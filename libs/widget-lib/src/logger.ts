@@ -3,5 +3,7 @@ function log(category = 'Default', color = '#1c5dbf', ...args: unknown[]): void 
 }
 
 export function logWidget(...args: unknown[]): void {
+  if (process.env['NODE_ENV'] === 'test') return
+
   log('Widget', '#47aba8', ...args)
 }

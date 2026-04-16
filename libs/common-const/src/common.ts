@@ -123,11 +123,11 @@ const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
-export const COW_PROTOCOL_LINK = 'https://cow.finance'
-export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.finance/learn'
-export const COWDAO_LEGAL_LINK = 'https://cow.finance/legal'
-export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.finance/cow-swap'
-export const DOCS_LINK = 'https://docs.cow.finance'
+export const COW_PROTOCOL_LINK = 'https://cow.fi'
+export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn'
+export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
+export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
+export const DOCS_LINK = 'https://docs.cow.fi'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
@@ -163,7 +163,7 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.INK]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
 }
 
-export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.finance/cow-protocol/reference/core/tokens'
+export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
 
 // fee threshold - should be greater than percentage, show warning
 export const FEE_SIZE_THRESHOLD = 10 as const // 10%

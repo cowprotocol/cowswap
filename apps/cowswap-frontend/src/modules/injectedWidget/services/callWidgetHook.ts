@@ -1,5 +1,6 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   WidgetHookEvents,
   WidgetHookPayloadMap,
@@ -11,7 +12,6 @@ import {
 import ms from 'ms.macro'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 const callsRegistry = new Map<string, (result: boolean) => void>()
 const HOOK_RESPONSE_TIMEOUT_MS = ms`2m`
@@ -24,6 +24,7 @@ function ensureListenerRegistered(parentOrigin: string): void {
 
   widgetIframeTransport.listenToMessageFromWindow(
     window,
+    window.parent,
     WidgetMethodsListen.HOOK_RESULT,
     (data) => {
       const callback = callsRegistry.get(data.id)

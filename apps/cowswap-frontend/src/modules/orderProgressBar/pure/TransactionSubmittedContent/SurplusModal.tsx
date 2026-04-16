@@ -200,7 +200,7 @@ export function SurplusModal(props: SurplusModalProps) {
       )}
       <p>
         <Trans>CoW Swap is the only token exchange that gets you extra tokens.</Trans>{' '}
-        <ExternalLink href={'https://blog.cow.finance/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
+        <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
           <Trans>Learn how</Trans> ↗
         </ExternalLink>
       </p>
@@ -214,6 +214,6 @@ function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: 
   const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.finance`,
+    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }

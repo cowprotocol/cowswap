@@ -56,7 +56,7 @@ export function useFaqData(): FaqItem[] {
         <>
           CoW Protocol is a permissionless DeFi settlement protocol leveraging{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
             data-click-event={toCowFiGtmEvent({
@@ -69,7 +69,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           ,{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -82,7 +82,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           ,{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
@@ -103,7 +103,7 @@ export function useFaqData(): FaqItem[] {
         <>
           CoW Protocol is the decentralized, permissionless DeFi protocol that powers{' '}
           <Link
-            href="https://swap.cow.finance/"
+            href="https://swap.cow.fi/"
             external
             utmContent="cow-protocol-cow-swap"
             data-click-event={toCowFiGtmEvent({
@@ -132,7 +132,7 @@ export function useFaqData(): FaqItem[] {
           <br />
           CoW Protocol groups user orders into batches and auctions them off to bonded third parties known as{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -157,7 +157,7 @@ export function useFaqData(): FaqItem[] {
         <>
           CoW Protocol is powered by a decentralized network of bonded third parties known as{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -171,7 +171,7 @@ export function useFaqData(): FaqItem[] {
           that source liquidity to settle users trade intents. Solvers tap onchain liquidity from major AMMs &
           aggregators, use private market maker inventory, and sometimes even match trades peer-to-peer in{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/how-it-works/coincidence-of-wants"
+            href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
             external
             utmContent="cow-protocol-coincidence-of-wants"
             data-click-event={toCowFiGtmEvent({
@@ -204,7 +204,7 @@ export function useFaqData(): FaqItem[] {
         <>
           An{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
             data-click-event={toCowFiGtmEvent({
@@ -219,7 +219,7 @@ export function useFaqData(): FaqItem[] {
           such as trading a token, minting an NFT, entering or exiting a LP position etc. These intents can then be
           executed by third parties, such as CoW Protocol&#39;s{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -234,7 +234,7 @@ export function useFaqData(): FaqItem[] {
           MEV protection. Intent-based trading has recently surged in popularity across DeFi. CoW Protocol is the
           largest intent-based meta DEX aggregator, with the largest{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -254,7 +254,7 @@ export function useFaqData(): FaqItem[] {
       answer: (
         <>
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -267,7 +267,7 @@ export function useFaqData(): FaqItem[] {
           </Link>{' '}
           are bonded third parties that bid on and execute user trades on CoW Protocol. Once a user submits a signed{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
             data-click-event={toCowFiGtmEvent({
@@ -280,7 +280,7 @@ export function useFaqData(): FaqItem[] {
           </Link>
           , CoW Protocol groups that intent alongside other intents in a{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
@@ -294,7 +294,7 @@ export function useFaqData(): FaqItem[] {
           . Solvers simulate solutions to the batch and then bid against each other in a batch auction for the right to
           execute the transactions onchain. The winner is determined based on which solver offers the most{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/benefits/price-improvement"
+            href="https://docs.cow.fi/cow-protocol/concepts/benefits/price-improvement"
             external
             utmContent="cow-protocol-price-improvement"
             data-click-event={toCowFiGtmEvent({
@@ -309,7 +309,7 @@ export function useFaqData(): FaqItem[] {
           This makes for a robust solver competition that ensures users have access to the best liquidity and best
           prices. CoW Protocol is always accepting new solvers. To learn how to deploy a solver, check out the{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-tutorials-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -330,7 +330,7 @@ export function useFaqData(): FaqItem[] {
         <>
           On CoW Protocol, users submit signed{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
             external
             utmContent="cow-protocol-introduction-intents"
             data-click-event={toCowFiGtmEvent({
@@ -343,7 +343,7 @@ export function useFaqData(): FaqItem[] {
           </Link>{' '}
           messages which are grouped together in batches and settled onchain by{' '}
           <Link
-            href="https://docs.cow.finance/category/solver"
+            href="https://docs.cow.fi/category/solver"
             external
             utmContent="cow-protocol-introduction-solvers"
             data-click-event={toCowFiGtmEvent({
@@ -358,7 +358,7 @@ export function useFaqData(): FaqItem[] {
           <br />
           To determine which solver should settle a given batch, the protocol runs a{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+            href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
             external
             utmContent="cow-protocol-introduction-batch-auctions"
             data-click-event={toCowFiGtmEvent({
@@ -374,7 +374,7 @@ export function useFaqData(): FaqItem[] {
           reward in the form of COW tokens. Solvers settle batches in a single transaction, ensuring uniform clearing
           prices for all assets in the batch, which{' '}
           <Link
-            href="https://docs.cow.finance/cow-protocol/concepts/benefits/mev-protection"
+            href="https://docs.cow.fi/cow-protocol/concepts/benefits/mev-protection"
             external
             utmContent="cow-protocol-mev-protection"
             data-click-event={toCowFiGtmEvent({
@@ -534,7 +534,7 @@ export const COW_PROTOCOL_SECTIONS = [
     bgColor: Color.cowfi_purple3,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.neutral98,
-    linkHref: 'https://docs.cow.finance/',
+    linkHref: 'https://docs.cow.fi/',
     linkText: 'Read the docs',
     linkEvent: 'click-docs',
     linkUtmContent: 'cow-protocol-docs',
@@ -559,7 +559,7 @@ export const COW_PROTOCOL_SECTIONS = [
     bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple3,
     titleColor: Color.cowfi_purple_dark,
-    linkHref: 'https://docs.cow.finance/',
+    linkHref: 'https://docs.cow.fi/',
     linkText: 'Apply for a grant',
     linkEvent: 'click-apply-for-a-grant',
     linkUtmContent: 'cow-protocol-grants',
