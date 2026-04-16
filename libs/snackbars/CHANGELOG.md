@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.20](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.19...snackbars-v2.0.20) (2026-04-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/ui bumped to 3.3.0
+
 ## [2.0.19](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.18...snackbars-v2.0.19) (2026-04-15)
 
 

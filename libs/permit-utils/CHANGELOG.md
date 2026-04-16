@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.2...permit-utils-v3.2.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.2
+
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.1...permit-utils-v3.1.2) (2026-04-15)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.2.1...common-utils-v3.3.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.3.0
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.2.0...common-utils-v3.2.1) (2026-04-15)
 
 

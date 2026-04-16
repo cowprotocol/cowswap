@@ -1,5 +1,37 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.6.1...cowswap-v3.7.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.0
+    * @cowprotocol/balances-and-allowances bumped to 3.2.0
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/core bumped to 3.2.0
+    * @cowprotocol/ens bumped to 3.2.0
+    * @cowprotocol/events bumped to 4.3.0
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.2
+    * @cowprotocol/iframe-transport bumped to 2.2.2
+    * @cowprotocol/multicall bumped to 3.2.0
+    * @cowprotocol/permit-utils bumped to 3.2.0
+    * @cowprotocol/snackbars bumped to 2.0.20
+    * @cowprotocol/tokens bumped to 3.4.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/ui bumped to 3.3.0
+    * @cowprotocol/wallet bumped to 3.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.16
+    * @cowprotocol/widget-lib bumped to 4.0.0
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.6.0...cowswap-v3.6.1) (2026-04-15)
 
 

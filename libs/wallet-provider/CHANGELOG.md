@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.16](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.15...wallet-provider-v2.1.16) (2026-04-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+
 ## [2.1.15](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.14...wallet-provider-v2.1.15) (2026-04-15)
 
 
