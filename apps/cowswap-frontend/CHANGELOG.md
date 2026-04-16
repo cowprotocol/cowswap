@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.7.1...cowswap-v3.8.0) (2026-04-16)
+
+
+### ✨ Features
+
+* attach eventId to error page ([#7364](https://github.com/cowprotocol/cowswap/issues/7364)) ([c056c0a](https://github.com/cowprotocol/cowswap/commit/c056c0a9a5244cbdc24bf3d0a7a04eccb9153801))
+
+
+### 🐛 Bug Fixes
+
+* appzi page crash in case of missing chunk ([#7363](https://github.com/cowprotocol/cowswap/issues/7363)) ([587123e](https://github.com/cowprotocol/cowswap/commit/587123e767b6065a818a95b8f67eaa615b753273))
+* reload the window after emergency wipe ([#7371](https://github.com/cowprotocol/cowswap/issues/7371)) ([a1ebde7](https://github.com/cowprotocol/cowswap/commit/a1ebde774a101e3a5f9b0fc468b2a1bc019206cb))
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.7.0...cowswap-v3.7.1) (2026-04-16)
 
 
