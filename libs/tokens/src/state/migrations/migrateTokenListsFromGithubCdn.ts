@@ -20,7 +20,7 @@ const GITHUB_RAW_PREFIXES = [
  * - `https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/CoinGecko.1.json`
  *
  * Now they use the CDN:
- * `https://files.cow.finance/token-lists/CoinGecko.1.json`
+ * `https://files.cow.fi/token-lists/CoinGecko.1.json`
  *
  * This migration:
  * 1. Reads the v6 data from IndexedDB

@@ -9,7 +9,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const host = headersList.get('host') || ''
   const { isDev, isPr } = checkEnvironment(host, '')
 
-  // Block all indexing on develop.cow.finance and PR preview environments
+  // Block all indexing on develop.cow.fi and PR preview environments
   if (isDev || isPr) {
     return {
       rules: {
@@ -25,6 +25,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://cow.finance'}/sitemap.xml`,
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://cow.fi'}/sitemap.xml`,
   }
 }
