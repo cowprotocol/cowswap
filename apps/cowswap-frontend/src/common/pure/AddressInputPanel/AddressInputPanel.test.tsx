@@ -159,17 +159,17 @@ describe('AddressInputPanel', () => {
     expect(screen.getByText('View ↗')).not.toBeNull()
   })
 
-  it('does not show View on Explorer for BTC target', () => {
+  it('shows View on Explorer link for valid BTC address', () => {
     renderComponent({ value: 'bc1qvalid', targetChainId: AdditionalTargetChainId.BITCOIN })
-    expect(screen.queryByText('View ↗')).toBeNull()
+    expect(screen.getByText('View ↗')).not.toBeNull()
   })
 
-  it('does not show View on Explorer for SOL target', () => {
+  it('shows View on Explorer link for valid SOL address', () => {
     renderComponent({
       value: 'SolValid1111111111111111111111111111111111111',
       targetChainId: AdditionalTargetChainId.SOLANA,
     })
-    expect(screen.queryByText('View ↗')).toBeNull()
+    expect(screen.getByText('View ↗')).not.toBeNull()
   })
 
   it('skips ENS resolution for BTC target', () => {

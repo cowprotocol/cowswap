@@ -20,7 +20,9 @@ export function useReceiverValidation(value: string, targetChainId?: TargetChain
   const isValid = Boolean(address)
   const isError = !isEmpty && !loading && !isValid
   const explorerUrl =
-    isValid && !isNonEvm && strategy.supportsENS ? getBlockExplorerUrl(chainId, 'address', name ?? address ?? '') : null
+    isValid && (isNonEvm || strategy.supportsENS)
+      ? getBlockExplorerUrl(chainId, 'address', name ?? address ?? '')
+      : null
 
   return { loading, isEmpty, isValid, isError, explorerUrl }
 }
