@@ -7,6 +7,20 @@ if (window.location.host === 'barn.cowswap.exchange') {
   window.location.href = 'https://barn.cow.fi'
 }
 
+// swap.cow.finance → swap.cow.fi when embedded (iframe / sandboxed); top-level stays on .finance until migrated
+try {
+  if (window.location.host === 'swap.cow.finance' && window.top !== window.self) {
+    const next = new URL(window.location.href)
+    next.protocol = 'https:'
+    next.hostname = 'swap.cow.fi'
+    window.location.replace(next.href)
+  }
+} catch {
+  if (window.location.host === 'swap.cow.finance') {
+    window.location.replace('https://swap.cow.fi/')
+  }
+}
+
 // We use the HashRouter, thus the pathname should ALWAYS be a '/'
 if (window.location.pathname !== '/') {
   window.location.pathname = '/'
