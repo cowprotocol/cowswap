@@ -1,5 +1,11 @@
 import { registerOnWindow } from './misc'
 
+export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
+export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
+
+const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
+
+// TODO: Remove regex checks and rely solely on the configured environment variable once all environments are updated
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
   pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
@@ -10,11 +16,23 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   ens: '(:?^cowswap.eth|ipfs)',
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getRegex(env: EnvironmentName) {
+function getRegex(env: EnvironmentName): RegExp {
   const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
   return new RegExp(regex, 'i')
+}
+
+function isEnvironmentName(value: string): value is EnvironmentName {
+  return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
+}
+
+function getConfiguredEnvironmentName(): EnvironmentName | undefined {
+  const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
+
+  if (!env) {
+    return undefined
+  }
+
+  return isEnvironmentName(env) ? env : undefined
 }
 
 export interface EnvironmentChecks {
@@ -26,7 +44,23 @@ export interface EnvironmentChecks {
   isLocal: boolean
 }
 
+function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChecks {
+  return {
+    isLocal: environmentName === 'local',
+    isDev: environmentName === 'development',
+    isPr: environmentName === 'pr',
+    isStaging: environmentName === 'staging',
+    isProd: environmentName === 'production',
+    isEns: environmentName === 'ens',
+  }
+}
+
 export function checkEnvironment(host: string, path: string): EnvironmentChecks {
+  const configuredEnvironmentName = getConfiguredEnvironmentName()
+  if (configuredEnvironmentName) {
+    return getEnvironmentChecks(configuredEnvironmentName)
+  }
+
   const ensRegex = getRegex('ens')
 
   return {
@@ -66,10 +100,7 @@ if (typeof window !== 'undefined') {
   isEns = envChecks.isEns
 }
 
-export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
-export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
-
-export const environmentName: EnvironmentName | undefined = (function () {
+function getEnvironmentName(): EnvironmentName | undefined {
   if (isProd) {
     return 'production'
   } else if (isEns) {
@@ -85,7 +116,9 @@ export const environmentName: EnvironmentName | undefined = (function () {
   } else {
     return undefined
   }
-})()
+}
+
+export const environmentName: EnvironmentName | undefined = getEnvironmentName()
 
 const isProdLike = isProd || isEns || isStaging
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forceStagingApi

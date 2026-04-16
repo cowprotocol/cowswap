@@ -12,6 +12,7 @@ const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
 // TODO: Break down this large function into smaller functions
 
 describe('Detect environments using host and path', () => {
+  const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
   const ENV_REGEX_KEYS = [
     'REACT_APP_DOMAIN_REGEX_LOCAL',
     'REACT_APP_DOMAIN_REGEX_PR',
@@ -23,6 +24,7 @@ describe('Detect environments using host and path', () => {
   ] as const
 
   const originalEnvRegexValues: Partial<Record<(typeof ENV_REGEX_KEYS)[number], string | undefined>> = {}
+  const originalEnvironment = process.env[ENVIRONMENT_VAR_NAME]
 
   beforeAll(() => {
     ENV_REGEX_KEYS.forEach((key) => {
@@ -32,6 +34,12 @@ describe('Detect environments using host and path', () => {
   })
 
   afterAll(() => {
+    if (typeof originalEnvironment === 'undefined') {
+      delete process.env[ENVIRONMENT_VAR_NAME]
+    } else {
+      process.env[ENVIRONMENT_VAR_NAME] = originalEnvironment
+    }
+
     ENV_REGEX_KEYS.forEach((key) => {
       const originalValue = originalEnvRegexValues[key]
       if (typeof originalValue === 'undefined') {
@@ -40,6 +48,14 @@ describe('Detect environments using host and path', () => {
         process.env[key] = originalValue
       }
     })
+  })
+
+  afterEach(() => {
+    if (typeof originalEnvironment === 'undefined') {
+      delete process.env[ENVIRONMENT_VAR_NAME]
+    } else {
+      process.env[ENVIRONMENT_VAR_NAME] = originalEnvironment
+    }
   })
 
   describe('Not a known environment', () => {
@@ -56,6 +72,12 @@ describe('Detect environments using host and path', () => {
 
     it('swap.cow.fi', () => {
       expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
+    })
+
+    it('uses env var override', () => {
+      process.env[ENVIRONMENT_VAR_NAME] = 'production'
+
+      expect(checkEnvironment('localhost:3000', '')).toEqual(isProduction)
     })
   })
 
@@ -128,6 +150,12 @@ describe('Detect environments using host and path', () => {
 
     it('192.168.0.11:3000', () => {
       expect(checkEnvironment('192.168.0.11:3000', '')).toEqual(isLocal)
+    })
+
+    it('falls back to host matching when env var is invalid', () => {
+      process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
+
+      expect(checkEnvironment('localhost:3000', '')).toEqual(isLocal)
     })
   })
 })
