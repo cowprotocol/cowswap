@@ -5,22 +5,6 @@ export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr'
 
 const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
 
-// TODO: Remove regex checks and rely solely on the configured environment variable once all environments are updated
-const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
-  local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
-  development: '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev.vercel.app)',
-  staging: '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-staging.vercel.app)',
-  production:
-    '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
-  ens: '(:?^cowswap.eth|ipfs)',
-}
-
-function getRegex(env: EnvironmentName): RegExp {
-  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
-  return new RegExp(regex, 'i')
-}
-
 function isEnvironmentName(value: string): value is EnvironmentName {
   return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
 }
@@ -55,23 +39,24 @@ function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChec
   }
 }
 
-export function checkEnvironment(host: string, path: string): EnvironmentChecks {
+function getDefaultEnvironmentChecks(): EnvironmentChecks {
+  return {
+    isLocal: false,
+    isDev: false,
+    isPr: false,
+    isStaging: false,
+    isProd: false,
+    isEns: false,
+  }
+}
+
+export function checkEnvironment(): EnvironmentChecks {
   const configuredEnvironmentName = getConfiguredEnvironmentName()
   if (configuredEnvironmentName) {
     return getEnvironmentChecks(configuredEnvironmentName)
   }
 
-  const ensRegex = getRegex('ens')
-
-  return {
-    // Project environments
-    isLocal: getRegex('local').test(host),
-    isDev: getRegex('development').test(host),
-    isPr: getRegex('pr').test(host),
-    isStaging: getRegex('staging').test(host),
-    isProd: getRegex('production').test(host),
-    isEns: ensRegex.test(host) || ensRegex.test(path),
-  }
+  return getDefaultEnvironmentChecks()
 }
 
 // A hack to test against prod API
@@ -91,7 +76,7 @@ let isProd = forceProdApi
 let isEns = false
 
 if (typeof window !== 'undefined') {
-  const envChecks = checkEnvironment(window.location.host, window.location.pathname)
+  const envChecks = checkEnvironment()
   isLocal = envChecks.isLocal
   isDev = envChecks.isDev
   isPr = envChecks.isPr
