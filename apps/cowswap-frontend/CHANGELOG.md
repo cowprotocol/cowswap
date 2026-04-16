@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.7.0...cowswap-v3.7.1) (2026-04-16)
+
+
+### 🐛 Bug Fixes
+
+* invert condition ([f381306](https://github.com/cowprotocol/cowswap/commit/f38130657298fd2948941d1b7ab9d3e542d34457))
+* redirect .finance to .fi except for widget ([65eb99b](https://github.com/cowprotocol/cowswap/commit/65eb99b357851dd92ce89a5771e248ef34d7831f))
+* redirect .finance to .fi except for widget ([160fb1c](https://github.com/cowprotocol/cowswap/commit/160fb1c6ae3181f15366668636861e5e7b80c658))
+* **widget:** cache widget events source ([c824326](https://github.com/cowprotocol/cowswap/commit/c82432689562d45ff3bebfc140ddc00b9ccc5ce9))
+* **widget:** cache widget events source ([cb73b8e](https://github.com/cowprotocol/cowswap/commit/cb73b8e496284e8e16d0b857ab4a46c51675d874))
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.6.1...cowswap-v3.7.0) (2026-04-16)
 
 
