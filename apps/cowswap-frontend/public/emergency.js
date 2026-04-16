@@ -12,6 +12,105 @@ if (window.location.pathname !== '/') {
   window.location.pathname = '/'
 }
 
+;(async function () {
+  const WIPE_KEY = 'emergencyWipe:v1'
+
+  if (localStorage.getItem(WIPE_KEY)) return
+
+  // 1. localStorage (re-set wipe flag after)
+  localStorage.clear()
+  localStorage.setItem(WIPE_KEY, '1')
+
+  // 2. sessionStorage
+  try {
+    sessionStorage.clear()
+  } catch {}
+
+  // 3. Cookies — expire each cookie across all known paths and domains
+  try {
+    const cookiePaths = [
+      '/',
+      '/swap',
+      '/limit',
+      '/limit-orders',
+      '/advanced',
+      '/advanced-orders',
+      '/yield',
+      '/account',
+      '/account/tokens',
+      '/account/governance',
+      '/account/affiliate',
+      '/account/my-rewards',
+      '/account-proxy',
+      '/send',
+      '/faq',
+      '/about',
+      '/play',
+      '/widget',
+    ]
+    const hostname = window.location.hostname
+    const hostParts = hostname.split('.')
+    // e.g. swap.cow.fi → [swap.cow.fi, .cow.fi, .swap.cow.fi]
+    const cookieDomains = [
+      hostname,
+      hostParts.length > 2 ? '.' + hostParts.slice(-2).join('.') : '',
+      '.' + hostname,
+    ].filter(Boolean)
+    const expired = ';expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    document.cookie.split(';').forEach(function (cookie) {
+      const name = cookie.split('=')[0].trim()
+      if (!name) return
+      cookiePaths.forEach(function (path) {
+        // Without domain — catches cookies set without explicit domain
+        document.cookie = name + '=' + expired + ';path=' + path
+        // With each domain variant
+        cookieDomains.forEach(function (domain) {
+          document.cookie = name + '=' + expired + ';path=' + path + ';domain=' + domain
+        })
+      })
+    })
+  } catch {}
+
+  // 4. IndexedDB (async — best-effort)
+  try {
+    if (indexedDB.databases) {
+      indexedDB
+        .databases()
+        .then(function (dbs) {
+          dbs.forEach(function (db) {
+            console.log('[Emergency] Deleting IndexedDB:', db.name)
+            indexedDB.deleteDatabase(db.name)
+          })
+        })
+        .catch(function () {})
+    }
+  } catch {}
+
+  // 5. Cache Storage (async — best-effort)
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys()
+      await Promise.all(
+        keys.map(function (k) {
+          return caches.delete(k)
+        }),
+      )
+    }
+  } catch {}
+
+  // 6. Service Workers (async — best-effort)
+  try {
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations()
+      await Promise.all(
+        registrations.map(function (r) {
+          return r.unregister()
+        }),
+      )
+    }
+  } catch {}
+})()
+
 /**
  * Removes deprecated token lists for a particular localStorage key: `allTokenListsInfoAtom:v5`
  *
