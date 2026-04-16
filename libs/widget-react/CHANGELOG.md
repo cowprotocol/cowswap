@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.0.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v2.0.2...widget-react-v3.0.0) (2026-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361))
+
+### ✨ Features
+
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361)) ([44fb968](https://github.com/cowprotocol/cowswap/commit/44fb968a2a4c1bc4b738e44fb59623799cc8cdc0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.3.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/widget-lib bumped to 4.0.0
+
 ## [2.0.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v2.0.1...widget-react-v2.0.2) (2026-04-15)
 
 

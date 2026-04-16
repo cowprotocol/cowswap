@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.2...tokens-v3.4.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/core bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/ui bumped to 3.3.0
+    * @cowprotocol/wallet-provider bumped to 2.1.16
+
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.1...tokens-v3.3.2) (2026-04-15)
 
 

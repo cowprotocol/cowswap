@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.2...ens-v3.2.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/wallet-provider bumped to 2.1.16
+
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.1...ens-v3.1.2) (2026-04-15)
 
 

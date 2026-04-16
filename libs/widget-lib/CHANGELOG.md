@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.1.1...widget-lib-v4.0.0) (2026-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361))
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361)) ([44fb968](https://github.com/cowprotocol/cowswap/commit/44fb968a2a4c1bc4b738e44fb59623799cc8cdc0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.3.0
+    * @cowprotocol/iframe-transport bumped to 2.2.2
+
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.1.0...widget-lib-v3.1.1) (2026-04-15)
 
 
