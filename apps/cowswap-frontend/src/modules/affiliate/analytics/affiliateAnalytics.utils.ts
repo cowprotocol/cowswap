@@ -112,20 +112,6 @@ export function getAffiliateModalViewKey(
   return [modalState, walletStatus, entrySource].filter(Boolean).join(':')
 }
 
-export function getAffiliateModalOpenViewKey(
-  isOpen: boolean,
-  walletStatus: TraderWalletStatus,
-  entrySource: AffiliateEntrySource | undefined,
-  hasSavedCode: boolean,
-  isLinked: boolean,
-): string | undefined {
-  if (!isOpen) {
-    return undefined
-  }
-
-  return [walletStatus, entrySource, String(hasSavedCode), String(isLinked)].filter(Boolean).join(':')
-}
-
 export function normalizeAffiliatePartnerCodeCreateFailureReason(
   error: AffiliatePartnerCodeCreateError | undefined,
 ): AffiliatePartnerCodeCreateFailureReason {

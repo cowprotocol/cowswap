@@ -34,7 +34,6 @@ export {
   getAffiliatePartnerPageState,
   getAffiliateTraderModalState,
   getAffiliateTraderPageState,
-  getAffiliateModalOpenViewKey,
   getAffiliateModalViewKey,
   getAffiliateCodeSourceFallback,
   normalizeAffiliatePartnerCodeCreateFailureReason,

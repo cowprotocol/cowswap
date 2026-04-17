@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ModalHeader } from '@cowprotocol/ui'
 
 import { CowModal } from 'common/pure/Modal'
@@ -11,9 +12,9 @@ import { AffiliateTraderModalIneligible } from './AffiliateTraderModalIneligible
 import { AffiliateTraderModalUnsupported } from './AffiliateTraderModalUnsupported'
 
 import {
-  getAffiliateModalOpenViewKey,
   getAffiliateModalViewKey,
   getAffiliateTraderModalState,
+  trackAffiliateEvent,
 } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
@@ -25,25 +26,41 @@ import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affilia
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderModal(): ReactNode {
-  useAffiliateTraderRecoverySideEffect()
+  const isRecoverySettling = useAffiliateTraderRecoverySideEffect()
   useAffiliateTraderRefUrlSideEffect()
 
+  const analytics = useCowAnalytics()
   const { isOpen: isModalOpen, source: entrySource } = useAtomValue(affiliateTraderModalAtom)
   const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
   const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
   const modalState = getAffiliateTraderModalState(walletStatus)
+  const hasTrackedOpenRef = useRef(false)
 
-  useAffiliateStateViewAnalytics({
-    action: 'affiliate_trader_modal_opened',
-    viewKey: getAffiliateModalOpenViewKey(isModalOpen, walletStatus, entrySource, !!savedCode, !!isLinked),
-    eventParams: {
+  useEffect(() => {
+    if (!isModalOpen) {
+      hasTrackedOpenRef.current = false
+      return
+    }
+
+    if (hasTrackedOpenRef.current) {
+      return
+    }
+
+    if (walletStatus === TraderWalletStatus.PENDING || isRecoverySettling) {
+      return
+    }
+
+    trackAffiliateEvent({
+      analytics,
+      action: 'affiliate_trader_modal_opened',
       entrySource,
       walletStatus,
       hasSavedCode: !!savedCode,
       isLinked: !!isLinked,
-    },
-  })
+    })
+    hasTrackedOpenRef.current = true
+  }, [analytics, entrySource, isLinked, isModalOpen, isRecoverySettling, savedCode, walletStatus])
 
   useAffiliateStateViewAnalytics({
     action: 'affiliate_trader_modal_state_viewed',

@@ -7,7 +7,7 @@ import { AnalyticsCategory, GtmEvent, toGtmEvent } from '@cowprotocol/analytics'
 export enum CowSwapAnalyticsCategory {
   // Trade Categories
   TRADE = 'Trade',
-  AFFILIATE = 'Affiliate',
+  AFFILIATE = 'affiliate',
   Bridge = 'Bridge',
   LIST = 'Lists',
   HOOKS = 'Hooks',

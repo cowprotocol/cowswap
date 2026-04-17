@@ -12,7 +12,6 @@ import {
 } from './affiliateAnalytics.types'
 import {
   getAffiliateCodeSourceFallback,
-  getAffiliateModalOpenViewKey,
   getAffiliateModalViewKey,
   getAffiliatePartnerPageState,
   getAffiliateTraderModalState,
@@ -167,16 +166,6 @@ describe('trader analytics helpers', () => {
         AffiliateEntrySource.TRADER_PAGE_ONBOARD,
       ),
     ).toBe('codeLinking:eligible:traderPageOnboard')
-
-    expect(
-      getAffiliateModalOpenViewKey(
-        true,
-        TraderWalletStatus.LINKED,
-        AffiliateEntrySource.TRADER_REWARDS_ROW,
-        true,
-        true,
-      ),
-    ).toBe('linked:traderRewardsRow:true:true')
 
     expect(
       getAffiliateModalViewKey(false, AffiliateModalState.LINKED, TraderWalletStatus.LINKED, undefined),
