@@ -87,6 +87,7 @@ export async function safeBundleEthFlow(
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
         amountToApprove: BigInt(amountToApprove.quotient.toString()),
+        chainId,
       })
 
       txs.push({

@@ -68,6 +68,7 @@ export async function safeBundleApprovalFlow(
       erc20Contract,
       spender,
       amountToApprove: BigInt(amountToApprove.quotient.toString()),
+      chainId,
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
@@ -145,6 +146,7 @@ export async function safeBundleApprovalFlow(
       const zeroApproveTx = await buildZeroApproveTx({
         erc20Contract,
         spender,
+        chainId,
       })
       safeTransactionData.unshift({
         to: zeroApproveTx.to!,

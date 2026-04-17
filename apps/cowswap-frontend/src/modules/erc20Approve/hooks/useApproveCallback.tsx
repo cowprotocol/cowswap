@@ -14,7 +14,12 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
 import { useTokenContract } from 'common/hooks/useContract'
 
-async function estimateApproveGas(tokenContract: Erc20, spender: string, approveAmount: string): Promise<BigNumber> {
+async function estimateApproveGas(
+  tokenContract: Erc20,
+  spender: string,
+  approveAmount: string,
+  chainId: number,
+): Promise<BigNumber> {
   for (let attempt = 1; attempt <= MAX_WALLET_RETRIES; attempt++) {
     try {
       return await tokenContract.estimateGas.approve(spender, approveAmount)
@@ -27,7 +32,6 @@ async function estimateApproveGas(tokenContract: Erc20, spender: string, approve
   }
 
   console.log('[estimateApproveGas] Wallet retries exhausted, switching to fallback provider')
-  const { chainId } = await tokenContract.provider.getNetwork()
   const fallbackProvider = getRpcProvider(chainId)
   if (fallbackProvider) {
     try {
@@ -49,6 +53,7 @@ export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,
   amountToApprove: bigint,
+  chainId: number,
 ): Promise<{
   approveAmount: BigNumber | string
   gasLimit: BigNumber
@@ -57,7 +62,7 @@ export async function estimateApprove(
 
   return {
     approveAmount,
-    gasLimit: await estimateApproveGas(tokenContract, spender, approveAmount),
+    gasLimit: await estimateApproveGas(tokenContract, spender, approveAmount, chainId),
   }
 }
 
@@ -83,7 +88,7 @@ export function useApproveCallback(
         return
       }
 
-      const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
+      const estimation = await estimateApprove(tokenContract, spender, amountToApprove, tokenChainId)
       return tokenContract
         .approve(spender, estimation.approveAmount, {
           gasLimit: calculateGasMargin(estimation.gasLimit),

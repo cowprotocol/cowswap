@@ -7,13 +7,14 @@ export type BuildApproveTxParams = {
   erc20Contract: Erc20
   spender: string
   amountToApprove: bigint
+  chainId: number
 }
 
 /**
  * Builds the approval tx, without sending it
  */
 export async function buildApproveTx(params: BuildApproveTxParams): Promise<PopulatedTransaction> {
-  const { erc20Contract, spender, amountToApprove } = params
-  const estimatedAmount = await estimateApprove(erc20Contract, spender, amountToApprove)
+  const { erc20Contract, spender, amountToApprove, chainId } = params
+  const estimatedAmount = await estimateApprove(erc20Contract, spender, amountToApprove, chainId)
   return erc20Contract.populateTransaction.approve(spender, estimatedAmount.approveAmount)
 }

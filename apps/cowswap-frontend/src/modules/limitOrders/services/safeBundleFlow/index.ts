@@ -74,6 +74,7 @@ export async function safeBundleFlow(
       erc20Contract,
       spender,
       amountToApprove: MaxUint256.toBigInt(),
+      chainId,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -150,6 +151,7 @@ export async function safeBundleFlow(
       const zeroApproveTx = await buildZeroApproveTx({
         erc20Contract,
         spender,
+        chainId,
       })
       safeTransactionData.unshift({
         to: zeroApproveTx.to!,
