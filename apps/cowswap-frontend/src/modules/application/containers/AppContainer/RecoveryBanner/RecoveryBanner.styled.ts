@@ -11,8 +11,8 @@ export const Banner = styled.div`
   align-items: center;
   gap: 5px;
   padding: 12px 10px;
+  color: ${darken(Color.successDark, 0.28)};
   background: ${Color.successDark};
-  color: ${darken(Color.successDark, 0.62)};
 
   ${Media.upToMedium()} {
     align-items: flex-start;
