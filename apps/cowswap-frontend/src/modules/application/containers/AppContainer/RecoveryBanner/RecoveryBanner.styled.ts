@@ -1,5 +1,6 @@
 import { Color, ExternalLink, Media, UI } from '@cowprotocol/ui'
 
+import { darken } from 'color2k'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 import { CloseIcon as SharedCloseIcon } from 'theme'
@@ -11,7 +12,7 @@ export const Banner = styled.div`
   gap: 5px;
   padding: 12px 10px;
   background: ${Color.successDark};
-  color: var(${UI.COLOR_BLACK});
+  color: ${darken(Color.successDark, 0.62)};
 
   ${Media.upToMedium()} {
     align-items: flex-start;
