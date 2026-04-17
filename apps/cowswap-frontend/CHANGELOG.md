@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.8.0...cowswap-v3.9.0) (2026-04-17)
+
+
+### ✨ Features
+
+* add recovery banner component and related functionality ([#7374](https://github.com/cowprotocol/cowswap/issues/7374)) ([e030412](https://github.com/cowprotocol/cowswap/commit/e03041283a933238a8f8feadb63a1279cda4aa6e))
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.7.1...cowswap-v3.8.0) (2026-04-16)
 
 
