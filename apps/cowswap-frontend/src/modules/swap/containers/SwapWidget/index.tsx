@@ -26,6 +26,7 @@ import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'm
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -65,7 +66,8 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
+  const isFeeExceedsError = quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.FeeExceedsFrom
   const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
@@ -166,6 +168,8 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
+  const hasInputAmount = !!inputCurrencyAmount && !inputCurrencyAmount.equalTo(0)
+
   const handleImport = useCallback(() => {
     setShowAddIntermediateTokenModal(false)
   }, [])
@@ -205,7 +209,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {!hideQuoteAmount && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
+            {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
+              <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            )}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
@@ -232,6 +238,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         intermediateBuyToken,
         isPrimaryValidationPassed,
         hideQuoteAmount,
+        isFeeExceedsError,
+        hasInputAmount,
+        isRateLoading,
       ],
     ),
   }
