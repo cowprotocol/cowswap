@@ -1,5 +1,69 @@
 # Changelog
 
+## [2.1.16](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.15...wallet-provider-v2.1.16) (2026-04-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+
+## [2.1.15](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.14...wallet-provider-v2.1.15) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+
+## [2.1.14](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.13...wallet-provider-v2.1.14) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+
+## [2.1.13](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.12...wallet-provider-v2.1.13) (2026-04-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.0
+
+## [2.1.12](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.11...wallet-provider-v2.1.12) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.4
+
+## [2.1.11](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.10...wallet-provider-v2.1.11) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.0.3
+
 ## [2.1.10](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.9...wallet-provider-v2.1.10) (2026-03-19)
 
 

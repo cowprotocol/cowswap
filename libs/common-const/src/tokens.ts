@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId, EvmChains, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -485,6 +485,15 @@ export const USDC_LINEA = new TokenWithLogo(
   'USD Coin',
 )
 
+export const USDC_SOLANA = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  AdditionalTargetChainId.SOLANA,
+  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  6,
+  'USDC',
+  'USDC (USDC)',
+)
+
 export const USDT_LINEA = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.LINEA,
@@ -554,7 +563,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
   'USD Coin',
 )
 
-export const USDC: Record<EvmChains, TokenWithLogo> = {
+export const USDC: Record<TargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
@@ -571,6 +580,10 @@ export const USDC: Record<EvmChains, TokenWithLogo> = {
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
+  [AdditionalTargetChainId.SOLANA]: USDC_SOLANA,
+  // we need some stablecoin ref currency to calculate price impact in usd,
+  // due to btc chain specific - there is no other currency than btc
+  [AdditionalTargetChainId.BITCOIN]: USDC_MAINNET,
 }
 
 /**

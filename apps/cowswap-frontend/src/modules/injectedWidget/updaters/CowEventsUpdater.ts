@@ -6,15 +6,14 @@ import {
   CowWidgetEventPayloadMap,
   CowWidgetEvents,
 } from '@cowprotocol/events'
-import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
+import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 const ALL_EVENTS = Object.values(CowWidgetEvents)
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CowEventsUpdater() {
+export function CowEventsUpdater(): null {
   // Setup listeners only once
   useEffect(() => {
     // Create all listeners
@@ -37,11 +36,21 @@ export function CowEventsUpdater() {
   return null
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function forwardEventToIframe<T extends CowWidgetEvents>(event: CowWidgetEvents, payload: CowWidgetEventPayloadMap[T]) {
-  widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
-    event,
-    payload,
-  })
+function forwardEventToIframe<T extends CowWidgetEvents>(
+  event: CowWidgetEvents,
+  payload: CowWidgetEventPayloadMap[T],
+): void {
+  const parentOrigin = getParentOrigin()
+
+  if (!parentOrigin) return
+
+  widgetIframeTransport.postMessageToWindow(
+    window.parent,
+    WidgetMethodsEmit.EMIT_COW_EVENT,
+    {
+      event,
+      payload,
+    },
+    parentOrigin,
+  )
 }

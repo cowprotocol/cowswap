@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 
-import { isBarn, isDev, isLocal, isPr, isStaging } from './environments'
+import { isDev, isLocal, isPr, isStaging } from './environments'
 
 function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
   let baseUrl: string | undefined
@@ -8,8 +8,6 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://dev.explorer.cow.fi'
   } else if (isStaging) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://staging.explorer.cow.fi'
-  } else if (isBarn) {
-    baseUrl = process.env.REACT_APP_EXPLORER_URL_BARN || 'https://barn.explorer.cow.fi'
   } else {
     // Production by default
     baseUrl = process.env.REACT_APP_EXPLORER_URL_PROD || 'https://explorer.cow.fi'
