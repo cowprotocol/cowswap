@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
+msgid "Wallet not connected"
+msgstr "Wallet not connected"
+
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token: "
 #~ msgstr "Selected token: "
@@ -397,8 +401,8 @@ msgid "sell"
 msgstr "sell"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
-msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
-msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+#~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+#~ msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
@@ -782,7 +786,7 @@ msgstr "Adding this app/hook grants it access to your wallet actions and trading
 msgid "Updates every 24 hours"
 msgstr "Updates every 24 hours"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "(View on Explorer)"
 msgstr "(View on Explorer)"
 
@@ -940,12 +944,12 @@ msgstr "Partial approval"
 
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
-msgid "Safe bundle flow context is not ready"
-msgstr "Safe bundle flow context is not ready"
+#~ msgid "Safe bundle flow context is not ready"
+#~ msgstr "Safe bundle flow context is not ready"
 
 #: apps/cowswap-frontend/src/modules/tradeQuote/utils/getBridgeQuoteSigner.ts
-msgid "No RPC provider available for chain ID: {chainId}"
-msgstr "No RPC provider available for chain ID: {chainId}"
+#~ msgid "No RPC provider available for chain ID: {chainId}"
+#~ msgstr "No RPC provider available for chain ID: {chainId}"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
@@ -1285,6 +1289,10 @@ msgstr "any token into CoW AMM pools to start benefiting from attractive APRs."
 msgid "Solvers"
 msgstr "Solvers"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
+msgid "The wallet request timed out. Please try again and complete signing in your wallet before the session expires."
+msgstr "The wallet request timed out. Please try again and complete signing in your wallet before the session expires."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "You don't have any {orderStatusText} orders at the moment."
 #~ msgstr "You don't have any {orderStatusText} orders at the moment."
@@ -1456,8 +1464,8 @@ msgid "Try adjusting your search term or filters"
 msgstr "Try adjusting your search term or filters"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
-msgid "New to decentralised applications?"
-msgstr "New to decentralised applications?"
+#~ msgid "New to decentralised applications?"
+#~ msgstr "New to decentralised applications?"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Begin with TWAP Today!"
@@ -2015,7 +2023,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -2242,7 +2250,6 @@ msgid "Set custom deadline"
 msgstr "Set custom deadline"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2317,7 +2324,6 @@ msgid "Safe nonce"
 msgstr "Safe nonce"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "Connect a wallet"
 msgstr "Connect a wallet"
 
@@ -2500,7 +2506,7 @@ msgstr "up"
 msgid "Sign the {operationLabel} with your wallet."
 msgstr "Sign the {operationLabel} with your wallet."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/index.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
@@ -2608,6 +2614,10 @@ msgstr "At current gas prices, your remaining {nativeSymbol} balance after confi
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
 msgstr "The price of this pool is outside of your selected range. Your position is not currently earning fees."
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
+msgid "Receiver address (required)"
+msgstr "Receiver address (required)"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "days"
 msgstr "days"
@@ -2668,6 +2678,10 @@ msgstr "Context is not full to cancel TWAP order"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
 msgstr "Sent {nativeTokenSymbol}"
+
+#: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
+msgid "Choose a wallet to connect to CoW Swap"
+msgstr "Choose a wallet to connect to CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
@@ -3033,6 +3047,10 @@ msgstr "In case you want to give allowance only for the trade amount, use the ad
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/AddressInputPanel.tsx
+msgid "Recipient address"
+msgstr "Recipient address"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Your position has 0 liquidity, and is not earning fees."
@@ -4108,7 +4126,6 @@ msgid "Unverified"
 msgstr "Unverified"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
@@ -4120,6 +4137,7 @@ msgstr "Only the {limit} most recent orders were searched."
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
@@ -5943,8 +5961,8 @@ msgid "Bridging deposit address is not verified! Please contact CoW Swap support
 msgstr "Bridging deposit address is not verified! Please contact CoW Swap support!"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
-msgid "Learn more about wallets"
-msgstr "Learn more about wallets"
+#~ msgid "Learn more about wallets"
+#~ msgstr "Learn more about wallets"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "This is the estimated amount you will receive for each part of the TWAP order."
@@ -6341,16 +6359,16 @@ msgid "on explorer"
 msgstr "on explorer"
 
 #: apps/cowswap-frontend/src/common/hooks/useGetReceipt.ts
-msgid "No provider yet"
-msgstr "No provider yet"
+#~ msgid "No provider yet"
+#~ msgstr "No provider yet"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
 msgstr "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
 
 #: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
-msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
-msgstr "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
+#~ msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
+#~ msgstr "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerQrModal.tsx
 msgid "Download referral QR code"
@@ -6416,6 +6434,10 @@ msgstr "Canceling your order"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "Referral code"
 msgstr "Referral code"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Enter a receiver address"
+msgstr "Enter a receiver address"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} out of {totalSolvers} solvers"
@@ -7231,8 +7253,8 @@ msgid "1 Week"
 msgstr "1 Week"
 
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
-msgid "Eth flow context is not ready"
-msgstr "Eth flow context is not ready"
+#~ msgid "Eth flow context is not ready"
+#~ msgstr "Eth flow context is not ready"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.tsx
 msgid "There are no orders"

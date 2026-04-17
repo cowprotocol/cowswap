@@ -3,10 +3,10 @@ import { ReactNode, useCallback } from 'react'
 import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useWalletClient } from 'wagmi'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -32,16 +32,15 @@ import {
 } from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
-  const provider = useWalletProvider()
-  const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const { data: walletClient } = useWalletClient()
+  const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()
 
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
   const isUnsupportedNetwork = !isSupportedPayoutsNetwork(chainId)
-  const isSignerAvailable = Boolean(provider)
+  const isSignerAvailable = Boolean(walletClient)
   const partnerRewardAmount = getPartnerRewardAmountLabel()
   const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
   const affiliateTimeCapDays = PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS

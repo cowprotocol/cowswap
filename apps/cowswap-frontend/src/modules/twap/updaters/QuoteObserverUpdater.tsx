@@ -5,8 +5,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 
 import { Field } from 'legacy/state/types'
 
-import { useGetReceiveAmountInfo } from 'modules/trade'
-import { useDerivedTradeState } from 'modules/trade'
+import { useGetReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { useTradeQuote } from 'modules/tradeQuote'
 

@@ -1,11 +1,16 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { isBtcAddress, isEvmAddress, isSolanaAddress, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
-import { getAddress } from '@ethersproject/address'
-import { AddressZero } from '@ethersproject/constants'
-import { Contract, ContractInterface } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+import {
+  isBtcAddress,
+  isBtcChain,
+  isEvmAddress,
+  isSolanaAddress,
+  isSolanaChain,
+  SupportedChainId,
+  TargetChainId,
+} from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
+import { getAddress } from 'viem'
 
 import { getExplorerOrderLink } from './explorer'
 
@@ -19,34 +24,12 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-// account is optional
-export function getContract(
-  address: string,
-  ABI: ContractInterface,
-  provider: JsonRpcProvider,
-  account?: string,
-): Contract {
-  if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-
-  return new Contract(address, ABI, getProviderOrSigner(provider, account))
-}
-
-// account is optional
-export function getProviderOrSigner(provider: JsonRpcProvider, account?: string): JsonRpcProvider | JsonRpcSigner {
-  return account ? getSigner(provider, account) : provider
-}
-
-// account is not optional
-export function getSigner(provider: JsonRpcProvider, account: string): JsonRpcSigner {
-  return provider.getSigner(account).connectUnchecked()
-}
-
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
+  if (!value) return false
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
   try {
-    return getAddress(value as never)
+    return getAddress(prefixed)
   } catch {
     return false
   }
@@ -98,7 +81,7 @@ export function formatOrderId(orderId: string): string {
 
 // Get the right block explorer URL by chainId
 export function getBlockExplorerUrl(
-  chainId: SupportedChainId,
+  chainId: TargetChainId,
   type: BlockExplorerLinkType,
   data: string,
   base?: string,
@@ -134,13 +117,7 @@ export function shortenOrderId(orderId: string): string {
   return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
-// eslint-disable-next-line complexity
-function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
-
-  if (!basePath) return ''
-
+function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
   switch (type) {
     case 'transaction':
       return `${basePath}/tx/${data}`
@@ -158,4 +135,49 @@ function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplor
     default:
       return `${basePath}/address/${data}`
   }
+}
+
+function getSolExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+  switch (type) {
+    case 'transaction':
+    case 'event':
+      return `${basePath}/tx/${data}`
+    case 'token':
+    case 'token-transfer':
+    case 'address':
+    case 'contract':
+    default:
+      return `${basePath}/address/${data}`
+    case 'block':
+      return `${basePath}/block/${data}`
+  }
+}
+
+function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+  switch (type) {
+    case 'transaction':
+    case 'event':
+      return `${basePath}/tx/${data}`
+    case 'block':
+      return `${basePath}/block/${data}`
+    case 'address':
+    case 'token-transfer':
+    default:
+      return `${basePath}/address/${data}`
+    case 'token':
+    case 'contract':
+      return `${basePath}` // BTC has no token or contract page
+  }
+}
+
+function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
+
+  if (!basePath) return ''
+
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
+  // a dedicated explorer URL builder must be added here before this fallback.
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
 }
