@@ -4,14 +4,8 @@ import { renderHook } from '@testing-library/react'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
+import { AffiliateModalState, AffiliatePageState } from './affiliateAnalytics.types'
 import {
-  AffiliateCodeSource,
-  AffiliateEntrySource,
-  AffiliateModalState,
-  AffiliatePageState,
-} from './affiliateAnalytics.types'
-import {
-  getAffiliateCodeSourceFallback,
   getAffiliateModalViewKey,
   getAffiliatePartnerPageState,
   getAffiliateTraderModalState,
@@ -20,8 +14,17 @@ import {
 } from './affiliateAnalytics.utils'
 
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
-import { TraderWalletStatus } from '../hooks/useAffiliateTraderWallet'
 import { logAffiliate } from '../utils/logger'
+
+const TraderWalletStatus = {
+  PENDING: 'pending',
+  UNSUPPORTED: 'unsupported',
+  INELIGIBLE: 'ineligible',
+  ELIGIBLE: 'eligible',
+  LINKED: 'linked',
+  ELIGIBILITY_UNKNOWN: 'eligibility-unknown',
+  DISCONNECTED: 'disconnected',
+} as const
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -35,6 +38,10 @@ jest.mock('@cowprotocol/analytics', () => {
 
 jest.mock('../utils/logger', () => ({
   logAffiliate: jest.fn(),
+}))
+
+jest.mock('../hooks/useAffiliateTraderWallet', () => ({
+  TraderWalletStatus,
 }))
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
@@ -54,7 +61,7 @@ describe('trackAffiliateEvent', () => {
       action: 'affiliate_trader_page_state_viewed',
       chainId: 1,
       walletStatus: TraderWalletStatus.LINKED,
-      codeSource: undefined,
+      optionalField: undefined,
     })
 
     expect(sendEvent).toHaveBeenCalledWith({
@@ -87,7 +94,7 @@ describe('trackAffiliateEvent', () => {
 })
 
 describe('getAffiliatePartnerPageState', () => {
-  it('returns onboard when the wallet or network is not eligible for partner setup', () => {
+  it('returns onboarding when the wallet or trading network is not eligible', () => {
     expect(
       getAffiliatePartnerPageState({
         hasAccount: false,
@@ -99,7 +106,7 @@ describe('getAffiliatePartnerPageState', () => {
     ).toBe(AffiliatePageState.ONBOARD)
   })
 
-  it('returns undefined while partner info is still loading', () => {
+  it('returns undefined while partner info is loading', () => {
     expect(
       getAffiliatePartnerPageState({
         hasAccount: true,
@@ -109,28 +116,6 @@ describe('getAffiliatePartnerPageState', () => {
         isSupportedTradingNetwork: true,
       }),
     ).toBeUndefined()
-  })
-
-  it('returns the live and creation states once loading completes', () => {
-    expect(
-      getAffiliatePartnerPageState({
-        hasAccount: true,
-        hasExistingCode: true,
-        isLoading: false,
-        isSupportedPayoutNetwork: true,
-        isSupportedTradingNetwork: true,
-      }),
-    ).toBe(AffiliatePageState.CODE_LIVE)
-
-    expect(
-      getAffiliatePartnerPageState({
-        hasAccount: true,
-        hasExistingCode: false,
-        isLoading: false,
-        isSupportedPayoutNetwork: true,
-        isSupportedTradingNetwork: true,
-      }),
-    ).toBe(AffiliatePageState.CODE_CREATION)
   })
 
   it('keeps existing partners on the live page state on unsupported payout networks', () => {
@@ -149,7 +134,6 @@ describe('getAffiliatePartnerPageState', () => {
 describe('trader analytics helpers', () => {
   it('derives trader page and modal states from wallet status', () => {
     expect(getAffiliateTraderPageState(TraderWalletStatus.PENDING, false)).toBe(AffiliatePageState.LOADING)
-    expect(getAffiliateTraderPageState(TraderWalletStatus.UNSUPPORTED, false)).toBe(AffiliatePageState.UNSUPPORTED)
     expect(getAffiliateTraderPageState(TraderWalletStatus.UNSUPPORTED, true)).toBe(AffiliatePageState.UNSUPPORTED)
     expect(getAffiliateTraderPageState(TraderWalletStatus.INELIGIBLE, true)).toBe(AffiliatePageState.INELIGIBLE)
     expect(getAffiliateTraderPageState(TraderWalletStatus.ELIGIBLE, true)).toBe(AffiliatePageState.LINKED)
@@ -158,23 +142,11 @@ describe('trader analytics helpers', () => {
   })
 
   it('builds stable modal analytics keys only while the modal is open', () => {
-    expect(
-      getAffiliateModalViewKey(
-        true,
-        AffiliateModalState.CODE_LINKING,
-        TraderWalletStatus.ELIGIBLE,
-        AffiliateEntrySource.TRADER_PAGE_ONBOARD,
-      ),
-    ).toBe('codeLinking:eligible:traderPageOnboard')
+    expect(getAffiliateModalViewKey(true, AffiliateModalState.CODE_LINKING, TraderWalletStatus.ELIGIBLE)).toBe(
+      'codeLinking:eligible',
+    )
 
-    expect(
-      getAffiliateModalViewKey(false, AffiliateModalState.LINKED, TraderWalletStatus.LINKED, undefined),
-    ).toBeUndefined()
-  })
-
-  it('falls back to legacy or manual code sources based on linkage state', () => {
-    expect(getAffiliateCodeSourceFallback(true)).toBe(AffiliateCodeSource.LEGACY_UNKNOWN)
-    expect(getAffiliateCodeSourceFallback(false)).toBe(AffiliateCodeSource.MANUAL_INPUT)
+    expect(getAffiliateModalViewKey(false, AffiliateModalState.LINKED, TraderWalletStatus.LINKED)).toBeUndefined()
   })
 })
 
@@ -222,12 +194,6 @@ describe('useAffiliateStateViewAnalytics', () => {
       walletStatus: TraderWalletStatus.LINKED,
       hasSavedCode: true,
     })
-
-    rerender({
-      walletStatus: TraderWalletStatus.LINKED,
-    })
-
-    expect(sendEvent).toHaveBeenCalledTimes(2)
   })
 
   it('ignores reserved analytics keys from event params', () => {

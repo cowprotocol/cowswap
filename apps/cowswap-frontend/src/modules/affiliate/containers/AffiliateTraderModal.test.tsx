@@ -7,7 +7,6 @@ import { render } from '@testing-library/react'
 
 import { AffiliateTraderModal } from './AffiliateTraderModal'
 
-import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
@@ -95,7 +94,7 @@ jest.mock('../pure/UnsupportedNetwork', () => ({
 
 jest.mock('../state/affiliateTraderModalAtom', () => ({
   affiliateTraderModalAtom: Symbol.for('affiliateTraderModalAtom'),
-  closeTraderModalAtom: Symbol.for('closeTraderModalAtom'),
+  toggleTraderModalAtom: Symbol.for('toggleTraderModalAtom'),
 }))
 
 jest.mock('../state/affiliateTraderSavedCodeAtom', () => ({
@@ -115,8 +114,8 @@ const useAffiliateStateViewAnalyticsMock = useAffiliateStateViewAnalytics as jes
 
 describe('AffiliateTraderModal', () => {
   const sendEvent = jest.fn()
-  const closeAffiliateModal = jest.fn()
-  let modalState: { isOpen: boolean; source?: AffiliateEntrySource }
+  const toggleAffiliateModal = jest.fn()
+  let isModalOpen: boolean
   let savedCodeState: { savedCode?: string; isLinked?: boolean }
   let isRecoverySettling: boolean
   let walletStatus: TraderWalletStatus
@@ -124,19 +123,19 @@ describe('AffiliateTraderModal', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    modalState = { isOpen: false, source: AffiliateEntrySource.TRADER_PAGE_ONBOARD }
+    isModalOpen = false
     savedCodeState = {}
     isRecoverySettling = false
     walletStatus = TraderWalletStatus.ELIGIBLE
 
     useCowAnalyticsMock.mockReturnValue({ sendEvent } as unknown as CowAnalytics)
-    useSetAtomMock.mockReturnValue(closeAffiliateModal)
+    useSetAtomMock.mockReturnValue(toggleAffiliateModal)
     useAffiliateTraderRecoverySideEffectMock.mockImplementation(() => isRecoverySettling)
     useAffiliateTraderWalletMock.mockImplementation(() => walletStatus)
     useAffiliateStateViewAnalyticsMock.mockImplementation(() => undefined)
     useAtomValueMock.mockImplementation((atom) => {
       if (atom === affiliateTraderModalAtom) {
-        return modalState
+        return isModalOpen
       }
 
       if (atom === affiliateTraderSavedCodeAtom) {
@@ -152,14 +151,13 @@ describe('AffiliateTraderModal', () => {
 
     expect(sendEvent).not.toHaveBeenCalled()
 
-    modalState = { isOpen: true, source: AffiliateEntrySource.TRADER_PAGE_ONBOARD }
+    isModalOpen = true
     rerender(<AffiliateTraderModal />)
 
     expect(sendEvent).toHaveBeenCalledTimes(1)
     expect(sendEvent).toHaveBeenCalledWith({
       category: 'affiliate',
       action: 'affiliate_trader_modal_opened',
-      entrySource: AffiliateEntrySource.TRADER_PAGE_ONBOARD,
       walletStatus: TraderWalletStatus.ELIGIBLE,
       hasSavedCode: false,
       isLinked: false,
@@ -170,28 +168,10 @@ describe('AffiliateTraderModal', () => {
     rerender(<AffiliateTraderModal />)
 
     expect(sendEvent).toHaveBeenCalledTimes(1)
-
-    modalState = { isOpen: false, source: AffiliateEntrySource.TRADER_PAGE_ONBOARD }
-    rerender(<AffiliateTraderModal />)
-
-    expect(sendEvent).toHaveBeenCalledTimes(1)
-
-    modalState = { isOpen: true, source: AffiliateEntrySource.TRADER_REWARDS_ROW }
-    rerender(<AffiliateTraderModal />)
-
-    expect(sendEvent).toHaveBeenCalledTimes(2)
-    expect(sendEvent).toHaveBeenLastCalledWith({
-      category: 'affiliate',
-      action: 'affiliate_trader_modal_opened',
-      entrySource: AffiliateEntrySource.TRADER_REWARDS_ROW,
-      walletStatus: TraderWalletStatus.LINKED,
-      hasSavedCode: true,
-      isLinked: true,
-    })
   })
 
   it('waits for pending wallet state to settle before tracking the open event', () => {
-    modalState = { isOpen: true, source: AffiliateEntrySource.TRADER_PAGE_ONBOARD }
+    isModalOpen = true
     walletStatus = TraderWalletStatus.PENDING
 
     const { rerender } = render(<AffiliateTraderModal />)
@@ -206,7 +186,6 @@ describe('AffiliateTraderModal', () => {
     expect(sendEvent).toHaveBeenCalledWith({
       category: 'affiliate',
       action: 'affiliate_trader_modal_opened',
-      entrySource: AffiliateEntrySource.TRADER_PAGE_ONBOARD,
       walletStatus: TraderWalletStatus.LINKED,
       hasSavedCode: true,
       isLinked: true,
@@ -214,7 +193,7 @@ describe('AffiliateTraderModal', () => {
   })
 
   it('waits for recovered code to settle before tracking the open event', () => {
-    modalState = { isOpen: true, source: AffiliateEntrySource.TRADER_REWARDS_ROW }
+    isModalOpen = true
     isRecoverySettling = true
 
     const { rerender } = render(<AffiliateTraderModal />)
@@ -230,7 +209,6 @@ describe('AffiliateTraderModal', () => {
     expect(sendEvent).toHaveBeenCalledWith({
       category: 'affiliate',
       action: 'affiliate_trader_modal_opened',
-      entrySource: AffiliateEntrySource.TRADER_REWARDS_ROW,
       walletStatus: TraderWalletStatus.LINKED,
       hasSavedCode: true,
       isLinked: true,

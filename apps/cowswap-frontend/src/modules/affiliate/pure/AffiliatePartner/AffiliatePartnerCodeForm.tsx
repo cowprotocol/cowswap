@@ -129,5 +129,4 @@ const ADORNMENT_VARIANT_MAP: Record<PartnerCodeAvailability, RefCodeAdornmentVar
   [PartnerCodeAvailability.Checking]: 'checking',
   [PartnerCodeAvailability.Available]: 'available',
   [PartnerCodeAvailability.Unavailable]: 'error',
-  [PartnerCodeAvailability.NetworkError]: 'error',
 }

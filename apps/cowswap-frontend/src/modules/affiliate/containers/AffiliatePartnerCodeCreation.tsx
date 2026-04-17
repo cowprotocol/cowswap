@@ -1,11 +1,9 @@
 import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useWalletClient } from 'wagmi'
 
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import {
   PartnerCodeAvailability,
   useAffiliatePartnerCodeAvailability,
@@ -16,15 +14,13 @@ import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from 
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
-  const analytics = useCowAnalytics()
   const { account, chainId } = useWalletInfo()
   const { data: walletClient } = useWalletClient()
 
   const isCreateEnabled = !!account && !!walletClient && isSupportedPayoutsNetwork(chainId)
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
-  const [generatedCode, setGeneratedCode] = useState(() => generateSuggestedCode())
-  const [inputCode, setInputCode] = useState(generatedCode)
+  const [inputCode, setInputCode] = useState(generateSuggestedCode())
   const isInputValid = Boolean(formatRefCode(inputCode))
 
   const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
@@ -44,16 +40,9 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
   }, [])
 
   const onGenerate = useCallback((): void => {
-    trackAffiliateEvent({
-      analytics,
-      action: 'affiliate_partner_code_suggestion_regenerated',
-      inputWasDirty: inputCode !== generatedCode,
-    })
-    const nextGeneratedCode = generateSuggestedCode()
-    setGeneratedCode(nextGeneratedCode)
-    setInputCode(nextGeneratedCode)
+    setInputCode(generateSuggestedCode())
     setError(undefined)
-  }, [analytics, generatedCode, inputCode])
+  }, [])
 
   return (
     <AffiliatePartnerCodeForm

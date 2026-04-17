@@ -23,7 +23,7 @@ export function AffiliateTraderExpiryBanner(): ReactNode {
   const now = useMachineTimeMs(AFFILIATE_EXPIRY_CHECK_INTERVAL_MS)
   const timeAgo = useTimeAgo(rewardsEnd ?? undefined, AFFILIATE_EXPIRY_CHECK_INTERVAL_MS)
   const rewardsEndTimestamp = rewardsEnd?.getTime()
-  const isExpired = !!rewardsEndTimestamp && rewardsEndTimestamp < now
+  const isExpired = !!rewardsEndTimestamp && rewardsEndTimestamp <= now
   const isPreExpiry =
     !!rewardsEndTimestamp && rewardsEndTimestamp > now && rewardsEndTimestamp - now <= PRE_EXPIRY_WINDOW_MS
 

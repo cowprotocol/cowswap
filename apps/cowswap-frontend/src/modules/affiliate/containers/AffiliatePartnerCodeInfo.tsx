@@ -1,6 +1,5 @@
-import { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
@@ -16,7 +15,6 @@ import { useModalState } from 'common/hooks/useModalState'
 
 import { AffiliatePartnerQrModal } from './AffiliatePartnerQrModal'
 
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliatePartnerInfo } from '../hooks/useAffiliatePartnerInfo'
 import { getReferralLink, toValidDate } from '../lib/affiliateProgramUtils'
 import {
@@ -40,7 +38,6 @@ import {
 } from '../pure/shared'
 
 export function AffiliatePartnerCodeInfo(): ReactNode {
-  const analytics = useCowAnalytics()
   const { account } = useWalletInfo()
   const { data: partnerInfo } = useAffiliatePartnerInfo(account)
 
@@ -51,24 +48,8 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
       `https://x.com/intent/tweet?text=${encodeURIComponent(`Trade on CoW Swap with my referral link! @CoWSwap`)}&url=${encodeURIComponent(referralLink)}`,
     [referralLink],
   )
-  const { isModalOpen, openModal, closeModal } = useModalState()
 
-  const onCopyCode = useCallback(
-    (): void => trackAffiliateEvent({ analytics, action: 'affiliate_partner_referral_code_copied' }),
-    [analytics],
-  )
-  const onCopyLink = useCallback(
-    (): void => trackAffiliateEvent({ analytics, action: 'affiliate_partner_referral_link_copied' }),
-    [analytics],
-  )
-  const onShareOnX = useCallback(
-    (): void => trackAffiliateEvent({ analytics, action: 'affiliate_partner_share_on_x_clicked' }),
-    [analytics],
-  )
-  const onOpenQrModal = useCallback((): void => {
-    trackAffiliateEvent({ analytics, action: 'affiliate_partner_qr_modal_opened' })
-    openModal()
-  }, [analytics, openModal])
+  const { isModalOpen, openModal, closeModal } = useModalState()
 
   if (!refCode) {
     return null
@@ -83,7 +64,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
         <LinkedCard>
           <LinkedCodeRow>
             <LinkedCopy>
-              <CopyHelper toCopy={refCode} iconSize={16} hideCopiedLabel onCopy={onCopyCode} />
+              <CopyHelper toCopy={refCode} iconSize={16} hideCopiedLabel />
               <LinkedCodeText>{refCode}</LinkedCodeText>
             </LinkedCopy>
             <LinkedBadge>
@@ -93,7 +74,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
           </LinkedCodeRow>
           <LinkedLinkRow>
             <LinkedCopy>
-              <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel onCopy={onCopyLink} />
+              <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
               <LinkedLinkText>
                 {referralLink
                   .split(/(ref=)/)
@@ -120,13 +101,13 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
           <Trans>Links/codes don't reveal your wallet.</Trans>
         </LinkedFooterNote>
         <LinkedActions>
-          <LinkedActionButton as="a" href={shareUrl} target="_blank" rel="noopener noreferrer" onClick={onShareOnX}>
+          <LinkedActionButton as="a" href={shareUrl} target="_blank" rel="noopener noreferrer">
             <LinkedActionIcon>
               <SVG src={ICON_SOCIAL_X} width={14} height={14} />
             </LinkedActionIcon>
             <Trans>Share on X</Trans>
           </LinkedActionButton>
-          <LinkedActionButton onClick={onOpenQrModal}>
+          <LinkedActionButton onClick={openModal}>
             <LinkedActionIcon>
               <SVG src={ICON_QR_CODE} width={14} height={14} />
             </LinkedActionIcon>

@@ -22,18 +22,19 @@ import { useAffiliateTraderRefUrlSideEffect } from '../hooks/useAffiliateTraderR
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { ModalContainer } from '../pure/AffiliateTraderModal/styles'
 import { UnsupportedNetwork } from '../pure/UnsupportedNetwork'
-import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { affiliateTraderModalAtom, toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderModal(): ReactNode {
   const isRecoverySettling = useAffiliateTraderRecoverySideEffect()
   useAffiliateTraderRefUrlSideEffect()
 
-  const analytics = useCowAnalytics()
-  const { isOpen: isModalOpen, source: entrySource } = useAtomValue(affiliateTraderModalAtom)
-  const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
+  const isModalOpen = useAtomValue(affiliateTraderModalAtom)
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
   const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+
+  const analytics = useCowAnalytics()
   const modalState = getAffiliateTraderModalState(walletStatus)
   const hasTrackedOpenRef = useRef(false)
 
@@ -54,30 +55,28 @@ export function AffiliateTraderModal(): ReactNode {
     trackAffiliateEvent({
       analytics,
       action: 'affiliate_trader_modal_opened',
-      entrySource,
       walletStatus,
       hasSavedCode: !!savedCode,
       isLinked: !!isLinked,
     })
     hasTrackedOpenRef.current = true
-  }, [analytics, entrySource, isLinked, isModalOpen, isRecoverySettling, savedCode, walletStatus])
+  }, [analytics, isLinked, isModalOpen, isRecoverySettling, savedCode, walletStatus])
 
   useAffiliateStateViewAnalytics({
     action: 'affiliate_trader_modal_state_viewed',
-    viewKey: getAffiliateModalViewKey(isModalOpen, modalState, walletStatus, entrySource),
+    viewKey: getAffiliateModalViewKey(isModalOpen, modalState, walletStatus),
     eventParams: {
       modalState,
       walletStatus,
-      entrySource,
     },
   })
 
   return (
     <>
       {isModalOpen && walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
-      <CowModal isOpen={isModalOpen} onDismiss={closeAffiliateModal} padding="0" maxHeight={90}>
+      <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
         <ModalContainer>
-          <ModalHeader onBack={closeAffiliateModal} />
+          <ModalHeader onBack={toggleAffiliateModal} />
           {walletStatus === TraderWalletStatus.UNSUPPORTED ? (
             <AffiliateTraderModalUnsupported />
           ) : walletStatus === TraderWalletStatus.LINKED ? (

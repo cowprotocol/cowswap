@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import COW_LOGO_ACCENT from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
 import COW_LOGO_BLACK from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
 import COW_LOGO_WHITE from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
@@ -13,7 +12,6 @@ import styled from 'styled-components/macro'
 
 import { CowModal } from 'common/pure/Modal'
 
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { getReferralLink } from '../lib/affiliateProgramUtils'
 
 const QR_SIZE_PX = 220
@@ -45,27 +43,15 @@ export function AffiliatePartnerQrModal({
   refCode: refCode,
   onDismiss,
 }: AffiliatePartnerQrModalProps): ReactNode {
-  const analytics = useCowAnalytics()
   const qrCodeRef = useRef<QRCode | null>(null)
   const referralLink = getReferralLink(refCode)
+
+  const onDownload = useCallback((fileType: DownloadQrFileType) => {
+    if (!qrCodeRef.current) return
+    qrCodeRef.current.download(fileType, 'cow-referral')
+  }, [])
+
   const [qrColor, setQrColor] = useState<QrColor>('accent')
-
-  const onDownload = useCallback(
-    (fileType: DownloadQrFileType) => {
-      if (!qrCodeRef.current) return
-
-      trackAffiliateEvent({
-        analytics,
-        action: 'affiliate_partner_qr_downloaded',
-        fileType,
-        qrTheme: qrColor,
-      })
-
-      qrCodeRef.current.download(fileType, 'cow-referral')
-    },
-    [analytics, qrColor],
-  )
-
   const qrColorLabels = useMemo<Record<QrColor, string>>(
     () => ({
       black: t`Black`,

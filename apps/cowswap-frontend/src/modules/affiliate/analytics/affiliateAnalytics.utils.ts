@@ -5,8 +5,6 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import {
   AffiliateAnalyticsAction,
-  AffiliateCodeSource,
-  AffiliateEntrySource,
   AffiliateModalState,
   AffiliatePageState,
   AffiliatePartnerCodeCreateFailureReason,
@@ -103,13 +101,12 @@ export function getAffiliateModalViewKey(
   isOpen: boolean,
   modalState: AffiliateModalState,
   walletStatus: TraderWalletStatus,
-  entrySource: AffiliateEntrySource | undefined,
 ): string | undefined {
   if (!isOpen) {
     return undefined
   }
 
-  return [modalState, walletStatus, entrySource].filter(Boolean).join(':')
+  return [modalState, walletStatus].join(':')
 }
 
 export function normalizeAffiliatePartnerCodeCreateFailureReason(
@@ -125,10 +122,6 @@ export function normalizeAffiliatePartnerCodeCreateFailureReason(
     default:
       return AffiliatePartnerCodeCreateFailureReason.UNEXPECTED_ERROR
   }
-}
-
-export function getAffiliateCodeSourceFallback(isLinked: boolean | undefined): AffiliateCodeSource {
-  return isLinked ? AffiliateCodeSource.LEGACY_UNKNOWN : AffiliateCodeSource.MANUAL_INPUT
 }
 
 function compactRecord(value: Record<string, unknown>): Record<string, unknown> {

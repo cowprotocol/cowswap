@@ -1,5 +1,5 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useCallback } from 'react'
+import { useSetAtom } from 'jotai'
+import { ReactNode, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
@@ -10,28 +10,26 @@ import { Link } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
 
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
-import { useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { HowItWorks } from '../pure/HowItWorks'
-import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderModalCodeInfo(): ReactNode {
-  const { source: entrySource } = useAtomValue(affiliateTraderModalAtom)
-  const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
   const analytics = useCowAnalytics()
-  const walletStatus = useAffiliateTraderWallet()
 
-  const onViewRewards = useCallback((): void => {
-    trackAffiliateEvent({
-      analytics,
-      action: 'affiliate_trader_modal_primary_cta_clicked',
-      ctaType: 'viewRewards',
-      entrySource,
-      walletStatus,
+  useEffect(() => {
+    analytics.sendEvent({
+      category: 'affiliate',
+      action: 'view_linked',
+      label: 'modal',
     })
-    closeAffiliateModal()
-  }, [analytics, closeAffiliateModal, entrySource, walletStatus])
+  }, [analytics])
+
+  const onViewRewards = (): void => {
+    analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'view_rewards' })
+    toggleAffiliateModal()
+  }
 
   return (
     <>

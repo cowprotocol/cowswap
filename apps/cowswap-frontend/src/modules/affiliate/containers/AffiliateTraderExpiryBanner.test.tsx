@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { AffiliateTraderExpiryBanner } from './AffiliateTraderExpiryBanner'
 
@@ -112,6 +112,8 @@ describe('AffiliateTraderExpiryBanner', () => {
         rewardsEnd: '2026-04-01T00:00:00.000Z',
       },
     })
+
+    expect(screen.getByText('Your referral code expired on Apr 01, 2026.')).toBeTruthy()
   })
 
   it('does not track the expired-code event for a non-expired banner state', () => {
@@ -128,5 +130,26 @@ describe('AffiliateTraderExpiryBanner', () => {
       viewKey: undefined,
       eventParams: undefined,
     })
+  })
+
+  it('treats the exact expiry boundary as expired', () => {
+    const rewardsEnd = '2026-04-10T12:00:00.000Z'
+
+    useAffiliateTraderStatsMock.mockReturnValue({
+      data: createTraderStatsResponse(rewardsEnd),
+      isLoading: false,
+    } as ReturnType<typeof useAffiliateTraderStats>)
+    useMachineTimeMsMock.mockReturnValue(Date.parse(rewardsEnd))
+
+    renderComponent()
+
+    expect(useAffiliateStateViewAnalyticsMock).toHaveBeenCalledWith({
+      action: 'affiliate_trader_expired_code_viewed',
+      viewKey: rewardsEnd,
+      eventParams: {
+        rewardsEnd,
+      },
+    })
+    expect(screen.getByText('Your referral code expired on Apr 10, 2026.')).toBeTruthy()
   })
 })

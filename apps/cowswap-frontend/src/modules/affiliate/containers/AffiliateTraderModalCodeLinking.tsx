@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type ReactNode, useCallback } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,59 +9,29 @@ import { t } from '@lingui/core/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
 import { formatRefCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
-import { affiliateTraderModalAtom, closeTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import {
   affiliateTraderPayoutConfirmationAtom,
   setAffiliateTraderPayoutConfirmationAtom,
 } from '../state/affiliateTraderPayoutConfirmationAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
-function getSubmitButtonLabel(hasAccount: boolean, isVerifying: boolean, hasSavedCode: boolean): string {
-  if (isVerifying) return t`Checking code...`
-  if (hasSavedCode) return t`Start trading`
-  return hasAccount ? t`Verify code` : t`Connect to verify code`
-}
-
-interface TrackPrimaryCtaClickParams {
-  analytics: ReturnType<typeof useCowAnalytics>
-  ctaType: 'connectToVerify' | 'startTrading' | 'verifyCode'
-  entrySource: AffiliateEntrySource | undefined
-  walletStatus: TraderWalletStatus
-}
-
-function trackPrimaryCtaClick({ analytics, ctaType, entrySource, walletStatus }: TrackPrimaryCtaClickParams): void {
-  trackAffiliateEvent({
-    analytics,
-    action: 'affiliate_trader_modal_primary_cta_clicked',
-    ctaType,
-    entrySource,
-    walletStatus,
-  })
-}
-
 export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
-  const closeAffiliateModal = useSetAtom(closeTraderModalAtom)
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+
   const walletStatus = useAffiliateTraderWallet()
-  const requiresPayoutConfirmation = !!account && !isSupportedPayoutsNetwork(chainId)
   const payoutConfirmed = useAtomValue(affiliateTraderPayoutConfirmationAtom)
   const setPayoutConfirmed = useSetAtom(setAffiliateTraderPayoutConfirmationAtom)
-  const { source: entrySource } = useAtomValue(affiliateTraderModalAtom)
-  const { codeInput, codeSource, error, isVerifying, verifyCode, onChange, onEdit, onRemove } =
-    useAffiliateTraderCodeInput({
-      requiresPayoutConfirmation,
-      walletStatus,
-    })
+  const { codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
   const showInvalidFormat = !!codeInput && !formatRefCode(codeInput)
@@ -69,58 +39,38 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
       if (isVerifying) return
-      trackAffiliateEvent({
-        analytics,
-        action: 'affiliate_trader_payout_confirmation_toggled',
-        checked,
-        entrySource,
-        walletStatus,
-      })
       setPayoutConfirmed(checked)
     },
-    [analytics, entrySource, isVerifying, setPayoutConfirmed, walletStatus],
+    [setPayoutConfirmed, isVerifying],
   )
 
-  const submitButtonLabel = getSubmitButtonLabel(!!account, isVerifying, !!savedCode)
+  const submitButtonLabel = useMemo(() => {
+    if (isVerifying) return t`Checking code...`
+    if (savedCode) return t`Start trading`
+    if (!account) return t`Connect to verify code`
+    return t`Verify code`
+  }, [account, isVerifying, savedCode])
 
   const onSubmit = useCallback((): void => {
     if (isVerifying || walletStatus === TraderWalletStatus.UNSUPPORTED) return
     if (savedCode) {
-      trackPrimaryCtaClick({
-        analytics,
-        ctaType: 'startTrading',
-        entrySource,
-        walletStatus,
-      })
-      closeAffiliateModal()
+      analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'start_trading' })
+      toggleAffiliateModal()
       return
     }
     if (!account) {
-      trackPrimaryCtaClick({
-        analytics,
-        ctaType: 'connectToVerify',
-        entrySource,
-        walletStatus,
-      })
       toggleWalletModal()
+      analytics.sendEvent({ category: 'affiliate', action: 'cta_clicked', label: 'connect_to_verify' })
       return
     }
-    trackPrimaryCtaClick({
-      analytics,
-      ctaType: 'verifyCode',
-      entrySource,
-      walletStatus,
-    })
-    void verifyCode({ code: codeInput, account, codeSource })
+    verifyCode(codeInput, account)
   }, [
     account,
     analytics,
     codeInput,
-    codeSource,
-    closeAffiliateModal,
-    entrySource,
     isVerifying,
     savedCode,
+    toggleAffiliateModal,
     toggleWalletModal,
     verifyCode,
     walletStatus,
@@ -130,7 +80,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
     <AffiliateTradeCodeForm
       walletStatus={walletStatus}
       account={account}
-      requiresPayoutConfirmation={!!account && !savedCode && requiresPayoutConfirmation}
+      requiresPayoutConfirmation={!!account && !savedCode && !isSupportedPayoutsNetwork(chainId)}
       codeInfo={codeInfo}
       payoutConfirmed={payoutConfirmed}
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}

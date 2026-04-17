@@ -1,31 +1,18 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
 import { StyledInfoIcon, StyledRowBetween, TextWrapper } from '../../tradeWidgetAddons/pure/Row/styled'
-import { AffiliateEntrySource } from '../analytics/affiliateAnalytics.types'
-import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
-import { openTraderModalAtom } from '../state/affiliateTraderModalAtom'
+import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderRewardsRow(): ReactNode {
-  const analytics = useCowAnalytics()
-  const openAffiliateModal = useSetAtom(openTraderModalAtom)
-  const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
+  const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
 
-  const onOpenModal = useCallback((): void => {
-    trackAffiliateEvent({
-      analytics,
-      action: 'affiliate_trader_rewards_row_clicked',
-      hasSavedCode: !!savedCode,
-      isLinked: !!isLinked,
-    })
-    openAffiliateModal(AffiliateEntrySource.TRADER_REWARDS_ROW)
-  }, [analytics, isLinked, openAffiliateModal, savedCode])
+  const { savedCode, isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
 
   return (
     <StyledRowBetween>
@@ -50,7 +37,7 @@ export function AffiliateTraderRewardsRow(): ReactNode {
       </RowFixed>
       <TextWrapper textAlign="right">
         <LinkStyledButton
-          onClick={onOpenModal}
+          onClick={toggleAffiliateModal}
           as={savedCode ? 'button' : undefined}
           type={savedCode ? 'button' : undefined}
           padding="0"

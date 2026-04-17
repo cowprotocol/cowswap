@@ -1,5 +1,4 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { act, renderHook } from '@testing-library/react'
 
@@ -10,6 +9,8 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
+
+import type { WalletClient } from 'viem'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -25,10 +26,43 @@ jest.mock('./useAffiliatePartnerInfo', () => ({
   useAffiliatePartnerInfo: jest.fn(),
 }))
 
+jest.mock('./useAffiliateTraderWallet', () => ({
+  TraderWalletStatus: {
+    PENDING: 'pending',
+    UNSUPPORTED: 'unsupported',
+    INELIGIBLE: 'ineligible',
+    ELIGIBLE: 'eligible',
+    LINKED: 'linked',
+    ELIGIBILITY_UNKNOWN: 'eligibility-unknown',
+    DISCONNECTED: 'disconnected',
+  },
+}))
+
 jest.mock('../api/bffAffiliateApi', () => ({
   bffAffiliateApi: {
     createCode: jest.fn(),
   },
+}))
+
+jest.mock('../lib/affiliateProgramUtils', () => ({
+  buildPartnerTypedData: jest.fn(({ walletAddress, code, chainId }) => ({
+    domain: {
+      name: 'CoW Affiliate',
+      version: '1',
+      chainId,
+      verifyingContract: '0x0000000000000000000000000000000000000001',
+    },
+    types: {
+      AffiliateCode: [
+        { name: 'walletAddress', type: 'address' },
+        { name: 'code', type: 'string' },
+      ],
+    },
+    message: {
+      walletAddress,
+      code,
+    },
+  })),
 }))
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
@@ -54,6 +88,13 @@ function createDeferred<T>(): {
   return { promise, resolve, reject }
 }
 
+function createWalletClient(): WalletClient {
+  return {
+    account: { address: '0x1111111111111111111111111111111111111111' },
+    signTypedData: jest.fn().mockResolvedValue('0xsigned-message'),
+  } as unknown as WalletClient
+}
+
 describe('useAffiliatePartnerCodeCreate', () => {
   const sendEvent = jest.fn()
   const mutatePartnerInfo = jest.fn().mockResolvedValue(undefined)
@@ -72,19 +113,14 @@ describe('useAffiliatePartnerCodeCreate', () => {
 
   it('ignores a second create request while the first one is still in flight', async () => {
     const deferredCreate = createDeferred<{ code: string }>()
-    const signer = {
-      _signTypedData: jest.fn().mockResolvedValue('0xsigned-message'),
-    }
-    const provider = {
-      getSigner: jest.fn().mockReturnValue(signer),
-    }
+    const walletClient = createWalletClient()
 
     createCodeMock.mockImplementation(() => deferredCreate.promise)
 
     const { result } = renderHook(() =>
       useAffiliatePartnerCodeCreate({
         account: '0x1111111111111111111111111111111111111111',
-        provider: provider as ReturnType<typeof useWalletProvider>,
+        walletClient,
         code: 'COW-123',
         setError,
       }),
@@ -99,8 +135,7 @@ describe('useAffiliatePartnerCodeCreate', () => {
       await Promise.resolve()
     })
 
-    expect(provider.getSigner).toHaveBeenCalledTimes(1)
-    expect(signer._signTypedData).toHaveBeenCalledTimes(1)
+    expect(walletClient.signTypedData).toHaveBeenCalledTimes(1)
     expect(createCodeMock).toHaveBeenCalledTimes(1)
 
     deferredCreate.resolve({ code: 'COW-123' })
@@ -126,12 +161,7 @@ describe('useAffiliatePartnerCodeCreate', () => {
   })
 
   it('continues code creation if the start event throws', async () => {
-    const signer = {
-      _signTypedData: jest.fn().mockResolvedValue('0xsigned-message'),
-    }
-    const provider = {
-      getSigner: jest.fn().mockReturnValue(signer),
-    }
+    const walletClient = createWalletClient()
 
     sendEvent.mockImplementationOnce(() => {
       throw new Error('analytics failed')
@@ -141,7 +171,7 @@ describe('useAffiliatePartnerCodeCreate', () => {
     const { result } = renderHook(() =>
       useAffiliatePartnerCodeCreate({
         account: '0x1111111111111111111111111111111111111111',
-        provider: provider as ReturnType<typeof useWalletProvider>,
+        walletClient,
         code: 'COW-123',
         setError,
       }),
@@ -151,7 +181,7 @@ describe('useAffiliatePartnerCodeCreate', () => {
       await result.current.onCreate()
     })
 
-    expect(provider.getSigner).toHaveBeenCalledTimes(1)
+    expect(walletClient.signTypedData).toHaveBeenCalledTimes(1)
     expect(createCodeMock).toHaveBeenCalledTimes(1)
     expect(mutatePartnerInfo).toHaveBeenCalledTimes(1)
     expect(setError.mock.calls).toEqual([[undefined]])

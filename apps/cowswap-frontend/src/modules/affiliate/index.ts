@@ -21,24 +21,8 @@ export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 
 export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
 
-export {
-  AffiliateCodeSource,
-  AffiliateEntrySource,
-  AffiliateModalState,
-  AffiliatePageState,
-  AffiliatePartnerCodeAvailabilityResult,
-  AffiliatePartnerCodeCreateFailureReason,
-  AffiliateVerificationResult,
-} from './analytics/affiliateAnalytics.types'
-export {
-  getAffiliatePartnerPageState,
-  getAffiliateTraderModalState,
-  getAffiliateTraderPageState,
-  getAffiliateModalViewKey,
-  getAffiliateCodeSourceFallback,
-  normalizeAffiliatePartnerCodeCreateFailureReason,
-  trackAffiliateEvent,
-} from './analytics/affiliateAnalytics.utils'
+export { AffiliatePageState } from './analytics/affiliateAnalytics.types'
+export { getAffiliatePartnerPageState, getAffiliateTraderPageState } from './analytics/affiliateAnalytics.utils'
 
 export { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } from './pure/shared'
 export { AffiliateTraderIneligible } from './pure/AffiliateTrader/AffiliateTraderIneligible'
