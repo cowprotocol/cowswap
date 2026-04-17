@@ -64,7 +64,7 @@ export const Content = styled.div`
 export const Title = styled.h2`
   margin: 0;
   font-size: 22px;
-  font-weight: ${UI.FONT_WEIGHT_BOLD};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1;
   color: inherit;
   white-space: nowrap;
