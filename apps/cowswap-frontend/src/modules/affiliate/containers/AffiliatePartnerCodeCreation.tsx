@@ -10,12 +10,7 @@ import {
 } from '../hooks/useAffiliatePartnerCodeAvailability'
 import { useAffiliatePartnerCodeCreate } from '../hooks/useAffiliatePartnerCodeCreate'
 import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
-import {
-  formatRefCode,
-  generateSuggestedCode,
-  getReferralLink,
-  isSupportedPayoutsNetwork,
-} from '../lib/affiliateProgramUtils'
+import { formatRefCode, generateSuggestedCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePartnerCodeForm'
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
@@ -58,8 +53,6 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
       availability={availability}
       canSubmit={canSubmit}
       submitting={submitting}
-      previewLink={getReferralLink(formattedCode || '')}
-      isPreviewCopyDisabled={!isInputValid}
       error={availability === PartnerCodeAvailability.Unavailable ? AffiliatePartnerCodeCreateError.Unavailable : error}
       onCreate={onCreate}
       onGenerate={onGenerate}

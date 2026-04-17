@@ -1,11 +1,11 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { fireEvent, render, screen, type RenderResult } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
+import { useWalletClient } from 'wagmi'
 
 import { AffiliatePartnerCodeCreation } from './AffiliatePartnerCodeCreation'
 
@@ -17,21 +17,8 @@ import { useAffiliatePartnerCodeCreate } from '../hooks/useAffiliatePartnerCodeC
 import { generateSuggestedCode } from '../lib/affiliateProgramUtils'
 
 jest.mock('@cowprotocol/wallet', () => {
-  const actualModule = jest.requireActual('@cowprotocol/wallet')
-
   return {
-    ...actualModule,
     useWalletInfo: jest.fn(),
-  }
-})
-
-jest.mock('@cowprotocol/wallet-provider', () => {
-  const actualModule = jest.requireActual('@cowprotocol/wallet-provider')
-
-  return {
-    ...actualModule,
-    useWalletChainId: jest.fn(),
-    useWalletProvider: jest.fn(),
   }
 })
 
@@ -49,12 +36,22 @@ jest.mock('../hooks/useAffiliatePartnerCodeCreate', () => ({
   useAffiliatePartnerCodeCreate: jest.fn(),
 }))
 
-jest.mock('../lib/affiliateProgramUtils', () => {
-  const actualModule = jest.requireActual('../lib/affiliateProgramUtils')
+jest.mock('modules/affiliate', () => ({
+  REF_CODE_MIN_LENGTH: 5,
+}))
 
+jest.mock('../lib/affiliateProgramUtils', () => {
   return {
-    ...actualModule,
+    formatRefCode: (value?: string | null) => {
+      if (!value) return undefined
+
+      const normalized = value.trim().toUpperCase()
+
+      return /^[A-Z0-9_-]{5,20}$/.test(normalized) ? normalized : undefined
+    },
     generateSuggestedCode: jest.fn(),
+    getReferralLink: (refCode: string) => `http://localhost?ref=${refCode}`,
+    isSupportedPayoutsNetwork: (chainId?: number) => chainId === 1,
   }
 })
 
@@ -63,9 +60,16 @@ jest.mock('react-inlinesvg', () => ({
   default: () => null,
 }))
 
+jest.mock('wagmi', () => {
+  const actualModule = jest.requireActual('wagmi')
+
+  return {
+    ...actualModule,
+    useWalletClient: jest.fn(),
+  }
+})
+
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const useWalletChainIdMock = useWalletChainId as jest.MockedFunction<typeof useWalletChainId>
-const useWalletProviderMock = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
 const useAffiliatePartnerCodeAvailabilityMock = useAffiliatePartnerCodeAvailability as jest.MockedFunction<
   typeof useAffiliatePartnerCodeAvailability
 >
@@ -73,6 +77,7 @@ const useAffiliatePartnerCodeCreateMock = useAffiliatePartnerCodeCreate as jest.
   typeof useAffiliatePartnerCodeCreate
 >
 const generateSuggestedCodeMock = generateSuggestedCode as jest.MockedFunction<typeof generateSuggestedCode>
+const useWalletClientMock = useWalletClient as jest.MockedFunction<typeof useWalletClient>
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -107,9 +112,9 @@ describe('AffiliatePartnerCodeCreation', () => {
 
     useWalletInfoMock.mockReturnValue({
       account: '0x0000000000000000000000000000000000000001',
+      chainId: 1,
     } as ReturnType<typeof useWalletInfo>)
-    useWalletChainIdMock.mockReturnValue(1 as ReturnType<typeof useWalletChainId>)
-    useWalletProviderMock.mockReturnValue({} as ReturnType<typeof useWalletProvider>)
+    useWalletClientMock.mockReturnValue({ data: {} } as ReturnType<typeof useWalletClient>)
     useAffiliatePartnerCodeAvailabilityMock.mockReturnValue(PartnerCodeAvailability.Idle)
     useAffiliatePartnerCodeCreateMock.mockReturnValue({
       submitting: false,
