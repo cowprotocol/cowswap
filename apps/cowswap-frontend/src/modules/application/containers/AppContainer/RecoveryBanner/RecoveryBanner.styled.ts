@@ -51,7 +51,7 @@ export const Content = styled.div`
   flex: 1 1 auto;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 10px;
   flex-wrap: wrap;
 
   ${Media.upToMedium()} {
@@ -83,12 +83,8 @@ export const Description = styled.p`
   margin: 0;
   min-width: 0;
   font-size: 13px;
-  line-height: 1;
+  line-height: 1.4;
   color: inherit;
-
-  ${Media.upToMedium()} {
-    line-height: 1.4;
-  }
 `
 
 export const Link = styled(ExternalLink)`
