@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
@@ -13,7 +11,7 @@ const context: CancellationModalContext = {
   error: null,
   isPendingSignature: false,
   onDismiss: null,
-  txCost: BigNumber.from('150000000000000000'),
+  txCost: 150000000000000000n,
   nativeCurrency: MAINNET_NATIVE_CURRENCY,
   triggerCancellation: async () => {
     alert('cancelling!!')

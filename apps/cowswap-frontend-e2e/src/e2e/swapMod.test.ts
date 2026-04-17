@@ -4,11 +4,6 @@ import { handleNativeBalance, mockSendCall } from '../support/mocks/mockSendCall
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
-// mock test to pass CI until we fix the test
-it('should be true', () => {
-  expect(true).to.be.true
-})
-
 describe('Swap (mod)', () => {
   it('starts with empty token selected', () => {
     cy.visit('/#/11155111/swap')
@@ -78,12 +73,11 @@ describe('Swap (mod)', () => {
 
   it('can find COW and swap Native for COW', () => {
     cy.visit('/#/11155111/swap', {
-      onBeforeLoad: async (win) => {
-        const address = await win.ethereum.signer.getAddress()
+      onBeforeLoad: (win) => {
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            address,
+            win.ethereum.address,
             50n * 10n ** 18n, // 18 decimals
           ),
         ])

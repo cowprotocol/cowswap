@@ -1,10 +1,13 @@
 import type { ReactNode } from 'react'
 
+import { notFound } from 'next/navigation'
+
 import { getPageBySlug } from '../services/cms'
 
 import type { Metadata } from 'next'
 
 import { CmsPageComponent } from '@/components/CmsPageComponent'
+import { CONFIG } from '@/const/meta'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
 /**
@@ -28,7 +31,10 @@ export async function generateCmsPageMetadata(slug: string): Promise<Metadata> {
   const page = await getPageBySlug(slug)
 
   if (!page?.attributes) {
-    throw new Error(`Page with slug "${slug}" not found in CMS`)
+    return getPageMetadata({
+      absoluteTitle: CONFIG.title.default,
+      description: CONFIG.description,
+    })
   }
 
   const { heading, description } = page.attributes
@@ -52,11 +58,11 @@ export async function createCmsPageComponent(slug: string): Promise<ReactNode> {
   const page = await getPageBySlug(slug)
 
   if (!page?.attributes) {
-    throw new Error(`Page with slug "${slug}" not found in CMS`)
+    return notFound()
   }
 
   if (!page.attributes.contentSections || page.attributes.contentSections.length === 0) {
-    throw new Error(`No content sections found for page with slug "${slug}"`)
+    return notFound()
   }
 
   // Pass the whole page data to the client component

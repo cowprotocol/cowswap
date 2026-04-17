@@ -1,5 +1,7 @@
 import { SWRConfiguration } from 'swr'
 
+import { BalancesQueryConfig } from './hooks/usePersistBalancesViaWebCalls'
+
 export const BASIC_MULTICALL_SWR_CONFIG: SWRConfiguration = {
   refreshWhenHidden: false,
   refreshWhenOffline: false,
@@ -8,4 +10,8 @@ export const BASIC_MULTICALL_SWR_CONFIG: SWRConfiguration = {
   isPaused() {
     return !document.hasFocus()
   },
+}
+
+export const BASIC_BALANCES_QUERY_CONFIG: BalancesQueryConfig = {
+  refetchInterval: 0,
 }

@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+
+import { type WalletClient } from 'viem'
 
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
@@ -19,7 +20,7 @@ import { buildPartnerTypedData } from '../lib/affiliateProgramUtils'
 
 interface UseAffiliatePartnerCodeCreateParams {
   account: string | undefined
-  provider: ReturnType<typeof useWalletProvider>
+  walletClient?: WalletClient
   code: string
   setError: (error?: AffiliatePartnerCodeCreateError) => void
 }
@@ -31,7 +32,7 @@ interface UseAffiliatePartnerCodeCreateResult {
 
 export function useAffiliatePartnerCodeCreate({
   account,
-  provider,
+  walletClient,
   code,
   setError,
 }: UseAffiliatePartnerCodeCreateParams): UseAffiliatePartnerCodeCreateResult {
@@ -41,7 +42,7 @@ export function useAffiliatePartnerCodeCreate({
   const { mutate: mutatePartnerInfo } = useAffiliatePartnerInfo(account)
 
   const onCreate = useCallback(async (): Promise<void> => {
-    if (!account || !provider || isSubmittingRef.current) return
+    if (!account || !walletClient || !walletClient.account || isSubmittingRef.current) return
 
     try {
       isSubmittingRef.current = true
@@ -54,14 +55,18 @@ export function useAffiliatePartnerCodeCreate({
 
       setSubmitting(true)
       setError(undefined)
-
-      const signer = provider.getSigner()
       const typedData = buildPartnerTypedData({
         walletAddress: account,
         code,
         chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       })
-      const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
+      const signedMessage = await walletClient.signTypedData({
+        account: walletClient.account.address,
+        domain: typedData.domain,
+        types: typedData.types,
+        primaryType: 'AffiliateCode',
+        message: typedData.message,
+      })
 
       await bffAffiliateApi.createCode({
         code,
@@ -91,7 +96,7 @@ export function useAffiliatePartnerCodeCreate({
       isSubmittingRef.current = false
       setSubmitting(false)
     }
-  }, [account, analytics, code, mutatePartnerInfo, provider, setError])
+  }, [account, analytics, code, mutatePartnerInfo, setError, walletClient])
 
   return useMemo(() => ({ submitting, onCreate }), [submitting, onCreate])
 }

@@ -35,9 +35,10 @@ const tradeContext: TradeFlowContext = {
   getCachedPermit: () => Promise.resolve(undefined),
   postOrderParams: {
     class: OrderClass.LIMIT,
-    account: '0x000',
+    account: '0x000' as `0x${string}`,
     chainId: 1,
     kind: OrderKind.SELL,
+    signer: undefined as unknown as import('viem').WalletClient,
     inputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     outputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     sellAmountBeforeFee: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
@@ -54,7 +55,7 @@ const tradeContext: TradeFlowContext = {
   rateImpact: 0,
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signer: {} as any,
+  config: {} as any,
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settlementContract: {} as any,
