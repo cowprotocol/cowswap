@@ -1,5 +1,87 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.1.2...balances-and-allowances-v3.2.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/core bumped to 3.2.0
+    * @cowprotocol/multicall bumped to 3.2.0
+    * @cowprotocol/tokens bumped to 3.4.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/wallet bumped to 3.2.0
+    * @cowprotocol/wallet-provider bumped to 2.1.16
+
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.1.1...balances-and-allowances-v3.1.2) (2026-04-15)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+    * @cowprotocol/common-hooks bumped to 3.1.2
+    * @cowprotocol/common-utils bumped to 3.2.1
+    * @cowprotocol/core bumped to 3.1.2
+    * @cowprotocol/multicall bumped to 3.1.2
+    * @cowprotocol/tokens bumped to 3.3.2
+    * @cowprotocol/wallet bumped to 3.1.2
+    * @cowprotocol/wallet-provider bumped to 2.1.15
+
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.1.0...balances-and-allowances-v3.1.1) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/common-hooks bumped to 3.1.1
+    * @cowprotocol/common-utils bumped to 3.2.0
+    * @cowprotocol/core bumped to 3.1.1
+    * @cowprotocol/multicall bumped to 3.1.1
+    * @cowprotocol/tokens bumped to 3.3.1
+    * @cowprotocol/types bumped to 4.2.1
+    * @cowprotocol/wallet bumped to 3.1.1
+    * @cowprotocol/wallet-provider bumped to 2.1.14
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.0.8...balances-and-allowances-v3.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.0
+    * @cowprotocol/common-hooks bumped to 3.1.0
+    * @cowprotocol/common-utils bumped to 3.1.0
+    * @cowprotocol/core bumped to 3.1.0
+    * @cowprotocol/multicall bumped to 3.1.0
+    * @cowprotocol/tokens bumped to 3.3.0
+    * @cowprotocol/types bumped to 4.2.0
+    * @cowprotocol/wallet bumped to 3.1.0
+    * @cowprotocol/wallet-provider bumped to 2.1.13
+
 ## [3.0.8](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.0.7...balances-and-allowances-v3.0.8) (2026-04-10)
 
 
