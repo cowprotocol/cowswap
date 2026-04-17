@@ -1,5 +1,21 @@
 export function getParentOrigin(): string | undefined {
-  return getAncestorOrigin() || getReferrerOrigin() || getParentLocationOrigin()
+  const origin =
+    normalizeOrigin(getAncestorOrigin()) ||
+    normalizeOrigin(getReferrerOrigin()) ||
+    normalizeOrigin(getParentLocationOrigin())
+
+  if (!origin) return undefined
+
+  try {
+    return new URL(origin).origin
+  } catch (e) {
+    console.error('[getParentOrigin] origin is invalid', e, { origin })
+    return undefined
+  }
+}
+
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }
 
 function getAncestorOrigin(): string | undefined {

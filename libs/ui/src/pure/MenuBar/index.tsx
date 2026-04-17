@@ -245,7 +245,7 @@ const DropdownContentItem: React.FC<{
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line max-lines-per-function, complexity
+  // eslint-disable-next-line max-lines-per-function
 }> = ({ item, closeMenu, LinkComponent }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
@@ -490,7 +490,7 @@ interface DropdownContentWrapperProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   content,
   isThirdLevel = false,
@@ -526,7 +526,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line complexity */}
+      {}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
