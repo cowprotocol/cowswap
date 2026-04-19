@@ -8,7 +8,6 @@ export const Wrapper = styled.div<{ columnViewMobile?: boolean }>`
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 0 2rem;
   ${ScrollBarStyle};
 
   ${({ columnViewMobile }) =>

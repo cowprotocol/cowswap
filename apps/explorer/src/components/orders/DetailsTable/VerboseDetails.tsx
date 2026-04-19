@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
 import { SolvedByBadge } from './SolvedByBadge'
-import { LinkButton, TextLink, Wrapper } from './styled'
+import { LinkButton, TextLink } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
@@ -32,7 +32,6 @@ interface VerboseDetailsProps {
   viewFills: Command
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function VerboseDetails({
   order,
   showSolverDetails,
@@ -81,15 +80,13 @@ export function VerboseDetails({
         )}
       </DetailRow>
       <DetailRow label="Filled" tooltipText={DetailsTableTooltips.filled}>
-        <Wrapper>
-          <FilledProgress order={order} />
-          {showFillsButton && (
-            <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-              <FontAwesomeIcon icon={faFill} />
-              View fills
-            </LinkButton>
-          )}
-        </Wrapper>
+        <FilledProgress order={order} />
+        {showFillsButton && (
+          <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+            <FontAwesomeIcon icon={faFill} />
+            View fills
+          </LinkButton>
+        )}
       </DetailRow>
       <DetailRow label="Order surplus" tooltipText={DetailsTableTooltips.surplus}>
         {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}
@@ -112,7 +109,7 @@ export function VerboseDetails({
       )}
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (
-          <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks}>
+          <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks} stack>
             {content}
           </DetailRow>
         )}

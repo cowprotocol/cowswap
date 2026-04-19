@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { DateDisplay } from 'components/common/DateDisplay'
@@ -19,10 +20,18 @@ import { abbreviateString } from 'utils'
 
 import { Trade } from 'api/operator'
 import { calculateExecutionPrice } from 'utils/orderCalculations'
+import { getTenderlyTxUrl } from 'utils/tenderly'
 
 const StyledShimmerBar = styled(ShimmerBar)`
   min-height: 2rem;
   min-width: 10rem;
+`
+
+const TxHashCell = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
 `
 
 interface FillsTableRowProps {
@@ -72,17 +81,22 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
     return null
   }
 
+  const tenderlyUrl = getTenderlyTxUrl(txHash)
+
   return (
     <tr key={txHash}>
       <td>
-        <RowWithCopyButton
-          textToCopy={txHash}
-          contentsToDisplay={
-            <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
-              {abbreviateString(txHash, 6, 4)}
-            </LinkWithPrefixNetwork>
-          }
-        />
+        <TxHashCell>
+          <RowWithCopyButton
+            textToCopy={txHash}
+            contentsToDisplay={
+              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
+                {abbreviateString(txHash, 6, 4)}
+              </LinkWithPrefixNetwork>
+            }
+          />
+          <ExternalLink href={tenderlyUrl}>Tenderly↗</ExternalLink>
+        </TxHashCell>
       </td>
       <td>
         <TokenAmount amount={sellAmount} token={sellToken} />
