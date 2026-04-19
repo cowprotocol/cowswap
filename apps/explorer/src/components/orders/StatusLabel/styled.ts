@@ -115,6 +115,7 @@ export const frameAnimation = keyframes`
 `
 
 export const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
+  position: relative;
   font-weight: ${({ theme }): string => theme.fontBold};
   border-radius: 0.4rem;
   line-height: 1.1;
@@ -146,4 +147,15 @@ export const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps
             border-radius: 0.4rem 0 0 0.4rem;
           `
       : null}
+`
+
+export const CornerWarningIcon = styled.span`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translate(50%, 25%);
+  font-size: 12px;
+  line-height: 1;
+  color: ${Color.explorer_orange1};
+  pointer-events: auto;
 `

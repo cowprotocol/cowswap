@@ -34,10 +34,9 @@ export interface BaseDetailsTableProps {
   children?: React.ReactNode
 }
 
-// Foundation component with core order information that every order detail view needs
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-
+/**
+ * Foundation component with core order information that every order detail view needs
+ */
 export function BaseDetailsTable({
   chainId,
   order,

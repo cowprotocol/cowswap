@@ -39,8 +39,6 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
   const depositAmount =
     bridgeStatus === BridgeStatus.EXECUTED ? crossChainOrder.order.executedBuyAmount : inputAmount.toString()
 
-  console.log(crossChainOrder)
-
   return (
     <>
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
