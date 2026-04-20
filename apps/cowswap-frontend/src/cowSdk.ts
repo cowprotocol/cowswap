@@ -19,11 +19,11 @@ import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
-const PROD_BASE_URL = 'https://api.cow.finance'
+const PROD_BASE_URL = 'https://api.cow.fi'
 
 /**
  * An object containing *production* environment base URLs for each supported `chainId`.
- * @see {@link https://api.cow.finance/docs/#/}
+ * @see {@link https://api.cow.fi/docs/#/}
  */
 export const ORDER_BOOK_PROD_CONFIG: ApiBaseUrls = {
   [SupportedChainId.MAINNET]: `${PROD_BASE_URL}/mainnet`,
@@ -41,7 +41,7 @@ export const ORDER_BOOK_PROD_CONFIG: ApiBaseUrls = {
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
-  : ORDER_BOOK_PROD_CONFIG
+  : undefined
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
 

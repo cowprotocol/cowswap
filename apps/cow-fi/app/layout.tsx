@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ...defaultMetadata,
     metadataBase: new URL(CONFIG.url.root),
     alternates: { canonical: './' },
-    // Add noindex for develop.cow.finance and PR preview environments to prevent search engine indexing
+    // Add noindex for develop.cow.fi and PR preview environments to prevent search engine indexing
     robots:
       isDev || isPr
         ? {

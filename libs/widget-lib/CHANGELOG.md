@@ -1,5 +1,68 @@
 # Changelog
 
+## [4.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.1.1...widget-lib-v4.0.0) (2026-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361))
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+* **widget:** bring cow.fi back ([#7361](https://github.com/cowprotocol/cowswap/issues/7361)) ([44fb968](https://github.com/cowprotocol/cowswap/commit/44fb968a2a4c1bc4b738e44fb59623799cc8cdc0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.3.0
+    * @cowprotocol/iframe-transport bumped to 2.2.2
+
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.1.0...widget-lib-v3.1.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.1
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.0.0...widget-lib-v3.1.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🐛 Bug Fixes
+
+* add disableExternalNavigation option to explicitly disable external navigation ([0c29369](https://github.com/cowprotocol/cowswap/commit/0c29369a11d75092244dc1dae9fdf17958cda3ca))
+* fix test ([177ee8c](https://github.com/cowprotocol/cowswap/commit/177ee8cfa4438280a74abc256752ae764e8e1fbb))
+* fix tests and remove debug logs from tests ([ab1fca8](https://github.com/cowprotocol/cowswap/commit/ab1fca88df4c2b32b7fbc731af44bb89e55bf479))
+* rename disableExternalNavigation to disableWindowOpen ([12e3c5a](https://github.com/cowprotocol/cowswap/commit/12e3c5a25bea25d49c52bdea82d07df728317d70))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.2.1
+    * @cowprotocol/iframe-transport bumped to 2.2.0
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v2.3.0...widget-lib-v3.0.0) (2026-04-15)
 
 

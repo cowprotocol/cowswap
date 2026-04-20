@@ -82,7 +82,7 @@ export const config = wagmiAdapter.wagmiConfig
 
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
-  allowUnsupportedChain: false,
+  allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
   enableEIP6963: true,

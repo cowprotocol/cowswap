@@ -3,8 +3,7 @@ import { useEffect, type ReactNode } from 'react'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { reconnect } from '@wagmi/core'
-import { WagmiProvider } from 'wagmi'
+import { reconnect, WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
 import { SafeConnectionHandler } from './SafeConnectionHandler'

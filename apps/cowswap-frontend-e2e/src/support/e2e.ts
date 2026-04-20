@@ -80,12 +80,12 @@ const cypressCache = new Map<string, CyHttpMessages.IncomingHttpResponse<unknown
 
 const cachedUrls = [
   /raw.githubusercontent.com\/cowprotocol\/cowswap/,
-  /files.cow.finance\/token-lists\/.*.json/,
-  /files.cow.finance\/tokens\/.*.json/,
-  /cms.cow.finance\/api\/solvers/,
-  /cms.cow.finance\/api\/announcements/,
-  /cms.cow.finance\/api\/correlated-tokens/,
-  /cms.cow.finance\/api\/notification-list/,
+  /files.cow.fi\/token-lists\/.*.json/,
+  /files.cow.fi\/tokens\/.*.json/,
+  /cms.cow.fi\/api\/solvers/,
+  /cms.cow.fi\/api\/announcements/,
+  /cms.cow.fi\/api\/correlated-tokens/,
+  /cms.cow.fi\/api\/notification-list/,
 ]
 
 beforeEach(() => {

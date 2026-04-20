@@ -29,8 +29,8 @@ export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.m
   (chainId) => CHAIN_INFO[chainId].label,
 )
 
-export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.finance/affiliate-program'
-export const AFFILIATE_TERMS_URL = 'https://cow.finance/legal/affiliate-program-terms'
+export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.fi/affiliate-program'
+export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'
 export const AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS = 24

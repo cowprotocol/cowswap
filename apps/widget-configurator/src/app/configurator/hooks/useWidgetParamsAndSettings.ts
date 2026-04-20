@@ -12,7 +12,7 @@ const getBaseUrl = (): string => {
 
   if (isLocalHost) return 'http://localhost:3000'
 
-  if (isDev) return 'https://dev.swap.cow.finance'
+  if (isDev) return 'https://dev.swap.cow.fi'
 
   if (isVercel) {
     const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
@@ -20,7 +20,7 @@ const getBaseUrl = (): string => {
     return `https://swap-dev-git-${prKey}${vercelSuffix}`
   }
 
-  return 'https://swap.cow.finance'
+  return 'https://swap.cow.fi'
 }
 
 const DEFAULT_BASE_URL = getBaseUrl()

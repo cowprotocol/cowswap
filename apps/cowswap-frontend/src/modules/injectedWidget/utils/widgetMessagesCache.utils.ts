@@ -3,6 +3,7 @@ import { widgetIframeTransport } from '@cowprotocol/widget-lib'
 interface CachedMessageEnvelope {
   data: unknown
   origin: string
+  source: MessageEventSource | null
 }
 
 const messagesCache: Record<string, CachedMessageEnvelope> = {}
@@ -17,6 +18,7 @@ export function cacheWidgetMessage(event: MessageEvent): void {
   messagesCache[method] = {
     data: event.data,
     origin: event.origin,
+    source: event.source,
   }
 }
 
@@ -31,6 +33,7 @@ export function replayCachedWidgetMessage(method: string): void {
     new MessageEvent('message', {
       origin: cachedMessage.origin,
       data: cachedMessage.data,
+      source: cachedMessage.source,
     }),
   )
 }
@@ -48,5 +51,11 @@ export function clearCachedWidgetMessages(): void {
 }
 
 function getEventMethod(event: MessageEvent): string | null {
-  return (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
+  const data = event.data
+
+  if (!data || typeof data !== 'object' || !('key' in data) || !('method' in data)) {
+    return null
+  }
+
+  return data.key === widgetIframeTransport.key && typeof data.method === 'string' ? data.method : null
 }

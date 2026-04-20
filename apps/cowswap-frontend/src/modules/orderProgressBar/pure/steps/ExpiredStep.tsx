@@ -82,12 +82,8 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
           Discord
         </styledEl.Link>{' '}
         <Trans>or send us an email at</Trans>{' '}
-        <styledEl.Link
-          href="mailto:help@cow.finance"
-          target="_blank"
-          data-click-event={handleAnalytics('Click Email Link')}
-        >
-          help@cow.finance
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank" data-click-event={handleAnalytics('Click Email Link')}>
+          help@cow.fi
         </styledEl.Link>{' '}
         <Trans>so we can investigate the problem.</Trans>
       </Description>

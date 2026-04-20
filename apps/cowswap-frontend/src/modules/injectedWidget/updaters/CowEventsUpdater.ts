@@ -6,11 +6,10 @@ import {
   CowWidgetEventPayloadMap,
   CowWidgetEvents,
 } from '@cowprotocol/events'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
-
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 const ALL_EVENTS = Object.values(CowWidgetEvents)
 

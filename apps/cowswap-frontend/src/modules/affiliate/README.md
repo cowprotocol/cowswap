@@ -114,25 +114,25 @@ Audit:
 
 Staging:
 
-- BFF: <https://bff.barn.cow.finance>
-- CMS: <https://cms.barn.cow.finance/admin>
-- FE: <https://staging.swap.cow.finance>
+- BFF: <https://bff.barn.cow.fi>
+- CMS: <https://cms.barn.cow.fi/admin>
+- FE: <https://staging.swap.cow.fi>
 - DUNE_QUERY_ID_TRADER_STATS: `6648679`
 - DUNE_QUERY_ID_AFFILIATE_STATS: `6648689`
 - DUNE_AFFILIATE_PROGRAM_TABLE_NAME: `affiliate_program_data_staging`
 
 ```sh
-curl -s "https://bff.barn.cow.finance/ref-codes/FOOBAR"
-curl -s "https://bff.barn.cow.finance/affiliate/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
-curl -s "https://bff.barn.cow.finance/affiliate/affiliate-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
-curl -s "https://bff.barn.cow.finance/affiliate/trader-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+curl -s "https://bff.barn.cow.fi/ref-codes/FOOBAR"
+curl -s "https://bff.barn.cow.fi/affiliate/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+curl -s "https://bff.barn.cow.fi/affiliate/affiliate-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
+curl -s "https://bff.barn.cow.fi/affiliate/trader-stats/0x6fc1Fb2e17DFf120fa8F838af139aF443070Fd0E"
 ```
 
 Production:
 
-- BFF: <https://bff.cow.finance>
-- CMS: <https://cms.cow.finance/admin>
-- FE: <https://swap.cow.finance>
+- BFF: <https://bff.cow.fi>
+- CMS: <https://cms.cow.fi/admin>
+- FE: <https://swap.cow.fi>
 - DUNE_QUERY_ID_TRADER_STATS: `6560853`
 - DUNE_QUERY_ID_AFFILIATE_STATS: `6560325`
 - DUNE_AFFILIATE_PROGRAM_TABLE_NAME: `affiliate_program_data`

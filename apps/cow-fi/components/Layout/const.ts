@@ -19,7 +19,7 @@ const LEARN_NAV_ITEM: MenuItem = {
       label: 'Knowledge Base',
     },
     {
-      href: 'https://docs.cow.finance/',
+      href: 'https://docs.cow.fi/',
       label: 'Docs',
       external: true,
       utmContent: 'menubar-nav-item-docs',
@@ -60,7 +60,7 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
           },
           {
             label: 'CoW Explorer',
-            href: 'https://explorer.cow.finance/',
+            href: 'https://explorer.cow.fi/',
             external: true,
             utmContent: 'menubar-nav-item-cow-explorer',
           },
@@ -68,7 +68,7 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
             ? [
                 {
                   label: 'Solvers',
-                  href: 'https://explorer.cow.finance/solvers',
+                  href: 'https://explorer.cow.fi/solvers',
                   external: true,
                   utmContent: 'menubar-nav-item-solvers',
                 },
@@ -91,12 +91,12 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
       },
       {
         label: 'Governance',
-        href: 'https://docs.cow.finance/governance',
+        href: 'https://docs.cow.fi/governance',
         external: true,
       },
       {
         label: 'Grants',
-        href: 'https://docs.cow.finance/',
+        href: 'https://grants.cow.fi/',
         external: true,
       },
       {
