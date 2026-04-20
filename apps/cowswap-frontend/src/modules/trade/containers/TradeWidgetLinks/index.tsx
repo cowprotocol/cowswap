@@ -88,7 +88,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
 
       const routeBasePath = addChainIdToRoute(item.route, chainId)
-      const isActive = location.pathname.startsWith(routeBasePath)
+      const hooksBasePath = addChainIdToRoute(Routes.HOOKS, chainId)
+      const isActive =
+        location.pathname.startsWith(routeBasePath) &&
+        (item.route === Routes.HOOKS || !location.pathname.startsWith(hooksBasePath))
 
       return (
         <MenuItem

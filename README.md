@@ -82,7 +82,7 @@ pnpm run build:explorer
 
 # 🐄 cow.fi
 
-Start CoW.fi on <http://localhost:3001>
+Start cow.fi on <http://localhost:3001>
 
 ### Start
 

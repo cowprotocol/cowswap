@@ -1,4 +1,5 @@
-import { RPC_URLS } from '@cowprotocol/common-const'
+import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -81,9 +82,9 @@ export const config = wagmiAdapter.wagmiConfig
 
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
-  allowUnsupportedChain: false,
+  allowUnsupportedChain: true,
   customRpcUrls,
-  defaultNetwork: SUPPORTED_REOWN_NETWORKS[0],
+  defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
   enableEIP6963: true,
   enableReconnect: true,
   enableWalletGuide: false,
@@ -92,6 +93,7 @@ export const reownAppKit = createAppKit({
     analytics: false,
     email: false,
     socials: false,
+    connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
   },
   metadata,
   networks: SUPPORTED_REOWN_NETWORKS,
