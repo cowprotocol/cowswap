@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -14,17 +15,19 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEthFlowContractData, useGP2SettlementContractData } from 'common/hooks/useContract'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
-  const {
-    result: { contract: ethFlowContract, chainId: ethFlowChainId },
-  } = useEthFlowContract()
-  const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
+  const config = useConfig()
+  const ethFlowContract = useEthFlowContractData()
+  const settlementContract = useGP2SettlementContractData()
   const cancelTwapOrder = useCancelTwapOrder()
   const { t } = useLingui()
+
+  const ethFlowChainId = ethFlowContract.chainId
+  const settlementChainId = settlementContract.chainId
 
   return useCallback(
     (order: Order) => {
@@ -35,21 +38,21 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
       }
 
       if (getIsTheLastTwapPart(order.composableCowInfo)) {
-        return cancelTwapOrder(order.composableCowInfo!.parentId!, order)
+        return cancelTwapOrder(order.composableCowInfo!.parentId! as `0x${string}`, order)
       }
 
       if (getIsComposableCowParentOrder(order)) {
-        return cancelTwapOrder(order.composableCowInfo!.id!, order)
+        return cancelTwapOrder(order.composableCowInfo!.id! as `0x${string}`, order)
       }
 
       const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       if (isEthFlowOrder) {
-        return getEthFlowCancellation(ethFlowContract!, order)
+        return getEthFlowCancellation({ config, ethFlowContract, order })
       }
 
-      return getOnChainCancellation(settlementContract!, order)
+      return getOnChainCancellation({ config, order, settlementContract })
     },
-    [ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
+    [config, ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
   )
 }

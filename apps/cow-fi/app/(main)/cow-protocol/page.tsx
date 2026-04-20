@@ -109,7 +109,7 @@ export default function Page() {
           color={Color.cowfi_purple3}
           margin="24px auto 0"
           gridFullWidth
-          href="https://dune.com/cowprotocol/cowswap"
+          href="https://dune.com/cowprotocol/cow-swap-home"
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-protocol-metrics"

@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { StatefulValue } from '@cowprotocol/types'

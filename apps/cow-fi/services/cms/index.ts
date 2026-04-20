@@ -27,6 +27,18 @@ export type ArticleListResponse = {
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
 
+const SKIP_CMS_FETCH_DURING_BUILD =
+  process.env.NEXT_PHASE === 'phase-production-build' || process.env.SKIP_COW_FI_CMS_FETCH === 'true'
+
+function handleCmsBuildFailure<T>(operation: string, error: unknown, fallback: T): T {
+  if (SKIP_CMS_FETCH_DURING_BUILD) {
+    console.error(`[cow-fi] ${operation} failed during build. Skipping CMS fetch.`, error)
+    return fallback
+  }
+
+  throw error
+}
+
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
@@ -38,25 +50,29 @@ export const client = getCmsClient()
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  const { data, error, response } = await client.GET('/articles', {
-    params: {
-      query: {
-        fields: ['slug'],
-        'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+  try {
+    const { data, error, response } = await client.GET('/articles', {
+      params: {
+        query: {
+          fields: ['slug'],
+          'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+        },
       },
-    },
-    querySerializer,
-    ...clientAddons,
-  })
+      querySerializer,
+      ...clientAddons,
+    })
 
-  if (error) {
-    console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
-    throw error
+    if (error) {
+      console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
+      throw error
+    }
+
+    return data.data
+      .filter((article: Article) => article.attributes)
+      .map((article: Article) => article.attributes!.slug)
+  } catch (error) {
+    return handleCmsBuildFailure('getAllArticleSlugs', error, [])
   }
-
-  return data.data
-    .filter((article: Article) => article.attributes) // Ensure attributes are defined
-    .map((article: Article) => article.attributes!.slug) // Non-null assertion since we have already filtered
 }
 
 /**
@@ -85,7 +101,7 @@ export async function getCategories(): Promise<Category[]> {
     return data.data
   } catch (err) {
     console.error('An unexpected error occurred:', err)
-    throw err
+    return handleCmsBuildFailure('getCategories', err, [])
   }
 }
 
@@ -110,31 +126,43 @@ export async function getArticles({
   pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
 }: PaginationParam & { filters?: Record<string, unknown> } = {}): Promise<ArticleListResponse> {
-  const { data, error, response } = await client.GET('/articles', {
-    params: {
-      query: {
-        // Populate
-        'populate[0]': 'cover',
-        'populate[1]': 'blocks',
-        'populate[2]': 'seo',
-        'populate[3]': 'authorsBio',
-        // Pagination
-        'pagination[page]': page,
-        'pagination[pageSize]': pageSize,
-        sort: 'publishDate:desc,publishedAt:desc',
-        filters,
+  try {
+    const { data, error, response } = await client.GET('/articles', {
+      params: {
+        query: {
+          'populate[0]': 'cover',
+          'populate[1]': 'blocks',
+          'populate[2]': 'seo',
+          'populate[3]': 'authorsBio',
+          'pagination[page]': page,
+          'pagination[pageSize]': pageSize,
+          sort: 'publishDate:desc,publishedAt:desc',
+          filters,
+        },
       },
-    },
-    querySerializer,
-    ...clientAddons,
-  })
+      querySerializer,
+      ...clientAddons,
+    })
 
-  if (error) {
-    console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
-    throw error
+    if (error) {
+      console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
+      throw error
+    }
+
+    return { data: data.data, meta: data.meta }
+  } catch (error) {
+    return handleCmsBuildFailure('getArticles', error, {
+      data: [],
+      meta: {
+        pagination: {
+          page,
+          pageSize,
+          pageCount: 0,
+          total: 0,
+        },
+      },
+    })
   }
-
-  return { data: data.data, meta: data.meta }
 }
 
 /**
@@ -258,36 +286,37 @@ async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | nu
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
 
-  const entity = endpoint.slice(1, -1)
-  const populate = getPopulateConfig(endpoint)
+  try {
+    const entity = endpoint.slice(1, -1)
+    const populate = getPopulateConfig(endpoint)
 
-  // Build query params
-  const queryParams = {
-    filters: { slug: { $eq: slug } },
-    pagination: { page: 1, pageSize: 2 },
-    populate,
+    const queryParams = {
+      filters: { slug: { $eq: slug } },
+      pagination: { page: 1, pageSize: 2 },
+      populate,
+    }
+
+    const queryString = endpoint === '/pages' ? qs.stringify(queryParams, { encodeValuesOnly: true }) : null
+
+    const { data, error } =
+      endpoint === '/pages'
+        ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
+        : await client.GET(endpoint, {
+            params: { query: toQueryParams(queryParams) },
+            ...clientAddons,
+          })
+
+    if (error) {
+      console.error(`Error getting slug ${slug} for ${entity}`, error)
+      throw error
+    }
+
+    const { total } = data.meta.pagination
+    if (total === 0) return null
+    if (total > 1) throw new Error(`Multiple ${entity} found with slug ${slug}`)
+
+    return data.data[0]
+  } catch (error) {
+    return handleCmsBuildFailure(`getBySlugAux(${endpoint}, ${slug})`, error, null)
   }
-
-  // Make API call
-  const queryString = endpoint === '/pages' ? qs.stringify(queryParams, { encodeValuesOnly: true }) : null
-
-  const { data, error } =
-    endpoint === '/pages'
-      ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
-      : await client.GET(endpoint, {
-          params: { query: toQueryParams(queryParams) },
-          ...clientAddons,
-        })
-
-  if (error) {
-    console.error(`Error getting slug ${slug} for ${entity}`, error)
-    throw error
-  }
-
-  // Handle response
-  const { total } = data.meta.pagination
-  if (total === 0) return null
-  if (total > 1) throw new Error(`Multiple ${entity} found with slug ${slug}`)
-
-  return data.data[0]
 }

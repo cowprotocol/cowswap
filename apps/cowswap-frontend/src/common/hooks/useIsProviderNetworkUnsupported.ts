@@ -1,15 +1,17 @@
-import { useMemo } from 'react'
-
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
+import { useConnection } from 'wagmi'
+
+/**
+ * Returns true when the connected wallet is on a chain not supported by the app.
+ * Reads the raw provider chain via useConnection() instead of useWalletInfo(),
+ * because useWalletInfo() masks unsupported chains with a URL fallback.
+ */
 export function useIsProviderNetworkUnsupported(): boolean {
-  const chainId = useWalletChainId()
+  const { chainId, isConnected } = useConnection()
   const availableChains = useAvailableChains()
 
-  return useMemo(() => {
-    if (!chainId) return false
+  if (!isConnected || !chainId) return false
 
-    return availableChains.indexOf(chainId) === -1
-  }, [chainId, availableChains])
+  return !availableChains.includes(chainId)
 }

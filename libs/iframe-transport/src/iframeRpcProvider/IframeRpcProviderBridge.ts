@@ -38,10 +38,13 @@ export class IframeRpcProviderBridge {
 
   /**
    * Creates an instance of IframeRpcProviderBridge.
-   * @param iframeWidow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
+   * @param iframeWindow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
    *  Also it will receive some special RPC events coming from the wallet, like connect/chainChanged,accountChanged
    */
-  constructor(private iframeWidow: Window) {}
+  constructor(
+    private iframeWindow: Window,
+    private iframeOrigin?: string,
+  ) {}
 
   /**
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
@@ -78,8 +81,10 @@ export class IframeRpcProviderBridge {
       // Listen for messages coming to the main window (from the iFrame window)
       iframeRpcProviderTransport.listenToMessageFromWindow(
         window,
+        this.iframeWindow,
         IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
         this.processRpcCallFromWindow,
+        this.iframeOrigin,
       )
     }
 
@@ -97,8 +102,10 @@ export class IframeRpcProviderBridge {
     // Listen for provider meta info request
     iframeRpcProviderTransport.listenToMessageFromWindow(
       window,
+      this.iframeWindow,
       IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
       this.processProviderMetaInfoRequest,
+      this.iframeOrigin,
     )
   }
 
@@ -164,17 +171,21 @@ export class IframeRpcProviderBridge {
     const providerWcMetadata = getProviderWcMetadata(this.ethereumProvider)
 
     // Send the provider meta info to the iFrame window
-    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.SEND_PROVIDER_META_INFO, {
-      providerEip6963Info,
-      providerWcMetadata,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.iframeWindow,
+      IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
+      { providerEip6963Info, providerWcMetadata },
+      this.iframeOrigin,
+    )
   }
 
   private onProviderEvent(event: string, params: unknown): void {
-    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.PROVIDER_ON_EVENT, {
-      event,
-      params,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.iframeWindow,
+      IframeRpcProviderEvents.PROVIDER_ON_EVENT,
+      { event, params },
+      this.iframeOrigin,
+    )
   }
 
   /**
@@ -184,9 +195,10 @@ export class IframeRpcProviderBridge {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
     iframeRpcProviderTransport.postMessageToWindow(
-      this.iframeWidow,
+      this.iframeWindow,
       IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
       params,
+      this.iframeOrigin,
     )
   }
 }

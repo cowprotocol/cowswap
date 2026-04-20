@@ -1,15 +1,16 @@
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
-import { useWeb3React } from '@web3-react/core'
-
 import { useConnection } from 'wagmi'
 
+/**
+ * Returns the actual chainId of the connected wallet, even when it's on an
+ * unsupported chain.
+ *
+ * Wagmi's `useChainId()` reads from `config.state.chainId`, which is only
+ * updated when the wallet switches to a *configured* chain (see createConfig
+ * subscriber that short-circuits on `!isChainConfigured`). That masks
+ * unsupported chains behind the last supported one and breaks any code that
+ * needs to detect an unsupported-network state. Reading straight from the
+ * active connection preserves the real chain.
+ */
 export function useWalletChainId(): number | undefined {
-  const { chainId: wagmiChainId } = useConnection()
-  const { chainId: web3ChainId } = useWeb3React()
-
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    return wagmiChainId
-  }
-
-  return web3ChainId
+  return useConnection().chainId
 }

@@ -3,35 +3,41 @@ import defaultBaseSvg from '../../assets/animated-favicon/shared/default-base.sv
 import defaultDarkBaseSvg from '../../assets/animated-favicon/shared/default-dark-base.svg?raw'
 
 const defaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const solvingFrameModules = import.meta.glob<string>('../../assets/animated-favicon/solving/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const completedFrameModules = import.meta.glob<string>('../../assets/animated-favicon/completed/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const completedDarkFrameModules = import.meta.glob<string>('../../assets/animated-favicon/completed-dark/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const backToDefaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/back-to-default/*.svg', {
-  as: 'raw',
   eager: true,
+  import: 'default',
+  query: '?raw',
 })
 
 const backToDefaultDarkFrameModules = import.meta.glob<string>(
   '../../assets/animated-favicon/back-to-default-dark/*.svg',
   {
-    as: 'raw',
     eager: true,
+    import: 'default',
+    query: '?raw',
   },
 )
 
