@@ -106,7 +106,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
         showDialog={false}
         // TODO: Extract nested component outside render function
         // eslint-disable-next-line react/no-unstable-nested-components
-        fallback={({ error: sentryError }) => {
+        fallback={({ error: sentryError, eventId }) => {
           document.body.classList.remove('noScroll')
           const { error: localError } = this.state
           const error = localError || sentryError
@@ -128,7 +128,13 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
                 </HeaderWrapper>
               )}
 
-              <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
+              <Wrapper>
+                {isChunkLoadError ? (
+                  <ChunkLoadError eventId={eventId} />
+                ) : (
+                  <ErrorWithStackTrace error={error} eventId={eventId} />
+                )}
+              </Wrapper>
             </AppWrapper>
           )
         }}
