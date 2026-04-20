@@ -153,8 +153,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // For SC wallets doing any bridge, the recipient field must be shown so the user can confirm the
   // destination address and unblock the SmartContractReceiverWarning confirmation checkbox.
   const isSCWalletBridging = isCurrentTradeBridging && !!isSmartContractWallet
-  const withRecipient =
-    !isWrapOrUnwrap && (hasRecipientInUrl || showRecipient || (!!account && (isNonEvmBridging || isSCWalletBridging)))
+  const requiresRecipientForBridge = !!account && (isNonEvmBridging || isSCWalletBridging)
+  const withRecipient = !isWrapOrUnwrap && (hasRecipientInUrl || showRecipient || requiresRecipientForBridge)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
