@@ -20,4 +20,22 @@ describe('getErrorMessage()', () => {
   it('falls back to default when error is empty', () => {
     expect(getErrorMessage(null)).toContain('Something went wrong')
   })
+
+  it('collapses viem-wrapped user rejection (nested cause) to a short message', () => {
+    const inner = new Error('User rejected the request. Details: User rejected transaction Version: viem@2.47.1')
+    ;(inner as Error & { code?: number }).code = 4001
+    const outer = new Error(
+      'User rejected the request. Request Arguments: chain: undefined (id: 8453) from: 0x8FAb71C0d4272698A3B2d1F3Ed5FC3c1B9b3E531 Details: User rejected transaction Version: viem@2.47.1',
+    )
+    ;(outer as Error & { cause?: unknown }).cause = inner
+
+    expect(getErrorMessage(outer)).toBe('User rejected transaction')
+  })
+
+  it('collapses top-level user rejection error to a short message', () => {
+    const err = new Error('User denied transaction signature')
+    ;(err as Error & { code?: number }).code = 4001
+
+    expect(getErrorMessage(err)).toBe('User rejected transaction')
+  })
 })
