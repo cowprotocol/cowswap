@@ -154,7 +154,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // destination address and unblock the SmartContractReceiverWarning confirmation checkbox.
   const isSCWalletBridging = isCurrentTradeBridging && !!isSmartContractWallet
   const withRecipient =
-    !isWrapOrUnwrap && (hasRecipientInUrl || (!!account && (isNonEvmBridging || showRecipient || isSCWalletBridging)))
+    !isWrapOrUnwrap && (hasRecipientInUrl || showRecipient || (!!account && (isNonEvmBridging || isSCWalletBridging)))
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
