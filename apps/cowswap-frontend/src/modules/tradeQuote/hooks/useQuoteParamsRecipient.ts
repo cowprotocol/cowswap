@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isBtcAddress, isBtcChain, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
@@ -10,17 +9,7 @@ import { useDerivedTradeState } from 'modules/trade'
 
 import { useTradeQuote } from './useTradeQuote'
 
-import { COW_QUOTE_BTC_BRIDGE_RECIPIENT, COW_QUOTE_SOL_BRIDGE_RECIPIENT } from '../utils/getBridgeQuoteSigner'
-
-/** Maps a chain predicate + address validator + default quote recipient for each non-EVM chain. */
-const NON_EVM_CHAIN_CONFIG: {
-  isChain: (chainId: number) => boolean
-  isAddress: (address: Nullish<string>) => boolean
-  defaultRecipient: string
-}[] = [
-  { isChain: isBtcChain, isAddress: isBtcAddress, defaultRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT },
-  { isChain: isSolanaChain, isAddress: isSolanaAddress, defaultRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT },
-]
+import { NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 
 export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRecipient: Nullish<string> } {
   const { bridgeQuote } = useTradeQuote()
@@ -80,11 +69,6 @@ function resolveNonEvmBridgeRecipient(
 function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
   if (!outputCurrency) return undefined
   return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
-}
-
-/** Returns true if the address is one of the placeholder recipients injected for non-EVM quote requests. */
-export function isNonEvmPlaceholderRecipient(address: Nullish<string>): boolean {
-  return NON_EVM_CHAIN_CONFIG.some(({ defaultRecipient }) => areAddressesEqual(address, defaultRecipient))
 }
 
 /** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
