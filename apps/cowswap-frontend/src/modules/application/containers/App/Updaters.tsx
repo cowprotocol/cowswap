@@ -54,6 +54,7 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { WalletChainUrlSyncUpdater } from 'common/updaters/WalletChainUrlSyncUpdater'
 import { WalletSessionDurationUpdater } from 'common/updaters/WalletSessionDurationUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
@@ -82,6 +83,7 @@ export function Updaters(): ReactNode {
       <TradingSdkUpdater />
       {/*Set custom chainId only when it differs from the wallet chainId*/}
       <WalletUpdater standaloneMode={standaloneMode} />
+      <WalletChainUrlSyncUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
       <PendingOrdersUpdater />
