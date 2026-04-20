@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -6,7 +6,7 @@ import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/comm
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -135,6 +135,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -143,6 +144,11 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
   const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
   const handleNonEvmConfirm = useCallback((v: boolean) => setNonEvmReceiverConfirmed(v), [setNonEvmReceiverConfirmed])
+
+  // Reset receiver confirmation when wallet account or chain changes
+  useEffect(() => {
+    setNonEvmReceiverConfirmed(false)
+  }, [account, chainId, setNonEvmReceiverConfirmed])
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
@@ -315,6 +321,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
                     isRequired={isNonEvmBridging}
+                    isSmartContractWallet={!!isSmartContractWallet && isCurrentTradeBridging}
                     onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}

@@ -2128,8 +2128,8 @@ msgstr "You have already claimed this airdrop"
 #~ msgstr "Checking availability..."
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.tsx
-msgid "I confirm this {chainName} address is correct."
-msgstr "I confirm this {chainName} address is correct."
+msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
+msgstr "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancel multiple orders: {ordersCount}"

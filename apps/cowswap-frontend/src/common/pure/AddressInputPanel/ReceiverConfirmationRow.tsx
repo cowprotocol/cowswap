@@ -10,14 +10,16 @@ interface Props {
   onConfirmChange(v: boolean): void
 }
 
-const CHECKBOX_ID = 'non-evm-receiver-confirmation'
+const CHECKBOX_ID = 'receiver-confirmation'
 
 export function ReceiverConfirmationRow({ chainName, confirmed, onConfirmChange }: Props): ReactElement {
   return (
     <ConfirmationRow>
       <input id={CHECKBOX_ID} type="checkbox" checked={confirmed} onChange={(e) => onConfirmChange(e.target.checked)} />
       <ConfirmationLabel htmlFor={CHECKBOX_ID} $confirmed={confirmed}>
-        <Trans>I confirm this {chainName} address is correct.</Trans>
+        <Trans>
+          Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain.
+        </Trans>
       </ConfirmationLabel>
     </ConfirmationRow>
   )
