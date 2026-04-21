@@ -17,6 +17,8 @@ import {
 } from '../lib/affiliateProgramUtils'
 import { MetricsCard } from '../pure/MetricsCard'
 
+import type { PartnerStatsResponse } from '../api/bffAffiliateApi.types'
+
 export function AffiliatePartnerStats(): ReactNode {
   const { account } = useWalletInfo()
   const { data: info, isLoading: codeLoading } = useAffiliatePartnerInfo(account)
@@ -24,44 +26,14 @@ export function AffiliatePartnerStats(): ReactNode {
 
   const rewardAmountLabel = getPartnerRewardAmountLabel(info?.rewardAmount, info?.revenueSplitAffiliatePct)
   const progressToNextReward = getProgressToNextReward(info?.triggerVolume, stats?.left_to_next_reward)
+  const items = getMetricsItems(stats, rewardAmountLabel)
 
   return (
     <MetricsCard
       showLoader={codeLoading || statsLoading}
       title={<Trans>Your referral traffic</Trans>}
       titleTooltip={t`This chart tracks eligible volume left to unlock the next reward.`}
-      items={[
-        {
-          id: 'volume-left-to-next-reward',
-          label: <Trans>Volume left to next {rewardAmountLabel}</Trans>,
-          value: formatUsdCompact(stats?.left_to_next_reward),
-        },
-        {
-          id: 'total-earned',
-          label: <Trans>Total earned</Trans>,
-          value: formatUsdcCompact(stats?.total_earned),
-        },
-        {
-          id: 'received',
-          label: <Trans>Received</Trans>,
-          value: formatUsdcCompact(stats?.paid_out),
-        },
-        {
-          id: 'volume-referred',
-          label: <Trans>Volume referred</Trans>,
-          value: formatUsdCompact(stats?.total_volume),
-        },
-        {
-          id: 'total-referrals',
-          label: <Trans>Total referrals</Trans>,
-          value: formatCompactNumber(stats?.total_traders),
-        },
-        {
-          id: 'active-referrals',
-          label: <Trans>Active referrals</Trans>,
-          value: formatCompactNumber(stats?.active_traders),
-        },
-      ]}
+      items={items}
       donutValue={getReferralTrafficPercent(info?.triggerVolume, progressToNextReward)}
       donutLabel={formatUsdCompact(progressToNextReward)}
       lastUpdatedAt={stats?.lastUpdatedAt}
@@ -74,4 +46,42 @@ export function AffiliatePartnerStats(): ReactNode {
       }
     />
   )
+}
+
+function getMetricsItems(
+  stats: PartnerStatsResponse | null | undefined,
+  rewardAmountLabel: string,
+): Array<{ id: string; label: ReactNode; value: string }> {
+  return [
+    {
+      id: 'volume-left-to-next-reward',
+      label: <Trans>Volume left to next {rewardAmountLabel}</Trans>,
+      value: formatUsdCompact(stats?.left_to_next_reward),
+    },
+    {
+      id: 'total-earned',
+      label: <Trans>Total earned</Trans>,
+      value: formatUsdcCompact(stats?.total_earned),
+    },
+    {
+      id: 'received',
+      label: <Trans>Received</Trans>,
+      value: formatUsdcCompact(stats?.paid_out),
+    },
+    {
+      id: 'volume-referred',
+      label: <Trans>Volume referred</Trans>,
+      value: formatUsdCompact(stats?.total_volume),
+    },
+    {
+      id: 'total-referrals',
+      label: <Trans>Total referrals</Trans>,
+      value: formatCompactNumber(stats?.total_traders),
+    },
+    {
+      id: 'active-referrals',
+      label: <Trans>Active referrals</Trans>,
+      value: formatCompactNumber(stats?.active_traders),
+    },
+  ]
 }
