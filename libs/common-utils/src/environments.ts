@@ -1,27 +1,10 @@
+import { getConfiguredEnvironmentNameFromEnvVars } from './environmentConfig'
 import { registerOnWindow } from './misc'
 
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
 export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
 
-const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
-
-function isEnvironmentName(value: string): value is EnvironmentName {
-  return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
-}
-
-function getConfiguredEnvironmentName(): EnvironmentName {
-  const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
-
-  if (!env) {
-    throw new Error(`Missing ${ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
-  }
-
-  if (!isEnvironmentName(env)) {
-    throw new Error(`Invalid ${ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
-  }
-
-  return env
-}
+const ENVIRONMENT_VAR_NAMES = ['REACT_APP_ENVIRONMENT'] as const
 
 export interface EnvironmentChecks {
   isProd: boolean
@@ -43,7 +26,7 @@ function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChec
   }
 }
 
-const configuredEnvironmentName = getConfiguredEnvironmentName()
+const configuredEnvironmentName = getConfiguredEnvironmentNameFromEnvVars(ENVIRONMENT_VAR_NAMES, ALL_ENVIRONMENTS)
 
 export function checkEnvironment(): EnvironmentChecks {
   return getEnvironmentChecks(configuredEnvironmentName)
