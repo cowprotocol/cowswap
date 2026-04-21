@@ -30,7 +30,7 @@ export function QrCameraView({ videoRef, onSwitchCamera }: QrCameraViewProps): R
           <span className="br" />
         </CornerBracketOverlay>
         <ScanLineAnimation />
-        <CameraSwitchBtn onClick={onSwitchCamera} aria-label={t`Switch camera`}>
+        <CameraSwitchBtn type="button" onClick={onSwitchCamera} aria-label={t`Switch camera`}>
           ⇄
         </CameraSwitchBtn>
       </VideoContainer>
