@@ -2,7 +2,6 @@ import { RefObject, useEffect, useState } from 'react'
 
 /**
  * BarcodeDetector is a browser API not yet included in TypeScript's DOM lib.
- * We declare the minimal interface we need rather than using `any`.
  * Spec: https://wicg.github.io/shape-detection-api/#barcode-detection-api
  */
 interface BarcodeDetectorResult {
@@ -59,8 +58,8 @@ export function useQrBarcodeScanner(
           stream.getTracks().forEach((t) => t.stop())
           return
         }
-      } catch {
-        // ignore individual frame detection errors
+      } catch (e) {
+        console.error(e)
       }
       frameId = requestAnimationFrame(scan)
     }

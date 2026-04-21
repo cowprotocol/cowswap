@@ -25,16 +25,16 @@ export function useQrCameraStream(
 
     navigator.mediaDevices
       ?.getUserMedia({ video: { facingMode } })
-      .then((s) => {
+      .then((mediaStream) => {
         if (cancelled) {
-          s.getTracks().forEach((t) => t.stop())
+          mediaStream.getTracks().forEach((t) => t.stop())
           return
         }
-        localStream = s
-        setStream(s)
+        localStream = mediaStream
+        setStream(mediaStream)
         if (videoRef.current) {
-          videoRef.current.srcObject = s
-          videoRef.current.play()
+          videoRef.current.srcObject = mediaStream
+          videoRef.current.play().catch((e: unknown) => console.error(e))
         }
       })
       .catch(() => {
