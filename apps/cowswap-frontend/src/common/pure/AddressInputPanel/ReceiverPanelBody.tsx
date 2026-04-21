@@ -5,8 +5,6 @@ import { TargetChainId } from '@cowprotocol/cow-sdk'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 
-import { useIsDarkMode } from 'legacy/state/user/hooks'
-
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
@@ -39,7 +37,6 @@ export function ReceiverPanelBody({
   const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
-  const isDarkMode = useIsDarkMode()
 
   const [isConfirmed, setIsConfirmed] = useState(false)
 
@@ -80,9 +77,7 @@ export function ReceiverPanelBody({
 
   return (
     <>
-      {chainPrefixWarning && (
-        <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} isDarkMode={isDarkMode} />
-      )}
+      {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ReceiverInputWrapper>
         <ReceiverInputRow>
           {isValid && !loading && (
