@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { bpsToPercent, FractionUtils, trimTrailingZeros } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { CenteredDots } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -57,10 +56,11 @@ export function ProtocolFeeRow({
       }
       label={
         <>
-          {t`Protocol fee`} ({loading ? <CenteredDots /> : `${protocolFeeAsPercent}%`})
+          {t`Protocol fee`} {!loading && ` (${protocolFeeAsPercent}%)`}
         </>
       }
       isLast={isLast}
+      loading={loading}
     />
   )
 }

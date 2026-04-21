@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { CenteredDots } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -61,10 +60,11 @@ export function PartnerFeeRow({
       }
       label={
         <>
-          {t`${label}`} ({loading ? <CenteredDots /> : `${feeAsPercent}%`})
+          {t`${label}`} {!loading && ` (${feeAsPercent}%)`}
         </>
       }
       isLast={isLast}
+      loading={loading}
     />
   )
 }
