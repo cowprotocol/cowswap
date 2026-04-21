@@ -12,7 +12,10 @@ export function useReceiverActions(onChange: (value: string) => void): ReceiverA
   const [showQrModal, setShowQrModal] = useState(false)
 
   const handlePaste = useCallback(() => {
-    navigator.clipboard.readText().then(onChange)
+    navigator.clipboard
+      .readText()
+      .then(onChange)
+      .catch((e: unknown) => console.error('Clipboard read failed', e))
   }, [onChange])
 
   const handleClear = useCallback(() => onChange(''), [onChange])

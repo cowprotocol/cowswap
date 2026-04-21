@@ -1,3 +1,5 @@
+import { EvmChains, NonEvmChains } from '@cowprotocol/cow-sdk'
+
 import { renderHook } from '@testing-library/react'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -12,9 +14,8 @@ jest.mock('./useDerivedTradeState', () => ({ useDerivedTradeState: jest.fn() }))
 const mockUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.MockedFunction<typeof useIsCurrentTradeBridging>
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 
-// Solana chainId = 1000000001, mainnet = 1
-const SOL_CHAIN_ID = 1000000001
-const ETH_CHAIN_ID = 1
+const SOL_CHAIN_ID = NonEvmChains.SOLANA
+const ETH_CHAIN_ID = EvmChains.MAINNET
 
 function makeState(chainId: number): TradeDerivedState {
   return {
