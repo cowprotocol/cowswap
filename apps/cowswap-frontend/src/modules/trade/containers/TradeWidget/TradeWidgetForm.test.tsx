@@ -18,6 +18,7 @@ import { TradeWidgetProps } from './types'
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { useIsNonEvmBridging } from '../../hooks/useIsNonEvmBridging'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
@@ -63,7 +64,10 @@ jest.mock('@cowprotocol/ui', () => ({
 jest.mock('modules/account', () => ({ useToggleAccountModal: () => jest.fn() }))
 jest.mock('modules/injectedWidget', () => ({ useInjectedWidgetParams: () => ({}) }))
 jest.mock('modules/tokensList', () => ({ useOpenTokenSelectWidget: () => jest.fn() }))
-jest.mock('modules/trade', () => ({ useDerivedTradeState: () => ({ orderKind: 'sell' }) }))
+jest.mock('modules/trade', () => ({
+  useDerivedTradeState: () => ({ orderKind: 'sell' }),
+  useSetNonEvmReceiverConfirmed: () => jest.fn(),
+}))
 jest.mock('modules/tradeFormValidation', () => ({
   useGetTradeFormValidation: () => null,
   TradeFormValidation: {},
@@ -72,6 +76,10 @@ jest.mock('modules/tradeFormValidation', () => ({
 // ─── Internal hook mocks ───────────────────────────────────────────────────
 
 jest.mock('../../hooks/useIsCurrentTradeBridging', () => ({ useIsCurrentTradeBridging: jest.fn() }))
+jest.mock('../../hooks/useIsNonEvmBridging', () => ({ useIsNonEvmBridging: jest.fn() }))
+jest.mock('../../hooks/useResetReceiverConfirmationOnWalletChange', () => ({
+  useResetReceiverConfirmationOnWalletChange: jest.fn(),
+}))
 jest.mock('../../hooks/useIsEoaEthFlow', () => ({ useIsEoaEthFlow: jest.fn() }))
 jest.mock('../../hooks/useIsQuoteUpdatePossible', () => ({ useIsQuoteUpdatePossible: jest.fn() }))
 jest.mock('../../hooks/useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
@@ -138,6 +146,7 @@ const mockedUseIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof 
 const mockedUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.MockedFunction<
   typeof useIsCurrentTradeBridging
 >
+const mockedUseIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
 const mockedUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 const mockedUseLimitOrdersPromoBanner = useLimitOrdersPromoBanner as jest.MockedFunction<
   typeof useLimitOrdersPromoBanner
@@ -186,6 +195,7 @@ function setupDefaults({
   account = undefined as string | undefined,
   isWrapOrUnwrap = false,
   isBridging = false,
+  isNonEvmBridging = false,
   isSmartContractWallet = false as boolean | undefined,
   recipientInUrl = null as string | null,
 } = {}): void {
@@ -197,6 +207,7 @@ function setupDefaults({
   mockedUseIsSmartContractWallet.mockReturnValue(isSmartContractWallet)
   mockedUseIsWrapOrUnwrap.mockReturnValue(isWrapOrUnwrap)
   mockedUseIsCurrentTradeBridging.mockReturnValue(isBridging)
+  mockedUseIsNonEvmBridging.mockReturnValue(isNonEvmBridging)
   mockedUseTradeStateFromUrl.mockReturnValue(
     recipientInUrl ? ({ recipient: recipientInUrl } as never) : (null as never),
   )
@@ -259,7 +270,7 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
 
   describe('non-EVM bridge', () => {
     it('shows SetRecipient for non-EVM bridge when account is connected', () => {
-      setupDefaults({ account: ACCOUNT, isBridging: true })
+      setupDefaults({ account: ACCOUNT, isBridging: true, isNonEvmBridging: true })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(BTC_CHAIN_ID) })} />)
 
@@ -267,7 +278,7 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
     })
 
     it('hides SetRecipient for non-EVM bridge when account is not connected', () => {
-      setupDefaults({ account: undefined, isBridging: true })
+      setupDefaults({ account: undefined, isBridging: true, isNonEvmBridging: true })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(BTC_CHAIN_ID) })} />)
 

@@ -1,9 +1,17 @@
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+
 import { renderHook } from '@testing-library/react'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
+import { useIsCurrentTradeBridging } from './useIsCurrentTradeBridging'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 import { useWithRecipient } from './useWithRecipient'
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(() => ({ account: undefined, chainId: 1 })),
+  useIsSmartContractWallet: jest.fn(() => false),
+}))
 
 jest.mock('./useIsWrapOrUnwrap', () => ({
   useIsWrapOrUnwrap: jest.fn(() => false),
@@ -13,13 +21,22 @@ jest.mock('./useIsNonEvmBridging', () => ({
   useIsNonEvmBridging: jest.fn(() => false),
 }))
 
+jest.mock('./useIsCurrentTradeBridging', () => ({
+  useIsCurrentTradeBridging: jest.fn(() => false),
+}))
+
 jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({
   useTradeStateFromUrl: jest.fn(() => null),
 }))
 
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockUseIsSmartContractWallet = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
 const mockUseIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
 const mockUseIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
+const mockUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.MockedFunction<typeof useIsCurrentTradeBridging>
 const mockUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
+
+const ACCOUNT = '0xabc'
 
 function renderUseWithRecipient(showRecipient: boolean): boolean {
   const { result } = renderHook(() => useWithRecipient(showRecipient))
@@ -28,8 +45,11 @@ function renderUseWithRecipient(showRecipient: boolean): boolean {
 
 describe('useWithRecipient', () => {
   beforeEach(() => {
+    mockUseWalletInfo.mockReturnValue({ account: undefined, chainId: 1 } as ReturnType<typeof useWalletInfo>)
+    mockUseIsSmartContractWallet.mockReturnValue(false)
     mockUseIsWrapOrUnwrap.mockReturnValue(false)
     mockUseIsNonEvmBridging.mockReturnValue(false)
+    mockUseIsCurrentTradeBridging.mockReturnValue(false)
     mockUseTradeStateFromUrl.mockReturnValue(null)
   })
 
@@ -37,6 +57,7 @@ describe('useWithRecipient', () => {
     it('returns false for non-EVM bridging during wrap/unwrap', () => {
       mockUseIsWrapOrUnwrap.mockReturnValue(true)
       mockUseIsNonEvmBridging.mockReturnValue(true)
+      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
       expect(renderUseWithRecipient(false)).toBe(false)
     })
 
@@ -48,14 +69,35 @@ describe('useWithRecipient', () => {
   })
 
   describe('non-EVM bridging', () => {
-    it('returns true', () => {
+    it('returns true when account is connected', () => {
       mockUseIsNonEvmBridging.mockReturnValue(true)
+      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
       expect(renderUseWithRecipient(false)).toBe(true)
+    })
+
+    it('returns false when account is not connected', () => {
+      mockUseIsNonEvmBridging.mockReturnValue(true)
+      expect(renderUseWithRecipient(false)).toBe(false)
+    })
+  })
+
+  describe('SC wallet + EVM bridge', () => {
+    it('returns true when account is connected', () => {
+      mockUseIsCurrentTradeBridging.mockReturnValue(true)
+      mockUseIsSmartContractWallet.mockReturnValue(true)
+      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
+      expect(renderUseWithRecipient(false)).toBe(true)
+    })
+
+    it('returns false when account is not connected', () => {
+      mockUseIsCurrentTradeBridging.mockReturnValue(true)
+      mockUseIsSmartContractWallet.mockReturnValue(true)
+      expect(renderUseWithRecipient(false)).toBe(false)
     })
   })
 
   describe('recipient in URL', () => {
-    it('returns true', () => {
+    it('returns true even without account', () => {
       mockUseTradeStateFromUrl.mockReturnValue({ recipient: '0xabc' } as ReturnType<typeof useTradeStateFromUrl>)
       expect(renderUseWithRecipient(false)).toBe(true)
     })
