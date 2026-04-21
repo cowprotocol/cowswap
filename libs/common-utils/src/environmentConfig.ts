@@ -2,19 +2,32 @@ function isEnvironmentName(value: string, environments: readonly string[]): bool
   return environments.includes(value)
 }
 
-export function getConfiguredEnvironmentNameFromEnvVars<TEnvironmentName extends string>(
+function getEnvironmentVariable(envVarName: string): string | undefined {
+  switch (envVarName) {
+    case 'REACT_APP_ENVIRONMENT':
+      // For React apps
+      return process.env.REACT_APP_ENVIRONMENT
+    case 'NEXT_PUBLIC_ENVIRONMENT':
+      // For Next.js apps
+      return process.env.NEXT_PUBLIC_ENVIRONMENT
+    default:
+      return process.env[envVarName]
+  }
+}
+
+export function getConfiguredEnvironmentNameFromEnvVars<EnvName extends string>(
   envVarNames: readonly string[],
-  environments: readonly TEnvironmentName[],
-): TEnvironmentName {
+  environments: readonly EnvName[],
+): EnvName {
   for (const envVarName of envVarNames) {
-    const env = process.env[envVarName]?.trim().toLowerCase()
+    const env = getEnvironmentVariable(envVarName)?.trim().toLowerCase()
 
     if (env) {
       if (!isEnvironmentName(env, environments)) {
         throw new Error(`Invalid ${envVarName}="${env}". Expected one of: ${environments.join(', ')}`)
       }
 
-      return env as TEnvironmentName
+      return env as EnvName
     }
   }
 
