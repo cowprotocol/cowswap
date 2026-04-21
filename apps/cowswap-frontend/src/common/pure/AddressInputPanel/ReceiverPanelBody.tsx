@@ -40,28 +40,34 @@ export function ReceiverPanelBody({
 
   const [isConfirmed, setIsConfirmed] = useState(false)
 
-  // Keep a stable ref to the latest callback so effects don't need it as a dep.
-  // Updated via useLayoutEffect (runs synchronously after render, before other
-  // effects) so it is always current by the time any effect reads it.
+  // Keep stable refs so effects don't need unstable values as deps.
+  // Both are updated synchronously via useLayoutEffect before any effects read them.
   const onConfirmedChangeRef = useRef(onNonEvmReceiverConfirmedChange)
+  const isConfirmedRef = useRef(false)
   useLayoutEffect(() => {
     onConfirmedChangeRef.current = onNonEvmReceiverConfirmedChange
+    isConfirmedRef.current = isConfirmed
   })
 
   const resolvedPlaceholder =
     placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
   const chainLabel = isNonEvm ? chainInfo?.label : ''
 
-  // Reset confirmation when address or target chain changes
+  // Reset confirmation when address or target chain changes.
+  // Guard with isConfirmedRef to avoid spurious callbacks on first render
+  // and when confirmation was never set.
   useEffect(() => {
+    if (!isConfirmedRef.current) return
     setIsConfirmed(false)
     onConfirmedChangeRef.current?.(false)
   }, [value, targetChainId])
 
-  // Reset on unmount
+  // Reset on unmount — only notify parent if confirmation was active.
   useEffect(() => {
     return () => {
-      onConfirmedChangeRef.current?.(false)
+      if (isConfirmedRef.current) {
+        onConfirmedChangeRef.current?.(false)
+      }
     }
   }, [])
 

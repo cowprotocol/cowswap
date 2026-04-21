@@ -306,7 +306,20 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     expect(onConfirmChange).toHaveBeenLastCalledWith(false)
   })
 
-  it('calls callback with false on unmount', () => {
+  it('calls callback with false on unmount when previously confirmed', () => {
+    const onConfirmChange = jest.fn()
+    const { unmount } = renderComponent({
+      value: VALID_SOL_ADDRESS,
+      targetChainId: AdditionalTargetChainId.SOLANA,
+      onNonEvmReceiverConfirmedChange: onConfirmChange,
+    })
+    fireEvent.click(screen.getByRole('checkbox'))
+    expect(onConfirmChange).toHaveBeenLastCalledWith(true)
+    unmount()
+    expect(onConfirmChange).toHaveBeenLastCalledWith(false)
+  })
+
+  it('does not call callback on unmount when never confirmed', () => {
     const onConfirmChange = jest.fn()
     const { unmount } = renderComponent({
       value: VALID_SOL_ADDRESS,
@@ -314,7 +327,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     unmount()
-    expect(onConfirmChange).toHaveBeenLastCalledWith(false)
+    expect(onConfirmChange).not.toHaveBeenCalled()
   })
 })
 
