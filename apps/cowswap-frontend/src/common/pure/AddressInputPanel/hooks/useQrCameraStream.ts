@@ -20,11 +20,16 @@ export function useQrCameraStream(
   useEffect(() => {
     if (!isOpen) return
 
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setIsSupported(false)
+      return
+    }
+
     let cancelled = false
     let localStream: MediaStream | null = null
 
     navigator.mediaDevices
-      ?.getUserMedia({ video: { facingMode } })
+      .getUserMedia({ video: { facingMode } })
       .then((mediaStream) => {
         if (cancelled) {
           mediaStream.getTracks().forEach((t) => t.stop())

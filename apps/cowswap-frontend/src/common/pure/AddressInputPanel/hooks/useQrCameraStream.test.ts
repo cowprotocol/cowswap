@@ -54,6 +54,17 @@ describe('useQrCameraStream', () => {
     expect(mockPlay).toHaveBeenCalled()
   })
 
+  it('sets isSupported=false when mediaDevices API is unavailable', () => {
+    Object.defineProperty(navigator, 'mediaDevices', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    })
+    const { result } = renderHook(() => useQrCameraStream(true, 'environment', makeVideoRef()))
+    expect(result.current.isSupported).toBe(false)
+    expect(mockGetUserMedia).not.toHaveBeenCalled()
+  })
+
   it('sets isSupported=false when getUserMedia is denied', async () => {
     mockGetUserMedia.mockRejectedValue(new Error('NotAllowedError'))
     const { result } = renderHook(() => useQrCameraStream(true, 'environment', makeVideoRef()))
