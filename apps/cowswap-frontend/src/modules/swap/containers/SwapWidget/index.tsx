@@ -37,6 +37,7 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 import { Container } from './styled'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
+import { useIsRecipientRequired } from '../../hooks/useIsRecipientRequired'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
   useSwapDeadlineState,
@@ -66,6 +67,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
+  const isRecipientRequired = useIsRecipientRequired()
   const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
   const isFeeExceedsError = quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.FeeExceedsFrom
   const hideQuoteAmount = useShouldHideTradeRateDetails()
@@ -101,6 +103,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
+
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -202,6 +205,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
+        isRecipientToggleDisabled={isRecipientRequired}
       />
     ),
     bottomContent: useCallback(

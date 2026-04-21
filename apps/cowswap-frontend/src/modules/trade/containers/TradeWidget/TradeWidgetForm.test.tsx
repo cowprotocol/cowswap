@@ -230,8 +230,8 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
     jest.clearAllMocks()
   })
 
-  describe('always hidden', () => {
-    it('hides SetRecipient when isWrapOrUnwrap is true, even with showRecipient=true', () => {
+  describe('wrap/unwrap — always hidden', () => {
+    it('hides SetRecipient even with showRecipient=true', () => {
       setupDefaults({ account: ACCOUNT, isWrapOrUnwrap: true })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ params: { ...buildProps().params, showRecipient: true } })} />)
@@ -240,8 +240,8 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
     })
   })
 
-  describe('explicit showRecipient (caller-driven)', () => {
-    it('shows SetRecipient when showRecipient=true even without a connected account', () => {
+  describe('toggle — shown when on, hidden when off (EOA, SC wallet, any EVM)', () => {
+    it('shows when showRecipient=true without a connected account', () => {
       setupDefaults({ account: undefined })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ params: { ...buildProps().params, showRecipient: true } })} />)
@@ -249,27 +249,33 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
       expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
 
-    it('shows SetRecipient when showRecipient=true with a connected account', () => {
+    it('shows when showRecipient=true with a connected account', () => {
       setupDefaults({ account: ACCOUNT })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ params: { ...buildProps().params, showRecipient: true } })} />)
 
       expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
-  })
 
-  describe('recipient in URL', () => {
-    it('shows SetRecipient when a recipient is present in the URL even without a connected account', () => {
-      setupDefaults({ account: undefined, recipientInUrl: '0xrecipient' })
+    it('hides when showRecipient=false for EVM swap (connected)', () => {
+      setupDefaults({ account: ACCOUNT })
 
       renderWithI18n(<TradeWidgetForm {...buildProps()} />)
 
-      expect(screen.getByTestId('set-recipient')).toBeTruthy()
+      expect(screen.queryByTestId('set-recipient')).toBeNull()
+    })
+
+    it('hides when showRecipient=false for EVM bridge with SC wallet', () => {
+      setupDefaults({ account: ACCOUNT, isBridging: true, isSmartContractWallet: true })
+
+      renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(EVM_CHAIN_ID) })} />)
+
+      expect(screen.queryByTestId('set-recipient')).toBeNull()
     })
   })
 
-  describe('non-EVM bridge', () => {
-    it('shows SetRecipient for non-EVM bridge when account is connected', () => {
+  describe('non-EVM bridge — always shown regardless of toggle or wallet connection', () => {
+    it('shows when connected and toggle is off', () => {
       setupDefaults({ account: ACCOUNT, isBridging: true, isNonEvmBridging: true })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(BTC_CHAIN_ID) })} />)
@@ -277,40 +283,22 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
       expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
 
-    it('hides SetRecipient for non-EVM bridge when account is not connected', () => {
+    it('shows when disconnected and toggle is off', () => {
       setupDefaults({ account: undefined, isBridging: true, isNonEvmBridging: true })
 
       renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(BTC_CHAIN_ID) })} />)
 
-      expect(screen.queryByTestId('set-recipient')).toBeNull()
-    })
-  })
-
-  describe('SC wallet + EVM bridge (isSCWalletBridging fix)', () => {
-    it('shows SetRecipient for SC wallet doing EVM bridge when account is connected', () => {
-      setupDefaults({ account: ACCOUNT, isBridging: true, isSmartContractWallet: true })
-
-      renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(EVM_CHAIN_ID) })} />)
-
       expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
-
-    it('hides SetRecipient for SC wallet doing EVM bridge when account is not connected', () => {
-      setupDefaults({ account: undefined, isBridging: true, isSmartContractWallet: true })
-
-      renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(EVM_CHAIN_ID) })} />)
-
-      expect(screen.queryByTestId('set-recipient')).toBeNull()
-    })
   })
 
-  describe('EOA wallet + EVM bridge (no special recipient)', () => {
-    it('hides SetRecipient for EOA wallet doing EVM bridge when showRecipient is false', () => {
-      setupDefaults({ account: ACCOUNT, isBridging: true, isSmartContractWallet: false })
+  describe('recipient in URL — always shown', () => {
+    it('shows even without a connected account', () => {
+      setupDefaults({ account: undefined, recipientInUrl: '0xrecipient' })
 
-      renderWithI18n(<TradeWidgetForm {...buildProps({ outputCurrencyInfo: makeCurrencyInfo(EVM_CHAIN_ID) })} />)
+      renderWithI18n(<TradeWidgetForm {...buildProps()} />)
 
-      expect(screen.queryByTestId('set-recipient')).toBeNull()
+      expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
   })
 })

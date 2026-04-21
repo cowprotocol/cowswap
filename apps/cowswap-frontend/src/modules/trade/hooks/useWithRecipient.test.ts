@@ -1,115 +1,88 @@
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-
 import { renderHook } from '@testing-library/react'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
-import { useIsCurrentTradeBridging } from './useIsCurrentTradeBridging'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 import { useWithRecipient } from './useWithRecipient'
 
-jest.mock('@cowprotocol/wallet', () => ({
-  useWalletInfo: jest.fn(() => ({ account: undefined, chainId: 1 })),
-  useIsSmartContractWallet: jest.fn(() => false),
-}))
+jest.mock('./useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
+jest.mock('./useIsNonEvmBridging', () => ({ useIsNonEvmBridging: jest.fn() }))
+jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 
-jest.mock('./useIsWrapOrUnwrap', () => ({
-  useIsWrapOrUnwrap: jest.fn(() => false),
-}))
+const mockIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
+const mockIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
+const mockTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 
-jest.mock('./useIsNonEvmBridging', () => ({
-  useIsNonEvmBridging: jest.fn(() => false),
-}))
+function setup({
+  isWrapOrUnwrap = false,
+  isNonEvmBridging = false,
+  recipientInUrl = null as string | null,
+} = {}): void {
+  mockIsWrapOrUnwrap.mockReturnValue(isWrapOrUnwrap)
+  mockIsNonEvmBridging.mockReturnValue(isNonEvmBridging)
+  mockTradeStateFromUrl.mockReturnValue(
+    recipientInUrl ? ({ recipient: recipientInUrl } as ReturnType<typeof useTradeStateFromUrl>) : null,
+  )
+}
 
-jest.mock('./useIsCurrentTradeBridging', () => ({
-  useIsCurrentTradeBridging: jest.fn(() => false),
-}))
-
-jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({
-  useTradeStateFromUrl: jest.fn(() => null),
-}))
-
-const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseIsSmartContractWallet = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
-const mockUseIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
-const mockUseIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
-const mockUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.MockedFunction<typeof useIsCurrentTradeBridging>
-const mockUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
-
-const ACCOUNT = '0xabc'
-
-function renderUseWithRecipient(showRecipient: boolean): boolean {
-  const { result } = renderHook(() => useWithRecipient(showRecipient))
-  return result.current
+function render(showRecipient: boolean): boolean {
+  return renderHook(() => useWithRecipient(showRecipient)).result.current
 }
 
 describe('useWithRecipient', () => {
   beforeEach(() => {
-    mockUseWalletInfo.mockReturnValue({ account: undefined, chainId: 1 } as ReturnType<typeof useWalletInfo>)
-    mockUseIsSmartContractWallet.mockReturnValue(false)
-    mockUseIsWrapOrUnwrap.mockReturnValue(false)
-    mockUseIsNonEvmBridging.mockReturnValue(false)
-    mockUseIsCurrentTradeBridging.mockReturnValue(false)
-    mockUseTradeStateFromUrl.mockReturnValue(null)
+    jest.clearAllMocks()
+    setup()
   })
 
-  describe('always false during wrap/unwrap', () => {
-    it('returns false for non-EVM bridging during wrap/unwrap', () => {
-      mockUseIsWrapOrUnwrap.mockReturnValue(true)
-      mockUseIsNonEvmBridging.mockReturnValue(true)
-      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
-      expect(renderUseWithRecipient(false)).toBe(false)
+  describe('wrap/unwrap — always hidden', () => {
+    it('hides when showRecipient=true', () => {
+      setup({ isWrapOrUnwrap: true })
+      expect(render(true)).toBe(false)
     })
 
-    it('returns false when recipient is in URL during wrap/unwrap', () => {
-      mockUseIsWrapOrUnwrap.mockReturnValue(true)
-      mockUseTradeStateFromUrl.mockReturnValue({ recipient: '0xabc' } as ReturnType<typeof useTradeStateFromUrl>)
-      expect(renderUseWithRecipient(false)).toBe(false)
-    })
-  })
-
-  describe('non-EVM bridging', () => {
-    it('returns true when account is connected', () => {
-      mockUseIsNonEvmBridging.mockReturnValue(true)
-      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
-      expect(renderUseWithRecipient(false)).toBe(true)
+    it('hides for non-EVM bridge during wrap/unwrap', () => {
+      setup({ isWrapOrUnwrap: true, isNonEvmBridging: true })
+      expect(render(false)).toBe(false)
     })
 
-    it('returns false when account is not connected', () => {
-      mockUseIsNonEvmBridging.mockReturnValue(true)
-      expect(renderUseWithRecipient(false)).toBe(false)
+    it('hides even with recipient in URL', () => {
+      setup({ isWrapOrUnwrap: true, recipientInUrl: '0xrecipient' })
+      expect(render(false)).toBe(false)
     })
   })
 
-  describe('SC wallet + EVM bridge', () => {
-    it('returns true when account is connected', () => {
-      mockUseIsCurrentTradeBridging.mockReturnValue(true)
-      mockUseIsSmartContractWallet.mockReturnValue(true)
-      mockUseWalletInfo.mockReturnValue({ account: ACCOUNT, chainId: 1 } as ReturnType<typeof useWalletInfo>)
-      expect(renderUseWithRecipient(false)).toBe(true)
+  describe('non-EVM bridging — always shown, ignores toggle and wallet state', () => {
+    it('shows when toggle is off', () => {
+      setup({ isNonEvmBridging: true })
+      expect(render(false)).toBe(true)
     })
 
-    it('returns false when account is not connected', () => {
-      mockUseIsCurrentTradeBridging.mockReturnValue(true)
-      mockUseIsSmartContractWallet.mockReturnValue(true)
-      expect(renderUseWithRecipient(false)).toBe(false)
+    it('shows when toggle is on', () => {
+      setup({ isNonEvmBridging: true })
+      expect(render(true)).toBe(true)
     })
   })
 
-  describe('recipient in URL', () => {
-    it('returns true even without account', () => {
-      mockUseTradeStateFromUrl.mockReturnValue({ recipient: '0xabc' } as ReturnType<typeof useTradeStateFromUrl>)
-      expect(renderUseWithRecipient(false)).toBe(true)
+  describe('toggle — shown when on, hidden when off (EOA, SC wallet, any EVM)', () => {
+    it('shows when toggle is on', () => {
+      expect(render(true)).toBe(true)
+    })
+
+    it('hides when toggle is off', () => {
+      expect(render(false)).toBe(false)
     })
   })
 
-  describe('manual showRecipient toggle', () => {
-    it('returns true when showRecipient=true regardless of wallet connection', () => {
-      expect(renderUseWithRecipient(true)).toBe(true)
+  describe('recipient in URL — always shown regardless of toggle', () => {
+    it('shows when toggle is off', () => {
+      setup({ recipientInUrl: '0xrecipient' })
+      expect(render(false)).toBe(true)
     })
 
-    it('returns false when showRecipient=false (EVM, no bridging)', () => {
-      expect(renderUseWithRecipient(false)).toBe(false)
+    it('shows when toggle is on', () => {
+      setup({ recipientInUrl: '0xrecipient' })
+      expect(render(true)).toBe(true)
     })
   })
 })
