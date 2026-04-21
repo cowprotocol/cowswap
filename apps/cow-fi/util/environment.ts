@@ -1,7 +1,7 @@
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'production'
 export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'production']
 
-const ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
+const ENVIRONMENT_VAR_NAME = 'NEXT_PUBLIC_ENVIRONMENT'
 
 function isEnvironmentName(value: string): value is EnvironmentName {
   return ALL_ENVIRONMENTS.includes(value as EnvironmentName)

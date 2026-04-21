@@ -6,7 +6,7 @@ const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
   nx: {},
   env: {
-    REACT_APP_ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT,
+    REACT_APP_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT,
   },
   // Type checking is handled by tsc in CI; skip here to avoid false positives
   // from ox's raw .ts source files (skipLibCheck doesn't cover them).
