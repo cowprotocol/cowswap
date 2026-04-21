@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
@@ -184,7 +185,7 @@ export function useTxOrderExplorerLink(
             networkId: network,
             identifier: txHash,
             showLogo: true,
-            label: network === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan',
+            label: CHAIN_INFO[network]?.explorerTitle || 'Etherscan',
           })
         }
       })
