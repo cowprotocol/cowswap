@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { CenteredDots } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -19,6 +20,7 @@ interface PartnerFeeRowProps {
   withTimelineDot: boolean
   volumeFeeTooltip: VolumeFeeTooltip
   isLast?: boolean
+  loading?: boolean
 }
 
 export function PartnerFeeRow({
@@ -28,13 +30,14 @@ export function PartnerFeeRow({
   withTimelineDot,
   volumeFeeTooltip,
   isLast = false,
+  loading = false,
 }: PartnerFeeRowProps): ReactNode {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
   const { t } = useLingui()
 
   if (!partnerFeeAmount || !partnerFeeBps || partnerFeeAmount.equalTo(0)) {
-    return <FreeFeeRow withTimelineDot={false} />
+    return <FreeFeeRow withTimelineDot={false} loading={loading} />
   }
 
   const label = volumeFeeTooltip.label
@@ -56,7 +59,11 @@ export function PartnerFeeRow({
           </Trans>
         )
       }
-      label={t`${label} (${feeAsPercent}%)`}
+      label={
+        <>
+          {t`${label}`} ({loading ? <CenteredDots /> : `${feeAsPercent}%`})
+        </>
+      }
       isLast={isLast}
     />
   )

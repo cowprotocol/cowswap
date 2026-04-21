@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { bpsToPercent, FractionUtils, trimTrailingZeros } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { CenteredDots } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -17,6 +18,7 @@ interface ProtocolFeeRowProps {
   protocolFeeBps: number | undefined
   withTimelineDot: boolean
   isLast?: boolean
+  loading?: boolean
 }
 
 export function ProtocolFeeRow({
@@ -25,6 +27,7 @@ export function ProtocolFeeRow({
   protocolFeeBps,
   withTimelineDot,
   isLast = false,
+  loading = false,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps
     ? trimTrailingZeros(
@@ -52,7 +55,11 @@ export function ProtocolFeeRow({
           trade is executed.
         </Trans>
       }
-      label={t`Protocol fee (${protocolFeeAsPercent}%)`}
+      label={
+        <>
+          {t`Protocol fee`} ({loading ? <CenteredDots /> : `${protocolFeeAsPercent}%`})
+        </>
+      }
       isLast={isLast}
     />
   )
