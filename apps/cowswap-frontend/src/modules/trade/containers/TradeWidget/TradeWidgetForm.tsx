@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -32,14 +32,15 @@ import * as styledEl from './styled'
 import { mapCurrencyInfo } from './TradeWidgetForm.utils'
 import { TradeWidgetProps } from './types'
 
-import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
+import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 import { TradeType } from '../../types'
@@ -137,7 +138,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isSafeWallet = useIsSafeWallet()
   const isSmartContractWallet = useIsSmartContractWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
-  const tradeStateFromUrl = useTradeStateFromUrl()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -145,19 +145,15 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
   const handleNonEvmConfirm = useCallback((v: boolean) => setNonEvmReceiverConfirmed(v), [setNonEvmReceiverConfirmed])
 
-  // Reset receiver confirmation when wallet account or chain changes
-  useEffect(() => {
-    setNonEvmReceiverConfirmed(false)
-  }, [account, chainId, setNonEvmReceiverConfirmed])
+  useResetReceiverConfirmationOnWalletChange()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
-  const withRecipient = !isWrapOrUnwrap && (hasRecipientInUrl || (!!account && (isNonEvmBridging || showRecipient)))
+  const withRecipient = useWithRecipient(showRecipient)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
