@@ -16,14 +16,16 @@ import {
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
 import { logAffiliate } from '../utils/logger'
 
+import type { TraderWalletStatus as TraderWalletStatusType } from '../hooks/useAffiliateTraderWallet'
+
 const TraderWalletStatus = {
-  PENDING: 'pending',
-  UNSUPPORTED: 'unsupported',
-  INELIGIBLE: 'ineligible',
-  ELIGIBLE: 'eligible',
-  LINKED: 'linked',
-  ELIGIBILITY_UNKNOWN: 'eligibility-unknown',
-  DISCONNECTED: 'disconnected',
+  PENDING: 'pending' as TraderWalletStatusType,
+  UNSUPPORTED: 'unsupported' as TraderWalletStatusType,
+  INELIGIBLE: 'ineligible' as TraderWalletStatusType,
+  ELIGIBLE: 'eligible' as TraderWalletStatusType,
+  LINKED: 'linked' as TraderWalletStatusType,
+  ELIGIBILITY_UNKNOWN: 'eligibility-unknown' as TraderWalletStatusType,
+  DISCONNECTED: 'disconnected' as TraderWalletStatusType,
 } as const
 
 jest.mock('@cowprotocol/analytics', () => {
@@ -167,7 +169,7 @@ describe('useAffiliateStateViewAnalytics', () => {
 
   it('re-tracks the view when payload fields change for the same view key', () => {
     const { rerender } = renderHook(
-      ({ walletStatus }) =>
+      ({ walletStatus }: { walletStatus: TraderWalletStatusType }) =>
         useAffiliateStateViewAnalytics({
           action: 'affiliate_trader_page_state_viewed',
           viewKey: AffiliatePageState.LINKED,
