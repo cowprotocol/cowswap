@@ -17,7 +17,7 @@ pnpm run dev
 
 ## Environment selection
 
-`cow-fi` environment selection is configured explicitly via `NEXT_PUBLIC_ENVIRONMENT`.
+`cow-fi` environment selection is configured explicitly via `REACT_APP_ENVIRONMENT`.
 Supported values are:
 
 - `local`
