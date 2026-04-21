@@ -2525,7 +2525,7 @@ msgid "Pool analytics"
 msgstr "Análisis de Pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
+msgid "Order Expiration"
 msgstr "Fecha límite de intercambio"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
