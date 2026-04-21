@@ -178,6 +178,16 @@ describe('AffiliateTraderModal', () => {
     rerender(<AffiliateTraderModal />)
 
     expect(sendEvent).toHaveBeenCalledTimes(1)
+
+    isModalOpen = false
+    rerender(<AffiliateTraderModal />)
+
+    expect(sendEvent).toHaveBeenCalledTimes(1)
+
+    isModalOpen = true
+    rerender(<AffiliateTraderModal />)
+
+    expect(sendEvent).toHaveBeenCalledTimes(2)
   })
 
   it('waits for pending wallet state to settle before tracking the open event', () => {

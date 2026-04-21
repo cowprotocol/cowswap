@@ -64,12 +64,16 @@ describe('trackAffiliateEvent', () => {
       optionalField: undefined,
     })
 
-    expect(sendEvent).toHaveBeenCalledWith({
+    const payload = sendEvent.mock.calls[0]?.[0] as Record<string, unknown>
+
+    expect(payload).toEqual({
       category: CowSwapAnalyticsCategory.AFFILIATE,
       action: 'affiliate_trader_page_state_viewed',
       chainId: 1,
       walletStatus: TraderWalletStatus.LINKED,
     })
+    expect(Object.keys(payload)).toEqual(['category', 'action', 'chainId', 'walletStatus'])
+    expect(Object.prototype.hasOwnProperty.call(payload, 'optionalField')).toBe(false)
   })
 
   it('swallows analytics transport failures', () => {
