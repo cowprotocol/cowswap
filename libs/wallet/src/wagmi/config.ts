@@ -47,7 +47,7 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
   }
 }
 
-const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
+const projectId = 'ac287751638b5d374a03c39e37f70376'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
