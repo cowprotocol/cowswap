@@ -25,6 +25,7 @@ export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
   const renderedValue = getRenderedValue(normalizedValue)
   const isComplete = normalizedValue === 100
   const hasProgress = renderedValue > 0
+  const hasSubtitle = shouldRenderSubtitle(subtitle)
   const labelRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 24, mode: 'single', deps: [label] })
   const subtitleRef = useAutoFitText<HTMLSpanElement>({ min: 11, max: 15, mode: 'single', deps: [subtitle] })
 
@@ -61,7 +62,7 @@ export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
           <styledEl.LabelRow>
             <styledEl.Label ref={labelRef}>{label}</styledEl.Label>
           </styledEl.LabelRow>
-          {subtitle ? (
+          {hasSubtitle ? (
             <styledEl.SubtitleRow>
               <styledEl.Subtitle ref={subtitleRef}>{subtitle}</styledEl.Subtitle>
             </styledEl.SubtitleRow>
@@ -70,6 +71,18 @@ export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
       </styledEl.Content>
     </styledEl.Wrapper>
   )
+}
+
+function shouldRenderSubtitle(subtitle: ReactNode): boolean {
+  if (subtitle === null || subtitle === undefined || subtitle === '' || typeof subtitle === 'boolean') {
+    return false
+  }
+
+  if (Array.isArray(subtitle)) {
+    return subtitle.some(shouldRenderSubtitle)
+  }
+
+  return true
 }
 
 function getRenderedValue(value: number): number {

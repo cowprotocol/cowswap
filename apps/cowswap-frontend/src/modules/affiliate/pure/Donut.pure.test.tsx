@@ -16,16 +16,26 @@ function getRequiredCircle(container: HTMLElement, selector: string): Element {
 
 describe('Donut', () => {
   it('renders explicit numeric SVG geometry for cross-browser compatibility', () => {
-    const { container } = render(<Donut value={35} label="$9" />)
+    const { container, getByText } = render(<Donut value={35} label="$9" />)
 
     const trackCircle = getRequiredCircle(container, '.donut-track')
     const progressCircle = getRequiredCircle(container, '.donut-progress')
     const centerCircle = getRequiredCircle(container, '.donut-center')
 
+    expect(getByText('$9')).toBeTruthy()
     expect(Number(trackCircle.getAttribute('r'))).toBeCloseTo(42.8)
     expect(Number(trackCircle.getAttribute('stroke-width'))).toBeCloseTo(14.4)
     expect(Number(progressCircle.getAttribute('stroke-dashoffset'))).toBe(65)
     expect(Number(centerCircle.getAttribute('r'))).toBeCloseTo(35.6)
+  })
+
+  it('renders numeric subtitle values and omits boolean-only subtitle rows', () => {
+    const { container: numericSubtitleContainer, getByText } = render(<Donut value={35} label="$9" subtitle={0} />)
+    const { container: booleanSubtitleContainer } = render(<Donut value={35} label="$9" subtitle={true} />)
+
+    expect(getByText('0')).toBeTruthy()
+    expect(numericSubtitleContainer.querySelectorAll('span')).toHaveLength(2)
+    expect(booleanSubtitleContainer.querySelectorAll('span')).toHaveLength(1)
   })
 
   it('omits the progress arc when there is no progress', () => {
