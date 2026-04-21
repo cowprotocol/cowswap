@@ -607,6 +607,10 @@ msgstr "Free"
 #~ msgid "Blocked Address"
 #~ msgstr "Blocked Address"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.tsx
+msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
+msgstr "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -2126,10 +2130,6 @@ msgstr "You have already claimed this airdrop"
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Checking availability..."
 #~ msgstr "Checking availability..."
-
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.tsx
-msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
-msgstr "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancel multiple orders: {ordersCount}"

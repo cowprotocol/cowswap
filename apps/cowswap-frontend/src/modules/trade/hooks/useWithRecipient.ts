@@ -1,5 +1,3 @@
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
@@ -15,11 +13,10 @@ import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
  */
 export function useWithRecipient(showRecipient: boolean): boolean {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { account } = useWalletInfo()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const isNonEvmBridging = useIsNonEvmBridging()
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
 
-  return !isWrapOrUnwrap && (hasRecipientInUrl || isNonEvmBridging || (!!account && showRecipient))
+  return !isWrapOrUnwrap && (hasRecipientInUrl || isNonEvmBridging || showRecipient)
 }

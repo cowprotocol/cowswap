@@ -1,6 +1,13 @@
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+---
+
 # cow-fi AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
+This file: cow-fi app-specific commands only.
 
 ## App commands
 - Start dev server: `pnpm start:cowfi`

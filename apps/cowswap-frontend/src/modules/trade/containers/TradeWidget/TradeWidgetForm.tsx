@@ -6,7 +6,7 @@ import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/comm
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -227,7 +227,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && <AccountElement />}
+          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
