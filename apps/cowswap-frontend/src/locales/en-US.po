@@ -1836,6 +1836,10 @@ msgstr "Unvested"
 msgid "(v)COW balance"
 msgstr "(v)COW balance"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
+msgid "MEV-Protected Slippage"
+msgstr "MEV-Protected Slippage"
+
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Closed"
 msgstr "Closed"
@@ -2593,10 +2597,6 @@ msgstr "Native"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "Pool analytics"
 msgstr "Pool analytics"
-
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-msgid "Order Expiration"
-msgstr "Order Expiration"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -5270,10 +5270,6 @@ msgstr "Price impact <0>unknown</0> - trade carefully"
 msgid "Earn while you trade"
 msgstr "Earn while you trade"
 
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
-msgid "Enable Partial Approvals"
-msgstr "Enable Partial Approvals"
-
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountItem/index.tsx
 msgid "Version"
@@ -5309,6 +5305,10 @@ msgstr "Edit partial approval"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Edit"
 msgstr "Edit"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "Order Expiration"
+msgstr "Order Expiration"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -6665,6 +6665,10 @@ msgstr "Connect signer"
 msgid "Connect wallet banner"
 msgstr "Connect wallet banner"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Enable Partial Approvals"
+msgstr "Enable Partial Approvals"
+
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
 msgstr "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
@@ -6790,10 +6794,6 @@ msgstr "Price impact due to current liquidity levels"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount and bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
 msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount and bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
-
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
-msgid "MEV-Protected Slippage"
-msgstr "MEV-Protected Slippage"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 #~ msgid "Swap bridged via your {accountProxyLabelString}: <0/>"
