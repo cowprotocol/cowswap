@@ -6792,8 +6792,8 @@ msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount and 
 msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount and bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
-msgid "MEV-protected slippage"
-msgstr "MEV-protected slippage"
+msgid "MEV-Protected Slippage"
+msgstr "MEV-Protected Slippage"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 #~ msgid "Swap bridged via your {accountProxyLabelString}: <0/>"
