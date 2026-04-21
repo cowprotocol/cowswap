@@ -73,13 +73,13 @@ type AppziSettings = {
 }
 
 function initialize(): void {
-  if (isAppziEnabled) {
-    ReactAppzi.initialize(APPZI_TOKEN)
+  if (!isAppziEnabled || typeof window === 'undefined') return
 
-    if (typeof window !== 'undefined') {
-      window.appziSettings = window.appziSettings || {}
-    }
-  }
+  window.appziSettings = window.appziSettings || {}
+
+  try {
+    ReactAppzi.initialize(APPZI_TOKEN)
+  } catch {}
 }
 
 function updateAppziSettings({ data = {}, userId = '' }: AppziSettings): void {

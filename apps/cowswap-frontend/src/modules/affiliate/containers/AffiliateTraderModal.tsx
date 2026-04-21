@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useRef } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ModalHeader } from '@cowprotocol/ui'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { CowModal } from 'common/pure/Modal'
 
 import { AffiliateTraderModalCodeInfo } from './AffiliateTraderModalCodeInfo'
@@ -40,9 +41,12 @@ export function AffiliateTraderModal(): ReactNode {
     wasOpenRef.current = isModalOpen
   }, [analytics, isModalOpen])
 
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
+
   return (
     <>
-      {isModalOpen && walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
+      {isModalOpen && showAffiliateBanner && <UnsupportedNetwork />}
       <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
         <ModalContainer>
           <ModalHeader onBack={toggleAffiliateModal} />

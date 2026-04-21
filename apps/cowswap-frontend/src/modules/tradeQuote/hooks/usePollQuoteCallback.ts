@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useCallback, RefObject, useRef } from 'react'
+import { RefObject, useCallback, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -40,6 +40,8 @@ export function usePollQuoteCallback(
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
+  const updatingStartTimestamp = useRef<number | null>(null)
+
   return useCallback(
     // eslint-disable-next-line complexity
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
@@ -55,6 +57,9 @@ export function usePollQuoteCallback(
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> => {
+        const now = Date.now()
+        updatingStartTimestamp.current = now
+
         return fetchAndProcessQuote(
           fetchParams,
           quoteParams,

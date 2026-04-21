@@ -1,28 +1,40 @@
-import { Interface } from '@ethersproject/abi'
-// Combined ABI for both EIP-2612 and DAI-like permit functions
-const COMBINED_ABI = [
-  'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)',
-  'function permit(address holder, address spender, uint256 nonce, uint256 expiry, bool allowed, uint8 v, bytes32 r, bytes32 s)',
-]
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
-const iface = new Interface(COMBINED_ABI)
+import { decodeFunctionData, type Hex } from 'viem'
+
+const COMBINED_ABI = [
+  ...oneInchPermitUtilsConsts.EIP_2612_PERMIT_ABI,
+  ...oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI,
+] as const
+
 /**
  * Recovers the spender address from either EIP-2612 or DAI-like permit calldata
  * @param calldata - The permit function calldata as a hex string
  * @returns An object containing the spender address and the detected format
  */
-export function recoverSpenderFromCalldata(calldata?: string): string | undefined {
+export function recoverSpenderFromCalldata(calldata?: Hex): string | undefined {
   if (!calldata) {
     return
   }
+  let error = new Error('')
 
-  try {
-    const decodedData = iface.parseTransaction({ data: calldata })
-    const spender = decodedData.args[1] // spender is the second argument in both formats
-
-    return spender
-  } catch (error) {
-    console.error(`Invalid permit calldata: ${error.message}`)
-    return
+  for (const abiEntry of COMBINED_ABI) {
+    try {
+      const { args } = decodeFunctionData({
+        abi: [abiEntry],
+        data: calldata,
+      })
+      // Spender is always the second argument for both standard EIP-2612 and DAI-style permits.
+      const spender = args[1]
+      if (typeof spender === 'string') {
+        return spender
+      }
+    } catch (e) {
+      error = e
+      continue
+    }
   }
+
+  console.error(`Invalid permit calldata: ${error.message}`)
+  return
 }

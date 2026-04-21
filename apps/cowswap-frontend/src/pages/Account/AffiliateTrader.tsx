@@ -23,15 +23,23 @@ import {
 } from 'modules/affiliate'
 import { PageTitle } from 'modules/application'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
+  // Only show the local affiliate banner when the chain is supported by the app
+  // but not eligible for rewards (e.g. Sepolia). When the chain is globally
+  // unsupported, the app-level banner already covers it.
+  const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
 
   return (
     <>
-      {walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
+      {showAffiliateBanner && <UnsupportedNetwork />}
       <PageWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 

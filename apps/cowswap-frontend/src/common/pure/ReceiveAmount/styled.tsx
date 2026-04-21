@@ -1,5 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { Media, UI, HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
