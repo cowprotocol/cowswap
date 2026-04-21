@@ -6,8 +6,8 @@ const SettingsInputFixtures = {
   'SettingsInput default': (
     <SettingsInput
       id="cosmos-input-1"
-      label="Swap deadline"
-      tooltip="Your swap expires after the selected duration."
+      label="Order Expiration"
+      tooltip="Your order expires after the selected duration."
       placeholder="20"
       value=""
       unit="minutes"
