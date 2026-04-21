@@ -2520,7 +2520,7 @@ msgid "Pool analytics"
 msgstr "Análises do pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Order Expiration"
+msgid "Swap Expiration"
 msgstr "Expiração da Ordem"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
