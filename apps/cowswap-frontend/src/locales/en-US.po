@@ -5307,8 +5307,8 @@ msgid "Edit"
 msgstr "Edit"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-msgid "Order Expiration"
-msgstr "Order Expiration"
+#~ msgid "Order Expiration"
+#~ msgstr "Order Expiration"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -6473,8 +6473,8 @@ msgstr "Receive {tokenLabel}"
 #~ msgstr "Save to verify code"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-#~ msgid "Swap Expiration"
-#~ msgstr "Swap Expiration"
+msgid "Swap Expiration"
+msgstr "Swap Expiration"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 msgid "Set approval amount"
