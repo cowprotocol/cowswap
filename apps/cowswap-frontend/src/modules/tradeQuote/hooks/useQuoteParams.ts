@@ -143,6 +143,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
     userSlippageBps,
+    volumeFee,
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
