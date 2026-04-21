@@ -5,6 +5,8 @@ import { type CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 
 import { render } from '@testing-library/react'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { AffiliateTraderModal } from './AffiliateTraderModal'
 
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
@@ -39,6 +41,10 @@ jest.mock('@cowprotocol/ui', () => ({
 
 jest.mock('common/pure/Modal', () => ({
   CowModal: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+}))
+
+jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
+  useIsProviderNetworkUnsupported: jest.fn(),
 }))
 
 jest.mock('./AffiliateTraderModalCodeInfo', () => ({
@@ -104,6 +110,9 @@ jest.mock('../state/affiliateTraderSavedCodeAtom', () => ({
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useSetAtomMock = useSetAtom as jest.MockedFunction<typeof useSetAtom>
+const useIsProviderNetworkUnsupportedMock = useIsProviderNetworkUnsupported as jest.MockedFunction<
+  typeof useIsProviderNetworkUnsupported
+>
 const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
 const useAffiliateTraderRecoverySideEffectMock = useAffiliateTraderRecoverySideEffect as jest.MockedFunction<
   typeof useAffiliateTraderRecoverySideEffect
@@ -129,6 +138,7 @@ describe('AffiliateTraderModal', () => {
     walletStatus = TraderWalletStatus.ELIGIBLE
 
     useCowAnalyticsMock.mockReturnValue({ sendEvent } as unknown as CowAnalytics)
+    useIsProviderNetworkUnsupportedMock.mockReturnValue(false)
     useSetAtomMock.mockReturnValue(toggleAffiliateModal)
     useAffiliateTraderRecoverySideEffectMock.mockImplementation(() => isRecoverySettling)
     useAffiliateTraderWalletMock.mockImplementation(() => walletStatus)
