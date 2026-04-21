@@ -2667,7 +2667,7 @@ msgstr "(v)COW token holders are eligible for a fee discount"
 msgid "Error connecting"
 msgstr "Error connecting"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
 msgid "Align the QR code in the frame."
 msgstr "Align the QR code in the frame."
 
@@ -5053,7 +5053,7 @@ msgstr "<0><1>Allows you to choose whether your limit orders will be <2>Partiall
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Mooove between <0/> any chain, hassle-free"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
 msgid "Scans locally in your browser. Nothing is uploaded."
 msgstr "Scans locally in your browser. Nothing is uploaded."
 
@@ -6638,7 +6638,7 @@ msgstr "Wrapping"
 msgid "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 msgstr "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
 msgid "Switch camera"
 msgstr "Switch camera"
 
