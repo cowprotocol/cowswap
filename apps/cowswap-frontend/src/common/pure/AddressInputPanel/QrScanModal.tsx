@@ -1,140 +1,33 @@
-import { ReactElement, RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactElement, useCallback, useRef, useState } from 'react'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
 import { CowModal } from 'common/pure/Modal'
 import { NewModal } from 'common/pure/NewModal'
 
-import {
-  CameraSwitchBtn,
-  CameraVideo,
-  CornerBracketOverlay,
-  QrInstructions,
-  QrModalWrapper,
-  QrSubText,
-  ScanLineAnimation,
-  VideoContainer,
-} from './styled'
+import { useQrBarcodeScanner } from './hooks/useQrBarcodeScanner'
+import { useQrCameraStream } from './hooks/useQrCameraStream'
+import { QrCameraView } from './QrCameraView'
+import { QrModalWrapper } from './styled'
 
-interface QrScanModalProps {
+export interface QrScanModalProps {
   isOpen: boolean
   onDismiss(): void
   onScan(value: string): void
 }
 
-interface QrCameraViewProps {
-  videoRef: RefObject<HTMLVideoElement | null>
-  onSwitchCamera(): void
-}
-
-function QrCameraView({ videoRef, onSwitchCamera }: QrCameraViewProps): ReactElement {
-  const { t } = useLingui()
-  return (
-    <>
-      <VideoContainer>
-        <CameraVideo ref={videoRef} muted playsInline />
-        <CornerBracketOverlay>
-          <span className="tl" />
-          <span className="tr" />
-          <span className="bl" />
-          <span className="br" />
-        </CornerBracketOverlay>
-        <ScanLineAnimation />
-        <CameraSwitchBtn onClick={onSwitchCamera} aria-label={t`Switch camera`}>
-          ⇄
-        </CameraSwitchBtn>
-      </VideoContainer>
-      <QrInstructions>
-        <Trans>Align the QR code in the frame.</Trans>
-      </QrInstructions>
-      <QrSubText>
-        <Trans>Scans locally in your browser. Nothing is uploaded.</Trans>
-      </QrSubText>
-    </>
-  )
-}
-
 export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): ReactElement {
   const { t } = useLingui()
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
-  const [isSupported, setIsSupported] = useState(true)
-  const [stream, setStream] = useState<MediaStream | null>(null)
-
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Start/stop camera stream
-  useEffect(() => {
-    if (!isOpen) return
+  const { stream, isSupported: cameraSupported } = useQrCameraStream(isOpen, facingMode, videoRef)
+  const { isSupported: scannerSupported } = useQrBarcodeScanner(isOpen, stream, videoRef, onScan)
 
-    let cancelled = false
-    let localStream: MediaStream | null = null
-
-    navigator.mediaDevices
-      ?.getUserMedia({ video: { facingMode } })
-      .then((s) => {
-        if (cancelled) {
-          s.getTracks().forEach((t) => t.stop())
-          return
-        }
-        localStream = s
-        setStream(s)
-        if (videoRef.current) {
-          videoRef.current.srcObject = s
-          videoRef.current.play()
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setIsSupported(false)
-      })
-
-    return () => {
-      cancelled = true
-      localStream?.getTracks().forEach((t) => t.stop())
-      setStream(null)
-    }
-  }, [isOpen, facingMode])
-
-  // BarcodeDetector scanning loop
-  useEffect(() => {
-    if (!isOpen || !stream) return
-
-    if (!('BarcodeDetector' in window)) {
-      setIsSupported(false)
-      return
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const detector = new (window as any).BarcodeDetector({ formats: ['qr_code'] })
-    let frameId: number
-
-    const scan = async (): Promise<void> => {
-      const video = videoRef.current
-      if (!video || video.readyState < 2) {
-        frameId = requestAnimationFrame(scan)
-        return
-      }
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const barcodes: any[] = await detector.detect(video)
-        if (barcodes.length > 0) {
-          onScan(barcodes[0].rawValue)
-          stream.getTracks().forEach((t) => t.stop())
-          return
-        }
-      } catch {
-        // ignore detection errors
-      }
-      frameId = requestAnimationFrame(scan)
-    }
-
-    frameId = requestAnimationFrame(scan)
-
-    return () => cancelAnimationFrame(frameId)
-  }, [isOpen, stream, onScan])
+  const isSupported = cameraSupported && scannerSupported
 
   const handleDismiss = useCallback(() => {
     stream?.getTracks().forEach((t) => t.stop())
-    setStream(null)
     onDismiss()
   }, [stream, onDismiss])
 

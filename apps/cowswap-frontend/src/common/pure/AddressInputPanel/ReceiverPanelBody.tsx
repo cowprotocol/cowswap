@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
@@ -43,6 +43,14 @@ export function ReceiverPanelBody({
 
   const [isConfirmed, setIsConfirmed] = useState(false)
 
+  // Keep a stable ref to the latest callback so effects don't need it as a dep.
+  // Updated via useLayoutEffect (runs synchronously after render, before other
+  // effects) so it is always current by the time any effect reads it.
+  const onConfirmedChangeRef = useRef(onNonEvmReceiverConfirmedChange)
+  useLayoutEffect(() => {
+    onConfirmedChangeRef.current = onNonEvmReceiverConfirmedChange
+  })
+
   const resolvedPlaceholder =
     placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
   const chainLabel = isNonEvm ? chainInfo?.label : ''
@@ -50,16 +58,14 @@ export function ReceiverPanelBody({
   // Reset confirmation when address or target chain changes
   useEffect(() => {
     setIsConfirmed(false)
-    onNonEvmReceiverConfirmedChange?.(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onConfirmedChangeRef.current?.(false)
   }, [value, targetChainId])
 
-  // Reset atom on unmount
+  // Reset on unmount
   useEffect(() => {
     return () => {
-      onNonEvmReceiverConfirmedChange?.(false)
+      onConfirmedChangeRef.current?.(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleConfirmChange = useCallback(

@@ -18,6 +18,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useIsEoaEthFlow,
+  useIsNonEvmBridging,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -37,7 +38,6 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 import { Container } from './styled'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
-import { useIsRecipientRequired } from '../../hooks/useIsRecipientRequired'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
   useSwapDeadlineState,
@@ -67,7 +67,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const isRecipientRequired = useIsRecipientRequired()
+  const isRecipientRequired = useIsNonEvmBridging()
   const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
   const isFeeExceedsError = quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.FeeExceedsFrom
   const hideQuoteAmount = useShouldHideTradeRateDetails()
