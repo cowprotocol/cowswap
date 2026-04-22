@@ -2072,6 +2072,10 @@ msgstr "No fees for failed transactions"
 #~ msgid "Across"
 #~ msgstr "Across"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+msgid "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
+msgstr "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order type"
