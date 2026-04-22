@@ -29,7 +29,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   return (
     <SettingsInput
       id="deadline-input"
-      label={t`Swap deadline`}
+      label={t`Swap Expiration`}
       tooltip={
         deadlineRangeParams.isEoaEthFlow
           ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])

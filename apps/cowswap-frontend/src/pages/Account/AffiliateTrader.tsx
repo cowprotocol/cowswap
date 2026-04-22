@@ -13,6 +13,8 @@ import {
   AffiliateTraderOnboard,
   AffiliateTraderStats,
   TraderWalletStatus,
+  getAffiliateTraderPageState,
+  useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
   AffiliateTraderIneligible,
   AffiliateTraderUnsupportedNetwork,
@@ -30,7 +32,19 @@ export default function AffiliateTrader(): ReactNode {
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+  const hasSavedCode = !!savedCode
+  const pageState = getAffiliateTraderPageState(walletStatus, hasSavedCode)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+
+  useAffiliateStateViewAnalytics({
+    action: 'affiliate_trader_page_state_viewed',
+    viewKey: pageState,
+    eventParams: {
+      pageState,
+      walletStatus,
+      hasSavedCode,
+    },
+  })
 
   // Only show the local affiliate banner when the chain is supported by the app
   // but not eligible for rewards (e.g. Sepolia). When the chain is globally
