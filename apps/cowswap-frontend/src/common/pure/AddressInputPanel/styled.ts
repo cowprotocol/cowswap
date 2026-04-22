@@ -32,7 +32,7 @@ export const ChainIconImg = styled.img`
 export const ChainNameLabel = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT});
 `
 
 export const ReceiverActions = styled.div`
@@ -45,9 +45,9 @@ export const ActionBtn = styled.button`
   background: none;
   border: none;
   padding: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 13px;
+  font-weight: 400;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -62,9 +62,9 @@ export const ActionExternalLink = styled.a`
   background: none;
   border: none;
   padding: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 13px;
+  font-weight: 400;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
   cursor: pointer;
   text-decoration: none;
   display: flex;
@@ -99,11 +99,14 @@ export const ValidCheckmark = styled.span`
 `
 
 export const ReceiverInput = styled.input<{ $error?: boolean }>`
-  font-size: 1.25rem;
+  font-size: var(${UI.FONT_SIZE_LARGER});
+  font-family: var(${UI.FONT_FAMILY_MONO});
+  letter-spacing: -0.2px;
   outline: none;
   border: none;
-  flex: 1;
+  flex: 1 1 auto;
   background: none;
+  transition: color 0.2s step-start;
   color: ${({ $error }) => ($error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   overflow: hidden;
   text-overflow: ellipsis;
@@ -133,7 +136,7 @@ export const ReceiverInput = styled.input<{ $error?: boolean }>`
 `
 
 export const ReceiverErrorText = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   color: var(${UI.COLOR_DANGER});
   padding-top: 8px;
   margin: 0;
@@ -157,8 +160,8 @@ export const ConfirmationRow = styled.div`
 `
 
 export const ConfirmationLabel = styled.label<{ $confirmed: boolean }>`
-  font-size: 14px;
-  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+  font-size: 13px;
+  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT_OPACITY_50})`)};
   cursor: pointer;
   user-select: none;
 `
