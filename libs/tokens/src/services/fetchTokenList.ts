@@ -143,7 +143,7 @@ async function fetchAdditionalChainTokenListByUrl(list: ListSourceConfig): Promi
 }
 
 async function fetchAdditionalChainTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_PROVIDER)
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
   const translatedUri = contenthashToUri(contentHashUri)
   const urls = uriToHttp(translatedUri)
 
