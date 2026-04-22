@@ -172,6 +172,7 @@ export const ConfirmationLabel = styled.label<{ $confirmed: boolean }>`
   color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
   cursor: pointer;
   user-select: none;
+  font-weight: 500;
 `
 
 // QR Modal
