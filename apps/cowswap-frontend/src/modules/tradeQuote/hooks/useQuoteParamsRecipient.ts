@@ -1,16 +1,15 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { isBtcAddress, isEvmChain, isSolanaAddress } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
 import { useDerivedTradeState } from 'modules/trade'
 
-import { getAddressValidationStrategy } from 'common/utils/addressValidation/addressValidationStrategy'
-
 import { useTradeQuote } from './useTradeQuote'
+
+import { NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 
 export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRecipient: Nullish<string> } {
   const { bridgeQuote } = useTradeQuote()
@@ -30,6 +29,14 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
       return { receiver: account, bridgeRecipient }
     }
 
+    // For non-EVM output chains, always fall back to the default placeholder when no valid
+    // recipient was resolved (empty, invalid, or wrong-chain input).
+    // Prevents the quote API from receiving an invalid address and returning errors instead of prices.
+    const defaultBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
+    if (defaultBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: defaultBridgeRecipient }
+    }
+
     // EVM ReceiverAccountBridgeProvider: use the custom recipient for both
     if (isReceiverAccountBridgeProvider && recipient && isAddress(recipient)) {
       return { receiver: recipient, bridgeRecipient: recipient }
@@ -45,20 +52,23 @@ function resolveNonEvmBridgeRecipient(
   recipient: Nullish<string>,
   outputCurrency: Nullish<{ chainId: number }>,
 ): Nullish<string> {
-  const isKnownNonEvmAddress = isBtcAddress(recipient) || isSolanaAddress(recipient)
-  if (!recipient || !isKnownNonEvmAddress) return undefined
-  const nonEvmChainMatch = isNonEvmChainMatched(outputCurrency, recipient)
+  const isNonEvmAddress = NON_EVM_CHAIN_CONFIG.some(({ isAddress: isNonEvmAddr }) => isNonEvmAddr(recipient))
+  if (!recipient || !isNonEvmAddress) return undefined
+
   // When outputCurrency is null (e.g. token not yet selected), preserve a confirmed non-EVM address
   // so it survives token selection. Once a token is selected, chain-gating applies.
-  return !outputCurrency || nonEvmChainMatch ? recipient : undefined
+  if (!outputCurrency) return recipient
+
+  const chainMatches = NON_EVM_CHAIN_CONFIG.some(
+    ({ isChain, isAddress: isNonEvmAddr }) => isChain(outputCurrency.chainId) && isNonEvmAddr(recipient),
+  )
+  return chainMatches ? recipient : undefined
 }
 
-/** Returns true if the output chain is non-EVM and the recipient address is valid for that chain. */
-function isNonEvmChainMatched(outputCurrency: Nullish<{ chainId: number }>, recipient: Nullish<string>): boolean {
-  if (!outputCurrency || !recipient) return false
-  const { chainId } = outputCurrency
-  if (isEvmChain(chainId)) return false
-  return getAddressValidationStrategy(chainId).isValidAddress(recipient)
+/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
+function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
+  if (!outputCurrency) return undefined
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
 }
 
 /** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
