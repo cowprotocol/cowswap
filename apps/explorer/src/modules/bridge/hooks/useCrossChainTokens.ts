@@ -50,7 +50,7 @@ function resolveDestinationToken(
 
   // Bungee has problems with WETH/ETH
   // So we need to map them
-  if (!token && areAddressesEqual(wrapped.address, address)) {
+  if (!token && wrapped && areAddressesEqual(wrapped.address, address)) {
     return destinationChain.nativeCurrency as TokenInfo
   }
 
