@@ -314,6 +314,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 </div>
                 {withRecipient && (
                   <SetRecipient
+                    key={account}
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
