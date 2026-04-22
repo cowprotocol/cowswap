@@ -5,13 +5,13 @@ import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
+import { useAddressDisplayValue } from './hooks/useAddressDisplayValue'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
 import { ReceiverConfirmationRow } from './ReceiverConfirmationRow'
 import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrapper, ValidCheckmark } from './styled'
 
-import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
 
 export interface ReceiverPanelBodyProps {
@@ -37,6 +37,7 @@ export function ReceiverPanelBody({
   const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
+  const { displayValue, handleFocus, handleBlur } = useAddressDisplayValue(value, isValid, loading)
 
   const [isConfirmed, setIsConfirmed] = useState(false)
 
@@ -98,8 +99,9 @@ export function ReceiverPanelBody({
             $error={isError}
             pattern={strategy.pattern}
             onChange={handleInput}
-            value={value}
-            onFocus={autofocus}
+            value={displayValue}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
         </ReceiverInputRow>
         {isError && (
