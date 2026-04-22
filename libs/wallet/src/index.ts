@@ -25,7 +25,7 @@ export { WalletUpdater } from './wagmi/updater'
 // Components
 export * from './api/container/Identicon'
 export * from './api/pure/JazzIcon'
-export { AccountIndexSelect, type AccountIndexSelectProps } from './web3-react/pure/AccountIndexSelect'
+export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/AccountIndexSelect'
 
 // Utils
 export * from './api/utils/connection'

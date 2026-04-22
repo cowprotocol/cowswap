@@ -26,7 +26,7 @@ export function OrdersTableNoWalletContent(): ReactNode {
       <h4>
         <Trans>Connect a wallet</Trans>
       </h4>
-      {!isInjectedWidget && (
+      {!isInjectedWidget() && (
         <>
           <p>
             <Trans>
