@@ -2517,7 +2517,7 @@ msgid "Pool analytics"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
+msgid "Swap Expiration"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
@@ -5128,7 +5128,7 @@ msgid "Earn while you trade"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
-msgid "Enable partial approvals"
+msgid "Enable Partial Approvals"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
@@ -6599,7 +6599,7 @@ msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount and 
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SlippageTooltip/index.tsx
-msgid "MEV-protected slippage"
+msgid "MEV-Protected Slippage"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
