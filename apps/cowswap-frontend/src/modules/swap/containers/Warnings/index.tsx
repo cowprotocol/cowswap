@@ -56,19 +56,15 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       {!hideQuoteAmount && <HighFeeWarning />}
-      {shouldCheckBridgingRecipient &&
-        account &&
-        outputChainId &&
-        recipient &&
-        !isFractionFalsy(outputCurrencyAmount) && (
-          <SmartContractReceiverWarning
-            account={account}
-            recipient={recipient}
-            chainId={outputChainId}
-            checked={smartContractRecipientConfirmed}
-            toggle={toggleSmartContractRecipientConfirmed}
-          />
-        )}
+      {shouldCheckBridgingRecipient && account && outputChainId && !isFractionFalsy(outputCurrencyAmount) && (
+        <SmartContractReceiverWarning
+          account={account}
+          recipient={recipient}
+          chainId={outputChainId}
+          checked={smartContractRecipientConfirmed}
+          toggle={toggleSmartContractRecipientConfirmed}
+        />
+      )}
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner
           chainId={chainId}
