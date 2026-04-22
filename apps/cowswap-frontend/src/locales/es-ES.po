@@ -2525,8 +2525,8 @@ msgid "Pool analytics"
 msgstr "Análisis de Pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
-msgstr "Fecha límite de intercambio"
+msgid "Swap Expiration"
+msgstr "Expiración de la Swap"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -5147,7 +5147,7 @@ msgid "Earn while you trade"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
-msgid "Enable partial approvals"
+msgid "Enable Partial Approvals"
 msgstr "Habilitar aprobación parcial"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
@@ -6625,8 +6625,8 @@ msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount and 
 msgstr "Los costes de intercambio son al menos un {formattedFeePercentage}% de la cantidad de swap y los costes de bridge son al menos un {formattedBridgeFeePercentage}% de la cantidad de swap"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SlippageTooltip/index.tsx
-msgid "MEV-protected slippage"
-msgstr "Deslizamiento protegido por MEV"
+msgid "MEV-Protected Slippage"
+msgstr "Slippage protegido contra MEV"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 #~ msgid "Swap bridged via your {accountProxyLabelString}: <0/>"
