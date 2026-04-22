@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-22 10:27\n"
+"PO-Revision-Date: 2026-04-22 18:45\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -2795,8 +2795,8 @@ msgid "place a new order"
 msgstr "создать новый заказ"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent.tsx
-msgid "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
-msgstr "Чтобы использовать заказы {orderType}, подключите ваш кошелек <0/> к одной из поддерживаемых сетей."
+#~ msgid "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
+#~ msgstr "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
