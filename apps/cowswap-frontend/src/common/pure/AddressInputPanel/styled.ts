@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
@@ -16,6 +16,13 @@ export const ReceiverHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
+
+  ${Media.upToSmall()} {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+  }
 `
 
 export const ChainLabelGroup = styled.div`
@@ -39,6 +46,10 @@ export const ReceiverActions = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  ${Media.upToSmall()} {
+    gap: 34px;
+  }
 `
 
 export const ActionBtn = styled.button`
@@ -91,6 +102,10 @@ export const ReceiverInputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  ${Media.upToSmall()} {
+    justify-content: center;
+  }
 `
 
 export const ValidCheckmark = styled(SVG)`
@@ -137,6 +152,11 @@ export const ReceiverInput = styled.input<{ $error?: boolean }>`
   ::-webkit-outer-spin-button,
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
+  }
+
+  ${Media.upToSmall()} {
+    text-align: center;
+    flex: 0 1 auto;
   }
 `
 
