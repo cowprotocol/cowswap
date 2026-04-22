@@ -105,7 +105,7 @@ export function SettingsDropdown({
                 {enablePartialApproval !== null ? (
                   <SettingsBox
                     id="enable-partial-approvals-button"
-                    title={t`Enable partial approvals`}
+                    title={t`Enable Partial Approvals`}
                     tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
                     checked={enablePartialApproval}
                     toggle={toggleEnablePartialApproval}
