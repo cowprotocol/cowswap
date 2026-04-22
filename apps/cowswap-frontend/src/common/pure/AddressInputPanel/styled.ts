@@ -150,23 +150,26 @@ export const ReceiverErrorText = styled.p`
 export const ConfirmationRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: var(${UI.COLOR_PAPER_DARKEST});
+  justify-content: center;
+  gap: 24px 10px;
+  background: var(${UI.COLOR_INFO_BG});
+  color: var(${UI.COLOR_INFO_TEXT});
   border-radius: 0 0 16px 16px;
-  padding: 12px 16px;
+  padding: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  width: 100%;
 
   input[type='checkbox'] {
     accent-color: var(${UI.COLOR_SUCCESS});
-    width: 16px;
-    height: 16px;
     flex-shrink: 0;
     cursor: pointer;
   }
 `
 
 export const ConfirmationLabel = styled.label<{ $confirmed: boolean }>`
-  font-size: 13px;
-  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
   cursor: pointer;
   user-select: none;
 `
