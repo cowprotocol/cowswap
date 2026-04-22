@@ -61,7 +61,7 @@ jest.mock('common/pure/ChainPrefixWarning', () => ({
   default: () => <div data-testid="chain-prefix-warning" />,
 }))
 
-jest.mock('./QrScanModal', () => ({
+jest.mock('./QrScanModal.modal', () => ({
   QrScanModal: () => null,
 }))
 

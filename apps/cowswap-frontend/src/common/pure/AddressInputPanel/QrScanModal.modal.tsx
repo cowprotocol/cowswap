@@ -7,7 +7,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { useQrBarcodeScanner } from './hooks/useQrBarcodeScanner'
 import { useQrCameraStream } from './hooks/useQrCameraStream'
-import { QrCameraView } from './QrCameraView'
+import { QrCameraView } from './QrCameraView.pure'
 import { QrModalWrapper } from './styled'
 
 export interface QrScanModalProps {

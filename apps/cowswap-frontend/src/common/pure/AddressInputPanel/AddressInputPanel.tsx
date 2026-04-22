@@ -2,8 +2,8 @@ import { ReactElement, ReactNode } from 'react'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { ReceiverPanelBody } from './ReceiverPanelBody'
-import { ReceiverPanelHeader } from './ReceiverPanelHeader'
+import { ReceiverPanelBody } from './ReceiverPanelBody.container'
+import { ReceiverPanelHeader } from './ReceiverPanelHeader.container'
 import { ReceiverPanel } from './styled'
 
 export interface AddressInputPanelProps {

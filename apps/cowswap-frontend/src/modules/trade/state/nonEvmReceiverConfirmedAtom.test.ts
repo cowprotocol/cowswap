@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 
-import { useNonEvmReceiverConfirmed, useSetNonEvmReceiverConfirmed } from './nonEvmReceiverConfirmedAtom'
+import { useNonEvmReceiverConfirmed, useSetNonEvmReceiverConfirmed } from './nonEvmReceiverConfirmedAtom.atoms'
 
 function renderBoth(): ReturnType<typeof renderHook<{ value: boolean; set: (v: boolean) => void }>> {
   return renderHook(() => ({

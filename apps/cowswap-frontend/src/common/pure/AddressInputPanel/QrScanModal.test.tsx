@@ -6,11 +6,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { useQrBarcodeScanner } from './hooks/useQrBarcodeScanner'
 import { useQrCameraStream } from './hooks/useQrCameraStream'
-import { QrScanModal } from './QrScanModal'
+import { QrScanModal } from './QrScanModal.modal'
 
 jest.mock('./hooks/useQrCameraStream')
 jest.mock('./hooks/useQrBarcodeScanner')
-jest.mock('./QrCameraView', () => ({
+jest.mock('./QrCameraView.pure', () => ({
   QrCameraView: ({ onSwitchCamera }: { onSwitchCamera(): void }) => (
     <div data-testid="qr-camera-view">
       <button onClick={onSwitchCamera}>Switch camera</button>

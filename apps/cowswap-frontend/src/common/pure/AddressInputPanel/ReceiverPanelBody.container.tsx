@@ -9,7 +9,7 @@ import { useAddressDisplayValue } from './hooks/useAddressDisplayValue'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
-import { ReceiverConfirmationRow } from './ReceiverConfirmationRow'
+import { ReceiverConfirmationRow } from './ReceiverConfirmationRow.pure'
 import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrapper, ValidCheckmark } from './styled'
 
 import ChainPrefixWarning from '../ChainPrefixWarning'

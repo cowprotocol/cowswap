@@ -10,7 +10,7 @@ import SVG from 'react-inlinesvg'
 import { useReceiverActions } from './hooks/useReceiverActions'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
-import { QrScanModal } from './QrScanModal'
+import { QrScanModal } from './QrScanModal.modal'
 import {
   ActionBtn,
   ActionExternalLink,

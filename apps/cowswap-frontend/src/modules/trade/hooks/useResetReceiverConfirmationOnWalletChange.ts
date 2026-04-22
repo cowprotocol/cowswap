@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useSetNonEvmReceiverConfirmed } from '../state/nonEvmReceiverConfirmedAtom'
+import { useSetNonEvmReceiverConfirmed } from '../state/nonEvmReceiverConfirmedAtom.atoms'
 
 /**
  * Resets the non-EVM receiver confirmation whenever the connected wallet

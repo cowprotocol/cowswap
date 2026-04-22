@@ -5,7 +5,7 @@ export * from './state/tradeTypeAtom'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
 export * from './state/isEoaEthFlowAtom'
-export * from './state/nonEvmReceiverConfirmedAtom'
+export * from './state/nonEvmReceiverConfirmedAtom.atoms'
 export {
   useAlternativeOrder,
   useHideAlternativeOrderModal,

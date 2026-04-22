@@ -611,7 +611,7 @@ msgstr "Free"
 #~ msgid "Blocked Address"
 #~ msgstr "Blocked Address"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.pure.tsx
 msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
 msgstr "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
 
@@ -762,7 +762,7 @@ msgstr "I received surplus on"
 msgid "Created on"
 msgstr "Created on"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
 msgid "Enter a valid {chainLabel} address"
 msgstr "Enter a valid {chainLabel} address"
 
@@ -852,7 +852,7 @@ msgstr "Cancelling order"
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 msgstr "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "View ↗"
 msgstr "View ↗"
 
@@ -1905,7 +1905,7 @@ msgstr "Your limit price is {absoluteRateImpact}% lower than current market pric
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 msgstr "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "QR scanning is not supported in this browser."
 msgstr "QR scanning is not supported in this browser."
 
@@ -2043,7 +2043,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -2071,6 +2071,10 @@ msgstr "No fees for failed transactions"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Across"
 #~ msgstr "Across"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
+msgid "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
+msgstr "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -2509,11 +2513,11 @@ msgstr "Error loading price. Try again later."
 msgid "Trying to claim without claim data"
 msgstr "Trying to claim without claim data"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "Paste"
 msgstr "Paste"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "Scan"
 msgstr "Scan"
 
@@ -2534,7 +2538,7 @@ msgstr "up"
 msgid "Sign the {operationLabel} with your wallet."
 msgstr "Sign the {operationLabel} with your wallet."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
@@ -2675,7 +2679,7 @@ msgstr "(v)COW token holders are eligible for a fee discount"
 msgid "Error connecting"
 msgstr "Error connecting"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Align the QR code in the frame."
 msgstr "Align the QR code in the frame."
 
@@ -3076,7 +3080,7 @@ msgstr "In case you want to give allowance only for the trade amount, use the ad
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
 msgid "Recipient address"
 msgstr "Recipient address"
 
@@ -4410,7 +4414,7 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 msgid "This token is not available in your region."
 msgstr "This token is not available in your region."
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Scan QR code"
 msgstr "Scan QR code"
 
@@ -5061,7 +5065,7 @@ msgstr "<0><1>Allows you to choose whether your limit orders will be <2>Partiall
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Mooove between <0/> any chain, hassle-free"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Scans locally in your browser. Nothing is uploaded."
 msgstr "Scans locally in your browser. Nothing is uploaded."
 
@@ -6278,7 +6282,7 @@ msgstr "Unknown hook dapp"
 msgid "Swap now"
 msgstr "Swap now"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "Send to {networkName} wallet"
 msgstr "Send to {networkName} wallet"
 
@@ -6654,7 +6658,7 @@ msgstr "Wrapping"
 msgid "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 msgstr "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Switch camera"
 msgstr "Switch camera"
 
@@ -7478,7 +7482,7 @@ msgstr "Simulate"
 msgid "Start time"
 msgstr "Start time"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Clear"
 msgstr "Clear"

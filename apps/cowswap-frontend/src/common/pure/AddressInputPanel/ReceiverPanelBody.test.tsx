@@ -10,7 +10,7 @@ import { getCowswapTheme } from 'theme'
 
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
-import { ReceiverPanelBody } from './ReceiverPanelBody'
+import { ReceiverPanelBody } from './ReceiverPanelBody.container'
 
 jest.mock('react-inlinesvg', () => ({
   __esModule: true,
