@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useMemo } from 'react'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { isAdditionalTargetChain, TargetChainId } from '@cowprotocol/cow-sdk'
+import { isAdditionalTargetChain, Nullish, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR, { SWRConfiguration } from 'swr'
 
@@ -36,7 +36,7 @@ const swrOptions: SWRConfiguration = {
 }
 
 interface AdditionalChainTokensListsUpdaterProps {
-  targetChainId: TargetChainId | undefined
+  targetChainId: Nullish<TargetChainId>
 }
 
 /**
@@ -52,7 +52,7 @@ export function AdditionalChainTokensListsUpdater({
   const setAdditionalChainTokenListsUpdating = useSetAtom(additionalChainTokenListsUpdatingAtom)
   const upsertAdditionalChainLists = useSetAtom(upsertAdditionalChainListsAtom)
 
-  const isAdditionalChain = targetChainId !== undefined && isAdditionalTargetChain(targetChainId)
+  const isAdditionalChain = targetChainId && isAdditionalTargetChain(targetChainId)
 
   const listSources = useMemo(() => {
     if (!isAdditionalChain || targetChainId === undefined) return []
