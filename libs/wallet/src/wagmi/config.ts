@@ -62,11 +62,11 @@ const storage =
       })
 
 const metadata = {
-  name: 'CoW Swap',
+  name: 'CoW Swap | The smartest way to trade cryptocurrencies',
   description:
     'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
   url: 'https://swap.cow.fi',
-  icons: ['https://swap.cow.fi/favicon-light-mode.png'],
+  icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
 export const wagmiAdapter = new WagmiAdapter({
