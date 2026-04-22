@@ -3,6 +3,7 @@ import { RefObject, useEffect, useState } from 'react'
 export interface QrCameraStreamResult {
   stream: MediaStream | null
   isSupported: boolean
+  permissionDenied: boolean
 }
 
 /**
@@ -16,6 +17,7 @@ export function useQrCameraStream(
 ): QrCameraStreamResult {
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [isSupported, setIsSupported] = useState(true)
+  const [permissionDenied, setPermissionDenied] = useState(false)
 
   useEffect(() => {
     if (!isOpen) return
@@ -24,6 +26,8 @@ export function useQrCameraStream(
       setIsSupported(false)
       return
     }
+
+    setPermissionDenied(false)
 
     let cancelled = false
     let localStream: MediaStream | null = null
@@ -42,8 +46,15 @@ export function useQrCameraStream(
           videoRef.current.play().catch((e: unknown) => console.error(e))
         }
       })
-      .catch(() => {
-        if (!cancelled) setIsSupported(false)
+      .catch((err: unknown) => {
+        if (cancelled) return
+        const isPermissionError =
+          err instanceof DOMException && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
+        if (isPermissionError) {
+          setPermissionDenied(true)
+        } else {
+          setIsSupported(false)
+        }
       })
 
     return () => {
@@ -53,5 +64,5 @@ export function useQrCameraStream(
     }
   }, [isOpen, facingMode, videoRef])
 
-  return { stream, isSupported }
+  return { stream, isSupported, permissionDenied }
 }

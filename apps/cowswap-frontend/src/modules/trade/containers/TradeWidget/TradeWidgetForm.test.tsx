@@ -35,6 +35,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 }))
 
 jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
   isInjectedWidget: () => false,
   isSellOrder: () => true,
   maxAmountSpend: () => null,
@@ -87,7 +88,11 @@ jest.mock('../../hooks/useLimitOrdersPromoBanner', () => ({ useLimitOrdersPromoB
 jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAmounts: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 jest.mock('../../hooks/useTradeTypeInfoFromUrl', () => ({ useTradeTypeInfoFromUrl: jest.fn() }))
-jest.mock('../../state/alternativeOrder', () => ({ useIsAlternativeOrderModalVisible: jest.fn() }))
+jest.mock('../../state/alternativeOrder', () => ({
+  useIsAlternativeOrderModalVisible: jest.fn(),
+  alternativeOrderReadWriteAtomFactory: (regular: unknown) => regular,
+  alternativeOrderAtomSetterFactory: (regular: unknown) => regular,
+}))
 
 // ─── Child component mocks ─────────────────────────────────────────────────
 

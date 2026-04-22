@@ -12,6 +12,13 @@ import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
 import { ReceiverPanelBody } from './ReceiverPanelBody'
 
+jest.mock('react-inlinesvg', () => ({
+  __esModule: true,
+  default: ({ src, ...props }: { src: string; [key: string]: unknown }) => (
+    <svg data-testid="inline-svg" data-src={src} {...(props as React.SVGProps<SVGSVGElement>)} />
+  ),
+}))
+
 jest.mock('./hooks/useReceiverChainInfo', () => ({
   useReceiverChainInfo: jest.fn(),
 }))

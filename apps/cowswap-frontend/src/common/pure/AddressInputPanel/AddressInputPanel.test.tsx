@@ -65,6 +65,11 @@ jest.mock('./QrScanModal', () => ({
   QrScanModal: () => null,
 }))
 
+jest.mock('react-inlinesvg', () => ({
+  __esModule: true,
+  default: () => null,
+}))
+
 jest.mock('common/utils/addressValidation', () => {
   const actual = jest.requireActual('@cowprotocol/cow-sdk')
   return {

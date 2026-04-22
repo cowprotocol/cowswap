@@ -21,7 +21,7 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const { stream, isSupported: cameraSupported } = useQrCameraStream(isOpen, facingMode, videoRef)
+  const { stream, isSupported: cameraSupported, permissionDenied } = useQrCameraStream(isOpen, facingMode, videoRef)
   const { isSupported: scannerSupported } = useQrBarcodeScanner(isOpen, stream, videoRef, onScan)
 
   const isSupported = cameraSupported && scannerSupported
@@ -39,7 +39,13 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
     <CowModal isOpen={isOpen} onDismiss={handleDismiss} maxWidth={480}>
       <NewModal title={t`Scan QR code`} modalMode onDismiss={handleDismiss}>
         <QrModalWrapper>
-          {!isSupported ? (
+          {permissionDenied ? (
+            <p>
+              <Trans>
+                Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes.
+              </Trans>
+            </p>
+          ) : !isSupported ? (
             <p>
               <Trans>QR scanning is not supported in this browser.</Trans>
             </p>
