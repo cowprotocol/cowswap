@@ -15,10 +15,14 @@ export { AffiliateTraderStats } from './containers/AffiliateTraderStats'
 export { useAffiliatePartnerInfo } from './hooks/useAffiliatePartnerInfo'
 export { useIsRefCodeExpired } from './hooks/useIsRefCodeExpired'
 export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowAffiliateTraderHeaderButton'
+export { useAffiliateStateViewAnalytics } from './hooks/useAffiliateStateViewAnalytics'
 export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffiliateTraderWallet'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 
-export { isSupportedPayoutsNetwork } from './lib/affiliateProgramUtils'
+export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
+
+export { AffiliatePageState } from './analytics/affiliateAnalytics.types'
+export { getAffiliatePartnerPageState, getAffiliateTraderPageState } from './analytics/affiliateAnalytics.utils'
 
 export { AffiliateTermsFaqLinks, ColumnOneCard, ThreeColumnGrid, PageWrapper } from './pure/shared'
 export { AffiliateTraderIneligible } from './pure/AffiliateTrader/AffiliateTraderIneligible'
