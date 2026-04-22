@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
@@ -29,7 +30,13 @@ export function useFetchTwapOrdersFromSafe({
 
       updateInProgressRef.current = true
 
-      fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setOrdersSafeData).finally(() => {
+      fetchTwapOrdersFromSafe(
+        chainId,
+        safeAddress,
+        composableCowContract,
+        setOrdersSafeData,
+        getSafeApiUrl(chainId),
+      ).finally(() => {
         updateInProgressRef.current = false
       })
     }

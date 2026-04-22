@@ -17,6 +17,24 @@ export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, HttpsString>
   [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global/api',
 }
 
+const SAFE_API_NETWORK_ID: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: 'eth',
+  [SupportedChainId.GNOSIS_CHAIN]: 'gno',
+  [SupportedChainId.ARBITRUM_ONE]: 'arb1',
+  [SupportedChainId.BASE]: 'base',
+  [SupportedChainId.SEPOLIA]: 'sepolia',
+  [SupportedChainId.POLYGON]: 'polygon',
+  [SupportedChainId.AVALANCHE]: 'avax',
+  [SupportedChainId.BNB]: 'bnb',
+  [SupportedChainId.LINEA]: 'linea',
+  [SupportedChainId.PLASMA]: 'plasma',
+  [SupportedChainId.INK]: 'ink',
+}
+
+export function getSafeApiUrl(chainId: SupportedChainId): string {
+  return `https://api.safe.global/tx-service/${SAFE_API_NETWORK_ID[chainId]}/api`
+}
+
 const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
