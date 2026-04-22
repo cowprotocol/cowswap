@@ -25,7 +25,7 @@ export function useAddressDisplayValue(value: string, isValid: boolean, loading:
   const displayValue = (() => {
     if (isFocused || !isValid || loading) return value
     try {
-      return shortenAddress(value)
+      return shortenAddress(value, 6)
     } catch {
       return value
     }
