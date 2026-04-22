@@ -1,5 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
 export const ReceiverPanel = styled.div`
@@ -24,15 +25,14 @@ export const ChainLabelGroup = styled.div`
 `
 
 export const ChainIconImg = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
 `
 
 export const ChainNameLabel = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: var(${UI.COLOR_TEXT});
 `
 
 export const ReceiverActions = styled.div`
@@ -42,37 +42,39 @@ export const ReceiverActions = styled.div`
 `
 
 export const ActionBtn = styled.button`
-  background: none;
   border: none;
+  background: transparent;
   padding: 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
   cursor: pointer;
-  display: flex;
+  color: inherit;
+  opacity: 0.7;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT});
+    opacity: 1;
   }
 `
 
 export const ActionExternalLink = styled.a`
-  background: none;
-  border: none;
   padding: 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 400;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
   cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
   text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 
   &:hover {
-    color: var(${UI.COLOR_TEXT});
+    opacity: 1;
   }
 `
 
@@ -91,11 +93,14 @@ export const ReceiverInputRow = styled.div`
   gap: 8px;
 `
 
-export const ValidCheckmark = styled.span`
-  display: flex;
-  align-items: center;
-  color: var(${UI.COLOR_SUCCESS});
-  flex-shrink: 0;
+export const ValidCheckmark = styled(SVG)`
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+
+  > path {
+    fill: var(${UI.COLOR_SUCCESS});
+  }
 `
 
 export const ReceiverInput = styled.input<{ $error?: boolean }>`
@@ -161,7 +166,7 @@ export const ConfirmationRow = styled.div`
 
 export const ConfirmationLabel = styled.label<{ $confirmed: boolean }>`
   font-size: 13px;
-  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT_OPACITY_50})`)};
+  color: ${({ $confirmed }) => ($confirmed ? `var(${UI.COLOR_SUCCESS})` : `var(${UI.COLOR_TEXT})`)};
   cursor: pointer;
   user-select: none;
 `

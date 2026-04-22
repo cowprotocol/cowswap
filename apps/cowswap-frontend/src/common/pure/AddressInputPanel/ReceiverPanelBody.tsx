@@ -1,9 +1,9 @@
 import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
+import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import { CheckCircle } from 'react-feather'
 
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
@@ -86,11 +86,7 @@ export function ReceiverPanelBody({
       {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ReceiverInputWrapper>
         <ReceiverInputRow>
-          {isValid && !loading && (
-            <ValidCheckmark>
-              <CheckCircle size={20} />
-            </ValidCheckmark>
-          )}
+          {isValid && !loading && <ValidCheckmark src={OrderCheckIcon} aria-hidden="true" />}
           <ReceiverInput
             className={className}
             type="text"
