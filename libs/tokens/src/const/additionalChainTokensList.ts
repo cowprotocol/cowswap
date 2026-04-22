@@ -8,6 +8,6 @@ import { ListSourceConfig } from '../types'
  */
 export const DEFAULT_ADDITIONAL_CHAIN_TOKENS_LISTS: Partial<Record<TargetChainId, ListSourceConfig[]>> = {
   [AdditionalTargetChainId.SOLANA]: [
-    { priority: 1, enabledByDefault: true, source: 'https://files.cow.fi/token-lists/CowSwap.solana.json' },
+    { priority: 1, enabledByDefault: true, source: 'https://files.cow.fi/token-lists/NearSolana.json' },
   ],
 }
