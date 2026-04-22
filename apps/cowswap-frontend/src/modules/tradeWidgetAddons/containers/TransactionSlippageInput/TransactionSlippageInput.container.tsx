@@ -68,7 +68,7 @@ export function TransactionSlippageInput(): JSX.Element {
   return (
     <SettingsInput
       id="slippage-input"
-      label={t`MEV-protected slippage`}
+      label={t`MEV-Protected Slippage`}
       tooltip={
         isEoaEthFlow
           ? getNativeSlippageTooltip(
