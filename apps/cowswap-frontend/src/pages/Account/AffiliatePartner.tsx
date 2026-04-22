@@ -12,14 +12,16 @@ import {
   AffiliatePartnerNextPayout,
   AffiliatePartnerOnboard,
   AffiliatePartnerStats,
-  useAffiliatePartnerInfo,
-  isSupportedPayoutsNetwork,
   AffiliateTermsFaqLinks,
   ColumnOneCard,
   ThreeColumnGrid,
   PageWrapper,
+  getAffiliatePartnerPageState,
+  isSupportedPayoutsNetwork,
+  isSupportedTradingNetwork,
+  useAffiliatePartnerInfo,
+  useAffiliateStateViewAnalytics,
 } from 'modules/affiliate'
-import { isSupportedTradingNetwork } from 'modules/affiliate/lib/affiliateProgramUtils'
 import { PageTitle } from 'modules/application'
 
 export default function AffiliatePartner(): ReactNode {
@@ -27,14 +29,38 @@ export default function AffiliatePartner(): ReactNode {
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const { data: partnerInfo, isLoading: infoLoading } = useAffiliatePartnerInfo(account)
+  const hasAccount = Boolean(account)
+  const isSupportedPayoutNetwork = isSupportedPayoutsNetwork(chainId)
+  const isSupportedTradingNetworkValue = isSupportedTradingNetwork(chainId)
+  const hasExistingCode = Boolean(partnerInfo?.code)
+  const pageState = getAffiliatePartnerPageState({
+    hasAccount,
+    hasExistingCode,
+    isLoading: infoLoading,
+    isSupportedPayoutNetwork,
+    isSupportedTradingNetwork: isSupportedTradingNetworkValue,
+  })
+
+  useAffiliateStateViewAnalytics({
+    action: 'affiliate_partner_page_state_viewed',
+    viewKey: pageState,
+    eventParams:
+      pageState === undefined
+        ? undefined
+        : {
+            pageState,
+            hasAccount,
+            isSupportedPayoutNetwork,
+            isSupportedTradingNetwork: isSupportedTradingNetworkValue,
+            hasExistingCode,
+          },
+  })
 
   return (
     <PageWrapper>
       <PageTitle title={i18n._(PAGE_TITLES.AFFILIATE)} />
 
-      {!account ||
-      (!isSupportedPayoutsNetwork(chainId) && !partnerInfo && !infoLoading) ||
-      !isSupportedTradingNetwork(chainId) ? (
+      {!account || (!isSupportedPayoutNetwork && !partnerInfo && !infoLoading) || !isSupportedTradingNetworkValue ? (
         <AffiliatePartnerOnboard />
       ) : (
         <>
