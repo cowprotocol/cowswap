@@ -17,6 +17,10 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
+msgid "Send to {chainLabel} wallet"
+msgstr "Send to {chainLabel} wallet"
+
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token: "
 #~ msgstr "Selected token: "
@@ -2550,6 +2554,7 @@ msgstr "Sign the {operationLabel} with your wallet."
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
 msgid "Recipient"
 msgstr "Recipient"
 
@@ -2647,8 +2652,8 @@ msgid "The price of this pool is outside of your selected range. Your position i
 msgstr "The price of this pool is outside of your selected range. Your position is not currently earning fees."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
-msgid "Receiver address (required)"
-msgstr "Receiver address (required)"
+#~ msgid "Receiver address (required)"
+#~ msgstr "Receiver address (required)"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "days"
@@ -3085,8 +3090,8 @@ msgid "Sell amount too small"
 msgstr "Sell amount too small"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
-msgid "Recipient address"
-msgstr "Recipient address"
+#~ msgid "Recipient address"
+#~ msgstr "Recipient address"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Your position has 0 liquidity, and is not earning fees."
@@ -6879,6 +6884,10 @@ msgstr "There was an error trying to load claimable tokens"
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Learn"
 msgstr "Learn"
+
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
+msgid "{networkLabel} address"
+msgstr "{networkLabel} address"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
