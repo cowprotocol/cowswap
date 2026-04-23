@@ -9,6 +9,7 @@ import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 import { useTradeQuote } from './useTradeQuote'
 
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
+import { COW_QUOTE_BTC_BRIDGE_RECIPIENT, COW_QUOTE_SOL_BRIDGE_RECIPIENT } from '../utils/getBridgeQuoteSigner'
 
 // Mock dependencies
 jest.mock('./useTradeQuote')
@@ -247,20 +248,20 @@ describe('useQuoteParamsRecipient', () => {
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: BTC_ADDRESS })
     })
 
-    it('should reject SOL address when output chain is BTC', () => {
+    it('should use BTC placeholder when SOL address is given but output chain is BTC (wrong chain)', () => {
       mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.BITCOIN)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT })
     })
 
-    it('should reject BTC address when output chain is SOL', () => {
+    it('should use SOL placeholder when BTC address is given but output chain is SOL (wrong chain)', () => {
       mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
     })
 
     it('should reject SOL address when output chain is EVM (chainId=1)', () => {
@@ -293,6 +294,82 @@ describe('useQuoteParamsRecipient', () => {
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: BTC_ADDRESS })
+    })
+  })
+
+  describe('Default non-EVM bridge recipient for quoting (no recipient set)', () => {
+    beforeEach(() => {
+      mockBridgeQuote(undefined)
+    })
+
+    it('should return default SOL address when output chain is SOL and no recipient is set', () => {
+      mockState(undefined, undefined, AdditionalTargetChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
+    })
+
+    it('should return default BTC address when output chain is BTC and no recipient is set', () => {
+      mockState(undefined, undefined, AdditionalTargetChainId.BITCOIN)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT })
+    })
+
+    it('should return undefined bridgeRecipient when output chain is EVM and no recipient is set', () => {
+      mockState(undefined, undefined, 1)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+
+    it('should return undefined bridgeRecipient when outputCurrency is null and no recipient is set', () => {
+      mockState(undefined, undefined, undefined)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+    })
+  })
+
+  describe('Non-EVM output chain: falls back to default placeholder when recipient is invalid or wrong-chain', () => {
+    beforeEach(() => {
+      mockBridgeQuote(undefined)
+    })
+
+    it('should use BTC placeholder when user has typed a partial/invalid BTC address on BTC chain', () => {
+      mockState('bc1q_partial', undefined, AdditionalTargetChainId.BITCOIN)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT })
+    })
+
+    it('should use SOL placeholder when user has typed a partial/invalid SOL address on SOL chain', () => {
+      mockState('sol_partial', undefined, AdditionalTargetChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
+    })
+
+    it('should use BTC placeholder when user has typed a SOL address on BTC chain (wrong chain)', () => {
+      mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.BITCOIN)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_BTC_BRIDGE_RECIPIENT })
+    })
+
+    it('should use SOL placeholder when user has typed a BTC address on SOL chain (wrong chain)', () => {
+      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
     })
   })
 })

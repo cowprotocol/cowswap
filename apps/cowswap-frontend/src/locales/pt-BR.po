@@ -2520,8 +2520,8 @@ msgid "Pool analytics"
 msgstr "Análises do pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
-msgstr "Prazo de troca"
+msgid "Swap Expiration"
+msgstr "Expiração da Ordem"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
