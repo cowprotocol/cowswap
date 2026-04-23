@@ -52,8 +52,7 @@ export function ReceiverPanelBody({
     isConfirmedRef.current = isConfirmed
   })
 
-  const networkLabel = chainInfo?.label
-  const defaultPlaceholder = useReceiverPlaceholder(strategy, networkLabel, targetChainId, isBridging)
+  const defaultPlaceholder = useReceiverPlaceholder(strategy, targetChainId, isBridging)
   const resolvedPlaceholder = placeholder ?? defaultPlaceholder
   const chainLabel = isNonEvm ? chainInfo?.label : ''
 
