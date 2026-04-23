@@ -37,7 +37,7 @@ export function ReceiverPanelBody({
   const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
-  const { displayValue, handleFocus, handleBlur } = useAddressDisplayValue(value, isValid, loading)
+  const { displayValue, handleFocus, handleBlur } = useAddressDisplayValue(value, isValid, loading, isNonEvm)
 
   const [isConfirmed, setIsConfirmed] = useState(false)
 

@@ -10,7 +10,12 @@ interface AddressDisplayValue {
   handleBlur: () => void
 }
 
-export function useAddressDisplayValue(value: string, isValid: boolean, loading: boolean): AddressDisplayValue {
+export function useAddressDisplayValue(
+  value: string,
+  isValid: boolean,
+  loading: boolean,
+  shouldBeShorted: boolean,
+): AddressDisplayValue {
   const [isFocused, setIsFocused] = useState(false)
 
   const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
@@ -25,7 +30,7 @@ export function useAddressDisplayValue(value: string, isValid: boolean, loading:
   const displayValue = (() => {
     if (isFocused || !isValid || loading) return value
     try {
-      return shortenAddress(value, 6)
+      return shouldBeShorted ? shortenAddress(value, 6) : value
     } catch {
       return value
     }
