@@ -20,7 +20,7 @@ export interface ReceiverPanelBodyProps {
   onChange(value: string): void
   targetChainId?: TargetChainId
   placeholder?: string
-  isSmartContractWallet?: boolean
+  isSmartContractWalletBridging?: boolean
   onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
@@ -30,7 +30,7 @@ export function ReceiverPanelBody({
   onChange,
   targetChainId,
   placeholder,
-  isSmartContractWallet,
+  isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
   const { t } = useLingui()
@@ -80,7 +80,7 @@ export function ReceiverPanelBody({
     [onNonEvmReceiverConfirmedChange],
   )
 
-  const showConfirmationRow = (isNonEvm || !!isSmartContractWallet) && isValid && !loading
+  const showConfirmationRow = (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
 
   return (
     <>

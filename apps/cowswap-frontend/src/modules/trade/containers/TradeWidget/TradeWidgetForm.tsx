@@ -319,7 +319,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
                     isRequired={isNonEvmBridging}
-                    isSmartContractWalletWithBridging={isSmartContractWalletBridging}
+                    isSmartContractWalletBridging={isSmartContractWalletBridging}
                     onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}

@@ -167,7 +167,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
 
   it('does NOT show for EOA on EVM bridge', () => {
     mockValidAddress('https://etherscan.io/address/0x123')
-    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWallet: false })
+    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: false })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
@@ -188,7 +188,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('shows for SC wallet on EVM bridge with valid address', () => {
     mockArbitrumChainInfo()
     mockValidAddress()
-    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWallet: true })
+    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: true })
     expect(screen.getByRole('checkbox')).not.toBeNull()
   })
 
@@ -201,7 +201,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
 
   it('does NOT show for SC wallet + EVM bridge with invalid address', () => {
     mockInvalidAddress()
-    renderComponent({ value: 'notanaddress', isSmartContractWallet: true })
+    renderComponent({ value: 'notanaddress', isSmartContractWalletBridging: true })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
@@ -214,7 +214,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
 
   it('does NOT show for EOA when isSmartContractWallet is false (non-bridging mode)', () => {
     mockValidAddress()
-    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWallet: false })
+    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: false })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 })
@@ -231,7 +231,7 @@ describe('ReceiverPanelBody — confirmation message content', () => {
   it('shows Arbitrum chain name and correct message for SC wallet EVM bridge', () => {
     mockArbitrumChainInfo()
     mockValidAddress()
-    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWallet: true })
+    renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: true })
     expect(screen.getByText(/Arbitrum/)).not.toBeNull()
     expect(screen.getByText(/Confirm this is the correct address/)).not.toBeNull()
   })

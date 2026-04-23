@@ -15,7 +15,7 @@ export interface SetRecipientProps {
   // Target chain ID for recipient address validation. For cross-chain swaps, this should be the output token's chain.
   targetChainId?: TargetChainId
   isRequired?: boolean
-  isSmartContractWalletWithBridging?: boolean
+  isSmartContractWalletBridging?: boolean
   onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
@@ -26,7 +26,7 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
     className,
     targetChainId,
     isRequired,
-    isSmartContractWalletWithBridging,
+    isSmartContractWalletBridging,
     onNonEvmReceiverConfirmedChange,
   } = props
 
@@ -41,7 +41,7 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
         onChange={onChangeRecipient}
         targetChainId={targetChainId}
         label={isRequired ? <Trans>Receiver address (required)</Trans> : undefined}
-        isSmartContractWallet={isSmartContractWalletWithBridging}
+        isSmartContractWalletBridging={isSmartContractWalletBridging}
         onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
     </>
