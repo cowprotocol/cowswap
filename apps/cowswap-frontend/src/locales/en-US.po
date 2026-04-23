@@ -18,8 +18,8 @@ msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
-msgid "Send to {chainLabel} wallet"
-msgstr "Send to {chainLabel} wallet"
+#~ msgid "Send to {chainLabel} wallet"
+#~ msgstr "Send to {chainLabel} wallet"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token: "
@@ -2554,7 +2554,6 @@ msgstr "Sign the {operationLabel} with your wallet."
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
 msgid "Recipient"
 msgstr "Recipient"
 
