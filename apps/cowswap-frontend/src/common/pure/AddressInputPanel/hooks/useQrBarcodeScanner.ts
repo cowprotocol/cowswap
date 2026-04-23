@@ -18,10 +18,6 @@ declare global {
   }
 }
 
-export interface QrBarcodeScannerResult {
-  isSupported: boolean
-}
-
 /**
  * Runs a requestAnimationFrame loop using BarcodeDetector to scan for QR codes.
  * Sets isSupported=false if BarcodeDetector is absent from the browser.
@@ -31,7 +27,7 @@ export function useQrBarcodeScanner(
   stream: MediaStream | null,
   videoRef: RefObject<HTMLVideoElement | null>,
   onScan: (value: string) => void,
-): QrBarcodeScannerResult {
+): boolean {
   const [isSupported, setIsSupported] = useState(true)
 
   useEffect(() => {
@@ -69,5 +65,5 @@ export function useQrBarcodeScanner(
     return () => cancelAnimationFrame(frameId)
   }, [isOpen, stream, videoRef, onScan])
 
-  return { isSupported }
+  return isSupported
 }

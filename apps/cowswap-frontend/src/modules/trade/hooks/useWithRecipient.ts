@@ -12,7 +12,7 @@ import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
  * - Never shown during wrap/unwrap flows
  * - Does NOT depend on EOA vs SC wallet
  */
-export function useWithRecipient(showRecipient: boolean): boolean {
+export function useIsWithRecipient(showRecipient: boolean): boolean {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isNonEvmBridging = useIsNonEvmBridging()
   const tradeStateFromUrl = useTradeStateFromUrl()

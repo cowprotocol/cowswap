@@ -22,7 +22,7 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { stream, isSupported: cameraSupported, permissionDenied } = useQrCameraStream(isOpen, facingMode, videoRef)
-  const { isSupported: scannerSupported } = useQrBarcodeScanner(isOpen, stream, videoRef, onScan)
+  const scannerSupported = useQrBarcodeScanner(isOpen, stream, videoRef, onScan)
 
   const isSupported = cameraSupported && scannerSupported
 

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from 'react'
+import { RefObject, useEffect, useMemo, useState } from 'react'
 
 export interface QrCameraStreamResult {
   stream: MediaStream | null
@@ -64,5 +64,5 @@ export function useQrCameraStream(
     }
   }, [isOpen, facingMode, videoRef])
 
-  return { stream, isSupported, permissionDenied }
+  return useMemo(() => ({ stream, isSupported, permissionDenied }), [stream, isSupported, permissionDenied])
 }

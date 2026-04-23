@@ -40,7 +40,7 @@ import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner
 import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
-import { useWithRecipient } from '../../hooks/useWithRecipient'
+import { useIsWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 import { useSetNonEvmReceiverConfirmed } from '../../state/nonEvmReceiverConfirmedAtom.atoms'
@@ -154,7 +154,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
   const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
-  const withRecipient = useWithRecipient(showRecipient)
+  const withRecipient = useIsWithRecipient(showRecipient)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 

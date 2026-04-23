@@ -52,7 +52,7 @@ describe('useQrBarcodeScanner', () => {
 
     const { result } = renderHook(() => useQrBarcodeScanner(true, stream, makeVideoRef(), jest.fn()))
 
-    expect(result.current.isSupported).toBe(false)
+    expect(result.current).toBe(false)
   })
 
   it('starts scanning loop when open with stream and BarcodeDetector available', () => {

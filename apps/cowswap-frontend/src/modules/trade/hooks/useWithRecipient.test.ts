@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react'
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
-import { useWithRecipient } from './useWithRecipient'
+import { useIsWithRecipient } from './useWithRecipient'
 
 jest.mock('./useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
 jest.mock('./useIsNonEvmBridging', () => ({ useIsNonEvmBridging: jest.fn() }))
@@ -26,10 +26,10 @@ function setup({
 }
 
 function render(showRecipient: boolean): boolean {
-  return renderHook(() => useWithRecipient(showRecipient)).result.current
+  return renderHook(() => useIsWithRecipient(showRecipient)).result.current
 }
 
-describe('useWithRecipient', () => {
+describe('useIsWithRecipient', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     setup()
