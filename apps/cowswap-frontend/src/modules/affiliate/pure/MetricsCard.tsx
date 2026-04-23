@@ -77,10 +77,7 @@ export function MetricsCard({
             </MetricItem>
           ))}
         </RewardsMetricsList>
-        <Donut value={donutValue}>
-          <span>{donutLabel}</span>
-          {donutSubtitle ? <small>{donutSubtitle}</small> : null}
-        </Donut>
+        <Donut value={donutValue} label={donutLabel} subtitle={donutSubtitle} />
       </RewardsMetricsRow>
       <BottomMetaRow>
         <LabelContent>
