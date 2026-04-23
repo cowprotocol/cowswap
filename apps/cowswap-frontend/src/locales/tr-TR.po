@@ -8,7 +8,7 @@ msgstr ""
 "Language: tr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-22 18:45\n"
+"PO-Revision-Date: 2026-04-23 09:17\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -7640,6 +7640,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "To proceed, change the network in your {walletName}"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
+msgid "User rejected transaction"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmedButton/ConfirmedButton.tsx
