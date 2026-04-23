@@ -1020,6 +1020,10 @@ msgstr "CoW Runner"
 msgid "Proposal 2"
 msgstr "Proposal 2"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
+msgid "Bitcoin address (bc1…, 1…, 3…)"
+msgstr "Bitcoin address (bc1…, 1…, 3…)"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
 msgid "Signing"
@@ -2051,7 +2055,7 @@ msgstr "Unknown"
 msgid "Connect to verify code"
 msgstr "Connect to verify code"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 msgid "Wallet Address or ENS name"
 msgstr "Wallet Address or ENS name"
 
@@ -6654,6 +6658,10 @@ msgstr "Allow CoW Swap to use your <0/>"
 #~ msgid "successfully"
 #~ msgstr "successfully"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
+msgid "Wallet address"
+msgstr "Wallet address"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "mo"
 msgstr "mo"
@@ -6884,7 +6892,7 @@ msgstr "There was an error trying to load claimable tokens"
 msgid "Learn"
 msgstr "Learn"
 
-#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 msgid "{networkLabel} address"
 msgstr "{networkLabel} address"
 
