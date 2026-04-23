@@ -12,7 +12,7 @@ import {
 export interface AddressValidationStrategy {
   isValidAddress(value: string): boolean
   supportsENS: boolean
-  placeholderKey: 'evm' | 'nonEvm'
+  placeholderKey: 'evm' | 'solana' | 'bitcoin'
   supportsChainPrefix: boolean
   /** HTML input `pattern` attribute — covers all valid address/name formats for this network */
   pattern: string
@@ -31,7 +31,7 @@ const evmStrategy: AddressValidationStrategy = {
 const btcStrategy: AddressValidationStrategy = {
   isValidAddress: (value: string) => isBtcAddress(value),
   supportsENS: false,
-  placeholderKey: 'nonEvm',
+  placeholderKey: 'bitcoin',
   supportsChainPrefix: false,
   pattern: BTC_ADDRESS_PATTERN.source,
 }
@@ -39,7 +39,7 @@ const btcStrategy: AddressValidationStrategy = {
 const solanaStrategy: AddressValidationStrategy = {
   isValidAddress: (value: string) => isSolanaAddress(value),
   supportsENS: false,
-  placeholderKey: 'nonEvm',
+  placeholderKey: 'solana',
   supportsChainPrefix: false,
   pattern: SOL_ADDRESS_PATTERN.source,
 }

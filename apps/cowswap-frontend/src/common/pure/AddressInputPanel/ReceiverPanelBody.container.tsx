@@ -3,11 +3,12 @@ import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useAddressDisplayValue } from './hooks/useAddressDisplayValue'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
+import { useReceiverPlaceholder } from './hooks/useReceiverPlaceholder'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
 import { ReceiverConfirmationRow } from './ReceiverConfirmationRow.pure'
 import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrapper, ValidCheckmark } from './styled'
@@ -20,6 +21,7 @@ export interface ReceiverPanelBodyProps {
   onChange(value: string): void
   targetChainId?: TargetChainId
   placeholder?: string
+  isBridging?: boolean
   isSmartContractWalletBridging?: boolean
   onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
@@ -30,10 +32,10 @@ export function ReceiverPanelBody({
   onChange,
   targetChainId,
   placeholder,
+  isBridging = false,
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
-  const { t } = useLingui()
   const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
@@ -51,8 +53,8 @@ export function ReceiverPanelBody({
   })
 
   const networkLabel = chainInfo?.label
-  const resolvedPlaceholder =
-    placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`${networkLabel} address` : t`Wallet Address or ENS name`)
+  const defaultPlaceholder = useReceiverPlaceholder(strategy, networkLabel, targetChainId, isBridging)
+  const resolvedPlaceholder = placeholder ?? defaultPlaceholder
   const chainLabel = isNonEvm ? chainInfo?.label : ''
 
   // Reset confirmation when address or target chain changes.

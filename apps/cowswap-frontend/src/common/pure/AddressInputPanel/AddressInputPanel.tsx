@@ -14,6 +14,7 @@ export interface AddressInputPanelProps {
   value: string
   onChange: (value: string) => void
   targetChainId?: TargetChainId
+  isBridging?: boolean
   isSmartContractWalletBridging?: boolean
   onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
@@ -26,6 +27,7 @@ export function AddressInputPanel({
   onChange,
   targetChainId,
   placeholder,
+  isBridging = false,
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: AddressInputPanelProps): ReactElement {
@@ -38,6 +40,7 @@ export function AddressInputPanel({
         onChange={onChange}
         targetChainId={targetChainId}
         placeholder={placeholder}
+        isBridging={isBridging}
         isSmartContractWalletBridging={isSmartContractWalletBridging}
         onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
