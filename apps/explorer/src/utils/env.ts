@@ -7,8 +7,6 @@ type EnvsFlags = {
 }
 
 export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
-
-const EXPLORER_ENVIRONMENT_VAR_NAME = 'REACT_APP_ENVIRONMENT'
 const ALL_ENVIRONMENTS: Envs[] = ['local', 'development', 'pr', 'staging', 'production']
 
 function isEnvironmentName(value: string): value is Envs {
@@ -16,16 +14,14 @@ function isEnvironmentName(value: string): value is Envs {
 }
 
 function getConfiguredEnvironmentName(): Envs {
-  const env = process.env[EXPLORER_ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
+  const env = process.env.REACT_APP_ENVIRONMENT?.trim().toLowerCase()
 
   if (!env) {
-    throw new Error(`Missing ${EXPLORER_ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
+    throw new Error(`Missing REACT_APP_ENVIRONMENT. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   if (!isEnvironmentName(env)) {
-    throw new Error(
-      `Invalid ${EXPLORER_ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`,
-    )
+    throw new Error(`Invalid REACT_APP_ENVIRONMENT="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   return env

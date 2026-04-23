@@ -1,21 +1,19 @@
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'production'
 export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'production']
 
-const ENVIRONMENT_VAR_NAME = 'NEXT_PUBLIC_ENVIRONMENT'
-
 function isEnvironmentName(value: string): value is EnvironmentName {
   return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
 }
 
 function getConfiguredEnvironmentName(): EnvironmentName {
-  const env = process.env[ENVIRONMENT_VAR_NAME]?.trim().toLowerCase()
+  const env = process.env.NEXT_PUBLIC_ENVIRONMENT?.trim().toLowerCase()
 
   if (!env) {
-    throw new Error(`Missing ${ENVIRONMENT_VAR_NAME}. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
+    throw new Error(`Missing NEXT_PUBLIC_ENVIRONMENT. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   if (!isEnvironmentName(env)) {
-    throw new Error(`Invalid ${ENVIRONMENT_VAR_NAME}="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
+    throw new Error(`Invalid NEXT_PUBLIC_ENVIRONMENT="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
   }
 
   return env
