@@ -61,7 +61,11 @@ export function useSetupTradeState(): void {
       } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
-        if (error.name === 'NoSafeContext') return
+        // We still need to clear the remembered state so subsequent network changes work correctly
+        if (error.name === 'NoSafeContext') {
+          rememberedUrlStateRef.current = null
+          return
+        }
 
         console.error('Network switching error: ', error)
 
