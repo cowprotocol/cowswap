@@ -36,6 +36,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isBundlingSupported,
     injectedWidgetParams,
     tradePriceImpact,
+    isNonEvmReceiverConfirmed,
   } = context
 
   const {
@@ -163,6 +164,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
+    }
+
+    if (isNonEvmBridging && recipient && isRecipientValid && !isNonEvmReceiverConfirmed) {
+      validations.push(TradeFormValidation.RecipientNotConfirmed)
     }
 
     if (isSwapUnsupported) {
