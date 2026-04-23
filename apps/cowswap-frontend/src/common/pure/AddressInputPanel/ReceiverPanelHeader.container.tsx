@@ -1,6 +1,5 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { BaseChainInfo } from '@cowprotocol/common-const'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -22,17 +21,6 @@ import {
   ReceiverHeader,
 } from './styled'
 
-function getComputedLabel(
-  label: ReactNode,
-  isNonEvm: boolean,
-  chainInfo: BaseChainInfo,
-  chainLabel: string,
-): ReactNode {
-  if (label) return label
-  if (isNonEvm) return chainLabel
-  return <Trans>Recipient</Trans>
-}
-
 export interface ReceiverPanelHeaderProps {
   onChange(value: string): void
   value: string
@@ -48,7 +36,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
 
   const networkName = chainInfo?.label
   const chainLabel = t`Send to ${networkName} wallet`
-  const computedLabel = getComputedLabel(label, isNonEvm, chainInfo, chainLabel)
+  const computedLabel = label || (isNonEvm ? chainLabel : <Trans>Recipient</Trans>)
   const showScanPaste = isEmpty || isError
 
   return (

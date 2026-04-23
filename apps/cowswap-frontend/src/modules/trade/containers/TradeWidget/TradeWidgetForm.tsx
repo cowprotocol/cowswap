@@ -143,8 +143,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
-  const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
-  const handleNonEvmConfirm = useCallback((v: boolean) => setNonEvmReceiverConfirmed(v), [setNonEvmReceiverConfirmed])
+  const handleNonEvmConfirm = useSetNonEvmReceiverConfirmed()
 
   useResetReceiverConfirmationOnWalletChange()
 
