@@ -1,6 +1,7 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
-import { TargetChainId } from '@cowprotocol/cow-sdk'
+import { getChainInfo } from '@cowprotocol/common-const'
+import { isNonEvmChain, TargetChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -25,10 +26,11 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
     onChangeRecipient,
     className,
     targetChainId,
-    isRequired,
     isSmartContractWalletBridging,
     onNonEvmReceiverConfirmedChange,
   } = props
+
+  const label = getRecipientLabel(targetChainId)
 
   return (
     <>
@@ -40,10 +42,18 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
         value={recipient}
         onChange={onChangeRecipient}
         targetChainId={targetChainId}
-        label={isRequired ? <Trans>Receiver address (required)</Trans> : undefined}
+        label={label}
         isSmartContractWalletBridging={isSmartContractWalletBridging}
         onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
     </>
   )
+}
+
+function getRecipientLabel(targetChainId: TargetChainId | undefined): ReactNode {
+  if (targetChainId === undefined || !isNonEvmChain(targetChainId)) return undefined
+
+  const chainLabel = getChainInfo(targetChainId)?.label
+
+  return chainLabel ? <Trans>Send to {chainLabel} wallet</Trans> : <Trans>Recipient</Trans>
 }

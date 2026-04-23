@@ -50,8 +50,9 @@ export function ReceiverPanelBody({
     isConfirmedRef.current = isConfirmed
   })
 
+  const networkLabel = chainInfo?.label
   const resolvedPlaceholder =
-    placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`Recipient address` : t`Wallet Address or ENS name`)
+    placeholder ?? (strategy.placeholderKey === 'nonEvm' ? t`${networkLabel} address` : t`Wallet Address or ENS name`)
   const chainLabel = isNonEvm ? chainInfo?.label : ''
 
   // Reset confirmation when address or target chain changes.

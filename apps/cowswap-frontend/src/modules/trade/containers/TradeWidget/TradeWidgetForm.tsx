@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -153,7 +153,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
-  const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
   const withRecipient = useIsWithRecipient(showRecipient)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
@@ -318,7 +317,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
-                    isRequired={isNonEvmBridging}
                     isSmartContractWalletBridging={isSmartContractWalletBridging}
                     onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
