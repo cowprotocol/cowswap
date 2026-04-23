@@ -42,6 +42,7 @@ import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
 import { useIsWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
+import { useResetRecipientOnChainChange } from '../../pure/SetRecipient/hooks/useResetRecipientOnChainChange'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 import { useSetNonEvmReceiverConfirmed } from '../../state/nonEvmReceiverConfirmedAtom.atoms'
 import { TradeType } from '../../types'
@@ -150,6 +151,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
+  useResetRecipientOnChainChange(buyToken?.chainId, recipient || '', onChangeRecipient)
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
