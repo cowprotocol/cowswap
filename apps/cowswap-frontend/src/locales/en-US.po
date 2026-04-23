@@ -762,6 +762,10 @@ msgstr "I received surplus on"
 msgid "Created on"
 msgstr "Created on"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Recipient is required for {chainLabel}"
+msgstr "Recipient is required for {chainLabel}"
+
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelBody.container.tsx
 msgid "Enter a valid {chainLabel} address"
 msgstr "Enter a valid {chainLabel} address"
@@ -4799,6 +4803,10 @@ msgstr "This percentage only applies to dips; if prices are better than this per
 msgid "Your wallet is already linked to a referral code."
 msgstr "Your wallet is already linked to a referral code."
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Confirm recipient to swap"
+msgstr "Confirm recipient to swap"
+
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "12 Hours"
 msgstr "12 Hours"
@@ -6481,8 +6489,8 @@ msgid "Referral code"
 msgstr "Referral code"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Enter a receiver address"
-msgstr "Enter a receiver address"
+#~ msgid "Enter a receiver address"
+#~ msgstr "Enter a receiver address"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} out of {totalSolvers} solvers"
