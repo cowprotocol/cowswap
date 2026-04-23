@@ -5,7 +5,7 @@ import { t } from '@lingui/core/macro'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
-import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
+import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -17,9 +17,14 @@ import { useLimitOrderProtocolFeeAmount } from '../../hooks/useLimitOrderProtoco
 interface TradeRateDetailsProps {
   rateInfoParams?: RateInfoParams
   alwaysExpanded?: boolean
+  loading?: boolean
 }
 
-export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps): ReactElement {
+export function TradeRateDetails({
+  rateInfoParams,
+  alwaysExpanded = false,
+  loading = false,
+}: TradeRateDetailsProps): ReactElement {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
@@ -29,7 +34,6 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
-  const { isLoading } = useTradeQuote()
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const toggleAccordion = useCallback(() => {
@@ -47,7 +51,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       protocolFeeBps={protocolFeeBps}
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
-      loading={isLoading}
+      loading={loading}
     />
   )
 
