@@ -211,6 +211,10 @@ msgstr "Your activity will appear here..."
 #~ msgid "Save code"
 #~ msgstr "Save code"
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
+msgid "Solana address"
+msgstr "Solana address"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "(Partially fillable)"
 msgstr "(Partially fillable)"
@@ -6893,8 +6897,8 @@ msgid "Learn"
 msgstr "Learn"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
-msgid "{networkLabel} address"
-msgstr "{networkLabel} address"
+#~ msgid "{networkLabel} address"
+#~ msgstr "{networkLabel} address"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
