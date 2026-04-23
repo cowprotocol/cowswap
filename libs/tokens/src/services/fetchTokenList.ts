@@ -6,7 +6,7 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SOL_ADDRESS_PATTERN, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenList } from '@uniswap/token-lists'
 
 import { createConfig, http } from 'wagmi'
@@ -47,7 +47,7 @@ async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListStat
 async function _fetchTokenList(
   source: string,
   urls: string[],
-  sanitizer: (list: TokenList) => Promise<TokenList>,
+  sanitizer: (list: unknown) => Promise<TokenList>,
 ): Promise<ListState> {
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i]
@@ -119,12 +119,34 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   return validateTokenList(cleanedList)
 }
 
+function isValidNonEvmAddress(address: string): boolean {
+  return SOL_ADDRESS_PATTERN.test(address)
+}
+
+function isValidTokenList(value: unknown): value is TokenList {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return (
+    typeof v['name'] === 'string' &&
+    typeof v['version'] === 'object' &&
+    v['version'] !== null &&
+    Array.isArray(v['tokens'])
+  )
+}
+
 /**
- * Like sanitizeList, but skips EVM address validation.
- * Used for additional target chains (non-EVM, e.g. Solana) where addresses are not checksummed hex.
+ * Like sanitizeList, but for non-EVM chains (e.g. Solana, BTC).
+ * Skips EVM address checksum — validates list shape via typeguard and filters tokens
+ * whose addresses don't match any known non-EVM address pattern.
  */
-async function sanitizeAdditionalChainList(list: TokenList): Promise<TokenList> {
-  return validateTokenList(list)
+async function sanitizeAdditionalChainList(value: unknown): Promise<TokenList> {
+  if (!isValidTokenList(value)) {
+    throw new Error('Invalid token list format')
+  }
+
+  const tokens = value.tokens.filter((token) => isValidNonEvmAddress(token.address))
+
+  return { ...value, tokens }
 }
 
 /**

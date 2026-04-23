@@ -32,7 +32,12 @@ import {
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { GeoDataUpdater } from 'modules/rwa'
 import { useSwapRawState } from 'modules/swap'
-import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
+import {
+  BlockedListSourcesUpdater,
+  RecentTokensStorageUpdater,
+  useSelectTokenWidgetState,
+  useSourceChainId,
+} from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
@@ -67,6 +72,7 @@ export function Updaters(): ReactNode {
 
   const { standaloneMode } = useInjectedWidgetParams()
   const { targetChainId } = useSwapRawState()
+  const { selectedTargetChainId } = useSelectTokenWidgetState()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
@@ -119,7 +125,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <AdditionalChainTokensListsUpdater targetChainId={targetChainId} />
+      <AdditionalChainTokensListsUpdater targetChainId={selectedTargetChainId ?? targetChainId} />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
       <RecentTokensStorageUpdater />
