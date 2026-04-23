@@ -138,6 +138,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWalletBridging = !!isSmartContractWallet && isCurrentTradeBridging
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
@@ -318,7 +319,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
                     isRequired={isNonEvmBridging}
-                    isSmartContractWallet={!!isSmartContractWallet && isCurrentTradeBridging}
+                    isSmartContractWalletWithBridging={isSmartContractWalletBridging}
                     onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}
