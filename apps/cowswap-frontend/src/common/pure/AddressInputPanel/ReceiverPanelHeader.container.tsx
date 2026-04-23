@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
 import QR_CODE_ICON from '@cowprotocol/assets/cow-swap/qr-code.svg'
@@ -21,6 +22,8 @@ import {
   ReceiverHeader,
 } from './styled'
 
+import { featureFlagsAtom } from '../../state/featureFlagsState'
+
 export interface ReceiverPanelHeaderProps {
   onChange(value: string): void
   value: string
@@ -34,6 +37,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
   const { isEmpty, isError, explorerUrl } = useReceiverValidation(value, targetChainId)
   const { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal } = useReceiverActions(onChange)
 
+  const { isQrScanEnabled } = useAtomValue(featureFlagsAtom)
   const networkName = chainInfo?.label
   const chainLabel = t`Send to ${networkName} wallet`
   const computedLabel = label || (isNonEvm ? chainLabel : <Trans>Recipient</Trans>)
@@ -47,7 +51,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
           <ChainNameLabel>{computedLabel}</ChainNameLabel>
         </ChainLabelGroup>
         <ReceiverActions>
-          {showScanPaste && (
+          {isQrScanEnabled && showScanPaste && (
             <ActionBtn onClick={() => setShowQrModal(true)}>
               <QrIconWrapper>
                 <SVG src={QR_CODE_ICON} width="14" height="14" />
@@ -72,7 +76,9 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
           )}
         </ReceiverActions>
       </ReceiverHeader>
-      <QrScanModal isOpen={showQrModal} onDismiss={() => setShowQrModal(false)} onScan={handleScan} />
+      {isQrScanEnabled && (
+        <QrScanModal isOpen={showQrModal} onDismiss={() => setShowQrModal(false)} onScan={handleScan} />
+      )}
     </>
   )
 }
