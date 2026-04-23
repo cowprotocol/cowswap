@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import {
   areAddressesEqual,
   getAddressKey,
@@ -58,11 +58,8 @@ function buildTokensByAddress(
 
   for (const listState of sortedLists) {
     for (const token of listState.list.tokens) {
-      if (token.chainId !== chainId) continue
-
       const addressKey = getAddressKey(token.address)
-
-      if (tokensByAddress[addressKey] || areAddressesEqual(token.address, NATIVE_CURRENCY_ADDRESS)) continue
+      if (tokensByAddress[addressKey] || areAddressesEqual(token.address, NATIVE_CURRENCIES[chainId].address)) continue
 
       tokensByAddress[addressKey] = TokenWithLogo.fromToken(token as TokenInfo, token.logoURI)
     }
