@@ -90,6 +90,21 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
+  if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
+    const isTradeConstrained = injectedWidgetParams.tokenPairConstraints.some((rule) => {
+      return (
+        rule.sell.chainId === inputCurrency.chainId &&
+        areAddressesEqual(rule.sell.address, getCurrencyAddress(inputCurrency)) &&
+        rule.buy.chainId === outputCurrency.chainId &&
+        areAddressesEqual(rule.buy.address, getCurrencyAddress(outputCurrency))
+      )
+    })
+
+    if (isTradeConstrained) {
+      validations.push(TradeFormValidation.WidgetConstrainedTokenPair)
+    }
+  }
+
   if (!isWrapUnwrap && tradeQuote.error) {
     if (inputAmountIsNotSet) {
       validations.push(TradeFormValidation.InputAmountNotSet)
@@ -220,21 +235,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isPriceImpactAboveThreshold) {
       validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)
-    }
-  }
-
-  if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
-    const isTradeConstrained = injectedWidgetParams.tokenPairConstraints.some((rule) => {
-      return (
-        rule.sell.chainId === inputCurrency.chainId &&
-        areAddressesEqual(rule.sell.address, getCurrencyAddress(inputCurrency)) &&
-        rule.buy.chainId === outputCurrency.chainId &&
-        areAddressesEqual(rule.buy.address, getCurrencyAddress(outputCurrency))
-      )
-    })
-
-    if (isTradeConstrained) {
-      validations.push(TradeFormValidation.WidgetConstrainedTokenPair)
     }
   }
 
