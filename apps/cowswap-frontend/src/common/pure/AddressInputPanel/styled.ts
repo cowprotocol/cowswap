@@ -167,12 +167,13 @@ export const ReceiverErrorText = styled.p`
   margin: 0;
 `
 
-export const ConfirmationRow = styled.div`
+export const ConfirmationRow = styled.div<{ $isConfirmed?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px 10px;
-  background: var(${UI.COLOR_INFO_BG});
+
+  background: ${({ $isConfirmed }) => ($isConfirmed ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_INFO_BG})`)};
   color: var(${UI.COLOR_INFO_TEXT});
   border-radius: 0 0 16px 16px;
   padding: 16px;

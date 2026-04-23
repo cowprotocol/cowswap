@@ -14,7 +14,7 @@ const CHECKBOX_ID = 'receiver-confirmation'
 
 export function ReceiverConfirmationRow({ chainName, confirmed, onConfirmChange }: Props): ReactElement {
   return (
-    <ConfirmationRow>
+    <ConfirmationRow $isConfirmed={confirmed}>
       <input id={CHECKBOX_ID} type="checkbox" checked={confirmed} onChange={(e) => onConfirmChange(e.target.checked)} />
       <ConfirmationLabel htmlFor={CHECKBOX_ID} $confirmed={confirmed}>
         <Trans>
