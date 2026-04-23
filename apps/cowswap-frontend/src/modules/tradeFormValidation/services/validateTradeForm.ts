@@ -1,5 +1,5 @@
-import { getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { isEvmChain } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
@@ -220,6 +220,21 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isPriceImpactAboveThreshold) {
       validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)
+    }
+  }
+
+  if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
+    const isTradeConstrained = injectedWidgetParams.tokenPairConstraints.some((rule) => {
+      return (
+        rule.sell.chainId === inputCurrency.chainId &&
+        areAddressesEqual(rule.sell.address, getCurrencyAddress(inputCurrency)) &&
+        rule.buy.chainId === outputCurrency.chainId &&
+        areAddressesEqual(rule.buy.address, getCurrencyAddress(outputCurrency))
+      )
+    })
+
+    if (isTradeConstrained) {
+      validations.push(TradeFormValidation.WidgetConstrainedTokenPair)
     }
   }
 

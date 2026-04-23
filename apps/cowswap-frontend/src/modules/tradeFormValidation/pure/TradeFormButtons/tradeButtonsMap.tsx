@@ -403,4 +403,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
+  [TradeFormValidation.WidgetConstrainedTokenPair]: {
+    text: <Trans>The token pair is constrained</Trans>,
+  },
 }
