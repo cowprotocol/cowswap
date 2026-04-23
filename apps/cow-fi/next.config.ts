@@ -1,13 +1,16 @@
 import { withNx } from '@nx/next'
 import { WithNxOptions } from '@nx/next/plugins/with-nx'
 import { NextConfig } from 'next'
+import webpack from 'webpack'
+
+const configuredEnvironment = process.env.NEXT_PUBLIC_ENVIRONMENT ?? process.env.REACT_APP_ENVIRONMENT
 
 const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
   nx: {},
   env: {
-    REACT_APP_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT,
-    NEXT_PUBLIC_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT,
+    REACT_APP_ENVIRONMENT: configuredEnvironment,
+    NEXT_PUBLIC_ENVIRONMENT: configuredEnvironment,
   },
   // Type checking is handled by tsc in CI; skip here to avoid false positives
   // from ox's raw .ts source files (skipLibCheck doesn't cover them).
@@ -18,6 +21,13 @@ const nextConfig: WithNxOptions & NextConfig = {
     styledComponents: true,
   },
   webpack: (config, { isServer }) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.REACT_APP_ENVIRONMENT': JSON.stringify(configuredEnvironment),
+        'process.env.NEXT_PUBLIC_ENVIRONMENT': JSON.stringify(configuredEnvironment),
+      }),
+    )
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
