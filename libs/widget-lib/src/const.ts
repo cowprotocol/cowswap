@@ -1,1 +1,1 @@
-export const COWSWAP_ORIGIN = 'https://swap.cow.finance'
+export const COWSWAP_ORIGIN = 'https://swap.cow.fi'

@@ -103,7 +103,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Did you know? {benefit}\n\n"
-"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
+"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
 msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
@@ -473,7 +473,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
-" Get yours at swap.cow.finance @CoWSwap"
+" Get yours at swap.cow.fi @CoWSwap"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
@@ -1735,7 +1735,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
-"Start swapping on swap.cow.finance"
+"Start swapping on swap.cow.fi"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
@@ -2517,7 +2517,7 @@ msgid "Pool analytics"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
+msgid "Swap Expiration"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx

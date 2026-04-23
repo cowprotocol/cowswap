@@ -95,7 +95,7 @@ export default function Page() {
             >
               Anyone can join CoW DAO by holding{' '}
               <Link
-                href="https://swap.cow.finance/#/1/swap/USDC/COW"
+                href="https://swap.cow.fi/#/1/swap/USDC/COW"
                 onClick={() => sendHomeEvent('click-cow-tokens')}
                 external
               >
@@ -146,7 +146,7 @@ export default function Page() {
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="home-page-apply-for-a-grant"
-              href="https://docs.cow.finance/"
+              href="https://grants.cow.fi/"
               onClick={() => sendHomeEvent('click-apply-for-a-grant')}
             >
               Explore grants

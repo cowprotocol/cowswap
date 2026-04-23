@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import { useCurrencyAmountBalance, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import {
   COW_TOKEN_TO_CHAIN,
   COW_CONTRACT_ADDRESS,
@@ -99,16 +99,13 @@ export default function Profile() {
     !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate,
   )
 
+  const { hasFirstLoad: hasBalancesLoaded } = useTokensBalances()
+
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !walletClient
+    if (!account) return false
 
-    // remove loader after 5 sec in any case
-    setTimeout(() => {
-      output = false
-    }, 5000)
-
-    return output
-  }, [isLockedGnoLoading, isVCowLoading, walletClient])
+    return isVCowLoading || isLockedGnoLoading || !walletClient || !hasBalancesLoaded
+  }, [account, isLockedGnoLoading, isVCowLoading, walletClient, hasBalancesLoaded])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()

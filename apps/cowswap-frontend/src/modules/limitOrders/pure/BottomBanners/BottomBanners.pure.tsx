@@ -29,7 +29,7 @@ export function BottomBanners(): ReactNode {
           <Trans>Your order may not fill exactly when the market price reaches your limit price.</Trans>{' '}
           <ReactRouterLink
             target="_blank"
-            to="https://docs.cow.finance/cow-protocol/tutorials/cow-swap/limit#track-a-limit-order"
+            to="https://docs.cow.fi/cow-protocol/tutorials/cow-swap/limit#track-a-limit-order"
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.TRADE,
               action: 'Click limit order fees FAQ link',

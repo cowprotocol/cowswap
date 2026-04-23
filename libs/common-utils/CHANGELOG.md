@@ -1,5 +1,60 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.2.1...common-utils-v3.3.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.3.0
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.2.0...common-utils-v3.2.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.1.0...common-utils-v3.2.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🐛 Bug Fixes
+
+* fix tests and remove debug logs from tests ([ab1fca8](https://github.com/cowprotocol/cowswap/commit/ab1fca88df4c2b32b7fbc731af44bb89e55bf479))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/types bumped to 4.2.1
+
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.0.4...common-utils-v3.1.0) (2026-04-14)
 
 

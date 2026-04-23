@@ -105,11 +105,11 @@ msgstr "Para anular esto, introduce la cantidad de tu deslizante deseada.<0/><1/
 msgid ""
 "Did you know? {benefit}\n"
 "\n"
-"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
+"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
 msgstr ""
 "¿Sabías que? {benefit}\n"
 "\n"
-"Comienza a intercambiar en swap.cow.finance #CoWSwap @CoWSwap 🐮"
+"Comienza a intercambiar en swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
@@ -476,11 +476,11 @@ msgstr "30 minutos"
 msgid ""
 "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
 "\n"
-" Get yours at swap.cow.finance @CoWSwap"
+" Get yours at swap.cow.fi @CoWSwap"
 msgstr ""
 "Mi galleta de la fortuna de CoW  🐮💬: \"{openFortuneText}\" \n"
 "\n"
-" Obtén el tuyo en swap.cow.finance @CoWSwap"
+" Obtén el tuyo en swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
@@ -1740,11 +1740,11 @@ msgstr "Ver tu {accountProxyLabelString} privado"
 msgid ""
 "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
 "\n"
-"Start swapping on swap.cow.finance"
+"Start swapping on swap.cow.fi"
 msgstr ""
 "¡Hola, acabo de {actionWord} un {surplus} extra en @CoWSwap! 🐮💸\n"
 "\n"
-"Empieza a intercambiar en swap.cow.finance"
+"Empieza a intercambiar en swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "See Terms"
@@ -2525,8 +2525,8 @@ msgid "Pool analytics"
 msgstr "Análisis de Pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
-msgstr "Fecha límite de intercambio"
+msgid "Swap Expiration"
+msgstr "Expiración de la Swap"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -5147,7 +5147,7 @@ msgid "Earn while you trade"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
-msgid "Enable partial approvals"
+msgid "Enable Partial Approvals"
 msgstr "Habilitar aprobación parcial"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
@@ -6625,8 +6625,8 @@ msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount and 
 msgstr "Los costes de intercambio son al menos un {formattedFeePercentage}% de la cantidad de swap y los costes de bridge son al menos un {formattedBridgeFeePercentage}% de la cantidad de swap"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SlippageTooltip/index.tsx
-msgid "MEV-protected slippage"
-msgstr "Deslizamiento protegido por MEV"
+msgid "MEV-Protected Slippage"
+msgstr "Slippage protegido contra MEV"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 #~ msgid "Swap bridged via your {accountProxyLabelString}: <0/>"

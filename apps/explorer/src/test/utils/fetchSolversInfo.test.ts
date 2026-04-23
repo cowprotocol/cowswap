@@ -67,7 +67,7 @@ describe('fetchSolversInfo', () => {
   beforeEach(() => {
     fetchMock.resetMocks()
     jest.resetModules()
-    process.env.REACT_APP_CMS_BASE_URL = 'https://cms.cow.finance/api'
+    process.env.REACT_APP_CMS_BASE_URL = 'https://cms.cow.fi/api'
   })
 
   it('maps active CMS solvers and normalizes image URL', async () => {
@@ -79,7 +79,7 @@ describe('fetchSolversInfo', () => {
     expect(result).toHaveLength(1)
     expect(result[0].solverId).toBe('alpha')
     expect(result[0].displayName).toBe('Alpha Solver')
-    expect(result[0].image).toBe('https://cms.cow.finance/uploads/alpha.png')
+    expect(result[0].image).toBe('https://cms.cow.fi/uploads/alpha.png')
     expect(result[0].deployments).toHaveLength(3)
     expect(result[0].deployments.find((deployment) => deployment.chainId === 10)?.chainName).toBe('Optimism')
   })

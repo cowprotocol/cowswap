@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.1...hook-dapp-lib-v2.2.2) (2026-04-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.2
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.0...hook-dapp-lib-v2.2.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.1
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.1.0...hook-dapp-lib-v2.2.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.0
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.0.13...hook-dapp-lib-v2.1.0) (2026-04-14)
 
 

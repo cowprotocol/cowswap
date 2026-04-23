@@ -212,7 +212,7 @@ export function getRefCodeFromAppData(fullAppData: string | undefined): string |
 }
 
 export function getReferralLink(refCode: string): string {
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://swap.cow.finance'
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://swap.cow.fi'
   return `${origin}?ref=${refCode}`
 }
 

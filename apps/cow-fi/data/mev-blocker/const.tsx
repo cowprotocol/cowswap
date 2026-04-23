@@ -59,7 +59,7 @@ export const TRUSTED_BY_CONTENT = [
     src: IMG_LOGO_CRYPTO_COM,
   },
   {
-    href: 'https://swap.cow.finance/',
+    href: 'https://swap.cow.fi/',
     component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
   },
   {
@@ -209,7 +209,7 @@ export const FAQ_DATA = [
         <br />
         While some DEXs like{' '}
         <Link
-          href="https://swap.cow.finance/"
+          href="https://swap.cow.fi/"
           external
           data-click-event={toCowFiGtmEvent({
             category: CowFiCategory.MEVBLOCKER,
@@ -359,7 +359,7 @@ export const FAQ_DATA = [
       <>
         MEV Blocker is jointly formulated and maintained by{' '}
         <Link
-          href="https://cow.finance/"
+          href="https://cow.fi/"
           external
           utmContent="mev-blocker-cow-protocol"
           data-click-event={toCowFiGtmEvent({
@@ -408,7 +408,7 @@ export const FAQ_DATA = [
       <>
         If you are a searcher that is interested in collaborating with MEV Blocker RPC, please check out the{' '}
         <Link
-          href="https://docs.cow.finance/mevblocker"
+          href="https://docs.cow.fi/mevblocker"
           external
           utmContent="mev-blocker-docs"
           data-click-event={toCowFiGtmEvent({

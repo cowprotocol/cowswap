@@ -104,7 +104,7 @@ export const FAQ_DATA = [
       <>
         CoW Swap is a meta DEX aggregator that uses{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+          href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
           onClick={() =>
@@ -118,7 +118,7 @@ export const FAQ_DATA = [
         </Link>{' '}
         and{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+          href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
@@ -134,7 +134,7 @@ export const FAQ_DATA = [
         (MEV). It is the first UI built on top of CoW Protocol. As the leading intents-based DEX, CoW Swap leverages a
         network of bonded third parties known as{' '}
         <Link
-          href="https://docs.cow.finance/category/solver"
+          href="https://docs.cow.fi/category/solver"
           external
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
@@ -148,7 +148,7 @@ export const FAQ_DATA = [
         </Link>{' '}
         to settle trades on behalf of users. When a user submits a{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/introduction/intents"
+          href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
           onClick={() =>
@@ -162,7 +162,7 @@ export const FAQ_DATA = [
         </Link>{' '}
         , solvers source liquidity from AMMs, private market makers, and through peer-to-peer matches known as{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/how-it-works/coincidence-of-wants"
+          href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
           onClick={() =>
@@ -196,7 +196,7 @@ export const FAQ_DATA = [
       <>
         "CoW" stands for{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/how-it-works/coincidence-of-wants"
+          href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
           onClick={() =>
@@ -213,7 +213,7 @@ export const FAQ_DATA = [
         USDC, and another user is selling USDC to buy ETH, the two users can simply swap their assets in a Coincidence
         of Wants. Thanks to CoW Swap's{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+          href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
@@ -240,7 +240,7 @@ export const FAQ_DATA = [
         against whichever DEX is lowest at the time of quoting, CoW Swap seeks to find the best execution price. CoW
         Swap groups user orders into batches and auctions them off to bonded third parties known as{' '}
         <Link
-          href="https://docs.cow.finance/category/solver"
+          href="https://docs.cow.fi/category/solver"
           external
           utmContent="cow-protocol-introduction-solvers"
           onClick={() =>
@@ -281,7 +281,7 @@ export const FAQ_DATA = [
       <>
         CoW Swap{' '}
         <Link
-          href="https://docs.cow.finance/cow-protocol/concepts/introduction/fair-combinatorial-auction"
+          href="https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
           onClick={() =>
@@ -308,7 +308,7 @@ export const FAQ_DATA = [
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
         our pages on{' '}
         <Link
-          href="https://www.cow.finance"
+          href="https://www.cow.fi"
           utmContent="cow-website"
           onClick={() =>
             analytics.sendEvent({
@@ -317,7 +317,7 @@ export const FAQ_DATA = [
             })
           }
         >
-          www.cow.finance
+          www.cow.fi
         </Link>
         .
         <br />
@@ -356,7 +356,7 @@ export const FAQ_DATA = [
         <br />
         Forum:{' '}
         <Link
-          href="https://forum.cow.finance/"
+          href="https://forum.cow.fi/"
           external
           utmContent="cow-forum"
           onClick={() =>
@@ -366,7 +366,7 @@ export const FAQ_DATA = [
             })
           }
         >
-          https://forum.cow.finance/
+          https://forum.cow.fi/
         </Link>
         <br />
         Snapshot:{' '}

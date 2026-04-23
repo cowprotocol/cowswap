@@ -1,7 +1,7 @@
 {
   "background_color": "#ffffff",
   "display": "standalone",
-  "homepage_url": "https://swap.cow.finance",
+  "homepage_url": "https://swap.cow.fi",
   "description": "SDK tools",
   "icons": [
     {
@@ -28,7 +28,7 @@
     "descriptionShort": "Bridge from Gnosis Chain to Mainnet",
     "description": "The SDK tools provide some convenient tools for CoW Protocol developers",
     "version": "0.0.1",
-    "website": "https://sdk-tools.cow.finance",
+    "website": "https://sdk-tools.cow.fi",
     "image": "http://localhost:4317/apple-touch-icon.png",
     "conditions": {
       "position": "post",

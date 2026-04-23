@@ -1,5 +1,5 @@
-import { createCowSwapWidget } from './cowSwapWidget'
-import { TradeType } from './types'
+import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
+import { CowSwapWidgetParams, TradeType } from './types'
 
 describe('createCowSwapWidget', () => {
   const originalOpen = window.open
@@ -14,63 +14,73 @@ describe('createCowSwapWidget', () => {
   })
 
   it('opens https links requested by the widget', () => {
-    createWidget()
+    const { iframe } = createWidget()
 
-    dispatchInterceptWindowOpen('https://example.com')
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('blocks javascript urls requested by the widget', () => {
-    createWidget()
+    const { iframe } = createWidget()
 
-    dispatchInterceptWindowOpen('javascript://%0Aalert(1)')
+    dispatchInterceptWindowOpen('javascript://%0Aalert(1)', undefined, iframe)
 
     expect(window.open).not.toHaveBeenCalled()
   })
 
   it('opens relative links requested by the widget', () => {
-    createWidget()
+    const { iframe } = createWidget()
 
-    dispatchInterceptWindowOpen('/faq')
+    dispatchInterceptWindowOpen('/faq', undefined, iframe)
 
-    expect(window.open).toHaveBeenCalledWith('https://swap.cow.finance/faq', '_blank', 'noopener')
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
   })
 
   it('accepts messages from a custom widget baseUrl origin', () => {
-    createWidget('https://barn.cow.finance')
+    const { iframe } = createWidget('https://barn.cow.fi')
 
-    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.finance')
+    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi', iframe)
 
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
   it('ignores messages from an untrusted origin', () => {
-    createWidget('https://swap.cow.finance')
+    const { iframe } = createWidget('https://swap.cow.fi')
 
-    dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example')
+    dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example', iframe)
+
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
+  it('does not window.open when disableWindowOpen = true', () => {
+    const { iframe } = createWidget(undefined, { disableWindowOpen: true })
+
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
 
     expect(window.open).not.toHaveBeenCalled()
   })
 })
 
-function createWidget(baseUrl?: string): void {
+function createWidget(baseUrl?: string, extraParams?: Partial<CowSwapWidgetParams>): CowSwapWidgetHandler {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
-  createCowSwapWidget(container, {
+  return createCowSwapWidget(container, {
     params: {
       appCode: 'test-app',
       baseUrl,
       chainId: 1,
       tradeType: TradeType.SWAP,
+      ...extraParams,
     },
   })
 }
 
-function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.finance'): void {
+function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi', iframe: HTMLIFrameElement): void {
   const event = new MessageEvent('message', {
     origin,
+    source: iframe.contentWindow,
     data: {
       key: 'cowSwapWidget',
       method: 'INTERCEPT_WINDOW_OPEN',
@@ -82,7 +92,7 @@ function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi
 
   Object.defineProperty(event, 'source', {
     configurable: true,
-    value: window,
+    value: iframe.contentWindow,
   })
 
   window.dispatchEvent(event)

@@ -67,7 +67,7 @@ const DEFAULT_STATE = {
   buyAmount: 0,
 }
 
-const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.finance'
+const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export type WidgetMode = 'dapp' | 'standalone'
 
@@ -204,11 +204,11 @@ export function Configurator({ title }: { title: string }) {
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
-    { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.finance/widget/?${UTM_PARAMS}` },
+    { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
     {
       icon: <ChromeReaderModeIcon />,
       label: 'Developer docs',
-      url: `https://docs.cow.finance/cow-protocol/tutorials/widget?${UTM_PARAMS}`,
+      url: `https://docs.cow.fi/cow-protocol/tutorials/widget?${UTM_PARAMS}`,
     },
   ]
 

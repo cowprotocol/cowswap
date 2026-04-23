@@ -1,20 +1,15 @@
-import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isSupportedAddress } from '@cowprotocol/cow-sdk'
 import { NativeCurrency, Token } from '@cowprotocol/currency'
 import { TokenInfo } from '@cowprotocol/types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const alwaysTrue = () => true
+const alwaysTrue = (): boolean => true
 
 /** Creates a filter function that filters tokens that do not match the query. */
 export function getTokenSearchFilter<T extends Token | TokenInfo>(
   query: string,
 ): (token: T | NativeCurrency) => boolean {
-  const searchingAddress = isAddress(query)
-
-  if (searchingAddress) {
-    const address = searchingAddress.toLowerCase()
-    return (t: T | NativeCurrency) => 'address' in t && address === t.address.toLowerCase()
+  if (isSupportedAddress(query)) {
+    return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(query, t.address)
   }
 
   const queryParts = query

@@ -24,7 +24,7 @@ const Answer1: FC = () => {
         {accountProxyLabelString} <Trans>(also known as CoW Shed)</Trans>
       </ExternalLink>{' '}
       <Trans>is a helper contract that improves the user experience within CoW Swap for features like</Trans>{' '}
-      <ExternalLink href="https://docs.cow.finance/cow-protocol/reference/core/intents/hooks">
+      <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">
         <Trans>CoW Hooks</Trans>
       </ExternalLink>
       .

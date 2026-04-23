@@ -103,9 +103,9 @@ msgstr "Para anular isso, insira a derrapagem desejada.<0/><1/>De qualquer forma
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Did you know? {benefit}\n\n"
-"Start swapping on swap.cow.finance #CoWSwap @CoWSwap 🐮"
+"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
 msgstr "Você sabia? {benefit}\n\n"
-"Comece a trocar em swap.cow.finance #CoWSwap @CoWSwap 🐮"
+"Comece a trocar em swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
@@ -474,9 +474,9 @@ msgstr "30 Minutos"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
-" Get yours at swap.cow.finance @CoWSwap"
+" Get yours at swap.cow.fi @CoWSwap"
 msgstr "Meu biscoito da sorte CoW 🐮💬: \"{openFortuneText}\" \n\n"
-"Pegue o seu em swap.cow.finance @CoWSwap"
+"Pegue o seu em swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
@@ -1737,9 +1737,9 @@ msgstr "Ver seu {accountProxyLabelString} privado"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
-"Start swapping on swap.cow.finance"
+"Start swapping on swap.cow.fi"
 msgstr "Ei, acabei de {actionWord} um extra {surplus} no @CoWSwap! 🐮💸\n\n"
-"Comece a trocar em swap.cow.finance"
+"Comece a trocar em swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "See Terms"
@@ -2520,8 +2520,8 @@ msgid "Pool analytics"
 msgstr "Análises do pool"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
-msgstr "Prazo de troca"
+msgid "Swap Expiration"
+msgstr "Expiração da Ordem"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"

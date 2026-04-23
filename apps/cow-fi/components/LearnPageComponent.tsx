@@ -331,7 +331,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps):
           <CTASubtitle>Explore, learn, integrate</CTASubtitle>
           <CTATitle>CoW DAO documentation</CTATitle>
           <CTAButton
-            href="https://docs.cow.finance/"
+            href="https://docs.cow.fi/"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() =>

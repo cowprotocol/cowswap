@@ -10,11 +10,11 @@ jest.mock('@cowprotocol/common-utils', () => ({
 describe('getSolversExplorerUrl', () => {
   it('uses environment-specific explorer base URL', () => {
     const mockedGetExplorerBaseUrl = jest.mocked(getExplorerBaseUrl)
-    mockedGetExplorerBaseUrl.mockReturnValue('https://barn.explorer.cow.finance')
+    mockedGetExplorerBaseUrl.mockReturnValue('https://barn.explorer.cow.fi')
 
     const result = getSolversExplorerUrl()
 
-    expect(result).toBe('https://barn.explorer.cow.finance/solvers')
+    expect(result).toBe('https://barn.explorer.cow.fi/solvers')
     expect(mockedGetExplorerBaseUrl).toHaveBeenCalledWith(SupportedChainId.MAINNET)
   })
 })

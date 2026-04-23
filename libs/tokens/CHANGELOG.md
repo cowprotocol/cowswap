@@ -1,5 +1,65 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.2...tokens-v3.4.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/core bumped to 3.2.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/ui bumped to 3.3.0
+    * @cowprotocol/wallet-provider bumped to 2.1.16
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.1...tokens-v3.3.2) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+    * @cowprotocol/common-hooks bumped to 3.1.2
+    * @cowprotocol/common-utils bumped to 3.2.1
+    * @cowprotocol/core bumped to 3.1.2
+    * @cowprotocol/ui bumped to 3.2.2
+    * @cowprotocol/wallet-provider bumped to 2.1.15
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.0...tokens-v3.3.1) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/common-hooks bumped to 3.1.1
+    * @cowprotocol/common-utils bumped to 3.2.0
+    * @cowprotocol/core bumped to 3.1.1
+    * @cowprotocol/types bumped to 4.2.1
+    * @cowprotocol/ui bumped to 3.2.1
+    * @cowprotocol/wallet-provider bumped to 2.1.14
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.2.0...tokens-v3.3.0) (2026-04-14)
 
 

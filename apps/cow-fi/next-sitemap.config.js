@@ -3,7 +3,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://cow.finance',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://cow.fi',
   generateRobotsTxt: false, // Disable since we're using robots.ts file instead
   sitemapSize: 5000,
   outDir: path.join(__dirname, 'public'),
@@ -67,7 +67,7 @@ const getAllArticleSlugsWithDatesCached = cacheAsyncFunction(getAllArticleSlugsW
  * Implements pagination to fetch all pages of articles
  */
 async function getAllArticleSlugsWithDates() {
-  const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.finance/api'
+  const cmsBaseUrl = process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
   const cmsApiUrl = `${cmsBaseUrl}/articles`
   let allArticles = []
   let page = 1

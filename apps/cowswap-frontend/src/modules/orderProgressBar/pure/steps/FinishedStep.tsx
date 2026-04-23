@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo, useState, Suspense, lazy } from 'react'
+import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
@@ -93,11 +93,8 @@ export function FinishedStep({
     }
   }, [chainId, t])
 
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  const twitterUrl = useMemo(() => {
+    return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
   // If order is not set, return null
@@ -197,12 +194,15 @@ export function FinishedStep({
       {children}
       {(!disablePostTradeTips || shouldShowSurplus) && (
         <styledEl.ShareButton
+          as="a"
+          href={twitterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.PROGRESS_BAR,
             action: 'Click Share Button',
             label: shouldShowSurplus ? 'Surplus' : 'Tip',
           })}
-          onClick={shareOnTwitter}
         >
           <SVG src={ICON_SOCIAL_X} />
           <span>

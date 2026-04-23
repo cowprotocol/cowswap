@@ -10,7 +10,7 @@ import { CONFIG } from '@/const/meta'
 
 export const AFFILIATE_PROGRAM_CTA = {
   text: 'Become an affiliate',
-  href: 'https://swap.cow.finance/#/account/affiliate',
+  href: 'https://swap.cow.fi/#/account/affiliate',
   action: 'click-become-an-affiliate',
   utmContent: 'affiliate-program-become-an-affiliate',
 } as const

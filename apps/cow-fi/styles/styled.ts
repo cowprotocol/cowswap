@@ -1296,7 +1296,7 @@ export const TrustedBy = styled.div`
   }
 `
 
-// From legacy cow.finance
+// From legacy cow.fi
 export const SwiperSlideWrapper = styled.div`
   --swiper-navigation-color: var(${UI.COLOR_NEUTRAL_0});
   --swiper-theme-color: var(${UI.COLOR_NEUTRAL_0});

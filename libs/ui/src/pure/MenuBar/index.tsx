@@ -61,7 +61,7 @@ import type { CowSwapTheme } from '../../types'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   {
-    href: 'https://cow.finance/',
+    href: 'https://cow.fi/',
     productVariant: ProductVariant.CowDao,
     hasDivider: true,
     hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
@@ -70,7 +70,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowdao',
   },
   {
-    href: 'https://swap.cow.finance/',
+    href: 'https://swap.cow.fi/',
     productVariant: ProductVariant.CowSwap,
     hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
@@ -78,7 +78,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowswap',
   },
   {
-    href: 'https://cow.finance/cow-protocol',
+    href: 'https://cow.fi/cow-protocol',
     productVariant: ProductVariant.CowProtocol,
     hoverColor: '#FCCAF2',
     hoverBgColor: '#AD02C6',
@@ -86,7 +86,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowprotocol',
   },
   {
-    href: 'https://cow.finance/cow-amm',
+    href: 'https://cow.fi/cow-amm',
     productVariant: ProductVariant.CowAmm,
     hoverColor: '#007CDB',
     hoverBgColor: '#CCF8FF',
@@ -94,7 +94,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-cowamm',
   },
   {
-    href: 'https://cow.finance/mev-blocker',
+    href: 'https://cow.fi/mev-blocker',
     productVariant: ProductVariant.MevBlocker,
     hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',

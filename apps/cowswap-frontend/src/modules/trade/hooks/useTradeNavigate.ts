@@ -7,7 +7,7 @@ import { useLocation } from 'react-router'
 import { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { useTradeTypeInfo } from './useTradeTypeInfo'
+import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
 import { TradeCurrenciesIds } from '../types/TradeRawState'
 import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
@@ -25,7 +25,7 @@ interface UseTradeNavigateCallback {
 export function useTradeNavigate(): UseTradeNavigateCallback {
   const navigate = useNavigate()
   const location = useLocation()
-  const tradeTypeInfo = useTradeTypeInfo()
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
   const tradeRoute = tradeTypeInfo?.route
 
   return useCallback(

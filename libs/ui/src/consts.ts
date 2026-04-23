@@ -1,8 +1,7 @@
 'use client'
 
-export const SAFE_COW_APP_LINK =
-  'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.finance&chain=eth'
-export const LINK_GUIDE_ADD_CUSTOM_TOKEN = 'https://cow.finance/learn/how-to-add-custom-tokens-on-cow-swap'
+export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
+export const LINK_GUIDE_ADD_CUSTOM_TOKEN = 'https://cow.fi/learn/how-to-add-custom-tokens-on-cow-swap'
 export const MY_ORDERS_ID = 'my-orders'
 
 export const MEDIA_WIDTHS = {
@@ -58,5 +57,5 @@ export const Font = {
   },
 }
 
-// Header offset in pixels (used in swap.cow.finance)
+// Header offset in pixels (used in swap.cow.fi)
 export const SWAP_HEADER_OFFSET = 76
