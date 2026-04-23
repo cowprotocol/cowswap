@@ -1,9 +1,9 @@
 import { ReactElement, ReactNode } from 'react'
 
+import QR_CODE_ICON from '@cowprotocol/assets/cow-swap/qr-code.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import QR_CODE_ICON from 'assets/icon/qr-code.svg'
 import SVG from 'react-inlinesvg'
 
 import { useReceiverActions } from './hooks/useReceiverActions'
