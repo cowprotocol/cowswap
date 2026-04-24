@@ -1,16 +1,32 @@
 import { useEffect } from 'react'
 
-import { bungeeAffiliateCode, getRpcProvider } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
-import { OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { bungeeAffiliateCode, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
+import { AbstractProviderAdapter, OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+
+import { Chain, createPublicClient, http } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { lens } from 'viem/chains'
 
 import { useNetworkId } from '../state/network'
 
-export const cowSdkAdapter = new EthersV5Adapter({
-  provider: getRpcProvider(SupportedChainId.MAINNET)!,
-})
+/** Lens (chain 232); cow-sdk v8 typings omit `SupportedChainId.LENS`. */
+const LENS_CHAIN_ID = 232 as const
+const LENS_DEFAULT_RPC = 'https://rpc.lens.xyz'
+
+/** Read-only signer for the explorer (no real funds at risk). */
+const EXPLORER_SIGNER_KEY = '0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe' as const
+
+type ViemChainMapKey = SupportedChainId | typeof LENS_CHAIN_ID
+
+export const cowSdkAdapter = new ViemAdapter({
+  provider: createPublicClient({
+    chain: VIEM_CHAINS[SupportedChainId.MAINNET],
+    transport: http(RPC_URLS[SupportedChainId.MAINNET]),
+  }),
+}) as AbstractProviderAdapter
 
 export const orderBookApi = new OrderBookApi()
 
@@ -32,7 +48,7 @@ const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: proces
 export const knownBridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider]
 
 function getBungeeApiBase(): string | undefined {
-  if (isProd || isDev || isStaging || isBarn) {
+  if (isProd || isDev || isStaging) {
     return 'https://backend.bungee.exchange'
   }
 
@@ -41,17 +57,30 @@ function getBungeeApiBase(): string | undefined {
 
 setGlobalAdapter(cowSdkAdapter)
 
+const CHAINS: Record<ViemChainMapKey, Chain> = {
+  ...VIEM_CHAINS,
+  [LENS_CHAIN_ID]: lens,
+}
+
 export function CowSdkUpdater(): null {
   const chainId = useNetworkId()
 
   useEffect(() => {
     if (!chainId) return
 
-    const provider = getRpcProvider(chainId)
-    if (provider) {
-      cowSdkAdapter.setProvider(provider)
-      cowSdkAdapter.setSigner(provider.getSigner())
-    }
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({
+          chain: CHAINS[chainId as ViemChainMapKey],
+          transport: http(
+            (chainId as number) === LENS_CHAIN_ID
+              ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? LENS_DEFAULT_RPC)
+              : RPC_URLS[chainId as SupportedChainId],
+          ),
+        }),
+        signer: privateKeyToAccount(EXPLORER_SIGNER_KEY),
+      }) as AbstractProviderAdapter,
+    )
   }, [chainId])
 
   return null

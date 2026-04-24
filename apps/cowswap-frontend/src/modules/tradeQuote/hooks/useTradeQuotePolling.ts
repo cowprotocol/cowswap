@@ -23,6 +23,7 @@ const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
+
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -59,7 +60,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
-    if (isConfirmOpen || !tradeQuoteManager) return
+    if (isConfirmOpen) return
+    if (!tradeQuoteManager) return
 
     if (!isWindowVisible || !document.hasFocus() || !amountStr) {
       tradeQuoteManager.reset()
@@ -95,9 +97,11 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    * Reset counter and update quote each time when confirmation modal is closed
    */
   useLayoutEffect(() => {
-    if (prevIsConfirmOpen === isConfirmOpen || isConfirmOpen) return
+    if (prevIsConfirmOpen === isConfirmOpen) return
 
-    setTradeQuotePolling(0)
+    if (!isConfirmOpen) {
+      setTradeQuotePolling(0)
+    }
   }, [setTradeQuotePolling, prevIsConfirmOpen, isConfirmOpen])
 
   /**

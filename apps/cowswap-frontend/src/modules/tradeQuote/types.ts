@@ -10,4 +10,5 @@ export interface TradeQuotePollingParameters {
   isConfirmOpen: boolean
   isQuoteUpdatePossible: boolean
   useSuggestedSlippageApi: boolean
+  hasPendingTrade: boolean
 }

@@ -30,13 +30,14 @@ import {
   useTradeConfirmActions,
   useCommonTradeConfirmContext,
 } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { isQuoteExpired, useTradeQuote, useTradeQuoteCounter } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline, RowQuoteId } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
 
+import { getSwapConfirmDisabledState } from './SwapConfirmModal.utils'
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
@@ -70,7 +71,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const swapBridgeClickEventData = useSwapBridgeClickEventData()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
-  const { bridgeQuote, quote, error: quoteError } = useTradeQuote()
+  const tradeQuote = useTradeQuote()
+  const quoteCounter = useTradeQuoteCounter()
+  const { bridgeQuote, quote, error: quoteError, isLoading: isQuoteLoading } = tradeQuote
+  const isQuoteStale = isQuoteExpired(tradeQuote) === true
 
   const bridgeProvider = bridgeQuote?.providerInfo
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
@@ -86,28 +90,42 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-  const disableConfirm = useMemo(() => {
+  const { disableConfirm, isInsufficientBalance } = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
-
-    if (shouldDisplayBridgeDetails && !bridgeQuoteAmounts) {
-      return true
-    }
+    const hasCurrentCurrency = Boolean(current)
+    let isBalanceEnough = false
 
     if (current) {
       const normalisedAddress = getAddressKey(getCurrencyAddress(current))
       const balance = balances[normalisedAddress]
       const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
+      const inputAmount = inputCurrencyInfo?.amount
 
-      const isBalanceEnough = balanceAsCurrencyAmount
-        ? inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
-          inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount)
-        : false
-
-      return !isBalanceEnough
+      isBalanceEnough = Boolean(
+        balanceAsCurrencyAmount &&
+          inputAmount &&
+          (inputAmount.equalTo(balanceAsCurrencyAmount) || inputAmount.lessThan(balanceAsCurrencyAmount)),
+      )
     }
 
-    return true
-  }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
+    return getSwapConfirmDisabledState({
+      shouldDisplayBridgeDetails,
+      hasBridgeQuoteAmounts: Boolean(bridgeQuoteAmounts),
+      hasCurrentCurrency,
+      isBalanceEnough,
+      isQuoteLoading,
+      quoteCounter,
+      isQuoteStale,
+    })
+  }, [
+    balances,
+    bridgeQuoteAmounts,
+    inputCurrencyInfo,
+    isQuoteLoading,
+    isQuoteStale,
+    quoteCounter,
+    shouldDisplayBridgeDetails,
+  ])
 
   const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails, true)
 
@@ -121,11 +139,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     const { amount } = inputCurrencyInfo
     const symbol = amount?.currency?.symbol || t`token`
 
-    if (disableConfirm) {
+    if (isInsufficientBalance) {
       return t`Insufficient ${symbol} balance`
     }
     return confirmText
-  }, [confirmText, disableConfirm, inputCurrencyInfo, t])
+  }, [confirmText, inputCurrencyInfo, isInsufficientBalance, t])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>

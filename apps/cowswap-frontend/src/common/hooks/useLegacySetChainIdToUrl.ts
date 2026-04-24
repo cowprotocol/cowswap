@@ -8,7 +8,9 @@ import { useLocation } from 'react-router'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 /**
- * Changing chainId in query parameters: ?chain=mainnet
+ * Updates the URL to reflect the selected chain:
+ * - When the path has a chain segment (e.g. /42161/swap), replaces it with the new chainId so the URL stays in sync.
+ * - Otherwise sets the legacy query parameter ?chain=...
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
   const navigate = useNavigate()
@@ -16,15 +18,21 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
 
   return useCallback(
     (chainId: SupportedChainId) => {
-      // Don't set chainId as query parameter when it's already set as /{chainId}
-      if (/^\/\d+\//.test(location.pathname)) return
+      const pathname = location.pathname
+
+      // Path-based chain (e.g. /42161/swap): replace the chain segment so the URL updates and connect flow uses it
+      if (/^\/\d+\//.test(pathname)) {
+        const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
+        navigate({ pathname: newPathname, search: location.search }, { replace: true })
+        return
+      }
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
       navigate(
         {
-          pathname: location.pathname,
+          pathname,
           search: replaceURLParam(location.search, 'chain', chainInfo.name),
         },
         { replace: true },

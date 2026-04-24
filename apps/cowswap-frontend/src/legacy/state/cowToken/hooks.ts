@@ -4,8 +4,6 @@ import { V_COW } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import type { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
 
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
@@ -85,10 +83,10 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
 
     return vCowContract
       .swapAll({ from: account, gasLimit: estimatedGas })
-      .then((tx: TransactionResponse) => {
+      .then(({ hash }) => {
         addTransaction({
           swapVCow: true,
-          hash: tx.hash,
+          hash,
           summary,
         })
       })
@@ -144,17 +142,17 @@ export function useVCowData(): VCowData {
 }
 
 /**
- * Hook that parses the result input with BigNumber value to CurrencyAmount
+ * Hook that parses the result input with bigint value to CurrencyAmount
  */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useParseVCowResult(result: BigNumber | undefined) {
+function useParseVCowResult(result: bigint | undefined) {
   const { chainId } = useWalletInfo()
 
   const vCowToken = V_COW[chainId]
 
   return useMemo(() => {
-    if (!vCowToken || !result) {
+    if (!vCowToken || result === undefined) {
       return
     }
 

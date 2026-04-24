@@ -5,6 +5,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -27,13 +28,21 @@ const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export async function safeBundleApprovalFlow(
-  tradeContext: TradeFlowContext,
-  safeBundleContext: SafeBundleFlowContext,
-  priceImpactParams: PriceImpact,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  analytics: TradeFlowAnalytics,
-): Promise<void | boolean> {
+export async function safeBundleApprovalFlow({
+  tradeContext,
+  safeBundleContext,
+  priceImpactParams,
+  confirmPriceImpactWithoutFee,
+  analytics,
+  config,
+}: {
+  tradeContext: TradeFlowContext
+  safeBundleContext: SafeBundleFlowContext
+  priceImpactParams: PriceImpact
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  analytics: TradeFlowAnalytics
+  config: Config
+}): Promise<void | boolean> {
   const {
     context,
     callbacks,
@@ -51,7 +60,7 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, erc20Contract, amountToApprove } = safeBundleContext
+  const { spender, sendBatchTransactions, tokenAddress, amountToApprove } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -66,7 +75,7 @@ export async function safeBundleApprovalFlow(
     // In the feature users will be able to sort/add steps as they see fit
     logTradeFlow(LOG_PREFIX, 'STEP 2: build approval tx')
     const approveTx = await buildApproveTx({
-      erc20Contract,
+      tokenAddress,
       spender,
       amountToApprove: BigInt(amountToApprove.quotient.toString()),
     })
@@ -136,15 +145,16 @@ export async function safeBundleApprovalFlow(
     ]
 
     const shouldZeroApprove = await shouldZeroApproveFn({
-      tokenContract: erc20Contract,
+      tokenAddress,
       spender,
       amountToApprove: context.inputAmount,
       forceApprove: true,
+      config,
     })
 
     if (shouldZeroApprove) {
       const zeroApproveTx = await buildZeroApproveTx({
-        erc20Contract,
+        tokenAddress,
         spender,
       })
       safeTransactionData.unshift({

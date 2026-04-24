@@ -104,7 +104,6 @@ interface OrderProgressStepFactoryProps {
   props: OrderProgressBarProps
 }
 
-// eslint-disable-next-line complexity
 export function OrderProgressStepFactory({ step, props }: OrderProgressStepFactoryProps): ReactNode {
   if (step === OrderProgressBarStepName.INITIAL) return <InitialStepWrapper {...props} />
   if (step === OrderProgressBarStepName.SOLVING) return <SolvingStepWrapper {...props} />

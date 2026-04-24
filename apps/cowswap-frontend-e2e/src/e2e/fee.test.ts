@@ -1,4 +1,4 @@
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from 'viem'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'

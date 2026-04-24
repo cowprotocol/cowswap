@@ -1,23 +1,27 @@
 /**
  * Updates cy.visit() to include an injected window.ethereum provider.
  */
-import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
+import EventEmitter from 'eventemitter3'
+import { Address, createPublicClient, createWalletClient, Hex, http, PublicClient, toHex, WalletClient } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { sepolia } from 'viem/chains'
 
 const CHAIN_ID = 11155111
 const CHAIN_NAME = 'sepolia'
 
-const INTEGRATION_TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
-assert(INTEGRATION_TEST_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
+const RAW_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY') as string
+assert(RAW_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
 
-const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
-const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY')
+const INTEGRATION_TEST_PRIVATE_KEY: Hex = RAW_PRIVATE_KEY.startsWith('0x')
+  ? (RAW_PRIVATE_KEY as Hex)
+  : `0x${RAW_PRIVATE_KEY}`
 
-const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID)
+const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY') as string | undefined
+const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') as string | undefined
+const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID) as string | undefined
 
 const PROVIDER_URL =
-  NETWORK_URL ||
+  NETWORK_URL ??
   (INTEGRATION_TESTS_ALCHEMY_KEY
     ? `https://eth-${CHAIN_NAME}.g.alchemy.com/v2/${INTEGRATION_TESTS_ALCHEMY_KEY}`
     : INTEGRATION_TESTS_INFURA_KEY
@@ -29,103 +33,137 @@ assert(
   `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_ALCHEMY_KEY=${INTEGRATION_TESTS_ALCHEMY_KEY}, INTEGRATION_TESTS_INFURA_KEY=${INTEGRATION_TESTS_INFURA_KEY}`,
 )
 
+const account = privateKeyToAccount(INTEGRATION_TEST_PRIVATE_KEY)
+
 // address of the above key
-export const TEST_ADDRESS_NEVER_USE = new Wallet(INTEGRATION_TEST_PRIVATE_KEY).address
+export const TEST_ADDRESS_NEVER_USE = account.address
 
-// Redefined bridge to fix a supper annoying issue making some contract calls to fail
-//  See https://github.com/ethers-io/ethers.js/issues/1683
-class CustomizedBridge extends Eip1193Bridge {
-  autoConnect = true
+const publicClient = createPublicClient({
+  chain: sepolia,
+  transport: http(PROVIDER_URL),
+})
 
-  chainId = CHAIN_ID
+const walletClient = createWalletClient({
+  account,
+  chain: sepolia,
+  transport: http(PROVIDER_URL),
+})
 
-  // TODO: Add proper return type annotation
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-  async sendAsync(...args: any[]) {
-    console.debug('sendAsync called', ...args)
-    return this.send(...args)
+interface EIP1193Request {
+  method: string
+  params?: unknown[]
+}
+
+type RpcCallback = (error: Error | null, result: { result: unknown } | null) => void
+
+interface TransactionRequest {
+  to: string
+  data?: string
+  value?: string
+  gas?: string
+  gasLimit?: string
+}
+
+interface CallRequest {
+  to?: string
+  data?: string
+}
+
+// Custom EIP-1193 provider for e2e testing.
+// Acts as window.ethereum — wagmi/reown calls request() to connect and sign transactions.
+class CustomizedBridge extends EventEmitter {
+  readonly chainId = CHAIN_ID
+  private readonly publicClient: PublicClient
+  private readonly walletClient: WalletClient
+
+  constructor(walletClient: WalletClient, publicClient: PublicClient) {
+    super()
+    this.walletClient = walletClient
+    this.publicClient = publicClient
   }
-  // TODO: Break down this large function into smaller functions
-  // TODO: Add proper return type annotation
-  // TODO: Reduce function complexity by extracting logic
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
-  async send(...args: any[]) {
-    console.debug('send called', ...args)
-    const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
-    let callback
-    let method
-    let params
-    if (isCallbackForm) {
-      callback = args[1]
-      method = args[0].method
-      params = args[0].params
-    } else {
-      method = args[0]
-      params = args[1]
+
+  // eslint-disable-next-line complexity
+  async request({ method, params = [] }: EIP1193Request): Promise<unknown> {
+    switch (method) {
+      case 'eth_requestAccounts':
+      case 'eth_accounts':
+        return [TEST_ADDRESS_NEVER_USE]
+
+      case 'eth_chainId':
+        return toHex(CHAIN_ID)
+
+      case 'net_version':
+        return String(CHAIN_ID)
+
+      case 'eth_sendTransaction': {
+        const tx = params[0] as TransactionRequest
+        return this.walletClient.sendTransaction({
+          account: account.address,
+          to: tx.to as Address,
+          data: tx.data as Hex | undefined,
+          value: tx.value !== undefined ? BigInt(tx.value) : undefined,
+          gas: tx.gas !== undefined ? BigInt(tx.gas) : tx.gasLimit !== undefined ? BigInt(tx.gasLimit) : undefined,
+          chain: sepolia,
+        })
+      }
+
+      case 'eth_call': {
+        const callParams = params[0] as CallRequest
+        const result = await this.publicClient.call({
+          to: callParams.to as Address,
+          data: callParams.data as Hex | undefined,
+        })
+        return result.data ?? '0x'
+      }
+
+      case 'eth_getBalance': {
+        const balance = await this.publicClient.getBalance({
+          address: params[0] as Address,
+          blockTag: (params[1] as 'latest' | 'pending' | 'earliest') ?? 'latest',
+        })
+        return toHex(balance)
+      }
+
+      case 'eth_blockNumber': {
+        const blockNumber = await this.publicClient.getBlockNumber()
+        return toHex(blockNumber)
+      }
+
+      case 'eth_getTransactionReceipt':
+        return this.publicClient.waitForTransactionReceipt({ hash: params[0] as Hex })
+
+      case 'eth_estimateGas': {
+        const txParams = params[0] as CallRequest & { value?: string }
+        const gas = await this.publicClient.estimateGas({
+          to: txParams.to as Address,
+          data: txParams.data as Hex | undefined,
+          value: txParams.value !== undefined ? BigInt(txParams.value) : undefined,
+        })
+        return toHex(gas)
+      }
+
+      default:
+        return this.publicClient.request({ method: method as never, params: params as never })
     }
-    // Mock out request accounts and chainId
-    if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
-      if (isCallbackForm) {
-        callback({ result: [TEST_ADDRESS_NEVER_USE] })
-      } else {
-        return Promise.resolve([TEST_ADDRESS_NEVER_USE])
-      }
+  }
+
+  // Legacy Web3 1.x callback form: send({ method, params }, callback)
+  send(request: EIP1193Request, callback: RpcCallback): void
+  // Legacy Web3 1.x promise form: send(method, params?)
+  send(method: string, params?: unknown[]): Promise<unknown>
+  send(methodOrRequest: string | EIP1193Request, paramsOrCallback?: unknown[] | RpcCallback): Promise<unknown> | void {
+    if (typeof methodOrRequest === 'object' && typeof paramsOrCallback === 'function') {
+      const callback = paramsOrCallback as RpcCallback
+      this.request(methodOrRequest)
+        .then((result) => callback(null, { result }))
+        .catch((error: Error) => callback(error, null))
+      return
     }
-    if (method === 'eth_chainId') {
-      if (isCallbackForm) {
-        callback(null, { result: `0x${CHAIN_ID.toString(16)}` })
-      } else {
-        return Promise.resolve(`0x${CHAIN_ID.toString(16)}`)
-      }
-    }
-    try {
-      // If from is present on eth_call it errors, removing it makes the library set
-      // from as the connected wallet which works fine
-      if (params && params.length && params[0].from && method === 'eth_call') delete params[0].from
-      let result
-      // For sending a transaction if we call send it will error
-      // as it wants gasLimit in sendTransaction but hexlify sets the property gas
-      // to gasLimit which makes sensd transaction error.
-      // This have taken the code from the super method for sendTransaction and altered
-      // it slightly to make it work with the gas limit issues.
-      if (params && params.length && params[0].from && method === 'eth_sendTransaction') {
-        // Hexlify will not take gas, must be gasLimit, set this property to be gasLimit
-        params[0].gasLimit = params[0].gas
-        delete params[0].gas
-        // If from is present on eth_sendTransaction it errors, removing it makes the library set
-        // from as the connected wallet which works fine
-        delete params[0].from
-        const req = JsonRpcProvider.hexlifyTransaction(params[0])
-        // Hexlify sets the gasLimit property to be gas again and send transaction requires gasLimit
-        req.gasLimit = req.gas
-        delete req.gas
-        // Send the transaction
-        const tx = await this.signer.sendTransaction(req)
-        result = tx.hash
-      } else {
-        // All other transactions the base class works for
-        result = await super.send(method, params)
-      }
-      console.debug('result received', method, params, result)
-      if (isCallbackForm) {
-        callback(null, { result })
-      } else {
-        return result
-      }
-    } catch (error) {
-      console.log(error)
-      if (isCallbackForm) {
-        callback(error, null)
-      } else {
-        throw error
-      }
-    }
+    return this.request({
+      method: methodOrRequest as string,
+      params: paramsOrCallback as unknown[] | undefined,
+    })
   }
 }
 
-const provider = new JsonRpcProvider(PROVIDER_URL, CHAIN_ID)
-const signer = new Wallet(INTEGRATION_TEST_PRIVATE_KEY, provider)
-
-export const injected = new CustomizedBridge(signer, provider)
+export const injected = new CustomizedBridge(walletClient, publicClient)

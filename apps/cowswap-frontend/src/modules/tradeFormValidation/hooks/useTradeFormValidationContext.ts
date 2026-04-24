@@ -10,7 +10,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'

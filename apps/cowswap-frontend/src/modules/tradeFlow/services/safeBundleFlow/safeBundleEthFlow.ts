@@ -1,7 +1,6 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { Percent } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
@@ -72,7 +71,7 @@ export async function safeBundleEthFlow(
     const txs: MetaTransactionData[] = []
 
     logTradeFlow(LOG_PREFIX, 'STEP 2: wrap native token')
-    const wrapTx = await buildWrapTx({ wrappedNativeContract, weiAmount: nativeAmountInWei })
+    const wrapTx = buildWrapTx({ wrappedNativeContract, weiAmount: nativeAmountInWei })
 
     txs.push({
       to: wrapTx.to!,
@@ -85,7 +84,7 @@ export async function safeBundleEthFlow(
 
     if (needsApproval) {
       const approveTx = await buildApproveTx({
-        erc20Contract: wrappedNativeContract as unknown as Erc20,
+        tokenAddress: wrappedNativeContract.address,
         spender,
         amountToApprove: BigInt(amountToApprove.quotient.toString()),
       })

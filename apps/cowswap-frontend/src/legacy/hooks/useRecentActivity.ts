@@ -46,11 +46,6 @@ type UseActivityDescriptionParams = {
   ids: string[]
 }
 
-enum TxReceiptStatus {
-  PENDING,
-  CONFIRMED,
-}
-
 export function createActivityDescriptor(
   tx?: EnhancedTransactionDetails,
   order?: Order,
@@ -219,7 +214,8 @@ function getIsOrderCancelling(order: Order): boolean {
 }
 
 function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
-  return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+  const status = tx.receipt?.status
+  return status === 'success' || typeof status === 'undefined'
 }
 
 function getOrderActivityStatus(order: Order): ActivityStatus {

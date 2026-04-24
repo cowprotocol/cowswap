@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { UI, InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { AlertTriangle } from 'react-feather'

@@ -31,7 +31,7 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const AVG_APPROVE_COST_GWEI = '50000'
+export const AVG_APPROVE_COST_GWEI = 50000n
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 

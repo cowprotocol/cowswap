@@ -1,7 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
@@ -27,6 +26,8 @@ const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
+
+type TypedDataField = { name: string; type: string }
 
 const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
