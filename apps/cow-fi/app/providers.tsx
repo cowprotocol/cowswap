@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
@@ -14,15 +14,10 @@ import { ThemeProvider } from '../theme'
 
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
-import { environmentName } from '@/util/environment'
 
 const cowAnalytics = initGtm()
 
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
-  useEffect(() => {
-    console.info('[cow-fi][environment]', environmentName ?? 'unknown')
-  }, [])
-
   return (
     <Suspense>
       <CacheProvider>
