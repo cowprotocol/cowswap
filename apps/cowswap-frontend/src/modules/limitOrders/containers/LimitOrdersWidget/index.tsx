@@ -225,7 +225,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {!hideTradeRateDetails && (
             <styledEl.FooterBox>
               <DeadlineInput />
-              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
+              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
             </styledEl.FooterBox>
           )}
 

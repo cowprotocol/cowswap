@@ -11,11 +11,9 @@ import { Web3Status } from 'modules/wallet'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { useOrdersTableState } from '../../../../hooks/useOrdersTableState'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
 export function OrdersTableNoWalletContent(): ReactNode {
-  const { orderType } = useOrdersTableState() || {}
   const pendingActivitiesCount = usePendingActivitiesCount()
 
   return (
@@ -26,17 +24,7 @@ export function OrdersTableNoWalletContent(): ReactNode {
       <h4>
         <Trans>Connect a wallet</Trans>
       </h4>
-      {!isInjectedWidget() && (
-        <>
-          <p>
-            <Trans>
-              To use {orderType} orders, please connect your wallet <br />
-              to one of our supported networks.
-            </Trans>
-          </p>
-          {pendingActivitiesCount && <Web3Status />}
-        </>
-      )}
+      {!isInjectedWidget() && pendingActivitiesCount > 0 && <Web3Status />}
     </styledEl.Content>
   )
 }
