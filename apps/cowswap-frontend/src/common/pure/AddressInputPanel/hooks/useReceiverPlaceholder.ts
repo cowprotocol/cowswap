@@ -8,7 +8,7 @@ const ENS_SUPPORTED_CHAINS = new Set<EvmChains>([EvmChains.MAINNET, EvmChains.SE
 
 export function useReceiverPlaceholder(
   strategy: AddressValidationStrategy,
-  targetChainId: TargetChainId | undefined,
+  resolvedChainId: TargetChainId,
   isBridging: boolean,
 ): string {
   const { t } = useLingui()
@@ -16,7 +16,7 @@ export function useReceiverPlaceholder(
   if (strategy.placeholderKey === 'bitcoin') return t`Bitcoin address (bc1…, 1…, 3…)`
   if (strategy.placeholderKey === 'solana') return t`Solana address`
 
-  const isEnsSupportedByChain = !!targetChainId && isEvmChain(targetChainId) && ENS_SUPPORTED_CHAINS.has(targetChainId)
+  const isEnsSupportedByChain = isEvmChain(resolvedChainId) && ENS_SUPPORTED_CHAINS.has(resolvedChainId)
   // bridge providers don't support ens
   const showEns = !isBridging && isEnsSupportedByChain
   return showEns ? t`Wallet Address or ENS name` : t`Wallet address`

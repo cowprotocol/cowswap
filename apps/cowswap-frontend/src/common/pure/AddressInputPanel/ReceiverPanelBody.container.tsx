@@ -36,7 +36,7 @@ export function ReceiverPanelBody({
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
-  const { strategy, isNonEvm, chainInfo } = useReceiverChainInfo(targetChainId)
+  const { strategy, isNonEvm, chainInfo, chainId } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy)
   const { displayValue, handleFocus, handleBlur } = useAddressDisplayValue(value, isValid, loading, isNonEvm)
@@ -52,7 +52,7 @@ export function ReceiverPanelBody({
     isConfirmedRef.current = isConfirmed
   })
 
-  const defaultPlaceholder = useReceiverPlaceholder(strategy, targetChainId, isBridging)
+  const defaultPlaceholder = useReceiverPlaceholder(strategy, chainId, isBridging)
   const resolvedPlaceholder = placeholder ?? defaultPlaceholder
   const chainLabel = isNonEvm ? chainInfo?.label : ''
 
