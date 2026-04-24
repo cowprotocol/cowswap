@@ -10,7 +10,9 @@ import {
 
 import styled from 'styled-components/macro'
 
-const ordersFactory = new ConditionalOrderFactory(DEFAULT_CONDITIONAL_ORDER_REGISTRY)
+import { cowSdkAdapter } from './cowSdkAdapter'
+
+const ordersFactory = new ConditionalOrderFactory(DEFAULT_CONDITIONAL_ORDER_REGISTRY, cowSdkAdapter)
 
 const Container = styled.div`
   padding: 20px;
