@@ -65,6 +65,7 @@ export async function openNativeWrapModal(page: Page): Promise<void> {
   }
 
   await expect(wrapNativeButton).toBeVisible()
+  await wrapNativeButton.click()
 }
 
 export async function openAccountModal(page: Page): Promise<void> {

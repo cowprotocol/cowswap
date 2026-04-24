@@ -16,6 +16,8 @@ import { CONNECT_INJECTED_WALLET_EVENT, OPEN_WALLET_MODAL_EVENT } from '../const
 const queryClient = new QueryClient()
 
 async function reconnectInjectedConnector(): Promise<void> {
+  if (isImTokenBrowser) return
+
   const injectedConnector = config.connectors.find((connector) => connector.id === 'injected')
 
   if (!injectedConnector) return
@@ -25,10 +27,8 @@ async function reconnectInjectedConnector(): Promise<void> {
   if (provider && typeof (provider as { request?: unknown }).request === 'function') {
     const eth = provider as { request: (args: { method: string }) => Promise<unknown> }
 
-    if (!isImTokenBrowser) {
-      // Seed eth_accounts before reconnect() so wagmi can rehydrate the injected connector.
-      await eth.request({ method: 'eth_requestAccounts' })
-    }
+    // Seed eth_accounts before reconnect() so wagmi can rehydrate the injected connector.
+    await eth.request({ method: 'eth_requestAccounts' })
   }
 
   const result = await reconnect(config, { connectors: [injectedConnector] })

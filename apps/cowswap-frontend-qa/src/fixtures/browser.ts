@@ -26,25 +26,5 @@ export async function setupBrowser(page: Page): Promise<void> {
   await page.addInitScript(() => {
     window.localStorage.clear()
     window.sessionStorage.clear()
-
-    const ownDescriptor = Object.getOwnPropertyDescriptor(window.navigator, 'serviceWorker')
-
-    if (ownDescriptor?.configurable !== false) {
-      Object.defineProperty(window.navigator, 'serviceWorker', {
-        configurable: true,
-        get: () => undefined,
-      })
-      return
-    }
-
-    const navigatorPrototype = Object.getPrototypeOf(window.navigator) as Navigator
-    const prototypeDescriptor = Object.getOwnPropertyDescriptor(navigatorPrototype, 'serviceWorker')
-
-    if (prototypeDescriptor?.configurable !== false) {
-      Object.defineProperty(navigatorPrototype, 'serviceWorker', {
-        configurable: true,
-        get: () => undefined,
-      })
-    }
   })
 }

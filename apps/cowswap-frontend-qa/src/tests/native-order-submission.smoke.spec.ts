@@ -55,6 +55,10 @@ function isSameAddress(value: unknown, address: string): boolean {
   }
 }
 
+function expectSameAddress(value: unknown, address: string, fieldName: string): void {
+  expect(isSameAddress(value, address), `${fieldName} should match ${address}`).toBe(true)
+}
+
 function getStringOrFallback(value: unknown, fallback: string): string {
   return typeof value === 'string' ? value : fallback
 }
@@ -164,11 +168,11 @@ async function interceptWrappedOrderSubmission(
     const body = toRecord(request.postDataJSON())
     capture.submittedOrderBody = body
 
-    expect(body.sellToken).toBe(MAINNET_WETH)
-    expect(body.buyToken).toBe(MAINNET_USDC)
+    expectSameAddress(body.sellToken, MAINNET_WETH, 'sellToken')
+    expectSameAddress(body.buyToken, MAINNET_USDC, 'buyToken')
     expect(body.kind).toBe('sell')
-    expect(body.from).toBe(walletAddress)
-    expect(body.receiver).toBe(walletAddress)
+    expectSameAddress(body.from, walletAddress, 'from')
+    expectSameAddress(body.receiver, walletAddress, 'receiver')
     expect(body.sellAmount).toBe(ONE_WETH_IN_WEI)
     expect(body.signingScheme).toBe('eip712')
     expect(typeof body.signature).toBe('string')
