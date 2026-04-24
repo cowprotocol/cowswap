@@ -1,0 +1,11 @@
+{
+  "name": "@cowprotocol/cowswap-frontend-qa",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "viem": "^2.47.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}

@@ -4,48 +4,53 @@ import { isImTokenBrowser } from '@cowprotocol/common-utils'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { reconnect } from '@wagmi/core'
+import { connect, reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
-import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { CONNECT_INJECTED_WALLET_EVENT, OPEN_WALLET_MODAL_EVENT } from '../constants'
 
 const queryClient = new QueryClient()
+
+async function reconnectInjectedConnector(): Promise<void> {
+  const injectedConnector = config.connectors.find((connector) => connector.id === 'injected')
+
+  if (!injectedConnector) return
+
+  const provider = await injectedConnector.getProvider()
+
+  if (provider && typeof (provider as { request?: unknown }).request === 'function') {
+    const eth = provider as { request: (args: { method: string }) => Promise<unknown> }
+
+    if (!isImTokenBrowser) {
+      // Seed eth_accounts before reconnect() so wagmi can rehydrate the injected connector.
+      await eth.request({ method: 'eth_requestAccounts' })
+    }
+  }
+
+  const result = await reconnect(config, { connectors: [injectedConnector] })
+  console.debug('[reconnectInjectedConnector] result', result)
+}
+
+async function connectInjectedConnector(): Promise<void> {
+  const injectedConnector = config.connectors.find((connector) => connector.id === 'injected')
+
+  if (!injectedConnector) return
+
+  const result = await connect(config, { connector: injectedConnector })
+  console.debug('[connectInjectedConnector] result', result)
+}
 
 function ReconnectOnMount(): null {
   useEffect(() => {
     if (getIsInjectedMobileBrowser()) {
-      const injectedConnector = config.connectors.find((c) => c.id === 'injected')
-
-      if (injectedConnector) {
-        void (async () => {
-          try {
-            const provider = await injectedConnector.getProvider()
-            if (provider && typeof (provider as { request?: unknown }).request === 'function') {
-              const eth = provider as { request: (args: { method: string }) => Promise<unknown> }
-
-              if (isImTokenBrowser) {
-                // imToken's eth_requestAccounts hangs when called programmatically.
-                // Connection is handled via WalletConnect instead — skip this path.
-                return
-              }
-
-              // MetaMask iOS: auto-approves eth_requestAccounts inside its own browser.
-              // Calling it first seeds eth_accounts so the subsequent reconnect() succeeds
-              // without triggering an AppKit state-sync disconnect (which connect() would cause).
-              await eth.request({ method: 'eth_requestAccounts' })
-            }
-            const res = await reconnect(config, { connectors: [injectedConnector] })
-            console.debug('[ReconnectOnMount] mobile reconnect result', res)
-          } catch (error) {
-            console.debug('[ReconnectOnMount] mobile reconnect failed', error)
-          }
-        })()
-        return
-      }
+      void reconnectInjectedConnector().catch((error: unknown) => {
+        console.debug('[ReconnectOnMount] mobile reconnect failed', error)
+      })
+      return
     }
 
     void reconnect(config)
@@ -70,6 +75,22 @@ function OpenWalletModalOnCustomEvent(): null {
   return null
 }
 
+function ConnectInjectedWalletOnCustomEvent(): null {
+  useEffect(() => {
+    const handler = (): void => {
+      void connectInjectedConnector().catch((error: unknown) => {
+        console.error('[ConnectInjectedWalletOnCustomEvent] failed', error)
+      })
+    }
+
+    document.addEventListener(CONNECT_INJECTED_WALLET_EVENT, handler)
+
+    return () => document.removeEventListener(CONNECT_INJECTED_WALLET_EVENT, handler)
+  }, [])
+
+  return null
+}
+
 interface Web3ProviderProps {
   children: ReactNode
 }
@@ -79,6 +100,7 @@ export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
     <WagmiProvider config={config}>
       <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
+      <ConnectInjectedWalletOnCustomEvent />
       <QueryClientProvider client={queryClient}>
         <SafeProvider>
           <SafeConnectionHandler>{children}</SafeConnectionHandler>

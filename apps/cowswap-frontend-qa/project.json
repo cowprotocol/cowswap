@@ -1,0 +1,37 @@
+{
+  "name": "cowswap-frontend-qa",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/cowswap-frontend-qa/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-qa",
+        "command": "playwright test"
+      }
+    },
+    "e2e:headed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-qa",
+        "command": "playwright test --headed --project=chromium"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/cowswap-frontend-qa/**/*.{ts,js}"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/cowswap-frontend-qa/tsconfig.json"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["cowswap-frontend"]
+}
