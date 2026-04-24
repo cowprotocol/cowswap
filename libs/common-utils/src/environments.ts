@@ -1,4 +1,4 @@
-import { getConfiguredEnvironmentNameFromEnvVars } from './environmentConfig'
+import { getConfiguredEnvironmentNameFromEnvVars } from './env'
 import { registerOnWindow } from './misc'
 
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'

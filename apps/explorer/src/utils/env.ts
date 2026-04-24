@@ -1,3 +1,5 @@
+import { getConfiguredEnvironmentNameFromEnvVars } from '@cowprotocol/common-utils'
+
 type EnvsFlags = {
   isLocal: boolean
   isDev: boolean
@@ -8,23 +10,10 @@ type EnvsFlags = {
 
 export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
 const ALL_ENVIRONMENTS: Envs[] = ['local', 'development', 'pr', 'staging', 'production']
-
-function isEnvironmentName(value: string): value is Envs {
-  return ALL_ENVIRONMENTS.includes(value as Envs)
-}
+const ENVIRONMENT_VAR_NAMES = ['REACT_APP_ENVIRONMENT'] as const
 
 function getConfiguredEnvironmentName(): Envs {
-  const env = process.env.REACT_APP_ENVIRONMENT?.trim().toLowerCase()
-
-  if (!env) {
-    throw new Error(`Missing REACT_APP_ENVIRONMENT. Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
-  }
-
-  if (!isEnvironmentName(env)) {
-    throw new Error(`Invalid REACT_APP_ENVIRONMENT="${env}". Expected one of: ${ALL_ENVIRONMENTS.join(', ')}`)
-  }
-
-  return env
+  return getConfiguredEnvironmentNameFromEnvVars(ENVIRONMENT_VAR_NAMES, ALL_ENVIRONMENTS)
 }
 
 function getEnvironmentChecks(environmentName: Envs): EnvsFlags {
