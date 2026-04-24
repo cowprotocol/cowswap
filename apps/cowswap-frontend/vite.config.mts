@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -14,6 +15,8 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
 import * as path from 'path'
+
+import pkg from './package.json'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
@@ -30,6 +33,12 @@ const nodeDepsToInclude = ['crypto', 'stream']
 
 const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
+const defaultSentryOrg = 'cowprotocol'
+const defaultSentryProject = 'cowswap'
+const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN
+const sentryOrg = process.env.SENTRY_ORG || defaultSentryOrg
+const sentryProject = process.env.SENTRY_PROJECT || defaultSentryProject
+const sentryReleaseName = `CowSwap@v${pkg.version}`
 
 // eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode, isPreview }) => {
@@ -85,6 +94,26 @@ export default defineConfig(({ mode, isPreview }) => {
       }) as PluginOption,
     )
     plugins.push(bundleStats() as PluginOption)
+  }
+
+  if (isProduction && sentryAuthToken) {
+    plugins.push(
+      ...sentryVitePlugin({
+        org: sentryOrg,
+        project: sentryProject,
+        authToken: sentryAuthToken,
+        telemetry: false,
+        release: {
+          name: sentryReleaseName,
+          inject: false,
+          create: true,
+          finalize: true,
+        },
+        sourcemaps: {
+          filesToDeleteAfterUpload: ['../../build/cowswap/**/*.js.map', '../../build/cowswap/**/*.mjs.map'],
+        },
+      }),
+    )
   }
 
   // Disable page indexing for non-prod envs

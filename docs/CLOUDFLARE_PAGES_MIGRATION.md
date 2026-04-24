@@ -56,6 +56,11 @@ Recommended project settings:
 - Build command: `pnpm run install:ci && pnpm run build:cowswap`
 - Build output directory: `build/cowswap`
 - Build variable: `SKIP_DEPENDENCY_INSTALL=1`
+- Secret: `SENTRY_AUTH_TOKEN` for build-time sourcemap upload
+- Optional overrides:
+  - `SENTRY_ORG=cowprotocol`
+  - `SENTRY_PROJECT=frontend`
+  - These are already the repo defaults and only need to be set if you want to override them.
 
 ### `explorer`
 - Root directory: repository root
