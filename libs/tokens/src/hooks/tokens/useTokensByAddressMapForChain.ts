@@ -11,7 +11,7 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { additionalChainTokenListsStateAtom } from '../../state/additionalChainTokenLists/additionalChainTokenListsStateAtom'
+import { additionalChainTokenListsStateAtom } from '../../state/additionalChainTokenLists/additionalChainTokenListsState.atoms'
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { TokensByAddress } from '../../state/tokens/allTokensAtom'
 import { ListState } from '../../types'

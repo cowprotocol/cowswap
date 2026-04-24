@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { additionalChainTokenListsStateAtom } from './additionalChainTokenListsStateAtom'
+import { additionalChainTokenListsStateAtom } from './additionalChainTokenListsState.atoms'
 
 import { ListState } from '../../types'
 
