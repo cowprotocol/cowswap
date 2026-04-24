@@ -25,7 +25,7 @@ const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomW
     {},
     getJotaiMergerStorage(),
     {
-      getOnInit: true,
+      unstable_getOnInit: true,
     },
   ),
 )

@@ -6,7 +6,7 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
-import { SOL_ADDRESS_PATTERN, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenList } from '@uniswap/token-lists'
 
 import { createConfig, http } from 'wagmi'
@@ -119,42 +119,39 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   return validateTokenList(cleanedList)
 }
 
-function isValidNonEvmAddress(address: string): boolean {
-  return SOL_ADDRESS_PATTERN.test(address)
+// we can't use uniswap scheme to validate non-evm lists due to address difference
+function isValidTokenList(value: unknown): value is TokenList {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return (
+    typeof v['name'] === 'string' &&
+    typeof v['version'] === 'object' &&
+    v['version'] !== null &&
+    Array.isArray(v['tokens'])
+  )
 }
 
 /**
  * Like sanitizeList, but for non-EVM chains (e.g. Solana, BTC).
- * Skips EVM address checksum — filters tokens whose addresses don't match
- * any known non-EVM address pattern (Solana base58, BTC).
+ * Validates list shape at runtime (response.json() is any), then filters tokens
+ * whose addresses don't match any known non-EVM address pattern.
  */
 async function sanitizeAdditionalChainList(list: TokenList): Promise<TokenList> {
-  const tokens = list.tokens.filter((token) => isValidNonEvmAddress(token.address))
+  if (!isValidTokenList(list)) {
+    throw new Error('Invalid token list format')
+  }
 
+  const tokens = list.tokens.filter((token) => isSolanaAddress(token.address))
   return { ...list, tokens }
 }
 
 /**
  * Fetches a token list for an additional target chain (non-EVM, e.g. Solana).
  * Unlike fetchTokenList, this skips EVM address checksum validation.
+ * ENS resolution is not supported — non-EVM chains always use direct URLs.
  */
 export function fetchAdditionalChainTokenList(list: ListSourceConfig): Promise<ListState> {
-  const isEnsSource = parseENSAddress(list.source)
-  return isEnsSource ? fetchAdditionalChainTokenListByEnsName(list) : fetchAdditionalChainTokenListByUrl(list)
-}
-
-async function fetchAdditionalChainTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
   return _fetchTokenList(list.source, [list.source], sanitizeAdditionalChainList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
-async function fetchAdditionalChainTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
-  const translatedUri = contenthashToUri(contentHashUri)
-  const urls = uriToHttp(translatedUri)
-
-  return _fetchTokenList(list.source, urls, sanitizeAdditionalChainList).then((result) => {
     return listStateFromSourceConfig(result, list)
   })
 }
