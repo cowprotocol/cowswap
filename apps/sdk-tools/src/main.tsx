@@ -1,15 +1,14 @@
-import { StrictMode } from 'react'
+import { ReactNode, StrictMode } from 'react'
 
 import 'inter-ui'
+import './cowSdkAdapter'
 import { Web3Provider } from '@cowprotocol/wallet'
 
 import { createRoot } from 'react-dom/client'
 
 import { SdkTools } from './SdkTools'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function Root() {
+function Root(): ReactNode {
   return (
     <StrictMode>
       <Web3Provider>
