@@ -42,16 +42,15 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
-  // const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
-  // if (!url) {
-  //   return null
-  // }
+  if (!(chainId in SAFE_API_NETWORK_ID)) {
+    return null
+  }
   if (!SAFE_API_AUTH_TOKEN) {
     console.warn('No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.')
   }
   const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
   return new SafeApiKit({
-    txServiceUrl: getSafeApiUrl(chainId),
+    txServiceUrl: getSafeApiUrl(chainId as SupportedChainId),
     chainId: BigInt(chainId),
     apiKey: SAFE_API_AUTH_TOKEN || undefined,
   })
