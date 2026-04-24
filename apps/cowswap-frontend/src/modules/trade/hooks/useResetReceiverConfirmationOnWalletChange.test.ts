@@ -10,7 +10,7 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(() => ({ account: '0x123', chainId: 1 })),
 }))
 
-jest.mock('../state/nonEvmReceiverConfirmedAtom', () => ({
+jest.mock('../state/nonEvmReceiverConfirmedAtom.atoms', () => ({
   useSetNonEvmReceiverConfirmed: jest.fn(() => mockSetNonEvmReceiverConfirmed),
 }))
 

@@ -78,7 +78,7 @@ jest.mock('common/utils/addressValidation', () => {
         return {
           isValidAddress: (v: string) => v === 'bc1qvalid',
           supportsENS: false,
-          placeholderKey: 'nonEvm',
+          placeholderKey: 'bitcoin',
           supportsChainPrefix: false,
         }
       }
@@ -86,7 +86,7 @@ jest.mock('common/utils/addressValidation', () => {
         return {
           isValidAddress: (v: string) => v === 'SolValid1111111111111111111111111111111111111',
           supportsENS: false,
-          placeholderKey: 'nonEvm',
+          placeholderKey: 'solana',
           supportsChainPrefix: false,
         }
       }
@@ -142,16 +142,16 @@ describe('AddressInputPanel', () => {
     expect(input.getAttribute('placeholder')).toBe('Wallet Address or ENS name')
   })
 
-  it('uses non-ENS placeholder for BTC target', () => {
+  it('uses BTC-specific placeholder for BTC target', () => {
     renderComponent({ targetChainId: AdditionalTargetChainId.BITCOIN })
     const input = screen.getByRole('textbox')
-    expect(input.getAttribute('placeholder')).toBe('Recipient address')
+    expect(input.getAttribute('placeholder')).toBe('Bitcoin address (bc1…, 1…, 3…)')
   })
 
-  it('uses non-ENS placeholder for SOL target', () => {
+  it('uses Solana-specific placeholder for SOL target', () => {
     renderComponent({ targetChainId: AdditionalTargetChainId.SOLANA })
     const input = screen.getByRole('textbox')
-    expect(input.getAttribute('placeholder')).toBe('Recipient address')
+    expect(input.getAttribute('placeholder')).toBe('Solana address')
   })
 
   it('shows View on Explorer link for valid EVM address', () => {

@@ -53,7 +53,7 @@ describe('getAddressValidationStrategy', () => {
     const strategy = getAddressValidationStrategy(AdditionalTargetChainId.BITCOIN)
 
     it('returns supportsENS false', () => expect(strategy.supportsENS).toBe(false))
-    it('returns placeholderKey nonEvm', () => expect(strategy.placeholderKey).toBe('nonEvm'))
+    it('returns placeholderKey bitcoin', () => expect(strategy.placeholderKey).toBe('bitcoin'))
     it('returns supportsChainPrefix false', () => expect(strategy.supportsChainPrefix).toBe(false))
     it('validates valid BTC address', () => expect(strategy.isValidAddress(VALID_BTC)).toBe(true))
     it('rejects invalid BTC address', () => expect(strategy.isValidAddress('0xinvalid')).toBe(false))
@@ -73,7 +73,7 @@ describe('getAddressValidationStrategy', () => {
     const strategy = getAddressValidationStrategy(AdditionalTargetChainId.SOLANA)
 
     it('returns supportsENS false', () => expect(strategy.supportsENS).toBe(false))
-    it('returns placeholderKey nonEvm', () => expect(strategy.placeholderKey).toBe('nonEvm'))
+    it('returns placeholderKey solana', () => expect(strategy.placeholderKey).toBe('solana'))
     it('returns supportsChainPrefix false', () => expect(strategy.supportsChainPrefix).toBe(false))
     it('validates valid Solana address', () => expect(strategy.isValidAddress(VALID_SOL)).toBe(true))
     it('rejects invalid Solana address', () => expect(strategy.isValidAddress('0xinvalid')).toBe(false))

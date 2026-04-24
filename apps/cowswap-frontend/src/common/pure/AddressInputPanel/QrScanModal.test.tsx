@@ -45,13 +45,13 @@ function makeMockStream(): MediaStream {
 }
 
 function setupSupported(stream: MediaStream | null = makeMockStream()): void {
-  mockUseQrCameraStream.mockReturnValue({ stream, isSupported: true })
-  mockUseQrBarcodeScanner.mockReturnValue({ isSupported: true })
+  mockUseQrCameraStream.mockReturnValue({ stream, isSupported: true, permissionDenied: false })
+  mockUseQrBarcodeScanner.mockReturnValue(true)
 }
 
 function setupUnsupported(reason: 'camera' | 'scanner'): void {
-  mockUseQrCameraStream.mockReturnValue({ stream: null, isSupported: reason !== 'camera' })
-  mockUseQrBarcodeScanner.mockReturnValue({ isSupported: reason !== 'scanner' })
+  mockUseQrCameraStream.mockReturnValue({ stream: null, isSupported: reason !== 'camera', permissionDenied: false })
+  mockUseQrBarcodeScanner.mockReturnValue(reason !== 'scanner')
 }
 
 function renderModal(props: Partial<React.ComponentProps<typeof QrScanModal>> = {}): ReturnType<typeof render> {
