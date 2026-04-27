@@ -8,7 +8,7 @@ msgstr ""
 "Language: pl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-27 08:58\n"
+"PO-Revision-Date: 2026-04-27 10:59\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
@@ -483,6 +483,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "When"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
@@ -2592,10 +2596,6 @@ msgstr ""
 msgid "Pool analytics"
 msgstr ""
 
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/index.tsx
-msgid "Swap deadline"
-msgstr ""
-
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 msgstr ""
@@ -3427,10 +3427,6 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Native currency (e.g ETH)"
-msgstr ""
-
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
-msgid "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
@@ -5094,6 +5090,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "This wallet is not yet supported"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "The token pair is constrained"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
@@ -7851,3 +7851,4 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr ""
+
