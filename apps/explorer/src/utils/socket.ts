@@ -6,5 +6,5 @@ export function getSocketUrl(txHash: string): string {
 }
 
 export function getSocketApiUrl(orderId: string): string {
-  return `https://microservices.socket.tech/loki/order?orderId=${orderId}`
+  return `https://microservices.socket.tech/loki/order?orderId=${encodeURIComponent(orderId)}`
 }
