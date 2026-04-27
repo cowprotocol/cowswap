@@ -5,7 +5,7 @@ import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/w
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
-// const vercelSuffix = '-cowswap-dev.vercel.app'
+const vercelSuffix = '-cowswap-dev.vercel.app'
 
 const getBaseUrl = (): string => {
   if (typeof window === 'undefined' || !window) return ''
@@ -15,11 +15,9 @@ const getBaseUrl = (): string => {
   if (isDev) return 'https://dev.swap.cow.fi'
 
   if (isVercel) {
-    // const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
 
-    // TODO: revert
-    return 'https://swap-dev-git-feat-widget-tokenpairconstraints-cowswap-dev.vercel.app'
-    // return `https://swap-dev-git-${prKey}${vercelSuffix}`
+    return `https://swap-dev-git-${prKey}${vercelSuffix}`
   }
 
   return 'https://swap.cow.fi'
