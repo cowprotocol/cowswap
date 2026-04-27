@@ -10,6 +10,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 /**
  * Updates the URL to reflect the selected chain:
  * - When the path has a chain segment (e.g. /42161/swap), replaces it with the new chainId so the URL stays in sync.
+ * - When on the root path (/), does nothing — the router's redirect flow will resolve to the correct trade URL.
  * - Otherwise sets the legacy query parameter ?chain=...
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
@@ -32,6 +33,13 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
         const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
         console.log('[SAFE-DEBUG][useLegacySetChainIdToUrl] path-based navigate to', newPathname)
         navigate({ pathname: newPathname, search: location.search }, { replace: true })
+        return
+      }
+
+      // On the root path, the router redirects to the swap page which will resolve the correct chain.
+      // Setting ?chain= here would leave the app stuck with no matching trade route.
+      if (pathname === '/') {
+        console.log('[SAFE-DEBUG][useLegacySetChainIdToUrl] skipping — on root path, letting router redirect handle it')
         return
       }
 
