@@ -42,7 +42,7 @@ export function getCowSwapDuplicateOrderUrl(chainId: SupportedChainId, order: Or
 
   const routeSegment = getTradeRouteSegment(getUiOrderType(order))
   const inputCurrencyId = getInputCurrencyId(chainId, sellToken)
-  const outputCurrencyId = buyToken.address
+  const outputCurrencyId = getInputCurrencyId(chainId, buyToken)
 
   const params = new URLSearchParams()
   const sellAmountParam = formatAtomicAmountForSwapUrl(sellAmount, sellToken.decimals)
