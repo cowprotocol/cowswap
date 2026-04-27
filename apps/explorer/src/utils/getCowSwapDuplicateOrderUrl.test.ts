@@ -1,3 +1,4 @@
+import * as commonUtils from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
@@ -7,6 +8,14 @@ import { Order } from 'api/operator'
 import { getCowSwapDuplicateOrderUrl } from './getCowSwapDuplicateOrderUrl'
 
 describe('getCowSwapDuplicateOrderUrl', () => {
+  beforeEach(() => {
+    jest.spyOn(commonUtils, 'getSwapBaseUrl').mockReturnValue('https://swap.cow.fi')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   const weth = {
     address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     symbol: 'WETH',

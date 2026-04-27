@@ -1,9 +1,8 @@
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getSwapBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-import { COWSWAP_LINK } from 'explorer/const'
 
 import { Order } from 'api/operator'
 
@@ -57,6 +56,6 @@ export function getCowSwapDuplicateOrderUrl(chainId: SupportedChainId, order: Or
   }
   params.set('orderKind', kind)
 
-  const path = `${COWSWAP_LINK}/#/${chainId}/${routeSegment}/${encodeURIComponent(inputCurrencyId)}/${encodeURIComponent(outputCurrencyId)}`
+  const path = `${getSwapBaseUrl()}/#/${chainId}/${routeSegment}/${encodeURIComponent(inputCurrencyId)}/${encodeURIComponent(outputCurrencyId)}`
   return `${path}?${params.toString()}`
 }
