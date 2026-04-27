@@ -203,10 +203,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
           })
         } catch {
           console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
-          // Do NOT reset to undefined on error: a transient getInfo() failure during chain transition
-          // would make useIsSafeWallet() return false, which briefly makes isSmartContractWallet false,
-          // which triggers the CrossChainUnlockScreen ("Cross-chain swaps are here") for Safe users.
-          // The previous safeInfo value is good enough until the next successful poll (every 5s).
+          setSafeInfo(undefined)
         }
       } else {
         if (chainId && account) {
