@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
 import { SolvedByBadge } from './SolvedByBadge'
-import { LinkButton, TextLink } from './styled'
+import { LinkButton, TextLink, Wrapper } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
@@ -81,12 +81,14 @@ export function VerboseDetails({
       </DetailRow>
       <DetailRow label="Filled" tooltipText={DetailsTableTooltips.filled}>
         <FilledProgress order={order} />
-        {showFillsButton && (
-          <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-            <FontAwesomeIcon icon={faFill} />
-            View fills
-          </LinkButton>
-        )}
+        <Wrapper>
+          {showFillsButton && (
+            <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
+              <FontAwesomeIcon icon={faFill} />
+              View fills
+            </LinkButton>
+          )}
+        </Wrapper>
       </DetailRow>
       <DetailRow label="Order surplus" tooltipText={DetailsTableTooltips.surplus}>
         {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}

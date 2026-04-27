@@ -11,8 +11,7 @@ import { useTable } from './useTable'
 import { CardRow } from '../../../components/common/CardRow'
 import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
-import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import { TabList } from '../../../components/common/Tabs/Tabs'
+import { TabItemInterface, TabList } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { useFlexSearch } from '../../../hooks/useFlexSearch'
 import { Token, useGetTokens } from '../../../hooks/useGetTokens'
@@ -62,11 +61,6 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
       display: flex;
       flex-direction: column;
     }
-  }
-
-  .tab-extra-content {
-    justify-content: center;
-    padding: 1.4rem 0;
   }
 `
 
