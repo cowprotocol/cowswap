@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { isIframe, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -12,7 +12,7 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
-// import { AddIntermediateTokenModal } from 'modules/tokensList'
+import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
@@ -76,7 +76,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
-  const [_showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
+  const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
 
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
@@ -173,13 +173,13 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const hasInputAmount = !!inputCurrencyAmount && !inputCurrencyAmount.equalTo(0)
 
-  // const handleImport = useCallback(() => {
-  //   setShowAddIntermediateTokenModal(false)
-  // }, [])
+  const handleImport = useCallback(() => {
+    setShowAddIntermediateTokenModal(false)
+  }, [])
 
-  // const handleCloseImportModal = useCallback(() => {
-  //   setShowAddIntermediateTokenModal(false)
-  // }, [])
+  const handleCloseImportModal = useCallback(() => {
+    setShowAddIntermediateTokenModal(false)
+  }, [])
 
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
@@ -195,6 +195,30 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     !isNetworkDeprecated &&
     !isInjectedWidget() &&
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
+
+  useEffect(() => {
+    console.log('[SAFE-DEBUG][SwapWidget] shouldShowLockScreen inputs', {
+      isHydrated,
+      isUnlocked,
+      isNetworkUnsupported,
+      isNetworkDeprecated,
+      isInjectedWidget: isInjectedWidget(),
+      isIframe: isIframe(),
+      isConnected,
+      isSmartContractWallet,
+      isEagerConnectInProgress,
+      shouldShowLockScreen,
+    })
+  }, [
+    isHydrated,
+    isUnlocked,
+    isNetworkUnsupported,
+    isNetworkDeprecated,
+    isConnected,
+    isSmartContractWallet,
+    isEagerConnectInProgress,
+    shouldShowLockScreen,
+  ])
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -263,32 +287,32 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   return (
     <Container>
-      {/* {showAddIntermediateTokenModal ? (
+      {showAddIntermediateTokenModal ? (
         <AddIntermediateTokenModal
           onDismiss={handleCloseImportModal}
           onBack={handleCloseImportModal}
           onImport={handleImport}
         />
-      ) : ( */}
-      <TradeWidget
-        slots={slots}
-        actions={widgetActions}
-        params={params}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-        confirmModal={
-          <SwapConfirmModal
-            doTrade={doTrade.callback}
-            recipient={recipient}
-            recipientAddress={recipientAddress}
-            priceImpact={priceImpact}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-          />
-        }
-        genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
-      />
-      {/* )} */}
+      ) : (
+        <TradeWidget
+          slots={slots}
+          actions={widgetActions}
+          params={params}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          confirmModal={
+            <SwapConfirmModal
+              doTrade={doTrade.callback}
+              recipient={recipient}
+              recipientAddress={recipientAddress}
+              priceImpact={priceImpact}
+              inputCurrencyInfo={inputCurrencyPreviewInfo}
+              outputCurrencyInfo={outputCurrencyPreviewInfo}
+            />
+          }
+          genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+        />
+      )}
       <BottomBanners />
     </Container>
   )

@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { AccountType } from '@cowprotocol/types'
 
@@ -46,7 +48,13 @@ export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
   const isSafeWallet = useIsSafeWallet()
 
-  return isSafeWallet || accountType === AccountType.SMART_CONTRACT
+  const result = isSafeWallet || accountType === AccountType.SMART_CONTRACT
+
+  useEffect(() => {
+    console.log('[SAFE-DEBUG][useIsSmartContractWallet]', { isSafeWallet, accountType, result })
+  }, [isSafeWallet, accountType, result])
+
+  return result
 }
 
 // https://eips.ethereum.org/EIPS/eip-7702#abstract

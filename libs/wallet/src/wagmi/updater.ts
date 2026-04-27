@@ -160,6 +160,7 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   }, [connector, eip6963Providers, setEip6963Provider])
 
   useEffect(() => {
+    console.log('[SAFE-DEBUG][WalletUpdater] walletInfo changed', walletInfo)
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
@@ -172,6 +173,7 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 
   useEffect(() => {
+    console.log('[SAFE-DEBUG][WalletUpdater] gnosisSafeInfo changed', gnosisSafeInfo)
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
@@ -186,9 +188,11 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
 
   useEffect(() => {
     const updateSafeInfo: () => Promise<void> = async () => {
+      console.log('[SAFE-DEBUG][useSafeInfo] updateSafeInfo called', { hasSdk: !!safeAppsSdk, account, chainId })
       if (safeAppsSdk) {
         try {
           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
+          console.log('[SAFE-DEBUG][useSafeInfo] getInfo() success', appsSdkSafeInfo)
           setSafeInfo((prevSafeInfo) => {
             const { safeAddress, threshold, owners, isReadOnly, nonce } = appsSdkSafeInfo
             return {
@@ -201,7 +205,8 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               isReadOnly,
             }
           })
-        } catch {
+        } catch (e) {
+          console.log('[SAFE-DEBUG][useSafeInfo] getInfo() ERROR', e)
           console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
           // Do NOT reset to undefined on error: a transient getInfo() failure during chain transition
           // would make useIsSafeWallet() return false, which briefly makes isSmartContractWallet false,
@@ -210,8 +215,10 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
         }
       } else {
         if (chainId && account) {
+          console.log('[SAFE-DEBUG][useSafeInfo] no SDK, fetching via getSafeInfo API', { chainId, account })
           try {
             const _safeInfo = await getSafeInfo(chainId, account)
+            console.log('[SAFE-DEBUG][useSafeInfo] getSafeInfo() success', _safeInfo)
             const { address, threshold, owners, nonce } = _safeInfo
             setSafeInfo((prevSafeInfo) => ({
               ...prevSafeInfo,
@@ -224,10 +231,12 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               isReadOnly: false,
             }))
           } catch {
+            console.log('[SAFE-DEBUG][useSafeInfo] getSafeInfo() failed — not a Safe, clearing safeInfo')
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
           }
         } else {
+          console.log('[SAFE-DEBUG][useSafeInfo] no SDK, no account/chainId — clearing safeInfo', { chainId, account })
           setSafeInfo(undefined)
         }
       }
