@@ -77,6 +77,7 @@ export const TabList = styled.div`
   display: flex;
   justify-content: flex-start;
   border-bottom: 0.1rem solid ${Color.explorer_border};
+  border-radius: 4px;
   box-sizing: border-box;
   flex-flow: row wrap;
 

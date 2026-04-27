@@ -8,14 +8,12 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
   margin-left: auto;
 
-  ${Media.MediumAndUp()} {
-    align-items: center;
-  }
-
-  ${Media.upToSmall()} {
+  ${Media.upToTiny()} {
+    width: 100%;
     flex-direction: column;
   }
 `
@@ -34,10 +32,6 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   padding: 0.8rem 1.5rem;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
-
-  ${Media.upToSmall()} {
-    margin: 1.6rem 0 0 0;
-  }
 
   &:hover {
     opacity: 0.8;
@@ -64,10 +58,6 @@ export const ExternalLinkButton = styled.a`
   padding: 0.8rem 1.5rem;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
-
-  ${Media.upToSmall()} {
-    margin: 1.6rem 0 0 0;
-  }
 
   &:hover {
     opacity: 0.8;
