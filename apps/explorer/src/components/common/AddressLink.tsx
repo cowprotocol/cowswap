@@ -55,7 +55,7 @@ export function AddressLink({
   const addressNode = (
     <LinkWithNetworkWrapper>
       {(showIcon || showNetworkName) && <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.dark} />}
-      {address ? `${getAddressKey(address)} ↗` : 'Unknown'}
+      {address ? `${getAddressKey(address)} ↗` : '-'}
     </LinkWithNetworkWrapper>
   )
 
