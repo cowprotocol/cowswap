@@ -1,5 +1,5 @@
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
+import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -24,6 +24,13 @@ const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
 const HISTORY_TX_COUNT_LIMIT = 100
 
+const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
+
+function getSafeApiHeaders(): HeadersInit {
+  if (!SAFE_API_AUTH_TOKEN) return {}
+  return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
+}
+
 type TwapDataArray = TwapOrdersSafeData[]
 
 export async function fetchTwapOrdersFromSafe(
@@ -31,10 +38,6 @@ export async function fetchTwapOrdersFromSafe(
   safeAddress: string,
   composableCowContract: ComposableCowContractData,
   setData: (state: TwapDataArray) => void,
-  /**
-   * Example of the second chunk url:
-   * https://safe-transaction-goerli.safe.global/api/v1/safes/0xe9B79591E270B3bCd0CC7e84f7B7De74BA3D0E2F/all-transactions/?executed=false&limit=20&offset=40&queued=true&trusted=true
-   */
   nextUrl?: string,
   accumulator: TwapDataArray[] = [],
 ): Promise<TwapDataArray> {
@@ -48,12 +51,64 @@ export async function fetchTwapOrdersFromSafe(
   const flattenState = accumulator.flat()
 
   // Exit from the recursion if we have enough transactions or there is no next page
+
   if (accumulator.length >= SAFE_TX_HISTORY_DEPTH || !response?.next) {
-    setData(flattenState)
-    return flattenState
+    /**
+     * Also fetch recently executed transactions (one page, newest-first).
+     * For Safe via WalletConnect, executed transactions disappear from the pending
+     * queue (executed=false), so we need a separate pass to capture them and set
+     * isExecuted=true — which lets the status logic correctly transition the order
+     * away from WaitSigning.
+     */
+    const executedResults = await fetchRecentlyExecutedTransactions(chainId, safeAddress, composableCowContract)
+
+    const merged = mergeByHash([...flattenState, ...executedResults])
+
+    setData(merged)
+    return merged
   }
 
   return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setData, response.next, accumulator)
+}
+
+async function fetchRecentlyExecutedTransactions(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  composableCowContract: ComposableCowContractData,
+): Promise<TwapDataArray> {
+  try {
+    const url = `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=true&limit=${HISTORY_TX_COUNT_LIMIT}&ordering=-submissionDate`
+
+    const headers = getSafeApiHeaders()
+
+    const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
+    const results = response?.results || []
+
+    return parseSafeTransactionsResult(composableCowContract, results)
+  } catch (error) {
+    console.error('Error fetching executed Safe transactions', { safeAddress }, error)
+    return []
+  }
+}
+
+/**
+ * Merge two TwapDataArrays by safeTxHash, preferring entries with isExecuted=true.
+ * This ensures that if the same transaction appears in both the pending and executed
+ * fetches (e.g. a tx that just executed), we keep the executed version.
+ */
+function mergeByHash(items: TwapDataArray): TwapDataArray {
+  const map = new Map<string, TwapOrdersSafeData>()
+
+  for (const item of items) {
+    const hash = item.safeTxParams.safeTxHash
+    const existing = map.get(hash)
+
+    if (!existing || (!existing.safeTxParams.isExecuted && item.safeTxParams.isExecuted)) {
+      map.set(hash, item)
+    }
+  }
+
+  return Array.from(map.values())
 }
 
 async function fetchSafeTransactionsChunk(
@@ -61,9 +116,11 @@ async function fetchSafeTransactionsChunk(
   safeAddress: string,
   nextUrl?: string,
 ): Promise<AllTransactionsListResponse> {
+  const headers = getSafeApiHeaders()
+
   if (nextUrl) {
     try {
-      const response: AllTransactionsListResponse = await fetch(nextUrl).then((res) => res.json())
+      const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -75,17 +132,13 @@ async function fetchSafeTransactionsChunk(
     }
   }
 
-  /**
-   * SafeApiKit set limit=20 by default and there is no way to change it using the SDK
-   *
-   */
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
 
-  return fetch(url).then((res) => res.json())
+  return fetch(url, { headers }).then((res) => res.json())
 }
 
 function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {
-  return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
+  return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
 function parseSafeTransactionsResult(

@@ -36,7 +36,7 @@ export function formatShortDate(value: Date | number | string | undefined | null
     return
   }
 
-  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric' })
+  return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' })
 }
 
 export function timeSinceInSeconds(timestamp?: number): number | undefined {
