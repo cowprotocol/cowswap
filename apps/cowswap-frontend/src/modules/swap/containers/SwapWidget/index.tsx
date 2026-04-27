@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isIframe, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -195,30 +195,6 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     !isNetworkDeprecated &&
     !isInjectedWidget() &&
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
-
-  useEffect(() => {
-    console.log('[SAFE-DEBUG][SwapWidget] shouldShowLockScreen inputs', {
-      isHydrated,
-      isUnlocked,
-      isNetworkUnsupported,
-      isNetworkDeprecated,
-      isInjectedWidget: isInjectedWidget(),
-      isIframe: isIframe(),
-      isConnected,
-      isSmartContractWallet,
-      isEagerConnectInProgress,
-      shouldShowLockScreen,
-    })
-  }, [
-    isHydrated,
-    isUnlocked,
-    isNetworkUnsupported,
-    isNetworkDeprecated,
-    isConnected,
-    isSmartContractWallet,
-    isEagerConnectInProgress,
-    shouldShowLockScreen,
-  ])
 
   const slots: TradeWidgetSlots = {
     topContent,

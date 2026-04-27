@@ -20,9 +20,17 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
     (chainId: SupportedChainId) => {
       const pathname = location.pathname
 
+      console.log('[SAFE-DEBUG][useLegacySetChainIdToUrl] called', {
+        chainId,
+        pathname,
+        search: location.search,
+        isPathBased: /^\/\d+\//.test(pathname),
+      })
+
       // Path-based chain (e.g. /42161/swap): replace the chain segment so the URL updates and connect flow uses it
       if (/^\/\d+\//.test(pathname)) {
         const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
+        console.log('[SAFE-DEBUG][useLegacySetChainIdToUrl] path-based navigate to', newPathname)
         navigate({ pathname: newPathname, search: location.search }, { replace: true })
         return
       }
@@ -30,10 +38,12 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
+      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
+      console.log('[SAFE-DEBUG][useLegacySetChainIdToUrl] legacy ?chain= navigate to', { pathname, search: newSearch })
       navigate(
         {
           pathname,
-          search: replaceURLParam(location.search, 'chain', chainInfo.name),
+          search: newSearch,
         },
         { replace: true },
       )

@@ -17,6 +17,14 @@ export function WalletChainUrlSyncUpdater(): null {
   const prevChainIdRef = useRef(chainId)
 
   useEffect(() => {
+    console.log('[SAFE-DEBUG][WalletChainUrlSyncUpdater]', {
+      isConnected,
+      chainId,
+      prevChainId: prevChainIdRef.current,
+      isSupportedChainId: isSupportedChainId(chainId),
+      willSync: isConnected && isSupportedChainId(chainId) && chainId !== prevChainIdRef.current,
+      currentPathname: window.location.hash,
+    })
     // Only sync supported chains from a connected wallet
     if (isConnected && isSupportedChainId(chainId) && chainId !== prevChainIdRef.current) {
       setChainIdToUrl(chainId)

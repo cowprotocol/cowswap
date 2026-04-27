@@ -36,7 +36,13 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
       customRoute?: RoutesValues,
     ) => {
       const targetRoute = customRoute || tradeRoute
-      if (!targetRoute) return
+      if (!targetRoute) {
+        console.log(
+          '[SAFE-DEBUG][useTradeNavigate] no targetRoute, bailing — tradeTypeInfo is null, current path has no trade type',
+          { tradeRoute, customRoute, chainId, pathname: location.pathname },
+        )
+        return
+      }
 
       const route = parameterizeTradeRoute(
         {

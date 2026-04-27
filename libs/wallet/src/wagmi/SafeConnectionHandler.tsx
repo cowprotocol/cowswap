@@ -81,19 +81,6 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
   const isConnectingToSafe = useRef(false)
 
-  useEffect(() => {
-    console.log('[SAFE-DEBUG][SafeConnectionHandler] state', {
-      isEmbeddedApp: isEmbeddedApp(),
-      isConnected,
-      isConnectedThroughSafeApp,
-      connectorId: currentConnector?.id,
-      connectorType: currentConnector?.type,
-      isSafeConnector: isSafeConnector(currentConnector),
-      safeAddress: safe?.safeAddress,
-      safeChainId: safe?.chainId,
-    })
-  }, [isConnected, isConnectedThroughSafeApp, currentConnector, safe])
-
   const isInSafeSdkContext = isConnectedThroughSafeApp && !!safe?.safeAddress
 
   const safeRef = useRef(safe)
