@@ -44,7 +44,14 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   const isListUrlValid = useMemo(() => {
     if (!listInput) return false
 
-    return uriToHttp(listInput).length > 0 || Boolean(parseENSAddress(listInput))
+    const value = listInput.trim()
+
+    if (parseENSAddress(value)) return true
+
+    const protocol = value.split(':')[0]?.toLowerCase()
+    if (protocol !== 'http' && protocol !== 'https') return false
+
+    return uriToHttp(value).length > 0
   }, [listInput])
 
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
