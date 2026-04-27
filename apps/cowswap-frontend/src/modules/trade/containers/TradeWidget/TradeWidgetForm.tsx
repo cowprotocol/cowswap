@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -18,7 +18,6 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { useDerivedTradeState } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -32,16 +31,20 @@ import * as styledEl from './styled'
 import { mapCurrencyInfo } from './TradeWidgetForm.utils'
 import { TradeWidgetProps } from './types'
 
-import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
+import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
+import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
+import { useResetRecipientOnChainChange } from '../../hooks/useResetRecipientOnChainChange'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useIsWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
+import { useSetNonEvmReceiverConfirmed } from '../../state/nonEvmReceiverConfirmedAtom.atoms'
 import { TradeType } from '../../types'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 import { QuotePolingProgress } from '../QuotePolingProgress'
@@ -136,25 +139,23 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWalletBridging = !!isSmartContractWallet && isCurrentTradeBridging
   const openTokenSelectWidget = useOpenTokenSelectWidget()
-  const tradeStateFromUrl = useTradeStateFromUrl()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
+  const handleNonEvmConfirm = useSetNonEvmReceiverConfirmed()
+
+  useResetReceiverConfirmationOnWalletChange()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
+  useResetRecipientOnChainChange(buyToken?.chainId, recipient || '', onChangeRecipient)
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
-  const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
-  // For SC wallets doing any bridge, the recipient field must be shown so the user can confirm the
-  // destination address and unblock the SmartContractReceiverWarning confirmation checkbox.
-  const isSCWalletBridging = isCurrentTradeBridging && !!isSmartContractWallet
-  const requiresRecipientForBridge = !!account && (isNonEvmBridging || isSCWalletBridging)
-  const withRecipient = !isWrapOrUnwrap && (hasRecipientInUrl || showRecipient || requiresRecipientForBridge)
+  const withRecipient = useIsWithRecipient(showRecipient)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
@@ -314,10 +315,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 </div>
                 {withRecipient && (
                   <SetRecipient
+                    key={account}
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
                     targetChainId={buyToken?.chainId}
-                    isRequired={isNonEvmBridging}
+                    isBridging={isCurrentTradeBridging}
+                    isSmartContractWalletBridging={isSmartContractWalletBridging}
+                    onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}
 
