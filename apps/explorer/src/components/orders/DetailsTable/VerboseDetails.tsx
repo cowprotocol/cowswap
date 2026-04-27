@@ -20,6 +20,7 @@ import { GasFeeDisplay } from '../GasFeeDisplay'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
+import { OrderWrapperDetails } from '../OrderWrapperDetails'
 
 interface VerboseDetailsProps {
   order: Order
@@ -109,6 +110,13 @@ export function VerboseDetails({
           )}
         </DetailRow>
       )}
+      <OrderWrapperDetails fullAppData={fullAppData ?? undefined} order={order}>
+        {(content) => (
+          <DetailRow label="Wrappers" tooltipText={DetailsTableTooltips.wrappers}>
+            {content}
+          </DetailRow>
+        )}
+      </OrderWrapperDetails>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => (
           <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks}>
