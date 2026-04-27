@@ -5,6 +5,7 @@ import { TruncatedText } from '@cowprotocol/ui'
 
 import { faGroupArrowsRotate, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { bungeeBridgeProvider } from 'sdk/cowSdk'
 
 import { Order } from 'api/operator'
 import { getCowSwapDuplicateOrderUrl } from 'utils/getCowSwapDuplicateOrderUrl'
@@ -19,10 +20,10 @@ interface OrderIdItemProps {
   chainId: SupportedChainId
   order: Order
   onCopy(label: string): void
-  isBridging: boolean
+  bridgeProviderId?: string
 }
 
-export function OrderIdItem({ chainId, order, onCopy, isBridging }: OrderIdItemProps): ReactNode {
+export function OrderIdItem({ chainId, order, onCopy, bridgeProviderId }: OrderIdItemProps): ReactNode {
   const orderId = order.uid
 
   if (!orderId) return null
@@ -45,7 +46,7 @@ export function OrderIdItem({ chainId, order, onCopy, isBridging }: OrderIdItemP
             New order↗
           </ExternalLinkButton>
         )}
-        {isBridging && (
+        {bridgeProviderId === bungeeBridgeProvider.info.dappId && (
           <>
             <ExternalLinkButton href={socketUrl} target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faGroupArrowsRotate} />

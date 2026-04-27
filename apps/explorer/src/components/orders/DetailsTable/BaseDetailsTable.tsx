@@ -59,6 +59,7 @@ export function BaseDetailsTable({
     partiallyFilled,
     buyToken,
     sellToken,
+    bridgeProviderId,
   } = order
 
   if (!buyToken || !sellToken) {
@@ -72,8 +73,9 @@ export function BaseDetailsTable({
       label,
     })
   }
+
   const isSigning = status === 'signing'
-  const isBridging = !!order?.bridgeProviderId
+  const isBridging = !!bridgeProviderId
 
   return (
     <SimpleTable
@@ -87,7 +89,7 @@ export function BaseDetailsTable({
               </td>
             </WarningRow>
           )}
-          <OrderIdItem chainId={chainId} order={order} onCopy={onCopy} isBridging={isBridging} />
+          <OrderIdItem chainId={chainId} order={order} onCopy={onCopy} bridgeProviderId={bridgeProviderId} />
           <FromItem
             chainId={chainId}
             isSigning={isSigning}
