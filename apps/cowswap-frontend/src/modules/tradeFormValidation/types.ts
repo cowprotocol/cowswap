@@ -118,4 +118,5 @@ export enum TradeFormValidation {
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,
   DisableTradeWithHighPriceImpact,
+  WidgetConstrainedTokenPair,
 }
