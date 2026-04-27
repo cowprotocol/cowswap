@@ -8,7 +8,7 @@ msgstr ""
 "Language: pl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-04-23 09:17\n"
+"PO-Revision-Date: 2026-04-27 08:58\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
@@ -277,8 +277,8 @@ msgid "My Custom Hooks ({customHooksCount})"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
-msgid "{label} ({feeAsPercent}%)"
-msgstr ""
+#~ msgid "{label} ({feeAsPercent}%)"
+#~ msgstr "{label} ({feeAsPercent}%)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
@@ -3162,8 +3162,8 @@ msgstr ""
 #~ msgstr "Rewards activity"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
-msgid "Protocol fee ({protocolFeeAsPercent}%)"
-msgstr ""
+#~ msgid "Protocol fee ({protocolFeeAsPercent}%)"
+#~ msgstr "Protocol fee ({protocolFeeAsPercent}%)"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
@@ -3434,6 +3434,7 @@ msgid "This token list is not available in your region."
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "Protocol fee"
 msgstr ""
 
@@ -7292,6 +7293,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Invalid parameters"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+msgid "{label}"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
