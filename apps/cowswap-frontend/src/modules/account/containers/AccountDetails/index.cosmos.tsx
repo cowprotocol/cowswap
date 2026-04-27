@@ -1,4 +1,3 @@
-import { useSelect } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
 import { AccountDetails } from './index'
@@ -21,14 +20,9 @@ const Wrapper = styled.div`
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Host() {
-  const [isHardWare] = useSelect('Is hardware wallet', {
-    options: ['true', 'false'],
-    defaultValue: 'false',
-  })
-
   return (
     <Wrapper>
-      <AccountDetails {...defaultProps} forceHardwareWallet={isHardWare === 'true'} />
+      <AccountDetails {...defaultProps} />
     </Wrapper>
   )
 }

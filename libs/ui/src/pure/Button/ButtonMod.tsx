@@ -14,6 +14,7 @@ export const BaseButton = styled(RebassButton)<
   {
     padding?: string
     width?: string
+    $gap?: string
     $borderRadius?: string
     altDisabledStyle?: boolean
     buttonSize?: ButtonSize // mod
@@ -33,6 +34,7 @@ export const BaseButton = styled(RebassButton)<
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
+  gap: ${({ $gap }) => $gap ?? '0'};
   cursor: pointer;
   position: relative;
   z-index: 1;

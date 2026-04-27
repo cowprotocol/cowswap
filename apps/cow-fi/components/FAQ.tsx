@@ -7,7 +7,7 @@ import { Font, Media, UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $fontSize?: number }>`
   --titleSize: 26px;
   --color: var(${UI.COLOR_NEUTRAL_10});
   display: flex;
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   gap: 10px;
   margin: 24px 0;
   width: 100%;
-  font-size: 24px;
+  font-size: ${({ $fontSize }) => `${$fontSize ?? 24}px`};
   font-weight: ${Font.weight.bold};
 
   ${Media.upToMedium()} {
@@ -129,7 +129,7 @@ interface FAQItemProps {
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleToggle = (e: React.MouseEvent) => {
+  const handleToggle = (e: React.MouseEvent): void => {
     e.preventDefault()
     setIsOpen(!isOpen)
   }
@@ -155,11 +155,12 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
 
 interface FAQComponentProps {
   faqs: FAQItemProps[]
+  fontSize?: number
 }
 
-const FAQComponent: React.FC<FAQComponentProps> = ({ faqs }) => {
+const FAQComponent: React.FC<FAQComponentProps> = ({ faqs, fontSize }) => {
   return (
-    <Wrapper>
+    <Wrapper $fontSize={fontSize}>
       {faqs.map((faq, index) => (
         <FAQItem key={index} question={faq.question} answer={faq.answer} />
       ))}

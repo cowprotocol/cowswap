@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
@@ -21,10 +22,10 @@ export function useCrossChainTokens(crossChainOrder: CrossChainOrder): CrossChai
 
   const { data: destinationChainTokens } = useBridgeProviderBuyTokens(provider, destinationChainId)
 
-  const sourceToken = sourceTokens && sourceTokens[inputTokenAddress.toLowerCase()]
-  const intermediateToken = sourceTokens && sourceTokens[order.buyToken.toLowerCase()]
+  const sourceToken = sourceTokens && sourceTokens[getAddressKey(inputTokenAddress)]
+  const intermediateToken = sourceTokens && sourceTokens[getAddressKey(order.buyToken)]
   const destinationToken =
-    destinationChainTokens && outputTokenAddress ? destinationChainTokens[outputTokenAddress.toLowerCase()] : undefined
+    destinationChainTokens && outputTokenAddress ? destinationChainTokens[getAddressKey(outputTokenAddress)] : undefined
 
   return { sourceToken, intermediateToken, destinationToken }
 }

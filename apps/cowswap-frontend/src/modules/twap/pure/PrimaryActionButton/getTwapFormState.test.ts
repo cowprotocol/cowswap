@@ -34,6 +34,8 @@ describe('getTwapFormState()', () => {
         sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
         chainId: 1,
         partTime: 1000000,
+        numberOfPartsValue: 1,
+        tradeFormValidationContext: null,
       })
 
       expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
@@ -47,6 +49,8 @@ describe('getTwapFormState()', () => {
         sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
         chainId: 1,
         partTime: 1000000,
+        numberOfPartsValue: 1,
+        tradeFormValidationContext: null,
       })
 
       expect(result).toEqual(null)

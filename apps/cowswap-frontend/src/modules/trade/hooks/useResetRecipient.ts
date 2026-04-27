@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
@@ -25,12 +26,16 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+  const outputCurrency = tradeState?.outputCurrency
+  const inputCurrency = tradeState?.inputCurrency
+  const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+  const isNonEvmBridging = isBridging && !!outputCurrency && !isEvmChain(outputCurrency.chainId)
 
   /**
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible && !postHooksRecipientOverride) {
+    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,10 +45,10 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Reset recipient whenever chainId changes
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride) {
+    if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride])
+  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
 
   /**
    * Remove recipient override when its source hook was deleted

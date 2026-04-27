@@ -1,8 +1,18 @@
 import * as Sentry from '@sentry/browser'
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function reportPermitWithDefaultSigner(params: Record<any, any>): void {
+import { log } from './logger'
+
+export enum ERROR_TYPES {
+  ON_SWAP = 'onSwap',
+  ON_APPROVE = 'onApprove',
+}
+
+export enum SentryTag {
+  DISCONNECTED = 'DISCONNECTED',
+  UNKNOWN = 'UNKNOWN',
+}
+
+export function reportPermitWithDefaultSigner(params: Record<string, unknown>): void {
   // report this to sentry if we ever use the default signer in the permit
   Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
     tags: { errorType: 'permitWithDefaultSigner' },
@@ -10,21 +20,19 @@ export function reportPermitWithDefaultSigner(params: Record<any, any>): void {
   })
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function reportAppDataWithHooks(params: Record<any, any>): void {
-  // report to sentry if we ever use hooks in the app data
-  Sentry.captureException("Hooks are present in the app data when it shouldn't", {
-    tags: { errorType: 'appDataWithHooks' },
+export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>): void {
+  Sentry.captureException('Attempt to place order with expired quote', {
+    tags: { errorType: 'placeOrderWithExpiredQuote' },
     contexts: { params },
   })
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function reportPlaceOrderWithExpiredQuote(params: Record<any, any>): void {
-  Sentry.captureException('Attempt to place order with expired quote', {
-    tags: { errorType: 'placeOrderWithExpiredQuote' },
-    contexts: { params },
+export function captureError(error: Error, errorType: ERROR_TYPES, params?: Record<string, unknown>): void {
+  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
+  Sentry.captureException(error, {
+    tags: { errorType, captureType: 'manual' },
+    contexts: {
+      params,
+    },
   })
 }

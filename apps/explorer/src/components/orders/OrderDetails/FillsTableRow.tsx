@@ -42,6 +42,7 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
     executionTime,
     surplusAmount,
     surplusPercentage,
+    orderId,
   } = trade
 
   const { value: tokens } = useMultipleErc20({
@@ -94,15 +95,20 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
       <td>{executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}</td>
       {showSolverDetails && (
         <td>
-          <TradeSolverCell txHash={txHash} />
+          <TradeSolverCell txHash={txHash} orderId={orderId} />
         </td>
       )}
     </tr>
   )
 }
 
-function TradeSolverCell({ txHash }: { txHash: string }): React.ReactNode {
-  const { solver, isLoading } = useTradeSolver(txHash)
+type TradeSolverCellProps = {
+  txHash: string
+  orderId: string
+}
+
+function TradeSolverCell({ txHash, orderId }: TradeSolverCellProps): React.ReactNode {
+  const { solver, isLoading } = useTradeSolver(txHash, orderId)
 
   if (isLoading) return <Spinner spin size="1x" />
 

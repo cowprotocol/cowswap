@@ -1,7 +1,10 @@
-import { percentToBps } from '@cowprotocol/common-utils'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { ReactNode } from 'react'
 
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { TradeSpenderOverrideUpdater } from '@cowprotocol/balances-and-allowances'
+import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { AppDataUpdater } from 'modules/appData'
 
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
@@ -14,18 +17,21 @@ import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TwapUpdaters() {
-  const { account } = useWalletInfo()
+export function TwapUpdaters(): ReactNode {
+  const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
+  const isSafeViaWc = useIsSafeViaWc()
+  const composableCowContract = useComposableCowContractData()
   const twapOrderSlippage = useTwapSlippage()
 
-  const shouldLoadTwapOrders = !!(isSafeWallet && account && composableCowContract)
+  const shouldLoadTwapOrders = !!((isSafeWallet || isSafeViaWc) && account && composableCowContract.address)
+  const composableCowChainId = composableCowContract.chainId
+  // TWAP orders always approve against the production vault relayer regardless of the current environment.
+  const spenderAddress = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
 
   return (
     <>
+      <TradeSpenderOverrideUpdater spenderAddress={spenderAddress} />
       <CreatedInOrderBookOrdersUpdater />
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />

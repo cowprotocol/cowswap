@@ -2,19 +2,21 @@ import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
-import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
+import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function IframeResizer() {
+export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {
     if (!isIframe() || !isInjectedWidget()) return
+    const parentOrigin = getParentOrigin()
+
+    if (!parentOrigin) return
 
     // Initial height calculation and message
     // TODO: Add proper return type annotation
@@ -25,16 +27,26 @@ export function IframeResizer() {
       if (isModalOpen) {
         const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
 
-        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall })
+        widgetIframeTransport.postMessageToWindow(
+          window.parent,
+          WidgetMethodsEmit.SET_FULL_HEIGHT,
+          { isUpToSmall },
+          parentOrigin,
+        )
 
         previousHeightRef.current = 0
         return
       }
 
       if (contentHeight !== previousHeightRef.current) {
-        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-          height: contentHeight,
-        })
+        widgetIframeTransport.postMessageToWindow(
+          window.parent,
+          WidgetMethodsEmit.UPDATE_HEIGHT,
+          {
+            height: contentHeight,
+          },
+          parentOrigin,
+        )
         previousHeightRef.current = contentHeight
       }
     }

@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
-import { errorToString } from '@cowprotocol/common-utils'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { ButtonOutlined, ExternalLink, LinkIcon, Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -52,10 +52,9 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
       } else {
         setSimulationError({ [hookId]: response.error.message })
       }
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setSimulationError({ [hookId]: errorToString(error) })
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+      setSimulationError({ [hookId]: error.message })
     } finally {
       setIsLoading(false)
     }

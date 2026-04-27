@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 
@@ -11,7 +12,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAffiliateTraderCodeInput } from '../hooks/useAffiliateTraderCodeInput'
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
-import { isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
+import { formatRefCode, isSupportedPayoutsNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateTradeCodeForm } from '../pure/AffiliateTraderModal/AffiliateTradeCodeForm'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import {
@@ -21,7 +22,8 @@ import {
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export function AffiliateTraderModalCodeLinking(): ReactNode {
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
+  const chainId = useWalletChainId()
   const analytics = useCowAnalytics()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
@@ -32,6 +34,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const { codeInput, error, isVerifying, verifyCode, onChange, onEdit, onRemove } = useAffiliateTraderCodeInput()
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const { data: codeInfo } = useAffiliateTraderInfo(savedCode)
+  const showInvalidFormat = !!codeInput && !formatRefCode(codeInput)
 
   const onTogglePayoutConfirmed = useCallback(
     (checked: boolean): void => {
@@ -83,6 +86,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
       onTogglePayoutConfirmed={onTogglePayoutConfirmed}
       value={codeInput}
       onChange={onChange}
+      showInvalidFormat={showInvalidFormat}
       savedCode={savedCode}
       isLoading={isVerifying}
       error={error}

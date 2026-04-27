@@ -22,6 +22,7 @@ import {
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -164,6 +165,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
+  const hideTradeRateDetails = useShouldHideTradeRateDetails()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -220,10 +222,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
-          <styledEl.FooterBox>
-            <DeadlineInput />
-            <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} />
-          </styledEl.FooterBox>
+          {!hideTradeRateDetails && (
+            <styledEl.FooterBox>
+              <DeadlineInput />
+              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
+            </styledEl.FooterBox>
+          )}
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}

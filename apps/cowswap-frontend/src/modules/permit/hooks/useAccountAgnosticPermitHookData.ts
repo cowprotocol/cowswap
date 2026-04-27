@@ -49,7 +49,7 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
     if (!address || !isSupportedPermitInfo(permitInfo)) return undefined
 
     return {
-      inputToken: { address, name },
+      inputToken: { address: address as `0x${string}`, name },
       permitInfo,
     }
   }, [address, name, permitInfo])

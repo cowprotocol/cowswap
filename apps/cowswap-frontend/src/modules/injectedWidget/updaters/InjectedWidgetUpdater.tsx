@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   UpdateParamsPayload,
   widgetIframeTransport,
@@ -17,57 +18,48 @@ import { useNavigate } from 'common/hooks/useNavigate'
 import { IframeResizer } from './IframeResizer'
 
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
+import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
-
-const messagesCache: { [method: string]: unknown } = {}
-
-const getEventMethod = (event: MessageEvent): string | null =>
-  (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
-
-const cacheMessages = (event: MessageEvent): void => {
-  const method = getEventMethod(event)
-
-  if (!method) return
-
-  messagesCache[method] = event.data
-}
-
+import {
+  cacheWidgetMessage,
+  clearCachedWidgetMessage,
+  getCachedWidgetMessageMethods,
+  replayCachedWidgetMessage,
+} from '../utils/widgetMessagesCache.utils'
 ;(function initInjectedWidget() {
   const isInIframe = window.parent !== window.self
 
   const parent = window.parent
+  const parentOrigin = getParentOrigin()
 
-  if (!parent || !isInIframe) return
+  if (!parent || !isInIframe || !parentOrigin) return
 
   /**
    * To avoid delays, immediately send an activation message and start listening messages
    */
-  window.addEventListener('message', cacheMessages)
-  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0)
+  window.addEventListener('message', cacheWidgetMessage)
+  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
 
   /**
-   * Intercept window.open and anchor clicks to send a message to the parent window
-   * to handle the opening of deeplinks in the parent window
+   * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
+   *
+   * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
+   * which opens in the parent, so calling both would open two tabs / popups.
    */
-  const originalWinOpen = window.open
-
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
-    widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    widgetIframeTransport.postMessageToWindow(
+      parent,
+      WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+      { href, target, rel },
+      parentOrigin,
+    )
 
-    return originalWinOpen.apply(this, args)
+    return window
   }
-
-  document.body.addEventListener('click', (event) => {
-    if (event.target instanceof HTMLAnchorElement) {
-      const { href, target, rel } = event.target
-
-      widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
-    }
-  })
 })()
 
 export function InjectedWidgetUpdater(): ReactNode {
@@ -78,19 +70,28 @@ export function InjectedWidgetUpdater(): ReactNode {
     },
     updateParams,
   ] = useAtom(injectedWidgetParamsAtom)
+  const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
+  const isReadySentRef = useRef(false)
 
   useEffect(() => {
     // Stop listening of message outside of React
-    window.removeEventListener('message', cacheMessages)
+    window.removeEventListener('message', cacheWidgetMessage)
+
+    const parentOrigin = getParentOrigin()
+
+    if (!parentOrigin) {
+      return
+    }
 
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
       (data) => {
         if (
@@ -108,8 +109,10 @@ export function InjectedWidgetUpdater(): ReactNode {
         prevData.current = data
 
         const appParams = data.appParams
+        const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
 
         const errors = validateWidgetParams(appParams)
+        setHooksEnabled(hooksEnabled)
 
         updateParams({
           params: appParams,
@@ -119,32 +122,41 @@ export function InjectedWidgetUpdater(): ReactNode {
         // Navigate to the new path
         navigate(data.urlParams, { replace: true })
       },
+      parentOrigin,
     )
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
       (data) => {
         if (data.metaData) {
           updateMetaData(data.metaData)
         }
       },
+      parentOrigin,
     )
 
     // Process all cached messages
-    Object.keys(messagesCache).forEach((method) => {
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      widgetIframeTransport.postMessageToWindow(window, method as any, messagesCache[method])
+    getCachedWidgetMessageMethods().forEach((method) => {
+      replayCachedWidgetMessage(method)
+      clearCachedWidgetMessage(method)
+    })
 
-      delete messagesCache[method]
+    const parent = window.parent !== window.self ? window.parent : null
+    const frameId = window.requestAnimationFrame(() => {
+      if (!parent || isReadySentRef.current) return
+
+      isReadySentRef.current = true
+      widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.READY, void 0, parentOrigin)
     })
 
     return () => {
+      window.cancelAnimationFrame(frameId)
       widgetIframeTransport.stopListeningWindowListener(window, updateParamsListener)
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams])
+  }, [setHooksEnabled, updateMetaData, navigate, updateParams])
 
   // Log an error when partnerFee was set and then discarded
   useEffect(() => {

@@ -23,7 +23,7 @@ describe('useSupportedChains', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockMapChainInfo.mockImplementation((id) => ({ id, label: `Chain ${id}` }) as unknown as ChainInfo)
-    mockUseFlags.mockReturnValue({ isInkEnabled: true })
+    mockUseFlags.mockReturnValue({})
   })
 
   it('returns ChainInfo for all available chains', () => {
@@ -39,21 +39,5 @@ describe('useSupportedChains', () => {
     renderHook(() => useSupportedChains())
 
     expect(mockMapChainInfo).toHaveBeenCalledWith(SupportedChainId.MAINNET, CHAIN_INFO[SupportedChainId.MAINNET])
-  })
-
-  it('excludes INK when isInkEnabled is false', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: false })
-
-    const { result } = renderHook(() => useSupportedChains())
-
-    expect(result.current.map((c) => c.id)).not.toContain(SupportedChainId.INK)
-  })
-
-  it('includes INK when isInkEnabled is true', () => {
-    mockUseFlags.mockReturnValue({ isInkEnabled: true })
-
-    const { result } = renderHook(() => useSupportedChains())
-
-    expect(result.current.map((c) => c.id)).toContain(SupportedChainId.INK)
   })
 })

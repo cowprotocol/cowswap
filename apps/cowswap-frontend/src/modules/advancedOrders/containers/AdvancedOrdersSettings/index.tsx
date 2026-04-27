@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
-import { Settings } from 'modules/advancedOrders/pure/Settings'
+import { AdvancedOrdersSettingsDropdown } from 'modules/advancedOrders/pure/Settings/AdvancedOrdersSettings'
 import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -55,7 +55,7 @@ export function AdvancedOrdersSettings() {
         <MenuPopover portal={false}>
           <MenuItems>
             <MenuItem disabled={true} onSelect={() => void 0}>
-              <Settings state={settingsState} onStateChanged={onStateChanged} />
+              <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
             </MenuItem>
           </MenuItems>
         </MenuPopover>

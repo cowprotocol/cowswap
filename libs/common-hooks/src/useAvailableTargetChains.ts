@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { getAvailableDestinationChains } from '@cowprotocol/common-utils'
-import { AdditionalTargetChainId, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { useFeatureFlags } from './useFeatureFlags'
 
@@ -13,14 +13,10 @@ import { useFeatureFlags } from './useFeatureFlags'
  * bridge feature flags are enabled.
  */
 export function useAvailableTargetChains(): TargetChainId[] {
-  const { isInkEnabled, isBtcBridgeEnabled, isSolBridgeEnabled } = useFeatureFlags()
+  const { isBtcBridgeEnabled, isSolBridgeEnabled } = useFeatureFlags()
 
   return useMemo(() => {
     const chainsToSkip: TargetChainId[] = []
-
-    if (!isInkEnabled) {
-      chainsToSkip.push(SupportedChainId.INK)
-    }
 
     if (!isBtcBridgeEnabled) {
       chainsToSkip.push(AdditionalTargetChainId.BITCOIN)
@@ -31,5 +27,5 @@ export function useAvailableTargetChains(): TargetChainId[] {
     }
 
     return getAvailableDestinationChains(chainsToSkip)
-  }, [isInkEnabled, isBtcBridgeEnabled, isSolBridgeEnabled])
+  }, [isBtcBridgeEnabled, isSolBridgeEnabled])
 }

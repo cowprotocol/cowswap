@@ -14,14 +14,9 @@ interface Props {
   networkId?: number | null
 }
 
-function wrapperMemoryRouter(props: Props): React.ReactNode {
-  const state = createState(props.networkId ?? null)
-
-  return (
-    <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>
-      <GlobalStateContext.Provider value={[state, (): void => undefined]}>{props.children}</GlobalStateContext.Provider>
-    </MemoryRouter>
-  )
+type SearchSubmitHookState = {
+  location: ReturnType<typeof useLocation>
+  submit: ReturnType<typeof useSearchSubmit>
 }
 
 type TestState = {
@@ -34,11 +29,6 @@ function createState(networkId: number | null): TestState {
     theme: Theme.DARK,
     networkId,
   }
-}
-
-type SearchSubmitHookState = {
-  location: ReturnType<typeof useLocation>
-  submit: ReturnType<typeof useSearchSubmit>
 }
 
 function runHook(query: string, options?: { location?: string; networkId?: number | null }): SearchSubmitHookState {
@@ -64,6 +54,16 @@ function runHook(query: string, options?: { location?: string; networkId?: numbe
   })
 
   return result.current
+}
+
+function wrapperMemoryRouter(props: Props): React.ReactNode {
+  const state = createState(props.networkId ?? null)
+
+  return (
+    <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>
+      <GlobalStateContext.Provider value={[state, (): void => undefined]}>{props.children}</GlobalStateContext.Provider>
+    </MemoryRouter>
+  )
 }
 
 describe('useSearchSubmit', () => {

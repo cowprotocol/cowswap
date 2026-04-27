@@ -5,15 +5,12 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/hook-dapp-lib",
-        "main": "libs/hook-dapp-lib/src/index.ts",
-        "tsConfig": "libs/hook-dapp-lib/tsconfig.lib.json",
-        "assets": ["libs/hook-dapp-lib/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true,
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "configFile": "libs/hook-dapp-lib/vite.config.mts",
+        "assets": ["libs/hook-dapp-lib/*.md"]
       }
     },
     "serve": {

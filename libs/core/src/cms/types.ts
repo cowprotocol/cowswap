@@ -1,9 +1,28 @@
 import { components } from '@cowprotocol/cms'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+export type Announcement = {
+  text: string
+  isCritical: boolean
+  chainIds: SupportedChainId[]
+  envs: CowEnv[]
+}
+
+export type Announcements = Announcement[]
+
+export type CmsAnnouncements = components['schemas']['AnnouncementListResponseDataItem'][]
+
 export type CmsSolversInfo = components['schemas']['SolverListResponseDataItem'][]
 
-export type SolversInfo = SolverInfo[]
+export type NotificationLocation = 'default' | 'speechBubble'
+
+export type RestrictedTokenList = {
+  name: string
+  tokenListUrl: string
+  restrictedCountries: string[]
+}
+
+export type RestrictedTokenLists = RestrictedTokenList[]
 
 export type SolverInfo = {
   solverId: string
@@ -18,26 +37,7 @@ export type SolverNetwork = {
   env: CowEnv
 }
 
-export type CmsAnnouncements = components['schemas']['AnnouncementListResponseDataItem'][]
-
-export type Announcement = {
-  text: string
-  isCritical: boolean
-  chainIds: SupportedChainId[]
-  envs: CowEnv[]
-}
-
-export type Announcements = Announcement[]
-
-export type RestrictedTokenList = {
-  name: string
-  tokenListUrl: string
-  restrictedCountries: string[]
-}
-
-export type RestrictedTokenLists = RestrictedTokenList[]
-
-export type NotificationLocation = 'default' | 'speechBubble'
+export type SolversInfo = SolverInfo[]
 
 export const NOTIFICATION_LOCATION_DEFAULT: NotificationLocation = 'default'
 

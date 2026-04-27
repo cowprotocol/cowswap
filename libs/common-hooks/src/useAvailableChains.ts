@@ -14,7 +14,7 @@ import { useFeatureFlags } from './useFeatureFlags'
  */
 export function useAvailableChains(): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isInkEnabled } = useFeatureFlags()
+  const {} = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
@@ -22,12 +22,12 @@ export function useAvailableChains(): SupportedChainId[] {
     () => {
       const chainsToSkip: SupportedChainId[] = []
 
-      if (!isInkEnabled) {
-        chainsToSkip.push(SupportedChainId.INK)
-      }
+      // if (!isInkEnabled) {
+      //   chainsToSkip.push(SupportedChainId.INK)
+      // }
 
       return getAvailableSourceChains(chainsToSkip)
     },
-    [isInkEnabled],
+    [],
   )
 }

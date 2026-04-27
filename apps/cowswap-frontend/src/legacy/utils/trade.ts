@@ -1,9 +1,11 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   formatSymbol,
   formatTokenAmount,
   getCurrencyAddress,
   isAddress,
+  isBarnBackendEnv,
   isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
@@ -14,10 +16,9 @@ import {
   SigningScheme,
   SupportedChainId as ChainId,
   UnsignedOrder,
+  type Signer,
 } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
-import type { Signer } from '@ethersproject/abstract-signer'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
@@ -29,6 +30,8 @@ import { AppDataInfo } from 'modules/appData'
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
+import type { WalletClient } from 'viem'
+
 export type MapUnsignedOrderToOrderParams = {
   unsignedOrder: UnsignedOrder
   additionalParams: UnsignedOrderAdditionalParams
@@ -37,7 +40,7 @@ export type MapUnsignedOrderToOrderParams = {
 export type PostOrderParams = {
   account: string
   chainId: ChainId
-  signer: JsonRpcSigner
+  signer: WalletClient
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
@@ -214,7 +217,10 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
   const { orderId, chainId, signer, cancelPendingOrder } = params
 
-  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
+  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
 
   if (!signature) throw new Error(t`Signature is undefined!`)
 

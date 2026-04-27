@@ -114,4 +114,34 @@ describe('getUnsupportedBridgePairPatch', () => {
 
     expect(result).toBeNull()
   })
+
+  it('clears cross-chain state when source chain does not support non-EVM target (e.g. Solana)', () => {
+    const SOLANA_CHAIN_ID = 1000000001
+
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.LINEA,
+      targetChainId: SOLANA_CHAIN_ID,
+      bridgeSupportedNetworks: [{ id: SupportedChainId.MAINNET }, { id: SOLANA_CHAIN_ID }],
+      isBridgeSupportedNetworksLoading: false,
+    })
+
+    expect(result).toEqual({
+      targetChainId: null,
+      outputCurrencyId: null,
+      outputCurrencyAmount: null,
+    })
+  })
+
+  it('returns null when both source and non-EVM target are bridge-supported', () => {
+    const SOLANA_CHAIN_ID = 1000000001
+
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.MAINNET,
+      targetChainId: SOLANA_CHAIN_ID,
+      bridgeSupportedNetworks: [{ id: SupportedChainId.MAINNET }, { id: SOLANA_CHAIN_ID }],
+      isBridgeSupportedNetworksLoading: false,
+    })
+
+    expect(result).toBeNull()
+  })
 })

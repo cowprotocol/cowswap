@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import unknownTokenImg from 'assets/img/unknown-token.png'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
@@ -38,7 +38,7 @@ const tokensIconsFilesByAddress: Record<string, string> = Object.keys(tokensIcon
       "Error initializing 'assets/img/tokens' images. The image doesn't have the expected format: " + file,
     )
   }
-  acc[address.toLowerCase()] = file
+  acc[getAddressKey(address)] = file
 
   return acc
 }, {})
@@ -47,15 +47,15 @@ export const TokenImg: React.FC<Props> = (props) => {
   const { address, addressMainnet, symbol, name, network, tokenLogo } = props
   const { data: tokenListTokens } = useTokenList(network)
 
-  let iconFile = address && tokensIconsFilesByAddress[address.toLowerCase()]
+  let iconFile = address && tokensIconsFilesByAddress[getAddressKey(address)]
   if (!iconFile && addressMainnet) {
-    iconFile = tokensIconsFilesByAddress[addressMainnet.toLowerCase()]
+    iconFile = tokensIconsFilesByAddress[getAddressKey(addressMainnet)]
   }
   const iconFileUrl: string | undefined =
     tokenLogo ||
     (iconFile
       ? tokensIconsRequire[iconFile].default
-      : tokenListTokens?.[address?.toLowerCase()]?.logoURI || getImageUrl(addressMainnet || address))
+      : tokenListTokens?.[getAddressKey(address)]?.logoURI || getImageUrl(addressMainnet || address))
 
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442

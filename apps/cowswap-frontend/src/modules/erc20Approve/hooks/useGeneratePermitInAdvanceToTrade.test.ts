@@ -12,6 +12,7 @@ import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceT
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
 jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
   getWrappedToken: jest.fn(),
 }))
 
@@ -319,7 +320,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
 
       const generatePermit = result.current
 
-      await expect(generatePermit()).rejects.toThrow('Permit generation failed')
+      await expect(generatePermit()).resolves.toBe(false)
     })
 
     it('should handle generatePermit returning empty object', async () => {

@@ -42,6 +42,7 @@ export function AffiliateTraderStats(): ReactNode {
       ]}
       donutValue={getReferralTrafficPercent(info?.triggerVolume, progressToNextReward)}
       donutLabel={formatUsdCompact(progressToNextReward)}
+      lastUpdatedAt={stats?.lastUpdatedAt}
       donutSubtitle={
         info?.triggerVolume && (
           <>

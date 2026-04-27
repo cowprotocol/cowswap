@@ -1,7 +1,6 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
 
-import { useGetReceiveAmountInfo } from 'modules/trade'
-import { useEstimatedBridgeBuyAmount } from 'modules/trade'
+import { useGetReceiveAmountInfo, useEstimatedBridgeBuyAmount } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'

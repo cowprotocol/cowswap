@@ -22,6 +22,12 @@ interface CowSpeechBubbleHiringContentProps {
   onClose: () => void
 }
 
+export function CowSpeechBubbleHiringBanner(): ReactNode {
+  const callback = useCallback((close: () => void) => <CowSpeechBubbleHiringContent onClose={close} />, [])
+
+  return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
+}
+
 function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentProps): ReactNode {
   const prefersReducedMotion = useReducedMotionPreference()
   const hasDelayElapsed = useDelay(BUBBLE_DELAY_MS)
@@ -61,10 +67,4 @@ function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentP
       </JobsLink>
     </CowSpeechBubble>
   ) : null
-}
-
-export function CowSpeechBubbleHiringBanner(): ReactNode {
-  const callback = useCallback((close: () => void) => <CowSpeechBubbleHiringContent onClose={close} />, [])
-
-  return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
 }

@@ -1,8 +1,11 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
-import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  isBarnBackendEnv,
+  MAX_VALID_TO_EPOCH,
+} from '@cowprotocol/common-utils'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
+import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
@@ -10,6 +13,8 @@ import { t } from '@lingui/core/macro'
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
+
+import type { EthFlowContractData } from 'common/hooks/useContract'
 
 import { EthFlowOrderExistsCallback } from '../../../hooks/useCheckEthFlowOrderExists'
 
@@ -20,7 +25,7 @@ export interface UniqueOrderIdResult {
 
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
-  ethFlowContract: CoWSwapEthFlow,
+  ethFlowContract: EthFlowContractData,
   checkEthFlowOrderExists: EthFlowOrderExistsCallback,
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
@@ -29,7 +34,10 @@ export async function calculateUniqueOrderId(
   const { order } = getSignOrderParams(orderParams)
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/cow-sdk')
-  const domain = await OrderSigningUtils.getDomain(chainId)
+  const domain = await OrderSigningUtils.getDomain(chainId, {
+    env: isBarnBackendEnv ? 'staging' : 'prod',
+    settlementContractOverride: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  })
   // Different validTo when signing because EthFlow contract expects it to be max for all orders
   const orderDigest = hashOrder(domain, {
     ...order,

@@ -28,8 +28,9 @@ function buildFullAppData(appCode: string, refCode?: string): string {
 
 function buildOrder(overrides: Partial<EnrichedOrder> = {}): EnrichedOrder {
   return {
+    executedBuyAmount: '1',
     fullAppData: JSON.stringify({ appCode: DEFAULT_APP_CODE, metadata: {}, version: '1.0.0' }),
-    status: OrderStatus.OPEN,
+    status: OrderStatus.FULFILLED,
     ...overrides,
   } as EnrichedOrder
 }

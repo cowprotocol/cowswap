@@ -1,4 +1,5 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
@@ -16,7 +17,7 @@ export function useBridgeProviderBuyTokens(
       const { tokens } = await provider.getBuyTokens({ buyChainId })
 
       return tokens?.reduce<Record<string, TokenInfo>>((acc, val) => {
-        acc[val.address.toLowerCase()] = {
+        acc[getAddressKey(val.address)] = {
           ...val,
           name: val.name || '',
           symbol: val.symbol || '',

@@ -3,10 +3,10 @@ import React, { ReactNode, useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -135,6 +135,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -148,7 +149,12 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
-  const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
+  const isNonEvmBridging = isCurrentTradeBridging && !!buyToken && !isEvmChain(buyToken.chainId)
+  // For SC wallets doing any bridge, the recipient field must be shown so the user can confirm the
+  // destination address and unblock the SmartContractReceiverWarning confirmation checkbox.
+  const isSCWalletBridging = isCurrentTradeBridging && !!isSmartContractWallet
+  const requiresRecipientForBridge = !!account && (isNonEvmBridging || isSCWalletBridging)
+  const withRecipient = !isWrapOrUnwrap && (hasRecipientInUrl || showRecipient || requiresRecipientForBridge)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
@@ -222,7 +228,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && <AccountElement />}
+          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
@@ -310,7 +316,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                   <SetRecipient
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
-                    targetChainId={buyToken?.chainId as SupportedChainId}
+                    targetChainId={buyToken?.chainId}
+                    isRequired={isNonEvmBridging}
                   />
                 )}
 

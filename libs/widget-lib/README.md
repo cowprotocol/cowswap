@@ -44,7 +44,7 @@ const params: CowSwapWidgetParams = {
 const {updateParams} = createCowSwapWidget(
   widgetContainer,
   // Optionally, you can provide some additional params to customise your widget
-  {params, provider}
+  {params, provider, onReady: () => console.log('Widget ready')}
 )
 
 // You also can change widget configuration on the fly

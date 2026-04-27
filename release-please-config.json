@@ -94,10 +94,6 @@
       "package-name": "@cowprotocol/ens",
       "release-type": "node"
     },
-    "libs/multicall": {
-      "package-name": "@cowprotocol/multicall",
-      "release-type": "node"
-    },
     "libs/snackbars": {
       "package-name": "@cowprotocol/snackbars",
       "release-type": "node"

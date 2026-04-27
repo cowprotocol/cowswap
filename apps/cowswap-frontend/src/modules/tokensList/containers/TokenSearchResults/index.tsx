@@ -4,6 +4,10 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
+import { Field } from 'legacy/state/types'
+
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
@@ -16,21 +20,54 @@ export function TokenSearchResults(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
   const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap } = useTokenListContext()
+  const { tokenLists, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
 
   const { onTokenListItemClick } = selectTokenContext
 
-  const { onSelectToken } = useSelectTokenWidgetState()
+  const { field, onSelectToken } = useSelectTokenWidgetState()
 
   // Search all tokens (used in both modes)
   const defaultSearchResults = useSearchToken(searchInput)
+  const filter = useMemo(() => getTokenSearchFilter(searchInput), [searchInput])
+  const hasScopedListRestriction = useMemo(() => {
+    if (field === Field.INPUT) {
+      return !!(tokenLists?.length || sellTokenLists?.length)
+    }
 
-  // For bridge mode, merge bridge-supported tokens with search results (non-bridgeable shown as disabled)
+    if (field === Field.OUTPUT) {
+      return !!(tokenLists?.length || buyTokenLists?.length)
+    }
+
+    return !!(tokenLists?.length || sellTokenLists?.length || buyTokenLists?.length)
+  }, [buyTokenLists?.length, field, sellTokenLists?.length, tokenLists?.length])
+
   const searchResults: TokenSearchResponse = useMemo(() => {
-    if (!areTokensFromBridge) return defaultSearchResults
+    if (!hasScopedListRestriction && !areTokensFromBridge) {
+      return defaultSearchResults
+    }
 
-    // Filter bridge-supported tokens (target chain) by search input
-    const filter = getTokenSearchFilter(searchInput)
+    // scoped list restriction
+    if (!areTokensFromBridge) {
+      return {
+        ...defaultSearchResults,
+        activeListsResult: allTokens.filter(filter),
+        inactiveListsResult: [],
+        blockchainResult: [],
+        externalApiResult: [],
+      }
+    }
+
     const filteredBridgeTokens = allTokens.filter(filter)
+
+    if (hasScopedListRestriction) {
+      return {
+        ...defaultSearchResults,
+        activeListsResult: filteredBridgeTokens,
+        inactiveListsResult: [],
+        blockchainResult: [],
+        externalApiResult: [],
+      }
+    }
 
     // Merge: bridge tokens first, then additional search results (will be marked disabled)
     const bridgeAddresses = new Set(filteredBridgeTokens.map((t) => getAddressKey(t.address)))
@@ -42,7 +79,7 @@ export function TokenSearchResults(): ReactNode {
       ...defaultSearchResults,
       activeListsResult: [...filteredBridgeTokens, ...additionalTokens],
     }
-  }, [searchInput, areTokensFromBridge, allTokens, defaultSearchResults])
+  }, [allTokens, areTokensFromBridge, defaultSearchResults, filter, hasScopedListRestriction])
 
   const { activeListsResult } = searchResults
 

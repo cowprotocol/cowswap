@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -16,32 +17,17 @@ import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
+import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
+
+type ButtonComponent = React.ComponentType<ButtonComponentProps>
+
+type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
 
 interface ButtonErrorConfig {
   text: ReactNode
   id?: string
-}
-
-type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
-
-type ButtonComponent = React.ComponentType<ButtonComponentProps>
-
-function getDefaultQuoteError(): string {
-  return t`Error loading price. Try again later.`
-}
-
-function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
-  return {
-    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
-    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
-    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
-    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
-  }
 }
 
 function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
@@ -58,6 +44,22 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
     [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
+  }
+}
+
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
   }
 }
 
@@ -107,19 +109,27 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.InputAmountNotSet]: {
     text: <Trans>Enter an amount</Trans>,
   },
+  [TradeFormValidation.XstockMinimumTradeSize]: {
+    text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
+  },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
+  },
+  [TradeFormValidation.RecipientNotSet]: {
+    text: <Trans>Enter a receiver address</Trans>,
   },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+    const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+    const showEnsTooltip = isBridging && recipient && !isNonEvmBridging
 
     return (
       <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
-          {isBridging && recipient && (
+          {showEnsTooltip && (
             <HelpTooltip
               placement="top"
               text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
@@ -266,6 +276,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
+  [TradeFormValidation.ImpactLoading]: {
+    text: (
+      <>
+        <Trans>Fetching price impact</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
   [TradeFormValidation.BalancesLoading]: {
     text: (
       <>
@@ -358,5 +376,34 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
+  },
+  [TradeFormValidation.DisableTradeWithUnknownPriceImpact]: () => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Unknown price impact</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Not enough price data for one or both assets to calculate the price impact`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.DisableTradeWithHighPriceImpact]: ({ widgetPriceImpactThreshold = 0 }) => {
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Price impact is too high</Trans>
+          <HelpTooltip
+            placement="top"
+            text={t`Trading is not allowed with price impact higher than ${widgetPriceImpactThreshold}%`}
+          />
+        </>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.WidgetConstrainedTokenPair]: {
+    text: <Trans>The token pair is constrained</Trans>,
   },
 }

@@ -1,4 +1,11 @@
-import { delay, getCurrencyAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import {
+  captureError,
+  delay,
+  ERROR_TYPES,
+  getCurrencyAddress,
+  normalizeError,
+  reportPermitWithDefaultSigner,
+} from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
@@ -8,6 +15,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -18,10 +26,13 @@ import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { isNonEvmPlaceholderRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+
+import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -59,6 +70,7 @@ export async function swapFlow(
   const {
     orderParams,
     context,
+    config,
     permitInfo,
     generatePermitHook,
     permitAmountToSign,
@@ -84,7 +96,7 @@ export async function swapFlow(
     orderParams.appData = await handlePermit({
       appData,
       typedHooks,
-      account,
+      account: account as `0x${string}`,
       inputToken: inputCurrency,
       permitInfo,
       amount: permitAmountToSign,
@@ -139,6 +151,20 @@ export async function swapFlow(
       },
     }
 
+    /**
+     * Safety guard: placeholder addresses injected into quote requests so that routes and prices can
+     * be fetched before the user has entered a real non-EVM destination address. They must never reach
+     * an actual order.
+     *
+     * The UI already blocks order submission via the RecipientNotSet form validation, but this check
+     * is a last-resort defence against any path (race condition, future refactor, etc.) that could
+     * bypass that gate and call postSwapOrderFromQuote with a stale quote still holding a placeholder.
+     */
+    const bridgeRecipient = tradeQuoteState.bridgeQuote?.tradeParameters.bridgeRecipient
+    if (isNonEvmPlaceholderRecipient(bridgeRecipient)) {
+      throw new Error('Bridge recipient is a placeholder address. Please set a valid recipient before proceeding.')
+    }
+
     const {
       orderId,
       signature,
@@ -170,19 +196,21 @@ export async function swapFlow(
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = (
-        await orderParams.signer.sendTransaction(presignTx).catch((error) => {
-          /**
-           * When using Rabby and Safe, the presign transaction is not a real transaction
-           * It's a safe signature
-           */
-          if (error.transactionHash) {
-            return { hash: error.transactionHash }
-          } else {
-            throw error
-          }
-        })
-      ).hash
+      presignTxHash = await sendTransaction(config, {
+        to: presignTx.to as `0x${string}`,
+        value: BigInt(presignTx.value),
+        data: presignTx.data as Hex,
+      }).catch((error) => {
+        /**
+         * When using Rabby and Safe, the presign transaction is not a real transaction
+         * It's a safe signature
+         */
+        if (error.transactionHash) {
+          return error.transactionHash
+        } else {
+          throw error
+        }
+      })
     }
 
     const order = mapUnsignedOrderToOrder({
@@ -249,9 +277,9 @@ export async function swapFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const isCoWShedEip1271SignatureError = error instanceof CoWShedEip1271SignatureInvalid
 
@@ -260,6 +288,7 @@ export async function swapFlow(
         ? BridgeInvalidEip1271SignatureError
         : getSwapErrorMessage(error)
 
+    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)

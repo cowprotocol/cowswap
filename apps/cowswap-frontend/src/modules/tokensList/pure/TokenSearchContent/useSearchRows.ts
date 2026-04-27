@@ -16,6 +16,7 @@ export function useSearchRows({
   isLoading,
   matchedTokens,
   activeList,
+  disableTokenImport,
   blockchainResult,
   inactiveListsResult,
   externalApiResult,
@@ -25,14 +26,12 @@ export function useSearchRows({
   return useMemo(() => {
     const entries: TokenSearchRow[] = []
 
-    if (isLoading) {
-      return entries
-    }
+    if (isLoading) return entries
 
     const noRouteTooltip = getNoRouteTooltip()
     const checkingRouteTooltip = getCheckingRouteTooltip()
 
-    entries.push({ type: 'banner' })
+    if (!disableTokenImport) entries.push({ type: 'banner' })
 
     appendTokenRows({
       entries,
@@ -52,45 +51,48 @@ export function useSearchRows({
       checkingRouteTooltip,
     })
 
-    appendImportSection(entries, {
-      tokens: blockchainResult,
-      section: 'blockchain',
-      limit: SEARCH_RESULTS_LIMIT,
-      sectionTitle: undefined,
-      tooltip: undefined,
-      shadowed: false,
-      wrapperId: 'currency-import',
-      bridgeSupportedTokensMap,
-      areTokensFromBridge,
-    })
+    if (!disableTokenImport) {
+      appendImportSection(entries, {
+        tokens: blockchainResult,
+        section: 'blockchain',
+        limit: SEARCH_RESULTS_LIMIT,
+        sectionTitle: undefined,
+        tooltip: undefined,
+        shadowed: false,
+        wrapperId: 'currency-import',
+        bridgeSupportedTokensMap,
+        areTokensFromBridge,
+      })
 
-    appendImportSection(entries, {
-      tokens: inactiveListsResult,
-      section: 'inactive',
-      limit: SEARCH_RESULTS_LIMIT,
-      sectionTitle: t`Expanded results from inactive Token Lists`,
-      tooltip: t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`,
-      shadowed: true,
-      bridgeSupportedTokensMap,
-      areTokensFromBridge,
-    })
+      appendImportSection(entries, {
+        tokens: inactiveListsResult,
+        section: 'inactive',
+        limit: SEARCH_RESULTS_LIMIT,
+        sectionTitle: t`Expanded results from inactive Token Lists`,
+        tooltip: t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`,
+        shadowed: true,
+        bridgeSupportedTokensMap,
+        areTokensFromBridge,
+      })
 
-    appendImportSection(entries, {
-      tokens: externalApiResult,
-      section: 'external',
-      limit: SEARCH_RESULTS_LIMIT,
-      sectionTitle: t`Additional Results from External Sources`,
-      tooltip: t`Tokens from external sources.`,
-      shadowed: true,
-      bridgeSupportedTokensMap,
-      areTokensFromBridge,
-    })
+      appendImportSection(entries, {
+        tokens: externalApiResult,
+        section: 'external',
+        limit: SEARCH_RESULTS_LIMIT,
+        sectionTitle: t`Additional Results from External Sources`,
+        tooltip: t`Tokens from external sources.`,
+        shadowed: true,
+        bridgeSupportedTokensMap,
+        areTokensFromBridge,
+      })
+    }
 
     return entries
   }, [
     isLoading,
     matchedTokens,
     activeList,
+    disableTokenImport,
     blockchainResult,
     inactiveListsResult,
     externalApiResult,
