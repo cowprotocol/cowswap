@@ -5105,6 +5105,10 @@ msgstr "Order Creation Failed"
 msgid "This wallet is not yet supported"
 msgstr "This wallet is not yet supported"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "The token pair is constrained"
+msgstr "The token pair is constrained"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Created"

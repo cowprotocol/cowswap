@@ -22,5 +22,6 @@ export default {
   moduleNameMapper: {
     '^wagmi$': require.resolve('wagmi'),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
+    '^@reown/appkit-adapter-wagmi$': '<rootDir>/../../testing/reownAdapterMock.ts',
   },
 }

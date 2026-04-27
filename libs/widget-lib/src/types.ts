@@ -450,6 +450,14 @@ export interface CowSwapWidgetParams {
     whenPriceImpactIsHigherThan?: number
   }
 
+  /**
+   * Disables trading of specific token pair
+   */
+  tokenPairConstraints?: {
+    sell: { address: string; chainId: SupportedChainId }
+    buy: { address: string; chainId: SupportedChainId }
+  }[]
+
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult
     onBeforeWrapOrUnwrap(payload: OnTradeParamsPayload): WidgetHookResult

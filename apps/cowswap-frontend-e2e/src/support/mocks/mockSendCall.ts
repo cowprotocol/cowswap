@@ -170,14 +170,35 @@ export function handleNativeBalance(ethereum: typeof injected, owner: string, va
 }
 
 export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
-  const send = ethereum.send.bind(ethereum)
+  const originalSend = ethereum.send.bind(ethereum)
+  const originalRequest = ethereum.request.bind(ethereum)
 
-  cy.stub(ethereum, 'send').callsFake(async (...args) => {
-    for (const middleware of middlewares) {
-      const handledResult = await middleware(...args)
-      if (typeof handledResult === 'undefined') continue
-      return handledResult
+  // Flag to prevent infinite recursion: request -> send -> request
+  let isInsideSend = false
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cy.stub(ethereum, 'send').callsFake(async (...args: any[]) => {
+    isInsideSend = true
+    try {
+      for (const middleware of middlewares) {
+        const handledResult = await middleware(...args)
+        if (typeof handledResult === 'undefined') continue
+        return handledResult
+      }
+      return await (originalSend as Function)(...args)
+    } finally {
+      isInsideSend = false
     }
-    return send(...args)
+  })
+
+  // Also stub `request` — wagmi/viem call request() directly, not send().
+  // Delegate to the (already-stubbed) send so middleware interception works.
+  cy.stub(ethereum, 'request').callsFake(async (reqObj: { method: string; params?: unknown[] }) => {
+    // If called from within a send middleware (e.g. getOriginalResult), bypass to avoid recursion
+    if (isInsideSend) {
+      return originalRequest(reqObj)
+    }
+    // Use the stubbed send in promise form so middlewares can intercept
+    return ethereum.send(reqObj.method, reqObj.params)
   })
 }
