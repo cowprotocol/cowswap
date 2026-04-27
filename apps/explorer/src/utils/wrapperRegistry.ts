@@ -28,24 +28,6 @@ const EULER_BRAND = {
 // Registry keyed by lowercase contract address. Add a new entry per wrapper using a
 // dedicated file (or shared file for related wrappers) under utils/wrappers/.
 export const WRAPPERS_BY_ADDRESS: Record<string, WrapperRegistryEntry> = {
-  // OrderFlowFactory (bridge & swap)
-  '0xfc6f2303c89e6dce31993bfa83d0b76454ece384': {
-    info: {
-      name: 'OrderFlowFactory',
-      description: 'Executes a CoW Protocol order on the destination chain after bridging.',
-      website: 'https://docs.cow.fi',
-    },
-    loadComponent: () => import('./wrappers/orderFlowFactory').then((m) => m.OrderFlowFactoryComponent),
-  },
-  '0x5ae7b59b98d207196b305e80b4b690e3721811b5': {
-    info: {
-      name: 'OrderFlowFactory',
-      description: 'Executes a CoW Protocol order on the destination chain after bridging.',
-      website: 'https://docs.cow.fi',
-    },
-    loadComponent: () => import('./wrappers/orderFlowFactory').then((m) => m.OrderFlowFactoryComponent),
-  },
-
   // Euler EVC wrappers (mainnet)
   '0x59684a689d4a1cac0f0632f54ec8cdd42612d728': {
     info: {
