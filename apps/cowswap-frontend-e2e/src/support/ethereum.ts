@@ -73,6 +73,7 @@ interface CallRequest {
 // Acts as window.ethereum — wagmi/reown calls request() to connect and sign transactions.
 class CustomizedBridge extends EventEmitter {
   readonly chainId = CHAIN_ID
+  readonly address: Address = account.address
   private readonly publicClient: PublicClient
   private readonly walletClient: WalletClient
 
@@ -94,6 +95,10 @@ class CustomizedBridge extends EventEmitter {
 
       case 'net_version':
         return String(CHAIN_ID)
+
+      case 'wallet_switchEthereumChain':
+      case 'wallet_addEthereumChain':
+        return null
 
       case 'eth_sendTransaction': {
         const tx = params[0] as TransactionRequest
