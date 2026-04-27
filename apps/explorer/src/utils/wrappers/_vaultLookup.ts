@@ -193,7 +193,7 @@ export function useNativePrice(tokenAddress: string | undefined): number | undef
     chainId && tokenAddress ? `native-price:${chainId}:${tokenAddress}` : null,
     async () => {
       const result = await orderBookApi.getNativePrice(tokenAddress!, { chainId: chainId! })
-      return result.price
+      return result.price || 0
     },
   )
 
