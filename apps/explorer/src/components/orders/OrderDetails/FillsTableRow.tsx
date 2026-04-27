@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 
+import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 
@@ -81,7 +82,7 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
     return null
   }
 
-  const tenderlyUrl = getTenderlyTxUrl(txHash)
+  const shouldShowTenderlyLink = TENDERLY_AVAILABLE[network]
 
   return (
     <tr key={txHash}>
@@ -95,7 +96,7 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
               </LinkWithPrefixNetwork>
             }
           />
-          <ExternalLink href={tenderlyUrl}>Tenderly↗</ExternalLink>
+          {shouldShowTenderlyLink && <ExternalLink href={getTenderlyTxUrl(txHash)}>Tenderly↗</ExternalLink>}
         </TxHashCell>
       </td>
       <td>
