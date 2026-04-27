@@ -132,6 +132,7 @@ export default function TokensOverview(): ReactNode {
           <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
+            account={account}
             walletClient={walletClient}
             darkMode={theme.darkMode}
             selectedView={selectedView}
@@ -232,6 +233,7 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
 }
 
 interface TokensTableContentProps {
+  account: string | undefined
   walletClient: WalletClient
   darkMode: boolean
   selectedView: PageViewKeys
@@ -248,6 +250,7 @@ interface TokensTableContentProps {
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
   const {
+    account,
     walletClient,
     darkMode,
     selectedView,
@@ -264,7 +267,7 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
 
   const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
 
-  if (!walletClient) {
+  if (account && !walletClient) {
     return (
       <TokensLoader>
         <CowLoadingIcon size={120} isDarkMode={darkMode} />

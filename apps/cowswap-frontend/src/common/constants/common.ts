@@ -14,6 +14,12 @@ export const MAX_ORDER_DEADLINE = ms`1y` // https://github.com/cowprotocol/infra
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const GAS_LIMIT_DEFAULT = 150_000n
 
+// Number of times to retry via the wallet provider before falling back to a dedicated RPC
+export const MAX_WALLET_RETRIES = 3
+
+// Base delay in ms between retries (used with exponential backoff: 1s, 2s, 4s, …)
+export const RETRY_BASE_DELAY_MS = 1000
+
 export const APP_HEADER_ELEMENT_ID = 'cowswap-app-header'
 
 export const PROTOCOL_FEE_SCALE = 100_000

@@ -317,7 +317,7 @@ export const SwapWidget = ({ tokenSymbol, tokenImage, platforms }: SwapWidgetPro
 
       const { sellToken, buyToken } = getBuyAndSellTokens(activeTab, network as Network, contractAddress)
 
-      return `https://swap.cow.finance/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
+      return `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
     } else {
       return '#'
     }

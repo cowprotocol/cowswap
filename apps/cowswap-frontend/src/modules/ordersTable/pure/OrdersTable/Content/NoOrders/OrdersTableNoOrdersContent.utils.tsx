@@ -90,7 +90,7 @@ export function getDescription({
   if (currentTab === OrderTabId.open) {
     const learnMoreLink =
       orderType === TabOrderTypes.LIMIT ? (
-        <styledEl.ExternalLinkStyled href="https://cow.finance/learn/limit-orders-explained">
+        <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
           <Trans>Learn more</Trans>
           <styledEl.ExternalArrow />
         </styledEl.ExternalLinkStyled>

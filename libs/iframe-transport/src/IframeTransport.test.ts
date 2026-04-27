@@ -6,7 +6,7 @@ interface TestPayloadMap {
 
 describe('IframeTransport', () => {
   const method = 'PING' as const
-  const trustedOrigin = 'https://swap.cow.finance'
+  const trustedOrigin = 'https://swap.cow.fi'
 
   function dispatchMessage({
     data,
@@ -24,7 +24,7 @@ describe('IframeTransport', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, method, callback, trustedOrigin)
+    transport.listenToMessageFromWindow(window, window, method, callback, trustedOrigin)
 
     dispatchMessage({
       data: { key: 'test-key', method, value: 'ok' },
@@ -37,7 +37,7 @@ describe('IframeTransport', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, method, callback, trustedOrigin)
+    transport.listenToMessageFromWindow(window, window, method, callback, trustedOrigin)
 
     dispatchMessage({
       data: { key: 'test-key', method, value: 'blocked' },
@@ -47,30 +47,43 @@ describe('IframeTransport', () => {
     expect(callback).not.toHaveBeenCalled()
   })
 
-  // TODO: renable source check and fix the test in a follow up PR
-  // it('rejects messages from an unexpected source', () => {
-  //   const transport = new IframeTransport<TestPayloadMap>('test-key')
-  //   const callback = jest.fn()
-  //   const wrongSource = { closed: false } as unknown as Window
-  //
-  //   transport.listenToMessageFromWindow(window, method, callback)
-  //
-  //   window.dispatchEvent(
-  //     new MessageEvent('message', {
-  //       origin: trustedOrigin,
-  //       source: wrongSource,
-  //       data: { key: 'test-key', method, value: 'blocked' },
-  //     }),
-  //   )
-  //
-  //   expect(callback).not.toHaveBeenCalled()
-  // })
+  it('rejects messages from an unexpected source', () => {
+    const transport = new IframeTransport<TestPayloadMap>('test-key')
+    const callback = jest.fn()
+    const wrongSource = { closed: false } as unknown as Window
+
+    transport.listenToMessageFromWindow(window, window, method, callback, trustedOrigin)
+
+    dispatchMessage({
+      data: { key: 'test-key', method, value: 'blocked' },
+      source: wrongSource,
+    })
+
+    expect(callback).not.toHaveBeenCalled()
+  })
+
+  it('accepts messages with an unexpected source in local dev origins', () => {
+    const transport = new IframeTransport<TestPayloadMap>('test-key')
+    const callback = jest.fn()
+    const localOrigin = 'http://localhost:3000'
+    const wrongSource = { closed: false } as unknown as Window
+
+    transport.listenToMessageFromWindow(window, window, method, callback, localOrigin)
+
+    dispatchMessage({
+      data: { key: 'test-key', method, value: 'ok' },
+      origin: localOrigin,
+      source: wrongSource,
+    })
+
+    expect(callback).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' })
+  })
 
   it('rejects messages with a different transport key', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, method, callback)
+    transport.listenToMessageFromWindow(window, window, method, callback)
 
     dispatchMessage({
       data: { key: 'other-key', method, value: 'blocked' },
@@ -83,11 +96,11 @@ describe('IframeTransport', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, method, callback, 'https://staging.swap.cow.finance')
+    transport.listenToMessageFromWindow(window, window, method, callback, 'https://staging.swap.cow.fi')
 
     dispatchMessage({
       data: { key: 'test-key', method, value: 'ok' },
-      origin: 'https://staging.swap.cow.finance',
+      origin: 'https://staging.swap.cow.fi',
     })
 
     expect(callback).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' })

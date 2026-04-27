@@ -59,8 +59,8 @@ export default function Page() {
             <p>
               We will reward you with a referral bonus of up to <b>6,000 USDC or USD</b> per placement. The referral
               bonus amount can vary for each role. You can find the exact amount listed in the job description on our
-              website at <a href="https://cow.finance/careers">https://cow.finance/careers</a>. Your referral is
-              successful and paid once the Candidate clears <b>their first 6 months</b> of work in their new role.
+              website at <a href="https://cow.fi/careers">https://cow.fi/careers</a>. Your referral is successful and
+              paid once the Candidate clears <b>their first 6 months</b> of work in their new role.
             </p>
 
             <p>
@@ -119,7 +119,7 @@ export default function Page() {
               </li>
               <li>
                 To apply for a specific role at CoW, <b>Candidates</b> are required to submit their application through
-                the official website: <a href="https://cow.finance/careers">https://cow.finance/careers</a>.{' '}
+                the official website: <a href="https://cow.fi/careers">https://cow.fi/careers</a>.{' '}
                 <b>
                   When applying, Candidates must mention the name and email of the person (or entity) who referred them.
                 </b>{' '}
@@ -144,8 +144,8 @@ export default function Page() {
                 after six (6) months from the Candidate&apos;s start date, provided that the Candidate remains providing
                 services to CoW during this period. The referral bonus amount can vary for each role. You can find the
                 exact amount listed in the job description on our website at{' '}
-                <a href="https://cow.finance/careers">https://cow.finance/careers</a>. The Referrer can decide if they
-                want to be paid in USDC or USD.
+                <a href="https://cow.fi/careers">https://cow.fi/careers</a>. The Referrer can decide if they want to be
+                paid in USDC or USD.
               </li>
               <li>
                 The referral bonus is excl. VAT (VAT can be added), but net of any other tax, such as, income tax or

@@ -20,8 +20,9 @@ export function AffiliatePartnerCodeCreation(): ReactNode {
   const isCreateEnabled = !!account && !!walletClient && isSupportedPayoutsNetwork(chainId)
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
-  const [inputCode, setInputCode] = useState(generateSuggestedCode())
-  const isInputValid = Boolean(formatRefCode(inputCode))
+  const [inputCode, setInputCode] = useState('')
+  const formattedCode = formatRefCode(inputCode)
+  const isInputValid = Boolean(formattedCode)
 
   const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
   const { submitting, onCreate } = useAffiliatePartnerCodeCreate({

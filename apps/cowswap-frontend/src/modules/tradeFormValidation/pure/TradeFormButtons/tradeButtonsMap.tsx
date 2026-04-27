@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -114,16 +116,30 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
+  [TradeFormValidation.RecipientNotConfirmed]: {
+    text: <Trans>Confirm recipient to swap</Trans>,
+  },
+  [TradeFormValidation.RecipientNotSet]: ({ derivedState: { outputCurrency } }: ButtonComponentProps) => {
+    const chainLabel = outputCurrency ? getChainInfo(outputCurrency.chainId)?.label : undefined
+
+    return (
+      <TradeFormBlankButton disabled>
+        <Trans>Recipient is required for {chainLabel}</Trans>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+    const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+    const showEnsTooltip = isBridging && recipient && !isNonEvmBridging
 
     return (
       <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
-          {isBridging && recipient && (
+          {showEnsTooltip && (
             <HelpTooltip
               placement="top"
               text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
@@ -396,5 +412,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         </>
       </TradeFormBlankButton>
     )
+  },
+  [TradeFormValidation.WidgetConstrainedTokenPair]: {
+    text: <Trans>The token pair is constrained</Trans>,
   },
 }

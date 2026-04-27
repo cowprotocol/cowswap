@@ -1,5 +1,67 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.3...widget-configurator-v3.4.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.0
+    * @cowprotocol/common-const bumped to 3.2.0
+    * @cowprotocol/common-hooks bumped to 3.2.0
+    * @cowprotocol/common-utils bumped to 3.3.0
+    * @cowprotocol/events bumped to 4.3.0
+    * @cowprotocol/types bumped to 4.3.0
+    * @cowprotocol/widget-lib bumped to 4.0.0
+    * @cowprotocol/widget-react bumped to 3.0.0
+
+## [3.3.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.2...widget-configurator-v3.3.3) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.2
+    * @cowprotocol/common-const bumped to 3.1.2
+    * @cowprotocol/common-hooks bumped to 3.1.2
+    * @cowprotocol/common-utils bumped to 3.2.1
+    * @cowprotocol/widget-lib bumped to 3.1.1
+    * @cowprotocol/widget-react bumped to 2.0.2
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.1...widget-configurator-v3.3.2) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.1.1
+    * @cowprotocol/common-const bumped to 3.1.1
+    * @cowprotocol/common-hooks bumped to 3.1.1
+    * @cowprotocol/common-utils bumped to 3.2.0
+    * @cowprotocol/events bumped to 4.2.1
+    * @cowprotocol/types bumped to 4.2.1
+    * @cowprotocol/widget-lib bumped to 3.1.0
+    * @cowprotocol/widget-react bumped to 2.0.1
+
 ## [3.3.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.3.0...widget-configurator-v3.3.1) (2026-04-15)
 
 

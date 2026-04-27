@@ -7,7 +7,7 @@ const DEFAULT_SELL_TOKEN = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14' // WETH
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const FEE_QUERY = `https://barn.api.cow.finance/sepolia/api/v1/quote`
+const FEE_QUERY = `https://barn.api.cow.fi/sepolia/api/v1/quote`
 
 const baseParams = {
   from: ZERO_ADDRESS,
@@ -108,7 +108,7 @@ describe('Fee: Complex fetch and persist fee', () => {
       cy.wait('@feeRequest')
         .its('response.body')
         .then(($body) => {
-          const body = JSON.parse($body)
+          const body = typeof $body === 'string' ? JSON.parse($body) : $body
           // @ts-expect-error - cypress untyped method
           const mockedTime = new Date($clock.details().now)
 
@@ -141,7 +141,6 @@ describe('Fee: simple checks it exists', () => {
     // WHEN: Select COW token as output and sells 0.1 WETH
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
-    cy.swapSelectInput(DEFAULT_SELL_TOKEN)
     cy.wait(1000)
     cy.swapSelectOutput(COW)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)

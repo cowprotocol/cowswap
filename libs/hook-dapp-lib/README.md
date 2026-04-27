@@ -3,13 +3,13 @@
 >CoW Hooks allow users to call arbitrary Ethereum action before and/or after swap.  
 >For example: before swap give a permission to CoW Protocol smart-contract and after swap bridge tokens to another chain.
 
-### Docs: https://docs.cow.finance/cow-protocol/tutorials/hook-dapp
+### Docs: https://docs.cow.fi/cow-protocol/tutorials/hook-dapp
 
 ![](./demo.png)
 
 ## CoW Hooks Dapp library
 
-[CoW Swap](https://swap.cow.finance/) provides an opportunity to use external dapps to build hooks.  
+[CoW Swap](https://swap.cow.fi/) provides an opportunity to use external dapps to build hooks.  
 So, you can put a link to some hook-daap and it will be automatically integrate in CoW Swap!
 
 This library is for developers who are interested in developing dapps for CoW Hooks.

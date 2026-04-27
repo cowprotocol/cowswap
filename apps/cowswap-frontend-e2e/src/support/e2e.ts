@@ -19,6 +19,20 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing'
 import './commands'
 import { injected } from './ethereum'
 
+// Wagmi storage key prefix (must match the `key` in wagmi's createStorage config)
+const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+
+/**
+ * Seed wagmi's localStorage entries so the injected connector is recognised
+ * as "previously connected" and `reconnect()` will auto-connect on mount.
+ */
+function seedWagmiConnectionState(storage: Storage): void {
+  // Mark the injected connector as previously connected
+  storage.setItem(`${WAGMI_STORAGE_KEY}.injected.connected`, 'true')
+  // Set the recent connector so reconnect prioritises it
+  storage.setItem(`${WAGMI_STORAGE_KEY}.recentConnectorId`, '"injected"')
+}
+
 declare global {
   namespace Cypress {
     interface ApplicationWindow {
@@ -41,6 +55,7 @@ Cypress.Commands.overwrite(
       onBeforeLoad(win) {
         options?.onBeforeLoad?.(win)
         win.localStorage.clear()
+        seedWagmiConnectionState(win.localStorage)
         win.ethereum = injected
       },
     })
@@ -80,15 +95,18 @@ const cypressCache = new Map<string, CyHttpMessages.IncomingHttpResponse<unknown
 
 const cachedUrls = [
   /raw.githubusercontent.com\/cowprotocol\/cowswap/,
-  /files.cow.finance\/token-lists\/.*.json/,
-  /files.cow.finance\/tokens\/.*.json/,
-  /cms.cow.finance\/api\/solvers/,
-  /cms.cow.finance\/api\/announcements/,
-  /cms.cow.finance\/api\/correlated-tokens/,
-  /cms.cow.finance\/api\/notification-list/,
+  /files.cow.fi\/token-lists\/.*.json/,
+  /files.cow.fi\/tokens\/.*.json/,
+  /cms.cow.fi\/api\/solvers/,
+  /cms.cow.fi\/api\/announcements/,
+  /cms.cow.fi\/api\/correlated-tokens/,
+  /cms.cow.fi\/api\/notification-list/,
 ]
 
 beforeEach(() => {
+  // Clear cache before each test to prevent cross-spec contamination
+  cypressCache.clear()
+
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
   cy.intercept(/infura.io/, (req) => {
@@ -120,6 +138,7 @@ beforeEach(() => {
 
   cy.on('window:before:load', (win) => {
     win.localStorage.clear()
+    seedWagmiConnectionState(win.localStorage)
     win.ethereum = injected
   })
 })

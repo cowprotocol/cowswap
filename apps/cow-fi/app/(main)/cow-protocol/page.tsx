@@ -73,7 +73,7 @@ export default function Page() {
           <Link
             bgColor={Color.cowfi_purple3}
             color={Color.cowfi_purple_bright}
-            href="https://docs.cow.finance/category/tutorials"
+            href="https://docs.cow.fi/category/tutorials"
             external
             linkType={LinkType.HeroButton}
             data-click-event={toCowFiGtmEvent({
@@ -164,7 +164,7 @@ export default function Page() {
                 <Link
                   bgColor={Color.cowfi_purple3}
                   color={Color.cowfi_purple_bright}
-                  href="https://docs.cow.finance/cow-protocol/reference/core/intents"
+                  href="https://docs.cow.fi/cow-protocol/reference/core/intents"
                   external
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
@@ -211,7 +211,7 @@ export default function Page() {
                 <Link
                   bgColor={Color.cowfi_purple3}
                   color={Color.cowfi_purple_bright}
-                  href="https://docs.cow.finance/category/solver"
+                  href="https://docs.cow.fi/category/solver"
                   external
                   data-click-event={toCowFiGtmEvent({
                     category: CowFiCategory.COWPROTOCOL,
@@ -596,7 +596,7 @@ export default function Page() {
             <Link
               bgColor={Color.cowfi_purple3}
               color={Color.cowfi_purple_bright}
-              href="https://docs.cow.finance/category/solver"
+              href="https://docs.cow.fi/category/solver"
               external
               linkType={LinkType.SectionTitleButton}
               utmContent="cow-protocol-solvers"

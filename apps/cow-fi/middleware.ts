@@ -27,7 +27,7 @@ export function middleware(request: NextRequest): NextResponse {
   const pathname = request.nextUrl.pathname
   const host = request.headers.get('host') || ''
 
-  // Check if we're on develop.cow.finance or PR preview environments and add noindex header
+  // Check if we're on develop.cow.fi or PR preview environments and add noindex header
   const { isDev, isPr } = checkEnvironment(host, pathname)
   const response = NextResponse.next()
 

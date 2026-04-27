@@ -3,12 +3,12 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.1.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.1.json"
     },
     {
       "priority": 3,
@@ -27,7 +27,7 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
@@ -37,12 +37,12 @@
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.100.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.100.json"
     },
     {
       "priority": 4,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.100.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.100.json"
     },
     {
       "priority": 5,
@@ -53,17 +53,17 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.42161.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.42161.json"
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.42161.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.42161.json"
     },
     {
       "priority": 4,
@@ -82,24 +82,24 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/CowSwapSepolia.json"
+      "source": "https://files.cow.fi/token-lists/CowSwapSepolia.json"
     }
   ],
   "8453": [
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.8453.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.8453.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.8453.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.8453.json"
     },
     {
       "priority": 4,
@@ -114,51 +114,51 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.137.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.137.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.137.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.137.json"
     }
   ],
   "43114": [
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.43114.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.43114.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.43114.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.43114.json"
     }
   ],
   "56": [
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.56.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.56.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/token-lists/Uniswap.56.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.56.json"
     },
     {
       "priority": 4,
@@ -173,11 +173,11 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.59144.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.59144.json",
       "enabledByDefault": true
     }
   ],
@@ -185,11 +185,11 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.9745.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.9745.json",
       "enabledByDefault": true
     }
   ],
@@ -197,11 +197,11 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.finance/tokens/CowSwap.json"
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
     },
     {
       "priority": 2,
-      "source": "https://files.cow.finance/token-lists/CoinGecko.57073.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.57073.json",
       "enabledByDefault": true
     },
     {

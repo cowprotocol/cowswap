@@ -26,7 +26,7 @@ import { NETWORK_PREFIXES } from '../../state/network/const'
 import { APP_TITLE } from '../const'
 
 const SOLVERS_DUNE_EMBED_URL = 'https://dune.com/embeds/5931238/9574995?darkMode=true'
-const SOLVERS_CANONICAL_URL = 'https://explorer.cow.finance/solvers'
+const SOLVERS_CANONICAL_URL = 'https://explorer.cow.fi/solvers'
 const SOLVER_DEEPLINK_QUERY_PARAM = 'solver'
 const SNAPSHOT_PREFLIGHT_TIMEOUT_MS = 4000
 

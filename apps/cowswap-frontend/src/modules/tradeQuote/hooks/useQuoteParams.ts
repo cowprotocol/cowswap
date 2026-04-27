@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,10 +12,10 @@ import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
-import { useIsWrapOrUnwrap, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
-import { useVolumeFee } from 'modules/volumeFee'
 import type { VolumeFee } from 'modules/volumeFee'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -35,6 +35,21 @@ export interface QuoteParams {
   hasSmartSlippage?: boolean
 }
 
+interface BuildQuoteParamsArgs {
+  inputCurrency: Currency
+  outputCurrency: Currency
+  orderKind: OrderKind
+  amount: string
+  account: string | undefined
+  appDataDoc: AppDataInfo['doc'] | undefined
+  receiver: Nullish<string>
+  bridgeRecipient: Nullish<string>
+  volumeFee: VolumeFee | undefined
+  userSlippageBps: number | undefined
+  partiallyFillable: boolean
+  hasSmartSlippage: boolean
+}
+
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const appData = useAppData()
@@ -46,29 +61,37 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const tradeSlippage = useTradeSlippageValueAndType()
   const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
+
   const smartSlippageBpsRef = useRef(smartSlippageBps)
   useEffect(() => {
     smartSlippageBpsRef.current = smartSlippageBps
   }, [smartSlippageBps])
+
   const { inputCurrency, outputCurrency, orderKind } = state || {}
-  const receiver = useQuoteParamsRecipient()
+  const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
   const appDataDoc = appData?.doc
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
     if (!inputCurrency || !outputCurrency || !orderKind) return
+
+    if (!amount) {
+      return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
+    }
+
     return buildQuoteParams({
-      amount,
-      partiallyFillable,
       inputCurrency,
       outputCurrency,
       orderKind,
+      amount,
+      account,
       appDataDoc,
       receiver,
-      account,
+      bridgeRecipient,
       volumeFee,
       userSlippageBps,
-      smartSlippageBpsRef,
+      partiallyFillable,
+      hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
     })
   }, [
     inputCurrency,
@@ -78,76 +101,47 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     orderKind,
     appDataDoc,
     receiver,
+    bridgeRecipient,
     account,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
     userSlippageBps,
-    smartSlippageBps,
   ])
 
   return useDebounce(params, AMOUNT_CHANGE_DEBOUNCE_TIME)
 }
 
-function buildQuoteParams(args: {
-  amount: Nullish<string>
-  partiallyFillable: boolean
-  inputCurrency: Currency
-  outputCurrency: Currency
-  orderKind: QuoteBridgeRequest['kind']
-  appDataDoc: AppDataInfo['doc'] | undefined
-  receiver: QuoteBridgeRequest['receiver']
-  account: string | undefined
-  volumeFee: VolumeFee | undefined
-  userSlippageBps: number | undefined
-  smartSlippageBpsRef: { current: number | undefined }
-}): QuoteParams | undefined {
-  const {
-    amount,
-    partiallyFillable,
-    inputCurrency,
-    outputCurrency,
-    orderKind,
-    appDataDoc,
-    receiver,
-    account,
-    volumeFee,
-    userSlippageBps,
-    smartSlippageBpsRef,
-  } = args
-  const appCode = appDataDoc?.appCode || DEFAULT_APP_CODE
-  const sellTokenAddress = getCurrencyAddress(inputCurrency)
-  const buyTokenAddress = getCurrencyAddress(outputCurrency)
-  if (!amount) {
-    return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
-  }
+function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
+  const { inputCurrency, outputCurrency, orderKind, amount, account } = args
+  const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
+    args
+
   const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
   const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
   const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
     amount: BigInt(amount),
     owner,
     sellTokenChainId: inputCurrency.chainId,
-    sellTokenAddress,
+    sellTokenAddress: getCurrencyAddress(inputCurrency),
     sellTokenDecimals: inputCurrency.decimals,
     buyTokenChainId: outputCurrency.chainId,
-    buyTokenAddress,
+    buyTokenAddress: getCurrencyAddress(outputCurrency),
     buyTokenDecimals: outputCurrency.decimals,
     account: owner,
-    appCode,
+    appCode: appDataDoc?.appCode || DEFAULT_APP_CODE,
     signer,
-    receiver,
-    validFor: DEFAULT_QUOTE_TTL,
     ethFlowContractOverride: COW_PROTOCOL_ETH_FLOW_ADDRESS,
+    receiver,
+    ...(bridgeRecipient ? { bridgeRecipient } : undefined),
+    validFor: DEFAULT_QUOTE_TTL,
     ...(volumeFee ? { partnerFee: volumeFee } : undefined),
     partiallyFillable,
     ...(typeof userSlippageBps === 'number' ? { swapSlippageBps: userSlippageBps } : undefined),
   }
-  return {
-    quoteParams,
-    inputCurrency,
-    appData: appDataDoc,
-    hasSmartSlippage: typeof smartSlippageBpsRef.current === 'number',
-  }
+
+  return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
 }

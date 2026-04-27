@@ -65,17 +65,17 @@ const LEARN_ITEM = {
   label: msg`Learn`,
   children: [
     {
-      href: 'https://cow.finance/cow-swap',
+      href: 'https://cow.fi/cow-swap',
       label: msg`About CoW Swap`,
       external: true,
     },
     {
-      href: 'https://cow.finance/learn',
+      href: 'https://cow.fi/learn',
       label: msg`FAQs`,
       external: true,
     },
     {
-      href: 'https://docs.cow.finance/',
+      href: 'https://docs.cow.fi/',
       label: msg`Docs`,
       external: true,
     },
@@ -86,17 +86,17 @@ const LEARN_ITEM_SUBMENU = {
   label: msg`Legal`,
   children: [
     {
-      href: 'https://cow.finance/legal/cowswap-privacy-policy',
+      href: 'https://cow.fi/legal/cowswap-privacy-policy',
       label: msg`Privacy Policy`,
       external: true,
     },
     {
-      href: 'https://cow.finance/legal/cowswap-cookie-policy',
+      href: 'https://cow.fi/legal/cowswap-cookie-policy',
       label: msg`Cookie Policy`,
       external: true,
     },
     {
-      href: 'https://cow.finance/legal/cowswap-terms',
+      href: 'https://cow.fi/legal/cowswap-terms',
       label: msg`Terms and Conditions`,
       external: true,
     },
@@ -107,17 +107,17 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
   label: msg`More`,
   children: [
     {
-      href: 'https://cow.finance/cow-protocol',
+      href: 'https://cow.fi/cow-protocol',
       label: msg`CoW Protocol`,
       external: true,
     },
     {
-      href: 'https://cow.finance/cow-amm',
+      href: 'https://cow.fi/cow-amm',
       label: msg`CoW AMM`,
       external: true,
     },
     {
-      href: 'https://cow.finance/careers',
+      href: 'https://cow.fi/careers',
       label: msg`Careers`,
       external: true,
     },
