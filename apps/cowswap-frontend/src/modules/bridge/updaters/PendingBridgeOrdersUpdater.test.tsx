@@ -126,6 +126,7 @@ describe('PendingBridgeOrdersUpdater', () => {
         }),
       )
     })
+    expect(updateBridgeOrderQuoteMock).toHaveBeenCalledWith('0xorder', crossChainOrder.statusResult)
     expect(addOrderToSurplusQueueMock).not.toHaveBeenCalled()
   })
 })

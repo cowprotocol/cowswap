@@ -49,7 +49,7 @@ function sendBridgeStatusAnalytics(
   const { depositTxHash, fillTxHash, status } = crossChainOrder.statusResult
   const providerInfo = crossChainOrder.provider.info
 
-  analytics.sendEvent({
+  const payload = {
     category: CowSwapAnalyticsCategory.Bridge,
     action,
     label: `From: ${sourceChainId}, to: ${destinationChainId}`,
@@ -66,7 +66,9 @@ function sendBridgeStatusAnalytics(
     providerName: providerInfo.name,
     providerType: providerInfo.type,
     providerDappId: providerInfo.dappId,
-  } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
+  } satisfies GtmEvent<CowSwapAnalyticsCategory.Bridge>
+
+  analytics.sendEvent(payload)
 }
 
 interface PendingOrderUpdaterProps {
