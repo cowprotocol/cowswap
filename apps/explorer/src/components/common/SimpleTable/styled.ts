@@ -74,7 +74,8 @@ export const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boo
   }
 
   thead th,
-  tbody td {
+  tbody td,
+  tbody th {
     padding: 1.2rem 1rem;
     font-size: inherit;
     line-height: 1.2;

@@ -16,17 +16,30 @@ export interface DetailRowProps {
 export function DetailRow({ label, tooltipText, children, isLoading, stack }: DetailRowProps): React.ReactNode {
   return (
     <tr>
-      <td>
-        <span>
+      <FirstColumnTh>
+        <div>
           {tooltipText && <HelpTooltip tooltip={tooltipText} />} {label}
-        </span>
+        </div>
+      </FirstColumnTh>
+      <td>
+        <TdContent $stack={stack}>{isLoading ? <ShimmerBar height={1.6} /> : (children ?? '-')}</TdContent>
       </td>
-      <StyledTd $stack={stack}>{isLoading ? <ShimmerBar height={1.6} /> : (children ?? '-')}</StyledTd>
     </tr>
   )
 }
 
-const StyledTd = styled.td<{ $stack?: boolean }>`
+const FirstColumnTh = styled.th`
+  width: 0;
+  min-width: 120px;
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+  }
+`
+
+const TdContent = styled.div<{ $stack?: boolean }>`
   display: flex;
   flex-wrap: wrap;
   gap: 16px;

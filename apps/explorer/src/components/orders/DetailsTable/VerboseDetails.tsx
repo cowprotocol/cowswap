@@ -67,6 +67,7 @@ export function VerboseDetails({
     isPriceInverted,
     invertPrice,
   }
+
   return (
     <>
       <DetailRow label="Limit Price" tooltipText={DetailsTableTooltips.priceLimit}>
