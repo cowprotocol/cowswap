@@ -1,11 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Web3Provider } from '@ethersproject/providers'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
-import { Connector as Web3Connector } from '@web3-react/types'
 
-import { injected, walletConnect, coinbaseWallet, safe } from '@wagmi/connectors'
 import { Address } from 'viem'
 import { Connector as WagmiConnector } from 'wagmi'
+import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 export const ConnectorType = {
   COINBASE_WALLET: coinbaseWallet.type,
@@ -16,10 +14,21 @@ export const ConnectorType = {
 
 export type ConnectorType = (typeof ConnectorType)[keyof typeof ConnectorType]
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
-  isReadOnly?: boolean
-  chainId: number
-  nonce: number
+export enum ConnectionType {
+  NETWORK = 'NETWORK',
+  INJECTED = 'INJECTED',
+  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
+  COINBASE_WALLET = 'COINBASE_WALLET',
+  METAMASK = 'METAMASK',
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
+  TREZOR = 'TREZOR',
+}
+
+export interface WalletInfo {
+  chainId: SupportedChainId
+  account?: Address
+  active?: boolean
+  connector?: WagmiConnector
 }
 
 export interface WalletDetails {
@@ -37,23 +46,10 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export interface WalletInfo {
-  chainId: SupportedChainId
-  account?: Address
-  active?: boolean
-  provider?: Web3Provider
-  legacyConnector?: Web3Connector
-  connector?: WagmiConnector
-}
-
-export enum ConnectionType {
-  NETWORK = 'NETWORK',
-  INJECTED = 'INJECTED',
-  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  METAMASK = 'METAMASK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-  TREZOR = 'TREZOR',
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
+  isReadOnly?: boolean
+  chainId: number
+  nonce: number
 }
 
 export enum WalletType {

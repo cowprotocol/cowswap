@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { waitForAnalytics } from '@cowprotocol/analytics'
-import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-utils'
+import { getUtmParams, cleanUpUtmParams, isInjectedWidget, UtmParams } from '@cowprotocol/common-utils'
 
 import { useLocation } from 'react-router'
 
@@ -187,6 +187,12 @@ function processUtmParams(
     })
 
     handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
+  }
+
+  if (isInjectedWidget()) {
+    // Widget mode does not load GTM; avoid long waitForAnalytics polling.
+    timeoutId = window.setTimeout(performUtmCleanup, 0)
+    return cleanup
   }
 
   // Wait for analytics to be ready before cleaning up UTM parameters

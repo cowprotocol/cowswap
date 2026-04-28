@@ -5,13 +5,6 @@ import type { TokensByAddress } from '@cowprotocol/tokens'
 
 import { fetchTokens, resetFetchTokensCache } from './fetchTokens.utils'
 
-const mockGetRpcProvider = jest.fn()
-
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual<typeof import('@cowprotocol/common-const')>('@cowprotocol/common-const'),
-  getRpcProvider: (...args: unknown[]) => mockGetRpcProvider(...args),
-}))
-
 jest.mock('@cowprotocol/tokens', () => ({
   ...jest.requireActual<typeof import('@cowprotocol/tokens')>('@cowprotocol/tokens'),
   fetchTokenFromBlockchain: jest.fn(),
@@ -36,14 +29,11 @@ function makeToken(address: string): TokenWithLogo {
 describe('fetchTokens', () => {
   beforeEach(() => {
     resetFetchTokensCache()
-    mockGetRpcProvider.mockReturnValue({})
     mockFetchTokenFromBlockchain.mockReset()
   })
 
-  it('returns null when RPC provider is missing', async () => {
-    mockGetRpcProvider.mockReturnValue(undefined)
-
-    await expect(fetchTokens(CHAIN, {}, [ADDR_A])).resolves.toBeNull()
+  it('returns null when chain is not supported', async () => {
+    await expect(fetchTokens(999999 as SupportedChainId, {}, [ADDR_A])).resolves.toBeNull()
   })
 
   it('returns an empty map when no addresses are requested', async () => {

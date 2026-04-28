@@ -31,15 +31,7 @@ import {
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
-import {
-  getDefaultNetworkState,
-  ORDERS_LIST,
-  OrdersState,
-  OrdersStateNetwork,
-  OrderTypeKeys,
-  PartialOrdersMap,
-  OrderObject,
-} from './reducer'
+import { ORDERS_LIST, OrdersState, OrdersStateNetwork, OrderTypeKeys, PartialOrdersMap, OrderObject } from './reducer'
 import { deserializeOrder } from './utils/deserializeOrder'
 
 import { AppDispatch, AppState } from '../index'
@@ -133,20 +125,12 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 }
 
 function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersStateNetwork | undefined {
-  const ordersState = useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
+  return useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
     if (!chainId) {
       return undefined
     }
     return state.orders?.[chainId]
   })
-
-  // Additional memoization to avoid excessive re-renders
-  // ordersState is a plain object that contains serialized data, so we can stringify it safely
-  return useMemo(() => {
-    if (!chainId) return undefined
-    return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(ordersState), chainId])
 }
 
 export const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {

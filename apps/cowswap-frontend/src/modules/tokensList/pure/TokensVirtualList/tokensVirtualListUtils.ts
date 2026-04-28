@@ -43,7 +43,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   const hasFavoriteSection = !!favoriteTokens?.length && !hideFavoriteTokens
   const hasRecentSection = !!recentTokens?.length && !hideRecentTokens
 
-  if (hasFavoriteSection) {
+  if (favoriteTokens?.length && !hideFavoriteTokens) {
     composedRows.push({
       type: 'favorite-section',
       tokens: favoriteTokens,
@@ -51,7 +51,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (hasRecentSection) {
+  if (recentTokens?.length && !hideRecentTokens) {
     const noRouteTooltip = getNoRouteTooltip()
     const checkingRouteTooltip = getCheckingRouteTooltip()
 

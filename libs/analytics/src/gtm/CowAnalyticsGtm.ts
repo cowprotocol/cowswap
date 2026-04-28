@@ -35,7 +35,8 @@ function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown
 declare global {
   interface Window {
     dataLayer: unknown[]
-    cowAnalyticsInstance?: CowAnalyticsGtm // For singleton pattern
+    /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
+    cowAnalyticsInstance?: CowAnalytics
   }
 }
 

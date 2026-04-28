@@ -28,7 +28,7 @@ export function OrdersTableContent({ searchTerm, historyStatusFilter }: OrdersTa
   const { account } = useWalletInfo()
 
   if (!account) {
-    return <OrdersTableNoWalletContent orderType={orderType} />
+    return <OrdersTableNoWalletContent />
   }
 
   if (isProviderNetworkUnsupported) {

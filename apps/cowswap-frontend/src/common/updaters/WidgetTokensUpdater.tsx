@@ -10,7 +10,8 @@ import { useOnTokenListAddingError } from 'modules/tokensList'
 import { CowSwapAnalyticsCategory } from '../analytics/types'
 
 export function WidgetTokensUpdater(): ReactNode {
-  const { tokenLists, appCode, customTokens, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens, sellTokenLists, buyTokenLists, hideFavoriteTokens } =
+    useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const cowAnalytics = useCowAnalytics()
 
@@ -21,6 +22,7 @@ export function WidgetTokensUpdater(): ReactNode {
       buyTokenLists={buyTokenLists}
       customTokens={customTokens}
       appCode={appCode}
+      hideFavoriteTokens={hideFavoriteTokens}
       onTokenListAddingError={onTokenListAddingError}
       onAddList={(source) => {
         cowAnalytics.sendEvent({

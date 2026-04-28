@@ -2,7 +2,12 @@
 
 import { atom } from 'jotai'
 
-import { BalancesAndAllowances, balancesAtom, tokenAllowancesFamily } from '@cowprotocol/balances-and-allowances'
+import {
+  BalancesAndAllowances,
+  balancesAtom,
+  tokenAllowancesFamily,
+  tradeSpenderAtom,
+} from '@cowprotocol/balances-and-allowances'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
@@ -53,10 +58,10 @@ export const ordersTableStateAtom = atom<OrdersTableState>(EMPTY_ORDERS_TABLE_ST
 
 ordersTableStateAtom.onMount = () => {
   const unobserveReduxOrders = observe((get, set) => {
-    const { chainId, account } = get(walletInfoAtom)
+    const { connector, chainId, account } = get(walletInfoAtom)
 
-    if (!chainId || !account) {
-      logOrdersTableDebug('No account or chainId, setting empty orders table state...')
+    if (!connector || !chainId || !account) {
+      logOrdersTableDebug('No connector, account or chainId, setting empty orders table state...')
 
       set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
 
@@ -118,10 +123,13 @@ ordersTableStateAtom.onMount = () => {
     logOrdersTableDebug('3. pendingOrders =', pendingOrders)
 
     const balancesState = get(balancesAtom)
+    const spender = get(tradeSpenderAtom)
     const allowancesState = get(
       tokenAllowancesFamily({
+        connector,
         chainId,
         account,
+        spender,
         tokenAddresses: Array.from(ordersTokensSet),
       }),
     )

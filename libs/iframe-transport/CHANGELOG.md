@@ -1,5 +1,92 @@
 # Changelog
 
+## [2.2.2](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.1...iframe-transport-v2.2.2) (2026-04-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.3.0
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.0...iframe-transport-v2.2.1) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* fix publish build issue ([#7356](https://github.com/cowprotocol/cowswap/issues/7356)) ([2092553](https://github.com/cowprotocol/cowswap/commit/2092553a8210b1fd48c162c71c7c1e44d1d5813a))
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.1.0...iframe-transport-v2.2.0) (2026-04-15)
+
+
+### ✨ Features
+
+* **widget:** refactor/improve window.open / deeplink widget logic ([1502fea](https://github.com/cowprotocol/cowswap/commit/1502feafa878d58d3936b427d66ecdd38de217d7))
+
+
+### 🐛 Bug Fixes
+
+* fix tests and remove debug logs from tests ([ab1fca8](https://github.com/cowprotocol/cowswap/commit/ab1fca88df4c2b32b7fbc731af44bb89e55bf479))
+* relax event.source check when in localhost ([76766b1](https://github.com/cowprotocol/cowswap/commit/76766b13cd2f00954bd678949b14410733daaac4))
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.2.1
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.13...iframe-transport-v2.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.2.0
+
+## [2.0.13](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.12...iframe-transport-v2.0.13) (2026-04-10)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** fix iframe issues ([#7298](https://github.com/cowprotocol/cowswap/issues/7298)) ([3f7094d](https://github.com/cowprotocol/cowswap/commit/3f7094df6389c01bdda515b645b58dcc0b292253))
+
+## [2.0.12](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.11...iframe-transport-v2.0.12) (2026-04-08)
+
+
+### 🔧 Miscellaneous
+
+* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.2
+
+## [2.0.11](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.10...iframe-transport-v2.0.11) (2026-04-07)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped to 4.1.1
+
 ## [2.0.10](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.0.9...iframe-transport-v2.0.10) (2026-03-19)
 
 

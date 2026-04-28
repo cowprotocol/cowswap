@@ -40,6 +40,8 @@ export interface OrdersTableRowGroupProps {
   isTwapTable?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
 export function OrdersTableRowGroup({
   item,
   prices,

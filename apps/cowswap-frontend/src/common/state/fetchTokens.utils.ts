@@ -1,8 +1,9 @@
-import { TokenWithLogo, getRpcProvider } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 import type { TokensByAddress } from '@cowprotocol/tokens'
+import { config as defaultWagmiConfig } from '@cowprotocol/wallet'
 
 function getTokenKey(chainId: number, address: string): string {
   return `${chainId}::${getAddressKey(address)}`
@@ -22,9 +23,7 @@ export async function fetchTokens(
   tokensByAddress: TokensByAddress,
   addresses: string[],
 ): Promise<null | TokensByAddress> {
-  const provider = getRpcProvider(chainId)
-
-  if (!provider || !isSupportedChainId(chainId)) return null
+  if (!isSupportedChainId(chainId)) return null
 
   const tokens: Record<string, TokenWithLogo> = {}
   const tokenPromises: Record<string, Promise<TokenWithLogo>> = {}
@@ -40,10 +39,7 @@ export async function fetchTokens(
     } else if (inFlightPromises[tokenKey]) {
       tokenPromises[addressKey] = inFlightPromises[tokenKey]
     } else if (!tokenPromises[addressKey]) {
-      // TODO M-6 COW-573
-      // This flow will be reviewed and updated later, to include a wagmi alternative
-
-      const promise = fetchTokenFromBlockchain(address, chainId, provider)
+      const promise = fetchTokenFromBlockchain(address, chainId, defaultWagmiConfig)
         .then((tokenData) => {
           const token = TokenWithLogo.fromToken(tokenData)
           cachedTokens[tokenKey] = token

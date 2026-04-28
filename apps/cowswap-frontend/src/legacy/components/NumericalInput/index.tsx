@@ -58,7 +58,6 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
 const inputRegex = /^(\d*\.?\d*)?$/
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export const Input = React.memo(function InnerInput({
   value,
   readOnly,

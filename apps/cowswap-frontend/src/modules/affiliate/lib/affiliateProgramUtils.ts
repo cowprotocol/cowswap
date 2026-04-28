@@ -1,7 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
@@ -27,6 +26,8 @@ const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
+
+type TypedDataField = { name: string; type: string }
 
 const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
@@ -245,12 +246,12 @@ function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
   return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
 }
 
-export function isSupportedPayoutsNetwork(chainId: number): boolean {
+export function isSupportedPayoutsNetwork(chainId?: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }
 
-export function isSupportedTradingNetwork(chainId: number): boolean {
-  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
+export function isSupportedTradingNetwork(chainId?: number): boolean {
+  return chainId !== undefined && AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
 }
 
 export function toValidDate(value: string | undefined): Date | null {

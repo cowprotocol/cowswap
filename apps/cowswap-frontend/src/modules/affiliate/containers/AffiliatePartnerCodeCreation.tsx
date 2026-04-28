@@ -1,7 +1,8 @@
 import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+
+import { useWalletClient } from 'wagmi'
 
 import {
   PartnerCodeAvailability,
@@ -14,18 +15,19 @@ import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePart
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
   const { account, chainId } = useWalletInfo()
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
 
-  const isCreateEnabled = !!account && !!provider && isSupportedPayoutsNetwork(chainId)
+  const isCreateEnabled = !!account && !!walletClient && isSupportedPayoutsNetwork(chainId)
 
   const [error, setError] = useState<AffiliatePartnerCodeCreateError | undefined>()
-  const [inputCode, setInputCode] = useState(generateSuggestedCode())
-  const isInputValid = Boolean(formatRefCode(inputCode))
+  const [inputCode, setInputCode] = useState('')
+  const formattedCode = formatRefCode(inputCode)
+  const isInputValid = Boolean(formattedCode)
 
   const availability = useAffiliatePartnerCodeAvailability(inputCode, isCreateEnabled && isInputValid, setError)
   const { submitting, onCreate } = useAffiliatePartnerCodeCreate({
     account,
-    provider,
+    walletClient,
     code: inputCode,
     setError,
   })

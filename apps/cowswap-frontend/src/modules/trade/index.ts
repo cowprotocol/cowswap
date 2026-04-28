@@ -5,6 +5,7 @@ export * from './state/tradeTypeAtom'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
 export * from './state/isEoaEthFlowAtom'
+export * from './state/nonEvmReceiverConfirmedAtom.atoms'
 export {
   useAlternativeOrder,
   useHideAlternativeOrderModal,
@@ -58,6 +59,7 @@ export * from './hooks/useIsSwapEth'
 export * from './hooks/useIsSafeEthFlow'
 export * from './hooks/useLimitOrdersPromoBanner'
 export * from './hooks/useIsCurrentTradeBridging'
+export * from './hooks/useIsNonEvmBridging'
 export * from './hooks/usePriorityTokenAddresses'
 export * from './hooks/useGetReceiveAmountInfo'
 export * from './hooks/useGetSwapReceiveAmountInfo'

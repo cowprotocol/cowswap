@@ -31,7 +31,7 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const AVG_APPROVE_COST_GWEI = '50000'
+export const AVG_APPROVE_COST_GWEI = 50000n
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
@@ -129,7 +129,7 @@ export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
 export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 
 // TODO: test gas prices for all networks

@@ -1,33 +1,39 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { useSafeAppsSdk } from '../../web3-react/hooks/useSafeAppsSdk'
+import { useConfig } from 'wagmi'
+import { sendCalls } from 'wagmi/actions'
+
+import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
 import { isBundlingSupportedAtom } from '../state/walletCapabilitiesAtom'
+
+import type { Hex } from 'viem'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 
 export function useSendBatchTransactions(): SendBatchTxCallback {
-  // TODO this will be fixed in M-3 COW-569
+  const config = useConfig()
   const safeAppsSdk = useSafeAppsSdk()
-  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const isBundlingSupported = useAtomValue(isBundlingSupportedAtom)
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
-      if (isBundlingSupported && provider && account && chainId) {
-        const chainIdHex = '0x' + (+chainId).toString(16)
-        const calls = txs.map((tx) => ({ ...tx, chainId: chainIdHex }))
+      if (isBundlingSupported && account && chainId) {
+        const calls = txs.map(({ to, value, data }) => ({
+          to: to as Hex,
+          value: BigInt(value),
+          data: (data ?? '0x') as Hex,
+        }))
 
-        return provider
-          .send('wallet_sendCalls', [{ version: '1.0', from: account, calls, chainId: chainIdHex }])
-          .then((res) => {
-            return typeof res === 'string' ? res : res.id
-          })
+        return sendCalls(config, {
+          account,
+          calls: calls as Parameters<typeof sendCalls>[1]['calls'],
+          chainId,
+        }).then((res) => res.id)
       }
 
       if (safeAppsSdk) {
@@ -38,6 +44,6 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
         throw new Error('Batch transactions sending is not supported')
       }
     },
-    [isBundlingSupported, provider, account, chainId, safeAppsSdk],
+    [isBundlingSupported, config, account, chainId, safeAppsSdk],
   )
 }

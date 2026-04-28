@@ -2,7 +2,13 @@ import { atom } from 'jotai'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey, AddressKey } from '@cowprotocol/cow-sdk'
-import { allActiveTokensAtom, environmentAtom, listsStatesMapAtom, TokenListsState } from '@cowprotocol/tokens'
+import {
+  allActiveTokensAtom,
+  environmentAtom,
+  favoriteTokensListAtom,
+  listsStatesMapAtom,
+  TokenListsState,
+} from '@cowprotocol/tokens'
 
 import { Field } from 'legacy/state/types'
 
@@ -12,12 +18,25 @@ type TokensToSelectPerField = Record<Field.INPUT | Field.OUTPUT, TokenWithLogo[]
 
 export const tokensToSelectAtomPerField = atom(async (get): Promise<TokensToSelectPerField> => {
   const allActive = await get(allActiveTokensAtom)
+  const favoriteTokens = get(favoriteTokensListAtom)
   const listsStatesMap = await get(listsStatesMapAtom)
-  const { sellSelectedLists, buySelectedLists } = get(environmentAtom)
+  const { sellSelectedLists, buySelectedLists, hideFavoriteTokens } = get(environmentAtom)
 
   return {
-    [Field.INPUT]: getTokensBySelectedLists(allActive.tokens, listsStatesMap, sellSelectedLists),
-    [Field.OUTPUT]: getTokensBySelectedLists(allActive.tokens, listsStatesMap, buySelectedLists),
+    [Field.INPUT]: getTokensBySelectedLists(
+      allActive.tokens,
+      listsStatesMap,
+      sellSelectedLists,
+      favoriteTokens,
+      hideFavoriteTokens,
+    ),
+    [Field.OUTPUT]: getTokensBySelectedLists(
+      allActive.tokens,
+      listsStatesMap,
+      buySelectedLists,
+      favoriteTokens,
+      hideFavoriteTokens,
+    ),
   }
 })
 
@@ -32,6 +51,8 @@ function getTokensBySelectedLists(
   allTokens: TokenWithLogo[],
   listsStatesMap: TokenListsState,
   selectedLists: string[] | undefined,
+  favoriteTokens: TokenWithLogo[],
+  hideFavoriteTokens: boolean | undefined,
 ): TokenWithLogo[] {
   /**
    * Widget-specific feature.
@@ -42,7 +63,7 @@ function getTokensBySelectedLists(
   }
 
   const availableTokens = Object.values(listsStatesMap).reduce<Set<AddressKey>>((acc, state) => {
-    if (selectedLists.includes(state.source)) {
+    if (selectedLists.includes(state.source.toLowerCase())) {
       state.list.tokens.forEach((token) => {
         acc.add(getAddressKey(token.address))
       })
@@ -51,5 +72,13 @@ function getTokensBySelectedLists(
     return acc
   }, new Set())
 
-  return allTokens.filter((token) => availableTokens.has(getAddressKey(token.address)))
+  const favoriteTokenAddresses = hideFavoriteTokens
+    ? null
+    : new Set(favoriteTokens.map((token) => getAddressKey(token.address)))
+
+  return allTokens.filter((token) => {
+    const tokenAddress = getAddressKey(token.address)
+
+    return availableTokens.has(tokenAddress) || !!favoriteTokenAddresses?.has(tokenAddress)
+  })
 }

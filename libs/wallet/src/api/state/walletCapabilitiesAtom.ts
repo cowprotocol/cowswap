@@ -1,17 +1,16 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { getRpcProvider, LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { isMobile, PromiseWithTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { getCapabilities } from 'viem/actions'
+import { Connector } from 'wagmi'
 
 import { config } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
-import { getIsWalletConnect as getIsWalletConnectLegacy } from '../../web3-react/hooks/useIsWalletConnect'
-import { isSafeAppAtom, isSafeViaWcAtom } from '../../web3-react/state/walletMetadata.atoms'
+import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
 
 const REQUEST_TIMEOUT_MS = 10_000
@@ -24,20 +23,19 @@ export interface WalletCapabilities {
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
  * to get the capabilities. It breaks the flow with perpetual requests.
  */
-export async function getShouldCheckCapabilities(
-  isWalletConnect: boolean,
-  chainId: SupportedChainId,
-): Promise<boolean> {
-  const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(chainId)
+async function getShouldCheckCapabilities(connector: Connector, chainId: SupportedChainId): Promise<boolean> {
+  const isWalletConnect = getIsWalletConnect(connector)
+  const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(connector, chainId)
   const isWalletConnectViaWidget = !!widgetProviderMetaInfo?.providerWcMetadata
 
   return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
-function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<ProviderMetaInfoPayload | null> {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = getRpcProvider(chainId)
+async function fetchWidgetProviderMetaInfo(
+  connector: Connector,
+  chainId: SupportedChainId,
+): Promise<ProviderMetaInfoPayload | null> {
+  const provider = await connector.getProvider({ chainId })
 
   if (provider instanceof WidgetEthereumProvider) {
     return PromiseWithTimeout<ProviderMetaInfoPayload>(REQUEST_TIMEOUT_MS, (resolve) => {
@@ -58,57 +56,24 @@ function fetchWidgetProviderMetaInfo(chainId: SupportedChainId): Promise<Provide
  * Async atom that fetches wallet capabilities (EIP-5792) via wagmi/viem.
  * Returns capabilities for the current account and chain, or undefined when disconnected or on error.
  */
-
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | undefined> => {
-  const { account, chainId, legacyConnector, connector, provider } = get(walletInfoAtom)
+  const { account, chainId, connector } = get(walletInfoAtom)
 
-  if (!account || !chainId || !provider || !legacyConnector || !connector) return undefined
-
-  const isWalletConnectLegacy = getIsWalletConnectLegacy(legacyConnector)
-  const isWalletConnectNew = getIsWalletConnect(connector)
-
-  const isWalletConnect = LAUNCH_DARKLY_VIEM_MIGRATION ? isWalletConnectNew : isWalletConnectLegacy
-
-  const shouldCheckCapabilities = await getShouldCheckCapabilities(isWalletConnect, chainId)
-
-  if (!shouldCheckCapabilities) {
-    return undefined
-  }
+  if (!account || !chainId || !connector) return undefined
 
   try {
-    // TODO this will be fixed in M-3 COW-569
+    const shouldCheckCapabilities = await getShouldCheckCapabilities(connector, chainId)
 
-    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-      return getCapabilities(config.getClient({ chainId }), {
-        account: account as `0x${string}`,
-        chainId,
-      })
+    if (!shouldCheckCapabilities) {
+      return undefined
     }
 
-    const result = await new PromiseWithTimeout<WalletCapabilities | undefined>(
-      REQUEST_TIMEOUT_MS,
-      (resolve, reject) => {
-        provider
-          .send('wallet_getCapabilities', [account])
-          .then((result: { [chainIdHex: string]: WalletCapabilities }) => {
-            if (!result) {
-              resolve(undefined)
-              return
-            }
+    const capabilities = await getCapabilities(config.getClient({ chainId }), {
+      account: account as `0x${string}`,
+      chainId,
+    })
 
-            const chainIdHex = `0x${chainId.toString(16)}`
-
-            // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
-            resolve(result[chainIdHex] || result[Object.keys(result)[0]])
-          })
-          .catch((error) => {
-            console.error('getCapabilities promise error:', error)
-            reject(error)
-          })
-      },
-    )
-
-    return result
+    return (capabilities[chainId] || Object.values(capabilities)[0]) as WalletCapabilities | undefined
   } catch (error) {
     console.error('Failed to fetch wallet capabilities:', error)
     return undefined
@@ -119,7 +84,10 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
 
 export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
-  if (get(isSafeAppAtom)) return true
+  // TODO: Before Viem PR this was like this:
+  // if (get(isSafeAppAtom)) return true
+
+  if (get(isSafeAppAtom) || get(isSafeViaWcAtom)) return true
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
@@ -130,10 +98,13 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
 
   const status = walletCapabilities.atomic?.status || ''
 
+  return status === 'supported'
+
+  // TODO: Before Viem PR this was like this:
   // See https://www.eip5792.xyz/getting-started:
   // - supported: The wallet will execute all calls atomically and contiguously
   // - ready: The wallet is able to upgrade to supported pending user approval (e.g. via EIP-7702)
-  return !!get(isSafeViaWcAtom) && ['supported', 'ready'].includes(status)
+  // return !!get(isSafeViaWcAtom) && ['supported', 'ready'].includes(status)
 })
 
 export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)

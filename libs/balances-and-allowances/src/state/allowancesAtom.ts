@@ -1,53 +1,59 @@
 import { atomWithStorage } from 'jotai/utils'
 
-import { getRpcProvider } from '@cowprotocol/common-const'
-import { asyncAtomFamily, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { asyncAtomFamily } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
-import { multiCall } from '@cowprotocol/multicall'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { BigNumber } from '@ethersproject/bignumber'
+import { isEip1193Provider } from '@cowprotocol/wallet'
 
-export type AllowancesState = Record<string, BigNumber | undefined>
+import { createPublicClient, custom, erc20Abi, type Address } from 'viem'
+import { Connector } from 'wagmi'
 
-function buildAllowancesState(
-  tokenAddresses: string[],
-  decodedResults: (readonly [BigNumber] | undefined)[],
-): AllowancesState {
+export type AllowancesState = Record<string, bigint | undefined>
+
+function buildAllowancesState(tokenAddresses: string[], decodedResults: (bigint | undefined)[]): AllowancesState {
   return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-    acc[getAddressKey(address)] = decodedResults[index]?.[0]
+    acc[getAddressKey(address)] = decodedResults[index]
     return acc
   }, {})
 }
 
 async function fetchAllowances(
+  connector: Connector,
   chainId: SupportedChainId,
   account: string,
   spender: string,
   tokenAddresses: string[],
 ): Promise<AllowancesState> {
-  const provider = getRpcProvider(chainId as number)
-  if (!provider)
+  const provider = await connector.getProvider({ chainId })
+
+  if (!isEip1193Provider(provider)) {
     return tokenAddresses.reduce<AllowancesState>((acc, a) => ({ ...acc, [getAddressKey(a)]: undefined }), {})
+  }
 
-  const callData = ERC_20_INTERFACE.encodeFunctionData('allowance', [account, spender])
-  const calls = tokenAddresses.map((address) => ({ target: address, callData }))
-
-  const { results } = await multiCall(provider, calls, {})
-
-  const decodedResults = results.map((result) => {
-    try {
-      return ERC_20_INTERFACE.decodeFunctionResult('allowance', result.returnData) as readonly [BigNumber]
-    } catch {
-      return undefined
-    }
+  const chain = VIEM_CHAINS[chainId]
+  const client = createPublicClient({
+    chain,
+    transport: custom(provider),
   })
+
+  const results = await client.multicall({
+    allowFailure: true,
+    contracts: tokenAddresses.map((address) => ({
+      address: address as Address,
+      abi: erc20Abi,
+      functionName: 'allowance' as const,
+      args: [account as Address, spender as Address],
+    })),
+  })
+
+  const decodedResults = results.map((result) => (result.status === 'success' ? result.result : undefined))
 
   return buildAllowancesState(tokenAddresses, decodedResults)
 }
 
-export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<string, BigNumber | undefined>>>(
+export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<string, bigint | undefined>>>(
   'allowancesAtom:v1',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),
@@ -57,7 +63,7 @@ export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<stri
 function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
   return [
     params.chainId,
-    getAddressKey(params.account),
+    getAddressKey(params.account ?? ''),
     ...params.tokenAddresses.map((a) => getAddressKey(a)).sort(),
   ].join(',')
 }
@@ -67,21 +73,22 @@ function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenA
 }
 
 export interface TokenAllowancesFamilyParams {
+  connector?: Connector
   chainId: SupportedChainId
-  account: string
+  account?: string
+  spender?: string
   tokenAddresses: string[]
 }
 
 export const tokenAllowancesFamily = asyncAtomFamily(
   async (params: TokenAllowancesFamilyParams): Promise<AllowancesState | null> => {
-    const { chainId, account, tokenAddresses } = params
-    const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+    const { connector, chainId, account, spender, tokenAddresses } = params
 
-    if (!chainId || !account || !spender || !tokenAddresses.length) {
+    if (!connector || !chainId || !account || !spender || !tokenAddresses.length) {
       return null
     }
 
-    return fetchAllowances(chainId, account, spender, tokenAddresses)
+    return fetchAllowances(connector, chainId, account, spender, tokenAddresses)
   },
   {
     areEqual: areTokenAllowancesParamsEqual,

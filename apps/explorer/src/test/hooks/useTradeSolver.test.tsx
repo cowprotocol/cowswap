@@ -40,7 +40,7 @@ const CROSS_NETWORK_SOLVER: SolverInfo = {
   deployments: [],
 }
 
-function mockSolverCompetitionResponse(solverName: string): SolverCompetitionResponse {
+function mockSolverCompetitionResponse(solverName: string, orderId: string): SolverCompetitionResponse {
   return {
     auctionId: 1,
     solutions: [
@@ -49,7 +49,7 @@ function mockSolverCompetitionResponse(solverName: string): SolverCompetitionRes
         isWinner: true,
         solverAddress: '0xsolver',
         ranking: 1,
-        orders: [],
+        orders: [{ id: orderId }],
       } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
     ],
   } as SolverCompetitionResponse
@@ -65,17 +65,18 @@ describe('useTradeSolver', () => {
   })
 
   it('returns no loading and no solver for null txHash', () => {
-    const { result } = renderHook(() => useTradeSolver(null))
+    const { result } = renderHook(() => useTradeSolver(null, null))
 
     expect(result.current.solver).toBeUndefined()
     expect(result.current.isLoading).toBe(false)
   })
 
   it('resolves solver from txHash competition data', async () => {
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc'))
+    const orderId = '0xorder123'
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc', orderId))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
-    const { result } = renderHook(() => useTradeSolver('0xtx123'))
+    const { result } = renderHook(() => useTradeSolver('0xtx123', orderId))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
@@ -88,11 +89,14 @@ describe('useTradeSolver', () => {
   })
 
   it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
+    const orderId = '0xorder456'
     mockedUseNetworkId.mockReturnValue(42161)
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('extquasimodo-solve'))
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
+      mockSolverCompetitionResponse('extquasimodo-solve', orderId),
+    )
     mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
 
-    const { result } = renderHook(() => useTradeSolver('0xextquasimodo'))
+    const { result } = renderHook(() => useTradeSolver('0xextquasimodo', orderId))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
@@ -111,7 +115,7 @@ describe('useTradeSolver', () => {
     } as unknown as SolverCompetitionResponse)
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
-    const { result } = renderHook(() => useTradeSolver('0xtx456'))
+    const { result } = renderHook(() => useTradeSolver('0xtx456', '0xorder789'))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
@@ -122,10 +126,36 @@ describe('useTradeSolver', () => {
     mockedGetSolverCompetitionByTxHash.mockRejectedValueOnce(new Error('API down'))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
-    const { result } = renderHook(() => useTradeSolver('0xtx789'))
+    const { result } = renderHook(() => useTradeSolver('0xtx789', '0xorderabc'))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(result.current.solver).toBeUndefined()
+  })
+
+  it('returns undefined solver when winner solution orderId mismatches requested orderId', async () => {
+    const requestedOrderId = '0xrequestedOrder123'
+    const winnerOrderId = '0xwinnerOrder456'
+
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce({
+      auctionId: 1,
+      solutions: [
+        {
+          solver: 'projectblanc',
+          isWinner: true,
+          solverAddress: '0xsolver',
+          ranking: 1,
+          orders: [{ id: winnerOrderId }],
+        } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
+      ],
+    } as SolverCompetitionResponse)
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const { result } = renderHook(() => useTradeSolver('0xtx789', requestedOrderId))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toBeUndefined()
+    expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 })

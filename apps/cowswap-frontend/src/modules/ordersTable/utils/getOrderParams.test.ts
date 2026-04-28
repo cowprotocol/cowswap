@@ -1,6 +1,5 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { getOrderParams } from './getOrderParams'
 
@@ -12,10 +11,10 @@ describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]
   const BASE_BALANCES_AND_ALLOWANCES: BalancesAndAllowances = {
     balances: {
-      [getAddressKey(BASE_ORDER.inputToken.address)]: BigNumber.from(BASE_ORDER.sellAmount),
+      [getAddressKey(BASE_ORDER.inputToken.address)]: BigInt(BASE_ORDER.sellAmount),
     },
     allowances: {
-      [getAddressKey(BASE_ORDER.inputToken.address)]: BigNumber.from(BASE_ORDER.sellAmount),
+      [getAddressKey(BASE_ORDER.inputToken.address)]: BigInt(BASE_ORDER.sellAmount),
     },
     isLoading: false,
   }
@@ -69,7 +68,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [getAddressKey(order.inputToken.address)]: BigNumber.from(String(+order.sellAmount * 0.00051)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00051)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -80,7 +79,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [getAddressKey(order.inputToken.address)]: BigNumber.from(String(+order.sellAmount * 0.00049)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -92,7 +91,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [getAddressKey(order.inputToken.address)]: BigNumber.from(String(+order.sellAmount * 0.00051)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00051)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -103,7 +102,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [getAddressKey(order.inputToken.address)]: BigNumber.from(String(+order.sellAmount * 0.00049)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)

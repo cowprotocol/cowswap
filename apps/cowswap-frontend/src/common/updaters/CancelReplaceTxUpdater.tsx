@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Dispatch } from 'redux'
 
@@ -20,7 +19,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 export function CancelReplaceTxUpdater(): null {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const accountLowerCase = account ? getAddressKey(account) : ''
@@ -35,15 +33,13 @@ export function CancelReplaceTxUpdater(): null {
   )
 
   useEffect(() => {
-    if (!provider) return
-    // Watch the mempool for cancellation/replacement of tx
+    // Watch the mempool for cancellation/replacement of tx (currently no-op)
     watchTxChanges(pendingHashes, chainId, dispatch)
 
     return () => {
-      // Unwatch the mempool
       unwatchTxChanges(pendingHashes, chainId)
     }
-  }, [chainId, provider, pendingHashes, dispatch])
+  }, [chainId, pendingHashes, dispatch])
 
   return null
 }

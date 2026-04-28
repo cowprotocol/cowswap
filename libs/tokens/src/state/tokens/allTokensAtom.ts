@@ -86,11 +86,11 @@ export const activeTokensMapAtom = atom(async (get) => {
 
 /**
  * Returns a list of tokens that are active and sorted alphabetically
- * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
+ * The list includes: native token, user added tokens, optional favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const allActiveTokensAtom = atom(async (get) => {
-  const { chainId, enableLpTokensByDefault } = get(environmentAtom)
+  const { chainId, enableLpTokensByDefault, hideFavoriteTokens } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
   const isTokenListsUpdating = get(tokenListsUpdatingAtom)
@@ -122,16 +122,19 @@ export const allActiveTokensAtom = atom(async (get) => {
    * The end of the array has the highest priority.
    * It means that activeTokens should take precedence over favoriteTokens
    */
-  const tokens = tokenMapToListWithLogo(
-    (lpTokens ? [lpTokens] : [])
-      .concat([
-        lowerCaseTokensMap(favoriteTokensState[chainId]),
-        lowerCaseTokensMap(userAddedTokens[chainId] || {}),
-        tokensMap.activeTokens,
-      ])
-      .concat(nativeToken ? [{ [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo }] : []),
-    chainId,
-  )
+  const tokenSources = lpTokens ? [lpTokens] : []
+
+  if (!hideFavoriteTokens) {
+    tokenSources.push(lowerCaseTokensMap(favoriteTokensState[chainId]))
+  }
+
+  tokenSources.push(lowerCaseTokensMap(userAddedTokens[chainId] || {}), tokensMap.activeTokens)
+
+  if (nativeToken) {
+    tokenSources.push({ [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo })
+  }
+
+  const tokens = tokenMapToListWithLogo(tokenSources, chainId)
 
   return { tokens, chainId }
 })

@@ -7,6 +7,7 @@ interface TokensModuleEnvironment {
   chainId: SupportedChainId
   useCuratedListOnly?: boolean
   enableLpTokensByDefault?: boolean
+  hideFavoriteTokens?: boolean
   isYieldEnabled?: boolean
   widgetAppCode?: string
   selectedLists?: string[]

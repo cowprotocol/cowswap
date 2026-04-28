@@ -1,15 +1,19 @@
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
+import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import ms from 'ms.macro'
+import { decodeFunctionData } from 'viem'
+
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { SafeTransactionParams } from 'common/types'
 
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
+
+import type { Hex } from 'viem'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
@@ -20,17 +24,20 @@ const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
 const HISTORY_TX_COUNT_LIMIT = 100
 
+const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
+
+function getSafeApiHeaders(): HeadersInit {
+  if (!SAFE_API_AUTH_TOKEN) return {}
+  return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
+}
+
 type TwapDataArray = TwapOrdersSafeData[]
 
 export async function fetchTwapOrdersFromSafe(
   chainId: SupportedChainId,
   safeAddress: string,
-  composableCowContract: ComposableCoW,
+  composableCowContract: ComposableCowContractData,
   setData: (state: TwapDataArray) => void,
-  /**
-   * Example of the second chunk url:
-   * https://safe-transaction-goerli.safe.global/api/v1/safes/0xe9B79591E270B3bCd0CC7e84f7B7De74BA3D0E2F/all-transactions/?executed=false&limit=20&offset=40&queued=true&trusted=true
-   */
   nextUrl?: string,
   accumulator: TwapDataArray[] = [],
 ): Promise<TwapDataArray> {
@@ -43,14 +50,65 @@ export async function fetchTwapOrdersFromSafe(
 
   const flattenState = accumulator.flat()
 
-  setData(flattenState)
-
   // Exit from the recursion if we have enough transactions or there is no next page
+
   if (accumulator.length >= SAFE_TX_HISTORY_DEPTH || !response?.next) {
-    return flattenState
+    /**
+     * Also fetch recently executed transactions (one page, newest-first).
+     * For Safe via WalletConnect, executed transactions disappear from the pending
+     * queue (executed=false), so we need a separate pass to capture them and set
+     * isExecuted=true — which lets the status logic correctly transition the order
+     * away from WaitSigning.
+     */
+    const executedResults = await fetchRecentlyExecutedTransactions(chainId, safeAddress, composableCowContract)
+
+    const merged = mergeByHash([...flattenState, ...executedResults])
+
+    setData(merged)
+    return merged
   }
 
   return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setData, response.next, accumulator)
+}
+
+async function fetchRecentlyExecutedTransactions(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  composableCowContract: ComposableCowContractData,
+): Promise<TwapDataArray> {
+  try {
+    const url = `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=true&limit=${HISTORY_TX_COUNT_LIMIT}&ordering=-submissionDate`
+
+    const headers = getSafeApiHeaders()
+
+    const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
+    const results = response?.results || []
+
+    return parseSafeTransactionsResult(composableCowContract, results)
+  } catch (error) {
+    console.error('Error fetching executed Safe transactions', { safeAddress }, error)
+    return []
+  }
+}
+
+/**
+ * Merge two TwapDataArrays by safeTxHash, preferring entries with isExecuted=true.
+ * This ensures that if the same transaction appears in both the pending and executed
+ * fetches (e.g. a tx that just executed), we keep the executed version.
+ */
+function mergeByHash(items: TwapDataArray): TwapDataArray {
+  const map = new Map<string, TwapOrdersSafeData>()
+
+  for (const item of items) {
+    const hash = item.safeTxParams.safeTxHash
+    const existing = map.get(hash)
+
+    if (!existing || (!existing.safeTxParams.isExecuted && item.safeTxParams.isExecuted)) {
+      map.set(hash, item)
+    }
+  }
+
+  return Array.from(map.values())
 }
 
 async function fetchSafeTransactionsChunk(
@@ -58,9 +116,11 @@ async function fetchSafeTransactionsChunk(
   safeAddress: string,
   nextUrl?: string,
 ): Promise<AllTransactionsListResponse> {
+  const headers = getSafeApiHeaders()
+
   if (nextUrl) {
     try {
-      const response: AllTransactionsListResponse = await fetch(nextUrl).then((res) => res.json())
+      const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -72,21 +132,17 @@ async function fetchSafeTransactionsChunk(
     }
   }
 
-  /**
-   * SafeApiKit set limit=20 by default and there is no way to change it using the SDK
-   *
-   */
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
 
-  return fetch(url).then((res) => res.json())
+  return fetch(url, { headers }).then((res) => res.json())
 }
 
 function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {
-  return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
+  return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
 function parseSafeTransactionsResult(
-  composableCowContract: ComposableCoW,
+  composableCowContract: ComposableCowContractData,
   results: AllTransactionsListResponse['results'],
 ): TwapOrdersSafeData[] {
   return results
@@ -97,9 +153,10 @@ function parseSafeTransactionsResult(
 
       if (selectorIndex < 0) return null
 
-      const callData = '0x' + result.data.substring(selectorIndex)
-
-      const conditionalOrderParams = parseConditionalOrderParams(composableCowContract, callData)
+      const conditionalOrderParams = parseConditionalOrderParams(
+        composableCowContract,
+        `0x${result.data.substring(selectorIndex)}`,
+      )
 
       if (!conditionalOrderParams) return null
 
@@ -120,14 +177,16 @@ function isSafeMultisigTransactionListResponse(response: any): response is SafeM
 }
 
 function parseConditionalOrderParams(
-  composableCowContract: ComposableCoW,
-  callData: string,
+  composableCowContract: ComposableCowContractData,
+  callData: Hex,
 ): ConditionalOrderParams | null {
   try {
-    const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { params } = _result as any as { params: ConditionalOrderParams }
+    const { args } = decodeFunctionData({
+      abi: composableCowContract.abi,
+      data: callData,
+    })
+
+    const [params] = args as unknown as [ConditionalOrderParams]
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
   } catch {

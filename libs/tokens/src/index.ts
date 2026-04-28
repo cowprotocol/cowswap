@@ -38,6 +38,7 @@ export { useRemoveUserToken } from './hooks/tokens/userAdded/useRemoveUserToken'
 export { useResetUserTokens } from './hooks/tokens/userAdded/useResetUserTokens'
 export { useRemoveList } from './hooks/lists/useRemoveList'
 export { useToggleList } from './hooks/lists/useToggleList'
+export { useIsXstockToken } from './hooks/lists/useIsXstockToken'
 export { useListsEnabledState } from './hooks/lists/useListsEnabledState'
 export { useAddUnsupportedToken } from './hooks/tokens/unsupported/useAddUnsupportedToken'
 export { useRemoveUnsupportedToken } from './hooks/tokens/unsupported/useRemoveUnsupportedToken'
@@ -64,6 +65,7 @@ export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTok
 export { environmentAtom } from './state/environmentAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 export { allActiveTokensAtom, tokensByAddressAtom } from './state/tokens/allTokensAtom'
+export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
 export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
 
 // Utils

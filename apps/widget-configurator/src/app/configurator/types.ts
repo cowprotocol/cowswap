@@ -1,5 +1,11 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowSwapWidgetPaletteColors, PartnerFee, SlippageConfig, TradeType } from '@cowprotocol/widget-lib'
+import {
+  CowSwapWidgetPaletteColors,
+  PartnerFee,
+  SlippageConfig,
+  TradeType,
+  WidgetHookEvents,
+} from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -16,9 +22,12 @@ export interface TokenListItem {
 
 export interface ConfiguratorState {
   chainId?: SupportedChainId
+  locale?: string
   theme: PaletteMode
+  boxShadow?: string
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
+  enabledWidgetHooks: WidgetHookEvents[]
   sellToken: string
   sellTokenAmount: number | undefined
   buyToken: string
@@ -35,11 +44,14 @@ export interface ConfiguratorState {
   standaloneMode: boolean
   disableToastMessages: boolean
   disableProgressBar: boolean
+  disablePostTradeTips: boolean
   disableCrossChainSwap: boolean
   disableTokenImport: boolean
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableTradeWhenPriceImpactIsUnknown: boolean
+  disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
 }

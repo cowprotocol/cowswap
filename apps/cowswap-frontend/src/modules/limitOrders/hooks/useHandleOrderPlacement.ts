@@ -3,12 +3,16 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
@@ -54,6 +58,7 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
+  const config = useConfig()
   const isBridge = getAreBridgeCurrencies(
     tradeContext.postOrderParams.inputAmount.currency,
     tradeContext.postOrderParams.outputAmount.currency,
@@ -96,14 +101,29 @@ export function useHandleOrderPlacement(
   }, [tradeContext, tradeConfirmActions])
 
   const tradeFn = useCallback(async () => {
+    const isWidgetHookPassed = await callWidgetHook(
+      WidgetHookEvents.ON_BEFORE_TRADE,
+      buildTradeWidgetHookPayload({
+        orderType: UiOrderType.LIMIT,
+        inputAmount: tradeContext.postOrderParams.inputAmount,
+        outputAmount: tradeContext.postOrderParams.outputAmount,
+        recipient: tradeContext.postOrderParams.recipient,
+        orderKind: tradeContext.postOrderParams.kind,
+      }),
+    )
+
+    if (!isWidgetHookPassed) {
+      return
+    }
+
     const partiallyFillableState =
       typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
 
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
-      return safeBundleFlow(
-        {
+      return safeBundleFlow({
+        params: {
           ...safeBundleFlowContext,
           postOrderParams: {
             ...safeBundleFlowContext.postOrderParams,
@@ -115,7 +135,8 @@ export function useHandleOrderPlacement(
         confirmPriceImpactWithoutFee,
         analytics,
         beforeTrade,
-      )
+        config,
+      })
     }
 
     return tradeFlow(
@@ -134,6 +155,7 @@ export function useHandleOrderPlacement(
       beforeTrade,
     )
   }, [
+    config,
     isSafeBundle,
     tradeContext,
     partiallyFillableOverride,
@@ -150,6 +172,10 @@ export function useHandleOrderPlacement(
   return useCallback(() => {
     return tradeFn()
       .then((orderHash) => {
+        if (!orderHash) {
+          return
+        }
+
         tradeConfirmActions.onSuccess(orderHash)
 
         updateLimitOrdersState({ recipient: null })

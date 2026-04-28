@@ -1,8 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
+
 import { useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
+
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { buildOrdersWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 
 import { updateOrdersToCancelAtom } from 'common/state/ordersToCancel.atom'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
@@ -13,8 +18,19 @@ export function useMultipleOrdersCancellation(): (orders: CancellableOrder[]) =>
 
   return useCallback(
     (orders: CancellableOrder[]) => {
-      setOrdersToCancel(orders)
-      openModal()
+      void (async () => {
+        const isWidgetHookPassed = await callWidgetHook(
+          WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL,
+          buildOrdersWidgetHookPayload(orders),
+        ).catch(() => false)
+
+        if (!isWidgetHookPassed) {
+          return
+        }
+
+        setOrdersToCancel(orders)
+        openModal()
+      })()
     },
     [openModal, setOrdersToCancel],
   )

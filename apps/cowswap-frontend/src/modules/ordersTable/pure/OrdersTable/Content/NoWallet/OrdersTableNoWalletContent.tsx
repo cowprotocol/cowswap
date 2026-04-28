@@ -10,15 +10,10 @@ import SVG from 'react-inlinesvg'
 import { Web3Status } from 'modules/wallet'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
-import { TabOrderTypes } from 'common/state/routesState'
 
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 
-export interface OrdersTableNoWalletContentProps {
-  orderType: TabOrderTypes
-}
-
-export function OrdersTableNoWalletContent({ orderType }: OrdersTableNoWalletContentProps): ReactNode {
+export function OrdersTableNoWalletContent(): ReactNode {
   const pendingActivitiesCount = usePendingActivitiesCount()
 
   return (
@@ -29,17 +24,7 @@ export function OrdersTableNoWalletContent({ orderType }: OrdersTableNoWalletCon
       <h4>
         <Trans>Connect a wallet</Trans>
       </h4>
-      {!isInjectedWidget && (
-        <>
-          <p>
-            <Trans>
-              To use {orderType} orders, please connect your wallet <br />
-              to one of our supported networks.
-            </Trans>
-          </p>
-          {pendingActivitiesCount && <Web3Status />}
-        </>
-      )}
+      {!isInjectedWidget() && pendingActivitiesCount > 0 && <Web3Status />}
     </styledEl.Content>
   )
 }

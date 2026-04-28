@@ -1,17 +1,27 @@
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
-import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
+import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import {
+  TradeType,
+  useDerivedTradeState,
+  useIsWrapOrUnwrap,
+  useNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -28,6 +38,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
+  const injectedWidgetParams = useInjectedWidgetParams()
+  const tradePriceImpact = useTradePriceImpact()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
@@ -40,6 +52,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
+  const isInputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(inputCurrency))
+  const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
@@ -49,6 +63,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
   const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
   const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
+
+  const isNonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -94,6 +110,11 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isRestrictedForCountry,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
+      injectedWidgetParams,
+      tradePriceImpact,
+      isInputCurrencyXstock,
+      isOutputCurrencyXstock,
+      isNonEvmReceiverConfirmed,
     }
   }, [
     hasFirstLoad,
@@ -116,13 +137,26 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isSwapUnsupported,
     isWrapUnwrap,
     isProxySetupValid,
+    isInputCurrencyXstock,
+    isOutputCurrencyXstock,
     recipientEnsAddress,
     toBeImported,
     tradeQuote,
     balancesError,
+    injectedWidgetParams,
+    tradePriceImpact,
+    isNonEvmReceiverConfirmed,
   ])
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
   return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
+}
+
+function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
+  if (!currency || getIsNativeToken(currency) || !('address' in currency)) {
+    return null
+  }
+
+  return currency
 }

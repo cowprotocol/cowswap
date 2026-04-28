@@ -5,11 +5,15 @@ import { useCallback } from 'react'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
+
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { buildOrderWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
@@ -91,24 +95,33 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // The callback returned that triggers the modal
       return () => {
-        // Updates the cancellation context with details pertaining the order
-        setContext({
-          orderId: order.id,
-          chainId,
-          defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
-          onDismiss,
-          triggerCancellation,
-          nativeCurrency,
-        })
-        // Display the actual modal
-        openModal()
-        // Estimate tx cost in case when OnChain cancellation is used
-        getOnChainTxInfo(order).then(({ estimatedGas }) => {
-          const gasPrice = +(gasPrices?.average || '0')
-          const txCost = calculateGasMargin(estimatedGas).mul(gasPrice)
+        void (async () => {
+          const isWidgetHookPassed = await callWidgetHook(
+            WidgetHookEvents.ON_BEFORE_ORDER_CANCEL,
+            buildOrderWidgetHookPayload(order),
+          ).catch(() => false)
 
-          setContext({ txCost })
-        })
+          if (!isWidgetHookPassed) return
+
+          // Updates the cancellation context with details pertaining the order
+          setContext({
+            orderId: order.id,
+            chainId,
+            defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
+            onDismiss,
+            triggerCancellation,
+            nativeCurrency,
+          })
+          // Display the actual modal
+          openModal()
+          // Estimate tx cost in case when OnChain cancellation is used
+          getOnChainTxInfo(order).then(({ estimatedGas }) => {
+            const gasPrice = BigInt(gasPrices?.average || '0')
+            const txCost = calculateGasMargin(estimatedGas) * gasPrice
+
+            setContext({ txCost })
+          })
+        })()
       }
     },
     [
