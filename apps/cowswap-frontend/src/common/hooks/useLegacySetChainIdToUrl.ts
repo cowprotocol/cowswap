@@ -30,16 +30,15 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
 
       // On the root path, the router redirects to the swap page which will resolve the correct chain.
       // Setting ?chain= here would leave the app stuck with no matching trade route.
-      if (pathname === '/') return
+      // if (pathname === '/') return
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
-      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
       navigate(
         {
           pathname,
-          search: newSearch,
+          search: replaceURLParam(location.search, 'chain', chainInfo.name),
         },
         { replace: true },
       )
