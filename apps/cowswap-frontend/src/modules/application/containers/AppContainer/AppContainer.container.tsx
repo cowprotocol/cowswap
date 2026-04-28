@@ -23,6 +23,7 @@ import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
 import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
+import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
@@ -103,6 +104,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
+        <RecoveryBanner />
         <InvalidLocalTimeWarning />
 
         <OrdersPanel />
