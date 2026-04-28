@@ -4,6 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
+import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -90,12 +91,19 @@ const UnsupportedTokenButton = ({ derivedState, isSupportedWallet }: ButtonCompo
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonComponent> = {
   [TradeFormValidation.WrapUnwrapFlow]: (props: ButtonComponentProps) => {
     const isNativeIn = !!props.derivedState.inputCurrency && getIsNativeToken(props.derivedState.inputCurrency)
+    const addSnackbar = useAddSnackbar()
 
-    return (
-      <TradeFormBlankButton onClick={() => props.wrapNativeFlow()}>
-        {isNativeIn ? t`Wrap` : t`Unwrap`}
-      </TradeFormBlankButton>
-    )
+    const handleClick = (): void => {
+      props.wrapNativeFlow().catch((error: unknown) => {
+        const message =
+          error instanceof Error
+            ? (error as Error & { shortMessage?: string }).shortMessage || error.message
+            : String(error)
+        addSnackbar({ id: 'wrap-unwrap-error', content: message, icon: 'alert' })
+      })
+    }
+
+    return <TradeFormBlankButton onClick={handleClick}>{isNativeIn ? t`Wrap` : t`Unwrap`}</TradeFormBlankButton>
   },
   [TradeFormValidation.CustomTokenError]: ({ customTokenError }: ButtonComponentProps) => {
     return (
