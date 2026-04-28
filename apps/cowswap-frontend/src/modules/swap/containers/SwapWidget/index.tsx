@@ -260,7 +260,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     isTradePriceUpdating: isRateLoading,
     priceImpact,
   }
-
+  console.log('testing vercel')
   return (
     <Container>
       {showAddIntermediateTokenModal ? (
