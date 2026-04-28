@@ -1,25 +1,20 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { faFill } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { DetailsTableTooltips } from './detailsTableTooltips'
-import { SolvedByBadge } from './SolvedByBadge'
-import { LinkButton, TextLink, Wrapper } from './styled'
+import { AppDataItem } from './items/AppDataItem'
+import { CostAndFeesItem } from './items/CostAndFeesItem'
+import { ExecutionPriceItem } from './items/ExecutionPriceItem'
+import { FilledItem } from './items/FilledItem'
+import { HooksItem } from './items/HooksItem'
+import { LimitPriceItem } from './items/LimitPriceItem'
+import { OrderSurplusItem } from './items/OrderSurplusItem'
+import { SolvedByItem } from './items/SolvedByItem'
 
 import { Order } from '../../../api/operator'
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
-import { DecodeAppData } from '../../AppData/DecodeAppData'
-import { DetailRow } from '../../common/DetailRow'
-import Spinner from '../../common/Spinner'
-import { FilledProgress } from '../FilledProgress'
-import { GasFeeDisplay } from '../GasFeeDisplay'
 import { OrderHooksDetails } from '../OrderHooksDetails'
-import { OrderPriceDisplay } from '../OrderPriceDisplay'
-import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
+import { OrderPriceDisplayProps } from '../OrderPriceDisplay'
 
 interface VerboseDetailsProps {
   order: Order
@@ -49,7 +44,6 @@ export function VerboseDetails({
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
-    surplusAmount,
     buyToken,
     sellToken,
     appData,
@@ -60,66 +54,46 @@ export function VerboseDetails({
     return null
   }
 
-  const priceDisplayContext = {
+  const orderPriceDisplayProps = {
     buyToken,
     sellToken,
     showInvertButton: true,
     isPriceInverted,
     invertPrice,
-  }
+  } as const satisfies Partial<OrderPriceDisplayProps>
 
   return (
     <>
-      <DetailRow label="Limit Price" tooltipText={DetailsTableTooltips.priceLimit}>
-        <OrderPriceDisplay buyAmount={buyAmount} sellAmount={sellAmount} {...priceDisplayContext} />
-      </DetailRow>
-      <DetailRow label="Execution price" tooltipText={DetailsTableTooltips.priceExecution}>
-        {!filledAmount.isZero() ? (
-          <OrderPriceDisplay buyAmount={executedBuyAmount} sellAmount={executedSellAmount} {...priceDisplayContext} />
-        ) : (
-          '-'
-        )}
-      </DetailRow>
-      <DetailRow label="Filled" tooltipText={DetailsTableTooltips.filled}>
-        <FilledProgress order={order} />
-        <Wrapper>
-          {showFillsButton && (
-            <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-              <FontAwesomeIcon icon={faFill} />
-              View fills
-            </LinkButton>
-          )}
-        </Wrapper>
-      </DetailRow>
-      <DetailRow label="Order surplus" tooltipText={DetailsTableTooltips.surplus}>
-        {!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}
-      </DetailRow>
-      <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
-        <GasFeeDisplay order={order} />
-      </DetailRow>
+      <LimitPriceItem {...orderPriceDisplayProps} buyAmount={buyAmount} sellAmount={sellAmount} />
+
+      <ExecutionPriceItem
+        {...orderPriceDisplayProps}
+        buyAmount={executedBuyAmount}
+        sellAmount={executedSellAmount}
+        filledAmount={filledAmount}
+      />
+
+      <FilledItem order={order} showFillsButton={showFillsButton} viewFills={viewFills} />
+
+      <OrderSurplusItem order={order} />
+
+      <CostAndFeesItem order={order} />
+
       {showSolverDetails && (
-        <DetailRow label="Solved by" tooltipText={DetailsTableTooltips.solvedBy}>
-          {showFillsButton ? (
-            <TextLink onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
-              View all solvers
-            </TextLink>
-          ) : isSolvedByLoading ? (
-            <Spinner spin size="1x" />
-          ) : (
-            <SolvedByBadge solvedBy={solvedBy} />
-          )}
-        </DetailRow>
+        <SolvedByItem
+          uid={uid}
+          isSolvedByLoading={isSolvedByLoading}
+          solvedBy={solvedBy}
+          showFillsButton={showFillsButton}
+          viewFills={viewFills}
+        />
       )}
+
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
-        {(content) => (
-          <DetailRow label="Hooks" tooltipText={DetailsTableTooltips.hooks} stack>
-            {content}
-          </DetailRow>
-        )}
+        {(content) => <HooksItem>{content}</HooksItem>}
       </OrderHooksDetails>
-      <DetailRow label="AppData" tooltipText={DetailsTableTooltips.appData}>
-        <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
-      </DetailRow>
+
+      <AppDataItem appData={appData} fullAppData={fullAppData ?? undefined} />
     </>
   )
 }
