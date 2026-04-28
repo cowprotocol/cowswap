@@ -1,16 +1,18 @@
 import { useCallback } from 'react'
 
-import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { calculateGasMargin, delay, getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { type Address, erc20Abi } from 'viem'
+import { type Address, createPublicClient, erc20Abi, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
 
 export async function estimateApprove(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
@@ -18,24 +20,48 @@ export async function estimateApprove(
   spender: string,
   amountToApprove: bigint,
   account: Address,
+  chainId: number,
 ): Promise<{ gasLimit: bigint }> {
-  try {
-    const gasLimit = await publicClient.estimateContractGas({
-      address: tokenAddress,
-      abi: erc20Abi,
-      functionName: 'approve',
-      args: [spender as Address, amountToApprove],
-      account,
-    })
-    return { gasLimit }
-  } catch (error) {
-    console.error(
-      '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
-        GAS_LIMIT_DEFAULT.toString(),
-      error,
-    )
-    return { gasLimit: GAS_LIMIT_DEFAULT }
+  for (let attempt = 1; attempt <= MAX_WALLET_RETRIES; attempt++) {
+    try {
+      const gasLimit = await publicClient.estimateContractGas({
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [spender as Address, amountToApprove],
+        account,
+      })
+      return { gasLimit }
+    } catch (error) {
+      console.warn(`[estimateApproveGas] Wallet attempt ${attempt}/${MAX_WALLET_RETRIES} failed`, error)
+      if (attempt < MAX_WALLET_RETRIES) {
+        await delay(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1))
+      }
+    }
   }
+
+  console.log('[estimateApproveGas] Wallet retries exhausted, switching to fallback RPC provider')
+  const rpcUrl = RPC_URLS[chainId as SupportedChainId]
+  const chain = VIEM_CHAINS[chainId as SupportedChainId]
+
+  if (rpcUrl && chain) {
+    try {
+      const fallbackClient = createPublicClient({ chain, transport: http(rpcUrl) })
+      const gasLimit = await fallbackClient.estimateContractGas({
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [spender as Address, amountToApprove],
+        account,
+      })
+      return { gasLimit }
+    } catch (error) {
+      console.warn('[estimateApproveGas] Fallback RPC gas estimation failed', error)
+    }
+  }
+
+  console.error(`[estimateApproveGas] All attempts failed, using default ${GAS_LIMIT_DEFAULT}`)
+  return { gasLimit: GAS_LIMIT_DEFAULT }
 }
 
 export type ApproveTxResult = { hash: `0x${string}` }
@@ -71,6 +97,7 @@ export function useApproveCallback(
         spender,
         amountToApprove,
         walletClient.account.address,
+        tokenChainId,
       )
       const hash = await walletClient.writeContract({
         address: tokenAddress,

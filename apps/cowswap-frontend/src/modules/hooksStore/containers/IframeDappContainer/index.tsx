@@ -1,4 +1,4 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
@@ -6,7 +6,7 @@ import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
-import { useWalletClient } from 'wagmi'
+import { useAccount } from 'wagmi'
 
 import { getDappOrigin } from './getDappOrigin'
 
@@ -83,7 +83,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isLoading, setIsLoading] = useState(true)
   const dappOrigin = getDappOrigin(dapp.url)
 
-  const { data: walletClient } = useWalletClient()
+  const { connector } = useAccount()
 
   // eslint-disable-next-line react-hooks/refs
   addHookRef.current = context.addHook
@@ -154,11 +154,21 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     }
   }, [dappOrigin])
 
-  useLayoutEffect(() => {
-    if (!walletClient || !bridgeRef.current) return
+  useEffect(() => {
+    if (!connector || !bridgeRef.current) return
 
-    bridgeRef.current.onConnect(walletClient as unknown as EthereumProvider)
-  }, [walletClient])
+    let cancelled = false
+
+    connector.getProvider().then((provider) => {
+      if (!cancelled && provider && bridgeRef.current) {
+        bridgeRef.current.onConnect(provider as unknown as EthereumProvider)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [connector])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow

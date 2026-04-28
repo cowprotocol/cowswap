@@ -3,7 +3,6 @@ import { ReactElement } from 'react'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
 import { ArrowDown } from 'react-feather'
 
 import { AddressInputPanel } from 'common/pure/AddressInputPanel'
@@ -14,11 +13,22 @@ export interface SetRecipientProps {
   className?: string
   // Target chain ID for recipient address validation. For cross-chain swaps, this should be the output token's chain.
   targetChainId?: TargetChainId
+  isBridging?: boolean
   isRequired?: boolean
+  isSmartContractWalletBridging?: boolean
+  onNonEvmReceiverConfirmedChange?: (confirmed: boolean) => void
 }
 
 export function SetRecipient(props: SetRecipientProps): ReactElement {
-  const { recipient, onChangeRecipient, className, targetChainId, isRequired } = props
+  const {
+    recipient,
+    onChangeRecipient,
+    className,
+    targetChainId,
+    isBridging,
+    isSmartContractWalletBridging,
+    onNonEvmReceiverConfirmedChange,
+  } = props
 
   return (
     <>
@@ -30,7 +40,9 @@ export function SetRecipient(props: SetRecipientProps): ReactElement {
         value={recipient}
         onChange={onChangeRecipient}
         targetChainId={targetChainId}
-        label={isRequired ? <Trans>Receiver address (required)</Trans> : undefined}
+        isBridging={isBridging}
+        isSmartContractWalletBridging={isSmartContractWalletBridging}
+        onNonEvmReceiverConfirmedChange={onNonEvmReceiverConfirmedChange}
       />
     </>
   )
