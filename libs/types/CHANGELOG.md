@@ -1,12 +1,5 @@
 # Changelog
 
-## [4.3.1](https://github.com/cowprotocol/cowswap/compare/types-v4.3.0...types-v4.3.1) (2026-04-22)
-
-
-### 🐛 Bug Fixes
-
-* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
-
 ## [4.3.0](https://github.com/cowprotocol/cowswap/compare/types-v4.2.1...types-v4.3.0) (2026-04-16)
 
 

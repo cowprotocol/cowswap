@@ -1,27 +1,5 @@
 # Changelog
 
-## [4.2.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.2.0...explorer-v4.2.1) (2026-04-22)
-
-
-### 🐛 Bug Fixes
-
-* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
-* unify 'scan' spelling for chain explorer labels ([#7382](https://github.com/cowprotocol/cowswap/issues/7382)) ([0286991](https://github.com/cowprotocol/cowswap/commit/028699127de8a51637fa2f9bc48b14ff3ecda10f)), closes [#6827](https://github.com/cowprotocol/cowswap/issues/6827)
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 3.2.1
-    * @cowprotocol/common-const bumped to 3.2.1
-    * @cowprotocol/common-hooks bumped to 3.2.1
-    * @cowprotocol/common-utils bumped to 3.3.1
-    * @cowprotocol/core bumped to 3.2.1
-    * @cowprotocol/hook-dapp-lib bumped to 2.2.3
-    * @cowprotocol/types bumped to 4.3.1
-    * @cowprotocol/ui bumped to 3.3.1
-
 ## [4.2.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.1.2...explorer-v4.2.0) (2026-04-16)
 
 
