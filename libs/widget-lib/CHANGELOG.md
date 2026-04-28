@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.0...widget-lib-v4.0.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped to 4.3.1
+    * @cowprotocol/iframe-transport bumped to 2.2.3
+
 ## [4.0.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v3.1.1...widget-lib-v4.0.0) (2026-04-16)
 
 

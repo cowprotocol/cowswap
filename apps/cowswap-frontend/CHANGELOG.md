@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.9.0...cowswap-v3.9.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+* unify 'scan' spelling for chain explorer labels ([#7382](https://github.com/cowprotocol/cowswap/issues/7382)) ([0286991](https://github.com/cowprotocol/cowswap/commit/028699127de8a51637fa2f9bc48b14ff3ecda10f)), closes [#6827](https://github.com/cowprotocol/cowswap/issues/6827)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.1
+    * @cowprotocol/balances-and-allowances bumped to 3.2.1
+    * @cowprotocol/common-const bumped to 3.2.1
+    * @cowprotocol/common-hooks bumped to 3.2.1
+    * @cowprotocol/common-utils bumped to 3.3.1
+    * @cowprotocol/core bumped to 3.2.1
+    * @cowprotocol/ens bumped to 3.2.1
+    * @cowprotocol/events bumped to 4.3.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.3
+    * @cowprotocol/iframe-transport bumped to 2.2.3
+    * @cowprotocol/multicall bumped to 3.2.1
+    * @cowprotocol/permit-utils bumped to 3.2.1
+    * @cowprotocol/snackbars bumped to 2.0.21
+    * @cowprotocol/tokens bumped to 3.4.1
+    * @cowprotocol/types bumped to 4.3.1
+    * @cowprotocol/ui bumped to 3.3.1
+    * @cowprotocol/wallet bumped to 3.2.1
+    * @cowprotocol/wallet-provider bumped to 2.1.17
+    * @cowprotocol/widget-lib bumped to 4.0.1
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.8.0...cowswap-v3.9.0) (2026-04-17)
+
+
+### ✨ Features
+
+* add recovery banner component and related functionality ([#7374](https://github.com/cowprotocol/cowswap/issues/7374)) ([e030412](https://github.com/cowprotocol/cowswap/commit/e03041283a933238a8f8feadb63a1279cda4aa6e))
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.7.1...cowswap-v3.8.0) (2026-04-16)
 
 
