@@ -1,27 +1,5 @@
 # Changelog
 
-## [3.2.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.0...balances-and-allowances-v3.2.1) (2026-04-22)
-
-
-### 🐛 Bug Fixes
-
-* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.2.1
-    * @cowprotocol/common-hooks bumped to 3.2.1
-    * @cowprotocol/common-utils bumped to 3.3.1
-    * @cowprotocol/core bumped to 3.2.1
-    * @cowprotocol/multicall bumped to 3.2.1
-    * @cowprotocol/tokens bumped to 3.4.1
-    * @cowprotocol/types bumped to 4.3.1
-    * @cowprotocol/wallet bumped to 3.2.1
-    * @cowprotocol/wallet-provider bumped to 2.1.17
-
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.1.2...balances-and-allowances-v3.2.0) (2026-04-16)
 
 

@@ -14,7 +14,7 @@ export const DetailsTableTooltips = {
   ),
   toBridgeReceiver:
     'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.',
-  hash: 'The onchain settlement transaction for this order. Can be viewed on a block explorer.',
+  hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Signing, Open, Filled, Partially filled, Expired or Cancelled.',

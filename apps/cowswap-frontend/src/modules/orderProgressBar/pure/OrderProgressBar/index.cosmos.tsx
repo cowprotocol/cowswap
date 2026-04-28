@@ -728,14 +728,14 @@ const Fixtures = {
 
   // Different chains combination
   // Tests: Polygon → Base
-  // Validates: Each chain uses its specific explorer (Polygonscan → Basescan)
+  // Validates: Each chain uses its specific explorer (PolygonScan → BaseScan)
   // Ensures: Chain-specific explorer names are correctly resolved
   'bridging-explorer-links-polygon-to-base': () => (
     <Wrapper>
       <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(0,150,0,0.1)', borderRadius: '8px' }}>
         <strong>✅ Different Chains:</strong> Polygon → Base
         <br />
-        <strong>Expected:</strong> "View on Polygonscan" → "View on Basescan"
+        <strong>Expected:</strong> "View on PolygonScan" → "View on BaseScan"
       </div>
       <OrderProgressBar
         {...defaultProps}
@@ -1040,14 +1040,14 @@ const Fixtures = {
   ),
 
   // AVALANCHE VALIDATION: Specific explorer branding
-  // Tests: ETH → Avalanche (uses Snowscan, not "Avalanche Explorer")
+  // Tests: ETH → Avalanche (uses SnowTrace, not "Avalanche Explorer")
   // Validates: Chain-specific explorer names are correctly resolved
   'bridging-explorer-links-avalanche': () => (
     <Wrapper>
       <div style={{ marginBottom: '16px', padding: '8px', background: 'rgba(255,100,100,0.1)', borderRadius: '8px' }}>
         <strong>🔺 Avalanche Test:</strong> ETH → Avalanche
         <br />
-        <strong>Expected:</strong> "View on Etherscan" → "View on Snowscan"
+        <strong>Expected:</strong> "View on Etherscan" → "View on SnowTrace"
       </div>
       <OrderProgressBar
         {...defaultProps}
