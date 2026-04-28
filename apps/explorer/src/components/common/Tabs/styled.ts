@@ -103,6 +103,10 @@ export const ExtraContent = styled.div<{ $isBottom?: boolean }>`
   margin-left: ${({ $isBottom }) => ($isBottom ? `0` : 'auto')};
   border-top: ${({ $isBottom }) => ($isBottom ? `0.1rem solid ${Color.explorer_border}` : 'none')};
 
+  &:empty {
+    display: none;
+  }
+
   ${Media.upToSmall()} {
     order: -1;
     width: 100%;

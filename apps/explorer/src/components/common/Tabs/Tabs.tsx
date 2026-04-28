@@ -77,8 +77,6 @@ function Tabs({
   const selectedTab = parentSelectedTab ?? innerSelectedTab
   const updateTab = parentUpdateSelectedTab ?? setInnerSelectedTab
 
-  // TODO: Do not pass empty elements as tabBarExtraContent
-
   return (
     <Wrapper>
       <TabList role="tablist" className="tablist">

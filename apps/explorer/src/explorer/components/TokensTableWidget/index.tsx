@@ -19,17 +19,6 @@ import { useNetworkId } from '../../../state/network'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
 
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
-
 const TableWrapper = styled(CardRow)`
   width: 100%;
 
@@ -63,12 +52,6 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
     }
   }
 `
-
-const ExtraComponentNode: React.ReactNode = (
-  <WrapperExtraComponents>
-    <TablePagination context={TokensTableContext} fixedResultsPerPage />
-  </WrapperExtraComponents>
-)
 
 interface Props {
   networkId: BlockchainNetwork
@@ -139,6 +122,8 @@ export const TokensTableWidget: React.FC<Props> = () => {
   if (!tokens?.length) {
     return <LoadingWrapper message="Loading tokens" />
   }
+
+  const ExtraComponentNode: React.ReactNode = <TablePagination context={TokensTableContext} fixedResultsPerPage />
 
   return (
     <TableWrapper>
