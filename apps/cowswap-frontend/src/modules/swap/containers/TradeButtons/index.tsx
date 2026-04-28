@@ -8,7 +8,9 @@ import {
   useConfirmTradeWithRwaCheck,
   useGetConfirmButtonLabel,
   useIsCurrentTradeBridging,
+  useIsNonEvmBridging,
   useIsNoImpactWarningAccepted,
+  useNonEvmReceiverConfirmed,
   useWrappedToken,
 } from 'modules/trade'
 import {
@@ -25,10 +27,7 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
-import {
-  useShouldCheckBridgingRecipient,
-  useSmartContractRecipientConfirmed,
-} from '../../hooks/useSmartContractRecipientConfirmed'
+import { useShouldCheckBridgingRecipient } from '../../hooks/useSmartContractRecipientConfirmed'
 import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
@@ -63,7 +62,8 @@ export function TradeButtons({
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
-  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const isNonEvmBridging = useIsNonEvmBridging()
+  const nonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
   const isSafeWallet = useIsSafeWallet()
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
@@ -116,7 +116,7 @@ export function TradeButtons({
     !isTradeContextReady ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
-    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
+    (isNonEvmBridging || shouldCheckBridgingRecipient ? !nonEvmReceiverConfirmed : false)
 
   if (!tradeFormButtonContext) return null
 

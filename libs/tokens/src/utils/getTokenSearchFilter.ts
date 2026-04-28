@@ -8,8 +8,9 @@ const alwaysTrue = (): boolean => true
 export function getTokenSearchFilter<T extends Token | TokenInfo>(
   query: string,
 ): (token: T | NativeCurrency) => boolean {
-  if (isSupportedAddress(query)) {
-    return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(query, t.address)
+  const normalizedQuery = query.startsWith('0x') ? query : `0x${query}`
+  if (isSupportedAddress(normalizedQuery)) {
+    return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(normalizedQuery, t.address)
   }
 
   const queryParts = query

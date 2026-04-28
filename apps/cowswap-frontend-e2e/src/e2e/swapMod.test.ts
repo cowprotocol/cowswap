@@ -1,5 +1,6 @@
 import { SMALL_TIMEOUT } from '../config'
-import { handleNativeBalance, mockSendCall } from '../support/mocks/mockSendCall'
+import { TEST_ADDRESS_NEVER_USE } from '../support/ethereum'
+import { mockNativeBalanceHttp } from '../support/mocks/mockRpcCall'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -18,7 +19,7 @@ describe('Swap (mod)', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
-      .type('{selectall}{backspace}{selectall}{backspace}')
+      .type('{selectAll}{del}')
       .type('0.001')
       .should('have.value', '0.001')
   })
@@ -26,19 +27,13 @@ describe('Swap (mod)', () => {
   it('zero swap amount', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
-    cy.get('#input-currency-input .token-amount-input')
-      .type('{selectall}{backspace}{selectall}{backspace}')
-      .type('0.0')
-      .should('have.value', '0.0')
+    cy.get('#input-currency-input .token-amount-input').type('{selectAll}{del}').type('0.0').should('have.value', '0.0')
   })
 
   it('invalid swap amount', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
-    cy.get('#input-currency-input .token-amount-input')
-      .type('{selectall}{backspace}{selectall}{backspace}')
-      .type('\\')
-      .should('have.value', '')
+    cy.get('#input-currency-input .token-amount-input').type('{selectAll}{del}').type('\@\@').should('have.value', '')
   })
 
   it('can enter an amount into output', () => {
@@ -72,17 +67,11 @@ describe('Swap (mod)', () => {
   })
 
   it('can find COW and swap Native for COW', () => {
-    cy.visit('/#/11155111/swap', {
-      onBeforeLoad: (win) => {
-        mockSendCall(win.ethereum, [
-          handleNativeBalance(
-            win.ethereum,
-            win.ethereum.address,
-            50n * 10n ** 18n, // 18 decimals
-          ),
-        ])
-      },
-    })
+    // Mock ETH balance at the HTTP transport level. wagmi/viem reads balances via
+    // Multicall3.aggregate3 over HTTP (not window.ethereum), so we intercept the
+    // RPC response and patch the getEthBalance result for our test address.
+    mockNativeBalanceHttp(TEST_ADDRESS_NEVER_USE, 50n * 10n ** 18n)
+    cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)

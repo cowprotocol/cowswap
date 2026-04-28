@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
@@ -115,8 +116,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
-  [TradeFormValidation.RecipientNotSet]: {
-    text: <Trans>Enter a receiver address</Trans>,
+  [TradeFormValidation.RecipientNotConfirmed]: {
+    text: <Trans>Confirm recipient to swap</Trans>,
+  },
+  [TradeFormValidation.RecipientNotSet]: ({ derivedState: { outputCurrency } }: ButtonComponentProps) => {
+    const chainLabel = outputCurrency ? getChainInfo(outputCurrency.chainId)?.label : undefined
+
+    return (
+      <TradeFormBlankButton disabled>
+        <Trans>Recipient is required for {chainLabel}</Trans>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
@@ -402,5 +412,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         </>
       </TradeFormBlankButton>
     )
+  },
+  [TradeFormValidation.WidgetConstrainedTokenPair]: {
+    text: <Trans>The token pair is constrained</Trans>,
   },
 }
