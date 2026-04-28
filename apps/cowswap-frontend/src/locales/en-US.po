@@ -2086,7 +2086,7 @@ msgstr "No fees for failed transactions"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Across"
-#~ msgstr "Across<<<<<<< HEAD"
+#~ msgstr "Across"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 #~ msgid "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
