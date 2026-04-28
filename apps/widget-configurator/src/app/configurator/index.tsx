@@ -77,7 +77,6 @@ const DEFAULT_STATE = {
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
-const LOCAL_FEDERATED_WIDGET_BASE_URL = 'http://localhost:3000'
 
 export type WidgetMode = 'dapp' | 'standalone'
 
@@ -279,7 +278,6 @@ export function Configurator({ title }: { title: string }) {
       customTokens,
       ...rawParamsObject,
       ...window.cowSwapWidgetParams,
-      baseUrl: LOCAL_FEDERATED_WIDGET_BASE_URL,
     }),
     [computedParams, customImages, customSounds, customTokens, rawParamsObject],
   )

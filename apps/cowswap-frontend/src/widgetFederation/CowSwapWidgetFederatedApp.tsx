@@ -1,6 +1,3 @@
-import '@reach/dialog/styles.css'
-import '../styles/fonts.css'
-
 import { Provider as AtomProvider } from 'jotai'
 import { ReactElement, ReactNode, StrictMode, useEffect, useMemo } from 'react'
 
