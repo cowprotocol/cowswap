@@ -2,11 +2,6 @@
 
 declare module '*.md'
 
-declare module '*.css?inline' {
-  const css: string
-  export default css
-}
-
 declare module '@metamask/jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
