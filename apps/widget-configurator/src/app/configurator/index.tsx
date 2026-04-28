@@ -5,7 +5,7 @@ import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cow
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
-import { CowSwapWidget } from '@cowprotocol/widget-react'
+import { CowSwapFederatedWidget, CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
 import CloseIcon from '@mui/icons-material/Close'
@@ -13,7 +13,16 @@ import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
-import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  IconButton,
+  Radio,
+  RadioGroup,
+  Snackbar,
+} from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -68,13 +77,14 @@ const DEFAULT_STATE = {
 }
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
+const LOCAL_FEDERATED_WIDGET_BASE_URL = 'http://localhost:3000'
 
 export type WidgetMode = 'dapp' | 'standalone'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function Configurator({ title }: { title: string }) {
   const { setThemeMode } = useWeb3ModalTheme()
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
@@ -86,6 +96,8 @@ export function Configurator({ title }: { title: string }) {
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
   const standaloneMode = widgetMode === 'standalone'
+  const [useFederatedWidget, setUseFederatedWidget] = useState(true)
+  const toggleFederatedWidget = useCallback(() => setUseFederatedWidget((curr) => !curr), [])
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -267,6 +279,7 @@ export function Configurator({ title }: { title: string }) {
       customTokens,
       ...rawParamsObject,
       ...window.cowSwapWidgetParams,
+      baseUrl: LOCAL_FEDERATED_WIDGET_BASE_URL,
     }),
     [computedParams, customImages, customSounds, customTokens, rawParamsObject],
   )
@@ -339,6 +352,13 @@ export function Configurator({ title }: { title: string }) {
         )}
 
         <Divider variant="middle">General</Divider>
+
+        {!IS_IFRAME && (
+          <FormControlLabel
+            control={<Checkbox checked={useFederatedWidget} onChange={toggleFederatedWidget} />}
+            label="Use federated React widget"
+          />
+        )}
 
         <ThemeControl />
 
@@ -579,14 +599,22 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            {isWidgetDisplayed && (
-              <CowSwapWidget
-                params={params}
-                provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
-                listeners={listeners}
-                onReady={() => console.log('[configurator:onReady] Widget ready')}
-              />
-            )}
+            {isWidgetDisplayed &&
+              (useFederatedWidget && !IS_IFRAME ? (
+                <CowSwapFederatedWidget
+                  params={params}
+                  provider={!standaloneMode ? provider : undefined}
+                  listeners={listeners}
+                  onReady={() => console.log('[configurator:onReady] Federated widget ready')}
+                />
+              ) : (
+                <CowSwapWidget
+                  params={params}
+                  provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+                  listeners={listeners}
+                  onReady={() => console.log('[configurator:onReady] Widget ready')}
+                />
+              ))}
           </>
         )}
       </Box>

@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -13,6 +14,7 @@ import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
+import { readFileSync, writeFileSync } from 'fs'
 import * as path from 'path'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
@@ -30,6 +32,21 @@ const nodeDepsToInclude = ['crypto', 'stream']
 
 const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
+
+function fixFederatedRemoteEntryPaths(): PluginOption {
+  return {
+    name: 'fix-federated-remote-entry-paths',
+    writeBundle() {
+      const remoteEntryPath = path.resolve(__dirname, '../../build/cowswap/remoteEntry.js')
+      const remoteEntry = readFileSync(remoteEntryPath, 'utf8')
+      const patchedRemoteEntry = remoteEntry.replaceAll('./static/static/', './static/')
+
+      if (patchedRemoteEntry !== remoteEntry) {
+        writeFileSync(remoteEntryPath, patchedRemoteEntry)
+      }
+    },
+  }
+}
 
 // eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode, isPreview }) => {
@@ -71,6 +88,14 @@ export default defineConfig(({ mode, isPreview }) => {
       robotsDir: 'robots',
       publicPath: path.resolve(__dirname, './public'),
     }),
+    federation({
+      name: 'cowSwapWidgetRemote',
+      filename: '../remoteEntry.js',
+      exposes: {
+        './CowSwapWidgetRemote': path.resolve(__dirname, './src/widgetFederation/CowSwapWidgetRemote.tsx'),
+      },
+    }),
+    fixFederatedRemoteEntryPaths(),
   ]
 
   if (analyzeBundle) {
