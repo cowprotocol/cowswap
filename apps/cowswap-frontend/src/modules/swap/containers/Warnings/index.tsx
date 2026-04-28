@@ -6,14 +6,16 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
+import {
+  useIsCurrentTradeBridging,
+  useNonEvmReceiverConfirmed,
+  useSetNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+  useTradeRouteContext,
+} from 'modules/trade'
 import { HighFeeWarning, MetamaskTransactionWarning, SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
-import {
-  useShouldCheckBridgingRecipient,
-  useSmartContractRecipientConfirmed,
-  useToggleSmartContractRecipientConfirmed,
-} from '../../hooks/useSmartContractRecipientConfirmed'
+import { useShouldCheckBridgingRecipient } from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { SwapFormState, useSwapFormState } from '../../hooks/useSwapFormState'
 import { SmartContractReceiverWarning } from '../../pure/SmartContractReceiverWarning'
@@ -26,13 +28,13 @@ interface WarningsProps {
 
 export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } = useSwapDerivedState()
+  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount, recipient } = useSwapDerivedState()
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const toggleSmartContractRecipientConfirmed = useToggleSmartContractRecipientConfirmed()
-  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
+  const nonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
+  const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
   const outputChainId = outputCurrency?.chainId
 
   const isNativeSellInHooksStore = formState === SwapFormState.SellNativeInHooks
@@ -44,25 +46,30 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
   const showTwapSuggestionBanner =
     (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) && !isCurrentTradeBridging
 
-  // Reset SmartContractRecipientConfirmed when trade params are changed
+  // Reset confirmation when trade params change
   useEffect(() => {
     if (!outputChainId) return
 
-    toggleSmartContractRecipientConfirmed(false)
-  }, [recipient, chainId, account, outputChainId, toggleSmartContractRecipientConfirmed])
+    setNonEvmReceiverConfirmed(false)
+  }, [recipient, chainId, account, outputChainId, setNonEvmReceiverConfirmed])
+
+  // Show SC wallet warning only when recipient was NOT explicitly set by the user
+  // (i.e. the connected wallet address will be used as the recipient on another chain)
+  const showScWalletWarning =
+    shouldCheckBridgingRecipient && !recipient && !!account && !!outputChainId && !isFractionFalsy(outputCurrencyAmount)
 
   return (
     <>
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       {!hideQuoteAmount && <HighFeeWarning />}
-      {shouldCheckBridgingRecipient && account && outputChainId && !isFractionFalsy(outputCurrencyAmount) && (
+      {showScWalletWarning && (
         <SmartContractReceiverWarning
           account={account}
           recipient={recipient}
           chainId={outputChainId}
-          checked={smartContractRecipientConfirmed}
-          toggle={toggleSmartContractRecipientConfirmed}
+          checked={nonEvmReceiverConfirmed}
+          toggle={setNonEvmReceiverConfirmed}
         />
       )}
       {showTwapSuggestionBanner && (

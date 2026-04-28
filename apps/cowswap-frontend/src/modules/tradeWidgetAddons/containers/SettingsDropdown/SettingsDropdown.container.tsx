@@ -27,6 +27,7 @@ interface SettingsTabProps {
   hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
+  isRecipientToggleDisabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -36,6 +37,7 @@ export function SettingsDropdown({
   hooksEnabledState,
   deadlineState,
   enablePartialApprovalState,
+  isRecipientToggleDisabled = false,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -93,8 +95,9 @@ export function SettingsDropdown({
                   id="toggle-recipient-mode-button"
                   title={t`Custom Recipient`}
                   tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-                  checked={recipientToggleVisible}
+                  checked={recipientToggleVisible || isRecipientToggleDisabled}
                   toggle={toggleRecipientVisibility}
+                  disabled={isRecipientToggleDisabled}
                   data-click-event={toCowSwapGtmEvent({
                     category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
                     action: 'Toggle Recipient Address',
