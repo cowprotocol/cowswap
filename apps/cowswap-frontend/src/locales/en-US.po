@@ -4065,8 +4065,8 @@ msgstr "Hook Store"
 #~ msgstr "CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/RecoveryBanner/RecoveryBanner.container.tsx
-msgid "A recent DNS incident has been resolved. CoW Swap contracts remain safe. If you interacted with the site on April 14, review your token approvals on <0>Revoke.cash</0>."
-msgstr "A recent DNS incident has been resolved. CoW Swap contracts remain safe. If you interacted with the site on April 14, review your token approvals on <0>Revoke.cash</0>."
+#~ msgid "A recent DNS incident has been resolved. CoW Swap contracts remain safe. If you interacted with the site on April 14, review your token approvals on <0>Revoke.cash</0>."
+#~ msgstr "A recent DNS incident has been resolved. CoW Swap contracts remain safe. If you interacted with the site on April 14, review your token approvals on <0>Revoke.cash</0>."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee Protocol - Swap tokens across chains"
@@ -6860,8 +6860,8 @@ msgid "When enabled, the orders table will be displayed on the left side on desk
 msgstr "When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/RecoveryBanner/RecoveryBanner.container.tsx
-msgid "Dismiss incident notice"
-msgstr "Dismiss incident notice"
+#~ msgid "Dismiss incident notice"
+#~ msgstr "Dismiss incident notice"
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "View proposals"
@@ -7174,8 +7174,8 @@ msgid "Modified recipient address to"
 msgstr "Modified recipient address to"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/RecoveryBanner/RecoveryBanner.container.tsx
-msgid "CoW Swap <0>is back online</0>"
-msgstr "CoW Swap <0>is back online</0>"
+#~ msgid "CoW Swap <0>is back online</0>"
+#~ msgstr "CoW Swap <0>is back online</0>"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "Something failed. Please try again later."
