@@ -1,11 +1,11 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual, EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
 import BigNumber from 'bignumber.js'
 
-import { OrderStatus, SerializedOrder } from 'legacy/state/orders/actions'
+import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
 import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer'
 
