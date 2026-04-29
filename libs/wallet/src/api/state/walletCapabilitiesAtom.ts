@@ -23,7 +23,7 @@ export interface WalletCapabilities {
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
  * to get the capabilities. It breaks the flow with perpetual requests.
  */
-async function getShouldCheckCapabilities(connector: Connector, chainId: SupportedChainId): Promise<boolean> {
+export async function getShouldCheckCapabilities(connector: Connector, chainId: SupportedChainId): Promise<boolean> {
   const isWalletConnect = getIsWalletConnect(connector)
   const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(connector, chainId)
   const isWalletConnectViaWidget = !!widgetProviderMetaInfo?.providerWcMetadata
