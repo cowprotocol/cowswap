@@ -19,6 +19,7 @@ import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersA
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
+import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const SAFE_INFO_SHORT_INTERVAL = ms`5s`
 // getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
@@ -93,10 +94,10 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
@@ -124,9 +125,10 @@ interface WalletUpdaterProps {
 }
 
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
-  const { connector } = useConnection()
+  const { connector, isConnected } = useConnection()
+
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
@@ -134,6 +136,12 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
   const setEip6963Provider = useSetEip6963Provider()
   const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
+
+  useEffect(() => {
+    if (standaloneMode && isConnected && connector?.id === COW_WIDGET_CONNECTOR_ID) {
+      // TODO: switch to the next connector
+    }
+  }, [standaloneMode, connector, isConnected])
 
   // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
   useEffect(() => {

@@ -1,29 +1,43 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isImTokenBrowser } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { safe } from '@wagmi/connectors'
-import { http } from 'viem'
+import { injected, safe } from '@wagmi/connectors'
+import { EIP1193Provider, http } from 'viem'
 import { createStorage, type Transport } from 'wagmi'
 
-import { throttledInjected } from './connectors/throttledInjected'
+import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
-import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
-
-type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
+type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof injected>
 
 function isEmbeddedInIframe(): boolean {
   return typeof window !== 'undefined' && window.self !== window.top
 }
 
+const connectorParams = { shimDisconnect: true }
+
 function getConnectors(): ConnectorInstance[] {
-  const injected = throttledInjected()
   if (isEmbeddedInIframe()) {
-    return [safe({ shimDisconnect: true }), injected]
+    if (isInjectedWidget()) {
+      return [
+        injected({
+          target: {
+            name: 'CoW Widget',
+            id: COW_WIDGET_CONNECTOR_ID,
+            provider: new WidgetEthereumProvider() as EIP1193Provider,
+          },
+        }),
+        injected(connectorParams),
+      ]
+    }
+
+    return [safe(connectorParams), injected(connectorParams)]
   }
-  return [injected]
+
+  return [injected(connectorParams)]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
@@ -69,8 +83,17 @@ const metadata = {
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
+export const connectors = getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors']
+
+/**
+ * Recent connector takes priority, and we have to override it in the widget
+ */
+if (isInjectedWidget()) {
+  storage.setItem('recentConnectorId', COW_WIDGET_CONNECTOR_ID)
+}
+
 export const wagmiAdapter = new WagmiAdapter({
-  connectors: getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
+  connectors,
   customRpcUrls,
   networks: SUPPORTED_REOWN_NETWORKS,
   projectId,
