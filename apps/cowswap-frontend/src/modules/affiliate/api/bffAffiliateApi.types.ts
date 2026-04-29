@@ -1,3 +1,5 @@
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export interface TraderInfoResponse {
   code: string
   traderRewardAmount: number
@@ -67,7 +69,7 @@ export interface TraderActivityResponse {
 }
 
 export interface TraderActivityRowResponse {
-  chain_id: number
+  chain_id: SupportedChainId
   creation_date: string
   tx_hash: string
   order_uid: string
