@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { bungeeBridgeProvider } from 'sdk/cowSdk'
 
 import { Order } from 'api/operator'
-import { getCowSwapDuplicateOrderUrl } from 'utils/getCowSwapDuplicateOrderUrl'
+import { getCowSwapOrderUrl } from 'utils/getCowSwapOrderUrl'
 import { getSocketApiUrl, getSocketUrl } from 'utils/socket'
 
 import { DetailRow } from '../../../common/DetailRow'
@@ -30,7 +30,7 @@ export function OrderIdItem({ chainId, order, onCopy, bridgeProviderId }: OrderI
 
   const socketUrl = getSocketUrl(orderId)
   const socketApiUrl = getSocketApiUrl(orderId)
-  const duplicateOnCowSwapHref = getCowSwapDuplicateOrderUrl(chainId, order)
+  const cowSwapOrderUrl = getCowSwapOrderUrl(chainId, order)
 
   return (
     <DetailRow label="Order Id" tooltipText={DetailsTableTooltips.orderID}>
@@ -40,8 +40,8 @@ export function OrderIdItem({ chainId, order, onCopy, bridgeProviderId }: OrderI
         contentsToDisplay={<TruncatedText>{orderId}</TruncatedText>}
       />
       <Wrapper>
-        {duplicateOnCowSwapHref && (
-          <ExternalLinkButton href={duplicateOnCowSwapHref} target="_blank" rel="noopener noreferrer">
+        {cowSwapOrderUrl && (
+          <ExternalLinkButton href={cowSwapOrderUrl} target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faPlus} />
             New order↗
           </ExternalLinkButton>

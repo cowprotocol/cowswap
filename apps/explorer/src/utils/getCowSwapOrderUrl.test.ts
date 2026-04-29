@@ -5,9 +5,9 @@ import BigNumber from 'bignumber.js'
 
 import { Order } from 'api/operator'
 
-import { getCowSwapDuplicateOrderUrl } from './getCowSwapDuplicateOrderUrl'
+import { getCowSwapOrderUrl } from './getCowSwapOrderUrl'
 
-describe('getCowSwapDuplicateOrderUrl', () => {
+describe('getCowSwapOrderUrl', () => {
   beforeEach(() => {
     jest.spyOn(commonUtils, 'getSwapBaseUrl').mockReturnValue('https://swap.cow.fi')
   })
@@ -41,7 +41,7 @@ describe('getCowSwapDuplicateOrderUrl', () => {
       class: OrderClass.LIMIT,
     } as Order
 
-    const url = getCowSwapDuplicateOrderUrl(1, order)
+    const url = getCowSwapOrderUrl(1, order)
 
     expect(url).toBe(
       'https://swap.cow.fi/#/1/limit/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/0xdAC17F958D2ee523a2206206994597C13D831ec7?sellAmount=0.0000000000001&buyAmount=7891408.295252&orderKind=sell',
@@ -59,7 +59,7 @@ describe('getCowSwapDuplicateOrderUrl', () => {
       class: OrderClass.MARKET,
     } as Order
 
-    const url = getCowSwapDuplicateOrderUrl(1, order)
+    const url = getCowSwapOrderUrl(1, order)
 
     expect(url).toContain('/1/swap/')
   })
@@ -77,7 +77,7 @@ describe('getCowSwapDuplicateOrderUrl', () => {
       class: OrderClass.LIMIT,
     } as Order
 
-    const url = getCowSwapDuplicateOrderUrl(1, order)
+    const url = getCowSwapOrderUrl(1, order)
 
     expect(url).toContain('/1/advanced/')
   })
@@ -93,6 +93,6 @@ describe('getCowSwapDuplicateOrderUrl', () => {
       class: OrderClass.MARKET,
     } as Order
 
-    expect(getCowSwapDuplicateOrderUrl(1, order)).toBeNull()
+    expect(getCowSwapOrderUrl(1, order)).toBeNull()
   })
 })

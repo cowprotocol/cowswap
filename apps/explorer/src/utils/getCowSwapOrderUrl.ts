@@ -34,7 +34,7 @@ function formatAtomicAmountForSwapUrl(amount: BigNumber, tokenDecimals: number):
 }
 
 /** CoW Swap URL that pre-fills the trade widget from an explorer order (pair, amounts, order kind). */
-export function getCowSwapDuplicateOrderUrl(chainId: SupportedChainId, order: Order): string | null {
+export function getCowSwapOrderUrl(chainId: SupportedChainId, order: Order): string | null {
   const { sellToken, buyToken, sellAmount, buyAmount, kind } = order
   if (!sellToken || !buyToken) {
     return null
