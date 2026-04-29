@@ -253,6 +253,10 @@ msgstr "The account address which will/did receive the bought amount."
 #~ msgid "Selected token: {sym}"
 #~ msgstr "Selected token: {sym}"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
+msgid "Volume"
+msgstr "Volume"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
 msgstr "Unexpected error fetching data: wrong format data"
@@ -689,6 +693,10 @@ msgstr "1 Month"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging completed!"
 msgstr "Bridging completed!"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "Trades coming from integrator flow are excluded from affiliate rewards."
+msgstr "Trades coming from integrator flow are excluded from affiliate rewards."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 #~ msgid "Nothing new yet"
@@ -1750,6 +1758,10 @@ msgstr "Last updated"
 #~ msgid "Save and verify code"
 #~ msgstr "Save and verify code"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "Eligible trade"
+msgstr "Eligible trade"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Recent"
 msgstr "Recent"
@@ -1879,6 +1891,10 @@ msgstr "Closed"
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
 msgstr "CoW Swap 404 not found"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "The trader already reached the rewardable volume cap for this referral code."
+msgstr "The trader already reached the rewardable volume cap for this referral code."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Apply"
@@ -2601,6 +2617,10 @@ msgstr "to receiver"
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "To proceed, change the network in your wallet"
 msgstr "To proceed, change the network in your wallet"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "This referral code was not found in the affiliate program configuration."
+msgstr "This referral code was not found in the affiliate program configuration."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
@@ -3476,7 +3496,6 @@ msgstr "You're all caught up"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TradeDetailsAccordion/index.tsx
-#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "Fee"
 msgstr "Fee"
@@ -3792,6 +3811,10 @@ msgstr "Get support on Discord"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Remove liquidity from a CoW AMM pool before the swap"
 #~ msgstr "Remove liquidity from a CoW AMM pool before the swap"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "This trade used a different referral code than the trader's bound code."
+msgstr "This trade used a different referral code than the trader's bound code."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.cosmos.tsx
 #~ msgid "Input currency not found for chain {supportedChainId}"
@@ -4950,6 +4973,10 @@ msgstr "Expiry"
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Minutes"
 msgstr "Minutes"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "The referral code was applied after the trader's first qualifying trade."
+msgstr "The referral code was applied after the trader's first qualifying trade."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
@@ -6509,6 +6536,7 @@ msgid "Canceling your order"
 msgstr "Canceling your order"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "Referral code"
@@ -6949,6 +6977,10 @@ msgstr "Light mode"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "The competition has started"
 msgstr "The competition has started"
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "This trade fee was too low to qualify for affiliate rewards."
+msgstr "This trade fee was too low to qualify for affiliate rewards."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "You will receive this price or better for your tokens."
