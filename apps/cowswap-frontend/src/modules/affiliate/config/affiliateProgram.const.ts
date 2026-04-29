@@ -64,8 +64,6 @@ export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 export const REF_CODE_MIN_LENGTH = 5
 export const REF_CODE_MAX_LENGTH = 20
 
-export const MIN_FEE_BPS = 1.9
-
 /**
  * Defaults params - keep them in sync with the cms env vars: `infrastructure/cms/index.ts`
  */

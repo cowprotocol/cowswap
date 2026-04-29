@@ -10,23 +10,22 @@ import { Card } from 'pages/Account/styled'
 import { AffiliateTraderActivityTableRow } from './AffiliateTraderActivityTableRow'
 import { CardTitle } from './shared'
 
-import { OrderWithChainId } from '../api/fetchTraderActivity'
+import { TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
 
 interface AffiliateTraderActivityTableProps {
-  orders: OrderWithChainId[]
-  savedCode: string
+  rows: TraderActivityRowResponse[]
   showLoader?: boolean
 }
 
 export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTableProps): ReactNode {
-  const { orders, savedCode, showLoader } = props
+  const { rows, showLoader } = props
 
   return (
     <TableCard showLoader={showLoader}>
       <CardTitle>
         <Trans>Rewards activity</Trans>
       </CardTitle>
-      {orders.length === 0 ? (
+      {rows.length === 0 ? (
         <EmptyText>
           <Trans>Your rewards activity will show here.</Trans>
         </EmptyText>
@@ -45,7 +44,7 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
                   <Trans>Trade</Trans>
                 </th>
                 <th>
-                  <Trans>Fee</Trans>
+                  <Trans>Volume</Trans>
                 </th>
                 <th>
                   <Trans>Eligible</Trans>
@@ -54,8 +53,8 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <AffiliateTraderActivityTableRow order={order} savedCode={savedCode} key={order.uid} />
+              {rows.map((row) => (
+                <AffiliateTraderActivityTableRow row={row} key={row.order_uid} />
               ))}
             </tbody>
           </Table>
@@ -110,6 +109,6 @@ const Table = styled.table`
   }
 
   ${Media.upToSmall()} {
-    min-width: 680px;
+    min-width: 720px;
   }
 `

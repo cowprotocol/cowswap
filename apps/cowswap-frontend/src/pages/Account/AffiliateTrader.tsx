@@ -76,11 +76,7 @@ export default function AffiliateTrader(): ReactNode {
               <AffiliateTraderStats />
               <AffiliateTraderNextPayout />
             </ThreeColumnGrid>
-            <AffiliateTraderActivityTable
-              orders={activityOrders || []}
-              savedCode={savedCode}
-              showLoader={activityLoading}
-            />
+            <AffiliateTraderActivityTable rows={activityOrders || []} showLoader={activityLoading} />
           </>
         )}
       </PageWrapper>

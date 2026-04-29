@@ -4,6 +4,7 @@ import { Address, areAddressesEqual, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
+import BigNumber from 'bignumber.js'
 
 import { OrderStatus, SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
@@ -11,14 +12,12 @@ import { getDefaultNetworkState, OrdersState } from 'legacy/state/orders/reducer
 
 import { decodeAppData } from 'modules/appData'
 
-import { OrderWithChainId } from '../api/fetchTraderActivity'
 import {
   AFFILIATE_PAYOUTS_CHAIN_ID,
   AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
   AFFILIATE_REWARDS_UPDATE_LAG_MS,
   AFFILIATE_STATS_REFRESH_INTERVAL_MS,
   AFFILIATE_SUPPORTED_CHAIN_IDS,
-  MIN_FEE_BPS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
@@ -112,6 +111,33 @@ export function formatRefCode(value?: string | null): string | undefined {
   return REF_CODE_PATTERN.test(normalized) ? normalized : undefined
 }
 
+export function formatTokenAmountDecimal(value?: string): string {
+  if (!value) return EMPTY_VALUE_LABEL
+
+  const amount = new BigNumber(value)
+
+  if (!amount.isFinite()) return EMPTY_VALUE_LABEL
+  if (amount.isZero()) return '0'
+
+  const absoluteValue = amount.abs()
+
+  if (absoluteValue.isLessThan(0.001)) {
+    return trimTrailingZeros(amount.toFixed(8))
+  }
+
+  if (absoluteValue.isLessThan(1)) {
+    return trimTrailingZeros(amount.toFixed(6))
+  }
+
+  return formatLocaleNumber({
+    number: amount.toNumber(),
+    locale: i18n.locale,
+    options: {
+      maximumFractionDigits: 3,
+    },
+  })
+}
+
 export function formatUsdcCompact(value?: number): string {
   const formatted = formatCompactNumber(value)
   return formatted === EMPTY_VALUE_LABEL ? EMPTY_VALUE_LABEL : `${formatted} USDC`
@@ -159,34 +185,6 @@ export function getDefaultTraderRewardAmount(): number {
 
 export function getDefaultTriggerVolume(): number {
   return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
-}
-
-export function getIneligibilityReason(order: OrderWithChainId, savedCode: string | undefined): string | undefined {
-  const refCode = getRefCodeFromAppData(extractFullAppDataFromOrder(order))
-
-  if (!refCode) return 'Referrer code missing.'
-  if (formatRefCode(refCode) !== formatRefCode(savedCode)) return `Referrer code mismatch: ${refCode}.`
-
-  try {
-    const { executedFeeToken, sellToken } = order
-
-    if (executedFeeToken !== sellToken) return 'Fee token mismatch.'
-
-    const precisionMultiplier = 100n
-    const executedSellAmount = BigInt(order.executedSellAmount)
-    const executedFeeAmount = BigInt(order.executedFee || '0')
-
-    if (
-      executedFeeAmount * 10_000n * precisionMultiplier <
-      executedSellAmount * BigInt(MIN_FEE_BPS * Number(precisionMultiplier))
-    ) {
-      return `Fee below minimum threshold (${MIN_FEE_BPS} bps).`
-    }
-  } catch {
-    return 'Fee data unavailable for eligibility check.'
-  }
-
-  return undefined
 }
 
 export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
@@ -330,4 +328,11 @@ function readStringFromRecord(value: JsonRecord | undefined, key: string): strin
   const raw = value[key]
 
   return typeof raw === 'string' ? raw : undefined
+}
+
+function trimTrailingZeros(value: string): string {
+  return value
+    .replace(/(\.\d*?[1-9])0+$/u, '$1')
+    .replace(/\.0+$/u, '')
+    .replace(/\.$/u, '')
 }

@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { formatDateWithTimezone, formatShortDate, getExplorerOrderLink } from '@cowprotocol/common-utils'
-import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 import {
   Badge,
@@ -11,7 +10,6 @@ import {
   ContextMenuTooltip,
   InfoTooltip,
   NetworkLogo,
-  TokenAmount,
   UI,
 } from '@cowprotocol/ui'
 
@@ -22,33 +20,31 @@ import styled from 'styled-components/macro'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
-import { OrderWithChainId } from '../api/fetchTraderActivity'
-import { getIneligibilityReason, toValidDate } from '../lib/affiliateProgramUtils'
+import { TraderActivityEligibilityReason, TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
+import { formatTokenAmountDecimal, formatUsdCompact, toValidDate } from '../lib/affiliateProgramUtils'
 
 export interface AffiliateTraderActivityTableRowProps {
-  order: OrderWithChainId
-  savedCode: string
+  row: TraderActivityRowResponse
 }
 
-export function AffiliateTraderActivityTableRow({ order, savedCode }: AffiliateTraderActivityTableRowProps): ReactNode {
+export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivityTableRowProps): ReactNode {
   const {
-    buyToken: buyTokenAddress,
-    chainId,
-    creationDate,
-    executedBuyAmount,
-    executedFee,
-    executedFeeToken,
-    executedSellAmount,
-    sellToken: sellTokenAddress,
-    uid,
-  } = order
-  const ineligibleReason = getIneligibilityReason(order, savedCode)
+    buy_token: buyTokenAddress,
+    chain_id: chainId,
+    creation_date: creationDate,
+    executed_buy_amount: executedBuyAmount,
+    executed_sell_amount: executedSellAmount,
+    eligible_volume_usd: eligibleVolumeUsd,
+    eligibility_reason: eligibilityReason,
+    is_eligible: isEligible,
+    order_uid: uid,
+    sell_token: sellTokenAddress,
+  } = row
   const orderLink = getExplorerOrderLink(chainId, uid)
 
   const tokensByAddress = useTokensByAddressMapForChain(chainId)
   const sellToken = getTokenFromMapping(sellTokenAddress, chainId, tokensByAddress)
   const buyToken = getTokenFromMapping(buyTokenAddress, chainId, tokensByAddress)
-  const feeToken = executedFeeToken ? getTokenFromMapping(executedFeeToken, chainId, tokensByAddress) : null
 
   return (
     <tr>
@@ -73,35 +69,23 @@ export function AffiliateTraderActivityTableRow({ order, savedCode }: AffiliateT
           </TokenPair>
           <TradeSummary>
             <TradeLine>
-              {sellToken && (
-                <TokenAmount
-                  amount={CurrencyAmount.fromRawAmount(sellToken, executedSellAmount)}
-                  tokenSymbol={sellToken}
-                />
-              )}
+              {sellToken ? `${formatTokenAmountDecimal(executedSellAmount)} ${sellToken.symbol}` : null}
             </TradeLine>
             <TradeLine>
-              {buyToken && (
-                <TokenAmount
-                  amount={CurrencyAmount.fromRawAmount(buyToken, executedBuyAmount)}
-                  tokenSymbol={buyToken}
-                />
-              )}
+              {buyToken ? `${formatTokenAmountDecimal(executedBuyAmount)} ${buyToken.symbol}` : null}
             </TradeLine>
           </TradeSummary>
         </TradeCell>
       </td>
       <td>
-        {feeToken && (
-          <TokenAmount amount={CurrencyAmount.fromRawAmount(feeToken, executedFee || '0')} tokenSymbol={feeToken} />
-        )}
+        <span>{formatUsdCompact(eligibleVolumeUsd)}</span>
       </td>
       <td>
         <EligibilityCell>
-          <Badge type={ineligibleReason ? BadgeTypes.ALERT : BadgeTypes.SUCCESS}>
-            {ineligibleReason ? <Trans>No</Trans> : <Trans>Yes</Trans>}
+          <Badge type={isEligible ? BadgeTypes.SUCCESS : BadgeTypes.ALERT}>
+            {isEligible ? <Trans>Yes</Trans> : <Trans>No</Trans>}
           </Badge>
-          {ineligibleReason ? <InfoTooltip content={ineligibleReason} size={14} /> : null}
+          {!isEligible && <InfoTooltip content={<EligibilityReasonMessage reason={eligibilityReason} />} size={14} />}
         </EligibilityCell>
       </td>
       <td>
@@ -116,6 +100,25 @@ export function AffiliateTraderActivityTableRow({ order, savedCode }: AffiliateT
       </td>
     </tr>
   )
+}
+
+function EligibilityReasonMessage({ reason }: { reason: TraderActivityEligibilityReason }): ReactNode {
+  switch (reason) {
+    case 'eligible':
+      return <Trans>Eligible trade</Trans>
+    case 'code_mismatch_after_binding':
+      return <Trans>This trade used a different referral code than the trader&apos;s bound code.</Trans>
+    case 'code_not_found':
+      return <Trans>This referral code was not found in the affiliate program configuration.</Trans>
+    case 'integrator_ignored':
+      return <Trans>Trades coming from integrator flow are excluded from affiliate rewards.</Trans>
+    case 'low_fee_excluded':
+      return <Trans>This trade fee was too low to qualify for affiliate rewards.</Trans>
+    case 'ref_after_first_trade':
+      return <Trans>The referral code was applied after the trader&apos;s first qualifying trade.</Trans>
+    case 'volume_cap_reached':
+      return <Trans>The trader already reached the rewardable volume cap for this referral code.</Trans>
+  }
 }
 
 const TradeCell = styled.div`

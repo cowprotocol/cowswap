@@ -15,6 +15,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Preview: `pnpm preview`
 - Lint: `pnpx nx run cowswap-frontend:lint`
 - Test: `pnpx nx run cowswap-frontend:test`
+- Single test file: `pnpm exec jest --config apps/cowswap-frontend/jest.config.ts --runTestsByPath apps/cowswap-frontend/src/path/to/file.test.ts --runInBand`
 - i18n (app-only): `pnpx nx run cowswap-frontend:i18n`
 - Cosmos: `pnpm start:cosmos`
 

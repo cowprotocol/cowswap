@@ -1,53 +1,30 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
 import { safeShortenAddress } from 'utils/address'
 
-import { useAffiliateTraderStats } from './useAffiliateTraderStats'
-
-import { fetchTraderActivity, OrderWithChainId } from '../api/fetchTraderActivity'
-import { ACTIVITY_UI_LIMIT } from '../config/affiliateProgram.const'
-import { isExecutedNonIntegratorOrder, toValidTimestamp } from '../lib/affiliateProgramUtils'
+import { bffAffiliateApi } from '../api/bffAffiliateApi'
+import { TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
+import { AFFILIATE_STATS_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
 import { logAffiliate } from '../utils/logger'
 
-const EMPTY_ORDERS: OrderWithChainId[] = []
+const EMPTY_ROWS: TraderActivityRowResponse[] = []
 
-const TIMESTAMP_ROUNDING_BUFFER_MS = ms`10m`
-
-export function useTraderActivity(): SWRResponse<OrderWithChainId[] | null, Error> {
+export function useTraderActivity(): SWRResponse<TraderActivityRowResponse[] | null, Error> {
   const { account } = useWalletInfo()
-  const { data: stats } = useAffiliateTraderStats(account)
 
-  return useSWR<OrderWithChainId[] | null, Error>(
-    !!account && !!stats ? ['affiliate-trader-activity', account] : null,
+  return useSWR<TraderActivityRowResponse[] | null, Error>(
+    account ? ['affiliate-trader-activity', account] : null,
     async () => {
-      if (!account || !stats) return EMPTY_ORDERS
+      if (!account) return EMPTY_ROWS
+      const response = await bffAffiliateApi.getTraderActivity(account)
+      const rows = response?.rows ?? EMPTY_ROWS
 
-      const allOrders = await fetchTraderActivity(account)
-      const linkedSince = toValidTimestamp(stats.linked_since)
-      const rewardsEnd = toValidTimestamp(stats.rewards_end)
+      logAffiliate(safeShortenAddress(account), `Found ${rows.length} trader activity rows from BFF`)
 
-      const validOrders = allOrders
-        .filter((order) => {
-          if (!isExecutedNonIntegratorOrder(order)) return false
-
-          const orderTimestamp = toValidTimestamp(order.creationDate)
-          if (orderTimestamp < linkedSince - TIMESTAMP_ROUNDING_BUFFER_MS) return false
-          if (orderTimestamp > rewardsEnd + TIMESTAMP_ROUNDING_BUFFER_MS) return false
-
-          return true
-        })
-        .sort((a, b) => toValidTimestamp(b.creationDate) - toValidTimestamp(a.creationDate))
-        .slice(0, ACTIVITY_UI_LIMIT)
-
-      logAffiliate(
-        safeShortenAddress(account),
-        `Found ${validOrders.length} valid orders in this trader's past activity`,
-      )
-
-      return validOrders
+      return rows
     },
+    { refreshInterval: AFFILIATE_STATS_REFRESH_INTERVAL_MS },
   )
 }
