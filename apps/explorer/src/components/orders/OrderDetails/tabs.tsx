@@ -87,7 +87,11 @@ export function getBridgeTab(
         ) : (
           <StatusLabel
             status={bridgeStatus}
-            withWarning={bridgeStatus === BridgeStatus.EXECUTED && isBridgingFromOrToMissing(crossChainOrder)}
+            warningLabel={
+              bridgeStatus === BridgeStatus.EXECUTED && isBridgingFromOrToMissing(crossChainOrder)
+                ? 'Missing from or to address'
+                : undefined
+            }
           />
         )}
       </TabContent>

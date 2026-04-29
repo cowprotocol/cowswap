@@ -21,7 +21,7 @@ export type StatusLabelProps = {
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
   customText?: string
-  withWarning?: boolean
+  warningLabel?: string
 }
 
 const SHIMMING_STATUSES = [
@@ -46,7 +46,7 @@ export function StatusLabel({
   filledPercentage,
   partialTagPosition = 'bottom',
   customText,
-  withWarning = false,
+  warningLabel,
 }: StatusLabelProps): ReactNode {
   const status = _status.toLowerCase()
   const shimming = SHIMMING_STATUSES.includes(status)
@@ -74,8 +74,8 @@ export function StatusLabel({
       >
         <StatusIcon status={displayStatus} />
         {customText || displayStatus.toUpperCase()}
-        {withWarning ? (
-          <CornerWarningIcon>
+        {warningLabel ? (
+          <CornerWarningIcon title={warningLabel}>
             <FontAwesomeIcon icon={faTriangleExclamation} />
           </CornerWarningIcon>
         ) : null}
