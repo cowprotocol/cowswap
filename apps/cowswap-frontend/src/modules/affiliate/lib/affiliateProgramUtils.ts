@@ -259,10 +259,6 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
   const { status } = order
 
   if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
-  const ignorableStatus =
-    status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED || status === OrderStatus.PRESIGNATURE_PENDING
-
-  if (ignorableStatus && !order.partiallyFillable) return false
 
   const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
   const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
