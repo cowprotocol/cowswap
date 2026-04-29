@@ -2,9 +2,10 @@ import React, { useMemo } from 'react'
 
 import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
 
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
+import { faGroupArrowsRotate } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
@@ -23,6 +24,8 @@ import { Trade } from 'api/operator'
 import { calculateExecutionPrice } from 'utils/orderCalculations'
 import { getTenderlyTxUrl } from 'utils/tenderly'
 
+import { ExternalLinkButton } from '../DetailsTable/styled'
+
 const StyledShimmerBar = styled(ShimmerBar)`
   min-height: 2rem;
   min-width: 10rem;
@@ -31,7 +34,7 @@ const StyledShimmerBar = styled(ShimmerBar)`
 const TxHashCell = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 0.8rem 1.2rem;
 `
 
@@ -96,7 +99,12 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
               </LinkWithPrefixNetwork>
             }
           />
-          {shouldShowTenderlyLink && <ExternalLink href={getTenderlyTxUrl(txHash)}>Tenderly↗</ExternalLink>}
+          {shouldShowTenderlyLink && (
+            <ExternalLinkButton href={getTenderlyTxUrl(txHash)} target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faGroupArrowsRotate} />
+              Tenderly↗
+            </ExternalLinkButton>
+          )}
         </TxHashCell>
       </td>
       <td>
