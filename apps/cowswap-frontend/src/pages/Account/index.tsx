@@ -2,17 +2,19 @@ import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation } from 'react-router'
 
+import { AffiliateFeedbackButton } from 'modules/affiliate'
 import { Content, PageTitle, Title } from 'modules/application'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import { AccountMenu } from './Menu'
-import { CardsWrapper, Container } from './styled'
+import { CardsWrapper, Container, TitleRow } from './styled'
 import { AccountPageWrapper, Wrapper } from './Tokens/styled'
 
 // Account pages
@@ -57,14 +59,25 @@ export const AccountOverview = (): ReactNode => {
 
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
+  const { account } = useWalletInfo()
   const { isAffiliateProgramEnabled } = useFeatureFlags()
   const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
+  const showAffiliateFeedbackButton =
+    Boolean(account) && isAffiliateProgramEnabled && pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER
+
   return (
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
         <Content>
-          <Title id={id}>{name}</Title>
+          {showAffiliateFeedbackButton ? (
+            <TitleRow>
+              <Title id={id}>{name}</Title>
+              <AffiliateFeedbackButton />
+            </TitleRow>
+          ) : (
+            <Title id={id}>{name}</Title>
+          )}
           <Outlet />
         </Content>
       </AccountPageWrapper>
