@@ -10,7 +10,6 @@ export const Wrapper = styled.div`
   cursor: pointer;
 
   ${Media.upToSmall()} {
-    justify-content: stretch;
     width: 100%;
   }
 `
