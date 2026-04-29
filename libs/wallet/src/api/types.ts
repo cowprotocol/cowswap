@@ -5,15 +5,16 @@ import { Address } from 'viem'
 import { Connector as WagmiConnector } from 'wagmi'
 import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
-export const ConnectorType = {
+export const ConnectionType = {
   COINBASE_WALLET: coinbaseWallet.type,
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,
   WALLET_CONNECT_V2: walletConnect.type,
 } as const
 
-export type ConnectorType = (typeof ConnectorType)[keyof typeof ConnectorType]
+export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
+/*
 export enum ConnectionType {
   NETWORK = 'NETWORK',
   INJECTED = 'INJECTED',
@@ -23,6 +24,7 @@ export enum ConnectionType {
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   TREZOR = 'TREZOR',
 }
+  */
 
 export interface WalletInfo {
   chainId: SupportedChainId
