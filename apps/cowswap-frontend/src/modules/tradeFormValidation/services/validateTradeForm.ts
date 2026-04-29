@@ -211,6 +211,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
     }
+    if (tradePriceImpact.loading) {
+      validations.push(TradeFormValidation.ImpactLoading)
+    }
   }
 
   if (isWrapUnwrap) {
