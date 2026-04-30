@@ -1,16 +1,17 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { Navigate, useLocation, useParams } from 'react-router'
+import { useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
 import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
 import { parameterizeTradeRoute, getDefaultTradeRawState, PageWrapper, PrimaryWrapper } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
+import { useNavigate } from 'common/hooks/useNavigate'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const TRADE_PAGE_MAX_WIDTH = '1800px'
@@ -41,27 +42,32 @@ export function SwapPage(): ReactNode {
 function SwapPageRedirect(): ReactNode {
   const { chainId } = useWalletInfo()
   const location = useLocation()
+  const navigate = useNavigate()
 
-  const defaultState = getDefaultTradeRawState(chainId)
-  const searchParams = new URLSearchParams(location.search)
-  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId]?.symbol
-  const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
+  useEffect(() => {
+    const defaultState = getDefaultTradeRawState(chainId)
+    const searchParams = new URLSearchParams(location.search)
+    const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId]?.symbol
+    const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
 
-  searchParams.delete('inputCurrency')
-  searchParams.delete('outputCurrency')
-  searchParams.delete('chain')
+    searchParams.delete('inputCurrency')
+    searchParams.delete('outputCurrency')
+    searchParams.delete('chain')
 
-  const pathname = parameterizeTradeRoute(
-    {
-      chainId: String(chainId),
-      inputCurrencyId,
-      outputCurrencyId,
-      inputCurrencyAmount: undefined,
-      outputCurrencyAmount: undefined,
-      orderKind: undefined,
-    },
-    Routes.SWAP,
-  )
+    const pathname = parameterizeTradeRoute(
+      {
+        chainId: String(chainId),
+        inputCurrencyId,
+        outputCurrencyId,
+        inputCurrencyAmount: undefined,
+        outputCurrencyAmount: undefined,
+        orderKind: undefined,
+      },
+      Routes.SWAP,
+    )
 
-  return <Navigate to={{ ...location, pathname, search: searchParams.toString() }} />
+    navigate({ pathname, search: searchParams.toString() }, { replace: true })
+  }, [chainId, location.search, navigate])
+
+  return null
 }
