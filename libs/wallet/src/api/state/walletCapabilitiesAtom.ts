@@ -4,7 +4,6 @@ import { loadable } from 'jotai/utils'
 import { isMobile, PromiseWithTimeout } from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
-import { isEip1193Provider } from 'src/wagmi/utils/isEip1193Provider.utilts'
 import { EIP1193Provider, PublicClient } from 'viem'
 import { getCapabilities } from 'viem/actions'
 import { Connector } from 'wagmi'
@@ -12,6 +11,7 @@ import { Connector } from 'wagmi'
 import { config } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
+import { isEip1193Provider } from '../../wagmi/utils/isEip1193Provider.utils'
 import { walletInfoAtom } from '../state'
 
 const REQUEST_TIMEOUT_MS = 10_000

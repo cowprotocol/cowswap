@@ -28,7 +28,7 @@ export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/Account
 
 // Utils
 export * from './api/utils/connection'
-export * from './wagmi/utils/isEip1193Provider.utilts'
+export * from './wagmi/utils/isEip1193Provider.utils'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'
