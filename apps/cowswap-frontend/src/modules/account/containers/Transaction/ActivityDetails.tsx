@@ -127,7 +127,7 @@ export function ActivityDetails(props: {
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
-  const { name: receiverEnsName } = useENS(order?.receiver)
+  const { name: receiverEnsName } = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined)
 
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this

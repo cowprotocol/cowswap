@@ -29,8 +29,23 @@ export const ORDER_DEADLINES: OrderDeadline[] = [
   { label: msg`1 Month`, value: ms`1d` * 30 },
 ]
 
-export const TWAP_ORDER_STRUCT =
-  'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'
+export const TWAP_ORDER_STRUCT = [
+  {
+    type: 'tuple',
+    components: [
+      { name: 'sellToken', type: 'address' },
+      { name: 'buyToken', type: 'address' },
+      { name: 'receiver', type: 'address' },
+      { name: 'partSellAmount', type: 'uint256' },
+      { name: 'minPartLimit', type: 'uint256' },
+      { name: 't0', type: 'uint256' },
+      { name: 'n', type: 'uint256' },
+      { name: 't', type: 'uint256' },
+      { name: 'span', type: 'uint256' },
+      { name: 'appData', type: 'bytes32' },
+    ],
+  },
+] as const
 
 const twapHandlerAddress = '0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5'
 export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = mapAddressToSupportedNetworks(twapHandlerAddress)

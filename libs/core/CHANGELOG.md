@@ -1,5 +1,76 @@
 # Changelog
 
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/core-v3.2.0...core-v3.2.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/core-v3.1.2...core-v3.2.0) (2026-04-16)
+
+
+### ✨ Features
+
+* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.0
+
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/core-v3.1.1...core-v3.1.2) (2026-04-15)
+
+
+### 🐛 Bug Fixes
+
+* revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+* revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.2
+
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/core-v3.1.0...core-v3.1.1) (2026-04-15)
+
+
+### 🔧 Miscellaneous
+
+* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.1
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/core-v3.0.4...core-v3.1.0) (2026-04-14)
+
+
+### ✨ Features
+
+* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.1.0
+
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/core-v3.0.3...core-v3.0.4) (2026-04-08)
 
 

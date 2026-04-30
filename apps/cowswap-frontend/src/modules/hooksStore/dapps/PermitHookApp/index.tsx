@@ -17,6 +17,8 @@ import { ContentWrapper, Row, Wrapper } from './styled'
 
 import { HookDappProps } from '../../types/hooks'
 
+import type { Hex } from 'viem'
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -26,7 +28,7 @@ export function PermitHookApp({ context }: HookDappProps) {
   const [tokenAddress, setTokenAddress] = useState<string>(hookToEdit?.hook.target || '')
   const isPermitEnabled = useIsPermitEnabled()
   const [spenderAddress, setSpenderAddress] = useState<string>(
-    recoverSpenderFromCalldata(hookToEdit?.hook.callData) || '',
+    recoverSpenderFromCalldata(hookToEdit?.hook.callData as Hex) || '',
   )
   const generatePermitHook = useGeneratePermitHook()
   const token = useTokenBySymbolOrAddress(tokenAddress)
@@ -35,8 +37,11 @@ export function PermitHookApp({ context }: HookDappProps) {
   const onButtonClick = useCallback(async () => {
     if (!permitInfo) return
     const hook = await generatePermitHook({
-      inputToken: { address: token?.address || '', name: token?.name || '' },
-      account: context.account,
+      inputToken: {
+        address: (token?.address || '') as `0x${string}`,
+        name: token?.name || '',
+      },
+      account: context.account as `0x${string}` | undefined,
       permitInfo,
       customSpender: spenderAddress,
     })

@@ -1,14 +1,30 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useAccount } from 'wagmi'
+
+import { getDappOrigin } from './getDappOrigin'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
+
+/**
+ * Iframe sandbox allowlist for embedded hook dapps.
+ * - allow-scripts: required for interactive SPA logic.
+ * - allow-same-origin: preserves the hook dapp origin so storage/fetches work as expected.
+ * - allow-forms: allows form controls used by dapp UIs.
+ * - allow-popups + allow-popups-to-escape-sandbox: wallet popups / WalletConnect windows.
+ */
+const HOOK_DAPP_IFRAME_SANDBOX =
+  'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox'
+/** Limits referrer leakage when embedding third-party hook dapps. */
+const HOOK_DAPP_IFRAME_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+/** Permissions policy features delegated to the hook iframe (HTML `allow` attribute). */
+const HOOK_DAPP_IFRAME_ALLOW = 'clipboard-read; clipboard-write'
 
 const Iframe = styled.iframe`
   border: 0;
@@ -54,6 +70,7 @@ interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
 }
+// eslint-disable-next-line max-lines-per-function
 export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
@@ -66,9 +83,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const [isLoading, setIsLoading] = useState(true)
   const dappOrigin = getDappOrigin(dapp.url)
 
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const walletProvider = useWalletProvider()
+  const { connector } = useAccount()
 
   // eslint-disable-next-line react-hooks/refs
   addHookRef.current = context.addHook
@@ -93,6 +108,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     const listeners = [
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.ACTIVATE,
         () => setIsIframeActive(true),
         dappOrigin,
@@ -104,24 +120,28 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     listeners.push(
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.ADD_HOOK,
         (payload) => addHookRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.EDIT_HOOK,
         (payload) => editHookRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.SET_SELL_TOKEN,
         (payload) => setSellTokenRef.current(payload.address),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
+        iframeWindow,
         CoWHookDappEvents.SET_BUY_TOKEN,
         (payload) => setBuyTokenRef.current(payload.address),
         dappOrigin,
@@ -134,11 +154,21 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     }
   }, [dappOrigin])
 
-  useLayoutEffect(() => {
-    if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
+  useEffect(() => {
+    if (!connector || !bridgeRef.current) return
 
-    bridgeRef.current.onConnect(walletProvider.provider as EthereumProvider)
-  }, [walletProvider])
+    let cancelled = false
+
+    connector.getProvider().then((provider) => {
+      if (!cancelled && provider && bridgeRef.current) {
+        bridgeRef.current.onConnect(provider as unknown as EthereumProvider)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [connector])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -146,7 +176,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     if (!iframeWindow || !isIframeActive || !dappOrigin) return
 
     // Omit unnecessary parameter
-    const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
+    const { addHook: _, editHook: _1, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
     hookDappIframeTransport.postMessageToWindow(
       iframeWindow,
@@ -169,18 +199,12 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       <Iframe
         ref={iframeRef}
         src={dapp.url}
-        allow="clipboard-read; clipboard-write"
+        allow={HOOK_DAPP_IFRAME_ALLOW}
+        referrerPolicy={HOOK_DAPP_IFRAME_REFERRER_POLICY}
+        sandbox={HOOK_DAPP_IFRAME_SANDBOX}
         onLoad={handleIframeLoad}
         $isLoading={isLoading}
       />
     </>
   )
-}
-
-function getDappOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
 }

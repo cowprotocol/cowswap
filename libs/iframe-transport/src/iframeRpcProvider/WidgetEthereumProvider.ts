@@ -190,6 +190,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
       (message) => {
         this.handleRpcRequests(message)
@@ -199,6 +200,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_ON_EVENT,
       (message) => {
         this.handleOnEvent(message)
@@ -208,6 +210,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
       (message) => {
         this.providerMetaInfo = message

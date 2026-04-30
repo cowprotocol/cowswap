@@ -57,6 +57,7 @@ export interface TradeFormValidationCommonContext {
   isOutputCurrencyXstock: boolean
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tradePriceImpact: PriceImpact
+  isNonEvmReceiverConfirmed: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -79,6 +80,8 @@ export enum TradeFormValidation {
   CurrencyNotSet,
   InputAmountNotSet,
   RecipientInvalid,
+  RecipientNotSet,
+  RecipientNotConfirmed,
   NetworkNotSupported,
   NetworkDeprecated,
   BrowserOffline,
@@ -115,4 +118,5 @@ export enum TradeFormValidation {
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,
   DisableTradeWithHighPriceImpact,
+  WidgetConstrainedTokenPair,
 }

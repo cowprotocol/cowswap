@@ -2,13 +2,20 @@
  * @jest-environment jsdom
  */
 
-import { createCowSwapWidget } from './cowSwapWidget'
-import { WidgetMethodsEmit } from './types'
+import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
+import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 describe('createCowSwapWidget', () => {
+  const originalOpen = window.open
+
   beforeEach(() => {
     document.body.innerHTML = ''
+    window.open = jest.fn()
+  })
+
+  afterEach(() => {
+    window.open = originalOpen
   })
 
   it('updates iframe width and default height when params change', () => {
@@ -18,29 +25,33 @@ describe('createCowSwapWidget', () => {
     const handler = createCowSwapWidget(container, {
       params: {
         appCode: 'widget-test',
-        width: '100%',
-        height: '640px',
-        iframeStyle: { backgroundColor: 'red', borderRadius: '1.6rem' },
+        iframeStyle: {
+          width: '100%',
+          height: '640px',
+          backgroundColor: 'red',
+          borderRadius: '1.6rem',
+        },
       },
     })
 
     const iframe = getIframe(container)
 
-    expect(iframe.width).toBe('100%')
-    expect(iframe.height).toBe('640px')
-    expect(iframe.style.height).toBe('')
+    expect(iframe.style.width).toBe('100%')
+    expect(iframe.style.height).toBe('640px')
     expect(iframe.style.backgroundColor).toBe('red')
     expect(iframe.style.borderRadius).toBe('1.6rem')
 
     handler.updateParams({
       appCode: 'widget-test',
-      width: '320px',
-      height: '432px',
-      iframeStyle: { backgroundColor: 'transparent', borderRadius: '0' },
+      iframeStyle: {
+        width: '320px',
+        height: '432px',
+        backgroundColor: 'transparent',
+        borderRadius: '0',
+      },
     })
 
-    expect(iframe.width).toBe('320px')
-    expect(iframe.height).toBe('432px')
+    expect(iframe.style.width).toBe('320px')
     expect(iframe.style.height).toBe('432px')
     expect(iframe.style.backgroundColor).toBe('transparent')
     expect(iframe.style.borderRadius).toBe('0')
@@ -77,7 +88,7 @@ describe('createCowSwapWidget', () => {
 
     const iframe = getIframe(container)
 
-    emitWidgetEvent(WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
     expect(iframe.style.height).toBe('400px')
 
     handler.updateParams({
@@ -86,10 +97,10 @@ describe('createCowSwapWidget', () => {
       maxHeight: 350,
     })
 
-    emitWidgetEvent(WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
     expect(iframe.style.height).toBe('350px')
 
-    emitWidgetEvent(WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
     expect(iframe.style.height).toBe('432px')
 
     Object.defineProperty(document.body, 'offsetHeight', {
@@ -97,8 +108,56 @@ describe('createCowSwapWidget', () => {
       value: 900,
     })
 
-    emitWidgetEvent(WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: false })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: false })
     expect(iframe.style.height).toBe('350px')
+  })
+
+  it('opens https links requested by the widget', () => {
+    const { iframe } = createWidget()
+
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
+
+    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
+  })
+
+  it('blocks javascript urls requested by the widget', () => {
+    const { iframe } = createWidget()
+
+    dispatchInterceptWindowOpen('javascript://%0Aalert(1)', undefined, iframe)
+
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
+  it('opens relative links requested by the widget', () => {
+    const { iframe } = createWidget()
+
+    dispatchInterceptWindowOpen('/faq', undefined, iframe)
+
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
+  })
+
+  it('accepts messages from a custom widget baseUrl origin', () => {
+    const { iframe } = createWidget('https://barn.cow.fi')
+
+    dispatchInterceptWindowOpen('https://example.com', 'https://barn.cow.fi', iframe)
+
+    expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
+  })
+
+  it('ignores messages from an untrusted origin', () => {
+    const { iframe } = createWidget('https://swap.cow.fi')
+
+    dispatchInterceptWindowOpen('https://example.com', 'https://attacker.example', iframe)
+
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
+  it('does not window.open when disableWindowOpen = true', () => {
+    const { iframe } = createWidget(undefined, { disableWindowOpen: true })
+
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
+
+    expect(window.open).not.toHaveBeenCalled()
   })
 })
 
@@ -112,14 +171,57 @@ function getIframe(container: HTMLElement): HTMLIFrameElement {
   return iframe
 }
 
-function emitWidgetEvent(method: WidgetMethodsEmit, payload: object): void {
-  window.dispatchEvent(
-    new MessageEvent('message', {
-      data: {
-        key: widgetIframeTransport.key,
-        method,
-        ...payload,
-      },
-    }),
-  )
+function emitWidgetEvent(iframe: HTMLIFrameElement, method: WidgetMethodsEmit, payload: object): void {
+  const origin = new URL(iframe.src).origin
+  const event = new MessageEvent('message', {
+    origin,
+    data: {
+      key: widgetIframeTransport.key,
+      method,
+      ...payload,
+    },
+  })
+
+  Object.defineProperty(event, 'source', {
+    configurable: true,
+    value: iframe.contentWindow,
+  })
+
+  window.dispatchEvent(event)
+}
+
+function createWidget(baseUrl?: string, extraParams?: Partial<CowSwapWidgetParams>): CowSwapWidgetHandler {
+  const container = document.createElement('div')
+  document.body.appendChild(container)
+
+  return createCowSwapWidget(container, {
+    params: {
+      appCode: 'test-app',
+      baseUrl,
+      chainId: 1,
+      tradeType: TradeType.SWAP,
+      ...extraParams,
+    },
+  })
+}
+
+function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi', iframe: HTMLIFrameElement): void {
+  const event = new MessageEvent('message', {
+    origin,
+    source: iframe.contentWindow,
+    data: {
+      key: widgetIframeTransport.key,
+      method: WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+      href,
+      target: '_blank',
+      rel: 'noopener',
+    },
+  })
+
+  Object.defineProperty(event, 'source', {
+    configurable: true,
+    value: iframe.contentWindow,
+  })
+
+  window.dispatchEvent(event)
 }

@@ -1,66 +1,72 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
-import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
-import { BigNumber } from '@ethersproject/bignumber'
 
-import { SWRConfiguration } from 'swr'
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
-const MULTICALL_OPTIONS = {}
+export interface BalancesQueryConfig {
+  refetchInterval: number
+  isPaused?(): boolean
+}
 
 export interface PersistBalancesAndAllowancesParams {
   account: string | undefined
   chainId: SupportedChainId
   tokenAddresses: string[]
-  balancesSwrConfig: SWRConfiguration
+  balancesQueryConfig?: BalancesQueryConfig
   setLoadingState?: boolean
-  multicallOptions?: MultiCallOptions
 
   onBalancesLoaded?(loaded: boolean): void
+
+  query?: { refetchInterval?: number | false; refetchOnMount?: boolean }
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
   const {
     account,
     chainId,
     tokenAddresses,
     setLoadingState,
-    balancesSwrConfig,
-    multicallOptions = MULTICALL_OPTIONS,
+    balancesQueryConfig,
     onBalancesLoaded,
+    query: queryOptions,
   } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
-  const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
-
   const {
+    data: balances,
     isLoading: isBalancesLoading,
-    data,
     error,
-  } = useMultipleContractSingleData<{ balance: BigNumber }>(
-    chainId,
-    tokenAddresses,
-    ERC_20_INTERFACE,
-    'balanceOf',
-    balanceOfParams,
-    multicallOptions,
-    balancesSwrConfig,
-    account,
-  )
-  const balances = data?.results
-  const blockNumber = data?.blockNumber
+    dataUpdatedAt,
+  } = useReadContracts({
+    contracts: tokenAddresses.map((address) => ({
+      abi: erc20Abi,
+      address: address as `0x${string}`,
+      chainId,
+      functionName: 'balanceOf',
+      args: [account as `0x${string}`],
+    })),
+    query: {
+      ...queryOptions,
+      refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      enabled: !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
+    },
+  })
 
-  // Skip multicall results from outdated block if there is a result from newer one
-  const isNewBlockNumber = useIsBlockNumberRelevant(chainId, blockNumber)
+  // Skip results from outdated fetches if there is a result from a newer one
+  const isNewData = useIsBlockNumberRelevant(chainId, dataUpdatedAt)
 
   // Set balances loading state
   useEffect(() => {
@@ -82,12 +88,15 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length || !isNewBlockNumber) return
+    if (!account || !balances?.length || !isNewData) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = balances[index]?.balance
+      const result = balances[index]?.result
+      if (result !== undefined) {
+        acc[address.toLowerCase()] = result as bigint
+      }
       return acc
     }, {})
 
@@ -118,7 +127,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     chainId,
     account,
     balances,
-    isNewBlockNumber,
+    isNewData,
     tokenAddresses,
     setBalances,
     setLoadingState,

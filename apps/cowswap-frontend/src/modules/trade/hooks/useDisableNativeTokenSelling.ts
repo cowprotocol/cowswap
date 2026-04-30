@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCIES, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeNavigate } from './useTradeNavigate'

@@ -1,7 +1,7 @@
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
   pr: '^cowfi-git-[\\w\\d-]+cowswap\\.vercel\\.app',
-  development: '^develop.cow.fi',
+  development: '^develop.cow.fi$',
   production: '^cow.fi$',
 }
 

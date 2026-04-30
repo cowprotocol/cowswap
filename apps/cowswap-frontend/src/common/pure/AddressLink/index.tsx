@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { isSupportedAddress } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
@@ -20,7 +21,7 @@ interface AddressLinkProps {
 }
 
 export function AddressLink({ address, chainId, className, content }: AddressLinkProps): ReactNode {
-  return isAddress(address) ? (
+  return isSupportedAddress(address) ? (
     <Link
       className={className}
       href={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)}

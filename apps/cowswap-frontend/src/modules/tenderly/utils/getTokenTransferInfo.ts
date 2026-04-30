@@ -1,5 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { TokenBuyTransferInfo } from './bundleSimulation'
 
 import { TokenHolder } from '../types'
@@ -11,8 +9,8 @@ export function getTokenTransferInfo({
   tokenHolders: TokenHolder[]
   amountToTransfer: string
 }): TokenBuyTransferInfo {
-  const amountToTransferBigNumber = BigNumber.from(amountToTransfer)
-  let sum = BigNumber.from('0')
+  const amountToTransferBigNumber = BigInt(amountToTransfer)
+  let sum = 0n
   const result: TokenBuyTransferInfo = []
 
   if (!tokenHolders) {
@@ -23,18 +21,18 @@ export function getTokenTransferInfo({
     // skip token holders with no address or balance
     if (!tokenHolder.address || !tokenHolder.balance) continue
 
-    const tokenHolderAmount = BigNumber.from(tokenHolder.balance)
-    const sumWithTokenHolder = sum.add(tokenHolderAmount)
+    const tokenHolderAmount = BigInt(tokenHolder.balance)
+    const sumWithTokenHolder = sum + tokenHolderAmount
 
-    if (sumWithTokenHolder.gte(amountToTransferBigNumber)) {
-      const remainingAmount = amountToTransferBigNumber.sub(sum)
+    if (sumWithTokenHolder >= amountToTransferBigNumber) {
+      const remainingAmount = amountToTransferBigNumber - sum
       result.push({
         sender: tokenHolder.address,
         amount: remainingAmount.toString(),
       })
       break
     }
-    sum = sum.add(tokenHolderAmount)
+    sum = sum + tokenHolderAmount
     result.push({
       sender: tokenHolder.address,
       amount: tokenHolderAmount.toString(),

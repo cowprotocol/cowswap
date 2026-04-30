@@ -2,13 +2,13 @@ import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
 
 import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)

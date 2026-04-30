@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   UpdateParamsPayload,
   widgetIframeTransport,
@@ -20,7 +21,6 @@ import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
@@ -43,11 +43,11 @@ import {
   widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
 
   /**
-   * Intercept window.open and anchor clicks to send a message to the parent window
-   * to handle the opening of deeplinks in the parent window
+   * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
+   *
+   * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
+   * which opens in the parent, so calling both would open two tabs / popups.
    */
-  const originalWinOpen = window.open
-
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
@@ -58,28 +58,8 @@ import {
       parentOrigin,
     )
 
-    return originalWinOpen.apply(this, args)
+    return window
   }
-
-  document.body.addEventListener('click', (event) => {
-    // Skip clicks already handled by React Router (it calls preventDefault before bubbling)
-    if (event.defaultPrevented) return
-
-    const anchor = (event.target as Element).closest?.('a')
-    if (!(anchor instanceof HTMLAnchorElement)) return
-
-    const { href, target, rel } = anchor
-
-    // Prevent the browser from opening a new tab or navigating the iframe itself
-    event.preventDefault()
-
-    widgetIframeTransport.postMessageToWindow(
-      parent,
-      WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel },
-      parentOrigin,
-    )
-  })
 })()
 
 export function InjectedWidgetUpdater(): ReactNode {
@@ -111,6 +91,7 @@ export function InjectedWidgetUpdater(): ReactNode {
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
       (data) => {
         if (
@@ -146,6 +127,7 @@ export function InjectedWidgetUpdater(): ReactNode {
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
+      window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
       (data) => {
         if (data.metaData) {

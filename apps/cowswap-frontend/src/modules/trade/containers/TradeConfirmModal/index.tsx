@@ -32,6 +32,20 @@ export interface TradeConfirmModalProps {
   submittedContent?: ReactNode
 }
 
+type InnerComponentProps = {
+  children: ReactElement
+  chainId: SupportedChainId
+  account: string
+  title: string
+  error: string | null
+  pendingTrade: TradeAmounts | null
+  transactionHash: string | null
+  onDismiss: Command
+  permitSignatureState: string | undefined
+  isSafeWallet: boolean
+  submittedContent?: ReactNode
+}
+
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
@@ -62,20 +76,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
       </InnerComponent>
     </Container>
   )
-}
-
-type InnerComponentProps = {
-  children: ReactElement
-  chainId: SupportedChainId
-  account: string
-  title: string
-  error: string | null
-  pendingTrade: TradeAmounts | null
-  transactionHash: string | null
-  onDismiss: Command
-  permitSignatureState: string | undefined
-  isSafeWallet: boolean
-  submittedContent?: ReactNode
 }
 
 function InnerComponent(props: InnerComponentProps): ReactNode {

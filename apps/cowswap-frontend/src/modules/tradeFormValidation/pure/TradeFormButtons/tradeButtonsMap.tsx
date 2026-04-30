@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
+import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -20,29 +22,13 @@ import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
-interface ButtonErrorConfig {
-  text: ReactNode
-  id?: string
-}
+type ButtonComponent = React.ComponentType<ButtonComponentProps>
 
 type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
 
-type ButtonComponent = React.ComponentType<ButtonComponentProps>
-
-function getDefaultQuoteError(): string {
-  return t`Error loading price. Try again later.`
-}
-
-function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
-  return {
-    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
-    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
-    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
-    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
-  }
+interface ButtonErrorConfig {
+  text: ReactNode
+  id?: string
 }
 
 function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
@@ -59,6 +45,22 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
     [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
+  }
+}
+
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
   }
 }
 
@@ -114,16 +116,30 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
+  [TradeFormValidation.RecipientNotConfirmed]: {
+    text: <Trans>Confirm recipient to swap</Trans>,
+  },
+  [TradeFormValidation.RecipientNotSet]: ({ derivedState: { outputCurrency } }: ButtonComponentProps) => {
+    const chainLabel = outputCurrency ? getChainInfo(outputCurrency.chainId)?.label : undefined
+
+    return (
+      <TradeFormBlankButton disabled>
+        <Trans>Recipient is required for {chainLabel}</Trans>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+    const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+    const showEnsTooltip = isBridging && recipient && !isNonEvmBridging
 
     return (
       <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
-          {isBridging && recipient && (
+          {showEnsTooltip && (
             <HelpTooltip
               placement="top"
               text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
@@ -396,5 +412,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         </>
       </TradeFormBlankButton>
     )
+  },
+  [TradeFormValidation.WidgetConstrainedTokenPair]: {
+    text: <Trans>The token pair is constrained</Trans>,
   },
 }

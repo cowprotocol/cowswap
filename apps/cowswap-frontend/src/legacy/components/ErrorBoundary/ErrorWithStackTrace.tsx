@@ -11,6 +11,7 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
+import CopyHelper from 'legacy/components/Copy'
 
 // eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Title } from 'modules/application/pure/Page'
@@ -61,12 +62,28 @@ const LinkWrapper = styled.div`
   padding: 6px 24px;
 `
 
+const IdText = styled(ThemedText.Main)`
+  opacity: 0.7;
+`
+
+const IdRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+`
+
 function truncate(value?: string): string | undefined {
   return value ? value.slice(0, 1000) : undefined
 }
 
-export const ErrorWithStackTrace = ({ error }: { error: Error }): ReactNode => {
-  const encodedBody = encodeURIComponent(issueBody(error))
+interface ErrorWithStackTraceProps {
+  error: Error
+  eventId: string
+}
+
+export const ErrorWithStackTrace = ({ error, eventId }: ErrorWithStackTraceProps): ReactNode => {
+  const encodedBody = encodeURIComponent(issueBody(error, eventId))
 
   return (
     <>
@@ -77,6 +94,12 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }): ReactNode => {
         <img src={CowError} alt={t`CowSwap Error`} height="125" />
       </FlexContainer>
       <AutoColumn gap={'md'}>
+        {eventId && (
+          <IdRow>
+            <IdText fontSize={14}>Event ID:</IdText>
+            <CopyHelper toCopy={eventId}>{eventId}</CopyHelper>
+          </IdRow>
+        )}
         <CodeBlockWrapper>
           <code>
             <ThemedText.Main fontSize={10}>
@@ -91,7 +114,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }): ReactNode => {
               href={
                 CODE_LINK +
                 `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
+                  `Crash report${eventId ? ` [${eventId}]` : ''}: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
                 )}`
               }
             >
@@ -115,11 +138,20 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }): ReactNode => {
   )
 }
 
-function issueBody(error: Error): string {
+function issueBody(error: Error, eventId: string): string {
   const deviceData = userAgent
+  const sentryEventUrl = `https://cowprotocol.sentry.io/issues/?query=${encodeURIComponent(`id:${eventId}`)}`
   return `## URL
 
 ${window.location.href}
+
+## Sentry Event ID
+
+\`\`\`
+${eventId}
+\`\`\`
+
+${sentryEventUrl}
 
 ${
   error.name &&

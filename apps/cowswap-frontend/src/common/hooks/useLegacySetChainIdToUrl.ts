@@ -8,7 +8,10 @@ import { useLocation } from 'react-router'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 /**
- * Changing chainId in query parameters: ?chain=mainnet
+ * Updates the URL to reflect the selected chain:
+ * - When the path has a chain segment (e.g. /42161/swap), replaces it with the new chainId so the URL stays in sync.
+ * - When on the root path (/), does nothing — the router's redirect flow will resolve to the correct trade URL.
+ * - Otherwise sets the legacy query parameter ?chain=...
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
   const navigate = useNavigate()
@@ -16,16 +19,27 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
 
   return useCallback(
     (chainId: SupportedChainId) => {
-      // Don't set chainId as query parameter when it's already set as /{chainId}
-      if (/^\/\d+\//.test(location.pathname)) return
+      const pathname = location.pathname
+
+      // Path-based chain (e.g. /42161/swap): replace the chain segment so the URL updates and connect flow uses it
+      if (/^\/\d+\//.test(pathname)) {
+        const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
+        navigate({ pathname: newPathname, search: location.search }, { replace: true })
+        return
+      }
+
+      // On the root path, the router redirects to the swap page which will resolve the correct chain.
+      // Setting ?chain= here would leave the app stuck with no matching trade route.
+      if (pathname === '/') return
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
+      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
       navigate(
         {
-          pathname: location.pathname,
-          search: replaceURLParam(location.search, 'chain', chainInfo.name),
+          pathname,
+          search: newSearch,
         },
         { replace: true },
       )
