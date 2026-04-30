@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
@@ -108,6 +108,8 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   useEffect(() => {
     if (!isEmbeddedApp()) return
     if (isConnected && isSafeConnector(currentConnector)) return
+    // Widget connector is already connected — the parent dapp provides the wallet, don't override it
+    if (isConnected && isInjectedWidget()) return
     if (isConnectingToSafe.current) return
 
     isConnectingToSafe.current = true

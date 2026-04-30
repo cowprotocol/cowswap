@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 
-import { isImTokenBrowser } from '@cowprotocol/common-utils'
+import { isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -15,8 +15,16 @@ import { OPEN_WALLET_MODAL_EVENT } from '../constants'
 
 const queryClient = new QueryClient()
 
+function isEmbeddedInIframe(): boolean {
+  return typeof window !== 'undefined' && window.self !== window.top
+}
+
 function ReconnectOnMount(): null {
   useEffect(() => {
+    // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
+    // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
+    if (isEmbeddedInIframe() && !isInjectedWidget()) return
+
     if (getIsInjectedMobileBrowser()) {
       const injectedConnector = config.connectors.find((c) => c.id === 'injected')
 

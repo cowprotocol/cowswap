@@ -32,6 +32,10 @@ function getConnectors(): ConnectorInstance[] {
           },
         }),
         injected(connectorParams),
+        // Include Safe connector so the widget can auto-connect when hosted inside a Safe app
+        // (e.g. widget-configurator loaded as a Safe App). IframeSafeSdkBridge in widget-lib
+        // already forwards the Safe SDK postMessages through the configurator to app.safe.global.
+        safe(connectorParams),
       ]
     }
 
