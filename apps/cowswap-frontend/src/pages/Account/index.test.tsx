@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { type ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -9,6 +10,8 @@ import { render, screen, type RenderResult } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
+
+import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 
@@ -27,8 +30,24 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
+jest.mock('jotai', () => {
+  const actualModule = jest.requireActual('jotai')
+
+  return {
+    ...actualModule,
+    useAtomValue: jest.fn(),
+  }
+})
+
 jest.mock('modules/affiliate', () => ({
   AffiliateFeedbackButton: () => <button type="button">Give feedback</button>,
+  TraderWalletStatus: {
+    ELIGIBLE: 'eligible',
+    INELIGIBLE: 'ineligible',
+    LINKED: 'linked',
+  },
+  affiliateTraderSavedCodeAtom: Symbol('affiliateTraderSavedCodeAtom'),
+  useAffiliateTraderWallet: jest.fn(),
 }))
 
 jest.mock('modules/application', () => ({
@@ -43,6 +62,8 @@ jest.mock('./Menu', () => ({
 
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
+const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -75,24 +96,47 @@ function renderComponent(pathname: string, account?: string): RenderResult {
 describe('Account', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    useAtomValueMock.mockReturnValue({ savedCode: 'COW-123', isLinked: true })
+    useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.LINKED)
   })
 
   it('shows the feedback button on the affiliate page when a wallet is connected', () => {
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER, '0x0000000000000000000000000000000000000001')
 
     expect(screen.getByRole('button', { name: 'Give feedback' })).not.toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
   })
 
-  it('shows the feedback button on the My Rewards page when a wallet is connected', () => {
+  it('shows the feedback button on the My Rewards page when an eligible wallet is connected', () => {
+    useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.ELIGIBLE)
+
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER, '0x0000000000000000000000000000000000000001')
 
     expect(screen.getByRole('button', { name: 'Give feedback' })).not.toBeNull()
+  })
+
+  it('does not show the feedback button on the My Rewards page when no code is saved', () => {
+    useAtomValueMock.mockReturnValue({})
+    useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.ELIGIBLE)
+
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER, '0x0000000000000000000000000000000000000001')
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+  })
+
+  it('does not show the feedback button on the My Rewards page when the wallet is ineligible', () => {
+    useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.INELIGIBLE)
+
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER, '0x0000000000000000000000000000000000000001')
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
   })
 
   it('does not show the feedback button on the My Rewards page without a connected wallet', () => {
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER)
 
     expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
   })
 
   it('does not show the feedback button on other account pages', () => {
