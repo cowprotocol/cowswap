@@ -1,5 +1,7 @@
 import React from 'react'
 
+import styled from 'styled-components/macro'
+
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { HelpTooltip } from '../../Tooltip'
 
@@ -8,17 +10,38 @@ export interface DetailRowProps {
   tooltipText?: React.ReactNode
   children: React.ReactNode
   isLoading?: boolean
+  stack?: boolean
 }
 
-export function DetailRow({ label, tooltipText, children, isLoading }: DetailRowProps): React.ReactNode {
+export function DetailRow({ label, tooltipText, children, isLoading, stack }: DetailRowProps): React.ReactNode {
   return (
     <tr>
-      <td>
-        <span>
+      <FirstColumnTh>
+        <div>
           {tooltipText && <HelpTooltip tooltip={tooltipText} />} {label}
-        </span>
+        </div>
+      </FirstColumnTh>
+      <td>
+        <TdContent $stack={stack}>{isLoading ? <ShimmerBar height={1.6} /> : (children ?? '-')}</TdContent>
       </td>
-      <td>{isLoading ? <ShimmerBar height={1.6} /> : (children ?? '-')}</td>
     </tr>
   )
 }
+
+const FirstColumnTh = styled.th`
+  width: 0;
+  min-width: 120px;
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+  }
+`
+
+const TdContent = styled.div<{ $stack?: boolean }>`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  flex-direction: ${({ $stack }) => ($stack ? 'column' : 'row')};
+`
