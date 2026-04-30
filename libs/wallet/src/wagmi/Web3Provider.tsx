@@ -76,7 +76,7 @@ interface Web3ProviderProps {
 
 export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={config} reconnectOnMount={false}>
       <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>

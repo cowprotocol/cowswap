@@ -24,6 +24,7 @@ function getConnectors(): ConnectorInstance[] {
     if (isInjectedWidget()) {
       return [
         injected({
+          ...connectorParams,
           target: {
             name: 'CoW Widget',
             id: COW_WIDGET_CONNECTOR_ID,
@@ -63,7 +64,7 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
-const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+const WAGMI_STORAGE_KEY = 'cowswap-wallet' + (isInjectedWidget() ? COW_WIDGET_CONNECTOR_ID : '')
 
 const storage =
   typeof window === 'undefined'
@@ -85,11 +86,12 @@ const metadata = {
 
 export const connectors = getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors']
 
+const RECENT_CONNECTOR_KEY = 'recentConnectorId'
 /**
  * Recent connector takes priority, and we have to override it in the widget
  */
 if (isInjectedWidget()) {
-  storage.setItem('recentConnectorId', COW_WIDGET_CONNECTOR_ID)
+  storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
 }
 
 export const wagmiAdapter = new WagmiAdapter({

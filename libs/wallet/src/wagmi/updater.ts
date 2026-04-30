@@ -19,7 +19,6 @@ import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersA
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
-import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const SAFE_INFO_SHORT_INTERVAL = ms`5s`
 // getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
@@ -125,7 +124,7 @@ interface WalletUpdaterProps {
 }
 
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
-  const { connector, isConnected } = useConnection()
+  const { connector } = useConnection()
 
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account)
@@ -138,10 +137,9 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
 
   useEffect(() => {
-    if (standaloneMode && isConnected && connector?.id === COW_WIDGET_CONNECTOR_ID) {
-      // TODO: switch to the next connector
-    }
-  }, [standaloneMode, connector, isConnected])
+    // TODO: remove widget connector when standaloneMode is true
+    console.log('standaloneMode', standaloneMode)
+  }, [standaloneMode])
 
   // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
   useEffect(() => {
