@@ -8,6 +8,7 @@ import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
@@ -29,7 +30,7 @@ import { CustomSoundsControl } from '../controls/CustomSoundsControl'
 import { DeadlineControl } from '../controls/DeadlineControl'
 import { PaletteControl } from '../controls/PaletteControl'
 import { PartnerFeeControl } from '../controls/PartnerFeeControl'
-import { ThemeControl } from '../controls/ThemeControl'
+import { THEME_OPTION_AUTO, ThemeControl, type ThemeOptionValue } from '../controls/ThemeControl'
 import { TokenListControl } from '../controls/TokenListControl'
 import { COMMENTS_BY_PARAM_NAME } from '../snippet/snippet.const'
 import { AccordionSection } from '../ui/Accordion/AccordionSection'
@@ -44,6 +45,7 @@ import { TradeModesControl } from '../ui/controls/Select/TradeModesControl'
 import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
 import { TextInput } from '../ui/controls/TextInput/TextInput.component'
 
+import type { PaletteMode } from '@mui/material'
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
 
@@ -86,8 +88,7 @@ export function Sidebar({
 
   // Basics Section:
 
-  const { mode } = useContext(ColorModeContext)
-
+  const [appCode, setAppCode] = useState<string>('')
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
   const standaloneMode = widgetMode === 'standalone'
 
@@ -97,8 +98,6 @@ export function Sidebar({
 
   const localeState = useState<SupportedLocale | ''>('')
   const [locale] = localeState
-
-  const [appCode, setAppCode] = useState<string>('')
 
   // Trade Setup Section:
 
@@ -131,7 +130,28 @@ export function Sidebar({
 
   // Theme Colors Section:
 
-  const paletteManager = useColorPaletteManager(mode)
+  const { mode } = useContext(ColorModeContext)
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  const [widgetBaseTheme, setWidgetBaseTheme] = useState<PaletteMode>('light')
+  const [widgetThemeFollowsSystem, setWidgetThemeFollowsSystem] = useState(false)
+  const effectiveWidgetTheme: PaletteMode = widgetThemeFollowsSystem
+    ? prefersDarkMode
+      ? 'dark'
+      : 'light'
+    : widgetBaseTheme
+
+  const handleWidgetThemeSelect = useCallback((value: ThemeOptionValue) => {
+    if (value === THEME_OPTION_AUTO) {
+      setWidgetThemeFollowsSystem(true)
+
+      return
+    }
+
+    setWidgetThemeFollowsSystem(false)
+    setWidgetBaseTheme(value)
+  }, [])
+
+  const paletteManager = useColorPaletteManager(effectiveWidgetTheme)
   const { colorPalette, defaultPalette } = paletteManager
 
   // Layout Section:
@@ -264,7 +284,7 @@ export function Sidebar({
 
       // Theme Colors:
 
-      theme: mode,
+      theme: effectiveWidgetTheme,
       customColors: colorPalette,
       defaultColors: defaultPalette,
 
@@ -340,7 +360,7 @@ export function Sidebar({
 
       // Theme Colors:
 
-      mode,
+      effectiveWidgetTheme,
       colorPalette,
       defaultPalette,
 
@@ -408,9 +428,9 @@ export function Sidebar({
   - [x] Allow wider sidebar to use it as mobile mode.
   - [x] Add loader to widget, also when reloading / updating.
   - [x] Add update/reload widget button if needed.
+  - [x] Make widget theme selector work.
 
   - [ ] Fix sticky style issue.
-  - [ ] Make widget theme selector work.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Add name to all fields.
@@ -485,7 +505,10 @@ export function Sidebar({
               expanded={expandedSection === 'Theme Colors'}
               onChange={toggleSection('Theme Colors')}
             >
-              <ThemeControl />
+              <ThemeControl
+                selectedValue={widgetThemeFollowsSystem ? THEME_OPTION_AUTO : widgetBaseTheme}
+                onChange={handleWidgetThemeSelect}
+              />
               <PaletteControl paletteManager={paletteManager} />
             </AccordionSection>
 

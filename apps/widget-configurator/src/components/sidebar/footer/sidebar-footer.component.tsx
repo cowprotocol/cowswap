@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useContext } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
 
 import { UTM_PARAMS } from '../../../configurator.constants'
+import { ColorModeContext } from '../../../theme/ColorModeContext'
 
 const WIDGET_WEB_URL = `https://cow.fi/widget/?${UTM_PARAMS}`
 const DEVELOPER_DOCS_URL = `https://docs.cow.fi/cow-protocol/tutorials/widget?${UTM_PARAMS}`
@@ -32,18 +33,16 @@ export function SidebarFooter({
   isWidgetSyncPending,
   onForceWidgetReload,
 }: SidebarFooterProps): ReactNode {
-  const theme: 'dark' | 'light' = 'dark'
+  const { mode, toggleColorMode } = useContext(ColorModeContext)
 
   const snippetLabel = isSnippetOpen ? 'See preview' : 'Get code'
   const SnippetIcon = isSnippetOpen ? Eye : Code
 
-  const themeLabel = 'Switch theme'
-  const ThemeIcon = theme === 'dark' ? Moon : Sun
+  const themeLabel = mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+  const ThemeIcon = mode === 'dark' ? Sun : Moon
 
   const sidebarLabel = isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'
   const SidebarIcon = isSidebarOpen ? ChevronLeft : ChevronRight
-
-  // TODO: Add theme selector
 
   const externalLinkSx = {
     fontSize: '12px',
@@ -161,7 +160,13 @@ export function SidebarFooter({
           </Tooltip>
 
           <Tooltip title={themeLabel} arrow placement="top">
-            <IconButton type="button" onClick={() => {}} aria-label={themeLabel} size="small" sx={iconOnlyButtonSx}>
+            <IconButton
+              type="button"
+              onClick={toggleColorMode}
+              aria-label={themeLabel}
+              size="small"
+              sx={iconOnlyButtonSx}
+            >
               <ThemeIcon size={20} strokeWidth={2} aria-hidden />
             </IconButton>
           </Tooltip>

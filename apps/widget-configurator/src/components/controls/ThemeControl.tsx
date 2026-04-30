@@ -1,4 +1,4 @@
-import { type ComponentType, type ReactNode, useContext, useState } from 'react'
+import { type ComponentType, type ReactNode } from 'react'
 
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
@@ -10,11 +10,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { type SelectChangeEvent } from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 
-import { ColorModeContext } from '../../theme/ColorModeContext'
+export const THEME_OPTION_AUTO = 'auto' as const
 
-const AUTO = 'auto'
-
-type ThemeOptionValue = 'auto' | 'light' | 'dark'
+export type ThemeOptionValue = typeof THEME_OPTION_AUTO | 'light' | 'dark'
 
 interface ThemeOption {
   icon: ComponentType
@@ -23,7 +21,7 @@ interface ThemeOption {
 }
 
 const THEME_OPTIONS: readonly ThemeOption[] = [
-  { label: 'Auto', value: AUTO, icon: SettingsBrightnessIcon },
+  { label: 'Auto', value: THEME_OPTION_AUTO, icon: SettingsBrightnessIcon },
   { label: 'Light', value: 'light', icon: LightModeIcon },
   { label: 'Dark', value: 'dark', icon: DarkModeIcon },
 ]
@@ -49,22 +47,15 @@ function ThemeOptionContent({ icon: Icon, label }: Pick<ThemeOption, 'icon' | 'l
   )
 }
 
-export function ThemeControl(): ReactNode {
-  const { mode, setMode, setAutoMode } = useContext(ColorModeContext)
-  const [isAutoMode, setIsAutoMode] = useState(false)
-  const selectedValue: ThemeOptionValue = isAutoMode ? AUTO : mode
+export interface ThemeControlProps {
+  /** Current select value: `auto` or an explicit palette mode. */
+  selectedValue: ThemeOptionValue
+  onChange: (value: ThemeOptionValue) => void
+}
 
+export function ThemeControl({ selectedValue, onChange }: ThemeControlProps): ReactNode {
   const handleThemeChange = (event: SelectChangeEvent<ThemeOptionValue>): void => {
-    const selectedTheme = event.target.value as ThemeOptionValue
-
-    if (selectedTheme === AUTO) {
-      setAutoMode()
-      setIsAutoMode(true)
-      return
-    }
-
-    setMode(selectedTheme)
-    setIsAutoMode(false)
+    onChange(event.target.value as ThemeOptionValue)
   }
 
   return (
