@@ -11,13 +11,10 @@ export interface ReceiverActions {
 
 export function useReceiverActions(onChange: (value: string) => void): ReceiverActions {
   const [showQrModal, setShowQrModal] = useState(false)
-  const [canPaste, setCanPaste] = useState(true)
+  const [canPaste, setCanPaste] = useState(() => Boolean(navigator.clipboard))
 
   useEffect(() => {
-    if (!navigator.clipboard) {
-      setCanPaste(false)
-      return
-    }
+    if (!navigator.clipboard) return
 
     navigator.permissions
       .query({ name: 'clipboard-read' as PermissionName })
