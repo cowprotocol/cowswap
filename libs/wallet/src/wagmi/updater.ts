@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
@@ -159,6 +160,12 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
     }
     detect()
   }, [connector, eip6963Providers, setEip6963Provider])
+
+  const provider = useWalletProvider()
+
+  useEffect(() => {
+    setWalletInfo((prevWalletInfo) => ({ ...prevWalletInfo, provider }))
+  }, [setWalletInfo, provider])
 
   useEffect(() => {
     setWalletInfo(walletInfo)

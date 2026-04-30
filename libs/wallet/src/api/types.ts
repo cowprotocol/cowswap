@@ -1,7 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { Address } from 'viem'
+import { Address, EIP1193Provider, PublicClient } from 'viem'
 import { Connector as WagmiConnector } from 'wagmi'
 import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
@@ -14,23 +15,12 @@ export const ConnectionType = {
 
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
-/*
-export enum ConnectionType {
-  NETWORK = 'NETWORK',
-  INJECTED = 'INJECTED',
-  WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  METAMASK = 'METAMASK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-  TREZOR = 'TREZOR',
-}
-  */
-
 export interface WalletInfo {
   chainId: SupportedChainId
   account?: Address
   active?: boolean
   connector?: WagmiConnector
+  provider?: EIP1193Provider | WidgetEthereumProvider | PublicClient
 }
 
 export interface WalletDetails {
