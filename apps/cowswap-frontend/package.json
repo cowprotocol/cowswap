@@ -125,7 +125,7 @@
     "tiny-invariant": "^1.2.0",
     "use-async-memo": "^1.2.4",
     "viem": "^2.42.1",
-    "wagmi": "^3.1.0",
+    "wagmi": "^3.4.2",
     "workbox-core": "^6.6.1",
     "workbox-expiration": "^6.6.1",
     "workbox-precaching": "^6.6.1",
