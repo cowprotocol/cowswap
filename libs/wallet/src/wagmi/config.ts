@@ -109,6 +109,19 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const config = wagmiAdapter.wagmiConfig
 
+// Prevent the CoW Widget connector from appearing in the wallet modal.
+// It must remain registered with wagmi (for reconnect/connect to work) but should not be
+// shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
+if (isInjectedWidget()) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
+    if (connector.id === COW_WIDGET_CONNECTOR_ID) return
+    return _addWagmiConnector(connector)
+  }
+}
+
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
   allowUnsupportedChain: true,
