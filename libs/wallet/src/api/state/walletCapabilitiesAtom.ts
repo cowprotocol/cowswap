@@ -112,13 +112,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
 
 export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
-  // TODO: Before Viem PR this was like this:
-  // if (get(isSafeAppAtom)) return true
-
-  const isSafeApp = get(isSafeAppAtom)
-  const isSafeViaWc = get(isSafeViaWcAtom)
-
-  if (isSafeApp || isSafeViaWc) return true
+  if (get(isSafeAppAtom) || get(isSafeViaWcAtom)) return true
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
@@ -129,13 +123,11 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
 
   const status = walletCapabilities.atomic?.status || ''
 
-  return status === 'supported'
-
-  // TODO: Before Viem PR this was like this:
   // See https://www.eip5792.xyz/getting-started:
   // - supported: The wallet will execute all calls atomically and contiguously
   // - ready: The wallet is able to upgrade to supported pending user approval (e.g. via EIP-7702)
-  // return !!get(isSafeViaWcAtom) && ['supported', 'ready'].includes(status)
+  return status === 'supported'
+  // return status === 'supported' || status === 'ready'
 })
 
 export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)
