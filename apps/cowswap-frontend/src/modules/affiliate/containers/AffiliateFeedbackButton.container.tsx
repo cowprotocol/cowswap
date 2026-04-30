@@ -24,12 +24,12 @@ export function AffiliateFeedbackButton(): ReactNode {
 
   return (
     <styledEl.Wrapper>
-      <styledEl.Button type="button" onClick={handleClick} aria-label={t`Give affiliate feedback`}>
+      <styledEl.Button type="button" onClick={handleClick} aria-label={t`Give feedback`}>
         <styledEl.Icon aria-hidden="true">
           <SVG src={FeedbackIcon} description={t`Provide Feedback`} />
         </styledEl.Icon>
         <styledEl.Label>
-          <Trans>Give affiliate feedback</Trans>
+          <Trans>Give feedback</Trans>
         </styledEl.Label>
       </styledEl.Button>
     </styledEl.Wrapper>

@@ -22,6 +22,11 @@ const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Acco
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
+const AFFILIATE_FEEDBACK_ROUTES = new Set<string>([
+  RoutesEnum.ACCOUNT_AFFILIATE_PARTNER,
+  RoutesEnum.ACCOUNT_AFFILIATE_TRADER,
+])
+
 function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): string[] {
   switch (route) {
     case RoutesEnum.ACCOUNT:
@@ -63,7 +68,7 @@ export default function Account(): ReactNode {
   const { isAffiliateProgramEnabled } = useFeatureFlags()
   const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
   const showAffiliateFeedbackButton =
-    Boolean(account) && isAffiliateProgramEnabled && pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER
+    Boolean(account) && isAffiliateProgramEnabled && AFFILIATE_FEEDBACK_ROUTES.has(pathname)
 
   return (
     <Wrapper>

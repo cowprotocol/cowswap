@@ -61,7 +61,7 @@ describe('AffiliateFeedbackButton', () => {
   it('opens the Appzi feedback form with wallet context', () => {
     renderComponent()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Give affiliate feedback' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Give feedback' }))
 
     expect(openAffiliateFeedbackAppziMock).toHaveBeenCalledWith({
       account: '0x0000000000000000000000000000000000000001',
