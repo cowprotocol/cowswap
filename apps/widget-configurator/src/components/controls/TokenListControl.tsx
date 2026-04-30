@@ -18,7 +18,7 @@ import {
 
 import { AddCustomListDialog } from './AddCustomListDialog'
 
-import { TokenListItem } from '../types'
+import { TokenListItem } from '../../configurator.types'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8

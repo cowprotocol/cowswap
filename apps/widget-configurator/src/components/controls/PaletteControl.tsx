@@ -5,16 +5,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Button, Collapse, FormControl, Stack } from '@mui/material'
 import { MuiColorInput } from 'mui-color-input'
 
-import { ColorPaletteManager } from '../hooks/useColorPaletteManager'
-import { ColorPalette } from '../types'
+import { ColorPalette } from '../../configurator.types'
+import { ColorPaletteManager } from '../../hooks/useColorPaletteManager'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
 export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }): ReactNode {
   const { colorPalette, resetColorPalette } = paletteManager
 
-  const otherColorKeys = Object.keys(colorPalette).filter(
-    (key): key is keyof ColorPalette => !visibleColorKeys.includes(key as keyof ColorPalette),
+  const otherColorKeys = (Object.keys(colorPalette) as Array<keyof ColorPalette>).filter(
+    (key) => !visibleColorKeys.includes(key),
   )
 
   const [expanded, setExpanded] = useState(false)
@@ -22,14 +22,14 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
   return (
     <div>
       {visibleColorKeys.map((key) => (
-        <FormControl sx={{ width: '100%', margin: '10px 0' }} key={key}>
+        <FormControl sx={{ width: '100%', margin: '10px 0' }} key={String(key)}>
           <ColorInput colorKey={key} paletteManager={paletteManager} />
         </FormControl>
       ))}
 
       <Collapse in={expanded}>
         {otherColorKeys.map((colorKey) => (
-          <FormControl sx={{ width: '100%', margin: '10px 0' }} key={colorKey}>
+          <FormControl sx={{ width: '100%', margin: '10px 0' }} key={String(colorKey)}>
             <ColorInput colorKey={colorKey} paletteManager={paletteManager} />
           </FormControl>
         ))}
@@ -65,7 +65,7 @@ function ColorInput({ colorKey, paletteManager }: ColorInputProps): ReactNode {
   const colorValue = colorPalette[colorKey] || defaultPalette[colorKey]
 
   const handleColorChange = (colorKey: keyof ColorPalette) => (newValue: string) => {
-    setColorPalette((prevPalette) => ({ ...prevPalette, [colorKey]: newValue }))
+    setColorPalette((prevPalette: ColorPalette) => ({ ...prevPalette, [colorKey]: newValue }))
   }
 
   return (
@@ -74,7 +74,7 @@ function ColorInput({ colorKey, paletteManager }: ColorInputProps): ReactNode {
       onChange={handleColorChange(colorKey)}
       size="small"
       variant="outlined"
-      label={`${colorKey.charAt(0).toUpperCase() + colorKey.slice(1)}`}
+      label={`${String(colorKey).charAt(0).toUpperCase() + String(colorKey).slice(1)}`}
       format="hex"
       isAlphaHidden
     />

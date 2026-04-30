@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { PaletteControl } from './PaletteControl'
 
-import { ColorPaletteManager } from '../hooks/useColorPaletteManager'
+import { ColorPaletteManager } from '../../hooks/useColorPaletteManager'
 
 jest.mock('mui-color-input', () => ({
   MuiColorInput: (props: { label: string }) => <div>{props.label}</div>,
