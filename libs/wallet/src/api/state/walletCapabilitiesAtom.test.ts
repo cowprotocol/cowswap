@@ -6,7 +6,7 @@ import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { Connector } from 'wagmi'
 
 import {
-  getShouldCheckCapabilities,
+  getShouldSkipCapabilitiesCheck,
   isBundlingSupportedAtom,
   isBundlingSupportedAsyncAtom,
   isBundlingSupportedLoadableAtom,
@@ -24,6 +24,7 @@ const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean, [boolea
 
 import type { WalletCapabilities } from './walletCapabilitiesAtom'
 import type { WalletInfo } from '../types'
+import type { EIP1193Provider } from 'viem'
 
 jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
   const jotai = require('jotai') as typeof import('jotai')
@@ -67,18 +68,28 @@ function createMockConnector(getProviderImpl?: () => Promise<unknown>): WalletIn
   } as unknown as WalletInfo['connector']
 }
 
+function createMockWalletProvider(): EIP1193Provider {
+  return {
+    request: jest.fn(),
+    on: jest.fn(),
+    removeListener: jest.fn(),
+  } as unknown as EIP1193Provider
+}
+
 function setWalletInfo(
   store: ReturnType<typeof createStore>,
   overrides: Partial<{
     account: string
     chainId: SupportedChainId
     connector: NonNullable<WalletInfo['connector']>
+    provider: NonNullable<WalletInfo['provider']>
   }>,
 ): void {
   store.set(walletInfoAtom, {
     chainId: overrides.chainId ?? MOCK_CHAIN_ID,
     account: overrides.account ?? MOCK_ACCOUNT,
     connector: overrides.connector ?? createMockConnector(),
+    provider: overrides.provider ?? createMockWalletProvider(),
   })
 }
 
@@ -91,17 +102,20 @@ describe('walletCapabilitiesAtom', () => {
     mockConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
-  describe('getShouldCheckCapabilities (widget meta info)', () => {
-    it('resolves when WidgetEthereumProvider never sends meta (timeout)', async () => {
+  describe('getShouldSkipCapabilitiesCheck (widget meta info)', () => {
+    it('resolves false when WidgetEthereumProvider never sends meta (timeout)', async () => {
       jest.useFakeTimers()
+      mockIsMobile.mockReturnValue(true)
+      mockGetIsWalletConnect.mockReturnValue(false)
       const widgetProvider = new WidgetEthereumProvider({ eventSource: window, eventTarget: window })
       const connector = createMockConnector(() => Promise.resolve(widgetProvider)) as Connector
 
-      const promise = getShouldCheckCapabilities(connector, MOCK_CHAIN_ID)
+      const provider = (await connector.getProvider()) as NonNullable<WalletInfo['provider']>
+      const promise = getShouldSkipCapabilitiesCheck(connector, provider)
       await jest.advanceTimersByTimeAsync(10_000)
       const result = await promise
 
-      expect(result).toBe(true)
+      expect(result).toBe(false)
       jest.useRealTimers()
     })
   })
@@ -137,6 +151,19 @@ describe('walletCapabilitiesAtom', () => {
         chainId: MOCK_CHAIN_ID,
         account: MOCK_ACCOUNT,
       } as WalletInfo)
+
+      const result = await store.get(walletCapabilitiesAtom)
+
+      expect(result).toBeUndefined()
+    })
+
+    it('returns undefined when provider is missing', async () => {
+      const store = createStore()
+      store.set(walletInfoAtom, {
+        chainId: MOCK_CHAIN_ID,
+        account: MOCK_ACCOUNT,
+        connector: createMockConnector(),
+      })
 
       const result = await store.get(walletCapabilitiesAtom)
 
