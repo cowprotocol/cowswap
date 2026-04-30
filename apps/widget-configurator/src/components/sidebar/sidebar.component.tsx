@@ -8,7 +8,6 @@ import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
@@ -30,7 +29,7 @@ import { CustomSoundsControl } from '../controls/CustomSoundsControl'
 import { DeadlineControl } from '../controls/DeadlineControl'
 import { PaletteControl } from '../controls/PaletteControl'
 import { PartnerFeeControl } from '../controls/PartnerFeeControl'
-import { THEME_OPTION_AUTO, ThemeControl, type ThemeOptionValue } from '../controls/ThemeControl'
+import { ThemeControl, type ThemeOptionValue } from '../controls/ThemeControl'
 import { TokenListControl } from '../controls/TokenListControl'
 import { COMMENTS_BY_PARAM_NAME } from '../snippet/snippet.const'
 import { AccordionSection } from '../ui/Accordion/AccordionSection'
@@ -131,27 +130,13 @@ export function Sidebar({
   // Theme Colors Section:
 
   const { mode } = useContext(ColorModeContext)
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  const [widgetBaseTheme, setWidgetBaseTheme] = useState<PaletteMode>('light')
-  const [widgetThemeFollowsSystem, setWidgetThemeFollowsSystem] = useState(false)
-  const effectiveWidgetTheme: PaletteMode = widgetThemeFollowsSystem
-    ? prefersDarkMode
-      ? 'dark'
-      : 'light'
-    : widgetBaseTheme
+  const [theme, setTheme] = useState<PaletteMode>('light')
 
   const handleWidgetThemeSelect = useCallback((value: ThemeOptionValue) => {
-    if (value === THEME_OPTION_AUTO) {
-      setWidgetThemeFollowsSystem(true)
-
-      return
-    }
-
-    setWidgetThemeFollowsSystem(false)
-    setWidgetBaseTheme(value)
+    setTheme(value)
   }, [])
 
-  const paletteManager = useColorPaletteManager(effectiveWidgetTheme)
+  const paletteManager = useColorPaletteManager(theme)
   const { colorPalette, defaultPalette } = paletteManager
 
   // Layout Section:
@@ -284,7 +269,7 @@ export function Sidebar({
 
       // Theme Colors:
 
-      theme: effectiveWidgetTheme,
+      theme,
       customColors: colorPalette,
       defaultColors: defaultPalette,
 
@@ -360,7 +345,7 @@ export function Sidebar({
 
       // Theme Colors:
 
-      effectiveWidgetTheme,
+      theme,
       colorPalette,
       defaultPalette,
 
@@ -505,10 +490,7 @@ export function Sidebar({
               expanded={expandedSection === 'Theme Colors'}
               onChange={toggleSection('Theme Colors')}
             >
-              <ThemeControl
-                selectedValue={widgetThemeFollowsSystem ? THEME_OPTION_AUTO : widgetBaseTheme}
-                onChange={handleWidgetThemeSelect}
-              />
+              <ThemeControl selectedValue={theme} onChange={handleWidgetThemeSelect} />
               <PaletteControl paletteManager={paletteManager} />
             </AccordionSection>
 

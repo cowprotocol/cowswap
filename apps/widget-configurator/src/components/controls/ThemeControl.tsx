@@ -2,7 +2,6 @@ import { type ComponentType, type ReactNode } from 'react'
 
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
-import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -10,9 +9,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { type SelectChangeEvent } from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 
-export const THEME_OPTION_AUTO = 'auto' as const
-
-export type ThemeOptionValue = typeof THEME_OPTION_AUTO | 'light' | 'dark'
+export type ThemeOptionValue = 'light' | 'dark'
 
 interface ThemeOption {
   icon: ComponentType
@@ -21,7 +18,6 @@ interface ThemeOption {
 }
 
 const THEME_OPTIONS: readonly ThemeOption[] = [
-  { label: 'Auto', value: THEME_OPTION_AUTO, icon: SettingsBrightnessIcon },
   { label: 'Light', value: 'light', icon: LightModeIcon },
   { label: 'Dark', value: 'dark', icon: DarkModeIcon },
 ]
