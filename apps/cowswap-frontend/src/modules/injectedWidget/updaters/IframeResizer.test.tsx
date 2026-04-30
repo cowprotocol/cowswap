@@ -24,6 +24,17 @@ jest.mock('@cowprotocol/ui', () => ({
   },
 }))
 
+jest.mock('../hooks/useInjectedWidgetParams', () => ({
+  useInjectedWidgetParams: jest.fn(() => ({})),
+}))
+
+jest.mock('@cowprotocol/iframe-transport', () => ({
+  ...jest.requireActual('@cowprotocol/iframe-transport'),
+  getParentOrigin: jest.fn(() => 'https://parent.example'),
+}))
+
+const MOCK_PARENT_ORIGIN = 'https://parent.example'
+
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const isIframeMock = isIframe as jest.MockedFunction<typeof isIframe>
 const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
@@ -97,9 +108,14 @@ describe('IframeResizer', () => {
   it('uses ResizeObserver and window resize events to emit updated heights', () => {
     const { unmount } = render(<IframeResizer />)
 
-    expect(postMessageToWindowSpy).toHaveBeenCalledWith(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-      height: 500,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      {
+        height: 500,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
     expect(resizeObserverObserveMock).toHaveBeenCalledWith(rootElement)
     expect(resizeObserverObserveMock).toHaveBeenCalledWith(document.body)
     expect(mutationObserverObserveMock).not.toHaveBeenCalled()
@@ -110,9 +126,14 @@ describe('IframeResizer', () => {
       triggerResizeObserver?.()
     })
 
-    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-      height: 610,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      {
+        height: 610,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
 
     setContentSize({ bodyOffsetWidth: 400, rootScrollHeight: 680, rootOffsetHeight: 700 })
 
@@ -120,9 +141,14 @@ describe('IframeResizer', () => {
       window.dispatchEvent(new Event('resize'))
     })
 
-    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-      height: 700,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      {
+        height: 700,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
 
     unmount()
 
@@ -146,9 +172,14 @@ describe('IframeResizer', () => {
 
     render(<IframeResizer />)
 
-    expect(postMessageToWindowSpy).toHaveBeenCalledWith(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-      height: 640,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      {
+        height: 640,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
   })
 
   it('falls back to MutationObserver when ResizeObserver is unavailable', () => {
@@ -169,9 +200,14 @@ describe('IframeResizer', () => {
       triggerMutationObserver?.()
     })
 
-    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
-      height: 560,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      {
+        height: 560,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
   })
 
   it('emits full-height updates while a modal is open', () => {
@@ -184,9 +220,14 @@ describe('IframeResizer', () => {
 
     render(<IframeResizer />)
 
-    expect(postMessageToWindowSpy).toHaveBeenCalledWith(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, {
-      isUpToSmall: true,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenCalledWith(
+      window.parent,
+      WidgetMethodsEmit.SET_FULL_HEIGHT,
+      {
+        isUpToSmall: true,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
 
     setContentSize({
       bodyOffsetWidth: MEDIA_WIDTHS.upToSmall + 1,
@@ -198,9 +239,14 @@ describe('IframeResizer', () => {
       window.dispatchEvent(new Event('resize'))
     })
 
-    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, {
-      isUpToSmall: false,
-    })
+    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
+      window.parent,
+      WidgetMethodsEmit.SET_FULL_HEIGHT,
+      {
+        isUpToSmall: false,
+      },
+      MOCK_PARENT_ORIGIN,
+    )
   })
 })
 

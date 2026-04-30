@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, PropsWithChildren } from 'react'
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
@@ -7,11 +7,10 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-interface AccordionSectionProps {
+interface AccordionSectionProps extends PropsWithChildren {
   title: string
   expanded: boolean
   onChange: (expanded: boolean) => void
-  children: ReactNode
 }
 
 export function AccordionSection({ title, expanded, onChange, children }: AccordionSectionProps): ReactNode {

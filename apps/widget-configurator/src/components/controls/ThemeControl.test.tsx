@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { ThemeControl } from './ThemeControl'
 
-import { ColorModeContext, type ColorModeParams } from '../../../theme/ColorModeContext'
+import { ColorModeContext, type ColorModeParams } from '../../theme/ColorModeContext'
 
 function renderThemeControl(contextValue: Partial<ColorModeParams> = {}): void {
   render(
