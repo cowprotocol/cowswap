@@ -1,0 +1,56 @@
+diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
+index 0ca5c3ea30151f782c8e23683b277660f9401e72..33db3cc5a899fe4d9ea28bbb9dad3e8db2712f86 100644
+--- a/dist/esm/src/client.js
++++ b/dist/esm/src/client.js
+@@ -10,7 +10,7 @@ import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils';
+ import { authConnector } from './connectors/AuthConnector.js';
+ import { walletConnect } from './connectors/WalletConnectConnector.js';
+ import { LimitterUtil } from './utils/LimitterUtil.js';
+-import { getBaseAccountConnector, getSafeConnector } from './utils/helpers.js';
++import { getCoinbaseWalletConnector, getSafeConnector } from './utils/helpers.js';
+ const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
+     enable: false,
+     pollingInterval: 30_000
+@@ -162,9 +162,9 @@ export class WagmiAdapter extends AdapterBlueprint {
+         const thirdPartyConnectors = [];
+         const { enableCoinbase: isCoinbaseEnabled } = OptionsController.state || {};
+         if (isCoinbaseEnabled !== false) {
+-            const baseAccountConnector = await getBaseAccountConnector(this.wagmiConfig.connectors);
+-            if (baseAccountConnector) {
+-                thirdPartyConnectors.push(baseAccountConnector);
++            const coinbaseConnector = await getCoinbaseWalletConnector(this.wagmiConfig.connectors);
++            if (coinbaseConnector) {
++                thirdPartyConnectors.push(coinbaseConnector);
+             }
+         }
+         const safeConnector = await getSafeConnector(this.wagmiConfig.connectors);
+diff --git a/dist/esm/src/utils/helpers.js b/dist/esm/src/utils/helpers.js
+index d78c8993c7bc992125aef540f08e7993e871acef..ebb9de056fee6cb7c857a06bf6288f2fe5c14508 100644
+--- a/dist/esm/src/utils/helpers.js
++++ b/dist/esm/src/utils/helpers.js
+@@ -1,7 +1,7 @@
+ import { UniversalProvider } from '@walletconnect/universal-provider';
+ import {} from 'viem';
+ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common';
+-import { CoreHelperUtil, WcHelpersUtil } from '@reown/appkit-controllers';
++import { CoreHelperUtil, OptionsController, WcHelpersUtil } from '@reown/appkit-controllers';
+ export async function getWalletConnectCaipNetworks(connector) {
+     if (!connector) {
+         throw new Error('WagmiAdapter:getApprovedCaipNetworks - connector is undefined');
+@@ -47,11 +47,12 @@ export async function getSafeConnector(connectors) {
+     }
+     return null;
+ }
+-export async function getBaseAccountConnector(connectors) {
++export async function getCoinbaseWalletConnector(connectors) {
+     try {
+-        const { baseAccount } = await import('@wagmi/connectors');
+-        if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
+-            return baseAccount();
++        const { coinbaseWallet } = await import('@wagmi/connectors');
++        if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWalletSDK')) {
++            const preference = (OptionsController.state || {}).coinbasePreference ?? 'all';
++            return coinbaseWallet({ preference });
+         }
+     }
+     catch (error) {
