@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.1...widget-lib-v4.0.2) (2026-04-30)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** call onReady against iframe ([#7436](https://github.com/cowprotocol/cowswap/issues/7436)) ([e8a9f91](https://github.com/cowprotocol/cowswap/commit/e8a9f912f560a1d849636723717c569b24cc7f83))
+
 ## [4.0.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.0...widget-lib-v4.0.1) (2026-04-22)
 
 
