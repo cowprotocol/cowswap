@@ -32,7 +32,7 @@ export const orderBookApi = new OrderBookApi()
 
 const bungeeApiBase = getBungeeApiBase()
 
-const bungeeBridgeProvider = new BungeeBridgeProvider({
+export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
@@ -41,9 +41,9 @@ const bungeeBridgeProvider = new BungeeBridgeProvider({
   },
 })
 
-const acrossBridgeProvider = new AcrossBridgeProvider()
+export const acrossBridgeProvider = new AcrossBridgeProvider()
 
-const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: process.env.REACT_APP_NEAR_API_KEY })
+export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider({ apiKey: process.env.REACT_APP_NEAR_API_KEY })
 
 export const knownBridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider]
 
