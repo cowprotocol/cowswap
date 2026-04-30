@@ -1,16 +1,33 @@
-import { cacheWidgetMessage, clearCachedWidgetMessages, replayCachedWidgetMessage } from './widgetMessagesCache.utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
+
+import {
+  cacheWidgetMessage,
+  clearCachedWidgetMessages,
+  registerCachedMessageHandler,
+  replayCachedWidgetMessage,
+  unregisterCachedMessageHandler,
+} from './widgetMessagesCache.utils'
+
+jest.mock('@cowprotocol/iframe-transport', () => ({
+  ...jest.requireActual('@cowprotocol/iframe-transport'),
+  getParentOrigin: jest.fn(),
+}))
+
+const TRUSTED_ORIGIN = 'https://widget-configurator.example'
 
 describe('widgetMessagesCache utils', () => {
   beforeEach(() => {
     clearCachedWidgetMessages()
+    ;(getParentOrigin as jest.Mock).mockReturnValue(TRUSTED_ORIGIN)
   })
 
   afterEach(() => {
+    unregisterCachedMessageHandler('UPDATE_PARAMS')
     jest.restoreAllMocks()
   })
 
-  it('replays cached widget messages with their original origin', () => {
-    const messageListener = jest.fn()
+  it('calls the registered handler directly with cached message data', () => {
+    const handler = jest.fn()
     const eventData = {
       key: 'cowSwapWidget',
       method: 'UPDATE_PARAMS',
@@ -21,40 +38,70 @@ describe('widgetMessagesCache utils', () => {
 
     cacheWidgetMessage(
       new MessageEvent('message', {
-        origin: 'https://widget-configurator.example',
+        origin: TRUSTED_ORIGIN,
+        source: window, // window.parent === window in jsdom
         data: eventData,
       }),
     )
 
-    window.addEventListener('message', messageListener)
+    registerCachedMessageHandler('UPDATE_PARAMS', handler)
     replayCachedWidgetMessage('UPDATE_PARAMS')
-    window.removeEventListener('message', messageListener)
 
-    expect(messageListener).toHaveBeenCalledTimes(1)
-
-    const replayedEvent = messageListener.mock.calls[0][0] as MessageEvent
-
-    expect(replayedEvent.origin).toBe('https://widget-configurator.example')
-    expect(replayedEvent.data).toEqual(eventData)
+    expect(handler).toHaveBeenCalledTimes(1)
+    expect(handler).toHaveBeenCalledWith(eventData)
   })
 
-  it('ignores non-widget messages', () => {
-    const messageListener = jest.fn()
+  it('does nothing if no handler is registered for the method', () => {
+    const eventData = {
+      key: 'cowSwapWidget',
+      method: 'UPDATE_PARAMS',
+      urlParams: { pathname: '/1/widget/swap', search: '' },
+      appParams: {},
+      hasProvider: false,
+    }
 
     cacheWidgetMessage(
       new MessageEvent('message', {
-        origin: 'https://widget-configurator.example',
-        data: {
-          key: 'different-key',
-          method: 'UPDATE_PARAMS',
-        },
+        origin: TRUSTED_ORIGIN,
+        source: window,
+        data: eventData,
       }),
     )
 
-    window.addEventListener('message', messageListener)
-    replayCachedWidgetMessage('UPDATE_PARAMS')
-    window.removeEventListener('message', messageListener)
+    expect(() => replayCachedWidgetMessage('UPDATE_PARAMS')).not.toThrow()
+  })
 
-    expect(messageListener).not.toHaveBeenCalled()
+  it('ignores messages with untrusted origin', () => {
+    const handler = jest.fn()
+
+    cacheWidgetMessage(
+      new MessageEvent('message', {
+        origin: 'https://evil.example',
+        source: window,
+        data: { key: 'cowSwapWidget', method: 'UPDATE_PARAMS' },
+      }),
+    )
+
+    registerCachedMessageHandler('UPDATE_PARAMS', handler)
+    replayCachedWidgetMessage('UPDATE_PARAMS')
+
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('ignores non-widget messages', () => {
+    const handler = jest.fn()
+
+    cacheWidgetMessage(
+      new MessageEvent('message', {
+        origin: TRUSTED_ORIGIN,
+        source: window,
+        data: { key: 'different-key', method: 'UPDATE_PARAMS' },
+      }),
+    )
+
+    registerCachedMessageHandler('UPDATE_PARAMS', handler)
+    replayCachedWidgetMessage('UPDATE_PARAMS')
+
+    expect(handler).not.toHaveBeenCalled()
   })
 })
