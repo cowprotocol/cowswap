@@ -1,12 +1,15 @@
 /**
- * Rename default SVG import bindings to icon*Src / image*Src / svg*Src (outside string literals only).
- * Prefix is derived from the asset path (see prefixFromAssetPath); default is image*Src.
+ * Rename default SVG import bindings to icon*Src / img*Src / svg*Src (outside string literals only).
+ * Prefix detection is filename-first, then path fallback, then default "img".
  * Run from repo root: node tools/codemods/rename-svg-import-bindings.mjs
  */
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+
+// Generic words we strip from the semantic "tail" of the generated binding.
+const GENERIC_TAIL_WORDS = new Set(['icon', 'img', 'image', 'svg', 'logo', 'illustration', 'asset', 'assets'])
 
 // Converts SCREAMING_SNAKE_CASE-like names into camelCase.
 // Example: COW_ICON -> cowIcon
@@ -17,21 +20,55 @@ export function snakeToCamel(str) {
   return s.replace(/_([a-z0-9])/g, (_, c) => c.toUpperCase())
 }
 
-/** icon | image | svg — checked on path with .svg stripped so the extension does not imply "svg" */
-export function prefixFromAssetPath(assetPath) {
-  // Remove extension before checks so ".svg" does not force the svg prefix.
-  const hintPath = assetPath.replace(/\.svg$/i, '').toLowerCase()
-  // Priority order matters: first matching hint wins.
-  if (hintPath.includes('icon')) return 'icon'
-  if (hintPath.includes('image')) return 'image'
-  if (hintPath.includes('svg')) return 'svg'
-  // Default to image when there is no explicit hint.
-  return 'image'
+// Split identifiers/paths into lowercase words:
+// - handles kebab/snake/dots/slashes
+// - handles camelCase / PascalCase boundaries
+export function splitWords(value) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((w) => w.toLowerCase())
 }
 
-// Valid final shape: iconFooSrc / imageFooSrc / svgFooSrc
+// Extract the filename segment without ".svg".
+export function filenameNoExt(assetPath) {
+  const file = assetPath.split('/').pop() || assetPath
+  return file.replace(/\.svg$/i, '')
+}
+
+// Turn words into PascalCase tail.
+export function toPascal(words) {
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('')
+}
+
+// Decide canonical prefix from words.
+// We accept plural/path variants via startsWith checks.
+export function prefixFromWords(words) {
+  if (words.some((w) => w.startsWith('icon'))) return 'icon'
+  if (words.some((w) => w === 'img' || w.startsWith('image') || w.startsWith('img'))) return 'img'
+  if (words.some((w) => w.startsWith('svg'))) return 'svg'
+  return null
+}
+
+/** icon | img | svg — filename first, then path fallback, else img */
+export function prefixFromAssetPath(assetPath) {
+  // 1) First, inspect file name (most specific source of intent).
+  const filePrefix = prefixFromWords(splitWords(filenameNoExt(assetPath)))
+  if (filePrefix) return filePrefix
+
+  // 2) Fallback to full path (directory names like images/icons/svg).
+  const pathPrefix = prefixFromWords(splitWords(assetPath.replace(/\.svg$/i, '')))
+  if (pathPrefix) return pathPrefix
+
+  // 3) Final fallback when no explicit hint is found.
+  return 'img'
+}
+
+// Valid final shape: iconFooSrc / imgFooSrc / svgFooSrc
 export function isValidBinding(name) {
-  return /^(icon|image|svg)[A-Za-z0-9]+Src$/.test(name)
+  return /^(icon|img|svg)[A-Za-z0-9]+Src$/.test(name)
 }
 
 // "fooBar" -> "FooBar"
@@ -40,46 +77,35 @@ export function camelCaseToPascalFirst(s) {
 }
 
 export function legacyToNew(name, assetPath) {
-  // Derive desired prefix from the import path.
+  // Derive desired prefix from filename/path hints.
   const prefix = prefixFromAssetPath(assetPath)
 
-  // Case 1: Already in the new format.
-  // Keep it as-is if prefix matches, otherwise swap prefix only.
-  if (isValidBinding(name)) {
-    const m = name.match(/^(icon|image|svg)([A-Za-z0-9]+)Src$/)
-    if (m && m[1] === prefix) return name
-    if (m) return `${prefix}${m[2]}Src`
+  // Build semantic tail from filename first; remove generic words.
+  const fileWords = splitWords(filenameNoExt(assetPath))
+  let tailWords = fileWords.filter((w) => !GENERIC_TAIL_WORDS.has(w))
+
+  // If filename contains only generic words, fallback to current binding words.
+  if (tailWords.length === 0) {
+    const fallbackCore = name.replace(/Src$/, '').replace(/^(icon|img|image|svg)/i, '')
+    const fallbackWords = splitWords(fallbackCore).filter((w) => !GENERIC_TAIL_WORDS.has(w))
+    tailWords = fallbackWords
   }
 
-  // Case 2: Legacy prefixed names without Src suffix.
-  // Reuse the existing tail but enforce the path-derived prefix.
-  if (/^icon[A-Za-z0-9]+$/.test(name) && !name.endsWith('Src')) {
-    return `${prefix}${name.slice(4)}Src`
-  }
-  if (/^image[A-Za-z0-9]+$/.test(name) && !name.endsWith('Src')) {
-    return `${prefix}${name.slice(5)}Src`
-  }
-  if (/^svg[A-Za-z0-9]+$/.test(name) && !name.endsWith('Src')) {
-    return `${prefix}${name.slice(3)}Src`
+  // Last-resort tail to keep output deterministic.
+  if (tailWords.length === 0) {
+    const fallback = snakeToCamel(name.replace(/Src$/i, '')) || 'asset'
+    tailWords = splitWords(fallback).filter((w) => !GENERIC_TAIL_WORDS.has(w))
   }
 
-  // Case 3: CONSTANT_STYLE legacy names.
-  // Normalize to camel, drop any old prefix token, then re-prefix.
-  if (/^[A-Z][A-Z0-9_]*$/.test(name)) {
-    const c = snakeToCamel(name)
-    const rest = c.replace(/^(icon|image|svg)/, '')
-    const tail = rest ? camelCaseToPascalFirst(rest) : camelCaseToPascalFirst(c)
-    const out = `${prefix}${tail}`
-    return out.endsWith('Src') ? out : `${out}Src`
-  }
+  // If still empty (extremely defensive), use "Asset".
+  const tail = toPascal(tailWords.length ? tailWords : ['asset'])
 
-  // Case 4: generic fallback.
-  // Remove common semantic suffixes to avoid duplicates like iconFooIconSrc.
-  let base = name.replace(/Icon$/i, '').replace(/Image$/i, '').replace(/Illustration$/i, '')
-  // Also trim accidental leading underscores.
-  base = base.replace(/^_+/, '')
-  const pascal = camelCaseToPascalFirst(base)
-  return `${prefix}${pascal}Src`
+  // Canonical output always follows "<prefix><Tail>Src".
+  const candidate = `${prefix}${tail}Src`
+
+  // Keep unchanged only when name already matches canonical candidate.
+  if (name === candidate) return name
+  return candidate
 }
 
 /** Replace `oldName` with `newName` only outside strings / line & block comments */
@@ -193,7 +219,7 @@ export function transformFile(content) {
   // Preserve either blank line(s) or EOF after each matched import.
   const tail = '((?:\\r?\\n)+|$)'
 
-  // 1) import { default as A, default as B } from 'x.svg'  ->  import imageFooSrc from 'x.svg'
+  // 1) import { default as A, default as B } from 'x.svg'  ->  import imgFooSrc from 'x.svg'
   out = out.replace(
     new RegExp(
       String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*,\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.svg)\4${tail}`,
@@ -207,7 +233,7 @@ export function transformFile(content) {
     },
   )
 
-  // 2) import { default as A } from 'x.svg'  ->  import imageFooSrc from 'x.svg'
+  // 2) import { default as A } from 'x.svg'  ->  import imgFooSrc from 'x.svg'
   out = out.replace(
     new RegExp(
       String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.svg)\3${tail}`,
