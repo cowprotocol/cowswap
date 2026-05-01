@@ -48,6 +48,12 @@ export function filenameNoExt(assetPath) {
   return file.replace(/\.(svg|png|jpe?g|webp|gif)$/i, '')
 }
 
+// Read normalized extension without the dot (svg/png/jpg/...).
+export function assetExt(assetPath) {
+  const m = assetPath.toLowerCase().match(/\.([a-z0-9]+)$/)
+  return m ? m[1] : ''
+}
+
 // Turn words into PascalCase tail.
 export function toPascal(words) {
   return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('')
@@ -62,8 +68,23 @@ export function prefixFromWords(words) {
   return null
 }
 
-/** icon | img | svg — filename first, then path fallback, else img */
+/** For .svg: icon|svg only. For raster assets: icon|img|svg, fallback img. */
 export function prefixFromAssetPath(assetPath) {
+  const ext = assetExt(assetPath)
+  const isSvg = ext === 'svg'
+
+  // For SVG imports lint only allows icon*Src or svg*Src.
+  if (isSvg) {
+    const fileWords = splitWords(filenameNoExt(assetPath))
+    const pathWords = splitWords(assetPath.replace(/\.(svg|png|jpe?g|webp|gif)$/i, ''))
+
+    if (fileWords.some((w) => w.startsWith('icon')) || pathWords.some((w) => w.startsWith('icon'))) {
+      return 'icon'
+    }
+
+    return 'svg'
+  }
+
   // 1) First, inspect file name (most specific source of intent).
   const filePrefix = prefixFromWords(splitWords(filenameNoExt(assetPath)))
   if (filePrefix) return filePrefix
