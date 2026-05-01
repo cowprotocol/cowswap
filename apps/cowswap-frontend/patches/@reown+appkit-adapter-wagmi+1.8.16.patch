@@ -1,6 +1,6 @@
-diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
---- a/dist/esm/src/client.js
-+++ b/dist/esm/src/client.js
+diff --git a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
+--- a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
++++ b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
 @@ -10,7 +10,7 @@
  import { authConnector } from './connectors/AuthConnector.js';
  import { walletConnect } from './connectors/WalletConnectConnector.js';
@@ -23,9 +23,9 @@ diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
              }
          }
          const safeConnector = await getSafeConnector(this.wagmiConfig.connectors);
-diff --git a/dist/esm/src/utils/helpers.js b/dist/esm/src/utils/helpers.js
---- a/dist/esm/src/utils/helpers.js
-+++ b/dist/esm/src/utils/helpers.js
+diff --git a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js
+--- a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js
++++ b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js
 @@ -1,7 +1,7 @@
  import { UniversalProvider } from '@walletconnect/universal-provider';
  import {} from 'viem';

@@ -100,10 +100,7 @@
     },
     "onlyBuiltDependencies": [
       "nx"
-    ],
-    "patchedDependencies": {
-      "@reown/appkit-adapter-wagmi": "patches/@reown__appkit-adapter-wagmi.patch"
-    }
+    ]
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",
