@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import orderPresignaturePendingIcon from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import imgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Currency, Price } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -90,7 +90,7 @@ export function OrderFillsAt({
           }
         >
           <styledEl.SigningDisplay>
-            <SVG src={orderPresignaturePendingIcon} description={t`signing`} />
+            <SVG src={imgOrderPresignaturePendingSrc} description={t`signing`} />
             <Trans>Please sign order</Trans>
           </styledEl.SigningDisplay>
         </HoverTooltip>
@@ -157,8 +157,7 @@ export function OrderFillsAt({
 
     return (
       <styledEl.ExecuteCellWrapper>
-        {false &&
-        !isUnfillable &&
+        {!isUnfillable &&
         priceDiffs?.percentage &&
         Math.abs(Number(priceDiffs.percentage.toFixed(4))) <= PENDING_EXECUTION_THRESHOLD_PERCENTAGE ? (
           <HoverTooltip
