@@ -1,21 +1,6 @@
-import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { isRejectRequestProviderError, MAX_NESTED_ERROR_DEPTH } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
-
-const MAX_ERROR_DEPTH = 8
-
-function isUserRejectionError(error: unknown, depth = 0): boolean {
-  if (depth > MAX_ERROR_DEPTH || error === null || error === undefined) {
-    return false
-  }
-  if (isRejectRequestProviderError(error)) {
-    return true
-  }
-  if (error instanceof Error && 'cause' in error && error.cause !== undefined) {
-    return isUserRejectionError(error.cause, depth + 1)
-  }
-  return false
-}
 
 function collectErrorMessageFromObject(error: object): string {
   return 'message' in error ? String((error as { message: unknown }).message) : ''
@@ -25,7 +10,7 @@ function collectErrorMessageFromObject(error: object): string {
  * Flattens `Error` + nested `cause` messages (viem / WalletConnect often nest "Request expired" here).
  */
 function collectErrorMessages(error: unknown, depth = 0): string {
-  if (depth > MAX_ERROR_DEPTH) {
+  if (depth > MAX_NESTED_ERROR_DEPTH) {
     return ''
   }
   if (error === null || error === undefined) {
@@ -67,7 +52,7 @@ function getWalletRequestExpiredMessage(flatMessage: string): string | undefined
 export function getErrorMessage(error: unknown): string {
   const DEFAULT_ERROR_MESSAGE = t`Something went wrong creating your order`
 
-  if (isUserRejectionError(error)) {
+  if (isRejectRequestProviderError(error)) {
     return t`User rejected transaction`
   }
 

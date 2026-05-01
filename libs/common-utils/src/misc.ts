@@ -9,6 +9,7 @@ interface Market<T = string> {
   quoteToken: T
 }
 
+export const MAX_NESTED_ERROR_DEPTH = 8
 const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
@@ -173,23 +174,29 @@ export function hashCode(text: string): number {
  */
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-export function isRejectRequestProviderError(error: any) {
-  if (error) {
-    // Check the error code is the user rejection as described in eip-1193
-    if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
-      return true
-    }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isRejectRequestProviderError(error: any, depth = 0): boolean {
+  if (!error || depth > MAX_NESTED_ERROR_DEPTH) {
+    return false
+  }
 
-    // Check for some specific messages returned by some wallets when rejecting requests
-    const message = getProviderErrorMessage(error)
-    if (
-      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
-        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
-      )
-    ) {
-      return true
-    }
+  // Check the error code is the user rejection as described in eip-1193
+  if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
+    return true
+  }
+
+  // Check for some specific messages returned by some wallets when rejecting requests
+  const message = getProviderErrorMessage(error)
+  if (
+    PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
+      (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
+    )
+  ) {
+    return true
+  }
+
+  if (error instanceof Error && 'cause' in error && error.cause !== undefined) {
+    return isRejectRequestProviderError(error.cause, depth + 1)
   }
 
   return false
