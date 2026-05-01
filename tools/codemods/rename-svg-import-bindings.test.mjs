@@ -87,6 +87,46 @@ function run() {
     "import iconMinusSrc from '@cowprotocol/assets/images/icon-minus.svg'\n",
   )
 
+  const transformedTemplateInterpolation = transformFile(
+    "import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'\n" +
+      'const styles = `background: url(${IMAGE_BACKGROUND_DARK}) no-repeat;`\n',
+  )
+  expectEqual(
+    'transform: replaces identifiers used inside template interpolation',
+    transformedTemplateInterpolation,
+    "import imgBackgroundCowswapDarkmodeSrc from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'\n" +
+      'const styles = `background: url(${imgBackgroundCowswapDarkmodeSrc}) no-repeat;`\n',
+  )
+
+  const transformedSameBasenameCollision = transformFile(
+    "import CowDark from '@cowprotocol/assets/images/404/swap/dark/cow.svg'\n" +
+      "import CowLight from '@cowprotocol/assets/images/404/swap/light/cow.svg'\n",
+  )
+  expectEqual(
+    'transform: avoids collisions for same filename in different folders',
+    transformedSameBasenameCollision,
+    "import imgCowDarkSrc from '@cowprotocol/assets/images/404/swap/dark/cow.svg'\n" +
+      "import imgCowLightSrc from '@cowprotocol/assets/images/404/swap/light/cow.svg'\n",
+  )
+
+  const transformedWalletAssets = transformFile(
+    "import CoinbaseWalletIcon from './api/assets/coinbase.svg'\n" +
+      "import MetaMaskLogo from './api/assets/metamask.png'\n" +
+      "import WalletConnectIcon from './api/assets/walletConnectIcon.svg'\n" +
+      '\n' +
+      'export { CoinbaseWalletIcon, WalletConnectIcon, MetaMaskLogo }\n',
+  )
+  expectEqual(
+    'transform: updates asset imports and export bindings in wallet assets re-export file',
+    transformedWalletAssets,
+    "import imgCoinbaseSrc from './api/assets/coinbase.svg'\n" +
+      "import imgMetamaskSrc from './api/assets/metamask.png'\n" +
+      "import iconWalletConnectSrc from './api/assets/walletConnectIcon.svg'\n" +
+      '\n' +
+      'export { imgCoinbaseSrc, iconWalletConnectSrc, imgMetamaskSrc }\n',
+  )
+
+
   console.log('')
   if (failures === 0) {
     console.log(`${CHECK} All tests passed`)

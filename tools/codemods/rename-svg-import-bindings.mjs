@@ -1,5 +1,5 @@
 /**
- * Rename default SVG import bindings to icon*Src / img*Src / svg*Src (outside string literals only).
+ * Rename default asset import bindings to icon*Src / img*Src / svg*Src (outside string literals only).
  * Prefix detection is filename-first, then path fallback, then default "img".
  * Run from repo root: node tools/codemods/rename-svg-import-bindings.mjs
  */
@@ -10,6 +10,16 @@ import { pathToFileURL } from 'node:url'
 
 // Generic words we strip from the semantic "tail" of the generated binding.
 const GENERIC_TAIL_WORDS = new Set(['icon', 'img', 'image', 'svg', 'logo', 'illustration', 'asset', 'assets'])
+// Common path words that should not be used as collision disambiguators.
+const GENERIC_PATH_WORDS = new Set([
+  ...GENERIC_TAIL_WORDS,
+  'src',
+  'public',
+  'static',
+  'media',
+  'file',
+  'files',
+])
 
 // Converts SCREAMING_SNAKE_CASE-like names into camelCase.
 // Example: COW_ICON -> cowIcon
@@ -35,7 +45,7 @@ export function splitWords(value) {
 // Extract the filename segment without ".svg".
 export function filenameNoExt(assetPath) {
   const file = assetPath.split('/').pop() || assetPath
-  return file.replace(/\.svg$/i, '')
+  return file.replace(/\.(svg|png|jpe?g|webp|gif)$/i, '')
 }
 
 // Turn words into PascalCase tail.
@@ -59,7 +69,7 @@ export function prefixFromAssetPath(assetPath) {
   if (filePrefix) return filePrefix
 
   // 2) Fallback to full path (directory names like images/icons/svg).
-  const pathPrefix = prefixFromWords(splitWords(assetPath.replace(/\.svg$/i, '')))
+  const pathPrefix = prefixFromWords(splitWords(assetPath.replace(/\.(svg|png|jpe?g|webp|gif)$/i, '')))
   if (pathPrefix) return pathPrefix
 
   // 3) Final fallback when no explicit hint is found.
@@ -108,6 +118,67 @@ export function legacyToNew(name, assetPath) {
   return candidate
 }
 
+// Produce candidate words from nearest parent directories first.
+// Example: /a/b/dark/cow.svg -> ['dark', 'b', 'a'] (generic words removed)
+export function disambiguationWordsFromPath(assetPath) {
+  const noExt = assetPath.replace(/\.(svg|png|jpe?g|webp|gif)$/i, '')
+  const parts = noExt.split('/').filter(Boolean)
+  const dirParts = parts.slice(0, -1)
+
+  const words = []
+  for (let i = dirParts.length - 1; i >= 0; i--) {
+    const segmentWords = splitWords(dirParts[i]).filter((w) => !GENERIC_PATH_WORDS.has(w))
+    for (const w of segmentWords) words.push(w)
+  }
+
+  return words
+}
+
+// Ensure generated binding is unique within a file.
+// On conflict, append nearest-path qualifiers (Dark/Light/...) before fallback numeric suffix.
+export function makeUniqueBinding(baseName, assetPath, usedNames, forceQualifier = false) {
+  if (!forceQualifier && !usedNames.has(baseName)) return baseName
+
+  const m = baseName.match(/^(icon|img|svg)([A-Za-z0-9]+)Src$/)
+  if (!m) {
+    if (!forceQualifier) {
+      let i = 2
+      let candidate = `${baseName}${i}`
+      while (usedNames.has(candidate)) {
+        i++
+        candidate = `${baseName}${i}`
+      }
+      return candidate
+    }
+    // If qualifier is forced but base format is unexpected, fall through to numeric suffix.
+    let i = 2
+    let candidate = `${baseName}${i}`
+    while (usedNames.has(candidate)) {
+      i++
+      candidate = `${baseName}${i}`
+    }
+    return candidate
+  }
+
+  const [, prefix, tail] = m
+  const tailWords = new Set(splitWords(tail))
+  const disambiguationWords = disambiguationWordsFromPath(assetPath)
+
+  for (const w of disambiguationWords) {
+    if (tailWords.has(w)) continue
+    const candidate = `${prefix}${tail}${camelCaseToPascalFirst(w)}Src`
+    if (!usedNames.has(candidate)) return candidate
+  }
+
+  let i = 2
+  let candidate = `${prefix}${tail}${i}Src`
+  while (usedNames.has(candidate)) {
+    i++
+    candidate = `${prefix}${tail}${i}Src`
+  }
+  return candidate
+}
+
 /** Replace `oldName` with `newName` only outside strings / line & block comments */
 export function replaceIdentifierOutsideStrings(code, oldName, newName) {
   // Fast path for no-op replacements.
@@ -130,18 +201,26 @@ export function replaceIdentifierOutsideStrings(code, oldName, newName) {
     if (inString) {
       out += c
       // Special handling for template string interpolations: `${ ... }`
-      // We copy the entire expression verbatim without attempting replacements.
+      // We DO run replacement in the expression body (recursive call) while
+      // still treating the surrounding template string as a string context.
       if (inString === '`' && c === '$' && code[i + 1] === '{') {
         out += '{'
         i += 2
         let depth = 1
+        let expr = ''
         while (i < n && depth > 0) {
           const ch = code[i]
-          out += ch
           if (ch === '{') depth++
           else if (ch === '}') depth--
+          if (depth === 0) {
+            i++
+            break
+          }
+          expr += ch
           i++
         }
+        out += replaceIdentifierOutsideStrings(expr, oldName, newName)
+        out += '}'
         continue
       }
       // Handle escaped chars inside strings.
@@ -209,9 +288,68 @@ export function replaceIdentifierOutsideStrings(code, oldName, newName) {
 export function transformFile(content) {
   // Keep all scheduled symbol replacements, then apply them after imports are rewritten.
   const reassignments = []
+  const usedNames = new Set()
+  const assignedByOld = new Map()
 
-  function schedule(oldName, newName) {
-    if (oldName !== newName) reassignments.push({ oldName, newName })
+  // Pre-scan imports so we can force disambiguation when multiple SVG paths
+  // collapse to the same canonical binding (e.g. dark/cow.svg + light/cow.svg).
+  const imported = []
+  const importTail = '((?:\\r?\\n)+|$)'
+  const assetExt = String.raw`(?:svg|png|jpe?g|webp|gif)`
+  const captureAandB = new RegExp(
+    String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*,\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.${assetExt})\4${importTail}`,
+    'gm',
+  )
+  const captureDefaultAs = new RegExp(
+    String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.${assetExt})\3${importTail}`,
+    'gm',
+  )
+  const captureNamespace = new RegExp(
+    String.raw`^(\s*)import\s+\*\s+as\s+(\w+)\s+from\s+(['"])([^'"]+\.${assetExt})\3${importTail}`,
+    'gm',
+  )
+  const captureDefault = new RegExp(
+    String.raw`^(\s*)import\s+(?!type\s)(\w+)\s+from\s+(['"])([^'"]+\.${assetExt})\3${importTail}`,
+    'gm',
+  )
+
+  content.replace(captureAandB, (_, __, a, b, ___, path) => {
+    imported.push({ bind: a, path }, { bind: b, path })
+    return _
+  })
+  content.replace(captureDefaultAs, (_, __, bind, ___, path) => {
+    imported.push({ bind, path })
+    return _
+  })
+  content.replace(captureNamespace, (_, __, bind, ___, path) => {
+    imported.push({ bind, path })
+    return _
+  })
+  content.replace(captureDefault, (_, __, bind, ___, path) => {
+    imported.push({ bind, path })
+    return _
+  })
+
+  const baseToDistinctPaths = new Map()
+  for (const { bind, path } of imported) {
+    const base = legacyToNew(bind, path)
+    if (!baseToDistinctPaths.has(base)) baseToDistinctPaths.set(base, new Set())
+    baseToDistinctPaths.get(base).add(path)
+  }
+  const forcedQualifierBases = new Set(
+    [...baseToDistinctPaths.entries()].filter(([, paths]) => paths.size > 1).map(([base]) => base),
+  )
+
+  function schedule(oldName, newName, assetPath) {
+    if (assignedByOld.has(oldName)) return assignedByOld.get(oldName)
+
+    const forceQualifier = forcedQualifierBases.has(newName)
+    const uniqueName = makeUniqueBinding(newName, assetPath, usedNames, forceQualifier)
+    usedNames.add(uniqueName)
+    assignedByOld.set(oldName, uniqueName)
+
+    if (oldName !== uniqueName) reassignments.push({ oldName, newName: uniqueName })
+    return uniqueName
   }
 
   // Build transformed source incrementally.
@@ -219,50 +357,51 @@ export function transformFile(content) {
   // Preserve either blank line(s) or EOF after each matched import.
   const tail = '((?:\\r?\\n)+|$)'
 
-  // 1) import { default as A, default as B } from 'x.svg'  ->  import imgFooSrc from 'x.svg'
+  // 1) import { default as A, default as B } from 'x.asset'  ->  import imgFooSrc from 'x.asset'
   out = out.replace(
     new RegExp(
-      String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*,\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.svg)\4${tail}`,
+      String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*,\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.${assetExt})\4${tail}`,
       'gm',
     ),
     (_, indent, a, b, q, path, trail) => {
       const next = legacyToNew(a, path)
-      schedule(a, next)
-      schedule(b, next)
-      return `${indent}import ${next} from ${q}${path}${q}${trail}`
+      const assigned = schedule(a, next, path)
+      schedule(b, next, path)
+      // Keep the collapsed single import binding; both old aliases map to it.
+      return `${indent}import ${assigned} from ${q}${path}${q}${trail}`
     },
   )
 
-  // 2) import { default as A } from 'x.svg'  ->  import imgFooSrc from 'x.svg'
+  // 2) import { default as A } from 'x.asset'  ->  import imgFooSrc from 'x.asset'
   out = out.replace(
     new RegExp(
-      String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.svg)\3${tail}`,
+      String.raw`^(\s*)import\s+\{\s*default\s+as\s+(\w+)\s*\}\s+from\s+(['"])([^'"]+\.${assetExt})\3${tail}`,
       'gm',
     ),
     (_, indent, bind, q, path, trail) => {
       const next = legacyToNew(bind, path)
-      schedule(bind, next)
-      return `${indent}import ${next} from ${q}${path}${q}${trail}`
+      const assigned = schedule(bind, next, path)
+      return `${indent}import ${assigned} from ${q}${path}${q}${trail}`
     },
   )
 
-  // 3) import * as A from 'x.svg'  ->  keep style, only rename binding.
+  // 3) import * as A from 'x.asset'  ->  keep style, only rename binding.
   out = out.replace(
-    new RegExp(String.raw`^(\s*)import\s+\*\s+as\s+(\w+)\s+from\s+(['"])([^'"]+\.svg)\3${tail}`, 'gm'),
+    new RegExp(String.raw`^(\s*)import\s+\*\s+as\s+(\w+)\s+from\s+(['"])([^'"]+\.${assetExt})\3${tail}`, 'gm'),
     (_, indent, bind, q, path, trail) => {
       const next = legacyToNew(bind, path)
-      schedule(bind, next)
-      return `${indent}import * as ${next} from ${q}${path}${q}${trail}`
+      const assigned = schedule(bind, next, path)
+      return `${indent}import * as ${assigned} from ${q}${path}${q}${trail}`
     },
   )
 
-  // 4) import A from 'x.svg'  ->  rename default binding.
+  // 4) import A from 'x.asset'  ->  rename default binding.
   out = out.replace(
-    new RegExp(String.raw`^(\s*)import\s+(?!type\s)(\w+)\s+from\s+(['"])([^'"]+\.svg)\3${tail}`, 'gm'),
+    new RegExp(String.raw`^(\s*)import\s+(?!type\s)(\w+)\s+from\s+(['"])([^'"]+\.${assetExt})\3${tail}`, 'gm'),
     (_, indent, bind, q, path, trail) => {
       const next = legacyToNew(bind, path)
-      schedule(bind, next)
-      return `${indent}import ${next} from ${q}${path}${q}${trail}`
+      const assigned = schedule(bind, next, path)
+      return `${indent}import ${assigned} from ${q}${path}${q}${trail}`
     },
   )
 
@@ -291,10 +430,10 @@ export function main() {
     .split('\n')
     // Restrict to JS/TS source-like files.
     .filter((f) => /\.(tsx|ts|jsx|js|mts)$/.test(f))
-    // Keep only files that contain an .svg import-like string.
+    // Keep only files that contain a supported asset import-like string.
     .filter((f) => {
       try {
-        return /\.svg['"]/.test(readFileSync(f, 'utf8'))
+        return /\.(svg|png|jpe?g|webp|gif)['"]/.test(readFileSync(f, 'utf8'))
       } catch {
         // Ignore unreadable files defensively.
         return false
