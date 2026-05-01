@@ -1,4 +1,4 @@
-import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, shortenOrderId } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 
@@ -16,10 +16,7 @@ export function IdField({ id, chainId }: Props) {
 
   return (
     <styledEl.Value>
-      <ExternalLink href={activityUrl || ''}>
-        <span>{id.slice(0, 8)}</span>
-        <span>↗</span>
-      </ExternalLink>
+      <ExternalLink href={activityUrl || ''}>{shortenOrderId(id)} ↗</ExternalLink>
     </styledEl.Value>
   )
 }

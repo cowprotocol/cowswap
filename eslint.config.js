@@ -340,7 +340,8 @@ module.exports = [
           paths: [
             {
               name: 'cowswap-frontend/modules',
-              message: 'Do not import from modules inside common dir.',
+              message:
+                'common/** must stay module-agnostic. Move domain logic into modules/<domain> or extract shared logic into common/lib.',
             },
           ],
           patterns: ['modules/*'],

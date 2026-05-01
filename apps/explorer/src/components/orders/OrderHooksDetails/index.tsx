@@ -4,7 +4,7 @@ import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 
 import { HookItem } from './HookItem'
-import { HooksList, Wrapper } from './styled'
+import { HooksList } from './styled'
 
 import { useAppData } from '../../../hooks/useAppData'
 
@@ -50,21 +50,19 @@ interface HooksInfoProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function HooksInfo({ data, title }: HooksInfoProps) {
   return (
-    <Wrapper>
-      <div>
-        <h3>
-          {title} ({data.length})
-        </h3>
-        <HooksList>
-          {data.map((item, index) => (
-            <HookItem
-              key={`${item.hook.callData}${item.hook.target}${item.hook.gasLimit}`}
-              item={item}
-              number={index + 1}
-            />
-          ))}
-        </HooksList>
-      </div>
-    </Wrapper>
+    <div>
+      <h3>
+        {title} ({data.length})
+      </h3>
+      <HooksList>
+        {data.map((item, index) => (
+          <HookItem
+            key={`${item.hook.callData}${item.hook.target}${item.hook.gasLimit}`}
+            item={item}
+            number={index + 1}
+          />
+        ))}
+      </HooksList>
+    </div>
   )
 }
