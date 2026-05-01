@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { connect, getConnection, reconnect } from '@wagmi/core'
-import { type Connector, useConnection, useConnectors, useDisconnect } from 'wagmi'
+import { type Connector, useConnection, useConnectors } from 'wagmi'
 
 import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
 
@@ -77,7 +77,6 @@ async function connectSafeInIframe(
 export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps): ReactNode {
   const { connector: currentConnector, isConnected } = useConnection()
   const connectors = useConnectors()
-  const { mutateAsync: disconnect } = useDisconnect()
   const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
   const isConnectingToSafe = useRef(false)
 
@@ -101,9 +100,14 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     if (!isInSafeSdkContext) return
     if (!currentConnector || isSafeConnector(currentConnector)) return
 
-    isConnectingToSafe.current = false
-    void disconnect().catch(() => {})
-  }, [currentConnector, isInSafeSdkContext, disconnect])
+    // Write the shimDisconnect flag directly instead of calling disconnect().
+    // wagmi's disconnect() calls wallet_revokePermissions on MetaMask, which revokes
+    // permissions for the entire localhost:3000 origin — not just this iframe — causing
+    // the browser tab at the same origin to lose its wallet connection.
+    // Setting the storage flag is sufficient to prevent reconnection on next load;
+    // the following effect (connectSafeInIframe) will then take over as the active connection.
+    void config.storage?.setItem(`${currentConnector.id}.disconnected`, true)
+  }, [currentConnector, isInSafeSdkContext])
 
   useEffect(() => {
     if (!isEmbeddedApp()) return
