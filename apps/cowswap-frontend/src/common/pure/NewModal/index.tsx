@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback } from 'react'
 import { Command } from '@cowprotocol/types'
 import { BackButton, Media, UI } from '@cowprotocol/ui'
 
-import CLOSE_ICON from 'assets/icon/x.svg'
+import iconXSrc from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -182,7 +182,7 @@ export function NewModal({
             {title}{' '}
             {modalMode && (
               <IconX onClick={onDismissCallback}>
-                <SVG src={CLOSE_ICON} />
+                <SVG src={iconXSrc} />
               </IconX>
             )}
           </Heading>

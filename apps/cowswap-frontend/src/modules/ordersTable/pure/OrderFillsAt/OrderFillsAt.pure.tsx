@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import imgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import svgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Currency, Price } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -90,7 +90,7 @@ export function OrderFillsAt({
           }
         >
           <styledEl.SigningDisplay>
-            <SVG src={imgOrderPresignaturePendingSrc} description={t`signing`} />
+            <SVG src={svgOrderPresignaturePendingSrc} description={t`signing`} />
             <Trans>Please sign order</Trans>
           </styledEl.SigningDisplay>
         </HoverTooltip>

@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
-import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
-import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
+import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
+import iconLocked2Src from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
@@ -72,12 +72,12 @@ export function AffiliateTraderCodeInfo(): ReactNode {
                 </ExpiredBadge>
               ) : isLinked ? (
                 <LinkedBadge>
-                  <SVG src={LockedIcon} width={16} height={16} />
+                  <SVG src={iconLocked2Src} width={16} height={16} />
                   <Trans>Linked</Trans>
                 </LinkedBadge>
               ) : (
                 <ValidBadge>
-                  <SVG src={CheckIcon} />
+                  <SVG src={svgOrderCheckSrc} />
                   <Trans>Valid</Trans>
                 </ValidBadge>
               )}

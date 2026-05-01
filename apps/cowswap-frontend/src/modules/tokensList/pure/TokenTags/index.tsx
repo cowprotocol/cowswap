@@ -6,7 +6,7 @@ import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
-import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
+import iconGasFreeSrc from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -22,7 +22,7 @@ const APP_TOKEN_TAGS: TokenListTags = {
   },
   'gas-free': {
     name: msg`Gas-free`,
-    icon: ICON_GAS_FREE,
+    icon: iconGasFreeSrc,
     description: msg`This token supports gas-free approvals. Enjoy! 🐮`,
     id: '1',
     color: StatusColorVariant.Success,

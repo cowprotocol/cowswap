@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import LockedIcon from '@cowprotocol/assets/images/icon-locked.svg'
-import UnlockedIcon from '@cowprotocol/assets/images/icon-unlocked.svg'
-import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
+import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
+import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
+import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -241,7 +241,7 @@ export function RateInput() {
                 placement="top-start"
               >
                 <styledEl.LockIcon onClick={handleTogglePriceLock}>
-                  <SVG src={limitPriceLocked ? LockedIcon : UnlockedIcon} width={12} height={10} />
+                  <SVG src={limitPriceLocked ? iconLockedSrc : iconUnlockedSrc} width={12} height={10} />
                 </styledEl.LockIcon>
               </HoverTooltip>
             }
@@ -282,7 +282,7 @@ export function RateInput() {
               </styledEl.ActiveCurrency>
 
               <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
-                <SVG src={UsdIcon} />
+                <SVG src={iconUsdSrc} />
               </styledEl.UsdButton>
             </styledEl.CurrencyToggleGroup>
           )}
