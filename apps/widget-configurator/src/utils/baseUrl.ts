@@ -26,11 +26,11 @@ export function getBaseUrl(): string {
 export function getEnvColor(brandColor: string, url: string): string {
   if (url.startsWith('http://localhost:')) return brandColor
 
-  if (url.includes(VERCEL_PREVIEW_URL_SUFFIX)) return 'darkred'
+  if (url.includes(VERCEL_PREVIEW_URL_SUFFIX)) return 'green'
 
   if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'orangered'
 
-  return 'green'
+  return 'darkred'
 }
 
 export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' {

@@ -95,6 +95,23 @@ export function Configurator({ title }: { title: string }): ReactNode {
     }
   }, [setIsWidgetReady])
 
+  const previousBaseUrlRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!params) return
+
+    if (previousBaseUrlRef.current === null) {
+      previousBaseUrlRef.current = params.baseUrl || null
+      return
+    }
+
+    if (previousBaseUrlRef.current !== params.baseUrl) {
+      previousBaseUrlRef.current = params.baseUrl || null
+      setIsWidgetReady(false)
+      setWidgetKey((k) => k + 1)
+    }
+  }, [params, setIsWidgetReady])
+
   // Old Widget Apps won't have the ready event, so we need a timeout:
 
   useEffect(() => {

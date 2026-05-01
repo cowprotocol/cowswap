@@ -5,12 +5,9 @@ import type * as CSS from 'csstype'
  * Values are stringified; callers should use explicit units in JSON (e.g. `"100px"`).
  */
 export function assignElementStyles(element: HTMLElement, styles: CSS.Properties | undefined): void {
-  if (!styles) {
-    return
-  }
+  element.removeAttribute('style')
 
-  if (Object.keys(styles).length === 0) {
-    element.removeAttribute('style')
+  if (!styles) {
     return
   }
 

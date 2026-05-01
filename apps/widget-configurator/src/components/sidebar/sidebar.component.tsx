@@ -36,6 +36,7 @@ import { AccordionSection } from '../ui/Accordion/AccordionSection'
 import { BooleanSwitchControl } from '../ui/controls/BooleanSwitch/BooleanSwitchControl'
 import { CurrencyInputControl } from '../ui/controls/CurrencyInput/CurrencyInputControl'
 import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
+import { PresetOption, PresetsButtons } from '../ui/controls/PresetsButtons/PresetsButtons.component'
 import { CurrentTradeTypeControl } from '../ui/controls/Select/CurrentTradeTypeControl'
 import { LocaleControl } from '../ui/controls/Select/LocaleControl'
 import { ModeControl } from '../ui/controls/Select/ModeControl'
@@ -61,6 +62,20 @@ export interface SidebarProps {
   isWidgetSyncPending: boolean
   onForceWidgetReload: () => void
 }
+
+const BASE_URL_PRESETS_OPTIONS: PresetOption[] = [
+  { label: 'Local', value: 'http://localhost:3000' },
+  { label: 'Dev', value: 'https://dev.swap.cow.fi' },
+  { label: 'Production', value: 'https://swap.cow.fi' },
+].map((presetOption) => {
+  return {
+    ...presetOption,
+    label:
+      presetOption.value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
+        ? `${presetOption.label} (default)`
+        : presetOption.label,
+  }
+})
 
 // eslint-disable-next-line max-lines-per-function
 export function Sidebar({
@@ -277,10 +292,10 @@ export function Sidebar({
 
       autoResizeEnabled,
       showIframeOutline,
-      iframeStyle: iframeStyleJson.mergedValue,
-      appWrapperStyle: appWrapperStyleJson.mergedValue,
-      bodyWrapperStyle: bodyWrapperStyleJson.mergedValue,
-      cardStyle: cardStyleJson.mergedValue,
+      iframeStyle: iframeStyleJson.parsedJsonValue,
+      appWrapperStyle: appWrapperStyleJson.parsedJsonValue,
+      bodyWrapperStyle: bodyWrapperStyleJson.parsedJsonValue,
+      cardStyle: cardStyleJson.parsedJsonValue,
 
       // Behavior:
 
@@ -316,7 +331,7 @@ export function Sidebar({
 
       baseUrl,
       enabledWidgetHooks,
-      rawParams: rawParamsJson.mergedValue,
+      rawParams: rawParamsJson.parsedJsonValue,
     }),
     [
       // Basics:
@@ -353,10 +368,10 @@ export function Sidebar({
 
       autoResizeEnabled,
       showIframeOutline,
-      iframeStyleJson.mergedValue,
-      appWrapperStyleJson.mergedValue,
-      bodyWrapperStyleJson.mergedValue,
-      cardStyleJson.mergedValue,
+      iframeStyleJson.parsedJsonValue,
+      appWrapperStyleJson.parsedJsonValue,
+      bodyWrapperStyleJson.parsedJsonValue,
+      cardStyleJson.parsedJsonValue,
 
       // Behavior:
 
@@ -392,7 +407,7 @@ export function Sidebar({
 
       baseUrl,
       enabledWidgetHooks,
-      rawParamsJson.mergedValue,
+      rawParamsJson.parsedJsonValue,
     ],
   )
 
@@ -414,13 +429,15 @@ export function Sidebar({
   - [x] Add loader to widget, also when reloading / updating.
   - [x] Add update/reload widget button if needed.
   - [x] Make widget theme selector work.
+  - [x] Create PresetsButtons component.
+  - [x] Add presets for baseUrl and layout.
+  - [x] Fix sticky style issue.
 
-  - [ ] Fix sticky style issue.
+  - [ ] Add toggle to disable scrollbars.
   - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Add name to all fields.
   - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
-  - [ ] Add presets for baseUrl and layout.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
 
   */
@@ -508,6 +525,7 @@ export function Sidebar({
                 tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
               />
               <AppearanceStyleControls
+                paperBackgroundColor={colorPalette.paper || defaultPalette.paper}
                 iframeStyleJson={iframeStyleJson}
                 onIframeStyleJson={setIframeStyleJson}
                 appWrapperStyleJson={appWrapperStyleJson}
@@ -616,6 +634,16 @@ export function Sidebar({
               expanded={expandedSection === 'Advanced'}
               onChange={toggleSection('Advanced')}
             >
+              <PresetsButtons
+                presets={BASE_URL_PRESETS_OPTIONS}
+                onPresetClick={(value) => {
+                  if (value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL) {
+                    setBaseUrl(null)
+                  } else {
+                    setBaseUrl(value)
+                  }
+                }}
+              />
               <TextInput
                 name="baseUrl"
                 label="Widget App URL"
@@ -629,7 +657,8 @@ export function Sidebar({
                 label="Raw JSON params"
                 name="rawParams"
                 value={rawParamsJson.rawJsonValue}
-                onChange={(_name, value) => setRawParamsJson(null, value)}
+                onChange={(_name, value) => setRawParamsJson(value)}
+                error={rawParamsJson.error}
                 helperText={jsonHelperText(rawParamsJson.error)}
               />
             </AccordionSection>

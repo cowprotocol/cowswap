@@ -1,17 +1,139 @@
-import type { ChangeEvent, ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import { jsonHelperText } from '../../utils/jsonFieldParsing'
+import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
+import { PresetOption, PresetsButtons } from '../ui/controls/PresetsButtons/PresetsButtons.component'
 
 import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
 import type * as CSS from 'csstype'
 
+const presetsOptions = [
+  {
+    label: 'None',
+    value: 'none',
+  },
+  {
+    label: 'Responsive block',
+    value: 'responsive-block',
+  },
+  {
+    label: 'Full-screen',
+    value: 'full-screen',
+  },
+  {
+    label: 'Bottom right popup',
+    value: 'bottom-right-popup',
+  },
+  {
+    label: 'Right sidebar',
+    value: 'right-sidebar',
+  },
+  {
+    label: 'Modal',
+    value: 'modal',
+  },
+] as const satisfies PresetOption[]
+
+type PresetKey = (typeof presetsOptions)[number]['value']
+
+type PresetElement = 'iframe' | 'appWrapper' | 'bodyWrapper' | 'card'
+
+function getPresets(paperBackgroundColor: string): Record<PresetKey, Partial<Record<PresetElement, CSS.Properties>>> {
+  return {
+    none: {},
+    'responsive-block': {
+      iframe: {
+        width: '100%',
+        height: 'var(--dynamicHeight)',
+      },
+    },
+    'full-screen': {
+      iframe: {
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+      },
+    },
+    'bottom-right-popup': {
+      iframe: {
+        position: 'absolute',
+        bottom: '24px',
+        right: '24px',
+        boxShadow: '0 0 32px 0 black',
+        borderRadius: '8px',
+        width: '420px',
+        maxHeight: 'calc(100lvh - 48px)',
+        height: 'var(--dynamicHeight)',
+        backgroundColor: paperBackgroundColor,
+      },
+      bodyWrapper: {
+        padding: '0',
+      },
+      card: {
+        borderRadius: '0',
+      },
+    },
+    'right-sidebar': {
+      iframe: {
+        position: 'absolute',
+        top: '0',
+        bottom: '0',
+        right: '0',
+        boxShadow: '0 0 32px 0 black',
+        borderRadius: '0',
+        width: '420px',
+        height: '100dvh',
+        backgroundColor: paperBackgroundColor,
+      },
+      bodyWrapper: {
+        padding: '0',
+      },
+      card: {
+        borderRadius: '0',
+      },
+    },
+    modal: {
+      iframe: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0 0 32px 0 black',
+        borderRadius: '8px',
+        width: '800px',
+        height: '600px',
+        minWidth: '75%',
+        minHeight: 'var(--dynamicHeight)',
+        maxWidth: '100%',
+        maxHeight: '100%',
+        backgroundColor: paperBackgroundColor,
+      },
+      bodyWrapper: {
+        padding: '0',
+      },
+      card: {
+        borderRadius: '0',
+      },
+    },
+  }
+}
+
+function applyPresetStyle(onJsonStateChange: OnJsonStateChange, style: CSS.Properties | undefined): void {
+  if (style) {
+    onJsonStateChange(JSON.stringify(style, null, 2))
+    return
+  }
+
+  onJsonStateChange(null)
+}
+
 export interface AppearanceStyleControlsProps {
+  paperBackgroundColor: string
   iframeStyleJson: JsonState<CSS.Properties>
   onIframeStyleJson: OnJsonStateChange
   appWrapperStyleJson: JsonState<CSS.Properties>
@@ -22,8 +144,8 @@ export interface AppearanceStyleControlsProps {
   onCardStyleJson: OnJsonStateChange
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function AppearanceStyleControls({
+  paperBackgroundColor,
   iframeStyleJson,
   onIframeStyleJson,
   appWrapperStyleJson,
@@ -33,227 +155,61 @@ export function AppearanceStyleControls({
   cardStyleJson,
   onCardStyleJson,
 }: AppearanceStyleControlsProps): ReactNode {
-  // Individual fields change handlers:
-  const handleIframeFieldChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    onIframeStyleJson(e.target.name.split('.')[1] as keyof CSS.Properties, e.target.value)
+  const presets = useMemo(() => getPresets(paperBackgroundColor), [paperBackgroundColor])
+
+  const handleIframeJsonChange = (_name: string, value: string | null): void => {
+    onIframeStyleJson(value)
   }
-  const handleAppWrapperFieldChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    onAppWrapperStyleJson(e.target.name.split('.')[1] as keyof CSS.Properties, e.target.value)
+  const handleBodyWrapperJsonChange = (_name: string, value: string | null): void => {
+    onBodyWrapperStyleJson(value)
   }
-  const handleBodyWrapperFieldChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    onBodyWrapperStyleJson(e.target.name.split('.')[1] as keyof CSS.Properties, e.target.value)
+  const handleAppWrapperJsonChange = (_name: string, value: string | null): void => {
+    onAppWrapperStyleJson(value)
   }
-  const handleCardFieldChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    onCardStyleJson(e.target.name.split('.')[1] as keyof CSS.Properties, e.target.value)
+  const handleCardJsonChange = (_name: string, value: string | null): void => {
+    onCardStyleJson(value)
   }
 
-  // JSON fields change handlers:
-  const handleIframeJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    onIframeStyleJson(null, e.target.value)
-  }
-  const handleBodyWrapperJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    onBodyWrapperStyleJson(null, e.target.value)
-  }
-  const handleAppWrapperJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    onAppWrapperStyleJson(null, e.target.value)
-  }
-  const handleCardJsonChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    onCardStyleJson(null, e.target.value)
-  }
+  const handlePresetClick = (value: string): void => {
+    const preset = presets[value as PresetKey]
 
-  const handlePresentNone = (): void => {
-    onIframeStyleJson(null, JSON.stringify({}))
-  }
-  const handlePresentBottomRightPopup = (): void => {
-    onIframeStyleJson(
-      null,
-      JSON.stringify(
-        {
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          boxShadow: '0 0 32px 0 black',
-          borderRadius: '8px',
-          width: '420px',
-          maxHeight: 'calc(100lvh - 48px)',
-        },
-        null,
-        2,
-      ),
-    )
-
-    onBodyWrapperStyleJson(
-      null,
-      JSON.stringify(
-        {
-          padding: '0',
-        },
-        null,
-        2,
-      ),
-    )
-
-    onCardStyleJson(
-      null,
-      JSON.stringify(
-        {
-          borderRadius: '0',
-        },
-        null,
-        2,
-      ),
-    )
-  }
-  const handlePresentRightSidebar = (): void => {
-    onIframeStyleJson(
-      null,
-      JSON.stringify(
-        {
-          position: 'fixed',
-          top: '0',
-          bottom: '0',
-          right: '0',
-          boxShadow: '0 0 32px 0 black',
-          borderRadius: '0',
-          width: '420px',
-          height: '100dvh',
-        },
-        null,
-        2,
-      ),
-    )
-
-    onBodyWrapperStyleJson(
-      null,
-      JSON.stringify(
-        {
-          padding: '0',
-        },
-        null,
-        2,
-      ),
-    )
-
-    onCardStyleJson(
-      null,
-      JSON.stringify(
-        {
-          borderRadius: '0',
-        },
-        null,
-        2,
-      ),
-    )
-  }
-  const handlePresentModal = (): void => {
-    onIframeStyleJson(null, JSON.stringify({}))
-  }
-  const handlePresentFullScreen = (): void => {
-    onIframeStyleJson(null, JSON.stringify({}))
-  }
-  const handlePresentFullSizeBlock = (): void => {
-    onIframeStyleJson(null, JSON.stringify({}))
+    applyPresetStyle(onIframeStyleJson, preset?.iframe)
+    applyPresetStyle(onAppWrapperStyleJson, preset?.appWrapper)
+    applyPresetStyle(onBodyWrapperStyleJson, preset?.bodyWrapper)
+    applyPresetStyle(onCardStyleJson, preset?.card)
   }
 
   return (
     <Stack spacing={2.4}>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          Presents
+          Presets
         </Typography>
-
-        <Button variant="contained" color="primary" onClick={handlePresentNone}>
-          None
-        </Button>
-        <Button variant="contained" color="primary" onClick={handlePresentBottomRightPopup}>
-          Bottom right popup
-        </Button>
-        <Button variant="contained" color="primary" onClick={handlePresentRightSidebar}>
-          Right sidebar
-        </Button>
-        <Button variant="contained" color="primary" onClick={handlePresentModal}>
-          Modal
-        </Button>
-        <Button variant="contained" color="primary" onClick={handlePresentFullScreen}>
-          Full-screen
-        </Button>
-        <Button variant="contained" color="primary" onClick={handlePresentFullSizeBlock}>
-          Full-size block
-        </Button>
-
+        <PresetsButtons presets={presetsOptions} onPresetClick={handlePresetClick} />
+      </Box>
+      <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
           Iframe (host)
         </Typography>
-        <Stack spacing={1.2}>
-          <TextField
-            fullWidth
-            margin="dense"
-            name="iframe.boxShadow"
-            label="Iframe boxShadow"
-            value={iframeStyleJson.fields.boxShadow}
-            onChange={handleIframeFieldChange}
-            size="medium"
-            placeholder="e.g. 0 8px 24px rgba(0,0,0,0.12)"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            name="iframe.border"
-            label="Iframe border"
-            value={iframeStyleJson.fields.border}
-            onChange={handleIframeFieldChange}
-            size="medium"
-            placeholder="e.g. 1px solid rgba(0,0,0,0.08)"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            name="iframe.style"
-            label="Iframe styles (JSON)"
-            value={iframeStyleJson.rawJsonValue}
-            onChange={handleIframeJsonChange}
-            size="medium"
-            multiline
-            minRows={4}
-            error={iframeStyleJson.error}
-            helperText={jsonHelperText(iframeStyleJson.error)}
-          />
-        </Stack>
+        <JsonInput
+          label="Iframe styles (JSON)"
+          name="iframe.style"
+          value={iframeStyleJson.rawJsonValue}
+          onChange={handleIframeJsonChange}
+          error={iframeStyleJson.error}
+          helperText={jsonHelperText(iframeStyleJson.error)}
+        />
       </Box>
 
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
           #appWrapper (inside iframe)
         </Typography>
-        <TextField
-          fullWidth
-          margin="dense"
-          name="appWrapper.boxShadow"
-          label="App wrapper boxShadow"
-          value={appWrapperStyleJson.fields.boxShadow}
-          onChange={handleAppWrapperFieldChange}
-          size="medium"
-          placeholder="Host-level wrapper style inside iframe app"
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="appWrapper.border"
-          label="App wrapper border"
-          value={appWrapperStyleJson.fields.border}
-          onChange={handleAppWrapperFieldChange}
-          size="medium"
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="appWrapper.style"
+        <JsonInput
           label="App wrapper styles (JSON)"
+          name="appWrapper.style"
           value={appWrapperStyleJson.rawJsonValue}
           onChange={handleAppWrapperJsonChange}
-          size="medium"
-          multiline
-          minRows={4}
           error={appWrapperStyleJson.error}
           helperText={jsonHelperText(appWrapperStyleJson.error)}
         />
@@ -263,35 +219,11 @@ export function AppearanceStyleControls({
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
           #bodyWrapper (inside iframe)
         </Typography>
-        <TextField
-          fullWidth
-          margin="dense"
-          name="bodyWrapper.boxShadow"
-          label="Body wrapper boxShadow"
-          value={bodyWrapperStyleJson.fields.boxShadow}
-          onChange={handleBodyWrapperFieldChange}
-          size="medium"
-          placeholder="Overrides theme card shadow when set"
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="bodyWrapper.border"
-          label="Body wrapper border"
-          value={bodyWrapperStyleJson.fields.border}
-          onChange={handleBodyWrapperFieldChange}
-          size="medium"
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          name="bodyWrapper.style"
+        <JsonInput
           label="Body wrapper styles (JSON)"
+          name="bodyWrapper.style"
           value={bodyWrapperStyleJson.rawJsonValue}
           onChange={handleBodyWrapperJsonChange}
-          size="medium"
-          multiline
-          minRows={4}
           error={bodyWrapperStyleJson.error}
           helperText={jsonHelperText(bodyWrapperStyleJson.error)}
         />
@@ -301,40 +233,14 @@ export function AppearanceStyleControls({
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
           #card (inside iframe)
         </Typography>
-        <Stack spacing={1.2}>
-          <TextField
-            fullWidth
-            margin="dense"
-            name="card.boxShadow"
-            label="Card boxShadow"
-            value={cardStyleJson.fields.boxShadow}
-            onChange={handleCardFieldChange}
-            size="medium"
-            placeholder="Overrides theme card shadow when set"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            name="card.border"
-            label="Card border"
-            value={cardStyleJson.fields.border}
-            onChange={handleCardFieldChange}
-            size="medium"
-          />
-          <TextField
-            fullWidth
-            margin="dense"
-            name="card.style"
-            label="Card styles (JSON)"
-            value={cardStyleJson.rawJsonValue}
-            onChange={handleCardJsonChange}
-            size="medium"
-            multiline
-            minRows={4}
-            error={cardStyleJson.error}
-            helperText={jsonHelperText(cardStyleJson.error)}
-          />
-        </Stack>
+        <JsonInput
+          label="Card styles (JSON)"
+          name="card.style"
+          value={cardStyleJson.rawJsonValue}
+          onChange={handleCardJsonChange}
+          error={cardStyleJson.error}
+          helperText={jsonHelperText(cardStyleJson.error)}
+        />
       </Box>
     </Stack>
   )

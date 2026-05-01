@@ -2,7 +2,12 @@ import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { assignElementStyles } from './applyElementStyles'
-import { DEFAULT_WIDGET_PARAMS, WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
+import {
+  DEFAULT_WIDGET_PARAMS,
+  WIDGET_IFRAME_ALLOW,
+  WIDGET_IFRAME_REFERRER_POLICY,
+  WIDGET_IFRAME_SANDBOX,
+} from './cowSwapWidget.constants'
 import { deepMerge } from './deepMerge'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -21,6 +26,8 @@ import {
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
+
+import type * as CSS from 'csstype'
 
 const noopHandler: CowSwapWidgetHandler = {
   iframe: document.createElement('iframe'),
@@ -47,11 +54,13 @@ export interface CowSwapWidgetHandler {
  * @param props - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
+
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
   const { params, provider: providerAux, listeners, onReady } = props
+
   let provider = providerAux
   let currentParams = deepMerge(params, DEFAULT_WIDGET_PARAMS)
-  let prevHeight = currentParams.iframeStyle?.height
+  let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
 
@@ -79,22 +88,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
 
   // 4. Handle widget height changes (re-registered when params change so defaults/maxHeight stay in sync)
-  let heightChangeListeners: WindowListener[] = listenToHeightChanges(
-    iframe,
-    iframeOrigin,
-    currentParams.height,
-    currentParams.maxHeight,
-  )
-
-  function refreshHeightChangeListeners(): void {
-    heightChangeListeners.forEach((listener) => window.removeEventListener('message', listener))
-    heightChangeListeners = listenToHeightChanges(
-      iframe,
-      iframeOrigin,
-      currentParams.height,
-      currentParams.maxHeight,
-    )
-  }
+  const heightChangeListeners: WindowListener[] = listenToHeightChanges(iframe, iframeOrigin, (nextHeight) => {
+    lastDynamicHeight = nextHeight
+  })
 
   // 5. Intercept deeplinks navigation in the iframe
   let interceptDeepLinksListener: WindowListener | null = null
@@ -146,16 +142,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   return {
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
-      const nextHeight = newParams.iframeStyle?.height ?? prevHeight
-      currentParams = deepMerge(
-        { ...newParams, iframeStyle: { ...newParams.iframeStyle, height: nextHeight } },
-        DEFAULT_WIDGET_PARAMS,
-      )
-      prevHeight = currentParams.iframeStyle?.height
+      currentParams = deepMerge(newParams, DEFAULT_WIDGET_PARAMS)
 
-      updateIframeElement(iframe, currentParams)
+      updateIframeElement(iframe, currentParams.iframeStyle, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
-      refreshHeightChangeListeners()
       updateInterceptDeepLinks()
       updateWidgetHooks()
     },
@@ -237,23 +227,20 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
 
-  updateIframeElement(iframe, params)
+  updateIframeElement(iframe, params.iframeStyle)
 
   return iframe
 }
 
-function updateIframeElement(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
-  assignElementStyles(iframe, params.iframeStyle)
-}
+function updateIframeElement(
+  iframe: HTMLIFrameElement,
+  iframeStyle?: CSS.Properties,
+  lastDynamicHeight?: string,
+): void {
+  assignElementStyles(iframe, iframeStyle)
 
-/*
-function getIframeSizingConfig(params: CowSwapWidgetParams): IframeSizingConfig {
-  return {
-    defaultHeight: params.iframeStyle?.height || DEFAULT_WIDGET_PARAMS.iframeStyle.height,
-    maxHeight: params.maxHeight,
-  }
+  if (lastDynamicHeight) iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }
-*/
 
 function getIframeOrigin(iframe: HTMLIFrameElement): string {
   return new URL(iframe.src).origin
@@ -377,7 +364,7 @@ function isAllowedWindowOpenUrl(url: string): boolean {
   }
 }
 
-const DEFAULT_HEIGHT = '100%'
+const DYNAMIC_HEIGHT_CSS_VAR = '--dynamicHeight'
 
 const HEIGHT_THRESHOLD = 0
 
@@ -391,8 +378,7 @@ const HEIGHT_THRESHOLD = 0
 function listenToHeightChanges(
   iframe: HTMLIFrameElement,
   iframeOrigin: string,
-  defaultHeight = DEFAULT_HEIGHT,
-  maxHeight?: number,
+  setLastDynamicHeight: (nextHeight: string) => void,
 ): WindowListener[] {
   if (!iframe.contentWindow) return []
 
@@ -402,9 +388,9 @@ function listenToHeightChanges(
       iframe.contentWindow,
       WidgetMethodsEmit.UPDATE_HEIGHT,
       (data) => {
-        const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
-
-        iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
+        const nextHeight = `${(data?.height ?? 0) + HEIGHT_THRESHOLD}px`
+        iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, nextHeight)
+        setLastDynamicHeight(nextHeight)
       },
       iframeOrigin,
     ),
@@ -412,8 +398,9 @@ function listenToHeightChanges(
       window,
       iframe.contentWindow,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
-      ({ isUpToSmall }) => {
-        iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
+      () => {
+        iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, '100dvh')
+        setLastDynamicHeight('100dvh')
       },
       iframeOrigin,
     ),
