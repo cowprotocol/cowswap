@@ -88,6 +88,7 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   const connectorsRef = useRef(connectors)
   const isConnectedRef = useRef(isConnected)
   const currentConnectorRef = useRef(currentConnector)
+  const isInSafeSdkContextRef = useRef(isInSafeSdkContext)
 
   useEffect(() => {
     safeRef.current = safe
@@ -95,7 +96,8 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     connectorsRef.current = connectors
     isConnectedRef.current = isConnected
     currentConnectorRef.current = currentConnector
-  }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector])
+    isInSafeSdkContextRef.current = isInSafeSdkContext
+  }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector, isInSafeSdkContext])
 
   useEffect(() => {
     if (!isInSafeSdkContext) return
@@ -108,8 +110,9 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   useEffect(() => {
     if (!isEmbeddedApp()) return
     if (isConnected && isSafeConnector(currentConnector)) return
-    // Widget connector is already connected — the parent dapp provides the wallet, don't override it
-    if (isConnected && isInjectedWidget()) return
+    // In widget context without Safe SDK: wallet is provided by the parent dapp via WidgetEthereumProvider.
+    // Skip Safe auto-connect entirely to avoid competing with the COW_WIDGET_CONNECTOR_ID connection.
+    if (isInjectedWidget() && !isInSafeSdkContext) return
     if (isConnectingToSafe.current) return
 
     isConnectingToSafe.current = true
@@ -118,7 +121,7 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
       .finally(() => {
         isConnectingToSafe.current = false
       })
-  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connectors, safe])
+  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connectors, safe, isInSafeSdkContext])
 
   useEffect(() => {
     if (!isEmbeddedApp()) return
@@ -126,6 +129,7 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     const reconnectSafeIfNeeded = (): void => {
       if (document.visibilityState === 'hidden') return
       if (isConnectedRef.current && isSafeConnector(currentConnectorRef.current)) return
+      if (isInjectedWidget() && !isInSafeSdkContextRef.current) return
       if (isConnectingToSafe.current) return
 
       isConnectingToSafe.current = true
