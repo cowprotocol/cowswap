@@ -7,7 +7,7 @@ import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 import { connect, getConnection, reconnect } from '@wagmi/core'
 import { type Connector, useConnection, useConnectors, useDisconnect } from 'wagmi'
 
-import { config } from './config'
+import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
 
 import { ConnectionType } from '../api/types'
 
@@ -16,7 +16,7 @@ interface SafeConnectionHandlerProps {
 }
 
 function isEmbeddedApp(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
+  return IS_CROSS_ORIGIN_IFRAME
 }
 
 function isSupportedChainId(chainId: number): chainId is SupportedChainId {

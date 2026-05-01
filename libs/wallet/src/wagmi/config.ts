@@ -14,8 +14,23 @@ import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
 type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
 
+// Detect if we're embedded in a cross-origin iframe (e.g. Safe).
+// Same-origin iframes (browser extensions like Loom, 1Password) can access parent.location —
+// only cross-origin iframes (Safe) throw a SecurityError.
+// Evaluated once at module load to avoid inconsistencies from extensions toggling iframe state.
+export const IS_CROSS_ORIGIN_IFRAME = (() => {
+  if (typeof window === 'undefined' || window.self === window.top) return false
+
+  try {
+    void window.parent.location.href
+    return false
+  } catch {
+    return true
+  }
+})()
+
 function isEmbeddedInIframe(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
+  return IS_CROSS_ORIGIN_IFRAME
 }
 
 function getConnectors(): ConnectorInstance[] {
@@ -47,9 +62,51 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
   }
 }
 
+const isIframe = isEmbeddedInIframe()
+
+// On the regular tab, remove @appkit/connection_status if it's "disconnected".
+// The Safe iframe (or a previous failed connection) may have left this, preventing new connections.
+if (typeof window !== 'undefined' && !isIframe) {
+  if (localStorage.getItem('@appkit/connection_status') === 'disconnected') {
+    localStorage.removeItem('@appkit/connection_status')
+  }
+}
+
+// In Safe iframe, redirect AppKit's @appkit/* localStorage operations to sessionStorage.
+// This prevents the iframe from polluting the regular tab's AppKit state (wallet_id, connection_status, etc.)
+// which causes the regular tab to fail when connecting MetaMask.
+// Uses IS_CROSS_ORIGIN_IFRAME (not window.self !== window.top) so browser extensions like Loom
+// don't trigger this redirect.
+if (typeof window !== 'undefined' && isIframe) {
+  const origSetItem = localStorage.setItem.bind(localStorage)
+  const origGetItem = localStorage.getItem.bind(localStorage)
+  const origRemoveItem = localStorage.removeItem.bind(localStorage)
+
+  localStorage.setItem = (key: string, value: string) => {
+    if (key.startsWith('@appkit/')) {
+      sessionStorage.setItem(key, value)
+    } else {
+      origSetItem(key, value)
+    }
+  }
+  localStorage.getItem = (key: string): string | null => {
+    if (key.startsWith('@appkit/')) {
+      return sessionStorage.getItem(key)
+    }
+    return origGetItem(key)
+  }
+  localStorage.removeItem = (key: string) => {
+    if (key.startsWith('@appkit/')) {
+      sessionStorage.removeItem(key)
+    } else {
+      origRemoveItem(key)
+    }
+  }
+}
+
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
-const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+const WAGMI_STORAGE_KEY = isIframe ? 'cowswap-wallet-safe' : 'cowswap-wallet'
 
 const storage =
   typeof window === 'undefined'
