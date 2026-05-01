@@ -3,27 +3,25 @@ import React from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeProviderType } from '@cowprotocol/sdk-bridging'
-import { Icon, UI, TruncatedText } from '@cowprotocol/ui'
 
-import { faHistory } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { AddressLink } from 'components/common/AddressLink'
-import { DateDisplay } from 'components/common/DateDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
-import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { HelpTooltip } from 'components/Tooltip'
-import { capitalize } from 'utils'
+import { AmountItem } from 'components/orders/DetailsTable/items/AmountItem'
+import { ExecutionTimeItem } from 'components/orders/DetailsTable/items/ExecutionTimeItem'
+import { ExpirationTimeItem } from 'components/orders/DetailsTable/items/ExpirationTimeItem'
+import { FromItem } from 'components/orders/DetailsTable/items/FromItem'
+import { StatusItem } from 'components/orders/DetailsTable/items/StatusItem'
+import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/SubmissionTimeItem'
+import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
+import { TypeItem } from 'components/orders/DetailsTable/items/TypeItem'
 
 import { Order } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-import { DetailsTableTooltips } from './detailsTableTooltips'
+import { OrderIdItem } from './items/OrderIdItem'
 import { TxHashItem } from './items/TxHashItem'
-import { LinkButton, WarningRow, Wrapper } from './styled'
+import { WarningRow } from './styled'
 
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
@@ -36,10 +34,9 @@ export interface BaseDetailsTableProps {
   children?: React.ReactNode
 }
 
-// Foundation component with core order information that every order detail view needs
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Foundation component with core order information that every order detail view needs
+ */
 export function BaseDetailsTable({
   chainId,
   order,
@@ -50,7 +47,6 @@ export function BaseDetailsTable({
 }: BaseDetailsTableProps): React.ReactNode | null {
   const cowAnalytics = useCowAnalytics()
   const {
-    uid,
     owner,
     receiver,
     txHash,
@@ -63,6 +59,7 @@ export function BaseDetailsTable({
     partiallyFilled,
     buyToken,
     sellToken,
+    bridgeProviderId,
   } = order
 
   if (!buyToken || !sellToken) {
@@ -76,13 +73,9 @@ export function BaseDetailsTable({
       label,
     })
   }
+
   const isSigning = status === 'signing'
-  const isBridging = !!order?.bridgeProviderId
-  const toTooltip = isBridging
-    ? bridgeProviderType === 'ReceiverAccountBridgeProvider'
-      ? DetailsTableTooltips.toBridgeReceiver
-      : DetailsTableTooltips.toBridgeProxy
-    : DetailsTableTooltips.to
+  const isBridging = !!bridgeProviderId
 
   return (
     <SimpleTable
@@ -96,134 +89,32 @@ export function BaseDetailsTable({
               </td>
             </WarningRow>
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.orderID} /> Order Id
-              </span>
-            </td>
-            <td>
-              <RowWithCopyButton
-                textToCopy={uid}
-                contentsToDisplay={<TruncatedText>{uid}</TruncatedText>}
-                onCopy={(): void => onCopy('orderId')}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.from} /> From
-              </span>
-            </td>
-            <td>
-              <Wrapper>
-                {isSigning && (
-                  <>
-                    <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
-                    &nbsp;
-                  </>
-                )}
-                <RowWithCopyButton
-                  textToCopy={owner}
-                  onCopy={(): void => onCopy('ownerAddress')}
-                  contentsToDisplay={<AddressLink address={owner} chainId={chainId} showNetworkName />}
-                />
-                <LinkButton to={`/address/${owner}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order history
-                </LinkButton>
-              </Wrapper>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip placement="bottom" tooltip={toTooltip} /> To
-              </span>
-            </td>
-            <td>
-              <Wrapper>
-                <RowWithCopyButton
-                  textToCopy={receiver}
-                  onCopy={(): void => onCopy('receiverAddress')}
-                  contentsToDisplay={<AddressLink address={receiver} chainId={chainId} showNetworkName />}
-                />
-                <LinkButton to={`/address/${receiver}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order history
-                </LinkButton>
-              </Wrapper>
-            </td>
-          </tr>
+          <OrderIdItem chainId={chainId} order={order} onCopy={onCopy} bridgeProviderId={bridgeProviderId} />
+          <FromItem
+            chainId={chainId}
+            isSigning={isSigning}
+            isBridgingOrder={isBridging}
+            onCopy={onCopy}
+            owner={owner}
+          />
+          <ToItem
+            chainId={chainId}
+            receiver={receiver}
+            isBridgingOrder={isBridging}
+            bridgeProviderType={bridgeProviderType}
+            onCopy={onCopy}
+          />
           {(!partiallyFillable || txHash) && areTradesLoading ? (
             <Spinner />
           ) : (
             <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
           )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.status} /> Status
-              </span>
-            </td>
-            <td>
-              <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.submission} /> Submission Time
-              </span>
-            </td>
-            <td>
-              <DateDisplay date={creationDate} showIcon={true} />
-            </td>
-          </tr>
-          {executionDate && !showFillsButton && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={DetailsTableTooltips.execution} /> Execution Time
-                </span>
-              </td>
-              <td>
-                <DateDisplay date={executionDate} showIcon={true} />
-              </td>
-            </tr>
-          )}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.expiration} /> Expiration Time
-              </span>
-            </td>
-            <td>
-              <DateDisplay date={expirationDate} showIcon={true} />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.type} /> Type
-              </span>
-            </td>
-            <td>
-              {capitalize(kind)} {getUiOrderType(order).toLowerCase()} order{' '}
-              {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.amount} /> Amount
-              </span>
-            </td>
-            <td>
-              <AmountsDisplay order={order} />
-            </td>
-          </tr>
+          <StatusItem status={status} partiallyFilled={partiallyFilled} />
+          <SubmissionTimeItem creationDate={creationDate} showIcon />
+          {executionDate && !showFillsButton && <ExecutionTimeItem executionDate={executionDate} showIcon />}
+          <ExpirationTimeItem expirationDate={expirationDate} showIcon />
+          <TypeItem kind={kind} uiOrderType={getUiOrderType(order)} partiallyFillable={partiallyFillable} />
+          <AmountItem order={order} />
           {children}
         </>
       }

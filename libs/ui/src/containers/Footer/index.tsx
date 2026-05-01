@@ -94,6 +94,7 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
 }
 
 export const GLOBAL_FOOTER_NAV_ITEMS = getGlobalFooterNavItems(false)
+export { getGlobalFooterNavItems }
 
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
