@@ -11,7 +11,7 @@ const defaultParams: GetSwapConfirmDisabledStateParams = {
 }
 
 describe('getSwapConfirmDisabledState', () => {
-  it('disables confirm when bridge quote is refreshing', () => {
+  it('disables confirm when quote is refreshing', () => {
     const result = getSwapConfirmDisabledState({
       ...defaultParams,
       quoteCounter: 0,
@@ -23,7 +23,7 @@ describe('getSwapConfirmDisabledState', () => {
     })
   })
 
-  it('disables confirm when bridge quote is stale', () => {
+  it('disables confirm when quote is stale', () => {
     const result = getSwapConfirmDisabledState({
       ...defaultParams,
       isQuoteStale: true,
@@ -35,7 +35,7 @@ describe('getSwapConfirmDisabledState', () => {
     })
   })
 
-  it('disables confirm when bridge quote is loading', () => {
+  it('disables confirm when quote is loading', () => {
     const result = getSwapConfirmDisabledState({
       ...defaultParams,
       isQuoteLoading: true,
@@ -73,6 +73,45 @@ describe('getSwapConfirmDisabledState', () => {
 
   it('enables confirm when quote is valid and balance is enough', () => {
     const result = getSwapConfirmDisabledState(defaultParams)
+
+    expect(result).toEqual({
+      disableConfirm: false,
+      isInsufficientBalance: false,
+    })
+  })
+
+  it('disables confirm for swap quote refresh without bridge details', () => {
+    const result = getSwapConfirmDisabledState({
+      ...defaultParams,
+      shouldDisplayBridgeDetails: false,
+      quoteCounter: 0,
+    })
+
+    expect(result).toEqual({
+      disableConfirm: true,
+      isInsufficientBalance: false,
+    })
+  })
+
+  it('disables confirm for stale swap quote without bridge details', () => {
+    const result = getSwapConfirmDisabledState({
+      ...defaultParams,
+      shouldDisplayBridgeDetails: false,
+      isQuoteStale: true,
+    })
+
+    expect(result).toEqual({
+      disableConfirm: true,
+      isInsufficientBalance: false,
+    })
+  })
+
+  it('does not require bridge quote amounts for plain swap', () => {
+    const result = getSwapConfirmDisabledState({
+      ...defaultParams,
+      shouldDisplayBridgeDetails: false,
+      hasBridgeQuoteAmounts: false,
+    })
 
     expect(result).toEqual({
       disableConfirm: false,

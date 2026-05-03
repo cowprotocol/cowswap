@@ -24,9 +24,9 @@ export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateP
     isQuoteStale,
   } = params
 
-  const isBridgeQuoteRefreshing = shouldDisplayBridgeDetails && (isQuoteLoading || quoteCounter === 0 || isQuoteStale)
+  const isQuoteRefreshing = isQuoteLoading || quoteCounter === 0 || isQuoteStale
 
-  if (isBridgeQuoteRefreshing) {
+  if (isQuoteRefreshing) {
     return {
       disableConfirm: true,
       isInsufficientBalance: false,
