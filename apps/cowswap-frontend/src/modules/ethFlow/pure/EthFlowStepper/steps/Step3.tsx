@@ -152,7 +152,7 @@ export function Step3({
           !(refundHash || cancellationHash) &&
           cancellationFailed === undefined && (
             <RefundMessage>
-              <Trans>Initiating {nativeTokenSymbol} svgRefundSrc...</Trans>
+              <Trans>Initiating {nativeTokenSymbol} Refund...</Trans>
             </RefundMessage>
           )}
         {orderIsNotCreated && (

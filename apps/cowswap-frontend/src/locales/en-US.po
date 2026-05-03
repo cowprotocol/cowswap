@@ -2019,6 +2019,7 @@ msgid "Pool address"
 msgstr "Pool address"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
+#: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 msgid "Initiating {nativeTokenSymbol} Refund..."
 msgstr "Initiating {nativeTokenSymbol} Refund..."
 
@@ -3606,10 +3607,6 @@ msgstr "This way, you'll take advantage of"
 #: apps/cowswap-frontend/src/legacy/components/CowBalance/index.tsx
 msgid "Your combined balance"
 msgstr "Your combined balance"
-
-#: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
-msgid "Initiating {nativeTokenSymbol} svgRefundSrc..."
-msgstr "Initiating {nativeTokenSymbol} svgRefundSrc..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderActivityTable.tsx
 #~ msgid "Not eligible"
