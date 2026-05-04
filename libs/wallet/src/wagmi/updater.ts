@@ -107,9 +107,9 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
       ensName: ensName || undefined,
       isSupportedWallet: checkIsSupportedWallet(walletName),
 
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
+      // Smart accounts (ERC-4337, Coinbase Smart Wallet, etc.) support EIP-1271 off-chain signing.
+      // Only Safe App connections need on-chain pre-signing (multi-sig flow via the Safe SDK).
+      allowsOffchainSigning: !isSafeApp,
       isSafeApp,
     }
   }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
