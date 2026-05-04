@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { usePublicClient } from 'wagmi'
@@ -20,8 +20,6 @@ interface TradeApproveCallbackParams {
   useModals: boolean
   waitForTxConfirmation?: boolean
 }
-
-const EVM_TX_HASH_LENGTH = 64 + 2
 
 const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
   useModals: true,
@@ -76,6 +74,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const publicClient = usePublicClient()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
+  const isSafeWallet = useIsSafeWallet()
   const approveCallback = useApproveCallback(currency, spender)
   const approvalAnalytics = useApprovalAnalytics()
   const handleApprovalError = useHandleApprovalError(symbol)
@@ -101,9 +100,9 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
         approvalAnalytics('Sign', symbol)
 
-        // Check the length to skip waiting for Safe tx
-        // We have to return undefined in order to avoid jumping into confirm screen after approval tx sending
-        if (response.hash.length !== EVM_TX_HASH_LENGTH) {
+        // Safe wallets return a safeTxHash (not an on-chain tx hash), so we can't wait for a receipt.
+        // We return undefined to avoid the confirm screen hanging indefinitely.
+        if (isSafeWallet) {
           return undefined
         }
 
@@ -139,6 +138,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       updateApproveProgressModalState,
       approveCallback,
       resetApproveProgressModalState,
+      isSafeWallet,
       account,
       spender,
       chainId,
