@@ -1,6 +1,7 @@
 import { getSwapConfirmDisabledState, GetSwapConfirmDisabledStateParams } from './SwapConfirmModal.utils'
 
 const defaultParams: GetSwapConfirmDisabledStateParams = {
+  isTradeContextReady: true,
   shouldDisplayBridgeDetails: true,
   hasBridgeQuoteAmounts: true,
   hasCurrentCurrency: true,
@@ -98,6 +99,18 @@ describe('getSwapConfirmDisabledState', () => {
       ...defaultParams,
       shouldDisplayBridgeDetails: false,
       isQuoteStale: true,
+    })
+
+    expect(result).toEqual({
+      disableConfirm: true,
+      isInsufficientBalance: false,
+    })
+  })
+
+  it('disables confirm when trade context is not ready', () => {
+    const result = getSwapConfirmDisabledState({
+      ...defaultParams,
+      isTradeContextReady: false,
     })
 
     expect(result).toEqual({
