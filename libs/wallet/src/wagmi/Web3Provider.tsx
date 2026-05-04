@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
-import { config, reownAppKit } from './config'
+import { config, IS_CROSS_ORIGIN_IFRAME, reownAppKit } from './config'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
@@ -16,15 +16,11 @@ import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
 
-function isEmbeddedInIframe(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
-}
-
 function ReconnectOnMount(): null {
   useEffect(() => {
-    // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
-    // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
-    if (isEmbeddedInIframe() && !isInjectedWidget()) return
+    // In Safe iframe (not widget), SafeConnectionHandler handles connection — skip generic reconnect
+    // to avoid briefly restoring a non-Safe connector from shared storage.
+    if (IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()) return
 
     if (isInjectedWidget()) {
       // In widget context, use reconnect() (not connect()) to avoid triggering wallet popups.
@@ -87,8 +83,11 @@ function ReconnectOnMount(): null {
 
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
+    const appKit = reownAppKit
+    if (!appKit) return
+
     const handler = (): void => {
-      void reownAppKit.open()
+      void appKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)

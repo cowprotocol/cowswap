@@ -5,9 +5,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { connect, getConnection, reconnect } from '@wagmi/core'
-import { type Connector, useConnection, useConnectors, useDisconnect } from 'wagmi'
+import { type Connector, useConnection, useConnectors } from 'wagmi'
 
-import { config } from './config'
+import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
 
 import { ConnectionType } from '../api/types'
 
@@ -16,7 +16,7 @@ interface SafeConnectionHandlerProps {
 }
 
 function isEmbeddedApp(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
+  return IS_CROSS_ORIGIN_IFRAME
 }
 
 function isSupportedChainId(chainId: number): chainId is SupportedChainId {
@@ -77,11 +77,9 @@ async function connectSafeInIframe(
 export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps): ReactNode {
   const { connector: currentConnector, isConnected } = useConnection()
   const connectors = useConnectors()
-  const { mutateAsync: disconnect } = useDisconnect()
   const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
-  const isConnectingToSafe = useRef(false)
-
   const isInSafeSdkContext = isConnectedThroughSafeApp && !!safe?.safeAddress
+  const isConnectingToSafe = useRef(false)
 
   const safeRef = useRef(safe)
   const sdkConnectedRef = useRef(isConnectedThroughSafeApp)
@@ -98,14 +96,6 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     currentConnectorRef.current = currentConnector
     isInSafeSdkContextRef.current = isInSafeSdkContext
   }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector, isInSafeSdkContext])
-
-  useEffect(() => {
-    if (!isInSafeSdkContext) return
-    if (!currentConnector || isSafeConnector(currentConnector)) return
-
-    isConnectingToSafe.current = false
-    void disconnect().catch(() => {})
-  }, [currentConnector, isInSafeSdkContext, disconnect])
 
   useEffect(() => {
     if (!isEmbeddedApp()) return
@@ -147,6 +137,13 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
       document.removeEventListener('visibilitychange', reconnectSafeIfNeeded)
     }
   }, [])
+
+  // In the Safe iframe (but not widget), only render children when the Safe connector is active.
+  // This prevents any visual blink from transient non-Safe connections while SafeConnectionHandler
+  // is switching from a previously stored connector to the Safe connector.
+  if (isEmbeddedApp() && !isInjectedWidget() && isConnected && !isSafeConnector(currentConnector)) {
+    return null
+  }
 
   return children
 }
