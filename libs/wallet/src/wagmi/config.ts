@@ -7,42 +7,56 @@ import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
-import { createStorage, type Transport } from 'wagmi'
+import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
 type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof injected>
 
-function isEmbeddedInIframe(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
-}
+/**
+ * True when the app is running inside a cross-origin iframe (e.g. Safe App).
+ * Accessing window.parent.location.href throws a SecurityError for cross-origin frames.
+ * Same-origin iframes (e.g. local dev) do not throw.
+ */
+export const IS_CROSS_ORIGIN_IFRAME = (() => {
+  if (typeof window === 'undefined' || window.self === window.top) return false
+  try {
+    void window.parent.location.href
+    return false
+  } catch {
+    return true
+  }
+})()
 
-const connectorParams = { shimDisconnect: true }
+// AppKit must not be initialised inside a Safe App iframe — it interferes with Safe's
+// postMessage flow. The injected widget runs in a cross-origin iframe too, but it needs
+// AppKit to surface the wallet-connect modal to the end user.
+const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 
 function getConnectors(): ConnectorInstance[] {
-  if (isEmbeddedInIframe()) {
+  if (IS_CROSS_ORIGIN_IFRAME) {
     if (isInjectedWidget()) {
       return [
         injected({
-          ...connectorParams,
+          shimDisconnect: true,
           target: {
             name: 'CoW Widget',
             id: COW_WIDGET_CONNECTOR_ID,
             provider: new WidgetEthereumProvider() as EIP1193Provider,
           },
         }),
-        injected(connectorParams),
+        injected({ shimDisconnect: true }),
         // Include Safe connector so the widget can auto-connect when hosted inside a Safe app
         // (e.g. widget-configurator loaded as a Safe App). IframeSafeSdkBridge in widget-lib
         // already forwards the Safe SDK postMessages through the configurator to app.safe.global.
-        safe(connectorParams),
+        safe({ shimDisconnect: true }),
       ]
     }
 
-    return [safe(connectorParams), injected(connectorParams)]
+    return [safe({ shimDisconnect: true }), injected({ shimDisconnect: true })]
   }
 
-  return [injected(connectorParams)]
+  return [injected({ shimDisconnect: true })]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
@@ -68,7 +82,10 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
-const WAGMI_STORAGE_KEY = 'cowswap-wallet' + (isInjectedWidget() ? COW_WIDGET_CONNECTOR_ID : '')
+// Use a distinct storage key per context to avoid cross-context session pollution.
+const WAGMI_STORAGE_KEY = isSafeIframe
+  ? 'cowswap-wallet-safe'
+  : 'cowswap-wallet' + (isInjectedWidget() ? COW_WIDGET_CONNECTOR_ID : '')
 
 const storage =
   typeof window === 'undefined'
@@ -88,66 +105,79 @@ const metadata = {
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
-export const connectors = getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors']
+const connectors = getConnectors()
 
-const RECENT_CONNECTOR_KEY = 'recentConnectorId'
-/**
- * Recent connector takes priority, and we have to override it in the widget
- */
-if (isInjectedWidget()) {
-  storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
-}
+let wagmiAdapter: WagmiAdapter | null = null
+let reownAppKit: ReturnType<typeof createAppKit> | null = null
+let config: Config
 
-export const wagmiAdapter = new WagmiAdapter({
-  connectors,
-  customRpcUrls,
-  networks: SUPPORTED_REOWN_NETWORKS,
-  projectId,
-  storage,
-  transports: wagmiTransports,
-})
+if (isSafeIframe) {
+  // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
+  config = createConfig({
+    connectors,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    chains: SUPPORTED_REOWN_NETWORKS as any,
+    storage,
+    transports: wagmiTransports,
+  })
+} else {
+  wagmiAdapter = new WagmiAdapter({
+    connectors: connectors as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
+    customRpcUrls,
+    networks: SUPPORTED_REOWN_NETWORKS,
+    projectId,
+    storage,
+    transports: wagmiTransports,
+  })
 
-export const config = wagmiAdapter.wagmiConfig
+  config = wagmiAdapter.wagmiConfig
 
-// Prevent the CoW Widget connector from appearing in the wallet modal.
-// It must remain registered with wagmi (for reconnect/connect to work) but should not be
-// shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
-if (isInjectedWidget()) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
-    if (connector.id === COW_WIDGET_CONNECTOR_ID) return
-    return _addWagmiConnector(connector)
+  const RECENT_CONNECTOR_KEY = 'recentConnectorId'
+  if (isInjectedWidget()) {
+    // Recent connector takes priority, and we have to override it in the widget
+    storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
+
+    // Prevent the CoW Widget connector from appearing in the wallet modal.
+    // It must remain registered with wagmi (for reconnect/connect to work) but should not be
+    // shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
+      if (connector.id === COW_WIDGET_CONNECTOR_ID) return
+      return _addWagmiConnector(connector)
+    }
   }
+
+  reownAppKit = createAppKit({
+    adapters: [wagmiAdapter],
+    allowUnsupportedChain: true,
+    customRpcUrls,
+    defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+    // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
+    // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
+    // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
+    // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
+    enableEIP6963: !isImTokenBrowser,
+    enableReconnect: true,
+    enableWalletGuide: false,
+    featuredWalletIds: [
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
+      'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
+    ],
+    features: {
+      analytics: false,
+      email: false,
+      socials: false,
+      connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
+    },
+    metadata,
+    networks: SUPPORTED_REOWN_NETWORKS,
+    projectId,
+    termsConditionsUrl:
+      'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+  })
 }
 
-export const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
-  allowUnsupportedChain: true,
-  customRpcUrls,
-  defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
-  // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
-  // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
-  // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
-  // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-  enableEIP6963: !isImTokenBrowser,
-  enableReconnect: true,
-  enableWalletGuide: false,
-  featuredWalletIds: [
-    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
-    'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
-  ],
-  features: {
-    analytics: false,
-    email: false,
-    socials: false,
-    connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
-  },
-  metadata,
-  networks: SUPPORTED_REOWN_NETWORKS,
-  projectId,
-  termsConditionsUrl:
-    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
-})
+export { wagmiAdapter, reownAppKit, config }
