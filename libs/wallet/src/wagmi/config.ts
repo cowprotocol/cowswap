@@ -62,7 +62,49 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
   }
 }
 
+const isIframe = isEmbeddedInIframe()
+
+// On the regular tab, remove @appkit/connection_status if it's "disconnected".
+// The Safe iframe (or a previous failed connection) may have left this, preventing new connections.
+if (typeof window !== 'undefined' && !isIframe) {
+  if (localStorage.getItem('@appkit/connection_status') === 'disconnected') {
+    localStorage.removeItem('@appkit/connection_status')
+  }
+}
+
+// In Safe iframe, redirect AppKit's @appkit/* localStorage operations to sessionStorage.
+// This prevents the iframe from polluting the regular tab's AppKit state (wallet_id, connection_status, etc.)
+// which causes the regular tab to fail when connecting MetaMask.
+if (typeof window !== 'undefined' && isIframe) {
+  const origSetItem = localStorage.setItem.bind(localStorage)
+  const origGetItem = localStorage.getItem.bind(localStorage)
+  const origRemoveItem = localStorage.removeItem.bind(localStorage)
+
+  localStorage.setItem = (key: string, value: string) => {
+    if (key.startsWith('@appkit/')) {
+      sessionStorage.setItem(key, value)
+    } else {
+      origSetItem(key, value)
+    }
+  }
+  localStorage.getItem = (key: string): string | null => {
+    if (key.startsWith('@appkit/')) {
+      return sessionStorage.getItem(key)
+    }
+    return origGetItem(key)
+  }
+  localStorage.removeItem = (key: string) => {
+    if (key.startsWith('@appkit/')) {
+      sessionStorage.removeItem(key)
+    } else {
+      origRemoveItem(key)
+    }
+  }
+}
+
 const projectId = 'ac287751638b5d374a03c39e37f70376'
+
+const WAGMI_STORAGE_KEY = isIframe ? 'cowswap-wallet-safe' : 'cowswap-wallet'
 
 const storage =
   typeof window === 'undefined'
@@ -71,7 +113,7 @@ const storage =
       })
     : createStorage({
         storage: window.localStorage,
-        key: 'cowswap-wallet',
+        key: WAGMI_STORAGE_KEY,
       })
 
 const metadata = {
