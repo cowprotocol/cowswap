@@ -22,7 +22,7 @@ import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'mo
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
-import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import {
   OrderProgressEventsUpdater,
@@ -69,8 +69,6 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-
-  const { standaloneMode } = useInjectedWidgetParams()
   const { targetChainId } = useSwapRawState()
   const { selectedTargetChainId } = useSelectTokenWidgetState()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
@@ -90,8 +88,7 @@ export function Updaters(): ReactNode {
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
-      {/*Set custom chainId only when it differs from the wallet chainId*/}
-      <WalletUpdater standaloneMode={standaloneMode} />
+      <WalletUpdater />
       <WalletChainUrlSyncUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />

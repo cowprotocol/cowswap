@@ -119,11 +119,7 @@ function useWalletDetails(account?: Address): WalletDetails {
 let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
-}
-
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
+export function WalletUpdater(): null {
   const { connector } = useConnection()
 
   const walletInfo = useWalletInfo()
@@ -135,11 +131,6 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
   const setEip6963Provider = useSetEip6963Provider()
   const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
-
-  useEffect(() => {
-    // TODO: remove widget connector when standaloneMode is true
-    console.log('standaloneMode', standaloneMode)
-  }, [standaloneMode])
 
   // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
   useEffect(() => {
