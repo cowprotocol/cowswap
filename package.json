@@ -106,10 +106,7 @@
         "utf-8-validate",
         "bufferutil"
       ]
-    },
-    "onlyBuiltDependencies": [
-      "nx"
-    ]
+    }
   },
   "dependencies": {
     "@babel/runtime": "7.27.0",
