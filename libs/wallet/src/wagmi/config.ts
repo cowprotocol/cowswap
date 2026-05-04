@@ -34,11 +34,10 @@ function isEmbeddedInIframe(): boolean {
 }
 
 function getConnectors(): ConnectorInstance[] {
-  const injected = throttledInjected()
   if (isEmbeddedInIframe()) {
-    return [safe({ shimDisconnect: true }), injected]
+    return [safe({ shimDisconnect: true })]
   }
-  return [injected]
+  return [throttledInjected()]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
@@ -100,6 +99,19 @@ if (typeof window !== 'undefined' && isIframe) {
       origRemoveItem(key)
     }
   }
+
+  // Suppress storage events from the regular tab that carry @appkit/* or cowswap-wallet keys.
+  // The browser fires 'storage' events directly (bypassing our localStorage.getItem intercept),
+  // so AppKit in the iframe would react to the regular tab's wallet changes, causing a brief blink.
+  window.addEventListener(
+    'storage',
+    (e: StorageEvent) => {
+      if (e.key?.startsWith('@appkit/') || e.key?.startsWith('cowswap-wallet.')) {
+        e.stopImmediatePropagation()
+      }
+    },
+    true,
+  )
 }
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
@@ -144,8 +156,10 @@ export const reownAppKit = createAppKit({
   // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
   // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
   // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-  enableEIP6963: !isImTokenBrowser,
-  enableReconnect: true,
+  // Also disable in Safe iframe: EIP-6963 discovery picks up injected wallets (Rabby, MM) and
+  // briefly connects to them before SafeConnectionHandler corrects back to Safe, causing a visible blink.
+  enableEIP6963: !isImTokenBrowser && !isIframe,
+  enableReconnect: !isIframe,
   enableWalletGuide: false,
   featuredWalletIds: [
     'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',

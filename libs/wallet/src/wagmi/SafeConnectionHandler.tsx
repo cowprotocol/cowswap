@@ -146,5 +146,11 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     }
   }, [])
 
+  // In the Safe iframe, only render children when the Safe connector is active.
+  // This prevents any visual blink from transient non-Safe connections.
+  if (isEmbeddedApp() && isConnected && !isSafeConnector(currentConnector)) {
+    return null
+  }
+
   return children
 }
