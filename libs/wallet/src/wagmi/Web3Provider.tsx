@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
-import { config, reownAppKit } from './config'
+import { config, IS_CROSS_ORIGIN_IFRAME, reownAppKit } from './config'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
@@ -17,6 +17,10 @@ const queryClient = new QueryClient()
 
 function ReconnectOnMount(): null {
   useEffect(() => {
+    // In Safe iframe, SafeConnectionHandler handles connection — skip generic reconnect
+    // to avoid briefly restoring a non-Safe connector from shared storage.
+    if (IS_CROSS_ORIGIN_IFRAME) return
+
     if (getIsInjectedMobileBrowser()) {
       const injectedConnector = config.connectors.find((c) => c.id === 'injected')
 

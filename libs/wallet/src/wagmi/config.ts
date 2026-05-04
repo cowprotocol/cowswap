@@ -139,11 +139,17 @@ const metadata = {
 export const wagmiAdapter = new WagmiAdapter({
   connectors: getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
   customRpcUrls,
+  // In Safe iframe, disable wagmi's MIPD (EIP-6963) provider discovery. Without this,
+  // wagmi's createConfig creates a MIPD store that listens for `announceProvider` events
+  // and auto-creates injected connectors for every wallet extension (Rabby, MM, etc.).
+  // Since window.ethereum is shared with the regular tab, wallet changes there cause the
+  // iframe to briefly connect to the wrong wallet before SafeConnectionHandler corrects it.
+  multiInjectedProviderDiscovery: !isIframe,
   networks: SUPPORTED_REOWN_NETWORKS,
   projectId,
   storage,
   transports: wagmiTransports,
-})
+} as ConstructorParameters<typeof WagmiAdapter>[0])
 
 export const config = wagmiAdapter.wagmiConfig
 
@@ -159,6 +165,11 @@ export const reownAppKit = createAppKit({
   // Also disable in Safe iframe: EIP-6963 discovery picks up injected wallets (Rabby, MM) and
   // briefly connects to them before SafeConnectionHandler corrects back to Safe, causing a visible blink.
   enableEIP6963: !isImTokenBrowser && !isIframe,
+  // In Safe iframe, disable AppKit's internal injected connector. Without this, AppKit's
+  // addWagmiConnectors() adds its own injected({ shimDisconnect: true }) connector that listens
+  // to window.ethereum — which is shared with the regular tab — causing the iframe to briefly
+  // react to wallet changes in the regular tab before SafeConnectionHandler corrects it.
+  enableInjected: !isIframe,
   enableReconnect: !isIframe,
   enableWalletGuide: false,
   featuredWalletIds: [
