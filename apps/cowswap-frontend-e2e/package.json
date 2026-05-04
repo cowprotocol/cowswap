@@ -6,10 +6,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "viem": "^2.45.1",
-    "eventemitter3": "^4.0.0"
+    "viem": "2.47.1",
+    "eventemitter3": "4.0.7"
   },
   "devDependencies": {
-    "cypress": "^15.4.0"
+    "cypress": "15.4.0"
   }
 }

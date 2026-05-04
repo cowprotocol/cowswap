@@ -24,13 +24,13 @@
   },
   "dependencies": {
     "@cowprotocol/cow-sdk": "9.0.2",
-    "@1inch/permit-signed-approvals-utils": "^1.5.1",
+    "@1inch/permit-signed-approvals-utils": "1.5.2",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
-    "ms.macro": "^2.0.0",
-    "viem": "^2.42.1",
-    "wagmi": "^3.1.0"
+    "ms.macro": "2.0.0",
+    "viem": "2.47.1",
+    "wagmi": "3.4.2"
   },
   "devDependencies": {
-    "@types/ms.macro": "^2.0.0"
+    "@types/ms.macro": "2.0.3"
   }
 }

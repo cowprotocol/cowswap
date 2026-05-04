@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "react": "19.1.2",
-    "viem": "^2.45.1",
+    "viem": "2.47.1",
     "wagmi": "3.4.2"
   },
   "devDependencies": {
