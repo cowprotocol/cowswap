@@ -65,8 +65,11 @@ function ReconnectOnMount(): null {
 
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
+    const appKit = reownAppKit
+    if (!appKit) return
+
     const handler = (): void => {
-      void reownAppKit.open()
+      void appKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)

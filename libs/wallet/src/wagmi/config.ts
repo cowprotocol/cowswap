@@ -2,17 +2,15 @@ import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isImTokenBrowser } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit, type AppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { safe } from '@wagmi/connectors'
 import { http } from 'viem'
-import { createStorage, type Transport } from 'wagmi'
+import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
 import { throttledInjected } from './connectors/throttledInjected'
 
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
-
-type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof throttledInjected>
 
 // Detect if we're embedded in a cross-origin iframe (e.g. Safe).
 // Same-origin iframes (browser extensions like Loom, 1Password) can access parent.location —
@@ -29,17 +27,6 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
   }
 })()
 
-function isEmbeddedInIframe(): boolean {
-  return IS_CROSS_ORIGIN_IFRAME
-}
-
-function getConnectors(): ConnectorInstance[] {
-  if (isEmbeddedInIframe()) {
-    return [safe({ shimDisconnect: true })]
-  }
-  return [throttledInjected()]
-}
-
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {
     const chainId = chain.id as SupportedChainId
@@ -52,71 +39,7 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<SupportedChainId, Transport>,
 )
 
-/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
-const customRpcUrls: Record<string, Array<{ url: string }>> = {}
-for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as SupportedChainId]
-  if (url) {
-    customRpcUrls[`eip155:${chain.id}`] = [{ url }]
-  }
-}
-
-const isIframe = isEmbeddedInIframe()
-
-// On the regular tab, remove @appkit/connection_status if it's "disconnected".
-// The Safe iframe (or a previous failed connection) may have left this, preventing new connections.
-if (typeof window !== 'undefined' && !isIframe) {
-  if (localStorage.getItem('@appkit/connection_status') === 'disconnected') {
-    localStorage.removeItem('@appkit/connection_status')
-  }
-}
-
-// In Safe iframe, redirect AppKit's @appkit/* localStorage operations to sessionStorage.
-// This prevents the iframe from polluting the regular tab's AppKit state (wallet_id, connection_status, etc.)
-// which causes the regular tab to fail when connecting MetaMask.
-if (typeof window !== 'undefined' && isIframe) {
-  const origSetItem = localStorage.setItem.bind(localStorage)
-  const origGetItem = localStorage.getItem.bind(localStorage)
-  const origRemoveItem = localStorage.removeItem.bind(localStorage)
-
-  localStorage.setItem = (key: string, value: string) => {
-    if (key.startsWith('@appkit/')) {
-      sessionStorage.setItem(key, value)
-    } else {
-      origSetItem(key, value)
-    }
-  }
-  localStorage.getItem = (key: string): string | null => {
-    if (key.startsWith('@appkit/')) {
-      return sessionStorage.getItem(key)
-    }
-    return origGetItem(key)
-  }
-  localStorage.removeItem = (key: string) => {
-    if (key.startsWith('@appkit/')) {
-      sessionStorage.removeItem(key)
-    } else {
-      origRemoveItem(key)
-    }
-  }
-
-  // Suppress storage events from the regular tab that carry @appkit/* or cowswap-wallet keys.
-  // The browser fires 'storage' events directly (bypassing our localStorage.getItem intercept),
-  // so AppKit in the iframe would react to the regular tab's wallet changes, causing a brief blink.
-  window.addEventListener(
-    'storage',
-    (e: StorageEvent) => {
-      if (e.key?.startsWith('@appkit/') || e.key?.startsWith('cowswap-wallet.')) {
-        e.stopImmediatePropagation()
-      }
-    },
-    true,
-  )
-}
-
 const projectId = 'ac287751638b5d374a03c39e37f70376'
-
-const WAGMI_STORAGE_KEY = isIframe ? 'cowswap-wallet-safe' : 'cowswap-wallet'
 
 const storage =
   typeof window === 'undefined'
@@ -125,67 +48,97 @@ const storage =
       })
     : createStorage({
         storage: window.localStorage,
-        key: WAGMI_STORAGE_KEY,
+        key: IS_CROSS_ORIGIN_IFRAME ? 'cowswap-wallet-safe' : 'cowswap-wallet',
       })
 
-const metadata = {
-  name: 'CoW Swap | The smartest way to trade cryptocurrencies',
-  description:
-    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
-  url: 'https://swap.cow.fi',
-  icons: ['https://swap.cow.fi/apple-touch-icon.png'],
+// ---------------------------------------------------------------------------
+// Iframe (Safe App) path — lightweight wagmi-only config, no AppKit.
+//
+// AppKit brings EIP-6963 discovery, injected connector management, reconnection
+// logic, localStorage state syncing, etc. All of this interferes with the Safe
+// iframe because window.ethereum and localStorage are shared with the regular
+// browser tab. Instead of monkey-patching each interference point, we simply
+// don't instantiate AppKit in the iframe. SafeConnectionHandler manages the
+// Safe connector directly via wagmi core.
+// ---------------------------------------------------------------------------
+
+function createIframeConfig(): { config: Config; wagmiAdapter: WagmiAdapter | null; reownAppKit: AppKit | null } {
+  const chains = SUPPORTED_REOWN_NETWORKS
+  const config = createConfig({
+    chains,
+    connectors: [safe({ shimDisconnect: true })],
+    multiInjectedProviderDiscovery: false,
+    storage,
+    transports: Object.fromEntries(chains.map((chain) => [chain.id, wagmiTransports[chain.id as SupportedChainId]])),
+  })
+
+  return { config, wagmiAdapter: null, reownAppKit: null }
 }
 
-export const wagmiAdapter = new WagmiAdapter({
-  connectors: getConnectors() as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
-  customRpcUrls,
-  // In Safe iframe, disable wagmi's MIPD (EIP-6963) provider discovery. Without this,
-  // wagmi's createConfig creates a MIPD store that listens for `announceProvider` events
-  // and auto-creates injected connectors for every wallet extension (Rabby, MM, etc.).
-  // Since window.ethereum is shared with the regular tab, wallet changes there cause the
-  // iframe to briefly connect to the wrong wallet before SafeConnectionHandler corrects it.
-  multiInjectedProviderDiscovery: !isIframe,
-  networks: SUPPORTED_REOWN_NETWORKS,
-  projectId,
-  storage,
-  transports: wagmiTransports,
-} as ConstructorParameters<typeof WagmiAdapter>[0])
+// ---------------------------------------------------------------------------
+// Regular tab path — full AppKit + WagmiAdapter setup.
+// ---------------------------------------------------------------------------
 
-export const config = wagmiAdapter.wagmiConfig
+function createRegularConfig(): { config: Config; wagmiAdapter: WagmiAdapter; reownAppKit: AppKit } {
+  /** CAIP-shaped RPCs for AppKit UI / network metadata. */
+  const customRpcUrls: Record<string, Array<{ url: string }>> = {}
+  for (const chain of SUPPORTED_REOWN_NETWORKS) {
+    const url = RPC_URLS[chain.id as SupportedChainId]
+    if (url) {
+      customRpcUrls[`eip155:${chain.id}`] = [{ url }]
+    }
+  }
 
-export const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
-  allowUnsupportedChain: true,
-  customRpcUrls,
-  defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
-  // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
-  // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
-  // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
-  // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-  // Also disable in Safe iframe: EIP-6963 discovery picks up injected wallets (Rabby, MM) and
-  // briefly connects to them before SafeConnectionHandler corrects back to Safe, causing a visible blink.
-  enableEIP6963: !isImTokenBrowser && !isIframe,
-  // In Safe iframe, disable AppKit's internal injected connector. Without this, AppKit's
-  // addWagmiConnectors() adds its own injected({ shimDisconnect: true }) connector that listens
-  // to window.ethereum — which is shared with the regular tab — causing the iframe to briefly
-  // react to wallet changes in the regular tab before SafeConnectionHandler corrects it.
-  enableInjected: !isIframe,
-  enableReconnect: !isIframe,
-  enableWalletGuide: false,
-  featuredWalletIds: [
-    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
-    'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
-  ],
-  features: {
-    analytics: false,
-    email: false,
-    socials: false,
-    connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
-  },
-  metadata,
-  networks: SUPPORTED_REOWN_NETWORKS,
-  projectId,
-  termsConditionsUrl:
-    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
-})
+  const adapter = new WagmiAdapter({
+    connectors: [throttledInjected()] as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
+    customRpcUrls,
+    networks: SUPPORTED_REOWN_NETWORKS,
+    projectId,
+    storage,
+    transports: wagmiTransports,
+  })
+
+  const appKit = createAppKit({
+    adapters: [adapter],
+    allowUnsupportedChain: true,
+    customRpcUrls,
+    defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+    // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
+    // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
+    // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
+    // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
+    enableEIP6963: !isImTokenBrowser,
+    enableReconnect: true,
+    enableWalletGuide: false,
+    featuredWalletIds: [
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
+      'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
+    ],
+    features: {
+      analytics: false,
+      email: false,
+      socials: false,
+      connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
+    },
+    metadata: {
+      name: 'CoW Swap | The smartest way to trade cryptocurrencies',
+      description:
+        'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
+      url: 'https://swap.cow.fi',
+      icons: ['https://swap.cow.fi/apple-touch-icon.png'],
+    },
+    networks: SUPPORTED_REOWN_NETWORKS,
+    projectId,
+    termsConditionsUrl:
+      'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+  })
+
+  return { config: adapter.wagmiConfig, wagmiAdapter: adapter, reownAppKit: appKit }
+}
+
+const result = IS_CROSS_ORIGIN_IFRAME ? createIframeConfig() : createRegularConfig()
+
+export const config = result.config
+export const wagmiAdapter = result.wagmiAdapter
+export const reownAppKit = result.reownAppKit
