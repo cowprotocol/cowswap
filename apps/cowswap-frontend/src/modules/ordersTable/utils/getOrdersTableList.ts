@@ -6,7 +6,7 @@ import { TabOrderTypes } from 'common/state/routesState'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
-import { getOrderParams } from './getOrderParams'
+import { getOrderParams, OrderParams } from './getOrderParams'
 import { groupOrdersTable } from './groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder } from './orderTableGroupUtils'
 
@@ -53,28 +53,37 @@ export function getOrdersTableList(
 
         // Check if order is unfillable (insufficient balance or allowance)
         const params = getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState)
-        let isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
 
-        // For TWAP orders, also check child orders
-        if (!isParsedOrder(item) && item.children) {
-          const hasUnfillableChild = item.children.some((childOrder) => {
+        // When allowance/balance is temporarily unavailable, keep the current persisted flag.
+        // This avoids incorrectly flipping an already-unfillable order back to fillable.
+        const unfillableParams = getUnfillableParams(params, order.isUnfillable ?? false)
+        const { hasKnownFillability } = unfillableParams
+        let { isUnfillable } = unfillableParams
+
+        // For TWAP orders, also check child orders (unless we know the parent order is already unfillable)
+        if (!isParsedOrder(item) && item.children && !isUnfillable) {
+          isUnfillable = item.children.some((childOrder) => {
             const childParams = getOrderParams(
               chainId,
               balancesAndAllowances,
               childOrder,
               pendingOrdersPermitValidityState,
             )
+            const unfillableParams = getUnfillableParams(childParams, childOrder.isUnfillable ?? false)
+            const { hasKnownFillability, isUnfillable } = unfillableParams
+
             return (
               childOrder.status !== OrderStatus.FULFILLED &&
               (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING) &&
-              (childParams.hasEnoughBalance === false || childParams.hasEnoughAllowance === false)
+              hasKnownFillability &&
+              isUnfillable
             )
           })
-          isUnfillable = isUnfillable || hasUnfillableChild
         }
 
         // Update the unfillable flag whenever the state changes, not just when becoming unfillable
-        if (isPending && order.isUnfillable !== isUnfillable) {
+        // Only dispatch when fillability is known to prevent state churn from transient undefined values.
+        if (isPending && hasKnownFillability && order.isUnfillable !== isUnfillable) {
           setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
         }
 
@@ -102,4 +111,16 @@ export function getOrdersTableList(
       },
       { open: [], history: [], unfillable: [], signing: [] },
     )
+}
+
+function getUnfillableParams(
+  orderParams: OrderParams,
+  defaultValue: boolean,
+): { hasKnownFillability: boolean; isUnfillable: boolean } {
+  const hasKnownFillability = orderParams.hasEnoughBalance !== undefined && orderParams.hasEnoughAllowance !== undefined
+  const isUnfillable = hasKnownFillability
+    ? orderParams.hasEnoughBalance === false || orderParams.hasEnoughAllowance === false
+    : defaultValue
+
+  return { hasKnownFillability, isUnfillable }
 }

@@ -8,6 +8,7 @@ import {
   tokenAllowancesFamily,
   tradeSpenderAtom,
 } from '@cowprotocol/balances-and-allowances'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
@@ -122,8 +123,12 @@ ordersTableStateAtom.onMount = () => {
 
     logOrdersTableDebug('3. pendingOrders =', pendingOrders)
 
+    // `tradeSpenderAtom` is an override-only atom, so it will usually be `undefined`.
+    // Therefore, we must fallback to the chain vault relayer spender:
+    const spenderOverride = get(tradeSpenderAtom)
+    const spender = spenderOverride ?? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+
     const balancesState = get(balancesAtom)
-    const spender = get(tradeSpenderAtom)
     const allowancesState = get(
       tokenAllowancesFamily({
         connector,

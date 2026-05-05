@@ -7,7 +7,7 @@ import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowproto
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { isEip1193Provider } from '@cowprotocol/wallet'
 
-import { createPublicClient, custom, erc20Abi, type Address } from 'viem'
+import { createPublicClient, custom, erc20Abi, http, type Address, type PublicClient } from 'viem'
 import { Connector } from 'wagmi'
 
 export type AllowancesState = Record<string, bigint | undefined>
@@ -26,16 +26,15 @@ async function fetchAllowances(
   spender: string,
   tokenAddresses: string[],
 ): Promise<AllowancesState> {
-  const provider = await connector.getProvider({ chainId })
-
-  if (!isEip1193Provider(provider)) {
-    return tokenAddresses.reduce<AllowancesState>((acc, a) => ({ ...acc, [getAddressKey(a)]: undefined }), {})
-  }
-
   const chain = VIEM_CHAINS[chainId]
-  const client = createPublicClient({
+
+  const provider = await connector.getProvider({ chainId }).catch(() => undefined)
+
+  // If the connector does not expose an EIP-1193, or provider retrieval fails (which can happen during page load),
+  // fallback to default RPC:
+  const client: PublicClient = createPublicClient({
     chain,
-    transport: custom(provider),
+    transport: provider && isEip1193Provider(provider) ? custom(provider) : http(),
   })
 
   const results = await client.multicall({
