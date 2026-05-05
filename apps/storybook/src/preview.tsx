@@ -1,8 +1,8 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
 
-import { UI } from '../libs/ui/src/enum'
-import { baseTheme } from '../libs/ui/src/theme/baseTheme'
-import { ThemeColorVars } from '../libs/ui/src/theme/ThemeColorVars'
+import { UI } from '../../../libs/ui/src/enum'
+import { baseTheme } from '../../../libs/ui/src/theme/baseTheme'
+import { ThemeColorVars } from '../../../libs/ui/src/theme/ThemeColorVars'
 
 import type { Preview } from '@storybook/react-vite'
 

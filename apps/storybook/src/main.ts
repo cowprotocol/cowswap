@@ -6,7 +6,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { getReactProcessEnv } from '../tools/getReactProcessEnv.ts'
+import { getReactProcessEnv } from '../../../tools/getReactProcessEnv.ts'
 
 import type { StorybookConfig } from '@storybook/react-vite'
 
@@ -69,7 +69,7 @@ function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Recor
 const workspaceAliases = getWorkspaceAliases()
 
 const config: StorybookConfig = {
-  stories: ['../libs/ui/src/**/*.stories.@(ts|tsx)'],
+  stories: ['../../../libs/ui/src/**/*.stories.@(ts|tsx)'],
   addons: [getAbsolutePath('@storybook/addon-a11y'), getAbsolutePath('@storybook/addon-docs')],
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
