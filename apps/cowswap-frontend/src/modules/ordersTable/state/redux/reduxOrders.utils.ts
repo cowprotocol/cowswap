@@ -1,11 +1,11 @@
-import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Address } from 'viem'
 
 import { Order } from 'legacy/state/orders/actions'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'
-import { ORDER_LIST_KEYS, OrdersStateNetwork } from 'legacy/state/orders/reducer'
+import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -50,4 +50,12 @@ export function getReduxOrdersByOrderTypeFromNetworkState({
   })
 
   return { reduxOrders, ordersTokensSet }
+}
+
+export function getReduxOrdersStateByChain(
+  reduxOrdersState: OrdersState,
+  chainId: SupportedChainId,
+): OrdersStateNetwork {
+  const reduxOrdersStateByChain = reduxOrdersState?.[chainId]
+  return { ...getDefaultNetworkState(chainId), ...reduxOrdersStateByChain }
 }

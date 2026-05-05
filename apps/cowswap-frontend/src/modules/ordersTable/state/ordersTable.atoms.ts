@@ -40,8 +40,8 @@ import { OrdersTableState } from './ordersTable.types'
 import { logOrdersTableDebug, setIsOrderUnfillable } from './ordersTable.utils'
 import { getTabsAndCurrentTab } from './params/ordersTableParams.atom'
 import { pendingOrdersPermitValidityStateAtom } from './permit/pendingOrdersPermitValidity.atom'
-import { getReduxOrdersByOrderTypeFromNetworkState } from './redux/getReduxOrdersByOrderType'
-import { reduxOrdersStateByChainAtom } from './redux/reduxOrders.atom'
+import { reduxOrdersStateAtom } from './redux/reduxOrders.atom'
+import { getReduxOrdersByOrderTypeFromNetworkState, getReduxOrdersStateByChain } from './redux/reduxOrders.utils'
 
 /**
  * WARNING: It looks like this could be a derived atom, but it cannot!
@@ -77,7 +77,7 @@ ordersTableStateAtom.onMount = () => {
       return
     }
 
-    const reduxOrdersStateInCurrentChain = get(reduxOrdersStateByChainAtom)(chainId)
+    const reduxOrdersStateInCurrentChain = getReduxOrdersStateByChain(get(reduxOrdersStateAtom), chainId)
     const reduxOrdersByOrderTypeResult = getReduxOrdersByOrderTypeFromNetworkState({
       account,
       reduxOrdersStateInCurrentChain,

@@ -3,8 +3,8 @@ import { atom } from 'jotai'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { getReduxOrdersByOrderTypeFromNetworkState } from './redux/getReduxOrdersByOrderType'
-import { reduxOrdersStateByChainAtom } from './redux/reduxOrders.atom'
+import { reduxOrdersStateAtom } from './redux/reduxOrders.atom'
+import { getReduxOrdersByOrderTypeFromNetworkState, getReduxOrdersStateByChain } from './redux/reduxOrders.utils'
 
 export const swapOrdersAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
@@ -17,11 +17,7 @@ export const swapOrdersAtom = atom((get) => {
     }
   }
 
-  console.log('swapOrdersAtom', chainId)
-
-  const reduxOrdersStateInCurrentChain = get(reduxOrdersStateByChainAtom)(chainId)
-
-  console.log('swapOrdersAtom', reduxOrdersStateInCurrentChain)
+  const reduxOrdersStateInCurrentChain = getReduxOrdersStateByChain(get(reduxOrdersStateAtom), chainId)
 
   return getReduxOrdersByOrderTypeFromNetworkState({
     account,

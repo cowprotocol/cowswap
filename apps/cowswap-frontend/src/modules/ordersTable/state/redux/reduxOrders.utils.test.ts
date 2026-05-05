@@ -3,10 +3,10 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
-import type { OrderObject } from 'legacy/state/orders/reducer'
+import type { OrderObject, OrdersState } from 'legacy/state/orders/reducer'
 import type { SerializedToken } from 'legacy/state/user/types'
 
-import { getReduxOrdersByOrderTypeFromNetworkState } from './getReduxOrdersByOrderType'
+import { getReduxOrdersByOrderTypeFromNetworkState, getReduxOrdersStateByChain } from './reduxOrders.utils'
 
 const MOCK_ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const OTHER_OWNER = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
@@ -110,5 +110,34 @@ describe('getReduxOrdersByOrderTypeFromNetworkState', () => {
       uiOrderType: UiOrderType.SWAP,
     })
     expect(swapResult.reduxOrders.map((o) => o.id)).toEqual([marketOrder.id])
+  })
+})
+
+describe('getReduxOrdersStateByChain', () => {
+  it('returns default network state merged with persisted chain state', () => {
+    const pendingOrder = makeOrderObject({
+      id: '0x01',
+      owner: MOCK_ACCOUNT,
+      orderClass: OrderClass.LIMIT,
+    })
+    const reduxOrdersState: OrdersState = {
+      [MOCK_CHAIN]: {
+        ...getDefaultNetworkState(MOCK_CHAIN),
+        pending: { '0x01': pendingOrder },
+      },
+    }
+
+    const network = getReduxOrdersStateByChain(reduxOrdersState, MOCK_CHAIN)
+
+    expect(network.pending['0x01']).toEqual(pendingOrder)
+    expect(network.lastCheckedBlock).toBe(getDefaultNetworkState(MOCK_CHAIN).lastCheckedBlock)
+  })
+
+  it('returns default network state when chain has no persisted orders', () => {
+    const reduxOrdersState: OrdersState = {}
+
+    const network = getReduxOrdersStateByChain(reduxOrdersState, MOCK_CHAIN)
+
+    expect(network).toEqual(getDefaultNetworkState(MOCK_CHAIN))
   })
 })
