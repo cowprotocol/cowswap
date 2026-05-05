@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { jotaiStore } from '@cowprotocol/core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { observe } from 'jotai-effect'
@@ -46,7 +47,7 @@ const resetOrdersToCancelKeyAtom = atom((get) => {
   const { chainId, account } = get(walletInfoAtom)
   const tab = get(tabParamAtom)
 
-  return [chainId, account, tab].join('::')
+  return [chainId, getAddressKey(account ?? ''), tab].join('::')
 })
 
 ordersToCancelAtom.onMount = () => {
