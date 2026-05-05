@@ -93,10 +93,10 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
@@ -119,14 +119,11 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
 let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
-}
-
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
+export function WalletUpdater(): null {
   const { connector } = useConnection()
+
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)

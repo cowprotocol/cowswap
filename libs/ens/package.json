@@ -32,7 +32,7 @@
     "react": "19.1.2",
     "swr": "^2.3.3",
     "viem": "^2.42.1",
-    "wagmi": "^3.1.0"
+    "wagmi": "^3.4.2"
   },
   "devDependencies": {
     "@types/react": "19.1.3"
