@@ -1,4 +1,3 @@
-export { AffiliateFeedbackButton } from './containers/AffiliateFeedbackButton.container'
 export { AffiliatePartnerCodeCreation } from './containers/AffiliatePartnerCodeCreation'
 export { AffiliatePartnerCodeInfo } from './containers/AffiliatePartnerCodeInfo'
 export { AffiliatePartnerNextPayout } from './containers/AffiliatePartnerNextPayout'
