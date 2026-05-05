@@ -41,9 +41,11 @@ const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 // We patch Storage.prototype (not the localStorage instance) because browsers may ignore
 // own-property overrides on native host objects like localStorage. AppKit's SafeLocalStorage
 // calls `localStorage.setItem()` which resolves through Storage.prototype.
-if (typeof window !== 'undefined' && isInjectedWidget()) {
+if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
   // Patch Storage.prototype to redirect @appkit/* on localStorage to sessionStorage.
-  // Don't clear @appkit/* keys from localStorage — that would wipe the main app's state.
+  // Applies to ALL cross-origin iframes (Safe App and widget) — not just the widget.
+  // The regular app's @appkit/* writes trigger `storage` events in iframes on the same
+  // origin, causing the Safe iframe to blink and the widget to leak connection state.
   const origSetItem = Storage.prototype.setItem
   const origGetItem = Storage.prototype.getItem
   const origRemoveItem = Storage.prototype.removeItem
