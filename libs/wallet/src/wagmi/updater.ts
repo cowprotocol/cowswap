@@ -93,10 +93,10 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
 
   return useMemo(() => {
@@ -125,8 +125,9 @@ interface WalletUpdaterProps {
 
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const { connector } = useConnection()
+
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
@@ -134,6 +135,11 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
   const setEip6963Provider = useSetEip6963Provider()
   const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
+
+  useEffect(() => {
+    // TODO: remove widget connector when standaloneMode is true
+    console.log('standaloneMode', standaloneMode)
+  }, [standaloneMode])
 
   // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
   useEffect(() => {
