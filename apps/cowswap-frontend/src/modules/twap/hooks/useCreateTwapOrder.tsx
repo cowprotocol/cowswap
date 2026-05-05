@@ -215,6 +215,8 @@ export function useCreateTwapOrder() {
 
         // TODO: Clear filters if the new order is not visible before navigating.
 
+        console.log('isSmartContractWallet =', isSmartContractWallet)
+
         // Navigate to open orders after successful placement
         navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
       } catch (error) {

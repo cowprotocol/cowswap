@@ -6,7 +6,12 @@ import { ConnectionType } from '../../api/types'
 export const isSafeAppAtom = atom((get) => {
   const { connector } = get(walletInfoAtom)
 
-  return connector?.connectionType === ConnectionType.GNOSIS_SAFE
+  console.log('connector?.type =', connector?.type)
+  console.log('connector?.connectionType =', connector?.connectionType)
+
+  // Wagmi connectors expose `type`; keep a fallback for older connector payloads
+  // that may still provide `connectionType`.
+  return connector?.type === ConnectionType.GNOSIS_SAFE || connector?.connectionType === ConnectionType.GNOSIS_SAFE
 })
 
 export const isSafeViaWcAtom = atom((get) => {
