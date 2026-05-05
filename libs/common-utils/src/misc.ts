@@ -123,7 +123,12 @@ export function getChainIdValues(): ChainId[] {
  */
 export function getProviderErrorMessage(error: unknown): string | undefined {
   if (typeof error === 'string') return error
-  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  if (error && typeof error === 'object') {
+    // Prefer viem's shortMessage (concise, human-readable) over the full message
+    // which includes verbose request arguments and hex data.
+    if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
+    if ('message' in error) return error.message as string
+  }
   return error?.toString()
 }
 
