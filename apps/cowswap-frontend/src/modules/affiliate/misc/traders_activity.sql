@@ -40,6 +40,8 @@ trades as (
     lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader_address,
     lower(cast(dune.cowprotocol.result_fac_trades.sell_token_address as varchar)) as sell_token,
     lower(cast(dune.cowprotocol.result_fac_trades.buy_token_address as varchar)) as buy_token,
+    cast(dune.cowprotocol.result_fac_trades.sell_token as varchar) as sell_token_symbol,
+    cast(dune.cowprotocol.result_fac_trades.buy_token as varchar) as buy_token_symbol,
     dune.cowprotocol.result_fac_trades.units_sold as executed_sell_amount,
     dune.cowprotocol.result_fac_trades.units_bought as executed_buy_amount,
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
@@ -187,6 +189,8 @@ select
   trades.order_uid,
   trades.sell_token,
   trades.buy_token,
+  trades.sell_token_symbol,
+  trades.buy_token_symbol,
   trades.executed_sell_amount,
   trades.executed_buy_amount
 from trades
