@@ -1,24 +1,25 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isImTokenBrowser } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
-import { createAppKit, type AppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { safe } from '@wagmi/connectors'
-import { http } from 'viem'
+import { injected, safe } from '@wagmi/connectors'
+import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
-import { throttledInjected } from './connectors/throttledInjected'
+import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
-import { SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof injected>
 
-// Detect if we're embedded in a cross-origin iframe (e.g. Safe).
-// Same-origin iframes (browser extensions like Loom, 1Password) can access parent.location —
-// only cross-origin iframes (Safe) throw a SecurityError.
-// Evaluated once at module load to avoid inconsistencies from extensions toggling iframe state.
+/**
+ * True when the app is running inside a cross-origin iframe (e.g. Safe App).
+ * Accessing window.parent.location.href throws a SecurityError for cross-origin frames.
+ * Same-origin iframes (e.g. local dev) do not throw.
+ */
 export const IS_CROSS_ORIGIN_IFRAME = (() => {
   if (typeof window === 'undefined' || window.self === window.top) return false
-
   try {
     void window.parent.location.href
     return false
@@ -26,6 +27,37 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
     return true
   }
 })()
+
+// AppKit must not be initialised inside a Safe App iframe — it interferes with Safe's
+// postMessage flow. The injected widget runs in a cross-origin iframe too, but it needs
+// AppKit to surface the wallet-connect modal to the end user.
+const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
+
+function getConnectors(): ConnectorInstance[] {
+  if (IS_CROSS_ORIGIN_IFRAME) {
+    if (isInjectedWidget()) {
+      return [
+        injected({
+          shimDisconnect: true,
+          target: {
+            name: 'CoW Widget',
+            id: COW_WIDGET_CONNECTOR_ID,
+            provider: new WidgetEthereumProvider() as EIP1193Provider,
+          },
+        }),
+        injected({ shimDisconnect: true }),
+        // Include Safe connector so the widget can auto-connect when hosted inside a Safe app
+        // (e.g. widget-configurator loaded as a Safe App). IframeSafeSdkBridge in widget-lib
+        // already forwards the Safe SDK postMessages through the configurator to app.safe.global.
+        safe({ shimDisconnect: true }),
+      ]
+    }
+
+    return [safe({ shimDisconnect: true }), injected({ shimDisconnect: true })]
+  }
+
+  return [injected({ shimDisconnect: true })]
+}
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {
@@ -39,7 +71,21 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<SupportedChainId, Transport>,
 )
 
+/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
+const customRpcUrls: Record<string, Array<{ url: string }>> = {}
+for (const chain of SUPPORTED_REOWN_NETWORKS) {
+  const url = RPC_URLS[chain.id as SupportedChainId]
+  if (url) {
+    customRpcUrls[`eip155:${chain.id}`] = [{ url }]
+  }
+}
+
 const projectId = 'ac287751638b5d374a03c39e37f70376'
+
+// Use a distinct storage key per context to avoid cross-context session pollution.
+const WAGMI_STORAGE_KEY = isSafeIframe
+  ? 'cowswap-wallet-safe'
+  : 'cowswap-wallet' + (isInjectedWidget() ? COW_WIDGET_CONNECTOR_ID : '')
 
 const storage =
   typeof window === 'undefined'
@@ -48,49 +94,35 @@ const storage =
       })
     : createStorage({
         storage: window.localStorage,
-        key: IS_CROSS_ORIGIN_IFRAME ? 'cowswap-wallet-safe' : 'cowswap-wallet',
+        key: WAGMI_STORAGE_KEY,
       })
 
-// ---------------------------------------------------------------------------
-// Iframe (Safe App) path — lightweight wagmi-only config, no AppKit.
-//
-// AppKit brings EIP-6963 discovery, injected connector management, reconnection
-// logic, localStorage state syncing, etc. All of this interferes with the Safe
-// iframe because window.ethereum and localStorage are shared with the regular
-// browser tab. Instead of monkey-patching each interference point, we simply
-// don't instantiate AppKit in the iframe. SafeConnectionHandler manages the
-// Safe connector directly via wagmi core.
-// ---------------------------------------------------------------------------
-
-function createIframeConfig(): { config: Config; wagmiAdapter: WagmiAdapter | null; reownAppKit: AppKit | null } {
-  const chains = SUPPORTED_REOWN_NETWORKS
-  const config = createConfig({
-    chains,
-    connectors: [safe({ shimDisconnect: true })],
-    multiInjectedProviderDiscovery: false,
-    storage,
-    transports: Object.fromEntries(chains.map((chain) => [chain.id, wagmiTransports[chain.id as SupportedChainId]])),
-  })
-
-  return { config, wagmiAdapter: null, reownAppKit: null }
+const metadata = {
+  name: 'CoW Swap | The smartest way to trade cryptocurrencies',
+  description:
+    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
+  url: 'https://swap.cow.fi',
+  icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
-// ---------------------------------------------------------------------------
-// Regular tab path — full AppKit + WagmiAdapter setup.
-// ---------------------------------------------------------------------------
+const connectors = getConnectors()
 
-function createRegularConfig(): { config: Config; wagmiAdapter: WagmiAdapter; reownAppKit: AppKit } {
-  /** CAIP-shaped RPCs for AppKit UI / network metadata. */
-  const customRpcUrls: Record<string, Array<{ url: string }>> = {}
-  for (const chain of SUPPORTED_REOWN_NETWORKS) {
-    const url = RPC_URLS[chain.id as SupportedChainId]
-    if (url) {
-      customRpcUrls[`eip155:${chain.id}`] = [{ url }]
-    }
-  }
+let wagmiAdapter: WagmiAdapter | null = null
+let reownAppKit: ReturnType<typeof createAppKit> | null = null
+let config: Config
 
-  const adapter = new WagmiAdapter({
-    connectors: [throttledInjected()] as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
+if (isSafeIframe) {
+  // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
+  config = createConfig({
+    connectors,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    chains: SUPPORTED_REOWN_NETWORKS as any,
+    storage,
+    transports: wagmiTransports,
+  })
+} else {
+  wagmiAdapter = new WagmiAdapter({
+    connectors: connectors as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
     customRpcUrls,
     networks: SUPPORTED_REOWN_NETWORKS,
     projectId,
@@ -98,8 +130,27 @@ function createRegularConfig(): { config: Config; wagmiAdapter: WagmiAdapter; re
     transports: wagmiTransports,
   })
 
-  const appKit = createAppKit({
-    adapters: [adapter],
+  config = wagmiAdapter.wagmiConfig
+
+  const RECENT_CONNECTOR_KEY = 'recentConnectorId'
+  if (isInjectedWidget()) {
+    // Recent connector takes priority, and we have to override it in the widget
+    storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
+
+    // Prevent the CoW Widget connector from appearing in the wallet modal.
+    // It must remain registered with wagmi (for reconnect/connect to work) but should not be
+    // shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
+      if (connector.id === COW_WIDGET_CONNECTOR_ID) return
+      return _addWagmiConnector(connector)
+    }
+  }
+
+  reownAppKit = createAppKit({
+    adapters: [wagmiAdapter],
     allowUnsupportedChain: true,
     customRpcUrls,
     defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
@@ -121,24 +172,12 @@ function createRegularConfig(): { config: Config; wagmiAdapter: WagmiAdapter; re
       socials: false,
       connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
     },
-    metadata: {
-      name: 'CoW Swap | The smartest way to trade cryptocurrencies',
-      description:
-        'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
-      url: 'https://swap.cow.fi',
-      icons: ['https://swap.cow.fi/apple-touch-icon.png'],
-    },
+    metadata,
     networks: SUPPORTED_REOWN_NETWORKS,
     projectId,
     termsConditionsUrl:
       'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
   })
-
-  return { config: adapter.wagmiConfig, wagmiAdapter: adapter, reownAppKit: appKit }
 }
 
-const result = IS_CROSS_ORIGIN_IFRAME ? createIframeConfig() : createRegularConfig()
-
-export const config = result.config
-export const wagmiAdapter = result.wagmiAdapter
-export const reownAppKit = result.reownAppKit
+export { wagmiAdapter, reownAppKit, config }

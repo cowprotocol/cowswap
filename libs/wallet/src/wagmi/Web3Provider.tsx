@@ -1,25 +1,47 @@
 import { useEffect, type ReactNode } from 'react'
 
-import { isImTokenBrowser } from '@cowprotocol/common-utils'
+import { isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
-import { config, IS_CROSS_ORIGIN_IFRAME, reownAppKit } from './config'
+import { config, reownAppKit } from './config'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
 import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
 
+function isEmbeddedInIframe(): boolean {
+  return typeof window !== 'undefined' && window.self !== window.top
+}
+
 function ReconnectOnMount(): null {
   useEffect(() => {
-    // In Safe iframe, SafeConnectionHandler handles connection — skip generic reconnect
-    // to avoid briefly restoring a non-Safe connector from shared storage.
-    if (IS_CROSS_ORIGIN_IFRAME) return
+    // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
+    // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
+    if (isEmbeddedInIframe() && !isInjectedWidget()) return
+
+    if (isInjectedWidget()) {
+      // In widget context, use reconnect() (not connect()) to avoid triggering wallet popups.
+      // connect() with shimDisconnect=true calls wallet_requestPermissions which shows a MetaMask
+      // account selector. reconnect() uses eth_accounts (silent) via isReconnecting=true path.
+      // IframeRpcProviderBridge forwards eth_accounts to the parent wallet's provider.
+      const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
+      if (widgetConnector) {
+        // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
+        // connector was previously "disconnected" (which can happen on widget recreations).
+        void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
+        reconnect(config, { connectors: [widgetConnector] }).catch((error) => {
+          console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
+        })
+      }
+      return
+    }
 
     if (getIsInjectedMobileBrowser()) {
       const injectedConnector = config.connectors.find((c) => c.id === 'injected')
@@ -65,9 +87,8 @@ function ReconnectOnMount(): null {
 
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
+    if (!reownAppKit) return
     const appKit = reownAppKit
-    if (!appKit) return
-
     const handler = (): void => {
       void appKit.open()
     }
@@ -83,7 +104,7 @@ interface Web3ProviderProps {
 
 export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={config} reconnectOnMount={false}>
       <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>
