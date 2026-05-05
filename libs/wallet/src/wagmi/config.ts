@@ -28,6 +28,56 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
   }
 })()
 
+// Safe App iframe: skip AppKit — it interferes with Safe's postMessage flow.
+// The widget needs AppKit for the standalone-mode wallet modal, so it keeps AppKit
+// but with localStorage isolation (see below) to avoid cross-context state leaks.
+const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
+
+// Isolate AppKit's @appkit/* localStorage keys in the widget iframe.
+// The widget and the main app share the same origin (= same localStorage). Without isolation,
+// AppKit syncs state via `storage` events: connecting in the widget auto-connects the app,
+// and disconnecting from the app disconnects the widget.
+//
+// We patch Storage.prototype (not the localStorage instance) because browsers may ignore
+// own-property overrides on native host objects like localStorage. AppKit's SafeLocalStorage
+// calls `localStorage.setItem()` which resolves through Storage.prototype.
+if (typeof window !== 'undefined' && isInjectedWidget()) {
+  // Step 1: Clear @appkit/* keys leaked from the main app so AppKit starts clean
+  // (otherwise it reads connection_status=connected and blocks the connect modal).
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i)
+    if (key?.startsWith('@appkit/')) {
+      localStorage.removeItem(key)
+    }
+  }
+
+  // Step 2: Patch Storage.prototype to redirect @appkit/* on localStorage to sessionStorage.
+  const origSetItem = Storage.prototype.setItem
+  const origGetItem = Storage.prototype.getItem
+  const origRemoveItem = Storage.prototype.removeItem
+
+  Storage.prototype.setItem = function (key: string, value: string) {
+    if (this === localStorage && key.startsWith('@appkit/')) {
+      origSetItem.call(sessionStorage, key, value)
+    } else {
+      origSetItem.call(this, key, value)
+    }
+  }
+  Storage.prototype.getItem = function (key: string): string | null {
+    if (this === localStorage && key.startsWith('@appkit/')) {
+      return origGetItem.call(sessionStorage, key)
+    }
+    return origGetItem.call(this, key)
+  }
+  Storage.prototype.removeItem = function (key: string) {
+    if (this === localStorage && key.startsWith('@appkit/')) {
+      origRemoveItem.call(sessionStorage, key)
+    } else {
+      origRemoveItem.call(this, key)
+    }
+  }
+}
+
 function getConnectors(): ConnectorInstance[] {
   if (IS_CROSS_ORIGIN_IFRAME) {
     if (isInjectedWidget()) {
@@ -78,11 +128,11 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
 // Use a distinct storage key per context to avoid cross-context session pollution.
-const WAGMI_STORAGE_KEY = IS_CROSS_ORIGIN_IFRAME
-  ? isInjectedWidget()
-    ? 'cowswap-wallet' + COW_WIDGET_CONNECTOR_ID
-    : 'cowswap-wallet-safe'
-  : 'cowswap-wallet'
+const WAGMI_STORAGE_KEY = isInjectedWidget()
+  ? 'cowswap-wallet' + COW_WIDGET_CONNECTOR_ID
+  : IS_CROSS_ORIGIN_IFRAME
+    ? 'cowswap-wallet-safe'
+    : 'cowswap-wallet'
 
 const storage =
   typeof window === 'undefined'
@@ -108,13 +158,8 @@ let wagmiAdapter: WagmiAdapter | null = null
 let reownAppKit: ReturnType<typeof createAppKit> | null = null
 let config: Config
 
-// Skip AppKit in iframe contexts (Safe App and widget). AppKit writes shared @appkit/*
-// localStorage keys that leak between same-origin contexts — connecting in the widget
-// auto-connects the app, and disconnecting from the app disconnects the widget.
-// Plain wagmi configs with namespaced storage keys avoid this entirely.
-const skipAppKit = IS_CROSS_ORIGIN_IFRAME
-
-if (skipAppKit) {
+if (isSafeIframe) {
+  // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
   config = createConfig({
     connectors,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,6 +179,23 @@ if (skipAppKit) {
 
   config = wagmiAdapter.wagmiConfig
 
+  if (isInjectedWidget()) {
+    const RECENT_CONNECTOR_KEY = 'recentConnectorId'
+    // Recent connector takes priority, and we have to override it in the widget
+    storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
+
+    // Prevent the CoW Widget connector from appearing in the wallet modal.
+    // It must remain registered with wagmi (for reconnect/connect to work) but should not be
+    // shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
+      if (connector.id === COW_WIDGET_CONNECTOR_ID) return
+      return _addWagmiConnector(connector)
+    }
+  }
+
   reownAppKit = createAppKit({
     adapters: [wagmiAdapter],
     allowUnsupportedChain: true,
@@ -144,7 +206,10 @@ if (skipAppKit) {
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
     enableEIP6963: !isImTokenBrowser,
-    enableReconnect: true,
+    // In the widget, disable AppKit's reconnect to prevent it from reading shared @appkit/*
+    // localStorage state from the main app. The widget reconnects explicitly via ReconnectOnMount.
+    // In the main app, keep it enabled for normal auto-reconnect on page reload.
+    enableReconnect: !isInjectedWidget(),
     enableWalletGuide: false,
     featuredWalletIds: [
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
