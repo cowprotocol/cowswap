@@ -32,6 +32,7 @@ import {
 } from 'modules/twap'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { TabOrderTypes, locationOrderTypeAtom } from 'common/state/routesState'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -46,7 +47,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
-  const { hideOrdersTable } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
+  const orderType = useAtomValue(locationOrderTypeAtom)
+  const hideOrdersTable =
+    orderType === TabOrderTypes.SWAP || orderType === TabOrderTypes.YIELD || widgetParams.hideOrdersTable
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }

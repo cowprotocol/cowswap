@@ -8,13 +8,18 @@ import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
+import { TabOrderTypes, locationOrderTypeAtom } from 'common/state/routesState'
+
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
 export function RegularLimitOrdersPage(): ReactNode {
   const isUnlocked = useIsWidgetUnlocked()
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
-  const { hideOrdersTable } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
+  const orderType = useAtomValue(locationOrderTypeAtom)
+  const hideOrdersTable =
+    orderType === TabOrderTypes.SWAP || orderType === TabOrderTypes.YIELD || widgetParams.hideOrdersTable
 
   return (
     <styledEl.PageWrapper
