@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { usePublicClient } from 'wagmi'
@@ -74,7 +74,9 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const publicClient = usePublicClient()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeApp = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = isSafeApp || isSafeViaWc
   const approveCallback = useApproveCallback(currency, spender)
   const approvalAnalytics = useApprovalAnalytics()
   const handleApprovalError = useHandleApprovalError(symbol)
