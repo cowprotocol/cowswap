@@ -78,6 +78,7 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   const { connector: currentConnector, isConnected } = useConnection()
   const connectors = useConnectors()
   const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
+  const isInSafeSdkContext = isConnectedThroughSafeApp && !!safe?.safeAddress
   const isConnectingToSafe = useRef(false)
 
   const safeRef = useRef(safe)
