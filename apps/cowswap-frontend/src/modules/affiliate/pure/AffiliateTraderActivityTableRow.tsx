@@ -1,23 +1,21 @@
 import { ReactNode } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { formatDateWithTimezone, formatShortDate, getExplorerOrderLink } from '@cowprotocol/common-utils'
-import { TokenLogo, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 import {
-  Badge,
-  BadgeTypes,
-  ContextMenuExternalLink,
-  ContextMenuTooltip,
-  InfoTooltip,
-  NetworkLogo,
-  UI,
-} from '@cowprotocol/ui'
+  formatDateWithTimezone,
+  formatShortDate,
+  getExplorerOrderLink,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
+import { Token } from '@cowprotocol/currency'
+import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
+import { Badge, BadgeTypes, ContextMenuExternalLink, ContextMenuTooltip, InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { MoreVertical } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { TraderActivityEligibilityReason, TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
@@ -39,40 +37,30 @@ export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivity
     is_eligible: isEligible,
     order_uid: uid,
     sell_token: sellTokenAddress,
+    sell_token_symbol: sellTokenSymbol,
+    buy_token_symbol: buyTokenSymbol,
   } = row
   const orderLink = getExplorerOrderLink(chainId, uid)
 
   const tokensByAddress = useTokensByAddressMapForChain(chainId)
   const sellToken = getTokenFromMapping(sellTokenAddress, chainId, tokensByAddress)
   const buyToken = getTokenFromMapping(buyTokenAddress, chainId, tokensByAddress)
+  const sellTokenLabel = sellToken?.symbol || sellTokenSymbol || shortenAddress(sellTokenAddress)
+  const buyTokenLabel = buyToken?.symbol || buyTokenSymbol || shortenAddress(buyTokenAddress)
+  const sellTokenLogo = sellToken || createDisplayToken(chainId, sellTokenAddress, sellTokenSymbol)
+  const buyTokenLogo = buyToken || createDisplayToken(chainId, buyTokenAddress, buyTokenSymbol)
 
   return (
     <tr>
       <td>
-        <span title={formatDateWithTimezone(toValidDate(creationDate))}>{formatShortDate(creationDate)}</span>
-      </td>
-      <td>
-        <NetworkCell>
-          <NetworkLogo chainId={chainId} size={16} />
-          <span>{CHAIN_INFO[chainId].label}</span>
-        </NetworkCell>
-      </td>
-      <td>
         <TradeCell>
-          <TokenPair>
-            <TokenIconSlot>
-              {sellToken ? <TokenLogo token={sellToken} size={24} hideNetworkBadge /> : <PlaceholderTokenIcon />}
-            </TokenIconSlot>
-            <TokenIconSlot $shift={-8}>
-              {buyToken ? <TokenLogo token={buyToken} size={24} hideNetworkBadge /> : <PlaceholderTokenIcon />}
-            </TokenIconSlot>
-          </TokenPair>
+          <CurrencyLogoPair sellToken={sellTokenLogo} buyToken={buyTokenLogo} />
           <TradeSummary>
             <TradeLine>
-              {sellToken ? `${formatTokenAmountDecimal(executedSellAmount)} ${sellToken.symbol}` : null}
+              {formatTokenAmountDecimal(executedSellAmount)} <TradeTokenSymbol>{sellTokenLabel}</TradeTokenSymbol>
             </TradeLine>
             <TradeLine>
-              {buyToken ? `${formatTokenAmountDecimal(executedBuyAmount)} ${buyToken.symbol}` : null}
+              {formatTokenAmountDecimal(executedBuyAmount)} <TradeTokenSymbol>{buyTokenLabel}</TradeTokenSymbol>
             </TradeLine>
           </TradeSummary>
         </TradeCell>
@@ -82,11 +70,14 @@ export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivity
       </td>
       <td>
         <EligibilityCell>
-          <Badge type={isEligible ? BadgeTypes.SUCCESS : BadgeTypes.ALERT}>
+          <EligibilityBadge type={isEligible ? BadgeTypes.SUCCESS : BadgeTypes.ALERT} $isEligible={isEligible}>
             {isEligible ? <Trans>Yes</Trans> : <Trans>No</Trans>}
-          </Badge>
+          </EligibilityBadge>
           {!isEligible && <InfoTooltip content={<EligibilityReasonMessage reason={eligibilityReason} />} size={14} />}
         </EligibilityCell>
+      </td>
+      <td>
+        <span title={formatDateWithTimezone(toValidDate(creationDate))}>{formatShortDate(creationDate)}</span>
       </td>
       <td>
         <ActionsCell>
@@ -100,6 +91,12 @@ export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivity
       </td>
     </tr>
   )
+}
+
+function createDisplayToken(chainId: TraderActivityRowResponse['chain_id'], address: string, symbol?: string): Token {
+  const label = symbol || shortenAddress(address)
+
+  return new Token(chainId, address, 18, label, label)
 }
 
 function EligibilityReasonMessage({ reason }: { reason: TraderActivityEligibilityReason }): ReactNode {
@@ -123,40 +120,17 @@ function EligibilityReasonMessage({ reason }: { reason: TraderActivityEligibilit
 
 const TradeCell = styled.div`
   display: flex;
+  flex-flow: row;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   min-width: 220px;
-`
-
-const TokenPair = styled.div`
-  display: inline-flex;
-  align-items: center;
-  min-width: 34px;
-`
-
-const TokenIconSlot = styled.span<{ $shift?: number }>`
-  display: inline-flex;
-  width: 26px;
-  height: 26px;
-  min-width: 26px;
-  min-height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(${UI.COLOR_PAPER});
-  overflow: hidden;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  margin-left: ${({ $shift = 0 }) => `${$shift}px`};
-`
-
-const PlaceholderTokenIcon = styled.span`
-  display: inline-flex;
-  width: 100%;
-  height: 100%;
-  background: var(${UI.COLOR_TEXT_OPACITY_25});
+  font-size: 12px;
+  font-weight: 500;
 `
 
 const TradeSummary = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   gap: 2px;
   min-width: 0;
 `
@@ -168,10 +142,12 @@ const TradeLine = styled.span`
   line-height: 1.2;
 `
 
-const NetworkCell = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+const TradeTokenSymbol = styled.span`
+  opacity: 0.7;
+`
+
+const EligibilityBadge = styled(Badge)<{ $isEligible: boolean }>`
+  cursor: ${({ $isEligible }) => ($isEligible ? 'default' : 'pointer')};
 `
 
 const EligibilityCell = styled.div`

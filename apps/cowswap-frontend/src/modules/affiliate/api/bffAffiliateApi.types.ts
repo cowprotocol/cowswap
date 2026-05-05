@@ -76,6 +76,8 @@ export interface TraderActivityRowResponse {
   trader_address: string
   sell_token: string
   buy_token: string
+  sell_token_symbol?: string
+  buy_token_symbol?: string
   executed_sell_amount: string
   executed_buy_amount: string
   usd_value: number

@@ -35,19 +35,16 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
             <thead>
               <tr>
                 <th>
-                  <Trans>Date</Trans>
-                </th>
-                <th>
-                  <Trans>Network</Trans>
-                </th>
-                <th>
                   <Trans>Trade</Trans>
                 </th>
                 <th>
-                  <Trans>Volume</Trans>
+                  <Trans>Eligible volume</Trans>
                 </th>
                 <th>
                   <Trans>Eligible</Trans>
+                </th>
+                <th>
+                  <Trans>Date</Trans>
                 </th>
                 <th />
               </tr>
@@ -85,6 +82,27 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 100px;
+  }
+
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 120px;
+  }
+
+  th:nth-child(5),
+  td:nth-child(5) {
+    width: 40px;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    text-align: right;
+  }
 
   th,
   td {
@@ -94,10 +112,19 @@ const Table = styled.table`
     border-bottom: 1px solid var(${UI.COLOR_BORDER});
   }
 
+  thead {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  thead th {
+    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  }
+
   th {
     font-size: 12px;
-    color: var(${UI.COLOR_TEXT_OPACITY_60});
-    font-weight: 600;
+    line-height: 1.1;
+    color: var(${UI.COLOR_TEXT});
+    font-weight: 500;
   }
 
   td {
