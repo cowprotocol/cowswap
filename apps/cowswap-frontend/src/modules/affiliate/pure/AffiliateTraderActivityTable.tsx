@@ -1,9 +1,11 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+
+import { OrdersTablePagination } from 'modules/ordersTable'
 
 import { Card } from 'pages/Account/styled'
 
@@ -12,6 +14,8 @@ import { CardTitle } from './shared'
 
 import { TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
 
+const AFFILIATE_ACTIVITY_PAGE_SIZE = 10
+
 interface AffiliateTraderActivityTableProps {
   rows: TraderActivityRowResponse[]
   showLoader?: boolean
@@ -19,6 +23,21 @@ interface AffiliateTraderActivityTableProps {
 
 export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTableProps): ReactNode {
   const { rows, showLoader } = props
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const rowsPage = useMemo(() => {
+    const start = (currentPage - 1) * AFFILIATE_ACTIVITY_PAGE_SIZE
+
+    return rows.slice(start, start + AFFILIATE_ACTIVITY_PAGE_SIZE)
+  }, [currentPage, rows])
+
+  useEffect(() => {
+    const lastPage = Math.max(Math.ceil(rows.length / AFFILIATE_ACTIVITY_PAGE_SIZE), 1)
+
+    if (currentPage > lastPage) {
+      setCurrentPage(lastPage)
+    }
+  }, [currentPage, rows.length])
 
   return (
     <TableCard showLoader={showLoader}>
@@ -50,11 +69,19 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {rowsPage.map((row) => (
                 <AffiliateTraderActivityTableRow row={row} key={row.order_uid} />
               ))}
             </tbody>
           </Table>
+          {rows.length > AFFILIATE_ACTIVITY_PAGE_SIZE && (
+            <OrdersTablePagination
+              pageSize={AFFILIATE_ACTIVITY_PAGE_SIZE}
+              totalCount={rows.length}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </TableWrapper>
       )}
     </TableCard>
