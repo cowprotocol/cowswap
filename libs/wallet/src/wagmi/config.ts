@@ -42,16 +42,8 @@ const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 // own-property overrides on native host objects like localStorage. AppKit's SafeLocalStorage
 // calls `localStorage.setItem()` which resolves through Storage.prototype.
 if (typeof window !== 'undefined' && isInjectedWidget()) {
-  // Step 1: Clear @appkit/* keys leaked from the main app so AppKit starts clean
-  // (otherwise it reads connection_status=connected and blocks the connect modal).
-  for (let i = localStorage.length - 1; i >= 0; i--) {
-    const key = localStorage.key(i)
-    if (key?.startsWith('@appkit/')) {
-      localStorage.removeItem(key)
-    }
-  }
-
-  // Step 2: Patch Storage.prototype to redirect @appkit/* on localStorage to sessionStorage.
+  // Patch Storage.prototype to redirect @appkit/* on localStorage to sessionStorage.
+  // Don't clear @appkit/* keys from localStorage — that would wipe the main app's state.
   const origSetItem = Storage.prototype.setItem
   const origGetItem = Storage.prototype.getItem
   const origRemoveItem = Storage.prototype.removeItem
@@ -90,7 +82,6 @@ function getConnectors(): ConnectorInstance[] {
             provider: new WidgetEthereumProvider() as EIP1193Provider,
           },
         }),
-        injected({ shimDisconnect: true }),
         // Include Safe connector so the widget can auto-connect when hosted inside a Safe app
         // (e.g. widget-configurator loaded as a Safe App). IframeSafeSdkBridge in widget-lib
         // already forwards the Safe SDK postMessages through the configurator to app.safe.global.
@@ -205,11 +196,11 @@ if (isSafeIframe) {
     // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-    enableEIP6963: !isImTokenBrowser,
-    // In the widget, disable AppKit's reconnect to prevent it from reading shared @appkit/*
-    // localStorage state from the main app. The widget reconnects explicitly via ReconnectOnMount.
-    // In the main app, keep it enabled for normal auto-reconnect on page reload.
-    enableReconnect: !isInjectedWidget(),
+    // Disable EIP-6963 in the widget — MetaMask is a per-origin singleton, so EIP-6963
+    // auto-detection would pick up MetaMask's state from the main app tab, causing
+    // cross-context connection leaks.
+    enableEIP6963: !isImTokenBrowser && !isInjectedWidget(),
+    enableReconnect: true,
     enableWalletGuide: false,
     featuredWalletIds: [
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
