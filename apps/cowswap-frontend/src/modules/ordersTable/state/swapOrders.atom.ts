@@ -17,7 +17,11 @@ export const swapOrdersAtom = atom((get) => {
     }
   }
 
+  console.log('swapOrdersAtom', chainId)
+
   const reduxOrdersStateInCurrentChain = get(reduxOrdersStateByChainAtom)(chainId)
+
+  console.log('swapOrdersAtom', reduxOrdersStateInCurrentChain)
 
   return getReduxOrdersByOrderTypeFromNetworkState({
     account,

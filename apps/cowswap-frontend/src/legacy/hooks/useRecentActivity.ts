@@ -1,17 +1,21 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSelector } from 'react-redux'
+
+import { AppState } from 'legacy/state'
 import { useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder, useOrdersById } from 'legacy/state/orders/hooks'
 
-import { OrderFillability, usePendingOrdersFillability, swapOrdersAtom } from 'modules/ordersTable'
+import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
+import { getReduxOrdersByOrderTypeFromNetworkState } from 'modules/ordersTable/state/redux/getReduxOrdersByOrderType'
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
 
@@ -125,9 +129,25 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export function useRecentActivity(): TransactionAndOrder[] {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const allTransactions = useAllTransactions()
-  const { reduxOrders: allNonEmptyOrders } = useAtomValue(swapOrdersAtom)
+  const reduxOrdersFromSelector = useSelector((state: AppState) => {
+    if (!chainId || !account) return []
+
+    const reduxOrdersStateInCurrentChain = state.orders?.[chainId]
+
+    if (!reduxOrdersStateInCurrentChain) return []
+
+    return getReduxOrdersByOrderTypeFromNetworkState({
+      account,
+      reduxOrdersStateInCurrentChain,
+      uiOrderType: UiOrderType.SWAP,
+    }).reduxOrders
+  })
+  const allNonEmptyOrders = reduxOrdersFromSelector
+
+  // const { reduxOrders: allNonEmptyOrdersTest, chainId: chainIdTest } = useAtomValue(swapOrdersAtom)
+  // console.log("useRecentActivity", chainIdTest, allNonEmptyOrdersTest)
 
   // TODO: Consider moving this to swapOrdersAtom as well:
   const recentOrdersAdjusted = useMemo<TransactionAndOrder[]>(() => {

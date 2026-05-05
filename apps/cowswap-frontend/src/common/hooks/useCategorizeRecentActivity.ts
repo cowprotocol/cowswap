@@ -47,6 +47,7 @@ export function useCategorizeRecentActivity() {
       [[], []],
     )
   }, [allRecentActivity, allTransactions])
+
   return useMemo(() => ({ pendingActivity, confirmedActivity }), [pendingActivity, confirmedActivity])
 }
 
