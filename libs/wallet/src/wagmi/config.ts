@@ -33,19 +33,13 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
 // but with localStorage isolation (see below) to avoid cross-context state leaks.
 const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 
-// Isolate AppKit's @appkit/* localStorage keys in the widget iframe.
-// The widget and the main app share the same origin (= same localStorage). Without isolation,
-// AppKit syncs state via `storage` events: connecting in the widget auto-connects the app,
-// and disconnecting from the app disconnects the widget.
-//
+// Isolate AppKit's @appkit/* localStorage keys in ALL cross-origin iframes (Safe App and widget).
+// The regular app's @appkit/* writes trigger `storage` events in iframes on the same
+// origin, causing the Safe iframe to blink and the widget to leak connection state.
 // We patch Storage.prototype (not the localStorage instance) because browsers may ignore
-// own-property overrides on native host objects like localStorage. AppKit's SafeLocalStorage
-// calls `localStorage.setItem()` which resolves through Storage.prototype.
+// own-property overrides on native host objects. AppKit's SafeLocalStorage calls
+// `localStorage.setItem()` which resolves through Storage.prototype.
 if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
-  // Patch Storage.prototype to redirect @appkit/* on localStorage to sessionStorage.
-  // Applies to ALL cross-origin iframes (Safe App and widget) — not just the widget.
-  // The regular app's @appkit/* writes trigger `storage` events in iframes on the same
-  // origin, causing the Safe iframe to blink and the widget to leak connection state.
   const origSetItem = Storage.prototype.setItem
   const origGetItem = Storage.prototype.getItem
   const origRemoveItem = Storage.prototype.removeItem
@@ -75,6 +69,10 @@ if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
 function getConnectors(): ConnectorInstance[] {
   if (IS_CROSS_ORIGIN_IFRAME) {
     if (isInjectedWidget()) {
+      // No plain `injected` connector here — MetaMask is a per-origin singleton, so registering
+      // it would leak wallet state between the widget and the main app (connecting in one
+      // auto-connects the other). The widget connects via WidgetEthereumProvider (dapp mode)
+      // or WalletConnect (standalone mode) instead.
       return [
         injected({
           shimDisconnect: true,
@@ -172,8 +170,8 @@ if (isSafeIframe) {
 
   config = wagmiAdapter.wagmiConfig
 
+  const RECENT_CONNECTOR_KEY = 'recentConnectorId'
   if (isInjectedWidget()) {
-    const RECENT_CONNECTOR_KEY = 'recentConnectorId'
     // Recent connector takes priority, and we have to override it in the widget
     storage.setItem(RECENT_CONNECTOR_KEY, COW_WIDGET_CONNECTOR_ID)
 
@@ -198,7 +196,7 @@ if (isSafeIframe) {
     // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-    // Disable EIP-6963 in the widget — MetaMask is a per-origin singleton, so EIP-6963
+    // Also disable EIP-6963 in the widget — MetaMask is a per-origin singleton, so EIP-6963
     // auto-detection would pick up MetaMask's state from the main app tab, causing
     // cross-context connection leaks.
     enableEIP6963: !isImTokenBrowser && !isInjectedWidget(),

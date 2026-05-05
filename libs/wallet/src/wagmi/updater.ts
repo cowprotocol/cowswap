@@ -13,7 +13,7 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
-import { useSetEip6963Provider } from '../api/hooks'
+import { useIsMetamaskBrowserExtensionWallet, useSetEip6963Provider } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
@@ -98,6 +98,7 @@ function useWalletDetails(account?: Address): WalletDetails {
   const isSmartContractWallet = useIsSmartContractWallet()
   const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
+  const isMetaMask = useIsMetamaskBrowserExtensionWallet()
 
   return useMemo(() => {
     return {
@@ -107,12 +108,13 @@ function useWalletDetails(account?: Address): WalletDetails {
       ensName: ensName || undefined,
       isSupportedWallet: checkIsSupportedWallet(walletName),
 
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
+      // EOAs can always sign off-chain. MetaMask smart accounts also support EIP-1271 off-chain
+      // signing. All other smart contract wallets (Coinbase Smart Wallet, ERC-4337, Safe, etc.)
+      // must use on-chain pre-signing.
+      allowsOffchainSigning: !isSmartContractWallet || isMetaMask,
       isSafeApp,
     }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
+  }, [isSmartContractWallet, isSafeApp, isMetaMask, walletName, icon, ensName])
 }
 
 // used for on-chain calls
