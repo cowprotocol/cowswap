@@ -254,8 +254,8 @@ msgstr "The account address which will/did receive the bought amount."
 #~ msgstr "Selected token: {sym}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-msgid "Volume"
-msgstr "Volume"
+#~ msgid "Volume"
+#~ msgstr "Volume"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
@@ -1511,10 +1511,9 @@ msgstr "Begin with TWAP Today!"
 msgid "Gas-free"
 msgstr "Gas-free"
 
-#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
-#: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
-#~ msgid "Eligible volume"
-#~ msgstr "Eligible volume"
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
+msgid "Eligible volume"
+msgstr "Eligible volume"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
@@ -3343,8 +3342,8 @@ msgid "Account overview"
 msgstr "Account overview"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-msgid "Network"
-msgstr "Network"
+#~ msgid "Network"
+#~ msgstr "Network"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate your"
