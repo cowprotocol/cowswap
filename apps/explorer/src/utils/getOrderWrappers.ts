@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { decodeFullAppData } from './decodeFullAppData'
 import { WRAPPERS_BY_ADDRESS, WrapperInfo } from './wrapperRegistry'
@@ -10,7 +10,7 @@ export interface ResolvedWrapper {
   data: string | undefined
   isOmittable: boolean
   info: WrapperInfo
-  loadComponent: () => Promise<React.ComponentType<{ data: string }>>
+  loadComponent?: () => Promise<React.ComponentType<{ data: string }>>
 }
 
 export function getOrderWrappers(fullAppData: string | undefined): ResolvedWrapper[] {
@@ -21,7 +21,7 @@ export function getOrderWrappers(fullAppData: string | undefined): ResolvedWrapp
   const entries = metadata?.wrappers ?? []
 
   return entries.map((entry) => {
-    const registryEntry = WRAPPERS_BY_ADDRESS[entry.address.toLowerCase()]
+    const registryEntry = WRAPPERS_BY_ADDRESS[getAddressKey(entry.address)]
 
     if (registryEntry) {
       return {
@@ -39,10 +39,6 @@ export function getOrderWrappers(fullAppData: string | undefined): ResolvedWrapp
       data: entry.data,
       isOmittable: entry.isOmittable ?? false,
       info: { name: short },
-      loadComponent: async () => {
-        const { createUnknownComponent } = await import('./wrappers/unknown')
-        return createUnknownComponent(entry.address)
-      },
     }
   })
 }

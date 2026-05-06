@@ -3,10 +3,15 @@ import React, { createContext, ReactElement, Suspense, useContext, useEffect, us
 import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { RenderedData, WrapperHeader, WrapperItem, WrapperList } from './styled'
+
 import { Order } from '../../../api/operator'
+import { usePopperDefault } from '../../../hooks/usePopper'
 import { useNetworkId } from '../../../state/network/hooks'
 import { getOrderWrappers, ResolvedWrapper } from '../../../utils/getOrderWrappers'
-import { RenderedData, WrapperHeader, WrapperItem, WrapperList } from './styled'
+import { WRAPPERS_BY_ADDRESS } from '../../../utils/wrapperRegistry'
+import { useContractName } from '../../../utils/wrappers/_vaultLookup'
+import { Tooltip } from '../../Tooltip'
 
 export const OrderCtx = createContext<Order | null>(null)
 
@@ -30,7 +35,7 @@ export function OrderWrapperDetails({ fullAppData, order, children }: OrderWrapp
       {children(
         <WrapperList>
           {wrappers.map((wrapper) => (
-            <WrapperEntry key={wrapper.address} wrapper={wrapper} />
+            <WrapperEntry key={`${wrapper.address}-${wrapper.data ?? ''}`} wrapper={wrapper} />
           ))}
         </WrapperList>,
       )}
@@ -38,41 +43,50 @@ export function OrderWrapperDetails({ fullAppData, order, children }: OrderWrapp
   )
 }
 
+const UNKNOWN_WRAPPER_TOOLTIP =
+  'Explorer does not recognize this wrapper address yet, so it cannot decode wrapper-specific details. This may be a custom wrapper or a supported wrapper missing from the registry.'
+
 function WrapperEntry({ wrapper }: { wrapper: ResolvedWrapper }): ReactElement {
   const [Component, setComponent] = useState<React.ComponentType<{ data: string }> | null>(null)
   const { info, address, data, isOmittable } = wrapper
   const chainId = useNetworkId() as SupportedChainId | null
+  const isUnknown = !WRAPPERS_BY_ADDRESS[address.toLowerCase()]
+  const contractName = useContractName(isUnknown ? address : '')
+  const { tooltipProps, targetProps } = usePopperDefault<HTMLLIElement>('top')
 
   useEffect(() => {
-    if (!data) return
+    if (!data || !wrapper.loadComponent) return
     wrapper.loadComponent().then((Comp) => setComponent(() => Comp))
   }, [wrapper, data])
 
   const addressUrl = chainId ? getBlockExplorerUrl(chainId, 'contract', address) : undefined
+  const shortAddress = `${address.slice(0, 6)}…${address.slice(-4)}`
+  const displayName = isUnknown ? (contractName ?? shortAddress) : info.name
 
   return (
-    <WrapperItem>
-      <WrapperHeader>
-        {info.image && <img src={info.image} alt={info.name} />}
-        <strong>{info.name}</strong>
-        {addressUrl ? (
-          <a href={addressUrl} target="_blank" rel="noopener noreferrer" title={address}>
-            ({address.slice(0, 6)}…{address.slice(-4)})
-          </a>
-        ) : (
-          <span title={address}>
-            ({address.slice(0, 6)}…{address.slice(-4)})
-          </span>
+    <>
+      <WrapperItem {...(isUnknown ? targetProps : {})}>
+        <WrapperHeader>
+          {info.image && <img src={info.image} alt={info.name} />}
+          <strong>{displayName}</strong>
+          {addressUrl ? (
+            <a href={addressUrl} target="_blank" rel="noopener noreferrer" title={address}>
+              ({shortAddress})
+            </a>
+          ) : (
+            <span title={address}>({shortAddress})</span>
+          )}
+          {isOmittable && <em>(omittable)</em>}
+        </WrapperHeader>
+        {Component && data && (
+          <RenderedData>
+            <Suspense fallback={<span>Loading…</span>}>
+              <Component data={data} />
+            </Suspense>
+          </RenderedData>
         )}
-        {isOmittable && <em>(omittable)</em>}
-      </WrapperHeader>
-      {Component && data && (
-        <RenderedData>
-          <Suspense fallback={<span>Loading…</span>}>
-            <Component data={data} />
-          </Suspense>
-        </RenderedData>
-      )}
-    </WrapperItem>
+      </WrapperItem>
+      {isUnknown && <Tooltip {...tooltipProps}>{UNKNOWN_WRAPPER_TOOLTIP}</Tooltip>}
+    </>
   )
 }

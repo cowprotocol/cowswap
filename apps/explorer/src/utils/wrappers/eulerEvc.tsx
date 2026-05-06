@@ -4,13 +4,14 @@ import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
 import { Link } from 'react-router'
+import styled from 'styled-components/macro'
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
+
+import { VaultAsset, useConvertToAssets, useVaultAsset } from './_vaultLookup'
 
 import { useOrderContext } from '../../components/orders/OrderWrapperDetails'
 import { useNetworkId } from '../../state/network/hooks'
-import { useConvertToAssets, useVaultAsset } from './_vaultLookup'
 
 // ─── Trade card primitives ───────────────────────────────────────────────────
 
@@ -40,7 +41,9 @@ const TokenSymbol = styled.span`
   a {
     color: inherit;
     text-decoration: none;
-    &:hover { text-decoration: underline; }
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `
 
@@ -50,7 +53,7 @@ const TokenAmount = styled.span`
 
 const ArrowSep = styled.span`
   font-size: 2rem;
-  color: ${Color.explorer_textSecondary};
+  color: ${Color.explorer_grey};
   /* offset past the direction label row so the arrow sits beside the token symbols */
   margin-top: 1.5rem;
 `
@@ -58,11 +61,13 @@ const ArrowSep = styled.span`
 const SubInfo = styled.p`
   margin: 0.8rem 0 0;
   font-size: 1.2rem;
-  color: ${Color.explorer_textSecondary};
+  color: ${Color.explorer_grey};
 
   a {
     color: inherit;
-    &:hover { opacity: 0.8; }
+    &:hover {
+      opacity: 0.8;
+    }
   }
 `
 
@@ -111,32 +116,33 @@ const OPEN_POSITION_ABI = parseAbiParameters([
   'bytes signature',
 ])
 
-export function OpenPositionComponent({ data }: { data: string }): React.ReactElement | null {
-  let params: {
-    owner: string
-    account: string
-    deadline: bigint
-    collateralVault: string
-    borrowVault: string
-    collateralAmount: bigint
-    borrowAmount: bigint
-  } | null = null
+type OpenPositionParams = {
+  owner: string
+  account: string
+  deadline: bigint
+  collateralVault: string
+  borrowVault: string
+  collateralAmount: bigint
+  borrowAmount: bigint
+}
 
-  try {
-    const [decoded] = decodeAbiParameters(OPEN_POSITION_ABI, data as `0x${string}`)
-    params = decoded
-  } catch {
-    // handled below
-  }
+interface OpenPositionViewProps {
+  params: OpenPositionParams
+  chainId: SupportedChainId | null
+  collateralAsset: VaultAsset | undefined
+  borrowAsset: VaultAsset | undefined
+  collateralAssets: bigint | undefined
+  borrowAssets: bigint | undefined
+}
 
-  const chainId = useNetworkId() as SupportedChainId | null
-  const collateralAsset = useVaultAsset(params?.collateralVault ?? '')
-  const borrowAsset = useVaultAsset(params?.borrowVault ?? '')
-  const collateralAssets = useConvertToAssets(params?.collateralVault, params?.collateralAmount)
-  const borrowAssets = useConvertToAssets(params?.borrowVault, params?.borrowAmount)
-
-  if (!params) return null
-
+function OpenPositionView({
+  params,
+  chainId,
+  collateralAsset,
+  borrowAsset,
+  collateralAssets,
+  borrowAssets,
+}: OpenPositionViewProps): React.ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = borrowAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -167,25 +173,11 @@ export function OpenPositionComponent({ data }: { data: string }): React.ReactEl
   )
 }
 
-// ─── Close Position ───────────────────────────────────────────────────────────
-
-const CLOSE_POSITION_ABI = parseAbiParameters([
-  '(address owner, address account, uint256 deadline, address borrowVault, address collateralVault, uint256 collateralAmount) params',
-  'bytes signature',
-])
-
-export function ClosePositionComponent({ data }: { data: string }): React.ReactElement | null {
-  let params: {
-    owner: string
-    account: string
-    deadline: bigint
-    borrowVault: string
-    collateralVault: string
-    collateralAmount: bigint
-  } | null = null
+export function OpenPositionComponent({ data }: { data: string }): React.ReactElement | null {
+  let params: OpenPositionParams | null = null
 
   try {
-    const [decoded] = decodeAbiParameters(CLOSE_POSITION_ABI, data as `0x${string}`)
+    const [decoded] = decodeAbiParameters(OPEN_POSITION_ABI, data as `0x${string}`)
     params = decoded
   } catch {
     // handled below
@@ -195,15 +187,59 @@ export function ClosePositionComponent({ data }: { data: string }): React.ReactE
   const collateralAsset = useVaultAsset(params?.collateralVault ?? '')
   const borrowAsset = useVaultAsset(params?.borrowVault ?? '')
   const collateralAssets = useConvertToAssets(params?.collateralVault, params?.collateralAmount)
-  const order = useOrderContext()
+  const borrowAssets = useConvertToAssets(params?.borrowVault, params?.borrowAmount)
 
   if (!params) return null
 
+  return (
+    <OpenPositionView
+      params={params}
+      chainId={chainId}
+      collateralAsset={collateralAsset}
+      borrowAsset={borrowAsset}
+      collateralAssets={collateralAssets}
+      borrowAssets={borrowAssets}
+    />
+  )
+}
+
+// ─── Close Position ───────────────────────────────────────────────────────────
+
+const CLOSE_POSITION_ABI = parseAbiParameters([
+  '(address owner, address account, uint256 deadline, address borrowVault, address collateralVault, uint256 collateralAmount) params',
+  'bytes signature',
+])
+
+type ClosePositionParams = {
+  owner: string
+  account: string
+  deadline: bigint
+  borrowVault: string
+  collateralVault: string
+  collateralAmount: bigint
+}
+
+interface ClosePositionViewProps {
+  params: ClosePositionParams
+  chainId: SupportedChainId | null
+  collateralAsset: VaultAsset | undefined
+  borrowAsset: VaultAsset | undefined
+  collateralAssets: bigint | undefined
+  order: ReturnType<typeof useOrderContext>
+}
+
+function ClosePositionView({
+  params,
+  chainId,
+  collateralAsset,
+  borrowAsset,
+  collateralAssets,
+  order,
+}: ClosePositionViewProps): React.ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
-  const borrowSymbol = order?.buyToken?.symbol ?? (borrowAsset?.symbol ?? '…')
+  const borrowSymbol = order?.buyToken?.symbol ?? borrowAsset?.symbol ?? '…'
   const borrowTokenAddress = order?.buyToken?.address ?? borrowAsset?.address
   const sub = subaccountNumber(params.owner, params.account)
-
   const repayAmount =
     order?.buyAmount && order.buyToken
       ? formatAmount(BigInt(order.buyAmount.toFixed(0)), order.buyToken.decimals)
@@ -235,6 +271,36 @@ export function ClosePositionComponent({ data }: { data: string }): React.ReactE
   )
 }
 
+export function ClosePositionComponent({ data }: { data: string }): React.ReactElement | null {
+  let params: ClosePositionParams | null = null
+
+  try {
+    const [decoded] = decodeAbiParameters(CLOSE_POSITION_ABI, data as `0x${string}`)
+    params = decoded
+  } catch {
+    // handled below
+  }
+
+  const chainId = useNetworkId() as SupportedChainId | null
+  const collateralAsset = useVaultAsset(params?.collateralVault ?? '')
+  const borrowAsset = useVaultAsset(params?.borrowVault ?? '')
+  const collateralAssets = useConvertToAssets(params?.collateralVault, params?.collateralAmount)
+  const order = useOrderContext()
+
+  if (!params) return null
+
+  return (
+    <ClosePositionView
+      params={params}
+      chainId={chainId}
+      collateralAsset={collateralAsset}
+      borrowAsset={borrowAsset}
+      collateralAssets={collateralAssets}
+      order={order}
+    />
+  )
+}
+
 // ─── Collateral Swap ──────────────────────────────────────────────────────────
 
 const COLLATERAL_SWAP_ABI = parseAbiParameters([
@@ -242,34 +308,33 @@ const COLLATERAL_SWAP_ABI = parseAbiParameters([
   'bytes signature',
 ])
 
-export function CollateralSwapComponent({ data }: { data: string }): React.ReactElement | null {
-  let params: {
-    owner: string
-    account: string
-    deadline: bigint
-    fromVault: string
-    toVault: string
-    fromAmount: bigint
-    disableSourceCollateral: boolean
-  } | null = null
+type CollateralSwapParams = {
+  owner: string
+  account: string
+  deadline: bigint
+  fromVault: string
+  toVault: string
+  fromAmount: bigint
+  disableSourceCollateral: boolean
+}
 
-  try {
-    const [decoded] = decodeAbiParameters(COLLATERAL_SWAP_ABI, data as `0x${string}`)
-    params = decoded
-  } catch {
-    // handled below
-  }
+interface CollateralSwapViewProps {
+  params: CollateralSwapParams
+  chainId: SupportedChainId | null
+  fromAsset: VaultAsset | undefined
+  toAsset: VaultAsset | undefined
+  fromAssets: bigint | undefined
+  toAssets: bigint | undefined
+}
 
-  const chainId = useNetworkId() as SupportedChainId | null
-  const fromAsset = useVaultAsset(params?.fromVault ?? '')
-  const toAsset = useVaultAsset(params?.toVault ?? '')
-  const fromAssets = useConvertToAssets(params?.fromVault, params?.fromAmount)
-  const order = useOrderContext()
-  const buyShares = order?.buyAmount ? BigInt(order.buyAmount.toFixed(0)) : undefined
-  const toAssets = useConvertToAssets(params?.toVault, buyShares)
-
-  if (!params) return null
-
+function CollateralSwapView({
+  params,
+  chainId,
+  fromAsset,
+  toAsset,
+  fromAssets,
+  toAssets,
+}: CollateralSwapViewProps): React.ReactElement {
   const fromSymbol = fromAsset?.symbol ?? '…'
   const toSymbol = toAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -298,5 +363,37 @@ export function CollateralSwapComponent({ data }: { data: string }): React.React
         {params.disableSourceCollateral && <> · {fromSymbol} disabled as collateral after swap</>}
       </SubInfo>
     </div>
+  )
+}
+
+export function CollateralSwapComponent({ data }: { data: string }): React.ReactElement | null {
+  let params: CollateralSwapParams | null = null
+
+  try {
+    const [decoded] = decodeAbiParameters(COLLATERAL_SWAP_ABI, data as `0x${string}`)
+    params = decoded
+  } catch {
+    // handled below
+  }
+
+  const chainId = useNetworkId() as SupportedChainId | null
+  const fromAsset = useVaultAsset(params?.fromVault ?? '')
+  const toAsset = useVaultAsset(params?.toVault ?? '')
+  const fromAssets = useConvertToAssets(params?.fromVault, params?.fromAmount)
+  const order = useOrderContext()
+  const buyShares = order?.buyAmount ? BigInt(order.buyAmount.toFixed(0)) : undefined
+  const toAssets = useConvertToAssets(params?.toVault, buyShares)
+
+  if (!params) return null
+
+  return (
+    <CollateralSwapView
+      params={params}
+      chainId={chainId}
+      fromAsset={fromAsset}
+      toAsset={toAsset}
+      fromAssets={fromAssets}
+      toAssets={toAssets}
+    />
   )
 }
