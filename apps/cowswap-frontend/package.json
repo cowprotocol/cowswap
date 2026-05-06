@@ -11,7 +11,7 @@
     "cosmos:run": "pnpm run _cosmos:run",
     "build:cosmos": "npx cross-env NODE_ENV=development npx cosmos-export",
     "_cosmos:run": "pnpm run cosmos:clear && npx cosmos",
-    "postinstall": "npx patch-package"
+    "postinstall": "bash scripts/postinstall.sh"
   },
   "browser": {
     "crypto": false
