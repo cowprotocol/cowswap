@@ -11,10 +11,9 @@ import { LimitPriceItem } from './items/LimitPriceItem'
 import { OrderSurplusItem } from './items/OrderSurplusItem'
 import { SolvedByItem } from './items/SolvedByItem'
 
+import { Order } from '../../../api/operator'
 import { DetailRow } from '../../../components/common/DetailRow'
 import { DetailsTableTooltips } from '../../../components/orders/DetailsTable/detailsTableTooltips'
-
-import { Order } from '../../../api/operator'
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplayProps } from '../OrderPriceDisplay'

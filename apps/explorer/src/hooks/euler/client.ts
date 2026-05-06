@@ -1,8 +1,9 @@
+import { atom, getDefaultStore } from 'jotai'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { atom, getDefaultStore } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomFamily } from 'jotai-family'
 import { createPublicClient, http } from 'viem'
 
 type PublicClient = ReturnType<typeof createPublicClient>
