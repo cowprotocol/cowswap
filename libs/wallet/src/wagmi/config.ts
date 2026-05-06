@@ -196,10 +196,7 @@ if (isSafeIframe) {
     // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-    // Also disable EIP-6963 in the widget — MetaMask is a per-origin singleton, so EIP-6963
-    // auto-detection would pick up MetaMask's state from the main app tab, causing
-    // cross-context connection leaks.
-    enableEIP6963: !isImTokenBrowser && !isInjectedWidget(),
+    enableEIP6963: !isImTokenBrowser,
     enableReconnect: true,
     enableWalletGuide: false,
     featuredWalletIds: [
