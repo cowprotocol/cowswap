@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
@@ -25,6 +27,16 @@ export interface OrderTab {
 }
 
 const WAITING_SWAP = 'Waiting for swap'
+
+function isBridgingFromOrToMissing(crossChainOrder: Nullish<CrossChainOrder>): boolean {
+  if (!crossChainOrder) {
+    return false
+  }
+  const { owner, recipient } = crossChainOrder.bridgingParams
+  const ownerUnset = !owner?.trim() || areAddressesEqual(owner, ZERO_ADDRESS)
+  const recipientUnset = !recipient?.trim() || areAddressesEqual(recipient, ZERO_ADDRESS)
+  return ownerUnset || recipientUnset
+}
 
 export function getOverviewTab(
   title: ReactNode,
@@ -73,7 +85,14 @@ export function getBridgeTab(
         ) : crossChainOrderLoading || !bridgeStatus ? (
           <Loader />
         ) : (
-          <StatusLabel status={bridgeStatus} />
+          <StatusLabel
+            status={bridgeStatus}
+            warningLabel={
+              bridgeStatus === BridgeStatus.EXECUTED && isBridgingFromOrToMissing(crossChainOrder)
+                ? 'Missing from or to address'
+                : undefined
+            }
+          />
         )}
       </TabContent>
     ),
