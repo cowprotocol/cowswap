@@ -50,7 +50,7 @@
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
     "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
-    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
+    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install --no-frozen-lockfile",
     "install:ci": "pnpm run install:sdk-preview"
   },
   "browser": {

@@ -24,7 +24,7 @@ index 9501be181ceaecb121326b72dba8fa01ab429f7d..9558a74b61f9db80c641ae91e96762d1
 -            try {
 -                // Adding timeout as not all wallets support this method and can hang
 -                // https://github.com/wevm/wagmi/issues/4064
--                await withTimeout(() => 
+-                await withTimeout(() =>
 -                // TODO: Remove explicit type for viem@3
 -                provider.request({
 -                    // `'wallet_revokePermissions'` added in `viem@2.10.3`
