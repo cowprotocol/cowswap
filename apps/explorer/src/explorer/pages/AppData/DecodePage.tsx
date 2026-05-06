@@ -4,7 +4,7 @@ import Form, { FormValidation } from '@rjsf/core'
 
 import { decodeAppDataSchema, FormProps, handleErrors, transformErrors } from './config'
 
-import { DecodeAppData } from '../../../components/AppData/DecodeAppData'
+import { DecodeAppData } from '../../../components/AppDataRowContent/AppDataRowContent'
 
 import { TabData } from './index'
 

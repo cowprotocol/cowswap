@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { DecodeAppData } from '../../../AppData/DecodeAppData'
+import { DecodeAppData } from '../../../AppDataRowContent/AppDataRowContent'
 import { DetailRow } from '../../../common/DetailRow'
 import { DetailsTableTooltips } from '../detailsTableTooltips'
 
