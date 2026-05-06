@@ -7,6 +7,8 @@ import { Color } from '@cowprotocol/ui'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
+import { TokenImg } from '../../../components/common/TokenImg'
+
 export const TradeCard = styled.div`
   display: flex;
   align-items: flex-start;
@@ -29,9 +31,12 @@ export const DirectionLabel = styled.span<{ $green?: boolean }>`
 export const TokenSymbol = styled.span`
   font-size: 2rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 
   a {
-    color: inherit;
+    color: ${Color.explorer_textActive};
     text-decoration: none;
     &:hover {
       text-decoration: underline;
@@ -56,11 +61,16 @@ export const SubInfo = styled.p`
   color: ${Color.explorer_grey};
 
   a {
-    color: inherit;
+    color: ${Color.explorer_textActive};
     &:hover {
       opacity: 0.8;
     }
   }
+`
+
+const TokenIcon = styled(TokenImg)`
+  width: 2rem;
+  height: 2rem;
 `
 
 export function TokenLink({
@@ -75,16 +85,19 @@ export function TokenLink({
   if (!tokenAddress || !chainId) return <>{symbol}</>
   const url = getBlockExplorerUrl(chainId, 'token', tokenAddress)
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" title={tokenAddress}>
-      {symbol}
-    </a>
+    <>
+      <TokenIcon address={tokenAddress} network={chainId} symbol={symbol} />
+      <a href={url} target="_blank" rel="noopener noreferrer" title={tokenAddress}>
+        {symbol}
+      </a>
+    </>
   )
 }
 
 export function OwnerLink({ address }: { address: string }): ReactElement {
   return (
     <Link to={`/address/${address}`} title={address}>
-      {shortenAddress(address)}
+      {shortenAddress(address)}↗
     </Link>
   )
 }

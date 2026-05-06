@@ -1,4 +1,4 @@
-import React, { ComponentType, createContext, ReactElement, Suspense, useContext, useEffect, useState } from 'react'
+import { ComponentType, createContext, ReactElement, Suspense, useContext, useEffect, useState } from 'react'
 
 import { getBlockExplorerUrl, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -70,9 +70,7 @@ function WrapperEntry({ wrapper }: { wrapper: ResolvedWrapper }): ReactElement {
           {info.image && <img src={info.image} alt={info.name} />}
           <strong>{displayName}</strong>
           {addressUrl ? (
-            <a href={addressUrl} target="_blank" rel="noopener noreferrer" title={address}>
-              ({shortAddress})
-            </a>
+            <span>(<a href={addressUrl} target="_blank" rel="noopener noreferrer" title={address}>{shortAddress}↗</a>)</span>
           ) : (
             <span title={address}>({shortAddress})</span>
           )}
