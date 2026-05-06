@@ -6,11 +6,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { RenderedData, WrapperHeader, WrapperItem, WrapperList } from './styled'
 
 import { Order } from '../../../api/operator'
+import { useContractName } from '../../../hooks/euler'
 import { usePopperDefault } from '../../../hooks/usePopper'
 import { useNetworkId } from '../../../state/network/hooks'
 import { getOrderWrappers, ResolvedWrapper } from '../../../utils/getOrderWrappers'
 import { WRAPPERS_BY_ADDRESS } from '../../../utils/wrapperRegistry'
-import { useContractName } from '../../../utils/wrappers/_vaultLookup'
 import { Tooltip } from '../../Tooltip'
 
 export const OrderCtx = createContext<Order | null>(null)
