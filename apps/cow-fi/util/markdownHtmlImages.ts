@@ -10,8 +10,21 @@ interface MarkdownAstNode {
 }
 
 const HTML_ATTRIBUTE_REGEXP = /([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g
+const HTML_COMMENT_REGEXP = /<!--[\s\S]*?-->/g
 const ASCII_CONTROL_CHARACTERS_REGEXP = /[\u0000-\u001f\u007f]/
 const URL_SCHEME_REGEXP = /^[a-z][a-z0-9+.-]*:/i
+const ALLOWED_IMAGE_CONTAINER_TAGS = new Set([
+  'a',
+  'br',
+  'div',
+  'figcaption',
+  'figure',
+  'img',
+  'p',
+  'picture',
+  'source',
+  'span',
+])
 
 const HTML_ENTITIES = {
   amp: '&',
@@ -26,9 +39,21 @@ export function remarkAllowedHtmlImages(): (tree: unknown) => void {
 }
 
 export function getAllowedHtmlImage(html: string): AllowedHtmlImage | null {
-  const imageTag = getSingleImageTag(html)
-  if (!imageTag) return null
+  return getAllowedHtmlImages(html)[0] ?? null
+}
 
+export function getAllowedHtmlImages(html: string): AllowedHtmlImage[] {
+  const normalizedHtml = removeHtmlComments(html)
+  if (!hasOnlyAllowedImageMarkup(normalizedHtml)) return []
+
+  return getImageTags(normalizedHtml).reduce<AllowedHtmlImage[]>((images, imageTag) => {
+    const image = getImageFromTag(imageTag)
+    if (image) images.push(image)
+    return images
+  }, [])
+}
+
+function getImageFromTag(imageTag: string): AllowedHtmlImage | null {
   const attributes = getHtmlAttributes(imageTag)
   const rawSrc = attributes.get('data-src') ?? attributes.get('src')
   if (!rawSrc) return null
@@ -45,16 +70,16 @@ export function getAllowedHtmlImage(html: string): AllowedHtmlImage | null {
 function transformAllowedHtmlImages(node: unknown): void {
   if (!isMarkdownAstNode(node) || !Array.isArray(node.children)) return
 
-  node.children = node.children.map((child) => {
+  node.children = node.children.flatMap((child) => {
     if (isHtmlNode(child)) {
-      const image = getAllowedHtmlImage(child.value)
-      if (image) {
-        return {
+      const images = getAllowedHtmlImages(child.value)
+      if (images.length > 0) {
+        return images.map((image) => ({
           type: 'image',
           url: image.src,
           alt: image.alt,
           title: null,
-        }
+        }))
       }
     }
 
@@ -63,21 +88,42 @@ function transformAllowedHtmlImages(node: unknown): void {
   })
 }
 
-function getSingleImageTag(html: string): string | null {
-  const trimmedHtml = html.trim()
-  if (!/^<img\b/i.test(trimmedHtml)) return null
-
-  const tagEnd = getTagEndIndex(trimmedHtml)
-  if (tagEnd === -1) return null
-
-  const trailingHtml = trimmedHtml.slice(tagEnd + 1).trim()
-  return trailingHtml ? null : trimmedHtml.slice(0, tagEnd + 1)
+function hasOnlyAllowedImageMarkup(html: string): boolean {
+  const tags = getHtmlTags(html)
+  return tags.length > 0 && tags.every(({ name }) => ALLOWED_IMAGE_CONTAINER_TAGS.has(name))
 }
 
-function getTagEndIndex(html: string): number {
+function getImageTags(html: string): string[] {
+  return getHtmlTags(html)
+    .filter(({ name }) => name === 'img')
+    .map(({ tag }) => tag)
+}
+
+function getHtmlTags(html: string): Array<{ tag: string; name: string }> {
+  const tags: Array<{ tag: string; name: string }> = []
+  let searchIndex = 0
+
+  while (searchIndex < html.length) {
+    const tagStart = html.indexOf('<', searchIndex)
+    if (tagStart === -1) break
+
+    const tagEnd = getTagEndIndex(html, tagStart)
+    if (tagEnd === -1) break
+
+    const tag = html.slice(tagStart, tagEnd + 1)
+    const tagNameMatch = tag.match(/^<\/?\s*([a-z][\w:-]*)\b/i)
+    if (tagNameMatch?.[1]) tags.push({ tag, name: tagNameMatch[1].toLowerCase() })
+
+    searchIndex = tagEnd + 1
+  }
+
+  return tags
+}
+
+function getTagEndIndex(html: string, tagStart: number): number {
   let quote: '"' | "'" | null = null
 
-  for (let index = 0; index < html.length; index++) {
+  for (let index = tagStart; index < html.length; index++) {
     const character = html[index]
 
     if (quote) {
@@ -90,6 +136,10 @@ function getTagEndIndex(html: string): number {
   }
 
   return -1
+}
+
+function removeHtmlComments(html: string): string {
+  return html.replace(HTML_COMMENT_REGEXP, '')
 }
 
 function getHtmlAttributes(imageTag: string): Map<string, string> {

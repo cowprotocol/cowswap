@@ -1,4 +1,4 @@
-import { getAllowedHtmlImage, remarkAllowedHtmlImages } from './markdownHtmlImages'
+import { getAllowedHtmlImage, getAllowedHtmlImages, remarkAllowedHtmlImages } from './markdownHtmlImages'
 
 interface TestMarkdownNode {
   type: string
@@ -17,10 +17,34 @@ describe('markdownHtmlImages', () => {
     })
   })
 
+  it('extracts safe CMS images wrapped in common rich-text HTML containers', () => {
+    expect(getAllowedHtmlImage('<figure class="image"><img src="/uploads/cow.png" alt="CoW"></figure>')).toEqual({
+      src: '/uploads/cow.png',
+      alt: 'CoW',
+    })
+    expect(getAllowedHtmlImage("<p><img src='/uploads/cow-2.png' alt='CoW 2' /></p>")).toEqual({
+      src: '/uploads/cow-2.png',
+      alt: 'CoW 2',
+    })
+  })
+
+  it('extracts multiple safe CMS images from one HTML block', () => {
+    expect(
+      getAllowedHtmlImages(
+        '<figure><img src="/uploads/cow.png" alt="CoW"></figure><p><img src="/uploads/moo.png" alt="Moo"></p>',
+      ),
+    ).toEqual([
+      { src: '/uploads/cow.png', alt: 'CoW' },
+      { src: '/uploads/moo.png', alt: 'Moo' },
+    ])
+  })
+
   it('rejects non-image and unsafe image HTML', () => {
     expect(getAllowedHtmlImage('<script>alert(1)</script>')).toBeNull()
     expect(getAllowedHtmlImage('<img src="javascript:alert(1)" alt="Bad">')).toBeNull()
     expect(getAllowedHtmlImage('<img src="java&#x0a;script:alert(1)" alt="Bad">')).toBeNull()
+    expect(getAllowedHtmlImage('<svg><img src="/uploads/cow.png" alt="CoW"></svg>')).toBeNull()
+    expect(getAllowedHtmlImage('<script><img src="/uploads/cow.png" alt="CoW"></script>')).toBeNull()
   })
 
   it('converts only allowed HTML image nodes into markdown image nodes', () => {
@@ -36,7 +60,11 @@ describe('markdownHtmlImages', () => {
             },
             {
               type: 'html',
-              value: '<iframe src="https://example.com"></iframe>',
+              value: '<figure><img src="/uploads/moo.png" alt="Moo"></figure>',
+            },
+            {
+              type: 'html',
+              value: '<iframe><img src="/uploads/ignored.png" alt="Ignored"></iframe>',
             },
           ],
         },
@@ -52,8 +80,14 @@ describe('markdownHtmlImages', () => {
       title: null,
     })
     expect(tree.children?.[0]?.children?.[1]).toEqual({
+      type: 'image',
+      url: '/uploads/moo.png',
+      alt: 'Moo',
+      title: null,
+    })
+    expect(tree.children?.[0]?.children?.[2]).toEqual({
       type: 'html',
-      value: '<iframe src="https://example.com"></iframe>',
+      value: '<iframe><img src="/uploads/ignored.png" alt="Ignored"></iframe>',
     })
   })
 })
