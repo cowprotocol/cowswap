@@ -59,6 +59,7 @@ export const SubInfo = styled.p`
   margin: 0.8rem 0 0;
   font-size: 1.2rem;
   color: ${Color.explorer_grey};
+  word-break: normal;
 
   a {
     color: ${Color.explorer_textActive};
