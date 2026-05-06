@@ -7,7 +7,7 @@ import { useLocation } from 'react-router'
 import type { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { getDefaultTradeRawState } from '../utils/getDefaultTradeRawState'
+import { getDefaultTradeRawState } from '../types/TradeRawState'
 import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
 interface UseTradeRouteRedirectOptions {
