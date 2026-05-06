@@ -5,8 +5,6 @@ import styled from 'styled-components/macro'
 import { StyledSearch, Wrapper as WrapperMod } from './styled'
 
 export const Wrapper = styled(WrapperMod)`
-  max-width: 140rem;
-
   ${Media.upToMedium()} {
     padding: 0 1.2rem 4.2rem;
   }
