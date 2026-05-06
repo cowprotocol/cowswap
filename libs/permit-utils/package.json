@@ -28,7 +28,7 @@
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "ms.macro": "^2.0.0",
     "viem": "^2.42.1",
-    "wagmi": "^3.1.0"
+    "wagmi": "^3.4.2"
   },
   "devDependencies": {
     "@types/ms.macro": "^2.0.0"
