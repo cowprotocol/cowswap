@@ -1,0 +1,21 @@
+diff --git a/node_modules/@wagmi/core/dist/esm/connectors/injected.js b/node_modules/@wagmi/core/dist/esm/connectors/injected.js
+--- a/node_modules/@wagmi/core/dist/esm/connectors/injected.js
++++ b/node_modules/@wagmi/core/dist/esm/connectors/injected.js
+@@ -48,16 +48,11 @@
+         async setup() {
+             const provider = await this.getProvider();
+             // Only start listening for events if `target` is set, otherwise `injected()` will also receive events
+             if (provider?.on && parameters.target) {
+                 if (!connect) {
+                     connect = this.onConnect.bind(this);
+                     provider.on('connect', connect);
+                 }
+-                // We shouldn't need to listen for `'accountsChanged'` here since the `'connect'` event should suffice (and wallet shouldn't be connected yet).
+-                // Some wallets, like MetaMask, do not implement the `'connect'` event and overload `'accountsChanged'` instead.
+-                if (!accountsChanged) {
+-                    accountsChanged = this.onAccountsChanged.bind(this);
+-                    provider.on('accountsChanged', accountsChanged);
+-                }
+             }
+         },
+         async connect({ chainId, isReconnecting, withCapabilities } = {}) {
