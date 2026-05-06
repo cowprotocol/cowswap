@@ -1,4 +1,4 @@
-import React from 'react'
+import { ComponentType } from 'react'
 
 export interface WrapperInfo {
   name: string
@@ -12,7 +12,7 @@ export interface WrapperRegistryEntry {
   // Dynamically imports the component that decodes and renders the WrapperEntry.data
   // field. The dynamic import enables code splitting: wrapper render code is only
   // fetched when an order actually uses that wrapper address.
-  loadComponent: () => Promise<React.ComponentType<{ data: string }>>
+  loadComponent: () => Promise<ComponentType<{ data: string }>>
 }
 
 // Euler brand shared across all three EVC wrapper entries.
@@ -33,7 +33,8 @@ export const WRAPPERS_BY_ADDRESS: Record<string, WrapperRegistryEntry> = {
     info: {
       ...EULER_BRAND,
       name: 'Euler EVC – Open Position',
-      description: 'Opens a leveraged position by enabling collateral, enabling a borrow vault, depositing collateral, and borrowing assets.',
+      description:
+        'Opens a leveraged position by enabling collateral, enabling a borrow vault, depositing collateral, and borrowing assets.',
     },
     loadComponent: () => import('./wrappers/eulerEvc').then((m) => m.OpenPositionComponent),
   },
@@ -41,7 +42,8 @@ export const WRAPPERS_BY_ADDRESS: Record<string, WrapperRegistryEntry> = {
     info: {
       ...EULER_BRAND,
       name: 'Euler EVC – Close Position',
-      description: 'Closes a leveraged position by transferring collateral, swapping it for debt assets, and repaying the borrow vault.',
+      description:
+        'Closes a leveraged position by transferring collateral, swapping it for debt assets, and repaying the borrow vault.',
     },
     loadComponent: () => import('./wrappers/eulerEvc').then((m) => m.ClosePositionComponent),
   },

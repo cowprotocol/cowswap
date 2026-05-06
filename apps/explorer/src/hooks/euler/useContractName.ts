@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
@@ -7,7 +7,7 @@ import { getPublicClient } from './client'
 
 import { useNetworkId } from '../../state/network/hooks'
 
-export function useContractName(address: string): string | undefined {
+export function useContractName(address: AddressKey): string | undefined {
   const chainId = useNetworkId() as SupportedChainId | null
 
   const { data } = useSWR<string>(

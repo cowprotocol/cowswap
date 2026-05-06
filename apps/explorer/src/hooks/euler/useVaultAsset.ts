@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
@@ -14,7 +14,17 @@ export interface VaultAsset {
   decimals: number
 }
 
-export function useVaultAsset(vaultAddress: string): VaultAsset | undefined {
+type Erc20Meta = { symbol: string; name: string; decimals: number }
+type MulticallEntry = { status: string; result?: unknown }
+
+function resolveErc20Meta(data: MulticallEntry[] | undefined): Erc20Meta | undefined {
+  if (!data) return undefined
+  const [s, n, d] = data
+  if (s?.status !== 'success' || n?.status !== 'success' || d?.status !== 'success') return undefined
+  return { symbol: s.result as string, name: n.result as string, decimals: d.result as number }
+}
+
+export function useVaultAsset(vaultAddress: AddressKey): VaultAsset | undefined {
   const chainId = useNetworkId() as SupportedChainId | null
 
   const { data: assetAddress } = useSWR<string>(
@@ -29,33 +39,18 @@ export function useVaultAsset(vaultAddress: string): VaultAsset | undefined {
     },
   )
 
-  const { data: symbol } = useSWR<string>(assetAddress ? `erc20-symbol:${chainId}:${assetAddress}` : null, () => {
+  const { data: erc20Data } = useSWR(assetAddress && chainId ? `erc20-meta:${chainId}:${assetAddress}` : null, () => {
     if (!chainId || !assetAddress) throw new Error('missing chainId or assetAddress')
-    return getPublicClient(chainId).readContract({
-      address: assetAddress as `0x${string}`,
-      abi: ERC20_ABI,
-      functionName: 'symbol',
-    }) as Promise<string>
+    return getPublicClient(chainId).multicall({
+      contracts: [
+        { address: assetAddress as `0x${string}`, abi: ERC20_ABI, functionName: 'symbol' },
+        { address: assetAddress as `0x${string}`, abi: ERC20_ABI, functionName: 'name' },
+        { address: assetAddress as `0x${string}`, abi: ERC20_ABI, functionName: 'decimals' },
+      ],
+    })
   })
 
-  const { data: name } = useSWR<string>(assetAddress ? `erc20-name:${chainId}:${assetAddress}` : null, () => {
-    if (!chainId || !assetAddress) throw new Error('missing chainId or assetAddress')
-    return getPublicClient(chainId).readContract({
-      address: assetAddress as `0x${string}`,
-      abi: ERC20_ABI,
-      functionName: 'name',
-    }) as Promise<string>
-  })
-
-  const { data: decimals } = useSWR<number>(assetAddress ? `erc20-decimals:${chainId}:${assetAddress}` : null, () => {
-    if (!chainId || !assetAddress) throw new Error('missing chainId or assetAddress')
-    return getPublicClient(chainId).readContract({
-      address: assetAddress as `0x${string}`,
-      abi: ERC20_ABI,
-      functionName: 'decimals',
-    }) as Promise<number>
-  })
-
-  if (!assetAddress || !symbol || !name || decimals === undefined) return undefined
-  return { address: assetAddress, symbol, name, decimals }
+  const erc20Meta = resolveErc20Meta(erc20Data)
+  if (!assetAddress || !erc20Meta) return undefined
+  return { address: assetAddress, ...erc20Meta }
 }

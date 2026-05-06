@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -53,7 +53,7 @@ function CollateralSwapView({
   toAsset,
   fromAssets,
   toAssets,
-}: CollateralSwapViewProps): React.ReactElement {
+}: CollateralSwapViewProps): ReactElement {
   const fromSymbol = fromAsset?.symbol ?? '…'
   const toSymbol = toAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -85,7 +85,7 @@ function CollateralSwapView({
   )
 }
 
-export function CollateralSwapComponent({ data }: { data: string }): React.ReactElement | null {
+export function CollateralSwapComponent({ data }: { data: string }): ReactElement | null {
   let params: CollateralSwapParams | null = null
 
   try {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -52,7 +52,7 @@ function OpenPositionView({
   borrowAsset,
   collateralAssets,
   borrowAssets,
-}: OpenPositionViewProps): React.ReactElement {
+}: OpenPositionViewProps): ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = borrowAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -83,7 +83,7 @@ function OpenPositionView({
   )
 }
 
-export function OpenPositionComponent({ data }: { data: string }): React.ReactElement | null {
+export function OpenPositionComponent({ data }: { data: string }): ReactElement | null {
   let params: OpenPositionParams | null = null
 
   try {

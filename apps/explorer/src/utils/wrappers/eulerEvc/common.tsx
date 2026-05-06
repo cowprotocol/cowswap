@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
-import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Color } from '@cowprotocol/ui'
 
@@ -71,7 +71,7 @@ export function TokenLink({
   symbol: string
   tokenAddress: string | undefined
   chainId: SupportedChainId | null
-}): React.ReactElement {
+}): ReactElement {
   if (!tokenAddress || !chainId) return <>{symbol}</>
   const url = getBlockExplorerUrl(chainId, 'token', tokenAddress)
   return (
@@ -81,10 +81,10 @@ export function TokenLink({
   )
 }
 
-export function OwnerLink({ address }: { address: string }): React.ReactElement {
+export function OwnerLink({ address }: { address: string }): ReactElement {
   return (
     <Link to={`/address/${address}`} title={address}>
-      {address.slice(0, 6)}…{address.slice(-4)}
+      {shortenAddress(address)}
     </Link>
   )
 }

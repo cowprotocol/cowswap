@@ -1,5 +1,6 @@
-import React from 'react'
+import { ComponentType } from 'react'
 
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { cowAppDataLatestScheme, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { decodeFullAppData } from './decodeFullAppData'
@@ -10,7 +11,7 @@ export interface ResolvedWrapper {
   data: string | undefined
   isOmittable: boolean
   info: WrapperInfo
-  loadComponent?: () => Promise<React.ComponentType<{ data: string }>>
+  loadComponent?: () => Promise<ComponentType<{ data: string }>>
 }
 
 export function getOrderWrappers(fullAppData: string | undefined): ResolvedWrapper[] {
@@ -33,7 +34,7 @@ export function getOrderWrappers(fullAppData: string | undefined): ResolvedWrapp
       }
     }
 
-    const short = `${entry.address.slice(0, 6)}…${entry.address.slice(-4)}`
+    const short = shortenAddress(entry.address)
     return {
       address: entry.address,
       data: entry.data,

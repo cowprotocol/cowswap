@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -52,7 +52,7 @@ function ClosePositionView({
   borrowAsset,
   collateralAssets,
   order,
-}: ClosePositionViewProps): React.ReactElement {
+}: ClosePositionViewProps): ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = order?.buyToken?.symbol ?? borrowAsset?.symbol ?? '…'
   const borrowTokenAddress = order?.buyToken?.address ?? borrowAsset?.address
@@ -88,7 +88,7 @@ function ClosePositionView({
   )
 }
 
-export function ClosePositionComponent({ data }: { data: string }): React.ReactElement | null {
+export function ClosePositionComponent({ data }: { data: string }): ReactElement | null {
   let params: ClosePositionParams | null = null
 
   try {

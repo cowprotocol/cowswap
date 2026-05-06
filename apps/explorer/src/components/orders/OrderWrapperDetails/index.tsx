@@ -1,6 +1,6 @@
-import React, { createContext, ReactElement, Suspense, useContext, useEffect, useState } from 'react'
+import React, { ComponentType, createContext, ReactElement, Suspense, useContext, useEffect, useState } from 'react'
 
-import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { RenderedData, WrapperHeader, WrapperItem, WrapperList } from './styled'
@@ -47,7 +47,7 @@ const UNKNOWN_WRAPPER_TOOLTIP =
   'Explorer does not recognize this wrapper address yet, so it cannot decode wrapper-specific details. This may be a custom wrapper or a supported wrapper missing from the registry.'
 
 function WrapperEntry({ wrapper }: { wrapper: ResolvedWrapper }): ReactElement {
-  const [Component, setComponent] = useState<React.ComponentType<{ data: string }> | null>(null)
+  const [Component, setComponent] = useState<ComponentType<{ data: string }> | null>(null)
   const { info, address, data, isOmittable } = wrapper
   const chainId = useNetworkId() as SupportedChainId | null
   const isUnknown = !WRAPPERS_BY_ADDRESS[address.toLowerCase()]
@@ -60,7 +60,7 @@ function WrapperEntry({ wrapper }: { wrapper: ResolvedWrapper }): ReactElement {
   }, [wrapper, data])
 
   const addressUrl = chainId ? getBlockExplorerUrl(chainId, 'contract', address) : undefined
-  const shortAddress = `${address.slice(0, 6)}…${address.slice(-4)}`
+  const shortAddress = shortenAddress(address)
   const displayName = isUnknown ? (contractName ?? shortAddress) : info.name
 
   return (
