@@ -39,3 +39,27 @@ index 9501be181ceaecb121326b72dba8fa01ab429f7d..9558a74b61f9db80c641ae91e96762d1
              // Add shim signalling connector is disconnected
              if (shimDisconnect) {
                  await config.storage?.setItem(`${this.id}.disconnected`, true);
+@@ -375,7 +358,12 @@ export function injected(parameters = {}) {
+                 throw new SwitchChainError(error);
+             }
+         },
+         async onAccountsChanged(accounts) {
++            // Skip if this connector isn't the active one in this tab.
++            // 'wagmi.activeConnectorUid' is written to sessionStorage (per-tab) by config.ts
++            // whenever the active connector changes, giving us cross-tab isolation.
++            const _activeUid = typeof window !== 'undefined' ? window.sessionStorage.getItem('wagmi.activeConnectorUid') : null;
++            if (_activeUid && _activeUid !== this.uid) return;
+             // Disconnect if there are no accounts
+             if (accounts.length === 0)
+                 this.onDisconnect();
+@@ -410,10 +398,6 @@ export function injected(parameters = {}) {
+                     provider.removeListener('connect', connect);
+                     connect = undefined;
+                 }
+-                if (!accountsChanged) {
+-                    accountsChanged = this.onAccountsChanged.bind(this);
+-                    provider.on('accountsChanged', accountsChanged);
+-                }
+                 if (!chainChanged) {
+                     chainChanged = this.onChainChanged.bind(this);
+                     provider.on('chainChanged', chainChanged);

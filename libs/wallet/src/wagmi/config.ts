@@ -218,4 +218,20 @@ if (isSafeIframe) {
   })
 }
 
+// Track the active connector uid per-tab in sessionStorage so the patched
+// injected connector can skip accountsChanged events from inactive wallets
+// without relying on cross-tab-polluted localStorage.
+// sessionStorage is per-tab, so each tab tracks its own active connector.
+export const ACTIVE_CONNECTOR_UID_KEY = 'wagmi.activeConnectorUid'
+if (typeof window !== 'undefined') {
+  config.subscribe(
+    (state) => state.current,
+    (current) => {
+      if (current) window.sessionStorage.setItem(ACTIVE_CONNECTOR_UID_KEY, current)
+      else window.sessionStorage.removeItem(ACTIVE_CONNECTOR_UID_KEY)
+    },
+    { emitImmediately: true },
+  )
+}
+
 export { wagmiAdapter, reownAppKit, config }
