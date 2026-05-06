@@ -11,11 +11,13 @@ import { LimitPriceItem } from './items/LimitPriceItem'
 import { OrderSurplusItem } from './items/OrderSurplusItem'
 import { SolvedByItem } from './items/SolvedByItem'
 
+import { DetailRow } from '../../../components/common/DetailRow'
+import { DetailsTableTooltips } from '../../../components/orders/DetailsTable/detailsTableTooltips'
+
 import { Order } from '../../../api/operator'
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplayProps } from '../OrderPriceDisplay'
-import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 import { OrderWrapperDetails } from '../OrderWrapperDetails'
 
 interface VerboseDetailsProps {
