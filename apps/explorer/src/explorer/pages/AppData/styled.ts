@@ -12,8 +12,6 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 `
 
 export const Wrapper = styled(WrapperTemplate)`
-  max-width: 118rem;
-
   .disclaimer {
     font-size: 1.2rem;
     line-height: 1.3;
