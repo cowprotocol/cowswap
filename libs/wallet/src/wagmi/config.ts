@@ -193,7 +193,7 @@ if (isSafeIframe) {
     customRpcUrls,
     defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
     // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
-    // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
+    // through too many async layers, losing the iOS WebKit gesture context, the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
     enableEIP6963: !isImTokenBrowser,
