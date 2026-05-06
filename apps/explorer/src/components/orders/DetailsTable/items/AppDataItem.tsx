@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { DecodeAppData } from '../../../AppDataRowContent/AppDataRowContent'
+import { AppDataRowContent } from '../../../AppDataRowContent/AppDataRowContent'
 import { DetailRow } from '../../../common/DetailRow'
 import { DetailsTableTooltips } from '../detailsTableTooltips'
 
@@ -12,7 +12,7 @@ interface AppDataItemProps {
 export function AppDataItem({ appData, fullAppData }: AppDataItemProps): ReactNode {
   return (
     <DetailRow label="AppData" tooltipText={DetailsTableTooltips.appData}>
-      <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
+      <AppDataRowContent appData={appData} fullAppData={fullAppData ?? undefined} />
     </DetailRow>
   )
 }
