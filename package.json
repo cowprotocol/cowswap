@@ -102,7 +102,10 @@
     },
     "onlyBuiltDependencies": [
       "nx"
-    ]
+    ],
+    "patchedDependencies": {
+      "@wagmi/core@3.3.2": "patches/@wagmi__core@3.3.2.patch"
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",

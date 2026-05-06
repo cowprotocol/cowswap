@@ -71,6 +71,7 @@
     "@react-spring/web": "^9.6.1",
     "@reown/appkit": "1.8.16",
     "@reown/appkit-adapter-wagmi": "1.8.16",
+    "@wagmi/core": "3.3.2",
     "@reduxjs/toolkit": "^1.8.0",
     "@safe-global/api-kit": "^4.0.1",
     "@safe-global/types-kit": "^3.0.0",
