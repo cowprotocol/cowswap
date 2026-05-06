@@ -6,9 +6,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { getReactProcessEnv } from '../../../tools/getReactProcessEnv.ts'
 
 import type { StorybookConfig } from '@storybook/react-vite'
+import type { Alias } from 'vite'
 
 type WorkspacePackageJson = {
   exports?: Record<string, string | { default?: string; import?: string }>
@@ -37,23 +39,22 @@ function getWorkspaceAlias(packageJsonPath: string): [string, string] | null {
   return [packageJson.name, path.resolve(path.dirname(packageJsonPath), entryPoint)]
 }
 
-function getWorkspaceAliases(): Record<string, string> {
-  return ['apps', 'libs'].reduce<Record<string, string>>((acc, rootDir) => {
+function getWorkspaceAliases(): Alias[] {
+  return ['apps', 'libs'].reduce<Alias[]>((acc, rootDir) => {
     const rootPath = path.resolve(process.cwd(), rootDir)
 
     for (const dirName of readdirSync(rootPath)) {
-      const packageJsonPath = path.resolve(rootPath, dirName, 'package.json')
-      const alias = getWorkspaceAlias(packageJsonPath)
+      const alias = getWorkspaceAlias(path.resolve(rootPath, dirName, 'package.json'))
 
       if (!alias) {
         continue
       }
 
-      acc[alias[0]] = alias[1]
+      acc.push({ find: new RegExp(`^${alias[0]}$`), replacement: alias[1] })
     }
 
     return acc
-  }, {})
+  }, [])
 }
 
 function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Record<string, string> {

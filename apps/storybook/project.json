@@ -5,10 +5,10 @@
   "sourceRoot": "apps/storybook/src",
   "targets": {
     "storybook": {
-      "command": "STORYBOOK_DISABLE_TELEMETRY=1 HOME=.cache/storybook-home storybook dev -p 6006 -c apps/storybook/src"
+      "command": "STORYBOOK_DISABLE_TELEMETRY=1 HOME=.cache/storybook-home apps/storybook/node_modules/.bin/storybook dev -p 6006 -c apps/storybook/src"
     },
     "build": {
-      "command": "STORYBOOK_DISABLE_TELEMETRY=1 HOME=.cache/storybook-home storybook build --output-dir build/storybook -c apps/storybook/src",
+      "command": "STORYBOOK_DISABLE_TELEMETRY=1 HOME=.cache/storybook-home apps/storybook/node_modules/.bin/storybook build --output-dir build/storybook -c apps/storybook/src",
       "outputs": ["{workspaceRoot}/build/storybook"]
     }
   }
