@@ -8,6 +8,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { LinkStyledButton } from '../LinkStyledButton'
+import { HoverTooltip } from '../Tooltip'
 
 export interface CopyButtonState {
   isCopied: boolean
@@ -79,8 +80,7 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
   const idleContent = renderedChildren ?? idleLabel
   const icon = isCopied ? <Check size={iconSize} /> : <Copy size={iconSize} />
   const content = isCopied ? showCopiedLabel ? <span>{copiedLabel}</span> : null : idleContent
-
-  return (
+  const button = (
     <StyledCopyButton
       type={type ?? 'button'}
       onClick={handleClick}
@@ -92,5 +92,13 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
       {iconPosition === 'left' ? icon : content}
       {iconPosition === 'left' ? content : icon}
     </StyledCopyButton>
+  )
+
+  return !idleContent && !showCopiedLabel ? (
+    <HoverTooltip content={isCopied ? copiedLabel : 'Copy to clipboard'} placement="top" wrapInContainer>
+      {button}
+    </HoverTooltip>
+  ) : (
+    button
   )
 }
