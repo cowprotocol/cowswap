@@ -19,3 +19,27 @@ diff --git a/node_modules/@wagmi/core/dist/esm/connectors/injected.js b/node_mod
              }
          },
          async connect({ chainId, isReconnecting, withCapabilities } = {}) {
+@@ -174,20 +169,9 @@
+                 connect = this.onConnect.bind(this);
+                 provider.on('connect', connect);
+             }
+-            // Experimental support for MetaMask disconnect
+-            // https://github.com/MetaMask/metamask-improvement-proposals/blob/main/MIPs/mip-2.md
+-            try {
+-                // Adding timeout as not all wallets support this method and can hang
+-                // https://github.com/wevm/wagmi/issues/4064
+-                await withTimeout(() =>
+-                // TODO: Remove explicit type for viem@3
+-                provider.request({
+-                    // `'wallet_revokePermissions'` added in `viem@2.10.3`
+-                    method: 'wallet_revokePermissions',
+-                    params: [{ eth_accounts: {} }],
+-                }), { timeout: 100 });
+-            }
+-            catch { }
++            // [PATCHED] wallet_revokePermissions revokes MetaMask permissions for the
++            // entire origin (not per-tab), disconnecting all other open tabs. Skip it;
++            // shimDisconnect flag is sufficient to prevent reconnect on next page load.
+             // Add shim signalling connector is disconnected
+             if (shimDisconnect) {
+                 await config.storage?.setItem(`${this.id}.disconnected`, true);
