@@ -70,6 +70,7 @@ export const CopyButtonSlot = styled.div`
   border-left: 1px solid ${Color.explorer_tableRowBorder};
   background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
+  margin-left: auto;
 
   > span {
     width: 100%;

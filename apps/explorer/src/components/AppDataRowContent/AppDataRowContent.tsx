@@ -14,10 +14,13 @@ interface AppDataRowContentProps {
   showExpanded?: boolean
 }
 
+const EMPTY_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
 export function AppDataRowContent({ appData, showExpanded = false, fullAppData }: AppDataRowContentProps): ReactNode {
   const { ipfsUri, hasError: appDataError } = useAppData(appData, fullAppData)
 
   const isLegacyAppDataHex = fullAppData === undefined
+  const hasAppData = appData.trim() !== EMPTY_APP_DATA
   const [showDecodedAppData, setShowDecodedAppData] = useState<boolean>(showExpanded)
 
   return (
@@ -40,9 +43,11 @@ export function AppDataRowContent({ appData, showExpanded = false, fullAppData }
           appData
         )}
         &nbsp;
-        <styledEl.ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
-          {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-        </styledEl.ShowMoreButton>
+        {hasAppData && (
+          <styledEl.ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
+            {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
+          </styledEl.ShowMoreButton>
+        )}
       </>
       <div className={`hidden-content ${appDataError && 'error'}`}>
         <AppDataContent appData={appData} fullAppData={fullAppData} showDecodedAppData={showDecodedAppData} />

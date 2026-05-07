@@ -29,8 +29,12 @@ export function AppDataContent({ appData, fullAppData, showDecodedAppData }: App
 
   const [tab, setTab] = useState<AppDataTab>(() => getStoredView())
 
-  const jsonData = useMemo(() => {
-    return stringifyJson(tab === 'raw' ? decodedAppData : parseQuoteBody(decodedAppData))
+  const { hasQuoteBody, jsonData } = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hasQuoteBody = !!(decodedAppData?.metadata as any).bridging?.quoteBody
+    const jsonData = stringifyJson(tab === 'raw' || !hasQuoteBody ? decodedAppData : parseQuoteBody(decodedAppData))
+
+    return { hasQuoteBody, jsonData }
   }, [tab, decodedAppData])
 
   useEffect(() => {
@@ -49,14 +53,16 @@ export function AppDataContent({ appData, fullAppData, showDecodedAppData }: App
   return (
     <styledEl.JsonPanel>
       <styledEl.TopRow>
-        <styledEl.Tabs>
-          <styledEl.TabButton type="button" $active={tab === 'raw'} onClick={() => setTab('raw')}>
-            Raw
-          </styledEl.TabButton>
-          <styledEl.TabButton type="button" $active={tab === 'parsed'} onClick={() => setTab('parsed')}>
-            Parsed
-          </styledEl.TabButton>
-        </styledEl.Tabs>
+        {hasQuoteBody && (
+          <styledEl.Tabs>
+            <styledEl.TabButton type="button" $active={tab === 'raw'} onClick={() => setTab('raw')}>
+              Raw
+            </styledEl.TabButton>
+            <styledEl.TabButton type="button" $active={tab === 'parsed'} onClick={() => setTab('parsed')}>
+              Parsed
+            </styledEl.TabButton>
+          </styledEl.Tabs>
+        )}
         <styledEl.CopyButtonSlot>
           <CopyButton text={jsonData} />
         </styledEl.CopyButtonSlot>
