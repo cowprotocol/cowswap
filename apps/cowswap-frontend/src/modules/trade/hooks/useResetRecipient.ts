@@ -42,13 +42,13 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId changes
+   * Reset recipient whenever chainId changes, but preserve any recipient set via URL
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride && !isNonEvmBridging) {
+    if (!postHooksRecipientOverride && !isNonEvmBridging && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
+  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging, hasRecipientInUrl])
 
   /**
    * Remove recipient override when its source hook was deleted
