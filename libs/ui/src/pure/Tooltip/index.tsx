@@ -1,11 +1,12 @@
-import { MouseEvent, ReactNode, RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useOnClickOutside, useOnScroll } from '@cowprotocol/common-hooks'
-import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
+import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip'
 import styled from 'styled-components/macro'
 
+import { UI } from '../../enum'
 import Popover, { PopoverProps } from '../Popover'
 
 const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
@@ -45,6 +46,39 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
   tooltipCloseDelay?: number
 }
 
+const BaseTooltipTrigger = styled.div`
+  display: inline-flex;
+  align-items: center;
+`
+
+const BaseTooltipPopup = styled(BaseTooltip.Popup)<{
+  bgColor?: string
+  color?: string
+  borderColor?: string
+}>`
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
+  box-shadow: var(${UI.BOX_SHADOW});
+  border: 1px solid ${({ borderColor, bgColor }) => borderColor || bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
+  border-radius: 12px;
+  padding: 6px 3px;
+  font-size: 13px;
+  backdrop-filter: blur(20px);
+  transform-origin: var(--transform-origin);
+
+  > div div {
+    font-size: inherit;
+  }
+`
+
+function getTooltipSide(placement: HoverTooltipProps['placement']): 'top' | 'bottom' | 'left' | 'right' {
+  const side = placement?.split('-')[0]
+
+  if (side === 'bottom' || side === 'left' || side === 'right') return side
+
+  return 'top'
+}
+
 /**
  * Tooltip that appears when hovering over the children
  *
@@ -55,10 +89,7 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
  * @param props
  * @returns
  */
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function HoverTooltip(props: HoverTooltipProps) {
+export function HoverTooltip(props: HoverTooltipProps): ReactNode {
   const {
     content,
     children,
@@ -67,78 +98,14 @@ export function HoverTooltip(props: HoverTooltipProps) {
     wrapInContainer = false,
     tooltipCloseDelay = TOOLTIP_CLOSE_DELAY,
     isClosed,
-    ...rest
+    placement = 'top',
+    bgColor,
+    color,
+    borderColor,
+    className,
   } = props
 
-  // { text, className, ...rest }: TooltipProps
-
   const [show, setShow] = useState(false)
-  const cancelCloseRef = useRef<Command | null>(null)
-
-  const divRef = useRef<HTMLDivElement>(null)
-  const open = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      e.preventDefault()
-      setShow(true)
-      onOpen?.()
-    },
-    [onOpen],
-  )
-
-  // Close the tooltip
-  const close = useCallback(
-    (e: MouseEvent<HTMLDivElement> | null, eager = false) => {
-      e && e.preventDefault()
-
-      // Cancel any previous scheduled close
-      if (cancelCloseRef.current) {
-        cancelCloseRef.current()
-      }
-
-      // TODO: Add proper return type annotation
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      const closeNow = () => {
-        cancelCloseRef.current = null
-        setShow(false)
-      }
-
-      if (eager) {
-        // Close eagerly
-        closeNow()
-      } else {
-        // Close after a delay
-        const closeTimeout = setTimeout(closeNow, tooltipCloseDelay)
-
-        cancelCloseRef.current = () => {
-          cancelCloseRef.current = null
-          clearTimeout(closeTimeout)
-        }
-      }
-
-      return () => cancelCloseRef.current && cancelCloseRef.current()
-    },
-    [tooltipCloseDelay],
-  )
-
-  // Stop the delayed close when hovering the tooltip
-  const stopDelayedClose = useCallback(() => {
-    // Cancel any previous scheduled close
-    if (cancelCloseRef.current) {
-      cancelCloseRef.current()
-    }
-  }, [])
-
-  const toggleTooltip = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      e.preventDefault()
-      if (show) {
-        close(e, true)
-      } else {
-        open(e)
-      }
-    },
-    [close, open, show],
-  )
 
   useEffect(() => {
     if (isClosed) {
@@ -148,11 +115,9 @@ export function HoverTooltip(props: HoverTooltipProps) {
 
   // Hide tooltip when scrolling
   useEffect(() => {
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       if (show) {
-        close(null, true)
+        setShow(false)
       }
     }
 
@@ -160,19 +125,41 @@ export function HoverTooltip(props: HoverTooltipProps) {
     return () => {
       document.removeEventListener('scroll', handleScroll)
     }
-  }, [show, close])
+  }, [show])
 
-  const tooltipContent = disableHover ? null : (
-    <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={close}>
-      {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
-    </div>
+  const onOpenChange = useCallback(
+    (open: boolean) => {
+      setShow(open)
+
+      if (open) {
+        onOpen?.()
+      }
+    },
+    [onOpen],
   )
+
+  if (disableHover) return <>{children}</>
+
   return (
-    <Popover show={show} content={tooltipContent} {...rest}>
-      <div onMouseEnter={open} onMouseLeave={close} onClick={isMobile ? undefined : toggleTooltip}>
-        {children}
-      </div>
-    </Popover>
+    <BaseTooltip.Provider delay={0} closeDelay={tooltipCloseDelay}>
+      <BaseTooltip.Root open={show} onOpenChange={onOpenChange}>
+        <BaseTooltip.Trigger closeOnClick={false} render={<BaseTooltipTrigger className={className} />}>
+          {children}
+        </BaseTooltip.Trigger>
+        <BaseTooltip.Portal>
+          <BaseTooltip.Positioner
+            side={getTooltipSide(placement)}
+            sideOffset={8}
+            positionMethod="fixed"
+            style={{ zIndex: 999999 }}
+          >
+            <BaseTooltipPopup bgColor={bgColor} color={color} borderColor={borderColor}>
+              {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
+            </BaseTooltipPopup>
+          </BaseTooltip.Positioner>
+        </BaseTooltip.Portal>
+      </BaseTooltip.Root>
+    </BaseTooltip.Provider>
   )
 }
 
