@@ -9,7 +9,7 @@ import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
-import { activeProviderRef, createIsolatedProvider, interceptEIP6963Providers } from './providerIsolation'
+import { activeProviderRef, interceptEIP6963Providers } from './providerIsolation'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
@@ -35,13 +35,14 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
 // but with localStorage isolation (see below) to avoid cross-context state leaks.
 const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 
-// Isolate AppKit's @appkit/* localStorage keys in ALL cross-origin iframes (Safe App and widget).
-// The regular app's @appkit/* writes trigger `storage` events in iframes on the same
-// origin, causing the Safe iframe to blink and the widget to leak connection state.
-// We patch Storage.prototype (not the localStorage instance) because browsers may ignore
-// own-property overrides on native host objects. AppKit's SafeLocalStorage calls
-// `localStorage.setItem()` which resolves through Storage.prototype.
-if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
+// Redirect AppKit's @appkit/* localStorage keys to sessionStorage on ALL pages.
+// sessionStorage is per-tab but survives page refreshes, giving us:
+//  - Tab isolation: connecting MetaMask in Tab B won't overwrite Rabby in Tab A
+//  - Refresh persistence: reloading a tab keeps the wallet connected
+// In cross-origin iframes this also prevents the regular app's storage events from
+// leaking into the iframe. We patch Storage.prototype (not the localStorage instance)
+// because browsers may ignore own-property overrides on native host objects.
+if (typeof window !== 'undefined') {
   const origSetItem = Storage.prototype.setItem
   const origGetItem = Storage.prototype.getItem
   const origRemoveItem = Storage.prototype.removeItem
@@ -99,18 +100,11 @@ function getConnectors(): ConnectorInstance[] {
     return [safe({ shimDisconnect: true }), injected({ shimDisconnect: true })]
   }
 
-  // Wrap window.ethereum so that legacy (non-EIP-6963) wallets also get tab isolation.
-  // EIP-6963 wallets are already wrapped by interceptEIP6963Providers().
-  return [
-    injected({
-      shimDisconnect: true,
-      target: () => {
-        const eth = typeof window !== 'undefined' ? (window as { ethereum?: EIP1193Provider }).ethereum : undefined
-        if (!eth) return undefined
-        return { id: 'injected', name: 'Injected', provider: createIsolatedProvider(eth) }
-      },
-    }),
-  ]
+  // EIP-6963 wallets (Rabby, MetaMask, etc.) are already wrapped with tab-isolation
+  // by interceptEIP6963Providers(). The plain injected connector is only a fallback for
+  // legacy wallets that don't support EIP-6963 — keep it simple so wagmi's built-in
+  // provider discovery and reconnection work correctly.
+  return [injected({ shimDisconnect: true })]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
@@ -149,7 +143,10 @@ const storage =
         storage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
       })
     : createStorage({
-        storage: window.localStorage,
+        // sessionStorage is per-tab but survives refreshes — each tab keeps its own
+        // wallet connection without cross-tab interference (e.g. Tab A stays on Rabby
+        // even if Tab B switches to MetaMask).
+        storage: window.sessionStorage,
         key: WAGMI_STORAGE_KEY,
       })
 

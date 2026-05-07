@@ -46,18 +46,13 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
     on: <event extends keyof EIP1193EventMap>(event: event, listener: EIP1193EventMap[event]): void => {
       if (event === 'accountsChanged') {
         const wrapped: AccountsChangedListener = (accounts) => {
-          const isActive = activeProviderRef.current === proxy
-          console.log(
-            '[providerIsolation] accountsChanged fired — proxy is active:',
-            isActive,
-            '| activeProviderRef.current:',
-            activeProviderRef.current,
-            '| this proxy:',
-            proxy,
-            '| accounts:',
-            accounts,
-          )
-          if (!isActive) return
+          // When activeProviderRef is null (before any connector is established, e.g. during
+          // page-load reconnection), let events through — blocking them would prevent wagmi
+          // from receiving account updates needed for reconnection.
+          // When an active provider IS set, only forward events for that provider to enforce
+          // tab-level isolation (wallet switch in Tab A shouldn't affect Tab B).
+          const active = activeProviderRef.current
+          if (active !== null && active !== proxy) return
           ;(listener as unknown as AccountsChangedListener)(accounts)
         }
         listenerMap.set(listener as unknown as AccountsChangedListener, wrapped)
