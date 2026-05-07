@@ -1,4 +1,4 @@
-import type { EIP1193Provider } from 'viem'
+import type { EIP1193EventMap, EIP1193Provider } from 'viem'
 
 /**
  * Tracks which isolated provider is currently active in this tab (in-memory, per-tab).
@@ -30,21 +30,22 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
   console.log('[providerIsolation] creating isolated proxy for provider', original)
 
   // Maps original listener → wrapped listener so removeListener works correctly.
-  const listenerMap = new Map<Function, Function>()
+  type AccountsChangedListener = EIP1193EventMap['accountsChanged']
+  const listenerMap = new Map<AccountsChangedListener, AccountsChangedListener>()
 
   const proxy: EIP1193Provider = {
-    request: async (args) => {
+    request: (async (args) => {
       const method = (args as { method: string }).method
       if (method === 'wallet_revokePermissions') {
         console.log('[providerIsolation] blocked wallet_revokePermissions')
         return null
       }
-      return original.request(args)
-    },
+      return original.request(args as unknown as Parameters<typeof original.request>[0])
+    }) as EIP1193Provider['request'],
 
-    on: (event, listener) => {
+    on: <event extends keyof EIP1193EventMap>(event: event, listener: EIP1193EventMap[event]): void => {
       if (event === 'accountsChanged') {
-        const wrapped = (...args: unknown[]): void => {
+        const wrapped: AccountsChangedListener = (accounts) => {
           const isActive = activeProviderRef.current === proxy
           console.log(
             '[providerIsolation] accountsChanged fired — proxy is active:',
@@ -54,29 +55,29 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
             '| this proxy:',
             proxy,
             '| accounts:',
-            args[0],
+            accounts,
           )
           if (!isActive) return
-          ;(listener as (...a: unknown[]) => void)(...args)
+          ;(listener as unknown as AccountsChangedListener)(accounts)
         }
-        listenerMap.set(listener as Function, wrapped)
-        original.on(event, wrapped as Parameters<EIP1193Provider['on']>[1])
+        listenerMap.set(listener as unknown as AccountsChangedListener, wrapped)
+        original.on('accountsChanged', wrapped)
       } else {
-        original.on(event, listener)
+        original.on(event, listener as unknown as EIP1193EventMap[event])
       }
     },
 
-    removeListener: (event, listener) => {
+    removeListener: <event extends keyof EIP1193EventMap>(event: event, listener: EIP1193EventMap[event]): void => {
       if (event === 'accountsChanged') {
-        const wrapped = listenerMap.get(listener as Function)
+        const wrapped = listenerMap.get(listener as unknown as AccountsChangedListener)
         if (wrapped) {
-          original.removeListener(event, wrapped as Parameters<EIP1193Provider['removeListener']>[1])
-          listenerMap.delete(listener as Function)
+          original.removeListener('accountsChanged', wrapped)
+          listenerMap.delete(listener as unknown as AccountsChangedListener)
         } else {
-          original.removeListener(event, listener)
+          original.removeListener('accountsChanged', listener as unknown as AccountsChangedListener)
         }
       } else {
-        original.removeListener(event, listener)
+        original.removeListener(event, listener as unknown as EIP1193EventMap[event])
       }
     },
   }
