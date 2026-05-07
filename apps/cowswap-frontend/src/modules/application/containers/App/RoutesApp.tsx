@@ -9,7 +9,6 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { Navigate, Route, Routes } from 'react-router'
 
@@ -82,20 +81,14 @@ const lazyRoutes: LazyRouteProps[] = [
 ]
 
 export function RoutesApp(): ReactNode {
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-
   return (
     <Routes>
       {/*Account*/}
       <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
         <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
         <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
-        {isAffiliateProgramEnabled && (
-          <Route path={RoutesEnum.ACCOUNT_AFFILIATE_PARTNER} element={<AccountAffiliatePartner />} />
-        )}
-        {isAffiliateProgramEnabled && (
-          <Route path={RoutesEnum.ACCOUNT_AFFILIATE_TRADER} element={<AccountAffiliateTrader />} />
-        )}
+        <Route path={RoutesEnum.ACCOUNT_AFFILIATE_PARTNER} element={<AccountAffiliatePartner />} />
+        <Route path={RoutesEnum.ACCOUNT_AFFILIATE_TRADER} element={<AccountAffiliateTrader />} />
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
