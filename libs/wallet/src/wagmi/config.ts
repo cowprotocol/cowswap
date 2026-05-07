@@ -9,6 +9,8 @@ import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
+import { activeProviderRef, createIsolatedProvider, interceptEIP6963Providers } from './providerIsolation'
+
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
 type ConnectorInstance = ReturnType<typeof safe> | ReturnType<typeof injected>
@@ -66,6 +68,11 @@ if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
   }
 }
 
+// Intercept EIP-6963 provider announcements before wagmi/AppKit processes them so
+// every wallet provider gets wrapped with tab-isolation logic (no wallet_revokePermissions,
+// filtered accountsChanged). Must run before WagmiAdapter / createConfig is instantiated.
+interceptEIP6963Providers()
+
 function getConnectors(): ConnectorInstance[] {
   if (IS_CROSS_ORIGIN_IFRAME) {
     if (isInjectedWidget()) {
@@ -92,7 +99,18 @@ function getConnectors(): ConnectorInstance[] {
     return [safe({ shimDisconnect: true }), injected({ shimDisconnect: true })]
   }
 
-  return [injected({ shimDisconnect: true })]
+  // Wrap window.ethereum so that legacy (non-EIP-6963) wallets also get tab isolation.
+  // EIP-6963 wallets are already wrapped by interceptEIP6963Providers().
+  return [
+    injected({
+      shimDisconnect: true,
+      target: () => {
+        const eth = typeof window !== 'undefined' ? (window as { ethereum?: EIP1193Provider }).ethereum : undefined
+        if (!eth) return undefined
+        return { id: 'injected', name: 'Injected', provider: createIsolatedProvider(eth) }
+      },
+    }),
+  ]
 }
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
@@ -197,7 +215,7 @@ if (isSafeIframe) {
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
     enableEIP6963: !isImTokenBrowser,
-    enableReconnect: true,
+    enableReconnect: !isInjectedWidget(),
     enableWalletGuide: false,
     featuredWalletIds: [
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
@@ -216,6 +234,28 @@ if (isSafeIframe) {
     termsConditionsUrl:
       'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
   })
+}
+
+// Keep activeProviderRef in sync with the active connector so the per-tab
+// accountsChanged filter in providerIsolation.ts knows which provider is current.
+if (typeof window !== 'undefined') {
+  config.subscribe(
+    (state) => state.current,
+    async (current) => {
+      if (!current) {
+        activeProviderRef.current = null
+        return
+      }
+      const connector = config.connectors.find((c) => c.uid === current)
+      if (!connector) {
+        activeProviderRef.current = null
+        return
+      }
+      const provider = (await connector.getProvider().catch(() => null)) as EIP1193Provider | null
+      activeProviderRef.current = provider
+    },
+    { emitImmediately: true },
+  )
 }
 
 export { wagmiAdapter, reownAppKit, config }
