@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 import { Search } from '../../../explorer/components/common/Search'
 
 const Wrapper = styled.div`
-  max-width: 140rem;
   display: flex;
   flex-flow: column wrap;
   align-items: center;

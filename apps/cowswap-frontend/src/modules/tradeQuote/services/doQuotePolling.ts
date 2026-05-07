@@ -38,6 +38,7 @@ export function doQuotePolling({
     // Also avoid quote refresh when only appData.quote (contains slippage) is changed
     // Important! We should skip quote updating only if there is no quote response
     if (
+      !hasParamsChanged &&
       isQuoteCached(currentQuote) &&
       quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData, hasSmartSlippage)
     ) {
@@ -54,7 +55,7 @@ export function doQuotePolling({
   const fetchStartTimestamp = Date.now()
 
   // Don't fetch fast quote in confirm screen and in bridging mode
-  if (fastQuote && !isConfirmOpen && !isBridging) {
+  if (shouldFetchFastQuote(fastQuote, isConfirmOpen, isBridging)) {
     fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
   fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
@@ -67,4 +68,8 @@ function isQuoteCached(quote: TradeQuoteState): boolean {
   const hasCachedError = quote.error
 
   return Boolean(hasCachedResponse || hasCachedError)
+}
+
+function shouldFetchFastQuote(fastQuote: boolean | undefined, isConfirmOpen: boolean, isBridging: boolean): boolean {
+  return Boolean(fastQuote && !isConfirmOpen && !isBridging)
 }
