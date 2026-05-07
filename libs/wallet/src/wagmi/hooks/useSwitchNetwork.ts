@@ -1,16 +1,25 @@
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useSwitchChain } from 'wagmi'
+import { useConnection, useSwitchChain } from 'wagmi'
+
+import { walletInfoAtom } from '../../api/state'
 
 export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
   const { mutateAsync: switchChain } = useSwitchChain()
+  const { isConnected } = useConnection()
+  const setWalletInfo = useSetAtom(walletInfoAtom)
 
   return useCallback(
     async (chainId: SupportedChainId) => {
-      await switchChain({ chainId })
+      if (isConnected) {
+        await switchChain({ chainId })
+      } else {
+        setWalletInfo((prev) => ({ ...prev, chainId }))
+      }
     },
-    [switchChain],
+    [switchChain, isConnected, setWalletInfo],
   )
 }

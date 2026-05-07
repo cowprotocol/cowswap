@@ -3,6 +3,7 @@ import { widgetIframeTransport } from '@cowprotocol/widget-lib'
 interface CachedMessageEnvelope {
   data: unknown
   origin: string
+  source: MessageEventSource | null
 }
 
 const messagesCache: Record<string, CachedMessageEnvelope> = {}
@@ -17,6 +18,7 @@ export function cacheWidgetMessage(event: MessageEvent): void {
   messagesCache[method] = {
     data: event.data,
     origin: event.origin,
+    source: event.source,
   }
 }
 
@@ -31,6 +33,7 @@ export function replayCachedWidgetMessage(method: string): void {
     new MessageEvent('message', {
       origin: cachedMessage.origin,
       data: cachedMessage.data,
+      source: cachedMessage.source,
     }),
   )
 }

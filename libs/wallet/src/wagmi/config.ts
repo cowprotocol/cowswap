@@ -1,5 +1,5 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isImTokenBrowser } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -47,7 +47,7 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
   }
 }
 
-const projectId = 'be9f19dedc14dc05c554d97f92aed71d'
+const projectId = 'ac287751638b5d374a03c39e37f70376'
 
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
@@ -62,11 +62,11 @@ const storage =
       })
 
 const metadata = {
-  name: 'CoW Swap',
+  name: 'CoW Swap | The smartest way to trade cryptocurrencies',
   description:
     'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
   url: 'https://swap.cow.fi',
-  icons: ['https://swap.cow.fi/favicon-light-mode.png'],
+  icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
 export const wagmiAdapter = new WagmiAdapter({
@@ -82,13 +82,21 @@ export const config = wagmiAdapter.wagmiConfig
 
 export const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
-  allowUnsupportedChain: false,
+  allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
-  enableEIP6963: true,
+  // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
+  // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
+  // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
+  // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
+  enableEIP6963: !isImTokenBrowser,
   enableReconnect: true,
   enableWalletGuide: false,
-  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  featuredWalletIds: [
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
+    'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
+  ],
   features: {
     analytics: false,
     email: false,

@@ -1,18 +1,13 @@
 import { ReactNode, useEffect } from 'react'
 
 import { AbstractProviderAdapter, setGlobalAdapter } from '@cowprotocol/cow-sdk'
-import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { privateKeyToAccount } from 'viem/accounts'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
-setGlobalAdapter(
-  new ViemAdapter({
-    provider: createPublicClient({ chain: mainnet, transport: http(mainnet.rpcUrls.default.http[0]) }),
-  }) as AbstractProviderAdapter,
-)
+const PERMIT_PK = '0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe' // address: 0xDa5F16F4ab0410096a4403e7223988649fac38cF
+const PERMIT_ACCOUNT = privateKeyToAccount(PERMIT_PK)
 
 export function CowSdk({ children }: { children: ReactNode }): ReactNode {
   const publicClient = usePublicClient()

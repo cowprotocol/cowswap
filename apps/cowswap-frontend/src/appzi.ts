@@ -24,6 +24,7 @@ export const isAppziEnabled =
 
 const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
+const AFFILIATE_FEEDBACK_SURVEY_ID = '05463dc6-7175-4dd5-8eb8-3a83aab074e4'
 
 const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || (isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY)
 
@@ -36,6 +37,7 @@ declare global {
   interface Window {
     appzi?: {
       openWidget: (key: string) => void
+      openSurvey: (key: string) => void
     }
     appziSettings: {
       userId: string
@@ -73,13 +75,13 @@ type AppziSettings = {
 }
 
 function initialize(): void {
-  if (isAppziEnabled) {
-    ReactAppzi.initialize(APPZI_TOKEN)
+  if (!isAppziEnabled || typeof window === 'undefined') return
 
-    if (typeof window !== 'undefined') {
-      window.appziSettings = window.appziSettings || {}
-    }
-  }
+  window.appziSettings = window.appziSettings || {}
+
+  try {
+    ReactAppzi.initialize(APPZI_TOKEN)
+  } catch {}
 }
 
 function updateAppziSettings({ data = {}, userId = '' }: AppziSettings): void {
@@ -94,6 +96,15 @@ export function openFeedbackAppzi(params: { account?: string; walletName?: strin
   if (typeof window !== 'undefined') {
     updateAppziSettings({ data: { account, chainId, walletName } })
     window.appzi?.openWidget(FEEDBACK_KEY)
+  }
+}
+
+export function openAffiliateFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
+  const { account, chainId, walletName } = params
+
+  if (typeof window !== 'undefined') {
+    updateAppziSettings({ data: { account, chainId, walletName } })
+    window.appzi?.openSurvey(AFFILIATE_FEEDBACK_SURVEY_ID)
   }
 }
 
