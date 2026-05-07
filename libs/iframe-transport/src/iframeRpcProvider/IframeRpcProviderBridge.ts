@@ -52,6 +52,12 @@ export class IframeRpcProviderBridge {
   disconnect(): void {
     if (typeof window === 'undefined') return
 
+    // Notify the iframe that the provider is disconnecting so the widget's wagmi state
+    // can properly transition to disconnected. Without this, mode switches (dapp → standalone)
+    // leave the widget thinking it's still connected.
+    this.onProviderEvent('accountsChanged', [])
+    this.onProviderEvent('disconnect', { code: 4900, message: 'Provider disconnected' })
+
     // Disconnect provider
     this.ethereumProvider = null
     iframeRpcProviderTransport.stopListeningToMessageFromWindow(
@@ -97,6 +103,24 @@ export class IframeRpcProviderBridge {
     // Register in the provider, the events that needs to be forwarded to the iFrame window
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
       newProvider.on(event, (params: unknown) => this.onProviderEvent(event, params))
+    })
+
+    // Push current provider state to the iframe so the widget syncs immediately.
+    // Without this, switching from standalone → dapp mode leaves the widget unaware of
+    // the parent wallet's current state until the next provider event fires.
+    // We send connect + chainChanged + accountsChanged so wagmi can re-establish a
+    // full connection even if the widget was previously disconnected.
+    Promise.all([
+      newProvider.request({ method: 'eth_chainId' }).catch(() => null),
+      newProvider.request({ method: 'eth_accounts' }).catch(() => null),
+    ]).then(([chainId, accounts]) => {
+      if (chainId) {
+        this.onProviderEvent('connect', { chainId })
+        this.onProviderEvent('chainChanged', chainId)
+      }
+      if (Array.isArray(accounts) && accounts.length > 0) {
+        this.onProviderEvent('accountsChanged', accounts)
+      }
     })
 
     // Listen for provider meta info request

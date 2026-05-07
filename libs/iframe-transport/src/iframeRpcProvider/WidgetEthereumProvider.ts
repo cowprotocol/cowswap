@@ -463,6 +463,9 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private emitDisconnect(error: ProviderRpcError) {
+    // Reset enabled state so the next connect/reconnect flow works properly
+    // (e.g. when switching from dapp mode → standalone → back to dapp mode).
+    this.enabled = null
     this.emit('disconnect', error)
   }
 

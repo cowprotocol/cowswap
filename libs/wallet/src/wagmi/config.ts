@@ -33,6 +33,87 @@ export const IS_CROSS_ORIGIN_IFRAME = (() => {
 // but with localStorage isolation (see below) to avoid cross-context state leaks.
 const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 
+// ── Per-tab wallet provider isolation ──────────────────────────────────────────
+// Patches every EIP-1193 provider (window.ethereum + EIP-6963 announced providers)
+// to prevent cross-tab side-effects:
+//
+// 1. wallet_revokePermissions → no-op. MetaMask revokes for the entire origin
+//    (not per-tab), which disconnects every other tab. shimDisconnect's storage
+//    flag is sufficient for disconnect state.
+//
+// 2. accountsChanged events are only forwarded when a wallet is connected in
+//    THIS tab (tracked via sessionStorage, which is per-tab). This prevents:
+//    - Tab B auto-connecting when tab A connects MetaMask
+//    - Rabby account changes leaking into a tab connected to MetaMask
+//
+// This covers ALL injected connectors, including the ones AppKit adds dynamically
+// via EIP-6963 discovery.
+// ──────────────────────────────────────────────────────────────────────────────
+
+const ACTIVE_PROVIDER_KEY = 'cowswap:active-provider'
+let providerIdCounter = 0
+
+// Skip provider patching in the Safe iframe — it only uses the Safe connector
+// (postMessage-based), not window.ethereum or EIP-6963 providers.
+if (typeof window !== 'undefined' && !isSafeIframe) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const patchedProviders = new WeakSet<any>()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function patchProvider(provider: any): void {
+    if (!provider || patchedProviders.has(provider)) return
+    patchedProviders.add(provider)
+
+    // Assign a stable ID so we can track which provider is active per-tab
+    const providerId = `p${++providerIdCounter}`
+    provider.__cowId = providerId
+
+    // 1. Intercept wallet_revokePermissions
+    if (typeof provider.request === 'function') {
+      const origRequest = provider.request.bind(provider)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      provider.request = async (args: { method: string; params?: any }) => {
+        if (args?.method === 'wallet_revokePermissions') return
+        return origRequest(args)
+      }
+    }
+
+    // 2. Filter accountsChanged — only forward from the active provider in this tab
+    if (typeof provider.on === 'function') {
+      const origOn = provider.on.bind(provider)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      provider.on = (event: string, handler: (...args: any[]) => void) => {
+        if (event === 'accountsChanged') {
+          return origOn(event, (accounts: string[]) => {
+            // Empty accounts (wallet locked / disconnected) — always forward
+            if (accounts.length === 0) {
+              handler(accounts)
+              return
+            }
+            // Only forward if THIS provider is the active one in this tab.
+            // Prevents Rabby's accountsChanged from leaking into a MetaMask tab.
+            if (sessionStorage.getItem(ACTIVE_PROVIDER_KEY) === providerId) {
+              handler(accounts)
+            }
+          })
+        }
+        return origOn(event, handler)
+      }
+    }
+  }
+
+  // Patch window.ethereum (may already be set by an extension)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((window as any).ethereum) patchProvider((window as any).ethereum)
+
+  // Patch every EIP-6963 announced provider (AppKit discovers wallets this way)
+  window.addEventListener('eip6963:announceProvider', (event: Event) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const detail = (event as any).detail
+    if (detail?.provider) patchProvider(detail.provider)
+  })
+}
+
 // Isolate AppKit's @appkit/* localStorage keys in ALL cross-origin iframes (Safe App and widget).
 // The regular app's @appkit/* writes trigger `storage` events in iframes on the same
 // origin, causing the Safe iframe to blink and the widget to leak connection state.
@@ -64,6 +145,20 @@ if (typeof window !== 'undefined' && IS_CROSS_ORIGIN_IFRAME) {
       origRemoveItem.call(this, key)
     }
   }
+
+  // Also block the `storage` event for @appkit/* keys. The Storage.prototype patches above
+  // only intercept direct API calls — they don't suppress the cross-tab `storage` event that
+  // fires when the regular app writes @appkit/* keys to real localStorage. AppKit's module-level
+  // code listens for these events and reacts, causing the Safe iframe to briefly blink.
+  window.addEventListener(
+    'storage',
+    (event: StorageEvent) => {
+      if (event.key?.startsWith('@appkit/')) {
+        event.stopImmediatePropagation()
+      }
+    },
+    true, // capture phase — runs before AppKit's listeners
+  )
 }
 
 function getConnectors(): ConnectorInstance[] {
@@ -151,10 +246,15 @@ let config: Config
 
 if (isSafeIframe) {
   // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
+  // Disable EIP-6963 auto-discovery: wallet extensions (Rabby, MetaMask) inject into all
+  // frames. With discovery enabled, wagmi creates connectors for each, registers
+  // accountsChanged listeners, and auto-connects when the extension fires events —
+  // causing the Safe iframe to briefly switch away from the Safe wallet.
   config = createConfig({
     connectors,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     chains: SUPPORTED_REOWN_NETWORKS as any,
+    multiInjectedProviderDiscovery: false,
     storage,
     transports: wagmiTransports,
   })
@@ -218,17 +318,25 @@ if (isSafeIframe) {
   })
 }
 
-// Track the active connector uid per-tab in sessionStorage so the patched
-// injected connector can skip accountsChanged events from inactive wallets
-// without relying on cross-tab-polluted localStorage.
-// sessionStorage is per-tab, so each tab tracks its own active connector.
-export const ACTIVE_CONNECTOR_UID_KEY = 'wagmi.activeConnectorUid'
+// Track which provider is active in this tab so the provider-level accountsChanged
+// filter only forwards events from the connected wallet's provider.
 if (typeof window !== 'undefined') {
   config.subscribe(
     (state) => state.current,
-    (current) => {
-      if (current) window.sessionStorage.setItem(ACTIVE_CONNECTOR_UID_KEY, current)
-      else window.sessionStorage.removeItem(ACTIVE_CONNECTOR_UID_KEY)
+    (currentUid) => {
+      if (!currentUid) {
+        sessionStorage.removeItem(ACTIVE_PROVIDER_KEY)
+        return
+      }
+      // Resolve the active connector's provider and store its ID
+      const connector = [...config.state.connections.values()].find((c) => c.connector.uid === currentUid)?.connector
+      if (connector) {
+        connector.getProvider().then((provider) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const id = (provider as any)?.__cowId
+          if (id) sessionStorage.setItem(ACTIVE_PROVIDER_KEY, id)
+        })
+      }
     },
     { emitImmediately: true },
   )
