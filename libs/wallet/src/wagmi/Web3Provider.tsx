@@ -20,8 +20,63 @@ function isEmbeddedInIframe(): boolean {
   return typeof window !== 'undefined' && window.self !== window.top
 }
 
+function reconnectWidgetConnector(): (() => void) | undefined {
+  const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
+  if (!widgetConnector) return undefined
+
+  // Clear stale connections from previous sessions (e.g., EIP-6963 connections from
+  // standalone mode) to prevent them from interfering with the widget connector.
+  // Without this, switching standalone→dapp leaves the old MetaMask EIP-6963 connection
+  // as "current" in wagmi's persisted state, blocking the widget connector.
+  config.setState((x) => ({
+    ...x,
+    connections: new Map(),
+    current: null,
+    status: 'disconnected',
+  }))
+
+  const doReconnect = (): void => {
+    // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
+    // connector was previously "disconnected" (which can happen on widget recreations).
+    void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
+    reconnect(config, { connectors: [widgetConnector] }).catch((error) => {
+      console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
+    })
+  }
+
+  doReconnect()
+
+  // AppKit with enableReconnect=false calls unSyncExistingConnection() during init,
+  // which asynchronously disconnects ALL wagmi connections — including the one we just
+  // established above. Subscribe to state changes and re-reconnect once if that happens.
+  // We track whether we've ever been connected to avoid reacting to the initial clear above.
+  let wasConnected = false
+  let retried = false
+  const unsubscribe = config.subscribe(
+    (state) => state.status,
+    (status) => {
+      if (status === 'connected') {
+        wasConnected = true
+      }
+      if (status === 'disconnected' && wasConnected && !retried) {
+        retried = true
+        unsubscribe()
+        console.debug('[ReconnectOnMount] detected disconnect (likely AppKit unSync), re-reconnecting widget connector')
+        doReconnect()
+      }
+    },
+  )
+
+  const timeoutId = setTimeout(() => unsubscribe(), 5000)
+
+  return () => {
+    unsubscribe()
+    clearTimeout(timeoutId)
+  }
+}
+
 function ReconnectOnMount(): null {
-  useEffect(() => {
+  useEffect((): (() => void) | void => {
     // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
     // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
     if (isEmbeddedInIframe() && !isInjectedWidget()) return
@@ -31,16 +86,7 @@ function ReconnectOnMount(): null {
       // connect() with shimDisconnect=true calls wallet_requestPermissions which shows a MetaMask
       // account selector. reconnect() uses eth_accounts (silent) via isReconnecting=true path.
       // IframeRpcProviderBridge forwards eth_accounts to the parent wallet's provider.
-      const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
-      if (widgetConnector) {
-        // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
-        // connector was previously "disconnected" (which can happen on widget recreations).
-        void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
-        reconnect(config, { connectors: [widgetConnector] }).catch((error) => {
-          console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
-        })
-      }
-      return
+      return reconnectWidgetConnector()
     }
 
     if (getIsInjectedMobileBrowser()) {
