@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -16,6 +16,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { type OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -36,6 +37,12 @@ import {
   updateOrderProgressBarStepName,
 } from '../state/atoms'
 import { OrderProgressBarProps, OrderProgressBarState } from '../types'
+import {
+  getCompletionDelayMs,
+  hasProgressBarLeftInitialStep,
+  shouldShowUnfillableProgressStep,
+  shouldStageExecutingStep,
+} from '../updaters/utils'
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
@@ -48,10 +55,11 @@ export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'>
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
+  currentOrderFillability?: OrderFillability
   isBridgingTrade: boolean
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
+export const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
@@ -65,6 +73,20 @@ export function useOrderProgressBarProps(
   props: OrderProgressBarProps
   activityDerivedState: ActivityDerivedState | null
 } {
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+  const currentOrderFillability = order?.id ? pendingOrdersFillability[order.id] : undefined
+
+  return useOrderProgressBarPropsWithFillability(chainId, order, currentOrderFillability)
+}
+
+export function useOrderProgressBarPropsWithFillability(
+  chainId: SupportedChainId,
+  order: Order | undefined,
+  currentOrderFillability: OrderFillability | undefined,
+): {
+  props: OrderProgressBarProps
+  activityDerivedState: ActivityDerivedState | null
+} {
   const orderId = order?.id
   const isBridgingTrade = !!order && order.inputToken.chainId !== order.outputToken.chainId
 
@@ -74,6 +96,7 @@ export function useOrderProgressBarProps(
   const progressBarProps = useOrderBaseProgressBarProps({
     chainId,
     activityDerivedState,
+    currentOrderFillability,
     isBridgingTrade,
   })
 
@@ -137,7 +160,7 @@ function getDoNotQueryStatusEndpoint(
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId, isBridgingTrade } = params
+  const { activityDerivedState, chainId, currentOrderFillability, isBridgingTrade } = params
 
   const {
     order,
@@ -172,7 +195,9 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     previousStepName,
     lastTimeChangedSteps,
     cancellationTriggered,
+    hasShownExecutingInCurrentAttempt,
   } = useGetExecutingOrderState(orderId)
+  const shouldShowUnfillableStep = shouldShowUnfillableProgressStep(isUnfillable, currentOrderFillability)
 
   const solversInfo = useSolversInfo(chainId)
   const totalSolvers = Object.keys(solversInfo).length
@@ -190,17 +215,19 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
   useProgressBarStepNameUpdater(
     orderId,
-    isUnfillable,
+    shouldShowUnfillableStep,
     isCancelled,
     isExpired,
     isCancelling,
     cancellationTriggered,
     isConfirmed,
     countdown,
+    progressBarStepName,
     backendApiStatus,
     previousBackendApiStatus,
     lastTimeChangedSteps,
     previousStepName,
+    hasShownExecutingInCurrentAttempt,
     bridgingStatus,
     isBridgingTrade,
   )
@@ -209,7 +236,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     orderId,
     countdown,
     backendApiStatus,
-    isUnfillable || isCancelled || isCancelling || isExpired,
+    shouldShowUnfillableStep || isCancelled || isCancelling || isExpired,
   )
 
   const solverCompetition = useMemo(() => {
@@ -259,8 +286,35 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
 const DEFAULT_STATE = {}
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
+function getCompletionStepName(
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
+  isConfirmed: boolean,
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+): OrderProgressBarStepName | undefined {
+  if (!isConfirmed && backendApiStatus !== CompetitionOrderStatus.type.TRADED) {
+    return undefined
+  }
+
+  // Completion can arrive without a visible backend `executing` poll, so we synthesize step 3
+  // when the current attempt has not shown it yet before moving to the final state.
+  return shouldStageExecutingStep(currentStepName, OrderProgressBarStepName.FINISHED, hasShownExecutingInCurrentAttempt)
+    ? OrderProgressBarStepName.EXECUTING
+    : OrderProgressBarStepName.FINISHED
+}
+
+function isSubmissionFailedStatusTransition(
+  previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+): boolean {
+  return (
+    previousBackendApiStatus === CompetitionOrderStatus.type.EXECUTING &&
+    (backendApiStatus === CompetitionOrderStatus.type.ACTIVE ||
+      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
+      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED)
+  )
+}
+
 // eslint-disable-next-line complexity
 export function getProgressBarStepName(
   isUnfillable: boolean,
@@ -270,33 +324,39 @@ export function getProgressBarStepName(
   cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
+  currentStepName: OrderProgressBarState['progressBarStepName'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
   const isTradedOrConfirmed = backendApiStatus === CompetitionOrderStatus.type.TRADED || isConfirmed
+  const hasMovedPastInitialStep = !!currentStepName && currentStepName !== OrderProgressBarStepName.INITIAL
+  const bridgingStepName = getBridgingStepName(bridgingStatus)
+  const completionStepName = getCompletionStepName(
+    currentStepName,
+    hasShownExecutingInCurrentAttempt,
+    isConfirmed,
+    backendApiStatus,
+  )
 
-  if (bridgingStatus) {
-    if (bridgingStatus === SwapAndBridgeStatus.DONE) {
-      return OrderProgressBarStepName.BRIDGING_FINISHED
-    }
+  if (shouldStageExecutingStep(currentStepName, bridgingStepName, hasShownExecutingInCurrentAttempt)) {
+    return OrderProgressBarStepName.EXECUTING
+  }
 
-    if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
-      return OrderProgressBarStepName.REFUND_COMPLETED
-    }
-
-    if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
-      return OrderProgressBarStepName.BRIDGING_FAILED
-    }
-
-    if (bridgingStatus && [SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
-      return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
-    }
+  if (bridgingStepName) {
+    return bridgingStepName
   }
 
   if (isTradedOrConfirmed && isBridgingTrade && !bridgingStatus) {
+    const persistedBridgingStepName = getPersistedBridgingStepName(currentStepName)
+
+    if (persistedBridgingStepName) {
+      return persistedBridgingStepName
+    }
+
     return OrderProgressBarStepName.EXECUTING
   }
 
@@ -309,20 +369,18 @@ export function getProgressBarStepName(
   } else if (cancellationTriggered && isTradedOrConfirmed) {
     // Was cancelling, but got executed in the meantime
     return OrderProgressBarStepName.CANCELLATION_FAILED
-  } else if (isConfirmed) {
-    // already traded
-    return OrderProgressBarStepName.FINISHED
-  } else if (
-    previousBackendApiStatus === CompetitionOrderStatus.type.EXECUTING &&
-    (backendApiStatus === CompetitionOrderStatus.type.ACTIVE ||
-      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
-      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED)
-  ) {
-    // moved back from executing to active
+  } else if (completionStepName) {
+    return completionStepName
+  } else if (isSubmissionFailedStatusTransition(previousBackendApiStatus, backendApiStatus)) {
+    // Submission failed and the backend is searching again. Show the retry screen first;
+    // if this attempt later completes, step 3 will be replayed before the final state.
     return OrderProgressBarStepName.SUBMISSION_FAILED
   } else if (isUnfillable) {
-    // out of market order
-    return OrderProgressBarStepName.UNFILLABLE
+    // A local unfillable flag can race immediately after approval / permit updates.
+    // Keep the first visible screen on step 1 until the bar has actually advanced.
+    return hasProgressBarLeftInitialStep(currentStepName)
+      ? OrderProgressBarStepName.UNFILLABLE
+      : OrderProgressBarStepName.INITIAL
   } else if (
     (backendApiStatus == null ||
       backendApiStatus === CompetitionOrderStatus.type.OPEN ||
@@ -338,8 +396,7 @@ export function getProgressBarStepName(
   } else if (
     (backendApiStatus === CompetitionOrderStatus.type.OPEN ||
       backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
-    previousStepName &&
-    previousStepName !== OrderProgressBarStepName.INITIAL
+    hasMovedPastInitialStep
   ) {
     // once moved out of initial state, never go back to it
     return OrderProgressBarStepName.DELAYED
@@ -349,6 +406,91 @@ export function getProgressBarStepName(
   }
 
   return OrderProgressBarStepName.INITIAL
+}
+
+function getCompletionTargetStepName(
+  isConfirmed: boolean,
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+): OrderProgressBarStepName | undefined {
+  const bridgingStepName = getBridgingStepName(bridgingStatus)
+
+  if (bridgingStepName) {
+    return bridgingStepName
+  }
+
+  if (isConfirmed || backendApiStatus === CompetitionOrderStatus.type.TRADED) {
+    return OrderProgressBarStepName.FINISHED
+  }
+
+  return undefined
+}
+
+export function shouldApplyCompletionDrivenExecutingImmediately(
+  stepName: OrderProgressBarStepName,
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
+  isConfirmed: boolean,
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
+): boolean {
+  if (
+    stepName !== OrderProgressBarStepName.EXECUTING ||
+    !currentStepName ||
+    currentStepName === OrderProgressBarStepName.EXECUTING
+  ) {
+    return false
+  }
+
+  const completionTargetStepName = getCompletionTargetStepName(isConfirmed, backendApiStatus, bridgingStatus)
+
+  if (shouldStageExecutingStep(currentStepName, completionTargetStepName, hasShownExecutingInCurrentAttempt)) {
+    return true
+  }
+
+  const isTradedOrConfirmed = backendApiStatus === CompetitionOrderStatus.type.TRADED || isConfirmed
+
+  return isTradedOrConfirmed && isBridgingTrade && !bridgingStatus
+}
+
+function getBridgingStepName(bridgingStatus: SwapAndBridgeStatus | undefined): OrderProgressBarStepName | undefined {
+  if (!bridgingStatus) {
+    return undefined
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.DONE) {
+    return OrderProgressBarStepName.BRIDGING_FINISHED
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.REFUND_COMPLETE) {
+    return OrderProgressBarStepName.REFUND_COMPLETED
+  }
+
+  if (bridgingStatus === SwapAndBridgeStatus.FAILED) {
+    return OrderProgressBarStepName.BRIDGING_FAILED
+  }
+
+  if ([SwapAndBridgeStatus.PENDING, SwapAndBridgeStatus.DEFAULT].includes(bridgingStatus)) {
+    return OrderProgressBarStepName.BRIDGING_IN_PROGRESS
+  }
+
+  return undefined
+}
+
+function getPersistedBridgingStepName(
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+): OrderProgressBarStepName | undefined {
+  if (
+    currentStepName === OrderProgressBarStepName.BRIDGING_IN_PROGRESS ||
+    currentStepName === OrderProgressBarStepName.BRIDGING_FAILED ||
+    currentStepName === OrderProgressBarStepName.REFUND_COMPLETED ||
+    currentStepName === OrderProgressBarStepName.BRIDGING_FINISHED
+  ) {
+    return currentStepName
+  }
+
+  return undefined
 }
 
 function useCancellingOrderUpdater(orderId: string | undefined, isCancelling: boolean): void {
@@ -404,7 +546,48 @@ function useGetExecutingOrderState(orderId?: string): OrderProgressBarState {
   return useMemo(() => singleState || DEFAULT_STATE, [singleState])
 }
 
-// TODO: Break down this large function into smaller functions
+function getStepNameUpdateTimer(
+  updateStepName: (stepName: OrderProgressBarStepName) => void,
+  stepName: OrderProgressBarStepName,
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  isConfirmed: boolean,
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
+): NodeJS.Timeout | undefined {
+  const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
+  const completionDelayMs = getCompletionDelayMs(currentStepName, stepName, lastTimeChangedSteps)
+  const shouldApplyStepNow = shouldApplyStepNameNow(
+    lastTimeChangedSteps,
+    timeSinceLastChange,
+    stepName,
+    currentStepName,
+    hasShownExecutingInCurrentAttempt,
+    isConfirmed,
+    backendApiStatus,
+    bridgingStatus,
+    isBridgingTrade,
+  )
+
+  if (completionDelayMs > 0) {
+    return setTimeout(() => updateStepName(stepName), completionDelayMs)
+  }
+
+  if (shouldApplyStepNow) {
+    updateStepName(stepName)
+
+    if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
+      return setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
+    }
+
+    return undefined
+  }
+
+  return setTimeout(() => updateStepName(stepName), MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
+}
+
 function useProgressBarStepNameUpdater(
   orderId: string | undefined,
   isUnfillable: boolean,
@@ -414,15 +597,16 @@ function useProgressBarStepNameUpdater(
   cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
+  currentStepName: OrderProgressBarState['progressBarStepName'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): void {
-  const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
-
+  const updateStepName = useUpdateProgressBarStepName(orderId)
   const stepName = getProgressBarStepName(
     isUnfillable,
     isCancelled,
@@ -431,52 +615,89 @@ function useProgressBarStepNameUpdater(
     cancellationTriggered,
     isConfirmed,
     countdown,
+    currentStepName,
     backendApiStatus,
     previousBackendApiStatus,
     previousStepName,
+    hasShownExecutingInCurrentAttempt,
     bridgingStatus,
     isBridgingTrade,
   )
 
-  // Update state with new step name
   useEffect(() => {
     if (!orderId) {
       return
     }
-
-    const ensuredOrderId = orderId
-
-    function updateStepName(name: OrderProgressBarStepName): void {
-      setProgressBarStepName(ensuredOrderId, name || DEFAULT_STEP_NAME)
-    }
-
-    let timer: NodeJS.Timeout | undefined
-
-    const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
-
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
-      updateStepName(stepName)
-
-      // schedule update for temporary steps
-      if (stepName === OrderProgressBarStepName.SUBMISSION_FAILED) {
-        timer = setTimeout(() => updateStepName(OrderProgressBarStepName.SOLVING), MINIMUM_STEP_DISPLAY_TIME)
-      }
-    } else {
-      // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
-      timer = setTimeout(() => updateStepName(stepName), MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
-    }
+    const timer = getStepNameUpdateTimer(
+      updateStepName,
+      stepName,
+      currentStepName,
+      hasShownExecutingInCurrentAttempt,
+      lastTimeChangedSteps,
+      isConfirmed,
+      backendApiStatus,
+      bridgingStatus,
+      isBridgingTrade,
+    )
 
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
+  }, [
+    backendApiStatus,
+    bridgingStatus,
+    currentStepName,
+    isBridgingTrade,
+    isConfirmed,
+    lastTimeChangedSteps,
+    orderId,
+    previousStepName,
+    hasShownExecutingInCurrentAttempt,
+    stepName,
+    updateStepName,
+  ])
+}
+
+function shouldApplyStepNameNow(
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  timeSinceLastChange: number,
+  stepName: OrderProgressBarStepName,
+  currentStepName: OrderProgressBarState['progressBarStepName'],
+  hasShownExecutingInCurrentAttempt: OrderProgressBarState['hasShownExecutingInCurrentAttempt'],
+  isConfirmed: boolean,
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  bridgingStatus: SwapAndBridgeStatus | undefined,
+  isBridgingTrade: boolean,
+): boolean {
+  return (
+    shouldApplyCompletionDrivenExecutingImmediately(
+      stepName,
+      currentStepName,
+      hasShownExecutingInCurrentAttempt,
+      isConfirmed,
+      backendApiStatus,
+      bridgingStatus,
+      isBridgingTrade,
+    ) || shouldApplyStepNameImmediately(lastTimeChangedSteps, timeSinceLastChange, stepName)
+  )
+}
+
+export function shouldApplyStepNameImmediately(
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  timeSinceLastChange: number,
+  stepName: OrderProgressBarStepName,
+): boolean {
+  return (
+    lastTimeChangedSteps === undefined ||
+    timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    stepName === OrderProgressBarStepName.CANCELLING ||
+    stepName === OrderProgressBarStepName.SUBMISSION_FAILED ||
+    stepName === OrderProgressBarStepName.BRIDGING_FINISHED ||
+    stepName === OrderProgressBarStepName.FINISHED ||
+    stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
+    stepName === OrderProgressBarStepName.CANCELLED ||
+    stepName === OrderProgressBarStepName.EXPIRED
+  )
 }
 
 function useSetExecutingOrderCountdownCallback(): (orderId: string, value: number | null) => void {
@@ -493,6 +714,21 @@ function useSetExecutingOrderProgressBarStepNameCallback(): (orderId: string, va
       setValue({ orderId, value })
     },
     [setValue],
+  )
+}
+
+function useUpdateProgressBarStepName(orderId: string | undefined): (name: OrderProgressBarStepName) => void {
+  const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
+
+  return useCallback(
+    (name: OrderProgressBarStepName) => {
+      if (!orderId) {
+        return
+      }
+
+      setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
+    },
+    [orderId, setProgressBarStepName],
   )
 }
 

@@ -109,6 +109,10 @@ export interface Order extends BaseOrder {
   bridgeOutputAmount?: CurrencyAmount<Currency>
 }
 
+export interface SerializedBridgeOutputAmount {
+  amount: string
+}
+
 /**
  * Order used for persisting it in the state.
  * The only difference with Order is that all it's fields are serializable
@@ -116,6 +120,7 @@ export interface Order extends BaseOrder {
 export interface SerializedOrder extends BaseOrder {
   inputToken: SerializedToken // for dapp use only, readable by user
   outputToken: SerializedToken // for dapp use only, readable by user
+  bridgeOutputAmount?: SerializedBridgeOutputAmount
 }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
 

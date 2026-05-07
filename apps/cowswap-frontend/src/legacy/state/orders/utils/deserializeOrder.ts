@@ -1,13 +1,12 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { SerializedToken } from '../../user/types'
-import { Order, OrderStatus } from '../actions'
+import { Order, OrderStatus, SerializedBridgeOutputAmount } from '../actions'
 import { OrderObject, V2OrderObject } from '../reducer'
 import { isOrderExpired } from '../utils'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {
+export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined): Order | undefined {
   let order: Order | undefined
   // we need to make sure the incoming order is a valid
   // V3 typed order as users can have stale data from V2
@@ -16,8 +15,14 @@ export function deserializeOrder(orderObject: OrderObject | V2OrderObject | unde
 
     const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
     const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
+    const deserialisedBridgeOutputAmount = deserializeBridgeOutputAmount(
+      serialisedOrder.bridgeOutputAmount,
+      deserialisedOutputToken,
+    )
+
     order = {
       ...serialisedOrder,
+      bridgeOutputAmount: deserialisedBridgeOutputAmount,
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
     }
@@ -36,6 +41,30 @@ export function deserializeOrder(orderObject: OrderObject | V2OrderObject | unde
 
 function deserializeToken(serializedToken: SerializedToken): TokenWithLogo {
   return TokenWithLogo.fromToken(serializedToken, serializedToken.logoURI)
+}
+
+function deserializeBridgeOutputAmount(
+  serializedAmount: SerializedBridgeOutputAmount | unknown,
+  outputToken: TokenWithLogo,
+): CurrencyAmount<Currency> | undefined {
+  if (typeof serializedAmount === 'string') {
+    return CurrencyAmount.fromRawAmount(outputToken, serializedAmount)
+  }
+
+  if (isSerializedBridgeOutputAmount(serializedAmount)) {
+    return CurrencyAmount.fromRawAmount(outputToken, serializedAmount.amount)
+  }
+
+  return undefined
+}
+
+function isSerializedBridgeOutputAmount(value: unknown): value is SerializedBridgeOutputAmount {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'amount' in value &&
+    typeof (value as { amount: unknown }).amount === 'string'
+  )
 }
 
 // TODO: Replace any with proper type definitions

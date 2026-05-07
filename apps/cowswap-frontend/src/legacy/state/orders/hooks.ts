@@ -8,7 +8,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useDispatch, useSelector } from 'react-redux'
 import useSWR from 'swr'
 
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { addPendingOrderStep } from 'modules/trade'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -296,6 +296,9 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
     (params: AddOrUpdateUnserialisedOrdersParams) => {
       const orders = params.orders.map((order) => ({
         ...order,
+        bridgeOutputAmount: order.bridgeOutputAmount
+          ? { amount: order.bridgeOutputAmount.quotient.toString() }
+          : undefined,
         inputToken: serializeToken(order.inputToken),
         outputToken: serializeToken(order.outputToken),
       }))

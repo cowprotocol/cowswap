@@ -1,10 +1,14 @@
 import { createStore } from 'jotai'
 
+import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
+
 import {
   cancellationTrackedOrderIdsAtom,
   ordersProgressBarStateAtom,
   pruneOrdersProgressBarState,
+  updateOrderProgressBarBackendInfo,
   updateOrderProgressBarCountdown,
+  updateOrderProgressBarStepName,
 } from './atoms'
 
 import { OrderProgressBarStepName, OrdersProgressBarState } from '../types'
@@ -136,5 +140,83 @@ describe('cancellationTrackedOrderIdsAtom', () => {
     })
 
     expect(store.get(cancellationTrackedOrderIdsAtom)).toEqual(['a', 'c'])
+  })
+})
+
+describe('executing replay state', () => {
+  const orderId = 'retry-order'
+  const EXECUTING_STATUS = CompetitionOrderStatus.type.EXECUTING
+  const OPEN_STATUS = CompetitionOrderStatus.type.OPEN
+
+  it('marks the order to replay executing after the backend falls back from executing to open', () => {
+    const store = createStore()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderId]: {
+        backendApiStatus: EXECUTING_STATUS,
+        progressBarStepName: OrderProgressBarStepName.EXECUTING,
+      },
+    })
+
+    store.set(updateOrderProgressBarBackendInfo, { orderId, value: { backendApiStatus: OPEN_STATUS } })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderId]).toMatchObject({
+      backendApiStatus: OPEN_STATUS,
+      previousBackendApiStatus: EXECUTING_STATUS,
+    })
+    expect(store.get(ordersProgressBarStateAtom)[orderId]?.hasShownExecutingInCurrentAttempt).toBeUndefined()
+  })
+
+  it('keeps the attempt reset while the retry screen moves back to solving', () => {
+    const store = createStore()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderId]: {
+        progressBarStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+        previousStepName: OrderProgressBarStepName.EXECUTING,
+      },
+    })
+
+    store.set(updateOrderProgressBarStepName, { orderId, value: OrderProgressBarStepName.SOLVING })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderId]).toMatchObject({
+      progressBarStepName: OrderProgressBarStepName.SOLVING,
+      previousStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+    })
+    expect(store.get(ordersProgressBarStateAtom)[orderId]?.hasShownExecutingInCurrentAttempt).toBeUndefined()
+  })
+
+  it('marks the current attempt as having shown executing once step 3 appears', () => {
+    const store = createStore()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderId]: {
+        progressBarStepName: OrderProgressBarStepName.SOLVING,
+        previousStepName: OrderProgressBarStepName.SUBMISSION_FAILED,
+      },
+    })
+
+    store.set(updateOrderProgressBarStepName, { orderId, value: OrderProgressBarStepName.EXECUTING })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderId]).toMatchObject({
+      progressBarStepName: OrderProgressBarStepName.EXECUTING,
+      previousStepName: OrderProgressBarStepName.SOLVING,
+      hasShownExecutingInCurrentAttempt: true,
+    })
+  })
+
+  it('clears the attempt flag when the backend falls back from executing to open', () => {
+    const store = createStore()
+
+    store.set(ordersProgressBarStateAtom, {
+      [orderId]: {
+        backendApiStatus: EXECUTING_STATUS,
+        hasShownExecutingInCurrentAttempt: true,
+      },
+    })
+
+    store.set(updateOrderProgressBarBackendInfo, { orderId, value: { backendApiStatus: OPEN_STATUS } })
+
+    expect(store.get(ordersProgressBarStateAtom)[orderId]?.hasShownExecutingInCurrentAttempt).toBeUndefined()
   })
 })

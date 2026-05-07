@@ -21,6 +21,7 @@ export type OrderProgressBarState = {
   previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number
   cancellationTriggered?: true
+  hasShownExecutingInCurrentAttempt?: true
 }
 
 export type OrdersProgressBarState = Record<string, OrderProgressBarState>
@@ -37,6 +38,7 @@ export type OrderProgressBarProps = {
   stepName?: OrderProgressBarStepName
   chainId: SupportedChainId
   countdown?: number | null | undefined
+  disableAnalytics?: boolean
   solverCompetition?: SolverCompetition[]
   totalSolvers?: number
   order?: Order

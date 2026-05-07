@@ -61,7 +61,7 @@ export function DelayedSolvedSubmissionFailedTopSection(): ReactNode {
 
   if (!STEP_LOTTIE_NEXTBATCH) return null
 
-  return <FullSizeLottie animationData={animationData} />
+  return <FullSizeLottie animationData={animationData} largePhoneScale={1.1} />
 }
 
 interface SolvingTopSectionProps {
@@ -107,7 +107,7 @@ export function ExecutingTopSection({ stepName }: BaseTopSectionProps): ReactNod
 
   return (
     <ProgressImageWrapper stepName={stepName}>
-      <FullSizeLottie animationData={animationData} />
+      <FullSizeLottie animationData={animationData} largePhoneScale={1.1} />
     </ProgressImageWrapper>
   )
 }

@@ -3,13 +3,14 @@ import { addPendingOrder, AddPendingOrderParams, SerializedOrder } from 'legacy/
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 import { serializeToken } from 'legacy/state/user/hooks'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function addPendingOrderStep(addOrderParams: AddUnserialisedPendingOrderParams, dispatch: AppDispatch) {
+export function addPendingOrderStep(addOrderParams: AddUnserialisedPendingOrderParams, dispatch: AppDispatch): void {
   const serialisedSellToken = serializeToken(addOrderParams.order.inputToken)
   const serialisedBuyToken = serializeToken(addOrderParams.order.outputToken)
   const order: SerializedOrder = {
     ...addOrderParams.order,
+    bridgeOutputAmount: addOrderParams.order.bridgeOutputAmount
+      ? { amount: addOrderParams.order.bridgeOutputAmount.quotient.toString() }
+      : undefined,
     inputToken: serialisedSellToken,
     outputToken: serialisedBuyToken,
   }
