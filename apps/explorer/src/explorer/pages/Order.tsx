@@ -10,8 +10,6 @@ import { OrderWidget } from '../components/OrderWidget'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperMod)`
-  max-width: 140rem;
-
   > h1 {
     padding: 2.4rem 0 0.75rem;
   }
