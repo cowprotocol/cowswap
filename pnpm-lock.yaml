@@ -325,7 +325,7 @@ importers:
         specifier: workspace:*
         version: link:../../libs/assets
       '@cowprotocol/cms':
-        specifier: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
         version: 0.11.0
       '@cowprotocol/common-const':
         specifier: workspace:*
@@ -533,7 +533,7 @@ importers:
         specifier: workspace:*
         version: link:../../libs/balances-and-allowances
       '@cowprotocol/cms':
-        specifier: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
         version: 0.11.0
       '@cowprotocol/common-const':
         specifier: workspace:*
@@ -548,7 +548,7 @@ importers:
         specifier: workspace:*
         version: link:../../libs/core
       '@cowprotocol/cow-runner-game':
-        specifier: 0.2.9
+        specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
         version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
         specifier: 9.0.2
@@ -1529,7 +1529,7 @@ importers:
   libs/core:
     dependencies:
       '@cowprotocol/cms':
-        specifier: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
         version: 0.11.0
       '@cowprotocol/common-const':
         specifier: workspace:*
