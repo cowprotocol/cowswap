@@ -37,6 +37,8 @@ import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
+export { getGlobalFooterNavItems } from './footer.constants'
+
 export interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
   label?: string
   badge?: string
