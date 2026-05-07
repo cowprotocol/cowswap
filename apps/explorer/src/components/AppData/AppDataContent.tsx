@@ -31,7 +31,7 @@ export function AppDataContent({ appData, fullAppData, showDecodedAppData }: App
 
   const { hasQuoteBody, jsonData } = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const hasQuoteBody = !!(decodedAppData?.metadata as any).bridging?.quoteBody
+    const hasQuoteBody = !!(decodedAppData?.metadata as any)?.bridging?.quoteBody
     const jsonData = stringifyJson(tab === 'raw' || !hasQuoteBody ? decodedAppData : parseQuoteBody(decodedAppData))
 
     return { hasQuoteBody, jsonData }
