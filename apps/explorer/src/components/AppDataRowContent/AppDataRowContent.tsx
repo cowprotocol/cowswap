@@ -1,40 +1,26 @@
 import { ReactNode, useState } from 'react'
 
-import { Color } from '@cowprotocol/ui'
-
-import AppDataWrapper from 'components/common/AppDataWrapper'
+import { AppDataWrapper } from 'components/common/AppDataWrapper'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { useAppData } from 'hooks/useAppData'
-import styled from 'styled-components/macro'
 
-import { AppDataContent } from './AppDataContent'
+import * as styledEl from './AppDataRowContent.styles'
 
-type DecodeAppDataProps = {
+import { AppDataContent } from '../AppData/AppDataContent'
+
+interface AppDataRowContentProps {
   appData: string
   fullAppData?: string
   showExpanded?: boolean
 }
 
-const ShowMoreButton = styled.button`
-  font-size: 1.4rem;
-  margin-top: 0.5rem;
-  border: none;
-  background: none;
-  color: ${Color.explorer_textActive};
-  align-self: flex-start;
-  padding: 0;
+const EMPTY_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
-  :hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`
-
-export const DecodeAppData = (props: DecodeAppDataProps): ReactNode => {
-  const { appData, showExpanded = false, fullAppData } = props
+export function AppDataRowContent({ appData, showExpanded = false, fullAppData }: AppDataRowContentProps): ReactNode {
   const { ipfsUri, hasError: appDataError } = useAppData(appData, fullAppData)
 
   const isLegacyAppDataHex = fullAppData === undefined
+  const hasAppData = appData.trim() !== EMPTY_APP_DATA
   const [showDecodedAppData, setShowDecodedAppData] = useState<boolean>(showExpanded)
 
   return (
@@ -57,9 +43,11 @@ export const DecodeAppData = (props: DecodeAppDataProps): ReactNode => {
           appData
         )}
         &nbsp;
-        <ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
-          {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-        </ShowMoreButton>
+        {hasAppData && (
+          <styledEl.ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
+            {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
+          </styledEl.ShowMoreButton>
+        )}
       </>
       <div className={`hidden-content ${appDataError && 'error'}`}>
         <AppDataContent appData={appData} fullAppData={fullAppData} showDecodedAppData={showDecodedAppData} />
