@@ -182,7 +182,7 @@ export function getAboutFooterNavChildren(): NavItemChildrenProps[] {
     },
     {
       label: 'Affiliate Program',
-      href: '/affiliate-program',
+      href: 'https://cow.fi/affiliate-program',
       utmContent: 'footer-about-affiliate-program',
     },
   ]
