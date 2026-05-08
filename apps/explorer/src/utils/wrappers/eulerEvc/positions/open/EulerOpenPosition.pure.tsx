@@ -3,19 +3,18 @@ import React, { ReactElement } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { VaultAsset } from '../../../../../hooks/euler'
+import { OwnerLink } from '../../components/OwnerLink.pure'
+import { TokenLink } from '../../components/TokenLink.pure'
+import { formatAmount, subaccountNumber } from '../../euler.utils'
 import {
   ArrowSep,
   DirectionLabel,
-  OwnerLink,
   SubInfo,
   TokenAmount,
   TokenBlock,
-  TokenLink,
   TokenSymbol,
   TradeCard,
-  formatAmount,
-  subaccountNumber,
-} from '../../EulerWrappers.styles'
+} from '../EulerPosition.styles'
 
 export interface EulerOpenPositionParams {
   owner: string

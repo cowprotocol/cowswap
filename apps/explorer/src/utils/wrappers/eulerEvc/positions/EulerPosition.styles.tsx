@@ -1,13 +1,6 @@
-import React, { ReactElement } from 'react'
-
-import { getBlockExplorerUrl, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Color, Media } from '@cowprotocol/ui'
 
-import { Link } from 'react-router'
 import styled from 'styled-components/macro'
-
-import { TokenImg } from '../../../components/common/TokenImg'
 
 export const TradeCard = styled.div`
   position: relative;
@@ -130,47 +123,3 @@ export const SubInfo = styled.p`
     }
   }
 `
-
-const TokenIcon = styled(TokenImg)`
-  width: 2rem;
-  height: 2rem;
-`
-
-export function TokenLink({
-  symbol,
-  tokenAddress,
-  chainId,
-}: {
-  symbol: string
-  tokenAddress: string | undefined
-  chainId: SupportedChainId | null
-}): ReactElement {
-  if (!tokenAddress || !chainId) return <>{symbol}</>
-  const url = getBlockExplorerUrl(chainId, 'token', tokenAddress)
-  return (
-    <>
-      <TokenIcon address={tokenAddress} network={chainId} symbol={symbol} />
-      <a href={url} target="_blank" rel="noopener noreferrer" title={tokenAddress}>
-        {symbol}
-      </a>
-    </>
-  )
-}
-
-export function OwnerLink({ address }: { address: string }): ReactElement {
-  return (
-    <Link to={`/address/${address}`} title={address}>
-      {shortenAddress(address)}↗
-    </Link>
-  )
-}
-
-export function formatAmount(raw: bigint | undefined, decimals: number | undefined): string {
-  if (raw === undefined) return '…'
-  if (decimals === undefined) return raw.toString()
-  return (Number(raw) / 10 ** decimals).toLocaleString(undefined, { maximumFractionDigits: 6 })
-}
-
-export function subaccountNumber(owner: string, account: string): number {
-  return parseInt(owner.slice(-2), 16) ^ parseInt(account.slice(-2), 16)
-}
