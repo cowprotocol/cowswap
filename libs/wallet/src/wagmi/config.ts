@@ -90,6 +90,7 @@ export const reownAppKit = createAppKit({
   // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
   // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
   enableEIP6963: !isImTokenBrowser,
+  coinbasePreference: isEmbeddedInIframe() ? 'smartWalletOnly' : 'all',
   enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: [
