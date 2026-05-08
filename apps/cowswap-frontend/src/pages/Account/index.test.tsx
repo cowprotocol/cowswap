@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { type ReactNode } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { i18n } from '@lingui/core'
@@ -16,15 +15,6 @@ import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate'
 import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import Account from './index'
-
-jest.mock('@cowprotocol/common-hooks', () => {
-  const actualModule = jest.requireActual('@cowprotocol/common-hooks')
-
-  return {
-    ...actualModule,
-    useFeatureFlags: jest.fn(),
-  }
-})
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
@@ -60,7 +50,6 @@ jest.mock('./Menu', () => ({
   AccountMenu: () => <nav aria-label="Account menu" />,
 }))
 
-const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
@@ -72,9 +61,6 @@ function renderComponent(pathname: string, account?: string): RenderResult {
   useWalletInfoMock.mockReturnValue({
     account,
   } as ReturnType<typeof useWalletInfo>)
-  useFeatureFlagsMock.mockReturnValue({
-    isAffiliateProgramEnabled: true,
-  } as ReturnType<typeof useFeatureFlags>)
 
   return render(
     <MemoryRouter initialEntries={[pathname]}>
