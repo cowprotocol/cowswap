@@ -10,7 +10,7 @@ import * as styledEl from './EulerCollateralSwap.styled'
 import { VaultAsset } from '../../../../../hooks/euler'
 import { OwnerLink } from '../../components/OwnerLink.pure'
 import { TokenLink } from '../../components/TokenLink.pure'
-import { formatAmount, subaccountNumber } from '../../euler.utils'
+import { formatAmount, subAccountNumber } from '../../euler.utils'
 import {
   ArrowSep,
   DirectionLabel,
@@ -50,7 +50,7 @@ export function EulerCollateralSwapView({
 }: EulerCollateralSwapViewProps): ReactElement {
   const fromSymbol = fromAsset?.symbol ?? '…'
   const toSymbol = toAsset?.symbol ?? '…'
-  const sub = subaccountNumber(params.owner, params.account)
+  const sub = subAccountNumber(params.owner, params.account)
 
   return (
     <div>

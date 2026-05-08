@@ -4,6 +4,6 @@ export function formatAmount(raw: bigint | undefined, decimals: number | undefin
   return (Number(raw) / 10 ** decimals).toLocaleString(undefined, { maximumFractionDigits: 6 })
 }
 
-export function subaccountNumber(owner: string, account: string): number {
+export function subAccountNumber(owner: string, account: string): number {
   return parseInt(owner.slice(-2), 16) ^ parseInt(account.slice(-2), 16)
 }

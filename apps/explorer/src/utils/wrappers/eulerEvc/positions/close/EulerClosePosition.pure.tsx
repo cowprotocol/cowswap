@@ -6,7 +6,7 @@ import { useOrderContext } from '../../../../../components/orders/OrderWrapperDe
 import { VaultAsset } from '../../../../../hooks/euler'
 import { OwnerLink } from '../../components/OwnerLink.pure'
 import { TokenLink } from '../../components/TokenLink.pure'
-import { formatAmount, subaccountNumber } from '../../euler.utils'
+import { formatAmount, subAccountNumber } from '../../euler.utils'
 import {
   ArrowSep,
   DirectionLabel,
@@ -46,7 +46,7 @@ export function EulerClosePositionView({
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = order?.buyToken?.symbol ?? borrowAsset?.symbol ?? '…'
   const borrowTokenAddress = order?.buyToken?.address ?? borrowAsset?.address
-  const sub = subaccountNumber(params.owner, params.account)
+  const sub = subAccountNumber(params.owner, params.account)
   const repayAmount =
     order?.buyAmount && order.buyToken
       ? formatAmount(BigInt(order.buyAmount.toFixed(0)), order.buyToken.decimals)
