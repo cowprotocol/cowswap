@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.6...cow-fi-v2.5.7) (2026-05-08)
+
+
+### 🐛 Bug Fixes
+
+* bump next version ([#7471](https://github.com/cowprotocol/cowswap/issues/7471)) ([5f0d60f](https://github.com/cowprotocol/cowswap/commit/5f0d60f1933ca435e49138c8c2133341bfd5bf9e))
+
 ## [2.5.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.5...cow-fi-v2.5.6) (2026-04-30)
 
 
