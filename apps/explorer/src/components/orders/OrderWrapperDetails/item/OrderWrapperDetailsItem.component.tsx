@@ -17,16 +17,16 @@ const UNKNOWN_WRAPPER_TOOLTIP =
 
 export function OrderWrapperDetailsItem({ wrapper }: { wrapper: ResolvedWrapper }): ReactElement {
   const [Component, setComponent] = useState<ComponentType<{ data: string }> | null>(null)
-  const { info, address, data, isOmittable } = wrapper
+  const { info, address, data, loadComponent, isOmittable } = wrapper
   const chainId = useNetworkId() as SupportedChainId | null
   const isUnknown = !WRAPPERS_BY_ADDRESS[getAddressKey(address)]
   const contractName = useContractName(isUnknown ? address : '')
   const { tooltipProps, targetProps } = usePopperDefault<HTMLLIElement>('top')
 
   useEffect(() => {
-    if (!data || !wrapper.loadComponent) return
-    wrapper.loadComponent().then((Comp) => setComponent(() => Comp))
-  }, [wrapper, data])
+    if (!data || !loadComponent) return
+    loadComponent().then((Comp) => setComponent(() => Comp))
+  }, [data, loadComponent])
 
   const addressUrl = chainId ? getBlockExplorerUrl(chainId, 'contract', address) : undefined
   const shortAddress = shortenAddress(address)
