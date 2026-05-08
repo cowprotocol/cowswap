@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
+import { isAddress, isValidTokenListSource } from '@cowprotocol/common-utils'
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 import { ModalHeader } from '@cowprotocol/ui'
 
@@ -44,14 +44,7 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   const isListUrlValid = useMemo(() => {
     if (!listInput) return false
 
-    const value = listInput.trim()
-
-    if (parseENSAddress(value)) return true
-
-    const protocol = value.split(':')[0]?.toLowerCase()
-    if (protocol !== 'http' && protocol !== 'https') return false
-
-    return uriToHttp(value).length > 0
+    return isValidTokenListSource(listInput)
   }, [listInput])
 
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
