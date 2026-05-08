@@ -28,8 +28,8 @@ function reconnectWidgetConnector(): (() => void) | undefined {
   // standalone mode) to prevent them from interfering with the widget connector.
   // Without this, switching standalone→dapp leaves the old MetaMask EIP-6963 connection
   // as "current" in wagmi's persisted state, blocking the widget connector.
-  config.setState((x) => ({
-    ...x,
+  config.setState((state) => ({
+    ...state,
     connections: new Map(),
     current: null,
     status: 'disconnected',

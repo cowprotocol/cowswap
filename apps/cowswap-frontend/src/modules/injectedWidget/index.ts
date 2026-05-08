@@ -1,6 +1,6 @@
 export { InjectedWidgetUpdater } from './updaters/InjectedWidgetUpdater'
 export { CowEventsUpdater } from './updaters/CowEventsUpdater'
-export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneModeUpdater'
+export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
 export { useInjectedWidgetParams, useWidgetPartnerFee } from './hooks/useInjectedWidgetParams'
 export { useInjectedWidgetDeadline } from './hooks/useInjectedWidgetDeadline'
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'

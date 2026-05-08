@@ -42,7 +42,9 @@ const isSafeIframe = IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget()
 // In cross-origin iframes this also prevents the regular app's storage events from
 // leaking into the iframe. We patch Storage.prototype (not the localStorage instance)
 // because browsers may ignore own-property overrides on native host objects.
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && !(Storage.prototype as unknown as { __isCowPatched?: boolean }).__isCowPatched) {
+  ;(Storage.prototype as unknown as { __isCowPatched: boolean }).__isCowPatched = true
+
   const origSetItem = Storage.prototype.setItem
   const origGetItem = Storage.prototype.getItem
   const origRemoveItem = Storage.prototype.removeItem
@@ -132,7 +134,7 @@ const projectId = 'ac287751638b5d374a03c39e37f70376'
 
 // Use a distinct storage key per context to avoid cross-context session pollution.
 const WAGMI_STORAGE_KEY = isInjectedWidget()
-  ? 'cowswap-wallet' + COW_WIDGET_CONNECTOR_ID
+  ? 'cowswap-wallet-' + COW_WIDGET_CONNECTOR_ID
   : IS_CROSS_ORIGIN_IFRAME
     ? 'cowswap-wallet-safe'
     : 'cowswap-wallet'
