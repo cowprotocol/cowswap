@@ -1,11 +1,25 @@
 import type { EIP1193EventMap, EIP1193Provider } from 'viem'
 
 /**
+ * Sentinel value meaning "the user has explicitly disconnected (or connected then disconnected)".
+ * In this state, all accountsChanged events are blocked to prevent wallets from
+ * auto-reconnecting disconnected tabs when the user switches accounts in the extension.
+ *
+ * Distinguished from `null` which means "no connector established yet" (initial page load),
+ * where events must pass through for reconnection to work.
+ */
+export const PROVIDER_DISCONNECTED: unique symbol = Symbol('PROVIDER_DISCONNECTED')
+
+/**
  * Tracks which isolated provider is currently active in this tab (in-memory, per-tab).
  * Updated by config.ts whenever config.state.current changes.
  * Used by createIsolatedProvider to filter accountsChanged events.
+ *
+ * - `null`: initial state, no connector established yet — events pass through
+ * - `PROVIDER_DISCONNECTED`: user disconnected — events are blocked
+ * - `EIP1193Provider`: active provider — only events from this provider pass through
  */
-export const activeProviderRef: { current: EIP1193Provider | null } = { current: null }
+export const activeProviderRef: { current: EIP1193Provider | typeof PROVIDER_DISCONNECTED | null } = { current: null }
 
 // Cache isolated providers by their original so identity is stable across calls.
 const cache = new WeakMap<object, EIP1193Provider>()
@@ -46,12 +60,16 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
     on: <event extends keyof EIP1193EventMap>(event: event, listener: EIP1193EventMap[event]): void => {
       if (event === 'accountsChanged') {
         const wrapped: AccountsChangedListener = (accounts) => {
-          // When activeProviderRef is null (before any connector is established, e.g. during
-          // page-load reconnection), let events through — blocking them would prevent wagmi
-          // from receiving account updates needed for reconnection.
-          // When an active provider IS set, only forward events for that provider to enforce
-          // tab-level isolation (wallet switch in Tab A shouldn't affect Tab B).
           const active = activeProviderRef.current
+
+          // PROVIDER_DISCONNECTED: user explicitly disconnected — block all events to
+          // prevent wallets from auto-reconnecting when accounts change in the extension.
+          if (active === PROVIDER_DISCONNECTED) return
+
+          // null: initial page load, no connector established yet — let events through
+          // so wagmi's reconnection can receive account updates.
+          // EIP1193Provider: only forward events for the active provider to enforce
+          // tab-level isolation (wallet switch in Tab A shouldn't affect Tab B).
           if (active !== null && active !== proxy) return
           ;(listener as unknown as AccountsChangedListener)(accounts)
         }

@@ -9,7 +9,7 @@ import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
-import { activeProviderRef, interceptEIP6963Providers } from './providerIsolation'
+import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED } from './providerIsolation'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
@@ -236,16 +236,21 @@ if (isSafeIframe) {
 // Keep activeProviderRef in sync with the active connector so the per-tab
 // accountsChanged filter in providerIsolation.ts knows which provider is current.
 if (typeof window !== 'undefined') {
+  let hasEverConnected = false
+
   config.subscribe(
     (state) => state.current,
     async (current) => {
       if (!current) {
-        activeProviderRef.current = null
+        // Distinguish "never connected yet" (null, let events through for reconnection)
+        // from "was connected, now disconnected" (PROVIDER_DISCONNECTED, block events).
+        activeProviderRef.current = hasEverConnected ? PROVIDER_DISCONNECTED : null
         return
       }
+      hasEverConnected = true
       const connector = config.connectors.find((c) => c.uid === current)
       if (!connector) {
-        activeProviderRef.current = null
+        activeProviderRef.current = PROVIDER_DISCONNECTED
         return
       }
       const provider = (await connector.getProvider().catch(() => null)) as EIP1193Provider | null
