@@ -10,24 +10,20 @@ import type { Preview } from '@storybook/react-vite'
 
 type ThemeMode = 'dark' | 'light'
 
+const checkerboardBackground = `repeating-conic-gradient(
+  from 90deg,
+  rgb(255, 255, 255) 0%,
+  rgb(255, 255, 255) 25%,
+  rgb(226, 226, 226) 0%,
+  rgb(226, 226, 226) 50%
+) 0 0 / 20px 20px`
+
 function getCowswapBackground(themeMode: ThemeMode): string {
   return themeMode === 'dark' ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
 }
 
 const GlobalStyle = createGlobalStyle<{ $themeMode: ThemeMode }>`
   ${ThemeColorVars}
-
-  .sb-show-main {
-    background-color: #fff;
-    background-image: repeating-conic-gradient(
-      from 90deg,
-      rgb(255, 255, 255) 0%,
-      rgb(255, 255, 255) 25%,
-      rgb(226, 226, 226) 0%,
-      rgb(226, 226, 226) 50%
-    );
-    background-size: 20px 20px;
-  }
 
   body {
     color: var(${UI.COLOR_TEXT});
@@ -53,6 +49,7 @@ const preview: Preview = {
   },
   initialGlobals: {
     themeMode: 'light' as ThemeMode,
+    backgrounds: { value: 'paperAuto' },
   },
   decorators: [
     (Story, context) => {
@@ -72,6 +69,7 @@ const preview: Preview = {
     backgrounds: {
       options: {
         paperAuto: { name: 'Paper auto', value: `var(${UI.COLOR_PAPER})` },
+        checkerboard: { name: 'Checkerboard', value: checkerboardBackground },
         swapAuto: { name: 'Swap auto', value: 'var(--storybook-cowswap-background)' },
         light: { name: 'Light', value: '#F8F8F8' },
         paperLight: { name: 'Paper light', value: Color.white },
