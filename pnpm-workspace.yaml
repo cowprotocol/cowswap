@@ -12,6 +12,3 @@ minimumReleaseAgeExclude:
   - typescript
   - '@types/*'
   - '@cowprotocol/*'
-  - wagmi
-  - '@wagmi/*'
-  - viem
