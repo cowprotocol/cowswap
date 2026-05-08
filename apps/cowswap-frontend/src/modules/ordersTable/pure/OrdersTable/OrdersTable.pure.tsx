@@ -8,7 +8,7 @@ import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
-import { TabOrderTypes, OrderTabId, locationOrderTypeAtom } from 'common/state/routesState'
+import { TabOrderTypes, OrderTabId } from 'common/state/routesState'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -24,17 +24,18 @@ import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.con
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../utils/orderTableGroupUtils'
 
 export interface OrdersTableProps {
+  orderType: TabOrderTypes
   currentTab: OrderTabId | null
 }
 
-export function OrdersTable({ currentTab }: OrdersTableProps): ReactNode {
+export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
 
-  const orderType = useAtomValue(locationOrderTypeAtom)
+  // const orderType = useAtomValue(locationOrderTypeAtom)
   const currentPageNumber = useAtomValue(ordersTablePageAtom) || 1
 
   const { filteredOrders, balancesAndAllowances } = useAtomValue(ordersTableStateAtom)

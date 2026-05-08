@@ -10,7 +10,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 
-import { OrderTabId } from 'common/state/routesState'
+import { OrderTabId, locationOrderTypeAtom, TabOrderTypes } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -42,7 +42,11 @@ function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber:
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLABLE] as const
 
-export function OrdersTableWidget(): ReactNode {
+export interface OrdersTableWidgetProps {
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
 
   const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
@@ -87,12 +91,15 @@ export function OrdersTableWidget(): ReactNode {
   }, [currentTabId, filteredOrders, currentPageNumber])
 
   const hasPendingOrdersInCurrentPage = !!pendingOrdersInCurrentPage?.length
+  const locationOrderType = useAtomValue(locationOrderTypeAtom)
+
+  if (orderType !== locationOrderType) return null
 
   return (
     <>
       {hasPendingOrdersInCurrentPage && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
-      <OrdersTableContainer>
+      <OrdersTableContainer orderType={orderType}>
         {hasPendingOrdersInCurrentPage && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
 
         {/* Show filters only if there are orders */}

@@ -32,6 +32,7 @@ import {
 } from 'modules/twap'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { TabOrderTypes } from 'common/state/routesState'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -82,7 +83,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget />
+              <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

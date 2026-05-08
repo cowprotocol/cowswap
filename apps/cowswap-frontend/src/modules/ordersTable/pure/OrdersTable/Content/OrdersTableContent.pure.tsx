@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { locationOrderTypeAtom } from 'common/state/routesState'
+import { TabOrderTypes } from 'common/state/routesState'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'
@@ -16,12 +16,13 @@ import { HistoryStatusFilter } from '../../../utils/getFilteredOrders'
 import { OrdersTable } from '../OrdersTable.pure'
 
 interface OrdersTableContentProps {
+  orderType: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 }
 
-export function OrdersTableContent({ searchTerm, historyStatusFilter }: OrdersTableContentProps): ReactNode {
-  const orderType = useAtomValue(locationOrderTypeAtom)
+export function OrdersTableContent({ orderType, searchTerm, historyStatusFilter }: OrdersTableContentProps): ReactNode {
+  // const orderType = useAtomValue(locationOrderTypeAtom)
   const currentTabId = useAtomValue(ordersTableTabIdAtom)
   const { orders, filteredOrders, hasHydratedOrders } = useAtomValue(ordersTableStateAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -45,6 +46,6 @@ export function OrdersTableContent({ searchTerm, historyStatusFilter }: OrdersTa
       hasOrders={!!orders?.length}
     />
   ) : (
-    <OrdersTable currentTab={currentTabId} />
+    <OrdersTable orderType={orderType} currentTab={currentTabId} />
   )
 }

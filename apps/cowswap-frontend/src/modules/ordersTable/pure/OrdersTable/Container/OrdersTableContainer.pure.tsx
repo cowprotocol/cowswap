@@ -7,7 +7,7 @@ import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
 import { ordersTableFiltersAtom } from 'modules/ordersTable'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { OrderTabId } from 'common/state/routesState'
+import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
@@ -16,7 +16,11 @@ import { ordersTableTabIdAtom } from '../../../state/params/ordersTableParams.at
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 
-export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode {
+export interface OrdersTableContainerProps extends PropsWithChildren {
+  orderType: TabOrderTypes
+}
+
+export function OrdersTableContainer({ orderType, children }: OrdersTableContainerProps): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
@@ -47,7 +51,7 @@ export function OrdersTableContainer({ children }: PropsWithChildren): ReactNode
         </>
       )}
 
-      <OrdersTableContent searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} />
+      <OrdersTableContent orderType={orderType} searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} />
     </styledEl.Wrapper>
   )
 }

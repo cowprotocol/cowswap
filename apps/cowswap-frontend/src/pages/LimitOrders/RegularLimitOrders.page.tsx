@@ -8,6 +8,8 @@ import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
+import { TabOrderTypes } from 'common/state/routesState'
+
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
 export function RegularLimitOrdersPage(): ReactNode {
@@ -31,7 +33,7 @@ export function RegularLimitOrdersPage(): ReactNode {
         <styledEl.SecondaryWrapper className="trade-orders-table">
           {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
           <Suspense fallback={<Loading />}>
-            <OrdersTableWidget />
+            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
           </Suspense>
         </styledEl.SecondaryWrapper>
       )}
