@@ -12,20 +12,17 @@ import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
 import { AdvancedSectionForm } from './sections/advanced/AdvancedSectionForm'
 import { BasicsSectionForm } from './sections/basics/BasicsSectionForm'
-import { BehaviorSectionForm, type BehaviorSectionFormProps } from './sections/behavior/BehaviorSectionForm'
+import { BehaviorSectionForm } from './sections/behavior/BehaviorSectionForm'
 import { CustomizationSectionForm } from './sections/customization/CustomizationSectionForm'
 import { DeadlinesSectionForm } from './sections/deadlines/DeadlinesSectionForm'
 import { IntegrationsSectionForm } from './sections/integrations/IntegrationsSectionForm'
-import { LayoutSectionForm, type LayoutSectionFormProps } from './sections/layout/LayoutSectionForm'
+import { LayoutSectionForm } from './sections/layout/LayoutSectionForm'
 import {
   type ConfiguratorFormChangeHandler,
   type ConfiguratorFormInputEvent,
   type ConfiguratorFormValues,
 } from './sections/section.types'
-import {
-  ThemeColorsSectionForm,
-  type ThemeColorsSectionFormProps,
-} from './sections/theme-colors/ThemeColorsSectionForm'
+import { ThemeColorsSectionForm } from './sections/theme-colors/ThemeColorsSectionForm'
 import { TokensSectionForm } from './sections/tokens/TokensSectionForm'
 import { TradeSetupSectionForm } from './sections/trade-setup/TradeSetupSectionForm'
 import { drawerContentColumnSx, drawerPaperRowSx, getDrawerPatternFillerSx, getDrawerSx } from './sidebar.styles'
@@ -371,7 +368,7 @@ export function Sidebar({
               values={configuratorFormValues}
               onChange={handleConfiguratorFormChange}
               formComponent={ThemeColorsSectionForm}
-              formProps={{ paletteManager } satisfies Omit<ThemeColorsSectionFormProps, 'values' | 'onChange'>}
+              formProps={{ paletteManager }}
             />
 
             <AccordionFormSection
@@ -381,21 +378,21 @@ export function Sidebar({
               values={configuratorFormValues}
               onChange={handleConfiguratorFormChange}
               formComponent={LayoutSectionForm}
-              formProps={
-                {
-                  paperBackgroundColor: colorPalette.paper || defaultPalette.paper,
-                  jsonStates: {
-                    iframeStyleJson,
-                    appWrapperStyleJson,
-                    bodyWrapperStyleJson,
-                    cardStyleJson,
-                    onIframeStyleJson: (value) => handleConfiguratorFormChange('iframeStyleJson', value),
-                    onAppWrapperStyleJson: (value) => handleConfiguratorFormChange('appWrapperStyleJson', value),
-                    onBodyWrapperStyleJson: (value) => handleConfiguratorFormChange('bodyWrapperStyleJson', value),
-                    onCardStyleJson: (value) => handleConfiguratorFormChange('cardStyleJson', value),
-                  },
-                } satisfies Omit<LayoutSectionFormProps, 'values' | 'onChange'>
-              }
+              formProps={{
+                paperBackgroundColor: colorPalette.paper || defaultPalette.paper,
+                jsonStates: {
+                  iframeStyleJson,
+                  appWrapperStyleJson,
+                  bodyWrapperStyleJson,
+                  cardStyleJson,
+                  onIframeStyleJson: (value: string | null) => handleConfiguratorFormChange('iframeStyleJson', value),
+                  onAppWrapperStyleJson: (value: string | null) =>
+                    handleConfiguratorFormChange('appWrapperStyleJson', value),
+                  onBodyWrapperStyleJson: (value: string | null) =>
+                    handleConfiguratorFormChange('bodyWrapperStyleJson', value),
+                  onCardStyleJson: (value: string | null) => handleConfiguratorFormChange('cardStyleJson', value),
+                },
+              }}
             />
 
             <AccordionFormSection
@@ -405,7 +402,7 @@ export function Sidebar({
               values={configuratorFormValues}
               onChange={handleConfiguratorFormChange}
               formComponent={BehaviorSectionForm}
-              formProps={{ toastManager } satisfies Omit<BehaviorSectionFormProps, 'values' | 'onChange'>}
+              formProps={{ toastManager }}
             />
 
             <AccordionFormSection
