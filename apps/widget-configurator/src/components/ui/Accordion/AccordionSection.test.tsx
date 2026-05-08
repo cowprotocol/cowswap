@@ -11,10 +11,16 @@ function AccordionSectionHarness({
   initialExpanded?: boolean
   title?: string
 }): ReactNode {
-  const [expanded, setExpanded] = useState(initialExpanded)
+  const [expandedSection, setExpandedSection] = useState<string | null>(initialExpanded ? title : null)
+
+  const handleToggleExpanded =
+    (nextTitle: string) =>
+    (expanded: boolean): void => {
+      setExpandedSection(expanded ? nextTitle : null)
+    }
 
   return (
-    <AccordionSection title={title} expanded={expanded} onChange={setExpanded}>
+    <AccordionSection title={title} expandedSection={expandedSection} onToggleExpanded={handleToggleExpanded}>
       <div>Inner content</div>
     </AccordionSection>
   )
@@ -46,16 +52,16 @@ describe('AccordionSection', () => {
   })
 
   it('invokes onChange when expansion should update', () => {
-    const onChange = jest.fn()
+    const onToggleExpanded = jest.fn(() => jest.fn())
     render(
-      <AccordionSection title="Callbacks" expanded={false} onChange={onChange}>
+      <AccordionSection title="Callbacks" expandedSection={null} onToggleExpanded={onToggleExpanded}>
         <div>Inner content</div>
       </AccordionSection>,
     )
 
     fireEvent.click(screen.getByRole('button', { name: 'Callbacks' }))
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onChange).toHaveBeenCalledWith(true)
+    expect(onToggleExpanded).toHaveBeenCalledTimes(1)
+    expect(onToggleExpanded).toHaveBeenCalledWith('Callbacks')
   })
 })

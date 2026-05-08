@@ -1,53 +1,78 @@
-import { ChangeEvent, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { SupportedLocale, DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
-import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
+import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
+import { AdvancedSectionForm } from './sections/advanced/AdvancedSectionForm'
+import { BasicsSectionForm } from './sections/basics/BasicsSectionForm'
+import { BehaviorSectionForm, type BehaviorSectionFormProps } from './sections/behavior/BehaviorSectionForm'
+import { CustomizationSectionForm } from './sections/customization/CustomizationSectionForm'
+import { DeadlinesSectionForm } from './sections/deadlines/DeadlinesSectionForm'
+import { IntegrationsSectionForm } from './sections/integrations/IntegrationsSectionForm'
+import { LayoutSectionForm, type LayoutSectionFormProps } from './sections/layout/LayoutSectionForm'
+import {
+  type ConfiguratorFormChangeHandler,
+  type ConfiguratorFormInputEvent,
+  type ConfiguratorFormValues,
+} from './sections/section.types'
+import {
+  ThemeColorsSectionForm,
+  type ThemeColorsSectionFormProps,
+} from './sections/theme-colors/ThemeColorsSectionForm'
+import { TokensSectionForm } from './sections/tokens/TokensSectionForm'
+import { TradeSetupSectionForm } from './sections/trade-setup/TradeSetupSectionForm'
 import { drawerContentColumnSx, drawerPaperRowSx, getDrawerPatternFillerSx, getDrawerSx } from './sidebar.styles'
 
 import { DEFAULT_STATE, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from '../../configurator.constants'
-import { ConfiguratorState, TokenListItem, WidgetMode } from '../../configurator.types'
+import { ConfiguratorState } from '../../configurator.types'
 import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
-import { useJsonState, EMPTY_JSON_STATE } from '../../hooks/useJsonState'
+import { type JsonState } from '../../hooks/useJsonState'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
-import { jsonHelperText } from '../../utils/jsonFieldParsing'
-import { AppearanceStyleControls } from '../controls/AppearanceStyleControls'
-import { CustomImagesControl } from '../controls/CustomImagesControl'
-import { CustomSoundsControl } from '../controls/CustomSoundsControl'
-import { DeadlineControl } from '../controls/DeadlineControl'
-import { PaletteControl } from '../controls/PaletteControl'
-import { PartnerFeeControl } from '../controls/PartnerFeeControl'
-import { ThemeControl, type ThemeOptionValue } from '../controls/ThemeControl'
-import { TokenListControl } from '../controls/TokenListControl'
-import { COMMENTS_BY_PARAM_NAME } from '../snippet/snippet.const'
-import { AccordionSection } from '../ui/Accordion/AccordionSection'
-import { BooleanSwitchControl } from '../ui/controls/BooleanSwitch/BooleanSwitchControl'
-import { CurrencyInputControl } from '../ui/controls/CurrencyInput/CurrencyInputControl'
-import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
-import { PresetOption, PresetsButtons } from '../ui/controls/PresetsButtons/PresetsButtons.component'
-import { CurrentTradeTypeControl } from '../ui/controls/Select/CurrentTradeTypeControl'
-import { LocaleControl } from '../ui/controls/Select/LocaleControl'
-import { ModeControl } from '../ui/controls/Select/ModeControl'
-import { NetworkControl, NetworkOption, NetworkOptions } from '../ui/controls/Select/NetworkControl'
-import { TradeModesControl } from '../ui/controls/Select/TradeModesControl'
-import { WidgetHooksControl } from '../ui/controls/Select/WidgetHooksControl'
-import { TextInput } from '../ui/controls/TextInput/TextInput.component'
+import { AccordionFormSection } from '../ui/Accordion/AccordionFormSection'
+import { type NetworkOption, NetworkOptions } from '../ui/controls/Select/NetworkControl'
 
-import type { PaletteMode } from '@mui/material'
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
+
+interface ParsedJsonField<T extends object> extends JsonState<T> {}
+
+const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
+  'iframeStyleJson',
+  'appWrapperStyleJson',
+  'bodyWrapperStyleJson',
+  'cardStyleJson',
+  'rawParamsJson',
+])
+
+const MODE_FIELD_NAME = 'mode'
+
+function parseJsonField<T extends object>(rawValue: string | null, fallbackValue: T): ParsedJsonField<T> {
+  const normalizedRaw = rawValue?.trim() ? rawValue : JSON.stringify(fallbackValue)
+
+  try {
+    return {
+      rawJsonValue: normalizedRaw,
+      parsedJsonValue: JSON.parse(normalizedRaw) as T,
+      error: false,
+    }
+  } catch {
+    return {
+      rawJsonValue: normalizedRaw,
+      parsedJsonValue: fallbackValue,
+      error: true,
+    }
+  }
+}
 
 export interface SidebarProps {
   title: string
@@ -63,20 +88,6 @@ export interface SidebarProps {
   onForceWidgetReload: () => void
 }
 
-const BASE_URL_PRESETS_OPTIONS: PresetOption[] = [
-  { label: 'Local', value: 'http://localhost:3000' },
-  { label: 'Dev', value: 'https://dev.swap.cow.fi' },
-  { label: 'Production', value: 'https://swap.cow.fi' },
-].map((presetOption) => {
-  return {
-    ...presetOption,
-    label:
-      presetOption.value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
-        ? `${presetOption.label} (default)`
-        : presetOption.label,
-  }
-})
-
 // eslint-disable-next-line max-lines-per-function
 export function Sidebar({
   title,
@@ -91,322 +102,194 @@ export function Sidebar({
   isWidgetSyncPending,
   onForceWidgetReload,
 }: SidebarProps): ReactNode {
-  const availableChains = useAvailableChains()
-
+  const { mode } = useContext(ColorModeContext)
   const [expandedSection, setExpandedSection] = useState<string | null>('Basics')
 
-  const toggleSection = useCallback(
+  const [configuratorFormValues, setConfiguratorFormValues] = useState<ConfiguratorFormValues>({
+    appCode: '',
+    widgetMode: 'dapp',
+    locale: '',
+    enabledTradeTypes: TRADE_MODES,
+    currentTradeType: TRADE_MODES[0],
+    chainId: NetworkOptions[0].chainId,
+    disableCrossChainSwap: false,
+    sellToken: DEFAULT_STATE.sellToken,
+    sellTokenAmount: DEFAULT_STATE.sellAmount,
+    buyToken: DEFAULT_STATE.buyToken,
+    buyTokenAmount: DEFAULT_STATE.buyAmount,
+    tokenListUrls: DEFAULT_TOKEN_LISTS,
+    customTokens: [],
+    theme: 'light',
+    autoResizeEnabled: true,
+    showIframeOutline: true,
+    iframeStyleJson: '{}',
+    appWrapperStyleJson: '{}',
+    bodyWrapperStyleJson: '{}',
+    cardStyleJson: '{}',
+    disableProgressBar: false,
+    disablePostTradeTips: false,
+    disableTokenImport: false,
+    hideRecentTokens: false,
+    hideFavoriteTokens: false,
+    hideBridgeInfo: false,
+    hideOrdersTable: false,
+    disableTradeWhenPriceImpactIsUnknown: false,
+    disableTradeWhenPriceImpactIsHigherThan: undefined,
+    deadline: undefined,
+    swapDeadline: undefined,
+    limitDeadline: undefined,
+    advancedDeadline: undefined,
+    partnerFeeBps: 0,
+    customImages: {},
+    customSounds: {},
+    baseUrl: null,
+    enabledWidgetHooks: [],
+    rawParamsJson: '{}',
+  })
+
+  const standaloneMode = configuratorFormValues.widgetMode === 'standalone'
+
+  const handleToggleExpanded = useCallback(
     (title: string) => (isExpanded: boolean) => setExpandedSection(isExpanded ? title : null),
     [],
   )
 
-  // Basics Section:
+  const handleConfiguratorFormChange = useCallback(
+    (nameOrEvent: keyof ConfiguratorFormValues | ConfiguratorFormInputEvent, value?: unknown) => {
+      if (typeof nameOrEvent !== 'string') {
+        const { name, value: eventValue } = nameOrEvent.target
+        const normalizedName = name === MODE_FIELD_NAME ? 'widgetMode' : name
 
-  const [appCode, setAppCode] = useState<string>('')
-  const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
-  const standaloneMode = widgetMode === 'standalone'
+        if (!normalizedName) return
 
-  const selectWidgetMode = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setWidgetMode(event.target.value as WidgetMode)
-  }
+        setConfiguratorFormValues((prevState) => {
+          if (!(normalizedName in prevState)) return prevState
 
-  const localeState = useState<SupportedLocale | ''>('')
-  const [locale] = localeState
+          const key = normalizedName as keyof ConfiguratorFormValues
+          const shouldKeepNull = key === 'baseUrl' || JSON_FIELD_NAMES.has(key)
+          const nextValue = eventValue === null && !shouldKeepNull ? '' : eventValue
 
-  // Trade Setup Section:
+          return {
+            ...prevState,
+            [key]: nextValue,
+          }
+        })
 
-  const networkControlState = useState<NetworkOption>(NetworkOptions[0])
-  const [{ chainId }, setNetworkControlState] = networkControlState
+        return
+      }
 
-  const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
-  const [currentTradeType] = tradeTypeState
+      setConfiguratorFormValues((prevState) => {
+        const shouldKeepNull = nameOrEvent === 'baseUrl' || JSON_FIELD_NAMES.has(nameOrEvent)
+        const nextValue = value === null && !shouldKeepNull ? '' : value
 
-  const tradeModesState = useState<TradeType[]>(TRADE_MODES)
-  const [enabledTradeTypes] = tradeModesState
+        return {
+          ...prevState,
+          [nameOrEvent]: nextValue,
+        }
+      })
+    },
+    [],
+  ) as ConfiguratorFormChangeHandler
 
-  const [disableCrossChainSwap, setDisableCrossChainSwap] = useState<boolean>(false)
-  const setAllowCrossChainSwap = useCallback((enabled: boolean) => setDisableCrossChainSwap(!enabled), [])
+  const setNetworkControlState = useCallback(
+    (option: NetworkOption): void => {
+      handleConfiguratorFormChange('chainId', option.chainId)
+    },
+    [handleConfiguratorFormChange],
+  )
 
-  // Tokens Section:
+  const iframeStyleJson = useMemo(
+    () => parseJsonField<CSS.Properties>(configuratorFormValues.iframeStyleJson, {}),
+    [configuratorFormValues.iframeStyleJson],
+  )
+  const appWrapperStyleJson = useMemo(
+    () => parseJsonField<CSS.Properties>(configuratorFormValues.appWrapperStyleJson, {}),
+    [configuratorFormValues.appWrapperStyleJson],
+  )
+  const bodyWrapperStyleJson = useMemo(
+    () => parseJsonField<CSS.Properties>(configuratorFormValues.bodyWrapperStyleJson, {}),
+    [configuratorFormValues.bodyWrapperStyleJson],
+  )
+  const cardStyleJson = useMemo(
+    () => parseJsonField<CSS.Properties>(configuratorFormValues.cardStyleJson, {}),
+    [configuratorFormValues.cardStyleJson],
+  )
+  const rawParamsJson = useMemo(
+    () => parseJsonField<Partial<CowSwapWidgetParams>>(configuratorFormValues.rawParamsJson, {}),
+    [configuratorFormValues.rawParamsJson],
+  )
 
-  const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
-  const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
-  const [sellToken] = sellTokenState
-  const [sellTokenAmount] = sellTokenAmountState
-
-  const buyTokenState = useState<string>(DEFAULT_STATE.buyToken)
-  const buyTokenAmountState = useState<number>(DEFAULT_STATE.buyAmount)
-  const [buyToken] = buyTokenState
-  const [buyTokenAmount] = buyTokenAmountState
-
-  const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
-  const customTokensState = useState<TokenInfo[]>([])
-
-  // Theme Colors Section:
-
-  const { mode } = useContext(ColorModeContext)
-  const [theme, setTheme] = useState<PaletteMode>('light')
-
-  const handleWidgetThemeSelect = useCallback((value: ThemeOptionValue) => {
-    setTheme(value)
-  }, [])
-
-  const paletteManager = useColorPaletteManager(theme)
+  const paletteManager = useColorPaletteManager(configuratorFormValues.theme)
   const { colorPalette, defaultPalette } = paletteManager
-
-  // Layout Section:
-
-  const [autoResizeEnabled, setAutoResizeEnabled] = useState<boolean>(true)
-  const [showIframeOutline, setShowIframeOutline] = useState<boolean>(true)
-
-  const [iframeStyleJson, setIframeStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
-  const [cardStyleJson, setCardStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
-  const [appWrapperStyleJson, setAppWrapperStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
-  const [bodyWrapperStyleJson, setBodyWrapperStyleJson] = useJsonState<CSS.Properties>(EMPTY_JSON_STATE)
-
-  // Behavior Section:
-
-  const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const setShowProgressBar = useCallback((enabled: boolean) => setDisableProgressBar(!enabled), [])
-
-  const [disablePostTradeTips, setDisablePostTradeTips] = useState<boolean>(false)
-  const setShowPostTradeTips = useCallback((enabled: boolean) => setDisablePostTradeTips(!enabled), [])
-
-  const [disableTokenImport, setDisableTokenImport] = useState<boolean>(false)
-  const setAllowTokenImport = useCallback((enabled: boolean) => setDisableTokenImport(!enabled), [])
-
-  const [hideRecentTokens, setHideRecentTokens] = useState<boolean>(false)
-  const setShowRecentTokens = useCallback((enabled: boolean) => setHideRecentTokens(!enabled), [])
-
-  const [hideFavoriteTokens, setHideFavoriteTokens] = useState<boolean>(false)
-  const setShowFavoriteTokens = useCallback((enabled: boolean) => setHideFavoriteTokens(!enabled), [])
-
-  const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
-  const setShowBridgeInfo = useCallback((enabled: boolean) => setHideBridgeInfo(!enabled), [])
-
-  const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
-  const setShowOrdersTable = useCallback((enabled: boolean) => setHideOrdersTable(!enabled), [])
-
-  const [disableTradeWhenPriceImpactIsUnknown, setDisableTradeWhenPriceImpactIsUnknown] = useState(false)
-  const setBlockUnknownPriceImpact = useCallback((enabled: boolean) => {
-    setDisableTradeWhenPriceImpactIsUnknown(enabled)
-  }, [])
-
-  const [disableTradeWhenPriceImpactIsHigherThan, setDisableTradeWhenPriceImpactIsHigherThan] = useState<
-    number | undefined
-  >()
-
-  const setBlockPriceImpactAboveValue = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const nextValue = event.target.value.trim()
-
-    if (!nextValue) {
-      setDisableTradeWhenPriceImpactIsHigherThan(undefined)
-
-      return
-    }
-
-    const parsedValue = Number(nextValue)
-
-    if (Number.isNaN(parsedValue)) return
-
-    setDisableTradeWhenPriceImpactIsHigherThan(parsedValue)
-  }, [])
-
-  // Deadlines Section:
-
-  const deadlineState = useState<number | undefined>()
-  const [deadline] = deadlineState
-  const swapDeadlineState = useState<number | undefined>()
-  const [swapDeadline] = swapDeadlineState
-  const limitDeadlineState = useState<number | undefined>()
-  const [limitDeadline] = limitDeadlineState
-  const advancedDeadlineState = useState<number | undefined>()
-  const [advancedDeadline] = advancedDeadlineState
-
-  // Integrations Section:
-
-  const partnerFeeBpsState = useState<number>(0)
-
-  // Customization Section:
-
-  const customImagesState = useState<CowSwapWidgetParams['images']>({})
-  const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
-  const [baseUrl, setBaseUrl] = useState<string | null>(null)
-  const [rawParamsJson, setRawParamsJson] = useJsonState<Partial<CowSwapWidgetParams>>(EMPTY_JSON_STATE)
-
-  // Advanced Section:
-
-  const widgetHooksState = useState<WidgetHookEvents[]>([])
-
-  // Merge and propagate state:
 
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
 
-  const [enabledWidgetHooks] = widgetHooksState
-  const [tokenListUrls] = tokenListUrlsState
-  const [customTokens] = customTokensState
-  const [partnerFeeBps] = partnerFeeBpsState
-  const [customImages] = customImagesState
-  const [customSounds] = customSoundsState
+  const effectiveChainId = IS_IFRAME
+    ? undefined
+    : !isConnected || !walletChainId
+      ? configuratorFormValues.chainId
+      : walletChainId
 
-  // Don't change chainId in the widget URL if the user is connected to a wallet
-  // Because useSyncWidgetNetwork() will send a request to change the network
-  const effectiveChainId = IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId
-
-  // TODO: This probably needs a field per chain in the UI:
-  const partnerFeeRecipient = DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[chainId]
+  const partnerFeeRecipient = DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[configuratorFormValues.chainId]
 
   const configuratorState: ConfiguratorState = useMemo(
     () => ({
-      // Basics:
-
-      appCode,
-      // widgetMode: WidgetMode
+      appCode: configuratorFormValues.appCode,
       standaloneMode,
-      locale: locale || undefined,
-
-      // Trade Setup:
-
-      enabledTradeTypes,
-      currentTradeType,
+      locale: configuratorFormValues.locale || undefined,
+      enabledTradeTypes: configuratorFormValues.enabledTradeTypes,
+      currentTradeType: configuratorFormValues.currentTradeType,
       chainId: effectiveChainId,
-      disableCrossChainSwap,
-      // slippage, // TODO: Defined but not in the form.
-
-      // Tokens:
-
-      sellToken,
-      sellTokenAmount,
-      buyToken,
-      buyTokenAmount,
-      tokenListUrls,
-      customTokens,
-
-      // Theme Colors:
-
-      theme,
+      disableCrossChainSwap: configuratorFormValues.disableCrossChainSwap,
+      sellToken: configuratorFormValues.sellToken,
+      sellTokenAmount: configuratorFormValues.sellTokenAmount,
+      buyToken: configuratorFormValues.buyToken,
+      buyTokenAmount: configuratorFormValues.buyTokenAmount,
+      tokenListUrls: configuratorFormValues.tokenListUrls,
+      customTokens: configuratorFormValues.customTokens,
+      theme: configuratorFormValues.theme,
       customColors: colorPalette,
       defaultColors: defaultPalette,
-
-      // Layout:
-
-      autoResizeEnabled,
-      showIframeOutline,
+      autoResizeEnabled: configuratorFormValues.autoResizeEnabled,
+      showIframeOutline: configuratorFormValues.showIframeOutline,
       iframeStyle: iframeStyleJson.parsedJsonValue,
       appWrapperStyle: appWrapperStyleJson.parsedJsonValue,
       bodyWrapperStyle: bodyWrapperStyleJson.parsedJsonValue,
       cardStyle: cardStyleJson.parsedJsonValue,
-
-      // Behavior:
-
       disableToastMessages: toastManager.disableToastMessages,
-      disableProgressBar,
-      disablePostTradeTips,
-      disableTokenImport,
-      hideRecentTokens,
-      hideFavoriteTokens,
-      hideBridgeInfo,
-      hideOrdersTable,
-      disableTradeWhenPriceImpactIsUnknown,
-      disableTradeWhenPriceImpactIsHigherThan,
-
-      // Deadlines:
-
-      deadline,
-      swapDeadline,
-      limitDeadline,
-      advancedDeadline,
-
-      // Integrations:
-
-      partnerFeeBps,
+      disableProgressBar: configuratorFormValues.disableProgressBar,
+      disablePostTradeTips: configuratorFormValues.disablePostTradeTips,
+      disableTokenImport: configuratorFormValues.disableTokenImport,
+      hideRecentTokens: configuratorFormValues.hideRecentTokens,
+      hideFavoriteTokens: configuratorFormValues.hideFavoriteTokens,
+      hideBridgeInfo: configuratorFormValues.hideBridgeInfo,
+      hideOrdersTable: configuratorFormValues.hideOrdersTable,
+      disableTradeWhenPriceImpactIsUnknown: configuratorFormValues.disableTradeWhenPriceImpactIsUnknown,
+      disableTradeWhenPriceImpactIsHigherThan: configuratorFormValues.disableTradeWhenPriceImpactIsHigherThan,
+      deadline: configuratorFormValues.deadline,
+      swapDeadline: configuratorFormValues.swapDeadline,
+      limitDeadline: configuratorFormValues.limitDeadline,
+      advancedDeadline: configuratorFormValues.advancedDeadline,
+      partnerFeeBps: configuratorFormValues.partnerFeeBps,
       partnerFeeRecipient,
-
-      // Customization:
-
-      customImages,
-      customSounds,
-
-      // Advanced:
-
-      baseUrl,
-      enabledWidgetHooks,
+      customImages: configuratorFormValues.customImages,
+      customSounds: configuratorFormValues.customSounds,
+      baseUrl: configuratorFormValues.baseUrl,
+      enabledWidgetHooks: configuratorFormValues.enabledWidgetHooks,
       rawParams: rawParamsJson.parsedJsonValue,
     }),
     [
-      // Basics:
-
-      appCode,
-      // widgetMode: WidgetMode
+      configuratorFormValues,
       standaloneMode,
-      locale,
-
-      // Trade Setup:
-
-      enabledTradeTypes,
-      currentTradeType,
       effectiveChainId,
-      disableCrossChainSwap,
-      // slippage, // TODO: Defined but not in form.
-
-      // Tokens:
-
-      sellToken,
-      sellTokenAmount,
-      buyToken,
-      buyTokenAmount,
-      tokenListUrls,
-      customTokens,
-
-      // Theme Colors:
-
-      theme,
       colorPalette,
       defaultPalette,
-
-      // Layout:
-
-      autoResizeEnabled,
-      showIframeOutline,
       iframeStyleJson.parsedJsonValue,
       appWrapperStyleJson.parsedJsonValue,
       bodyWrapperStyleJson.parsedJsonValue,
       cardStyleJson.parsedJsonValue,
-
-      // Behavior:
-
       toastManager.disableToastMessages,
-      disableProgressBar,
-      disablePostTradeTips,
-      disableTokenImport,
-      hideRecentTokens,
-      hideFavoriteTokens,
-      hideBridgeInfo,
-      hideOrdersTable,
-      disableTradeWhenPriceImpactIsUnknown,
-      disableTradeWhenPriceImpactIsHigherThan,
-
-      // Deadlines:
-
-      deadline,
-      swapDeadline,
-      limitDeadline,
-      advancedDeadline,
-
-      // Integrations:
-
-      partnerFeeBps,
       partnerFeeRecipient,
-
-      // Customization:
-
-      customImages,
-      customSounds,
-
-      // Advanced:
-
-      baseUrl,
-      enabledWidgetHooks,
       rawParamsJson.parsedJsonValue,
     ],
   )
@@ -415,7 +298,7 @@ export function Sidebar({
     onStateChange(configuratorState)
   }, [configuratorState, onStateChange])
 
-  useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
+  useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, standaloneMode)
 
   /*
 
@@ -433,13 +316,13 @@ export function Sidebar({
   - [x] Add presets for baseUrl and layout.
   - [x] Fix sticky style issue.
 
-  - [ ] Add toggle to disable scrollbars.
-  - [ ] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
-  - [ ] Create reusable TextInput, NumberInput and SelectInput components.
-  - [ ] Add name to all fields.
-  - [ ] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
-  - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
+  - [x] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
+  - [x] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
 
+  - [ ] Add toggle to disable scrollbars.
+  - [ ] Add name to all fields.
+  - [ ] Create reusable TextInput, NumberInput and SelectInput components.
+  - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
   */
 
   return (
@@ -450,218 +333,116 @@ export function Sidebar({
             title={title}
             themeMode={mode}
             standaloneMode={standaloneMode}
-            baseUrl={baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+            baseUrl={configuratorFormValues.baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
           />
 
           <Stack spacing={0} sx={{ display: 'flex', flexDirection: 'column' }}>
-            <AccordionSection title="Basics" expanded={expandedSection === 'Basics'} onChange={toggleSection('Basics')}>
-              <TextInput
-                name="appCode"
-                label="App code"
-                value={appCode}
-                onChange={(_, value) => setAppCode(value ?? '')}
-                helperText={COMMENTS_BY_PARAM_NAME.appCode}
-                inputProps={{ maxLength: 50 }}
-              />
-              {!IS_IFRAME && <ModeControl value={widgetMode} onChange={selectWidgetMode} />}
-              <LocaleControl state={localeState} />
-            </AccordionSection>
+            <AccordionFormSection
+              title="Basics"
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={BasicsSectionForm}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Trade Setup"
-              expanded={expandedSection === 'Trade setup'}
-              onChange={toggleSection('Trade setup')}
-            >
-              <TradeModesControl state={tradeModesState} />
-              <CurrentTradeTypeControl state={tradeTypeState} />
-              {!IS_IFRAME && (
-                <NetworkControl
-                  state={networkControlState}
-                  standaloneMode={standaloneMode}
-                  availableChains={availableChains}
-                />
-              )}
-              <BooleanSwitchControl
-                checked={!disableCrossChainSwap}
-                label="Allow cross-chain swaps"
-                onChange={setAllowCrossChainSwap}
-              />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={TradeSetupSectionForm}
+            />
 
-            <AccordionSection title="Tokens" expanded={expandedSection === 'Tokens'} onChange={toggleSection('Tokens')}>
-              <CurrencyInputControl
-                label="Sell token"
-                tokenIdState={sellTokenState}
-                tokenAmountState={sellTokenAmountState}
-              />
-              <CurrencyInputControl
-                label="Buy token"
-                tokenIdState={buyTokenState}
-                tokenAmountState={buyTokenAmountState}
-              />
-              <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
-            </AccordionSection>
+            <AccordionFormSection
+              title="Tokens"
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={TokensSectionForm}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Theme Colors"
-              expanded={expandedSection === 'Theme Colors'}
-              onChange={toggleSection('Theme Colors')}
-            >
-              <ThemeControl selectedValue={theme} onChange={handleWidgetThemeSelect} />
-              <PaletteControl paletteManager={paletteManager} />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={ThemeColorsSectionForm}
+              formProps={{ paletteManager } satisfies Omit<ThemeColorsSectionFormProps, 'values' | 'onChange'>}
+            />
 
-            <AccordionSection title="Layout" expanded={expandedSection === 'Layout'} onChange={toggleSection('Layout')}>
-              <BooleanSwitchControl
-                checked={autoResizeEnabled}
-                label="Auto-resize iframe"
-                onChange={setAutoResizeEnabled}
-                helperText="When enabled, the iframe height adjusts automatically to fit its content."
-              />
-              <BooleanSwitchControl
-                checked={showIframeOutline}
-                label="Show iframe outline"
-                onChange={setShowIframeOutline}
-                tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
-              />
-              <AppearanceStyleControls
-                paperBackgroundColor={colorPalette.paper || defaultPalette.paper}
-                iframeStyleJson={iframeStyleJson}
-                onIframeStyleJson={setIframeStyleJson}
-                appWrapperStyleJson={appWrapperStyleJson}
-                onAppWrapperStyleJson={setAppWrapperStyleJson}
-                bodyWrapperStyleJson={bodyWrapperStyleJson}
-                onBodyWrapperStyleJson={setBodyWrapperStyleJson}
-                cardStyleJson={cardStyleJson}
-                onCardStyleJson={setCardStyleJson}
-              />
-            </AccordionSection>
+            <AccordionFormSection
+              title="Layout"
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={LayoutSectionForm}
+              formProps={
+                {
+                  paperBackgroundColor: colorPalette.paper || defaultPalette.paper,
+                  jsonStates: {
+                    iframeStyleJson,
+                    appWrapperStyleJson,
+                    bodyWrapperStyleJson,
+                    cardStyleJson,
+                    onIframeStyleJson: (value) => handleConfiguratorFormChange('iframeStyleJson', value),
+                    onAppWrapperStyleJson: (value) => handleConfiguratorFormChange('appWrapperStyleJson', value),
+                    onBodyWrapperStyleJson: (value) => handleConfiguratorFormChange('bodyWrapperStyleJson', value),
+                    onCardStyleJson: (value) => handleConfiguratorFormChange('cardStyleJson', value),
+                  },
+                } satisfies Omit<LayoutSectionFormProps, 'values' | 'onChange'>
+              }
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Behavior"
-              expanded={expandedSection === 'Behavior'}
-              onChange={toggleSection('Behavior')}
-            >
-              <BooleanSwitchControl
-                checked={toastManager.disableToastMessages}
-                label="Use app toasts"
-                helperText="When off, the widget keeps toast messages inside the iframe."
-                onChange={toastManager.setToastMessagesInDappMode}
-              />
-              <BooleanSwitchControl
-                checked={!disableProgressBar}
-                label="Show progress bar"
-                onChange={setShowProgressBar}
-              />
-              <BooleanSwitchControl
-                checked={!disablePostTradeTips}
-                label="Show post-trade tips"
-                onChange={setShowPostTradeTips}
-              />
-              <BooleanSwitchControl
-                checked={!disableTokenImport}
-                label="Allow custom token imports"
-                onChange={setAllowTokenImport}
-              />
-              <BooleanSwitchControl
-                checked={!hideRecentTokens}
-                label="Show recent tokens"
-                onChange={setShowRecentTokens}
-              />
-              <BooleanSwitchControl
-                checked={!hideFavoriteTokens}
-                label="Show favorite tokens"
-                onChange={setShowFavoriteTokens}
-              />
-              <BooleanSwitchControl checked={!hideBridgeInfo} label="Show bridge info" onChange={setShowBridgeInfo} />
-              <BooleanSwitchControl
-                checked={!hideOrdersTable}
-                label="Show orders table"
-                onChange={setShowOrdersTable}
-              />
-              <BooleanSwitchControl
-                checked={disableTradeWhenPriceImpactIsUnknown}
-                label="Block trade if price impact is unknown"
-                onChange={setBlockUnknownPriceImpact}
-              />
-              <TextField
-                fullWidth
-                margin="dense"
-                id="disableTradeWhenPriceImpactIsHigherThan"
-                label="Block trade above price impact (%)"
-                type="number"
-                value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
-                onChange={setBlockPriceImpactAboveValue}
-                size="medium"
-                helperText="Leave empty to disable"
-                inputProps={{
-                  min: 0,
-                  step: 'any',
-                }}
-              />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={BehaviorSectionForm}
+              formProps={{ toastManager } satisfies Omit<BehaviorSectionFormProps, 'values' | 'onChange'>}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Deadlines"
-              expanded={expandedSection === 'Deadlines'}
-              onChange={toggleSection('Deadlines')}
-            >
-              <DeadlineControl label="Global Deadline" deadlineState={deadlineState} />
-              <DeadlineControl label="Swap Deadline" deadlineState={swapDeadlineState} />
-              <DeadlineControl label="Limit Deadline" deadlineState={limitDeadlineState} />
-              <DeadlineControl label="Advanced Deadline" deadlineState={advancedDeadlineState} />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={DeadlinesSectionForm}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Integrations"
-              expanded={expandedSection === 'Integrations'}
-              onChange={toggleSection('Integrations')}
-            >
-              <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={IntegrationsSectionForm}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Customization"
-              expanded={expandedSection === 'Customization'}
-              onChange={toggleSection('Customization')}
-            >
-              <CustomImagesControl state={customImagesState} />
-              <CustomSoundsControl state={customSoundsState} />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={CustomizationSectionForm}
+            />
 
-            <AccordionSection
+            <AccordionFormSection
               title="Advanced"
-              expanded={expandedSection === 'Advanced'}
-              onChange={toggleSection('Advanced')}
-            >
-              <PresetsButtons
-                presets={BASE_URL_PRESETS_OPTIONS}
-                onPresetClick={(value) => {
-                  if (value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL) {
-                    setBaseUrl(null)
-                  } else {
-                    setBaseUrl(value)
-                  }
-                }}
-              />
-              <TextInput
-                name="baseUrl"
-                label="Widget App URL"
-                value={baseUrl}
-                onChange={(_, value) => setBaseUrl(value)}
-                placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
-                helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}`}
-              />
-              <WidgetHooksControl state={widgetHooksState} />
-              <JsonInput
-                label="Raw JSON params"
-                name="rawParams"
-                value={rawParamsJson.rawJsonValue}
-                onChange={(_name, value) => setRawParamsJson(value)}
-                error={rawParamsJson.error}
-                helperText={jsonHelperText(rawParamsJson.error)}
-              />
-            </AccordionSection>
+              expandedSection={expandedSection}
+              onToggleExpanded={handleToggleExpanded}
+              values={configuratorFormValues}
+              onChange={handleConfiguratorFormChange}
+              formComponent={AdvancedSectionForm}
+            />
           </Stack>
 
           <SidebarFooter
