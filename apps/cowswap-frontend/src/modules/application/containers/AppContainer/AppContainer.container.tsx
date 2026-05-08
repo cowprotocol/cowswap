@@ -58,7 +58,7 @@ interface FooterSectionProps {
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -139,7 +139,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
+        <AffiliateTraderModal />
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
   )
