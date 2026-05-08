@@ -5,7 +5,6 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import iconCowLensSrc from '@cowprotocol/assets/images/icon-cow-lens.svg'
 import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
 import svgAffiliateHeroSrc from '@cowprotocol/assets/images/image-affiliate-hero.svg'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Media, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -14,7 +13,6 @@ import styled from 'styled-components/macro'
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
-import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import {
   AFFILIATE_PROGRAM_CTA,
   AFFILIATE_PROGRAM_DOCS_CTA,
@@ -255,10 +253,6 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
 }
 export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-
-  if (isAffiliateProgramEnabled === undefined) return null
-  if (isAffiliateProgramEnabled === false) return <NotFoundPageComponent />
 
   const sendEvent = (action: string): void => {
     analytics.sendEvent({ category: CowFiCategory.COWSWAP, action })
