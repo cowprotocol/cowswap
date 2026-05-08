@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
 
-import { EulerOpenPositionParams, EulerOpenPositionView } from './eulerOpenPosition.pure'
+import { EulerOpenPositionParams, EulerOpenPositionView } from './EulerOpenPosition.pure'
 
 import { useConvertToAssets, useVaultAsset } from '../../../../../hooks/euler'
 import { useNetworkId } from '../../../../../state/network/hooks'

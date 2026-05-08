@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
 
-import { EulerCollateralSwapParams, EulerCollateralSwapView } from './eulerCollateralSwap.pure'
+import { EulerCollateralSwapParams, EulerCollateralSwapView } from './EulerCollateralSwap.pure'
 
 import { useOrderContext } from '../../../../../components/orders/OrderWrapperDetails/OrderWrapperDetails.provider'
 import { useConvertToAssets, useVaultAsset } from '../../../../../hooks/euler'

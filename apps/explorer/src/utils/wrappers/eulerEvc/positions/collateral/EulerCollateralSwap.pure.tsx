@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import { BaseIconTooltipOnClick } from 'components/Tooltip'
 
-import * as styledEl from './eulerCollateralSwap.styled'
+import * as styledEl from './EulerCollateralSwap.styled'
 
 import { VaultAsset } from '../../../../../hooks/euler'
 import {
@@ -20,7 +20,7 @@ import {
   TradeCard,
   formatAmount,
   subaccountNumber,
-} from '../../eulerWrappers.styles'
+} from '../../EulerWrappers.styles'
 
 export interface EulerCollateralSwapParams {
   owner: string

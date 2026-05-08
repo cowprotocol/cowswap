@@ -15,7 +15,7 @@ import {
   TradeCard,
   formatAmount,
   subaccountNumber,
-} from '../../eulerWrappers.styles'
+} from '../../EulerWrappers.styles'
 
 export interface EulerOpenPositionParams {
   owner: string

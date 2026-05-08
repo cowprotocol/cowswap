@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
 
-import { EulerClosePositionParams, EulerClosePositionView } from './eulerClosePosition.pure'
+import { EulerClosePositionParams, EulerClosePositionView } from './EulerClosePosition.pure'
 
 import { useOrderContext } from '../../../../../components/orders/OrderWrapperDetails/OrderWrapperDetails.provider'
 import { useConvertToAssets, useVaultAsset } from '../../../../../hooks/euler'

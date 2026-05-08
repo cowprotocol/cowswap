@@ -1,3 +1,3 @@
-export { EulerClosePositionItem } from './positions/close/eulerClosePosition.component'
-export { EulerCollateralSwapItem } from './positions/collateral/eulerCollateralSwap.component'
-export { EulerOpenPositionItem } from './positions/open/eulerOpenPosition.component'
+export { EulerClosePositionItem } from './positions/close/EulerClosePosition.component'
+export { EulerCollateralSwapItem } from './positions/collateral/EulerCollateralSwap.component'
+export { EulerOpenPositionItem } from './positions/open/EulerOpenPosition.component'
