@@ -99,10 +99,22 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
   return proxy
 }
 
-// Module-level set so re-dispatched events are recognised even if
-// interceptEIP6963Providers() is called more than once (e.g. HMR).
-const reDispatched = new WeakSet<Event>()
-let interceptRegistered = false
+// Guards stored on `window` so they survive HMR — module-local variables are
+// reset on hot reload, but the capture listener stays attached to `window`.
+// Without this, each HMR reload would add another listener and the two instances
+// could re-dispatch events back and forth.
+type IsolationWindow = Window & {
+  __cowEip6963InterceptRegistered?: boolean
+  __cowEip6963ReDispatched?: WeakSet<Event>
+}
+
+function getReDispatched(): WeakSet<Event> {
+  const win = window as IsolationWindow
+  if (!win.__cowEip6963ReDispatched) {
+    win.__cowEip6963ReDispatched = new WeakSet<Event>()
+  }
+  return win.__cowEip6963ReDispatched
+}
 
 /**
  * Registers a capture-phase listener for EIP-6963 provider announcements so that
@@ -110,17 +122,20 @@ let interceptRegistered = false
  * processes it and creates connectors.
  *
  * Must be called before WagmiAdapter / createConfig is instantiated.
- * Safe to call multiple times — only registers the listener once.
+ * Safe to call multiple times — only registers the listener once (survives HMR).
  */
 export function interceptEIP6963Providers(): void {
-  if (typeof window === 'undefined' || interceptRegistered) return
-  interceptRegistered = true
+  if (typeof window === 'undefined') return
+  const win = window as IsolationWindow
+  if (win.__cowEip6963InterceptRegistered) return
+  win.__cowEip6963InterceptRegistered = true
 
   console.log('[providerIsolation] interceptEIP6963Providers: capture listener registered')
 
   window.addEventListener(
     'eip6963:announceProvider',
     (event) => {
+      const reDispatched = getReDispatched()
       if (reDispatched.has(event)) return
       event.stopImmediatePropagation()
 

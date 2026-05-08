@@ -239,10 +239,13 @@ if (isSafeIframe) {
 // accountsChanged filter in providerIsolation.ts knows which provider is current.
 if (typeof window !== 'undefined') {
   let hasEverConnected = false
+  let syncVersion = 0
 
   config.subscribe(
     (state) => state.current,
     async (current) => {
+      const version = ++syncVersion
+
       if (!current) {
         // Distinguish "never connected yet" (null, let events through for reconnection)
         // from "was connected, now disconnected" (PROVIDER_DISCONNECTED, block events).
@@ -256,6 +259,10 @@ if (typeof window !== 'undefined') {
         return
       }
       const provider = (await connector.getProvider().catch(() => null)) as EIP1193Provider | null
+
+      // Ignore stale resolution — a newer subscribe call may have fired while we awaited.
+      if (version !== syncVersion) return
+
       activeProviderRef.current = provider
     },
     { emitImmediately: true },
