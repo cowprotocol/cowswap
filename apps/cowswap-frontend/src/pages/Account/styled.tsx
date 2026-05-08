@@ -14,6 +14,29 @@ export const Container = styled.div`
   z-index: 1;
 `
 
+export const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  > h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  ${Media.upToSmall()} {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0 0 20px;
+
+    > h1 {
+      text-align: center;
+      margin: 24px 0 10px;
+    }
+  }
+`
+
 export const ExtLink = styled(ExternalLink)`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 
