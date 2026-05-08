@@ -12,13 +12,14 @@ export class FiniteMap<K, V> extends Map<K, V> {
   }
 
   override get(key: K): V | undefined {
+    const hasKey = this.has(key)
     const value = super.get(key)
 
-    if (value === undefined) return undefined
+    if (!hasKey) return value
 
     // Refresh recency on read (LRU behavior)
     super.delete(key)
-    super.set(key, value)
+    super.set(key, value as V)
 
     return value
   }
@@ -31,9 +32,9 @@ export class FiniteMap<K, V> extends Map<K, V> {
     super.set(key, value)
 
     if (this.size > this.maxSize) {
-      const oldestKey = this.keys().next().value as K | undefined
-      if (oldestKey !== undefined) {
-        super.delete(oldestKey)
+      const iter = this.keys().next()
+      if (!iter.done) {
+        super.delete(iter.value)
       }
     }
 
