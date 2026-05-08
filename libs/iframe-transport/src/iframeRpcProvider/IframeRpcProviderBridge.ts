@@ -10,6 +10,10 @@ import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
+type EthereumProviderWithRemoveListener = EthereumProvider & {
+  removeListener?(event: string, handler: (...args: unknown[]) => void): void
+}
+
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
@@ -57,9 +61,7 @@ export class IframeRpcProviderBridge {
 
     // Remove event-forwarding listeners from the provider before dropping the reference.
     if (this.ethereumProvider) {
-      const provider = this.ethereumProvider as EthereumProvider & {
-        removeListener?(event: string, handler: (...args: unknown[]) => void): void
-      }
+      const provider = this.ethereumProvider as EthereumProviderWithRemoveListener
       if (typeof provider.removeListener === 'function') {
         for (const { event, handler } of this.providerEventListeners) {
           provider.removeListener(event, handler)
