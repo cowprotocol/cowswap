@@ -2,8 +2,7 @@ import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { decodeAbiParameters, parseAbiParameters } from 'viem'
-
+import { VaultAsset } from '../../../../../hooks/euler'
 import {
   ArrowSep,
   DirectionLabel,
@@ -16,17 +15,9 @@ import {
   TradeCard,
   formatAmount,
   subaccountNumber,
-} from './common'
+} from '../../eulerWrappers.styles'
 
-import { VaultAsset, useConvertToAssets, useVaultAsset } from '../../../hooks/euler'
-import { useNetworkId } from '../../../state/network/hooks'
-
-const OPEN_POSITION_ABI = parseAbiParameters([
-  '(address owner, address account, uint256 deadline, address collateralVault, address borrowVault, uint256 collateralAmount, uint256 borrowAmount) params',
-  'bytes signature',
-])
-
-type OpenPositionParams = {
+export interface EulerOpenPositionParams {
   owner: string
   account: string
   deadline: bigint
@@ -36,8 +27,8 @@ type OpenPositionParams = {
   borrowAmount: bigint
 }
 
-interface OpenPositionViewProps {
-  params: OpenPositionParams
+export interface EulerOpenPositionViewProps {
+  params: EulerOpenPositionParams
   chainId: SupportedChainId | null
   collateralAsset: VaultAsset | undefined
   borrowAsset: VaultAsset | undefined
@@ -45,14 +36,14 @@ interface OpenPositionViewProps {
   borrowAssets: bigint | undefined
 }
 
-function OpenPositionView({
+export function EulerOpenPositionView({
   params,
   chainId,
   collateralAsset,
   borrowAsset,
   collateralAssets,
   borrowAssets,
-}: OpenPositionViewProps): ReactElement {
+}: EulerOpenPositionViewProps): ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = borrowAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -80,35 +71,5 @@ function OpenPositionView({
         Subaccount #{sub} · Owner <OwnerLink address={params.owner} />
       </SubInfo>
     </div>
-  )
-}
-
-export function OpenPositionComponent({ data }: { data: string }): ReactElement | null {
-  let params: OpenPositionParams | null = null
-
-  try {
-    const [decoded] = decodeAbiParameters(OPEN_POSITION_ABI, data as `0x${string}`)
-    params = decoded
-  } catch {
-    // handled below
-  }
-
-  const chainId = useNetworkId() as SupportedChainId | null
-  const collateralAsset = useVaultAsset(params?.collateralVault ?? '')
-  const borrowAsset = useVaultAsset(params?.borrowVault ?? '')
-  const collateralAssets = useConvertToAssets(params?.collateralVault, params?.collateralAmount)
-  const borrowAssets = useConvertToAssets(params?.borrowVault, params?.borrowAmount)
-
-  if (!params) return null
-
-  return (
-    <OpenPositionView
-      params={params}
-      chainId={chainId}
-      collateralAsset={collateralAsset}
-      borrowAsset={borrowAsset}
-      collateralAssets={collateralAssets}
-      borrowAssets={borrowAssets}
-    />
   )
 }

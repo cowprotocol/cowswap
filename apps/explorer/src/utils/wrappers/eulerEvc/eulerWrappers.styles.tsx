@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 
 import { getBlockExplorerUrl, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Color } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -10,15 +10,44 @@ import styled from 'styled-components/macro'
 import { TokenImg } from '../../../components/common/TokenImg'
 
 export const TradeCard = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 2rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+
+  ${Media.upToExtraSmall()} {
+    grid-template-columns: 1fr;
+  }
 `
 
 export const TokenBlock = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  padding: 12px;
+
+  &:first-child {
+    padding-right: 32px;
+    align-items: flex-start;
+  }
+
+  &:last-child {
+    padding-left: 32px;
+    align-items: flex-end;
+  }
+
+  ${Media.upToExtraSmall()} {
+    &:first-child {
+      padding-right: 12px;
+      padding-bottom: 20px;
+    }
+
+    &:last-child {
+      padding-left: 12px;
+      padding-top: 20px;
+      align-items: flex-start;
+    }
+  }
 `
 
 export const DirectionLabel = styled.span<{ $green?: boolean }>`
@@ -49,17 +78,50 @@ export const TokenAmount = styled.span`
 `
 
 export const ArrowSep = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid ${Color.explorer_tableRowBorder};
+  border-radius: 16px;
+  background: ${Color.explorer_tableRowBorder};
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 2rem;
   color: ${Color.explorer_grey};
-  /* offset past the direction label row so the arrow sits beside the token symbols */
-  margin-top: 1.5rem;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-right: 1px solid ${Color.explorer_tableRowBorder};
+    left: 50%;
+    height: 512px;
+  }
+
+  &::before {
+    bottom: 100%;
+  }
+
+  &::after {
+    top: 100%;
+  }
+
+  ${Media.upToExtraSmall()} {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
 `
 
 export const SubInfo = styled.p`
-  margin: 0.8rem 0 0;
+  padding: 8px 12px;
+  margin: 0;
   font-size: 1.2rem;
   color: ${Color.explorer_grey};
   word-break: normal;
+  border-top: 1px solid ${Color.explorer_tableRowBorder};
 
   a {
     color: ${Color.explorer_textActive};

@@ -2,19 +2,10 @@ import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const WrapperList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-flow: column wrap;
-  gap: 1rem;
-`
-
 export const WrapperItem = styled.li`
   display: flex;
   flex-flow: column wrap;
-  gap: 0.5rem;
+  gap: 12px;
 `
 
 export const WrapperHeader = styled.p`
@@ -31,10 +22,9 @@ export const WrapperHeader = styled.p`
 `
 
 export const RenderedData = styled.div`
-  border: 0.1rem solid ${Color.explorer_tableRowBorder};
+  border: 1px solid ${Color.explorer_tableRowBorder};
   border-radius: 0.5rem;
   background: ${Color.explorer_tableRowBorder};
-  padding: 1.4rem;
   overflow: auto;
   word-break: break-all;
   line-height: 1.5;

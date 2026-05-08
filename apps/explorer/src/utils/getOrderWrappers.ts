@@ -4,7 +4,8 @@ import { shortenAddress } from '@cowprotocol/common-utils'
 import { cowAppDataLatestScheme, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { decodeFullAppData } from './decodeFullAppData'
-import { WRAPPERS_BY_ADDRESS, WrapperInfo } from './wrapperRegistry'
+import { WRAPPERS_BY_ADDRESS } from './wrappers/wrapperRegistry.constants'
+import { WrapperInfo } from './wrappers/wrapperRegistry.types'
 
 export interface ResolvedWrapper {
   address: string

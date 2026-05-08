@@ -17,7 +17,7 @@ import { DetailsTableTooltips } from '../../../components/orders/DetailsTable/de
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplayProps } from '../OrderPriceDisplay'
-import { OrderWrapperDetails } from '../OrderWrapperDetails'
+import { OrderWrapperDetails } from '../OrderWrapperDetails/OrderWrapperDetails.component'
 
 interface VerboseDetailsProps {
   order: Order

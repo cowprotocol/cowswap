@@ -2,8 +2,12 @@ import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { decodeAbiParameters, parseAbiParameters } from 'viem'
+import { faLock } from '@fortawesome/free-solid-svg-icons'
+import { BaseIconTooltipOnClick } from 'components/Tooltip'
 
+import * as styledEl from './eulerCollateralSwap.styled'
+
+import { VaultAsset } from '../../../../../hooks/euler'
 import {
   ArrowSep,
   DirectionLabel,
@@ -16,18 +20,9 @@ import {
   TradeCard,
   formatAmount,
   subaccountNumber,
-} from './common'
+} from '../../eulerWrappers.styles'
 
-import { useOrderContext } from '../../../components/orders/OrderWrapperDetails'
-import { VaultAsset, useConvertToAssets, useVaultAsset } from '../../../hooks/euler'
-import { useNetworkId } from '../../../state/network/hooks'
-
-const COLLATERAL_SWAP_ABI = parseAbiParameters([
-  '(address owner, address account, uint256 deadline, address fromVault, address toVault, uint256 fromAmount, bool disableSourceCollateral) params',
-  'bytes signature',
-])
-
-type CollateralSwapParams = {
+export interface EulerCollateralSwapParams {
   owner: string
   account: string
   deadline: bigint
@@ -37,8 +32,8 @@ type CollateralSwapParams = {
   disableSourceCollateral: boolean
 }
 
-interface CollateralSwapViewProps {
-  params: CollateralSwapParams
+export interface EulerCollateralSwapViewProps {
+  params: EulerCollateralSwapParams
   chainId: SupportedChainId | null
   fromAsset: VaultAsset | undefined
   toAsset: VaultAsset | undefined
@@ -46,14 +41,14 @@ interface CollateralSwapViewProps {
   toAssets: bigint | undefined
 }
 
-function CollateralSwapView({
+export function EulerCollateralSwapView({
   params,
   chainId,
   fromAsset,
   toAsset,
   fromAssets,
   toAssets,
-}: CollateralSwapViewProps): ReactElement {
+}: EulerCollateralSwapViewProps): ReactElement {
   const fromSymbol = fromAsset?.symbol ?? '…'
   const toSymbol = toAsset?.symbol ?? '…'
   const sub = subaccountNumber(params.owner, params.account)
@@ -65,6 +60,16 @@ function CollateralSwapView({
           <DirectionLabel $green>SWAP OUT</DirectionLabel>
           <TokenSymbol title={`Vault: ${params.fromVault}`}>
             <TokenLink symbol={fromSymbol} tokenAddress={fromAsset?.address} chainId={chainId} />
+            {params.disableSourceCollateral && (
+              <BaseIconTooltipOnClick
+                tooltip={`${fromSymbol} will be disabled as collateral after swap`}
+                targetContent={
+                  <styledEl.DisabledCollateralBadge>
+                    <styledEl.DisabledCollateralIcon icon={faLock} />
+                  </styledEl.DisabledCollateralBadge>
+                }
+              />
+            )}
           </TokenSymbol>
           <TokenAmount>{formatAmount(fromAssets, fromAsset?.decimals)}</TokenAmount>
         </TokenBlock>
@@ -79,40 +84,7 @@ function CollateralSwapView({
       </TradeCard>
       <SubInfo>
         Subaccount #{sub} · Owner <OwnerLink address={params.owner} />
-        {params.disableSourceCollateral && <> · {fromSymbol} disabled as collateral after swap</>}
       </SubInfo>
     </div>
-  )
-}
-
-export function CollateralSwapComponent({ data }: { data: string }): ReactElement | null {
-  let params: CollateralSwapParams | null = null
-
-  try {
-    const [decoded] = decodeAbiParameters(COLLATERAL_SWAP_ABI, data as `0x${string}`)
-    params = decoded
-  } catch {
-    // handled below
-  }
-
-  const chainId = useNetworkId() as SupportedChainId | null
-  const fromAsset = useVaultAsset(params?.fromVault ?? '')
-  const toAsset = useVaultAsset(params?.toVault ?? '')
-  const fromAssets = useConvertToAssets(params?.fromVault, params?.fromAmount)
-  const order = useOrderContext()
-  const buyShares = order?.buyAmount ? BigInt(order.buyAmount.toFixed(0)) : undefined
-  const toAssets = useConvertToAssets(params?.toVault, buyShares)
-
-  if (!params) return null
-
-  return (
-    <CollateralSwapView
-      params={params}
-      chainId={chainId}
-      fromAsset={fromAsset}
-      toAsset={toAsset}
-      fromAssets={fromAssets}
-      toAssets={toAssets}
-    />
   )
 }

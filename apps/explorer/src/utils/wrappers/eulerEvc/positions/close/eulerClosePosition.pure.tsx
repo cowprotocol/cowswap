@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { decodeAbiParameters, parseAbiParameters } from 'viem'
-
+import { useOrderContext } from '../../../../../components/orders/OrderWrapperDetails/OrderWrapperDetails.provider'
+import { VaultAsset } from '../../../../../hooks/euler'
 import {
   ArrowSep,
   DirectionLabel,
@@ -16,18 +16,9 @@ import {
   TradeCard,
   formatAmount,
   subaccountNumber,
-} from './common'
+} from '../../eulerWrappers.styles'
 
-import { useOrderContext } from '../../../components/orders/OrderWrapperDetails'
-import { VaultAsset, useConvertToAssets, useVaultAsset } from '../../../hooks/euler'
-import { useNetworkId } from '../../../state/network/hooks'
-
-const CLOSE_POSITION_ABI = parseAbiParameters([
-  '(address owner, address account, uint256 deadline, address borrowVault, address collateralVault, uint256 collateralAmount) params',
-  'bytes signature',
-])
-
-type ClosePositionParams = {
+export interface EulerClosePositionParams {
   owner: string
   account: string
   deadline: bigint
@@ -36,8 +27,8 @@ type ClosePositionParams = {
   collateralAmount: bigint
 }
 
-interface ClosePositionViewProps {
-  params: ClosePositionParams
+export interface EulerClosePositionViewProps {
+  params: EulerClosePositionParams
   chainId: SupportedChainId | null
   collateralAsset: VaultAsset | undefined
   borrowAsset: VaultAsset | undefined
@@ -45,14 +36,14 @@ interface ClosePositionViewProps {
   order: ReturnType<typeof useOrderContext>
 }
 
-function ClosePositionView({
+export function EulerClosePositionView({
   params,
   chainId,
   collateralAsset,
   borrowAsset,
   collateralAssets,
   order,
-}: ClosePositionViewProps): ReactElement {
+}: EulerClosePositionViewProps): ReactElement {
   const collateralSymbol = collateralAsset?.symbol ?? '…'
   const borrowSymbol = order?.buyToken?.symbol ?? borrowAsset?.symbol ?? '…'
   const borrowTokenAddress = order?.buyToken?.address ?? borrowAsset?.address
@@ -85,35 +76,5 @@ function ClosePositionView({
         Subaccount #{sub} · Owner <OwnerLink address={params.owner} />
       </SubInfo>
     </div>
-  )
-}
-
-export function ClosePositionComponent({ data }: { data: string }): ReactElement | null {
-  let params: ClosePositionParams | null = null
-
-  try {
-    const [decoded] = decodeAbiParameters(CLOSE_POSITION_ABI, data as `0x${string}`)
-    params = decoded
-  } catch {
-    // handled below
-  }
-
-  const chainId = useNetworkId() as SupportedChainId | null
-  const collateralAsset = useVaultAsset(params?.collateralVault ?? '')
-  const borrowAsset = useVaultAsset(params?.borrowVault ?? '')
-  const collateralAssets = useConvertToAssets(params?.collateralVault, params?.collateralAmount)
-  const order = useOrderContext()
-
-  if (!params) return null
-
-  return (
-    <ClosePositionView
-      params={params}
-      chainId={chainId}
-      collateralAsset={collateralAsset}
-      borrowAsset={borrowAsset}
-      collateralAssets={collateralAssets}
-      order={order}
-    />
   )
 }
