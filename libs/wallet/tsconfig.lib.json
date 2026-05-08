@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "../../dist/out-tsc/wallet",
+    "declaration": true,
     "baseUrl": ".",
     "types": ["node", "vite/client"]
   },

@@ -6,6 +6,13 @@ dist
 tmp
 /out-tsc
 
+# Accidental TS declaration emit beside sources (tsconfig lib/spec use outDir → dist/out-tsc).
+# Keeps `pnpm typecheck` / `tsc --build --emitDeclarationOnly` from polluting src/ if mis-invoked.
+libs/**/src/**/*.d.ts
+!libs/wallet/src/types.d.ts
+**/jest.config.d.ts
+**/tsconfig*.tsbuildinfo
+
 # dependencies
 node_modules
 

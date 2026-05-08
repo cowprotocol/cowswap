@@ -1,8 +1,8 @@
 {
   "packageManager": "pnpm",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "affected": {
-    "defaultBase": "develop"
+  "sync": {
+    "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
   },
   "release": {
     "projectsRelationship": "independent",
@@ -120,5 +120,6 @@
         "targetName": "eslint:lint"
       }
     }
-  ]
+  ],
+  "defaultBase": "develop"
 }

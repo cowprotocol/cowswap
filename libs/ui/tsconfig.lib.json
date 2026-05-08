@@ -4,6 +4,7 @@
     "types": ["node"]
   },
   "files": [
+    "../../types/cow-protocol-ambient.d.ts",
     "../../node_modules/@nx/react/typings/styled-jsx.d.ts",
     "../../node_modules/@nx/react/typings/cssmodule.d.ts",
     "../../node_modules/@nx/react/typings/image.d.ts"
@@ -18,5 +19,5 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.d.ts"]
 }

@@ -3,7 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/widget-configurator/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/widget-configurator/tsconfig.app.json"
+      }
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
@@ -72,6 +79,5 @@
         "buildTarget": "widget-configurator:build"
       }
     }
-  },
-  "tags": []
+  }
 }
