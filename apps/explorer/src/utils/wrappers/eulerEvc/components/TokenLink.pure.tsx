@@ -16,19 +16,25 @@ export function TokenLink({
   tokenAddress: string | undefined
   chainId: SupportedChainId | null
 }): ReactNode {
-  if (!tokenAddress || !chainId) return <>{symbol}</>
+  if (!tokenAddress || !chainId) return <TokenLinkContainer>{symbol}</TokenLinkContainer>
   const url = getBlockExplorerUrl(chainId, 'token', tokenAddress)
   return (
-    <>
+    <TokenLinkContainer>
       <TokenIcon address={tokenAddress} network={chainId} symbol={symbol} />
       <a href={url} target="_blank" rel="noopener noreferrer" title={tokenAddress}>
         {symbol}
       </a>
-    </>
+    </TokenLinkContainer>
   )
 }
 
+const TokenLinkContainer = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
 const TokenIcon = styled(TokenImg)`
-  width: 2rem;
-  height: 2rem;
+  width: 20px;
+  height: 20px;
 `
