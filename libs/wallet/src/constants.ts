@@ -1,6 +1,12 @@
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
 
+/**
+ * Custom event name for deterministic injected-wallet connection in end-to-end tests.
+ * This bypasses vendor-specific AppKit modal markup and connects the wagmi injected connector directly.
+ */
+export const CONNECT_INJECTED_WALLET_EVENT = 'cowswap-connect-injected-wallet'
+
 /** SessionStorage key: set on user disconnect so InjectedBrowserAutoConnect does not reopen the wallet (e.g. Rabby). */
 export const USER_DISCONNECTED_SESSION_KEY = 'cowswap:userDisconnected:v0'
 

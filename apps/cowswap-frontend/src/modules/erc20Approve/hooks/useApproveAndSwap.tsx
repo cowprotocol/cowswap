@@ -12,7 +12,7 @@ import { TradeType } from 'modules/trade'
 import { ApproveCurrencyCallback, useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
-import { MAX_APPROVE_AMOUNT } from '../constants'
+import { MAX_APPROVE_AMOUNT, FORCE_ONCHAIN_APPROVAL_SESSION_KEY } from '../constants'
 import {
   UpdateApproveProgressModalState,
   useIsPartialApproveSelectedByUser,
@@ -41,7 +41,10 @@ export function useApproveAndSwap({
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
 
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
+  const isPermitSupported =
+    useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) &&
+    !ignorePermit &&
+    !getShouldForceOnchainApproval()
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const handlePermit = useCallback(async () => {
@@ -137,4 +140,10 @@ function getApprovalTxHash(txResponse: object): string | null {
   }
 
   return null
+}
+
+function getShouldForceOnchainApproval(): boolean {
+  if (typeof window === 'undefined') return false
+
+  return window.sessionStorage.getItem(FORCE_ONCHAIN_APPROVAL_SESSION_KEY) === 'true'
 }
