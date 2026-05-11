@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-05-04 15:27\n"
+"PO-Revision-Date: 2026-05-11 11:22\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -3066,9 +3066,9 @@ msgstr "Если пособие остается недостаточным в �
 #~ msgid "User rejected signing the order"
 #~ msgstr "User rejected signing the order"
 
-#: libs/common-const/src/common.ts
-#~ msgid "Account Proxy"
-#~ msgstr "Account Proxy"
+#: apps/cowswap-frontend/src/pages/Account/index.tsx
+msgid "Account Proxy"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
