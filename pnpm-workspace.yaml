@@ -11,4 +11,5 @@ minimumReleaseAgeExclude:
   - next
   - typescript
   - '@types/*'
+  - '@next/swc-linux-x64-gnu@15.5.18' # security patch
   - '@cowprotocol/*'
