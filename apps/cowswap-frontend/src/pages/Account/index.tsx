@@ -2,12 +2,11 @@ import { useAtomValue } from 'jotai'
 import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, matchPath } from 'react-router'
 
 import {
   AffiliateFeedbackButton,
@@ -76,7 +75,16 @@ function AccountTitle({ canShowAffiliateFeedbackButton, id, name, pathname }: Ac
   return <Title id={id}>{name}</Title>
 }
 
-function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): string[] {
+function getPropsFromRoute(route: string): string[] {
+  if (
+    matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
+  ) {
+    return ['account-proxy', t`Account Proxy`]
+  }
+
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]
@@ -85,9 +93,9 @@ function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): s
     case RoutesEnum.ACCOUNT_TOKENS:
       return ['account-tokens', t`Tokens overview`]
     case RoutesEnum.ACCOUNT_AFFILIATE_PARTNER:
-      return isAffiliateProgramEnabled ? ['account-affiliate', t`Rewards hub - Affiliate`] : []
+      return ['account-affiliate', t`Rewards hub - Affiliate`]
     case RoutesEnum.ACCOUNT_AFFILIATE_TRADER:
-      return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My Rewards`] : []
+      return ['account-my-rewards', t`Rewards hub - My Rewards`]
     default:
       return []
   }
@@ -114,9 +122,8 @@ export const AccountOverview = (): ReactNode => {
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
   const { account } = useWalletInfo()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-  const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
-  const canShowAffiliateFeedbackButton = Boolean(account) && isAffiliateProgramEnabled
+  const [id, name] = getPropsFromRoute(pathname)
+  const canShowAffiliateFeedbackButton = Boolean(account)
 
   return (
     <Wrapper>
