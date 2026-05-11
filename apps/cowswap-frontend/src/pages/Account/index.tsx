@@ -17,6 +17,7 @@ import {
 import { Content, PageTitle, Title } from 'modules/application'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { AccountMenu } from './Menu'
 import { CardsWrapper, Container, TitleRow } from './styled'
@@ -113,8 +114,9 @@ export const AccountOverview = (): ReactNode => {
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
   const { account } = useWalletInfo()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const [id, name] = getPropsFromRoute(pathname)
-  const canShowAffiliateFeedbackButton = Boolean(account)
+  const canShowAffiliateFeedbackButton = Boolean(account) && !isProviderNetworkUnsupported
 
   return (
     <Wrapper>

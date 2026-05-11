@@ -13,11 +13,16 @@ import { getCowswapTheme } from 'theme'
 import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import Account from './index'
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
+}))
+
+jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
+  useIsProviderNetworkUnsupported: jest.fn(),
 }))
 
 jest.mock('jotai', () => {
@@ -51,6 +56,9 @@ jest.mock('./Menu', () => ({
 }))
 
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useIsProviderNetworkUnsupportedMock = useIsProviderNetworkUnsupported as jest.MockedFunction<
+  typeof useIsProviderNetworkUnsupported
+>
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
 
@@ -84,12 +92,29 @@ describe('Account', () => {
     jest.clearAllMocks()
     useAtomValueMock.mockReturnValue({ savedCode: 'COW-123', isLinked: true })
     useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.LINKED)
+    useIsProviderNetworkUnsupportedMock.mockReturnValue(false)
   })
 
   it('shows the feedback button on the affiliate page when a wallet is connected', () => {
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER, '0x0000000000000000000000000000000000000001')
 
     expect(screen.getByRole('button', { name: 'Give feedback' })).not.toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
+  })
+
+  it('does not show the feedback button on the affiliate page without a connected wallet', () => {
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER)
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
+  })
+
+  it('does not show the feedback button on the affiliate page when the provider network is unsupported', () => {
+    useIsProviderNetworkUnsupportedMock.mockReturnValue(true)
+
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER, '0x0000000000000000000000000000000000000001')
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
     expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
   })
 

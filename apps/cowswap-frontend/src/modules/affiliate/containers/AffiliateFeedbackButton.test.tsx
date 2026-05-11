@@ -7,6 +7,8 @@ import { openAffiliateFeedbackAppzi } from 'appzi'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { AffiliateFeedbackButton } from './AffiliateFeedbackButton.container'
 
 jest.mock('@cowprotocol/wallet', () => {
@@ -21,6 +23,10 @@ jest.mock('appzi', () => ({
   openAffiliateFeedbackAppzi: jest.fn(),
 }))
 
+jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
+  useIsProviderNetworkUnsupported: jest.fn(),
+}))
+
 jest.mock('react-inlinesvg', () => ({
   __esModule: true,
   default: () => null,
@@ -28,6 +34,9 @@ jest.mock('react-inlinesvg', () => ({
 
 const useWalletDetailsMock = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useIsProviderNetworkUnsupportedMock = useIsProviderNetworkUnsupported as jest.MockedFunction<
+  typeof useIsProviderNetworkUnsupported
+>
 const openAffiliateFeedbackAppziMock = openAffiliateFeedbackAppzi as jest.MockedFunction<
   typeof openAffiliateFeedbackAppzi
 >
@@ -56,6 +65,7 @@ describe('AffiliateFeedbackButton', () => {
       account: '0x0000000000000000000000000000000000000001',
       chainId: 1,
     } as ReturnType<typeof useWalletInfo>)
+    useIsProviderNetworkUnsupportedMock.mockReturnValue(false)
   })
 
   it('opens the Appzi feedback form with wallet context', () => {
@@ -68,5 +78,24 @@ describe('AffiliateFeedbackButton', () => {
       chainId: 1,
       walletName: 'Safe',
     })
+  })
+
+  it('does not render without a connected wallet', () => {
+    useWalletInfoMock.mockReturnValue({
+      account: undefined,
+      chainId: 1,
+    } as ReturnType<typeof useWalletInfo>)
+
+    renderComponent()
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+  })
+
+  it('does not render when the provider network is unsupported', () => {
+    useIsProviderNetworkUnsupportedMock.mockReturnValue(true)
+
+    renderComponent()
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
   })
 })

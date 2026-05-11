@@ -8,17 +8,20 @@ import { Trans } from '@lingui/react/macro'
 import { isAppziEnabled, openAffiliateFeedbackAppzi } from 'appzi'
 import SVG from 'react-inlinesvg'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import * as styledEl from './AffiliateFeedbackButton.styled'
 
 export function AffiliateFeedbackButton(): ReactNode {
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const handleClick = useCallback((): void => {
     openAffiliateFeedbackAppzi({ account, chainId, walletName })
   }, [account, chainId, walletName])
 
-  if (!isAppziEnabled) {
+  if (!isAppziEnabled || !account || isProviderNetworkUnsupported) {
     return null
   }
 
