@@ -1,6 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { ALL_CHAINS_MAP, getAddressKey, TargetChainId } from '@cowprotocol/cow-sdk'
+import { ALL_CHAINS_MAP, getAddressKey, isSupportedAddress, TargetChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
 import { TokensByAddress, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
@@ -65,8 +65,11 @@ function resolveTokenAddressAndLogo(
   tokensByAddress: TokensByAddress,
 ): { address: string; logoUrl: string | undefined } | null {
   const nativeCurrency = ALL_CHAINS_MAP[token.chainId as TargetChainId].nativeCurrency
-  // bridge non-evm native tokens doesn't have address, so we need to map them to our convention address
-  const address = token.address || nativeCurrency?.address
+  // Bridge providers may return non-EVM native tokens without an address, or with a junk placeholder
+  // (e.g. NEAR Intents returns BTC native with contractAddress="coin"). In either case, fall back
+  // to our convention native address from the SDK so downstream code (shortenAddress, explorer
+  // links, address comparisons) keeps working.
+  const address = isSupportedAddress(token.address) ? token.address : nativeCurrency?.address
   if (!address) return null
 
   const listToken = tokensByAddress[getAddressKey(address)]
