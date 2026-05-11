@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { type ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -10,7 +11,7 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
-import { TraderWalletStatus, useAffiliateTraderWallet } from 'modules/affiliate'
+import { TraderWalletStatus, isSupportedPayoutsNetwork, useAffiliateTraderWallet } from 'modules/affiliate'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -19,6 +20,10 @@ import Account from './index'
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/wallet-provider', () => ({
+  useWalletChainId: jest.fn(),
 }))
 
 jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
@@ -42,6 +47,7 @@ jest.mock('modules/affiliate', () => ({
     LINKED: 'linked',
   },
   affiliateTraderSavedCodeAtom: Symbol('affiliateTraderSavedCodeAtom'),
+  isSupportedPayoutsNetwork: jest.fn((chainId?: number) => chainId === 1),
   useAffiliateTraderWallet: jest.fn(),
 }))
 
@@ -56,10 +62,12 @@ jest.mock('./Menu', () => ({
 }))
 
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useWalletChainIdMock = useWalletChainId as jest.MockedFunction<typeof useWalletChainId>
 const useIsProviderNetworkUnsupportedMock = useIsProviderNetworkUnsupported as jest.MockedFunction<
   typeof useIsProviderNetworkUnsupported
 >
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
+const isSupportedPayoutsNetworkMock = isSupportedPayoutsNetwork as jest.MockedFunction<typeof isSupportedPayoutsNetwork>
 const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
 
 i18n.load('en-US', {})
@@ -90,8 +98,10 @@ function renderComponent(pathname: string, account?: string): RenderResult {
 describe('Account', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    useWalletChainIdMock.mockReturnValue(1)
     useAtomValueMock.mockReturnValue({ savedCode: 'COW-123', isLinked: true })
     useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.LINKED)
+    isSupportedPayoutsNetworkMock.mockImplementation((chainId?: number) => chainId === 1)
     useIsProviderNetworkUnsupportedMock.mockReturnValue(false)
   })
 
@@ -99,6 +109,15 @@ describe('Account', () => {
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER, '0x0000000000000000000000000000000000000001')
 
     expect(screen.getByRole('button', { name: 'Give feedback' })).not.toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
+  })
+
+  it('does not show the feedback button on the affiliate page when the wallet is not on the payout network', () => {
+    useWalletChainIdMock.mockReturnValue(100)
+
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_PARTNER, '0x0000000000000000000000000000000000000001')
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
     expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
   })
 

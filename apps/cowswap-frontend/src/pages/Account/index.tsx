@@ -3,6 +3,7 @@ import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -12,6 +13,7 @@ import {
   AffiliateFeedbackButton,
   TraderWalletStatus,
   affiliateTraderSavedCodeAtom,
+  isSupportedPayoutsNetwork,
   useAffiliateTraderWallet,
 } from 'modules/affiliate'
 import { Content, PageTitle, Title } from 'modules/application'
@@ -30,6 +32,7 @@ const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Acc
 
 interface AccountTitleProps {
   canShowAffiliateFeedbackButton: boolean
+  canShowAffiliatePartnerFeedbackButton: boolean
   id?: string
   name?: string
   pathname: string
@@ -60,13 +63,23 @@ function MyRewardsTitleWithFeedback({ id, name }: TitleWithFeedbackProps): React
   return <TitleWithFeedback id={id} name={name} />
 }
 
-function AccountTitle({ canShowAffiliateFeedbackButton, id, name, pathname }: AccountTitleProps): ReactNode {
-  if (!canShowAffiliateFeedbackButton) {
+function AccountTitle({
+  canShowAffiliateFeedbackButton,
+  canShowAffiliatePartnerFeedbackButton,
+  id,
+  name,
+  pathname,
+}: AccountTitleProps): ReactNode {
+  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER) {
+    if (canShowAffiliatePartnerFeedbackButton) {
+      return <TitleWithFeedback id={id} name={name} />
+    }
+
     return <Title id={id}>{name}</Title>
   }
 
-  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER) {
-    return <TitleWithFeedback id={id} name={name} />
+  if (!canShowAffiliateFeedbackButton) {
+    return <Title id={id}>{name}</Title>
   }
 
   if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
@@ -114,9 +127,12 @@ export const AccountOverview = (): ReactNode => {
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
   const { account } = useWalletInfo()
+  const walletChainId = useWalletChainId()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const [id, name] = getPropsFromRoute(pathname)
   const canShowAffiliateFeedbackButton = Boolean(account) && !isProviderNetworkUnsupported
+  const canShowAffiliatePartnerFeedbackButton =
+    canShowAffiliateFeedbackButton && isSupportedPayoutsNetwork(walletChainId)
 
   return (
     <Wrapper>
@@ -124,6 +140,7 @@ export default function Account(): ReactNode {
       <AccountPageWrapper>
         <Content>
           <AccountTitle
+            canShowAffiliatePartnerFeedbackButton={canShowAffiliatePartnerFeedbackButton}
             canShowAffiliateFeedbackButton={canShowAffiliateFeedbackButton}
             id={id}
             name={name}
