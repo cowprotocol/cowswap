@@ -180,26 +180,37 @@ export function isRejectRequestProviderError(error: any, depth = 0): boolean {
     return false
   }
 
+  if (isRejectionAtCurrentLevel(error)) {
+    return true
+  }
+
+  // Recurse into cause chain (viem/WalletConnect nest errors deeply)
+  const cause = error.cause
+  if (cause !== undefined && cause !== error) {
+    return isRejectRequestProviderError(cause, depth + 1)
+  }
+
+  return false
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isRejectionAtCurrentLevel(error: any): boolean {
   // Check the error code is the user rejection as described in eip-1193
   if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
     return true
   }
 
-  // Check for some specific messages returned by some wallets when rejecting requests
+  // Check error message and viem's `details` property for wallet-specific rejection messages
   const message = getProviderErrorMessage(error)
-  if (
-    PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
-      (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
-    )
-  ) {
-    return true
-  }
+  const details = typeof error.details === 'string' ? error.details : undefined
 
-  if (error instanceof Error && 'cause' in error && error.cause !== undefined) {
-    return isRejectRequestProviderError(error.cause, depth + 1)
-  }
+  return matchesRejectionMessage(message) || matchesRejectionMessage(details)
+}
 
-  return false
+function matchesRejectionMessage(message: string | undefined): boolean {
+  if (!message) return false
+  const lower = message.toLowerCase()
+  return PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) => lower.includes(rejectMessage.toLowerCase()))
 }
 
 /**

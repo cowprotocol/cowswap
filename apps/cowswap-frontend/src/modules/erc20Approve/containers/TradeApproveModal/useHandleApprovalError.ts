@@ -28,7 +28,9 @@ export function useHandleApprovalError(symbol: string | undefined): (error: unkn
       } else {
         captureError(error, ERROR_TYPES.ON_APPROVE)
         approvalAnalytics('Error', symbol, extractErrorCode(err))
-        updateApproveProgressModalState({ error: error.message })
+        // Use shortMessage (viem) to avoid verbose error output with request arguments
+        const displayMessage = ('shortMessage' in error ? error.shortMessage : error.message) as string
+        updateApproveProgressModalState({ error: displayMessage })
       }
     },
     [updateApproveProgressModalState, t, approvalAnalytics, symbol],
