@@ -3,7 +3,6 @@ import { useEffect, type ReactNode } from 'react'
 import { isImTokenBrowser } from '@cowprotocol/common-utils'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
@@ -12,8 +11,6 @@ import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
 import { OPEN_WALLET_MODAL_EVENT } from '../constants'
-
-const queryClient = new QueryClient()
 
 function ReconnectOnMount(): null {
   useEffect(() => {
@@ -79,11 +76,9 @@ export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
     <WagmiProvider config={config}>
       <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
-      <QueryClientProvider client={queryClient}>
-        <SafeProvider>
-          <SafeConnectionHandler>{children}</SafeConnectionHandler>
-        </SafeProvider>
-      </QueryClientProvider>
+      <SafeProvider>
+        <SafeConnectionHandler>{children}</SafeConnectionHandler>
+      </SafeProvider>
     </WagmiProvider>
   )
 }

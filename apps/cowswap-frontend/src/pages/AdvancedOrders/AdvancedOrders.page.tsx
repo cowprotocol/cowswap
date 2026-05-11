@@ -6,7 +6,6 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useLingui } from '@lingui/react/macro'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
@@ -18,14 +17,13 @@ import {
 import { PageTitle } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { OrdersTableWidget, ordersTableStateAtom } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
-  useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
   useTwapFormState,
@@ -34,6 +32,7 @@ import {
 } from 'modules/twap'
 
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { TabOrderTypes } from 'common/state/routesState'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -42,7 +41,7 @@ export function AdvancedOrdersPage(): ReactNode {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
-  const allEmulatedOrders = useAllEmulatedOrders()
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()
@@ -52,8 +51,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-  const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
-
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
   return (
@@ -86,11 +83,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
-                orderType={TabOrderTypes.ADVANCED}
-                orders={allEmulatedOrders}
-              />
+              <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

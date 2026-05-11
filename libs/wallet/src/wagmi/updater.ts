@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
@@ -40,8 +41,8 @@ function useBrowserUrlKey(): string {
 }
 
 function useWalletInfo(): WalletInfo {
+  const { address, chainId, isConnected, connector } = useConnection()
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected } = useConnection()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
   const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
@@ -76,8 +77,9 @@ function useWalletInfo(): WalletInfo {
       chainId: resolvedChainId,
       active: isConnected,
       account: address,
+      connector,
     }
-  }, [address, chainId, isConnected, isChainIdUnsupported, lastStableChainId, lastResolvedChainId, urlKey])
+  }, [address, chainId, isConnected, connector, isChainIdUnsupported, lastStableChainId, lastResolvedChainId, urlKey])
 
   useEffect(() => {
     setLastResolvedChainId(walletInfo.chainId)
@@ -158,6 +160,12 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
     }
     detect()
   }, [connector, eip6963Providers, setEip6963Provider])
+
+  const provider = useWalletProvider()
+
+  useEffect(() => {
+    setWalletInfo((prevWalletInfo) => ({ ...prevWalletInfo, provider }))
+  }, [setWalletInfo, provider])
 
   useEffect(() => {
     setWalletInfo(walletInfo)

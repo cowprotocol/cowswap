@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 
 import { useConnection } from 'wagmi'
 
-import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import {
   gnosisSafeInfoAtom,
   walletDetailsAtom,
@@ -17,11 +16,11 @@ import {
   selectedEip6963ProviderAtom,
   selectedEip6963ProviderRdnsAtom,
 } from './state/multiInjectedProvidersAtom'
+import { isBundlingSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../wagmi/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -54,18 +53,7 @@ export function useEndEagerConnect(): () => void {
 }
 
 export function useIsTxBundlingSupported(): boolean | null {
-  // TODO this will be fixed in M-3 COW-569
-  const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-  const isSafeApp = useIsSafeApp()
-  const isSafeViaWc = useIsSafeViaWc()
-
-  const result = (() => {
-    if (isSafeApp || isSafeViaWc) return true
-    if (isCapabilitiesLoading) return null
-    return capabilities?.atomic?.status === 'supported'
-  })()
-
-  return result
+  return useAtomValue(isBundlingSupportedAtom)
 }
 
 // TODO: Add proper return type annotation

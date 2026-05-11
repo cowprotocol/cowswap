@@ -81,9 +81,11 @@
   },
   "pnpm": {
     "overrides": {
-      "wagmi": "3.4.2",
       "@wagmi/core": "3.3.2",
-      "viem": "2.47.1"
+      "react-router-dom": "7.13.0",
+      "react-router": "7.13.0",
+      "viem": "2.47.1",
+      "wagmi": "3.4.2"
     },
     "peerDependencyRules": {
       "allowedVersions": {
