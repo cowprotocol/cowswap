@@ -11,7 +11,7 @@ import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
 
-import { getProxyAccountUrl } from 'modules/accountProxy/utils/getProxyAccountUrl'
+import { getProxyAccountUrl } from 'modules/accountProxy'
 
 interface MenuItem {
   title: string | MessageDescriptor
@@ -37,7 +37,7 @@ export function AccountMenu(): ReactNode {
       <ul>
         {ACCOUNT_MENU_LINKS(chainId).map(({ title, url }) => (
           <li key={url}>
-            <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            <NavLink end={url === '/account'} to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {extractTextFromStringOrI18nDescriptor(title)}
             </NavLink>
           </li>
