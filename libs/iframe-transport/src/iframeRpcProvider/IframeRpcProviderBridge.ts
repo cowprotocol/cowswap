@@ -10,6 +10,10 @@ import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
+type EthereumProviderWithRemoveListener = EthereumProvider & {
+  removeListener?(event: string, handler: (...args: unknown[]) => void): void
+}
+
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
@@ -36,6 +40,9 @@ export class IframeRpcProviderBridge {
   /** Stored JSON-RPC requests, to queue them when disconnected. */
   private requestWaitingForConnection: { [key: string]: JsonRpcRequestMessage } = {}
 
+  /** Bound event-forwarding listeners so they can be removed on disconnect. */
+  private providerEventListeners: Array<{ event: string; handler: (params: unknown) => void }> = []
+
   /**
    * Creates an instance of IframeRpcProviderBridge.
    * @param iframeWindow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
@@ -51,6 +58,17 @@ export class IframeRpcProviderBridge {
    */
   disconnect(): void {
     if (typeof window === 'undefined') return
+
+    // Remove event-forwarding listeners from the provider before dropping the reference.
+    if (this.ethereumProvider) {
+      const provider = this.ethereumProvider as EthereumProviderWithRemoveListener
+      if (typeof provider.removeListener === 'function') {
+        for (const { event, handler } of this.providerEventListeners) {
+          provider.removeListener(event, handler)
+        }
+      }
+    }
+    this.providerEventListeners = []
 
     // Disconnect provider
     this.ethereumProvider = null
@@ -94,9 +112,12 @@ export class IframeRpcProviderBridge {
     // Process pending requests
     this.processPendingRequests()
 
-    // Register in the provider, the events that needs to be forwarded to the iFrame window
+    // Register in the provider, the events that needs to be forwarded to the iFrame window.
+    // Store references so they can be removed on disconnect().
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-      newProvider.on(event, (params: unknown) => this.onProviderEvent(event, params))
+      const handler = (params: unknown): void => this.onProviderEvent(event, params)
+      this.providerEventListeners.push({ event, handler })
+      newProvider.on(event, handler)
     })
 
     // Listen for provider meta info request

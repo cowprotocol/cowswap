@@ -45,7 +45,7 @@
     "styled-components": "5.3.11",
     "swr": "^2.3.3",
     "viem": "^2.45.1",
-    "wagmi": "3.4.2"
+    "wagmi": "3.6.9"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",
