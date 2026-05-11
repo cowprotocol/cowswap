@@ -66,42 +66,6 @@ jobs:
         if: env.HAS_MAINNET_RPC == 'true'
         run: pnpm --dir apps/cowswap-frontend-qa exec playwright install --with-deps chromium
 
-      - name: Mask RPC secret in logs
-        if: env.HAS_MAINNET_RPC == 'true'
-        env:
-          MAINNET_RPC: ${{ secrets.MAINNET_RPC }}
-        run: |
-          node <<'NODE'
-          const mainnetRpc = process.env.MAINNET_RPC ?? ''
-          if (!mainnetRpc) process.exit(0)
-
-          const masks = new Set([mainnetRpc])
-
-          try {
-            const parsedUrl = new URL(mainnetRpc)
-
-            if (parsedUrl.username) masks.add(parsedUrl.username)
-            if (parsedUrl.password) masks.add(parsedUrl.password)
-
-            const lastPathSegment = parsedUrl.pathname.split('/').filter(Boolean).at(-1)
-            if (lastPathSegment && lastPathSegment.length >= 8) {
-              masks.add(lastPathSegment)
-            }
-
-            for (const value of parsedUrl.searchParams.values()) {
-              if (value.length >= 8) {
-                masks.add(value)
-              }
-            }
-          } catch {
-            // Keep the full secret masked even if parsing fails.
-          }
-
-          for (const value of masks) {
-            process.stdout.write(`::add-mask::${value}\n`)
-          }
-          NODE
-
       - name: Run Playwright QA
         if: env.HAS_MAINNET_RPC == 'true'
         env:

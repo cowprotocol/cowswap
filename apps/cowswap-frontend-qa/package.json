@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
     "viem": "^2.47.1"
   },
   "devDependencies": {

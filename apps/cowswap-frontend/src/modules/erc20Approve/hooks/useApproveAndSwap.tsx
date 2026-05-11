@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { QA_FORCE_ONCHAIN_APPROVAL_SESSION_KEY } from '@cowprotocol/common-const/qa'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -12,7 +13,7 @@ import { TradeType } from 'modules/trade'
 import { ApproveCurrencyCallback, useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
-import { MAX_APPROVE_AMOUNT, FORCE_ONCHAIN_APPROVAL_SESSION_KEY } from '../constants'
+import { MAX_APPROVE_AMOUNT } from '../constants'
 import {
   UpdateApproveProgressModalState,
   useIsPartialApproveSelectedByUser,
@@ -145,5 +146,5 @@ function getApprovalTxHash(txResponse: object): string | null {
 function getShouldForceOnchainApproval(): boolean {
   if (typeof window === 'undefined') return false
 
-  return window.sessionStorage.getItem(FORCE_ONCHAIN_APPROVAL_SESSION_KEY) === 'true'
+  return window.sessionStorage.getItem(QA_FORCE_ONCHAIN_APPROVAL_SESSION_KEY) === 'true'
 }

@@ -10,6 +10,12 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./qa": {
+      "types": "./qa.ts",
+      "import": "./qa.ts",
+      "require": "./qa.ts",
+      "default": "./qa.ts"
     }
   },
   "publishConfig": {
@@ -20,6 +26,11 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
+      },
+      "./qa": {
+        "types": "./qa.d.ts",
+        "import": "./qa.mjs",
+        "require": "./qa.js"
       }
     }
   },

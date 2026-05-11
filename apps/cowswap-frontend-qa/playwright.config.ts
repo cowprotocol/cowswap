@@ -39,6 +39,7 @@ export default defineConfig({
     env: {
       ...process.env,
       NX_DAEMON: 'false',
+      REACT_APP_ENABLE_QA_INJECTED_WALLET: 'true',
       REACT_APP_NETWORK_URL_1: process.env.REACT_APP_NETWORK_URL_1 || ANVIL_RPC_URL,
       REACT_APP_SERVICE_WORKER: 'false',
     },

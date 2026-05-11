@@ -41,7 +41,6 @@ export function ConnectWalletModal(): ReactNode {
             <ButtonPrimary
               key={connector.uid}
               buttonSize={ButtonSize.BIG}
-              data-testid={`wallet-connector-${connector.type}`}
               disabled={isPending}
               onClick={() => void handleConnect(connector)}
             >

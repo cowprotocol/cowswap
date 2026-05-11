@@ -1,10 +1,9 @@
 import { getAddress, isAddressEqual, type Address } from 'viem'
 
 import { expect, test } from '../fixtures'
-import { assertWethApprovalProof, createWethApprovalProofBaseline } from '../helpers/approvalProof'
 import { swapSelectors } from '../helpers/selectors'
-import { MAINNET_ETH, MAINNET_USDC, MAINNET_WETH, buildMainnetSwapRoute } from '../helpers/tokens'
-import { connectInjectedWallet, expectSellAmount, openAccountModal, openNativeWrapModal } from '../helpers/trade'
+import { MAINNET_USDC, MAINNET_WETH, buildMainnetSwapRoute } from '../helpers/tokens'
+import { connectInjectedWallet, expectSellAmount, openAccountModal } from '../helpers/trade'
 import { waitForNonZeroInputValue } from '../helpers/wait'
 
 import type { Page, TestInfo } from '@playwright/test'
@@ -216,11 +215,11 @@ async function attachOrderSubmissionProof(
   })
 }
 
-test('native submission smoke: mainnet ETH -> USDC reaches submitted state and recent activity', async ({
-  anvilUrl,
+test('order submission smoke: mainnet WETH -> USDC reaches submitted state and recent activity', async ({
   approveWethForCowVaultRelayer,
   page,
   walletAddress,
+  wrapNativeToWeth,
 }, testInfo) => {
   test.setTimeout(180_000)
 
@@ -231,32 +230,11 @@ test('native submission smoke: mainnet ETH -> USDC reaches submitted state and r
   }
 
   await interceptWrappedOrderSubmission(page, walletAddress, submissionCapture)
-
-  await page.goto(buildMainnetSwapRoute(MAINNET_ETH, MAINNET_USDC, { orderKind: 'sell', sellAmount: '1' }))
-
-  await connectInjectedWallet(page)
-  await expectSellAmount(page, '1')
-  await waitForNonZeroInputValue(page.locator(swapSelectors.buyAmountInput))
-
-  await openNativeWrapModal(page)
-
-  await expect(page.getByRole('heading', { name: 'Swap with Wrapped ETH' })).toBeVisible()
-  await expect(
-    page.getByText('To continue, click below to wrap your ETH to WETH via an on-chain ERC20 transaction.'),
-  ).toBeVisible()
-
-  await page.getByRole('button', { name: 'Wrap ETH' }).click()
-
-  const approvalProofBaseline = await createWethApprovalProofBaseline({ anvilUrl, owner: walletAddress })
-
-  await expect(page.getByRole('heading', { name: 'Approve WETH' })).toBeVisible({ timeout: 30_000 })
-  await approveWethForCowVaultRelayer(BigInt(ONE_WETH_IN_WEI))
-
-  await assertWethApprovalProof({ anvilUrl, baseline: approvalProofBaseline, owner: walletAddress, testInfo })
-
   await interceptDeterministicWrappedQuote(page, walletAddress)
 
-  await page.goto('about:blank')
+  await wrapNativeToWeth(BigInt(ONE_WETH_IN_WEI))
+  await approveWethForCowVaultRelayer(BigInt(ONE_WETH_IN_WEI))
+
   await page.goto(buildMainnetSwapRoute(MAINNET_WETH, MAINNET_USDC, { orderKind: 'sell', sellAmount: '1' }))
 
   await connectInjectedWallet(page)

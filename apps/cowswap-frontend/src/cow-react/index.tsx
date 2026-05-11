@@ -30,6 +30,7 @@ import {
   WithLDProvider,
 } from 'modules/application'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { QaInjectedWalletConnector } from 'modules/wallet'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
@@ -72,6 +73,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                         <React310RecoveryErrorBoundary>
                           <WithLDProvider>
                             <Web3Provider>
+                              <QaInjectedWalletConnector />
                               <BlockNumberProvider>
                                 <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                                   <WalletUnsupportedNetworkBanner />

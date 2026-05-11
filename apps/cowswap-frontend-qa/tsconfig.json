@@ -3,7 +3,7 @@
   "compilerOptions": {
     "sourceMap": false,
     "outDir": "../../dist/out-tsc",
-    "types": ["node", "@playwright/test"]
+    "types": ["node"]
   },
   "include": ["src/**/*.ts", "playwright.config.ts"]
 }
