@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.2.1...common-hooks-v3.2.2) (2026-05-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-utils bumped to 3.3.2
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.2.0...common-hooks-v3.2.1) (2026-04-22)
 
 
