@@ -7,11 +7,19 @@ export function isTestEnv(): boolean {
 }
 
 export function isStagingEnv(): boolean {
-  return Boolean(process.env.REACT_APP_STAGING)
+  for (const envVarName of ['REACT_APP_ENVIRONMENT', 'NEXT_PUBLIC_ENVIRONMENT', 'NODE_ENV']) {
+    const env = getEnvironmentVariable(envVarName)?.trim().toLowerCase()
+    if (env) return env === 'staging'
+  }
+  return false
 }
 
 export function isProductionEnv(): boolean {
-  return process.env.NODE_ENV === 'production' && !isStagingEnv()
+  for (const envVarName of ['REACT_APP_ENVIRONMENT', 'NEXT_PUBLIC_ENVIRONMENT', 'NODE_ENV']) {
+    const env = getEnvironmentVariable(envVarName)?.trim().toLowerCase()
+    if (env) return env === 'production'
+  }
+  return false
 }
 
 function isEnvironmentName(value: string, environments: readonly string[]): boolean {
