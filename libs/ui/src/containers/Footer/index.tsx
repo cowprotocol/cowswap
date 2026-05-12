@@ -9,8 +9,8 @@ import SVG from 'react-inlinesvg'
 import {
   getGlobalFooterNavItems,
   GLOBAL_FOOTER_DESCRIPTION,
-  SOCIAL_LINKS,
   PRODUCT_LOGO_LINKS,
+  SOCIAL_LINKS,
 } from './footer.constants'
 import { FooterAnimation } from './footerAnimation'
 import {
@@ -96,7 +96,6 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
 }
 
 export const GLOBAL_FOOTER_NAV_ITEMS = getGlobalFooterNavItems()
-export { getGlobalFooterNavItems }
 
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
