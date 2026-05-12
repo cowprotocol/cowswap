@@ -88,6 +88,8 @@
     "@types/rebass": "^4.0.10",
     "@types/sortablejs": "^1.15.8",
     "@types/styled-components": "5.1.34",
+    "babel-loader": "^9.1.3",
+    "babel-plugin-macros": "^3.1.0",
     "file-loader": "^6.2.0",
     "jest-fetch-mock": "^3.0.3",
     "react-cosmos": "^7.0.0"
