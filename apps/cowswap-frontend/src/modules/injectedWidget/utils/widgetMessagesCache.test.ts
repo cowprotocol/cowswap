@@ -1,11 +1,11 @@
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
+import { WidgetMethodsListen } from '@cowprotocol/widget-lib'
 
 import {
   cacheWidgetMessage,
   clearCachedWidgetMessages,
   registerCachedMessageHandler,
   replayCachedWidgetMessage,
-  unregisterCachedMessageHandler,
 } from './widgetMessagesCache.utils'
 
 jest.mock('@cowprotocol/iframe-transport', () => ({
@@ -22,7 +22,6 @@ describe('widgetMessagesCache utils', () => {
   })
 
   afterEach(() => {
-    unregisterCachedMessageHandler('UPDATE_PARAMS')
     jest.restoreAllMocks()
   })
 
@@ -44,7 +43,7 @@ describe('widgetMessagesCache utils', () => {
       }),
     )
 
-    registerCachedMessageHandler('UPDATE_PARAMS', handler)
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_PARAMS, handler)
     replayCachedWidgetMessage('UPDATE_PARAMS')
 
     expect(handler).toHaveBeenCalledTimes(1)
@@ -82,7 +81,7 @@ describe('widgetMessagesCache utils', () => {
       }),
     )
 
-    registerCachedMessageHandler('UPDATE_PARAMS', handler)
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_PARAMS, handler)
     replayCachedWidgetMessage('UPDATE_PARAMS')
 
     expect(handler).not.toHaveBeenCalled()
@@ -99,7 +98,7 @@ describe('widgetMessagesCache utils', () => {
       }),
     )
 
-    registerCachedMessageHandler('UPDATE_PARAMS', handler)
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_PARAMS, handler)
     replayCachedWidgetMessage('UPDATE_PARAMS')
 
     expect(handler).not.toHaveBeenCalled()
