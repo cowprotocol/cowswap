@@ -110,7 +110,12 @@ export default defineConfig(({ mode, isPreview }) => {
           finalize: true,
         },
         sourcemaps: {
-          filesToDeleteAfterUpload: ['../../build/cowswap/**/*.js.map', '../../build/cowswap/**/*.mjs.map'],
+          // Use absolute globs so cleanup works both in Nx builds from the repo root
+          // and direct Vite builds from the app directory.
+          filesToDeleteAfterUpload: [
+            path.resolve(__dirname, '../../build/cowswap/**/*.map'),
+            path.resolve(__dirname, './dist/**/*.map'),
+          ],
         },
       }),
     )
