@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { LinkStyledButton } from '../LinkStyledButton'
-import { NewTooltip } from '../Tooltip'
+import { NewTooltip } from '../Tooltip/Tooltip'
 
 export interface CopyButtonState {
   isCopied: boolean
@@ -95,7 +95,7 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
   )
 
   return !idleContent && !showCopiedLabel ? (
-    <NewTooltip content={isCopied ? copiedLabel : 'Copy to clipboard'} placement="top" wrapInContainer>
+    <NewTooltip content={isCopied ? copiedLabel : 'Copy to clipboard'} placement="top">
       {button}
     </NewTooltip>
   ) : (

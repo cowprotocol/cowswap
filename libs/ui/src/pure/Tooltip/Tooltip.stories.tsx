@@ -3,10 +3,12 @@ import type { CSSProperties, ReactNode } from 'react'
 
 import { Info } from 'react-feather'
 
+import { NewTooltip } from './Tooltip'
+
 import { HelpTooltip } from '../HelpTooltip'
 import { InfoTooltip } from '../InfoTooltip'
 
-import { HoverTooltip, NewTooltip, Tooltip } from './index'
+import { HoverTooltip, Tooltip } from './index'
 
 import type { HoverTooltipProps } from './index'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -101,7 +103,7 @@ export const HoverTooltipStory: Story = {
   render: () => (
     <div style={storyStyle}>
       {placements.map((placement) => (
-        <HoverTooltip key={placement} content={`Tooltip on ${placement}`} placement={placement}>
+        <HoverTooltip key={placement} content={`Tooltip on ${placement}`} placement={placement} wrapInContainer>
           <span>{placement}</span>
         </HoverTooltip>
       ))}
@@ -114,7 +116,7 @@ export const HelpTooltipStory: Story = {
     <div style={storyStyle}>
       <span style={rowStyle}>
         Slippage tolerance
-        <HelpTooltip text="Maximum price movement you accept before the order can no longer execute." />
+        <HelpTooltip text="Maximum price movement you accept before the order can no longer execute." wrapInContainer />
       </span>
 
       <span style={rowStyle}>
@@ -139,7 +141,7 @@ export const NewTooltipStory: Story = {
   render: () => (
     <div style={storyStyle}>
       {placements.map((placement) => (
-        <NewTooltip key={placement} content={`Base UI tooltip on ${placement}`} placement={placement}>
+        <NewTooltip key={placement} content={`New tooltip on ${placement}`} placement={placement}>
           <span>{placement}</span>
         </NewTooltip>
       ))}
@@ -154,16 +156,16 @@ export const NewTooltipComparisonStory: Story = {
       <strong>Current</strong>
       <div style={comparisonRowStyle}>
         {placements.map((placement) => (
-          <HoverTooltip key={placement} content={`Tooltip on ${placement}`} placement={placement}>
+          <HoverTooltip key={placement} content={`Old tooltip on ${placement}`} placement={placement} wrapInContainer>
             <span>{placement}</span>
           </HoverTooltip>
         ))}
       </div>
 
-      <strong>Base UI</strong>
+      <strong>New</strong>
       <div style={comparisonRowStyle}>
         {placements.map((placement) => (
-          <NewTooltip key={placement} content={`Base UI tooltip on ${placement}`} placement={placement}>
+          <NewTooltip key={placement} content={`New tooltip on ${placement}`} placement={placement}>
             <span>{placement}</span>
           </NewTooltip>
         ))}
