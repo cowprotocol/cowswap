@@ -1,16 +1,19 @@
-import type { CSSProperties } from 'react'
+import { useRef, useState } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 import { Info } from 'react-feather'
 
 import { HelpTooltip } from '../HelpTooltip'
 import { InfoTooltip } from '../InfoTooltip'
 
-import { HoverTooltip } from './index'
+import { HoverTooltip, NewTooltip, Tooltip } from './index'
 
+import type { HoverTooltipProps } from './index'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const storyStyle = {
   display: 'flex',
+  flexWrap: 'wrap',
   alignItems: 'center',
   justifyContent: 'center',
   gap: '24px',
@@ -20,6 +23,45 @@ const storyStyle = {
 
 const rowStyle = { display: 'flex', alignItems: 'center', gap: '8px' } satisfies CSSProperties
 
+const controlledTooltipStyle = {
+  minHeight: '220px',
+  padding: '32px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+} satisfies CSSProperties
+
+const comparisonStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr',
+  alignItems: 'center',
+  gap: '24px',
+  minHeight: '220px',
+  padding: '32px',
+} satisfies CSSProperties
+
+const comparisonRowStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  gap: '24px',
+} satisfies CSSProperties
+
+const placements = [
+  'top-start',
+  'top',
+  'top-end',
+  'right-start',
+  'right',
+  'right-end',
+  'bottom-start',
+  'bottom',
+  'bottom-end',
+  'left-start',
+  'left',
+  'left-end',
+] as const satisfies ReadonlyArray<NonNullable<HoverTooltipProps['placement']>>
+
 const meta = {
   title: 'UI/Tooltip',
 } satisfies Meta
@@ -28,17 +70,44 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
+function ControlledTooltipDemo(): ReactNode {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [show, setShow] = useState(false)
+
+  return (
+    <div ref={containerRef} style={controlledTooltipStyle}>
+      <Tooltip
+        show={show}
+        content="Controlled tooltip content"
+        containerRef={containerRef}
+        placement="top"
+        wrapInContainer
+      >
+        <button type="button" onClick={() => setShow((value) => !value)}>
+          Toggle controlled tooltip
+        </button>
+      </Tooltip>
+    </div>
+  )
+}
+
+export const ControlledTooltipStory: Story = {
+  name: 'Tooltip',
+  render: () => <ControlledTooltipDemo />,
+}
+
 export const HoverTooltipStory: Story = {
   name: 'HoverTooltip',
   render: () => (
     <div style={storyStyle}>
-      <HoverTooltip content="CoW Protocol batches trades and finds better prices." placement="top">
-        <span>Hover me</span>
-      </HoverTooltip>
+      {placements.map((placement) => (
+        <HoverTooltip key={placement} content={`Tooltip on ${placement}`} placement={placement}>
+          <span>{placement}</span>
+        </HoverTooltip>
+      ))}
     </div>
   ),
 }
-
 export const HelpTooltipStory: Story = {
   name: 'HelpTooltip',
   render: () => (
@@ -61,6 +130,44 @@ export const InfoTooltipStory: Story = {
   render: () => (
     <div style={storyStyle}>
       <InfoTooltip content="Hooks are interactions before or after order execution." preText="Hooks" />
+    </div>
+  ),
+}
+
+export const NewTooltipStory: Story = {
+  name: 'NewTooltip',
+  render: () => (
+    <div style={storyStyle}>
+      {placements.map((placement) => (
+        <NewTooltip key={placement} content={`Base UI tooltip on ${placement}`} placement={placement}>
+          <span>{placement}</span>
+        </NewTooltip>
+      ))}
+    </div>
+  ),
+}
+
+export const NewTooltipComparisonStory: Story = {
+  name: 'New vs Old comparison',
+  render: () => (
+    <div style={comparisonStyle}>
+      <strong>Current</strong>
+      <div style={comparisonRowStyle}>
+        {placements.map((placement) => (
+          <HoverTooltip key={placement} content={`Tooltip on ${placement}`} placement={placement}>
+            <span>{placement}</span>
+          </HoverTooltip>
+        ))}
+      </div>
+
+      <strong>Base UI</strong>
+      <div style={comparisonRowStyle}>
+        {placements.map((placement) => (
+          <NewTooltip key={placement} content={`Base UI tooltip on ${placement}`} placement={placement}>
+            <span>{placement}</span>
+          </NewTooltip>
+        ))}
+      </div>
     </div>
   ),
 }
