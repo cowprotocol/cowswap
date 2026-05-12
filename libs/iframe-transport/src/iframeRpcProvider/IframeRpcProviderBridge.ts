@@ -31,6 +31,7 @@ export type EthereumProviderWithRemoveListener = EthereumProvider & {
 }
 
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
+
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
 if (typeof window !== 'undefined') {
