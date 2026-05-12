@@ -10,12 +10,18 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeType,
+  useDerivedTradeState,
+  useIsWrapOrUnwrap,
+  useNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -57,6 +63,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
   const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
   const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
+
+  const isNonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -106,6 +114,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       tradePriceImpact,
       isInputCurrencyXstock,
       isOutputCurrencyXstock,
+      isNonEvmReceiverConfirmed,
     }
   }, [
     hasFirstLoad,
@@ -136,6 +145,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     balancesError,
     injectedWidgetParams,
     tradePriceImpact,
+    isNonEvmReceiverConfirmed,
   ])
 }
 

@@ -35,7 +35,6 @@ import {
 } from './actions'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
-  getDefaultNetworkState,
   ORDER_LIST_KEYS,
   ORDERS_LIST,
   OrdersState,
@@ -138,20 +137,12 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 }
 
 function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersStateNetwork | undefined {
-  const ordersState = useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
+  return useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
     if (!chainId) {
       return undefined
     }
     return state.orders?.[chainId]
   })
-
-  // Additional memoization to avoid excessive re-renders
-  // ordersState is a plain object that contains serialized data, so we can stringify it safely
-  return useMemo(() => {
-    if (!chainId) return undefined
-    return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(ordersState), chainId])
 }
 
 export const useOrders = (

@@ -128,7 +128,7 @@ export default function Page(): ReactNode {
           color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
           margin="24px auto 0"
           gridFullWidth
-          href="https://dune.com/cowprotocol/cowswap"
+          href="https://dune.com/cowprotocol/cow-swap-home"
           external
           linkType={LinkType.SectionTitleButton}
           utmContent="cow-swap-metrics-link"

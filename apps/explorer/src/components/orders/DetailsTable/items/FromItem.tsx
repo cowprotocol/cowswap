@@ -23,22 +23,18 @@ interface FromItemProps {
 export function FromItem({ chainId, isSigning, isBridgingOrder, onCopy, owner }: FromItemProps): ReactNode {
   return (
     <DetailRow label="From" tooltipText={DetailsTableTooltips.from}>
+      {isSigning && (
+        <>
+          <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
+          &nbsp;
+        </>
+      )}
+      <RowWithCopyButton
+        textToCopy={owner}
+        onCopy={() => onCopy('ownerAddress')}
+        contentsToDisplay={<AddressLink address={owner} chainId={chainId} showNetworkName={isBridgingOrder} />}
+      />
       <Wrapper>
-        {isSigning && (
-          <>
-            <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
-            &nbsp;
-          </>
-        )}
-        <RowWithCopyButton
-          textToCopy={owner}
-          onCopy={() => onCopy('ownerAddress')}
-          contentsToDisplay={
-            <span>
-              <AddressLink address={owner} chainId={chainId} showNetworkName={isBridgingOrder} />
-            </span>
-          }
-        />
         <LinkButton to={`/address/${owner}`}>
           <FontAwesomeIcon icon={faHistory} />
           Order history

@@ -5,14 +5,14 @@ export function processTwapCancellation(txHash: string, onTxSuccess: () => void)
     if (data.transaction.hash === txHash) {
       ONCHAIN_TRANSACTIONS_EVENTS.off(listener)
 
-      if (data.receipt.status === 1) {
+      if (data.receipt.status === 'success') {
         onTxSuccess()
       }
     }
   }
 
   const listener = {
-    event: OnchainTxEvents.BEFORE_TX_FINALIZE,
+    event: OnchainTxEvents.BEFORE_TX_FINALIZE as const,
     handler: onTxMined,
   }
 

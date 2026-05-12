@@ -32,6 +32,7 @@ describe('validateTradeForm - xStock logic', () => {
       recipient: '0x123',
       isQuoteBasedOrder: true,
       tradeType: TradeType.SWAP,
+      slippage: null,
     },
     tradeQuote: { isLoading: false } as unknown as TradeQuoteState,
     isOnline: true,
@@ -48,12 +49,13 @@ describe('validateTradeForm - xStock logic', () => {
     intermediateTokenToBeImported: false,
     isAccountProxyLoading: false,
     isProxySetupValid: true,
-    customTokenError: null,
+    customTokenError: undefined,
     isRestrictedForCountry: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
     isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
   }
 
   test('shows xStock minimum trade size for sell orders when xStock sell amount is below $10', () => {

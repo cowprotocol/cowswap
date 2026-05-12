@@ -1,21 +1,30 @@
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
-import { BigNumber } from '@ethersproject/bignumber'
+import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
+import { encodeFunctionData, type Address, type PublicClient } from 'viem'
+
 export interface CancelTwapOrderContext {
-  composableCowContract: ComposableCoW
-  settlementContract: GPv2Settlement
+  composableCowAddress: Address
+  composableCowAbi: typeof ComposableCoWAbi
+  settlementAddress: Address
+  settlementAbi: typeof GPv2SettlementAbi
   orderId: string
   chainId: SupportedChainId
   partOrderId?: string
+  publicClient?: PublicClient
+  account?: Address
 }
 
 export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransactionData[] {
-  const { composableCowContract, settlementContract, orderId, partOrderId } = context
+  const { composableCowAddress, composableCowAbi, settlementAddress, settlementAbi, orderId, partOrderId } = context
   const cancelTwapOrderTx = {
-    to: composableCowContract.address,
-    data: composableCowContract.interface.encodeFunctionData('remove', [orderId]),
+    to: composableCowAddress,
+    data: encodeFunctionData({
+      abi: composableCowAbi,
+      functionName: 'remove',
+      args: [orderId as `0x${string}`],
+    }),
     value: '0',
     operation: 0,
   }
@@ -23,8 +32,12 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
   if (!partOrderId) return [cancelTwapOrderTx]
 
   const cancelTwapPartOrderTx = {
-    to: settlementContract.address,
-    data: settlementContract.interface.encodeFunctionData('invalidateOrder', [partOrderId]),
+    to: settlementAddress,
+    data: encodeFunctionData({
+      abi: settlementAbi,
+      functionName: 'invalidateOrder',
+      args: [partOrderId as `0x${string}`],
+    }),
     value: '0',
     operation: 0,
   }
@@ -33,7 +46,7 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
 }
 
 // TODO: we might need a custom method for estimating gas on Linea
-export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
+export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<bigint> {
   if (isZkSyncChain(context.chainId)) {
     throw new Error('estimateCancelTwapOrderTxs: Please, re-enable zkSync chain estimation.')
 
@@ -42,14 +55,37 @@ export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext
     // return estimateZkSyncCancelTwapOrderTxs(context)
   }
 
-  const { composableCowContract, settlementContract, orderId, partOrderId } = context
-  const cancelComposableCowTxCost = await composableCowContract.estimateGas.remove(orderId)
+  const {
+    composableCowAddress,
+    composableCowAbi,
+    settlementAddress,
+    settlementAbi,
+    orderId,
+    partOrderId,
+    publicClient,
+    account,
+  } = context
+  if (!publicClient || !account) throw new Error('estimateCancelTwapOrderTxs: publicClient and account required')
+
+  const cancelComposableCowTxCost = await publicClient.estimateContractGas({
+    address: composableCowAddress,
+    abi: composableCowAbi,
+    functionName: 'remove',
+    args: [orderId as `0x${string}`],
+    account,
+  })
 
   if (!partOrderId) return cancelComposableCowTxCost
 
-  const cancelPartOrderTx = await settlementContract.estimateGas.invalidateOrder(partOrderId)
+  const cancelPartOrderTx = await publicClient.estimateContractGas({
+    address: settlementAddress,
+    abi: settlementAbi,
+    functionName: 'invalidateOrder',
+    args: [partOrderId as `0x${string}`],
+    account,
+  })
 
-  return cancelComposableCowTxCost.add(cancelPartOrderTx)
+  return cancelComposableCowTxCost + cancelPartOrderTx
 }
 
 /**

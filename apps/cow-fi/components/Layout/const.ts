@@ -27,8 +27,8 @@ const LEARN_NAV_ITEM: MenuItem = {
   ],
 }
 
-export function getNavItems(isSolversEnabled: boolean, isAffiliateProgramEnabled: boolean): MenuItem[] {
-  return [getAboutNavItem(isAffiliateProgramEnabled), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
+export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
+  return [getAboutNavItem(), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
 }
 
 function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
@@ -80,13 +80,13 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
   }
 }
 
-function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
+function getAboutNavItem(): MenuItem {
   return {
     label: 'About',
     children: [
       {
         label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cowswap',
+        href: 'https://dune.com/cowprotocol/cow-swap-home',
         external: true,
       },
       {
@@ -105,7 +105,7 @@ function getAboutNavItem(isAffiliateProgramEnabled: boolean): MenuItem {
         external: true,
       },
       { label: 'Careers', href: '/careers' },
-      ...(isAffiliateProgramEnabled ? [{ label: 'Affiliate program', href: '/affiliate-program' }] : []),
+      { label: 'Affiliate Program', href: '/affiliate-program' },
     ],
   }
 }

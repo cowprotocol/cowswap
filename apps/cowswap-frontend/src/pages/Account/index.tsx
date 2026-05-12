@@ -1,18 +1,18 @@
 import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation } from 'react-router'
 
+import { AffiliateFeedbackButton } from 'modules/affiliate'
 import { Content, PageTitle, Title } from 'modules/application'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 
 import { AccountMenu } from './Menu'
-import { CardsWrapper, Container } from './styled'
+import { CardsWrapper, Container, TitleRow } from './styled'
 import { AccountPageWrapper, Wrapper } from './Tokens/styled'
 
 // Account pages
@@ -20,7 +20,35 @@ const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Acco
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
-function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): string[] {
+interface AccountTitleProps {
+  id?: string
+  name?: string
+  pathname: string
+}
+
+interface TitleWithFeedbackProps {
+  id?: string
+  name?: string
+}
+
+function TitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
+  return (
+    <TitleRow>
+      <Title id={id}>{name}</Title>
+      <AffiliateFeedbackButton />
+    </TitleRow>
+  )
+}
+
+function AccountTitle({ id, name, pathname }: AccountTitleProps): ReactNode {
+  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER || pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
+    return <TitleWithFeedback id={id} name={name} />
+  }
+
+  return <Title id={id}>{name}</Title>
+}
+
+function getPropsFromRoute(route: string): string[] {
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]
@@ -29,9 +57,9 @@ function getPropsFromRoute(route: string, isAffiliateProgramEnabled: boolean): s
     case RoutesEnum.ACCOUNT_TOKENS:
       return ['account-tokens', t`Tokens overview`]
     case RoutesEnum.ACCOUNT_AFFILIATE_PARTNER:
-      return isAffiliateProgramEnabled ? ['account-affiliate', t`Rewards hub - Affiliate`] : []
+      return ['account-affiliate', t`Rewards hub - Affiliate`]
     case RoutesEnum.ACCOUNT_AFFILIATE_TRADER:
-      return isAffiliateProgramEnabled ? ['account-my-rewards', t`Rewards hub - My Rewards`] : []
+      return ['account-my-rewards', t`Rewards hub - My Rewards`]
     default:
       return []
   }
@@ -57,14 +85,14 @@ export const AccountOverview = (): ReactNode => {
 
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-  const [id, name] = getPropsFromRoute(pathname, isAffiliateProgramEnabled)
+  const [id, name] = getPropsFromRoute(pathname)
+
   return (
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
         <Content>
-          <Title id={id}>{name}</Title>
+          <AccountTitle id={id} name={name} pathname={pathname} />
           <Outlet />
         </Content>
       </AccountPageWrapper>

@@ -35,7 +35,8 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
       } catch (error: any) {
         console.error('Failed to switch networks', error)
 
-        if (isRejectRequestProviderError(error)) {
+        const causeIsRejection = !error.cause || isRejectRequestProviderError(error.cause)
+        if (isRejectRequestProviderError(error) && causeIsRejection) {
           return
         }
 

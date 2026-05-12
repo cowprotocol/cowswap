@@ -14,7 +14,7 @@ providing MEV protection.
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                          |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
@@ -287,9 +287,21 @@ In case of problems with the service worker cache you force a reset using
 
 ## Vercel preview build
 
+Each app’s `vercel.json` uses `cd ../..` then **`npx pnpm@10.30.3`** so installs match root **`packageManager`** and avoid Vercel’s default **pnpm 9** (which can trigger `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH` with this lockfile).
+
+**Project settings that must line up (if deploys fail for unclear reasons):**
+
+1. **Root Directory** for that Vercel project should be the app folder (e.g. `apps/cow-fi`). If it is the monorepo root instead, `cd ../..` is wrong and install reads the wrong tree.
+2. **Build & Development →** no **Install Command** / **Build Command** override in the dashboard that replaces `vercel.json` (or align them with the repo).
+3. **Node.js version** on Vercel should be current LTS (Corepack / `npx` expect a recent Node).
+4. **`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`:** run `pnpm install` locally with **pnpm 10.30.3**, commit any `pnpm-lock.yaml` change, and ensure root `package.json` `pnpm.*` config was not edited without reinstalling.
+5. **Ignored Build Step:** use `node tools/scripts/ignore-build-step.js --app=…` — do not use a broken one-line `[ … || … ]` `sh` test (see below).
+
 Since this repo includes multiple apps, we do not want to build all of them on each PR because it causes long build queues in Vercel.  
 Some apps (see the list below) are not required to be built on each PR so we run them only a PR is labeled with a specific label.
 This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.
+Use the Node script below (do **not** use a one-line `sh`/`bash` test with `[ ... || ... ]` inside a single `[` — POSIX `[` does not support `||` there, which breaks branch names like `feature/foo` and logs `[: missing \`]'`).
+
 For example, the label for the widget-configurator is `preview-widget-cfg`:
 
 ```
