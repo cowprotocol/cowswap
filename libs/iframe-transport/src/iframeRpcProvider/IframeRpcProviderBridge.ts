@@ -11,7 +11,20 @@ import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
 /**
- * EIP-1193 provider that optionally exposes `removeListener` for event-cleanup.
+ * An {@link EthereumProvider} that may also expose `removeListener` for
+ * subscription cleanup.
+ *
+ * EIP-1193 standardizes `on(event, handler)` for subscribing to provider
+ * events but does not formally specify the removal counterpart. Most wallet
+ * providers (MetaMask, Rabby, Coinbase Wallet, WalletConnect) implement
+ * `removeListener` to match Node's `EventEmitter` API, but it is not
+ * guaranteed. Use this type — or a `typeof provider.removeListener ===
+ * 'function'` runtime check — to narrow before calling it.
+ *
+ * Within this library it is used by {@link IframeRpcProviderBridge.disconnect}
+ * to detach the forwarded `connect` / `disconnect` / `chainChanged` /
+ * `accountsChanged` listeners before dropping the provider reference,
+ * preventing stale handlers from firing against the parent dapp.
  */
 export type EthereumProviderWithRemoveListener = EthereumProvider & {
   removeListener?(event: string, handler: (...args: unknown[]) => void): void
