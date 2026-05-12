@@ -4,11 +4,11 @@ import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/com
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { Navigate, useLocation, useParams } from 'react-router'
+import { useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
 import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
-import { parameterizeTradeRoute, getDefaultTradeRawState, PageWrapper, PrimaryWrapper } from 'modules/trade'
+import { PageWrapper, PrimaryWrapper, TradeRouteRedirect } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
@@ -18,10 +18,13 @@ const TRADE_PAGE_MAX_WIDTH = '1800px'
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
+  const { chainId } = useWalletInfo()
   const swapDerivedStateToFill = useSwapDerivedStateToFill()
 
   if (!params.chainId) {
-    return <SwapPageRedirect />
+    return (
+      <TradeRouteRedirect route={Routes.SWAP} inputCurrencyFallback={chainId ? WETH[chainId]?.symbol : undefined} />
+    )
   }
 
   return (
@@ -36,32 +39,4 @@ export function SwapPage(): ReactNode {
       </PageWrapper>
     </HydrateAtom>
   )
-}
-
-function SwapPageRedirect(): ReactNode {
-  const { chainId } = useWalletInfo()
-  const location = useLocation()
-
-  const defaultState = getDefaultTradeRawState(chainId)
-  const searchParams = new URLSearchParams(location.search)
-  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId]?.symbol
-  const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
-
-  searchParams.delete('inputCurrency')
-  searchParams.delete('outputCurrency')
-  searchParams.delete('chain')
-
-  const pathname = parameterizeTradeRoute(
-    {
-      chainId: String(chainId),
-      inputCurrencyId,
-      outputCurrencyId,
-      inputCurrencyAmount: undefined,
-      outputCurrencyAmount: undefined,
-      orderKind: undefined,
-    },
-    Routes.SWAP,
-  )
-
-  return <Navigate to={{ ...location, pathname, search: searchParams.toString() }} />
 }
