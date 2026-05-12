@@ -11,7 +11,12 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
-import { TraderWalletStatus, isSupportedPayoutsNetwork, useAffiliateTraderWallet } from 'modules/affiliate'
+import {
+  TraderWalletStatus,
+  isSupportedPayoutsNetwork,
+  isSupportedTradingNetwork,
+  useAffiliateTraderWallet,
+} from 'modules/affiliate'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -48,6 +53,7 @@ jest.mock('modules/affiliate', () => ({
   },
   affiliateTraderSavedCodeAtom: Symbol('affiliateTraderSavedCodeAtom'),
   isSupportedPayoutsNetwork: jest.fn((chainId?: number) => chainId === 1),
+  isSupportedTradingNetwork: jest.fn((chainId?: number) => chainId !== undefined && chainId !== 11155111),
   useAffiliateTraderWallet: jest.fn(),
 }))
 
@@ -68,6 +74,7 @@ const useIsProviderNetworkUnsupportedMock = useIsProviderNetworkUnsupported as j
 >
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const isSupportedPayoutsNetworkMock = isSupportedPayoutsNetwork as jest.MockedFunction<typeof isSupportedPayoutsNetwork>
+const isSupportedTradingNetworkMock = isSupportedTradingNetwork as jest.MockedFunction<typeof isSupportedTradingNetwork>
 const useAffiliateTraderWalletMock = useAffiliateTraderWallet as jest.MockedFunction<typeof useAffiliateTraderWallet>
 
 i18n.load('en-US', {})
@@ -102,6 +109,9 @@ describe('Account', () => {
     useAtomValueMock.mockReturnValue({ savedCode: 'COW-123', isLinked: true })
     useAffiliateTraderWalletMock.mockReturnValue(TraderWalletStatus.LINKED)
     isSupportedPayoutsNetworkMock.mockImplementation((chainId?: number) => chainId === 1)
+    isSupportedTradingNetworkMock.mockImplementation(
+      (chainId?: number) => chainId !== undefined && chainId !== 11155111,
+    )
     useIsProviderNetworkUnsupportedMock.mockReturnValue(false)
   })
 
@@ -143,6 +153,15 @@ describe('Account', () => {
     renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER, '0x0000000000000000000000000000000000000001')
 
     expect(screen.getByRole('button', { name: 'Give feedback' })).not.toBeNull()
+  })
+
+  it('does not show the feedback button on the My Rewards page when the wallet is not on a supported trading network', () => {
+    useWalletChainIdMock.mockReturnValue(11155111)
+
+    renderComponent(RoutesEnum.ACCOUNT_AFFILIATE_TRADER, '0x0000000000000000000000000000000000000001')
+
+    expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+    expect(useAffiliateTraderWalletMock).not.toHaveBeenCalled()
   })
 
   it('does not show the feedback button on the My Rewards page when no code is saved', () => {

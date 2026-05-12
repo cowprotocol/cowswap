@@ -14,6 +14,7 @@ import {
   TraderWalletStatus,
   affiliateTraderSavedCodeAtom,
   isSupportedPayoutsNetwork,
+  isSupportedTradingNetwork,
   useAffiliateTraderWallet,
 } from 'modules/affiliate'
 import { Content, PageTitle, Title } from 'modules/application'
@@ -33,6 +34,7 @@ const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Acc
 interface AccountTitleProps {
   canShowAffiliateFeedbackButton: boolean
   canShowAffiliatePartnerFeedbackButton: boolean
+  canShowAffiliateTraderFeedbackButton: boolean
   id?: string
   name?: string
   pathname: string
@@ -66,6 +68,7 @@ function MyRewardsTitleWithFeedback({ id, name }: TitleWithFeedbackProps): React
 function AccountTitle({
   canShowAffiliateFeedbackButton,
   canShowAffiliatePartnerFeedbackButton,
+  canShowAffiliateTraderFeedbackButton,
   id,
   name,
   pathname,
@@ -83,6 +86,10 @@ function AccountTitle({
   }
 
   if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
+    if (!canShowAffiliateTraderFeedbackButton) {
+      return <Title id={id}>{name}</Title>
+    }
+
     return <MyRewardsTitleWithFeedback id={id} name={name} />
   }
 
@@ -133,6 +140,8 @@ export default function Account(): ReactNode {
   const canShowAffiliateFeedbackButton = Boolean(account) && !isProviderNetworkUnsupported
   const canShowAffiliatePartnerFeedbackButton =
     canShowAffiliateFeedbackButton && isSupportedPayoutsNetwork(walletChainId)
+  const canShowAffiliateTraderFeedbackButton =
+    canShowAffiliateFeedbackButton && isSupportedTradingNetwork(walletChainId)
 
   return (
     <Wrapper>
@@ -141,6 +150,7 @@ export default function Account(): ReactNode {
         <Content>
           <AccountTitle
             canShowAffiliatePartnerFeedbackButton={canShowAffiliatePartnerFeedbackButton}
+            canShowAffiliateTraderFeedbackButton={canShowAffiliateTraderFeedbackButton}
             canShowAffiliateFeedbackButton={canShowAffiliateFeedbackButton}
             id={id}
             name={name}
