@@ -20,6 +20,11 @@ export type FlexibleConfig<T> =
   | PerTradeTypeConfig<PerNetworkConfig<T>>
   | PerNetworkConfig<PerTradeTypeConfig<T>>
 
+export type TokenPairConstraint = {
+  sell: { address: string; chainId: SupportedChainId }
+  buy: { address: string; chainId: SupportedChainId }
+}
+
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
   READY = 'READY',
@@ -453,10 +458,7 @@ export interface CowSwapWidgetParams {
   /**
    * Disables trading of specific token pair
    */
-  tokenPairConstraints?: {
-    sell: { address: string; chainId: SupportedChainId }
-    buy: { address: string; chainId: SupportedChainId }
-  }[]
+  tokenPairConstraints?: TokenPairConstraint[]
 
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult

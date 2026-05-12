@@ -10,7 +10,10 @@ import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
-type EthereumProviderWithRemoveListener = EthereumProvider & {
+/**
+ * EIP-1193 provider that optionally exposes `removeListener` for event-cleanup.
+ */
+export type EthereumProviderWithRemoveListener = EthereumProvider & {
   removeListener?(event: string, handler: (...args: unknown[]) => void): void
 }
 
