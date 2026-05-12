@@ -11,6 +11,14 @@ export async function checkIsCallDataAValidPermit(
   _tokenName: string | undefined,
   callData: string,
   { version, type, name }: PermitInfo,
+  // Smart wallets (incl. EIP-7702 EOAs delegating to a smart-account implementation)
+  // typically sign permits via EIP-1271, which is *not* ECDSA-recoverable. Running
+  // `recoverPermitOwnerFromCallData` against such a signature returns a meaningless
+  // EOA address and yields a false negative ("permit invalid" → order shown as
+  // unfillable even though it is on-chain valid). Callers that know the account is
+  // a smart wallet should pass `true` to skip recovery and defer to the static
+  // calldata/amount validation done by the caller.
+  skipSignatureRecovery?: boolean,
 ): Promise<boolean | undefined> {
   // TODO: take name only from PermitInfo
   const tokenName = name || _tokenName
@@ -21,6 +29,11 @@ export async function checkIsCallDataAValidPermit(
 
   if (!tokenName) {
     throw new Error(`No token name for ${tokenAddress}`)
+  }
+
+  if (skipSignatureRecovery) {
+    // Caller will fall back to optimistic / amount-only validation.
+    return undefined
   }
 
   const params = { chainId, tokenName, tokenAddress, callData, version }

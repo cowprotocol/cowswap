@@ -14,6 +14,10 @@ export async function checkPermitNonceAndAmount(
   permitCallData: Hex,
   permitInfo: PermitInfo,
   walletClient?: WalletClient | null,
+  // Skip EIP-2612 signature-recovery check for accounts that sign permits via
+  // EIP-1271 (smart wallets, EIP-7702 EOAs). Their signatures are not
+  // ECDSA-recoverable, so the recover step yields a false negative.
+  skipSignatureRecovery?: boolean,
 ): Promise<boolean | undefined> {
   try {
     const eip2612Utils = await getPermitUtilsInstance({
@@ -45,6 +49,7 @@ export async function checkPermitNonceAndAmount(
           tokenName,
           permitCallData,
           permitInfo,
+          skipSignatureRecovery,
         )
 
         if (isPermitValid === false) return false

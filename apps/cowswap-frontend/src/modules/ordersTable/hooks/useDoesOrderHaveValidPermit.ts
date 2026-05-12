@@ -1,4 +1,5 @@
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { AccountType } from '@cowprotocol/types'
+import { useAccountType, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -30,11 +31,18 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
 
+  // Smart wallets (contract accounts + EIP-7702 EOAs) typically sign permits via
+  // EIP-1271, which is not ECDSA-recoverable. Skipping the recovery check avoids a
+  // false "invalid permit" verdict that would mark the order as unfillable.
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const accountType = useAccountType()
+  const skipSignatureRecovery = isEip1271SigningAccount(isSmartContractWallet, accountType)
+
   const isPendingOrder = order ? isPending(order) : false
   const checkPermit = isPermitValid(permit, chainId, account) && account && publicClient && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
-    checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
+    checkPermit ? [account, chainId, order?.id, tradeType, permit, skipSignatureRecovery] : null,
     async ([account, chainId]) => {
       if (!permit || !order || !account || !publicClient || !chainId || !tokenPermitInfo) {
         return undefined
@@ -49,6 +57,7 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
           permit,
           tokenPermitInfo,
           walletClient,
+          skipSignatureRecovery,
         )
       } catch (error) {
         console.error('Error validating permit:', error)
@@ -63,4 +72,12 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
 
 function isPermitValid(permit: Hex | null, chainId: number, account: string | undefined): boolean {
   return permit && account ? isPermitDecodedCalldataValid(permit, chainId, account).isValid : false
+}
+
+function isEip1271SigningAccount(
+  isSmartContractWallet: boolean | undefined,
+  accountType: AccountType | undefined,
+): boolean {
+  if (isSmartContractWallet) return true
+  return accountType === AccountType.EIP7702EOA
 }
