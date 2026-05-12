@@ -1,13 +1,9 @@
-import { headers } from 'next/headers'
-
 import type { MetadataRoute } from 'next'
 
 import { checkEnvironment } from '@/util/environment'
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  const headersList = await headers()
-  const host = headersList.get('host') || ''
-  const { isDev, isPr } = checkEnvironment(host, '')
+  const { isDev, isPr } = checkEnvironment()
 
   // Block all indexing on develop.cow.fi and PR preview environments
   if (isDev || isPr) {

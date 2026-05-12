@@ -19,6 +19,11 @@ import { RowBetween } from '../Row'
 export { BaseButton, ButtonEmpty, ButtonYellow } from './ButtonMod'
 export { BUTTON_SIZES_STYLE, ButtonSize } from './types'
 
+type ButtonSecondaryStyleProps = {
+  $fontSize?: string
+  $minHeight?: string
+}
+
 function getButtonStatusStyles(status?: StatusColorVariant): ReturnType<typeof css> | undefined {
   if (!status || status === StatusColorVariant.Default) {
     return undefined
@@ -84,48 +89,6 @@ export const ButtonPrimary = styled(ButtonPrimaryMod).withConfig({
   ${({ status }) => getButtonStatusStyles(status)}
 `
 
-export const ButtonLight = styled(ButtonPrimary)`
-  color: ${({ theme }) => theme.text1};
-  font-weight: 800;
-  border: ${({ theme }) => `4px solid ${theme.black}`};
-  box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-  overflow: hidden;
-  position: relative;
-
-  > div {
-    font-size: inherit;
-    font-weight: inherit;
-  }
-
-  &:focus {
-    box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-    background-color: ${({ theme }) => theme.bg2};
-  }
-
-  &:hover {
-    background-color: ${({ theme }) => theme.bg2};
-  }
-
-  &:active {
-    box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-    background-color: ${({ theme }) => theme.bg2};
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: auto;
-    animation: none;
-    color: ${({ theme }) => theme.text1};
-
-    &:hover {
-      cursor: auto;
-      background-color: ${({ theme }) => theme.bg2};
-      box-shadow: none;
-      outline: none;
-    }
-  }
-`
-
 export const ButtonGray = styled(ButtonGrayMod)`
   box-shadow: none;
 
@@ -135,12 +98,13 @@ export const ButtonGray = styled(ButtonGrayMod)`
   }
 `
 
-export const ButtonSecondary = styled(ButtonPrimary)`
+export const ButtonSecondary = styled(ButtonPrimary)<ButtonSecondaryStyleProps>`
   // CSS overrides
-  min-height: 0;
+  min-height: ${({ $minHeight }) => $minHeight ?? '0'};
   border: 0;
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '21px'};
   box-shadow: none;
+  font-size: ${({ $fontSize }) => $fontSize ?? '18px'};
   padding: ${({ padding }) => padding ?? '6px 8px'};
   transform: none;
 `
