@@ -60,6 +60,7 @@ export async function safeBundleEthFlow(
   }
 
   const { account, recipientAddressOrName, kind } = orderParams
+  const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmount.quotient.toString()
@@ -174,6 +175,9 @@ export async function safeBundleEthFlow(
       chainId,
       id: orderId,
       kind,
+      quoteId: orderParams.quoteId,
+      isCrossChain: isBridgingOrder,
+      destinationChainId: outputAmount.currency.chainId,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
