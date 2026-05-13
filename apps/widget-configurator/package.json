@@ -42,7 +42,6 @@
     "@wagmi/connectors": "^8.0.9",
     "inter-ui": "^3.19.3",
     "launchdarkly-react-client-sdk": "^3.0.4",
-    "lit-html": "^2.8.0",
     "mui-color-input": "^2.0.1",
     "react": "19.1.2",
     "react-dom": "19.1.2",

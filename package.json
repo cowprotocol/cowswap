@@ -104,7 +104,14 @@
     },
     "onlyBuiltDependencies": [
       "nx"
-    ]
+    ],
+    "packageExtensions": {
+      "@walletconnect/modal-ui": {
+        "dependencies": {
+          "lit-html": "2.8.0"
+        }
+      }
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",
