@@ -65,10 +65,8 @@ trades as (
     if(array_position(split('{{blockchain}}', ','), '-=All=-') > 0, true, array_position(split('{{blockchain}}', ','), dune.cowprotocol.result_fac_trades.blockchain) > 0)
     and if(
       (select is_staging_env from params),
-      app_data.environment is not null
-        and app_data.environment <> 'production',
-      app_data.environment is null
-        or app_data.environment = 'production'
+      app_data.environment in ('local', 'development', 'pr'),
+      app_data.environment in ('production', 'staging', 'ens')
     )
 ),
 first_trade as (

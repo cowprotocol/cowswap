@@ -73,10 +73,8 @@ trades_with_referrer as (
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
     and if(
       params.is_staging_env,
-      app_data.environment is not null
-        and app_data.environment <> 'production',
-      app_data.environment is null
-        or app_data.environment = 'production'
+      app_data.environment in ('local', 'development', 'pr'),
+      app_data.environment in ('production', 'staging', 'ens')
     )
 ),
 first_trade as (
