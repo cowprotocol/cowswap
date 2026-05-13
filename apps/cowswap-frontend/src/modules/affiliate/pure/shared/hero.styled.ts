@@ -6,8 +6,8 @@ import { Card } from 'pages/Account/styled'
 
 const DEFAULT_CARD_MAX_WIDTH = 540
 
-export const HeroCard = styled(Card)<{ $maxWidth?: number }>`
-  max-width: ${({ $maxWidth }) => `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`};
+export const HeroCard = styled(Card)<{ $fullWidth?: boolean; $maxWidth?: number }>`
+  max-width: ${({ $fullWidth, $maxWidth }) => ($fullWidth ? '100%' : `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`)};
   align-items: center;
   justify-content: center;
   text-align: center;
