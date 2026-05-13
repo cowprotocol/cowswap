@@ -56,7 +56,7 @@ setGlobalAdapter(
 
 export const orderBookApi = new OrderBookApi({
   env: isBarnBackendEnv ? 'staging' : 'prod',
-  ...(ORDER_BOOK_BASE_URLS ? { baseUrls: ORDER_BOOK_BASE_URLS } : undefined),
+  ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
 
