@@ -116,6 +116,8 @@ jobs:
 
       - name: Tag release baseline
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           TAG="release-$(date -u +%Y%m%dT%H%M%SZ)"
           git tag -a "$TAG" -m "Release published at $TAG"
           git push origin "$TAG"
