@@ -16,6 +16,8 @@ const rootDir = join(__dirname, '../..')
 const changesetDir = join(rootDir, '.changeset')
 
 // Sentinels chosen so they cannot appear in a real commit message.
+// The 5b3c suffix is an arbitrary random tag — it makes accidental collisions
+// (e.g. someone literally typing "<<<FIELD_SEP>>>" in a commit body) effectively impossible.
 const COMMIT_SEP = '<<<COMMIT_SEP_5b3c>>>'
 const FIELD_SEP = '<<<FIELD_SEP_5b3c>>>'
 
