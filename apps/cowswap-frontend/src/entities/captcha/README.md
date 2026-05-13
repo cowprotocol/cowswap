@@ -1,23 +1,12 @@
-# captcha
+# Captcha
 
-Alpha only.
+Turnstile is mounted in swap, limit, yield, and twap forms through `containers/CaptchaWidget.container.tsx`.
 
-Current shape:
+On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `state/captchaJwtAtom.ts` stores it, and `CaptchaWidget` mirrors it into `orderBookApi.context.bearerToken`.
 
-- `CaptchaWidget.tsx` mounts Turnstile inside swap, limit, yield, and twap forms.
-- Turnstile success is exchanged through `api/exchangeTurnstileToken.ts`.
-- exchanged JWT lives in `state/captchaAuthTokenAtom.ts`.
-- exchanged JWT is mirrored into `orderBookApi.context.requestHeaders['X-Auth-Token']`.
-- widget uses `size: 'flexible'` + `appearance: 'interaction-only'`.
-- widget theme follows app theme (`dark` / `light`).
-- widget is rendered full-width inside the form.
-- root-level captcha mount was removed; swap owns this now.
-- the exchange is mocked right now; no real backend call yet.
+Exchange URL: `REACT_APP_TURNSTILE_AUTH_URL`, defaulting to `https://barn.api.cow.fi/auth/turnstile`.
 
-Testing helpers:
+Debug helpers:
 
-- `window.useDemoInteractiveCaptchaKey()` switches to Cloudflare's demo interactive key.
-- `window.resetCaptchaKey()` switches back to `REACT_APP_TURNSTILE_SITE_KEY`.
-
-This is not a clean fallback architecture yet.
-It is a staging area for captcha/header wiring and widget behavior experiments.
+- `window.useDemoInteractiveCaptchaKey()`
+- `window.resetCaptchaKey()`

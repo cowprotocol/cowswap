@@ -2,25 +2,20 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
+import { getJwtTtl } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { orderBookApi } from 'cowSdk'
 
-import { exchangeTurnstileToken } from './api/exchangeTurnstileToken'
-import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY, TURNSTILE_TOKEN_HEADER_NAME } from './const'
-import { logCaptcha } from './logger'
-import { captchaAuthTokenAtom } from './state/captchaAuthTokenAtom'
-
-declare global {
-  interface Window {
-    useDemoInteractiveCaptchaKey?: () => void
-    resetCaptchaKey?: () => void
-  }
-}
+import { exchangeTurnstileToken } from '../api/captchaApi'
+import { TURNSTILE_SITE_KEY } from '../config/captcha.const'
+import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
+import { logCaptcha } from '../logger'
+import { captchaJwtAtom } from '../state/captchaJwtAtom'
 
 export function CaptchaWidget(): ReactNode {
-  const setAuthToken = useSetAtom(captchaAuthTokenAtom)
-  const authToken = useAtomValue(captchaAuthTokenAtom)
+  const setCaptchaJwt = useSetAtom(captchaJwtAtom)
+  const captchaJwt = useAtomValue(captchaJwtAtom)
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
@@ -32,39 +27,27 @@ export function CaptchaWidget(): ReactNode {
       return
     }
 
-    const headers = { ...(orderBookApi.context.requestHeaders ?? {}) }
-
-    if (authToken) {
-      headers[TURNSTILE_TOKEN_HEADER_NAME] = authToken
+    if (captchaJwt?.token) {
+      orderBookApi.context.bearerToken = captchaJwt.token
     } else {
-      delete headers[TURNSTILE_TOKEN_HEADER_NAME]
+      delete orderBookApi.context.bearerToken
     }
-
-    orderBookApi.context.requestHeaders = Object.keys(headers).length ? headers : undefined
-  }, [authToken, siteKey])
+  }, [captchaJwt, siteKey])
 
   useEffect(() => {
-    window.useDemoInteractiveCaptchaKey = () => {
-      logCaptcha('Switching to demo interactive site key')
-      exchangeRequestIdRef.current += 1
-      setAuthToken(null)
-      setSiteKey(TURNSTILE_DEMO_INTERACTIVE_SITE_KEY)
-    }
+    if (!captchaJwt) return
 
-    window.resetCaptchaKey = () => {
-      logCaptcha('Resetting captcha site key')
-      exchangeRequestIdRef.current += 1
-      setAuthToken(null)
-      setSiteKey(TURNSTILE_SITE_KEY)
-    }
+    const timeout = window.setTimeout(() => {
+      logCaptcha('Captcha JWT expired')
+      setCaptchaJwt(null)
+    }, getJwtTtl(captchaJwt.expiresAt))
 
-    return () => {
-      delete window.useDemoInteractiveCaptchaKey
-      delete window.resetCaptchaKey
-    }
-  }, [setAuthToken])
+    return () => window.clearTimeout(timeout)
+  }, [captchaJwt, setCaptchaJwt])
 
-  if (!siteKey) return null
+  useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
+
+  if (!siteKey || captchaJwt) return null
 
   return (
     <Turnstile
@@ -83,7 +66,7 @@ export function CaptchaWidget(): ReactNode {
         logCaptcha('Challenge starting')
         captchaRef.current?.execute()
       }}
-      onSuccess={async (token) => {
+      onSuccess={async (token: string) => {
         const requestId = exchangeRequestIdRef.current + 1
 
         exchangeRequestIdRef.current = requestId
@@ -92,35 +75,35 @@ export function CaptchaWidget(): ReactNode {
         logCaptcha('Exchanging challenge token for captcha JWT')
 
         try {
-          const { jwt, expiresAt } = await exchangeTurnstileToken(token)
+          const jwt = await exchangeTurnstileToken(token)
 
           if (exchangeRequestIdRef.current !== requestId) {
             logCaptcha('Skipping stale captcha JWT exchange result')
             return
           }
 
-          logCaptcha('Captcha JWT received', expiresAt)
-          setAuthToken(jwt)
+          logCaptcha('Captcha JWT received')
+          setCaptchaJwt(jwt)
         } catch (error) {
           if (exchangeRequestIdRef.current !== requestId) {
             return
           }
 
           logCaptcha('Captcha JWT exchange failed', error)
-          setAuthToken(null)
+          setCaptchaJwt(null)
         }
       }}
       onExpire={() => {
         exchangeRequestIdRef.current += 1
         logCaptcha('Challenge expired')
-        setAuthToken(null)
+        setCaptchaJwt(null)
         logCaptcha('Challenge re-starting')
         captchaRef.current?.reset()
       }}
       onError={() => {
         exchangeRequestIdRef.current += 1
         logCaptcha('Challenge errored')
-        setAuthToken(null)
+        setCaptchaJwt(null)
       }}
     />
   )

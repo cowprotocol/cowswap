@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { ApiError } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
@@ -10,16 +11,15 @@ import { safeShortenAddress } from 'utils/address'
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 import { setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
-import { ApiError } from '../utils/api-utils'
 import { logAffiliate } from '../utils/logger'
-
-interface VerificationParams {
-  setError(error?: string): void
-}
 
 export interface UseAffiliateTraderVerificationResult {
   isVerifying: boolean
   verifyCode(code: string, account: string): Promise<void>
+}
+
+interface VerificationParams {
+  setError(error?: string): void
 }
 
 export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
