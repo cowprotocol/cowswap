@@ -214,11 +214,6 @@ if (isSafeIframe) {
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
     // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
     enableEIP6963: !isImTokenBrowser,
-    // Inside the widget the Coinbase popup can open from the iframe (see the window.open
-    // passthrough in InjectedWidgetUpdater), so 'all' works and gives users both Smart Wallet
-    // and mobile/QR link options. Safe iframes skip AppKit entirely (handled above), so
-    // IS_CROSS_ORIGIN_IFRAME here only means "widget iframe".
-    coinbasePreference: IS_CROSS_ORIGIN_IFRAME && !isInjectedWidget() ? 'smartWalletOnly' : 'all',
     enableReconnect: !isInjectedWidget(),
     enableWalletGuide: false,
     featuredWalletIds: [
