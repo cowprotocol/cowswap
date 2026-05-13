@@ -1,6 +1,7 @@
 {
   "name": "@cowprotocol/cowswap-e2e",
   "version": "0.0.1",
+  "private": true,
   "description": "CoW Swap e2e tests",
   "main": "index.js",
   "author": "",

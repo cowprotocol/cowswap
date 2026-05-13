@@ -10,5 +10,9 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@cowprotocol/cowswap-e2e",
+    "@cowprotocol/sdk-tools",
+    "@cowprotocol/storybook"
+  ]
 }
