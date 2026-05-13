@@ -59,6 +59,7 @@ describe('parseConventionalCommit', () => {
   it('BREAKING-CHANGE: hyphen variant → major', () => {
     const r = parseConventionalCommit('feat: thing', 'BREAKING-CHANGE: removed')
     assert.equal(r.bump, 'major')
+    assert.equal(r.breaking, true)
   })
 
   it('non-conventional → patch + parsedOk false', () => {
@@ -125,7 +126,7 @@ describe('resolveAffectedPackages', () => {
       ['libs/events/src/a.ts', 'tools/x.js'],
       pkgs,
     )
-    assert.deepEqual([...r], ['libs/events'])
+    assert.deepEqual([...r].sort(), ['libs/events'])
   })
 
   it('deduplicates multiple files in same package', () => {
@@ -133,7 +134,7 @@ describe('resolveAffectedPackages', () => {
       ['libs/events/src/a.ts', 'libs/events/src/b.ts', 'libs/events/README.md'],
       pkgs,
     )
-    assert.deepEqual([...r], ['libs/events'])
+    assert.deepEqual([...r].sort(), ['libs/events'])
   })
 })
 
