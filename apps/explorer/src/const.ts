@@ -1,7 +1,10 @@
 import {
-  ALL_SUPPORTED_CHAINS_MAP,
+  ALL_CHAINS_MAP,
+  getAddressKey,
+  mapAllNetworks,
   mapSupportedNetworks,
   SupportedChainId,
+  TargetChainId,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/cow-sdk'
 
@@ -91,14 +94,14 @@ export const MEDIA = {
 }
 
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
+export const NATIVE_TOKEN_ADDRESS_NORMALIZED = getAddressKey(NATIVE_TOKEN_ADDRESS)
 
 export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = mapSupportedNetworks(
   (chainId) => WRAPPED_NATIVE_CURRENCIES[chainId].address,
 )
 
-export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = mapSupportedNetworks(
-  (chainId) => ALL_SUPPORTED_CHAINS_MAP[chainId].nativeCurrency,
+export const NATIVE_TOKEN_PER_NETWORK: Record<TargetChainId, TokenErc20> = mapAllNetworks(
+  (chainId) => ALL_CHAINS_MAP[chainId].nativeCurrency,
 )
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'

@@ -1,0 +1,97 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+import { fireEvent, render, screen, type RenderResult } from '@testing-library/react'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { getCowswapTheme } from 'theme'
+
+import { Routes } from 'common/constants/routes'
+import { useNavigate } from 'common/hooks/useNavigate'
+
+import { AffiliateTraderHeaderButton } from './AffiliateTraderHeaderButton.container'
+
+jest.mock('@cowprotocol/analytics', () => {
+  const actualModule = jest.requireActual('@cowprotocol/analytics')
+
+  return {
+    ...actualModule,
+    __resetGtmInstance: jest.fn(),
+    useCowAnalytics: jest.fn(),
+  }
+})
+
+jest.mock('@cowprotocol/common-utils', () => {
+  const actualModule = jest.requireActual('@cowprotocol/common-utils')
+
+  return {
+    ...actualModule,
+    isInjectedWidget: jest.fn(),
+  }
+})
+
+jest.mock('common/hooks/useNavigate', () => {
+  return {
+    useNavigate: jest.fn(),
+  }
+})
+
+const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
+const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
+const useNavigateMock = useNavigate as jest.MockedFunction<typeof useNavigate>
+
+i18n.load('en-US', {})
+i18n.activate('en-US')
+
+function renderComponent(): RenderResult {
+  return render(
+    <I18nProvider i18n={i18n}>
+      <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
+        <AffiliateTraderHeaderButton />
+      </StyledComponentsThemeProvider>
+    </I18nProvider>,
+  )
+}
+
+describe('AffiliateTraderHeaderButton', () => {
+  const sendEvent = jest.fn()
+  const navigate = jest.fn()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    useCowAnalyticsMock.mockReturnValue({
+      sendEvent,
+    } as unknown as ReturnType<typeof useCowAnalytics>)
+    isInjectedWidgetMock.mockReturnValue(false)
+    useNavigateMock.mockReturnValue(navigate)
+  })
+
+  it('renders the header refer button', () => {
+    renderComponent()
+
+    expect(screen.getByRole('button', { name: 'Refer' })).not.toBeNull()
+  })
+
+  it('does not render in widget mode', () => {
+    isInjectedWidgetMock.mockReturnValue(true)
+
+    renderComponent()
+
+    expect(screen.queryByRole('button', { name: 'Refer' })).toBeNull()
+  })
+
+  it('navigates to the affiliate account page and tracks the click', () => {
+    renderComponent()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Refer' }))
+
+    expect(sendEvent).toHaveBeenCalledWith({
+      category: 'affiliate',
+      action: 'cta_clicked',
+      label: 'header_refer',
+    })
+    expect(navigate).toHaveBeenCalledWith(Routes.ACCOUNT_AFFILIATE_PARTNER)
+  })
+})

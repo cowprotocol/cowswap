@@ -8,6 +8,7 @@ tmp
 
 # dependencies
 node_modules
+.pnpm-store
 
 # IDEs and editors
 /.idea
@@ -29,6 +30,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -65,6 +67,7 @@ apps/cowswap-frontend/public/robots.txt
 # Claude context files (local only)
 CLAUDE.md
 .claude/
+.superpowers/**/*
 
 # Agents context files (local only)
 .agents/

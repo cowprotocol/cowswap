@@ -31,6 +31,64 @@ interface ChainSwitchEffectParams extends ChainSwitchGuardInput {
   cowAnalytics: CowAnalytics
 }
 
+export function useChainContext(cowAnalytics: CowAnalytics, chainId: SupportedChainId | undefined): void {
+  useEffect(() => {
+    cowAnalytics.setContext(AnalyticsContext.chainId, getChainContextValue(chainId))
+  }, [chainId, cowAnalytics])
+}
+
+export function useChainSwitchAnalytics({
+  account,
+  prevAccount,
+  chainId,
+  prevChainId,
+  cowAnalytics,
+}: ChainSwitchEffectParams): void {
+  useEffect(() => {
+    // Reused in contexts where chain can change without a connected wallet.
+    // Emit only wallet chain-switches: same account before/after and a real chainId change.
+    const chainSwitchInput = { account, prevAccount, chainId, prevChainId }
+
+    if (!shouldEmitChainSwitchedEventForSameWallet(chainSwitchInput)) {
+      return
+    }
+
+    cowAnalytics.sendEvent(getChainSwitchedEvent(chainSwitchInput.prevChainId, chainSwitchInput.chainId))
+  }, [account, prevAccount, chainId, prevChainId, cowAnalytics])
+}
+
+export function useInitAnalytics(cowAnalytics: CowAnalytics, webVitalsAnalytics: WebVitalsAnalytics | undefined): void {
+  useEffect(() => {
+    reportInitAnalytics(cowAnalytics, webVitalsAnalytics)
+  }, [cowAnalytics, webVitalsAnalytics])
+}
+
+export function useInitPixelTracking(pixelAnalytics: PixelAnalytics | undefined): void {
+  useEffect(() => {
+    reportInitPixel(pixelAnalytics)
+  }, [pixelAnalytics])
+}
+
+export function useInjectedWidgetContext(cowAnalytics: CowAnalytics, injectedWidgetAppId: string | undefined): void {
+  useEffect(() => {
+    cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, injectedWidgetAppId)
+  }, [injectedWidgetAppId, cowAnalytics])
+}
+
+export function useMarketContext(cowAnalytics: CowAnalytics, marketDimension: string | undefined): void {
+  useEffect(() => {
+    cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
+  }, [marketDimension, cowAnalytics])
+}
+
+export function usePageViewTracking(cowAnalytics: CowAnalytics, pathname: string, search: string): void {
+  useEffect(() => {
+    cowAnalytics.sendPageView(`${pathname}${search}`)
+  }, [pathname, search, cowAnalytics])
+}
+
+export { useUserContext } from './useUserContext'
+
 function getBrowserType(win: Window): BrowserType {
   return !isMobile ? 'desktop' : 'web3' in win || 'ethereum' in win ? 'mobileWeb3' : 'mobileRegular'
 }
@@ -68,62 +126,4 @@ function reportInitPixel(pixelAnalytics?: PixelAnalytics): void {
 
   pixelAnalytics.sendAllPixels(PixelEvent.INIT)
   initializedPixelInstances.add(pixelAnalytics)
-}
-
-export function useInitAnalytics(cowAnalytics: CowAnalytics, webVitalsAnalytics: WebVitalsAnalytics | undefined): void {
-  useEffect(() => {
-    reportInitAnalytics(cowAnalytics, webVitalsAnalytics)
-  }, [cowAnalytics, webVitalsAnalytics])
-}
-
-export function useChainContext(cowAnalytics: CowAnalytics, chainId: SupportedChainId | undefined): void {
-  useEffect(() => {
-    cowAnalytics.setContext(AnalyticsContext.chainId, getChainContextValue(chainId))
-  }, [chainId, cowAnalytics])
-}
-
-export function useChainSwitchAnalytics({
-  account,
-  prevAccount,
-  chainId,
-  prevChainId,
-  cowAnalytics,
-}: ChainSwitchEffectParams): void {
-  useEffect(() => {
-    // Reused in contexts where chain can change without a connected wallet.
-    // Emit only wallet chain-switches: same account before/after and a real chainId change.
-    const chainSwitchInput = { account, prevAccount, chainId, prevChainId }
-
-    if (!shouldEmitChainSwitchedEventForSameWallet(chainSwitchInput)) {
-      return
-    }
-
-    cowAnalytics.sendEvent(getChainSwitchedEvent(chainSwitchInput.prevChainId, chainSwitchInput.chainId))
-  }, [account, prevAccount, chainId, prevChainId, cowAnalytics])
-}
-
-export { useUserContext } from './useUserContext'
-
-export function usePageViewTracking(cowAnalytics: CowAnalytics, pathname: string, search: string): void {
-  useEffect(() => {
-    cowAnalytics.sendPageView(`${pathname}${search}`)
-  }, [pathname, search, cowAnalytics])
-}
-
-export function useInitPixelTracking(pixelAnalytics: PixelAnalytics | undefined): void {
-  useEffect(() => {
-    reportInitPixel(pixelAnalytics)
-  }, [pixelAnalytics])
-}
-
-export function useMarketContext(cowAnalytics: CowAnalytics, marketDimension: string | undefined): void {
-  useEffect(() => {
-    cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
-  }, [marketDimension, cowAnalytics])
-}
-
-export function useInjectedWidgetContext(cowAnalytics: CowAnalytics, injectedWidgetAppId: string | undefined): void {
-  useEffect(() => {
-    cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, injectedWidgetAppId)
-  }, [injectedWidgetAppId, cowAnalytics])
 }

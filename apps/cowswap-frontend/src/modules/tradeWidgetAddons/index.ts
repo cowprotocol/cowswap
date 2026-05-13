@@ -5,11 +5,14 @@ export { QuoteVerificationBadge, QuoteVerificationIcon } from './containers/RowQ
 export { getQuoteExpiresInLabel } from './containers/RowQuoteId/RowQuoteId.utils'
 export { RowSlippage } from './containers/RowSlippage'
 export { TradeRateDetails } from './containers/TradeRateDetails'
-export { SettingsTab } from './containers/SettingsTab'
+export {
+  SettingsDropdown,
+  SettingsDropdown as SettingsTab,
+} from './containers/SettingsDropdown/SettingsDropdown.container'
 export { HighFeeWarning } from './containers/HighFeeWarning'
 export { MetamaskTransactionWarning } from './containers/MetamaskTransactionWarning'
 export { SellNativeWarningBanner } from './containers/SellNativeWarningBanner'
 export { useHighFeeWarning } from './containers/HighFeeWarning/hooks/useHighFeeWarning'
 export { NetworkCostsTooltipSuffix } from './pure/NetworkCostsTooltipSuffix'
-export { DeadlineTransactionSettings } from './containers/DeadlineTransactionSettings'
-export { TransactionSlippageInput } from './containers/TransactionSlippageInput'
+export { DeadlineTransactionSettings } from './containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container'
+export { TransactionSlippageInput } from './containers/TransactionSlippageInput/TransactionSlippageInput.container'

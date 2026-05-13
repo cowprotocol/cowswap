@@ -1,7 +1,9 @@
 import {
+  AdditionalTargetChainId,
   arbitrumOne,
   avalanche,
   base,
+  bitcoin,
   bnb,
   ChainInfo,
   gnosisChain,
@@ -10,10 +12,13 @@ import {
   isEvmChainInfo,
   linea,
   mainnet,
+  optimism,
   plasma,
   polygon,
   sepolia,
+  solana,
   SupportedChainId,
+  TargetChainId,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -36,7 +41,7 @@ export interface BaseChainInfo {
   readonly nativeCurrency: TokenWithLogo
 }
 
-export type ChainInfoMap = Record<SupportedChainId, BaseChainInfo>
+export type ChainInfoMap = Record<TargetChainId, BaseChainInfo>
 
 function mapChainInfoToBaseChainInfo(
   chainInfo: ChainInfo,
@@ -134,6 +139,24 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'sepolia',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
   },
+  [AdditionalTargetChainId.SOLANA]: {
+    ...mapChainInfoToBaseChainInfo(solana),
+    name: 'solana',
+    urlAlias: 'solana',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.SOLANA],
+  },
+  [AdditionalTargetChainId.BITCOIN]: {
+    ...mapChainInfoToBaseChainInfo(bitcoin),
+    name: 'bitcoin',
+    urlAlias: 'bitcoin',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.BITCOIN],
+  },
+  [AdditionalTargetChainId.OPTIMISM]: {
+    ...mapChainInfoToBaseChainInfo(optimism),
+    name: 'optimism',
+    urlAlias: 'opt',
+    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.OPTIMISM],
+  },
 }
 
 /**
@@ -154,8 +177,28 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.SEPOLIA,
 ]
 
+/**
+ * Sorted array of chain IDs in order of relevance.
+ * TODO: Sort by TVL? Reference: https://defillama.com/chain/gnosis
+ */
+export const SORTED_DST_CHAIN_IDS: TargetChainId[] = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.BNB,
+  SupportedChainId.BASE,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.LINEA, // TODO: decide where to place Linea
+  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
+  SupportedChainId.INK, // TODO: decide where to place Ink
+  SupportedChainId.GNOSIS_CHAIN,
+  AdditionalTargetChainId.SOLANA,
+  AdditionalTargetChainId.BITCOIN,
+  SupportedChainId.SEPOLIA,
+]
+
 export const CHAIN_INFO_ARRAY: BaseChainInfo[] = SORTED_CHAIN_IDS.map((id) => CHAIN_INFO[id])
 
-export function getChainInfo(chainId: SupportedChainId): BaseChainInfo {
+export function getChainInfo(chainId: TargetChainId): BaseChainInfo {
   return CHAIN_INFO[chainId]
 }

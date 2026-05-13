@@ -1,15 +1,15 @@
 import { atom } from 'jotai'
 
 import { getDeprecatedChains } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 // import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
-export const deprecatedChainsAtom = atom<Set<SupportedChainId>>((/*get*/) => {
+export const deprecatedChainsAtom = atom<Set<TargetChainId>>((/*get*/) => {
   // Commented out code left here for reference:
   // const { isLensDeprecated } = get(featureFlagsAtom)
 
-  const chainsToSkip: SupportedChainId[] = []
+  const chainsToSkip: TargetChainId[] = []
 
   // if (isLensDeprecated === false) {
   //   chainsToSkip.push(SupportedChainId.LENS)

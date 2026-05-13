@@ -1,0 +1,1 @@
+export const XSTOCK_MIN_TRADE_SIZE_USD = 10

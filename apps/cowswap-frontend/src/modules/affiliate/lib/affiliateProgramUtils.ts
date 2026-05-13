@@ -1,7 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber, isRecord, JsonRecord, readStringField } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import type { TypedDataField } from '@ethersproject/abstract-signer'
 
 import { i18n } from '@lingui/core'
 
@@ -27,6 +26,8 @@ const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
+
+type TypedDataField = { name: string; type: string }
 
 const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
@@ -224,22 +225,31 @@ export function getReferralTrafficPercent(triggerVolume?: number, progressToNext
 export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOrder): boolean {
   const { status } = order
 
-  if (status === OrderStatus.CANCELLED || status === OrderStatus.EXPIRED) return false
+  if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
 
   if (typeof appCode !== 'string') return false
 
-  return appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE
+  return hasAmountExecuted(order) && (appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE)
 }
 
-export function isSupportedPayoutsNetwork(chainId: number): boolean {
+function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
+  const executedBuyAmount =
+    (order as EnrichedOrder).executedBuyAmount || (order as SerializedOrder).apiAdditionalInfo?.executedBuyAmount
+  const executedSellAmount =
+    (order as EnrichedOrder).executedSellAmount || (order as SerializedOrder).apiAdditionalInfo?.executedSellAmount
+
+  return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
+}
+
+export function isSupportedPayoutsNetwork(chainId?: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }
 
-export function isSupportedTradingNetwork(chainId: number): boolean {
-  return AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
+export function isSupportedTradingNetwork(chainId?: number): boolean {
+  return chainId !== undefined && AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
 }
 
 export function toValidDate(value: string | undefined): Date | null {

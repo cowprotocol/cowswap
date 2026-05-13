@@ -4,14 +4,10 @@ import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { Category, GtmEvent } from '../types'
 
-interface DataLayerEvent extends Record<string, unknown> {
-  event: string
-}
-
 type DataLayer = DataLayerEvent[]
 
-function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+interface DataLayerEvent extends Record<string, unknown> {
+  event: string
 }
 
 function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unknown> {
@@ -32,10 +28,15 @@ function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unk
   return sanitizeRecord(rest)
 }
 
+function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+}
+
 declare global {
   interface Window {
     dataLayer: unknown[]
-    cowAnalyticsInstance?: CowAnalyticsGtm // For singleton pattern
+    /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
+    cowAnalyticsInstance?: CowAnalytics
   }
 }
 
@@ -252,7 +253,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
             value: event.value,
             non_interaction: event.nonInteraction,
             ...this.getDimensions(),
-            ...(gtmEvent.isBridgeOrder && { isBridgeOrder: gtmEvent.isBridgeOrder }),
+            ...(gtmEvent.isBridgeOrder !== undefined && { isBridgeOrder: gtmEvent.isBridgeOrder }),
             ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
             ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
             ...(gtmEvent.tokenSymbol && {

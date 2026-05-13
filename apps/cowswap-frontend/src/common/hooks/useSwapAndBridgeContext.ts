@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
@@ -64,7 +64,7 @@ export function useSwapAndBridgeContext(
     if (!order) return undefined
 
     // Primary: Try to get from tokensByAddress map (enriched with logos, etc.)
-    const enrichedToken = tokensByAddress[order.buyToken.toLowerCase()]
+    const enrichedToken = tokensByAddress[getAddressKey(order.buyToken)]
     if (enrichedToken) {
       return enrichedToken
     }

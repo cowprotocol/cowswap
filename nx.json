@@ -7,8 +7,8 @@
   "release": {
     "projectsRelationship": "independent",
     "projects": [
-      "libs/common-entities",
       "libs/events",
+      "libs/currency",
       "libs/types",
       "libs/permit-utils",
       "libs/widget-lib",
@@ -18,6 +18,11 @@
     ]
   },
   "targetDefaults": {
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/libs/{projectName}"
+      }
+    },
     "build": {
       "inputs": ["production", "^production", "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)"],
       "cache": true

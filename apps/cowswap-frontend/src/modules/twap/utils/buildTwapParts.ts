@@ -1,39 +1,16 @@
 import { isTruthy } from '@cowprotocol/common-utils'
-import { ContractsOrder, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  ContractsOrder,
+  OrderParameters,
+  SupportedChainId,
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
+  AddressPerChain,
+} from '@cowprotocol/cow-sdk'
 
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
-
-export async function generateTwapOrderParts(
-  twapOrder: TwapOrderItem,
-  safeAddress: string,
-  chainId: SupportedChainId,
-): Promise<{ [id: string]: TwapPartOrderItem[] }> {
-  const twapOrderId = twapOrder.id
-
-  const parts = [...new Array(twapOrder.order.n)]
-    .map((_, index) => createPartOrderFromParent(twapOrder, index))
-    .filter(isTruthy)
-
-  const ids = await Promise.all(parts.map((part) => computeOrderUid(chainId, safeAddress, part as ContractsOrder)))
-
-  return {
-    [twapOrderId]: ids.map<TwapPartOrderItem>((uid, index) => {
-      return {
-        uid,
-        index,
-        twapOrderId,
-        chainId,
-        safeAddress,
-        isCreatedInOrderBook: false,
-        isCancelling: false,
-        order: parts[index],
-      }
-    }),
-  }
-}
 
 export function createPartOrderFromParent(twapOrder: TwapOrderItem, index: number): OrderParameters | null {
   const executionDate = twapOrder.safeTxParams?.executionDate
@@ -63,6 +40,45 @@ export function createPartOrderFromParent(twapOrder: TwapOrderItem, index: numbe
     sellTokenBalance: 'erc20',
     buyTokenBalance: 'erc20',
   } as OrderParameters
+}
+
+export async function generateTwapOrderParts(
+  twapOrder: TwapOrderItem,
+  safeAddress: string,
+  chainId: SupportedChainId,
+): Promise<{ [id: string]: TwapPartOrderItem[] }> {
+  const twapOrderId = twapOrder.id
+
+  const parts = [...new Array(twapOrder.order.n)]
+    .map((_, index) => createPartOrderFromParent(twapOrder, index))
+    .filter(isTruthy)
+
+  const ids = await Promise.all(
+    parts.map((part) =>
+      computeOrderUid(
+        chainId,
+        safeAddress,
+        part as ContractsOrder,
+        // TWAP orders always run on the production settlement contract regardless of the current environment.
+        COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain,
+      ),
+    ),
+  )
+
+  return {
+    [twapOrderId]: ids.map<TwapPartOrderItem>((uid, index) => {
+      return {
+        uid,
+        index,
+        twapOrderId,
+        chainId,
+        safeAddress,
+        isCreatedInOrderBook: false,
+        isCancelling: false,
+        order: parts[index],
+      }
+    }),
+  }
 }
 
 function calculateValidTo({

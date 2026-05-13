@@ -1055,6 +1055,8 @@ export const HeroButtonWrapper = styled.div<{ gap?: number; width?: string }>`
 export const HeroImage = styled.div<{
   width?: number | string
   height?: number | string
+  widthMobile?: number | string
+  heightMobile?: number | string
   color?: string
   margin?: string
   marginMobile?: string
@@ -1067,6 +1069,22 @@ export const HeroImage = styled.div<{
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
 
   ${Media.upToMedium()} {
+    width: ${({ widthMobile, width }) =>
+      widthMobile
+        ? typeof widthMobile === 'number'
+          ? `${widthMobile}px`
+          : widthMobile
+        : typeof width === 'number'
+          ? `${width}px`
+          : width || '100%'};
+    height: ${({ heightMobile, height }) =>
+      heightMobile
+        ? typeof heightMobile === 'number'
+          ? `${heightMobile}px`
+          : heightMobile
+        : typeof height === 'number'
+          ? `${height}px`
+          : height || 'auto'};
     margin: ${({ marginMobile }) => marginMobile || '0 auto'};
   }
 

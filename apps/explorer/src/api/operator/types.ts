@@ -32,10 +32,41 @@ export const RAW_ORDER_STATUS = {
 
 export const ORDER_FINAL_FAILED_STATUSES = [OrderStatus.Expired, OrderStatus.Cancelled]
 
-export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
+export type GetAccountOrdersParams = WithNetworkId & {
+  owner: string
+  offset?: number
+  limit?: number
+}
 
-// Raw API response
-export type RawOrder = EnrichedOrder
+export type GetOrderCompetitionStatusParams = WithNetworkId & {
+  orderId: string
+}
+export type GetOrderParams = WithNetworkId & {
+  orderId: string
+}
+
+export type GetOrdersParams = WithNetworkId & {
+  owner: string
+  minValidTo: number
+  sellToken?: string
+  buyToken?: string
+}
+
+export type GetSolverCompetitionByTxHashParams = WithNetworkId & {
+  txHash: string
+}
+
+export type GetTradesParams = WithNetworkId & {
+  owner?: string
+  orderId?: string
+  offset?: number
+  limit?: number
+}
+
+export type GetTxOrdersParams = WithNetworkId & {
+  txHash: TxHash
+}
+
 /**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
@@ -81,6 +112,13 @@ export type Order = Pick<
   bridgeProviderId?: string
 }
 
+export type OrderCompetitionStatus = CompetitionOrderStatus
+
+// Raw API response
+export type RawOrder = EnrichedOrder
+
+export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
+
 /**
  * Raw API trade response type
  */
@@ -106,43 +144,5 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 }
 
 export type WithNetworkId = { networkId: Network }
-
-export type GetOrderParams = WithNetworkId & {
-  orderId: string
-}
-
-export type GetAccountOrdersParams = WithNetworkId & {
-  owner: string
-  offset?: number
-  limit?: number
-}
-
-export type GetOrdersParams = WithNetworkId & {
-  owner: string
-  minValidTo: number
-  sellToken?: string
-  buyToken?: string
-}
-
-export type GetTxOrdersParams = WithNetworkId & {
-  txHash: TxHash
-}
-
-export type GetTradesParams = WithNetworkId & {
-  owner?: string
-  orderId?: string
-  offset?: number
-  limit?: number
-}
-
-export type GetOrderCompetitionStatusParams = WithNetworkId & {
-  orderId: string
-}
-
-export type GetSolverCompetitionByTxHashParams = WithNetworkId & {
-  txHash: string
-}
-
-export type OrderCompetitionStatus = CompetitionOrderStatus
 
 export type { SolverCompetitionResponse }

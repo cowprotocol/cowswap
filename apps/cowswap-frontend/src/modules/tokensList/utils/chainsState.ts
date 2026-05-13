@@ -1,4 +1,4 @@
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { sortChainsByDisplayOrder } from './sortChainsByDisplayOrder'
 
@@ -16,21 +16,7 @@ export interface CreateOutputChainsOptions {
     loadingChainIds: Set<number>
     isLoading: boolean
   }
-}
-
-export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId)
-}
-
-export function createInputChainsState(
-  selectedTargetChainId: SupportedChainId | number,
-  supportedChains: ChainInfo[],
-): ChainsToSelectState {
-  return {
-    defaultChainId: selectedTargetChainId,
-    chains: sortChainsByDisplayOrder(supportedChains),
-    isLoading: false,
-  }
+  additionalChainIds?: Set<number>
 }
 
 export function computeDisabledChainIds(
@@ -53,21 +39,15 @@ export function computeDisabledChainIds(
   )
 }
 
-export function resolveDefaultChainId(
-  orderedChains: ChainInfo[],
-  selectedTargetChainId: number,
-  chainId: SupportedChainId,
-  disabledChainIds: Set<number>,
-): number {
-  const isSelectedTargetValid =
-    orderedChains.some((c) => c.id === selectedTargetChainId) && !disabledChainIds.has(selectedTargetChainId)
-  if (isSelectedTargetValid) return selectedTargetChainId
-
-  const sourceInList = orderedChains.some((c) => c.id === chainId)
-  if (sourceInList) return chainId
-
-  const firstEnabledChain = orderedChains.find((c) => !disabledChainIds.has(c.id))
-  return firstEnabledChain?.id ?? orderedChains[0]?.id ?? chainId
+export function createInputChainsState(
+  selectedTargetChainId: SupportedChainId | number,
+  supportedChains: ChainInfo[],
+): ChainsToSelectState {
+  return {
+    defaultChainId: selectedTargetChainId,
+    chains: sortChainsByDisplayOrder(supportedChains),
+    isLoading: false,
+  }
 }
 
 export function createOutputChainsState({
@@ -105,4 +85,25 @@ export function createOutputChainsState({
     disabledChainIds: disabledChainIds.size > 0 ? disabledChainIds : undefined,
     loadingChainIds: routesAvailability.loadingChainIds.size > 0 ? routesAvailability.loadingChainIds : undefined,
   }
+}
+
+export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
+  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId || chain.id in AdditionalTargetChainId)
+}
+
+export function resolveDefaultChainId(
+  orderedChains: ChainInfo[],
+  selectedTargetChainId: number,
+  chainId: SupportedChainId,
+  disabledChainIds: Set<number>,
+): number {
+  const isSelectedTargetValid =
+    orderedChains.some((c) => c.id === selectedTargetChainId) && !disabledChainIds.has(selectedTargetChainId)
+  if (isSelectedTargetValid) return selectedTargetChainId
+
+  const sourceInList = orderedChains.some((c) => c.id === chainId)
+  if (sourceInList) return chainId
+
+  const firstEnabledChain = orderedChains.find((c) => !disabledChainIds.has(c.id))
+  return firstEnabledChain?.id ?? orderedChains[0]?.id ?? chainId
 }

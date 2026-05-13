@@ -52,6 +52,9 @@ export interface Colors {
   blue500Primary: ColorValue
   blue700Primary: ColorValue
   blue900Primary: ColorValue
+  yellow300Primary: ColorValue
+  yellow700Primary: ColorValue
+  yellow800Primary: ColorValue
   purple200Primary: ColorValue
   purple800Primary: ColorValue
   white: ColorValue

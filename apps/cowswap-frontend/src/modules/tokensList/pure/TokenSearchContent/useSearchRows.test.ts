@@ -96,6 +96,19 @@ describe('useSearchRows', () => {
       const bannerRow = result.current[0]
       expect(bannerRow).toEqual({ type: 'banner' })
     })
+
+    it('should hide banner when token and list imports are disabled', () => {
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [],
+          activeList: [],
+          disableTokenImport: true,
+        }),
+      )
+
+      expect(result.current).toEqual([])
+    })
   })
 
   describe('Matched Tokens', () => {
@@ -627,6 +640,27 @@ describe('useSearchRows', () => {
       expect(importRows.find((row) => row.section === 'blockchain')).toBeDefined()
       expect(importRows.find((row) => row.section === 'inactive')).toBeDefined()
       expect(importRows.find((row) => row.section === 'external')).toBeDefined()
+    })
+
+    it('should hide all import sections when token and list imports are disabled', () => {
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
+      const inactiveToken = createToken('INACTIVE', 2, 'Inactive Token')
+      const externalToken = createToken('EXTERNAL', 3, 'External Token')
+
+      const { result } = renderHook(() =>
+        useSearchRows({
+          isLoading: false,
+          matchedTokens: [],
+          activeList: [],
+          disableTokenImport: true,
+          blockchainResult: [blockchainToken],
+          inactiveListsResult: [inactiveToken],
+          externalApiResult: [externalToken],
+        }),
+      )
+
+      expect(result.current.find((row) => row.type === 'import-token')).toBeUndefined()
+      expect(result.current.find((row) => row.type === 'section-title')).toBeUndefined()
     })
   })
 

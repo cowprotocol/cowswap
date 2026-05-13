@@ -1,5 +1,5 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
@@ -57,7 +57,7 @@ export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | 
 
   if (!platform) throw new UnsupportedPlatformError({ cause: `Defillama does not support chain '${currency.chainId}'` })
 
-  const key = `${platform}:${currency.address}`.toLowerCase()
+  const key = `${platform}:${getAddressKey(currency.address)}`
   const url = `${BASE_URL}/${key}`
 
   return fetchRateLimited(url)

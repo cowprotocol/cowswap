@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
@@ -38,7 +39,7 @@ export function FallbackHandlerVerificationUpdater() {
   useEffect(() => {
     if (!account || fallbackHandlerVerification === null) return
 
-    update({ [account.toLowerCase()]: fallbackHandlerVerification })
+    update({ [getAddressKey(account)]: fallbackHandlerVerification })
     localStorage.setItem(FB_UPDATE_TIME_KEY, Date.now().toString())
   }, [fallbackHandlerVerification, update, account])
 

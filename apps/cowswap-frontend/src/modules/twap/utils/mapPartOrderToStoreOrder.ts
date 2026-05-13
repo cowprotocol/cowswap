@@ -1,4 +1,4 @@
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -19,8 +19,8 @@ export function mapPartOrderToStoreOrder(
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
 
-  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
-  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+  const inputToken = tokensByAddress[getAddressKey(enrichedOrder.sellToken)]
+  const outputToken = tokensByAddress[getAddressKey(enrichedOrder.buyToken)]
 
   if (!inputToken || !outputToken) return null
 

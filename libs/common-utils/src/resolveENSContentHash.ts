@@ -1,6 +1,7 @@
-import { Provider } from '@ethersproject/abstract-provider'
-import { Contract } from '@ethersproject/contracts'
-import { namehash } from '@ethersproject/hash'
+import { namehash, normalize } from 'viem/ens'
+import { readContract } from 'wagmi/actions'
+
+import type { Config } from 'wagmi'
 
 const REGISTRAR_ABI = [
   {
@@ -22,7 +23,7 @@ const REGISTRAR_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const
 const REGISTRAR_ADDRESS = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
 
 const RESOLVER_ABI = [
@@ -47,21 +48,25 @@ const RESOLVER_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-]
-
-// cache the resolver contracts since most of them are the public resolver
-function resolverContract(resolverAddress: string, provider: Provider): Contract {
-  return new Contract(resolverAddress, RESOLVER_ABI, provider)
-}
+] as const
 
 /**
  * Fetches and decodes the result of an ENS contenthash lookup on mainnet to a URI
  * @param ensName to resolve
  * @param provider provider to use to fetch the data
  */
-export async function resolveENSContentHash(ensName: string, provider: Provider): Promise<string> {
-  const ensRegistrarContract = new Contract(REGISTRAR_ADDRESS, REGISTRAR_ABI, provider)
-  const hash = namehash(ensName)
-  const resolverAddress = await ensRegistrarContract.resolver(hash)
-  return resolverContract(resolverAddress, provider).contenthash(hash)
+export async function resolveENSContentHash(ensName: string, config: Config): Promise<string> {
+  const hash = namehash(normalize(ensName))
+  const resolverAddress = await readContract(config, {
+    abi: REGISTRAR_ABI,
+    address: REGISTRAR_ADDRESS,
+    functionName: 'resolver',
+    args: [hash],
+  })
+  return readContract(config, {
+    abi: RESOLVER_ABI,
+    address: resolverAddress,
+    functionName: 'contenthash',
+    args: [hash],
+  })
 }

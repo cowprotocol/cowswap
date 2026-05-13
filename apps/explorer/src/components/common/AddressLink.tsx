@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Color, NetworkLogo } from '@cowprotocol/ui'
 
@@ -29,7 +30,7 @@ const LinkWithNetworkWrapper = styled.span`
 `
 
 export interface AddressLinkProps {
-  address: string
+  address?: string
   chainId: number
   showIcon?: boolean
   showNetworkName: boolean
@@ -47,25 +48,31 @@ export function AddressLink({
 
   const bridgeNetwork = networks?.[chainId]
   const bridgeBlockExplorer = bridgeNetwork?.blockExplorer
-
   const chainLabel = bridgeNetwork?.label || getChainInfo(chainId)?.label
 
   if (!chainLabel) return null
 
+  const addressNode = (
+    <LinkWithNetworkWrapper>
+      {(showIcon || showNetworkName) && <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.dark} />}
+      {address ? `${getAddressKey(address)} ↗` : '-'}
+    </LinkWithNetworkWrapper>
+  )
+
   return (
     <AddressLinkWrapper>
-      <LinkWithPrefixNetwork
-        to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS, bridgeBlockExplorer?.url)}
-        target="_blank"
-        noPrefix
-      >
-        <LinkWithNetworkWrapper>
-          {(showIcon || showNetworkName) && (
-            <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.dark} />
-          )}
-          {address.toLowerCase()} ↗
-        </LinkWithNetworkWrapper>
-      </LinkWithPrefixNetwork>
+      {address ? (
+        <LinkWithPrefixNetwork
+          to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS, bridgeBlockExplorer?.url)}
+          target="_blank"
+          noPrefix
+        >
+          {addressNode}
+        </LinkWithPrefixNetwork>
+      ) : (
+        addressNode
+      )}
+
       {showNetworkName && <NetworkName>on {chainLabel}</NetworkName>}
     </AddressLinkWrapper>
   )

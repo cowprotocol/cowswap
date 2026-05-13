@@ -6,7 +6,7 @@ import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/comm
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -18,7 +18,6 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { useDerivedTradeState } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -32,16 +31,20 @@ import * as styledEl from './styled'
 import { mapCurrencyInfo } from './TradeWidgetForm.utils'
 import { TradeWidgetProps } from './types'
 
-import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
+import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
+import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
+import { useResetRecipientOnChainChange } from '../../hooks/useResetRecipientOnChainChange'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useIsWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
+import { useSetNonEvmReceiverConfirmed } from '../../state/nonEvmReceiverConfirmedAtom.atoms'
 import { TradeType } from '../../types'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
 import { QuotePolingProgress } from '../QuotePolingProgress'
@@ -135,20 +138,24 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSafeWallet = useIsSafeWallet()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWalletBridging = !!isSmartContractWallet && isCurrentTradeBridging
   const openTokenSelectWidget = useOpenTokenSelectWidget()
-  const tradeStateFromUrl = useTradeStateFromUrl()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
+  const handleNonEvmConfirm = useSetNonEvmReceiverConfirmed()
+
+  useResetReceiverConfirmationOnWalletChange()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
+  useResetRecipientOnChainChange(buyToken?.chainId, recipient || '', onChangeRecipient)
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
-  const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
+  const withRecipient = useIsWithRecipient(showRecipient)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
@@ -222,7 +229,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
+          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
@@ -308,9 +315,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 </div>
                 {withRecipient && (
                   <SetRecipient
+                    key={account}
                     recipient={recipient || ''}
                     onChangeRecipient={onChangeRecipient}
-                    targetChainId={buyToken?.chainId as SupportedChainId}
+                    targetChainId={buyToken?.chainId}
+                    isBridging={isCurrentTradeBridging}
+                    isSmartContractWalletBridging={isSmartContractWalletBridging}
+                    onNonEvmReceiverConfirmedChange={handleNonEvmConfirm}
                   />
                 )}
 

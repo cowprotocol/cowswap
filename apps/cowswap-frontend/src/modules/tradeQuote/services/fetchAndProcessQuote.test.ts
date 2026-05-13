@@ -29,8 +29,7 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
 }))
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality, SupportedChainId, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
   BridgeProviderQuoteError,
@@ -73,11 +72,6 @@ const tradeQuotePollingParameters: TradeQuotePollingParameters = {
   isConfirmOpen: false,
   isQuoteUpdatePossible: true,
   useSuggestedSlippageApi: false,
-}
-
-const mockTimings = {
-  now: Date.now(),
-  ref: { current: Date.now() },
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -170,18 +164,24 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true, sameChainQuoteParams)
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(sameChainQuoteParams, {
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
         appData: mockAppData,
         quoteSigner: undefined,
+        getSlippageSuggestion: undefined,
+        getCorrelatedTokens: undefined,
       })
-      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(mockQuoteAndPost, null, mockFetchParams)
+      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
+        mockQuoteAndPost,
+        null,
+        mockFetchParams,
+        sameChainQuoteParams,
+      )
     })
 
     it('should set loading state and call fetchBridgingQuote for cross-chain swaps', async () => {
@@ -204,20 +204,19 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true, crossChainQuoteParams)
       expect(mockGetBridgeQuoteSigner).toHaveBeenCalledWith(SupportedChainId.MAINNET)
       expect(mockBridgingSdk.getBestQuote).toHaveBeenCalledWith({
         quoteBridgeRequest: crossChainQuoteParams,
-        advancedSettings: {
+        advancedSettings: expect.objectContaining({
           quoteRequest: {
             priceQuality: PriceQuality.FAST,
           },
           appData: mockAppData,
           quoteSigner: {},
-        },
+        }),
         options: {
           onQuoteResult: expect.any(Function),
         },
@@ -246,7 +245,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
@@ -255,6 +253,8 @@ describe('fetchAndProcessQuote', () => {
         },
         appData: mockAppData,
         quoteSigner: undefined,
+        getSlippageSuggestion: undefined,
+        getCorrelatedTokens: undefined,
       })
     })
 
@@ -278,7 +278,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
         mockGetCorrelatedTokens,
       )
 
@@ -288,6 +287,7 @@ describe('fetchAndProcessQuote', () => {
         },
         appData: mockAppData,
         quoteSigner: undefined,
+        getSlippageSuggestion: undefined,
         getCorrelatedTokens: mockGetCorrelatedTokens,
       })
     })
@@ -323,10 +323,14 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(mockQuoteAndPost, null, mockFetchParams)
+      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
+        mockQuoteAndPost,
+        null,
+        mockFetchParams,
+        mockQuoteParams,
+      )
     })
 
     it('should handle cancelled request', async () => {
@@ -341,7 +345,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
@@ -364,7 +367,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
@@ -387,12 +389,14 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       // Should call onError for generic errors in swap quotes
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockError)
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchSwapQuote error',
+        expect.any(QuoteApiError),
+      )
     })
   })
 
@@ -440,7 +444,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       // Simulate the callback being called
@@ -455,6 +458,7 @@ describe('fetchAndProcessQuote', () => {
         },
         mockBridgeQuote,
         mockFetchParams,
+        crossChainQuoteParams,
       )
     })
 
@@ -474,7 +478,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
@@ -501,10 +504,12 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockGenericError)
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchBridgingQuote error',
+        expect.any(BridgeProviderQuoteError),
+      )
     })
 
     it('should handle null result', async () => {
@@ -516,7 +521,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       // Should not call any manager methods for null result
@@ -534,10 +538,12 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: unexpected bridge error', unexpectedError)
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchBridgingQuote error',
+        expect.any(BridgeProviderQuoteError),
+      )
     })
 
     it('should not call onResponse when quote is null in onQuoteResult callback', async () => {
@@ -559,7 +565,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       // Simulate the callback being called with null quote
@@ -592,7 +597,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       // Should not call any manager methods when request is cancelled
@@ -622,7 +626,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockMapOperatorErrorToQuoteError).toHaveBeenCalledWith(mockErrorBody)
@@ -646,12 +649,14 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockMapOperatorErrorToQuoteError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
-      expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockError)
+      expect(console.error).toHaveBeenCalledWith(
+        '[fetchAndProcessQuote]:: fetchSwapQuote error',
+        expect.any(QuoteApiError),
+      )
     })
   })
 
@@ -673,7 +678,6 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         undefined,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
@@ -682,6 +686,8 @@ describe('fetchAndProcessQuote', () => {
         },
         appData: undefined,
         quoteSigner: undefined,
+        getSlippageSuggestion: undefined,
+        getCorrelatedTokens: undefined,
       })
     })
 
@@ -707,10 +713,9 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
-        mockTimings,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(false)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(false, mockQuoteParams)
     })
   })
 })

@@ -1,6 +1,6 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
-const chainIdToName: Record<SupportedChainId, string | null> = {
+const chainIdToName: Record<TargetChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
@@ -12,12 +12,15 @@ const chainIdToName: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: null, // As of now (2026/01/23), Ink is not on Trust Wallet assets repo
+  [AdditionalTargetChainId.SOLANA]: 'solana',
+  [AdditionalTargetChainId.BITCOIN]: 'bitcoin',
+  [AdditionalTargetChainId.OPTIMISM]: 'optimism',
 }
 
 /**
  * @deprecated TODO5(daniel)
  */
-export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): string | null {
+export function trustTokenLogoUrl(address: string, chainId: TargetChainId): string | null {
   const trustChainName = chainIdToName[chainId]
 
   if (!trustChainName) {

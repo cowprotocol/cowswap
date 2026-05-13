@@ -10,30 +10,6 @@ import { TokensVirtualRow } from './types'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 import { getCheckingRouteTooltip, getNoRouteTooltip } from '../constants'
 
-type BalancesMap = BalancesState['values'] | undefined
-
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
-  if (!balances) {
-    return tokens
-  }
-
-  const prioritized: TokenWithLogo[] = []
-  const remainder: TokenWithLogo[] = []
-
-  for (const token of tokens) {
-    const hasBalance = Boolean(balances[token.address.toLowerCase()])
-    if (hasBalance || getIsNativeToken(token)) {
-      prioritized.push(token)
-    } else {
-      remainder.push(token)
-    }
-  }
-
-  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
-
-  return [...sortedPrioritized, ...remainder]
-}
-
 export interface BuildVirtualRowsParams {
   sortedTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[] | undefined
@@ -42,8 +18,13 @@ export interface BuildVirtualRowsParams {
   onClearRecentTokens: () => void
   bridgeSupportedTokensMap: Record<string, boolean> | null
   areTokensFromBridge: boolean
+  hideRecentTokens?: boolean
+  hideFavoriteTokens?: boolean
 }
 
+type BalancesMap = BalancesState['values'] | undefined
+
+// eslint-disable-next-line complexity
 export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualRow[] {
   const {
     sortedTokens,
@@ -53,12 +34,16 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     onClearRecentTokens,
     bridgeSupportedTokensMap,
     areTokensFromBridge = false,
+    hideRecentTokens = false,
+    hideFavoriteTokens = false,
   } = params
 
   const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
   const composedRows: TokensVirtualRow[] = []
+  const hasFavoriteSection = !!favoriteTokens?.length && !hideFavoriteTokens
+  const hasRecentSection = !!recentTokens?.length && !hideRecentTokens
 
-  if (favoriteTokens?.length) {
+  if (favoriteTokens?.length && !hideFavoriteTokens) {
     composedRows.push({
       type: 'favorite-section',
       tokens: favoriteTokens,
@@ -66,7 +51,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (recentTokens?.length) {
+  if (recentTokens?.length && !hideRecentTokens) {
     const noRouteTooltip = getNoRouteTooltip()
     const checkingRouteTooltip = getCheckingRouteTooltip()
 
@@ -111,9 +96,31 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (favoriteTokens?.length || recentTokens?.length) {
+  if (hasFavoriteSection || hasRecentSection) {
     composedRows.push({ type: 'title', label: t`All tokens` })
   }
 
   return [...composedRows, ...tokenRows]
+}
+
+export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
+  if (!balances) {
+    return tokens
+  }
+
+  const prioritized: TokenWithLogo[] = []
+  const remainder: TokenWithLogo[] = []
+
+  for (const token of tokens) {
+    const hasBalance = Boolean(balances[getAddressKey(token.address)])
+    if (hasBalance || getIsNativeToken(token)) {
+      prioritized.push(token)
+    } else {
+      remainder.push(token)
+    }
+  }
+
+  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+
+  return [...sortedPrioritized, ...remainder]
 }

@@ -4,6 +4,8 @@ import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { useManageWidgetVisibility } from './useManageWidgetVisibility'
 import { resolveModalTitle } from './useWidgetMetadata'
 
@@ -18,6 +20,7 @@ export interface HeaderState {
 export function useHeaderState(): HeaderState {
   const widgetState = useSelectTokenWidgetState()
   const { openManageWidget } = useManageWidgetVisibility()
+  const { disableTokenImport } = useInjectedWidgetParams()
   const { standalone } = widgetState
   const resolvedField = widgetState.field ?? Field.INPUT
 
@@ -26,9 +29,9 @@ export function useHeaderState(): HeaderState {
   return useMemo(
     () => ({
       title,
-      showManageButton: !standalone,
+      showManageButton: !standalone && !disableTokenImport,
       onOpenManageWidget: openManageWidget,
     }),
-    [title, standalone, openManageWidget],
+    [title, standalone, disableTokenImport, openManageWidget],
   )
 }

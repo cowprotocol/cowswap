@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import type { TokenWithLogo } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { Nullish } from '@cowprotocol/types'
 
@@ -41,8 +42,7 @@ export function useBridgeOrderOutputToken(
       return localOrderOutputToken as TokenWithLogo
     }
 
-    const tokenAddressLower = outputTokenAddress.toLowerCase()
-    const token = data.tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)
+    const token = data.tokens.find((token) => areAddressesEqual(token.address, outputTokenAddress))
 
     // This is actually a hack
     // For some reason Bungee replaces ETH with WETH, so we cannot find WETH in tokens

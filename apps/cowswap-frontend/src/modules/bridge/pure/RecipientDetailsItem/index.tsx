@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSupportedAddress } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -22,7 +21,7 @@ interface RecipientDetailsItemProps {
 export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsItemProps): ReactNode {
   return (
     <>
-      {!areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT) && isAddress(recipient) && (
+      {!areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT) && isSupportedAddress(recipient) && (
         <ConfirmDetailsItem
           withTimelineDot
           label={

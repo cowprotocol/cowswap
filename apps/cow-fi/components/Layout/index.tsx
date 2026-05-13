@@ -3,7 +3,7 @@
 import { PropsWithChildren, ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { Footer, GlobalCoWDAOStyles, Media, MenuBar, baseTheme } from '@cowprotocol/ui'
+import { Footer, GlobalCoWDAOStyles, Media, MenuBar, baseTheme, getGlobalFooterNavItems } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
@@ -77,6 +77,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
         <Footer
           maxWidth={PAGE_MAX_WIDTH}
           productVariant={PRODUCT_VARIANT}
+          navItems={getGlobalFooterNavItems()}
           host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
           expanded
           hasTouchFooter

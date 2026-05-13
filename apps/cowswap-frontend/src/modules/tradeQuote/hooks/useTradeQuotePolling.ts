@@ -37,6 +37,10 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
   const { quoteParams, inputCurrency } = quoteParamsState || {}
 
+  const currentAmountRef = useRef<string | null>(null)
+  // eslint-disable-next-line react-hooks/refs
+  currentAmountRef.current = amountStr ?? null
+
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
   const isWindowVisible = useIsWindowVisible()
@@ -45,7 +49,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState, currentAmountRef)
   const pollQuoteRef = useRef(pollQuote)
   // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote

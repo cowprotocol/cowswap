@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
@@ -23,7 +24,7 @@ export function CreatedInOrderBookOrdersUpdater(): null {
 
   const { orders: partOrders, cacheEntries: partOrdersCacheEntries } = useCreatedInOrderBookPartOrders({
     chainId,
-    owner: account?.toLowerCase(),
+    owner: account ? getAddressKey(account) : undefined,
   })
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export function CreatedInOrderBookOrdersUpdater(): null {
     if (!Object.keys(partOrdersCacheEntries).length) return
     updateTwapPartOrdersCache({
       chainId,
-      owner: account?.toLowerCase(),
+      owner: account ? getAddressKey(account) : account,
       entries: partOrdersCacheEntries,
     })
   }, [chainId, account, partOrdersCacheEntries, updateTwapPartOrdersCache])

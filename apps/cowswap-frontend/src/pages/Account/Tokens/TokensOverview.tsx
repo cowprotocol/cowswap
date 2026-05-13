@@ -17,7 +17,6 @@ import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowproto
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
@@ -25,6 +24,7 @@ import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
+import { useWalletClient } from 'wagmi'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
@@ -57,7 +57,7 @@ const TokensLoader = styled(CardsLoader)`
 `
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
-type WalletProvider = ReturnType<typeof useWalletProvider>
+type WalletClient = ReturnType<typeof useWalletClient>['data']
 
 enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -87,9 +87,7 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
 
@@ -134,7 +132,8 @@ export default function TokensOverview(): ReactNode {
           <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
-            provider={provider}
+            account={account}
+            walletClient={walletClient}
             darkMode={theme.darkMode}
             selectedView={selectedView}
             formattedTokens={formattedTokens}
@@ -234,7 +233,8 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
 }
 
 interface TokensTableContentProps {
-  provider: WalletProvider
+  account: string | undefined
+  walletClient: WalletClient
   darkMode: boolean
   selectedView: PageViewKeys
   formattedTokens: TokenWithLogo[]
@@ -250,7 +250,8 @@ interface TokensTableContentProps {
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
   const {
-    provider,
+    account,
+    walletClient,
     darkMode,
     selectedView,
     formattedTokens,
@@ -266,7 +267,7 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
 
   const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
 
-  if (!provider) {
+  if (account && !walletClient) {
     return (
       <TokensLoader>
         <CowLoadingIcon size={120} isDarkMode={darkMode} />

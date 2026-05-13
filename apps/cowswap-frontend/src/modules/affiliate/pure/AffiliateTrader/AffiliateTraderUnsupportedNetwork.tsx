@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/react/macro'
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
@@ -12,7 +12,7 @@ export function AffiliateTraderUnsupportedNetwork(): ReactNode {
   return (
     <UnsupportedNetworkCard>
       <UnsupportedNetworkHeader>
-        <AlertCircle size={20} />
+        <AlertTriangle size={20} />
         <Trans>Switch network</Trans>
       </UnsupportedNetworkHeader>
       <UnsupportedNetworkMessage>

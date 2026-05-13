@@ -18,18 +18,6 @@ jest.mock('@cowprotocol/wallet', () => ({
 
 type VisibilityStateValue = 'visible' | 'hidden'
 
-function setVisibilityState(state: VisibilityStateValue): void {
-  Object.defineProperty(document, 'visibilityState', {
-    configurable: true,
-    value: state,
-  })
-}
-
-function dispatchVisibilityChange(state: VisibilityStateValue): void {
-  setVisibilityState(state)
-  document.dispatchEvent(new Event('visibilitychange'))
-}
-
 function buildWalletDetails(walletName: string | undefined): WalletDetails {
   return {
     walletName,
@@ -38,6 +26,18 @@ function buildWalletDetails(walletName: string | undefined): WalletDetails {
     isSafeApp: false,
     allowsOffchainSigning: true,
   }
+}
+
+function dispatchVisibilityChange(state: VisibilityStateValue): void {
+  setVisibilityState(state)
+  document.dispatchEvent(new Event('visibilitychange'))
+}
+
+function setVisibilityState(state: VisibilityStateValue): void {
+  Object.defineProperty(document, 'visibilityState', {
+    configurable: true,
+    value: state,
+  })
 }
 
 describe('useWalletSessionDuration', () => {

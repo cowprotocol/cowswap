@@ -1,6 +1,6 @@
-import React, { useCallback, ErrorInfo, PropsWithChildren } from 'react'
+import React, { ErrorInfo, PropsWithChildren } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import { getCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
@@ -11,6 +11,7 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
+import { tryRecoverFromReactError310 } from 'modules/application'
 // eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Page } from 'modules/application/pure/Page'
 
@@ -59,21 +60,11 @@ const HeaderWrapper = styled.div`
   }
 `
 
-async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
-  if (!('serviceWorker' in navigator)) {
-    throw new Error('Service Worker is not available')
-  }
-  const ready = await navigator.serviceWorker.ready
-  // the return type of update is incorrectly typed as Promise<void>. See
-  // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
-  return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
-}
-
 interface ErrorBoundaryProps extends PropsWithChildren {
   onError?: (error: Error, errorInfo: ErrorInfo) => void
 }
 
-class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { error: null }
@@ -102,6 +93,10 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    if (tryRecoverFromReactError310(error)) {
+      return
+    }
+    getCowAnalytics()?.sendError(error, errorInfo.toString())
     this.props.onError?.(error, errorInfo)
   }
 
@@ -111,7 +106,7 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
         showDialog={false}
         // TODO: Extract nested component outside render function
         // eslint-disable-next-line react/no-unstable-nested-components
-        fallback={({ error: sentryError }) => {
+        fallback={({ error: sentryError, eventId }) => {
           document.body.classList.remove('noScroll')
           const { error: localError } = this.state
           const error = localError || sentryError
@@ -133,7 +128,13 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
                 </HeaderWrapper>
               )}
 
-              <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
+              <Wrapper>
+                {isChunkLoadError ? (
+                  <ChunkLoadError eventId={eventId} />
+                ) : (
+                  <ErrorWithStackTrace error={error} eventId={eventId} />
+                )}
+              </Wrapper>
             </AppWrapper>
           )
         }}
@@ -144,16 +145,12 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
   }
 }
 
-// HOC to inject analytics into error boundary
-export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
-  const cowAnalytics = useCowAnalytics()
-
-  const handleError = useCallback(
-    (error: Error, errorInfo: ErrorInfo): void => {
-      cowAnalytics.sendError(error, errorInfo.toString())
-    },
-    [cowAnalytics],
-  )
-
-  return <ErrorBoundaryComponent {...props} onError={handleError} />
+async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('Service Worker is not available')
+  }
+  const ready = await navigator.serviceWorker.ready
+  // the return type of update is incorrectly typed as Promise<void>. See
+  // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
+  return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
 }

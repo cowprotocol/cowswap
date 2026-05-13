@@ -7,7 +7,6 @@ import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
-  getIsHardWareWallet,
   getIsInjectedMobileBrowser,
   useConnectionType,
   useDisconnectWallet,
@@ -68,8 +67,6 @@ export interface AccountDetailsProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  forceHardwareWallet?: boolean
-  toggleAccountSelectorModal: Command
   handleCloseOrdersPanel: Command
 }
 
@@ -81,9 +78,7 @@ export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ENSName,
-  toggleAccountSelectorModal,
   handleCloseOrdersPanel,
-  forceHardwareWallet,
 }: AccountDetailsProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const connectionType = useConnectionType()
@@ -109,14 +104,13 @@ export function AccountDetails({
   // When name is not set, it defaults to WalletConnect already
   const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ` + t`(via WalletConnect)` : ''
 
-  const handleDisconnectClick = (): void => {
-    disconnectWallet()
+  const handleDisconnectClick = async (): Promise<void> => {
+    await disconnectWallet()
     handleCloseOrdersPanel()
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
   const networkLabel = CHAIN_INFO[chainId].label
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
 
   return (
     <Wrapper>
@@ -124,14 +118,7 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              <WalletSelector
-                isHardWareWallet={isHardWareWallet}
-                onClick={() => {
-                  if (isHardWareWallet) {
-                    toggleAccountSelectorModal()
-                  }
-                }}
-              >
+              <WalletSelector>
                 <AccountIcon size={24} account={account} />
 
                 {(ENSName || account) && (

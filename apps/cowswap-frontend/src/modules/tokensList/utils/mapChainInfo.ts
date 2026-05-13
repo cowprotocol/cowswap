@@ -1,27 +1,20 @@
 import { BaseChainInfo, RPC_URLS } from '@cowprotocol/common-const'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainInfo, isEvmChain, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
-export function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): ChainInfo {
-  return {
+export function mapChainInfo(chainId: TargetChainId, info: BaseChainInfo): ChainInfo {
+  const shared = {
     addressPrefix: info.addressPrefix,
-    contracts: {},
     docs: {
       url: info.docs,
       name: `${info.label} Docs`,
     },
     isTestnet: chainId === SupportedChainId.SEPOLIA,
-    rpcUrls: {
-      default: {
-        http: [RPC_URLS[chainId]],
-      },
-    },
     website: {
       url: info.infoLink,
       name: info.label,
     },
     id: chainId,
     label: info.label,
-    eip155Label: info.eip155Label,
     nativeCurrency: {
       ...info.nativeCurrency,
       name: info.nativeCurrency.name || '',
@@ -36,5 +29,22 @@ export function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): Ch
       dark: info.logo.dark,
     },
     color: info.color,
+  }
+
+  if (isEvmChain(chainId)) {
+    return {
+      ...shared,
+      eip155Label: info.eip155Label ?? '',
+      contracts: {},
+      rpcUrls: {
+        default: {
+          http: [RPC_URLS[chainId]],
+        },
+      },
+    }
+  }
+
+  return {
+    ...shared,
   }
 }

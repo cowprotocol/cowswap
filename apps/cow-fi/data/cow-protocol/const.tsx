@@ -559,7 +559,7 @@ export const COW_PROTOCOL_SECTIONS = [
     bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple3,
     titleColor: Color.cowfi_purple_dark,
-    linkHref: 'https://grants.cow.fi/',
+    linkHref: 'https://docs.cow.fi/',
     linkText: 'Apply for a grant',
     linkEvent: 'click-apply-for-a-grant',
     linkUtmContent: 'cow-protocol-grants',

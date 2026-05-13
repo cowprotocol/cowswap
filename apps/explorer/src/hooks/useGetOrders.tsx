@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import { useMultipleErc20 } from 'hooks/useErc20'
@@ -95,8 +96,8 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     }
 
     const newOrders = orders.map((order) => {
-      order.buyToken = valueErc20s[order.buyTokenAddress.toLowerCase()] || order.buyToken
-      order.sellToken = valueErc20s[order.sellTokenAddress.toLowerCase()] || order.sellToken
+      order.buyToken = valueErc20s[getAddressKey(order.buyTokenAddress)] || order.buyToken
+      order.sellToken = valueErc20s[getAddressKey(order.sellTokenAddress)] || order.sellToken
 
       return order
     })
@@ -184,7 +185,7 @@ export function useTxOrderExplorerLink(
             networkId: network,
             identifier: txHash,
             showLogo: true,
-            label: network === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan',
+            label: CHAIN_INFO[network]?.explorerTitle || 'Etherscan',
           })
         }
       })

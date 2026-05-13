@@ -1,30 +1,25 @@
 import { useCallback } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { sendOrderCancellation } from 'legacy/utils/trade'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useOffChainCancelOrder() {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+import { useAppSigner } from 'common/hooks/useAppSigner'
+
+export function useOffChainCancelOrder(): (order: Order) => Promise<void> {
   const { account, chainId } = useWalletInfo()
   const cancelPendingOrder = useRequestOrderCancellation()
+  const signer = useAppSigner()
 
   return useCallback(
     async (order: Order): Promise<void> => {
-      if (!account || !provider) {
+      if (!account || !signer) {
         return
       }
-      const signer = provider.getSigner()
-
       return sendOrderCancellation({ chainId, orderId: order.id, signer, account, cancelPendingOrder })
     },
-    [account, cancelPendingOrder, chainId, provider],
+    [account, cancelPendingOrder, chainId, signer],
   )
 }

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { GenericOrder } from 'common/types'
@@ -16,12 +17,12 @@ export interface OrderFillability {
 
 export function useOrdersFillability(orders: GenericOrder[]): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
-  const tokens = useMemo(() => orders.map((order) => order.inputToken.address.toLowerCase()), [orders])
+  const tokens = useMemo(() => orders.map((order) => getAddressKey(order.inputToken.address)), [orders])
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
   return useMemo(() => {
     return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
-      const inputTokenAddress = order.inputToken.address.toLowerCase()
+      const inputTokenAddress = getAddressKey(order.inputToken.address)
       if (getIsNativeToken(chainId, inputTokenAddress)) {
         acc[order.id] = {
           hasEnoughBalance: true,
@@ -34,10 +35,11 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
 
       const balance = balances[inputTokenAddress]
       const allowance = allowances?.[inputTokenAddress]
+      const sellAmount = order.sellAmount !== undefined ? BigInt(order.sellAmount) : undefined
 
       acc[order.id] = {
-        hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
-        hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
+        hasEnoughBalance: balance !== undefined && sellAmount !== undefined ? balance >= sellAmount : undefined,
+        hasEnoughAllowance: allowance !== undefined && sellAmount !== undefined ? allowance >= sellAmount : undefined,
         hasPermit: doesOrderHavePermit(order),
         order,
       }

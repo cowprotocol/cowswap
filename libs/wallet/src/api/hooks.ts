@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
+import { AccountType } from '@cowprotocol/types'
 
 import { useConnection } from 'wagmi'
 
@@ -19,11 +19,12 @@ import {
   selectedEip6963ProviderAtom,
   selectedEip6963ProviderRdnsAtom,
 } from './state/multiInjectedProvidersAtom'
-import { ConnectionType, ConnectorType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useConnectionType } from '../web3-react/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
+import { useConnectionType } from '../wagmi/hooks/useConnectionType'
+import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
+import { useIsSafeApp, useIsSafeViaWc, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -60,12 +61,22 @@ export function useIsTxBundlingSupported(): boolean | null {
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
+  const accountType = useAccountType()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSafeWallet = useIsSafeWallet()
 
-  if (isSafeApp) return true
+  const result = (() => {
+    if (isSafeApp || isSafeViaWc) return true
+    // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
+    // fallback handler mechanism TWAP requires — treat them as unsupported.
+    // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
+    // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
+    if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
+    if (isCapabilitiesLoading) return null
+    return capabilities?.atomic?.status === 'supported'
+  })()
 
-  if (isCapabilitiesLoading) return null
-
-  return isSafeViaWc && capabilities?.atomic?.status === 'supported'
+  return result
 }
 
 // TODO: Add proper return type annotation
@@ -93,14 +104,10 @@ export function useSelectedEip6963ProviderInfo() {
 }
 
 export function useIsAssetWatchingSupported(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -109,14 +116,10 @@ export function useIsAssetWatchingSupported(): boolean {
 }
 
 export function useIsRabbyWallet(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -124,14 +127,10 @@ export function useIsRabbyWallet(): boolean {
 }
 
 export function useIsBraveWallet(): boolean {
-  const { connector } = useConnection()
   const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isInjectedConnection = connectionType === ConnectionType.INJECTED
 
   if (!info || !isInjectedConnection) return false
 
@@ -140,15 +139,10 @@ export function useIsBraveWallet(): boolean {
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const { connector } = useConnection()
-  const connectionType = useConnectionType()
   const info = useSelectedEip6963ProviderInfo()
 
-  let isMetamaskConnection = connectionType === ConnectionType.METAMASK
-  let isInjectedConnection = connectionType === ConnectionType.INJECTED
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
-    isInjectedConnection = connector?.type === ConnectorType.INJECTED
-  }
+  const isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
+  const isInjectedConnection = connector?.type === ConnectionType.INJECTED
 
   if (isMetamaskConnection) return true
 

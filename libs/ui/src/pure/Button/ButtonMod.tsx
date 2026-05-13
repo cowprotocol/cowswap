@@ -14,6 +14,7 @@ export const BaseButton = styled(RebassButton)<
   {
     padding?: string
     width?: string
+    $gap?: string
     $borderRadius?: string
     altDisabledStyle?: boolean
     buttonSize?: ButtonSize // mod
@@ -33,6 +34,7 @@ export const BaseButton = styled(RebassButton)<
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
+  gap: ${({ $gap }) => $gap ?? '0'};
   cursor: pointer;
   position: relative;
   z-index: 1;
@@ -72,34 +74,6 @@ export const ButtonPrimary = styled(BaseButton)`
     border: 1px solid transparent;
     outline: none;
     opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
-  }
-`
-
-export const ButtonLight = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text1};
-  font-size: 16px;
-  // font-weight: 500;
-  &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-  }
-  &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-  }
-  &:active {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.05)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.05)};
-  }
-  :disabled {
-    opacity: 0.4;
-    :hover {
-      cursor: auto;
-      background-color: ${({ theme }) => theme.bg2};
-      box-shadow: none;
-      border: 1px solid transparent;
-      outline: none;
-    }
   }
 `
 

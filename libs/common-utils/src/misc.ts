@@ -2,6 +2,7 @@ import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 
 import { isSellOrder } from './isSellOrder'
+import { log } from './logger'
 
 interface Market<T = string> {
   baseToken: T
@@ -63,14 +64,14 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string
   return Promise.race([promise, failOnTimeout])
 }
 
-// TODO: Replace any with proper type definitions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
-export const registerOnWindow = (registerMapping: Record<string, any>) => {
+type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+
+export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
+  if (typeof window === 'undefined') return
+
   Object.entries(registerMapping).forEach(([key, value]) => {
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any)[key] = value
+    ;(window as WindowWithMapping)[key] = value
+    log(undefined, undefined, key, value)
   })
 }
 

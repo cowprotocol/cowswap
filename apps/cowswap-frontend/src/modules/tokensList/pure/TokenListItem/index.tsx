@@ -2,11 +2,10 @@ import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { Nullish } from 'types'
 
@@ -26,7 +25,7 @@ const LoadingElement = (
 export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
-  balance: BigNumber | undefined
+  balance: bigint | undefined
   usdAmount?: CurrencyAmount<Currency> | null
 
   onSelectToken?: TokenSelectionHandler
@@ -113,7 +112,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   const shouldShowBalances = isWalletConnected && isSupportedChain
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
-    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+    shouldFormatBalances && balance !== undefined ? CurrencyAmount.fromRawAmount(token, balance.toString()) : undefined
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected || disabled) {
@@ -128,7 +127,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     <DisabledTooltip disabled={disabled} disabledReason={disabledReason}>
       <styledEl.TokenItem
         ref={visibilityRef}
-        data-address={token.address.toLowerCase()}
+        data-address={getAddressKey(token.address)}
         data-token-symbol={token.symbol || ''}
         data-token-name={token.name || ''}
         data-element-type="token-selection"

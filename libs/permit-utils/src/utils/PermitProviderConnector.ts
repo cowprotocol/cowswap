@@ -1,75 +1,78 @@
-import { defaultAbiCoder, ParamType } from '@ethersproject/abi'
-import { TypedDataField } from '@ethersproject/abstract-signer'
-import { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
-
-import { getContract } from './getContract'
+import { encodeFunctionData, decodeAbiParameters, bytesToHex, toHex } from 'viem'
 
 import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
+import type { Address, WalletClient, PublicClient, Hex } from 'viem'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(
-    private provider: JsonRpcProvider,
-    private walletSigner?: Wallet | undefined,
+    private publicClient: PublicClient,
+    private walletClient: WalletClient,
   ) {}
 
-  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
-    const contract = getContract(address || '', abi, this.provider)
+  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): Hex {
+    const normalizedParams = methodParams.map((param) => {
+      if (!(param instanceof Uint8Array)) {
+        return param
+      }
+      return bytesToHex(param)
+    })
 
-    return contract.interface.encodeFunctionData(methodName, methodParams)
+    return encodeFunctionData({ abi, functionName: methodName, args: normalizedParams })
   }
 
-  signTypedData(_walletAddress: string, typedData: EIP712TypedData, _typedDataHash: string): Promise<string> {
+  signTypedData(walletAddress: Address, typedData: EIP712TypedData, _typedDataHash: string): Promise<Hex> {
     // Removes `EIP712Domain` as it's already part of EIP712 (see https://ethereum.stackexchange.com/a/151930/55204)
     // and EthersJS complains when a type is not needed (see https://github.com/ethers-io/ethers.js/discussions/4000)
-    const types = Object.keys(typedData.types).reduce<Record<string, TypedDataField[]>>((acc, type) => {
-      if (type !== 'EIP712Domain') {
-        acc[type] = typedData.types[type]
-      }
-      return acc
-    }, {})
+    const types = Object.fromEntries(Object.entries(typedData.types).filter(([type]) => type !== 'EIP712Domain'))
 
-    const signer = this.walletSigner || this.provider.getSigner()
+    // Use the wallet client's account if available (LocalAccount signs in-memory),
+    // otherwise fall back to the address string (triggers RPC signing via the wallet).
+    const account = this.walletClient.account ?? walletAddress
 
-    return signer._signTypedData(typedData.domain, types, typedData.message)
-  }
-
-  ethCall(contractAddress: string, callData: string): Promise<string> {
-    return this.provider.call({
-      to: contractAddress,
-      data: callData,
+    return this.walletClient.signTypedData({
+      account,
+      domain: typedData.domain,
+      types,
+      primaryType: typedData.primaryType,
+      message: typedData.message,
     })
   }
 
-  decodeABIParameter<T>(type: string, hex: string): T {
-    return defaultAbiCoder.decode([type], hex)[0]
+  ethCall(contractAddress: Address, callData: Hex): Promise<string> {
+    return this.publicClient
+      .call({
+        to: contractAddress,
+        data: callData,
+      })
+      .then(({ data }) => data || '0x')
   }
 
-  decodeABIParameters<T>(types: AbiInput[], hex: string): T {
-    const decodedValues = defaultAbiCoder.decode(types as unknown as (ParamType | string)[], hex) as T
+  decodeABIParameter<T>(type: string, hex: Hex): T {
+    const [decoded] = decodeAbiParameters([{ type }], hex)
 
-    // Ethersjs decodes numbers as BigNumber instances
-    // However, 1inch utils do not deal with BigNumber instances,
-    // so we need this mess to convert them to hex strings, which 1inch understands
-    // TODO: Any way to make this typing mess any cleaner?
-    if (decodedValues && typeof decodedValues === 'object') {
-      const copy: Record<string, unknown> = {}
+    return decoded as T
+  }
 
-      Object.keys(decodedValues).forEach((key) => {
-        // @ts-ignore
-        const value = decodedValues[key]
-        if (BigNumber.isBigNumber(value)) {
-          // @ts-ignore
-          copy[key] = value.toHexString()
-        } else {
-          copy[key] = value
-        }
-      })
+  decodeABIParameters<T>(types: AbiInput[], hex: Hex): T {
+    const decoded = decodeAbiParameters(types, hex)
 
-      return copy as T
-    }
-
-    return decodedValues
+    // ethers' result was a hybrid array/object — callers in 1inch utils destructure
+    // by parameter name (eg `const { owner, spender } = decodeABIParameters(...)`).
+    // viem's `decodeAbiParameters returns a plain tuple, so
+    // destructuring by name yields undefined. Reconstruct the hybrid shape by keying
+    // values under both numeric index and the ABI parameter name.
+    //
+    // Also: 1inch utils don't understand bigint (ethers used BigNumber), so we coerce
+    // bigint values to hex strings — preserving the original viem-migration behavior.
+    const result: Record<string | number, unknown> = {}
+    types.forEach((input, i) => {
+      const raw = decoded[i]
+      const value = typeof raw === 'bigint' ? toHex(raw) : raw
+      result[i] = value
+      if (input.name) {
+        result[input.name] = value
+      }
+    })
+    return result as T
   }
 }

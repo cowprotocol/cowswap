@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TargetChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import {
   OnBridgingSuccessPayload,
@@ -30,7 +30,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
   [OrderStatusEvents.ON_POSTED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPostedOrderPayload) => {
-      const nativeCurrency = NATIVE_CURRENCIES[payload.inputAmount.currency.chainId as SupportedChainId]
+      const nativeCurrency = NATIVE_CURRENCIES[payload.inputAmount.currency.chainId as TargetChainId]
 
       const payloadFixed: OnPostedOrderPayload = {
         ...payload,

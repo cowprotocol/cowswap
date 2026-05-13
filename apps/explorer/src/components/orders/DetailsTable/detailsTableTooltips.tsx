@@ -14,11 +14,12 @@ export const DetailsTableTooltips = {
   ),
   toBridgeReceiver:
     'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.',
-  hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
+  hash: 'The onchain settlement transaction for this order. Can be viewed on a block explorer.',
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Signing, Open, Filled, Partially filled, Expired or Cancelled.',
   solvedBy: 'The solver that won and executed the settlement for this order.',
+  wrappers: 'Wrappers are smart contracts that execute as part of this order, as specified in the appData.',
   hooks: 'Hooks are interactions before/after order execution.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',

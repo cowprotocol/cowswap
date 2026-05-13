@@ -1,7 +1,12 @@
-import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
+
+import { getAddressValidationStrategy } from 'common/utils/addressValidation'
+
+import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
@@ -29,6 +34,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
+    injectedWidgetParams,
+    tradePriceImpact,
+    isNonEvmReceiverConfirmed,
   } = context
 
   const {
@@ -55,6 +63,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
 
+  const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
+
   const validations: TradeFormValidation[] = []
 
   // Always check if the browser is online before checking any other conditions
@@ -68,6 +78,32 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  // Return early as these take precedence
+  if (validations.length > 0) {
+    return validations
+  }
+
+  // If the xstock trade amount is below the minimum trade size, we want to show a specific error message,
+  // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
+  if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
+    return [TradeFormValidation.XstockMinimumTradeSize]
+  }
+
+  if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
+    const isTradeConstrained = injectedWidgetParams.tokenPairConstraints.some((rule) => {
+      return (
+        rule.sell.chainId === inputCurrency.chainId &&
+        areAddressesEqual(rule.sell.address, getCurrencyAddress(inputCurrency)) &&
+        rule.buy.chainId === outputCurrency.chainId &&
+        areAddressesEqual(rule.buy.address, getCurrencyAddress(outputCurrency))
+      )
+    })
+
+    if (isTradeConstrained) {
+      validations.push(TradeFormValidation.WidgetConstrainedTokenPair)
+    }
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
@@ -126,8 +162,15 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
+  const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+
   if (!isWrapUnwrap) {
-    const isRecipientAddress = Boolean(recipient && isAddress(recipient))
+    if (isNonEvmBridging && !recipient) {
+      validations.push(TradeFormValidation.RecipientNotSet)
+    }
+
+    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : undefined)
+    const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
     /**
      * For bridging, recipient can be only an address (ENS is not supported)
@@ -136,6 +179,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
+    }
+
+    if (isNonEvmBridging && recipient && isRecipientValid && !isNonEvmReceiverConfirmed) {
+      validations.push(TradeFormValidation.RecipientNotConfirmed)
     }
 
     if (isSwapUnsupported) {
@@ -168,6 +215,32 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isWrapUnwrap) {
     validations.push(TradeFormValidation.WrapUnwrapFlow)
+  }
+
+  const { whenPriceImpactIsHigherThan, whenPriceImpactIsUnknown } = injectedWidgetParams?.disableTrade || {}
+
+  const checkHighPriceImpact = typeof whenPriceImpactIsHigherThan === 'number'
+  const checkUnknownPriceImpact = whenPriceImpactIsUnknown || checkHighPriceImpact
+
+  if (!isWrapUnwrap && checkUnknownPriceImpact) {
+    const isPriceImpactUnknown = !tradePriceImpact.loading && !tradePriceImpact.priceImpact
+
+    if (isPriceImpactUnknown) {
+      validations.push(TradeFormValidation.DisableTradeWithUnknownPriceImpact)
+    }
+
+    if (tradePriceImpact.loading) {
+      validations.push(TradeFormValidation.ImpactLoading)
+    }
+  }
+
+  if (!isWrapUnwrap && checkHighPriceImpact && tradePriceImpact.priceImpact) {
+    const priceImpactAsNum = +tradePriceImpact.priceImpact.toSignificant()
+    const isPriceImpactAboveThreshold = priceImpactAsNum > whenPriceImpactIsHigherThan
+
+    if (isPriceImpactAboveThreshold) {
+      validations.push(TradeFormValidation.DisableTradeWithHighPriceImpact)
+    }
   }
 
   if (![ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired].includes(isApproveRequired)) {

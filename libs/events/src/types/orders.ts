@@ -7,12 +7,20 @@ export type BaseOrderPayload = {
   order: EnrichedOrder
 }
 
+export type BaseOrdersPayload = {
+  chainId: SupportedChainId
+  orders: EnrichedOrder[]
+}
+
 export type OnPostedOrderPayload = {
   orderUid: string
   chainId: SupportedChainId
   owner: string
   kind: OrderKind
   orderType: UiOrderType
+  quoteId?: string | number
+  isCrossChain?: boolean
+  destinationChainId?: number
   partiallyFillable?: boolean
   inputAmount: bigint
   outputAmount: bigint

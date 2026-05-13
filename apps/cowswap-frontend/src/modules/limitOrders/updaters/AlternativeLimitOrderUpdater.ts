@@ -156,7 +156,7 @@ function useUpdateAlternativeRawState(): null {
   // Use custom recipient address if set and != owner
   const recipientAddress = receiver && receiver !== owner ? receiver : undefined
   // Load used ens name, if any
-  const { name: recipient } = useENS(recipientAddress)
+  const { name: recipient } = useENS(recipientAddress as `0x${string}`)
 
   useEffect(() => {
     if (alternativeOrder) {

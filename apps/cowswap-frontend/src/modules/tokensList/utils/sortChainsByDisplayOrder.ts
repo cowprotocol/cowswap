@@ -1,12 +1,12 @@
 import { SORTED_CHAIN_IDS } from '@cowprotocol/common-const'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ChainInfo, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
-const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<SupportedChainId, number>>(
+const CHAIN_ORDER = SORTED_CHAIN_IDS.reduce<Record<TargetChainId, number>>(
   (acc, chainId, index) => {
     acc[chainId] = index
     return acc
   },
-  {} as Record<SupportedChainId, number>,
+  {} as Record<TargetChainId, number>,
 )
 
 interface SortOptions {

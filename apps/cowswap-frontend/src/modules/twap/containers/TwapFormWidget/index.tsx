@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
@@ -11,13 +11,11 @@ import { CaptchaWidget } from 'entities/captcha'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useGetTradeFormValidations, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -67,7 +65,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
-  const tradeQuote = useTradeQuote()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
@@ -77,10 +74,10 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
   const localFormValidation = useTwapFormState()
-  const primaryFormValidation = useGetTradeFormValidation()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const validations = useGetTradeFormValidations()
+  const primaryFormValidation = validations?.[0] || null
 
-  const hideQuoteAmount = useShouldHideQuoteAmounts()
+  const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -153,13 +150,6 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
-  // Reset output amount when quote params are changed
-  useLayoutEffect(() => {
-    if (tradeQuote.hasParamsChanged) {
-      updateState?.({ outputCurrencyAmount: null })
-    }
-  }, [tradeQuote.hasParamsChanged, updateState])
-
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
@@ -177,7 +167,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   return (
     <>
-      {!isWrapOrUnwrap && !hideQuoteAmount && (
+      {!hideQuoteAmount && (
         <>
           <styledEl.FooterBox>
             <RateInfo

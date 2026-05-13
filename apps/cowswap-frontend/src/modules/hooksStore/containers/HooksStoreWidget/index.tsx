@@ -24,7 +24,6 @@ import { PreHookButton } from '../PreHookButton'
 
 type HookPosition = 'pre' | 'post'
 
-// eslint-disable-next-line max-lines-per-function
 export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)

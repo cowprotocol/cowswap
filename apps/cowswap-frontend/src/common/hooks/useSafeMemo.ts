@@ -1,11 +1,12 @@
 import { EffectCallback, useEffect, useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, NativeCurrency, Percent, Price, Token } from '@cowprotocol/currency'
 
 export function useSafeDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return (dep.symbol || '') + dep.chainId
-    if (dep instanceof Token) return dep.address.toLowerCase() + dep.chainId
+    if (dep instanceof Token) return getAddressKey(dep.address) + dep.chainId
     if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.chainId
     if (dep instanceof Percent) return dep.toFixed(6)
     if (dep instanceof Price)

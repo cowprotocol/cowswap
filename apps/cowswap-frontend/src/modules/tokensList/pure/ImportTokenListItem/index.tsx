@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import { ListState } from '@cowprotocol/tokens'
 
 import { Trans } from '@lingui/react/macro'
-import { CheckCircle, AlertCircle } from 'react-feather'
+import { CheckCircle, AlertTriangle } from 'react-feather'
 
 import * as styledEl from './styled'
 
@@ -33,7 +33,7 @@ export function ImportTokenListItem(props: ImportTokenListItemProps): ReactEleme
         </styledEl.LoadedInfo>
       ) : isBlocked ? (
         <styledEl.BlockedInfo>
-          <AlertCircle size={16} strokeWidth={2} />
+          <AlertTriangle size={16} strokeWidth={2} />
           <span>{blockReason || <Trans>Not available in your region</Trans>}</span>
         </styledEl.BlockedInfo>
       ) : (

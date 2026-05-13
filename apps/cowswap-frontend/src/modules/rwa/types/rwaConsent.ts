@@ -1,6 +1,10 @@
-export interface UserConsent {
-  terms: string
-  acceptedDate: string
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
+export type RwaConsentCacheKey = `${string}-${string}`
+
+export interface RwaConsentKey {
+  wallet: string
+  ipfsHash: string
 }
 
 export interface RwaConsentRecord {
@@ -8,15 +12,13 @@ export interface RwaConsentRecord {
   acceptedAt: string
 }
 
-export interface RwaConsentKey {
-  wallet: string
-  ipfsHash: string
+export interface UserConsent {
+  terms: string
+  acceptedDate: string
 }
 
-export type RwaConsentCacheKey = `${string}-${string}`
-
 export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): RwaConsentCacheKey {
-  return `${wallet.toLowerCase()}-${ipfsHash}`
+  return `${getAddressKey(wallet)}-${ipfsHash}`
 }
 
 export function buildUserConsent(termsIpfsHash: string, acceptedAt: string): UserConsent {

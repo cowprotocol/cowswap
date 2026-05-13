@@ -240,3 +240,8 @@ This ensures both human contributors and AI assistants adhere to consistent codi
      - https://nx.dev/docs/reference/inputs
      - https://nx.dev/docs/concepts/how-caching-works#fine-tuning-nxs-cache
 3. In Vercel env variables, there are two different `NX_CLOUD_AUTH_TOKEN`. Token for production environment (`develop` branch) has write access.
+
+## 13. NPM publishing
+
+1. While creating a new library which is supposed to be published in NPM, please configure trusted published for it:
+   - https://docs.npmjs.com/trusted-publishers

@@ -47,10 +47,6 @@ const Wrapper = styled(Page)`
   }
 `
 
-function openGame(): void {
-  window?.open(GAME_URL, '_blank')?.focus()
-}
-
 export default function MevSlicer(): ReactNode {
   const { i18n } = useLingui()
 
@@ -89,4 +85,8 @@ export default function MevSlicer(): ReactNode {
       <Content></Content>
     </Wrapper>
   )
+}
+
+function openGame(): void {
+  window?.open(GAME_URL, '_blank')?.focus()
 }

@@ -2,7 +2,11 @@ name: ipfs
 
 on:
   push:
-    tags: [cowswap-v*]
+    tags: [ cowswap-v* ]
+
+permissions:
+  contents: read
+  deployments: write
 
 env:
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -17,11 +21,15 @@ env:
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NODE_VERSION: lts/jod
+  REACT_APP_ENVIRONMENT: ens
 
 jobs:
   ipfs:
     name: IPFS
     runs-on: ubuntu-latest
+    environment:
+      name: cowswap-ipfs
+      url: ${{ steps.deploy-ipfs.outputs.url }}
 
     steps:
       - name: Checkout code
@@ -33,7 +41,7 @@ jobs:
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
 
       - name: Set up node
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
@@ -42,4 +50,24 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Web Apps
-        run: pnpm run ipfs
+        id: deploy-ipfs
+        run: |
+          set -euo pipefail
+
+          output="$(pnpm run ipfs)"
+          printf '%s\n' "$output"
+
+          cid="$(printf '%s\n' "$output" | node tools/scripts/extract-ipfs-deployment.mjs)"
+          url="https://dweb.link/ipfs/${cid}/"
+          fallback_url="https://inbrowser.link/ipfs/${cid}/"
+
+          echo "cid=${cid}" >> "$GITHUB_OUTPUT"
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+          echo "fallback_url=${fallback_url}" >> "$GITHUB_OUTPUT"
+          {
+            echo "### IPFS deployment"
+            echo
+            echo "- CID: \`${cid}\`"
+            echo "- Primary URL: ${url}"
+            echo "- Fallback URL: ${fallback_url}"
+          } >> "$GITHUB_STEP_SUMMARY"

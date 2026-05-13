@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 
 import { formatTokenAmount } from '@cowprotocol/common-utils'
-import { Airdrop, AirdropAbi } from '@cowprotocol/cowswap-abis'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { AirdropAbi } from '@cowprotocol/cowswap-abis'
 import { Fraction } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -17,6 +18,12 @@ import { AirdropDataInfo, IAirdrop, IClaimData } from '../types'
 export interface PreviewClaimableTokensParams {
   dataBaseUrl: string
   address: string
+}
+
+/** Legacy contract shape for type narrowing; actual implementation is stub (null). */
+type AirdropContractLike = {
+  isClaimed(index: number): Promise<boolean>
+  interface: { encodeFunctionData(name: string, args: unknown[]): string }
 }
 
 type ChunkDataType = { [key: string]: AirdropDataInfo[] }
@@ -94,7 +101,7 @@ const fetchAddressIsEligible = async ({
 
   const chunkData = await fetchChunk(dataBaseUrl, intervalKey)
 
-  const addressLowerCase = address.toLowerCase()
+  const addressLowerCase = getAddressKey(address)
 
   // The user address is not listed in chunk
   if (!(addressLowerCase in chunkData)) throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS))
@@ -111,10 +118,11 @@ const fetchAddressIsEligible = async ({
 export const useClaimData = (tokenToClaimData?: IAirdrop) => {
   const { account } = useWalletInfo()
   const { i18n } = useLingui()
-  const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(
-    tokenToClaimData?.address,
-    AirdropAbi,
-  )
+  const {
+    contract: airdropContract,
+    address: airdropAddress,
+    chainId: airdropChainId,
+  } = useContract<AirdropContractLike>(tokenToClaimData?.address, AirdropAbi)
 
   const fetchPreviewClaimableTokens = useCallback(
     async ({ dataBaseUrl, address }: PreviewClaimableTokensParams): Promise<IClaimData> => {
@@ -146,20 +154,20 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
       return {
         ...isEligibleData,
         isClaimed,
-        callData,
-        contract: airdropContract,
+        callData: callData as `0x${string}`,
+        contractAddress: airdropAddress ?? '',
         token: tokenToClaim,
         formattedAmount,
       }
     },
-    [airdropContract, tokenToClaimData, account, airdropChainId, i18n],
+    [airdropContract, airdropAddress, tokenToClaimData, account, airdropChainId, i18n],
   )
 
   return useSWR<IClaimData | undefined, Error>(
     tokenToClaimData && account
       ? {
           dataBaseUrl: tokenToClaimData.dataBaseUrl,
-          address: account.toLowerCase(),
+          address: getAddressKey(account),
         }
       : null,
     fetchPreviewClaimableTokens,

@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai/index'
 import { useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BridgeOrderData } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -14,6 +15,6 @@ export function useBridgeOrders(): BridgeOrderData[] | undefined {
   return useMemo(() => {
     if (!account) return undefined
 
-    return bridgeOrderQuote[chainId]?.[account.toLowerCase()]
+    return bridgeOrderQuote[chainId]?.[getAddressKey(account)]
   }, [bridgeOrderQuote, chainId, account])
 }

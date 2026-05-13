@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -18,8 +19,8 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
 export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order | null {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
-  const inputToken = tokensByAddress[enrichedOrder.sellToken.toLowerCase()]
-  const outputToken = tokensByAddress[enrichedOrder.buyToken.toLowerCase()]
+  const inputToken = tokensByAddress[getAddressKey(enrichedOrder.sellToken)]
+  const outputToken = tokensByAddress[getAddressKey(enrichedOrder.buyToken)]
 
   if (!inputToken || !outputToken) return null
 

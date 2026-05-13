@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -97,8 +98,8 @@ function useTokenForTargetChain(params: BuyTokensParams | undefined, currencyId:
   return useMemo(() => {
     if (!result.data?.tokens?.length || !currencyId) return null
 
-    const currencyIdLower = currencyId.toLowerCase()
+    const currencyIdKey = getAddressKey(currencyId)
 
-    return result.data.tokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
+    return result.data.tokens.find((token) => getAddressKey(token.address) === currencyIdKey) || null
   }, [result, currencyId])
 }

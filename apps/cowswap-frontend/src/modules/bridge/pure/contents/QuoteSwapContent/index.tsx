@@ -7,7 +7,7 @@ import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { ProxyRecipient } from 'modules/accountProxy'
+import { ProxyRecipient } from 'modules/accountProxy/containers/ProxyRecipient'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'

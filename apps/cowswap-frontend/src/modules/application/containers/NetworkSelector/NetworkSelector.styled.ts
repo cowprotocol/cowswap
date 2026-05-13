@@ -144,7 +144,7 @@ export const SelectorLabel = styled.div`
     display: none;
   }
 `
-export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean; isOpen: boolean }>`
+export const SelectorControls = styled.div<{ $isChainIdUnsupported: boolean; $isOpen: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
@@ -157,8 +157,8 @@ export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean; isOp
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
 
-  ${({ isOpen }) =>
-    isOpen &&
+  ${({ $isOpen }) =>
+    $isOpen &&
     `
       background: var(${UI.COLOR_PAPER_DARKER});
       border: 2px solid var(${UI.COLOR_PAPER_DARKEST});
@@ -172,8 +172,8 @@ export const SelectorControls = styled.div<{ isChainIdUnsupported: boolean; isOp
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
 
-  ${({ isChainIdUnsupported, theme }) =>
-    isChainIdUnsupported &&
+  ${({ $isChainIdUnsupported, theme }) =>
+    $isChainIdUnsupported &&
     `
       color: ${theme.danger}!important;
       background: ${transparentize(theme.danger, 0.85)}!important;
@@ -200,12 +200,12 @@ export const SelectorWrapper = styled.div`
     position: relative;
   }
 `
-export const StyledChevronDown = styled(ChevronDown)<{ isOpen: boolean }>`
+export const StyledChevronDown = styled(ChevronDown)<{ $isOpen: boolean }>`
   width: 21px;
   height: 21px;
   margin: 0 0 0 -3px;
   object-fit: contain;
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 export const NetworkIcon = styled(AlertTriangle)`
