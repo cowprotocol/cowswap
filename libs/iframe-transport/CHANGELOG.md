@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.4](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.3...iframe-transport-v2.2.4) (2026-05-13)
+
+
+### 🐛 Bug Fixes
+
+* bump version of widget-lib + iframe-transport ([#7493](https://github.com/cowprotocol/cowswap/issues/7493)) ([b8a3bea](https://github.com/cowprotocol/cowswap/commit/b8a3beaed3ea1aebdfbdd1eee05d34fcb0f9c3a4))
+
 ## [2.2.3](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.2...iframe-transport-v2.2.3) (2026-04-22)
 
 

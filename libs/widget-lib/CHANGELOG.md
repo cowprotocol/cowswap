@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.0.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.2...widget-lib-v4.0.3) (2026-05-13)
+
+
+### 🐛 Bug Fixes
+
+* bump version of widget-lib + iframe-transport ([#7493](https://github.com/cowprotocol/cowswap/issues/7493)) ([b8a3bea](https://github.com/cowprotocol/cowswap/commit/b8a3beaed3ea1aebdfbdd1eee05d34fcb0f9c3a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.4
+
 ## [4.0.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.1...widget-lib-v4.0.2) (2026-04-30)
 
 
