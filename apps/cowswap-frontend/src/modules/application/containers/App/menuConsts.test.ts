@@ -34,6 +34,10 @@ jest.mock('modules/fortune', () => ({
   FortuneWidget: () => null,
 }))
 
+jest.mock('modules/accountProxy', () => ({
+  getProxyAccountUrl: (chainId: number) => `/${chainId}/account/account-proxy`,
+}))
+
 jest.mock('./menuConsts.utils', () => ({
   getSolversExplorerUrl: () => 'https://explorer.cow.fi/solvers',
 }))

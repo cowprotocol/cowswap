@@ -18,6 +18,9 @@ export type OnPostedOrderPayload = {
   owner: string
   kind: OrderKind
   orderType: UiOrderType
+  quoteId?: string | number
+  isCrossChain?: boolean
+  destinationChainId?: number
   partiallyFillable?: boolean
   inputAmount: bigint
   outputAmount: bigint
