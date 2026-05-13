@@ -141,7 +141,8 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails, true)
 
   const swapBridgeClickEvent = useMemo(
-    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    () =>
+      buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click', surface: 'confirm_modal' }),
     [swapBridgeClickEventData],
   )
 

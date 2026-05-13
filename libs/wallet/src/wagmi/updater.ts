@@ -13,7 +13,7 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
-import { useSetEip6963Provider } from '../api/hooks'
+import { useIsMetamaskBrowserExtensionWallet, useSetEip6963Provider } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
@@ -93,11 +93,12 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
+  const isMetaMask = useIsMetamaskBrowserExtensionWallet()
 
   return useMemo(() => {
     return {
@@ -107,26 +108,24 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
       ensName: ensName || undefined,
       isSupportedWallet: checkIsSupportedWallet(walletName),
 
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
+      // EOAs can always sign off-chain. MetaMask smart accounts also support EIP-1271 off-chain
+      // signing. All other smart contract wallets (Coinbase Smart Wallet, ERC-4337, Safe, etc.)
+      // must use on-chain pre-signing.
+      allowsOffchainSigning: !isSmartContractWallet || isMetaMask,
       isSafeApp,
     }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
+  }, [isSmartContractWallet, isSafeApp, isMetaMask, walletName, icon, ensName])
 }
 
 // used for on-chain calls
 let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
-}
-
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
+export function WalletUpdater(): null {
   const { connector } = useConnection()
+
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)

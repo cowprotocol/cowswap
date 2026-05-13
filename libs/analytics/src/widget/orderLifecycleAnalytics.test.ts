@@ -74,6 +74,9 @@ describe('orderLifecycleAnalytics', () => {
       owner: '0xowner',
       orderUid: '0xuid',
       chainId: 1,
+      quoteId: 42,
+      isCrossChain: true,
+      destinationChainId: 100,
       inputToken: {
         address: '0x0000000000000000000000000000000000000001',
         symbol: 'SELL',
@@ -97,7 +100,14 @@ describe('orderLifecycleAnalytics', () => {
 
     const result = mapPostedOrder(payload)
     expect(result.sellAmountUnits).toBe('1')
-    expect(result).toMatchObject({ fromAmount: '1', toAmount: '2.5', fromCurrency: 'SELL' })
+    expect(result).toMatchObject({
+      fromAmount: '1',
+      toAmount: '2.5',
+      fromCurrency: 'SELL',
+      quoteId: '42',
+      isCrossChain: true,
+      destinationChainId: 100,
+    })
   })
 
   it('formats fulfilled order amounts and cross-chain flag', () => {

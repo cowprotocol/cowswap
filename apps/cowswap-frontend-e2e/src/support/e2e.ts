@@ -23,7 +23,7 @@ import { injected } from './ethereum'
 const WAGMI_STORAGE_KEY = 'cowswap-wallet'
 
 /**
- * Seed wagmi's localStorage entries so the injected connector is recognised
+ * Seed wagmi's sessionStorage entries so the injected connector is recognised
  * as "previously connected" and `reconnect()` will auto-connect on mount.
  */
 function seedWagmiConnectionState(storage: Storage): void {
@@ -54,8 +54,8 @@ Cypress.Commands.overwrite(
       url: url.toString(),
       onBeforeLoad(win) {
         options?.onBeforeLoad?.(win)
-        win.localStorage.clear()
-        seedWagmiConnectionState(win.localStorage)
+        win.sessionStorage.clear()
+        seedWagmiConnectionState(win.sessionStorage)
         win.ethereum = injected
       },
     })
@@ -137,8 +137,8 @@ beforeEach(() => {
   })
 
   cy.on('window:before:load', (win) => {
-    win.localStorage.clear()
-    seedWagmiConnectionState(win.localStorage)
+    win.sessionStorage.clear()
+    seedWagmiConnectionState(win.sessionStorage)
     win.ethereum = injected
   })
 })

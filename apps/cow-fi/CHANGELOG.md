@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.5.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.7...cow-fi-v2.5.8) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* resolve transitive deps ([57d4b0f](https://github.com/cowprotocol/cowswap/commit/57d4b0f3236bdec7d3cd489fd663557ea31e6062))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.2
+    * @cowprotocol/assets bumped to 2.3.0
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/ui bumped to 3.4.0
+    * @cowprotocol/wallet bumped to 3.3.0
+
 ## [2.5.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.6...cow-fi-v2.5.7) (2026-05-08)
 
 

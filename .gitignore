@@ -30,6 +30,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -67,9 +68,6 @@ apps/cowswap-frontend/public/robots.txt
 CLAUDE.md
 .claude/
 .superpowers/**/*
-
-# Codex context files (local only)
-.codex
 
 # Agents context files (local only)
 .agents/

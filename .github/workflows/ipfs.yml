@@ -2,7 +2,7 @@ name: ipfs
 
 on:
   push:
-    tags: [cowswap-v*]
+    tags: [ cowswap-v* ]
 
 permissions:
   contents: read
@@ -21,6 +21,7 @@ env:
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NODE_VERSION: lts/jod
+  REACT_APP_ENVIRONMENT: ens
 
 jobs:
   ipfs:
