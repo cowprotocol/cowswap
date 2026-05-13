@@ -10,7 +10,28 @@ import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
 import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
+/**
+ * An {@link EthereumProvider} that may also expose `removeListener` for
+ * subscription cleanup.
+ *
+ * EIP-1193 standardizes `on(event, handler)` for subscribing to provider
+ * events but does not formally specify the removal counterpart. Most wallet
+ * providers (MetaMask, Rabby, Coinbase Wallet, WalletConnect) implement
+ * `removeListener` to match Node's `EventEmitter` API, but it is not
+ * guaranteed. Use this type — or a `typeof provider.removeListener ===
+ * 'function'` runtime check — to narrow before calling it.
+ *
+ * Within this library it is used by {@link IframeRpcProviderBridge.disconnect}
+ * to detach the forwarded `connect` / `disconnect` / `chainChanged` /
+ * `accountsChanged` listeners before dropping the provider reference,
+ * preventing stale handlers from firing against the parent dapp.
+ */
+export type EthereumProviderWithRemoveListener = EthereumProvider & {
+  removeListener?(event: string, handler: (...args: unknown[]) => void): void
+}
+
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
+
 const eip6963Providers: EIP6963ProviderDetail[] = []
 
 if (typeof window !== 'undefined') {
@@ -36,6 +57,9 @@ export class IframeRpcProviderBridge {
   /** Stored JSON-RPC requests, to queue them when disconnected. */
   private requestWaitingForConnection: { [key: string]: JsonRpcRequestMessage } = {}
 
+  /** Bound event-forwarding listeners so they can be removed on disconnect. */
+  private providerEventListeners: Array<{ event: string; handler: (params: unknown) => void }> = []
+
   /**
    * Creates an instance of IframeRpcProviderBridge.
    * @param iframeWindow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
@@ -51,6 +75,17 @@ export class IframeRpcProviderBridge {
    */
   disconnect(): void {
     if (typeof window === 'undefined') return
+
+    // Remove event-forwarding listeners from the provider before dropping the reference.
+    if (this.ethereumProvider) {
+      const provider = this.ethereumProvider as EthereumProviderWithRemoveListener
+      if (typeof provider.removeListener === 'function') {
+        for (const { event, handler } of this.providerEventListeners) {
+          provider.removeListener(event, handler)
+        }
+      }
+    }
+    this.providerEventListeners = []
 
     // Disconnect provider
     this.ethereumProvider = null
@@ -94,9 +129,12 @@ export class IframeRpcProviderBridge {
     // Process pending requests
     this.processPendingRequests()
 
-    // Register in the provider, the events that needs to be forwarded to the iFrame window
+    // Register in the provider, the events that needs to be forwarded to the iFrame window.
+    // Store references so they can be removed on disconnect().
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-      newProvider.on(event, (params: unknown) => this.onProviderEvent(event, params))
+      const handler = (params: unknown): void => this.onProviderEvent(event, params)
+      this.providerEventListeners.push({ event, handler })
+      newProvider.on(event, handler)
     })
 
     // Listen for provider meta info request
