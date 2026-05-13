@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.2...balances-and-allowances-v3.2.3) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/wallet bumped to 3.3.1
+
 ## [3.2.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.1...balances-and-allowances-v3.2.2) (2026-05-12)
 
 
