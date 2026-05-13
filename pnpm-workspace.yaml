@@ -11,5 +11,5 @@ minimumReleaseAgeExclude:
   - next
   - typescript
   - '@types/*'
-  - '@next/swc-*' # security patch
+  - '@next/swc-*@15.5.18' # security patch (pinned to next@15.5.18; update with Next bumps)
   - '@cowprotocol/*'
