@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.3.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.3.0...explorer-v4.3.1) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.4
+
 ## [4.3.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.2.1...explorer-v4.3.0) (2026-05-12)
 
 
