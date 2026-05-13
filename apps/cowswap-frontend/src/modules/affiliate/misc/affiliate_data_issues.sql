@@ -12,6 +12,8 @@ params as (
 select
   base.block_time,
   base.environment,
+  base.app_data_app_code,
+  base.order_class,
   base.protocol_fee_volume_bps,
   base.referrer_code,
   base.blockchain,
@@ -22,6 +24,7 @@ from (
   select
     trades.*,
     coalesce(ad.environment, ad.widget_environment) as environment,
+    ad.app_code as app_data_app_code,
     lower(cast(trades.trader as varchar)) as trader_address
   from dune.cowprotocol.result_fac_trades as trades
   left join query_5172256 as ad
@@ -31,6 +34,7 @@ from (
   where
     trades.block_time >= cast(params.start_date as timestamp)
     and (not params.has_referrer or trades.referrer_code is not null)
+    and lower(coalesce(trades.swap_source, '')) != 'integrations'
 ) base
 cross join params
 where
