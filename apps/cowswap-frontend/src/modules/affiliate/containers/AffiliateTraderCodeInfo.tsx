@@ -135,7 +135,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
   )
 }
 
-export function CodeNotFound({ savedCode }: { savedCode: string }): ReactNode {
+function CodeNotFound({ savedCode }: { savedCode: string }): ReactNode {
   return (
     <div>
       <ColumnOneCard>

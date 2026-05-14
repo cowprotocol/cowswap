@@ -3,7 +3,6 @@ import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
-import BigNumber from 'bignumber.js'
 
 import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
@@ -108,33 +107,6 @@ export function formatRefCode(value?: string | null): string | undefined {
   if (!value) return undefined
   const normalized = value.trim().toUpperCase()
   return REF_CODE_PATTERN.test(normalized) ? normalized : undefined
-}
-
-export function formatTokenAmountDecimal(value?: string): string {
-  if (!value) return EMPTY_VALUE_LABEL
-
-  const amount = new BigNumber(value)
-
-  if (!amount.isFinite()) return EMPTY_VALUE_LABEL
-  if (amount.isZero()) return '0'
-
-  const absoluteValue = amount.abs()
-
-  if (absoluteValue.isLessThan(0.001)) {
-    return trimTrailingZeros(amount.toFixed(8))
-  }
-
-  if (absoluteValue.isLessThan(1)) {
-    return trimTrailingZeros(amount.toFixed(6))
-  }
-
-  return formatLocaleNumber({
-    number: amount.toNumber(),
-    locale: i18n.locale,
-    options: {
-      maximumFractionDigits: 3,
-    },
-  })
 }
 
 export function formatUsdcCompact(value?: number): string {
@@ -327,11 +299,4 @@ function readStringFromRecord(value: JsonRecord | undefined, key: string): strin
   const raw = value[key]
 
   return typeof raw === 'string' ? raw : undefined
-}
-
-function trimTrailingZeros(value: string): string {
-  return value
-    .replace(/(\.\d*?[1-9])0+$/u, '$1')
-    .replace(/\.0+$/u, '')
-    .replace(/\.$/u, '')
 }

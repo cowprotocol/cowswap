@@ -5,10 +5,18 @@ import {
   formatShortDate,
   getExplorerOrderLink,
   shortenAddress,
+  tryParseCurrencyAmount,
 } from '@cowprotocol/common-utils'
 import { Token } from '@cowprotocol/currency'
 import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
-import { Badge, BadgeTypes, ContextMenuExternalLink, ContextMenuTooltip, InfoTooltip } from '@cowprotocol/ui'
+import {
+  Badge,
+  BadgeTypes,
+  ContextMenuExternalLink,
+  ContextMenuTooltip,
+  InfoTooltip,
+  TokenAmount,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -19,7 +27,7 @@ import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { TraderActivityEligibilityReason, TraderActivityRowResponse } from '../api/bffAffiliateApi.types'
-import { formatTokenAmountDecimal, formatUsdCompact, toValidDate } from '../lib/affiliateProgramUtils'
+import { formatUsdCompact, toValidDate } from '../lib/affiliateProgramUtils'
 
 export interface AffiliateTraderActivityTableRowProps {
   row: TraderActivityRowResponse
@@ -49,6 +57,8 @@ export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivity
   const buyTokenLabel = buyToken?.symbol || buyTokenSymbol || shortenAddress(buyTokenAddress)
   const sellTokenLogo = sellToken || createDisplayToken(chainId, sellTokenAddress, sellTokenSymbol)
   const buyTokenLogo = buyToken || createDisplayToken(chainId, buyTokenAddress, buyTokenSymbol)
+  const sellAmount = tryParseCurrencyAmount(executedSellAmount, sellTokenLogo)
+  const buyAmount = tryParseCurrencyAmount(executedBuyAmount, buyTokenLogo)
 
   return (
     <tr>
@@ -57,10 +67,22 @@ export function AffiliateTraderActivityTableRow({ row }: AffiliateTraderActivity
           <CurrencyLogoPair sellToken={sellTokenLogo} buyToken={buyTokenLogo} />
           <TradeSummary>
             <TradeLine>
-              {formatTokenAmountDecimal(executedSellAmount)} <TradeTokenSymbol>{sellTokenLabel}</TradeTokenSymbol>
+              {sellAmount ? (
+                <TokenAmount amount={sellAmount} tokenSymbol={sellTokenLogo} opacitySymbol />
+              ) : (
+                <>
+                  - <TradeTokenSymbol>{sellTokenLabel}</TradeTokenSymbol>
+                </>
+              )}
             </TradeLine>
             <TradeLine>
-              {formatTokenAmountDecimal(executedBuyAmount)} <TradeTokenSymbol>{buyTokenLabel}</TradeTokenSymbol>
+              {buyAmount ? (
+                <TokenAmount amount={buyAmount} tokenSymbol={buyTokenLogo} opacitySymbol />
+              ) : (
+                <>
+                  - <TradeTokenSymbol>{buyTokenLabel}</TradeTokenSymbol>
+                </>
+              )}
             </TradeLine>
           </TradeSummary>
         </TradeCell>
