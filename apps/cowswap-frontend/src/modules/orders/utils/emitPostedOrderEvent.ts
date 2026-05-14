@@ -16,6 +16,9 @@ interface PendingOrderNotificationParams {
   owner: string
   kind: OrderKind
   uiOrderType: UiOrderType
+  quoteId?: string | number
+  isCrossChain?: boolean
+  destinationChainId?: number
   receiver: Nullish<string>
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
@@ -33,6 +36,9 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     owner,
     kind: params.kind,
     orderType: uiOrderType,
+    quoteId: params.quoteId,
+    isCrossChain: params.isCrossChain,
+    destinationChainId: params.destinationChainId,
     inputAmount: BigInt(inputAmount.quotient.toString()),
     outputAmount: BigInt(outputAmount.quotient.toString()),
     inputToken: currencyToTokenInfo(inputAmount.currency),

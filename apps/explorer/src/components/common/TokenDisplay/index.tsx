@@ -14,7 +14,7 @@ import { NativeWrapper, StyledImg, Wrapper } from './styled'
 import { getNetworkSuffix, getTokenLabelBaseNode } from './utils'
 
 export type TokenDisplayProps = {
-  erc20: TokenErc20 & { chainId?: Network | SupportedChainId; logoUrl?: string }
+  erc20: TokenErc20 & { chainId?: Network | SupportedChainId; logoUrl?: string; logoURI?: string }
   network: number
   showAbbreviated?: boolean
   showNetworkName?: boolean
@@ -30,7 +30,7 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const { data: networks } = useBridgeProviderNetworks(bridgeProvider)
 
   const tokenInfo = tokens?.[getAddressKey(erc20.address)]
-  const tokenLogo = erc20?.logoUrl || tokenInfo?.logoURI
+  const tokenLogo = erc20?.logoUrl || erc20?.logoURI || tokenInfo?.logoURI
 
   const bridgeNetwork = networks?.[network]
   const bridgeBlockExplorer = bridgeNetwork?.blockExplorer

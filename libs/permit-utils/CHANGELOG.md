@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.1...permit-utils-v3.2.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* permit provider connector ([#7488](https://github.com/cowprotocol/cowswap/issues/7488)) ([c993576](https://github.com/cowprotocol/cowswap/commit/c99357660e42aa8b4e4ec82eb8b7f96ffc9e404a))
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.0...permit-utils-v3.2.1) (2026-04-22)
 
 

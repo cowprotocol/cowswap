@@ -18,6 +18,7 @@ describe('Swap (mod)', () => {
   it('can enter an amount into input', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
+    cy.get('#input-currency-input .token-amount-input').should('have.value', '1')
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectAll}{del}')
       .type('0.001')
@@ -27,12 +28,16 @@ describe('Swap (mod)', () => {
   it('zero swap amount', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
+    // Wait for the default sell amount to be auto-filled before clearing
+    cy.get('#input-currency-input .token-amount-input').should('have.value', '1')
     cy.get('#input-currency-input .token-amount-input').type('{selectAll}{del}').type('0.0').should('have.value', '0.0')
   })
 
   it('invalid swap amount', () => {
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
+    // Wait for the default sell amount to be auto-filled before clearing
+    cy.get('#input-currency-input .token-amount-input').should('have.value', '1')
     cy.get('#input-currency-input .token-amount-input').type('{selectAll}{del}').type('\@\@').should('have.value', '')
   })
 
