@@ -83,6 +83,7 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@storybook/react-vite": "^10.3.1",
     "@testing-library/react": "16.3.0",
     "@types/cytoscape": "^3.21.9",
     "@types/cytoscape-popper": "^2.0.0",

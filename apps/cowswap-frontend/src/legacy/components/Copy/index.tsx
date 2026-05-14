@@ -1,4 +1,4 @@
-import Copy, { CopyIcon, TransactionStatusText } from './CopyMod'
+import Copy, { CopyIcon, TransactionStatusText } from './CopyHelper'
 
 export { CopyIcon, TransactionStatusText }
 

@@ -1055,7 +1055,7 @@ msgstr "Sending {nativeTokenSymbol}"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
+#: apps/cowswap-frontend/src/legacy/components/Copy/CopyHelper.tsx
 msgid "Copied"
 msgstr "Copied"
 

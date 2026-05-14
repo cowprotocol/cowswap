@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, ReactNode } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { UI, LinkStyledButton } from '@cowprotocol/ui'
@@ -63,15 +63,11 @@ interface CopyHelperProps
   hideCopiedLabel?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function CopyHelper(props: CopyHelperProps) {
+export default function CopyHelper(props: CopyHelperProps): ReactNode {
   const { toCopy, children, clickableLink, copyIconWidth, hideCopiedLabel = false, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
     event.stopPropagation()
     setCopied(toCopy)
   }
