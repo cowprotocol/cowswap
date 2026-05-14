@@ -1,71 +1,69 @@
-import { checkEnvironment, EnvironmentChecks } from './environment'
+const ENVIRONMENT_VAR_NAME = 'NEXT_PUBLIC_ENVIRONMENT'
+const originalEnvironment = process.env[ENVIRONMENT_VAR_NAME]
 
-const DEFAULT_ENVIRONMENTS_CHECKS: EnvironmentChecks = {
+const DEFAULT_ENVIRONMENTS_CHECKS = {
   isProd: false,
   isPr: false,
   isDev: false,
   isLocal: false,
 }
 
-describe('Detect environments using host and path', () => {
-  describe('Not a known environment', () => {
-    it('Empty strings', () => {
-      expect(checkEnvironment('', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
-    })
-    it('Unknown domain', () => {
-      expect(checkEnvironment('github.com', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
-    })
+describe('Detect environments using configured env var', () => {
+  afterEach(() => {
+    jest.resetModules()
 
-    it('swap.cow.fi', () => {
-      expect(checkEnvironment('swap.cow.fi', '')).toEqual(DEFAULT_ENVIRONMENTS_CHECKS)
-    })
+    if (typeof originalEnvironment === 'undefined') {
+      delete process.env[ENVIRONMENT_VAR_NAME]
+    } else {
+      process.env[ENVIRONMENT_VAR_NAME] = originalEnvironment
+    }
   })
 
-  describe('Is production', () => {
-    const isProduction = { ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true }
+  it('throws when the env var is missing', async () => {
+    delete process.env[ENVIRONMENT_VAR_NAME]
 
-    it('cow.fi', () => {
-      expect(checkEnvironment('cow.fi', '')).toEqual(isProduction)
-    })
+    await expect(import('./environment')).rejects.toThrow(`Missing ${ENVIRONMENT_VAR_NAME}`)
   })
 
-  describe('Is PR', () => {
-    const isPr = { ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true }
+  it('throws when the env var is invalid', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'invalid-environment'
 
-    it('https://cowfi-git-widget-page-1-cowswap.vercel.app', () => {
-      expect(checkEnvironment('cowfi-git-widget-page-1-cowswap.vercel.app', '')).toEqual(isPr)
-    })
-
-    it('https://cowfi-git-add-env-test-and-widget-cowswap.vercel.app', () => {
-      expect(checkEnvironment('cowfi-git-add-env-test-and-widget-cowswap.vercel.app', '')).toEqual(isPr)
-    })
+    await expect(import('./environment')).rejects.toThrow(`Invalid ${ENVIRONMENT_VAR_NAME}="invalid-environment"`)
   })
 
-  describe('Is Development', () => {
-    const isDevelopment = { ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true }
+  it('uses production env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'production'
 
-    it('develop.cow.fi', () => {
-      expect(checkEnvironment('develop.cow.fi', '')).toEqual(isDevelopment)
-    })
+    const { checkEnvironment, environmentName } = await import('./environment')
+
+    expect(environmentName).toBe('production')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isProd: true })
   })
 
-  describe('Is Local', () => {
-    const isLocal = { ...DEFAULT_ENVIRONMENTS_CHECKS, isLocal: true }
+  it('uses pr env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'pr'
 
-    it('localhost:3000', () => {
-      expect(checkEnvironment('localhost:3000', '')).toEqual(isLocal)
-    })
+    const { checkEnvironment, environmentName } = await import('./environment')
 
-    it('localhost:8080', () => {
-      expect(checkEnvironment('localhost:8080', '')).toEqual(isLocal)
-    })
+    expect(environmentName).toBe('pr')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isPr: true })
+  })
 
-    it('127.0.0.1:3000', () => {
-      expect(checkEnvironment('127.0.0.1:3000', '')).toEqual(isLocal)
-    })
+  it('uses development env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'development'
 
-    it('192.168.0.11:3000', () => {
-      expect(checkEnvironment('192.168.0.11:3000', '')).toEqual(isLocal)
-    })
+    const { checkEnvironment, environmentName } = await import('./environment')
+
+    expect(environmentName).toBe('development')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isDev: true })
+  })
+
+  it('uses local env var override', async () => {
+    process.env[ENVIRONMENT_VAR_NAME] = 'local'
+
+    const { checkEnvironment, environmentName } = await import('./environment')
+
+    expect(environmentName).toBe('local')
+    expect(checkEnvironment()).toEqual({ ...DEFAULT_ENVIRONMENTS_CHECKS, isLocal: true })
   })
 })

@@ -23,6 +23,7 @@ import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
 import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
+import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
@@ -57,7 +58,7 @@ interface FooterSectionProps {
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -103,6 +104,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
+        <RecoveryBanner />
         <InvalidLocalTimeWarning />
 
         <OrdersPanel />
@@ -131,7 +133,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
+        <AffiliateTraderModal />
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
   )

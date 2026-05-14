@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/core-v3.2.1...core-v3.2.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* **twap:** update Safe API url to v2 ([#7394](https://github.com/cowprotocol/cowswap/issues/7394)) ([b186ff4](https://github.com/cowprotocol/cowswap/commit/b186ff4d48993975474cb7e5400e110b4ed232f6))
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/core-v3.2.0...core-v3.2.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.1
+
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/core-v3.1.2...core-v3.2.0) (2026-04-16)
 
 

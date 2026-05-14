@@ -1,4 +1,5 @@
 export interface GetSwapConfirmDisabledStateParams {
+  isTradeContextReady: boolean
   shouldDisplayBridgeDetails: boolean
   hasBridgeQuoteAmounts: boolean
   hasCurrentCurrency: boolean
@@ -15,6 +16,7 @@ export interface SwapConfirmDisabledState {
 
 export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateParams): SwapConfirmDisabledState {
   const {
+    isTradeContextReady,
     shouldDisplayBridgeDetails,
     hasBridgeQuoteAmounts,
     hasCurrentCurrency,
@@ -24,9 +26,16 @@ export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateP
     isQuoteStale,
   } = params
 
-  const isBridgeQuoteRefreshing = shouldDisplayBridgeDetails && (isQuoteLoading || quoteCounter === 0 || isQuoteStale)
+  const isQuoteRefreshing = isQuoteLoading || quoteCounter === 0 || isQuoteStale
 
-  if (isBridgeQuoteRefreshing) {
+  if (isQuoteRefreshing) {
+    return {
+      disableConfirm: true,
+      isInsufficientBalance: false,
+    }
+  }
+
+  if (!isTradeContextReady) {
     return {
       disableConfirm: true,
       isInsufficientBalance: false,

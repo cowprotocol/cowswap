@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/wallet",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,9 +24,9 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.0",
-    "@reown/appkit": "^1.6.2",
-    "@reown/appkit-adapter-wagmi": "^1.6.2",
+    "@cowprotocol/cow-sdk": "9.0.2",
+    "@reown/appkit": "1.8.16",
+    "@reown/appkit-adapter-wagmi": "1.8.16",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
@@ -57,10 +57,10 @@
     "ms.macro": "^2.0.0",
     "react": "19.1.2",
     "styled-components": "5.3.11",
-    "viem": "^2.47.1",
-    "wagmi": "3.4.2",
-    "@wagmi/core": "3.3.2",
-    "@wagmi/connectors": "^7.1.5",
+    "viem": "^2.48.8",
+    "wagmi": "3.6.9",
+    "@wagmi/core": "3.4.8",
+    "@wagmi/connectors": "^8.0.9",
     "swr": "^2.3.3"
   },
   "devDependencies": {

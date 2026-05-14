@@ -13,7 +13,7 @@ export function WalletProvider({ children }: WalletProviderProps): ReactNode {
   const darkMode = theme?.darkMode ?? false
 
   useEffect(() => {
-    reownAppKit.setThemeMode(darkMode ? 'dark' : 'light')
+    reownAppKit?.setThemeMode(darkMode ? 'dark' : 'light')
   }, [darkMode])
 
   return <>{children}</>

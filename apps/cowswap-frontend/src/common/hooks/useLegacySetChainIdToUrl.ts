@@ -7,9 +7,15 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
+// Trade routes that handle their own chain resolution (e.g. via SwapPageRedirect).
+// Setting ?chain= on these paths causes unnecessary navigation that races with their own redirect logic.
+const CHAINLESS_TRADE_ROUTES = ['/swap', '/limit', '/advanced', '/yield']
+
 /**
  * Updates the URL to reflect the selected chain:
  * - When the path has a chain segment (e.g. /42161/swap), replaces it with the new chainId so the URL stays in sync.
+ * - When on the root path (/) or a chainId-less trade route (/swap, /limit, etc.), does nothing —
+ *   the router's redirect flow will resolve to the correct trade URL.
  * - Otherwise sets the legacy query parameter ?chain=...
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
@@ -27,13 +33,19 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
         return
       }
 
+      // On the root path or chainId-less trade routes, the page itself handles chain resolution.
+      // Setting ?chain= here races with that redirect logic and can leave the widget stuck.
+      if (pathname === '/') return
+      if (CHAINLESS_TRADE_ROUTES.some((r) => pathname === r || pathname.startsWith(r + '/'))) return
+
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
+      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
       navigate(
         {
           pathname,
-          search: replaceURLParam(location.search, 'chain', chainInfo.name),
+          search: newSearch,
         },
         { replace: true },
       )

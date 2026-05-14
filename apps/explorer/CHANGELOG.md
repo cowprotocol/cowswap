@@ -1,5 +1,57 @@
 # Changelog
 
+## [4.3.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.2.1...explorer-v4.3.0) (2026-05-12)
+
+
+### ✨ Features
+
+* add token lists for non-supported chains ([#7262](https://github.com/cowprotocol/cowswap/issues/7262)) ([c356c12](https://github.com/cowprotocol/cowswap/commit/c356c125015a31556eed8acc2460e172ee8b20ae))
+* **explorer:** Explorer bridging debuggin improvements ([#7377](https://github.com/cowprotocol/cowswap/issues/7377)) ([ddd08e2](https://github.com/cowprotocol/cowswap/commit/ddd08e2de277587865f977c82ccec25209a3f113))
+* parse appData quoteBody in Explorer ([#7461](https://github.com/cowprotocol/cowswap/issues/7461)) ([716164f](https://github.com/cowprotocol/cowswap/commit/716164f23ff431441efddc4448a36cd3da75f9fa))
+
+
+### 🐛 Bug Fixes
+
+* **explorer:** make explorer max-width's wider ([#7456](https://github.com/cowprotocol/cowswap/issues/7456)) ([1f13c97](https://github.com/cowprotocol/cowswap/commit/1f13c9760300af7d06653d052116ec72c4bb530e))
+
+
+### 🔧 Miscellaneous
+
+* update deps ([3e60158](https://github.com/cowprotocol/cowswap/commit/3e60158e943aaa9340c3d55745fac1041542a5ee))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.2
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/ui bumped to 3.4.0
+
+## [4.2.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.2.0...explorer-v4.2.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+* unify 'scan' spelling for chain explorer labels ([#7382](https://github.com/cowprotocol/cowswap/issues/7382)) ([0286991](https://github.com/cowprotocol/cowswap/commit/028699127de8a51637fa2f9bc48b14ff3ecda10f)), closes [#6827](https://github.com/cowprotocol/cowswap/issues/6827)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.1
+    * @cowprotocol/common-const bumped to 3.2.1
+    * @cowprotocol/common-hooks bumped to 3.2.1
+    * @cowprotocol/common-utils bumped to 3.3.1
+    * @cowprotocol/core bumped to 3.2.1
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.3
+    * @cowprotocol/types bumped to 4.3.1
+    * @cowprotocol/ui bumped to 3.3.1
+
 ## [4.2.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.1.2...explorer-v4.2.0) (2026-04-16)
 
 

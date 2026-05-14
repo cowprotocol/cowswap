@@ -1,5 +1,57 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.3.1...ui-v3.4.0) (2026-05-12)
+
+
+### ✨ Features
+
+* prettify receiver component ([#7339](https://github.com/cowprotocol/cowswap/issues/7339)) ([3ff9551](https://github.com/cowprotocol/cowswap/commit/3ff9551f1761934f769fe3591c135454232eb1ea))
+
+
+### 🐛 Bug Fixes
+
+* build ([d74c738](https://github.com/cowprotocol/cowswap/commit/d74c738678a2937c9901125b2f448e2396ec5639))
+
+
+### ♻️ Refactoring
+
+* **affiliate:** remove feature flag checks for affiliate program ([#7466](https://github.com/cowprotocol/cowswap/issues/7466)) ([d2d7dab](https://github.com/cowprotocol/cowswap/commit/d2d7dab1ae7e192ed3fbaef88091fe82a572a798))
+
+
+### 🔧 Miscellaneous
+
+* fix cow.fi build ([d1956ca](https://github.com/cowprotocol/cowswap/commit/d1956cabac28b1d52496dbc62305ce9d94849987))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.2
+    * @cowprotocol/assets bumped to 2.3.0
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.3.0...ui-v3.3.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.1
+    * @cowprotocol/common-const bumped to 3.2.1
+    * @cowprotocol/common-hooks bumped to 3.2.1
+    * @cowprotocol/common-utils bumped to 3.3.1
+    * @cowprotocol/core bumped to 3.2.1
+    * @cowprotocol/types bumped to 4.3.1
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.2.2...ui-v3.3.0) (2026-04-16)
 
 

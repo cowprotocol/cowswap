@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.3.1...common-utils-v3.3.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+
+### 🧪 Tests
+
+* fix e2e tests after viem migration ([#7336](https://github.com/cowprotocol/cowswap/issues/7336)) ([49c8237](https://github.com/cowprotocol/cowswap/commit/49c82371859cfc50a590b15fff3906b05a1ed609))
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.3.0...common-utils-v3.3.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-const bumped to 3.2.1
+    * @cowprotocol/types bumped to 4.3.1
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.2.1...common-utils-v3.3.0) (2026-04-16)
 
 

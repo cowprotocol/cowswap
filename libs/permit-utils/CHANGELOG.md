@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.1...permit-utils-v3.2.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* permit provider connector ([#7488](https://github.com/cowprotocol/cowswap/issues/7488)) ([c993576](https://github.com/cowprotocol/cowswap/commit/c99357660e42aa8b4e4ec82eb8b7f96ffc9e404a))
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.0...permit-utils-v3.2.1) (2026-04-22)
+
+
+### 🐛 Bug Fixes
+
+* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.3
+
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.2...permit-utils-v3.2.0) (2026-04-16)
 
 

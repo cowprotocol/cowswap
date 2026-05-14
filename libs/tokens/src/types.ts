@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
 import { StatusColorVariant } from '@cowprotocol/ui'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
@@ -44,6 +44,10 @@ export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' 
 export type TokenListsState = { [source: string]: ListState }
 
 export type TokenListsByChainState = PersistentStateByChain<{ [source: string]: ListState | 'deleted' }>
+
+export type AdditionalChainTokenListsByChainState = Partial<
+  Record<TargetChainId, { [source: string]: ListState | 'deleted' }>
+>
 
 export type TagInfo = {
   id: string

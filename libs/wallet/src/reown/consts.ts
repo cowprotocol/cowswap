@@ -7,3 +7,5 @@ export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.map((chainId) =>
   Chain,
   ...Chain[],
 ]
+
+export const COW_WIDGET_CONNECTOR_ID = 'cow-widget'
