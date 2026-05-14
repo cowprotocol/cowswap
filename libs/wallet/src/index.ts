@@ -3,6 +3,7 @@ import './types.d.ts'
 export * from './api/types'
 export * from './assets'
 export * from './constants'
+export { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
 
 // Hooks
 export * from './api/hooks'
