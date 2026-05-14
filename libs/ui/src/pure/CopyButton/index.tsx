@@ -2,6 +2,7 @@ import { type ButtonHTMLAttributes, type MouseEvent, type ReactNode, useCallback
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
+import { Trans } from '@lingui/react/macro'
 import { Check, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -47,7 +48,7 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
   const {
     value,
     children,
-    copiedLabel = 'Copied',
+    copiedLabel = <Trans>Copied</Trans>,
     idleLabel,
     showCopiedLabel = true,
     iconSize = 16,
