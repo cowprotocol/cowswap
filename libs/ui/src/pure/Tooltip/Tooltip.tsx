@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip'
+import ms from 'ms.macro'
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-const CLOSE_DELAY_MS = 300
+const CLOSE_DELAY_MS = ms`0.3s`
 
 const Trigger = styled.div`
   display: inline-flex;
