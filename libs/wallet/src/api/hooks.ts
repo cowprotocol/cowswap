@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { AccountType } from '@cowprotocol/types'
+
 import { useConnection } from 'wagmi'
 
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
@@ -21,7 +23,8 @@ import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './typ
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../wagmi/hooks/useConnectionType'
-import { useIsSafeApp, useIsSafeViaWc } from '../wagmi/hooks/useWalletMetadata'
+import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
+import { useIsSafeApp, useIsSafeViaWc, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -58,9 +61,17 @@ export function useIsTxBundlingSupported(): boolean | null {
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
+  const accountType = useAccountType()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSafeWallet = useIsSafeWallet()
 
   const result = (() => {
     if (isSafeApp || isSafeViaWc) return true
+    // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
+    // fallback handler mechanism TWAP requires — treat them as unsupported.
+    // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
+    // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
+    if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
     if (isCapabilitiesLoading) return null
     return capabilities?.atomic?.status === 'supported'
   })()
