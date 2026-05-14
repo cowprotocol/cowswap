@@ -16,8 +16,7 @@ export function useTraderActivity(): SWRResponse<TraderActivityRowResponse[] | n
 
   return useSWR<TraderActivityRowResponse[] | null, Error>(
     account ? ['affiliate-trader-activity', account] : null,
-    async () => {
-      if (!account) return EMPTY_ROWS
+    async ([_, account]: [string, string]) => {
       const response = await bffAffiliateApi.getTraderActivity(account)
       const rows = response?.rows ?? EMPTY_ROWS
 
