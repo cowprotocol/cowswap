@@ -328,7 +328,7 @@ importers:
         version: link:../../libs/assets
       '@cowprotocol/cms':
         specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        version: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -542,7 +542,7 @@ importers:
         version: link:../../libs/balances-and-allowances
       '@cowprotocol/cms':
         specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        version: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -557,7 +557,7 @@ importers:
         version: link:../../libs/core
       '@cowprotocol/cow-runner-game':
         specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
-        version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+        version: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
         specifier: 9.1.0-pr-825-dbd7d596.0
         version: 9.1.0-pr-825-dbd7d596.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@13.4.2)
@@ -1577,7 +1577,7 @@ importers:
     dependencies:
       '@cowprotocol/cms':
         specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        version: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
@@ -3051,11 +3051,13 @@ packages:
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
-  '@cowprotocol/cms@0.11.0':
-    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==}
+  '@cowprotocol/cms@https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz':
+    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==, tarball: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz}
+    version: 0.11.0
 
-  '@cowprotocol/cow-runner-game@0.2.9':
-    resolution: {integrity: sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==}
+  '@cowprotocol/cow-runner-game@https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz':
+    resolution: {integrity: sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==, tarball: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz}
+    version: 0.2.9
     peerDependencies:
       react: ^16.X
       react-dom: ^16.X
@@ -19266,11 +19268,11 @@ snapshots:
 
   '@corex/deepmerge@4.0.43': {}
 
-  '@cowprotocol/cms@0.11.0':
+  '@cowprotocol/cms@https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz':
     dependencies:
       openapi-fetch: 0.9.5
 
-  '@cowprotocol/cow-runner-game@0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)':
+  '@cowprotocol/cow-runner-game@https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz(react-dom@19.1.2(react@19.1.2))(react@19.1.2)':
     dependencies:
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
