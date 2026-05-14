@@ -8,6 +8,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { LinkStyledButton } from '../LinkStyledButton'
+import { NewTooltip } from '../Tooltip/Tooltip'
 
 export interface CopyButtonState {
   isCopied: boolean
@@ -21,7 +22,7 @@ export interface CopyButtonProps
   children?: CopyButtonChildren
   copiedLabel?: ReactNode
   idleLabel?: ReactNode
-  showCopiedLabel?: boolean
+  iconOnly?: boolean
   iconSize?: number
   iconPosition?: 'left' | 'right'
   color?: string
@@ -50,7 +51,7 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
     children,
     copiedLabel = <Trans>Copied</Trans>,
     idleLabel,
-    showCopiedLabel = true,
+    iconOnly = false,
     iconSize = 16,
     iconPosition = 'left',
     color,
@@ -78,9 +79,8 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
   const renderedChildren = typeof children === 'function' ? children({ isCopied }) : children
   const idleContent = renderedChildren ?? idleLabel
   const icon = isCopied ? <Check size={iconSize} /> : <Copy size={iconSize} />
-  const content = isCopied ? showCopiedLabel ? <span>{copiedLabel}</span> : null : idleContent
-
-  return (
+  const content = isCopied ? iconOnly ? null : <span>{copiedLabel}</span> : idleContent
+  const button = (
     <StyledCopyButton
       type={type ?? 'button'}
       onClick={handleClick}
@@ -92,5 +92,13 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
       {iconPosition === 'left' ? icon : content}
       {iconPosition === 'left' ? content : icon}
     </StyledCopyButton>
+  )
+
+  return !idleContent && iconOnly ? (
+    <NewTooltip content={isCopied ? copiedLabel : 'Copy to clipboard'} placement="top">
+      {button}
+    </NewTooltip>
+  ) : (
+    button
   )
 }
