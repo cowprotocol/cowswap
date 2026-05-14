@@ -46,6 +46,7 @@ import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
+  isTradeContextReady: boolean
 
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
@@ -59,7 +60,15 @@ export interface SwapConfirmModalProps {
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { t } = useLingui()
   const CONFIRM_TITLE = t`Swap`
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
+  const {
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    priceImpact,
+    recipient,
+    recipientAddress,
+    doTrade,
+    isTradeContextReady,
+  } = props
 
   const { account } = useWalletInfo()
   const appData = useAppData()
@@ -109,6 +118,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     }
 
     return getSwapConfirmDisabledState({
+      isTradeContextReady,
       shouldDisplayBridgeDetails,
       hasBridgeQuoteAmounts: Boolean(bridgeQuoteAmounts),
       hasCurrentCurrency,
@@ -123,6 +133,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     inputCurrencyInfo,
     isQuoteLoading,
     isQuoteStale,
+    isTradeContextReady,
     quoteCounter,
     shouldDisplayBridgeDetails,
   ])
@@ -130,7 +141,8 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const confirmText = useGetConfirmButtonLabel('swap', shouldDisplayBridgeDetails, true)
 
   const swapBridgeClickEvent = useMemo(
-    () => buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click' }),
+    () =>
+      buildSwapBridgeClickEvent({ ...swapBridgeClickEventData, action: 'swap_bridge_click', surface: 'confirm_modal' }),
     [swapBridgeClickEventData],
   )
 

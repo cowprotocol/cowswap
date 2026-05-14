@@ -1,5 +1,75 @@
 # Changelog
 
+## [3.10.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.1...cowswap-v3.10.2) (2026-05-14)
+
+
+### 🐛 Bug Fixes
+
+* add safe api key to vercel ([#7504](https://github.com/cowprotocol/cowswap/issues/7504)) ([9743ec9](https://github.com/cowprotocol/cowswap/commit/9743ec94f6fcf33ab6d55a1fbee0ccb0e62ba2aa))
+
+## [3.10.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.0...cowswap-v3.10.1) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/balances-and-allowances bumped to 3.2.3
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.4
+    * @cowprotocol/iframe-transport bumped to 2.2.4
+    * @cowprotocol/permit-utils bumped to 3.2.3
+    * @cowprotocol/wallet bumped to 3.3.1
+    * @cowprotocol/widget-lib bumped to 4.0.3
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.9.2...cowswap-v3.10.0) (2026-05-12)
+
+
+### ✨ Features
+
+* add AffiliateFeedbackButton ([#7431](https://github.com/cowprotocol/cowswap/issues/7431)) ([74d8348](https://github.com/cowprotocol/cowswap/commit/74d8348e08e6feb30ff738aed6d05d792b1b6db8))
+* **explorer:** Explorer bridging debuggin improvements ([#7377](https://github.com/cowprotocol/cowswap/issues/7377)) ([ddd08e2](https://github.com/cowprotocol/cowswap/commit/ddd08e2de277587865f977c82ccec25209a3f113))
+
+
+### 🐛 Bug Fixes
+
+* **affiliate:** gate feedback button by affiliate network state ([#7481](https://github.com/cowprotocol/cowswap/issues/7481)) ([bb80b12](https://github.com/cowprotocol/cowswap/commit/bb80b12b98983bbba1d17636bd53f15a27c0342e))
+* **approval:** use isSafeWallet to check if the transaction is from safe ([#7453](https://github.com/cowprotocol/cowswap/issues/7453)) ([0d651b0](https://github.com/cowprotocol/cowswap/commit/0d651b03388f4ad511b1cf7c56e66aa37885cda4))
+* Coinbase Sign In preferences (connect with coinbase wallet) ([#7443](https://github.com/cowprotocol/cowswap/issues/7443)) ([0e40b35](https://github.com/cowprotocol/cowswap/commit/0e40b3503cf3030cd24b105e3ce67a72a8c798e6))
+* hide paste btn if the api denied by settings ([#7435](https://github.com/cowprotocol/cowswap/issues/7435)) ([14cc289](https://github.com/cowprotocol/cowswap/commit/14cc2891c532250dfea86b120d9447ae26de138c))
+* prevent MetaMask embedded browser from getting stuck at swap route ([#7433](https://github.com/cowprotocol/cowswap/issues/7433)) ([5079915](https://github.com/cowprotocol/cowswap/commit/507991532a1052df91f29d2c45af7a457818f716))
+* **swap:** hide MetaMask version warning on mobile browsers ([#7464](https://github.com/cowprotocol/cowswap/issues/7464)) ([c861fbd](https://github.com/cowprotocol/cowswap/commit/c861fbdd7efc26086e645906dd8800e439ead038)), closes [#7462](https://github.com/cowprotocol/cowswap/issues/7462)
+* **tradeQuote:** refetch quote immediately after token change ([#7448](https://github.com/cowprotocol/cowswap/issues/7448)) ([adf4a1d](https://github.com/cowprotocol/cowswap/commit/adf4a1dfcc5a8f4c95f1d94c87d96fdbdc0f24ac))
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+
+### ♻️ Refactoring
+
+* **affiliate:** remove feature flag checks for affiliate program ([#7466](https://github.com/cowprotocol/cowswap/issues/7466)) ([d2d7dab](https://github.com/cowprotocol/cowswap/commit/d2d7dab1ae7e192ed3fbaef88091fe82a572a798))
+
+
+### 🔧 Miscellaneous
+
+* revert [#7448](https://github.com/cowprotocol/cowswap/issues/7448) ([#7487](https://github.com/cowprotocol/cowswap/issues/7487)) ([146a0c2](https://github.com/cowprotocol/cowswap/commit/146a0c235d4b7e994468ff339a154c95ef60281f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/analytics bumped to 3.2.2
+    * @cowprotocol/assets bumped to 2.3.0
+    * @cowprotocol/balances-and-allowances bumped to 3.2.2
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/cowswap-abis bumped to 4.0.0
+    * @cowprotocol/ens bumped to 3.2.2
+    * @cowprotocol/permit-utils bumped to 3.2.2
+    * @cowprotocol/snackbars bumped to 2.0.22
+    * @cowprotocol/tokens bumped to 3.5.0
+    * @cowprotocol/ui bumped to 3.4.0
+    * @cowprotocol/wallet bumped to 3.3.0
+
 ## [3.9.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.9.1...cowswap-v3.9.2) (2026-04-30)
 
 

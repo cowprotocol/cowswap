@@ -17,6 +17,8 @@
     "start:cosmos": "nx run cowswap-frontend:cosmos:run",
     "start:cosmos:explorer": "nx run explorer:cosmos:run",
     "start:explorer": "cross-env NODE_ENV=development nx run explorer:serve",
+    "storybook": "nx run storybook:storybook",
+    "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
     "build": "pnpm run build:cowswap",
@@ -81,9 +83,11 @@
   },
   "pnpm": {
     "overrides": {
-      "wagmi": "3.4.2",
-      "@wagmi/core": "3.3.2",
-      "viem": "2.47.1"
+      "wagmi": "3.6.9",
+      "@wagmi/core": "3.4.8",
+      "viem": "2.48.8",
+      "use-sync-external-store": "1.5.0",
+      "zod": "3.25.76"
     },
     "peerDependencyRules": {
       "allowedVersions": {

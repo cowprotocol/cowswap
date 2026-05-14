@@ -1,19 +1,12 @@
-import { useAtomValue } from 'jotai'
 import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, matchPath } from 'react-router'
 
-import {
-  AffiliateFeedbackButton,
-  TraderWalletStatus,
-  affiliateTraderSavedCodeAtom,
-  useAffiliateTraderWallet,
-} from 'modules/affiliate'
+import { AffiliateFeedbackButton } from 'modules/affiliate'
 import { Content, PageTitle, Title } from 'modules/application'
 
 import { Routes as RoutesEnum } from 'common/constants/routes'
@@ -28,7 +21,6 @@ const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
 interface AccountTitleProps {
-  canShowAffiliateFeedbackButton: boolean
   id?: string
   name?: string
   pathname: string
@@ -48,34 +40,24 @@ function TitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
   )
 }
 
-function MyRewardsTitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
-  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const walletStatus = useAffiliateTraderWallet()
-
-  if (!savedCode || walletStatus === TraderWalletStatus.INELIGIBLE) {
-    return <Title id={id}>{name}</Title>
-  }
-
-  return <TitleWithFeedback id={id} name={name} />
-}
-
-function AccountTitle({ canShowAffiliateFeedbackButton, id, name, pathname }: AccountTitleProps): ReactNode {
-  if (!canShowAffiliateFeedbackButton) {
-    return <Title id={id}>{name}</Title>
-  }
-
-  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER) {
+function AccountTitle({ id, name, pathname }: AccountTitleProps): ReactNode {
+  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER || pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
     return <TitleWithFeedback id={id} name={name} />
-  }
-
-  if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
-    return <MyRewardsTitleWithFeedback id={id} name={name} />
   }
 
   return <Title id={id}>{name}</Title>
 }
 
 function getPropsFromRoute(route: string): string[] {
+  if (
+    matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
+  ) {
+    return ['account-proxy', t`Account Proxy`]
+  }
+
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', t`Account overview`]
@@ -112,21 +94,14 @@ export const AccountOverview = (): ReactNode => {
 
 export default function Account(): ReactNode {
   const { pathname } = useLocation()
-  const { account } = useWalletInfo()
   const [id, name] = getPropsFromRoute(pathname)
-  const canShowAffiliateFeedbackButton = Boolean(account)
 
   return (
     <Wrapper>
       <AccountMenu />
       <AccountPageWrapper>
         <Content>
-          <AccountTitle
-            canShowAffiliateFeedbackButton={canShowAffiliateFeedbackButton}
-            id={id}
-            name={name}
-            pathname={pathname}
-          />
+          <AccountTitle id={id} name={name} pathname={pathname} />
           <Outlet />
         </Content>
       </AccountPageWrapper>
