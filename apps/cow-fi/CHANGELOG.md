@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.5.9](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.8...cow-fi-v2.5.9) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/wallet bumped to 3.3.1
+    * @cowprotocol/widget-react bumped to 3.0.3
+
 ## [2.5.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.7...cow-fi-v2.5.8) (2026-05-12)
 
 
