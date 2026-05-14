@@ -13,6 +13,10 @@ const Trigger = styled.div`
   align-items: center;
 `
 
+const Positioner = styled(BaseTooltip.Positioner)`
+  z-index: 10;
+`
+
 const Popup = styled(BaseTooltip.Popup)`
   max-width: 320px;
   background: var(${UI.COLOR_PAPER_DARKER});
@@ -103,12 +107,12 @@ export function NewTooltip(props: NewTooltipProps): ReactNode {
           {children}
         </BaseTooltip.Trigger>
         <BaseTooltip.Portal>
-          <BaseTooltip.Positioner side={side} align={align} sideOffset={8}>
+          <Positioner side={side} align={align} sideOffset={8}>
             <Popup>
               <Arrow />
               {content}
             </Popup>
-          </BaseTooltip.Positioner>
+          </Positioner>
         </BaseTooltip.Portal>
       </BaseTooltip.Root>
     </BaseTooltip.Provider>

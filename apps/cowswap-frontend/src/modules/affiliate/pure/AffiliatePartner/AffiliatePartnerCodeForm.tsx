@@ -1,13 +1,11 @@
 import { KeyboardEvent, ReactNode, useCallback, useId } from 'react'
 
-import { HelpTooltip, UI } from '@cowprotocol/ui'
+import { CopyButton, HelpTooltip, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { RotateCw } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import CopyHelper from 'legacy/components/Copy'
 
 import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
 
@@ -158,10 +156,10 @@ function ReferralLinkPreview({ previewLink, isCopyDisabled }: ReferralLinkPrevie
     <ConnectedPreviewCard>
       <LinkedLinkRow>
         <LinkedCopy>
-          <CopyHelper
-            toCopy={previewLink}
+          <CopyButton
+            value={previewLink}
             iconSize={16}
-            hideCopiedLabel
+            iconOnly
             disabled={isCopyDisabled}
             aria-label={isCopyDisabled ? t`Enter a code to copy the referral link` : t`Copy referral link`}
           />

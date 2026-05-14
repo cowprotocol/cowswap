@@ -21,7 +21,7 @@ export const Default: Story = {}
 export const IconOnly: Story = {
   args: {
     children: undefined,
-    showCopiedLabel: false,
+    iconOnly: true,
     'aria-label': 'Copy address',
   },
 }
