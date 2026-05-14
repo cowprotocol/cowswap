@@ -25,18 +25,26 @@ interface TransactionContentWithLinkProps {
   orderUid?: string
   children?: ReactElement
   isEthFlow?: boolean
+  /**
+   * Explicitly marks `transactionHash` as a Safe transaction hash (safeTxHash).
+   * When omitted, it's inferred from whether the connected wallet is a Safe.
+   * On-chain transactions (e.g. approve/wrap/unwrap executed directly, including
+   * 1/1 Safe immediate execution) report an Ethereum tx hash, which cannot be used
+   * to build a working app.safe.global link, so they must keep the explorer link.
+   */
+  isSafeTx?: boolean
 }
 
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps): ReactNode {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
-  const { transactionHash, orderUid, children, isEthFlow } = props
+  const { transactionHash, orderUid, children, isEthFlow, isSafeTx: isSafeTxProp } = props
   const { status } = useOrder({ id: orderUid, chainId }) || {}
 
   const isOrder = isCowOrder('transaction', orderUid)
   const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid))
-  const isSafeTx = !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
+  const isSafeTx = isSafeTxProp ?? !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
 
   const isEthFlowCreating =
     isEthFlow && transactionHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status)
