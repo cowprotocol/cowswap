@@ -4,7 +4,7 @@ Turnstile is mounted in swap, limit, yield, and twap forms through `containers/C
 
 On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `state/captchaJwtAtom.ts` stores it, and `CaptchaWidget` mirrors it into `orderBookApi.context.bearerToken`.
 
-Exchange URL: `REACT_APP_TURNSTILE_AUTH_URL`, defaulting to `https://barn.api.cow.fi/auth/turnstile`.
+Exchange URL: selected backend API origin plus `/auth/turnstile`.
 
 Debug helpers:
 
