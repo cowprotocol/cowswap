@@ -151,7 +151,7 @@ const FOOTER_NAV_GROUP_MISC = {
   ],
 } as const satisfies NavItemProps
 
-export function getAboutFooterNavChildren(isAffiliateProgramEnabled: boolean): NavItemChildrenProps[] {
+export function getAboutFooterNavChildren(): NavItemChildrenProps[] {
   return [
     {
       href: 'https://docs.cow.fi/governance',
@@ -180,21 +180,18 @@ export function getAboutFooterNavChildren(isAffiliateProgramEnabled: boolean): N
       external: true,
       utmContent: 'footer-misc-bug-bounty',
     },
-    ...(isAffiliateProgramEnabled
-      ? [
-          {
-            label: 'Affiliate Program',
-            href: '/affiliate-program',
-            utmContent: 'footer-about-affiliate-program',
-          },
-        ]
-      : []),
+    {
+      label: 'Affiliate Program',
+      href: 'https://cow.fi/affiliate-program',
+      external: true,
+      utmContent: 'footer-about-affiliate-program',
+    },
   ]
 }
 
-export function getGlobalFooterNavItems(isAffiliateProgramEnabled: boolean): NavItemProps[] {
+export function getGlobalFooterNavItems(): NavItemProps[] {
   return [
-    { label: 'About', children: getAboutFooterNavChildren(isAffiliateProgramEnabled) },
+    { label: 'About', children: getAboutFooterNavChildren() },
     FOOTER_NAV_GROUP_PRODUCTS,
     FOOTER_NAV_GROUP_HELP,
     FOOTER_NAV_GROUP_MISC,

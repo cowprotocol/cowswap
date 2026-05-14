@@ -30,6 +30,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -76,3 +77,5 @@ CLAUDE.md
 
 # Github
 /.npmrc
+
+tsconfig.tsbuildinfo

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.1...assets-v2.3.0) (2026-05-12)
+
+
+### ✨ Features
+
+* prettify receiver component ([#7339](https://github.com/cowprotocol/cowswap/issues/7339)) ([3ff9551](https://github.com/cowprotocol/cowswap/commit/3ff9551f1761934f769fe3591c135454232eb1ea))
+
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.0...assets-v2.2.1) (2026-04-08)
 
 
