@@ -29,7 +29,6 @@
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/react": "^5.4.1",
-    "copy-to-clipboard": "^3.2.0",
     "jotai": "2.16.2",
     "launchdarkly-react-client-sdk": "^3.0.4",
     "ms.macro": "^2.0.0",

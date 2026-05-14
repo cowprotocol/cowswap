@@ -7,9 +7,6 @@ import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled, { DefaultTheme, StyledComponentProps } from 'styled-components/macro'
 
-import { TransactionStatusText } from 'legacy/components/Copy/index'
-
-// MOD imports
 export const CopyIcon = styled(LinkStyledButton)<{ copyIconWidth?: string }>`
   --iconSize: var(${UI.ICON_SIZE_NORMAL});
   color: inherit;
@@ -30,6 +27,16 @@ export const CopyIcon = styled(LinkStyledButton)<{ copyIconWidth?: string }>`
   :focus {
     text-decoration: none;
     color: inherit;
+  }
+`
+
+export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
+  ${({ theme }) => theme.flexRowNoWrap};
+  color: ${({ isCopied }) => (isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
+  align-items: center;
+
+  ${CopyIcon} {
+    color: currentColor;
   }
 `
 
