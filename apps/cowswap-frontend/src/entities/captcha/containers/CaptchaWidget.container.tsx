@@ -64,11 +64,6 @@ export function CaptchaWidget(): ReactNode {
         // execution: 'execute',
         // refreshExpired: 'manual',
       }}
-      scriptOptions={{
-        onError: () => {
-          logCaptcha.error('Challenge script failed to load', { hostname: window.location.hostname })
-        },
-      }}
       onWidgetLoad={(widgetId) => {
         logCaptcha.debug('Challenge starting', { widgetId })
         captchaRef.current?.execute()
