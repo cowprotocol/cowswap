@@ -48,6 +48,17 @@ Start CoW Swap on `http://localhost:3000`
 pnpm start
 ```
 
+Environment selection for `cowswap-frontend` is configured explicitly via `REACT_APP_ENVIRONMENT`
+in the app-level `.env.*` files:
+
+- Supported values:
+  `local`, `development`, `pr`, `staging`, `production`, `ens`
+
+- `apps/cowswap-frontend/.env.development` -> `local`
+- `apps/cowswap-frontend/.env.dev` -> `development`
+- `apps/cowswap-frontend/.env.staging` -> `staging`
+- `apps/cowswap-frontend/.env.production` -> `production`
+
 ## Build
 
 Build the project. The static files will be generated in the `build` folder.
@@ -74,6 +85,9 @@ Start the Explorer on <http://localhost:4200>
 pnpm run start:explorer
 ```
 
+Explorer environment selection is configured explicitly via `REACT_APP_ENVIRONMENT`.
+See [apps/explorer/.env.example](apps/explorer/.env.example).
+
 ### Build
 
 ```bash
@@ -89,6 +103,9 @@ Start cow.fi on <http://localhost:3001>
 ```bash
 pnpm run start:cowfi
 ```
+
+`cow-fi` no longer infers its environment from the hostname. Set `NEXT_PUBLIC_ENVIRONMENT`
+explicitly. See [apps/cow-fi/.env.example](apps/cow-fi/.env.example).
 
 ### Build
 

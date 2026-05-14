@@ -1055,8 +1055,7 @@ msgstr "Sending {nativeTokenSymbol}"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
-#: apps/cowswap-frontend/src/modules/account/containers/CopyHelper/index.tsx
+#: apps/cowswap-frontend/src/legacy/components/Copy/CopyHelper.tsx
 msgid "Copied"
 msgstr "Copied"
 
@@ -3073,9 +3072,9 @@ msgstr "If allowance remains insufficient at creation time, this portion will no
 #~ msgid "User rejected signing the order"
 #~ msgstr "User rejected signing the order"
 
-#: libs/common-const/src/common.ts
-#~ msgid "Account Proxy"
-#~ msgstr "Account Proxy"
+#: apps/cowswap-frontend/src/pages/Account/index.tsx
+msgid "Account Proxy"
+msgstr "Account Proxy"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."

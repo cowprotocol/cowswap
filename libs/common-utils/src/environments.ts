@@ -1,21 +1,10 @@
+import { getConfiguredEnvironmentNameFromEnvVars } from './env'
 import { registerOnWindow } from './misc'
 
-const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
-  local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
-  development: '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev.vercel.app)',
-  staging: '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-staging.vercel.app)',
-  production:
-    '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
-  ens: '(:?^cowswap.eth|ipfs)',
-}
+export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
+export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getRegex(env: EnvironmentName) {
-  const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
-  return new RegExp(regex, 'i')
-}
+const ENVIRONMENT_VAR_NAMES = ['REACT_APP_ENVIRONMENT'] as const
 
 export interface EnvironmentChecks {
   isProd: boolean
@@ -26,19 +15,37 @@ export interface EnvironmentChecks {
   isLocal: boolean
 }
 
-export function checkEnvironment(host: string, path: string): EnvironmentChecks {
-  const ensRegex = getRegex('ens')
-
+function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChecks {
   return {
-    // Project environments
-    isLocal: getRegex('local').test(host),
-    isDev: getRegex('development').test(host),
-    isPr: getRegex('pr').test(host),
-    isStaging: getRegex('staging').test(host),
-    isProd: getRegex('production').test(host),
-    isEns: ensRegex.test(host) || ensRegex.test(path),
+    isLocal: environmentName === 'local',
+    isDev: environmentName === 'development',
+    isPr: environmentName === 'pr',
+    isStaging: environmentName === 'staging',
+    isProd: environmentName === 'production',
+    isEns: environmentName === 'ens',
   }
 }
+
+const configuredEnvironmentName = getConfiguredEnvironmentNameFromEnvVars(ENVIRONMENT_VAR_NAMES, ALL_ENVIRONMENTS)
+
+export function checkEnvironment(): EnvironmentChecks {
+  return getEnvironmentChecks(configuredEnvironmentName)
+}
+
+let isLocal = false
+let isDev = false
+let isPr = false
+let isStaging = false
+let isProd = false
+let isEns = false
+
+const envChecks = checkEnvironment()
+isLocal = envChecks.isLocal
+isDev = envChecks.isDev
+isPr = envChecks.isPr
+isStaging = envChecks.isStaging
+isProd = envChecks.isProd
+isEns = envChecks.isEns
 
 // A hack to test against prod API
 const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
@@ -46,30 +53,11 @@ const forceStagingApi = typeof window !== 'undefined' && !!window.localStorage.g
 
 if (forceProdApi || forceStagingApi) {
   console.debug('[BackendApiOverwrite]', `forceProdApi: ${forceProdApi}, forceStagingApi: ${forceStagingApi}`)
+  isProd = forceProdApi
+  isStaging = forceStagingApi
 }
 
-// Default values for environments
-let isLocal = false
-let isDev = false
-let isPr = false
-let isStaging = forceStagingApi
-let isProd = forceProdApi
-let isEns = false
-
-if (typeof window !== 'undefined') {
-  const envChecks = checkEnvironment(window.location.host, window.location.pathname)
-  isLocal = envChecks.isLocal
-  isDev = envChecks.isDev
-  isPr = envChecks.isPr
-  isStaging = envChecks.isStaging
-  isProd = envChecks.isProd
-  isEns = envChecks.isEns
-}
-
-export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'staging', 'production', 'ens']
-export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'ens'
-
-export const environmentName: EnvironmentName | undefined = (function () {
+function getEnvironmentName(): EnvironmentName {
   if (isProd) {
     return 'production'
   } else if (isEns) {
@@ -83,9 +71,11 @@ export const environmentName: EnvironmentName | undefined = (function () {
   } else if (isLocal) {
     return 'local'
   } else {
-    return undefined
+    return configuredEnvironmentName
   }
-})()
+}
+
+export const environmentName: EnvironmentName = getEnvironmentName()
 
 const isProdLike = isProd || isEns || isStaging
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forceStagingApi

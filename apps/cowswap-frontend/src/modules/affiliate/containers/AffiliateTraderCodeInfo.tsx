@@ -5,14 +5,12 @@ import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
-import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
+import { ButtonPrimary, CopyButton, HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
-
-import CopyHelper from 'legacy/components/Copy'
 
 import { useAffiliateTraderInfo } from '../hooks/useAffiliateTraderInfo'
 import { useAffiliateTraderStats } from '../hooks/useAffiliateTraderStats'
@@ -63,7 +61,7 @@ export function AffiliateTraderCodeInfo(): ReactNode {
           <LinkedCard $isExpired={isExpired}>
             <LinkedCodeRow $isExpired={isExpired}>
               <LinkedCopy>
-                <CopyHelper toCopy={savedCode} iconSize={16} hideCopiedLabel />
+                <CopyButton value={savedCode} iconSize={16} iconOnly />
                 <LinkedCodeText>{savedCode}</LinkedCodeText>
               </LinkedCopy>
               {isExpired ? (

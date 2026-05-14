@@ -133,6 +133,7 @@
     "workbox-strategies": "^6.6.1"
   },
   "devDependencies": {
+    "@storybook/react-vite": "^10.3.1",
     "@testing-library/react": "16.3.0",
     "@types/ms": "^2.1.0",
     "@types/ms.macro": "^2.0.0",

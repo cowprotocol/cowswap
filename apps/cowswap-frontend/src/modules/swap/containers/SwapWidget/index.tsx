@@ -279,6 +279,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
           confirmModal={
             <SwapConfirmModal
               doTrade={doTrade.callback}
+              isTradeContextReady={doTrade.contextIsReady}
               recipient={recipient}
               recipientAddress={recipientAddress}
               priceImpact={priceImpact}
