@@ -1,4 +1,14 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import {
+  ApiError,
+  fetchWithTimeout,
+  JSON_HEADERS,
+  parseJsonResponse,
+  RetryableResponseError,
+  STATUS_CODES_TO_RETRY,
+  unwrapOk,
+} from '@cowprotocol/common-utils'
+import type { ApiErrorPayload, FetchJsonResponse } from '@cowprotocol/common-utils'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 import { wait } from 'common/utils/wait'
@@ -20,17 +30,6 @@ import {
   VERIFICATION_MIN_RESPONSE_DELAY_MS,
   VERIFICATION_RETRY_DELAY_MS,
 } from '../config/affiliateProgram.const'
-import {
-  ApiError,
-  fetchWithTimeout,
-  JSON_HEADERS,
-  parseJsonResponse,
-  STATUS_CODES_TO_RETRY,
-  RetryableResponseError,
-  unwrapOk,
-} from '../utils/api-utils'
-
-import type { ApiErrorPayload, FetchJsonResponse } from '../utils/api-utils'
 
 class BffAffiliateApi {
   private readonly baseUrl: string
@@ -69,7 +68,11 @@ class BffAffiliateApi {
         headers: JSON_HEADERS,
         ...init,
       }
-      const response = await fetchWithTimeout(input, requestInit, this.timeoutMs)
+      const response = await fetchWithTimeout(input, {
+        ...requestInit,
+        timeout: this.timeoutMs,
+        timeoutMessage: 'Unable to reach referral service',
+      })
       if (STATUS_CODES_TO_RETRY.has(response.status)) {
         throw new RetryableResponseError(response.status)
       }

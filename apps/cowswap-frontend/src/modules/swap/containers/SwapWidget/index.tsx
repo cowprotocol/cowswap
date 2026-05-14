@@ -5,6 +5,7 @@ import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { CaptchaWidget } from 'entities/captcha'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -219,6 +220,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
+            <CaptchaWidget />
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}
               openNativeWrapModal={openNativeWrapModal}

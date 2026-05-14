@@ -9,6 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { CaptchaWidget } from 'entities/captcha'
 
 import { Field } from 'legacy/state/types'
 
@@ -197,6 +198,7 @@ export function YieldWidget() {
             />
             <Warnings />
             {tradeWarnings}
+            <CaptchaWidget />
             <TradeButtons isOutputLpToken={isOutputLpToken} isTradeContextReady={doTrade.contextIsReady} />
           </>
         )
