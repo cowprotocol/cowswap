@@ -20,12 +20,15 @@ export function useResetRecipientOnChainChange(
     stableRef.current.recipient = recipient
   })
 
-  const isMountedRef = useRef(false)
+  const prevTargetChainId = useRef<TargetChainId | undefined>(undefined)
   useEffect(() => {
-    if (!isMountedRef.current) {
-      isMountedRef.current = true
-      return
-    }
+    const prev = prevTargetChainId.current
+    prevTargetChainId.current = targetChainId
+
+    // Skip the initial `undefined -> chainId` transition: that's app init, not a
+    // user-driven chain change, and treating it as one wipes a URL-provided recipient.
+    if (prev === undefined) return
+
     const { recipient: currentRecipient, onChangeRecipient: onChange } = stableRef.current
     if (currentRecipient && !getAddressValidationStrategy(targetChainId).isValidAddress(currentRecipient)) {
       onChange(null)
