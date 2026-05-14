@@ -23,14 +23,16 @@ export function CaptchaWidget(): ReactNode {
 
   useEffect(() => {
     if (!siteKey) {
-      logCaptcha('Missing env TURNSTILE_SITE_KEY, captcha widget disabled')
+      logCaptcha.warn('Missing env TURNSTILE_SITE_KEY, captcha widget disabled')
       return
     }
 
     if (captchaJwt?.token) {
       orderBookApi.context.bearerToken = captchaJwt.token
+      logCaptcha.info('Captcha JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
       delete orderBookApi.context.bearerToken
+      logCaptcha.info('Captcha JWT cleared from orderbook context')
     }
   }, [captchaJwt, siteKey])
 
@@ -38,7 +40,7 @@ export function CaptchaWidget(): ReactNode {
     if (!captchaJwt) return
 
     const timeout = window.setTimeout(() => {
-      logCaptcha('Captcha JWT expired')
+      logCaptcha.warn('Captcha JWT expired')
       setCaptchaJwt(null)
     }, getJwtTtl(captchaJwt.expiresAt))
 
@@ -62,48 +64,62 @@ export function CaptchaWidget(): ReactNode {
         // execution: 'execute',
         // refreshExpired: 'manual',
       }}
-      onWidgetLoad={() => {
-        logCaptcha('Challenge starting')
+      scriptOptions={{
+        onError: () => {
+          logCaptcha.error('Challenge script failed to load', { hostname: window.location.hostname })
+        },
+      }}
+      onWidgetLoad={(widgetId) => {
+        logCaptcha.debug('Challenge starting', { widgetId })
         captchaRef.current?.execute()
+      }}
+      onBeforeInteractive={() => {
+        logCaptcha.debug('Challenge requires interaction')
+      }}
+      onAfterInteractive={() => {
+        logCaptcha.debug('Challenge interaction completed')
       }}
       onSuccess={async (token: string) => {
         const requestId = exchangeRequestIdRef.current + 1
 
         exchangeRequestIdRef.current = requestId
 
-        logCaptcha('Challenge succeeded', token.slice(0, 10))
-        logCaptcha('Exchanging challenge token for captcha JWT')
+        logCaptcha.info('Challenge succeeded', { requestId, tokenLength: token.length })
+        logCaptcha.debug('Exchanging challenge token for captcha JWT', { requestId })
 
         try {
           const jwt = await exchangeTurnstileToken(token)
 
           if (exchangeRequestIdRef.current !== requestId) {
-            logCaptcha('Skipping stale captcha JWT exchange result')
+            logCaptcha.warn('Skipping stale captcha JWT exchange result')
             return
           }
 
-          logCaptcha('Captcha JWT received')
+          logCaptcha.info('Captcha JWT received', { requestId })
           setCaptchaJwt(jwt)
         } catch (error) {
           if (exchangeRequestIdRef.current !== requestId) {
             return
           }
 
-          logCaptcha('Captcha JWT exchange failed', error)
+          logCaptcha.error('Captcha JWT exchange failed', { requestId, error })
           setCaptchaJwt(null)
         }
       }}
       onExpire={() => {
         exchangeRequestIdRef.current += 1
-        logCaptcha('Challenge expired')
+        logCaptcha.warn('Challenge expired')
         setCaptchaJwt(null)
-        logCaptcha('Challenge re-starting')
+        logCaptcha.debug('Challenge re-starting')
         captchaRef.current?.reset()
       }}
-      onError={() => {
+      onError={(errorCode) => {
         exchangeRequestIdRef.current += 1
-        logCaptcha('Challenge errored')
+        logCaptcha.error('Challenge errored', { errorCode, hostname: window.location.hostname })
         setCaptchaJwt(null)
+      }}
+      onUnsupported={() => {
+        logCaptcha.warn('Challenge unsupported by browser')
       }}
     />
   )

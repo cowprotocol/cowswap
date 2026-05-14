@@ -23,14 +23,14 @@ export function useCaptchaDebugControls({
 }: UseCaptchaDebugControlsParams): void {
   useEffect(() => {
     window.useDemoInteractiveCaptchaKey = () => {
-      logCaptcha('Switching to demo interactive site key')
+      logCaptcha.debug('Switching to demo interactive site key')
       exchangeRequestIdRef.current += 1
       setCaptchaJwt(null)
       setSiteKey(TURNSTILE_DEMO_INTERACTIVE_SITE_KEY)
     }
 
     window.resetCaptchaKey = () => {
-      logCaptcha('Resetting captcha site key')
+      logCaptcha.debug('Resetting captcha site key')
       exchangeRequestIdRef.current += 1
       setCaptchaJwt(null)
       setSiteKey(TURNSTILE_SITE_KEY)
