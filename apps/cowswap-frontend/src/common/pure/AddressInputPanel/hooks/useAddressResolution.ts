@@ -10,7 +10,11 @@ export function useAddressResolution(
   targetChainId: TargetChainId | undefined,
 ): { address: string | null; loading: boolean; name: string | null } {
   const strategy = getAddressValidationStrategy(targetChainId)
-  const { address: ensAddress, loading: ensLoading, name } = useENS(strategy.supportsENS ? value : undefined)
+  const {
+    address: ensAddress,
+    loading: ensLoading,
+    name,
+  } = useENS((strategy.supportsENS ? value : undefined) as `0x${string}` | undefined)
 
   return useMemo(() => {
     if (!strategy.supportsENS) {

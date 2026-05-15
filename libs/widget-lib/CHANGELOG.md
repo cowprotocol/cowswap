@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.0.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.2...widget-lib-v4.0.3) (2026-05-13)
+
+
+### ✨ Features
+
+* **widget:** add `tokenPairConstraints` option to forbid specific sell→buy combinations, with the new `TokenPairConstraint` exported type ([#7397](https://github.com/cowprotocol/cowswap/issues/7397)) ([0a95a6c](https://github.com/cowprotocol/cowswap/commit/0a95a6cfbabb75b4bf1146e7320752969a846b53))
+
+
+### 🐛 Bug Fixes
+
+* bump version of widget-lib + iframe-transport ([#7493](https://github.com/cowprotocol/cowswap/issues/7493)) ([b8a3bea](https://github.com/cowprotocol/cowswap/commit/b8a3beaed3ea1aebdfbdd1eee05d34fcb0f9c3a4))
+
+
+### 🔧 Miscellaneous
+
+* backfills changes shipped to `main` via [#7397](https://github.com/cowprotocol/cowswap/issues/7397) but skipped by release-please during the cowswap-v3.10.0 cycle (committer-date older than the release anchor caused the history iterator to bypass the commit).
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.4
+
 ## [4.0.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.1...widget-lib-v4.0.2) (2026-04-30)
 
 
