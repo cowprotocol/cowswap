@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
+    "@cowprotocol/common-const": "workspace:*",
+    "@lingui/core": "^5.4.1",
+    "@lingui/react": "^5.4.1",
     "@storybook/addon-a11y": "^10.3.1",
     "@storybook/addon-docs": "^10.3.1",
     "@storybook/react": "10.3.1",

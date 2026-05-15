@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.1...ens-v3.2.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/cowswap-abis bumped to 4.0.0
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.0...ens-v3.2.1) (2026-04-22)
 
 
