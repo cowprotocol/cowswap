@@ -134,17 +134,23 @@ export default defineConfig(({ mode, isPreview }) => {
     )
   }
 
+  const tryGit = (cmd: string): string => {
+    try {
+      return execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString()
+        .trim()
+    } catch {
+      return ''
+    }
+  }
+
   return {
     root: path.resolve(__dirname, './'),
     base: './',
     define: {
       ...getReactProcessEnv(mode),
-      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(
-        execSync('git rev-parse --short=7 HEAD').toString().trim(),
-      ),
-      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(
-        execSync('git show -s --format=%cI HEAD').toString().trim(),
-      ),
+      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(tryGit('git rev-parse --short=7 HEAD')),
+      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(tryGit('git show -s --format=%cI HEAD')),
     },
 
     assetsInclude: ['**/*.md'],

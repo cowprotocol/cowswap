@@ -104,7 +104,10 @@
     },
     "onlyBuiltDependencies": [
       "nx"
-    ]
+    ],
+    "patchedDependencies": {
+      "@cowprotocol/sdk-config@2.0.0": "patches/@cowprotocol__sdk-config@2.0.0.patch"
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",

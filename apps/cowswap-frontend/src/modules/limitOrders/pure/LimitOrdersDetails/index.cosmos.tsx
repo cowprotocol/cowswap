@@ -36,7 +36,7 @@ const tradeContext: TradeFlowContext = {
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000' as `0x${string}`,
-    chainId: 1,
+    chainId: SupportedChainId.MAINNET,
     kind: OrderKind.SELL,
     signer: undefined as unknown as import('viem').WalletClient,
     inputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
@@ -59,7 +59,7 @@ const tradeContext: TradeFlowContext = {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settlementContract: {} as any,
-  chainId: 1,
+  chainId: SupportedChainId.MAINNET,
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: (() => void 0) as any,

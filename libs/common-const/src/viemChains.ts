@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { defineChain } from 'viem'
 import {
   arbitrum,
   avalanche,
@@ -15,8 +16,10 @@ import {
   sepolia,
 } from 'viem/chains'
 
+const mainnetFork: Chain = defineChain({ ...mainnet, id: SupportedChainId.MAINNET })
+
 export const VIEM_CHAINS: Record<SupportedChainId, Chain> = {
-  [SupportedChainId.MAINNET]: mainnet,
+  [SupportedChainId.MAINNET]: mainnetFork,
   [SupportedChainId.BNB]: bsc,
   [SupportedChainId.GNOSIS_CHAIN]: gnosis,
   [SupportedChainId.POLYGON]: polygon,

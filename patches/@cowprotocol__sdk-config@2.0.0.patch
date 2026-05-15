@@ -1,0 +1,68 @@
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index a163163..f119cbf 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -17,7 +17,7 @@ interface TokenInfo {
+  * All EVM chains supported by CoW Protocol or available for bridging
+  * */
+ declare enum EvmChains {
+-    MAINNET = 1,
++    MAINNET = 123456789,
+     BNB = 56,
+     GNOSIS_CHAIN = 100,
+     POLYGON = 137,
+@@ -42,7 +42,7 @@ declare enum NonEvmChains {
+  * Subset of EvmChains — excludes bridge-only chains like OPTIMISM.
+  */
+ declare enum SupportedChainId {
+-    MAINNET = 1,
++    MAINNET = 123456789,
+     BNB = 56,
+     GNOSIS_CHAIN = 100,
+     POLYGON = 137,
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index a163163..f119cbf 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -17,7 +17,7 @@ interface TokenInfo {
+  * All EVM chains supported by CoW Protocol or available for bridging
+  * */
+ declare enum EvmChains {
+-    MAINNET = 1,
++    MAINNET = 123456789,
+     BNB = 56,
+     GNOSIS_CHAIN = 100,
+     POLYGON = 137,
+@@ -42,7 +42,7 @@ declare enum NonEvmChains {
+  * Subset of EvmChains — excludes bridge-only chains like OPTIMISM.
+  */
+ declare enum SupportedChainId {
+-    MAINNET = 1,
++    MAINNET = 123456789,
+     BNB = 56,
+     GNOSIS_CHAIN = 100,
+     POLYGON = 137,
+diff --git a/dist/index.js b/dist/index.js
+index 5b9af2a..9a5276e 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -94,7 +94,7 @@ __export(src_exports, {
+ module.exports = __toCommonJS(src_exports);
+ 
+ // src/chains/types.ts
+-var MAINNET_ID = 1;
++var MAINNET_ID = 123456789;
+ var BNB_ID = 56;
+ var GNOSIS_CHAIN_ID = 100;
+ var POLYGON_ID = 137;
+diff --git a/dist/index.mjs b/dist/index.mjs
+index efdf095..e4e9999 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1,5 +1,5 @@
+ // src/chains/types.ts
+-var MAINNET_ID = 1;
++var MAINNET_ID = 123456789;
+ var BNB_ID = 56;
+ var GNOSIS_CHAIN_ID = 100;
+ var POLYGON_ID = 137;

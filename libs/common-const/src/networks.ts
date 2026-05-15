@@ -3,7 +3,7 @@ import { mapSupportedNetworks, SupportedChainId, HttpsString } from '@cowprotoco
 const INFURA_KEY = process.env['REACT_APP_INFURA_KEY'] || '2af29cd5ac554ae3b8d991afe1ba4b7d' // Default rate-limited infura key (should be overridden, not reliable to use)
 
 const RPC_URL_ENVS: Record<SupportedChainId, HttpsString | undefined> = {
-  [SupportedChainId.MAINNET]: (process.env['REACT_APP_NETWORK_URL_1'] as HttpsString) || undefined,
+  [SupportedChainId.MAINNET]: (process.env['REACT_APP_NETWORK_URL_123456789'] as HttpsString) || undefined,
   [SupportedChainId.BNB]: (process.env['REACT_APP_NETWORK_URL_56'] as HttpsString) || undefined,
   [SupportedChainId.GNOSIS_CHAIN]: (process.env['REACT_APP_NETWORK_URL_100'] as HttpsString) || undefined,
   [SupportedChainId.POLYGON]: (process.env['REACT_APP_NETWORK_URL_137'] as HttpsString) || undefined,

@@ -74,7 +74,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
   },
   bridgingProgressContext: {
     account,
-    sourceChainId: 1,
+    sourceChainId: SupportedChainId.MAINNET,
     destinationChainId: USDC_BASE.chainId,
   },
   swapResultContext: {
@@ -95,7 +95,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
 
 const defaultProps: OrderProgressBarProps = {
   order,
-  chainId: 1,
+  chainId: SupportedChainId.MAINNET,
   stepName: OrderProgressBarStepName.INITIAL,
   isBridgingTrade: false,
   showCancellationModal: () => {
