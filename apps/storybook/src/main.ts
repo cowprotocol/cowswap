@@ -67,10 +67,17 @@ function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Recor
   }
 }
 
-const workspaceAliases = getWorkspaceAliases()
+const workspaceAliases = [
+  ...getWorkspaceAliases(),
+  { find: /^@\/(.*)$/, replacement: path.resolve(process.cwd(), 'apps/cow-fi/$1') },
+]
 
 const config: StorybookConfig = {
-  stories: ['../../../libs/ui/src/**/*.stories.@(ts|tsx)'],
+  stories: [
+    '../../../libs/ui/src/**/*.stories.@(ts|tsx)',
+    '../../../apps/cowswap-frontend/src/**/*.stories.@(ts|tsx)',
+    // '../../../apps/explorer/src/components/common/CopyButton/CopyButton.stories.@(ts|tsx)',
+  ],
   addons: [getAbsolutePath('@storybook/addon-a11y'), getAbsolutePath('@storybook/addon-docs')],
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),

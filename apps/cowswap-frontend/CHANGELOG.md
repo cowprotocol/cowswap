@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.10.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.1...cowswap-v3.10.2) (2026-05-14)
+
+
+### 🐛 Bug Fixes
+
+* add safe api key to vercel ([#7504](https://github.com/cowprotocol/cowswap/issues/7504)) ([9743ec9](https://github.com/cowprotocol/cowswap/commit/9743ec94f6fcf33ab6d55a1fbee0ccb0e62ba2aa))
+
+## [3.10.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.0...cowswap-v3.10.1) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/balances-and-allowances bumped to 3.2.3
+    * @cowprotocol/hook-dapp-lib bumped to 2.2.4
+    * @cowprotocol/iframe-transport bumped to 2.2.4
+    * @cowprotocol/permit-utils bumped to 3.2.3
+    * @cowprotocol/wallet bumped to 3.3.1
+    * @cowprotocol/widget-lib bumped to 4.0.3
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.9.2...cowswap-v3.10.0) (2026-05-12)
 
 

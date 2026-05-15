@@ -51,13 +51,14 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
  * @see HelpTooltip as an alternative if you need to show a tooltip with a question mark icon (or icon of your choice)
  * @see InfoTooltip as an alternative if you need to show a tooltip with an info icon
  * @see Tooltip as an alternative if you need to control when the tooltip is shown
+ * @deprecated Use `NewTooltip` instead.
  *
  * @param props
  * @returns
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HoverTooltip(props: HoverTooltipProps) {
   const {
     content,
