@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
+import { CopyButton, HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
@@ -25,11 +25,11 @@ export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
   return (
     <styledEl.QuoteIdValueWrapper>
       <styledEl.QuoteIdReference>{formatQuoteIdReference(quoteId)}</styledEl.QuoteIdReference>
-      <styledEl.CopyQuoteIdButton
+      <CopyButton
         value={quoteId}
         timeoutMs={1500}
         iconSize={14}
-        copiedLabel={<Trans>Copied!</Trans>}
+        iconOnly
         aria-label={t`Copy full quote ID`}
         onClick={(event) => event.stopPropagation()}
       />

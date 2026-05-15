@@ -1,8 +1,7 @@
 import { Fragment, ReactNode } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
@@ -18,13 +17,14 @@ import {
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { LogOut } from 'react-feather'
 
-import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { StatusIcon } from 'modules/wallet/pure/StatusIcon'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
@@ -36,14 +36,14 @@ import {
   AccountGroupingRow,
   AddressLink,
   InfoCard,
+  LinksSeparator,
   LowerSection,
-  NetworkCard,
   NoActivityMessage,
   UnsupportedWalletBox,
   WalletAction,
   WalletActions,
   WalletName,
-  WalletNameAddress,
+  WalletNameCopy,
   WalletSecondaryActions,
   WalletSelector,
   WalletWrapper,
@@ -56,7 +56,15 @@ import { CowShedInfo } from '../CowShedInfo'
 import { CreationDateText } from '../Transaction/styled'
 
 const CowShedInfoStyled = styled(CowShedInfo)`
-  margin-top: 10px;
+  color: inherit;
+  font-size: inherit;
+  font-weight: normal;
+  text-decoration: underline;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
 `
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -110,8 +118,6 @@ export function AccountDetails({
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
-  const networkLabel = CHAIN_INFO[chainId].label
-
   return (
     <Wrapper>
       <InfoCard>
@@ -119,42 +125,40 @@ export function AccountDetails({
           <AccountControl>
             <WalletWrapper>
               <WalletSelector>
-                <AccountIcon size={24} account={account} />
-
+                <StatusIcon connectionType={connectionType} account={account} size={24} />
                 {(ENSName || account) && (
-                  <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
+                  <WalletNameCopy
+                    address={ENSName ? ENSName : account ? account : ''}
+                    displayAddress={ENSName || undefined}
+                    aria-label={t`Copy wallet`}
+                  />
                 )}
               </WalletSelector>
-
-              {(ENSName || account) && <Copy toCopy={ENSName ? ENSName : account ? account : ''} />}
             </WalletWrapper>
 
             <WalletActions>
-              {' '}
-              {!isChainIdUnsupported && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>}{' '}
               <WalletName>
-                <Trans>Connected with</Trans> {walletDetails?.walletName} {walletConnectSuffix}
+                <Trans>Connected with</Trans>
+                <AccountIcon size={16} account={account} />
+                {walletDetails?.walletName} {walletConnectSuffix}
+                <LinksSeparator aria-hidden="true">·</LinksSeparator>
+                {!isInjectedMobileBrowser && account && !isChainIdUnsupported && (
+                  <AddressLink href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}>
+                    {explorerLabel} ↗
+                  </AddressLink>
+                )}
+                <LinksSeparator aria-hidden="true">·</LinksSeparator>
+                <CowShedInfoStyled onClick={closeAccountModal} />
               </WalletName>
             </WalletActions>
-
-            <CowShedInfoStyled onClick={closeAccountModal} />
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {!isInjectedMobileBrowser && account && !isChainIdUnsupported && (
-                <AddressLink
-                  hasENS={!!ENSName}
-                  isENS={!!ENSName}
-                  href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
-                >
-                  {explorerLabel} ↗
-                </AddressLink>
-              )}
-
               {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
                 <WalletAction onClick={handleDisconnectClick}>
+                  <LogOut size={14} />
                   <Trans>Disconnect</Trans>
                 </WalletAction>
               )}

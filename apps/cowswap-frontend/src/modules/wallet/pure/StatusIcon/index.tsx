@@ -30,7 +30,7 @@ export function StatusIcon({ connectionType, account, size = 16 }: StatusIconPro
       image = <img src={CoinbaseWalletIcon} alt={t`Coinbase Wallet`} />
       break
     case ConnectionType.INJECTED:
-      image = <Identicon account={account} />
+      image = <Identicon account={account} size={size} />
       break
     case ConnectionType.WALLET_CONNECT_V2:
       image = <img src={WalletConnectIcon} alt={t`WalletConnect`} />

@@ -6,7 +6,6 @@ import * as styledEl from './styled'
 
 export { ContextMenuItem } from './ContextMenuItem'
 export { ContextMenuTooltip } from './ContextMenuTooltip'
-export { ContextMenuCopyButton } from './ContextMenuCopyButton'
 export { ContextMenuExternalLink } from './ContextMenuExternalLink'
 
 export const ContextMenuItemButton = styledEl.ContextMenuItemButton

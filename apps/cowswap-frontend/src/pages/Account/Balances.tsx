@@ -22,7 +22,6 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 import { useWalletClient } from 'wagmi'
 
-import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'
@@ -44,6 +43,7 @@ import {
   CardActions,
   CardsLoader,
   CardsSpinner,
+  ContractAddressCopy,
   ConvertWrapper,
   ExtLink,
   StyledWatchAssetInWallet,
@@ -286,11 +286,7 @@ export default function Profile() {
                 <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>
                   <Trans>View contract</Trans> ↗
                 </ExtLink>
-                <CopyHelper toCopy={vCowToken.address}>
-                  <div title={t`Click to copy token contract address`}>
-                    <Trans>Copy contract</Trans>
-                  </div>
-                </CopyHelper>
+                <ContractAddressCopy address={vCowToken.address} aria-label={t`Click to copy token contract address`} />
               </CardActions>
             </Card>
           )}
@@ -319,11 +315,10 @@ export default function Profile() {
                   shortLabel
                   currency={cowToken}
                   fallback={
-                    <CopyHelper toCopy={cowContractAddress}>
-                      <div title={t`Click to copy token contract address`}>
-                        <Trans>Copy contract</Trans>
-                      </div>
-                    </CopyHelper>
+                    <ContractAddressCopy
+                      address={cowContractAddress}
+                      aria-label={t`Click to copy token contract address`}
+                    />
                   }
                 />
 

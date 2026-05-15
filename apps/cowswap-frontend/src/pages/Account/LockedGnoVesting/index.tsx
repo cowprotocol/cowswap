@@ -25,12 +25,19 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
+import {
+  BalanceDisplay,
+  Card,
+  CardActions,
+  ContractAddressCopy,
+  ConvertWrapper,
+  ExtLink,
+  VestingBreakdown,
+} from 'pages/Account/styled'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 
@@ -231,11 +238,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           <ExtLink href={getBlockExplorerUrl(chainId, 'address', contractAddress)}>
             <Trans>View contract</Trans> ↗
           </ExtLink>
-          <CopyHelper toCopy={contractAddress}>
-            <div title={t`Click to copy contract address`}>
-              <Trans>Copy contract</Trans>
-            </div>
-          </CopyHelper>
+          <ContractAddressCopy address={contractAddress} aria-label={t`Click to copy contract address`} />
         </CardActions>
       </Card>
 

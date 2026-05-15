@@ -1,9 +1,6 @@
-import { ButtonSecondary, Media, ExternalLink, StyledLink, UI } from '@cowprotocol/ui'
+import { ButtonSecondary, CopyableAddress, Media, ExternalLink, StyledLink, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { YellowCard } from 'legacy/components/Card'
-import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 
 import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
 
@@ -17,10 +14,25 @@ import {
 } from '../../containers/Transaction/styled'
 
 export const WalletName = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
   width: initial;
   font-size: 0.825rem;
   font-weight: 500;
   color: ${({ theme }) => theme.info};
+
+  a {
+    color: inherit;
+    font-size: inherit;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: inherit;
+  }
 `
 
 export const IconWrapper = styled.div<{ size?: number }>`
@@ -53,6 +65,9 @@ export const WalletIconSmall = styled.img`
 `
 
 export const WalletAction = styled(ButtonSecondary)`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   width: fit-content;
   font-weight: 400;
   margin-left: 8px;
@@ -70,22 +85,28 @@ export const WalletAction = styled(ButtonSecondary)`
 `
 
 export const WalletActions = styled.div`
-  display: flex;
-  margin: 10px 0 0;
-  flex-flow: column wrap;
-  gap: 10px;
-  align-items: flex-start;
+  && {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 14px 0 0;
+  }
 `
 
-export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
-  font-size: 0.825rem;
+export const AddressLink = styled(ExternalLink)`
   color: inherit;
-  margin-left: 1rem;
-  font-size: 0.825rem;
-  display: flex;
+  display: inline-flex;
+  text-decoration: underline;
+
   :hover {
     color: inherit;
   }
+`
+
+export const LinksSeparator = styled.span`
+  line-height: 1;
+  user-select: none;
 `
 
 export const AccountControl = styled.div`
@@ -118,11 +139,17 @@ export const UnsupportedWalletBox = styled.div`
 
 export const WalletSecondaryActions = styled.div``
 
-export const WalletNameAddress = styled.div`
-  width: 100%;
+export const WalletNameCopy = styled(CopyableAddress)`
+  margin: 0 0 0 8px;
+  gap: 6px;
+  color: inherit;
   font-size: 20px;
   font-weight: 500;
-  margin: 0 0 0 8px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
 `
 
 export const Wrapper = styled.div`
@@ -143,8 +170,6 @@ export const Wrapper = styled.div`
   }
 
   ${WalletName},
-  ${AddressLink},
-  ${CopyIcon},
   ${WalletAction} {
     color: inherit;
     opacity: 0.85;
@@ -170,18 +195,7 @@ export const Wrapper = styled.div`
     margin: 0;
   }
 
-  ${TransactionStatusText} {
-    order: 2;
-    margin: 0 0 0 8px;
-    align-self: center;
-    font-size: 21px;
-    color: inherit;
-  }
-
   ${WalletName} {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
     margin: 0;
     font-size: 12px;
   }
@@ -237,6 +251,12 @@ export const Wrapper = styled.div`
 `
 
 export const WalletWrapper = styled.div`
+  && {
+    display: grid;
+    justify-items: flex-start;
+    align-items: flex-start;
+  }
+
   > div > img[alt='Gnosis Safe Multisig logo'] {
     ${({ theme }) => theme.invertImageForDarkMode};
   }
@@ -413,35 +433,6 @@ export const LowerSectionSimple = styled(LowerSection)`
         margin: auto;
       }
     }
-  }
-`
-
-const NetworkCardUni = styled(YellowCard)`
-  border-radius: 12px;
-  padding: 8px 12px;
-
-  ${Media.upToSmall()} {
-    margin: 0;
-    margin-right: 0.5rem;
-    width: initial;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
-  }
-`
-
-export const NetworkCard = styled(NetworkCardUni)`
-  background-color: var(${UI.COLOR_PAPER});
-  color: inherit;
-  padding: 6px 8px;
-  font-size: 13px;
-  margin: 0;
-  letter-spacing: 0.7px;
-  min-width: initial;
-  flex: 0 0 fit-content;
-
-  ${Media.upToSmall()} {
-    margin: 0 auto 12px;
   }
 `
 

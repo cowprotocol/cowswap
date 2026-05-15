@@ -10,58 +10,48 @@ import { UI } from '../../enum'
 import { LinkStyledButton } from '../LinkStyledButton'
 import { NewTooltip } from '../Tooltip/Tooltip'
 
-export interface CopyButtonState {
-  isCopied: boolean
-}
-
-type CopyButtonChildren = ReactNode | ((state: CopyButtonState) => ReactNode)
-
 export interface CopyButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'children' | 'onCopy'> {
   value: string
-  children?: CopyButtonChildren
-  copiedLabel?: ReactNode
-  idleLabel?: ReactNode
+  children?: ReactNode
   iconOnly?: boolean
   iconSize?: number
   iconPosition?: 'left' | 'right'
-  color?: string
   timeoutMs?: number
-  onCopy?: (value: string) => void
 }
 
-const StyledCopyButton = styled(LinkStyledButton)<{ $isCopied?: boolean; $color?: string }>`
+const StyledCopyButton = styled(LinkStyledButton)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: ${({ $color, $isCopied }) => ($isCopied ? `var(${UI.COLOR_SUCCESS})` : ($color ?? 'inherit'))};
+  color: inherit;
 
   &:hover,
   &:active,
   &:focus {
     text-decoration: none;
-    color: ${({ $color, $isCopied }) => ($isCopied ? `var(${UI.COLOR_SUCCESS})` : ($color ?? 'inherit'))};
+    color: inherit;
   }
 `
 
-export function CopyButton(props: CopyButtonProps): ReactNode {
-  const {
-    value,
-    children,
-    copiedLabel = <Trans>Copied</Trans>,
-    idleLabel,
-    iconOnly = false,
-    iconSize = 16,
-    iconPosition = 'left',
-    color,
-    timeoutMs,
-    onCopy,
-    onClick,
-    disabled,
-    type,
-    ...rest
-  } = props
+const IconWrapper = styled.span<{ $isCopied?: boolean }>`
+  display: inline-flex;
+  color: ${({ $isCopied }) => ($isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
+`
+
+export function CopyButton({
+  value,
+  children,
+  iconOnly = false,
+  iconSize = 16,
+  iconPosition = 'left',
+  timeoutMs,
+  onClick,
+  disabled,
+  type = 'button',
+  ...rest
+}: CopyButtonProps): ReactNode {
   const [isCopied, setCopied] = useCopyClipboard(timeoutMs)
 
   const handleClick = useCallback(
@@ -71,34 +61,28 @@ export function CopyButton(props: CopyButtonProps): ReactNode {
       if (event.defaultPrevented || disabled) return
 
       setCopied(value)
-      onCopy?.(value)
     },
-    [disabled, onClick, onCopy, setCopied, value],
+    [disabled, onClick, setCopied, value],
   )
 
-  const renderedChildren = typeof children === 'function' ? children({ isCopied }) : children
-  const idleContent = renderedChildren ?? idleLabel
-  const icon = isCopied ? <Check size={iconSize} /> : <Copy size={iconSize} />
-  const content = isCopied ? iconOnly ? null : <span>{copiedLabel}</span> : idleContent
+  const Icon = isCopied ? Check : Copy
+  const icon = (
+    <IconWrapper $isCopied={isCopied}>
+      <Icon size={iconSize} />
+    </IconWrapper>
+  )
+  const content = iconOnly ? null : children
+  const tooltip = isCopied ? <Trans>Copied</Trans> : <Trans>Copy to clipboard</Trans>
   const button = (
-    <StyledCopyButton
-      type={type ?? 'button'}
-      onClick={handleClick}
-      disabled={disabled}
-      $isCopied={isCopied}
-      $color={color}
-      {...rest}
-    >
+    <StyledCopyButton type={type} onClick={handleClick} disabled={disabled} {...rest}>
       {iconPosition === 'left' ? icon : content}
       {iconPosition === 'left' ? content : icon}
     </StyledCopyButton>
   )
 
-  return !idleContent && iconOnly ? (
-    <NewTooltip content={isCopied ? copiedLabel : 'Copy to clipboard'} placement="top">
+  return (
+    <NewTooltip content={tooltip} placement="top">
       {button}
     </NewTooltip>
-  ) : (
-    button
   )
 }

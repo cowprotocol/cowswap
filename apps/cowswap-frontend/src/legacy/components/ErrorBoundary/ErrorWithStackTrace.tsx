@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
-import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
+import { AutoRow, CopyButton, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -11,7 +11,6 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import CopyHelper from 'legacy/components/Copy'
 
 // eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Title } from 'modules/application/pure/Page'
@@ -97,7 +96,8 @@ export const ErrorWithStackTrace = ({ error, eventId }: ErrorWithStackTraceProps
         {eventId && (
           <IdRow>
             <IdText fontSize={14}>Event ID:</IdText>
-            <CopyHelper toCopy={eventId}>{eventId}</CopyHelper>
+            <IdText fontSize={14}>{eventId}</IdText>
+            <CopyButton value={eventId} iconOnly aria-label={t`Copy event ID`} />
           </IdRow>
         )}
         <CodeBlockWrapper>

@@ -3,22 +3,14 @@ import { ReactNode } from 'react'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import {
-  ExternalLink,
-  FiatAmount,
-  Loader,
-  ContextMenuTooltip,
-  ContextMenuCopyButton,
-  ContextMenuExternalLink,
-} from '@cowprotocol/ui'
+import { CopyButton, ExternalLink, FiatAmount, Loader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { MoreHorizontal } from 'react-feather'
 
 import { safeShortenAddress } from 'utils/address'
 
-import { LeftBottom, LeftTop, RightTop, AddressDisplay, AddressLinkWrapper, ValueLabel, ValueAmount } from './styled'
+import { LeftBottom, LeftTop, AddressDisplay, AddressLinkWrapper, ValueLabel, ValueAmount } from './styled'
 
 import { AccountIcon } from '../AccountItem/AccountIcon'
 import { CowProtocolIcon } from '../CowProtocolIcon'
@@ -48,19 +40,6 @@ export function DefaultAccountContent({
           {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
         </ValueAmount>
       </LeftTop>
-      <RightTop>
-        <ContextMenuTooltip
-          placement="bottom"
-          content={
-            <>
-              <ContextMenuCopyButton address={account} />
-              <ContextMenuExternalLink href={addressLink} label={t`View details`} />
-            </>
-          }
-        >
-          <MoreHorizontal size={20} />
-        </ContextMenuTooltip>
-      </RightTop>
       <LeftBottom>
         <ExternalLink
           href={addressLink}
@@ -72,6 +51,7 @@ export function DefaultAccountContent({
             <AddressDisplay>{safeShortenAddress(account)}</AddressDisplay>
           </AddressLinkWrapper>
         </ExternalLink>
+        <CopyButton value={account} iconOnly aria-label={t`Copy address`} />
       </LeftBottom>
       <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
     </>

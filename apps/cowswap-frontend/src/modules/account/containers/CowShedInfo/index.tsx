@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
-import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 import { Pocket } from 'react-feather'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -32,7 +31,6 @@ interface CowShedInfoProps {
 export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode {
   const { chainId } = useWalletInfo()
   const proxyAddress = useCurrentAccountProxyAddress()
-  const { i18n } = useLingui()
 
   if (!proxyAddress) return null
 
@@ -49,7 +47,9 @@ export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode
       rel={isWidget ? 'noopener noreferrer' : undefined}
     >
       <Pocket size={14} />
-      <span>{i18n._(ACCOUNT_PROXY_LABEL)}</span>
+      <span>
+        <Trans>View Account Proxy</Trans>
+      </span>
     </ProxyPageLink>
   )
 }

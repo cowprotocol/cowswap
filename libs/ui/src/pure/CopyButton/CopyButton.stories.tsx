@@ -8,7 +8,6 @@ const meta = {
   args: {
     value: '0x1234567890abcdef1234567890abcdef12345678',
     children: 'Copy address',
-    copiedLabel: 'Copied',
   },
 } satisfies Meta<typeof CopyButton>
 

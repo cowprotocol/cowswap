@@ -1,12 +1,12 @@
-import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
+import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media, CopyableAddress } from '@cowprotocol/ui'
 import { toPixelValue } from '@cowprotocol/ui-utils'
 
 import { X } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
-
 import { WatchAssetInWallet } from 'modules/wallet'
+
+import { accountActionLinkMixin } from './AccountActionLink.styled'
 
 export const Container = styled.div`
   max-width: 100%;
@@ -46,26 +46,6 @@ export const ExtLink = styled(ExternalLink)`
   }
 `
 
-const linkMixin = css`
-  font-size: 13px;
-  height: 100%;
-  font-weight: 500;
-  border-radius: 0;
-  min-height: initial;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-  color: inherit;
-  display: flex;
-  align-items: center;
-  text-decoration: underline;
-
-  ${Media.upToMedium()} {
-    font-size: 15px;
-    margin: 0 auto;
-  }
-`
-
 export const StyledWatchAssetInWallet = styled(WatchAssetInWallet)`
   border: 0;
   min-height: initial;
@@ -87,7 +67,21 @@ export const StyledWatchAssetInWallet = styled(WatchAssetInWallet)`
     margin: 0 6px 0 0;
   }
 
-  ${linkMixin}
+  ${accountActionLinkMixin}
+`
+
+export const ContractAddressCopy = styled(CopyableAddress)`
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: inherit;
+  gap: 6px;
+  text-decoration: none;
+
+  ${Media.upToMedium()} {
+    font-size: 15px;
+    margin: 0 auto;
+  }
 `
 
 export const CardsWrapper = styled.div`
@@ -267,15 +261,8 @@ export const CardActions = styled.div<{ content?: string }>`
     gap: 24px;
   }
 
-  > a,
-  > ${ClickToCopy} {
-    ${linkMixin}
-  }
-
-  > ${ClickToCopy} svg {
-    height: 13px;
-    width: auto;
-    margin: 0 4px 0 0;
+  > a {
+    ${accountActionLinkMixin}
   }
 `
 

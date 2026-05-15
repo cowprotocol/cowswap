@@ -2,7 +2,7 @@ import { ReactNode, useCallback } from 'react'
 
 import cowNoConnectionIMG from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
 import { DISCORD_LINK } from '@cowprotocol/common-const'
-import { AutoRow, ButtonPrimary, ExternalLink, MEDIA_WIDTHS } from '@cowprotocol/ui'
+import { AutoRow, ButtonPrimary, CopyButton, ExternalLink, MEDIA_WIDTHS } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import CopyHelper from 'legacy/components/Copy'
 
 // eslint-disable-next-line import/no-internal-modules -- Direct import to avoid circular dependency (barrel re-exports App which imports ErrorBoundary)
 import { Title } from 'modules/application/pure/Page'
@@ -128,7 +127,8 @@ export const ChunkLoadError = ({ eventId }: ChunkLoadErrorProps): ReactNode => {
             {eventId && (
               <IdRow>
                 <IdText fontSize={14}>Event ID:</IdText>
-                <CopyHelper toCopy={eventId}>{eventId}</CopyHelper>
+                <IdText fontSize={14}>{eventId}</IdText>
+                <CopyButton value={eventId} iconOnly aria-label={t`Copy event ID`} />
               </IdRow>
             )}
           </NoConnectionDesc>

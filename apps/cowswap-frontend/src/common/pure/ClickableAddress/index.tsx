@@ -1,12 +1,10 @@
-import { ReactNode, useRef } from 'react'
+import { ReactNode } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { Media, ContextMenuTooltip, ContextMenuCopyButton, ContextMenuExternalLink, Opacity, UI } from '@cowprotocol/ui'
+import { CopyButton, ExternalLink, Media, Opacity, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
-import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export type ClickableAddressProps = {
@@ -21,12 +19,14 @@ const Wrapper = styled.div<{ alwaysShow: boolean }>`
   gap: 4px;
 
   &:hover {
-    > button {
+    > button,
+    > div {
       opacity: ${Opacity.medium};
     }
   }
 
-  > button {
+  > button,
+  > div {
     opacity: ${({ alwaysShow }) => (alwaysShow ? Opacity.medium : Opacity.none)};
 
     &:hover {
@@ -35,19 +35,24 @@ const Wrapper = styled.div<{ alwaysShow: boolean }>`
   }
 `
 
-const AddressWrapper = styled.span`
+const AddressWrapper = styled(ExternalLink)`
   margin: 0;
   line-height: 1;
   font-size: 13px;
   font-weight: 400;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   opacity: ${Opacity.full};
+  text-decoration: none;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+    text-decoration: underline;
+  }
 `
 
 export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
 
-  const wrapperRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const bridgeNetwork = useBridgeSupportedNetwork(chainId)
 
@@ -57,20 +62,9 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
 
   return (
     shouldShowAddress && (
-      <Wrapper alwaysShow={isMobile} ref={wrapperRef}>
-        <AddressWrapper>{shortAddress}</AddressWrapper>
-        <ContextMenuTooltip
-          content={
-            <>
-              <ContextMenuCopyButton address={address} />
-              <ContextMenuExternalLink href={target} label={t`View details`} />
-            </>
-          }
-          placement="bottom"
-          containerRef={wrapperRef}
-        >
-          <Info size={16} />
-        </ContextMenuTooltip>
+      <Wrapper alwaysShow={isMobile}>
+        <AddressWrapper href={target}>{shortAddress}</AddressWrapper>
+        <CopyButton value={address} iconOnly />
       </Wrapper>
     )
   )
