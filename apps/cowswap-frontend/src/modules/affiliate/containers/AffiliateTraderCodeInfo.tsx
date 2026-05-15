@@ -3,6 +3,7 @@ import { ReactNode, useMemo } from 'react'
 
 import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
+import { IS_BFF_STAGING } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, formatShortDate } from '@cowprotocol/common-utils'
 import { ButtonPrimary, CopyButton, HelpTooltip } from '@cowprotocol/ui'
@@ -48,6 +49,10 @@ export function AffiliateTraderCodeInfo(): ReactNode {
 
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
   const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
+
+  if (!codeLoading && !info && savedCode) {
+    return <CodeNotFound savedCode={savedCode} />
+  }
 
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
@@ -125,5 +130,37 @@ export function AffiliateTraderCodeInfo(): ReactNode {
         </>
       )}
     </ColumnOneCard>
+  )
+}
+
+function CodeNotFound({ savedCode }: { savedCode: string }): ReactNode {
+  return (
+    <div>
+      <ColumnOneCard>
+        <RewardsHeader>
+          <CardTitle>
+            <Trans>Referral code</Trans>
+          </CardTitle>
+        </RewardsHeader>
+        <LinkedCard $isExpired>
+          <LinkedCodeRow $isExpired>
+            <LinkedCopy>
+              <CopyHelper toCopy={savedCode} iconSize={16} hideCopiedLabel />
+              <LinkedCodeText>{savedCode}</LinkedCodeText>
+            </LinkedCopy>
+          </LinkedCodeRow>
+        </LinkedCard>
+        <HeroActions>
+          <LinkedMetaList>
+            <MetricItem>
+              <span>
+                The code you used in your past orders was not found in our {IS_BFF_STAGING ? 'staging' : 'production'}{' '}
+                backend.
+              </span>
+            </MetricItem>
+          </LinkedMetaList>
+        </HeroActions>
+      </ColumnOneCard>
+    </div>
   )
 }

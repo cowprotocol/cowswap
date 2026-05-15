@@ -229,6 +229,11 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
 
   if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
 
+  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
+  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
+
+  if (!executedBuy && !executedSell) return false
+
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
 
@@ -261,6 +266,15 @@ export function toValidDate(value: string | undefined): Date | null {
 
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+export function toValidTimestamp(value: string | undefined): number {
+  if (!value) {
+    return 0
+  }
+
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime()
 }
 
 function isRecord(value: unknown): value is JsonRecord {
