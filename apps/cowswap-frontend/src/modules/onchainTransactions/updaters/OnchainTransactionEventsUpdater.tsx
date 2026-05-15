@@ -23,13 +23,13 @@ export function OnchainTransactionEventsUpdater() {
     const listener: CowWidgetEventListener = {
       event: CowWidgetEvents.ON_ONCHAIN_TRANSACTION,
       handler(payload: OnTransactionPayload) {
-        const { receipt, summary } = payload
+        const { receipt, summary, isSafeTx } = payload
         const isSuccess = receipt.status === 1 && receipt.replacementType !== 'cancel'
 
         // Display a snackbar in CowSwap UI
         addSnackbar({
           content: (
-            <TransactionContentWithLink transactionHash={receipt.transactionHash}>
+            <TransactionContentWithLink transactionHash={receipt.transactionHash} isSafeTx={isSafeTx}>
               <>{summary}</>
             </TransactionContentWithLink>
           ),

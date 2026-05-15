@@ -86,7 +86,7 @@ export async function getSafeTransaction(
 export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
   const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
+  return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {
