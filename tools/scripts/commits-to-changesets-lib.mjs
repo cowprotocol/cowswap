@@ -1,30 +1,32 @@
+// Only feat and fix produce changesets. Other types (chore, docs, refactor, etc.)
+// are intentionally skipped — they don't represent consumer-visible behavior
+// changes, so they don't earn a release. Breaking changes override this and
+// always produce a major bump regardless of type (see parseConventionalCommit).
 const TYPE_BUMP = {
   feat: 'minor',
   fix: 'patch',
-  perf: 'patch',
-  refactor: 'patch',
-  docs: 'patch',
-  test: 'patch',
-  chore: 'patch',
-  build: 'patch',
-  ci: 'patch',
-  style: 'patch',
-  revert: 'patch',
 }
 
 const CONVENTIONAL_RE =
   /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^)]+)\))?(?<bang>!)?:\s+(?<rest>.+)$/
 
+// Returns { parsedOk, bump, type, scope, breaking }. `bump` is one of
+// 'major' | 'minor' | 'patch' | null. A `null` bump means "skip this commit"
+// (non-conventional, or a type not in TYPE_BUMP that isn't breaking).
 export function parseConventionalCommit(subject, body = '') {
   const match = CONVENTIONAL_RE.exec(subject || '')
   if (!match) {
-    return { parsedOk: false, bump: 'patch', type: null, scope: null, breaking: false }
+    return { parsedOk: false, bump: null, type: null, scope: null, breaking: false }
   }
   const { type, scope, bang } = match.groups
   const hasBreakingFooter = /^BREAKING[ -]CHANGE:/m.test(body || '')
   const breaking = Boolean(bang) || hasBreakingFooter
-  let bump = TYPE_BUMP[type.toLowerCase()] ?? 'patch'
-  if (breaking) bump = 'major'
+  let bump
+  if (breaking) {
+    bump = 'major'
+  } else {
+    bump = TYPE_BUMP[type.toLowerCase()] ?? null
+  }
   return { parsedOk: true, bump, type, scope: scope || null, breaking }
 }
 

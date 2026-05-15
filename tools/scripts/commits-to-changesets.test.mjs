@@ -21,17 +21,31 @@ describe('parseConventionalCommit', () => {
     assert.equal(parseConventionalCommit('fix: bug').bump, 'patch')
   })
 
-  it('perf, refactor, docs, test, chore, build, ci, style, revert → patch', () => {
+  it('perf, refactor, docs, test, chore, build, ci, style, revert → skipped (bump null)', () => {
     for (const t of ['perf', 'refactor', 'docs', 'test', 'chore', 'build', 'ci', 'style', 'revert']) {
-      assert.equal(parseConventionalCommit(`${t}: x`).bump, 'patch', `${t} should be patch`)
+      const r = parseConventionalCommit(`${t}: x`)
+      assert.equal(r.bump, null, `${t} should be skipped (bump null)`)
+      assert.equal(r.parsedOk, true, `${t} should still parse OK`)
     }
   })
 
-  it('unknown conventional type → patch (parsedOk true)', () => {
+  it('unknown conventional type → skipped (bump null)', () => {
     // e.g. "wip: x" — parses as conventional but type isn't in the bump map.
     const r = parseConventionalCommit('wip: x')
     assert.equal(r.parsedOk, true)
-    assert.equal(r.bump, 'patch')
+    assert.equal(r.bump, null)
+  })
+
+  it('chore! → major (breaking overrides skip)', () => {
+    const r = parseConventionalCommit('chore!: drop Node 18')
+    assert.equal(r.bump, 'major')
+    assert.equal(r.breaking, true)
+  })
+
+  it('refactor with BREAKING CHANGE footer → major', () => {
+    const r = parseConventionalCommit('refactor: rename', 'BREAKING CHANGE: removed legacy API')
+    assert.equal(r.bump, 'major')
+    assert.equal(r.breaking, true)
   })
 
   it('feat with scope', () => {
@@ -62,15 +76,15 @@ describe('parseConventionalCommit', () => {
     assert.equal(r.breaking, true)
   })
 
-  it('non-conventional → patch + parsedOk false', () => {
+  it('non-conventional → skipped (bump null, parsedOk false)', () => {
     const r = parseConventionalCommit('random message without prefix')
-    assert.equal(r.bump, 'patch')
+    assert.equal(r.bump, null)
     assert.equal(r.parsedOk, false)
   })
 
-  it('empty subject → patch + parsedOk false', () => {
+  it('empty subject → skipped (bump null, parsedOk false)', () => {
     const r = parseConventionalCommit('')
-    assert.equal(r.bump, 'patch')
+    assert.equal(r.bump, null)
     assert.equal(r.parsedOk, false)
   })
 })

@@ -116,13 +116,15 @@ function main() {
   let written = 0
   let skipped = 0
   let touchedNothing = 0
+  let skippedByType = 0
 
   for (const commit of commits) {
     const parsed = parseConventionalCommit(commit.subject, commit.body)
-    if (!parsed.parsedOk) {
-      console.warn(
-        `[converter] commit ${commit.sha.slice(0, 7)} ("${commit.subject}") is not conventional; defaulting bump=patch`,
-      )
+    // bump === null means "skip" — non-conventional, or a type that doesn't
+    // earn a release (chore, docs, refactor, etc.) and isn't breaking.
+    if (parsed.bump === null) {
+      skippedByType++
+      continue
     }
 
     const files = getChangedFiles(commit.sha)
@@ -148,7 +150,8 @@ function main() {
 
   console.log(
     `[converter] Wrote ${written} changeset(s); skipped ${skipped} pre-existing; ` +
-      `${touchedNothing} commit(s) touched no tracked package`,
+      `${touchedNothing} commit(s) touched no tracked package; ` +
+      `${skippedByType} commit(s) excluded by type policy (only feat/fix/breaking included)`,
   )
 }
 
