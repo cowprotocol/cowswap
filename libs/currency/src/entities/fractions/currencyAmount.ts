@@ -8,7 +8,6 @@ import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/appl
 import { toFixed as divToFixed } from '../../utils/toFixed'
 import { BigintIsh, Rounding } from '../constants'
 import { Currency } from '../currency'
-import { Token } from '../token'
 
 const MAX_UINT = JSBI.BigInt(MAX_UINT256.toString())
 
@@ -92,10 +91,5 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
       ),
       format,
     )
-  }
-
-  get wrapped(): CurrencyAmount<Token> {
-    if (this.currency.isToken) return this as CurrencyAmount<Token>
-    return CurrencyAmount.fromFractionalAmount(this.currency.wrapped, this.numerator, this.denominator)
   }
 }

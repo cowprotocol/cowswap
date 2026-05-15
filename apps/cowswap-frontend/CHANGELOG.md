@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.1...cowswap-v3.10.2) (2026-05-14)
+
+
+### 🐛 Bug Fixes
+
+* add safe api key to vercel ([#7504](https://github.com/cowprotocol/cowswap/issues/7504)) ([9743ec9](https://github.com/cowprotocol/cowswap/commit/9743ec94f6fcf33ab6d55a1fbee0ccb0e62ba2aa))
+
 ## [3.10.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.10.0...cowswap-v3.10.1) (2026-05-13)
 
 
