@@ -1,6 +1,8 @@
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { CowSwapWidgetParams, TradeType } from './types'
 
+const widgetHandlers: CowSwapWidgetHandler[] = []
+
 describe('createCowSwapWidget', () => {
   const originalOpen = window.open
 
@@ -9,8 +11,10 @@ describe('createCowSwapWidget', () => {
   })
 
   afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
     document.body.innerHTML = ''
     window.open = originalOpen
+    jest.restoreAllMocks()
   })
 
   it('opens https links requested by the widget', () => {
@@ -91,7 +95,12 @@ function createWidget(
       tradeType: TradeType.SWAP,
       ...extraParams,
     },
+    enableSafeSdkBridge,
   })
+
+  widgetHandlers.push(widgetHandler)
+
+  return widgetHandler
 }
 
 function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi', iframe: HTMLIFrameElement): void {
@@ -104,6 +113,28 @@ function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi
       href,
       target: '_blank',
       rel: 'noopener',
+    },
+  })
+
+  Object.defineProperty(event, 'source', {
+    configurable: true,
+    value: iframe.contentWindow,
+  })
+
+  window.dispatchEvent(event)
+}
+
+function dispatchSafeSdkRequest(iframe: HTMLIFrameElement): void {
+  const event = new MessageEvent('message', {
+    origin: 'https://swap.cow.fi',
+    source: iframe.contentWindow,
+    data: {
+      id: 'safe-request-id',
+      method: 'getSafeInfo',
+      params: {},
+      env: {
+        sdkVersion: '1.0.0',
+      },
     },
   })
 

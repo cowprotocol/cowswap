@@ -1,10 +1,12 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
-import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
+import { CowSwapWidget, type CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -106,7 +108,7 @@ export default function Page(): ReactNode {
         </HeroContent>
 
         <WidgetContainer id="COW-WIDGET">
-          <CowSwapWidget params={widgetParams} />
+          <CowSwapWidget params={widgetParams} enableSafeSdkBridge={false} />
         </WidgetContainer>
       </HeroContainer>
 
