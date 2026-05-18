@@ -1,0 +1,41 @@
+[
+  {
+    "hunk_id": "h_b854ee12b397",
+    "file": "libs/common-const/src/common.ts",
+    "line": 51,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.78,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Removes exported constants and changes getEthFlowContractAddresses to always use BARN_ETH_FLOW_ADDRESSES for non-prod. This alters runtime contract address selection and removes exports, impacting cross-file usage. High-risk behavioral change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_44cd95faf829",
+    "file": "libs/common-utils/src/cowProtocolContracts.ts",
+    "line": 1,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.85,
+    "intents": [
+      "lint"
+    ],
+    "rationale": "Removes now-unused imports; mechanical cleanup with no semantic impact on its own.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_0d09b2bcec2d",
+    "file": "libs/common-utils/src/cowProtocolContracts.ts",
+    "line": 6,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.83,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Consolidates address resolution to staging for barn env across settlement, relayer, and ETH flow, removing mixed mapping and old fallback. This is a substantive runtime behavior change affecting which on-chain contracts are used.",
+    "escalations": []
+  }
+]
