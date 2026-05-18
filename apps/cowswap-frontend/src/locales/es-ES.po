@@ -7959,3 +7959,18 @@ msgstr "Aprende más"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Asset officially issued by {assetIssuedByIssuer}"
+msgstr "Activo emitido oficialmente por {assetIssuedByIssuer}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Issued by {issuedByIssuer}"
+msgstr "Emitido por {issuedByIssuer}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Token officially issued by {tokenIssuedByIssuer}"
+msgstr "Token emitido oficialmente por {tokenIssuedByIssuer}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Tokenized by {tokenizedByIssuer}"
+msgstr "Tokenizado por {tokenizedByIssuer}"
