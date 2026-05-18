@@ -23,7 +23,7 @@
     "start:sdk-tools": "nx run sdk-tools:serve",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
-    "build:cowswap": "cross-env NODE_ENV=production nx build cowswap-frontend --no-cloud",
+    "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
     "build:explorer": "nx build explorer --no-cloud",
     "build:widget": "nx build widget-configurator --no-cloud",
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",

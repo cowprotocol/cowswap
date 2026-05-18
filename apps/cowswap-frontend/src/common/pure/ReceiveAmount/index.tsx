@@ -36,6 +36,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
       <div>
         <span>{!isSell ? t`From (incl. fees)` : t`Receive (incl. fees)`}</span>
         <styledEl.QuestionHelperWrapped
+          placement="right"
           text={
             bridgeEstimatedAmounts ? (
               <BridgeReceiveAmountInfo bridgeEstimatedAmounts={bridgeEstimatedAmounts} />

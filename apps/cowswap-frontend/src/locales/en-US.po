@@ -1055,8 +1055,7 @@ msgstr "Sending {nativeTokenSymbol}"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
-#: apps/cowswap-frontend/src/modules/account/containers/CopyHelper/index.tsx
+#: apps/cowswap-frontend/src/legacy/components/Copy/CopyHelper.tsx
 msgid "Copied"
 msgstr "Copied"
 
@@ -2421,6 +2420,7 @@ msgid "From (incl. fees)"
 msgstr "From (incl. fees)"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "View rewards"
 msgstr "View rewards"
 
@@ -3454,6 +3454,10 @@ msgstr "Not now"
 msgid "Unsupported network"
 msgstr "Unsupported network"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Code <0>{code}</0> is linked for the next {timeCapDays} days"
+msgstr "Code <0>{code}</0> is linked for the next {timeCapDays} days"
+
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
 #~ msgstr "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
@@ -4435,6 +4439,10 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
 msgstr "This token is not available in your region."
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Rewards activated"
+msgstr "Rewards activated"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Scan QR code"

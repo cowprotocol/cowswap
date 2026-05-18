@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.4](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.3...iframe-transport-v2.2.4) (2026-05-13)
+
+
+### ✨ Features
+
+* **WidgetEthereumProvider:** intercept `wallet_revokePermissions` locally and resolve to `null`, so widget disconnect does not revoke wallet permissions on the parent dapp's origin ([#7467](https://github.com/cowprotocol/cowswap/issues/7467)) ([e93bf10](https://github.com/cowprotocol/cowswap/commit/e93bf10af5e813b4ae519421184616af0409f96b))
+* **iframe-transport:** export `EthereumProviderWithRemoveListener` type for consumers that need to narrow EIP-1193 providers before calling the optional `removeListener` method ([b8a3bea](https://github.com/cowprotocol/cowswap/commit/b8a3beaed3ea1aebdfbdd1eee05d34fcb0f9c3a4))
+
+
+### 🐛 Bug Fixes
+
+* **IframeRpcProviderBridge:** detach forwarded `connect`/`disconnect`/`chainChanged`/`accountsChanged` listeners on `disconnect()` to prevent stale handlers leaking against the parent dapp ([#7467](https://github.com/cowprotocol/cowswap/issues/7467)) ([e93bf10](https://github.com/cowprotocol/cowswap/commit/e93bf10af5e813b4ae519421184616af0409f96b))
+* bump version of widget-lib + iframe-transport ([#7493](https://github.com/cowprotocol/cowswap/issues/7493)) ([b8a3bea](https://github.com/cowprotocol/cowswap/commit/b8a3beaed3ea1aebdfbdd1eee05d34fcb0f9c3a4))
+
+
+### 🔧 Miscellaneous
+
+* backfills changes shipped to `main` via [#7467](https://github.com/cowprotocol/cowswap/issues/7467) but skipped by release-please during the cowswap-v3.10.0 cycle (the PR's merge-commit title was not Conventional Commits).
+
 ## [2.2.3](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.2...iframe-transport-v2.2.3) (2026-04-22)
 
 
