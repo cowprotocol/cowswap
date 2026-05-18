@@ -1,11 +1,13 @@
 import { cowprotocolTokenLogoUrl, TokenWithLogo } from '@cowprotocol/common-const'
-import { uriToHttp } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSupportedChainId, uriToHttp } from '@cowprotocol/common-utils'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { trustTokenLogoUrl } from './trustTokenLogoUrl'
 
 export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
-  const fallbackUrls = token?.address ? getTokenLogoFallbacks(token.address, token.chainId as SupportedChainId) : []
+  // for sol tokens we use address as it is, without logo.png
+  const fallbackUrls =
+    token?.address && isSupportedChainId(token.chainId) ? getTokenLogoFallbacks(token.address, token.chainId) : []
 
   if (!token?.logoURI) {
     return fallbackUrls
@@ -21,9 +23,10 @@ export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
 }
 
 function getTokenLogoFallbacks(address: string, chainId: SupportedChainId): string[] {
+  const addressKey = getAddressKey(address)
   const logos = [
-    cowprotocolTokenLogoUrl(address.toLowerCase(), chainId),
-    cowprotocolTokenLogoUrl(address.toLowerCase(), SupportedChainId.MAINNET),
+    cowprotocolTokenLogoUrl(addressKey, chainId),
+    cowprotocolTokenLogoUrl(addressKey, SupportedChainId.MAINNET),
   ]
 
   const trustLogo = trustTokenLogoUrl(address, chainId)

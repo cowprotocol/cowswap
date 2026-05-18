@@ -4,12 +4,11 @@ import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
+import { CopyButton } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
-
-import CopyHelper from 'legacy/components/Copy'
 
 import { useModalState } from 'common/hooks/useModalState'
 
@@ -64,7 +63,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
         <LinkedCard>
           <LinkedCodeRow>
             <LinkedCopy>
-              <CopyHelper toCopy={refCode} iconSize={16} hideCopiedLabel />
+              <CopyButton value={refCode} iconSize={16} iconOnly />
               <LinkedCodeText>{refCode}</LinkedCodeText>
             </LinkedCopy>
             <LinkedBadge>
@@ -74,7 +73,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
           </LinkedCodeRow>
           <LinkedLinkRow>
             <LinkedCopy>
-              <CopyHelper toCopy={referralLink} iconSize={16} hideCopiedLabel />
+              <CopyButton value={referralLink} iconSize={16} iconOnly />
               <LinkedLinkText>
                 {referralLink
                   .split(/(ref=)/)

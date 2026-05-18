@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/ens",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -31,8 +31,8 @@
     "@cowprotocol/wallet-provider": "workspace:*",
     "react": "19.1.2",
     "swr": "2.3.3",
-    "viem": "2.47.1",
-    "wagmi": "3.4.2"
+    "viem": "2.48.8",
+    "wagmi": "3.6.9"
   },
   "devDependencies": {
     "@types/react": "19.1.3"

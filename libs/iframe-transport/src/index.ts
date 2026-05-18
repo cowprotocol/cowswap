@@ -1,6 +1,7 @@
 export { IframeRpcProviderBridge } from './iframeRpcProvider/IframeRpcProviderBridge'
+export type { EthereumProviderWithRemoveListener } from './iframeRpcProvider/IframeRpcProviderBridge'
 export { WidgetEthereumProvider } from './iframeRpcProvider/WidgetEthereumProvider'
-export { IframeTransport } from './IframeTransport'
+export { IframeTransport, isLocalEnvOrigin } from './IframeTransport'
 export { getParentOrigin } from './getParentOrigin'
 export * from './iframeRpcProvider/iframeRpcProviderEvents'
 export * from './types'

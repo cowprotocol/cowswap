@@ -1,6 +1,7 @@
 {
   "name": "@cowprotocol/sdk-tools",
   "version": "1.0.0",
+  "private": true,
   "description": "SDK tools",
   "main": "src/main.tsx",
   "author": "",
@@ -27,8 +28,8 @@
     "@cowprotocol/sdk-composable": "1.0.1",
     "@cowprotocol/sdk-viem-adapter": "0.3.18",
     "@cowprotocol/wallet": "workspace:*",
-    "viem": "2.47.1",
-    "wagmi": "3.4.2",
+    "viem": "2.48.8",
+    "wagmi": "3.6.9",
     "inter-ui": "3.19.3",
     "react": "19.1.2",
     "react-dom": "19.1.2",

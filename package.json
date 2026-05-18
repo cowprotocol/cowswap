@@ -17,11 +17,13 @@
     "start:cosmos": "nx run cowswap-frontend:cosmos:run",
     "start:cosmos:explorer": "nx run explorer:cosmos:run",
     "start:explorer": "cross-env NODE_ENV=development nx run explorer:serve",
+    "storybook": "nx run storybook:storybook",
+    "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
-    "build:cowswap": "cross-env NODE_ENV=production nx build cowswap-frontend --no-cloud",
+    "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
     "build:explorer": "nx build explorer --no-cloud",
     "build:widget": "nx build widget-configurator --no-cloud",
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",
@@ -48,6 +50,9 @@
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
     "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
@@ -90,9 +95,13 @@
       "nx": true
     },
     "overrides": {
-      "wagmi": "3.4.2",
-      "@wagmi/core": "3.3.2",
-      "viem": "2.47.1"
+      "semver": "7.8.0",
+      "undici-types": "6.19.2",
+      "wagmi": "3.6.9",
+      "@wagmi/core": "3.4.8",
+      "viem": "2.48.8",
+      "use-sync-external-store": "1.5.0",
+      "zod": "3.25.76"
     },
     "peerDependencyRules": {
       "allowedVersions": {
@@ -118,12 +127,14 @@
     "@walletconnect/types": "2.17.3",
     "cross-env": "7.0.3",
     "dotenv": "16.4.7",
-    "next": "15.2.8",
+    "next": "15.5.18",
     "styled-jsx": "5.1.2",
     "tslib": "2.8.1"
   },
   "devDependencies": {
     "@babel/preset-react": "7.27.1",
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.0",
     "@commitlint/cli": "20.1.0",
     "@commitlint/config-conventional": "20.0.0",
     "@eslint/eslintrc": "3.3.1",
@@ -143,7 +154,7 @@
     "@sentry/vite-plugin": "4.4.0",
     "@swc-node/register": "1.11.1",
     "@swc/cli": "0.7.8",
-    "@swc/core": "1.13.5",
+    "@swc/core": "1.15.26",
     "@swc/plugin-styled-components": "9.1.0",
     "@testing-library/dom": "10.4.1",
     "@typechain/ethers-v5": "11.1.2",

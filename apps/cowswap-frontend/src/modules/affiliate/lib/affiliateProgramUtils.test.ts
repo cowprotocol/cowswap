@@ -1,7 +1,7 @@
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 
-import { formatRefCode, isExecutedNonIntegratorOrder } from './affiliateProgramUtils'
+import { extractFullAppDataFromResponse, formatRefCode, isExecutedNonIntegratorOrder } from './affiliateProgramUtils'
 
 function buildFullAppData(appCode: string): string {
   return JSON.stringify({
@@ -35,6 +35,31 @@ describe('formatRefCode', () => {
 
   it('rejects invalid characters', () => {
     expect(formatRefCode('ABCD!')).toBeUndefined()
+  })
+})
+
+describe('extractFullAppDataFromResponse', () => {
+  const fullAppData = buildFullAppData(DEFAULT_APP_CODE)
+  const appDataHash = '0x6b29c96a56b70162fa3e7ab6847df043179b27232d57155d531fdc4ac8179218'
+
+  it('returns full appData fields', () => {
+    expect(extractFullAppDataFromResponse({ fullAppData })).toBe(fullAppData)
+    expect(extractFullAppDataFromResponse({ full_app_data: fullAppData })).toBe(fullAppData)
+  })
+
+  it('ignores appData hash fields', () => {
+    expect(extractFullAppDataFromResponse({ appData: appDataHash })).toBeUndefined()
+    expect(extractFullAppDataFromResponse(appDataHash)).toBeUndefined()
+  })
+
+  it('uses appData only when it contains full appData', () => {
+    expect(extractFullAppDataFromResponse({ appData: fullAppData })).toBe(fullAppData)
+  })
+
+  it('falls back to document when appData is only a hash', () => {
+    const document = { appCode: DEFAULT_APP_CODE, metadata: {}, version: '1.0.0' }
+
+    expect(extractFullAppDataFromResponse({ appData: appDataHash, document })).toBe(JSON.stringify(document))
   })
 })
 
@@ -81,5 +106,23 @@ describe('isExecutedNonIntegratorOrder', () => {
 
     // assert
     expect(result).toBe(false)
+  })
+
+  it('does not decode hash-only appData from local order state', () => {
+    // arrange
+    const consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation()
+    const order = buildOrder({
+      appData: '0x6b29c96a56b70162fa3e7ab6847df043179b27232d57155d531fdc4ac8179218',
+      fullAppData: undefined,
+    })
+
+    // act
+    const result = isExecutedNonIntegratorOrder(order)
+
+    // assert
+    expect(result).toBe(false)
+    expect(consoleInfoSpy).not.toHaveBeenCalled()
+
+    consoleInfoSpy.mockRestore()
   })
 })
