@@ -1,0 +1,667 @@
+[
+  {
+    "hunk_id": "h_881e87700f84",
+    "file": "apps/cow-fi/.env",
+    "line": 1,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.9,
+    "intents": [
+      "config_runtime",
+      "docs"
+    ],
+    "rationale": ".env change affects runtime configuration and secrets sourcing; repo floors mark .env as high-risk.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_901451924678",
+    "file": "apps/cow-fi/app/(main)/widget/page.tsx",
+    "line": 1,
+    "layer": "B",
+    "original_layer": "A",
+    "confidence": 0.95,
+    "intents": [
+      "type_annotation"
+    ],
+    "rationale": "Type-only imports; no runtime effect.",
+    "escalations": [
+      "cross_reference"
+    ]
+  },
+  {
+    "hunk_id": "h_232acaa951f6",
+    "file": "apps/cow-fi/app/(main)/widget/page.tsx",
+    "line": 54,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.95,
+    "intents": [
+      "type_annotation"
+    ],
+    "rationale": "Adds return type annotation only; no behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_3238a2e5b4f4",
+    "file": "apps/cow-fi/app/(main)/widget/page.tsx",
+    "line": 108,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.84,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Passes a new prop that toggles side-effectful behavior (Safe SDK bridge) in a widget.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_9f6af86106a5",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 1,
+    "layer": "B",
+    "original_layer": "A",
+    "confidence": 0.92,
+    "intents": [
+      "lint"
+    ],
+    "rationale": "Removes unused import; mechanical cleanup.",
+    "escalations": [
+      "cross_reference"
+    ]
+  },
+  {
+    "hunk_id": "h_264363376451",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 7,
+    "layer": "B",
+    "original_layer": "A",
+    "confidence": 0.92,
+    "intents": [
+      "lint"
+    ],
+    "rationale": "Removes unused import; mechanical cleanup.",
+    "escalations": [
+      "cross_reference"
+    ]
+  },
+  {
+    "hunk_id": "h_3eb8ee1cad8c",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 36,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.75,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Switches imported utility to a different module, implying behavior change in markdown handling.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_5f2abf1b16a3",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 306,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.8,
+    "intents": [
+      "validation_localized"
+    ],
+    "rationale": "Introduces precomputed, conditionally displayed formatted date; localized display logic.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_a1a86024c9f6",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 314,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.8,
+    "intents": [
+      "validation_localized"
+    ],
+    "rationale": "Uses precomputed formatted date in UI; localized display logic change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_09c78c6878f1",
+    "file": "apps/cow-fi/components/ArticlePageComponent.tsx",
+    "line": 350,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.78,
+    "intents": [
+      "validation_security"
+    ],
+    "rationale": "Changes markdown processing to skip raw HTML and allow only vetted images; content security behavior.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_0f7ec0ab8d2b",
+    "file": "apps/cow-fi/next.config.ts",
+    "line": 2,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.85,
+    "intents": [
+      "extract_pure"
+    ],
+    "rationale": "Extracts a constant for reuse; no captured state or behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_bc085992a8ad",
+    "file": "apps/cow-fi/next.config.ts",
+    "line": 118,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.82,
+    "intents": [
+      "config_runtime",
+      "validation_security"
+    ],
+    "rationale": "Alters Next.js headers (caching and framing/CSP) impacting runtime/security behavior.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_dd95badbe108",
+    "file": "apps/cow-fi/package.json",
+    "line": 66,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.8,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Removes a runtime dependency from package.json; runtime dependency changes require human review.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_c70c42dbe983",
+    "file": "apps/cow-fi/services/dune/index.tsx",
+    "line": 2,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.72,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Refactors env key retrieval into a function with trimming/assertion; localized behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_6de22cbd3103",
+    "file": "apps/cow-fi/services/dune/index.tsx",
+    "line": 27,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Updates header usage to call the new getter; minor behavior refactor.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_47ad316d1452",
+    "file": "apps/cow-fi/services/dune/index.tsx",
+    "line": 68,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.95,
+    "intents": [
+      "type_annotation"
+    ],
+    "rationale": "Adds explicit return type; no runtime effect.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_3c41ab25b38e",
+    "file": "apps/cow-fi/util/lazyLoadImages.ts",
+    "line": 12,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.74,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Removes now-unreferenced helper; dead-code removal, no behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_141a0ff9afa1",
+    "file": "apps/cow-fi/util/markdownHtmlImages.test.ts",
+    "line": 1,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.93,
+    "intents": [
+      "test_additive"
+    ],
+    "rationale": "New unit tests only; additive coverage.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_9fed732e775b",
+    "file": "apps/cow-fi/util/markdownHtmlImages.ts",
+    "line": 1,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.77,
+    "intents": [
+      "validation_security"
+    ],
+    "rationale": "Adds new sanitizer/transformer for HTML images in markdown; localized content-security logic.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_2c35b703d9cd",
+    "file": "libs/ui/src/index.ts",
+    "line": 6,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.72,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Expands library public surface by exporting a new symbol; cross-package API change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_5914f857b149",
+    "file": "libs/widget-lib/src/cowSwapWidget.spec.ts",
+    "line": 1,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "test_refactor"
+    ],
+    "rationale": "Test harness changes to manage handler lifecycle; refactor of tests.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_22b5006ed2fd",
+    "file": "libs/widget-lib/src/cowSwapWidget.spec.ts",
+    "line": 11,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.78,
+    "intents": [
+      "test_refactor"
+    ],
+    "rationale": "Modifies afterEach and jest mocks; test behavior/setup refactor.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_86b5c9fc017f",
+    "file": "libs/widget-lib/src/cowSwapWidget.spec.ts",
+    "line": 64,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.9,
+    "intents": [
+      "test_additive"
+    ],
+    "rationale": "Adds a new test case; no production code change here.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_836b69bf7b0e",
+    "file": "libs/widget-lib/src/cowSwapWidget.spec.ts",
+    "line": 95,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.78,
+    "intents": [
+      "test_refactor"
+    ],
+    "rationale": "Refactors test helper signature and tracking; test-only behavioral setup change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_b40166ff717d",
+    "file": "libs/widget-lib/src/cowSwapWidget.spec.ts",
+    "line": 123,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.75,
+    "intents": [
+      "test_refactor"
+    ],
+    "rationale": "Adds test helper for message dispatch; test harness change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_ed06d94f1e6b",
+    "file": "libs/widget-lib/src/cowSwapWidget.ts",
+    "line": 57,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.87,
+    "intents": [
+      "type_export_change"
+    ],
+    "rationale": "Adds optional prop to exported function signature; public API change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_17c95d3d8378",
+    "file": "libs/widget-lib/src/cowSwapWidget.ts",
+    "line": 132,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.83,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Gates side-effectful Safe SDK bridge behind a flag; localized runtime behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_288dde3666f2",
+    "file": "libs/widget-lib/src/cowSwapWidget.ts",
+    "line": 160,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.8,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Makes cleanup resilient when bridge disabled; minor runtime behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_81ee46dc6bd6",
+    "file": "libs/widget-lib/src/types.ts",
+    "line": 62,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.9,
+    "intents": [
+      "type_export_change"
+    ],
+    "rationale": "Extends exported props interface; public type surface change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_0f39e4b5e593",
+    "file": "libs/widget-react/package.json",
+    "line": 29,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "unknown"
+    ],
+    "rationale": "Adds dev-only testing deps; development-time dependency changes with bounded impact.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_4b48058b0ee9",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.spec.tsx",
+    "line": 1,
+    "layer": "A",
+    "original_layer": "A",
+    "confidence": 0.9,
+    "intents": [
+      "test_additive"
+    ],
+    "rationale": "Adds a new unit test and supporting mocks/helpers without altering production code; purely additive test coverage.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_003f4c43e56e",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.tsx",
+    "line": 10,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.86,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Introduces a new prop (enableSafeSdkBridge) and state/ref handling that affects widget creation logic; localized UI behavior change with effects.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_98d3ae16865f",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.tsx",
+    "line": 37,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.85,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Refactors unmount cleanup into a hook and updates effect conditions to consider a new flag; small, localized behavior change tied to effects.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_df32ccabfc99",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.tsx",
+    "line": 58,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.86,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Alters create/update/destroy flow to recreate the widget when the Safe SDK bridge flag changes and adjusts dependencies; localized UI effect logic change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_3be098287f28",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.tsx",
+    "line": 124,
+    "layer": "C",
+    "original_layer": "B",
+    "confidence": 0.82,
+    "intents": [
+      "ui_with_effect",
+      "extract_pure"
+    ],
+    "rationale": "Extracts a pure error component and a cleanup hook while keeping effectful logic; mixed refactor plus small UI behavior organization.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_174b9122e7fa",
+    "file": "libs/widget-react/src/lib/CowSwapWidget.tsx",
+    "line": 190,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.83,
+    "intents": [
+      "ui_with_effect"
+    ],
+    "rationale": "Introduces a helper to create the widget (including the new flag) and routes calls through it; localized effectful behavior refactor.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_21e15398779f",
+    "file": "pnpm-lock.yaml",
+    "line": 447,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile change removing rehype-raw from an importer; reflects a runtime dependency graph adjustment and warrants light human review.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_bb82bc697764",
+    "file": "pnpm-lock.yaml",
+    "line": 2095,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.8,
+    "intents": [
+      "dep_dev_patch"
+    ],
+    "rationale": "Lockfile updates add testing libraries and move React-related entries into devDependencies for a package; dev-only dependency adjustments.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_b9562b0cab2d",
+    "file": "pnpm-lock.yaml",
+    "line": 11304,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile prunes transitive entries tied to removed rehype-raw; dependency graph update with runtime implications.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_4b141fa1c1d4",
+    "file": "pnpm-lock.yaml",
+    "line": 11374,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile cleanup of transitive packages related to rehype-raw removal; runtime dependency graph adjustment.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_8535ae6fdc41",
+    "file": "pnpm-lock.yaml",
+    "line": 14776,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Further lockfile removals of rehype-raw and related transitive entries; reflects runtime dependency change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_b8b34c88ca62",
+    "file": "pnpm-lock.yaml",
+    "line": 16693,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes transitive dependency (vfile-location) stemming from dependency changes; runtime graph update.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_873af4eed0f0",
+    "file": "pnpm-lock.yaml",
+    "line": 16871,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes a transitive package (web-namespaces) as part of dependency pruning; runtime dependency update.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_7528f31c799e",
+    "file": "pnpm-lock.yaml",
+    "line": 30635,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile cleans multiple transitive entries tied to rehype-raw; runtime dependency graph changes.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_0d2de061ea4d",
+    "file": "pnpm-lock.yaml",
+    "line": 30657,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes additional transitive packages related to rehype-raw; runtime dependency graph update.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_400feb441f2b",
+    "file": "pnpm-lock.yaml",
+    "line": 30669,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile cleans up transitive hastscript version related to removed dependency; runtime dependency graph adjustment.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_d9cda1fa72c5",
+    "file": "pnpm-lock.yaml",
+    "line": 30738,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes html-void-elements entry as part of pruning; runtime dependency changes.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_4e8139d3f82a",
+    "file": "pnpm-lock.yaml",
+    "line": 34940,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes rehype-raw package definition; runtime dependency adjustment.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_20651e8665ef",
+    "file": "pnpm-lock.yaml",
+    "line": 36975,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes vfile-location due to upstream dependency removal; runtime graph change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_9d8120d62306",
+    "file": "pnpm-lock.yaml",
+    "line": 37297,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.7,
+    "intents": [
+      "dep_runtime"
+    ],
+    "rationale": "Lockfile removes web-namespaces as a consequence of dependency pruning; runtime dependency update.",
+    "escalations": []
+  }
+]
