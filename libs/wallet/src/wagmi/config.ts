@@ -1,6 +1,6 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -111,20 +111,20 @@ function getConnectors(): ConnectorInstance[] {
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {
-    const chainId = chain.id as SupportedChainId
+    const chainId = chain.id as EvmChains
     const url = RPC_URLS[chainId]
     if (url) {
       acc[chainId] = http(url)
     }
     return acc
   },
-  {} as Record<SupportedChainId, Transport>,
+  {} as Record<EvmChains, Transport>,
 )
 
 /** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as SupportedChainId]
+  const url = RPC_URLS[chain.id as EvmChains]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -204,11 +204,14 @@ if (isSafeIframe) {
     }
   }
 
+  const urlChainId = getCurrentChainIdFromUrl()
+  const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
+
   reownAppKit = createAppKit({
     adapters: [wagmiAdapter],
     allowUnsupportedChain: true,
     customRpcUrls,
-    defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+    defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
     // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
     // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on

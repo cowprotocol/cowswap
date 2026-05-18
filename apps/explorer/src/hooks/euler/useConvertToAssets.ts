@@ -1,4 +1,4 @@
-import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, EvmChains } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
@@ -11,7 +11,7 @@ export function useConvertToAssets(
   vaultAddress: AddressKey | undefined,
   shares: bigint | undefined,
 ): bigint | undefined {
-  const chainId = useNetworkId() as SupportedChainId | null
+  const chainId = useNetworkId() as EvmChains | null
 
   const { data } = useSWR<bigint>(
     chainId && vaultAddress && shares !== undefined

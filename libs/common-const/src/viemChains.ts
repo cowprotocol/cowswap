@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import {
   arbitrum,
@@ -10,21 +10,28 @@ import {
   ink,
   linea,
   mainnet,
+  optimism,
   plasma,
   polygon,
   sepolia,
 } from 'viem/chains'
 
-export const VIEM_CHAINS: Record<SupportedChainId, Chain> = {
-  [SupportedChainId.MAINNET]: mainnet,
-  [SupportedChainId.BNB]: bsc,
-  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
-  [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.BASE]: base,
-  [SupportedChainId.PLASMA]: plasma,
-  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
-  [SupportedChainId.AVALANCHE]: avalanche,
-  [SupportedChainId.LINEA]: linea,
-  [SupportedChainId.INK]: ink,
-  [SupportedChainId.SEPOLIA]: sepolia,
+/**
+ * viem `Chain` definitions for every EVM chain known to cow-sdk.
+ * `OPTIMISM` is included because it is in `EvmChains`; trading from Optimism is not
+ * supported today, but the entry is required for `Record<EvmChains, Chain>` exhaustiveness.
+ */
+export const VIEM_CHAINS: Record<EvmChains, Chain> = {
+  [EvmChains.MAINNET]: mainnet,
+  [EvmChains.BNB]: bsc,
+  [EvmChains.GNOSIS_CHAIN]: gnosis,
+  [EvmChains.POLYGON]: polygon,
+  [EvmChains.BASE]: base,
+  [EvmChains.PLASMA]: plasma,
+  [EvmChains.ARBITRUM_ONE]: arbitrum,
+  [EvmChains.AVALANCHE]: avalanche,
+  [EvmChains.LINEA]: linea,
+  [EvmChains.INK]: ink,
+  [EvmChains.SEPOLIA]: sepolia,
+  [EvmChains.OPTIMISM]: optimism,
 }

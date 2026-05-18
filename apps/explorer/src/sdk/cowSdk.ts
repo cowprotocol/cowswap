@@ -2,7 +2,13 @@ import { useEffect } from 'react'
 
 import { bungeeAffiliateCode, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
-import { AbstractProviderAdapter, OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  AbstractProviderAdapter,
+  EvmChains,
+  OrderBookApi,
+  setGlobalAdapter,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
@@ -19,7 +25,7 @@ const LENS_DEFAULT_RPC = 'https://rpc.lens.xyz'
 /** Read-only signer for the explorer (no real funds at risk). */
 const EXPLORER_SIGNER_KEY = '0xa50dc0f7fc051309434deb3b1c71e927dbb711759231d8ecbf630c85d94a42fe' as const
 
-type ViemChainMapKey = SupportedChainId | typeof LENS_CHAIN_ID
+type ViemChainMapKey = EvmChains | typeof LENS_CHAIN_ID
 
 export const cowSdkAdapter = new ViemAdapter({
   provider: createPublicClient({
@@ -71,11 +77,11 @@ export function CowSdkUpdater(): null {
     setGlobalAdapter(
       new ViemAdapter({
         provider: createPublicClient({
-          chain: CHAINS[chainId as ViemChainMapKey],
+          chain: CHAINS[chainId as unknown as ViemChainMapKey],
           transport: http(
             (chainId as number) === LENS_CHAIN_ID
               ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? LENS_DEFAULT_RPC)
-              : RPC_URLS[chainId as SupportedChainId],
+              : RPC_URLS[chainId as unknown as EvmChains],
           ),
         }),
         signer: privateKeyToAccount(EXPLORER_SIGNER_KEY),
