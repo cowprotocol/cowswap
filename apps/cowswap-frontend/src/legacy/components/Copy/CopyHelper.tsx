@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent, ReactNode } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { UI, LinkStyledButton } from '@cowprotocol/ui'
@@ -7,9 +7,6 @@ import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled, { DefaultTheme, StyledComponentProps } from 'styled-components/macro'
 
-import { TransactionStatusText } from 'legacy/components/Copy/index'
-
-// MOD imports
 export const CopyIcon = styled(LinkStyledButton)<{ copyIconWidth?: string }>`
   --iconSize: var(${UI.ICON_SIZE_NORMAL});
   color: inherit;
@@ -30,6 +27,16 @@ export const CopyIcon = styled(LinkStyledButton)<{ copyIconWidth?: string }>`
   :focus {
     text-decoration: none;
     color: inherit;
+  }
+`
+
+export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
+  ${({ theme }) => theme.flexRowNoWrap};
+  color: ${({ isCopied }) => (isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
+  align-items: center;
+
+  ${CopyIcon} {
+    color: currentColor;
   }
 `
 
@@ -56,15 +63,11 @@ interface CopyHelperProps
   hideCopiedLabel?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function CopyHelper(props: CopyHelperProps) {
+export default function CopyHelper(props: CopyHelperProps): ReactNode {
   const { toCopy, children, clickableLink, copyIconWidth, hideCopiedLabel = false, ...rest } = props
   const [isCopied, setCopied] = useCopyClipboard()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>): void => {
     event.stopPropagation()
     setCopied(toCopy)
   }

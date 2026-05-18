@@ -1,4 +1,8 @@
 /* eslint-disable @nx/enforce-module-boundaries */
+import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
+
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
 import { createGlobalStyle, ThemeProvider } from 'styled-components/macro'
 
 import { Color } from '../../../libs/ui/src/colors'
@@ -7,6 +11,9 @@ import { baseTheme } from '../../../libs/ui/src/theme/baseTheme'
 import { ThemeColorVars } from '../../../libs/ui/src/theme/ThemeColorVars'
 
 import type { Preview } from '@storybook/react-vite'
+
+i18n.load(DEFAULT_LOCALE, {})
+i18n.activate(DEFAULT_LOCALE)
 
 type ThemeMode = 'dark' | 'light'
 
@@ -57,10 +64,12 @@ const preview: Preview = {
       const theme = baseTheme(themeMode)
 
       return (
-        <ThemeProvider theme={theme}>
-          <GlobalStyle $themeMode={themeMode} />
-          <Story />
-        </ThemeProvider>
+        <I18nProvider i18n={i18n}>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle $themeMode={themeMode} />
+            <Story />
+          </ThemeProvider>
+        </I18nProvider>
       )
     },
   ],
@@ -69,8 +78,8 @@ const preview: Preview = {
     backgrounds: {
       options: {
         paperAuto: { name: 'Paper auto', value: `var(${UI.COLOR_PAPER})` },
-        checkerboard: { name: 'Checkerboard', value: checkerboardBackground },
         swapAuto: { name: 'Swap auto', value: 'var(--storybook-cowswap-background)' },
+        checkerboard: { name: 'Checkerboard', value: checkerboardBackground },
         light: { name: 'Light', value: '#F8F8F8' },
         paperLight: { name: 'Paper light', value: Color.white },
         swapLight: { name: 'Swap light', value: `var(${UI.COLOR_BLUE_300_PRIMARY})` },
