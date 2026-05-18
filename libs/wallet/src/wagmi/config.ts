@@ -235,6 +235,33 @@ if (isSafeIframe) {
   })
 }
 
+// Wagmi's `<Hydrate>` (wrapped by WagmiProvider) calls `hydrate.onMount` synchronously
+// on every render. With `reconnectOnMount={false}` (used so SafeConnectionHandler can
+// take over without racing against an auto-reconnect), onMount runs:
+//   config.setState((x) => ({ ...x, connections: new Map() }))
+// which clears `connections` but leaves `status` and `current` alone. Once our manual
+// reconnect has set `status: 'connected'`, the next re-render of WagmiProvider wipes
+// the connections map and the store ends up with status='connected' but empty
+// connections — `getConnection()` then returns `{ status: 'connected', connector: undefined }`,
+// and @reown/appkit-adapter-wagmi's watchAccount crashes reading `accountData.connector.id`.
+//
+// Enforce the invariant ourselves by wrapping `config.setState`: if the next state has
+// empty connections, force status='disconnected' and current=null in the same write so
+// the inconsistent state is never observed by any subscriber.
+const _wagmiSetState = config.setState.bind(config)
+config.setState = ((value: Parameters<typeof config.setState>[0]) => {
+  return _wagmiSetState((current) => {
+    const next = typeof value === 'function' ? value(current) : value
+    if (next && typeof next === 'object' && 'connections' in next) {
+      const { connections, status } = next as { connections?: Map<unknown, unknown>; status?: string }
+      if (connections && connections.size === 0 && status === 'connected') {
+        return { ...next, status: 'disconnected', current: null }
+      }
+    }
+    return next
+  })
+}) as typeof config.setState
+
 // Keep activeProviderRef in sync with the active connector so the per-tab
 // accountsChanged filter in providerIsolation.ts knows which provider is current.
 if (typeof window !== 'undefined') {
