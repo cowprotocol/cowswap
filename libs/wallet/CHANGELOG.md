@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.3.0...wallet-v3.3.1) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/iframe-transport bumped to 2.2.4
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.2.1...wallet-v3.3.0) (2026-05-12)
+
+
+### ✨ Features
+
+* allow smart accounts to use gasless off-chain signing ([#7451](https://github.com/cowprotocol/cowswap/issues/7451)) ([c7a65bc](https://github.com/cowprotocol/cowswap/commit/c7a65bc29269c6837b1fa90b8c3583c23454dd39))
+
+
+### 🐛 Bug Fixes
+
+* adjusting the wallet capabilities, so it doesn't mess up with metamask smart wallet ([#7455](https://github.com/cowprotocol/cowswap/issues/7455)) ([fcd9bbf](https://github.com/cowprotocol/cowswap/commit/fcd9bbf78e457f0a7a397805e1f744592fee8fcb))
+* auto-connect wallet in MetaMask iOS in-app browser on first visit ([d9e4bdd](https://github.com/cowprotocol/cowswap/commit/d9e4bddaa96dc2052dec4e7b5e0b5eb2f216ec83))
+* Coinbase Sign In preferences (connect with coinbase wallet) ([#7443](https://github.com/cowprotocol/cowswap/issues/7443)) ([0e40b35](https://github.com/cowprotocol/cowswap/commit/0e40b3503cf3030cd24b105e3ce67a72a8c798e6))
+* do not call eth_requestAccounts via connect() to avoid AppKit state-sync disconnect ([d9e4bdd](https://github.com/cowprotocol/cowswap/commit/d9e4bddaa96dc2052dec4e7b5e0b5eb2f216ec83))
+* fixing imToken wallet in app browser; ([d9e4bdd](https://github.com/cowprotocol/cowswap/commit/d9e4bddaa96dc2052dec4e7b5e0b5eb2f216ec83))
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/assets bumped to 2.3.0
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/ens bumped to 3.2.2
+    * @cowprotocol/ui bumped to 3.4.0
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.2.0...wallet-v3.2.1) (2026-04-22)
 
 

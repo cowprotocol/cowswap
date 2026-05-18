@@ -92,11 +92,13 @@ export function RoutesApp(): ReactNode {
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
-      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
-        <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
-        <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
-        <Route index element={<AccountProxiesPage />} />
+      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<Account />}>
+        <Route element={<AccountProxyWidgetPage />}>
+          <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
+          <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
+          <Route index element={<AccountProxiesPage />} />
+        </Route>
       </Route>
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />

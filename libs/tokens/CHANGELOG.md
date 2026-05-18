@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.4.1...tokens-v3.5.0) (2026-05-12)
+
+
+### ✨ Features
+
+* add token lists for non-supported chains ([#7262](https://github.com/cowprotocol/cowswap/issues/7262)) ([c356c12](https://github.com/cowprotocol/cowswap/commit/c356c125015a31556eed8acc2460e172ee8b20ae))
+
+
+### 🧪 Tests
+
+* fix e2e tests after viem migration ([#7336](https://github.com/cowprotocol/cowswap/issues/7336)) ([49c8237](https://github.com/cowprotocol/cowswap/commit/49c82371859cfc50a590b15fff3906b05a1ed609))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/ui bumped to 3.4.0
+
 ## [3.4.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.4.0...tokens-v3.4.1) (2026-04-22)
 
 

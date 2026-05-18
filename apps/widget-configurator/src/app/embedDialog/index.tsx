@@ -5,6 +5,7 @@ import svgHtmlSrc from '@cowprotocol/assets/cow-swap/html.svg'
 import svgJsSrc from '@cowprotocol/assets/cow-swap/js.svg'
 import svgReactSrc from '@cowprotocol/assets/cow-swap/react.svg'
 import svgTsSrc from '@cowprotocol/assets/cow-swap/ts.svg'
+import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
@@ -100,10 +101,11 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [, copyToClipboard] = useCopyClipboard(3000)
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(code)
+    copyToClipboard(code)
     cowAnalytics.sendEvent({
       category: AnalyticsCategory.WIDGET_CONFIGURATOR,
       action: 'Copy code',

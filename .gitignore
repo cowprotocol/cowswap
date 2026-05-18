@@ -30,6 +30,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -68,9 +69,6 @@ CLAUDE.md
 .claude/
 .superpowers/**/*
 
-# Codex context files (local only)
-.codex
-
 # Agents context files (local only)
 .agents/
 
@@ -79,3 +77,5 @@ CLAUDE.md
 
 # Github
 /.npmrc
+
+*tsbuildinfo

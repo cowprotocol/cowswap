@@ -35,7 +35,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
   const { t } = useLingui()
   const { chainIcon, chainInfo, isNonEvm } = useReceiverChainInfo(targetChainId)
   const { isEmpty, isError, explorerUrl } = useReceiverValidation(value, targetChainId)
-  const { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal } = useReceiverActions(onChange)
+  const { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal, canPaste } = useReceiverActions(onChange)
 
   const { isQrScanEnabled } = useAtomValue(featureFlagsAtom)
   const networkName = chainInfo?.label
@@ -59,7 +59,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
               <Trans>Scan</Trans>
             </ActionBtn>
           )}
-          {showScanPaste && (
+          {showScanPaste && canPaste && (
             <ActionBtn onClick={handlePaste}>
               <Trans>Paste</Trans>
             </ActionBtn>

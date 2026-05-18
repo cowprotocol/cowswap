@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.2...balances-and-allowances-v3.2.3) (2026-05-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/wallet bumped to 3.3.1
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.1...balances-and-allowances-v3.2.2) (2026-05-12)
+
+
+### 🐛 Bug Fixes
+
+* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/common-hooks bumped to 3.2.2
+    * @cowprotocol/common-utils bumped to 3.3.2
+    * @cowprotocol/core bumped to 3.2.2
+    * @cowprotocol/cowswap-abis bumped to 4.0.0
+    * @cowprotocol/tokens bumped to 3.5.0
+    * @cowprotocol/wallet bumped to 3.3.0
+
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.0...balances-and-allowances-v3.2.1) (2026-04-22)
 
 
