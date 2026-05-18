@@ -1,4 +1,3 @@
-import { OLD_BARN_ETH_FLOW_ADDRESS, STAGING_MIGRATED_CONTRACT_NETWORKS } from '@cowprotocol/common-const'
 import {
   AddressPerChain,
   BARN_ETH_FLOW_ADDRESSES,
