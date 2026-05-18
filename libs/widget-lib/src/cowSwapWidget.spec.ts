@@ -60,13 +60,30 @@ describe('createCowSwapWidget', () => {
 
     expect(window.open).not.toHaveBeenCalled()
   })
+
+  it('keeps parent widget messages while Safe SDK forwarding is disabled', () => {
+    const postMessageSpy = jest.spyOn(window.parent, 'postMessage').mockImplementation(() => void 0)
+    const { iframe } = createWidget(undefined, undefined, false)
+
+    dispatchInterceptWindowOpen('/faq', undefined, iframe)
+    dispatchSafeSdkRequest(iframe)
+
+    expect(window.open).toHaveBeenCalledWith('https://swap.cow.fi/faq', '_blank', 'noopener')
+    expect(postMessageSpy).not.toHaveBeenCalled()
+
+    postMessageSpy.mockRestore()
+  })
 })
 
-function createWidget(baseUrl?: string, extraParams?: Partial<CowSwapWidgetParams>): CowSwapWidgetHandler {
+function createWidget(
+  baseUrl?: string,
+  extraParams?: Partial<CowSwapWidgetParams>,
+  enableSafeSdkBridge?: boolean,
+): CowSwapWidgetHandler {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
-  return createCowSwapWidget(container, {
+  const widgetHandler = createCowSwapWidget(container, {
     params: {
       appCode: 'test-app',
       baseUrl,

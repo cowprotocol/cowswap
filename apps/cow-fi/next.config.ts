@@ -2,6 +2,11 @@ import { withNx } from '@nx/next'
 import { WithNxOptions } from '@nx/next/plugins/with-nx'
 import { NextConfig } from 'next'
 
+const DEFAULT_CACHE_CONTROL_HEADER = {
+  key: 'Cache-Control',
+  value: 'public, s-maxage=3600, stale-while-revalidate=86400', // 1h cache, 24h stale
+}
+
 const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
   nx: {},

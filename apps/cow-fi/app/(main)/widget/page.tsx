@@ -52,7 +52,7 @@ const widgetParams: CowSwapWidgetParams = {
   width: '100%',
 }
 
-export default function Page() {
+export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
 
   return (

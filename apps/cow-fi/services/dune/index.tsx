@@ -61,7 +61,7 @@ export async function _getTotalCount(queryId: number): Promise<TotalCount> {
 /**
  * @deprecated
  */
-export const getTotalTrades = () => _getTotalCount(TOTAL_TRADES_COUNT_QUERY_ID)
+export const getTotalTrades = (): Promise<TotalCount> => _getTotalCount(TOTAL_TRADES_COUNT_QUERY_ID)
 
 /**
  * @deprecated
