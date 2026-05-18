@@ -8,18 +8,16 @@ function extractText(text: string | MessageDescriptor): string {
 }
 
 describe('translateTokenListTagText', () => {
-  it('translates Tokenized by labels while preserving the issuer from the token list', () => {
-    const translated = translateTokenListTagText('Tokenized by Example Issuer')
+  it.each([
+    'Tokenized by Example Issuer',
+    'Issued by Example Issuer',
+    'Asset officially issued by Example Issuer',
+    'Token officially issued by Example Issuer',
+  ])('translates known token-list tag text while preserving the issuer: %s', (input) => {
+    const translated = translateTokenListTagText(input)
 
     expect(typeof translated).toBe('object')
-    expect(extractText(translated)).toBe('Tokenized by Example Issuer')
-  })
-
-  it('translates known issuer descriptions while preserving the issuer from the token list', () => {
-    const translated = translateTokenListTagText('Asset officially issued by Example Issuer')
-
-    expect(typeof translated).toBe('object')
-    expect(extractText(translated)).toBe('Asset officially issued by Example Issuer')
+    expect(extractText(translated)).toBe(input)
   })
 
   it('leaves unknown token-list text unchanged', () => {
