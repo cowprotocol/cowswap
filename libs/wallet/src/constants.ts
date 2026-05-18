@@ -19,4 +19,4 @@ export const RABBY_RDNS = 'io.rabby'
 
 export const BRAVE_WALLET_RDNS = 'com.brave.wallet'
 
-export const WATCH_ASSET_SUPPORED_WALLETS = [METAMASK_RDNS]
+export const WATCH_ASSET_SUPPORED_WALLETS = [METAMASK_RDNS, BRAVE_WALLET_RDNS]
