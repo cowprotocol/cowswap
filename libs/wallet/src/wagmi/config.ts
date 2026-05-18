@@ -166,17 +166,35 @@ let wagmiAdapter: WagmiAdapter | null = null
 let reownAppKit: ReturnType<typeof createAppKit> | null = null
 let config: Config
 
+// `batch.multicall` collapses concurrent single `useReadContract` calls into one
+// multicall3 aggregate3 — the dominant savings for our `eth_call` budget (otherwise
+// each singular contract read is its own RPC call).
+// `pollingInterval` overrides viem's 4s default so block-driven hooks (BlockNumberProvider,
+// useReadContracts refetches) poll once per ~mainnet block time. Cowswap's UX tolerates
+// the L2 staleness this introduces because trades settle on the protocol's batch cadence.
+const VIEM_CLIENT_TUNING = {
+  batch: {
+    multicall: {
+      wait: 130, //  coalescing window in ms
+      batchSize: 30_000, // calldata size ceiling (30kb)
+    },
+  },
+  // Frequency (in ms) for polling enabled actions & events.
+  pollingInterval: 12_000,
+} as const
+
 if (isSafeIframe) {
   // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
   config = createConfig({
+    ...VIEM_CLIENT_TUNING,
     connectors,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    chains: SUPPORTED_REOWN_NETWORKS as any,
+    chains: SUPPORTED_REOWN_NETWORKS,
     storage,
     transports: wagmiTransports,
   })
 } else {
   wagmiAdapter = new WagmiAdapter({
+    ...VIEM_CLIENT_TUNING,
     connectors: connectors as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
     customRpcUrls,
     networks: SUPPORTED_REOWN_NETWORKS,
