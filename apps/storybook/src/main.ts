@@ -59,10 +59,14 @@ function getWorkspaceAliases(): Alias[] {
 
 function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Record<string, string> {
   const mode = configType === 'PRODUCTION' ? 'production' : 'development'
-  const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
+  const env = {
+    REACT_APP_ENVIRONMENT: mode,
+    ...loadEnv(mode, process.cwd(), ['REACT_APP_']),
+  }
 
   return {
     ...getReactProcessEnv(mode),
+    'process.env.REACT_APP_ENVIRONMENT': JSON.stringify(env.REACT_APP_ENVIRONMENT),
     'process.env': JSON.stringify(env),
   }
 }
