@@ -1457,6 +1457,10 @@ msgstr "creating"
 #~ msgid "Permit a token"
 #~ msgstr "Permit a token"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Asset officially issued by {assetIssuedByIssuer}"
+msgstr "Asset officially issued by {assetIssuedByIssuer}"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Claimable amount"
 msgstr "Claimable amount"
@@ -2071,6 +2075,10 @@ msgstr "Min. to receive"
 msgid "No unfillable orders"
 msgstr "No unfillable orders"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Token officially issued by {tokenIssuedByIssuer}"
+msgstr "Token officially issued by {tokenIssuedByIssuer}"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Invite your friends. Earn together."
 msgstr "Invite your friends. Earn together."
@@ -2420,6 +2428,7 @@ msgid "From (incl. fees)"
 msgstr "From (incl. fees)"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "View rewards"
 msgstr "View rewards"
 
@@ -3453,6 +3462,10 @@ msgstr "Not now"
 msgid "Unsupported network"
 msgstr "Unsupported network"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Code <0>{code}</0> is linked for the next {timeCapDays} days"
+msgstr "Code <0>{code}</0> is linked for the next {timeCapDays} days"
+
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
 #~ msgstr "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
@@ -3649,6 +3662,10 @@ msgstr "Invalid URL: No manifest.json file found. Please check the URL and try a
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
 msgstr "COW token not found for chain {SupportedChainIdMAINNET}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Tokenized by {tokenizedByIssuer}"
+msgstr "Tokenized by {tokenizedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
@@ -4434,6 +4451,10 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
 msgstr "This token is not available in your region."
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Rewards activated"
+msgstr "Rewards activated"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Scan QR code"
@@ -6520,6 +6541,10 @@ msgstr "Referral code"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} out of {totalSolvers} solvers"
 msgstr "{solversLength} out of {totalSolvers} solvers"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Issued by {issuedByIssuer}"
+msgstr "Issued by {issuedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
