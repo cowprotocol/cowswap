@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-05-18 08:36\n"
+"PO-Revision-Date: 2026-05-18 12:07\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1454,6 +1454,10 @@ msgstr "creando"
 #~ msgid "Permit a token"
 #~ msgstr "Permit a token"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Asset officially issued by {assetIssuedByIssuer}"
+msgstr "Activo emitido oficialmente por {assetIssuedByIssuer}"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Claimable amount"
 msgstr "Cantidad reclamable"
@@ -1937,6 +1941,10 @@ msgstr "Las órdenes TWAP actualmente requieren una caja fuerte con un manejador
 msgid "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
 msgstr "CoW Swap fue el primer DEX en ofrecer operaciones basadas en intención, swaps sin gas, coincidencias de deseos y muchas otras innovaciones DeFi."
 
+#: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
+msgid "User rejected the request."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
 msgstr "¡Cantidad de aprobación insuficiente!"
@@ -2063,6 +2071,10 @@ msgstr "Mínimo para recibir"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No unfillable orders"
 msgstr "No hay órdenes impagables"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Token officially issued by {tokenIssuedByIssuer}"
+msgstr "Token emitido oficialmente por {tokenIssuedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Invite your friends. Earn together."
@@ -3647,6 +3659,10 @@ msgstr "URL no válida: No se encontró archivo manifest.json. Por favor, compru
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
 msgstr "Token COW no encontrado para la cadena {SupportedChainIdMAINNET}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Tokenized by {tokenizedByIssuer}"
+msgstr "Tokenizado por {tokenizedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
@@ -6521,6 +6537,10 @@ msgstr ""
 msgid "{solversLength} out of {totalSolvers} solvers"
 msgstr "Resolver {solversLength} de {totalSolvers}"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
+msgid "Issued by {issuedByIssuer}"
+msgstr "Emitido por {issuedByIssuer}"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "My Rewards"
@@ -7959,18 +7979,3 @@ msgstr "Aprende más"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
-msgid "Asset officially issued by {assetIssuedByIssuer}"
-msgstr "Activo emitido oficialmente por {assetIssuedByIssuer}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
-msgid "Issued by {issuedByIssuer}"
-msgstr "Emitido por {issuedByIssuer}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
-msgid "Token officially issued by {tokenIssuedByIssuer}"
-msgstr "Token emitido oficialmente por {tokenIssuedByIssuer}"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
-msgid "Tokenized by {tokenizedByIssuer}"
-msgstr "Tokenizado por {tokenizedByIssuer}"
