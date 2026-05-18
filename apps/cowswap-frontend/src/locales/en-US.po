@@ -1948,6 +1948,10 @@ msgstr "TWAP orders currently require a Safe with a special fallback handler. Ha
 msgid "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
 msgstr "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
 
+#: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
+msgid "User rejected the request."
+msgstr "User rejected the request."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
 msgstr "Approval amount insufficient!"
