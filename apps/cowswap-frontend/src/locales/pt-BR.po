@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-05-11 11:22\n"
+"PO-Revision-Date: 2026-05-18 08:36\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1052,8 +1052,7 @@ msgstr "Enviando {nativeTokenSymbol}"
 msgid "Tokens"
 msgstr ""
 
-#: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
-#: apps/cowswap-frontend/src/modules/account/containers/CopyHelper/index.tsx
+#: apps/cowswap-frontend/src/legacy/components/Copy/CopyHelper.tsx
 msgid "Copied"
 msgstr "Copiado"
 
@@ -2414,6 +2413,7 @@ msgid "From (incl. fees)"
 msgstr "De (incl. taxas)"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "View rewards"
 msgstr ""
 
@@ -3447,6 +3447,10 @@ msgstr "Agora não"
 msgid "Unsupported network"
 msgstr "Rede não suportada"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Code <0>{code}</0> is linked for the next {timeCapDays} days"
+msgstr ""
+
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
 #~ msgstr "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
@@ -4424,6 +4428,10 @@ msgstr "Com hooks você pode adicionar ações específicas <0>antes</0> e <1>de
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
+msgid "Rewards activated"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
