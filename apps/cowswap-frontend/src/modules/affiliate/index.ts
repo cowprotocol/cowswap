@@ -19,6 +19,7 @@ export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowA
 export { useAffiliateStateViewAnalytics } from './hooks/useAffiliateStateViewAnalytics'
 export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffiliateTraderWallet'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
+export { useNotifyAffiliateLinkedCode } from './hooks/useNotifyAffiliateLinkedCode'
 
 export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
 
