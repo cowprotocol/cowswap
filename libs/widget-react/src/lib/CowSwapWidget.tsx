@@ -124,18 +124,52 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
     tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
   }, [listeners, tryOrHandleError])
 
-  // Handle errors
   if (error) {
-    return (
-      <div style={{ color: '#ff3a3a' }}>
-        {error.message}
-        {error.error.message && <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.75em' }}>{error.error.message}</pre>}
-      </div>
-    )
+    return <WidgetError error={error} />
   }
 
-  // Render widget container
   return <div ref={containerRef} style={{ width: '100%' }}></div>
+}
+
+interface WidgetRefs {
+  paramsRef: MutableRef<CowSwapWidgetParams | null>
+  providerRef: MutableRef<EthereumProvider | undefined>
+  listenersRef: MutableRef<CowWidgetEventListeners | undefined>
+  enableSafeSdkBridgeRef: MutableRef<boolean>
+  widgetHandlerRef: MutableRef<CowSwapWidgetHandler | null>
+}
+
+function useDestroyWidgetOnUnmount({
+  refs,
+  tryOrHandleError,
+}: {
+  refs: WidgetRefs
+  tryOrHandleError: TryOrHandleError
+}): void {
+  useEffect(() => {
+    return () => {
+      refs.paramsRef.current = null
+      refs.providerRef.current = undefined
+      refs.listenersRef.current = undefined
+      refs.enableSafeSdkBridgeRef.current = true
+
+      const handler = refs.widgetHandlerRef.current
+      if (handler) {
+        tryOrHandleError('Destroy widget', () => handler.destroy())
+        refs.widgetHandlerRef.current = null
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}
+
+function WidgetError({ error }: { error: NonNullable<WidgetErrorState> }): JSX.Element {
+  return (
+    <div style={{ color: '#ff3a3a' }}>
+      {error.message}
+      {error.error.message && <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.75em' }}>{error.error.message}</pre>}
+    </div>
+  )
 }
 
 function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
