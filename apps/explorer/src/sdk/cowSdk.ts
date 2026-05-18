@@ -5,6 +5,7 @@ import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
   EvmChains,
+  isEvmChain,
   OrderBookApi,
   setGlobalAdapter,
   SupportedChainId,
@@ -72,16 +73,16 @@ export function CowSdkUpdater(): null {
   const chainId = useNetworkId()
 
   useEffect(() => {
-    if (!chainId) return
+    if (!chainId || !isEvmChain(chainId)) return
 
     setGlobalAdapter(
       new ViemAdapter({
         provider: createPublicClient({
-          chain: CHAINS[chainId as unknown as ViemChainMapKey],
+          chain: CHAINS[chainId as ViemChainMapKey],
           transport: http(
             (chainId as number) === LENS_CHAIN_ID
               ? ((process.env['REACT_APP_NETWORK_URL_232'] as string | undefined) ?? LENS_DEFAULT_RPC)
-              : RPC_URLS[chainId as unknown as EvmChains],
+              : RPC_URLS[chainId],
           ),
         }),
         signer: privateKeyToAccount(EXPLORER_SIGNER_KEY),
