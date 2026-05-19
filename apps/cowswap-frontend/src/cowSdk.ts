@@ -45,6 +45,31 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
 
+type EstimateGasParams = Record<string, unknown>
+type EstimateGasFn = (params: EstimateGasParams) => Promise<unknown>
+
+function patchSignerEstimateGas(adapter: ViemAdapter): void {
+  let signer: { estimateGas?: EstimateGasFn } | undefined
+  try {
+    signer = adapter.signer as unknown as { estimateGas?: EstimateGasFn }
+  } catch {
+    return
+  }
+  if (!signer || typeof signer.estimateGas !== 'function') return
+  const original = signer.estimateGas.bind(signer)
+  signer.estimateGas = (params) => {
+    const value = params?.value
+    if (value === undefined || value === null) return original(params)
+    if (typeof value === 'string' && value.startsWith('0x')) return original(params)
+    try {
+      const hexValue = '0x' + BigInt(value as string | number | bigint).toString(16)
+      return original({ ...params, value: hexValue })
+    } catch {
+      return original(params)
+    }
+  }
+}
+
 setGlobalAdapter(
   new ViemAdapter({
     provider: createPublicClient({
@@ -75,6 +100,7 @@ export function CowSdkUpdater(): null {
     } else {
       adapter = new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT })
     }
+    patchSignerEstimateGas(adapter)
     setGlobalAdapter(adapter as AbstractProviderAdapter)
     setAppSigner(walletClient ? adapter.signer : undefined)
   }, [publicClient, walletClient, setAppSigner])
