@@ -6,7 +6,7 @@ import ms from 'ms.macro'
 
 import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
-import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
+import { fetchCachedTwapOrdersFromSafe } from '../services/fetchCachedTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
 
 const PENDING_TWAP_UPDATE_INTERVAL = ms`45s`
@@ -29,7 +29,7 @@ export function useFetchTwapOrdersFromSafe({
 
       updateInProgressRef.current = true
 
-      fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setOrdersSafeData).finally(() => {
+      fetchCachedTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setOrdersSafeData).finally(() => {
         updateInProgressRef.current = false
       })
     }
