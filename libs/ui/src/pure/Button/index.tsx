@@ -23,6 +23,16 @@ type ButtonSecondaryStyleProps = {
   $fontSize?: string
   $minHeight?: string
 }
+export type ButtonPrimaryProps = HTMLAttributes<HTMLButtonElement> &
+  ButtonProps & {
+    altDisabledStyle?: boolean
+    buttonSize?: ButtonSize
+    padding?: string
+    status?: StatusColorVariant
+    width?: string
+    $borderRadius?: string
+    $gap?: string
+  }
 
 function getButtonStatusStyles(status?: StatusColorVariant): ReturnType<typeof css> | undefined {
   if (!status || status === StatusColorVariant.Default) {
