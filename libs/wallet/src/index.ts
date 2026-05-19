@@ -19,6 +19,7 @@ export * from './wagmi/hooks/useIsSmartContractWallet'
 export * from './wagmi/hooks/useDisconnectWallet'
 export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
+export * from './wagmi/hooks/useIsRestoringConnection'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
