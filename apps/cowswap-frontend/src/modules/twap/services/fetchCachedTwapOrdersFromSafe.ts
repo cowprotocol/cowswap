@@ -9,7 +9,7 @@ import { fetchTwapOrdersFromSafe, mergeTwapOrdersByHash } from './fetchTwapOrder
 
 import type { TwapDataArray } from './fetchTwapOrdersFromSafe'
 
-const SAFE_TX_SCAN_CACHE_VERSION = 1
+const SAFE_TX_SCAN_CACHE_VERSION = 10
 const SAFE_TX_SCAN_OVERLAP = ms`1m`
 
 type SafeTwapScanCache = {
@@ -96,6 +96,7 @@ function writeSafeTwapScanCache(
       orders,
     }
 
+    console.log(`[COW][SafeAPI] Saving to cache TWAP executed orders newestSubmissionDate=${newestSubmissionDate}`)
     window.localStorage.setItem(getSafeTwapScanCacheKey(chainId, safeAddress), JSON.stringify(cache))
   } catch {
     // Ignore storage failures. The next load will run without cache.

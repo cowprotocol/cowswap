@@ -9,7 +9,7 @@ import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useCompo
 import { fetchCachedTwapOrdersFromSafe } from '../services/fetchCachedTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
 
-const PENDING_TWAP_UPDATE_INTERVAL = ms`45s`
+const TWAP_SAFE_ORDERS_UPDATE_INTERVAL = ms`1m`
 
 export function useFetchTwapOrdersFromSafe({
   chainId,
@@ -34,7 +34,7 @@ export function useFetchTwapOrdersFromSafe({
       })
     }
 
-    const interval = setInterval(persistOrders, PENDING_TWAP_UPDATE_INTERVAL)
+    const interval = setInterval(persistOrders, TWAP_SAFE_ORDERS_UPDATE_INTERVAL)
 
     persistOrders()
 

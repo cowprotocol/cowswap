@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { logSafeApiCall } from '@cowprotocol/core'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
@@ -74,7 +73,7 @@ async function waitForSafeTransactionExecution({
   return await pollUntil(
     async () => {
       try {
-        logSafeApiCall('waitForSafeTransactionExecution.getTransaction', { txHash })
+        console.log('[COW][SafeAPI] Wait for Safe transaction execution')
         return await safeApiKit.getTransaction(txHash)
       } catch {
         return null

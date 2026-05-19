@@ -41,12 +41,6 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
-type SafeApiLogDetails = Record<string, string | number | boolean | undefined>
-
-export function logSafeApiCall(operation: string, details: SafeApiLogDetails): void {
-  console.log('[COW][SafeAPI]', operation, details)
-}
-
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
@@ -72,7 +66,7 @@ export async function getSafeInfo(chainId: number, safeAddress: string): Promise
   try {
     const client = await _getClientOrThrow(chainId)
 
-    logSafeApiCall('getSafeInfo', { chainId, safeAddress })
+    console.log('[COW][SafeAPI] Fetch Safe info')
     return client.getSafeInfo(safeAddress)
   } catch (error) {
     return Promise.reject(error)
@@ -85,7 +79,7 @@ export async function getSafeTransaction(
 ): Promise<SafeMultisigTransactionResponse> {
   const client = await _getClientOrThrow(chainId)
 
-  logSafeApiCall('getSafeTransaction', { chainId, safeTxHash })
+  console.log('[COW][SafeAPI] Fetch Safe transaction')
   return client.getTransaction(safeTxHash)
 }
 

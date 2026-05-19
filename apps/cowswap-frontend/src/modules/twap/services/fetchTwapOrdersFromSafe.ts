@@ -1,5 +1,5 @@
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import { getSafeApiUrl, logSafeApiCall } from '@cowprotocol/core'
+import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -85,6 +85,7 @@ export async function fetchTwapOrdersFromSafe(
   return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince, response.next, accumulator)
 }
 
+// eslint-disable-next-line complexity
 async function fetchRecentlyExecutedTransactions(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -98,7 +99,9 @@ async function fetchRecentlyExecutedTransactions(
     const url = nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
     const headers = getSafeApiHeaders()
 
-    logSafeApiCall('fetchRecentlyExecutedTransactions', { chainId, safeAddress, url, isNextPage: !!nextUrl })
+    console.log(
+      `[COW][SafeAPI] Fetch TWAP executed orders (${nextUrl ? 'next' : 'first'} page${since && !nextUrl ? ` since ${since}` : ''})`,
+    )
     const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
     const results = response?.results || []
     const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
@@ -109,7 +112,7 @@ async function fetchRecentlyExecutedTransactions(
 
     accumulator.push(parsedResults)
 
-    if (since && response.next && accumulator.length < SAFE_TX_HISTORY_DEPTH) {
+    if (response.next && accumulator.length < SAFE_TX_HISTORY_DEPTH) {
       return fetchRecentlyExecutedTransactions(
         chainId,
         safeAddress,
@@ -124,7 +127,7 @@ async function fetchRecentlyExecutedTransactions(
     return {
       orders: accumulator.flat(),
       newestSubmissionDate: nextNewestSubmissionDate,
-      complete: !since || !response.next,
+      complete: !response.next,
     }
   } catch (error) {
     console.error('Error fetching executed Safe transactions', { safeAddress }, error)
@@ -161,7 +164,7 @@ async function fetchSafeTransactionsChunk(
 
   if (nextUrl) {
     try {
-      logSafeApiCall('fetchSafeTransactionsChunk', { chainId, safeAddress, url: nextUrl, isNextPage: true })
+      console.log('[COW][SafeAPI] Fetch TWAP pending orders (next page)')
       const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
 
       await delay(SAFE_TX_REQUEST_DELAY)
@@ -176,7 +179,7 @@ async function fetchSafeTransactionsChunk(
 
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, false)
 
-  logSafeApiCall('fetchSafeTransactionsChunk', { chainId, safeAddress, url, isNextPage: false })
+  console.log('[COW][SafeAPI] Fetch TWAP pending orders (first page)')
   return fetch(url, { headers }).then((res) => res.json())
 }
 
