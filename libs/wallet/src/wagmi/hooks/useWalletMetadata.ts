@@ -4,7 +4,7 @@ import { Connector, useConnection } from 'wagmi'
 
 import { useConnectionType } from './useConnectionType'
 
-import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
+import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
 
@@ -66,7 +66,6 @@ function useWcPeerMetadata(connector?: Connector): WalletMetaData {
 export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
-  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
 
   if (!connector) {
     return METADATA_DISCONNECTED
@@ -76,24 +75,6 @@ export function useWalletMetaData(): WalletMetaData {
     return {
       walletName: 'CoW Swap widget',
       icon: 'Identicon',
-    }
-  }
-
-  // AppKit EIP-6963 connectors have type "announced" — treat them like injected
-  if (connector.type === ConnectionType.INJECTED || connector.type === 'announced') {
-    if (selectedEip6963Provider) {
-      return {
-        icon: selectedEip6963Provider.info.icon,
-        walletName: selectedEip6963Provider.info.name,
-      }
-    }
-
-    // Fallback for AppKit EIP-6963 connectors that provide name/icon directly
-    if (connector.name && connector.name !== 'Injected') {
-      return {
-        icon: connector.icon,
-        walletName: connector.name,
-      }
     }
   }
 
