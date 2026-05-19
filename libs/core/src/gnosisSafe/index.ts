@@ -41,6 +41,12 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
+type SafeApiLogDetails = Record<string, string | number | boolean | undefined>
+
+export function logSafeApiCall(operation: string, details: SafeApiLogDetails): void {
+  console.log('[COW][SafeAPI]', operation, details)
+}
+
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
@@ -63,10 +69,10 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
   try {
     const client = await _getClientOrThrow(chainId)
 
+    logSafeApiCall('getSafeInfo', { chainId, safeAddress })
     return client.getSafeInfo(safeAddress)
   } catch (error) {
     return Promise.reject(error)
@@ -77,9 +83,9 @@ export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
 ): Promise<SafeMultisigTransactionResponse> {
-  console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
+  logSafeApiCall('getSafeTransaction', { chainId, safeTxHash })
   return client.getTransaction(safeTxHash)
 }
 

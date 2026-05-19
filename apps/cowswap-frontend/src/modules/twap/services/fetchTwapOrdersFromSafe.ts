@@ -1,5 +1,5 @@
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import { getSafeApiUrl } from '@cowprotocol/core'
+import { getSafeApiUrl, logSafeApiCall } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -81,6 +81,7 @@ async function fetchRecentlyExecutedTransactions(
 
     const headers = getSafeApiHeaders()
 
+    logSafeApiCall('fetchRecentlyExecutedTransactions', { chainId, safeAddress, url })
     const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
     const results = response?.results || []
 
@@ -120,6 +121,7 @@ async function fetchSafeTransactionsChunk(
 
   if (nextUrl) {
     try {
+      logSafeApiCall('fetchSafeTransactionsChunk', { chainId, safeAddress, url: nextUrl, isNextPage: true })
       const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
 
       await delay(SAFE_TX_REQUEST_DELAY)
@@ -134,6 +136,7 @@ async function fetchSafeTransactionsChunk(
 
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
 
+  logSafeApiCall('fetchSafeTransactionsChunk', { chainId, safeAddress, url, isNextPage: false })
   return fetch(url, { headers }).then((res) => res.json())
 }
 
