@@ -1,0 +1,154 @@
+[
+  {
+    "hunk_id": "h_60e34d7c5c31",
+    "file": "apps/cowswap-frontend/src/modules/twap/hooks/useFetchTwapOrdersFromSafe.ts",
+    "line": 6,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.84,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Switches to a new cached fetch service and changes polling interval (45s to 1m), altering runtime data-fetch behavior.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_df35ee2fdce0",
+    "file": "apps/cowswap-frontend/src/modules/twap/hooks/useFetchTwapOrdersFromSafe.ts",
+    "line": 29,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.84,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Updates to call the new cached fetch function and changes the interval constant, impacting update cadence and behavior.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_91fc5a28fc38",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchCachedTwapOrdersFromSafe.ts",
+    "line": 1,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.92,
+    "intents": [
+      "schema_persistence",
+      "business_logic"
+    ],
+    "rationale": "Introduces localStorage-backed caching, versioning, overlap logic, and merging—adds persistence/cache behavior and affects fetching logic.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_c3533acca279",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchTwapOrdersFromSafe.ts",
+    "line": 31,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.86,
+    "intents": [
+      "type_export_change",
+      "business_logic"
+    ],
+    "rationale": "Exports a type and changes the exported function’s signature and return shape, affecting callers and behavior.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_8563d262c35a",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchTwapOrdersFromSafe.ts",
+    "line": 68,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.83,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Refactors executed-transactions fetching to accept a since parameter, paginates, and returns metadata; modifies merge/return behavior.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_2cb2a7c5c781",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchTwapOrdersFromSafe.ts",
+    "line": 140,
+    "layer": "C",
+    "original_layer": "B",
+    "confidence": 0.86,
+    "intents": [
+      "rename_cross_boundary",
+      "type_export_change"
+    ],
+    "rationale": "Renames and exports a utility (mergeByHash -> mergeTwapOrdersByHash) for cross-file use; no logic change but exported symbol/usage change.",
+    "escalations": [
+      "multi_intent"
+    ]
+  },
+  {
+    "hunk_id": "h_dae44996aea4",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchTwapOrdersFromSafe.ts",
+    "line": 159,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.8,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Alters fetch return type to include a fetchError flag and adds logging; changes error handling/flow for upstream logic.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_5f9e9ba91a91",
+    "file": "apps/cowswap-frontend/src/modules/twap/services/fetchTwapOrdersFromSafe.ts",
+    "line": 173,
+    "layer": "C",
+    "original_layer": "C",
+    "confidence": 0.82,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Changes request URL builder semantics (executed flag, since filter, ordering, queued), adds logging; network query behavior change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_6dde44eb3705",
+    "file": "apps/cowswap-frontend/src/modules/zeroApproval/hooks/useZeroApprove.ts",
+    "line": 73,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.95,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Adds a console log during polling; minor observable behavior change only.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_e74bae80516e",
+    "file": "libs/core/src/gnosisSafe/index.ts",
+    "line": 63,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.94,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Replaces/moves console logging for fetching Safe info; minor logging-only change.",
+    "escalations": []
+  },
+  {
+    "hunk_id": "h_2aa8fc07b66c",
+    "file": "libs/core/src/gnosisSafe/index.ts",
+    "line": 77,
+    "layer": "B",
+    "original_layer": "B",
+    "confidence": 0.94,
+    "intents": [
+      "business_logic"
+    ],
+    "rationale": "Changes console logging for getSafeTransaction; minor, logging-only behavior change.",
+    "escalations": []
+  }
+]
