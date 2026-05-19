@@ -34,7 +34,9 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
     async () => {
       if (!lastBlockNumber || !account) return null
 
-      const transactionsCount = await getTransactionCount(config, { address: account })
+      // Fallback to 0 on failure so receipt checking can still run even when the nonce fetch fails
+      // (e.g. temporary RPC errors). The nonce-based replacement check will simply be skipped.
+      const transactionsCount = await getTransactionCount(config, { address: account }).catch(() => 0)
 
       const params: CheckEthereumTransactions = {
         chainId,
