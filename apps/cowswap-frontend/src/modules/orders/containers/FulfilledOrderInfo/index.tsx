@@ -35,7 +35,7 @@ interface ExecutedSummaryProps {
 export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps): ReactNode {
   const order = useOrder({ chainId, id: orderUid })
   const surplusData = useGetSurplusData(order)
-  useNotifyAffiliateLinkedCode({ order })
+  useNotifyAffiliateLinkedCode({ order, chainId })
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = surplusData
 
