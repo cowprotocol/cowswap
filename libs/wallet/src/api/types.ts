@@ -16,6 +16,7 @@ export interface WalletInfo {
   chainId: SupportedChainId
   account?: Address
   active?: boolean
+  isConnectionRestoring?: boolean
 }
 
 export interface WalletDetails {
