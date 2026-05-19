@@ -1,4 +1,5 @@
 import { isTruthy } from '@cowprotocol/common-utils'
+import { localForageJotai } from '@cowprotocol/core'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
@@ -9,14 +10,17 @@ import { fetchTwapOrdersFromSafe, mergeTwapOrdersByHash } from './fetchTwapOrder
 
 import type { TwapDataArray } from './fetchTwapOrdersFromSafe'
 
-const SAFE_TX_SCAN_CACHE_VERSION = 10
+const SAFE_TX_SCAN_CACHE_VERSION = 1
+const SAFE_TX_SCAN_CACHE_KEY_PREFIX = 'twapSafeScanCache:v'
+const SAFE_TX_SCAN_CACHE_IDB_KEY = `${SAFE_TX_SCAN_CACHE_KEY_PREFIX}${SAFE_TX_SCAN_CACHE_VERSION}`
 const SAFE_TX_SCAN_OVERLAP = ms`1m`
 
 type SafeTwapScanCache = {
-  version: typeof SAFE_TX_SCAN_CACHE_VERSION
   newestSubmissionDate: string
   orders: TwapDataArray
 }
+
+type SafeTwapScanCacheMap = Record<string, SafeTwapScanCache | undefined>
 
 // eslint-disable-next-line complexity
 export async function fetchCachedTwapOrdersFromSafe(
@@ -25,7 +29,7 @@ export async function fetchCachedTwapOrdersFromSafe(
   composableCowContract: ComposableCowContractData,
   setData: (state: TwapDataArray) => void,
 ): Promise<TwapDataArray> {
-  const cached = readSafeTwapScanCache(chainId, safeAddress)
+  const cached = await readSafeTwapScanCache(chainId, safeAddress)
   const executedSince = cached ? getOverlappedSubmissionDate(cached.newestSubmissionDate) : undefined
 
   if (cached) setData(cached.orders)
@@ -51,56 +55,70 @@ export async function fetchCachedTwapOrdersFromSafe(
   ])
 
   if (fresh.complete) {
-    writeSafeTwapScanCache(chainId, safeAddress, executedOrders, newestSubmissionDate)
+    await writeSafeTwapScanCache(chainId, safeAddress, executedOrders, newestSubmissionDate)
   }
 
   setData(merged)
   return merged
 }
 
-function getSafeTwapScanCacheKey(chainId: SupportedChainId, safeAddress: string): string {
-  return `cow:twap:safe-scan:v${SAFE_TX_SCAN_CACHE_VERSION}:${chainId}:${getAddressKey(safeAddress)}`
+function getSafeTwapScanCacheEntryKey(chainId: SupportedChainId, safeAddress: string): string {
+  return `${chainId}:${getAddressKey(safeAddress)}`
 }
 
-function readSafeTwapScanCache(chainId: SupportedChainId, safeAddress: string): SafeTwapScanCache | null {
+async function readSafeTwapScanCache(
+  chainId: SupportedChainId,
+  safeAddress: string,
+): Promise<SafeTwapScanCache | null> {
   try {
-    const serialized = window.localStorage.getItem(getSafeTwapScanCacheKey(chainId, safeAddress))
-    if (!serialized) return null
+    await cleanupOlderCacheVersions()
 
-    const parsed = JSON.parse(serialized) as Partial<SafeTwapScanCache>
+    const cache = await localForageJotai.getItem<SafeTwapScanCacheMap>(SAFE_TX_SCAN_CACHE_IDB_KEY)
+    const entry = cache?.[getSafeTwapScanCacheEntryKey(chainId, safeAddress)]
 
-    if (parsed.version !== SAFE_TX_SCAN_CACHE_VERSION || !parsed.newestSubmissionDate || !parsed.orders) return null
+    if (!entry?.newestSubmissionDate || !entry.orders) return null
 
     return {
-      version: SAFE_TX_SCAN_CACHE_VERSION,
-      newestSubmissionDate: parsed.newestSubmissionDate,
-      orders: parsed.orders.filter((order) => order.safeTxParams.isExecuted),
+      newestSubmissionDate: entry.newestSubmissionDate,
+      orders: entry.orders.filter((order) => order.safeTxParams.isExecuted),
     }
   } catch {
     return null
   }
 }
 
-function writeSafeTwapScanCache(
+async function writeSafeTwapScanCache(
   chainId: SupportedChainId,
   safeAddress: string,
   orders: TwapDataArray,
   newestSubmissionDate: string,
-): void {
+): Promise<void> {
   if (!newestSubmissionDate) return
 
   try {
-    const cache: SafeTwapScanCache = {
-      version: SAFE_TX_SCAN_CACHE_VERSION,
+    const cache = (await localForageJotai.getItem<SafeTwapScanCacheMap>(SAFE_TX_SCAN_CACHE_IDB_KEY)) || {}
+
+    cache[getSafeTwapScanCacheEntryKey(chainId, safeAddress)] = {
       newestSubmissionDate,
       orders,
     }
 
     console.log(`[COW][SafeAPI] Saving to cache TWAP executed orders newestSubmissionDate=${newestSubmissionDate}`)
-    window.localStorage.setItem(getSafeTwapScanCacheKey(chainId, safeAddress), JSON.stringify(cache))
+    await localForageJotai.setItem(SAFE_TX_SCAN_CACHE_IDB_KEY, cache)
   } catch {
     // Ignore storage failures. The next load will run without cache.
   }
+}
+
+async function cleanupOlderCacheVersions(): Promise<void> {
+  try {
+    const keys = await localForageJotai.keys()
+    const oldKeys = keys.filter(
+      (key) => key.startsWith(SAFE_TX_SCAN_CACHE_KEY_PREFIX) && key !== SAFE_TX_SCAN_CACHE_IDB_KEY,
+    )
+
+    await Promise.all(oldKeys.map((key) => localForageJotai.removeItem(key)))
+  } catch {}
 }
 
 function getOverlappedSubmissionDate(submissionDate: string): string {
