@@ -20,6 +20,7 @@ import {
   getDefaultTriggerVolume,
   getPartnerRewardAmountLabel,
   isSupportedPayoutsNetwork,
+  isSupportedTradingNetwork,
 } from '../lib/affiliateProgramUtils'
 import { HowItWorks } from '../pure/HowItWorks'
 import {
@@ -42,7 +43,9 @@ export function AffiliatePartnerOnboard(): ReactNode {
 
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
   const onPayoutsChain = isSupportedPayoutsNetwork(chainId)
+  const isAffiliateSupportedNetwork = isSupportedTradingNetwork(chainId)
   const shouldSwitchToPayoutsChain = !!account && !onPayoutsChain
+  const shouldUseFullWidthCard = !!account && isAffiliateSupportedNetwork
   const isSignerAvailable = Boolean(walletClient)
   const partnerRewardAmount = getPartnerRewardAmountLabel()
   const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
@@ -53,7 +56,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
   }, [onSelectNetwork])
 
   return (
-    <HeroCard>
+    <HeroCard $fullWidth={shouldUseFullWidthCard}>
       <HeroContent>
         <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
         <HeroTitle $maxWidth={400}>
