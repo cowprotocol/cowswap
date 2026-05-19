@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useConnectionType, useIsRestoringConnection, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -21,6 +21,7 @@ export interface Web3StatusProps {
 export function Web3Status({ className, onClick, joinedLeft = false }: Web3StatusProps): ReactNode {
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
+  const isConnectionRestoring = useIsRestoringConnection()
   const { ensName } = useWalletDetails()
 
   const toggleWalletModal = useToggleWalletModal()
@@ -37,6 +38,7 @@ export function Web3Status({ className, onClick, joinedLeft = false }: Web3Statu
         ensName={ensName}
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
+        isConnectionRestoring={isConnectionRestoring}
       />
     </Wrapper>
   )

@@ -41,7 +41,8 @@ function useBrowserUrlKey(): string {
 
 function useWalletInfo(): WalletInfo {
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected } = useConnection()
+  const { address, chainId, isConnected, status } = useConnection()
+  const isConnectionRestoring = status === 'reconnecting'
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
   const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
@@ -76,8 +77,18 @@ function useWalletInfo(): WalletInfo {
       chainId: resolvedChainId,
       active: isConnected,
       account: address,
+      isConnectionRestoring,
     }
-  }, [address, chainId, isConnected, isChainIdUnsupported, lastStableChainId, lastResolvedChainId, urlKey])
+  }, [
+    address,
+    chainId,
+    isConnected,
+    isChainIdUnsupported,
+    isConnectionRestoring,
+    lastStableChainId,
+    lastResolvedChainId,
+    urlKey,
+  ])
 
   useEffect(() => {
     setLastResolvedChainId(walletInfo.chainId)

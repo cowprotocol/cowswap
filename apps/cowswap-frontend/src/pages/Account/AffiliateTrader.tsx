@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useIsRestoringConnection } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -35,6 +36,8 @@ export default function AffiliateTrader(): ReactNode {
   const hasSavedCode = !!savedCode
   const pageState = getAffiliateTraderPageState(walletStatus, hasSavedCode)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isConnectionRestoring = useIsRestoringConnection()
+  const showLoadingSkeleton = isConnectionRestoring || walletStatus === TraderWalletStatus.PENDING
 
   useAffiliateStateViewAnalytics({
     action: 'affiliate_trader_page_state_viewed',
@@ -61,7 +64,7 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
-        ) : walletStatus === TraderWalletStatus.PENDING ? (
+        ) : showLoadingSkeleton ? (
           <AffiliateTraderLoading />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
           <AffiliateTraderOnboard />
