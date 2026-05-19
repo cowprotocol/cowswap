@@ -8,7 +8,7 @@ import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useCompo
 
 import { fetchTwapOrdersFromSafe, mergeTwapOrdersByHash } from './fetchTwapOrdersFromSafe'
 
-import type { TwapDataArray } from './fetchTwapOrdersFromSafe'
+import type { FetchTwapOrdersFromSafeResult, TwapDataArray } from './fetchTwapOrdersFromSafe'
 
 const SAFE_TX_SCAN_CACHE_VERSION = 1
 const SAFE_TX_SCAN_CACHE_KEY_PREFIX = 'twapSafeScanCache:v'
@@ -22,7 +22,6 @@ type SafeTwapScanCache = {
 
 type SafeTwapScanCacheMap = Record<string, SafeTwapScanCache | undefined>
 
-// eslint-disable-next-line complexity
 export async function fetchCachedTwapOrdersFromSafe(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -30,22 +29,42 @@ export async function fetchCachedTwapOrdersFromSafe(
   setData: (state: TwapDataArray) => void,
 ): Promise<TwapDataArray> {
   const cached = await readSafeTwapScanCache(chainId, safeAddress)
-  const executedSince = cached ? getOverlappedSubmissionDate(cached.newestSubmissionDate) : undefined
 
   if (cached) setData(cached.orders)
 
-  const fresh = await fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince).catch(
-    (error) => {
-      if (!cached) throw error
-
-      console.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
-      return null
-    },
-  )
+  const fresh = await fetchFreshTwapOrders(chainId, safeAddress, composableCowContract, cached)
 
   if (!fresh) return cached?.orders || []
   if (!fresh.complete && cached) return cached.orders
 
+  const merged = await mergeAndCacheTwapOrders(chainId, safeAddress, fresh, cached)
+
+  setData(merged)
+  return merged
+}
+
+async function fetchFreshTwapOrders(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  composableCowContract: ComposableCowContractData,
+  cached: SafeTwapScanCache | null,
+): Promise<FetchTwapOrdersFromSafeResult | null> {
+  const executedSince = cached ? getOverlappedSubmissionDate(cached.newestSubmissionDate) : undefined
+
+  return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince).catch((error) => {
+    if (!cached) throw error
+
+    console.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
+    return null
+  })
+}
+
+async function mergeAndCacheTwapOrders(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  fresh: FetchTwapOrdersFromSafeResult,
+  cached: SafeTwapScanCache | null,
+): Promise<TwapDataArray> {
   const merged = mergeTwapOrdersByHash(cached ? [...cached.orders, ...fresh.orders] : fresh.orders)
   const executedOrders = merged.filter((order) => order.safeTxParams.isExecuted)
   const newestSubmissionDate = getNewestSubmissionDate([
@@ -58,7 +77,6 @@ export async function fetchCachedTwapOrdersFromSafe(
     await writeSafeTwapScanCache(chainId, safeAddress, executedOrders, newestSubmissionDate)
   }
 
-  setData(merged)
   return merged
 }
 

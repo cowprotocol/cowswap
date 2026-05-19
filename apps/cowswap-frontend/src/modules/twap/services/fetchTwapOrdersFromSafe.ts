@@ -85,7 +85,6 @@ export async function fetchTwapOrdersFromSafe(
   return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince, response.next, accumulator)
 }
 
-// eslint-disable-next-line complexity
 async function fetchRecentlyExecutedTransactions(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -96,12 +95,11 @@ async function fetchRecentlyExecutedTransactions(
   newestSubmissionDate?: string,
 ): Promise<FetchTwapOrdersFromSafeResult> {
   try {
-    const url = nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
+    const url = getExecutedTransactionsUrl(chainId, safeAddress, since, nextUrl)
     const headers = getSafeApiHeaders()
 
-    console.log(
-      `[COW][SafeAPI] Fetch TWAP executed orders (${nextUrl ? 'next' : 'first'} page${since && !nextUrl ? ` since ${since}` : ''})`,
-    )
+    logExecutedTransactionsFetch(nextUrl, since)
+
     const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
     const results = response?.results || []
     const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
@@ -112,13 +110,15 @@ async function fetchRecentlyExecutedTransactions(
 
     accumulator.push(parsedResults)
 
-    if (response.next && accumulator.length < SAFE_TX_HISTORY_DEPTH) {
+    const nextExecutedPage = getNextExecutedPage(response, accumulator)
+
+    if (nextExecutedPage) {
       return fetchRecentlyExecutedTransactions(
         chainId,
         safeAddress,
         composableCowContract,
         since,
-        response.next,
+        nextExecutedPage,
         accumulator,
         nextNewestSubmissionDate,
       )
@@ -133,6 +133,26 @@ async function fetchRecentlyExecutedTransactions(
     console.error('Error fetching executed Safe transactions', { safeAddress }, error)
     return { orders: [], complete: false }
   }
+}
+
+function getExecutedTransactionsUrl(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  since?: string,
+  nextUrl?: string,
+): string {
+  return nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
+}
+
+function logExecutedTransactionsFetch(nextUrl?: string, since?: string): void {
+  const page = nextUrl ? 'next' : 'first'
+  const sinceText = since && !nextUrl ? ` since ${since}` : ''
+
+  console.log(`[COW][SafeAPI] Fetch TWAP executed orders (${page} page${sinceText})`)
+}
+
+function getNextExecutedPage(response: AllTransactionsListResponse, accumulator: TwapDataArray[]): string | undefined {
+  return accumulator.length < SAFE_TX_HISTORY_DEPTH ? response.next || undefined : undefined
 }
 
 /**
