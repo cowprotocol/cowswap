@@ -27,6 +27,7 @@ export const appSignerAtom = atom<Signer | undefined>(undefined)
 
 function getInitialEvmChainId(): EvmChains {
   const urlChainId = getCurrentChainIdFromUrl()
+  // viem doesn't support non-evm chains, so set default mainnet for global adapter
   return isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
 }
 
