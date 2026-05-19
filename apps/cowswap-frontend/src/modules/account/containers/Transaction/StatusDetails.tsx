@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import OrderCancelledImage from '@cowprotocol/assets/cow-swap/order-cancelled.svg'
-import OrderCheckImage from '@cowprotocol/assets/cow-swap/order-check.svg'
-import OrderExpiredImage from '@cowprotocol/assets/cow-swap/order-expired.svg'
-import OrderOpenImage from '@cowprotocol/assets/cow-swap/order-open.svg'
-import PresignaturePendingImage from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import svgOrderCancelledSrc from '@cowprotocol/assets/cow-swap/order-cancelled.svg'
+import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
+import svgOrderExpiredSrc from '@cowprotocol/assets/cow-swap/order-expired.svg'
+import svgOrderOpenSrc from '@cowprotocol/assets/cow-swap/order-open.svg'
+import svgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
@@ -68,34 +68,34 @@ function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
     return <Info size={16} />
   }
   if (isConfirmed && isTransaction) {
-    return <SVG src={OrderCheckImage} description={t`Transaction Confirmed`} />
+    return <SVG src={svgOrderCheckSrc} description={t`Transaction Confirmed`} />
   }
   if (isConfirmed) {
-    return <SVG src={OrderCheckImage} description={t`Order Filled`} />
+    return <SVG src={svgOrderCheckSrc} description={t`Order Filled`} />
   }
   if (isExpired && isTransaction) {
-    return <SVG src={OrderCancelledImage} description={t`Transaction Failed`} />
+    return <SVG src={svgOrderCancelledSrc} description={t`Transaction Failed`} />
   }
   if (isExpired) {
-    return <SVG src={OrderExpiredImage} description={t`Order Expired`} />
+    return <SVG src={svgOrderExpiredSrc} description={t`Order Expired`} />
   }
   if (isFailed) {
-    return <SVG src={OrderCancelledImage} description={t`Failed`} />
+    return <SVG src={svgOrderCancelledSrc} description={t`Failed`} />
   }
   if (isCreating) {
     // TODO: use another icon for Creating state
-    return <SVG src={OrderExpiredImage} description={t`Creating Order`} />
+    return <SVG src={svgOrderExpiredSrc} description={t`Creating Order`} />
   }
   if (isCancelled) {
-    return <SVG src={OrderCancelledImage} description={t`Order Cancelled`} />
+    return <SVG src={svgOrderCancelledSrc} description={t`Order Cancelled`} />
   }
   if (isPresignaturePending) {
-    return <SVG src={PresignaturePendingImage} description={t`Pending pre-signature`} />
+    return <SVG src={svgOrderPresignaturePendingSrc} description={t`Pending pre-signature`} />
   }
   if (isCancelling) {
     return null
   }
-  return <SVG src={OrderOpenImage} description={t`Order Open`} />
+  return <SVG src={svgOrderOpenSrc} description={t`Order Open`} />
 }
 
 function _getSafeAddress(activityDerivedState: ActivityDerivedState): string | undefined {

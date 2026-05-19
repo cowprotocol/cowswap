@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useRef } from 'react'
 
-import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
+import svgExperimentSrc from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsBox, SettingsBoxGroup, SettingsDropdownSection } from '@cowprotocol/ui'
@@ -122,7 +122,7 @@ export function SettingsDropdown({
                     tooltip={
                       <Trans>
                         <b>
-                          <SVG src={EXPERIMENT_ICON} width={12} height={12} /> Experimental:
+                          <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
                         </b>{' '}
                         Add DeFi interactions before and after your trade.
                       </Trans>

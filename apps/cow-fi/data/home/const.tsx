@@ -1,11 +1,11 @@
 import { initGtm } from '@cowprotocol/analytics'
-import IMG_BITS from '@cowprotocol/assets/images/image-bits.svg'
-import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
-import IMG_DISCORD from '@cowprotocol/assets/images/image-discord.svg'
-import IMG_FORUM from '@cowprotocol/assets/images/image-forum.svg'
-import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
-import IMG_SNAPSHOT from '@cowprotocol/assets/images/image-snapshot.svg'
-import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
+import svgBitsSrc from '@cowprotocol/assets/images/image-bits.svg'
+import svgCoinsSrc from '@cowprotocol/assets/images/image-coins.svg'
+import svgDiscordSrc from '@cowprotocol/assets/images/image-discord.svg'
+import svgForumSrc from '@cowprotocol/assets/images/image-forum.svg'
+import svgGreenWavesSrc from '@cowprotocol/assets/images/image-green-waves.svg'
+import svgSnapshotSrc from '@cowprotocol/assets/images/image-snapshot.svg'
+import svgTubeSrc from '@cowprotocol/assets/images/image-tube.svg'
 import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -41,7 +41,7 @@ export const PRODUCT_LIST = [
     linkBgColor: Color.cowfi_purple_bright,
     linkColor: Color.cowfi_purple_dark,
     productVariant: ProductVariant.CowDao,
-    iconImage: IMG_BITS,
+    iconImage: svgBitsSrc,
   },
   {
     title: 'CoW Swap',
@@ -57,7 +57,7 @@ export const PRODUCT_LIST = [
     linkBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     linkColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     productVariant: ProductVariant.CowDao,
-    iconImage: IMG_COINS,
+    iconImage: svgCoinsSrc,
   },
   {
     title: 'CoW AMM',
@@ -71,7 +71,7 @@ export const PRODUCT_LIST = [
     linkBgColor: Color.cowamm_green,
     linkColor: Color.cowamm_dark_green,
     productVariant: ProductVariant.CowDao,
-    iconImage: IMG_GREEN_WAVES,
+    iconImage: svgGreenWavesSrc,
   },
   {
     title: 'MEV Blocker',
@@ -85,7 +85,7 @@ export const PRODUCT_LIST = [
     linkBgColor: Color.cowfi_orange_bright,
     linkColor: Color.cowfi_orange_pale,
     productVariant: ProductVariant.MevBlocker,
-    iconImage: IMG_TUBE,
+    iconImage: svgTubeSrc,
   },
 ]
 
@@ -96,7 +96,7 @@ export const CHANNEL_LIST = [
     linkEvent: 'click-discord',
     iconColor: Color.cowfi_discord_pink,
     textColor: `var(${UI.COLOR_NEUTRAL_10})`,
-    iconImage: IMG_DISCORD,
+    iconImage: svgDiscordSrc,
   },
   {
     title: 'Forum',
@@ -104,7 +104,7 @@ export const CHANNEL_LIST = [
     linkEvent: 'click-forum',
     iconColor: Color.cowamm_dark_green,
     textColor: Color.neutral98,
-    iconImage: IMG_FORUM,
+    iconImage: svgForumSrc,
   },
   {
     title: 'Snapshot',
@@ -112,7 +112,7 @@ export const CHANNEL_LIST = [
     linkEvent: 'click-snapshot',
     iconColor: Color.cowfi_snapshot_red,
     textColor: Color.neutral98,
-    iconImage: IMG_SNAPSHOT,
+    iconImage: svgSnapshotSrc,
   },
 ]
 

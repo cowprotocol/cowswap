@@ -1,13 +1,13 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
-import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
-import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
-import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconCrownCowSrc from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
+import svgCowammHeroSrc from '@cowprotocol/assets/images/image-cowamm-hero.svg'
+import svgCowammPassiveSrc from '@cowprotocol/assets/images/image-cowamm-passive.svg'
+import svgCowammRaisingSrc from '@cowprotocol/assets/images/image-cowamm-raising.svg'
+import svgCowammRektSrc from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -71,7 +71,7 @@ export default function Page() {
           </Link>
         </HeroContent>
         <HeroImage width={470} height={470} color={Color.cowamm_dark_green} marginMobile="24px auto 56px">
-          <LazySVG src={IMG_COWAMM_HERO} />
+          <LazySVG src={svgCowammHeroSrc} />
         </HeroImage>
       </HeroContainer>
 
@@ -114,7 +114,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
-              <LazySVG src={IMG_ICON_CROWN_COW} />
+              <LazySVG src={iconCrownCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
           </SectionTitleWrapper>
@@ -165,7 +165,7 @@ export default function Page() {
             color={`var(${UI.COLOR_NEUTRAL_10})`}
           >
             <SectionTitleIcon $size={128}>
-              <LazySVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={iconBulbCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Finally, an AMM designed with LPs in mind</SectionTitleText>
             <SectionTitleDescription textAlign="center">
@@ -210,7 +210,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
-              <LazySVG src={IMG_ICON_CROWN_COW} />
+              <LazySVG src={iconCrownCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>
               Raising the <s>bar</s> curve
@@ -246,7 +246,7 @@ export default function Page() {
                 orderReverseTablet
                 borderRadius={32}
               >
-                <LazySVG src={IMG_COWAMM_RAISING} />
+                <LazySVG src={svgCowammRaisingSrc} />
               </TopicImage>
             </TopicCard>
           </TopicList>
@@ -257,7 +257,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={128}>
-              <LazySVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={iconBulbCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
           </SectionTitleWrapper>
@@ -281,7 +281,7 @@ export default function Page() {
                 orderReverseTablet
                 borderRadius={32}
               >
-                <LazySVG src={IMG_COWAMM_REKT} />
+                <LazySVG src={svgCowammRektSrc} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
@@ -320,7 +320,7 @@ export default function Page() {
                 orderReverseTablet
                 borderRadius={32}
               >
-                <LazySVG src={IMG_COWAMM_PASSIVE} />
+                <LazySVG src={svgCowammPassiveSrc} />
               </TopicImage>
             </TopicCard>
           </TopicList>
@@ -362,7 +362,7 @@ export default function Page() {
         <ContainerCardSection padding={'0 0 100px'}>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={62}>
-              <LazySVG src={IMG_ICON_FAQ} />
+              <LazySVG src={iconFaqSrc} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
           </SectionTitleWrapper>

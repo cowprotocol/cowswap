@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import EDIT from '@cowprotocol/assets/cow-swap/edit.svg'
+import svgEditSrc from '@cowprotocol/assets/cow-swap/edit.svg'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
@@ -39,7 +39,7 @@ export function Toggle({
         >
           <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} />{' '}
           <styledEl.EditIcon>
-            <SVG src={EDIT} description="Edit" />
+            <SVG src={svgEditSrc} description="Edit" />
           </styledEl.EditIcon>
         </styledEl.PartialAmountWrapper>
       </Option>
