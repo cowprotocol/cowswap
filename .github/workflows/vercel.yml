@@ -21,6 +21,7 @@ env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets[format('VERCEL_PROJECT_ID_{0}', inputs.app)] }}
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  REACT_APP_ENVIRONMENT: ${{ inputs.env_name == 'prod' && 'production' || inputs.env_name == 'dev' && 'development' || inputs.env_name }}
 
 jobs:
   build_and_deploy:

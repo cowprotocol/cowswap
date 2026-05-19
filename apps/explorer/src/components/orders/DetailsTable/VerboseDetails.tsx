@@ -12,9 +12,12 @@ import { OrderSurplusItem } from './items/OrderSurplusItem'
 import { SolvedByItem } from './items/SolvedByItem'
 
 import { Order } from '../../../api/operator'
+import { DetailRow } from '../../../components/common/DetailRow'
+import { DetailsTableTooltips } from '../../../components/orders/DetailsTable/detailsTableTooltips'
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 import { OrderHooksDetails } from '../OrderHooksDetails'
 import { OrderPriceDisplayProps } from '../OrderPriceDisplay'
+import { OrderWrapperDetails } from '../OrderWrapperDetails/OrderWrapperDetails.component'
 
 interface VerboseDetailsProps {
   order: Order
@@ -88,7 +91,13 @@ export function VerboseDetails({
           viewFills={viewFills}
         />
       )}
-
+      <OrderWrapperDetails fullAppData={fullAppData ?? undefined} order={order}>
+        {(content) => (
+          <DetailRow label="Wrappers" tooltipText={DetailsTableTooltips.wrappers}>
+            {content}
+          </DetailRow>
+        )}
+      </OrderWrapperDetails>
       <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
         {(content) => <HooksItem>{content}</HooksItem>}
       </OrderHooksDetails>

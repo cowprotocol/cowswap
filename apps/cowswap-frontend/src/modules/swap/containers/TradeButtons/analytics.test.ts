@@ -26,6 +26,7 @@ describe('buildSwapBridgeClickEvent', () => {
     const event = buildSwapBridgeClickEvent({
       action: 'swap_bridge_click',
       isBridging: true,
+      surface: 'trade_button',
       account: '0xca011d01a4b75a36afb5e2b69e0ba8f01c6b500e',
       sellAmount,
       buyAmount,
@@ -53,6 +54,7 @@ describe('buildSwapBridgeClickEvent', () => {
       buyTokenChainId: SupportedChainId.MAINNET,
       buyAmountExpected: '10049',
       buyAmountHuman: '0.00010049',
+      surface: 'trade_button',
     })
 
     expect(parsed.event_label).toContain('from: 42161')

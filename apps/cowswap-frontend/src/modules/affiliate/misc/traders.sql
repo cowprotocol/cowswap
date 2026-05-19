@@ -8,6 +8,13 @@ params as (
       else transform(split('{{trader_payout_sources}}', ','), x -> lower(trim(x)))
     end as trader_payout_sources
 ),
+app_data as (
+  select
+    blockchain,
+    app_hash,
+    coalesce(environment, widget_environment) as environment
+  from query_5172256
+),
 constants as (
   -- Exclude very low fee swaps from counting towards trader eligible volume.
   -- Threshold is in bps (so 1 = 1 bps = 0.01%).
@@ -48,19 +55,27 @@ trades_with_referrer as (
     dune.cowprotocol.result_fac_trades.usd_value as usd_value,
     dune.cowprotocol.result_fac_trades.referrer_code as referrer_code,
     dune.cowprotocol.result_fac_trades.swap_source as swap_source,
-    dune.cowprotocol.result_fac_trades.protocol_fee_bps,
     dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps,
+    app_data.environment,
     (
-      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 1e9) < constants.min_fee_bps
+      coalesce(dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps, 0) < constants.min_fee_bps
     ) as is_excluded_low_fee,
     (
       lower(coalesce(dune.cowprotocol.result_fac_trades.swap_source, '')) = 'integrations'
     ) as is_excluded_integrators_source
   from dune.cowprotocol.result_fac_trades
+  left join app_data
+    on app_data.blockchain = dune.cowprotocol.result_fac_trades.blockchain
+    and app_data.app_hash = dune.cowprotocol.result_fac_trades.app_data
   cross join params
   cross join constants
   where
     if(array_position(params.blockchains, '-=All=-') > 0, true, array_position(params.blockchains, dune.cowprotocol.result_fac_trades.blockchain) > 0)
+    and if(
+      params.is_staging_env,
+      app_data.environment in ('local', 'development', 'pr'),
+      app_data.environment in ('production', 'staging', 'ens')
+    )
 ),
 first_trade as (
   select trader, min(block_time) as first_trade_time
@@ -127,7 +142,6 @@ payouts as (
   cross join unnest(params.trader_payout_sources) as ps(payout_source)
   where lower(to_hex("from")) = replace(ps.payout_source, '0x', '')
     and contract_address = 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-    and evt_block_time >= date '2026-01-01'
   group by 1
 )
 select

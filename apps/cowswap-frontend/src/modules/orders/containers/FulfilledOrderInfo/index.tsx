@@ -8,6 +8,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import { useNotifyAffiliateLinkedCode } from 'modules/affiliate'
+
 import { useGetExecutedBridgeSummary } from 'common/hooks/useGetExecutedBridgeSummary'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { OrderSummary } from 'common/pure/OrderSummary'
@@ -33,6 +35,7 @@ interface ExecutedSummaryProps {
 export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps): ReactNode {
   const order = useOrder({ chainId, id: orderUid })
   const surplusData = useGetSurplusData(order)
+  useNotifyAffiliateLinkedCode({ order })
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = surplusData
 
