@@ -32,7 +32,7 @@
     "@cowprotocol/currency": "workspace:*",
     "react": "19.1.2",
     "react-router": "7.5.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "2.1.4"
   },
   "devDependencies": {
     "@types/react": "19.1.3"

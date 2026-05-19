@@ -28,9 +28,9 @@
     "@cowprotocol/sdk-composable": "1.0.1",
     "@cowprotocol/sdk-viem-adapter": "0.3.18",
     "@cowprotocol/wallet": "workspace:*",
-    "viem": "^2.42.1",
-    "wagmi": "^3.6.9",
-    "inter-ui": "^3.19.3",
+    "viem": "2.48.8",
+    "wagmi": "3.6.9",
+    "inter-ui": "3.19.3",
     "react": "19.1.2",
     "react-dom": "19.1.2",
     "styled-components": "5.3.11"
