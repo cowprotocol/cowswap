@@ -13,7 +13,7 @@ import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswa
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import styled from 'styled-components/macro'
+import styled, { type DefaultTheme } from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
@@ -25,17 +25,23 @@ export function isChristmasTheme(theme?: CowSwapTheme): boolean {
   return ['darkChristmas', 'lightChristmas'].includes(theme)
 }
 
+const DEFAULT_WIDGET_BODY_PADDING = '16px 16px 24px'
+
+function getWidgetBodyPadding(theme: DefaultTheme): string {
+  return theme.widgetPadding || DEFAULT_WIDGET_BODY_PADDING
+}
+
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  min-height: ${({ theme }) => (theme.isWidget ? '400px' : '100vh')};
+  min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
 `
 
 export const Marginer = styled.div`
-  margin-top: 5rem;
+  margin-top: ${({ theme }) => (theme.isWidget ? '0' : '5rem')};
 `
 
 export const SceneContainer = styled.div`
@@ -72,11 +78,15 @@ export const BodyWrapper = styled.div<{
   width: 100%;
   align-items: flex-start;
   justify-content: center;
-  flex: 1 1 auto;
+  flex: ${({ theme }) => (theme.isWidget ? '0 0 auto' : '1 1 auto')};
   z-index: 2;
   color: inherit;
   padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-    theme.isWidget ? '16px 16px 0' : $hasActiveSpeechBubbleNotification ? '150px 16px 320px' : '150px 16px 176px'};
+    theme.isWidget
+      ? getWidgetBodyPadding(theme)
+      : $hasActiveSpeechBubbleNotification
+        ? '150px 16px 320px'
+        : '150px 16px 176px'};
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
@@ -108,7 +118,11 @@ export const BodyWrapper = styled.div<{
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
+      theme.isWidget
+        ? getWidgetBodyPadding(theme)
+        : $hasActiveSpeechBubbleNotification
+          ? '150px 16px 330px'
+          : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) =>
@@ -133,7 +147,11 @@ export const BodyWrapper = styled.div<{
 
   ${Media.upToSmall()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
-      theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
+      theme.isWidget
+        ? getWidgetBodyPadding(theme)
+        : $hasActiveSpeechBubbleNotification
+          ? '90px 16px 400px'
+          : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) =>
       customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};

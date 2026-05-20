@@ -10,8 +10,7 @@ import {
   createCowSwapWidget,
 } from '@cowprotocol/widget-lib'
 
-export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
-  const { params, provider, listeners, onReady } = props
+export function CowSwapWidget({ params, provider, listeners, onReady }: CowSwapWidgetProps): JSX.Element {
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
@@ -136,8 +135,16 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
     )
   }
 
-  // Render widget container
-  return <div ref={containerRef} style={{ width: '100%' }}></div>
+  return (
+    <div
+      ref={containerRef}
+      id="cowswap-widget"
+      style={{
+        width: '100%',
+        flex: '1 0 auto',
+      }}
+    />
+  )
 }
 
 function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {

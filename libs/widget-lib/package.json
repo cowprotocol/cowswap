@@ -24,8 +24,10 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.0.2",
     "@cowprotocol/events": "workspace:*",
-    "@cowprotocol/iframe-transport": "workspace:*"
+    "@cowprotocol/iframe-transport": "workspace:*",
+    "csstype": "^3.1.3"
   }
 }

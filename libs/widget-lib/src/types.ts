@@ -6,6 +6,8 @@ import {
   OnTradeParamsPayload,
 } from '@cowprotocol/events'
 
+import type * as CSS from 'csstype'
+
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
@@ -191,11 +193,6 @@ export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: st
 
 export type CowSwapWidgetPalette = {
   baseTheme: CowSwapTheme
-  /**
-   * Overrides the main widget card shadow.
-   * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
-   */
-  boxShadow?: string
 } & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
@@ -250,18 +247,47 @@ export interface CowSwapWidgetParams {
   appCode: string
 
   /**
-   * The width of the widget in pixels. Default: 400px
+   * The width of the outer iframe element. Accepts CSS width values such as `450px` or `100%`.
+   * Default: `450px`
+   *
+   * @deprecated Use iframeStyle.width instead.
    */
   width?: string
   /**
-   * The height of the widget in pixels. Default: 600px
+   * The height of the outer iframe element. Accepts CSS height values such as `640px`.
+   * Default: `640px`
+   *
+   * @deprecated Use iframeStyle.height instead.
    */
   height?: string
 
   /**
    * The maximum height of the widget in pixels. Default: body.offsetHeight
+   *
+   * @deprecated Use iframeStyle.maxHeight instead.
    */
   maxHeight?: number
+
+  /**
+   * Extra inline styles for the outer iframe element (host page only; not sent into the iframe app).
+   * Applied after width/height attributes. Use e.g. `backgroundColor`, `borderRadius`, `boxShadow`, `border`.
+   */
+  iframeStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the top-level app wrapper (inside the iframe).
+   */
+  appWrapperStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the body wrapper (inside the iframe).
+   */
+  bodyWrapperStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the main trade widget card (inside the iframe).
+   */
+  cardStyle?: CSS.Properties
 
   /**
    * Network ID.
@@ -391,6 +417,14 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
+   * Dynamically adjust the iframe height to match the content height.
+   * If enabled, no scrollbar will be shown inside the widget iframe.
+   *
+   * Defaults to true.
+   */
+  autoResizeEnabled?: boolean
+
+  /**
    * Disables CoW Swap educational tips shown after a trade completes when no surplus message is available.
    * Defaults to false.
    */
@@ -517,7 +551,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks' | 'iframeStyle'>
 
 export interface UpdateParamsPayload {
   urlParams: {

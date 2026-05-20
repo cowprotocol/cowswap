@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -67,7 +67,7 @@ const scrollToMyOrders = () => {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable, cardStyle } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
@@ -226,7 +226,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   return (
     <>
-      <styledEl.ContainerBox>
+      <styledEl.ContainerBox id="card" style={isInjectedWidgetMode ? (cardStyle as CSSProperties) : undefined}>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
           {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}

@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -12,7 +12,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate'
-import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+import { useInjectedWidgetMetaData, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -70,6 +70,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   useInitializeUtm()
   const isInjectedWidgetMode = isInjectedWidget()
+  const { bodyWrapperStyle, appWrapperStyle } = useInjectedWidgetParams()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
@@ -102,7 +103,10 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper>
+      <styledEl.AppWrapper
+        id="appWrapper"
+        style={isInjectedWidgetMode ? (appWrapperStyle as CSSProperties) : undefined}
+      >
         <URLWarning />
         <RecoveryBanner />
         <InvalidLocalTimeWarning />
@@ -114,6 +118,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         {isYieldEnabled && <CoWAmmBanner />}
 
         <styledEl.BodyWrapper
+          id="bodyWrapper"
+          style={isInjectedWidgetMode ? (bodyWrapperStyle as CSSProperties) : undefined}
           customTheme={customTheme}
           backgroundVariant={pageBackgroundVariant}
           $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}

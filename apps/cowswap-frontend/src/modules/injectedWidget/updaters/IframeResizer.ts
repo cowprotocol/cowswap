@@ -8,21 +8,37 @@ import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-li
 
 import { openModalState } from 'common/state/openModalState'
 
+import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
+
 export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
+  const { autoResizeEnabled } = useInjectedWidgetParams()
 
   useLayoutEffect(() => {
-    if (!isIframe() || !isInjectedWidget()) return
     const parentOrigin = getParentOrigin()
 
-    if (!parentOrigin) return
+    // Checking for `autoResizeEnabled === undefined` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === undefined || !parentOrigin) return
 
-    // Initial height calculation and message
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const sendHeightUpdate = () => {
-      const contentHeight = document.body.scrollHeight
+    if (autoResizeEnabled) {
+      document.documentElement.style.overflow = 'hidden'
+    } else {
+      document.documentElement.style.removeProperty('overflow')
+    }
+  }, [autoResizeEnabled])
+
+  // eslint-disable-next-line complexity
+  useLayoutEffect(() => {
+    const parentOrigin = getParentOrigin()
+
+    // Checking for `autoResizeEnabled === false` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
+    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === false || !parentOrigin) return
+
+    const contentElement = getContentElement(document)
+
+    const sendHeightUpdate = (): void => {
+      const contentHeight = getContentHeight(contentElement)
 
       if (isModalOpen) {
         const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
@@ -52,19 +68,53 @@ export function IframeResizer(): null {
     }
     sendHeightUpdate()
 
-    // Set up a MutationObserver to watch for changes in the DOM
-    const observer = new MutationObserver(() => {
-      sendHeightUpdate()
+    window.addEventListener('resize', sendHeightUpdate)
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            sendHeightUpdate()
+          })
+        : null
+
+    resizeObserver?.observe(contentElement)
+
+    if (contentElement !== document.body) {
+      resizeObserver?.observe(document.body)
+    }
+
+    const mutationObserver =
+      !resizeObserver && typeof MutationObserver !== 'undefined'
+        ? new MutationObserver(() => {
+            sendHeightUpdate()
+          })
+        : null
+
+    mutationObserver?.observe(document.body, {
+      attributes: true,
+      characterData: true,
+      childList: true,
+      subtree: true,
     })
 
-    // Start observing the entire body for changes that might affect its height
-    observer.observe(document.body, { childList: true, subtree: true })
-
-    // Cleanup: Disconnect the observer when the component is unmounted
     return () => {
-      observer.disconnect()
+      window.removeEventListener('resize', sendHeightUpdate)
+      resizeObserver?.disconnect()
+      mutationObserver?.disconnect()
     }
-  }, [isModalOpen])
+  }, [isModalOpen, autoResizeEnabled])
 
   return null
+}
+
+function getContentElement(doc: Document): HTMLElement {
+  return doc.getElementById('root') ?? doc.body
+}
+
+function getContentHeight(contentElement: HTMLElement): number {
+  return Math.max(
+    contentElement.offsetHeight,
+    contentElement.clientHeight,
+    Math.ceil(contentElement.getBoundingClientRect().height),
+  )
 }
