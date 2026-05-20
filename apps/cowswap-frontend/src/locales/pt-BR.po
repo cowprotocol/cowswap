@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-05-19 09:49\n"
+"PO-Revision-Date: 2026-05-20 12:54\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2696,6 +2696,10 @@ msgstr "Pré"
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/constants.ts
 msgid "(v)COW token holders are eligible for a fee discount"
 msgstr "Os detentores de tokens (v)COW são elegíveis para um desconto na taxa"
+
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/OnchainTransactionEventsUpdater.tsx
+msgid "Transaction cancelled: it was not submitted to the blockchain."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Error connecting"
@@ -7242,6 +7246,7 @@ msgstr ""
 msgid "Estimated fill price"
 msgstr ""
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
 msgid "Transaction failed"
 msgstr ""
