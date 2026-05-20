@@ -48,6 +48,7 @@ export async function fetchTwapOrdersFromSafe(
   executedSince?: string,
   nextUrl?: string,
   accumulator: TwapDataArray[] = [],
+  onProgress?: (state: TwapDataArray) => void,
 ): Promise<FetchTwapOrdersFromSafeResult> {
   const response = await fetchSafeTransactionsChunk(chainId, safeAddress, nextUrl)
 
@@ -57,6 +58,7 @@ export async function fetchTwapOrdersFromSafe(
   accumulator.push(parsedResults)
 
   const flattenState = accumulator.flat()
+  onProgress?.(mergeTwapOrdersByHash(flattenState))
 
   // Exit from the recursion if we have enough transactions or there is no next page
 
@@ -82,7 +84,15 @@ export async function fetchTwapOrdersFromSafe(
     }
   }
 
-  return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince, response.next, accumulator)
+  return fetchTwapOrdersFromSafe(
+    chainId,
+    safeAddress,
+    composableCowContract,
+    executedSince,
+    response.next,
+    accumulator,
+    onProgress,
+  )
 }
 
 async function fetchRecentlyExecutedTransactions(

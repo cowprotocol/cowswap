@@ -32,7 +32,7 @@ export async function fetchCachedTwapOrdersFromSafe(
 
   if (cached) setData(cached.orders)
 
-  const fresh = await fetchFreshTwapOrders(chainId, safeAddress, composableCowContract, cached)
+  const fresh = await fetchFreshTwapOrders(chainId, safeAddress, composableCowContract, cached, setData)
 
   if (!fresh) return cached?.orders || []
   if (!fresh.complete && cached) return cached.orders
@@ -48,10 +48,21 @@ async function fetchFreshTwapOrders(
   safeAddress: string,
   composableCowContract: ComposableCowContractData,
   cached: SafeTwapScanCache | null,
+  setData: (state: TwapDataArray) => void,
 ): Promise<FetchTwapOrdersFromSafeResult | null> {
   const executedSince = cached ? getOverlappedSubmissionDate(cached.newestSubmissionDate) : undefined
+  const onProgress = (orders: TwapDataArray): void =>
+    setData(cached ? mergeTwapOrdersByHash([...cached.orders, ...orders]) : orders)
 
-  return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, executedSince).catch((error) => {
+  return fetchTwapOrdersFromSafe(
+    chainId,
+    safeAddress,
+    composableCowContract,
+    executedSince,
+    undefined,
+    [],
+    onProgress,
+  ).catch((error) => {
     if (!cached) throw error
 
     console.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
