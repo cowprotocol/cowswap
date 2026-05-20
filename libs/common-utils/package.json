@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-utils",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.2",
+    "@cowprotocol/cow-sdk": "9.1.1",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "^5.4.1",
@@ -46,7 +46,7 @@
     "react": "19.1.2",
     "ua-parser-js": "^1.0.32",
     "viem": "^2.42.1",
-    "wagmi": "^3.1.0"
+    "wagmi": "^3.6.9"
   },
   "devDependencies": {
     "@types/ms": "^2.1.0",

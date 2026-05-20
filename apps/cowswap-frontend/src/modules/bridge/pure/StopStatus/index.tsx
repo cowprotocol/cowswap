@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
-import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
-import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
+import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import iconRefundSrc from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import svgSpinnerSrc from '@cowprotocol/assets/cow-swap/spinner.svg'
+import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
@@ -30,12 +30,12 @@ const StyledStatusCloseIcon = styled(SVG)`
  * swap and bridge operations.
  */
 
-const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
+const CloseIcon = <StyledStatusCloseIcon src={svgXSrc} />
 
 // Base set of icons for status states, used by both swap and bridge
 export const commonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
-  [SwapAndBridgeStatus.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
-  [SwapAndBridgeStatus.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
+  [SwapAndBridgeStatus.DONE]: <StyledStatusCheckmarkIcon src={svgCheckmarkSrc} />,
+  [SwapAndBridgeStatus.PENDING]: <StyledSpinnerIcon src={svgSpinnerSrc} />,
   [SwapAndBridgeStatus.FAILED]: CloseIcon,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: CloseIcon,
   [SwapAndBridgeStatus.DEFAULT]: null,
@@ -44,8 +44,8 @@ export const commonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
 // Swap has custom icons for different states
 export const swapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
   ...commonStatusIcons,
-  [SwapAndBridgeStatus.FAILED]: <SVG src={RefundIcon} />,
-  [SwapAndBridgeStatus.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
+  [SwapAndBridgeStatus.FAILED]: <SVG src={iconRefundSrc} />,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={iconRefundSrc} />,
 }
 
 // Bridge uses the common icons without modification

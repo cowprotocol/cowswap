@@ -3,6 +3,7 @@ import './types.d.ts'
 export * from './api/types'
 export * from './assets'
 export * from './constants'
+export { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
 
 // Hooks
 export * from './api/hooks'
@@ -18,6 +19,7 @@ export * from './wagmi/hooks/useIsSmartContractWallet'
 export * from './wagmi/hooks/useDisconnectWallet'
 export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
+export * from './wagmi/hooks/useIsRestoringConnection'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'

@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useRef, useState } from 'react'
 
-import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import ICON_X from '@cowprotocol/assets/images/x.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/images/carret-down.svg'
+import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getEtherscanLink, isBarnBackendEnv } from '@cowprotocol/common-utils'
@@ -195,12 +195,12 @@ export const Version = ({ className }: { className?: string }): ReactNode => {
   return (
     <Dropdown className={className} ref={dropdownRef}>
       <DropdownButton onClick={() => setShowDropdown(!showDropdown)}>
-        {webVersion} <SVG src={ICON_ARROW_DOWN} />
+        {webVersion} <SVG src={svgCarretDownSrc} />
       </DropdownButton>
       {showDropdown && (
         <DropdownContent>
           <CloseButton onClick={() => setShowDropdown(false)}>
-            <SVG src={ICON_X} />
+            <SVG src={svgXSrc} />
           </CloseButton>
           {versionsList.map((key) => {
             const { href, version } = VERSIONS[key]
