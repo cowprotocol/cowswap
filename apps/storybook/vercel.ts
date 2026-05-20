@@ -28,7 +28,8 @@ const csp = buildCsp([
   ['font-src', ["'self'", 'data:', 'https:']],
   ['connect-src', ["'self'", 'https:', 'wss:']],
   ['media-src', ["'self'", 'data:', 'blob:']],
-  ['frame-src', ["'none'"]],
+  // Storybook renders stories inside /iframe.html on the same origin.
+  ['frame-src', ["'self'"]],
   ['frame-ancestors', ["'none'"]],
   ['worker-src', ["'self'"]],
   ['manifest-src', ["'self'"]],
