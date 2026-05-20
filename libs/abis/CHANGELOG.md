@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.0](https://github.com/cowprotocol/cowswap/compare/abis-v3.0.0...abis-v4.0.0) (2026-05-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Viem, Wagmi, and Reown ([#7061](https://github.com/cowprotocol/cowswap/issues/7061))
+
+### ✨ Features
+
+* migrate to Viem, Wagmi, and Reown ([#7061](https://github.com/cowprotocol/cowswap/issues/7061)) ([48daef9](https://github.com/cowprotocol/cowswap/commit/48daef9bfbdd9284ca56e3d0df3ae75eb4891ee1))
+
+
+### 🐛 Bug Fixes
+
+* merge develop and resolve conflicts ([fe1429b](https://github.com/cowprotocol/cowswap/commit/fe1429b975856c8415be84b60b01183e36569efb))
+
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/abis-v2.0.0...abis-v3.0.0) (2026-02-05)
 
 

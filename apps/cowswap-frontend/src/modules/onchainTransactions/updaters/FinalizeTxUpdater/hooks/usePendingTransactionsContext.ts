@@ -16,7 +16,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
 
-export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
+export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthereumTransactions | null {
   const config = useConfig()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
@@ -32,7 +32,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
 
   return useAsyncMemo(
     async () => {
-      if (!lastBlockNumber || !account) return null
+      if (!lastBlockNumber || !account || !hasPendingTxs) return null
 
       const transactionsCount = await getTransactionCount(config, { address: account })
 
@@ -66,6 +66,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       cancelOrdersBatch,
       getTwapOrderById,
       safeInfo,
+      hasPendingTxs,
     ],
     null,
   )

@@ -1,11 +1,10 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useLayoutEffect, useState } from 'react'
 
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { Outlet, useLocation, useParams } from 'react-router'
+import { Outlet, useLocation, useParams, matchPath } from 'react-router'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -16,7 +15,7 @@ import { Routes } from 'common/constants/routes'
 import { useNavigate, useNavigateBack } from 'common/hooks/useNavigate'
 import { NewModal } from 'common/pure/NewModal'
 
-import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
+import { EmptyWrapper, HelpLink, TitleWrapper, WidgetWrapper } from './styled'
 
 import { NEED_HELP_LABEL } from '../../consts'
 import { useOnAccountOrChainChanged } from '../../hooks/useOnAccountOrChainChanged'
@@ -28,18 +27,8 @@ import { WidgetPageTitle } from '../WidgetPageTitle'
 
 const URL_NETWORK_CHANGED_STATE = 'network-changed'
 
-interface AccountProxiesPageProps {
-  modalMode?: boolean
-  onDismiss?(): void
-}
-
-export function AccountProxyWidgetPage({
-  modalMode = false,
-  onDismiss: modalOnDismiss,
-}: AccountProxiesPageProps): ReactNode {
+export function AccountProxyWidgetPage(): ReactNode {
   const { i18n } = useLingui()
-  const widgetRef = useRef(null)
-  const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
   const { chainId, account } = useWalletInfo()
   const tradeNavigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = useSwapRawState()
@@ -55,10 +44,11 @@ export function AccountProxyWidgetPage({
 
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')
+  const isRootProxyPage = !!matchPath(Routes.ACCOUNT_PROXIES, location.pathname)
   const query = new URLSearchParams(location.search)
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
-  const defaultOnDismiss = (): void => {
+  const onDismiss = (): void => {
     if (location.key === 'default' || location.state === URL_NETWORK_CHANGED_STATE) {
       tradeNavigate(
         chainId,
@@ -71,8 +61,6 @@ export function AccountProxyWidgetPage({
     }
   }
 
-  const onDismiss = modalOnDismiss || defaultOnDismiss
-
   // Go to main page when account/chainId changes
   useLayoutEffect(() => {
     if (!accountOrChainChanged) return
@@ -80,13 +68,11 @@ export function AccountProxyWidgetPage({
     navigate(getProxyAccountUrl(chainId), { state: URL_NETWORK_CHANGED_STATE })
   }, [accountOrChainChanged, chainId, navigate])
 
-  useOnClickOutside([widgetRef], modalMode ? onDismiss : undefined)
-
   return (
-    <Wrapper $modalMode={modalMode}>
-      <WidgetWrapper ref={widgetRef}>
+    <EmptyWrapper>
+      <WidgetWrapper>
         <NewModal
-          modalMode={modalMode}
+          showBackButton={!isRootProxyPage}
           title={
             <TitleWrapper>
               <span>
@@ -106,6 +92,6 @@ export function AccountProxyWidgetPage({
           {isWalletConnected || isHelpPage ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
         </NewModal>
       </WidgetWrapper>
-    </Wrapper>
+    </EmptyWrapper>
   )
 }

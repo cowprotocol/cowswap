@@ -41,19 +41,15 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
       isSell,
       beforeAllFees,
       afterNetworkCosts,
-      costs: { networkFee, partnerFee, bridgeFee },
-      quotePrice,
+      costs: { bridgeFee, networkFee, partnerFee },
     } = receiveAmountInfo
 
     const outputAmountWithoutFee = isSell ? beforeAllFees.buyAmount : afterNetworkCosts.buyAmount
 
     const inputAmountAfterFees = isSell ? beforeAllFees.sellAmount : afterNetworkCosts.sellAmount
 
-    const feeAsCurrency = isSell ? quotePrice.quote(networkFee.amountInSellCurrency) : networkFee.amountInSellCurrency
-
-    const volumeFeeAmount = partnerFee.amount
-
-    const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
+    const networkFeeAmount = isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency
+    const totalFeeAmount = networkFeeAmount.add(partnerFee.amount)
     const targetAmount = isSell ? outputAmountWithoutFee : inputAmountAfterFees
 
     if (targetAmount.equalTo(0)) return DEFAULT_FEE_STATE

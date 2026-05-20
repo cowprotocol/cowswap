@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
+import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
 import {
@@ -17,7 +18,6 @@ import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
 import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
-import { validateURL } from '../../utils/validateURL'
 
 const jsonTextAreaStyles = {
   fontFamily: 'monospace',
@@ -80,7 +80,7 @@ export function AddCustomListDialog({
 
     setCustomListUrl(value)
 
-    setHasErrors(value ? !validateURL(value) : false)
+    setHasErrors(value ? !isValidTokenListSource(value) : false)
   }
 
   // TODO: Add proper return type annotation

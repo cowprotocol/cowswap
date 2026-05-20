@@ -67,7 +67,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
         </HeroSubtitle>
         <HeroActions>
           {!account && (
-            <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal} data-testid="affiliate-connect">
+            <ButtonPrimary buttonSize={ButtonSize.BIG} data-testid="affiliate-connect" onClick={toggleWalletModal}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}

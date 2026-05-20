@@ -7,14 +7,14 @@ peer-to-peer among its users or into any on-chain liquidity source while
 providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+|-----------------------|---------------------------------------------------------------------------------------------------------------|
 | 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                          |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                    |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
@@ -48,6 +48,17 @@ Start CoW Swap on `http://localhost:3000`
 pnpm start
 ```
 
+Environment selection for `cowswap-frontend` is configured explicitly via `REACT_APP_ENVIRONMENT`
+in the app-level `.env.*` files:
+
+- Supported values:
+  `local`, `development`, `pr`, `staging`, `production`, `ens`
+
+- `apps/cowswap-frontend/.env.development` -> `local`
+- `apps/cowswap-frontend/.env.dev` -> `development`
+- `apps/cowswap-frontend/.env.staging` -> `staging`
+- `apps/cowswap-frontend/.env.production` -> `production`
+
 ## Build
 
 Build the project. The static files will be generated in the `build` folder.
@@ -55,6 +66,18 @@ Build the project. The static files will be generated in the `build` folder.
 ```bash
 pnpm run build
 ```
+
+### Sentry Sourcemaps
+
+`cowswap-frontend` generates production sourcemaps for Sentry.
+
+- Runtime error reporting still uses `REACT_APP_SENTRY_DSN`.
+- Build-time sourcemap upload uses `SENTRY_AUTH_TOKEN`.
+- `SENTRY_ORG` and `SENTRY_PROJECT` are optional overrides.
+  Defaults:
+  `cowprotocol` and `cowswap`
+
+If `SENTRY_AUTH_TOKEN` is not set, the build still succeeds, but sourcemaps are not uploaded to Sentry.
 
 ## Unit testing
 
@@ -74,6 +97,9 @@ Start the Explorer on <http://localhost:4200>
 pnpm run start:explorer
 ```
 
+Explorer environment selection is configured explicitly via `REACT_APP_ENVIRONMENT`.
+See [apps/explorer/.env.example](apps/explorer/.env.example).
+
 ### Build
 
 ```bash
@@ -89,6 +115,9 @@ Start cow.fi on <http://localhost:3001>
 ```bash
 pnpm run start:cowfi
 ```
+
+`cow-fi` no longer infers its environment from the hostname. Set `NEXT_PUBLIC_ENVIRONMENT`
+explicitly. See [apps/cow-fi/.env.example](apps/cow-fi/.env.example).
 
 ### Build
 
@@ -202,6 +231,24 @@ The API endpoint is configured using the environment variable
 REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
 ```
 
+## Sentry Configuration
+
+For `apps/cowswap-frontend`:
+
+```ini
+REACT_APP_SENTRY_DSN=https://<public-dsn>
+SENTRY_AUTH_TOKEN=<sentry-auth-token>
+```
+
+Optional overrides for the build-time upload target:
+
+```ini
+SENTRY_ORG=cowprotocol
+SENTRY_PROJECT=cowswap
+```
+
+`SENTRY_AUTH_TOKEN` is the only required secret for source map upload. The org and project values are public identifiers and already default to the values above.
+
 ## BFF API Endpoints (Backend for Frontend)
 
 The BFF API is a helper API that provides some additional data to the frontend.
@@ -246,7 +293,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
-| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+|-----------|--------------------------------------|------------------------------|--------------------------------------------------------------------------------------|
 | **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 

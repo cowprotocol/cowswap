@@ -77,34 +77,6 @@ export const ButtonPrimary = styled(BaseButton)`
   }
 `
 
-export const ButtonLight = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text1};
-  font-size: 16px;
-  // font-weight: 500;
-  &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-  }
-  &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.03)};
-  }
-  &:active {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.05)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(theme.bg2, 0.05)};
-  }
-  :disabled {
-    opacity: 0.4;
-    :hover {
-      cursor: auto;
-      background-color: ${({ theme }) => theme.bg2};
-      box-shadow: none;
-      border: 1px solid transparent;
-      outline: none;
-    }
-  }
-`
-
 export const ButtonGray = styled(BaseButton)`
   background-color: ${({ theme }) => theme.background};
   color: var(--cow-color-text2);

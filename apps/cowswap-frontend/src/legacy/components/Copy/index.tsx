@@ -1,19 +1,5 @@
-import { UI } from '@cowprotocol/ui'
+import Copy, { CopyIcon, TransactionStatusText } from './CopyHelper'
 
-import styled from 'styled-components/macro'
-
-import Copy, { CopyIcon } from './CopyMod'
-
-export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`
-  ${({ theme }) => theme.flexRowNoWrap};
-  color: ${({ isCopied }) => (isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
-  align-items: center;
-
-  ${CopyIcon} {
-    color: currentColor;
-  }
-`
-
-export { CopyIcon }
+export { CopyIcon, TransactionStatusText }
 
 export default Copy
