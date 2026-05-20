@@ -82,7 +82,7 @@ jest.mock('common/utils/addressValidation', () => {
           supportsChainPrefix: false,
         }
       }
-      if (targetChainId === actual.AdditionalTargetChainId.SOLANA) {
+      if (targetChainId === actual.SupportedChainId.SOLANA) {
         return {
           isValidAddress: (v: string) => v === 'SolValid1111111111111111111111111111111111111',
           supportsENS: false,
@@ -149,7 +149,7 @@ describe('AddressInputPanel', () => {
   })
 
   it('uses Solana-specific placeholder for SOL target', () => {
-    renderComponent({ targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ targetChainId: SupportedChainId.SOLANA })
     const input = screen.getByRole('textbox')
     expect(input.getAttribute('placeholder')).toBe('Solana address')
   })
@@ -172,7 +172,7 @@ describe('AddressInputPanel', () => {
   it('shows View on Explorer link for valid SOL address', () => {
     renderComponent({
       value: 'SolValid1111111111111111111111111111111111111',
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
     })
     expect(screen.getByText('View ↗')).not.toBeNull()
   })

@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -233,7 +233,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should accept SOL address when output chain is SOL', () => {
-      mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(SOLANA_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -257,7 +257,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when BTC address is given but output chain is SOL (wrong chain)', () => {
-      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(BTC_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -303,7 +303,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should return default SOL address when output chain is SOL and no recipient is set', () => {
-      mockState(undefined, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(undefined, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -349,7 +349,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when user has typed a partial/invalid SOL address on SOL chain', () => {
-      mockState('sol_partial', undefined, AdditionalTargetChainId.SOLANA)
+      mockState('sol_partial', undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -365,7 +365,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when user has typed a BTC address on SOL chain (wrong chain)', () => {
-      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(BTC_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 

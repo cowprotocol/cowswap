@@ -29,6 +29,8 @@ const SAFE_API_NETWORK_ID: Record<SupportedChainId, string> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: 'ink',
+  // Gnosis Safe is EVM-only — Solana has no Safe deployment.
+  [SupportedChainId.SOLANA]: '',
 }
 
 export function getSafeApiUrl(chainId: SupportedChainId): string {

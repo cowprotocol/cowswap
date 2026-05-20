@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.2",
+    "@cowprotocol/cow-sdk": "9.1.0-pr-873-a8906c90.0",
     "@reown/appkit": "1.8.16",
     "@reown/appkit-adapter-wagmi": "1.8.16",
     "@cowprotocol/assets": "workspace:*",

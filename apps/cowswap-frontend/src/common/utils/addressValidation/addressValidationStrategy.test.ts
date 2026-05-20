@@ -70,7 +70,7 @@ describe('getAddressValidationStrategy', () => {
   })
 
   describe('SOLANA chainId → Solana strategy', () => {
-    const strategy = getAddressValidationStrategy(AdditionalTargetChainId.SOLANA)
+    const strategy = getAddressValidationStrategy(SupportedChainId.SOLANA)
 
     it('returns supportsENS false', () => expect(strategy.supportsENS).toBe(false))
     it('returns placeholderKey solana', () => expect(strategy.placeholderKey).toBe('solana'))

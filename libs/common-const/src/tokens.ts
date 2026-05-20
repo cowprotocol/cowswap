@@ -487,7 +487,7 @@ export const USDC_LINEA = new TokenWithLogo(
 
 export const USDC_SOLANA = new TokenWithLogo(
   USDC_MAINNET.logoURI,
-  AdditionalTargetChainId.SOLANA,
+  SupportedChainId.SOLANA,
   'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   6,
   'USDC',
@@ -580,7 +580,7 @@ export const USDC: Record<TargetChainId, TokenWithLogo> = {
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
-  [AdditionalTargetChainId.SOLANA]: USDC_SOLANA,
+  [SupportedChainId.SOLANA]: USDC_SOLANA,
   // we need some stablecoin ref currency to calculate price impact in usd,
   // due to btc chain specific - there is no other currency than btc
   [AdditionalTargetChainId.BITCOIN]: USDC_MAINNET,
@@ -671,6 +671,8 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
   [SupportedChainId.INK]: COW_TOKEN_INK,
+  // COW token is not deployed on Solana.
+  [SupportedChainId.SOLANA]: null,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
@@ -761,6 +763,9 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
   [SupportedChainId.INK]: new Set(INK_STABLECOINS),
+  // Solana stablecoin tracking isn't wired up yet. Note: Solana addresses are base58
+  // and case-sensitive — when populated, do NOT `.toLowerCase()` like EVM addresses.
+  [SupportedChainId.SOLANA]: new Set([USDC_SOLANA.address]),
 }
 
 /**

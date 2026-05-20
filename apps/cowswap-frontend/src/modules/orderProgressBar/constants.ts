@@ -107,6 +107,7 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, MessageDescriptor
   [SupportedChainId.LINEA]: COW_SWAP_BENEFITS,
   [SupportedChainId.PLASMA]: COW_SWAP_BENEFITS,
   [SupportedChainId.INK]: COW_SWAP_BENEFITS,
+  [SupportedChainId.SOLANA]: COW_SWAP_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [

@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -93,7 +93,7 @@ describe('useBridgeQuoteRecipient', () => {
 
   describe('Solana output chain', () => {
     it('returns BRIDGE_QUOTE_ACCOUNT when no recipient is set — must NOT fall back to EVM account', () => {
-      mockState(undefined, AdditionalTargetChainId.SOLANA)
+      mockState(undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useBridgeQuoteRecipient())
 
@@ -103,7 +103,7 @@ describe('useBridgeQuoteRecipient', () => {
     })
 
     it('returns Solana address when a valid Solana recipient is set', () => {
-      mockState(SOLANA_ADDRESS, AdditionalTargetChainId.SOLANA)
+      mockState(SOLANA_ADDRESS, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useBridgeQuoteRecipient())
 
@@ -112,7 +112,7 @@ describe('useBridgeQuoteRecipient', () => {
 
     it('returns BRIDGE_QUOTE_ACCOUNT when no account and no recipient', () => {
       mockedUseWalletInfo.mockReturnValue({ account: undefined } as unknown as WalletInfo)
-      mockState(undefined, AdditionalTargetChainId.SOLANA)
+      mockState(undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useBridgeQuoteRecipient())
 
