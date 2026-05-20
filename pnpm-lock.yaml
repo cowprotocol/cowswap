@@ -1288,6 +1288,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: 15.5.9
         version: 15.5.9
+      '@vercel/config':
+        specifier: 0.1.0
+        version: 0.1.0
 
   libs/abis: {}
 
