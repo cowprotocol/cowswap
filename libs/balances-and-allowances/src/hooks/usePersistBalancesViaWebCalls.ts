@@ -51,7 +51,6 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     isLoading: isBalancesLoading,
     error,
     dataUpdatedAt,
-    refetch,
   } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
       abi: erc20Abi,
@@ -60,6 +59,9 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       functionName: 'balanceOf',
       args: [account as `0x${string}`],
     })),
+    // refetches whenever it changes
+    // (is needed when order has been filled or a bridge transfer has completed)
+    scopeKey: refreshTrigger !== undefined ? String(refreshTrigger) : undefined,
     query: {
       ...queryOptions,
       refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,
@@ -71,13 +73,6 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Skip results from outdated fetches if there is a result from a newer one
   const isNewData = useIsBlockNumberRelevant(chainId, dataUpdatedAt)
-
-  // Force an immediate refetch whenever the refreshTrigger value changes
-  // (e.g. an order has been filled or a bridge transfer has completed)
-  useEffect(() => {
-    if (refreshTrigger === undefined) return
-    refetch()
-  }, [refreshTrigger, refetch])
 
   // Set balances loading state
   useEffect(() => {
