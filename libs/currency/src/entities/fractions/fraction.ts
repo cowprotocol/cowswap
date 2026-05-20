@@ -9,7 +9,6 @@ function toBigInt(value: BigintIsh): bigint {
   if (typeof value === 'bigint') return value
   if (typeof value === 'number') return BigInt(value)
   if (typeof value === 'string') return BigInt(value)
-  // JSBI instance
   return BigInt(value.toString())
 }
 
