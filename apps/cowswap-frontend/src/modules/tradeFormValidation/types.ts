@@ -27,7 +27,7 @@ export interface TradeFormButtonContext {
 
   connectWallet: Command
 
-  wrapNativeFlow(): void
+  wrapNativeFlow(): Promise<unknown>
 }
 
 export interface TradeFormValidationCommonContext {

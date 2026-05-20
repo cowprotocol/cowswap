@@ -141,7 +141,7 @@ export const Footer: React.FC<FooterType> = (props) => {
               label="Settlement contract"
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.settlement}>
-              <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
+              <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
             </a>
           </ContractContainer>
         )}
@@ -155,7 +155,7 @@ export const Footer: React.FC<FooterType> = (props) => {
               label="Vault Relayer contract"
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.vaultRelayer}>
-              <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
+              <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
             </a>
           </ContractContainer>
         )}
@@ -163,7 +163,8 @@ export const Footer: React.FC<FooterType> = (props) => {
       <VersionsWrapper>
         {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
-            Web: v{VERSION} <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
+            Web: v{VERSION}{' '}
+            <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
           </a>
         )}
       </VersionsWrapper>

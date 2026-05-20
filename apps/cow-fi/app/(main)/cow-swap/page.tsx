@@ -4,11 +4,11 @@ import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import ICON_BULB from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
-import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
-import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
+import iconFlowerCowSrc from '@cowprotocol/assets/images/icon-flower-cow.svg'
+import iconUnicornSrc from '@cowprotocol/assets/images/icon-unicorn.svg'
+import svgCowswapHeroSrc from '@cowprotocol/assets/images/image-cowswap-hero.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -100,7 +100,7 @@ export default function Page(): ReactNode {
           </Link>
         </HeroContent>
         <HeroImage width={470} height={470} color={`var(${UI.COLOR_BLUE_900_PRIMARY})`} marginMobile="24px auto 56px">
-          <LazySVG src={IMG_COWSWAP_HERO} />
+          <LazySVG src={svgCowswapHeroSrc} />
         </HeroImage>
       </HeroContainer>
 
@@ -147,9 +147,9 @@ export default function Page(): ReactNode {
         <ContainerCardSection gap={90}>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $multiple $size={82}>
-              <LazySVG src={IMG_ICON_UNICORN} />
+              <LazySVG src={iconUnicornSrc} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
-              <LazySVG src={IMG_ICON_UNICORN} className="image-reverse" />
+              <LazySVG src={iconUnicornSrc} className="image-reverse" />
             </SectionTitleIcon>
 
             <SectionTitleText>CoW Swap is different</SectionTitleText>
@@ -186,7 +186,7 @@ export default function Page(): ReactNode {
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={800}>
             <SectionTitleIcon $size={126}>
-              <LazySVG src={ICON_BULB} />
+              <LazySVG src={iconBulbCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
             <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_50})`}>
@@ -215,7 +215,7 @@ export default function Page(): ReactNode {
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
             <SectionTitleIcon $size={140}>
-              <LazySVG src={IMG_ICON_FLOWER_COW} />
+              <LazySVG src={iconFlowerCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>S-moooo-th trading</SectionTitleText>
             <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_60})`}>
@@ -397,7 +397,7 @@ export default function Page(): ReactNode {
         <ContainerCardSection>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={62}>
-              <LazySVG src={IMG_ICON_FAQ} />
+              <LazySVG src={iconFaqSrc} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
           </SectionTitleWrapper>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
+import svgNotificationSrc from '@cowprotocol/assets/images/notification.svg'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
@@ -75,7 +75,7 @@ export function NotificationBell({ onClick, unreadCount }: NotificationBellProps
         label: `Unread count: ${unreadCount}`,
       })}
     >
-      <SVG src={ICON_NOTIFICATION} />
+      <SVG src={svgNotificationSrc} />
     </Icon>
   )
 }

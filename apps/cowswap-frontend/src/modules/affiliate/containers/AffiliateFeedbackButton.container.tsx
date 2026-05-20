@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { type ReactNode, useCallback } from 'react'
 
-import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
+import svgFeedbackSrc from '@cowprotocol/assets/cow-swap/feedback.svg'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
@@ -72,7 +72,7 @@ function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTrigger
     <styledEl.Wrapper>
       <styledEl.Button type="button" onClick={handleClick} aria-label={t`Give feedback`}>
         <styledEl.Icon aria-hidden="true">
-          <SVG src={FeedbackIcon} description={t`Provide Feedback`} />
+          <SVG src={svgFeedbackSrc} description={t`Provide Feedback`} />
         </styledEl.Icon>
         <styledEl.Label>
           <Trans>Give feedback</Trans>
