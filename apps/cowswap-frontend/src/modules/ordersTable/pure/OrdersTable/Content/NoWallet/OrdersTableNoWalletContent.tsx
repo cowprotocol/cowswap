@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import ICON_WALLET from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
+import svgWalletPlusSrc from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
@@ -19,7 +19,7 @@ export function OrdersTableNoWalletContent(): ReactNode {
   return (
     <styledEl.Content>
       <styledEl.ConnectWalletIconWrapper>
-        <SVG src={ICON_WALLET} description={t`connect wallet`} />
+        <SVG src={svgWalletPlusSrc} description={t`connect wallet`} />
       </styledEl.ConnectWalletIconWrapper>
       <h4>
         <Trans>Connect a wallet</Trans>

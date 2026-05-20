@@ -1,4 +1,4 @@
-import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
+import svgExperimentSrc from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BadgeTypes } from '@cowprotocol/ui'
 
@@ -89,7 +89,7 @@ export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
   route: Routes.HOOKS,
   label: msg`Hooks`,
   description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
-  badgeImage: EXPERIMENT_ICON,
+  badgeImage: svgExperimentSrc,
   badgeType: BadgeTypes.INFORMATION,
 }
 
