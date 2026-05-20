@@ -1200,6 +1200,9 @@ importers:
       '@types/styled-components':
         specifier: 5.1.34
         version: 5.1.34
+      '@vercel/config':
+        specifier: 0.1.0
+        version: 0.1.0
       react:
         specifier: 19.1.2
         version: 19.1.2
