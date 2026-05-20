@@ -22,6 +22,8 @@ export interface PersistBalancesAndAllowancesParams {
   tokenAddresses: string[]
   balancesQueryConfig?: BalancesQueryConfig
   setLoadingState?: boolean
+  // Increment to force an immediate refetch (e.g. after an order is filled)
+  refreshTrigger?: number
 
   onBalancesLoaded?(loaded: boolean): void
 
@@ -37,6 +39,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     setLoadingState,
     balancesQueryConfig,
     onBalancesLoaded,
+    refreshTrigger,
     query: queryOptions,
   } = params
 
@@ -48,6 +51,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     isLoading: isBalancesLoading,
     error,
     dataUpdatedAt,
+    refetch,
   } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
       abi: erc20Abi,
@@ -67,6 +71,13 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Skip results from outdated fetches if there is a result from a newer one
   const isNewData = useIsBlockNumberRelevant(chainId, dataUpdatedAt)
+
+  // Force an immediate refetch whenever the refreshTrigger value changes
+  // (e.g. an order has been filled or a bridge transfer has completed)
+  useEffect(() => {
+    if (refreshTrigger === undefined) return
+    refetch()
+  }, [refreshTrigger, refetch])
 
   // Set balances loading state
   useEffect(() => {

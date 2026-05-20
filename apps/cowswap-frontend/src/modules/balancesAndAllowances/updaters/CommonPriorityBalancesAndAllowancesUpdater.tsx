@@ -12,6 +12,8 @@ import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
+import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
+
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
   const { account } = useWalletInfo()
@@ -48,6 +50,8 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
+  const refreshTrigger = useOrdersFilledEventsTrigger()
+
   return (
     <>
       <PriorityTokensUpdater
@@ -62,6 +66,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         account={balancesAccount}
         chainId={sourceChainId}
         excludedTokens={priorityTokenAddresses}
+        refreshTrigger={refreshTrigger}
       />
     </>
   )

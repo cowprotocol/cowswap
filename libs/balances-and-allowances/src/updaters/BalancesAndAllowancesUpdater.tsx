@@ -24,12 +24,15 @@ export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
   excludedTokens: Set<string>
+  // Increment to force an immediate refetch (e.g. after an order is filled)
+  refreshTrigger?: number
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
   excludedTokens,
+  refreshTrigger,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -74,6 +77,7 @@ export function BalancesAndAllowancesUpdater({
         chainId={chainId}
         tokenAddresses={tokenAddresses}
         balancesQueryConfig={rpcBalancesQueryConfig}
+        refreshTrigger={refreshTrigger}
         setLoadingState
       />
       <BalancesResetUpdater chainId={chainId} account={account} />
