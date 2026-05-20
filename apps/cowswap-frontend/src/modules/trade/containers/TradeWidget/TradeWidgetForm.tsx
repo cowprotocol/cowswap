@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
-import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -234,7 +234,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
               <Trans>
-                My orders <SVG src={ICON_ORDERS} />
+                My orders <SVG src={svgOrdersSrc} />
               </Trans>
             </ButtonOutlined>
           )}

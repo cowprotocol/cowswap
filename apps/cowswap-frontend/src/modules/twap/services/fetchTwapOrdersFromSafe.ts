@@ -81,7 +81,7 @@ async function fetchRecentlyExecutedTransactions(
 
     const headers = getSafeApiHeaders()
 
-    const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
+    const response = await fetchWithFallback<AllTransactionsListResponse>(url, headers)
     const results = response?.results || []
 
     return parseSafeTransactionsResult(composableCowContract, results)
@@ -120,7 +120,7 @@ async function fetchSafeTransactionsChunk(
 
   if (nextUrl) {
     try {
-      const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
+      const response = await fetchWithFallback<AllTransactionsListResponse>(nextUrl, headers)
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -134,7 +134,18 @@ async function fetchSafeTransactionsChunk(
 
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
 
-  return fetch(url, { headers }).then((res) => res.json())
+  return fetchWithFallback(url, headers)
+}
+
+function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
+  return fetch(url, { headers })
+    .then((res) => {
+      if (res.status === 429 || res.status === 403) {
+        return fetch(url)
+      }
+      return res
+    })
+    .then((res) => res.json())
 }
 
 function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {

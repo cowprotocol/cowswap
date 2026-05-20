@@ -1,8 +1,8 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useRef, useState, useMemo, ReactNode } from 'react'
 
-import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
-import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
+import svgTwitterSrc from '@cowprotocol/assets/cow-swap/twitter.svg'
+import iconFortuneCookieSrc from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink, Media, UI, Confetti } from '@cowprotocol/ui'
 
@@ -359,7 +359,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                 >
                   <SuccessBanner type={'Twitter'}>
                     <Trans>Share on Twitter</Trans>
-                    <SVG src={twitterImage} description="Twitter" />
+                    <SVG src={svgTwitterSrc} description="Twitter" />
                   </SuccessBanner>
                 </StyledExternalLink>
                 {!isNewFortuneOpen && !isFortunedShared && (
@@ -391,7 +391,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
           action: 'Open Fortune Cookie',
         })}
       >
-        <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
+        <SVG src={iconFortuneCookieSrc} description="Fortune Cookie" />
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
       {ReactDOM.createPortal(PortalContent, document.body)}

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import DropDown from '@cowprotocol/assets/images/dropdown.svg'
+import svgDropdownSrc from '@cowprotocol/assets/images/dropdown.svg'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -64,7 +64,7 @@ export function ArrowIcon({
 }: ArrowIconProps): ReactNode {
   return (
     <StyledArrowIcon
-      src={DropDown}
+      src={svgDropdownSrc}
       className={className}
       $size={size}
       $color={color}

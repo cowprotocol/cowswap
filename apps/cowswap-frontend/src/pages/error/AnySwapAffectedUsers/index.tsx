@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
+import imgCow404Src from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, ExternalLink as ExternalLinkTheme, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -90,7 +90,7 @@ export default function AnySwapAffectedUsers(): ReactNode {
       </Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt={t`CoW Swap 404 not found`} />
+          <img src={imgCow404Src} alt={t`CoW Swap 404 not found`} />
           <h2>
             <Trans>Read how to prevent losing funds</Trans>
           </h2>
