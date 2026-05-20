@@ -1,4 +1,4 @@
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import svgArrowRightSrc from '@cowprotocol/assets/images/arrow-right.svg'
 import { Font, UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
@@ -66,7 +66,7 @@ export const ArrowButton = ({ link, external = false, text }: ArrowButtonProps) 
   <Wrapper href={link} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
     {text && <b>{text}</b>}
     <span>
-      <SVG src={IMG_ICON_ARROW_RIGHT} />
+      <SVG src={svgArrowRightSrc} />
     </span>
   </Wrapper>
 )

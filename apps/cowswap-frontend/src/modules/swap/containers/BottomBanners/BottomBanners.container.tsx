@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import HAND_SVG from '@cowprotocol/assets/cow-swap/hand.svg'
+import svgHandSrc from '@cowprotocol/assets/cow-swap/hand.svg'
 import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -31,7 +31,7 @@ export function BottomBanners(): ReactNode {
     bannerNode = (
       <InlineBanner
         bannerType={StatusColorVariant.Info}
-        customIcon={HAND_SVG}
+        customIcon={svgHandSrc}
         iconSize={24}
         orientation={BannerOrientation.Horizontal}
         backDropBlur

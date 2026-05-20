@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import iconInformation from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
-import iconCheck from '@cowprotocol/assets/cow-swap/order-check.svg'
-import iconPending from '@cowprotocol/assets/cow-swap/spinner.svg'
+import svgFilledInfoCircleSrc from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
+import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
+import svgSpinnerSrc from '@cowprotocol/assets/cow-swap/spinner.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -24,7 +24,7 @@ export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefC
   if (variant === 'error') {
     return (
       <RefCodeAdornmentContainer variant="error" $isAdornmentWrappable={isAdornmentWrappable}>
-        <SVG src={iconInformation} title={t`Error`} />
+        <SVG src={svgFilledInfoCircleSrc} title={t`Error`} />
       </RefCodeAdornmentContainer>
     )
   }
@@ -32,7 +32,7 @@ export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefC
   if (variant === 'checking') {
     return (
       <RefCodeAdornmentContainer variant="checking" $isAdornmentWrappable={isAdornmentWrappable}>
-        <SVG src={iconPending} title={t`Checking`} />
+        <SVG src={svgSpinnerSrc} title={t`Checking`} />
         <span>{t`Checking`}</span>
       </RefCodeAdornmentContainer>
     )
@@ -41,7 +41,7 @@ export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefC
   if (variant === 'pending') {
     return (
       <RefCodeAdornmentContainer variant="pending" $isAdornmentWrappable={isAdornmentWrappable}>
-        <SVG src={iconPending} title={t`Pending`} />
+        <SVG src={svgSpinnerSrc} title={t`Pending`} />
         <span>{t`Pending`}</span>
       </RefCodeAdornmentContainer>
     )
@@ -50,7 +50,7 @@ export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefC
   if (variant === 'available') {
     return (
       <RefCodeAdornmentContainer variant="available" $isAdornmentWrappable={isAdornmentWrappable}>
-        <SVG src={iconCheck} title={t`Available`} />
+        <SVG src={svgOrderCheckSrc} title={t`Available`} />
         <span>{t`Available`}</span>
       </RefCodeAdornmentContainer>
     )
@@ -58,7 +58,7 @@ export function RefCodeAdornment({ variant, isAdornmentWrappable = false }: RefC
 
   return (
     <RefCodeAdornmentContainer variant="valid" $isAdornmentWrappable={isAdornmentWrappable}>
-      <SVG src={iconCheck} title={t`Valid`} />
+      <SVG src={svgOrderCheckSrc} title={t`Valid`} />
       <span>{t`Valid`}</span>
     </RefCodeAdornmentContainer>
   )

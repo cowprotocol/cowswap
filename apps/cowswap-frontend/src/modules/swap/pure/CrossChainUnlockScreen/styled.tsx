@@ -1,4 +1,4 @@
-import CROSS_CHAIN_BG from '@cowprotocol/assets/images/cross-chain-unlock-bg.svg'
+import svgCrossChainUnlockBgSrc from '@cowprotocol/assets/images/cross-chain-unlock-bg.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -21,7 +21,7 @@ export const Container = styled.div<{ darkMode: boolean }>`
     content: '';
     position: absolute;
     inset: 0;
-    background: url(${CROSS_CHAIN_BG}) calc(100% - -12px) center/contain no-repeat;
+    background: url(${svgCrossChainUnlockBgSrc}) calc(100% - -12px) center/contain no-repeat;
     opacity: ${({ darkMode }) => (darkMode ? 0.5 : 1)};
     pointer-events: none;
     z-index: 0;

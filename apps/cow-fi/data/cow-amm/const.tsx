@@ -1,9 +1,9 @@
 import { initGtm } from '@cowprotocol/analytics'
-import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
-import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
-import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
-import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
-import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
+import svgCowammLp1Src from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
+import svgCowammLp2Src from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
+import svgCowammLp3Src from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
+import svgCowammLp4Src from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
+import svgCowammLvrSrc from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import { Color } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -57,25 +57,25 @@ export const COW_AMM_CONTENT = [
       'Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access the liquidity',
     bgColor: Color.cowamm_dark_green2,
     textColor: Color.cowamm_light_green,
-    image: IMG_COWAMM_LP_1,
+    image: svgCowammLp1Src,
   },
   {
     description: 'Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity',
     bgColor: Color.cowamm_dark_green2,
     textColor: Color.cowamm_light_green,
-    image: IMG_COWAMM_LP_2,
+    image: svgCowammLp2Src,
   },
   {
     description: 'The solver that offers the most surplus to the pool wins the right to rebalance the pool',
     bgColor: Color.cowamm_dark_green2,
     textColor: Color.cowamm_light_green,
-    image: IMG_COWAMM_LP_3,
+    image: svgCowammLp3Src,
   },
   {
     description: 'CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots',
     bgColor: Color.cowamm_dark_green2,
     textColor: Color.cowamm_light_green,
-    image: IMG_COWAMM_LP_4,
+    image: svgCowammLp4Src,
   },
 ]
 
@@ -92,7 +92,7 @@ export const LVR_CONTENT = [
     description2:
       "Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response (November 2023)",
     bgColor: 'transparent',
-    image: IMG_COWAMM_LVR,
+    image: svgCowammLvrSrc,
   },
 ]
 

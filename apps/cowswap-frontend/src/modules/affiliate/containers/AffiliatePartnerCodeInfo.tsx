@@ -1,8 +1,8 @@
 import { ReactNode, useMemo } from 'react'
 
-import LockedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
-import ICON_QR_CODE from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
-import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import iconLocked2Src from '@cowprotocol/assets/images/icon-locked-2.svg'
+import iconQrCodeV2Src from '@cowprotocol/assets/images/icon-qr-code-v2.svg'
+import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import { formatShortDate } from '@cowprotocol/common-utils'
 import { CopyButton } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -67,7 +67,7 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
               <LinkedCodeText>{refCode}</LinkedCodeText>
             </LinkedCopy>
             <LinkedBadge>
-              <SVG src={LockedIcon} width={16} height={16} />
+              <SVG src={iconLocked2Src} width={16} height={16} />
               <Trans>Created</Trans>
             </LinkedBadge>
           </LinkedCodeRow>
@@ -102,13 +102,13 @@ export function AffiliatePartnerCodeInfo(): ReactNode {
         <LinkedActions>
           <LinkedActionButton as="a" href={shareUrl} target="_blank" rel="noopener noreferrer">
             <LinkedActionIcon>
-              <SVG src={ICON_SOCIAL_X} width={14} height={14} />
+              <SVG src={iconSocialXSrc} width={14} height={14} />
             </LinkedActionIcon>
             <Trans>Share on X</Trans>
           </LinkedActionButton>
           <LinkedActionButton onClick={openModal}>
             <LinkedActionIcon>
-              <SVG src={ICON_QR_CODE} width={14} height={14} />
+              <SVG src={iconQrCodeV2Src} width={14} height={14} />
             </LinkedActionIcon>
             <Trans>Download QR</Trans>
           </LinkedActionButton>
