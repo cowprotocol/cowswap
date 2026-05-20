@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
+import svgFeedbackSrc from '@cowprotocol/assets/cow-swap/feedback.svg'
 import { Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -80,7 +80,7 @@ export default function Appzi({ menuTitle }: AppziButtonProps) {
   return (
     <Wrapper onClick={showFeedbackModal}>
       {menuTitle && <span>{menuTitle}</span>}
-      <SVG src={FeedbackIcon} description={t`Provide Feedback`} />
+      <SVG src={svgFeedbackSrc} description={t`Provide Feedback`} />
     </Wrapper>
   )
 }

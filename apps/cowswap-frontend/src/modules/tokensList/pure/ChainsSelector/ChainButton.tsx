@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
+import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { useLingui } from '@lingui/react/macro'
@@ -64,7 +64,7 @@ export function ChainButton({
       </styledEl.ChainInfo>
       {isActive && !isLoading && (
         <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>
-          <SVG src={OrderCheckIcon} />
+          <SVG src={svgOrderCheckSrc} />
         </styledEl.ActiveIcon>
       )}
     </styledEl.ChainButton>

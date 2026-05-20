@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
+import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
@@ -55,7 +55,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
   return (
     <HeroCard>
       <HeroContent>
-        <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsAffiliateSrc} alt="" role="presentation" />
         <HeroTitle $maxWidth={400}>
           <Trans>Invite your friends. Earn together.</Trans>
         </HeroTitle>
@@ -67,7 +67,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
         </HeroSubtitle>
         <HeroActions>
           {!account && (
-            <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal} data-testid="affiliate-connect">
+            <ButtonPrimary buttonSize={ButtonSize.BIG} data-testid="affiliate-connect" onClick={toggleWalletModal}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}

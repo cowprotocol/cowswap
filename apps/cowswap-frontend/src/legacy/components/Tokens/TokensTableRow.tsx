@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
-import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
+import iconEtherscanSrc from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
@@ -228,7 +228,7 @@ export const TokensTableRow = ({
           <>
             <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
               <TableButton>
-                <SVG src={EtherscanImage} title={t`View token contract`} description={t`View token contract`} />
+                <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
               </TableButton>
             </ExtLink>
             {displayApproveContent}

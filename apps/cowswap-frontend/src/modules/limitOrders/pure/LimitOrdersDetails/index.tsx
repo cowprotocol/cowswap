@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
+import svgArrowDownRightSrc from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@cowprotocol/currency'
@@ -93,7 +93,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
           <div>
             <span>
               <ArrowDownRight>
-                <SVG src={ArrowDownImage} />
+                <SVG src={svgArrowDownRightSrc} />
               </ArrowDownRight>
               <p>
                 <Trans>order executes at</Trans>

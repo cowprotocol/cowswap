@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
-import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg'
+import svgArrowLeftSrc from '@cowprotocol/assets/images/arrow-left.svg'
+import iconBellAlertSrc from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -51,7 +51,7 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
 
 export const ArrowLeft = ({ onClick }: IconProps): ReactNode => (
   <IconButton onClick={onClick}>
-    <IconBase src={ICON_ARROW} size="14px" />
+    <IconBase src={svgArrowLeftSrc} size="14px" />
   </IconButton>
 )
 
@@ -172,7 +172,7 @@ export const EnableAlertsButtonWithIcon = ({
   ...props
 }: IconProps & React.ButtonHTMLAttributes<HTMLButtonElement>): ReactNode => (
   <EnableAlertsButton onClick={onClick} {...props}>
-    <BellIcon src={ICON_BELL_ALERT} />
+    <BellIcon src={iconBellAlertSrc} />
     Enable trade alerts
   </EnableAlertsButton>
 )

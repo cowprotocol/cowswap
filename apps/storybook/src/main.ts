@@ -6,7 +6,6 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { getReactProcessEnv } from '../../../tools/getReactProcessEnv.ts'
 
 import type { StorybookConfig } from '@storybook/react-vite'
