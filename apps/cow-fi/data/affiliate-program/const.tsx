@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import IMG_AFFILIATE_EARN from '@cowprotocol/assets/images/image-affiliate-earn.svg'
-import IMG_GENERATE_LINK from '@cowprotocol/assets/images/image-generate-link.svg'
-import IMG_SHARE_IT from '@cowprotocol/assets/images/image-shareit.svg'
+import svgAffiliateEarnSrc from '@cowprotocol/assets/images/image-affiliate-earn.svg'
+import svgGenerateLinkSrc from '@cowprotocol/assets/images/image-generate-link.svg'
+import svgShareitSrc from '@cowprotocol/assets/images/image-shareit.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { Link } from '@/components/Link'
@@ -29,7 +29,7 @@ export const AFFILIATE_PROGRAM_STEPS = [
     bgColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
     textColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
     descriptionColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
-    image: IMG_GENERATE_LINK,
+    image: svgGenerateLinkSrc,
     imageHeight: 128,
   },
   {
@@ -39,7 +39,7 @@ export const AFFILIATE_PROGRAM_STEPS = [
     bgColor: `var(${UI.COLOR_YELLOW_300_PRIMARY})`,
     textColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
     descriptionColor: `var(${UI.COLOR_YELLOW_800_PRIMARY})`,
-    image: IMG_SHARE_IT,
+    image: svgShareitSrc,
     imageHeight: 132,
   },
   {
@@ -49,7 +49,7 @@ export const AFFILIATE_PROGRAM_STEPS = [
     bgColor: `var(${UI.COLOR_YELLOW_700_PRIMARY})`,
     textColor: `var(${UI.COLOR_NEUTRAL_100})`,
     descriptionColor: `var(${UI.COLOR_NEUTRAL_100})`,
-    image: IMG_AFFILIATE_EARN,
+    image: svgAffiliateEarnSrc,
     imageHeight: 128,
   },
 ] as const

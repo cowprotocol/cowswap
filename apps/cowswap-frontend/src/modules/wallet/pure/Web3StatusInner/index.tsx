@@ -8,7 +8,7 @@ import { type ConnectionType } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import ICON_WALLET from 'assets/icon/wallet.svg'
+import iconWalletSrc from 'assets/icon/wallet.svg'
 import { AlertTriangle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
@@ -97,7 +97,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
       <Text>
         <Trans>Connect wallet</Trans>
       </Text>
-      <SVG src={ICON_WALLET} title={t`Wallet`} />
+      <SVG src={iconWalletSrc} title={t`Wallet`} />
     </Web3StatusConnect>
   )
 }

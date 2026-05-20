@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import TELEGRAM_ICON from '@cowprotocol/assets/images/icon-telegram.svg'
+import iconTelegramSrc from '@cowprotocol/assets/images/icon-telegram.svg'
 import { RowBetween, RowFixed, HoverTooltip, UI, Toggle } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -130,7 +130,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow>
             <RowBetween>
               <RowFixed gap={8}>
-                <TelegramIcon src={TELEGRAM_ICON} />
+                <TelegramIcon src={iconTelegramSrc} />
                 <div>
                   <span>Telegram</span>
                   {username && <TelegramUsername>@{username}</TelegramUsername>}

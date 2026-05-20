@@ -1,9 +1,9 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
-import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconGovernanceSrc from '@cowprotocol/assets/images/icon-governance.svg'
+import iconGrantsCartonSrc from '@cowprotocol/assets/images/icon-grants-carton.svg'
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Font, UI } from '@cowprotocol/ui'
 
@@ -61,7 +61,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
             <SectionTitleIcon $size={126}>
-              <LazySVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={iconBulbCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>Innovation in action</SectionTitleText>
             <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_30})`}>
@@ -85,7 +85,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
             <SectionTitleIcon $size={90}>
-              <LazySVG src={IMG_ICON_GOVERNANCE} />
+              <LazySVG src={iconGovernanceSrc} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Governance</SectionTitleText>
             <SectionTitleDescription
@@ -131,7 +131,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={900}>
             <SectionTitleIcon $size={90}>
-              <LazySVG src={IMG_ICON_GRANTS_CARTON} />
+              <LazySVG src={iconGrantsCartonSrc} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Grants</SectionTitleText>
             <SectionTitleDescription

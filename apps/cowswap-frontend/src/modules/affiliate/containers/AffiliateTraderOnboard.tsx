@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -30,7 +30,7 @@ export function AffiliateTraderOnboard(): ReactNode {
   return (
     <HeroCard>
       <HeroContent>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <HeroTitle>
           <Trans>Earn while you trade</Trans>
         </HeroTitle>

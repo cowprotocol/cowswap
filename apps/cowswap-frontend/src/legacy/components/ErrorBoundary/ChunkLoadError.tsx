@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import cowNoConnectionIMG from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
+import imgCowNoConnectionSrc from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
 import { DISCORD_LINK } from '@cowprotocol/common-const'
 import { AutoRow, ButtonPrimary, ExternalLink, MEDIA_WIDTHS } from '@cowprotocol/ui'
 
@@ -22,7 +22,7 @@ import { Title } from 'modules/application/pure/Page'
 let cowNoConnectionIMGCache: string | null = null
 
 function preloadNoConnectionImg(): void {
-  fetch(cowNoConnectionIMG)
+  fetch(imgCowNoConnectionSrc)
     .then((res) => res.blob())
     .then((blob) => {
       const reader = new FileReader()

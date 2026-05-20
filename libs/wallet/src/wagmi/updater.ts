@@ -1,22 +1,22 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
-import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
 
-import { useIsMetamaskBrowserExtensionWallet, useSetEip6963Provider } from '../api/hooks'
+import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersAtom'
-import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
@@ -133,8 +133,6 @@ let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
 export function WalletUpdater(): null {
-  const { connector } = useConnection()
-
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
@@ -142,32 +140,6 @@ export function WalletUpdater(): null {
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
-  const setEip6963Provider = useSetEip6963Provider()
-  const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
-
-  // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
-  useEffect(() => {
-    if (
-      !connector ||
-      (connector.type !== ConnectionType.INJECTED && connector.type !== 'announced') ||
-      !eip6963Providers.length
-    ) {
-      return
-    }
-
-    const detect = async (): Promise<void> => {
-      try {
-        const connectorProvider = await connector.getProvider()
-        const match = eip6963Providers.find((p) => p.provider === connectorProvider)
-        if (match) {
-          setEip6963Provider(match.info.rdns)
-        }
-      } catch {
-        // ignore
-      }
-    }
-    detect()
-  }, [connector, eip6963Providers, setEip6963Provider])
 
   useEffect(() => {
     setWalletInfo(walletInfo)
@@ -188,9 +160,21 @@ export function WalletUpdater(): null {
   return null
 }
 
+function useShouldFetchSafeInfo(): boolean {
+  const accountType = useAccountType()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (!isSafeViaWc) return false
+  if (accountType === AccountType.EOA) return false
+  if (accountType === AccountType.EIP7702EOA) return false
+
+  return true
+}
+
 function useSafeInfo(): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
   const { account, chainId } = useWalletInfo()
+  const shouldFetchSafeInfo = useShouldFetchSafeInfo()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
 
@@ -216,7 +200,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
           setSafeInfo(undefined)
         }
       } else {
-        if (chainId && account) {
+        if (chainId && account && shouldFetchSafeInfo) {
           try {
             const _safeInfo = await getSafeInfo(chainId, account)
             const { address, threshold, owners, nonce } = _safeInfo
@@ -262,7 +246,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
     }
-  }, [chainId, account, safeAppsSdk])
+  }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
 
   return safeInfo
 }
