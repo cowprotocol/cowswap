@@ -6,7 +6,6 @@ import { useAllActiveTokens, useTokensByAddressMapForChain } from '@cowprotocol/
 
 import ms from 'ms.macro'
 
-import { BalancesBffUpdater } from './BalancesBffUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
@@ -24,19 +23,13 @@ const EMPTY_TOKENS: string[] = []
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
-  invalidateCacheTrigger: number
   excludedTokens: Set<string>
-  isBffSwitchedOn: boolean
-  isBffEnabled?: boolean
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
-  invalidateCacheTrigger,
-  isBffSwitchedOn,
   excludedTokens,
-  isBffEnabled,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -67,36 +60,22 @@ export function BalancesAndAllowancesUpdater({
 
   // Add native token balance to the store as well
   useEffect(() => {
-    if (isBffSwitchedOn) return
-
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
       updateTokenBalance(nativeToken.address, nativeTokenBalance.value)
     }
-  }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
-
-  const enableRpcFallback = !isBffSwitchedOn || !isBffEnabled
+  }, [nativeTokenBalance, chainId, updateTokenBalance])
 
   return (
     <>
-      {isBffEnabled && (
-        <BalancesBffUpdater
-          account={account}
-          chainId={chainId}
-          invalidateCacheTrigger={invalidateCacheTrigger}
-          tokenAddresses={tokenAddresses}
-        />
-      )}
-      {enableRpcFallback && (
-        <BalancesRpcCallUpdater
-          account={account}
-          chainId={chainId}
-          tokenAddresses={tokenAddresses}
-          balancesQueryConfig={rpcBalancesQueryConfig}
-          setLoadingState
-        />
-      )}
+      <BalancesRpcCallUpdater
+        account={account}
+        chainId={chainId}
+        tokenAddresses={tokenAddresses}
+        balancesQueryConfig={rpcBalancesQueryConfig}
+        setLoadingState
+      />
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>
