@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, getAddressKey, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, getTokenId, isEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
@@ -108,8 +108,11 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   })
 
   const isTokenSelected = checkIsTokenSelected(token, selectedToken)
-  const isSupportedChain = token.chainId in SupportedChainId
-  const shouldShowBalances = isWalletConnected && isSupportedChain
+  // Balances are only fetched for EVM chains (wagmi + BFF are EVM-only). Bridge-only
+  // destinations like Solana or Bitcoin land here too — for them, skip the balance column
+  // entirely instead of rendering an indefinite loading skeleton.
+  const canShowBalances = isEvmChain(token.chainId)
+  const shouldShowBalances = isWalletConnected && canShowBalances
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
     shouldFormatBalances && balance !== undefined ? CurrencyAmount.fromRawAmount(token, balance.toString()) : undefined

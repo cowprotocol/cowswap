@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
@@ -43,6 +43,11 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
+  // wagmi + viem only speak EVM. For non-EVM chains (Solana) we don't have a public client,
+  // so `useReadContracts` would dispatch ERC20 calls against a non-EVM RPC and either fail
+  // or spam noise. Hard-gate the query here until a Solana balance source is wired up.
+  const isEvm = isEvmChain(chainId)
+
   const {
     data: balances,
     isLoading: isBalancesLoading,
@@ -61,7 +66,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      enabled: !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
+      enabled: isEvm && !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
     },
   })
 
