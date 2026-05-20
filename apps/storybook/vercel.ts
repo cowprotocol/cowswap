@@ -45,13 +45,13 @@ const csp = buildCsp([
 export const config: VercelConfig = {
   buildCommand: 'cd ../../ && pnpm storybook:build',
   outputDirectory: '../../build/storybook',
+  // Uses pnpm install --frozen-lockfile for deterministic installs (no SDK preview switching).
   installCommand: 'cd ../../ && pnpm install --frozen-lockfile',
   devCommand: 'vite --port $PORT',
-  redirects: [
+  rewrites: [
     {
-      source: '/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
-      destination: '/',
-      permanent: false,
+      source: '/(.*)',
+      destination: '/index.html',
     },
   ],
   headers: [

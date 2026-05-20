@@ -80,6 +80,7 @@
     "workbox-strategies": "6.6.1"
   },
   "devDependencies": {
+    "@vercel/config": "0.1.0",
     "@testing-library/react": "16.3.0",
     "@types/ms": "2.1.0",
     "@types/ms.macro": "2.0.0",

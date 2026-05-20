@@ -55,8 +55,7 @@
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
-    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
-    "install:ci": "pnpm run install:sdk-preview"
+    "install:ci": "node tools/scripts/install-sdk-preview.js"
   },
   "browser": {
     "crypto": false

@@ -45,12 +45,12 @@ const csp = buildCsp([
 export const config: VercelConfig = {
   buildCommand: 'cd ../../ && pnpm build:widget',
   outputDirectory: '../../build/widget-configurator',
-  installCommand: 'cd ../../ && pnpm install --frozen-lockfile',
-  redirects: [
+  // Uses install:ci because this app may require SDK preview package switching.
+  installCommand: 'cd ../../ && pnpm run install:ci',
+  rewrites: [
     {
-      source: '/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
-      destination: '/',
-      permanent: false,
+      source: '/(.*)',
+      destination: '/index.html',
     },
   ],
   headers: [
