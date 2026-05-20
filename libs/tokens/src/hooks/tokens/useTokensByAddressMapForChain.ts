@@ -2,16 +2,9 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import {
-  areAddressesEqual,
-  getAddressKey,
-  isAdditionalTargetChain,
-  SupportedChainId,
-  TargetChainId,
-} from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { additionalChainTokenListsStateAtom } from '../../state/additionalChainTokenLists/additionalChainTokenListsState.atoms'
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { TokensByAddress } from '../../state/tokens/allTokensAtom'
 import { ListState } from '../../types'
@@ -24,24 +17,21 @@ import { ListState } from '../../types'
  * Lists are processed in priority order (lower priority value = higher precedence).
  * Useful for bridge scenarios where you need tokens from the destination chain.
  *
- * For SupportedChainId chains, reads from listsStatesByChainAtom.
- * For AdditionalTargetChainId chains, reads from additionalChainTokenListsStateAtom.
+ * Reads from `listsStatesByChainAtom`, which now covers Solana too (its token list is
+ * part of `DEFAULT_TOKENS_LISTS` since cow-sdk's Solana-as-supported migration). For
+ * bridge-only `AdditionalTargetChainId` chains (BITCOIN) the result is an empty map until
+ * a dedicated source is wired in.
  */
 export function useTokensByAddressMapForChain(chainId: SupportedChainId | undefined): TokensByAddress
 export function useTokensByAddressMapForChain(chainId: TargetChainId | undefined): TokensByAddress
 export function useTokensByAddressMapForChain(chainId: TargetChainId | undefined): TokensByAddress {
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
-  const additionalChainTokenListsState = useAtomValue(additionalChainTokenListsStateAtom)
 
   return useMemo(() => {
     if (!chainId) return {}
 
-    if (isAdditionalTargetChain(chainId)) {
-      return buildTokensByAddress(additionalChainTokenListsState[chainId], chainId)
-    }
-
     return buildTokensByAddress(listsStatesByChain[chainId as SupportedChainId], chainId)
-  }, [chainId, listsStatesByChain, additionalChainTokenListsState])
+  }, [chainId, listsStatesByChain])
 }
 
 function buildTokensByAddress(

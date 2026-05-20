@@ -29,7 +29,8 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`,
   [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`,
   [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`,
-  // Uniswap doesn't publish a Solana token list — Solana lists ship via DEFAULT_ADDITIONAL_CHAIN_TOKENS_LISTS.
+  // Uniswap doesn't publish a Solana token list — Solana token lists come from
+  // `DEFAULT_TOKENS_LISTS` (driven by `tokensList.json`), not from this curated source.
   [SupportedChainId.SOLANA]: '',
 }
 
