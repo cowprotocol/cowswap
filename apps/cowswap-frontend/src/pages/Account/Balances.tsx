@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
+import svgArrowSrc from '@cowprotocol/assets/cow-swap/arrow.svg'
+import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import svgVCowSrc from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import {
   COW_TOKEN_TO_CHAIN,
@@ -193,7 +193,7 @@ export default function Profile() {
     } else {
       content = (
         <Trans>
-          Convert to COW <SVG src={ArrowIcon} />
+          Convert to COW <SVG src={svgArrowSrc} />
         </Trans>
       )
     }
@@ -252,7 +252,7 @@ export default function Profile() {
           {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <SVG src={vCOWImage} title={t`vCOW token`} width="56" height="56" />
+                <SVG src={svgVCowSrc} title={t`vCOW token`} width="56" height="56" />
                 <span>
                   <i>
                     <Trans>Total vCOW balance</Trans>
@@ -298,7 +298,7 @@ export default function Profile() {
           {cowContractAddress && (
             <Card>
               <BalanceDisplay titleSize={26}>
-                <img src={CowImage} alt={t`Cow Balance`} height="80" width="80" />
+                <img src={svgCowTokenSrc} alt={t`Cow Balance`} height="80" width="80" />
                 <span>
                   <i>
                     <Trans>Available COW balance</Trans>
