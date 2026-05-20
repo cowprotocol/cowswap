@@ -2704,6 +2704,10 @@ msgstr "Pre"
 msgid "(v)COW token holders are eligible for a fee discount"
 msgstr "(v)COW token holders are eligible for a fee discount"
 
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/OnchainTransactionEventsUpdater.tsx
+msgid "Transaction cancelled: it was not submitted to the blockchain."
+msgstr "Transaction cancelled: it was not submitted to the blockchain."
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Error connecting"
 msgstr "Error connecting"
@@ -7027,6 +7031,10 @@ msgstr "Default approve"
 msgid "Order cannot be filled due to insufficient balance on the current account."
 msgstr "Order cannot be filled due to insufficient balance on the current account."
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
+msgid "Restoring wallet..."
+msgstr "Restoring wallet..."
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "required"
@@ -7248,6 +7256,7 @@ msgstr "Recover!"
 msgid "Estimated fill price"
 msgstr "Estimated fill price"
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
 msgid "Transaction failed"
 msgstr "Transaction failed"
