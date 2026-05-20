@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
-import QR_CODE_ICON from '@cowprotocol/assets/cow-swap/qr-code.svg'
+import svgQrCodeSrc from '@cowprotocol/assets/cow-swap/qr-code.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -54,7 +54,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
           {isQrScanEnabled && showScanPaste && (
             <ActionBtn onClick={() => setShowQrModal(true)}>
               <QrIconWrapper>
-                <SVG src={QR_CODE_ICON} width="14" height="14" />
+                <SVG src={svgQrCodeSrc} width="14" height="14" />
               </QrIconWrapper>
               <Trans>Scan</Trans>
             </ActionBtn>

@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
-import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import svgHookSrc from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -70,7 +70,7 @@ export function HooksStoreWidget(): ReactNode {
     <>
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
-        customIcon={ICON_HOOK}
+        customIcon={svgHookSrc}
         iconSize={36}
         bannerId="hooks-store-banner-tradeContainer"
       >

@@ -99,8 +99,7 @@ async function fetchRecentlyExecutedTransactions(
     const headers = getSafeApiHeaders()
 
     logExecutedTransactionsFetch(nextUrl, since)
-
-    const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
+    const response = await fetchWithFallback<AllTransactionsListResponse>(url, headers)
     const results = response?.results || []
     const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
     const nextNewestSubmissionDate = getNewestSubmissionDate([
@@ -185,7 +184,7 @@ async function fetchSafeTransactionsChunk(
   if (nextUrl) {
     try {
       console.log('[COW][SafeAPI] Fetch TWAP pending orders (next page)')
-      const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
+      const response = await fetchWithFallback<AllTransactionsListResponse>(nextUrl, headers)
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -200,7 +199,19 @@ async function fetchSafeTransactionsChunk(
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, false)
 
   console.log('[COW][SafeAPI] Fetch TWAP pending orders (first page)')
-  return fetch(url, { headers }).then((res) => res.json())
+  return fetchWithFallback(url, headers)
+}
+
+function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
+  return fetch(url, { headers })
+    .then((res) => {
+      if (res.status === 429 || res.status === 403) {
+        console.log('[COW][SafeAPI] Fetching without API Key (fallback)')
+        return fetch(url)
+      }
+      return res
+    })
+    .then((res) => res.json())
 }
 
 function getSafeHistoryRequestUrl(
