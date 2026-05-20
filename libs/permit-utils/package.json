@@ -31,6 +31,6 @@
     "wagmi": "3.6.9"
   },
   "devDependencies": {
-    "@types/ms.macro": "2.0.3"
+    "@types/ms.macro": "2.0.0"
   }
 }

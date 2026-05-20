@@ -33,6 +33,6 @@
     "ms.macro": "2.0.0"
   },
   "devDependencies": {
-    "@types/ms.macro": "2.0.3"
+    "@types/ms.macro": "2.0.0"
   }
 }

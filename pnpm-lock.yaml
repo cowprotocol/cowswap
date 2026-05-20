@@ -62,10 +62,10 @@ importers:
         specifier: 7.27.1
         version: 7.27.1(@babel/core@7.28.4)
       '@changesets/changelog-github':
-        specifier: ^0.5.0
+        specifier: 0.5.2
         version: 0.5.2(encoding@0.1.13)
       '@changesets/cli':
-        specifier: ^2.27.0
+        specifier: 2.31.0
         version: 2.31.0(@types/node@24.7.1)
       '@commitlint/cli':
         specifier: 20.1.0
@@ -495,8 +495,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/qs':
         specifier: 6.9.7
         version: 6.9.7
@@ -841,7 +841,7 @@ importers:
         version: 6.6.1
     devDependencies:
       '@storybook/react-vite':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(esbuild@0.27.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@testing-library/react':
         specifier: 16.3.0
@@ -850,8 +850,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/qs':
         specifier: 6.9.7
         version: 6.9.7
@@ -1089,7 +1089,7 @@ importers:
         version: 2.8.1
     devDependencies:
       '@storybook/react-vite':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(esbuild@0.27.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@testing-library/react':
         specifier: 16.3.0
@@ -1104,8 +1104,8 @@ importers:
         specifier: 0.7.6
         version: 0.7.6
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -1174,22 +1174,22 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-const
       '@lingui/core':
-        specifier: ^5.4.1
+        specifier: 5.5.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)
       '@lingui/react':
-        specifier: ^5.4.1
+        specifier: 5.5.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)(react@19.1.2)
       '@storybook/addon-a11y':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))
       '@storybook/addon-docs':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(@types/react@19.1.3)(esbuild@0.27.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@storybook/react':
         specifier: 10.3.1
         version: 10.3.1(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)
       '@storybook/react-vite':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(esbuild@0.27.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@types/react':
         specifier: 19.1.3
@@ -1207,7 +1207,7 @@ importers:
         specifier: 19.1.2
         version: 19.1.2(react@19.1.2)
       storybook:
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10)
       styled-components:
         specifier: 5.3.11
@@ -1395,8 +1395,8 @@ importers:
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -1429,8 +1429,8 @@ importers:
         version: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
     devDependencies:
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
 
   libs/common-hooks:
     dependencies:
@@ -1487,8 +1487,8 @@ importers:
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/qs':
         specifier: 6.9.7
         version: 6.9.7
@@ -1615,8 +1615,8 @@ importers:
         version: 6.14.1
     devDependencies:
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/qs':
         specifier: 6.9.7
         version: 6.9.7
@@ -1747,8 +1747,8 @@ importers:
         version: 3.6.9(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
     devDependencies:
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
 
   libs/snackbars:
     dependencies:
@@ -1778,8 +1778,8 @@ importers:
         version: 5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2)
     devDependencies:
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -1860,8 +1860,8 @@ importers:
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -1887,7 +1887,7 @@ importers:
   libs/ui:
     dependencies:
       '@base-ui/react':
-        specifier: ^1.4.1
+        specifier: 1.4.1
         version: 1.4.1(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/analytics':
         specifier: workspace:*
@@ -1944,7 +1944,7 @@ importers:
         specifier: 2.16.2
         version: 2.16.2(@babel/core@7.28.4)(@babel/template@7.28.6)(@types/react@19.1.3)(react@19.1.2)
       ms.macro:
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0
       next:
         specifier: 15.2.8
@@ -1978,14 +1978,14 @@ importers:
         version: 5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2)
     devDependencies:
       '@storybook/addon-docs':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(@types/react@19.1.3)(esbuild@0.27.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@storybook/react-vite':
-        specifier: ^10.3.1
+        specifier: 10.3.6
         version: 10.3.6(esbuild@0.27.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(rollup@4.52.4)(storybook@10.3.6(@testing-library/dom@10.4.1)(bufferutil@4.0.8)(prettier@3.6.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(utf-8-validate@5.0.10))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(yaml@2.8.1))(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(esbuild@0.27.2))
       '@types/ms.macro':
-        specifier: ^2.0.0
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -2120,8 +2120,8 @@ importers:
         version: 3.6.9(@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(@types/react@19.1.3)(@walletconnect/ethereum-provider@2.18.0(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(utf-8-validate@5.0.10))(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
     devDependencies:
       '@types/ms.macro':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/react':
         specifier: 19.1.3
         version: 19.1.3
@@ -3936,14 +3936,8 @@ packages:
   '@ethersproject/wordlists@5.8.0':
     resolution: {integrity: sha512-2df9bbXicZws2Sb5S6ET493uJ0Z84Fjr3pC4tu/qlnZERibZCeUVuqdtt+7Tv9xxhUxHoIekIA7avrKUWHrezg==}
 
-  '@floating-ui/core@1.7.3':
-    resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
-
   '@floating-ui/core@1.7.5':
     resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
-
-  '@floating-ui/dom@1.7.4':
-    resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
 
   '@floating-ui/dom@1.7.6':
     resolution: {integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==}
@@ -3965,9 +3959,6 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
-
-  '@floating-ui/utils@0.2.10':
-    resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
@@ -7666,8 +7657,8 @@ packages:
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
-  '@types/ms.macro@2.0.3':
-    resolution: {integrity: sha512-W7bqyxfLewjxo80INsAl07NG8kgKRZIRu8A6Q2fjNDjmj/I5bbQnngT4rqmEUo5xBG2qEpmRcM5wbBJGi8MhSA==}
+  '@types/ms.macro@2.0.0':
+    resolution: {integrity: sha512-xT4rTPFfZv2KZa0PLgB6e4RC5SuIr+8NDq2iZ4YxNtbByZRR98qbnS4WyNCQZIC5Jwn55AFok2CEqEb95w/CQQ==}
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -20611,18 +20602,9 @@ snapshots:
       '@ethersproject/properties': 5.8.0
       '@ethersproject/strings': 5.8.0
 
-  '@floating-ui/core@1.7.3':
-    dependencies:
-      '@floating-ui/utils': 0.2.10
-
   '@floating-ui/core@1.7.5':
     dependencies:
       '@floating-ui/utils': 0.2.11
-
-  '@floating-ui/dom@1.7.4':
-    dependencies:
-      '@floating-ui/core': 1.7.3
-      '@floating-ui/utils': 0.2.10
 
   '@floating-ui/dom@1.7.6':
     dependencies:
@@ -20631,7 +20613,7 @@ snapshots:
 
   '@floating-ui/react-dom@1.3.0(react-dom@19.1.2(react@19.1.2))(react@19.1.2)':
     dependencies:
-      '@floating-ui/dom': 1.7.4
+      '@floating-ui/dom': 1.7.6
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
 
@@ -20648,8 +20630,6 @@ snapshots:
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
       tabbable: 6.4.0
-
-  '@floating-ui/utils@0.2.10': {}
 
   '@floating-ui/utils@0.2.11': {}
 
@@ -25516,7 +25496,7 @@ snapshots:
 
   '@types/minimist@1.2.5': {}
 
-  '@types/ms.macro@2.0.3': {}
+  '@types/ms.macro@2.0.0': {}
 
   '@types/ms@2.1.0': {}
 
@@ -28728,7 +28708,7 @@ snapshots:
   cosmiconfig@8.2.0:
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
 
@@ -28736,7 +28716,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
