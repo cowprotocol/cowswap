@@ -96,6 +96,9 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       openTransactionConfirmationModal() {
         setWrapNativeState({ isOpen: true })
       },
+      openErrorModal(errorMessage: string) {
+        setWrapNativeState({ isOpen: true, errorMessage })
+      },
     }
   }, [
     wethChainId,

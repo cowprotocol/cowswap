@@ -139,6 +139,28 @@ const WAGMI_STORAGE_KEY = isInjectedWidget()
     ? 'cowswap-wallet-safe'
     : 'cowswap-wallet'
 
+function persistedStateHasSession(state: unknown): boolean {
+  if (!state || typeof state !== 'object') return false
+  const s = state as { current?: unknown; connections?: { __type?: string; value?: unknown } }
+  if (typeof s.current === 'string' && s.current) return true
+  const c = s.connections
+  return c?.__type === 'Map' && Array.isArray(c.value) && c.value.length > 0
+}
+
+// Sniff persisted wagmi state synchronously at module init, BEFORE WagmiProvider's
+// `<Hydrate>` mounts and runs `setState({ connections: new Map() })` (which the guard
+// below may rewrite to `current: null`, erasing the signal at runtime). Used by the
+// initialReconnectLifecycle module to know whether a wallet session needs restoring.
+export const HAS_PERSISTED_WAGMI_SESSION = ((): boolean => {
+  if (typeof window === 'undefined') return false
+  try {
+    const raw = window.sessionStorage.getItem(`${WAGMI_STORAGE_KEY}.store`)
+    return raw ? persistedStateHasSession(JSON.parse(raw)?.state) : false
+  } catch {
+    return false
+  }
+})()
+
 const storage =
   typeof window === 'undefined'
     ? createStorage({

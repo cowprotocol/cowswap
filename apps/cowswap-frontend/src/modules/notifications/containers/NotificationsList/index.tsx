@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
-import ICON_MESSAGE_READ from '@cowprotocol/assets/images/icon-message-read.svg'
+import iconMessageReadSrc from '@cowprotocol/assets/images/icon-message-read.svg'
 
 import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
@@ -33,7 +33,7 @@ interface EmptyNotificationsProps {
 function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotificationsProps): ReactNode {
   return (
     <NoNotifications>
-      <MessageReadIcon src={ICON_MESSAGE_READ} />
+      <MessageReadIcon src={iconMessageReadSrc} />
       <h4>
         <Trans>You're all caught up</Trans>
       </h4>

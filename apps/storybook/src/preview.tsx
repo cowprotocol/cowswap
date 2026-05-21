@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
 
 import { i18n } from '@lingui/core'

@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -326,7 +326,7 @@ export function LearnPageComponent({ categories, featuredArticles }: PageProps):
       <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_98})`} padding="0" touchFooter>
         <CTASectionWrapper>
           <CTAImage color={`var(${UI.COLOR_BLUE_500_PRIMARY})`}>
-            <LazySVG src={IMG_ICON_BULB_COW} />
+            <LazySVG src={iconBulbCowSrc} />
           </CTAImage>
           <CTASubtitle>Explore, learn, integrate</CTASubtitle>
           <CTATitle>CoW DAO documentation</CTATitle>

@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import styled from 'styled-components/macro'
 
-import mooEarnIcon from '../assets/moo-earn-icon.svg'
+import iconMooEarnSrc from '../assets/moo-earn-icon.svg'
 
 const Icon = styled.img`
   display: block;
@@ -12,5 +12,5 @@ const Icon = styled.img`
 `
 
 export function AffiliateNotificationIcon(): ReactNode {
-  return <Icon src={mooEarnIcon} alt="" aria-hidden />
+  return <Icon src={iconMooEarnSrc} alt="" aria-hidden />
 }

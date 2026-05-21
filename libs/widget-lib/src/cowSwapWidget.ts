@@ -32,7 +32,7 @@ const DEFAULT_WIDTH = '450px'
 const HEIGHT_THRESHOLD = 20
 
 const noopHandler: CowSwapWidgetHandler = {
-  iframe: document.createElement('iframe'),
+  iframe: null as never,
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,

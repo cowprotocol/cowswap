@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
+import imgCowErrorSrc from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
@@ -91,7 +91,7 @@ export const ErrorWithStackTrace = ({ error, eventId }: ErrorWithStackTraceProps
         <StyledTitle>
           <Trans>Something went wrong</Trans>
         </StyledTitle>
-        <img src={CowError} alt={t`CowSwap Error`} height="125" />
+        <img src={imgCowErrorSrc} alt={t`CowSwap Error`} height="125" />
       </FlexContainer>
       <AutoColumn gap={'md'}>
         {eventId && (
