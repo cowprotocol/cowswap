@@ -145,7 +145,7 @@ function CodeNotFound({ savedCode }: { savedCode: string }): ReactNode {
         <LinkedCard $isExpired>
           <LinkedCodeRow $isExpired>
             <LinkedCopy>
-              <CopyHelper toCopy={savedCode} iconSize={16} hideCopiedLabel />
+              <CopyButton value={savedCode} iconSize={16} iconOnly />
               <LinkedCodeText>{savedCode}</LinkedCodeText>
             </LinkedCopy>
           </LinkedCodeRow>
