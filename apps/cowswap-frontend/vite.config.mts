@@ -263,17 +263,25 @@ export default defineConfig(({ mode, isPreview }) => {
               return 'portfolio-modules'
             }
 
-            // Keep wallet UI/provider stack split from the app entry.
+            // Split the wallet stack by sub-domain so it does not collapse into one huge vendor chunk.
+            if (id.includes('/node_modules/@reown/')) return 'vendor-reown'
+            if (id.includes('/node_modules/@mantine/') || id.includes('/node_modules/@base-ui/')) return 'vendor-ui-kit'
             if (
-              id.includes('/node_modules/@reown/') ||
-              id.includes('/node_modules/@mantine/') ||
-              id.includes('/node_modules/@base-ui/') ||
               id.includes('/node_modules/wagmi/') ||
               id.includes('/node_modules/@wagmi/') ||
               id.includes('/node_modules/viem/') ||
               id.includes('/node_modules/@walletconnect/')
             ) {
-              return 'wallet-stack'
+              return 'vendor-wallet'
+            }
+
+            if (
+              id.includes('/node_modules/axios/') ||
+              id.includes('/node_modules/graphql/') ||
+              id.includes('/node_modules/timeago.js/') ||
+              id.includes('/node_modules/qrcode/')
+            ) {
+              return 'vendor-data-utils'
             }
 
             if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
