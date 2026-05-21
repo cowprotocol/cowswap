@@ -24,6 +24,7 @@ interface AffiliateTraderActivityTableProps {
 export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTableProps): ReactNode {
   const { rows, showLoader } = props
   const [currentPage, setCurrentPage] = useState(1)
+  const isLikelyGloballyIneligible = rows[0]?.eligibility_reason === 'ref_after_first_trade'
 
   const rowsPage = useMemo(() => {
     const start = (currentPage - 1) * AFFILIATE_ACTIVITY_PAGE_SIZE
@@ -44,7 +45,11 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
       <CardTitle>
         <Trans>Rewards activity</Trans>
       </CardTitle>
-      {rows.length === 0 ? (
+      {isLikelyGloballyIneligible ? (
+        <EmptyText>
+          <Trans>The referral code was applied after the trader&apos;s first qualifying trade.</Trans>
+        </EmptyText>
+      ) : rows.length === 0 ? (
         <EmptyText>
           <Trans>Your rewards activity will show here.</Trans>
         </EmptyText>

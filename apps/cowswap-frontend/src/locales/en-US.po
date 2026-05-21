@@ -5001,6 +5001,7 @@ msgstr "Expiry"
 msgid "Minutes"
 msgstr "Minutes"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "The referral code was applied after the trader's first qualifying trade."
