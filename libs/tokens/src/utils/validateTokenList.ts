@@ -1,6 +1,6 @@
 import { TokenInfo } from '@cowprotocol/types'
-import type { TokenList } from '@uniswap/token-lists'
 
+import type { TokenList } from '@uniswap/token-lists'
 import type { Ajv, ValidateFunction } from 'ajv'
 
 const SYMBOL_AND_NAME_VALIDATION = [
@@ -73,11 +73,16 @@ const validator = new Promise<Ajv>((resolve) => {
   })
 })
 
-function getValidationErrors(validate: ValidateFunction | undefined): string {
-  return (
-    validate?.errors?.map((error) => [error.dataPath, error.message].filter(Boolean).join(' ')).join('; ') ??
-    'unknown error'
-  )
+/**
+ * Validates a token list.
+ * @param json the TokenList to validate
+ */
+export async function validateTokenList(json: TokenList): Promise<TokenList> {
+  const validate = (await validator).getSchema(ValidationSchema.LIST)
+  if (validate?.(json)) {
+    return json
+  }
+  throw new Error(`Token list failed validation: ${getValidationErrors(validate)}`)
 }
 
 /**
@@ -92,14 +97,9 @@ export async function validateTokens(json: TokenInfo[]): Promise<TokenInfo[]> {
   throw new Error(`Token list failed validation: ${getValidationErrors(validate)}`)
 }
 
-/**
- * Validates a token list.
- * @param json the TokenList to validate
- */
-export async function validateTokenList(json: TokenList): Promise<TokenList> {
-  const validate = (await validator).getSchema(ValidationSchema.LIST)
-  if (validate?.(json)) {
-    return json
-  }
-  throw new Error(`Token list failed validation: ${getValidationErrors(validate)}`)
+function getValidationErrors(validate: ValidateFunction | undefined): string {
+  return (
+    validate?.errors?.map((error) => [error.dataPath, error.message].filter(Boolean).join(' ')).join('; ') ??
+    'unknown error'
+  )
 }

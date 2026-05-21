@@ -73,18 +73,6 @@ export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
   )
 }
 
-function shouldRenderSubtitle(subtitle: ReactNode): boolean {
-  if (subtitle === null || subtitle === undefined || subtitle === '' || typeof subtitle === 'boolean') {
-    return false
-  }
-
-  if (Array.isArray(subtitle)) {
-    return subtitle.some(shouldRenderSubtitle)
-  }
-
-  return true
-}
-
 function getRenderedValue(value: number): number {
   if (value <= 0) {
     return 0
@@ -99,4 +87,16 @@ function getRenderedValue(value: number): number {
 
   // Preserve a visible gap near 100% when using round line caps while keeping tail values distinct.
   return TAIL_COMPRESSION_START + tailProgress * (MAX_VISIBLE_PROGRESS - TAIL_COMPRESSION_START)
+}
+
+function shouldRenderSubtitle(subtitle: ReactNode): boolean {
+  if (subtitle === null || subtitle === undefined || subtitle === '' || typeof subtitle === 'boolean') {
+    return false
+  }
+
+  if (Array.isArray(subtitle)) {
+    return subtitle.some(shouldRenderSubtitle)
+  }
+
+  return true
 }

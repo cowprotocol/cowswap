@@ -1,9 +1,9 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useWatchBlockNumber } from 'wagmi'
+
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useWatchBlockNumber } from 'wagmi'
 
 import { BlockNumberContext } from './context'
 

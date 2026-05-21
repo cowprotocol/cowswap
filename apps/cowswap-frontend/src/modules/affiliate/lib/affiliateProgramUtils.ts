@@ -1,8 +1,8 @@
+import { i18n } from '@lingui/core'
+
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-
-import { i18n } from '@lingui/core'
 
 import { SerializedOrder } from 'legacy/state/orders/actions'
 import { flatOrdersStateNetwork } from 'legacy/state/orders/flatOrdersStateNetwork'
@@ -92,14 +92,6 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   }
 
   return undefined
-}
-
-function getFullAppDataString(value: string | undefined): string | undefined {
-  if (!value || APP_DATA_HASH_PATTERN.test(value.trim())) {
-    return undefined
-  }
-
-  return value
 }
 
 export function formatCompactNumber(value?: number): string {
@@ -246,15 +238,6 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
   return hasAmountExecuted(order) && (appCode === DEFAULT_APP_CODE || appCode === SAFE_APP_CODE)
 }
 
-function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
-  const executedBuyAmount =
-    (order as EnrichedOrder).executedBuyAmount || (order as SerializedOrder).apiAdditionalInfo?.executedBuyAmount
-  const executedSellAmount =
-    (order as EnrichedOrder).executedSellAmount || (order as SerializedOrder).apiAdditionalInfo?.executedSellAmount
-
-  return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
-}
-
 export function isSupportedPayoutsNetwork(chainId?: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }
@@ -270,6 +253,23 @@ export function toValidDate(value: string | undefined): Date | null {
 
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+function getFullAppDataString(value: string | undefined): string | undefined {
+  if (!value || APP_DATA_HASH_PATTERN.test(value.trim())) {
+    return undefined
+  }
+
+  return value
+}
+
+function hasAmountExecuted(order: EnrichedOrder | SerializedOrder): boolean {
+  const executedBuyAmount =
+    (order as EnrichedOrder).executedBuyAmount || (order as SerializedOrder).apiAdditionalInfo?.executedBuyAmount
+  const executedSellAmount =
+    (order as EnrichedOrder).executedSellAmount || (order as SerializedOrder).apiAdditionalInfo?.executedSellAmount
+
+  return Number(executedBuyAmount) > 0 || Number(executedSellAmount) > 0
 }
 
 function isRecord(value: unknown): value is JsonRecord {

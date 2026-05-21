@@ -1,3 +1,6 @@
+import type { Hex } from 'viem'
+import { sendTransaction } from 'wagmi/actions'
+
 import { captureError, ERROR_TYPES, normalizeError, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
@@ -5,7 +8,6 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -23,8 +25,6 @@ import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAna
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function

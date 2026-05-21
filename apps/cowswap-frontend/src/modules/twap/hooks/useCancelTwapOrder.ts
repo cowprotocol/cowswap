@@ -1,10 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import type { Hex } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -18,8 +20,6 @@ import { processTwapCancellation } from '../services/processTwapCancellation'
 import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
-
-import type { Hex } from 'viem'
 
 export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promise<OnChainCancellation> {
   const publicClient = usePublicClient()

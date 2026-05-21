@@ -2,11 +2,6 @@ import { assert, DEFAULT_PRECISION } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { TEN_BIG_NUMBER } from 'const'
 
-export interface TheGraphApi {
-  getPrice(params: GetPriceParams): Promise<BigNumber | null>
-  getPrices(params: GetPricesParams): Promise<GetPricesResult>
-}
-
 export interface GetPriceParams {
   networkId: number
   tokenId: number
@@ -19,9 +14,26 @@ export interface GetPricesParams {
   inWei?: boolean
 }
 
+export interface TheGraphApi {
+  getPrice(params: GetPriceParams): Promise<BigNumber | null>
+  getPrices(params: GetPricesParams): Promise<GetPricesResult>
+}
+
 interface GetPricesResult {
   [tokenId: number]: BigNumber | null
 }
+
+interface GqlError {
+  errors: {
+    locations: {
+      line: number
+      column: number
+    }[]
+    message: string
+  }[]
+}
+
+type GqlResult = PricesResponse | GqlError
 
 interface PriceEntry {
   priceInOwlNumerator: string
@@ -36,18 +48,6 @@ interface PricesResponse {
     [tokenKey: string]: PriceEntry[]
   }
 }
-
-interface GqlError {
-  errors: {
-    locations: {
-      line: number
-      column: number
-    }[]
-    message: string
-  }[]
-}
-
-type GqlResult = PricesResponse | GqlError
 
 const isGqlError = (gqlResult: GqlResult): gqlResult is GqlError => 'errors' in gqlResult
 

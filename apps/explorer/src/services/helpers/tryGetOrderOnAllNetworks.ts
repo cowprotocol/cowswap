@@ -4,25 +4,25 @@ import { Network } from 'types'
 
 import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
 
-export type SingleOrder = RawOrder | null
-export type MultipleOrders = RawOrder[] | null
-
+export type GetOrderApi<T, R> = {
+  api: GetOrderApiFn<T, R>
+  defaultParams: GetOrderParamsApi<T>
+}
 export interface GetOrderResult<R> {
   order: R | null
   errorOrderPresentInNetworkId?: Network
 }
 
-type GetOrderParamsApi<T> = {
-  [K in keyof T]: T[K]
-}
+export type MultipleOrders = RawOrder[] | null
+
+export type SingleOrder = RawOrder | null
 
 interface GetOrderApiFn<T, R> {
   (params: GetOrderParamsApi<T>): Promise<R>
 }
 
-export type GetOrderApi<T, R> = {
-  api: GetOrderApiFn<T, R>
-  defaultParams: GetOrderParamsApi<T>
+type GetOrderParamsApi<T> = {
+  [K in keyof T]: T[K]
 }
 
 export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(

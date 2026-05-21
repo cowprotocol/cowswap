@@ -1,3 +1,6 @@
+import { createConfig, http } from 'wagmi'
+import { mainnet } from 'wagmi/chains'
+
 import { RPC_URLS } from '@cowprotocol/common-const'
 import {
   contenthashToUri,
@@ -7,10 +10,8 @@ import {
   uriToHttp,
 } from '@cowprotocol/common-utils'
 import { isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenList } from '@uniswap/token-lists'
 
-import { createConfig, http } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
+import { TokenList } from '@uniswap/token-lists'
 
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
@@ -21,27 +22,22 @@ const MAINNET_CONFIG = createConfig({
 })
 
 /**
+ * Fetches a token list for an additional target chain (non-EVM, e.g. Solana).
+ * Unlike fetchTokenList, this skips EVM address checksum validation.
+ * ENS resolution is not supported — non-EVM chains always use direct URLs.
+ */
+export function fetchAdditionalChainTokenList(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source], sanitizeAdditionalChainList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+/**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
  */
 export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
   const isEnsSource = parseENSAddress(list.source)
   return isEnsSource ? fetchTokenListByEnsName(list) : fetchTokenListByUrl(list)
-}
-
-async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
-async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
-  const translatedUri = contenthashToUri(contentHashUri)
-  const urls = uriToHttp(translatedUri)
-
-  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
 }
 
 async function _fetchTokenList(
@@ -95,28 +91,20 @@ async function _fetchTokenList(
   throw new Error('Unrecognized list URL protocol.')
 }
 
-function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
-  return {
-    ...result,
-    priority: list.priority,
-    source: list.source,
-    lpTokenProvider: list.lpTokenProvider,
-  }
+async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
+  const translatedUri = contenthashToUri(contentHashUri)
+  const urls = uriToHttp(translatedUri)
+
+  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
 }
 
-async function sanitizeList(list: TokenList): Promise<TokenList> {
-  // Remove tokens from the list that don't have valid addresses
-  const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    const checksummed = isAddress(token.address.toLowerCase())
-    if (!checksummed) return acc
-    acc.push({ ...token, address: checksummed })
-    return acc
-  }, [])
-
-  const cleanedList = { ...list, tokens }
-
-  // Validate the list
-  return validateTokenList(cleanedList)
+async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
 }
 
 // we can't use uniswap scheme to validate non-evm lists due to address difference
@@ -129,6 +117,15 @@ function isValidTokenList(value: unknown): value is TokenList {
     v['version'] !== null &&
     Array.isArray(v['tokens'])
   )
+}
+
+function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
+  return {
+    ...result,
+    priority: list.priority,
+    source: list.source,
+    lpTokenProvider: list.lpTokenProvider,
+  }
 }
 
 /**
@@ -145,13 +142,17 @@ async function sanitizeAdditionalChainList(list: TokenList): Promise<TokenList> 
   return { ...list, tokens }
 }
 
-/**
- * Fetches a token list for an additional target chain (non-EVM, e.g. Solana).
- * Unlike fetchTokenList, this skips EVM address checksum validation.
- * ENS resolution is not supported — non-EVM chains always use direct URLs.
- */
-export function fetchAdditionalChainTokenList(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source], sanitizeAdditionalChainList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
+async function sanitizeList(list: TokenList): Promise<TokenList> {
+  // Remove tokens from the list that don't have valid addresses
+  const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
+    const checksummed = isAddress(token.address.toLowerCase())
+    if (!checksummed) return acc
+    acc.push({ ...token, address: checksummed })
+    return acc
+  }, [])
+
+  const cleanedList = { ...list, tokens }
+
+  // Validate the list
+  return validateTokenList(cleanedList)
 }

@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
@@ -35,6 +36,13 @@ const FIELDS: ReadonlyArray<FormFieldParams> = [
   { name: 'gasLimit', label: msg`Gas limit`, type: 'number' },
   { name: 'callData', label: msg`Calldata`, type: 'textarea', rows: 8 },
 ]
+
+interface FormFieldProps {
+  params: FormFieldParams
+  value: string
+  error: string
+  onChange(value: { name: string; value: string }): void
+}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -103,13 +111,6 @@ export function BuildHookApp({ context }: HookDappProps) {
       </ButtonPrimary>
     </Wrapper>
   )
-}
-
-interface FormFieldProps {
-  params: FormFieldParams
-  value: string
-  error: string
-  onChange(value: { name: string; value: string }): void
 }
 
 // TODO: Add proper return type annotation

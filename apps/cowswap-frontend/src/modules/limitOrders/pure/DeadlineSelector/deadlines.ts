@@ -1,4 +1,5 @@
 import { MessageDescriptor } from '@lingui/core'
+
 import { msg } from '@lingui/core/macro'
 import ms from 'ms.macro'
 import { format } from 'timeago.js'
@@ -27,6 +28,16 @@ export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = [
 ]
 
 /**
+ * Builds a LimitOrderDeadline from milliseconds value.
+ * Uses timeago to an approximate title
+ */
+export function buildLimitOrderDeadline(value: number): LimitOrderDeadline {
+  const title = format(Date.now() + value, undefined).replace(/in /, '')
+
+  return { title, value }
+}
+
+/**
  * Get limit order deadlines and optionally adds
  * @param value
  */
@@ -38,14 +49,4 @@ export function getLimitOrderDeadlines(value?: number | LimitOrderDeadline): Lim
   const itemToAdd = typeof value === 'number' ? buildLimitOrderDeadline(value) : value
 
   return [...LIMIT_ORDERS_DEADLINES, itemToAdd].sort((a, b) => a.value - b.value)
-}
-
-/**
- * Builds a LimitOrderDeadline from milliseconds value.
- * Uses timeago to an approximate title
- */
-export function buildLimitOrderDeadline(value: number): LimitOrderDeadline {
-  const title = format(Date.now() + value, undefined).replace(/in /, '')
-
-  return { title, value }
 }

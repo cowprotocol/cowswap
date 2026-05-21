@@ -15,6 +15,20 @@ const SUCCESS_STEPS = new Set<OrderProgressBarStepName>([
 
 const RECENT_STEP_THRESHOLD_MS = 1_800_000
 
+export function isRecentStateChange(state: OrderProgressBarState): boolean {
+  const { lastTimeChangedSteps, progressBarStepName } = state
+
+  if (lastTimeChangedSteps == null) {
+    return progressBarStepName === OrderProgressBarStepName.INITIAL
+  }
+
+  return Date.now() - lastTimeChangedSteps < RECENT_STEP_THRESHOLD_MS
+}
+
+export function isSuccess(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {
+  return step !== undefined && SUCCESS_STEPS.has(step)
+}
+
 export function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
   const step = state.progressBarStepName
 
@@ -37,18 +51,8 @@ export function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
   return hasActiveCountdown(state.countdown) || isRecentStateChange(state)
 }
 
-export function isRecentStateChange(state: OrderProgressBarState): boolean {
-  const { lastTimeChangedSteps, progressBarStepName } = state
-
-  if (lastTimeChangedSteps == null) {
-    return progressBarStepName === OrderProgressBarStepName.INITIAL
-  }
-
-  return Date.now() - lastTimeChangedSteps < RECENT_STEP_THRESHOLD_MS
-}
-
-export function isSuccess(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {
-  return step !== undefined && SUCCESS_STEPS.has(step)
+function hasActiveCountdown(countdown: OrderProgressBarState['countdown']): boolean {
+  return typeof countdown === 'number' && countdown > 0
 }
 
 function shouldAnimateInitialStep(state: OrderProgressBarState): boolean {
@@ -67,8 +71,4 @@ function shouldAnimateInitialStep(state: OrderProgressBarState): boolean {
   }
 
   return countdownActive || isRecentStateChange(state)
-}
-
-function hasActiveCountdown(countdown: OrderProgressBarState['countdown']): boolean {
-  return typeof countdown === 'number' && countdown > 0
 }

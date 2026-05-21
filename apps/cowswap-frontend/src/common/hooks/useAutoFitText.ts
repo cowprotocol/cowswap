@@ -1,7 +1,5 @@
 import { DependencyList, RefObject, useLayoutEffect, useRef } from 'react'
 
-type FitMode = 'single' | 'multi'
-
 interface AutoFitOptions {
   min?: number
   max?: number
@@ -10,14 +8,9 @@ interface AutoFitOptions {
   deps?: DependencyList
 }
 
-const EMPTY_DEPS: DependencyList = []
+type FitMode = 'single' | 'multi'
 
-interface NormalizedOptions {
-  minBound: number
-  maxBound: number
-  stepSize: number
-  shouldWarn: boolean
-}
+const EMPTY_DEPS: DependencyList = []
 
 interface FitConfig {
   node: HTMLElement
@@ -28,50 +21,11 @@ interface FitConfig {
   whiteSpace: 'nowrap' | 'normal'
 }
 
-function normalizeOptions(min: number, max: number, step: number): NormalizedOptions {
-  const stepSize = step > 0 ? step : 1
-  const swappedBounds = min > max
-
-  return {
-    minBound: swappedBounds ? max : min,
-    maxBound: swappedBounds ? min : max,
-    stepSize,
-    shouldWarn: swappedBounds || stepSize !== step,
-  }
-}
-
-function fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }: FitConfig): void {
-  const setSize = (val: number): void => {
-    node.style.fontSize = `${val}px`
-    node.style.whiteSpace = whiteSpace
-  }
-
-  const fits = (): boolean => {
-    const { width, height } = node.getBoundingClientRect()
-    const { width: pWidth, height: pHeight } = parent.getBoundingClientRect()
-    return width <= pWidth && height <= pHeight
-  }
-
-  let low = minBound
-  let high = maxBound
-  let best = minBound
-
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2)
-    setSize(mid)
-
-    if (fits()) {
-      best = mid
-      low = mid + 1
-    } else {
-      high = mid - 1
-    }
-  }
-
-  // Quantize downward so we never exceed the measured best-fit size
-  const quantized = Math.floor(best / stepSize) * stepSize
-  const clamped = Math.max(minBound, Math.min(quantized, best, maxBound))
-  setSize(clamped)
+interface NormalizedOptions {
+  minBound: number
+  maxBound: number
+  stepSize: number
+  shouldWarn: boolean
 }
 
 /**
@@ -123,4 +77,50 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
   }, [deps, max, min, mode, step])
 
   return ref
+}
+
+function fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }: FitConfig): void {
+  const setSize = (val: number): void => {
+    node.style.fontSize = `${val}px`
+    node.style.whiteSpace = whiteSpace
+  }
+
+  const fits = (): boolean => {
+    const { width, height } = node.getBoundingClientRect()
+    const { width: pWidth, height: pHeight } = parent.getBoundingClientRect()
+    return width <= pWidth && height <= pHeight
+  }
+
+  let low = minBound
+  let high = maxBound
+  let best = minBound
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2)
+    setSize(mid)
+
+    if (fits()) {
+      best = mid
+      low = mid + 1
+    } else {
+      high = mid - 1
+    }
+  }
+
+  // Quantize downward so we never exceed the measured best-fit size
+  const quantized = Math.floor(best / stepSize) * stepSize
+  const clamped = Math.max(minBound, Math.min(quantized, best, maxBound))
+  setSize(clamped)
+}
+
+function normalizeOptions(min: number, max: number, step: number): NormalizedOptions {
+  const stepSize = step > 0 ? step : 1
+  const swappedBounds = min > max
+
+  return {
+    minBound: swappedBounds ? max : min,
+    maxBound: swappedBounds ? min : max,
+    stepSize,
+    shouldWarn: swappedBounds || stepSize !== step,
+  }
 }

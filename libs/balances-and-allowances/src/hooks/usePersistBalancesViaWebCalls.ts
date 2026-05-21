@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
+
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 

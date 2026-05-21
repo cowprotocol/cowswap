@@ -3,10 +3,11 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { Web3Provider } from '@cowprotocol/wallet'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+
+import { Web3Provider } from '@cowprotocol/wallet'
+
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router'

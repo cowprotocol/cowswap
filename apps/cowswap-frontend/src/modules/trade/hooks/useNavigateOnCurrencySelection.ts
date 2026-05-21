@@ -19,14 +19,14 @@ import { useTradeNavigate } from './useTradeNavigate'
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
-export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) => void
-
 export type CurrencySelectionCallback = (
   field: Field,
   currency: Currency | null,
   stateUpdateCallback?: StateUpdateCallback,
   searchParams?: TradeSearchParams,
 ) => void
+
+export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) => void
 
 /**
  * To avoid collisions of tokens with the same symbols we use a token address instead of token symbol

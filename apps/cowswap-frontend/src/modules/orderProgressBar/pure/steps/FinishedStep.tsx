@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
@@ -10,7 +12,6 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'

@@ -1,6 +1,6 @@
-import { oneInchPermitUtilsConsts, PermitType } from '@cowprotocol/permit-utils'
-
 import { decodeFunctionData, type Address, type Hex } from 'viem'
+
+import { oneInchPermitUtilsConsts, PermitType } from '@cowprotocol/permit-utils'
 
 import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 

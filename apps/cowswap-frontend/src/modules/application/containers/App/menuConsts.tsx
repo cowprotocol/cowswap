@@ -1,8 +1,9 @@
+import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 import AppziButton from 'legacy/components/AppziButton'

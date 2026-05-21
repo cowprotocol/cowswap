@@ -7,8 +7,6 @@ import styled from 'styled-components/macro'
 
 import { IconSpinner } from 'common/pure/IconSpinner'
 
-type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'
-
 export interface StepProps {
   stepState: StepState
   stepNumber: number
@@ -16,6 +14,8 @@ export interface StepProps {
   dotSize?: number
   dotBorderColor?: UI
 }
+
+type StepState = 'active' | 'finished' | 'disabled' | 'error' | 'loading' | 'open'
 
 interface StepStyles {
   dotBackground: UI

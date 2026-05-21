@@ -2,16 +2,16 @@ import { useCallback, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+export interface TableOptions {
+  initialState: TableState
+}
+
 export interface TableState {
   pageSize: number
   pageOffset: number
   pageIndex?: number
   hasNextPage?: boolean
   totalResults?: number
-}
-
-export interface TableOptions {
-  initialState: TableState
 }
 
 export interface TableStateSetters {

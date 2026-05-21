@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { render, screen } from '@testing-library/react'
 
 import { Field } from 'legacy/state/types'
@@ -163,18 +164,6 @@ const EVM_CHAIN_ID = 1
 const BTC_CHAIN_ID = AdditionalTargetChainId.BITCOIN
 const ACCOUNT = '0xabc'
 
-function makeCurrencyInfo(chainId?: number): CurrencyInfo {
-  return {
-    field: Field.OUTPUT,
-    currency: chainId !== undefined ? ({ chainId } as unknown as Currency) : null,
-    amount: null,
-    isIndependent: false,
-    balance: null,
-    fiatAmount: null,
-    receiveAmountInfo: null,
-  }
-}
-
 function buildProps(overrides: Partial<TradeWidgetProps> = {}): TradeWidgetProps {
   return {
     slots: { settingsWidget: null },
@@ -194,6 +183,22 @@ function buildProps(overrides: Partial<TradeWidgetProps> = {}): TradeWidgetProps
     outputCurrencyInfo: makeCurrencyInfo(),
     ...overrides,
   }
+}
+
+function makeCurrencyInfo(chainId?: number): CurrencyInfo {
+  return {
+    field: Field.OUTPUT,
+    currency: chainId !== undefined ? ({ chainId } as unknown as Currency) : null,
+    amount: null,
+    isIndependent: false,
+    balance: null,
+    fiatAmount: null,
+    receiveAmountInfo: null,
+  }
+}
+
+function renderWithI18n(ui: React.ReactElement): ReturnType<typeof render> {
+  return render(<I18nProvider i18n={i18n}>{ui}</I18nProvider>)
 }
 
 function setupDefaults({
@@ -222,10 +227,6 @@ function setupDefaults({
   ;(useIsEoaEthFlow as jest.Mock).mockReturnValue(false)
   ;(useIsQuoteUpdatePossible as jest.Mock).mockReturnValue(false)
   ;(useShouldHideQuoteAmounts as jest.Mock).mockReturnValue(false)
-}
-
-function renderWithI18n(ui: React.ReactElement): ReturnType<typeof render> {
-  return render(<I18nProvider i18n={i18n}>{ui}</I18nProvider>)
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────

@@ -8,27 +8,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
-function currencyAmountToAtomsAndUnits(currency?: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
-  if (!currency) return undefined
-
-  return {
-    atoms: BigInt(currency.quotient.toString()),
-    units: currency.toExact(),
-  }
-}
-
-function currencyToTokenInfo(currency?: Currency | null): TokenInfo | undefined {
-  if (!currency) return undefined
-
-  return {
-    address: getCurrencyAddress(currency),
-    chainId: currency.chainId,
-    name: currency.name || '',
-    decimals: currency.decimals,
-    symbol: currency.symbol || '',
-  }
-}
-
 interface BuildTradeWidgetHookPayloadParams {
   orderType: UiOrderType
   inputAmount?: CurrencyAmount<Currency> | null
@@ -37,6 +16,18 @@ interface BuildTradeWidgetHookPayloadParams {
   orderKind?: OrderKind
   maximumSendSellAmount?: CurrencyAmount<Currency> | null
   minimumReceiveBuyAmount?: CurrencyAmount<Currency> | null
+}
+
+export function buildOrdersWidgetHookPayload(orders: CancellableOrder[]): EnrichedOrder[] {
+  return orders.map((order) => {
+    const candidate = order as { apiAdditionalInfo?: EnrichedOrder }
+
+    return (candidate.apiAdditionalInfo || order) as EnrichedOrder
+  })
+}
+
+export function buildOrderWidgetHookPayload(order: Order): EnrichedOrder {
+  return (order.apiAdditionalInfo || order) as EnrichedOrder
 }
 
 export function buildTradeWidgetHookPayload({
@@ -61,14 +52,23 @@ export function buildTradeWidgetHookPayload({
   }
 }
 
-export function buildOrderWidgetHookPayload(order: Order): EnrichedOrder {
-  return (order.apiAdditionalInfo || order) as EnrichedOrder
+function currencyAmountToAtomsAndUnits(currency?: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
+  if (!currency) return undefined
+
+  return {
+    atoms: BigInt(currency.quotient.toString()),
+    units: currency.toExact(),
+  }
 }
 
-export function buildOrdersWidgetHookPayload(orders: CancellableOrder[]): EnrichedOrder[] {
-  return orders.map((order) => {
-    const candidate = order as { apiAdditionalInfo?: EnrichedOrder }
+function currencyToTokenInfo(currency?: Currency | null): TokenInfo | undefined {
+  if (!currency) return undefined
 
-    return (candidate.apiAdditionalInfo || order) as EnrichedOrder
-  })
+  return {
+    address: getCurrencyAddress(currency),
+    chainId: currency.chainId,
+    name: currency.name || '',
+    decimals: currency.decimals,
+    symbol: currency.symbol || '',
+  }
 }

@@ -8,16 +8,16 @@ import { t } from '@lingui/core/macro'
 
 import { useGeoStatus } from 'modules/rwa'
 
-export enum RestrictedTokenImportStatus {
-  NotRestricted = 'NotRestricted',
-  Blocked = 'Blocked',
-}
-
 export interface RestrictedTokenImportResult {
   status: RestrictedTokenImportStatus
   restrictedInfo: RestrictedTokenInfo | null
   isImportDisabled: boolean
   blockReason: string | null
+}
+
+export enum RestrictedTokenImportStatus {
+  NotRestricted = 'NotRestricted',
+  Blocked = 'Blocked',
 }
 
 const NOT_RESTRICTED_RESULT: RestrictedTokenImportResult = {

@@ -1,15 +1,7 @@
-export type QuoteIdInput = string | number | null | undefined
 export type QuoteExpirationInput = string | null | undefined
+export type QuoteIdInput = string | number | null | undefined
 
 const QUOTE_REF_MAX_VISIBLE_LENGTH = 16
-
-export function getQuoteIdString(quoteId: QuoteIdInput): string | null {
-  if (quoteId === null || quoteId === undefined) return null
-
-  const parsedQuoteId = String(quoteId).trim()
-
-  return parsedQuoteId.length ? parsedQuoteId : null
-}
 
 export function formatQuoteIdReference(quoteId: string): string {
   const normalizedQuoteId = quoteId.toUpperCase()
@@ -40,4 +32,12 @@ export function getQuoteExpiresInLabel(expiration: QuoteExpirationInput, nowMs =
   if (seconds === 0) return `${minutes}m`
 
   return `${minutes}m ${seconds}s`
+}
+
+export function getQuoteIdString(quoteId: QuoteIdInput): string | null {
+  if (quoteId === null || quoteId === undefined) return null
+
+  const parsedQuoteId = String(quoteId).trim()
+
+  return parsedQuoteId.length ? parsedQuoteId : null
 }

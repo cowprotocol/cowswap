@@ -1,9 +1,10 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ALL_CHAINS_MAP, getAddressKey, isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
-import type { TokenInfo } from '@uniswap/token-lists'
 
 import useSWR, { SWRResponse } from 'swr'
+
+import type { TokenInfo } from '@uniswap/token-lists'
 
 export function useBridgeProviderBuyTokens(
   provider: CrossChainOrder['provider'] | undefined,

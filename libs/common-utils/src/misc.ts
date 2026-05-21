@@ -26,6 +26,8 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
 
+type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
@@ -66,8 +68,6 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string
 
   return Promise.race([promise, failOnTimeout])
 }
-
-type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
 
 export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
   if (typeof window === 'undefined') return

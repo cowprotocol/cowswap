@@ -1,9 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 

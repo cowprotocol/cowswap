@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { useConnect, useConnectors } from 'wagmi'
+
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { useConnect, useConnectors } from 'wagmi'
 
 import { useModalIsOpen, useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'

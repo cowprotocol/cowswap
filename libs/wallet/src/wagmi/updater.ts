@@ -1,14 +1,15 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
+import { Address } from 'viem'
+import { useConnection, useEnsName } from 'wagmi'
+
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
-import { Address } from 'viem'
-import { useConnection, useEnsName } from 'wagmi'
 
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
@@ -160,17 +161,6 @@ export function WalletUpdater(): null {
   return null
 }
 
-function useShouldFetchSafeInfo(): boolean {
-  const accountType = useAccountType()
-  const isSafeViaWc = useIsSafeViaWc()
-
-  if (!isSafeViaWc) return false
-  if (accountType === AccountType.EOA) return false
-  if (accountType === AccountType.EIP7702EOA) return false
-
-  return true
-}
-
 function useSafeInfo(): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
   const { account, chainId } = useWalletInfo()
@@ -249,4 +239,15 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
   }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
 
   return safeInfo
+}
+
+function useShouldFetchSafeInfo(): boolean {
+  const accountType = useAccountType()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (!isSafeViaWc) return false
+  if (accountType === AccountType.EOA) return false
+  if (accountType === AccountType.EIP7702EOA) return false
+
+  return true
 }

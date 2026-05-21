@@ -8,6 +8,25 @@ const state = {
   instance: null as CowAnalytics | null,
 }
 
+/** @internal Testing only */
+export function __resetNoopCowAnalyticsInstance(): void {
+  if (process.env.NODE_ENV === 'test') {
+    state.instance = null
+  }
+}
+
+/**
+ * Returns a singleton no-op CowAnalytics and registers it on window when in the browser.
+ */
+export function createNoopCowAnalytics(): CowAnalytics {
+  if (state.instance) {
+    return state.instance
+  }
+
+  state.instance = new CowAnalyticsNoop()
+  return state.instance
+}
+
 class CowAnalyticsNoop implements CowAnalytics {
   private cleanup(): void {
     if (typeof window !== 'undefined') {
@@ -43,23 +62,4 @@ class CowAnalyticsNoop implements CowAnalytics {
   }
 
   setContext(_key: AnalyticsContext, _value?: string): void {}
-}
-
-/**
- * Returns a singleton no-op CowAnalytics and registers it on window when in the browser.
- */
-export function createNoopCowAnalytics(): CowAnalytics {
-  if (state.instance) {
-    return state.instance
-  }
-
-  state.instance = new CowAnalyticsNoop()
-  return state.instance
-}
-
-/** @internal Testing only */
-export function __resetNoopCowAnalyticsInstance(): void {
-  if (process.env.NODE_ENV === 'test') {
-    state.instance = null
-  }
 }

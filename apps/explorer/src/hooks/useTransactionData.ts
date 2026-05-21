@@ -54,6 +54,35 @@ function useTransactionTrace(network: Network | undefined, txHash: string): Load
 
 const CONTRACTS_CACHE = new Map<string, Contract[]>()
 
+export type TransactionData = {
+  trace: Trace | undefined
+  contracts: Contract[]
+  isLoading: boolean
+  error: string
+}
+
+export function useTransactionData(network: Network | undefined, txHash: string): TransactionData {
+  const traceData = useTransactionTrace(network, txHash)
+  const contractsData = useTransactionContracts(network, txHash)
+
+  return useMemo(
+    () => ({
+      trace: traceData.data,
+      contracts: contractsData.data,
+      isLoading: traceData.isLoading || contractsData.isLoading,
+      error: traceData.error || contractsData.error,
+    }),
+    [
+      traceData.data,
+      contractsData.data,
+      traceData.isLoading,
+      contractsData.isLoading,
+      traceData.error,
+      contractsData.error,
+    ],
+  )
+}
+
 function useTransactionContracts(network: Network | undefined, txHash: string): LoadingData<Contract[]> {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -87,33 +116,4 @@ function useTransactionContracts(network: Network | undefined, txHash: string): 
   }, [network, txHash, fetchContracts])
 
   return useMemo(() => ({ data: contracts, isLoading, error }), [contracts, isLoading, error])
-}
-
-export type TransactionData = {
-  trace: Trace | undefined
-  contracts: Contract[]
-  isLoading: boolean
-  error: string
-}
-
-export function useTransactionData(network: Network | undefined, txHash: string): TransactionData {
-  const traceData = useTransactionTrace(network, txHash)
-  const contractsData = useTransactionContracts(network, txHash)
-
-  return useMemo(
-    () => ({
-      trace: traceData.data,
-      contracts: contractsData.data,
-      isLoading: traceData.isLoading || contractsData.isLoading,
-      error: traceData.error || contractsData.error,
-    }),
-    [
-      traceData.data,
-      contractsData.data,
-      traceData.isLoading,
-      contractsData.isLoading,
-      traceData.error,
-      contractsData.error,
-    ],
-  )
 }

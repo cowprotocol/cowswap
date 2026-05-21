@@ -8,8 +8,8 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
 
-type OrderFilledListener = CowEventListener<CowWidgetEventPayloadMap, CowWidgetEvents.ON_FULFILLED_ORDER>
 type BridgingSuccessListener = CowEventListener<CowWidgetEventPayloadMap, CowWidgetEvents.ON_BRIDGING_SUCCESS>
+type OrderFilledListener = CowEventListener<CowWidgetEventPayloadMap, CowWidgetEvents.ON_FULFILLED_ORDER>
 
 /**
  * Invalidate cache trigger that only updates when the number of pending orders decreases

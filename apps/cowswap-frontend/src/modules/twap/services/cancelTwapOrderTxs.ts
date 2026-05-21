@@ -1,8 +1,8 @@
+import { encodeFunctionData, type Address, type PublicClient } from 'viem'
+
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 import type { MetaTransactionData } from '@safe-global/types-kit'
-
-import { encodeFunctionData, type Address, type PublicClient } from 'viem'
 
 export interface CancelTwapOrderContext {
   composableCowAddress: Address

@@ -73,13 +73,13 @@ const IdRow = styled.div`
   flex-wrap: wrap;
 `
 
-function truncate(value?: string): string | undefined {
-  return value ? value.slice(0, 1000) : undefined
-}
-
 interface ErrorWithStackTraceProps {
   error: Error
   eventId: string
+}
+
+function truncate(value?: string): string | undefined {
+  return value ? value.slice(0, 1000) : undefined
 }
 
 export const ErrorWithStackTrace = ({ error, eventId }: ErrorWithStackTraceProps): ReactNode => {

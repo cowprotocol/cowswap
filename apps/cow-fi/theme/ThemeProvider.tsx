@@ -8,12 +8,12 @@ import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-component
 
 import { THEME_MODE } from '@/components/Layout/const'
 
-function getCowfiTheme() {
-  return baseTheme(THEME_MODE)
-}
-
 export function ThemeProvider(props: PropsWithChildren) {
   const theme = useMemo(() => getCowfiTheme(), [])
 
   return <StyledComponentsThemeProvider theme={theme}>{props.children}</StyledComponentsThemeProvider>
+}
+
+function getCowfiTheme() {
+  return baseTheme(THEME_MODE)
 }

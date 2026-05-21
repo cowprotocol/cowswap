@@ -31,11 +31,16 @@ const MENU_PROPS = {
   },
 }
 
-type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
-
 type TokenListControlProps = {
   tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
   customTokensState: [TokenInfo[], Dispatch<SetStateAction<TokenInfo[]>>]
+}
+
+type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
+
+interface TokenListSelectionsProps {
+  tokenListUrls: TokenListItem[]
+  onChangeByScope: Record<TokenListScope, (event: SelectChangeEvent<string[]>) => void>
 }
 
 interface TokenListSelectProps {
@@ -44,11 +49,6 @@ interface TokenListSelectProps {
   selectedUrls: string[]
   options: ReactNode
   onChange(event: SelectChangeEvent<string[]>): void
-}
-
-interface TokenListSelectionsProps {
-  tokenListUrls: TokenListItem[]
-  onChangeByScope: Record<TokenListScope, (event: SelectChangeEvent<string[]>) => void>
 }
 
 const TOKEN_LIST_SELECT_CONFIG: { label: string; labelId: string; scope: TokenListScope }[] = [

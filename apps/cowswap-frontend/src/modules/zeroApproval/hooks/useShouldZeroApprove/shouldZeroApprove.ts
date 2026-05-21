@@ -1,12 +1,12 @@
+import { Address } from 'viem'
+import type { Config } from 'wagmi'
+import { simulateContract } from 'wagmi/actions'
+
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
-import { Address } from 'viem'
-import { simulateContract } from 'wagmi/actions'
 
 import { ApprovalState } from 'modules/erc20Approve'
-
-import type { Config } from 'wagmi'
 
 const erc20Abi = [
   {

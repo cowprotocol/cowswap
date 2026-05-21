@@ -2,6 +2,11 @@ import { ElementDefinition } from 'cytoscape'
 
 import { InfoTooltip, Node, TypeEdgeOnTx, TypeNodeOnTx } from './types'
 
+interface CustomLayoutNodes {
+  center: ElementDefinition
+  nodes: ElementDefinition[]
+}
+
 export default class ElementsBuilder {
   _center: ElementDefinition | null = null
   _nodes: ElementDefinition[] = []
@@ -108,28 +113,6 @@ export default class ElementsBuilder {
   }
 }
 
-interface CustomLayoutNodes {
-  center: ElementDefinition
-  nodes: ElementDefinition[]
-}
-
-export function getGridColumn(type: TypeNodeOnTx, traderRowsLength: number, dexRowsLenght: number): number {
-  let col
-  const batchOf = 5
-  // Add a column for each batch of n
-  const leftPaddingCol = 1 + Math.round(traderRowsLength / batchOf)
-  const rightPaddingCol = leftPaddingCol + 1 + Math.round(dexRowsLenght / batchOf)
-
-  if (type === TypeNodeOnTx.Trader) {
-    col = 0 // first Column
-  } else if (type === TypeNodeOnTx.CowProtocol) {
-    col = leftPaddingCol
-  } else {
-    col = rightPaddingCol
-  }
-  return col
-}
-
 /**
  * Build a grid layout using the 'data: {row, col}' attribute
  */
@@ -190,6 +173,34 @@ export function buildGridLayout(
   return { center: _center, nodes: _nodes }
 }
 
+export function getGridColumn(type: TypeNodeOnTx, traderRowsLength: number, dexRowsLenght: number): number {
+  let col
+  const batchOf = 5
+  // Add a column for each batch of n
+  const leftPaddingCol = 1 + Math.round(traderRowsLength / batchOf)
+  const rightPaddingCol = leftPaddingCol + 1 + Math.round(dexRowsLenght / batchOf)
+
+  if (type === TypeNodeOnTx.Trader) {
+    col = 0 // first Column
+  } else if (type === TypeNodeOnTx.CowProtocol) {
+    col = leftPaddingCol
+  } else {
+    col = rightPaddingCol
+  }
+  return col
+}
+
+/**
+ * Add css class to edges according to the kind
+ */
+function addClassWithKind(edges: ElementDefinition[]): ElementDefinition[] {
+  return edges.map((_edge) => {
+    const CLASS_NAME = _edge.data.kind
+    _edge.classes = _edge.classes ? `${_edge.classes} ${CLASS_NAME}` : CLASS_NAME
+    return _edge
+  })
+}
+
 /**
  * Add css class to edges that have the same direction more than once
  */
@@ -205,17 +216,6 @@ function addClassWithMoreThanOneBidirectional(
     if (edgeDirectionCount > 1) {
       _edge.classes = CLASS_NAME
     }
-    return _edge
-  })
-}
-
-/**
- * Add css class to edges according to the kind
- */
-function addClassWithKind(edges: ElementDefinition[]): ElementDefinition[] {
-  return edges.map((_edge) => {
-    const CLASS_NAME = _edge.data.kind
-    _edge.classes = _edge.classes ? `${_edge.classes} ${CLASS_NAME}` : CLASS_NAME
     return _edge
   })
 }

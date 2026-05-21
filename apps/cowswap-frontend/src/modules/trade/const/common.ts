@@ -1,6 +1,7 @@
+import { MessageDescriptor } from '@lingui/core'
+
 import { UiOrderType } from '@cowprotocol/types'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 import { TradeType } from '../types'

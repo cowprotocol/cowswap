@@ -19,49 +19,54 @@ const TRY_AGGREGATE_ABI = [
 ]
 const GET_ETH_BALANCE_ABI = [parseAbiItem('function getEthBalance(address addr) view returns (uint256 balance)')]
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
-function parseSendArgs(send: typeof injected.send, ...args: any[]) {
-  const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
-  let callback: Function | undefined
-  let method: string | undefined
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let params: any[] | undefined
-  if (isCallbackForm) {
-    callback = args[1]
-    method = args[0].method
-    params = args[0].params
-  } else {
-    method = args[0]
-    params = args[1]
-  }
-
-  function getOriginalResult(): Promise<Hex> {
-    if (callback) {
-      return new Promise((resolve) => {
-        send({ method, params }, resolve)
-      })
-    }
-    return send(...args) as Promise<Hex>
-  }
-
-  function returnResult(value: unknown): Promise<unknown> | void {
-    if (callback) {
-      callback(value)
-      return
-    }
-    return Promise.resolve(value)
-  }
-
-  return {
-    method,
-    params,
-    getOriginalResult,
-    returnResult,
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MockMiddleware = (...args: any[]) => Promise<unknown>
+
+export function handleNativeBalance(ethereum: typeof injected, owner: string, value: bigint): MockMiddleware {
+  return handleNativeBalanceCall(ethereum, owner, encodeAbiParameters([{ type: 'uint256' }], [value]))
+}
+
+export function handleTokenAllowance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
+  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', encodeAbiParameters([{ type: 'uint256' }], [value]))
+}
+
+export function handleTokenBalance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
+  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', encodeAbiParameters([{ type: 'uint256' }], [value]))
+}
+
+export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
+  const originalSend = ethereum.send.bind(ethereum)
+  const originalRequest = ethereum.request.bind(ethereum)
+
+  // Flag to prevent infinite recursion: request -> send -> request
+  let isInsideSend = false
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cy.stub(ethereum, 'send').callsFake(async (...args: any[]) => {
+    isInsideSend = true
+    try {
+      for (const middleware of middlewares) {
+        const handledResult = await middleware(...args)
+        if (typeof handledResult === 'undefined') continue
+        return handledResult
+      }
+      return await (originalSend as Function)(...args)
+    } finally {
+      isInsideSend = false
+    }
+  })
+
+  // Also stub `request` — wagmi/viem call request() directly, not send().
+  // Delegate to the (already-stubbed) send so middleware interception works.
+  cy.stub(ethereum, 'request').callsFake(async (reqObj: { method: string; params?: unknown[] }) => {
+    // If called from within a send middleware (e.g. getOriginalResult), bypass to avoid recursion
+    if (isInsideSend) {
+      return originalRequest(reqObj)
+    }
+    // Use the stubbed send in promise form so middlewares can intercept
+    return ethereum.send(reqObj.method, reqObj.params)
+  })
+}
 
 function handleAddressEthCall(
   ethereum: typeof injected,
@@ -124,14 +129,6 @@ function handleAddressEthCall(
   }
 }
 
-export function handleTokenBalance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0x70a08231', encodeAbiParameters([{ type: 'uint256' }], [value]))
-}
-
-export function handleTokenAllowance(ethereum: typeof injected, tokenAddress: string, value: bigint): MockMiddleware {
-  return handleAddressEthCall(ethereum, tokenAddress, '0xdd62ed3e', encodeAbiParameters([{ type: 'uint256' }], [value]))
-}
-
 function handleNativeBalanceCall(ethereum: typeof injected, owner: string, returnData: Hex): MockMiddleware {
   const send = ethereum.send.bind(ethereum)
 
@@ -165,40 +162,43 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
   }
 }
 
-export function handleNativeBalance(ethereum: typeof injected, owner: string, value: bigint): MockMiddleware {
-  return handleNativeBalanceCall(ethereum, owner, encodeAbiParameters([{ type: 'uint256' }], [value]))
-}
-
-export function mockSendCall(ethereum: typeof injected, middlewares: MockMiddleware[]): void {
-  const originalSend = ethereum.send.bind(ethereum)
-  const originalRequest = ethereum.request.bind(ethereum)
-
-  // Flag to prevent infinite recursion: request -> send -> request
-  let isInsideSend = false
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
+function parseSendArgs(send: typeof injected.send, ...args: any[]) {
+  const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
+  let callback: Function | undefined
+  let method: string | undefined
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cy.stub(ethereum, 'send').callsFake(async (...args: any[]) => {
-    isInsideSend = true
-    try {
-      for (const middleware of middlewares) {
-        const handledResult = await middleware(...args)
-        if (typeof handledResult === 'undefined') continue
-        return handledResult
-      }
-      return await (originalSend as Function)(...args)
-    } finally {
-      isInsideSend = false
-    }
-  })
+  let params: any[] | undefined
+  if (isCallbackForm) {
+    callback = args[1]
+    method = args[0].method
+    params = args[0].params
+  } else {
+    method = args[0]
+    params = args[1]
+  }
 
-  // Also stub `request` — wagmi/viem call request() directly, not send().
-  // Delegate to the (already-stubbed) send so middleware interception works.
-  cy.stub(ethereum, 'request').callsFake(async (reqObj: { method: string; params?: unknown[] }) => {
-    // If called from within a send middleware (e.g. getOriginalResult), bypass to avoid recursion
-    if (isInsideSend) {
-      return originalRequest(reqObj)
+  function getOriginalResult(): Promise<Hex> {
+    if (callback) {
+      return new Promise((resolve) => {
+        send({ method, params }, resolve)
+      })
     }
-    // Use the stubbed send in promise form so middlewares can intercept
-    return ethereum.send(reqObj.method, reqObj.params)
-  })
+    return send(...args) as Promise<Hex>
+  }
+
+  function returnResult(value: unknown): Promise<unknown> | void {
+    if (callback) {
+      callback(value)
+      return
+    }
+    return Promise.resolve(value)
+  }
+
+  return {
+    method,
+    params,
+    getOriginalResult,
+    returnResult,
+  }
 }

@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import { initialState } from './initialState'
 
+export interface ApplicationState {
+  openModal: ApplicationModal | null
+}
+
 export enum ApplicationModal {
   NETWORK_SELECTOR,
   WALLET,
@@ -12,10 +16,6 @@ export enum ApplicationModal {
   CONFIRMATION,
   MULTIPLE_CANCELLATION,
   // ------------------------------------------------------------------------------
-}
-
-export interface ApplicationState {
-  openModal: ApplicationModal | null
 }
 
 const applicationSlice = createSlice({

@@ -5,6 +5,10 @@ type Lifecycle = 'pending' | 'settled'
 let lifecycle: Lifecycle = HAS_PERSISTED_WAGMI_SESSION ? 'pending' : 'settled'
 const listeners = new Set<() => void>()
 
+export function getInitialReconnectLifecycle(): Lifecycle {
+  return lifecycle
+}
+
 export function markInitialReconnectSettled(): void {
   if (lifecycle === 'settled') return
   lifecycle = 'settled'
@@ -16,8 +20,4 @@ export function subscribeInitialReconnect(callback: () => void): () => void {
   return () => {
     listeners.delete(callback)
   }
-}
-
-export function getInitialReconnectLifecycle(): Lifecycle {
-  return lifecycle
 }

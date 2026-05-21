@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { useTimeAgo } from '@cowprotocol/common-hooks'
-
 import { i18n } from '@lingui/core'
+
+import { useTimeAgo } from '@cowprotocol/common-hooks'
 
 import * as styledEl from '../ReceiptModal.styled'
 

@@ -1,3 +1,5 @@
+import type { TransactionReceipt } from 'viem'
+
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
@@ -8,8 +10,6 @@ import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
-
-import type { TransactionReceipt } from 'viem'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

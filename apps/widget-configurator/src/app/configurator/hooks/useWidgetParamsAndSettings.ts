@@ -52,90 +52,6 @@ const getForcedOrderDeadline = ({
   }
 }
 
-function confirmWidgetHookAction(message: string): boolean {
-  return prompt(message) === 'ok'
-}
-
-function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetParams['hooks'] {
-  const hooks: CowSwapWidgetParams['hooks'] = {
-    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
-      ? {
-          onBeforeApproval(payload) {
-            return confirmWidgetHookAction(`Type "ok" to proceed with approval on chainId ${payload.chainId}`)
-          },
-        }
-      : null),
-    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_TRADE)
-      ? {
-          onBeforeTrade(payload) {
-            const sellToken = payload.sellToken?.symbol || 'unknown'
-            const buyToken = payload.buyToken?.symbol || 'unknown'
-
-            return confirmWidgetHookAction(
-              `Type "ok" to proceed with ${payload.orderType} trade ${sellToken} -> ${buyToken}`,
-            )
-          },
-        }
-      : null),
-    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP)
-      ? {
-          onBeforeWrapOrUnwrap(payload) {
-            const sellToken = payload.sellToken?.symbol || 'unknown'
-            const buyToken = payload.buyToken?.symbol || 'unknown'
-
-            return confirmWidgetHookAction(`Type "ok" to proceed with wrap/unwrap ${sellToken} -> ${buyToken}`)
-          },
-        }
-      : null),
-    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
-      ? {
-          onBeforeOrderCancel(payload) {
-            return confirmWidgetHookAction(`Type "ok" to cancel order ${payload.uid}`)
-          },
-        }
-      : null),
-    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
-      ? {
-          onBeforeOrdersCancel(payload) {
-            return confirmWidgetHookAction(`Type "ok" to cancel ${payload.length} orders`)
-          },
-        }
-      : null),
-  }
-
-  return hooks
-}
-
-function getThemeParam(
-  theme: ConfiguratorState['theme'],
-  customColors: ConfiguratorState['customColors'],
-  defaultColors: ConfiguratorState['defaultColors'],
-  boxShadow: ConfiguratorState['boxShadow'],
-): CowSwapWidgetParams['theme'] {
-  if (JSON.stringify(customColors) === JSON.stringify(defaultColors) && !boxShadow) {
-    return theme
-  }
-
-  const themeColors = {
-    ...defaultColors,
-    ...customColors,
-  }
-
-  return {
-    baseTheme: theme,
-    primary: themeColors.primary,
-    background: themeColors.background,
-    paper: themeColors.paper,
-    text: themeColors.text,
-    danger: themeColors.danger,
-    warning: themeColors.warning,
-    alert: themeColors.alert,
-    info: themeColors.info,
-    success: themeColors.success,
-    ...(boxShadow ? { boxShadow } : null),
-  }
-}
-
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   return useMemo(() => {
     const {
@@ -218,4 +134,88 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
 
     return params
   }, [configuratorState])
+}
+
+function confirmWidgetHookAction(message: string): boolean {
+  return prompt(message) === 'ok'
+}
+
+function getThemeParam(
+  theme: ConfiguratorState['theme'],
+  customColors: ConfiguratorState['customColors'],
+  defaultColors: ConfiguratorState['defaultColors'],
+  boxShadow: ConfiguratorState['boxShadow'],
+): CowSwapWidgetParams['theme'] {
+  if (JSON.stringify(customColors) === JSON.stringify(defaultColors) && !boxShadow) {
+    return theme
+  }
+
+  const themeColors = {
+    ...defaultColors,
+    ...customColors,
+  }
+
+  return {
+    baseTheme: theme,
+    primary: themeColors.primary,
+    background: themeColors.background,
+    paper: themeColors.paper,
+    text: themeColors.text,
+    danger: themeColors.danger,
+    warning: themeColors.warning,
+    alert: themeColors.alert,
+    info: themeColors.info,
+    success: themeColors.success,
+    ...(boxShadow ? { boxShadow } : null),
+  }
+}
+
+function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetParams['hooks'] {
+  const hooks: CowSwapWidgetParams['hooks'] = {
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
+      ? {
+          onBeforeApproval(payload) {
+            return confirmWidgetHookAction(`Type "ok" to proceed with approval on chainId ${payload.chainId}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_TRADE)
+      ? {
+          onBeforeTrade(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(
+              `Type "ok" to proceed with ${payload.orderType} trade ${sellToken} -> ${buyToken}`,
+            )
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_WRAP_UNWRAP)
+      ? {
+          onBeforeWrapOrUnwrap(payload) {
+            const sellToken = payload.sellToken?.symbol || 'unknown'
+            const buyToken = payload.buyToken?.symbol || 'unknown'
+
+            return confirmWidgetHookAction(`Type "ok" to proceed with wrap/unwrap ${sellToken} -> ${buyToken}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
+      ? {
+          onBeforeOrderCancel(payload) {
+            return confirmWidgetHookAction(`Type "ok" to cancel order ${payload.uid}`)
+          },
+        }
+      : null),
+    ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
+      ? {
+          onBeforeOrdersCancel(payload) {
+            return confirmWidgetHookAction(`Type "ok" to cancel ${payload.length} orders`)
+          },
+        }
+      : null),
+  }
+
+  return hooks
 }

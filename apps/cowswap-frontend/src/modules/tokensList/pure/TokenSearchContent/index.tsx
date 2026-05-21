@@ -1,11 +1,12 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { VirtualItem } from '@tanstack/react-virtual'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { VirtualItem } from '@tanstack/react-virtual'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 

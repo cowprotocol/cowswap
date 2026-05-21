@@ -11,6 +11,8 @@ import { useBridgeProvidersIds } from './useBridgeProvidersIds'
 
 export type BridgeSupportedToken = { tokens: TokenWithLogo[]; isRouteAvailable: boolean }
 
+type BridgeTokenItem = GetProviderBuyTokens['tokens'][number]
+
 export function useBridgeSupportedTokens(
   params: BuyTokensParams | undefined,
 ): SWRResponse<BridgeSupportedToken | null> {
@@ -58,22 +60,6 @@ export function useBridgeSupportedTokens(
   )
 }
 
-type BridgeTokenItem = GetProviderBuyTokens['tokens'][number]
-
-function resolveTokenAddressAndLogo(
-  token: BridgeTokenItem,
-  tokensByAddress: TokensByAddress,
-): { address: string; logoUrl: string | undefined } | null {
-  const nativeCurrency = ALL_CHAINS_MAP[token.chainId as TargetChainId].nativeCurrency
-  // bridge non-evm native tokens doesn't have address, so we need to map them to our convention address
-  const address = token.address || nativeCurrency?.address
-  if (!address) return null
-
-  const listToken = tokensByAddress[getAddressKey(address)]
-  const logoUrl = listToken?.logoURI || token.logoUrl || nativeCurrency?.logoUrl
-  return { address, logoUrl }
-}
-
 function collectBridgeToken(
   acc: TokenWithLogo[],
   token: BridgeTokenItem | null | undefined,
@@ -98,4 +84,18 @@ function collectBridgeToken(
   )
 
   return acc
+}
+
+function resolveTokenAddressAndLogo(
+  token: BridgeTokenItem,
+  tokensByAddress: TokensByAddress,
+): { address: string; logoUrl: string | undefined } | null {
+  const nativeCurrency = ALL_CHAINS_MAP[token.chainId as TargetChainId].nativeCurrency
+  // bridge non-evm native tokens doesn't have address, so we need to map them to our convention address
+  const address = token.address || nativeCurrency?.address
+  if (!address) return null
+
+  const listToken = tokensByAddress[getAddressKey(address)]
+  const logoUrl = listToken?.logoURI || token.logoUrl || nativeCurrency?.logoUrl
+  return { address, logoUrl }
 }

@@ -1,8 +1,8 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { SafeInfoResponse } from '@safe-global/api-kit'
-
 import { Address } from 'viem'
 import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export const ConnectionType = {
   COINBASE_WALLET: coinbaseWallet.type,
@@ -12,11 +12,10 @@ export const ConnectionType = {
 } as const
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
-export interface WalletInfo {
-  chainId: SupportedChainId
-  account?: Address
-  active?: boolean
-  isConnectionRestoring?: boolean
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
+  isReadOnly?: boolean
+  chainId: number
+  nonce: number
 }
 
 export interface WalletDetails {
@@ -34,10 +33,11 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
-  isReadOnly?: boolean
-  chainId: number
-  nonce: number
+export interface WalletInfo {
+  chainId: SupportedChainId
+  account?: Address
+  active?: boolean
+  isConnectionRestoring?: boolean
 }
 
 export enum WalletType {

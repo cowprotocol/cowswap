@@ -58,32 +58,8 @@ const CompactIconWrapper = styled.span`
   vertical-align: middle;
 `
 
-function getVerificationTooltipText(isVerified: boolean): ReactNode {
-  return isVerified ? (
-    <Trans>Quote verified by CoW Protocol simulation</Trans>
-  ) : (
-    <Trans>Quote not yet verified by CoW Protocol simulation</Trans>
-  )
-}
-
 interface VerificationIconProps {
   isVerified: boolean
-}
-
-function VerificationIcon({ isVerified }: VerificationIconProps): ReactNode {
-  return isVerified ? <VerifiedIcon /> : <UnverifiedIcon />
-}
-
-export function QuoteVerificationIcon({ isVerified }: BaseQuoteVerificationProps): ReactNode {
-  const isVerifiedState = !!isVerified
-
-  return (
-    <HoverTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
-      <CompactIconWrapper>
-        <VerificationIcon isVerified={isVerifiedState} />
-      </CompactIconWrapper>
-    </HoverTooltip>
-  )
 }
 
 export function QuoteVerificationBadge({ isVerified }: BaseQuoteVerificationProps): ReactNode {
@@ -98,4 +74,28 @@ export function QuoteVerificationBadge({ isVerified }: BaseQuoteVerificationProp
       </VerificationBadge>
     </HoverTooltip>
   )
+}
+
+export function QuoteVerificationIcon({ isVerified }: BaseQuoteVerificationProps): ReactNode {
+  const isVerifiedState = !!isVerified
+
+  return (
+    <HoverTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
+      <CompactIconWrapper>
+        <VerificationIcon isVerified={isVerifiedState} />
+      </CompactIconWrapper>
+    </HoverTooltip>
+  )
+}
+
+function getVerificationTooltipText(isVerified: boolean): ReactNode {
+  return isVerified ? (
+    <Trans>Quote verified by CoW Protocol simulation</Trans>
+  ) : (
+    <Trans>Quote not yet verified by CoW Protocol simulation</Trans>
+  )
+}
+
+function VerificationIcon({ isVerified }: VerificationIconProps): ReactNode {
+  return isVerified ? <VerifiedIcon /> : <UnverifiedIcon />
 }

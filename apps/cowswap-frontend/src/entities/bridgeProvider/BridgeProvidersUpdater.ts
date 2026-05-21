@@ -14,14 +14,6 @@ import {
 
 import { bridgeProvidersAtom } from './bridgeProvidersAtom'
 
-function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
-  if (flag) {
-    providers.add(provider)
-  } else {
-    providers.delete(provider)
-  }
-}
-
 export function BridgeProvidersUpdater(): null {
   const setBridgeProviders = useSetAtom(bridgeProvidersAtom)
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
@@ -65,4 +57,12 @@ export function BridgeProvidersUpdater(): null {
   ])
 
   return null
+}
+
+function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
+  if (flag) {
+    providers.add(provider)
+  } else {
+    providers.delete(provider)
+  }
 }

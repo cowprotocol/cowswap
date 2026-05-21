@@ -1,11 +1,12 @@
 import { useEffect, type ReactNode } from 'react'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+
 import { isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { reconnect } from '@wagmi/core'
-import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
 import { markInitialReconnectSettled } from './initialReconnectLifecycle'
@@ -17,67 +18,39 @@ import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
 
+interface Web3ProviderProps {
+  children: ReactNode
+}
+
+export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
+  return (
+    <WagmiProvider config={config} reconnectOnMount={false}>
+      <ReconnectOnMount />
+      <OpenWalletModalOnCustomEvent />
+      <QueryClientProvider client={queryClient}>
+        <SafeProvider>
+          <SafeConnectionHandler>{children}</SafeConnectionHandler>
+        </SafeProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+
 function isEmbeddedInIframe(): boolean {
   return typeof window !== 'undefined' && window.self !== window.top
 }
 
-function reconnectWidgetConnector(): (() => void) | undefined {
-  const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
-  if (!widgetConnector) return undefined
-
-  // Clear stale connections from previous sessions (e.g., EIP-6963 connections from
-  // standalone mode) to prevent them from interfering with the widget connector.
-  // Without this, switching standalone→dapp leaves the old MetaMask EIP-6963 connection
-  // as "current" in wagmi's persisted state, blocking the widget connector.
-  config.setState((state) => ({
-    ...state,
-    connections: new Map(),
-    current: null,
-    status: 'disconnected',
-  }))
-
-  const doReconnect = (): void => {
-    // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
-    // connector was previously "disconnected" (which can happen on widget recreations).
-    void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
-    reconnect(config, { connectors: [widgetConnector] })
-      .catch((error) => {
-        console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
-      })
-      .finally(() => {
-        markInitialReconnectSettled()
-      })
-  }
-
-  doReconnect()
-
-  // AppKit with enableReconnect=false calls unSyncExistingConnection() during init,
-  // which asynchronously disconnects ALL wagmi connections — including the one we just
-  // established above. Subscribe to state changes and re-reconnect once if that happens.
-  // We track whether we've ever been connected to avoid reacting to the initial clear above.
-  let wasConnected = false
-  let retried = false
-  const unsubscribe = config.subscribe(
-    (state) => state.status,
-    (status) => {
-      if (status === 'connected') {
-        wasConnected = true
-      }
-      if (status === 'disconnected' && wasConnected && !retried) {
-        retried = true
-        unsubscribe()
-        console.debug('[ReconnectOnMount] detected disconnect (likely AppKit unSync), re-reconnecting widget connector')
-        doReconnect()
-      }
-    },
-  )
-
-  const timeoutId = setTimeout(() => unsubscribe(), 5000)
-
-  return () => {
-    unsubscribe()
-    clearTimeout(timeoutId)
-  }
+function OpenWalletModalOnCustomEvent(): null {
+  useEffect(() => {
+    if (!reownAppKit) return
+    const appKit = reownAppKit
+    const handler = (): void => {
+      void appKit.open()
+    }
+    document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
+    return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
+  }, [])
+  return null
 }
 
 function ReconnectOnMount(): null {
@@ -146,33 +119,61 @@ function ReconnectOnMount(): null {
   return null
 }
 
-function OpenWalletModalOnCustomEvent(): null {
-  useEffect(() => {
-    if (!reownAppKit) return
-    const appKit = reownAppKit
-    const handler = (): void => {
-      void appKit.open()
-    }
-    document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
-    return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
-  }, [])
-  return null
-}
+function reconnectWidgetConnector(): (() => void) | undefined {
+  const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
+  if (!widgetConnector) return undefined
 
-interface Web3ProviderProps {
-  children: ReactNode
-}
+  // Clear stale connections from previous sessions (e.g., EIP-6963 connections from
+  // standalone mode) to prevent them from interfering with the widget connector.
+  // Without this, switching standalone→dapp leaves the old MetaMask EIP-6963 connection
+  // as "current" in wagmi's persisted state, blocking the widget connector.
+  config.setState((state) => ({
+    ...state,
+    connections: new Map(),
+    current: null,
+    status: 'disconnected',
+  }))
 
-export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
-  return (
-    <WagmiProvider config={config} reconnectOnMount={false}>
-      <ReconnectOnMount />
-      <OpenWalletModalOnCustomEvent />
-      <QueryClientProvider client={queryClient}>
-        <SafeProvider>
-          <SafeConnectionHandler>{children}</SafeConnectionHandler>
-        </SafeProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+  const doReconnect = (): void => {
+    // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
+    // connector was previously "disconnected" (which can happen on widget recreations).
+    void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
+    reconnect(config, { connectors: [widgetConnector] })
+      .catch((error) => {
+        console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
+      })
+      .finally(() => {
+        markInitialReconnectSettled()
+      })
+  }
+
+  doReconnect()
+
+  // AppKit with enableReconnect=false calls unSyncExistingConnection() during init,
+  // which asynchronously disconnects ALL wagmi connections — including the one we just
+  // established above. Subscribe to state changes and re-reconnect once if that happens.
+  // We track whether we've ever been connected to avoid reacting to the initial clear above.
+  let wasConnected = false
+  let retried = false
+  const unsubscribe = config.subscribe(
+    (state) => state.status,
+    (status) => {
+      if (status === 'connected') {
+        wasConnected = true
+      }
+      if (status === 'disconnected' && wasConnected && !retried) {
+        retried = true
+        unsubscribe()
+        console.debug('[ReconnectOnMount] detected disconnect (likely AppKit unSync), re-reconnecting widget connector')
+        doReconnect()
+      }
+    },
   )
+
+  const timeoutId = setTimeout(() => unsubscribe(), 5000)
+
+  return () => {
+    unsubscribe()
+    clearTimeout(timeoutId)
+  }
 }

@@ -28,6 +28,15 @@ export interface ApproveAndSwapProps {
   useModals?: boolean
 }
 
+interface ApproveAndSwapContext {
+  amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
+  onApproveConfirm?: (transactionHash: string | null) => void
+  isPartialApproveEnabledByUser?: boolean
+  handleApprove: ApproveCurrencyCallback
+  updateTradeApproveState: UpdateApproveProgressModalState
+}
+
 export function useApproveAndSwap({
   amountToApprove,
   useModals,
@@ -85,15 +94,6 @@ export function useApproveAndSwap({
     account,
     tradeSpenderAddress,
   ])
-}
-
-interface ApproveAndSwapContext {
-  amountToApprove: CurrencyAmount<Currency>
-  minAmountToSignForSwap?: CurrencyAmount<Currency>
-  onApproveConfirm?: (transactionHash: string | null) => void
-  isPartialApproveEnabledByUser?: boolean
-  handleApprove: ApproveCurrencyCallback
-  updateTradeApproveState: UpdateApproveProgressModalState
 }
 
 async function approveAndSwap({

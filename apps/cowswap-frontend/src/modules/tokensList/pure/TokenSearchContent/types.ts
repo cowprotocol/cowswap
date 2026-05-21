@@ -3,6 +3,20 @@ import { TokenSearchResponse } from '@cowprotocol/tokens'
 
 import { SelectTokenContext } from '../../types'
 
+export interface AppendImportSectionParams {
+  tokens?: TokenWithLogo[]
+  section: TokenImportSection
+  limit: number
+  sectionTitle?: string
+  tooltip?: string
+  shadowed?: boolean
+  wrapperId?: string
+  bridgeSupportedTokensMap?: Record<string, boolean> | null
+  areTokensFromBridge?: boolean
+}
+
+export type TokenImportSection = 'blockchain' | 'inactive' | 'external'
+
 export interface TokenSearchContentProps {
   searchInput: string
   searchResults: TokenSearchResponse
@@ -12,8 +26,6 @@ export interface TokenSearchContentProps {
   areTokensFromBridge?: boolean
   bridgeSupportedTokensMap?: Record<string, boolean> | null
 }
-
-export type TokenImportSection = 'blockchain' | 'inactive' | 'external'
 
 export type TokenSearchRow =
   | { type: 'banner' }
@@ -31,6 +43,12 @@ export type TokenSearchRow =
       disabledReason?: string
     }
 
+export interface TokenSearchRowRendererProps {
+  row: TokenSearchRow
+  selectTokenContext: SelectTokenContext
+  importToken(token: TokenWithLogo): void
+}
+
 export interface UseSearchRowsParams {
   isLoading: boolean
   matchedTokens: TokenWithLogo[]
@@ -41,22 +59,4 @@ export interface UseSearchRowsParams {
   externalApiResult?: TokenWithLogo[]
   bridgeSupportedTokensMap?: Record<string, boolean> | null
   areTokensFromBridge?: boolean
-}
-
-export interface AppendImportSectionParams {
-  tokens?: TokenWithLogo[]
-  section: TokenImportSection
-  limit: number
-  sectionTitle?: string
-  tooltip?: string
-  shadowed?: boolean
-  wrapperId?: string
-  bridgeSupportedTokensMap?: Record<string, boolean> | null
-  areTokensFromBridge?: boolean
-}
-
-export interface TokenSearchRowRendererProps {
-  row: TokenSearchRow
-  selectTokenContext: SelectTokenContext
-  importToken(token: TokenWithLogo): void
 }

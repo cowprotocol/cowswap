@@ -1,6 +1,11 @@
 import { AnalyticsCategory, Category, GtmEvent, toGtmEvent } from '@cowprotocol/analytics'
 
 /**
+ * Cow-Fi-specific GTM event type
+ */
+export type CowFiGtmEvent = GtmEvent<CowFiCategory>
+
+/**
  * Cow-Fi-specific analytics categories
  * Extends the base Category enum with Cow-Fi-specific values
  */
@@ -25,11 +30,6 @@ export enum CowFiCategory {
   TOKENS = 'Tokens',
   LEGAL = 'Legal',
 }
-
-/**
- * Cow-Fi-specific GTM event type
- */
-export type CowFiGtmEvent = GtmEvent<CowFiCategory>
 
 /**
  * Helper function to create GTM events with Cow-Fi categories

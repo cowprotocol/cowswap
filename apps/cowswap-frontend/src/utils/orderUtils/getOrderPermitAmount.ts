@@ -1,10 +1,10 @@
+import type { Hex } from 'viem'
+
 import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { isPermitDecodedCalldataValid } from './isPermitValidForOrder'
 import { ParsedOrder } from './parseOrder'
-
-import type { Hex } from 'viem'
 
 export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrder): bigint | null {
   if (!order.fullAppData) return null

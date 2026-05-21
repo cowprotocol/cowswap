@@ -10,8 +10,8 @@ import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedW
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
-type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
+type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
 
 const DEFAULT_COW_SOUNDS: Sounds = {
@@ -44,6 +44,28 @@ const APRIL_FOOL_SOUND_SEND = [
   '/audio/cowswap-aprils2025-bubba2.mp3',
   '/audio/cowswap-aprils2025-bubba.mp3',
 ]
+
+function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
+  const darkModeEnabled = isDarkMode()
+  const activeSeasonalTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled })
+
+  if (activeSeasonalTheme === CustomTheme.HALLOWEEN) return HALLOWEEN_SOUNDS
+  if (activeSeasonalTheme === CustomTheme.CHRISTMAS) return WINTER_SOUNDS
+
+  return {}
+}
+
+function getThemeBasedSound(type: SoundType): string {
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as FeatureFlags
+  const isAprilsFoolsEnabled = Boolean(featureFlags?.[APRILS_FOOLS_FLAG_KEY])
+
+  if (isAprilsFoolsEnabled && type === 'SEND') {
+    return pickRandomAprilsFoolSound()
+  }
+
+  const themedSounds = getSeasonalSounds(featureFlags)
+  return themedSounds[type] || DEFAULT_COW_SOUNDS[type]
+}
 
 function isDarkMode(): boolean {
   const state = cowSwapStore.getState()
@@ -86,54 +108,22 @@ function pickRandomAprilsFoolSound(): string {
   return randomPick
 }
 
-function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
-  const darkModeEnabled = isDarkMode()
-  const activeSeasonalTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled })
-
-  if (activeSeasonalTheme === CustomTheme.HALLOWEEN) return HALLOWEEN_SOUNDS
-  if (activeSeasonalTheme === CustomTheme.CHRISTMAS) return WINTER_SOUNDS
-
-  return {}
-}
-
-function getThemeBasedSound(type: SoundType): string {
-  const featureFlags = jotaiStore.get(featureFlagsAtom) as FeatureFlags
-  const isAprilsFoolsEnabled = Boolean(featureFlags?.[APRILS_FOOLS_FLAG_KEY])
-
-  if (isAprilsFoolsEnabled && type === 'SEND') {
-    return pickRandomAprilsFoolSound()
-  }
-
-  const themedSounds = getSeasonalSounds(featureFlags)
-  return themedSounds[type] || DEFAULT_COW_SOUNDS[type]
-}
-
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
-function getEmptySound(): HTMLAudioElement {
-  if (typeof Audio !== 'undefined') {
-    return new Audio('')
-  }
+export function getCowSoundError(): HTMLAudioElement {
+  return getAudio('ERROR')
+}
 
-  const stub: Partial<HTMLAudioElement> = {
-    play: () => Promise.resolve(),
-    pause: () => undefined,
-    addEventListener: () => undefined,
-    removeEventListener: () => undefined,
-  }
+export function getCowSoundSend(): HTMLAudioElement {
+  return getAudio('SEND')
+}
 
-  return stub as HTMLAudioElement
+export function getCowSoundSuccess(): HTMLAudioElement {
+  return getAudio('SUCCESS')
 }
 
 function createAudioOrEmpty(src: string): HTMLAudioElement {
   return typeof Audio !== 'undefined' ? new Audio(src) : getEmptySound()
-}
-
-function getWidgetSoundUrl(type: SoundType): string | null | undefined {
-  const { params } = jotaiStore.get(injectedWidgetParamsAtom)
-  const key = COW_SOUND_TO_WIDGET_KEY[type]
-
-  return params?.sounds?.[key]
 }
 
 function getAudio(type: SoundType): HTMLAudioElement {
@@ -168,16 +158,26 @@ function getAudio(type: SoundType): HTMLAudioElement {
   return sound
 }
 
-export function getCowSoundSend(): HTMLAudioElement {
-  return getAudio('SEND')
+function getEmptySound(): HTMLAudioElement {
+  if (typeof Audio !== 'undefined') {
+    return new Audio('')
+  }
+
+  const stub: Partial<HTMLAudioElement> = {
+    play: () => Promise.resolve(),
+    pause: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  }
+
+  return stub as HTMLAudioElement
 }
 
-export function getCowSoundSuccess(): HTMLAudioElement {
-  return getAudio('SUCCESS')
-}
+function getWidgetSoundUrl(type: SoundType): string | null | undefined {
+  const { params } = jotaiStore.get(injectedWidgetParamsAtom)
+  const key = COW_SOUND_TO_WIDGET_KEY[type]
 
-export function getCowSoundError(): HTMLAudioElement {
-  return getAudio('ERROR')
+  return params?.sounds?.[key]
 }
 
 export const __soundTestUtils = {

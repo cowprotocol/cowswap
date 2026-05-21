@@ -45,6 +45,25 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
   tooltipCloseDelay?: number
 }
 
+export interface TooltipProps extends Omit<PopoverProps, 'content'> {
+  /**
+   * Shows the tooltip
+   */
+  show: boolean
+
+  /**
+   * Whether to wrap the content in a container
+   */
+  wrapInContainer?: boolean
+
+  /**
+   * The content of the tooltip
+   */
+  content: ReactNode
+
+  containerRef: RefObject<HTMLElement | null>
+}
+
 /**
  * Tooltip that appears when hovering over the children
  *
@@ -177,23 +196,13 @@ export function HoverTooltip(props: HoverTooltipProps) {
   )
 }
 
-export interface TooltipProps extends Omit<PopoverProps, 'content'> {
-  /**
-   * Shows the tooltip
-   */
-  show: boolean
-
-  /**
-   * Whether to wrap the content in a container
-   */
-  wrapInContainer?: boolean
-
-  /**
-   * The content of the tooltip
-   */
-  content: ReactNode
-
-  containerRef: RefObject<HTMLElement | null>
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any): ReactNode {
+  if (typeof tooltip === 'function') {
+    return tooltip(params)
+  }
+  return tooltip
 }
 
 /**
@@ -225,13 +234,4 @@ export function Tooltip({ content, className, wrapInContainer, show, containerRe
       {...rest}
     />
   )
-}
-
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any): ReactNode {
-  if (typeof tooltip === 'function') {
-    return tooltip(params)
-  }
-  return tooltip
 }

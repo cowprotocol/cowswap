@@ -5,6 +5,18 @@ import { isProdLike } from '@cowprotocol/common-utils'
 import { Announcement, Announcements, announcementsAtom } from '@cowprotocol/core'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+export function useCriticalAnnouncements(chainId: SupportedChainId): Announcements {
+  const announcements = useAnnouncements(chainId)
+
+  return announcements.filter(({ isCritical }) => isCritical)
+}
+
+export function useNonCriticalAnnouncements(chainId: SupportedChainId): Announcements {
+  const announcements = useAnnouncements(chainId)
+
+  return announcements.filter(({ isCritical }) => !isCritical)
+}
+
 function getAnnouncementSpecificity(chainId: SupportedChainId, env: CowEnv, announcement: Announcement): number {
   let specificity = 0
 
@@ -46,16 +58,4 @@ function useAnnouncements(chainId: SupportedChainId): Announcements {
 
     return filtered
   }, [chainId, allAnnouncements])
-}
-
-export function useCriticalAnnouncements(chainId: SupportedChainId): Announcements {
-  const announcements = useAnnouncements(chainId)
-
-  return announcements.filter(({ isCritical }) => isCritical)
-}
-
-export function useNonCriticalAnnouncements(chainId: SupportedChainId): Announcements {
-  const announcements = useAnnouncements(chainId)
-
-  return announcements.filter(({ isCritical }) => !isCritical)
 }

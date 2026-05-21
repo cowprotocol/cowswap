@@ -18,21 +18,6 @@ import { cowHookToTypedCowHook } from '../utils/typedHooks'
 
 type OrderInteractionHooks = cowAppDataLatestScheme.OrderInteractionHooks
 
-function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
-  const hookData = useAccountAgnosticPermitHookData()
-
-  // Remove permitData if the user has enough allowance for the current trade
-  const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()
-
-  if (hasTradeEnoughAllowance === undefined) return undefined
-
-  const shouldUsePermit = hasTradeEnoughAllowance === false
-
-  return shouldUsePermit ? hookData : null
-}
-
-// TODO: Break down this large function into smaller functions
-
 export function AppDataHooksUpdater(): null {
   const tradeState = useDerivedTradeState()
   const isHooksTradeType = useIsHooksTradeType()
@@ -126,4 +111,19 @@ export function AppDataHooksUpdater(): null {
   }, [permitData, isSmartContractWallet])
 
   return null
+}
+
+// TODO: Break down this large function into smaller functions
+
+function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
+  const hookData = useAccountAgnosticPermitHookData()
+
+  // Remove permitData if the user has enough allowance for the current trade
+  const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()
+
+  if (hasTradeEnoughAllowance === undefined) return undefined
+
+  const shouldUsePermit = hasTradeEnoughAllowance === false
+
+  return shouldUsePermit ? hookData : null
 }

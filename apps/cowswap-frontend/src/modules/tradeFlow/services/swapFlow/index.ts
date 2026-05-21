@@ -1,3 +1,6 @@
+import type { Hex } from 'viem'
+import { sendTransaction } from 'wagmi/actions'
+
 import {
   captureError,
   delay,
@@ -15,7 +18,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -31,8 +33,6 @@ import { isNonEvmPlaceholderRecipient } from 'modules/tradeQuote'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
-
-import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 

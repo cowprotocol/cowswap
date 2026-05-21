@@ -3,17 +3,17 @@ import { useMemo } from 'react'
 
 import { restrictedListsAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 
-export function getSourceAsKey(source: string): string {
-  return source.toLowerCase().trim()
+export interface ListBlockedResult {
+  isBlocked: boolean
+  isLoading: boolean
 }
 
 export function getCountryAsKey(country: string): string {
   return country.toUpperCase()
 }
 
-export interface ListBlockedResult {
-  isBlocked: boolean
-  isLoading: boolean
+export function getSourceAsKey(source: string): string {
+  return source.toLowerCase().trim()
 }
 
 /**

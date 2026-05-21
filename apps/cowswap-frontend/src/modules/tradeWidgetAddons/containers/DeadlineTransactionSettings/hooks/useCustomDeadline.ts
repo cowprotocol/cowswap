@@ -14,10 +14,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { deadlineToView, getDeadlineRange } from '../utils'
 
-type TxSettingAction = 'Default' | 'Custom'
-
-enum DeadlineError {
-  InvalidInput = 'InvalidInput',
+export interface DeadlineRangeParams {
+  minMinutes: number
+  maxMinutes: number
+  isEoaEthFlow: boolean
+  isSmartContractWallet: boolean
 }
 
 interface DeadlineAnalyticsEvent {
@@ -26,11 +27,10 @@ interface DeadlineAnalyticsEvent {
   value: number
 }
 
-export interface DeadlineRangeParams {
-  minMinutes: number
-  maxMinutes: number
-  isEoaEthFlow: boolean
-  isSmartContractWallet: boolean
+type TxSettingAction = 'Default' | 'Custom'
+
+enum DeadlineError {
+  InvalidInput = 'InvalidInput',
 }
 
 // eslint-disable-next-line max-lines-per-function

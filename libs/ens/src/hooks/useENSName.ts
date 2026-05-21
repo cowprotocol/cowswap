@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
+import type { Address } from 'viem'
 import { useEnsName } from 'wagmi'
 
-import type { Address } from 'viem'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
  * Does a reverse lookup for an address to find its ENS name.

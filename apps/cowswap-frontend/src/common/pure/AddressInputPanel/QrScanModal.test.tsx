@@ -2,6 +2,7 @@ import React from 'react'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { useQrBarcodeScanner } from './hooks/useQrBarcodeScanner'
@@ -44,6 +45,14 @@ function makeMockStream(): MediaStream {
   } as unknown as MediaStream
 }
 
+function renderModal(props: Partial<React.ComponentProps<typeof QrScanModal>> = {}): ReturnType<typeof render> {
+  return render(
+    <I18nProvider i18n={i18n}>
+      <QrScanModal isOpen={true} onDismiss={jest.fn()} onScan={jest.fn()} {...props} />
+    </I18nProvider>,
+  )
+}
+
 function setupSupported(stream: MediaStream | null = makeMockStream()): void {
   mockUseQrCameraStream.mockReturnValue({ stream, isSupported: true, permissionDenied: false })
   mockUseQrBarcodeScanner.mockReturnValue(true)
@@ -52,14 +61,6 @@ function setupSupported(stream: MediaStream | null = makeMockStream()): void {
 function setupUnsupported(reason: 'camera' | 'scanner'): void {
   mockUseQrCameraStream.mockReturnValue({ stream: null, isSupported: reason !== 'camera', permissionDenied: false })
   mockUseQrBarcodeScanner.mockReturnValue(reason !== 'scanner')
-}
-
-function renderModal(props: Partial<React.ComponentProps<typeof QrScanModal>> = {}): ReturnType<typeof render> {
-  return render(
-    <I18nProvider i18n={i18n}>
-      <QrScanModal isOpen={true} onDismiss={jest.fn()} onScan={jest.fn()} {...props} />
-    </I18nProvider>,
-  )
 }
 
 describe('QrScanModal', () => {

@@ -11,9 +11,9 @@ import { AccountDetailsProps } from '../AccountDetails'
 import { ActivitiesList } from '../AccountDetails/ActivitiesList'
 import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
 
-type StyledWrapperProps = { $margin?: string }
 type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions' | 'confirmedTransactions'> &
   StyledWrapperProps
+type StyledWrapperProps = { $margin?: string }
 
 const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   ${({ $margin }) => $margin && `margin: ${$margin};`}

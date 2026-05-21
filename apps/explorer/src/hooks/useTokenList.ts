@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 
 import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import useSWR, { SWRResponse } from 'swr'
 
 import { NATIVE_TOKEN_PER_NETWORK } from '../const'
+
+import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 type TokenListByAddress = Record<string, TokenInfo>
 type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>

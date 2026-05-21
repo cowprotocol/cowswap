@@ -1,10 +1,11 @@
+import { maxUint256, encodeFunctionData } from 'viem'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
-import { maxUint256, encodeFunctionData } from 'viem'
 
 import { getOrderPermitAmount } from './getOrderPermitAmount'
 import { ParsedOrder } from './parseOrder'

@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { CenteredDots } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 export const ProxyAccountLoading = (): ReactNode => {

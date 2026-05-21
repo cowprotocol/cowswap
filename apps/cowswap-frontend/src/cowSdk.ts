@@ -1,6 +1,9 @@
 import { atom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { createPublicClient, http } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
@@ -15,9 +18,6 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
-
-import { createPublicClient, http } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 const PROD_BASE_URL = 'https://api.cow.fi'
 

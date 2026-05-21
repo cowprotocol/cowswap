@@ -1,5 +1,14 @@
 import { UI } from '../enum'
 
+export interface StatusColorEnums {
+  icon?: string
+  iconColor?: string
+  iconText?: string
+  color: UI
+  bg: string
+  text: string
+}
+
 export enum StatusColorVariant {
   Info = 'info',
   Success = 'success',
@@ -8,15 +17,6 @@ export enum StatusColorVariant {
   Danger = 'danger',
   Alert = 'alert',
   Default = 'default',
-}
-
-export interface StatusColorEnums {
-  icon?: string
-  iconColor?: string
-  iconText?: string
-  color: UI
-  bg: string
-  text: string
 }
 
 // Base color schemes

@@ -1,3 +1,7 @@
+import { encodeFunctionData } from 'viem'
+import type { Hex } from 'viem'
+import { usePublicClient } from 'wagmi'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
@@ -5,8 +9,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
-import { encodeFunctionData } from 'viem'
-import { usePublicClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -17,8 +19,6 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 
 import { useDoesOrderHaveValidPermit } from './useDoesOrderHaveValidPermit'
-
-import type { Hex } from 'viem'
 
 // Mock SWR response interface
 interface MockSWRResponse {

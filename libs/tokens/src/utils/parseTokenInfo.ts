@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
+
 import type { TokenInfo as Erc20TokenInfo } from '@uniswap/token-lists'
 
 interface BridgeInfo {

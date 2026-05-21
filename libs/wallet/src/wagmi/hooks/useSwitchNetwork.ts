@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { useConnection, useSwitchChain } from 'wagmi'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { walletInfoAtom } from '../../api/state'
 

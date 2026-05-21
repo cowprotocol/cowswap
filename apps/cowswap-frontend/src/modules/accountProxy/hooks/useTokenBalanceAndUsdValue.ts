@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
+import { toHex } from 'viem'
+
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
-
-import { toHex } from 'viem'
 
 import { useUsdAmount } from 'modules/usdAmount'
 

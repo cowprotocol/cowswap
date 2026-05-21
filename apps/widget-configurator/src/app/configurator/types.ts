@@ -13,13 +13,6 @@ export type ColorPalette = {
   [key in CowSwapWidgetPaletteColors]: string
 }
 
-export interface TokenListItem {
-  url: string
-  enabled: boolean
-  enabledForSell: boolean
-  enabledForBuy: boolean
-}
-
 export interface ConfiguratorState {
   chainId?: SupportedChainId
   locale?: string
@@ -54,4 +47,11 @@ export interface ConfiguratorState {
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
   slippage?: SlippageConfig
+}
+
+export interface TokenListItem {
+  url: string
+  enabled: boolean
+  enabledForSell: boolean
+  enabledForBuy: boolean
 }

@@ -3,9 +3,9 @@ import { UI } from '@cowprotocol/ui'
 import { OrderProgressBarProps } from '../types'
 
 export type BgColorMap = Record<NonNullable<StepName>, string | undefined>
-export type StepName = OrderProgressBarProps['stepName']
-export type PaddingMap = Record<NonNullable<StepName>, string | undefined>
 export type GapMap = Record<NonNullable<StepName>, string | undefined>
+export type PaddingMap = Record<NonNullable<StepName>, string | undefined>
+export type StepName = OrderProgressBarProps['stepName']
 
 export const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
   initial: `var(${UI.COLOR_BLUE_300_PRIMARY})`,

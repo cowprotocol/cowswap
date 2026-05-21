@@ -12,6 +12,16 @@ export enum SentryTag {
   UNKNOWN = 'UNKNOWN',
 }
 
+export function captureError(error: Error, errorType: ERROR_TYPES, params?: Record<string, unknown>): void {
+  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
+  Sentry.captureException(error, {
+    tags: { errorType, captureType: 'manual' },
+    contexts: {
+      params,
+    },
+  })
+}
+
 export function reportPermitWithDefaultSigner(params: Record<string, unknown>): void {
   // report this to sentry if we ever use the default signer in the permit
   Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
@@ -24,15 +34,5 @@ export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>
   Sentry.captureException('Attempt to place order with expired quote', {
     tags: { errorType: 'placeOrderWithExpiredQuote' },
     contexts: { params },
-  })
-}
-
-export function captureError(error: Error, errorType: ERROR_TYPES, params?: Record<string, unknown>): void {
-  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
-  Sentry.captureException(error, {
-    tags: { errorType, captureType: 'manual' },
-    contexts: {
-      params,
-    },
   })
 }

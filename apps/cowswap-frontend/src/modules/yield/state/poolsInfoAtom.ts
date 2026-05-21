@@ -12,12 +12,12 @@ export interface PoolInfo {
   volume24h: number
 }
 
+export type PoolInfoStates = Record<string, PoolInfoState>
+
 type PoolInfoState = {
   info: PoolInfo
   updatedAt: number
 }
-
-export type PoolInfoStates = Record<string, PoolInfoState>
 
 type PoolsInfoState = Record<SupportedChainId, PoolInfoStates | undefined>
 

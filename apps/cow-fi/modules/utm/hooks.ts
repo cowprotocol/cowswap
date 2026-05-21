@@ -4,15 +4,10 @@ import { useEffect, useRef } from 'react'
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, hasUtmCodes, UtmParams } from '@cowprotocol/common-utils'
 
-import { useSearchParams, useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 
 import { utmAtom } from './state'
 import { cleanUpParams } from './utils'
-
-export function useUtm(): UtmParams | undefined {
-  return useAtomValue(utmAtom)
-}
 
 export function useInitializeUtm(): void {
   const pathname = usePathname()
@@ -57,4 +52,8 @@ export function useInitializeUtm(): void {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Intentionally empty - we only want this to run once on mount
+}
+
+export function useUtm(): UtmParams | undefined {
+  return useAtomValue(utmAtom)
 }

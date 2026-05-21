@@ -50,6 +50,10 @@ export interface CowSwapWidgetHandler {
   destroy: () => void
 }
 
+type WidgetHookHandlerMap = {
+  [K in WidgetHookEvents]: (payload: WidgetHookPayloadMap[K], hooks: CowSwapWidgetParams['hooks']) => WidgetHookResult
+}
+
 /**
  * Generates and injects a CoW Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
@@ -169,38 +173,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 }
 
 /**
- * Update the provider for the iframeRpcProviderBridge.
- *
- * It will disconnect from the previous provider and connect to the new one.
- *
- * @param iframe iframe window
- * @param iframeRpcProviderBridge iframe RPC manager
- * @param newProvider new provider
- *
- * @returns the iframeRpcProviderBridge
- */
-function updateProvider(
-  iframe: Window,
-  iframeOrigin: string,
-  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
-  newProvider?: EthereumProvider,
-): IframeRpcProviderBridge {
-  // Disconnect from the previous provider bridge
-  if (iframeRpcProviderBridge) {
-    iframeRpcProviderBridge.disconnect()
-  }
-
-  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe, iframeOrigin)
-
-  // Connect to the new provider
-  if (newProvider) {
-    providerBridge.onConnect(newProvider)
-  }
-
-  return providerBridge
-}
-
-/**
  * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
@@ -226,81 +198,6 @@ function getIframeOrigin(iframe: HTMLIFrameElement): string {
 }
 
 /**
- * Updates the CoW Swap Widget based on the new settings provided.
- * @param contentWindow - Window object of the widget's iframe.
- * @param iframeOrigin - The trusted origin of the widget's iframe.
- * @param params - New params for the widget.
- * @param provider - EIP-1193 provider
- */
-function updateParams(
-  contentWindow: Window,
-  iframeOrigin: string,
-  params: CowSwapWidgetParams,
-  provider: EthereumProvider | undefined,
-): void {
-  const hasProvider = !!provider
-
-  const pathname = buildWidgetPath(params)
-  const search = buildWidgetUrlQuery(params).toString()
-
-  // Omit theme from appParams
-  const { theme: _theme, hooks: _hooks, ...appParams } = params
-
-  widgetIframeTransport.postMessageToWindow(
-    contentWindow,
-    WidgetMethodsListen.UPDATE_PARAMS,
-    { urlParams: { pathname, search }, appParams, hasProvider },
-    iframeOrigin,
-  )
-}
-
-/**
- * Sends appCode to the contentWindow of the widget once the widget is activated.
- *
- * @param contentWindow - Window object of the widget's iframe.
- * @param iframeOrigin - The trusted origin of the widget's iframe.
- * @param appCode - A unique identifier for the app.
- */
-function sendAppCodeOnActivation(
-  contentWindow: Window,
-  iframeOrigin: string,
-  appCode: string | undefined,
-): (payload: MessageEvent<unknown>) => void {
-  return widgetIframeTransport.listenToMessageFromWindow(
-    window,
-    contentWindow,
-    WidgetMethodsEmit.ACTIVATE,
-    () => {
-      // Update the appData
-      widgetIframeTransport.postMessageToWindow(
-        contentWindow,
-        WidgetMethodsListen.UPDATE_APP_DATA,
-        { metaData: appCode ? { appCode } : undefined },
-        iframeOrigin,
-      )
-    },
-    iframeOrigin,
-  )
-}
-
-function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () => void): WindowListener {
-  let isReady = false
-
-  return widgetIframeTransport.listenToMessageFromWindow(
-    window,
-    contentWindow,
-    WidgetMethodsEmit.READY,
-    () => {
-      if (isReady) return
-
-      isReady = true
-      onReady()
-    },
-    iframeOrigin,
-  )
-}
-
-/**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
 function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowListener {
@@ -317,20 +214,6 @@ function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowL
     },
     iframeOrigin,
   )
-}
-
-function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
-  const trimmedUrl = url.trim()
-
-  if (!trimmedUrl) {
-    return null
-  }
-
-  try {
-    return new URL(trimmedUrl, iframeOrigin).toString()
-  } catch {
-    return null
-  }
 }
 
 function isAllowedWindowOpenUrl(url: string): boolean {
@@ -382,8 +265,125 @@ function listenToHeightChanges(
   ]
 }
 
-type WidgetHookHandlerMap = {
-  [K in WidgetHookEvents]: (payload: WidgetHookPayloadMap[K], hooks: CowSwapWidgetParams['hooks']) => WidgetHookResult
+function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () => void): WindowListener {
+  let isReady = false
+
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    contentWindow,
+    WidgetMethodsEmit.READY,
+    () => {
+      if (isReady) return
+
+      isReady = true
+      onReady()
+    },
+    iframeOrigin,
+  )
+}
+
+function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
+  const trimmedUrl = url.trim()
+
+  if (!trimmedUrl) {
+    return null
+  }
+
+  try {
+    return new URL(trimmedUrl, iframeOrigin).toString()
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Sends appCode to the contentWindow of the widget once the widget is activated.
+ *
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
+ * @param appCode - A unique identifier for the app.
+ */
+function sendAppCodeOnActivation(
+  contentWindow: Window,
+  iframeOrigin: string,
+  appCode: string | undefined,
+): (payload: MessageEvent<unknown>) => void {
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    contentWindow,
+    WidgetMethodsEmit.ACTIVATE,
+    () => {
+      // Update the appData
+      widgetIframeTransport.postMessageToWindow(
+        contentWindow,
+        WidgetMethodsListen.UPDATE_APP_DATA,
+        { metaData: appCode ? { appCode } : undefined },
+        iframeOrigin,
+      )
+    },
+    iframeOrigin,
+  )
+}
+
+/**
+ * Updates the CoW Swap Widget based on the new settings provided.
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
+ * @param params - New params for the widget.
+ * @param provider - EIP-1193 provider
+ */
+function updateParams(
+  contentWindow: Window,
+  iframeOrigin: string,
+  params: CowSwapWidgetParams,
+  provider: EthereumProvider | undefined,
+): void {
+  const hasProvider = !!provider
+
+  const pathname = buildWidgetPath(params)
+  const search = buildWidgetUrlQuery(params).toString()
+
+  // Omit theme from appParams
+  const { theme: _theme, hooks: _hooks, ...appParams } = params
+
+  widgetIframeTransport.postMessageToWindow(
+    contentWindow,
+    WidgetMethodsListen.UPDATE_PARAMS,
+    { urlParams: { pathname, search }, appParams, hasProvider },
+    iframeOrigin,
+  )
+}
+
+/**
+ * Update the provider for the iframeRpcProviderBridge.
+ *
+ * It will disconnect from the previous provider and connect to the new one.
+ *
+ * @param iframe iframe window
+ * @param iframeRpcProviderBridge iframe RPC manager
+ * @param newProvider new provider
+ *
+ * @returns the iframeRpcProviderBridge
+ */
+function updateProvider(
+  iframe: Window,
+  iframeOrigin: string,
+  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
+  newProvider?: EthereumProvider,
+): IframeRpcProviderBridge {
+  // Disconnect from the previous provider bridge
+  if (iframeRpcProviderBridge) {
+    iframeRpcProviderBridge.disconnect()
+  }
+
+  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe, iframeOrigin)
+
+  // Connect to the new provider
+  if (newProvider) {
+    providerBridge.onConnect(newProvider)
+  }
+
+  return providerBridge
 }
 
 const widgetHookHandlers: WidgetHookHandlerMap = {

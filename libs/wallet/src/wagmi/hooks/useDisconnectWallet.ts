@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
-import { Command } from '@cowprotocol/types'
-
 import { useDisconnect } from 'wagmi'
+
+import { Command } from '@cowprotocol/types'
 
 import { USER_DISCONNECTED_SESSION_KEY } from '../../constants'
 

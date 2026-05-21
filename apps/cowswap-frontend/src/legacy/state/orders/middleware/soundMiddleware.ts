@@ -76,9 +76,14 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return result
 }
 
-function _shouldPlayPendingOrderSound(payload: AddPendingOrderParams): boolean {
-  // Only play COW sound if added pending order is not hidden
-  return !payload.order.isHidden
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function _getUpdatedOrderSound(payload: UpdateOrderParams) {
+  if (!payload.order.isHidden) {
+    // Trigger COW sound when an order is being updated to a non-hidden state
+    return getCowSoundSend()
+  }
+  return undefined
 }
 
 function _shouldPlayExpiredOrderSound(
@@ -95,12 +100,7 @@ function _shouldPlayExpiredOrderSound(
   })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _getUpdatedOrderSound(payload: UpdateOrderParams) {
-  if (!payload.order.isHidden) {
-    // Trigger COW sound when an order is being updated to a non-hidden state
-    return getCowSoundSend()
-  }
-  return undefined
+function _shouldPlayPendingOrderSound(payload: AddPendingOrderParams): boolean {
+  // Only play COW sound if added pending order is not hidden
+  return !payload.order.isHidden
 }

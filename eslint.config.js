@@ -234,7 +234,12 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{viem,wagmi,wagmi/*,@tanstack/*,@lingui/*}',
+              group: 'external',
+              position: 'before',
+            },
+            {
+              pattern: '{@cowprotocol,@safe-global}/**',
               group: 'external',
               position: 'before',
             },

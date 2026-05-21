@@ -1,3 +1,6 @@
+import { EIP1193Provider, http } from 'viem'
+import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -6,8 +9,6 @@ import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { injected, safe } from '@wagmi/connectors'
-import { EIP1193Provider, http } from 'viem'
-import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
 import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED } from './providerIsolation'
 

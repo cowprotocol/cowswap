@@ -1,8 +1,8 @@
 import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { useWalletClient } from 'wagmi'
+
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
   PartnerCodeAvailability,

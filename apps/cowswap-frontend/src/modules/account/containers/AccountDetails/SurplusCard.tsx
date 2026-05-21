@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   ExternalLink,
@@ -9,7 +11,6 @@ import {
   UI,
 } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
