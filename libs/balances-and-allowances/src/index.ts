@@ -13,11 +13,8 @@ export { useUpdateTokenBalance } from './hooks/useUpdateTokenBalance'
 export { useTokenAllowances } from './hooks/useTokenAllowances'
 export { useBalancesAndAllowances } from './hooks/useBalancesAndAllowances'
 export { useTradeSpenderAddress } from './hooks/useTradeSpenderAddress'
-export { useIsBffFailed } from './state/isBffFailedAtom'
-export { BalancesBffUpdater } from './updaters/BalancesBffUpdater'
 export { BalancesRpcCallUpdater } from './updaters/BalancesRpcCallUpdater'
 export type { BalancesAndAllowances } from './types/balances-and-allowances'
-export * from './utils/isBffSupportedNetwork'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'
