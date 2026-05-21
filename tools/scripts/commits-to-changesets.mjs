@@ -9,6 +9,8 @@ import {
   resolveAffectedPackages,
   changesetFilename,
   changesetContent,
+  isReleaseCommitSubject,
+  resolveBaselineRef,
 } from './commits-to-changesets-lib.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -34,28 +36,43 @@ function tryGit(args) {
 }
 
 function resolveBaseline() {
-  const fromEnv = (process.env.BASELINE_REF || '').trim()
-  if (fromEnv) {
-    console.log(`[converter] Using BASELINE_REF=${fromEnv}`)
-    return fromEnv
+  const envBaseline = (process.env.BASELINE_REF || '').trim()
+  const latestReleaseTag = envBaseline ? null : tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
+  const releasePrCommit = !envBaseline && latestReleaseTag ? findRecentReleasePrCommit(latestReleaseTag) : null
+
+  const { ref, source } = resolveBaselineRef({
+    envBaseline,
+    latestReleaseTag,
+    releasePrCommit,
+  })
+
+  switch (source) {
+    case 'env':
+      console.log(`[converter] Using BASELINE_REF=${ref}`)
+      break
+    case 'release-pr-merge':
+      console.log(
+        `[converter] Using release-PR merge commit ${ref} as baseline ` +
+          `(newer than last release tag ${latestReleaseTag} — avoids re-emitting ` +
+          `changesets the just-merged release PR already consumed)`,
+      )
+      break
+    case 'release-tag':
+      console.log(`[converter] Using latest release tag: ${ref}`)
+      break
+    case 'none':
+      console.warn(
+        '[converter] No baseline tag found and BASELINE_REF not set. ' +
+          'No changesets will be generated. ' +
+          'To bootstrap, re-run via workflow_dispatch with `baseline_ref` set.',
+      )
+      break
   }
-  const tag = tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
-  if (tag) {
-    console.log(`[converter] Using latest release tag: ${tag}`)
-    return tag
-  }
-  console.warn(
-    '[converter] No baseline tag found and BASELINE_REF not set. ' +
-      'No changesets will be generated. ' +
-      'To bootstrap, re-run via workflow_dispatch with `baseline_ref` set.',
-  )
-  return null
+  return ref
 }
 
 function loadTrackedPackages() {
-  const registry = JSON.parse(
-    readFileSync(join(rootDir, 'tools/release/tracked-packages.json'), 'utf-8'),
-  )
+  const registry = JSON.parse(readFileSync(join(rootDir, 'tools/release/tracked-packages.json'), 'utf-8'))
   const result = []
   for (const path of registry.packages) {
     const pkgJsonPath = join(rootDir, path, 'package.json')
@@ -68,13 +85,7 @@ function loadTrackedPackages() {
 
 function getCommits(baseline) {
   const format = `${COMMIT_SEP}%H${FIELD_SEP}%s${FIELD_SEP}%b`
-  const raw = git([
-    'log',
-    '--no-merges',
-    '--reverse',
-    `${baseline}..HEAD`,
-    `--format=${format}`,
-  ])
+  const raw = git(['log', '--no-merges', '--reverse', `${baseline}..HEAD`, `--format=${format}`])
   if (!raw) return []
   return raw
     .split(COMMIT_SEP)
