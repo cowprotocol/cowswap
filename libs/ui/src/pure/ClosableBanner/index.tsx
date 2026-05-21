@@ -6,17 +6,17 @@ import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 import { CLOSABLE_BANNER_STORAGE } from './constants'
 
-// true - when banner closed
-type ClosableBannersState = Record<string, true | undefined>
+export interface ClosableBannerProps {
+  storageKey: string
+  callback: ClosableBannerCallback
+}
 
 interface ClosableBannerCallback {
   (close: () => void): ReactElement
 }
 
-export interface ClosableBannerProps {
-  storageKey: string
-  callback: ClosableBannerCallback
-}
+// true - when banner closed
+type ClosableBannersState = Record<string, true | undefined>
 
 const DEFAULT_STATE: ClosableBannersState = {}
 

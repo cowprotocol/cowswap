@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import svgCheckSrc from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'

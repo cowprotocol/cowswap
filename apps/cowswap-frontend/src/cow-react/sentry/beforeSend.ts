@@ -36,26 +36,7 @@ function shouldIgnoreErrorBasedOnExtra(error: SentryErrorEvent): boolean {
 
 const EXTRA_ERROR_CODES_TO_IGNORE = new Set([-32000, 4001, -32603])
 
-/**
- * Detects whether given error is a load failed error
- *
- * Adapted from https://gist.github.com/jeengbe/4bc86f05a41a1831e6abf2369579cc7a
- */
-function shouldIgnoreErrorBasedOnBreadcrumbs(error: SentryErrorEvent): boolean {
-  const exception = error.exception?.values?.[0]
-  const breadcrumbs = error.breadcrumbs
-
-  if (
-    !exception?.type ||
-    !breadcrumbs ||
-    !isTypeError(exception.type, exception?.value) ||
-    !isUnhandledRejectionError(exception.type)
-  ) {
-    return false
-  }
-
-  return searchBreadcrumbs(breadcrumbs, [isFetchError, isMetamaskRpcError])
-}
+type CheckBreadcrumb = (breadcrumb: Sentry.Breadcrumb) => boolean
 
 function isTypeError(type: string, value: string | undefined): boolean {
   return !!value && type === 'TypeError' && TYPE_ERROR_FETCH_FAILED_VALUES.has(value)
@@ -88,7 +69,26 @@ function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], checkBreadcrumbs: C
   return false
 }
 
-type CheckBreadcrumb = (breadcrumb: Sentry.Breadcrumb) => boolean
+/**
+ * Detects whether given error is a load failed error
+ *
+ * Adapted from https://gist.github.com/jeengbe/4bc86f05a41a1831e6abf2369579cc7a
+ */
+function shouldIgnoreErrorBasedOnBreadcrumbs(error: SentryErrorEvent): boolean {
+  const exception = error.exception?.values?.[0]
+  const breadcrumbs = error.breadcrumbs
+
+  if (
+    !exception?.type ||
+    !breadcrumbs ||
+    !isTypeError(exception.type, exception?.value) ||
+    !isUnhandledRejectionError(exception.type)
+  ) {
+    return false
+  }
+
+  return searchBreadcrumbs(breadcrumbs, [isFetchError, isMetamaskRpcError])
+}
 
 const TYPE_ERROR_FETCH_FAILED_VALUES = new Set([
   'Failed to fetch',

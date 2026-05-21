@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
 
+import { type Address, erc20Abi } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import {
   getEthFlowContractAddresses,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -23,9 +26,6 @@ import {
 } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { type Address, erc20Abi } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
-
 const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
   Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [
     chainId,
@@ -35,8 +35,14 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
 
 export const ethFlowEnv: CowEnv = isProd || isStaging || isEns ? 'prod' : 'staging'
 
-export type UseContractResult<T> = { abi: T; address: string; chainId: SupportedChainId }
+export type EthFlowContractData = UseContractResult<typeof CoWSwapEthFlowAbi>
 
+export type SettlementContractData = UseContractResult<typeof GPv2SettlementAbi>
+
+export type UseContractResult<T> = { abi: T; address: string; chainId: SupportedChainId }
+export type VCowContractData = Omit<UseContractResult<typeof vCowAbi>, 'address'> & { address: string | null }
+
+export type WethContractData = UseContractResult<typeof WethAbi>
 /** Minimal stub for legacy useContract(address, abi, withContract). Returns contract data only; contract methods require viem/wagmi. */
 export function useContract<TContract = null, TAbi = unknown>(
   address: string | undefined,
@@ -55,21 +61,6 @@ export function useContract<TContract = null, TAbi = unknown>(
   ) as UseContractResult<TAbi> & { contract: TContract | null }
 }
 
-export type WethContractData = UseContractResult<typeof WethAbi>
-export function useWethContractData(): WethContractData {
-  const { chainId } = useWalletInfo()
-
-  return useMemo(
-    () => ({
-      abi: WethAbi,
-      address: WETH_CONTRACT_ADDRESS_MAP[chainId],
-      chainId,
-    }),
-    [chainId],
-  )
-}
-
-export type EthFlowContractData = UseContractResult<typeof CoWSwapEthFlowAbi>
 export function useEthFlowContractData(): EthFlowContractData {
   const { chainId } = useWalletInfo()
 
@@ -84,8 +75,6 @@ export function useEthFlowContractData(): EthFlowContractData {
     [contractAddress, chainId],
   )
 }
-
-export type SettlementContractData = UseContractResult<typeof GPv2SettlementAbi>
 export function useGP2SettlementContractData(): SettlementContractData {
   const { chainId } = useWalletInfo()
 
@@ -113,20 +102,41 @@ export function useGP2SettlementContractProd(): SettlementContractData {
   )
 }
 
-export type VCowContractData = Omit<UseContractResult<typeof vCowAbi>, 'address'> & { address: string | null }
-export function useVCowContractData(): VCowContractData {
+export function useMerkleDropContract(): {
+  contract: {
+    claim: (index: number, amount: string, proof: string[]) => Promise<{ hash: `0x${string}` }>
+  } | null
+  chainId: SupportedChainId | undefined
+} {
   const { chainId } = useWalletInfo()
+  const { data: walletClient } = useWalletClient()
+  const address = chainId ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId] : ''
+
+  const contract = useMemo(() => {
+    if (!address || !chainId || !walletClient) return null
+    const contractAddress = address as Address
+    return {
+      claim: async (index: number, amount: string, proof: string[]) => {
+        const hash = await walletClient.writeContract({
+          address: contractAddress,
+          abi: MerkleDropAbi,
+          functionName: 'claim',
+          args: [BigInt(index), BigInt(amount), proof as readonly `0x${string}`[]],
+          account: walletClient.account,
+        })
+        return { hash }
+      },
+    }
+  }, [address, chainId, walletClient])
 
   return useMemo(
     () => ({
-      abi: vCowAbi,
-      address: V_COW_CONTRACT_ADDRESS[chainId],
-      chainId,
+      contract,
+      chainId: chainId ?? undefined,
     }),
-    [chainId],
+    [contract, chainId],
   )
 }
-
 /** ERC20 contract wrapper for viem: returns { contract, chainId } for token at address */
 export function useTokenContract(tokenAddress: string | undefined): {
   contract: { allowance: (owner: string, spender: string) => Promise<bigint> } | null
@@ -148,6 +158,52 @@ export function useTokenContract(tokenAddress: string | undefined): {
         }),
     }
   }, [tokenAddress, chainId, publicClient])
+
+  return useMemo(
+    () => ({
+      contract,
+      chainId: chainId ?? undefined,
+    }),
+    [contract, chainId],
+  )
+}
+
+export function useTokenDistroContract(): {
+  contract: {
+    balances: (account: string) => Promise<{ claimed: bigint }>
+    claim: () => Promise<{ hash: `0x${string}` }>
+  } | null
+  chainId: SupportedChainId | undefined
+} {
+  const { chainId } = useWalletInfo()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const address = chainId ? TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId] : ''
+
+  const contract = useMemo(() => {
+    if (!address || !chainId || !publicClient || !walletClient) return null
+    const contractAddress = address as Address
+    return {
+      balances: async (account: string) => {
+        const [, claimed] = await publicClient.readContract({
+          address: contractAddress,
+          abi: TokenDistroAbi,
+          functionName: 'balances',
+          args: [account as Address],
+        })
+        return { claimed }
+      },
+      claim: async () => {
+        const hash = await walletClient.writeContract({
+          address: contractAddress,
+          abi: TokenDistroAbi,
+          functionName: 'claim',
+          account: walletClient.account,
+        })
+        return { hash }
+      },
+    }
+  }, [address, chainId, publicClient, walletClient])
 
   return useMemo(
     () => ({
@@ -227,84 +283,28 @@ export function useVCowContract(): {
   )
 }
 
-export function useMerkleDropContract(): {
-  contract: {
-    claim: (index: number, amount: string, proof: string[]) => Promise<{ hash: `0x${string}` }>
-  } | null
-  chainId: SupportedChainId | undefined
-} {
+export function useVCowContractData(): VCowContractData {
   const { chainId } = useWalletInfo()
-  const { data: walletClient } = useWalletClient()
-  const address = chainId ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId] : ''
-
-  const contract = useMemo(() => {
-    if (!address || !chainId || !walletClient) return null
-    const contractAddress = address as Address
-    return {
-      claim: async (index: number, amount: string, proof: string[]) => {
-        const hash = await walletClient.writeContract({
-          address: contractAddress,
-          abi: MerkleDropAbi,
-          functionName: 'claim',
-          args: [BigInt(index), BigInt(amount), proof as readonly `0x${string}`[]],
-          account: walletClient.account,
-        })
-        return { hash }
-      },
-    }
-  }, [address, chainId, walletClient])
 
   return useMemo(
     () => ({
-      contract,
-      chainId: chainId ?? undefined,
+      abi: vCowAbi,
+      address: V_COW_CONTRACT_ADDRESS[chainId],
+      chainId,
     }),
-    [contract, chainId],
+    [chainId],
   )
 }
 
-export function useTokenDistroContract(): {
-  contract: {
-    balances: (account: string) => Promise<{ claimed: bigint }>
-    claim: () => Promise<{ hash: `0x${string}` }>
-  } | null
-  chainId: SupportedChainId | undefined
-} {
+export function useWethContractData(): WethContractData {
   const { chainId } = useWalletInfo()
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
-  const address = chainId ? TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId] : ''
-
-  const contract = useMemo(() => {
-    if (!address || !chainId || !publicClient || !walletClient) return null
-    const contractAddress = address as Address
-    return {
-      balances: async (account: string) => {
-        const [, claimed] = await publicClient.readContract({
-          address: contractAddress,
-          abi: TokenDistroAbi,
-          functionName: 'balances',
-          args: [account as Address],
-        })
-        return { claimed }
-      },
-      claim: async () => {
-        const hash = await walletClient.writeContract({
-          address: contractAddress,
-          abi: TokenDistroAbi,
-          functionName: 'claim',
-          account: walletClient.account,
-        })
-        return { hash }
-      },
-    }
-  }, [address, chainId, publicClient, walletClient])
 
   return useMemo(
     () => ({
-      contract,
-      chainId: chainId ?? undefined,
+      abi: WethAbi,
+      address: WETH_CONTRACT_ADDRESS_MAP[chainId],
+      chainId,
     }),
-    [contract, chainId],
+    [chainId],
   )
 }

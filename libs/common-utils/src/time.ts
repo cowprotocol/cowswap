@@ -3,10 +3,6 @@
  * @param date
  */
 
-export function getDateTimestamp(date: Date): number {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
-}
-
 /**
  * Helper function that returns a given Date/timestamp as a locale representation of it as string
  * in the format <local date string> (<time zone information>)
@@ -37,6 +33,10 @@ export function formatShortDate(value: Date | number | string | undefined | null
   }
 
   return date.toLocaleDateString(undefined, { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' })
+}
+
+export function getDateTimestamp(date: Date): number {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
 }
 
 export function timeSinceInSeconds(timestamp?: number): number | undefined {

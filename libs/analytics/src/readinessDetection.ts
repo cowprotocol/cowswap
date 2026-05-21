@@ -23,30 +23,40 @@ export function isAnalyticsReady(): AnalyticsReadiness {
 }
 
 /**
- * Log detailed analytics status for debugging
+ * Wait for analytics tools to be ready with sophisticated timing logic
+ * Matches the logic from the utm-fix.js attribution loading system
+ *
+ * @returns Promise that resolves when analytics are ready or timeout is reached
  */
-function logAnalyticsStatus(
-  attempts: number,
-  elapsed: number,
-  analytics: AnalyticsReadiness,
-  bothReady: boolean,
-): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[UTM Analytics] Readiness check:', {
-      attempt: attempts,
-      elapsed: elapsed + 'ms',
-      gtmReady: analytics.gtm,
-      safaryReady: analytics.safary,
-      bothReady,
-      dataLayer: !!window.dataLayer,
-      gtag: !!window.gtag,
-      googleTagManager: !!(window.google_tag_manager && Object.keys(window.google_tag_manager).length > 0),
-      safaryGlobal: !!window.safary,
-      safaryScript: !!(
-        document.querySelector('script[data-name="safary-sdk"]') || document.querySelector('script[src*="safary"]')
-      ),
-    })
-  }
+export function waitForAnalytics(): Promise<void> {
+  return new Promise((resolve) => {
+    const startTime = Date.now()
+    let attempts = 0
+    const maxAttempts = 50 // 5 seconds max wait
+    const checkInterval = 100 // Check every 100ms
+
+    const analyticsInterval = setInterval(() => {
+      attempts++
+      const analytics = isAnalyticsReady()
+      const elapsed = Date.now() - startTime
+      const bothReady = analytics.gtm && analytics.safary
+
+      logAnalyticsStatus(attempts, elapsed, analytics, bothReady)
+
+      if (bothReady) {
+        handleBothReady(analyticsInterval, resolve)
+      } else if (analytics.gtm && elapsed >= 3000) {
+        handleGtmOnlyReady(analyticsInterval, resolve)
+      } else if (attempts >= maxAttempts) {
+        handleTimeout(analyticsInterval, resolve, 'Timeout reached, proceeding anyway')
+      }
+    }, checkInterval)
+
+    // Additional hard timeout safety net (10 seconds)
+    setTimeout(() => {
+      handleTimeout(analyticsInterval, resolve, 'Hard timeout reached, force proceeding')
+    }, 10000)
+  })
 }
 
 /**
@@ -85,38 +95,28 @@ function handleTimeout(analyticsInterval: NodeJS.Timeout, resolve: () => void, m
 }
 
 /**
- * Wait for analytics tools to be ready with sophisticated timing logic
- * Matches the logic from the utm-fix.js attribution loading system
- *
- * @returns Promise that resolves when analytics are ready or timeout is reached
+ * Log detailed analytics status for debugging
  */
-export function waitForAnalytics(): Promise<void> {
-  return new Promise((resolve) => {
-    const startTime = Date.now()
-    let attempts = 0
-    const maxAttempts = 50 // 5 seconds max wait
-    const checkInterval = 100 // Check every 100ms
-
-    const analyticsInterval = setInterval(() => {
-      attempts++
-      const analytics = isAnalyticsReady()
-      const elapsed = Date.now() - startTime
-      const bothReady = analytics.gtm && analytics.safary
-
-      logAnalyticsStatus(attempts, elapsed, analytics, bothReady)
-
-      if (bothReady) {
-        handleBothReady(analyticsInterval, resolve)
-      } else if (analytics.gtm && elapsed >= 3000) {
-        handleGtmOnlyReady(analyticsInterval, resolve)
-      } else if (attempts >= maxAttempts) {
-        handleTimeout(analyticsInterval, resolve, 'Timeout reached, proceeding anyway')
-      }
-    }, checkInterval)
-
-    // Additional hard timeout safety net (10 seconds)
-    setTimeout(() => {
-      handleTimeout(analyticsInterval, resolve, 'Hard timeout reached, force proceeding')
-    }, 10000)
-  })
+function logAnalyticsStatus(
+  attempts: number,
+  elapsed: number,
+  analytics: AnalyticsReadiness,
+  bothReady: boolean,
+): void {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[UTM Analytics] Readiness check:', {
+      attempt: attempts,
+      elapsed: elapsed + 'ms',
+      gtmReady: analytics.gtm,
+      safaryReady: analytics.safary,
+      bothReady,
+      dataLayer: !!window.dataLayer,
+      gtag: !!window.gtag,
+      googleTagManager: !!(window.google_tag_manager && Object.keys(window.google_tag_manager).length > 0),
+      safaryGlobal: !!window.safary,
+      safaryScript: !!(
+        document.querySelector('script[data-name="safary-sdk"]') || document.querySelector('script[src*="safary"]')
+      ),
+    })
+  }
 }

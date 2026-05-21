@@ -8,10 +8,6 @@ interface CachedMessageEnvelope {
 const messagesCache: Record<string, CachedMessageEnvelope> = {}
 const handlers: Record<string, (data: never) => void> = {}
 
-export function registerCachedMessageHandler(method: WidgetMethodsListen, handler: (data: never) => void): void {
-  handlers[method] = handler
-}
-
 export function cacheWidgetMessage(event: MessageEvent): void {
   const method = getEventMethod(event)
   if (!method) return
@@ -31,6 +27,23 @@ export function cacheWidgetMessage(event: MessageEvent): void {
   }
 }
 
+export function clearCachedWidgetMessage(method: string): void {
+  delete messagesCache[method]
+  delete handlers[method]
+}
+
+export function clearCachedWidgetMessages(): void {
+  Object.keys(messagesCache).forEach(clearCachedWidgetMessage)
+}
+
+export function getCachedWidgetMessageMethods(): string[] {
+  return Object.keys(messagesCache)
+}
+
+export function registerCachedMessageHandler(method: WidgetMethodsListen, handler: (data: never) => void): void {
+  handlers[method] = handler
+}
+
 export function replayCachedWidgetMessage(method: string): void {
   const cachedMessage = messagesCache[method]
   if (!cachedMessage) return
@@ -39,19 +52,6 @@ export function replayCachedWidgetMessage(method: string): void {
   if (!handler) return
 
   handler(cachedMessage.data as never)
-}
-
-export function getCachedWidgetMessageMethods(): string[] {
-  return Object.keys(messagesCache)
-}
-
-export function clearCachedWidgetMessage(method: string): void {
-  delete messagesCache[method]
-  delete handlers[method]
-}
-
-export function clearCachedWidgetMessages(): void {
-  Object.keys(messagesCache).forEach(clearCachedWidgetMessage)
 }
 
 function getEventMethod(event: MessageEvent): string | null {

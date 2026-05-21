@@ -85,6 +85,16 @@ export default async function TopicPage({ params }: { params: Promise<{ topicSlu
   )
 }
 
+function formatCategoryForList(category: Category): {
+  name: string
+  slug: string
+} {
+  return {
+    name: category.attributes?.name ?? '',
+    slug: category.attributes?.slug ?? '',
+  }
+}
+
 function formatCategoryForTopicPage(category: Category): {
   name: string
   slug: string
@@ -112,15 +122,5 @@ function formatCategoryForTopicPage(category: Category): {
     bgColor: attrs.backgroundColor ?? '#FFFFFF',
     textColor: attrs.textColor ?? '#000000',
     imageUrl: attrs.image?.data?.attributes?.url ?? '',
-  }
-}
-
-function formatCategoryForList(category: Category): {
-  name: string
-  slug: string
-} {
-  return {
-    name: category.attributes?.name ?? '',
-    slug: category.attributes?.slug ?? '',
   }
 }

@@ -7,15 +7,15 @@ import { BlockchainNetwork } from './context/OrdersTableContext'
 import { getAccountOrders, Order } from '../../../api/operator'
 import { Network } from '../../../types'
 
-interface OrdersInNetwork {
-  network: number
-}
-
 export interface ResultSearchInAnotherNetwork {
   isLoading: boolean
   ordersInNetworks: OrdersInNetwork[]
   setLoadingState: (value: boolean) => void
   errorMsg: string | null
+}
+
+interface OrdersInNetwork {
+  network: number
 }
 
 export const useSearchInAnotherNetwork = (

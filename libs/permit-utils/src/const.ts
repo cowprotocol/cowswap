@@ -1,5 +1,6 @@
-import ms from 'ms.macro'
 import { maxUint256 } from 'viem'
+
+import ms from 'ms.macro'
 import { privateKeyToAccount } from 'viem/accounts'
 
 // PK used only for signing permit requests for quoting and identifying token 'permittability'

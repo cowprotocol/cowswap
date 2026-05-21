@@ -1,5 +1,7 @@
 import { Fragment, ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { styled } from '@cowprotocol/common-hooks'
 import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
@@ -15,7 +17,6 @@ import {
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 

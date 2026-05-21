@@ -6,29 +6,40 @@ const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 
 export const DOCUMENT = self.location.origin + '/index.html'
 
-/**
- * Matches with App Shell-style routing, so that navigation requests are fulfilled with an index.html shell.
- * See https://developers.google.com/web/fundamentals/architecture/app-shell
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function matchDocument({ request, url }: RouteMatchCallbackOptions) {
-  // If this isn't a navigation, skip.
-  if (request.mode !== 'navigate') {
-    return false
-  }
-
-  // If this looks like a resource (ie has a file extension), skip.
-  if (url.pathname.match(fileExtensionRegexp)) {
-    return false
-  }
-
-  return true
-}
-
 type HandlerContext = {
   offlineDocument?: Response
 } | void
+
+/**
+ * A cache-specific version of the document.
+ * This document sets the local `__isDocumentCached` variable to true.
+ */
+export class CachedDocument extends Response {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  static async from(response: Response) {
+    const text = await response.text()
+
+    // Set the content-type explicitly. Some browsers (Android 12; Chrome 91) use an invalid content-type header.
+    const headers = new Headers(response.headers)
+    headers.set('Content-Type', 'text/html; charset=utf-8')
+    const init = { ...response, headers }
+
+    // Injects a marker into the document so that client code knows it was served from cache.
+    // The marker should be injected immediately in the <body> so it is available to client code.
+    return new CachedDocument(text.replace('<body>', '<body><script>window.__isDocumentCached=true</script>'), init)
+  }
+
+  private constructor(text: string, response: Response) {
+    super(text, response)
+  }
+}
+
+export class DocumentRoute extends Route {
+  constructor(offlineDocument?: Response) {
+    super(matchDocument, handleDocument.bind({ offlineDocument }), 'GET')
+  }
+}
 
 /**
  * The returned document should always be fresh, so this handler uses a custom strategy:
@@ -84,33 +95,22 @@ export async function handleDocument(this: HandlerContext, { event: _event, requ
   return new Response(response.body, response)
 }
 
-export class DocumentRoute extends Route {
-  constructor(offlineDocument?: Response) {
-    super(matchDocument, handleDocument.bind({ offlineDocument }), 'GET')
-  }
-}
-
 /**
- * A cache-specific version of the document.
- * This document sets the local `__isDocumentCached` variable to true.
+ * Matches with App Shell-style routing, so that navigation requests are fulfilled with an index.html shell.
+ * See https://developers.google.com/web/fundamentals/architecture/app-shell
  */
-export class CachedDocument extends Response {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  static async from(response: Response) {
-    const text = await response.text()
-
-    // Set the content-type explicitly. Some browsers (Android 12; Chrome 91) use an invalid content-type header.
-    const headers = new Headers(response.headers)
-    headers.set('Content-Type', 'text/html; charset=utf-8')
-    const init = { ...response, headers }
-
-    // Injects a marker into the document so that client code knows it was served from cache.
-    // The marker should be injected immediately in the <body> so it is available to client code.
-    return new CachedDocument(text.replace('<body>', '<body><script>window.__isDocumentCached=true</script>'), init)
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function matchDocument({ request, url }: RouteMatchCallbackOptions) {
+  // If this isn't a navigation, skip.
+  if (request.mode !== 'navigate') {
+    return false
   }
 
-  private constructor(text: string, response: Response) {
-    super(text, response)
+  // If this looks like a resource (ie has a file extension), skip.
+  if (url.pathname.match(fileExtensionRegexp)) {
+    return false
   }
+
+  return true
 }

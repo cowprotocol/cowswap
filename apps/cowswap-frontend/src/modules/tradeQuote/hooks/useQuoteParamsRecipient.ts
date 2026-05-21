@@ -47,6 +47,21 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
   }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
 }
 
+/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
+function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
+  if (!outputCurrency) return undefined
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
+}
+
+/** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
+function resolveEvmReceiver(
+  recipientAddress: Nullish<string>,
+  recipient: Nullish<string>,
+  account: Nullish<string>,
+): Nullish<string> {
+  return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
+}
+
 /** Returns the recipient if it's a non-EVM address accepted for the given output chain, otherwise undefined. */
 function resolveNonEvmBridgeRecipient(
   recipient: Nullish<string>,
@@ -63,19 +78,4 @@ function resolveNonEvmBridgeRecipient(
     ({ isChain, isAddress: isNonEvmAddr }) => isChain(outputCurrency.chainId) && isNonEvmAddr(recipient),
   )
   return chainMatches ? recipient : undefined
-}
-
-/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
-function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
-  if (!outputCurrency) return undefined
-  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
-}
-
-/** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
-function resolveEvmReceiver(
-  recipientAddress: Nullish<string>,
-  recipient: Nullish<string>,
-  account: Nullish<string>,
-): Nullish<string> {
-  return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
 }

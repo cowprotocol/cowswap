@@ -1,3 +1,5 @@
+import { type Hash, type PublicClient, type WalletClient } from 'viem'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { RADIX_HEX } from '@cowprotocol/common-const'
 import {
@@ -14,7 +16,6 @@ import { getChainCurrencySymbols } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
-import { type Hash, type PublicClient, type WalletClient } from 'viem'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 

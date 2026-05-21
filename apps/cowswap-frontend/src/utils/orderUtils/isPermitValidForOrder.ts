@@ -1,8 +1,8 @@
+import { decodeFunctionData, type Hex, maxUint256 } from 'viem'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
-
-import { decodeFunctionData, type Hex, maxUint256 } from 'viem'
 
 export interface PermitValidationResult {
   isValid: boolean

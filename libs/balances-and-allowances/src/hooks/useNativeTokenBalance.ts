@@ -1,7 +1,7 @@
-import ms from 'ms.macro'
+import type { Address } from 'viem'
 import { useBalance, UseBalanceReturnType } from 'wagmi'
 
-import type { Address } from 'viem'
+import ms from 'ms.macro'
 
 export function useNativeTokenBalance(account?: string, chainId?: number): UseBalanceReturnType {
   return useBalance({

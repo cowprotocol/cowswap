@@ -1,24 +1,35 @@
-import type { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
-
-import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 import type { Address, PublicClient } from 'viem'
 import type { Config } from 'wagmi'
 
-export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
+import type { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 
-export type PermitInfo = {
-  type: PermitType
-  // TODO: make it not optional once token-lists is migrated
-  name?: string
-  version?: string | undefined // Some tokens have it different than `1`, and won't work without it
+import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+
+export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
+  callDataParams: Parameters<Eip2612PermitUtils['buildDaiLikePermitCallData']>
 }
 
-// Local TokenInfo definition to not depend on external libs just for this
-type TokenInfo = {
-  address: Address
-  // TODO: remove from token info
-  name: string | undefined
+export type BuildEip2612PermitCallDataParams = BasePermitCallDataParams & {
+  callDataParams: Parameters<Eip2612PermitUtils['buildPermitCallData']>
 }
+
+export type GetTokenPermitInfoParams = {
+  chainId: number
+  config: Config
+  publicClient: PublicClient
+  spender: string
+  tokenAddress: Address
+  amount?: bigint
+  minGasLimit?: bigint | undefined
+}
+
+export type GetTokenPermitIntoResult =
+  // When it's a permittable token:
+  | PermitInfo
+  // When something failed:
+  | FailedToIdentify
+
+export type PermitHookData = cowAppDataLatestScheme.CoWHook
 
 export type PermitHookParams = {
   chainId: number
@@ -32,32 +43,22 @@ export type PermitHookParams = {
   nonce?: number
 }
 
-export type PermitHookData = cowAppDataLatestScheme.CoWHook
+export type PermitInfo = {
+  type: PermitType
+  // TODO: make it not optional once token-lists is migrated
+  name?: string
+  version?: string | undefined // Some tokens have it different than `1`, and won't work without it
+}
 
-type FailedToIdentify = { error: string }
-
-export type GetTokenPermitIntoResult =
-  // When it's a permittable token:
-  | PermitInfo
-  // When something failed:
-  | FailedToIdentify
-
+export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 type BasePermitCallDataParams = {
   eip2612Utils: Eip2612PermitUtils
 }
-export type BuildEip2612PermitCallDataParams = BasePermitCallDataParams & {
-  callDataParams: Parameters<Eip2612PermitUtils['buildPermitCallData']>
-}
-export type BuildDaiLikePermitCallDataParams = BasePermitCallDataParams & {
-  callDataParams: Parameters<Eip2612PermitUtils['buildDaiLikePermitCallData']>
-}
+type FailedToIdentify = { error: string }
 
-export type GetTokenPermitInfoParams = {
-  chainId: number
-  config: Config
-  publicClient: PublicClient
-  spender: string
-  tokenAddress: Address
-  amount?: bigint
-  minGasLimit?: bigint | undefined
+// Local TokenInfo definition to not depend on external libs just for this
+type TokenInfo = {
+  address: Address
+  // TODO: remove from token info
+  name: string | undefined
 }

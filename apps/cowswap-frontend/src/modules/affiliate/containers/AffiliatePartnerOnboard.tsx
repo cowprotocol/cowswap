@@ -1,5 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
+import { useWalletClient } from 'wagmi'
+
 import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -7,7 +9,6 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
-import { useWalletClient } from 'wagmi'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 

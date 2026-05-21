@@ -5,10 +5,6 @@ import { useConnection } from 'wagmi'
 import { useWalletInfo } from '../../api/hooks'
 import { getInitialReconnectLifecycle, subscribeInitialReconnect } from '../initialReconnectLifecycle'
 
-function getServerSnapshot(): 'pending' | 'settled' {
-  return 'settled'
-}
-
 export function useIsRestoringConnection(): boolean {
   const { status } = useConnection()
   const { account } = useWalletInfo()
@@ -28,4 +24,8 @@ export function useIsRestoringConnection(): boolean {
   if (status === 'connected' && !account) return true
 
   return false
+}
+
+function getServerSnapshot(): 'pending' | 'settled' {
+  return 'settled'
 }

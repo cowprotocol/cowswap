@@ -20,6 +20,42 @@ export enum ExplorerDataType {
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
+/**
+ * Return the explorer link for the given data and data type
+ * @param chainId the ID of the chain for which to return the data
+ * @param data the data to return a link for
+ * @param type the type of the data
+ * @param defaultPrefix
+ */
+export function getExplorerLink(
+  chainId: number,
+  data: string,
+  type: ExplorerDataType,
+  defaultPrefix = 'https://etherscan.io',
+): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
+
+  if (isBtcChain(chainId)) return getBtcExplorerData(prefix, data, type)
+  if (isSolanaChain(chainId)) return getSolExplorerData(prefix, data, type)
+  return getEvmExplorerData(prefix, data, type)
+}
+
+function getBtcExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
+  switch (type) {
+    case ExplorerDataType.TRANSACTION:
+      return `${prefix}/tx/${data}`
+    case ExplorerDataType.ADDRESS:
+      return `${prefix}/address/${data}`
+    case ExplorerDataType.BLOCK:
+      return `${prefix}/block/${data}`
+    case ExplorerDataType.TOKEN:
+      return `${prefix}` // BTC has no token page
+    default:
+      return `${prefix}`
+  }
+}
+
 function getEvmExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
   switch (type) {
     case ExplorerDataType.TRANSACTION:
@@ -47,40 +83,4 @@ function getSolExplorerData(prefix: string, data: string, type: ExplorerDataType
     default:
       return `${prefix}`
   }
-}
-
-function getBtcExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
-  switch (type) {
-    case ExplorerDataType.TRANSACTION:
-      return `${prefix}/tx/${data}`
-    case ExplorerDataType.ADDRESS:
-      return `${prefix}/address/${data}`
-    case ExplorerDataType.BLOCK:
-      return `${prefix}/block/${data}`
-    case ExplorerDataType.TOKEN:
-      return `${prefix}` // BTC has no token page
-    default:
-      return `${prefix}`
-  }
-}
-
-/**
- * Return the explorer link for the given data and data type
- * @param chainId the ID of the chain for which to return the data
- * @param data the data to return a link for
- * @param type the type of the data
- * @param defaultPrefix
- */
-export function getExplorerLink(
-  chainId: number,
-  data: string,
-  type: ExplorerDataType,
-  defaultPrefix = 'https://etherscan.io',
-): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
-
-  if (isBtcChain(chainId)) return getBtcExplorerData(prefix, data, type)
-  if (isSolanaChain(chainId)) return getSolExplorerData(prefix, data, type)
-  return getEvmExplorerData(prefix, data, type)
 }

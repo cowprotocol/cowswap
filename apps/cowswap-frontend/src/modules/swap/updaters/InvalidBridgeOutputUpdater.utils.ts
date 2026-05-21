@@ -20,34 +20,6 @@ export interface UnsupportedBridgePairPatchParams {
   isBridgeSupportedNetworksLoading: boolean
 }
 
-export function getUnsupportedBridgePairPatch(params: UnsupportedBridgePairPatchParams): Partial<SwapRawState> | null {
-  const { sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading } = params
-
-  if (!sourceChainId || !targetChainId || sourceChainId === targetChainId) {
-    return null
-  }
-
-  // Keep existing state while supported networks are still loading or unresolved.
-  if (isBridgeSupportedNetworksLoading) {
-    return null
-  }
-
-  const destinationIds = new Set((bridgeSupportedNetworks ?? []).map((chain) => chain.id))
-
-  const isSourceSupported = destinationIds.has(sourceChainId)
-  const isTargetSupported = destinationIds.has(targetChainId)
-
-  if (!isSourceSupported || !isTargetSupported) {
-    return {
-      targetChainId: null,
-      outputCurrencyId: null,
-      outputCurrencyAmount: null,
-    }
-  }
-
-  return null
-}
-
 export function getInvalidBridgeOutputPatch(params: InvalidBridgeOutputPatchParams): Partial<SwapRawState> | null {
   const { sourceChainId, targetChainId, selectedOutputCurrencyId, bridgeRouteData, isBridgeRouteLoading } = params
 
@@ -81,6 +53,34 @@ export function getInvalidBridgeOutputPatch(params: InvalidBridgeOutputPatchPara
         outputCurrencyId: null,
         outputCurrencyAmount: null,
       }
+    }
+  }
+
+  return null
+}
+
+export function getUnsupportedBridgePairPatch(params: UnsupportedBridgePairPatchParams): Partial<SwapRawState> | null {
+  const { sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading } = params
+
+  if (!sourceChainId || !targetChainId || sourceChainId === targetChainId) {
+    return null
+  }
+
+  // Keep existing state while supported networks are still loading or unresolved.
+  if (isBridgeSupportedNetworksLoading) {
+    return null
+  }
+
+  const destinationIds = new Set((bridgeSupportedNetworks ?? []).map((chain) => chain.id))
+
+  const isSourceSupported = destinationIds.has(sourceChainId)
+  const isTargetSupported = destinationIds.has(targetChainId)
+
+  if (!isSourceSupported || !isTargetSupported) {
+    return {
+      targetChainId: null,
+      outputCurrencyId: null,
+      outputCurrencyAmount: null,
     }
   }
 

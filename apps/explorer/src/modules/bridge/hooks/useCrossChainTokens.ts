@@ -6,11 +6,12 @@ import {
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
-import type { TokenInfo } from '@uniswap/token-lists'
 
 import { useBridgeProviderBuyTokens } from './useBridgeProviderBuyTokens'
 
 import { useTokenList } from '../../../hooks/useTokenList'
+
+import type { TokenInfo } from '@uniswap/token-lists'
 
 export interface CrossChainTokens<T = TokenInfo | undefined> {
   sourceToken: T

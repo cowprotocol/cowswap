@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 
+import { MessageDescriptor, i18n } from '@lingui/core'
+
 import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { AirdropAbi } from '@cowprotocol/cowswap-abis'
 import { Fraction } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { MessageDescriptor, i18n } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'

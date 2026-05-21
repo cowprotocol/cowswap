@@ -1,18 +1,19 @@
-import { calculateGasMargin } from '@cowprotocol/common-utils'
-
-import useSWR from 'swr'
 import { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
+import { calculateGasMargin } from '@cowprotocol/common-utils'
+
+import useSWR from 'swr'
+
 import type { SWRConfiguration } from 'swr'
+
+type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
 type ITransactionData = {
   to?: Address
   data?: Hex
 }
-
-type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
 export const useHookGasLimitCalculator = (): IHookGasCalculator => {
   const config = useConfig()

@@ -7,16 +7,12 @@ import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
 
 /**
- * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
- * @param maybeSupportedLocale the fuzzy locale identifier
+ * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux (without react context)
+ * Required to preload "messages" before <Main> render
+ * @see useActiveLocale - should implement **the same** locale detection logic
  */
-function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined {
-  if (typeof maybeSupportedLocale !== 'string') return undefined
-  const lowerMaybeSupportedLocale = maybeSupportedLocale.toLowerCase()
-  return SUPPORTED_LOCALES.find(
-    (locale) =>
-      locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale,
-  )
+export function getActiveLocale(): SupportedLocale {
+  return parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
 }
 
 /**
@@ -34,17 +30,6 @@ export function navigatorLocale(): SupportedLocale | undefined {
   return parseLocale(language)
 }
 
-function storeLocale(): SupportedLocale | undefined {
-  return cowSwapStore.getState().user.userLocale ?? undefined
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useUrlLocale() {
-  const parsed = useParsedQueryString()
-  return parseLocale(parsed.lng)
-}
-
 /**
  * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux
  * Stores the query string locale in redux (if set) to persist across sessions
@@ -56,10 +41,25 @@ export function useActiveLocale(): SupportedLocale {
 }
 
 /**
- * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux (without react context)
- * Required to preload "messages" before <Main> render
- * @see useActiveLocale - should implement **the same** locale detection logic
+ * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
+ * @param maybeSupportedLocale the fuzzy locale identifier
  */
-export function getActiveLocale(): SupportedLocale {
-  return parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
+function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined {
+  if (typeof maybeSupportedLocale !== 'string') return undefined
+  const lowerMaybeSupportedLocale = maybeSupportedLocale.toLowerCase()
+  return SUPPORTED_LOCALES.find(
+    (locale) =>
+      locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale,
+  )
+}
+
+function storeLocale(): SupportedLocale | undefined {
+  return cowSwapStore.getState().user.userLocale ?? undefined
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function useUrlLocale() {
+  const parsed = useParsedQueryString()
+  return parseLocale(parsed.lng)
 }

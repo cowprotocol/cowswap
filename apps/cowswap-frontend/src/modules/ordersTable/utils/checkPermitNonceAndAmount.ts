@@ -1,10 +1,10 @@
+import type { Hex, PublicClient, WalletClient } from 'viem'
+
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
 
 import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
-
-import type { Hex, PublicClient, WalletClient } from 'viem'
 
 export async function checkPermitNonceAndAmount(
   account: string,

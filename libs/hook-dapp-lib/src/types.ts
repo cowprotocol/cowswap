@@ -7,28 +7,9 @@ export interface CowHook {
   dappId: string
 }
 
-export interface HookDappConditions {
-  position?: 'post' | 'pre'
-  walletCompatibility?: HookDappWalletCompatibility[]
-  supportedNetworks?: number[]
-}
-
 export interface CowHookCreation {
   hook: Omit<CowHook, 'dappId'>
   recipientOverride?: string
-}
-
-export interface TokenData {
-  address: string
-}
-
-export interface CowHookDetails extends CowHookCreation {
-  hook: CowHook
-  uuid: string
-}
-
-export interface CowHookToEdit extends CowHookCreation {
-  uuid: string
 }
 
 export interface CoWHookDappActions {
@@ -41,6 +22,47 @@ export interface CoWHookDappActions {
   setBuyToken(token: TokenData): void
 }
 
+export interface CowHookDetails extends CowHookCreation {
+  hook: CowHook
+  uuid: string
+}
+
+export interface CowHookToEdit extends CowHookCreation {
+  uuid: string
+}
+
+export interface HookDappBase {
+  id: string
+  name: string
+  descriptionShort?: string
+  description?: string
+  type: HookDappType
+  version: string
+  website: string
+  image: string
+  conditions?: HookDappConditions
+}
+
+export interface HookDappConditions {
+  position?: 'post' | 'pre'
+  walletCompatibility?: HookDappWalletCompatibility[]
+  supportedNetworks?: number[]
+}
+
+export interface HookDappContext {
+  chainId: number
+  account?: string
+  orderParams: HookDappOrderParams | null
+  hookToEdit?: CowHookDetails
+  isSmartContract: boolean | undefined
+  isPreHook: boolean
+  isDarkMode: boolean
+  // { [address: string]: { [token: string]: balanceDiff: string } }
+  // example: { '0x123': { '0x456': '100', '0xabc': '-100' } }
+  balancesDiff: Record<string, Record<string, string>>
+  stateDiff: StateDiff[]
+}
+
 export interface HookDappOrderParams {
   kind: 'buy' | 'sell'
   validTo: number
@@ -51,6 +73,40 @@ export interface HookDappOrderParams {
   buyAmount: string
 }
 
+export interface StateDiff {
+  address: string
+  soltype: SoltypeElement | null
+  original: string | Record<string, unknown>
+  dirty: string | Record<string, unknown>
+  raw: RawElement[]
+}
+
+export interface TokenData {
+  address: string
+}
+
+interface RawElement {
+  address: string
+  key: string
+  original: string
+  dirty: string
+}
+
+interface SoltypeElement {
+  name: string
+  type: SoltypeType
+  storage_location: StorageLocation
+  components: SoltypeElement[] | null
+  offset: number
+  index: string
+  indexed: boolean
+  simple_type?: Type
+}
+
+interface Type {
+  type: SimpleTypeType
+}
+
 enum SimpleTypeType {
   Address = 'address',
   Bool = 'bool',
@@ -58,10 +114,6 @@ enum SimpleTypeType {
   Slice = 'slice',
   String = 'string',
   Uint = 'uint',
-}
-
-interface Type {
-  type: SimpleTypeType
 }
 
 enum SoltypeType {
@@ -86,56 +138,4 @@ enum StorageLocation {
   Default = 'default',
   Memory = 'memory',
   Storage = 'storage',
-}
-
-interface SoltypeElement {
-  name: string
-  type: SoltypeType
-  storage_location: StorageLocation
-  components: SoltypeElement[] | null
-  offset: number
-  index: string
-  indexed: boolean
-  simple_type?: Type
-}
-
-interface RawElement {
-  address: string
-  key: string
-  original: string
-  dirty: string
-}
-
-export interface StateDiff {
-  address: string
-  soltype: SoltypeElement | null
-  original: string | Record<string, unknown>
-  dirty: string | Record<string, unknown>
-  raw: RawElement[]
-}
-
-export interface HookDappContext {
-  chainId: number
-  account?: string
-  orderParams: HookDappOrderParams | null
-  hookToEdit?: CowHookDetails
-  isSmartContract: boolean | undefined
-  isPreHook: boolean
-  isDarkMode: boolean
-  // { [address: string]: { [token: string]: balanceDiff: string } }
-  // example: { '0x123': { '0x456': '100', '0xabc': '-100' } }
-  balancesDiff: Record<string, Record<string, string>>
-  stateDiff: StateDiff[]
-}
-
-export interface HookDappBase {
-  id: string
-  name: string
-  descriptionShort?: string
-  description?: string
-  type: HookDappType
-  version: string
-  website: string
-  image: string
-  conditions?: HookDappConditions
 }

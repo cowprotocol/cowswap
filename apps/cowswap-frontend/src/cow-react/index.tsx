@@ -1,6 +1,8 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
 import { type ReactNode, StrictMode } from 'react'
+
+import { Messages } from '@lingui/core'
 import './sentry'
 
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
@@ -9,7 +11,6 @@ import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
-import { Messages } from '@lingui/core'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'

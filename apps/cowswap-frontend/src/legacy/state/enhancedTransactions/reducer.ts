@@ -14,11 +14,6 @@ import {
   SerializableTransactionReceipt,
 } from './actions'
 
-export enum HashType {
-  ETHEREUM_TX = 'ETHEREUM_TX',
-  GNOSIS_SAFE_TX = 'GNOSIS_SAFE_TX',
-}
-
 export interface EnhancedTransactionDetails {
   hash: string // The hash of the transaction, normally Ethereum one, but not necessarily
   hashType: HashType // Transaction hash: could be Ethereum tx, or for multisigs could be some kind of hash identifying the order (i.e. Gnosis Safe)
@@ -68,6 +63,11 @@ export interface EnhancedTransactionState {
   [chainId: number]: {
     [txHash: string]: EnhancedTransactionDetails
   }
+}
+
+export enum HashType {
+  ETHEREUM_TX = 'ETHEREUM_TX',
+  GNOSIS_SAFE_TX = 'GNOSIS_SAFE_TX',
 }
 
 export const initialState: EnhancedTransactionState = {}

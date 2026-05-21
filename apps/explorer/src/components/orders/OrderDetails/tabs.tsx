@@ -14,56 +14,19 @@ import { LoadingWrapper } from '../../common/LoadingWrapper'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
-export enum TabView {
-  OVERVIEW = 1,
-  FILLS = 2,
-  BRIDGE = 3,
-}
-
 export interface OrderTab {
   id: TabView
   tab: ReactNode
   content: ReactNode
 }
 
+export enum TabView {
+  OVERVIEW = 1,
+  FILLS = 2,
+  BRIDGE = 3,
+}
+
 const WAITING_SWAP = 'Waiting for swap'
-
-function isBridgingFromOrToMissing(crossChainOrder: Nullish<CrossChainOrder>): boolean {
-  if (!crossChainOrder) {
-    return false
-  }
-  const { owner, recipient } = crossChainOrder.bridgingParams
-  const ownerUnset = !owner?.trim() || areAddressesEqual(owner, ZERO_ADDRESS)
-  const recipientUnset = !recipient?.trim() || areAddressesEqual(recipient, ZERO_ADDRESS)
-  return ownerUnset || recipientUnset
-}
-
-export function getOverviewTab(
-  title: ReactNode,
-  children: ReactNode,
-  noTokens: boolean,
-  isLoadingForTheFirstTime: boolean,
-): OrderTab {
-  return {
-    id: TabView.OVERVIEW,
-    tab: title,
-    content: (
-      <>
-        {children}
-        {noTokens && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <LoadingWrapper message="Loading order" />}
-      </>
-    ),
-  }
-}
-
-export function getFillsTab(filledPercentage: string | undefined, props: FillsTableWithDataProps): OrderTab {
-  return {
-    id: TabView.FILLS,
-    tab: filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>,
-    content: <FillsTableWithData {...props} />,
-  }
-}
 
 export function getBridgeTab(
   order: Order,
@@ -104,4 +67,41 @@ export function getBridgeTab(
       />
     ),
   }
+}
+
+export function getFillsTab(filledPercentage: string | undefined, props: FillsTableWithDataProps): OrderTab {
+  return {
+    id: TabView.FILLS,
+    tab: filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>,
+    content: <FillsTableWithData {...props} />,
+  }
+}
+
+export function getOverviewTab(
+  title: ReactNode,
+  children: ReactNode,
+  noTokens: boolean,
+  isLoadingForTheFirstTime: boolean,
+): OrderTab {
+  return {
+    id: TabView.OVERVIEW,
+    tab: title,
+    content: (
+      <>
+        {children}
+        {noTokens && <p>Not able to load tokens</p>}
+        {isLoadingForTheFirstTime && <LoadingWrapper message="Loading order" />}
+      </>
+    ),
+  }
+}
+
+function isBridgingFromOrToMissing(crossChainOrder: Nullish<CrossChainOrder>): boolean {
+  if (!crossChainOrder) {
+    return false
+  }
+  const { owner, recipient } = crossChainOrder.bridgingParams
+  const ownerUnset = !owner?.trim() || areAddressesEqual(owner, ZERO_ADDRESS)
+  const recipientUnset = !recipient?.trim() || areAddressesEqual(recipient, ZERO_ADDRESS)
+  return ownerUnset || recipientUnset
 }

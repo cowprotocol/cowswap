@@ -1,8 +1,8 @@
+import { createPublicClient, http } from 'viem'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { FiniteMap } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { createPublicClient, http } from 'viem'
 
 type PublicClient = ReturnType<typeof createPublicClient>
 

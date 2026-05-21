@@ -1,4 +1,5 @@
 import { MessageDescriptor } from '@lingui/core'
+
 import { msg } from '@lingui/core/macro'
 export const COW_PROTOCOL_NAME = `CoW Protocol`
 

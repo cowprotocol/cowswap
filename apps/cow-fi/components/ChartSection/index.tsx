@@ -10,8 +10,7 @@ import { fixChart } from 'util/fixChart'
 import { usePriceHistory } from 'lib/hooks/usePriceHistory'
 
 import { Chart, TimePeriod } from '../Chart'
-import { ChartContainer } from '../Chart/LoadingChart'
-import { LoadingChart } from '../Chart/LoadingChart'
+import { ChartContainer, LoadingChart } from '../Chart/LoadingChart'
 
 type ChartSectionProps = {
   platforms: Platforms

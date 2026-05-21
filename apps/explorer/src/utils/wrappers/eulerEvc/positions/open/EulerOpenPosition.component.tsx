@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { decodeAbiParameters, parseAbiParameters } from 'viem'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { EulerOpenPositionParams, EulerOpenPositionView } from './EulerOpenPosition.pure'
 

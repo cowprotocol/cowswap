@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { useLingui } from '@lingui/react/macro'
 
 /**

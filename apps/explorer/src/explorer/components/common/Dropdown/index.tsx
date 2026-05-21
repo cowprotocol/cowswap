@@ -18,15 +18,15 @@ import {
 
 import useOnClickOutside from '../../../../hooks/useOnClickOutside'
 
+export enum DropdownDirection {
+  downwards = 'down',
+  upwards = 'up',
+}
+
 export enum DropdownPosition {
   center,
   left,
   right,
-}
-
-export enum DropdownDirection {
-  downwards = 'down',
-  upwards = 'up',
 }
 
 const Wrapper = styled.div<{ isOpen: boolean; disabled: boolean }>`

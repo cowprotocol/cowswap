@@ -26,6 +26,8 @@ interface NativeBalancePatch {
   value: bigint
 }
 
+type RpcPatch = NativeBalancePatch | TokenCallPatch
+
 interface TokenCallPatch {
   type: 'tokenCall'
   tokenAddress: string
@@ -33,9 +35,36 @@ interface TokenCallPatch {
   value: bigint
 }
 
-type RpcPatch = NativeBalancePatch | TokenCallPatch
-
 // --- Multicall patching helpers ---
+
+export function mockNativeBalanceHttp(owner: string, value: bigint): void {
+  setupRpcMocks().mockNativeBalance(owner, value)
+}
+
+/**
+ * Sets up RPC mocks for a single test. Call inside an it() block before cy.visit().
+ */
+export function setupRpcMocks(): {
+  mockNativeBalance(owner: string, value: bigint): void
+  mockTokenBalance(tokenAddress: string, value: bigint): void
+  mockTokenAllowance(tokenAddress: string, value: bigint): void
+} {
+  const patches: RpcPatch[] = []
+
+  cy.intercept('POST', RPC_URL_PATTERN, (req) => handleRpcRequest(req, patches))
+
+  return {
+    mockNativeBalance(owner, value) {
+      patches.push({ type: 'nativeBalance', owner, value })
+    },
+    mockTokenBalance(tokenAddress, value) {
+      patches.push({ type: 'tokenCall', tokenAddress, selector: '0x70a08231', value })
+    },
+    mockTokenAllowance(tokenAddress, value) {
+      patches.push({ type: 'tokenCall', tokenAddress, selector: '0xdd62ed3e', value })
+    },
+  }
+}
 
 function buildPatchMap(
   calls: ReadonlyArray<{ target: string; allowFailure: boolean; callData: string }>,
@@ -51,63 +80,6 @@ function buildPatchMap(
 
   return patchMap
 }
-
-function matchNativeBalance(
-  call: { target: string; callData: string },
-  patches: RpcPatch[],
-  index: number,
-  patchMap: Map<number, Hex>,
-): void {
-  if (call.target.toLowerCase() !== MULTICALL3_ADDRESS || !call.callData.startsWith('0x4d2301cc')) return
-  try {
-    const { args } = decodeFunctionData({ abi: GET_ETH_BALANCE_ABI, data: call.callData as Hex })
-    const patch = patches.find((p) => p.type === 'nativeBalance' && p.owner.toLowerCase() === args[0].toLowerCase())
-    if (patch) {
-      patchMap.set(
-        index,
-        encodeFunctionResult({ abi: GET_ETH_BALANCE_ABI, functionName: 'getEthBalance', result: patch.value }) as Hex,
-      )
-    }
-  } catch {
-    /* skip */
-  }
-}
-
-function matchTokenCalls(
-  call: { target: string; callData: string },
-  patches: RpcPatch[],
-  index: number,
-  patchMap: Map<number, Hex>,
-): void {
-  for (const patch of patches) {
-    if (
-      patch.type === 'tokenCall' &&
-      call.target.toLowerCase() === patch.tokenAddress.toLowerCase() &&
-      call.callData.startsWith(patch.selector)
-    ) {
-      patchMap.set(index, toHex(patch.value, { size: 32 }) as Hex)
-    }
-  }
-}
-
-function patchMulticallResponse(res: Cypress.Response<unknown>, patchMap: Map<number, Hex>): void {
-  const resBody = typeof res.body === 'string' ? JSON.parse(res.body) : res.body
-  const results = decodeFunctionResult({
-    abi: AGGREGATE3_ABI,
-    functionName: 'aggregate3',
-    data: resBody.result as Hex,
-  }) as Array<{ success: boolean; returnData: Hex }>
-
-  const patched = results.map((item, idx) => {
-    const data = patchMap.get(idx)
-    return data ? { success: true, returnData: data } : item
-  })
-
-  resBody.result = encodeFunctionResult({ abi: AGGREGATE3_ABI, functionName: 'aggregate3', result: patched })
-  res.body = resBody
-}
-
-// --- Intercept handler ---
 
 // eslint-disable-next-line complexity
 function handleRpcRequest(req: Cypress.Request, patches: RpcPatch[]): void {
@@ -161,33 +133,61 @@ function handleRpcRequest(req: Cypress.Request, patches: RpcPatch[]): void {
   req.continue()
 }
 
-// --- Public API ---
+// --- Intercept handler ---
 
-/**
- * Sets up RPC mocks for a single test. Call inside an it() block before cy.visit().
- */
-export function setupRpcMocks(): {
-  mockNativeBalance(owner: string, value: bigint): void
-  mockTokenBalance(tokenAddress: string, value: bigint): void
-  mockTokenAllowance(tokenAddress: string, value: bigint): void
-} {
-  const patches: RpcPatch[] = []
-
-  cy.intercept('POST', RPC_URL_PATTERN, (req) => handleRpcRequest(req, patches))
-
-  return {
-    mockNativeBalance(owner, value) {
-      patches.push({ type: 'nativeBalance', owner, value })
-    },
-    mockTokenBalance(tokenAddress, value) {
-      patches.push({ type: 'tokenCall', tokenAddress, selector: '0x70a08231', value })
-    },
-    mockTokenAllowance(tokenAddress, value) {
-      patches.push({ type: 'tokenCall', tokenAddress, selector: '0xdd62ed3e', value })
-    },
+function matchNativeBalance(
+  call: { target: string; callData: string },
+  patches: RpcPatch[],
+  index: number,
+  patchMap: Map<number, Hex>,
+): void {
+  if (call.target.toLowerCase() !== MULTICALL3_ADDRESS || !call.callData.startsWith('0x4d2301cc')) return
+  try {
+    const { args } = decodeFunctionData({ abi: GET_ETH_BALANCE_ABI, data: call.callData as Hex })
+    const patch = patches.find((p) => p.type === 'nativeBalance' && p.owner.toLowerCase() === args[0].toLowerCase())
+    if (patch) {
+      patchMap.set(
+        index,
+        encodeFunctionResult({ abi: GET_ETH_BALANCE_ABI, functionName: 'getEthBalance', result: patch.value }) as Hex,
+      )
+    }
+  } catch {
+    /* skip */
   }
 }
 
-export function mockNativeBalanceHttp(owner: string, value: bigint): void {
-  setupRpcMocks().mockNativeBalance(owner, value)
+// --- Public API ---
+
+function matchTokenCalls(
+  call: { target: string; callData: string },
+  patches: RpcPatch[],
+  index: number,
+  patchMap: Map<number, Hex>,
+): void {
+  for (const patch of patches) {
+    if (
+      patch.type === 'tokenCall' &&
+      call.target.toLowerCase() === patch.tokenAddress.toLowerCase() &&
+      call.callData.startsWith(patch.selector)
+    ) {
+      patchMap.set(index, toHex(patch.value, { size: 32 }) as Hex)
+    }
+  }
+}
+
+function patchMulticallResponse(res: Cypress.Response<unknown>, patchMap: Map<number, Hex>): void {
+  const resBody = typeof res.body === 'string' ? JSON.parse(res.body) : res.body
+  const results = decodeFunctionResult({
+    abi: AGGREGATE3_ABI,
+    functionName: 'aggregate3',
+    data: resBody.result as Hex,
+  }) as Array<{ success: boolean; returnData: Hex }>
+
+  const patched = results.map((item, idx) => {
+    const data = patchMap.get(idx)
+    return data ? { success: true, returnData: data } : item
+  })
+
+  resBody.result = encodeFunctionResult({ abi: AGGREGATE3_ABI, functionName: 'aggregate3', result: patched })
+  res.body = resBody
 }

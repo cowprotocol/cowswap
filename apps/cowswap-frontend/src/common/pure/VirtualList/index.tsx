@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useLayoutEffect, useRef } from 'react'
 
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual'
+
 import ms from 'ms.macro'
 
 import { ListInner, ListScroller, ListWrapper, LoadingRows } from './styled'
@@ -17,61 +18,6 @@ const LoadingPlaceholder: () => ReactNode = () => {
   )
 }
 
-interface VirtualListRowProps<T> {
-  item: VirtualItem
-  loading?: boolean
-  items: T[]
-  getItemView(items: T[], item: VirtualItem): ReactNode
-  measureElement(element: Element | null): void
-}
-
-function VirtualListRow<T>({ item, loading, items, getItemView, measureElement }: VirtualListRowProps<T>): ReactNode {
-  if (loading) {
-    return (
-      <LoadingRows>
-        <LoadingPlaceholder />
-      </LoadingRows>
-    )
-  }
-
-  return (
-    <div data-index={item.index} ref={measureElement}>
-      {getItemView(items, item)}
-    </div>
-  )
-}
-
-interface VirtualListRowsProps<T> {
-  virtualItems: VirtualItem[]
-  loading?: boolean
-  items: T[]
-  getItemView(items: T[], item: VirtualItem): ReactNode
-  measureElement(element: Element | null): void
-}
-
-function VirtualListRows<T>({
-  virtualItems,
-  loading,
-  items,
-  getItemView,
-  measureElement,
-}: VirtualListRowsProps<T>): ReactNode {
-  return (
-    <>
-      {virtualItems.map((item) => (
-        <VirtualListRow
-          key={item.key}
-          item={item}
-          loading={loading}
-          items={items}
-          getItemView={getItemView}
-          measureElement={measureElement}
-        />
-      ))}
-    </>
-  )
-}
-
 interface VirtualListProps<T> {
   id?: string
   items: T[]
@@ -82,6 +28,22 @@ interface VirtualListProps<T> {
   estimateSize?: () => number
   children?: ReactNode
   scrollResetKey?: number | string
+}
+
+interface VirtualListRowProps<T> {
+  item: VirtualItem
+  loading?: boolean
+  items: T[]
+  getItemView(items: T[], item: VirtualItem): ReactNode
+  measureElement(element: Element | null): void
+}
+
+interface VirtualListRowsProps<T> {
+  virtualItems: VirtualItem[]
+  loading?: boolean
+  items: T[]
+  getItemView(items: T[], item: VirtualItem): ReactNode
+  measureElement(element: Element | null): void
 }
 
 export function VirtualList<T>({
@@ -154,5 +116,44 @@ export function VirtualList<T>({
         </ListScroller>
       </ListInner>
     </ListWrapper>
+  )
+}
+
+function VirtualListRow<T>({ item, loading, items, getItemView, measureElement }: VirtualListRowProps<T>): ReactNode {
+  if (loading) {
+    return (
+      <LoadingRows>
+        <LoadingPlaceholder />
+      </LoadingRows>
+    )
+  }
+
+  return (
+    <div data-index={item.index} ref={measureElement}>
+      {getItemView(items, item)}
+    </div>
+  )
+}
+
+function VirtualListRows<T>({
+  virtualItems,
+  loading,
+  items,
+  getItemView,
+  measureElement,
+}: VirtualListRowsProps<T>): ReactNode {
+  return (
+    <>
+      {virtualItems.map((item) => (
+        <VirtualListRow
+          key={item.key}
+          item={item}
+          loading={loading}
+          items={items}
+          getItemView={getItemView}
+          measureElement={measureElement}
+        />
+      ))}
+    </>
   )
 }

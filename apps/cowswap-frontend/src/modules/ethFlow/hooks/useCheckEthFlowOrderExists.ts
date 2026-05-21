@@ -1,17 +1,16 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
-
+import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { readContract } from 'wagmi/actions'
+
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { useEthFlowContractData } from 'common/hooks/useContract'
 
 import { ethFlowInFlightOrderIdsAtom } from '../state/ethFlowInFlightOrderIdsAtom'
-
-import type { Hex } from 'viem'
 
 export interface EthFlowOrderExistsCallback {
   (orderId: string, orderDigest: string): Promise<boolean>

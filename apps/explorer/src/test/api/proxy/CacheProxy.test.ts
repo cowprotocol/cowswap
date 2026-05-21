@@ -1,5 +1,9 @@
 import { CacheMixin } from 'api/proxy'
 
+interface Params<T> {
+  p: T
+}
+
 interface TestApi {
   echo<T>(params: Params<T>): T
   cachedMethod<T>(params: Params<T>): Promise<T>
@@ -8,10 +12,6 @@ interface TestApi {
   nonCachedMethod<T>(params: Params<T>): Promise<T>
   flatParam(param: number): number
   multiFlatParams(p1: number, p2: string): string
-}
-
-interface Params<T> {
-  p: T
 }
 
 class TestApiImpl implements TestApi {
@@ -40,10 +40,6 @@ class TestApiImpl implements TestApi {
   }
 }
 
-function hashFn(..._params: unknown[]): string {
-  return 'always the same lol'
-}
-
 class TestApiProxyV2 extends TestApiImpl {
   private cache: CacheMixin
 
@@ -60,6 +56,10 @@ class TestApiProxyV2 extends TestApiImpl {
       { method: 'multiFlatParams' },
     ])
   }
+}
+
+function hashFn(..._params: unknown[]): string {
+  return 'always the same lol'
 }
 
 let instance: TestApi

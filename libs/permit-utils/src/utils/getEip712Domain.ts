@@ -6,6 +6,18 @@ import Erc20Abi from '../abi/erc20'
 
 // See https://eips.ethereum.org/EIPS/eip-5267
 
+export type Eip712Domain = Omit<Eip5267Return, 'fields' | 'extensions'>
+
+type Eip5267Return = {
+  fields: string
+  name?: string
+  version?: string
+  chainId?: string
+  verifyingContract?: string
+  salt?: string
+  extensions?: string[]
+}
+
 export async function getEip712Domain(tokenAddress: Address, chainId: number, config: Config): Promise<Eip712Domain> {
   const [fields, name, version, domainChainId, verifyingContract, salt, extensions] = await readContract(config, {
     abi: Erc20Abi,
@@ -24,18 +36,6 @@ export async function getEip712Domain(tokenAddress: Address, chainId: number, co
 
   return processDomain(eip5267Domain, chainId, tokenAddress)
 }
-
-type Eip5267Return = {
-  fields: string
-  name?: string
-  version?: string
-  chainId?: string
-  verifyingContract?: string
-  salt?: string
-  extensions?: string[]
-}
-
-export type Eip712Domain = Omit<Eip5267Return, 'fields' | 'extensions'>
 
 /** Retrieves the EIP-712 domain of a contract using EIP-5267 without extensions.
  *

@@ -1,6 +1,7 @@
+import { MessageDescriptor } from '@lingui/core'
+
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'

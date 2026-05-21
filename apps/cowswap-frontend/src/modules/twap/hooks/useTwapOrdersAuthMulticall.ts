@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 
+import type { Hex } from 'viem'
 import { useReadContracts } from 'wagmi'
 
 import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { TwapOrdersAuthResult } from '../types'
-
-import type { Hex } from 'viem'
 
 const EMPTY_AUTH_RESULT = {}
 

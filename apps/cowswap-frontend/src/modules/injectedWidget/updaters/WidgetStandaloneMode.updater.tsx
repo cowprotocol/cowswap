@@ -1,9 +1,9 @@
 import { type ReactNode, useEffect, useRef } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { COW_WIDGET_CONNECTOR_ID, useDisconnectWallet } from '@cowprotocol/wallet'
-
-import { useConnection } from 'wagmi'
 
 import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
 

@@ -21,6 +21,14 @@ import { Color } from '../../colors'
 import { Media } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
+export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
+  light: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkChristmas?: { default: LogoInfo }
+  lightChristmas?: { default: LogoInfo }
+}
+
 export enum ProductVariant {
   CowSwap = 'cowSwap',
   CowExplorer = 'cowExplorer',
@@ -37,14 +45,6 @@ interface LogoInfo {
   height?: string // Optional height for both desktop and mobile
   heightMobile?: string // Optional height specifically for mobile
   preserveOriginalColors?: boolean // If true, original SVG colors will be preserved
-}
-
-export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
-  light: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  darkChristmas?: { default: LogoInfo }
-  lightChristmas?: { default: LogoInfo }
 }
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {

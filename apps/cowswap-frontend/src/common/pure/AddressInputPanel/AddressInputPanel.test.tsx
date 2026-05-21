@@ -1,10 +1,11 @@
 import React from 'react'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { render, screen } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'

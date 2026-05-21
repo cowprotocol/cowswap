@@ -79,10 +79,6 @@ export function EthFlowDeadlineUpdater({ deadlineState }: EthFlowDeadlineUpdater
   return null
 }
 
-function _saveDeadline(currentUserDeadline: DeadlineSettings): void {
-  setJsonToLocalStorage(LOCAL_STORAGE_KEY, currentUserDeadline)
-}
-
 function _loadDeadline(): DeadlineSettings | null {
   return loadJsonFromLocalStorage(LOCAL_STORAGE_KEY)
 }
@@ -91,4 +87,8 @@ function _resetDeadline(setUserDeadline: (deadline: number) => void): void {
   const { regular } = _loadDeadline() || {}
   // user switched back to non-native swap, set deadline back to previous value
   regular && setUserDeadline(regular)
+}
+
+function _saveDeadline(currentUserDeadline: DeadlineSettings): void {
+  setJsonToLocalStorage(LOCAL_STORAGE_KEY, currentUserDeadline)
 }

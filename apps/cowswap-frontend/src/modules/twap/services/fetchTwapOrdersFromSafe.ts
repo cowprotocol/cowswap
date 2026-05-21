@@ -1,3 +1,6 @@
+import { decodeFunctionData } from 'viem'
+import type { Hex } from 'viem'
+
 import { delay, isTruthy } from '@cowprotocol/common-utils'
 import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -5,15 +8,12 @@ import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import ms from 'ms.macro'
-import { decodeFunctionData } from 'viem'
 
 import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import { SafeTransactionParams } from 'common/types'
 
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
-
-import type { Hex } from 'viem'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
@@ -26,18 +26,13 @@ const HISTORY_TX_COUNT_LIMIT = 100
 
 const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
 
-function getSafeApiHeaders(): HeadersInit {
-  if (!SAFE_API_AUTH_TOKEN) return {}
-  return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
-}
-
-export type TwapDataArray = TwapOrdersSafeData[]
-
 export type FetchTwapOrdersFromSafeResult = {
   orders: TwapDataArray
   newestSubmissionDate?: string
   complete: boolean
 }
+
+export type TwapDataArray = TwapOrdersSafeData[]
 
 type SafeTransactionsChunk = AllTransactionsListResponse & { fetchError?: boolean }
 
@@ -95,6 +90,26 @@ export async function fetchTwapOrdersFromSafe(
   )
 }
 
+/**
+ * Merge two TwapDataArrays by safeTxHash, preferring entries with isExecuted=true.
+ * This ensures that if the same transaction appears in both the pending and executed
+ * fetches (e.g. a tx that just executed), we keep the executed version.
+ */
+export function mergeTwapOrdersByHash(items: TwapDataArray): TwapDataArray {
+  const map = new Map<string, TwapOrdersSafeData>()
+
+  for (const item of items) {
+    const hash = item.safeTxParams.safeTxHash
+    const existing = map.get(hash)
+
+    if (!existing || (!existing.safeTxParams.isExecuted && item.safeTxParams.isExecuted)) {
+      map.set(hash, item)
+    }
+  }
+
+  return Array.from(map.values())
+}
+
 async function fetchRecentlyExecutedTransactions(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -144,46 +159,6 @@ async function fetchRecentlyExecutedTransactions(
   }
 }
 
-function getExecutedTransactionsUrl(
-  chainId: SupportedChainId,
-  safeAddress: string,
-  since?: string,
-  nextUrl?: string,
-): string {
-  return nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
-}
-
-function logExecutedTransactionsFetch(nextUrl?: string, since?: string): void {
-  const page = nextUrl ? 'next' : 'first'
-  const sinceText = since && !nextUrl ? ` since ${since}` : ''
-
-  console.log(`[COW][SafeAPI] Fetch TWAP executed orders (${page} page${sinceText})`)
-}
-
-function getNextExecutedPage(response: AllTransactionsListResponse, accumulator: TwapDataArray[]): string | undefined {
-  return accumulator.length < SAFE_TX_HISTORY_DEPTH ? response.next || undefined : undefined
-}
-
-/**
- * Merge two TwapDataArrays by safeTxHash, preferring entries with isExecuted=true.
- * This ensures that if the same transaction appears in both the pending and executed
- * fetches (e.g. a tx that just executed), we keep the executed version.
- */
-export function mergeTwapOrdersByHash(items: TwapDataArray): TwapDataArray {
-  const map = new Map<string, TwapOrdersSafeData>()
-
-  for (const item of items) {
-    const hash = item.safeTxParams.safeTxHash
-    const existing = map.get(hash)
-
-    if (!existing || (!existing.safeTxParams.isExecuted && item.safeTxParams.isExecuted)) {
-      map.set(hash, item)
-    }
-  }
-
-  return Array.from(map.values())
-}
-
 async function fetchSafeTransactionsChunk(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -224,6 +199,28 @@ function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
     .then((res) => res.json())
 }
 
+function getExecutedTransactionsUrl(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  since?: string,
+  nextUrl?: string,
+): string {
+  return nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
+}
+
+function getNewestSubmissionDate(dates: (string | undefined)[]): string {
+  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+}
+
+function getNextExecutedPage(response: AllTransactionsListResponse, accumulator: TwapDataArray[]): string | undefined {
+  return accumulator.length < SAFE_TX_HISTORY_DEPTH ? response.next || undefined : undefined
+}
+
+function getSafeApiHeaders(): HeadersInit {
+  if (!SAFE_API_AUTH_TOKEN) return {}
+  return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
+}
+
 function getSafeHistoryRequestUrl(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -246,12 +243,53 @@ function getSafeHistoryRequestUrl(
   return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?${params.toString()}`
 }
 
-function getNewestSubmissionDate(dates: (string | undefined)[]): string {
-  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
+  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
+
+  return {
+    isExecuted,
+    submissionDate,
+    executionDate,
+    confirmationsRequired,
+    confirmations: confirmations?.length || 0,
+    safeTxHash,
+    nonce,
+  }
 }
 
 function getTransactionSubmissionDate(transaction: unknown): string | undefined {
   return isSafeMultisigTransactionListResponse(transaction) ? transaction.submissionDate : undefined
+}
+
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
+  return !!response.data && !!response.submissionDate
+}
+
+function logExecutedTransactionsFetch(nextUrl?: string, since?: string): void {
+  const page = nextUrl ? 'next' : 'first'
+  const sinceText = since && !nextUrl ? ` since ${since}` : ''
+
+  console.log(`[COW][SafeAPI] Fetch TWAP executed orders (${page} page${sinceText})`)
+}
+
+function parseConditionalOrderParams(
+  composableCowContract: ComposableCowContractData,
+  callData: Hex,
+): ConditionalOrderParams | null {
+  try {
+    const { args } = decodeFunctionData({
+      abi: composableCowContract.abi,
+      data: callData,
+    })
+
+    const [params] = args as unknown as [ConditionalOrderParams]
+
+    return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
+  } catch {
+    return null
+  }
 }
 
 function parseSafeTransactionsResult(
@@ -281,42 +319,4 @@ function parseSafeTransactionsResult(
       }
     })
     .filter(isTruthy)
-}
-
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
-  return !!response.data && !!response.submissionDate
-}
-
-function parseConditionalOrderParams(
-  composableCowContract: ComposableCowContractData,
-  callData: Hex,
-): ConditionalOrderParams | null {
-  try {
-    const { args } = decodeFunctionData({
-      abi: composableCowContract.abi,
-      data: callData,
-    })
-
-    const [params] = args as unknown as [ConditionalOrderParams]
-
-    return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
-  } catch {
-    return null
-  }
-}
-
-function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
-  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
-
-  return {
-    isExecuted,
-    submissionDate,
-    executionDate,
-    confirmationsRequired,
-    confirmations: confirmations?.length || 0,
-    safeTxHash,
-    nonce,
-  }
 }

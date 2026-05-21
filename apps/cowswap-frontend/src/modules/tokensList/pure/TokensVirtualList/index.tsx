@@ -1,9 +1,9 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { VirtualItem } from '@tanstack/react-virtual'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-
-import { VirtualItem } from '@tanstack/react-virtual'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 

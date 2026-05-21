@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 
-function getErrorMessage(filePath: string, res: Response): string {
-  return `Error fetching file ${filePath} - status: ${res.statusText}`
-}
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useFetchFile(filePath: string) {
@@ -32,4 +28,8 @@ export function useFetchFile(filePath: string) {
   }, [filePath])
 
   return useMemo(() => ({ file, error }), [file, error])
+}
+
+function getErrorMessage(filePath: string, res: Response): string {
+  return `Error fetching file ${filePath} - status: ${res.statusText}`
 }

@@ -7,13 +7,6 @@ interface WindowSize {
 
 const isClient = typeof window === 'object'
 
-function getSize(): WindowSize {
-  return {
-    width: isClient ? window.innerWidth : undefined,
-    height: isClient ? window.innerHeight : undefined,
-  }
-}
-
 // https://usehooks.com/useWindowSize/
 export function useWindowSize(): WindowSize {
   const [windowSize, setWindowSize] = useState(getSize)
@@ -33,4 +26,11 @@ export function useWindowSize(): WindowSize {
   }, [])
 
   return windowSize
+}
+
+function getSize(): WindowSize {
+  return {
+    width: isClient ? window.innerWidth : undefined,
+    height: isClient ? window.innerHeight : undefined,
+  }
 }

@@ -7,6 +7,13 @@ import { useUpdateSelectTokenWidgetState } from '../../../hooks/useUpdateSelectT
 import { customFlowsRegistryAtom } from '../state'
 import { CustomFlowContext, CustomFlowResult, TokenSelectorView } from '../types'
 
+export type ViewWithFlowsResult =
+  | ViewResult<TokenSelectorView.Main>
+  | ViewResult<TokenSelectorView.ImportToken>
+  | ViewResult<TokenSelectorView.ImportList>
+  | ViewResult<TokenSelectorView.Manage>
+  | ViewResult<TokenSelectorView.LpToken>
+
 /**
  * Helper type to create a view result with proper typing.
  */
@@ -15,13 +22,6 @@ type ViewResult<TView extends TokenSelectorView> = {
   preFlowResult: CustomFlowResult<TView> | null
   postFlowResult: CustomFlowResult<TView> | null
 }
-
-export type ViewWithFlowsResult =
-  | ViewResult<TokenSelectorView.Main>
-  | ViewResult<TokenSelectorView.ImportToken>
-  | ViewResult<TokenSelectorView.ImportList>
-  | ViewResult<TokenSelectorView.Manage>
-  | ViewResult<TokenSelectorView.LpToken>
 
 /**
  * Hook that determines the current view and checks for custom pre/post flows.

@@ -24,6 +24,15 @@ export const activeProviderRef: { current: EIP1193Provider | typeof PROVIDER_DIS
 // Cache isolated providers by their original so identity is stable across calls.
 const cache = new WeakMap<object, EIP1193Provider>()
 
+// Guards stored on `window` so they survive HMR — module-local variables are
+// reset on hot reload, but the capture listener stays attached to `window`.
+// Without this, each HMR reload would add another listener and the two instances
+// could re-dispatch events back and forth.
+type IsolationWindow = Window & {
+  __cowEip6963InterceptRegistered?: boolean
+  __cowEip6963ReDispatched?: WeakSet<Event>
+}
+
 /**
  * Wraps an EIP-1193 provider to enforce tab-level wallet isolation:
  *
@@ -99,23 +108,6 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
   return proxy
 }
 
-// Guards stored on `window` so they survive HMR — module-local variables are
-// reset on hot reload, but the capture listener stays attached to `window`.
-// Without this, each HMR reload would add another listener and the two instances
-// could re-dispatch events back and forth.
-type IsolationWindow = Window & {
-  __cowEip6963InterceptRegistered?: boolean
-  __cowEip6963ReDispatched?: WeakSet<Event>
-}
-
-function getReDispatched(): WeakSet<Event> {
-  const win = window as IsolationWindow
-  if (!win.__cowEip6963ReDispatched) {
-    win.__cowEip6963ReDispatched = new WeakSet<Event>()
-  }
-  return win.__cowEip6963ReDispatched
-}
-
 /**
  * Registers a capture-phase listener for EIP-6963 provider announcements so that
  * every wallet provider is wrapped with createIsolatedProvider *before* wagmi/AppKit
@@ -157,4 +149,12 @@ export function interceptEIP6963Providers(): void {
     },
     { capture: true },
   )
+}
+
+function getReDispatched(): WeakSet<Event> {
+  const win = window as IsolationWindow
+  if (!win.__cowEip6963ReDispatched) {
+    win.__cowEip6963ReDispatched = new WeakSet<Event>()
+  }
+  return win.__cowEip6963ReDispatched
 }

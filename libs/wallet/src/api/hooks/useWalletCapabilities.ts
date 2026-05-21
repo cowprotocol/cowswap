@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-
 import { useCapabilities } from 'wagmi'
+
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
@@ -12,21 +12,6 @@ import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
   atomic?: { status: 'supported' | 'ready' | 'unsupported' }
-}
-
-function shouldCheckCapabilities(
-  isWalletConnect: boolean,
-  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
-): boolean {
-  // When widget in the mobile device, wait till providerWcMetadata is loaded
-  // In order to detect if is connected to WalletConnect
-  if (isInjectedWidget() && isMobile && isLoading) {
-    return false
-  }
-
-  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
-
-  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
@@ -65,4 +50,19 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
       },
     },
   })
+}
+
+function shouldCheckCapabilities(
+  isWalletConnect: boolean,
+  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
+): boolean {
+  // When widget in the mobile device, wait till providerWcMetadata is loaded
+  // In order to detect if is connected to WalletConnect
+  if (isInjectedWidget() && isMobile && isLoading) {
+    return false
+  }
+
+  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
+
+  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }

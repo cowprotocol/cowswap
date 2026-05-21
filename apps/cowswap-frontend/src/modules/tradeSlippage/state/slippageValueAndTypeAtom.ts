@@ -10,9 +10,9 @@ import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from '
 
 import { resolveSlippageConfig } from '../utils/slippage'
 
-type SlippageBpsPerNetwork = PersistentStateByChain<number>
-
 export type SlippageType = 'smart' | 'default' | 'user'
+
+type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',

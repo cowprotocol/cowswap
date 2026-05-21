@@ -1,11 +1,3 @@
-type GetParamsApi<T> = {
-  [K in keyof T]: T[K]
-}
-
-interface GetApiFn<T, R> {
-  (params?: GetParamsApi<T>): Promise<R>
-}
-
 export type FetchQueryApi<T> = {
   get: GetApiFn<T, Response>
 }
@@ -13,6 +5,14 @@ export type FetchQueryApi<T> = {
 type FetchQueryParams = {
   queryString: string
   networkId?: string
+}
+
+interface GetApiFn<T, R> {
+  (params?: GetParamsApi<T>): Promise<R>
+}
+
+type GetParamsApi<T> = {
+  [K in keyof T]: T[K]
 }
 
 export async function fetchQuery<T>(api: FetchQueryApi<FetchQueryParams>, queryString: string): Promise<T>

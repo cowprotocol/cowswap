@@ -1,6 +1,6 @@
-import { buildApproveTx, BuildApproveTxParams } from './buildApproveTx'
-
 import type { TransactionRequest } from 'viem'
+
+import { buildApproveTx, BuildApproveTxParams } from './buildApproveTx'
 
 type BuildZeroApproveTxParams = Omit<BuildApproveTxParams, 'amountToApprove'>
 

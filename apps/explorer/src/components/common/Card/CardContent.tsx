@@ -6,8 +6,6 @@ import styled from 'styled-components/macro'
 
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 
-export type statusType = 'success' | 'danger'
-
 export interface CardContentProps {
   variant: '2row' | '3row' | 'double'
   direction?: string
@@ -27,6 +25,8 @@ export interface CardContentProps {
   hint2?: string
   loading?: boolean
 }
+
+export type statusType = 'success' | 'danger'
 
 const resolveCardColor = (colorType: string | undefined): string => {
   if (!colorType) return 'inherit'

@@ -1,5 +1,8 @@
 import { useCallback } from 'react'
 
+import { type Address, createPublicClient, erc20Abi, http } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { calculateGasMargin, delay, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -7,12 +10,12 @@ import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { type Address, createPublicClient, erc20Abi, http } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
+
+export type ApproveTxResult = { hash: `0x${string}` }
 
 export async function estimateApprove(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
@@ -63,8 +66,6 @@ export async function estimateApprove(
   console.error(`[estimateApproveGas] All attempts failed, using default ${GAS_LIMIT_DEFAULT}`)
   return { gasLimit: GAS_LIMIT_DEFAULT }
 }
-
-export type ApproveTxResult = { hash: `0x${string}` }
 
 export function useApproveCallback(
   currency: Currency | undefined,

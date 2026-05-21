@@ -10,26 +10,10 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
 
-// Simple hook for analytics events
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useAlternativeModalAnalytics() {
-  const cowAnalytics = useCowAnalytics()
-  return useCallback(
-    (action: string) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action,
-      })
-    },
-    [cowAnalytics],
-  )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useIsAlternativeOrderModalVisible() {
-  return useAtomValue(isAlternativeOrderModalVisibleAtom)
+export function useAlternativeOrder() {
+  return useAtomValue(alternativeOrderAtom)
 }
 
 // TODO: Add proper return type annotation
@@ -42,8 +26,19 @@ export function useHideAlternativeOrderModal() {
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAlternativeOrder() {
-  return useAtomValue(alternativeOrderAtom)
+export function useIsAlternativeOrderModalVisible() {
+  return useAtomValue(isAlternativeOrderModalVisibleAtom)
+}
+
+/**
+ * Returns the id of the order being edited, if it's an edit
+ */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function useReplacedOrderUid() {
+  const { order, isEdit } = useAlternativeOrder() || {}
+
+  return isEdit ? order?.id : undefined
 }
 
 // TODO: Add proper return type annotation
@@ -61,13 +56,18 @@ export function useSetAlternativeOrder() {
   )
 }
 
-/**
- * Returns the id of the order being edited, if it's an edit
- */
+// Simple hook for analytics events
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useReplacedOrderUid() {
-  const { order, isEdit } = useAlternativeOrder() || {}
-
-  return isEdit ? order?.id : undefined
+function useAlternativeModalAnalytics() {
+  const cowAnalytics = useCowAnalytics()
+  return useCallback(
+    (action: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action,
+      })
+    },
+    [cowAnalytics],
+  )
 }

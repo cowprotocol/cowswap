@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useWalletClient } from 'wagmi'
+
 import svgArrowSrc from '@cowprotocol/assets/cow-swap/arrow.svg'
 import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import svgVCowSrc from '@cowprotocol/assets/images/vCOW.svg'
@@ -20,7 +22,6 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
-import { useWalletClient } from 'wagmi'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'

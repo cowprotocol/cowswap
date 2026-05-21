@@ -1,8 +1,9 @@
+import { useConfig } from 'wagmi'
+import { getTransactionCount } from 'wagmi/actions'
+
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAsyncMemo } from 'use-async-memo'
-import { useConfig } from 'wagmi'
-import { getTransactionCount } from 'wagmi/actions'
 
 import { useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAppDispatch } from 'legacy/state/hooks'

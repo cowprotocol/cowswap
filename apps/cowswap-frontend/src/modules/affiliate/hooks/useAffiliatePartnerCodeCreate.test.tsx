@@ -1,3 +1,5 @@
+import type { WalletClient } from 'viem'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { act, renderHook } from '@testing-library/react'
@@ -9,8 +11,6 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
-
-import type { WalletClient } from 'viem'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')

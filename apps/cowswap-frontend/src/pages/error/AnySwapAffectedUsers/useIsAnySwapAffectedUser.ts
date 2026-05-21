@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
+
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { erc20Abi } from 'viem'
-import { useReadContracts } from 'wagmi'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'

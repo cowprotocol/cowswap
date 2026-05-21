@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 import { Trans } from '@lingui/react/macro'
+import { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 import * as styledEl from './styled'
 

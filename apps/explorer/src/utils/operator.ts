@@ -12,71 +12,16 @@ import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
-function isOrderFilled(order: RawOrder): boolean {
-  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
-  let amount, executedAmount
-
-  if (isSellOrder(kind)) {
-    amount = new BigNumber(sellAmount)
-    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
-  } else {
-    amount = new BigNumber(buyAmount)
-    executedAmount = new BigNumber(executedBuyAmount)
-  }
-
-  return executedAmount.gte(amount)
+export type Surplus = {
+  amount: BigNumber
+  percentage: BigNumber
 }
 
-function isOrderExpired(order: RawOrder): boolean {
-  return Math.floor(Date.now() / 1000) > order.validTo
-}
-
-function isOrderPartiallyFilled(order: RawOrder): boolean {
-  if (isOrderFilled(order)) {
-    return false
-  }
-  if (isSellOrder(order.kind)) {
-    return order.executedSellAmount !== '0'
-  } else {
-    return order.executedBuyAmount !== '0'
-  }
-}
-
-function isOrderPresigning(order: RawOrder): boolean {
-  return order.status === RAW_ORDER_STATUS.PRESIGNATURE_PENDING
-}
-
-/**
- * An order is considered cancelled if the `invalidated` flag is `true` and
- * it has been at least `PENDING_ORDERS_BUFFER` since it has been created.
- * The buffer is used to take into account race conditions where a solver might
- * execute a transaction after the backend changed the order status.
- *
- * We assume the order is not fulfilled.
- */
-function isOrderCancelled(order: Pick<RawOrder, 'creationDate' | 'invalidated'>): boolean {
-  const creationTime = new Date(order.creationDate).getTime()
-  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
-}
-
-function isOrderCancelling(order: RawOrder): boolean {
-  return order.status === RAW_ORDER_STATUS.CANCELLED && order.invalidated
-}
-
-export function getOrderStatus(order: RawOrder): OrderStatus {
-  if (isOrderFilled(order)) {
-    return OrderStatus.Filled
-  } else if (isOrderCancelled(order)) {
-    return OrderStatus.Cancelled
-  } else if (isOrderExpired(order)) {
-    return OrderStatus.Expired
-  } else if (isOrderPresigning(order)) {
-    return OrderStatus.Signing
-  } else if (isOrderCancelling(order)) {
-    return OrderStatus.Cancelling
-  } else {
-    return OrderStatus.Open
-  }
+type PartialFillSurplusParams = {
+  buyAmount: string | BigNumber
+  sellAmount: string | BigNumber
+  executedSellAmountBeforeFees: string
+  executedBuyAmount: string
 }
 
 /**
@@ -99,9 +44,20 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
 }
 
-export type Surplus = {
-  amount: BigNumber
-  percentage: BigNumber
+export function getOrderStatus(order: RawOrder): OrderStatus {
+  if (isOrderFilled(order)) {
+    return OrderStatus.Filled
+  } else if (isOrderCancelled(order)) {
+    return OrderStatus.Cancelled
+  } else if (isOrderExpired(order)) {
+    return OrderStatus.Expired
+  } else if (isOrderPresigning(order)) {
+    return OrderStatus.Signing
+  } else if (isOrderCancelling(order)) {
+    return OrderStatus.Cancelling
+  } else {
+    return OrderStatus.Open
+  }
 }
 
 /**
@@ -133,40 +89,60 @@ function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
   return { amount, percentage }
 }
 
-type PartialFillSurplusParams = {
-  buyAmount: string | BigNumber
-  sellAmount: string | BigNumber
-  executedSellAmountBeforeFees: string
-  executedBuyAmount: string
+/**
+ * An order is considered cancelled if the `invalidated` flag is `true` and
+ * it has been at least `PENDING_ORDERS_BUFFER` since it has been created.
+ * The buffer is used to take into account race conditions where a solver might
+ * execute a transaction after the backend changed the order status.
+ *
+ * We assume the order is not fulfilled.
+ */
+function isOrderCancelled(order: Pick<RawOrder, 'creationDate' | 'invalidated'>): boolean {
+  const creationTime = new Date(order.creationDate).getTime()
+  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
+}
+
+function isOrderCancelling(order: RawOrder): boolean {
+  return order.status === RAW_ORDER_STATUS.CANCELLED && order.invalidated
+}
+
+function isOrderExpired(order: RawOrder): boolean {
+  return Math.floor(Date.now() / 1000) > order.validTo
+}
+
+function isOrderFilled(order: RawOrder): boolean {
+  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
+  let amount, executedAmount
+
+  if (isSellOrder(kind)) {
+    amount = new BigNumber(sellAmount)
+    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
+  } else {
+    amount = new BigNumber(buyAmount)
+    executedAmount = new BigNumber(executedBuyAmount)
+  }
+
+  return executedAmount.gte(amount)
+}
+
+function isOrderPartiallyFilled(order: RawOrder): boolean {
+  if (isOrderFilled(order)) {
+    return false
+  }
+  if (isSellOrder(order.kind)) {
+    return order.executedSellAmount !== '0'
+  } else {
+    return order.executedBuyAmount !== '0'
+  }
+}
+
+function isOrderPresigning(order: RawOrder): boolean {
+  return order.status === RAW_ORDER_STATUS.PRESIGNATURE_PENDING
 }
 
 // The surplus calculation can be called for huge and small values
 // And default DECIMAL_PLACES=20 is not enough for it and can cause rounding problems
 const BigNumberForSurplus = BigNumber.clone({ DECIMAL_PLACES: 32 })
-
-function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
-  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
-
-  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
-  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
-
-  // BUY is QUOTE
-  const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
-
-  // What you would get at limit price, in buy token atoms
-  const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
-
-  // Surplus is the difference between what you got minus what you would get if executed at limit price
-  // Surplus amount, in buy token atoms
-  const amount = executedBuyAmountBigNumber.minus(minimumBuyAmount)
-
-  // The percentage is based on the amount you would receive, if executed at limit price
-  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
-
-  return { amount, percentage }
-}
 
 /**
  * Calculates BUY surplus based on sell amounts
@@ -217,23 +193,65 @@ function _getPartialFillBuySurplus(params: PartialFillSurplusParams): Surplus | 
   return { amount, percentage }
 }
 
+function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
+  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
+
+  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
+  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
+
+  // BUY is QUOTE
+  const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
+
+  // What you would get at limit price, in buy token atoms
+  const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
+
+  // Surplus is the difference between what you got minus what you would get if executed at limit price
+  // Surplus amount, in buy token atoms
+  const amount = executedBuyAmountBigNumber.minus(minimumBuyAmount)
+
+  // The percentage is based on the amount you would receive, if executed at limit price
+  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
+
+  return { amount, percentage }
+}
+
 export const ZERO_SURPLUS: Surplus = { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
 
-export function getOrderSurplus(order: RawOrder): Surplus {
-  const { kind } = order
+export type GetOrderLimitPriceParams = CommonPriceParams & {
+  buyAmount: string | BigNumber
+  sellAmount: string | BigNumber
+}
 
-  // `executedSellAmount` already has the fees discounted
-  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+export type GetRawOrderPriceParams = CommonPriceParams & {
+  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>
+}
 
-  if (executedBuyAmount.isZero() || executedSellAmount.isZero()) {
-    return ZERO_SURPLUS
-  }
+export enum FormatAmountPrecision {
+  middlePrecision,
+  highPrecision,
+  maxPrecision,
+}
 
-  if (isSellOrder(kind)) {
-    return getSellSurplus(order)
-  } else {
-    return getBuySurplus(order)
-  }
+interface CommonPriceParams {
+  buyTokenDecimals: number
+  sellTokenDecimals: number
+  inverted?: boolean
+}
+
+export function formattedAmount(
+  erc20: TokenErc20 | null | undefined,
+  amount: BigNumber,
+  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision,
+): string {
+  if (!isTokenErc20(erc20)) return '-'
+
+  if (!erc20.decimals) return amount.toString(10)
+
+  return typePrecision === FormatAmountPrecision.maxPrecision
+    ? formatSmartMaxPrecision(amount, erc20)
+    : formattingAmountPrecision(amount, erc20, typePrecision)
 }
 
 /**
@@ -252,46 +270,6 @@ export function getOrderExecutedAmounts(order: Pick<RawOrder, 'executedBuyAmount
     executedBuyAmount: new BigNumber(executedBuyAmount),
     executedSellAmount: new BigNumber(executedSellAmountBeforeFees),
   }
-}
-
-interface CommonPriceParams {
-  buyTokenDecimals: number
-  sellTokenDecimals: number
-  inverted?: boolean
-}
-
-export type GetRawOrderPriceParams = CommonPriceParams & {
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>
-}
-
-export type GetOrderLimitPriceParams = CommonPriceParams & {
-  buyAmount: string | BigNumber
-  sellAmount: string | BigNumber
-}
-
-/**
- * Calculates order limit price base on order and buy/sell token decimals
- * Result is given in sell token units
- *
- * @param buyAmount The order buyAmount
- * @param sellAmount The order sellAmount
- * @param buyTokenDecimals The buy token decimals
- * @param sellTokenDecimals The sell token decimals
- * @param inverted Optional. Whether to invert the price (1/price).
- */
-export function getOrderLimitPrice({
-  buyAmount,
-  sellAmount,
-  buyTokenDecimals,
-  sellTokenDecimals,
-  inverted,
-}: GetOrderLimitPriceParams): BigNumber {
-  const price = calculatePrice({
-    numerator: { amount: sellAmount, decimals: sellTokenDecimals },
-    denominator: { amount: buyAmount, decimals: buyTokenDecimals },
-  })
-
-  return inverted ? invertPrice(price) : price
 }
 
 /**
@@ -326,36 +304,63 @@ export function getOrderExecutedPrice({
   })
 }
 
-function isZeroAddress(address: string): boolean {
-  return /^0x0{40}$/.test(address)
+/**
+ * Calculates order limit price base on order and buy/sell token decimals
+ * Result is given in sell token units
+ *
+ * @param buyAmount The order buyAmount
+ * @param sellAmount The order sellAmount
+ * @param buyTokenDecimals The buy token decimals
+ * @param sellTokenDecimals The sell token decimals
+ * @param inverted Optional. Whether to invert the price (1/price).
+ */
+export function getOrderLimitPrice({
+  buyAmount,
+  sellAmount,
+  buyTokenDecimals,
+  sellTokenDecimals,
+  inverted,
+}: GetOrderLimitPriceParams): BigNumber {
+  const price = calculatePrice({
+    numerator: { amount: sellAmount, decimals: sellTokenDecimals },
+    denominator: { amount: buyAmount, decimals: buyTokenDecimals },
+  })
+
+  return inverted ? invertPrice(price) : price
+}
+
+export function getOrderSurplus(order: RawOrder): Surplus {
+  const { kind } = order
+
+  // `executedSellAmount` already has the fees discounted
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+
+  if (executedBuyAmount.isZero() || executedSellAmount.isZero()) {
+    return ZERO_SURPLUS
+  }
+
+  if (isSellOrder(kind)) {
+    return getSellSurplus(order)
+  } else {
+    return getBuySurplus(order)
+  }
+}
+
+export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
+  const params: PartialFillSurplusParams = {
+    sellAmount: order.sellAmount,
+    buyAmount: order.buyAmount,
+    executedSellAmountBeforeFees: rawTrade.sellAmountBeforeFees,
+    executedBuyAmount: rawTrade.buyAmount,
+  }
+
+  const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
+
+  return surplus || ZERO_SURPLUS
 }
 
 export function isTokenErc20(token: TokenErc20 | null | undefined): token is TokenErc20 {
   return (token as TokenErc20)?.address !== undefined
-}
-
-export enum FormatAmountPrecision {
-  middlePrecision,
-  highPrecision,
-  maxPrecision,
-}
-
-export function formattedAmount(
-  erc20: TokenErc20 | null | undefined,
-  amount: BigNumber,
-  typePrecision: FormatAmountPrecision = FormatAmountPrecision.maxPrecision,
-): string {
-  if (!isTokenErc20(erc20)) return '-'
-
-  if (!erc20.decimals) return amount.toString(10)
-
-  return typePrecision === FormatAmountPrecision.maxPrecision
-    ? formatSmartMaxPrecision(amount, erc20)
-    : formattingAmountPrecision(amount, erc20, typePrecision)
-}
-
-function getReceiverAddress({ owner, receiver }: RawOrder): string {
-  return !receiver || isZeroAddress(receiver) ? owner : receiver
 }
 
 /**
@@ -436,15 +441,10 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
-export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
-  const params: PartialFillSurplusParams = {
-    sellAmount: order.sellAmount,
-    buyAmount: order.buyAmount,
-    executedSellAmountBeforeFees: rawTrade.sellAmountBeforeFees,
-    executedBuyAmount: rawTrade.buyAmount,
-  }
+function getReceiverAddress({ owner, receiver }: RawOrder): string {
+  return !receiver || isZeroAddress(receiver) ? owner : receiver
+}
 
-  const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
-
-  return surplus || ZERO_SURPLUS
+function isZeroAddress(address: string): boolean {
+  return /^0x0{40}$/.test(address)
 }

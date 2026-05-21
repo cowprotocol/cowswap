@@ -149,14 +149,14 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   ])
 }
 
-function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
-}
-
 function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   if (!currency || getIsNativeToken(currency) || !('address' in currency)) {
     return null
   }
 
   return currency
+}
+
+function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
+  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

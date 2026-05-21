@@ -7,6 +7,24 @@ import { DetailRow } from '../../../common/DetailRow'
 import { BridgeDetailsTooltips } from '../bridgeDetailsTooltips'
 import { RefundStatus, RefundStatusEnum } from '../RefundStatus'
 
+export function BridgingTime({
+  bridgeStatus,
+  fillTimeInSeconds,
+}: {
+  bridgeStatus: BridgeStatus
+  fillTimeInSeconds: number | undefined
+}): ReactNode {
+  if (bridgeStatus !== BridgeStatus.IN_PROGRESS || !fillTimeInSeconds) {
+    return null
+  }
+
+  return (
+    <DetailRow label="Bridging Time" tooltipText={BridgeDetailsTooltips.bridgingTime}>
+      {displayTime(fillTimeInSeconds * 1000, true)}
+    </DetailRow>
+  )
+}
+
 export function RefundStatusItem({
   bridgeStatus,
   hash,
@@ -23,24 +41,6 @@ export function RefundStatusItem({
       <RefundStatus
         status={RefundStatusEnum.NOT_INITIATED} // TODO: add refund statuses once we have them
       />
-    </DetailRow>
-  )
-}
-
-export function BridgingTime({
-  bridgeStatus,
-  fillTimeInSeconds,
-}: {
-  bridgeStatus: BridgeStatus
-  fillTimeInSeconds: number | undefined
-}): ReactNode {
-  if (bridgeStatus !== BridgeStatus.IN_PROGRESS || !fillTimeInSeconds) {
-    return null
-  }
-
-  return (
-    <DetailRow label="Bridging Time" tooltipText={BridgeDetailsTooltips.bridgingTime}>
-      {displayTime(fillTimeInSeconds * 1000, true)}
     </DetailRow>
   )
 }

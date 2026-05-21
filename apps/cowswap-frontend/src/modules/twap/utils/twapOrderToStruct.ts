@@ -1,8 +1,8 @@
+import type { Hex } from 'viem'
+
 import { FractionUtils, getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { TWAPOrder, TWAPOrderStruct } from '../types'
-
-import type { Hex } from 'viem'
 
 export function twapOrderToStruct(order: TWAPOrder): TWAPOrderStruct {
   const buyToken = order.buyAmount.currency

@@ -22,16 +22,6 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIMIT,
 }
 
-export function getUiOrderTypeTitles(): Record<UiOrderType, string> {
-  return {
-    [UiOrderType.SWAP]: t`Swap`,
-    [UiOrderType.LIMIT]: t`Limit order`,
-    [UiOrderType.TWAP]: t`TWAP order`,
-    [UiOrderType.HOOKS]: t`Hooks`,
-    [UiOrderType.YIELD]: t`Yield`,
-  }
-}
-
 export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>
 
 export function getUiOrderType({ fullAppData, composableCowInfo, class: orderClass }: UiOrderTypeParams): UiOrderType {
@@ -53,4 +43,14 @@ export function getUiOrderType({ fullAppData, composableCowInfo, class: orderCla
   // 3. As a last resort, map it to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
   return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass]
+}
+
+export function getUiOrderTypeTitles(): Record<UiOrderType, string> {
+  return {
+    [UiOrderType.SWAP]: t`Swap`,
+    [UiOrderType.LIMIT]: t`Limit order`,
+    [UiOrderType.TWAP]: t`TWAP order`,
+    [UiOrderType.HOOKS]: t`Hooks`,
+    [UiOrderType.YIELD]: t`Yield`,
+  }
 }

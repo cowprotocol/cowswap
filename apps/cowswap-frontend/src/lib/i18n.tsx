@@ -1,9 +1,9 @@
 import { ReactNode, useEffect } from 'react'
 
-import { SupportedLocale } from '@cowprotocol/common-const'
-
 import { i18n, Messages } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+
+import { SupportedLocale } from '@cowprotocol/common-const'
 
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 

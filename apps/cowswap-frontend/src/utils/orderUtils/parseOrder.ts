@@ -1,3 +1,5 @@
+import type { MessageDescriptor } from '@lingui/core'
+
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@cowprotocol/currency'
 
@@ -14,8 +16,6 @@ import { getOrderFilledAmount } from './getOrderFilledAmount'
 import { getOrderSurplus } from './getOrderSurplus'
 import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
-
-import type { MessageDescriptor } from '@lingui/core'
 
 export interface ParsedOrder {
   id: string
