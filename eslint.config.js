@@ -158,10 +158,6 @@ module.exports = [
                 "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
             },
             {
-              name: 'ethers',
-              message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
-            },
-            {
               name: 'styled-components',
               message: 'Please import from styled-components/macro.',
             },
@@ -235,7 +231,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
               group: 'external',
               position: 'before',
             },
@@ -297,6 +293,12 @@ module.exports = [
         'error',
         {
           paths: [
+            {
+              name: '@cowprotocol/cow-sdk',
+              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
+              message:
+                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
+            },
             {
               name: 'react-router',
               importNames: ['useNavigate'],
