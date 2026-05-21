@@ -5,7 +5,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
-import { orderBookApi } from 'cowSdk'
+import { setBearerToken } from 'cowSdk'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_SITE_KEY } from '../config/captcha.const'
@@ -27,10 +27,10 @@ export function CaptchaWidget(): ReactNode {
     }
 
     if (captchaJwt?.token) {
-      orderBookApi.context.bearerToken = captchaJwt.token
+      setBearerToken(captchaJwt.token)
       logCaptcha.info('Captcha JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
-      delete orderBookApi.context.bearerToken
+      setBearerToken(null)
       logCaptcha.info('Captcha JWT cleared from orderbook context')
     }
   }, [captchaJwt, siteKey])
