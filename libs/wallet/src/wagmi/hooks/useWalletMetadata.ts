@@ -105,7 +105,9 @@ export function useIsSafeApp(): boolean {
 
 /**
  * Detects whether the currently connected wallet is a Safe wallet
- * regardless of the connection method (WalletConnect or inside Safe as an App)
+ * regardless of the connection method (WalletConnect or inside Safe as an App).
+ * Warning: this can be false when Safe API is down or rate-limited and does not mean the wallet is not a Safe.
+ * TODO: Rename to useHasGnosisSafeInfo.
  */
 export function useIsSafeWallet(): boolean {
   return !!useGnosisSafeInfo()
