@@ -7,11 +7,10 @@ const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 const ROOT_NPMRC_PATH = path.join(ROOT_DIR, '.npmrc')
 const TEMP_USER_CONFIG_PATH = path.join(ROOT_DIR, '.npmrc.preview')
+const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
-
 const sdkPrVersionRegex = /pr-\d+/
-
 const sdkPrefix = '@cowprotocol/'
 const hasSdkPrVersion = Object.keys(packageJson.dependencies)
   .filter((key) => key.startsWith(sdkPrefix))
@@ -24,7 +23,13 @@ const hasSdkPrVersion = Object.keys(packageJson.dependencies)
 if (!hasSdkPrVersion) {
   console.log('[install.js] No SDK PR version found in apps/cowswap-frontend/package.json.')
 
-  runPnpmInstall()
+  try {
+    runPnpmInstall()
+  } catch (err) {
+    console.error('[install.js] Failed to install dependencies:', err)
+    process.exit(1)
+  }
+
   return
 }
 
@@ -41,16 +46,19 @@ if (!PACKAGE_READ_AUTH_TOKEN) {
 // The scope-wide @cowprotocol:registry redirects ALL @cowprotocol/* packages to GitHub Packages.
 // Non-SDK packages (e.g. @cowprotocol/cms) are only on npmjs and would fail to install.
 // Fix: pin them to explicit npmjs tarball URLs so pnpm fetches them directly, bypassing the scope registry.
+let rewriteMap
+
 try {
-  pinNonSdkPackagesToNpmjs()
+  rewriteMap = pinNonSdkPackagesToNpmjs()
 } catch (err) {
   console.error('[install.js] Failed to pin non-SDK packages to npmjs:', err)
   process.exit(1)
 }
 
-const installationSuccess = runPnpmInstall(PACKAGE_READ_AUTH_TOKEN)
-
-if (!installationSuccess) {
+try {
+  runPnpmInstall(PACKAGE_READ_AUTH_TOKEN, rewriteMap)
+} catch (err) {
+  console.error('[install.js] Failed to install dependencies:', err)
   process.exit(1)
 }
 
@@ -78,6 +86,7 @@ function getNpmjsTarballUrl(name, version) {
  */
 function pinNonSdkPackagesToNpmjs() {
   const packageJsonPaths = []
+  const rewriteMap = {}
 
   for (const baseDir of [APPS_DIR, LIBS_DIR]) {
     if (!fs.existsSync(baseDir)) continue
@@ -92,7 +101,8 @@ function pinNonSdkPackagesToNpmjs() {
   for (const pkgPath of packageJsonPaths) {
     const content = fs.readFileSync(pkgPath, 'utf-8')
     const pkg = JSON.parse(content)
-    let changed = false
+    const packageName = pkg.name
+    if (!packageName) continue
 
     for (const section of ['dependencies', 'devDependencies']) {
       const deps = pkg[section]
@@ -105,16 +115,16 @@ function pinNonSdkPackagesToNpmjs() {
         if (deps[depName].startsWith('https://')) continue
 
         const tarballUrl = getNpmjsTarballUrl(depName, deps[depName])
-        console.log(`[install.js] pinning ${depName}@${deps[depName]} -> ${tarballUrl}`)
-        deps[depName] = tarballUrl
-        changed = true
+
+        if (!rewriteMap[packageName]) rewriteMap[packageName] = {}
+
+        rewriteMap[packageName][depName] = tarballUrl
+        console.log(`[install.js] pinning ${packageName} -> ${depName}@${deps[depName]} -> ${tarballUrl}`)
       }
     }
-
-    if (changed) {
-      fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-    }
   }
+
+  return rewriteMap
 }
 
 /**
@@ -123,8 +133,14 @@ function pinNonSdkPackagesToNpmjs() {
  * Uses frozen lockfile by default. When `authToken` is provided it creates a temporary
  * user config with said `authToken` and runs with no frozen lockfile.
  */
-function runPnpmInstall(authToken) {
-  const installArgs = authToken ? `--no-frozen-lockfile --userconfig "${TEMP_USER_CONFIG_PATH}"` : '--frozen-lockfile'
+function runPnpmInstall(authToken, rewriteMap = {}) {
+  const installArgs = authToken
+    ? `--no-frozen-lockfile --userconfig "${TEMP_USER_CONFIG_PATH}" --config.pnpmfile="${TEMP_PNPMFILE_PATH}"`
+    : '--frozen-lockfile'
+
+  if (authToken && Object.keys(rewriteMap).length === 0) {
+    throw new Error('[install.js] Auth token provided but no rewrite map. Could not complete installation.')
+  }
 
   if (authToken) {
     console.log(`[install.js] Installing with SDK PR version (pnpm install ${installArgs})...`)
@@ -133,22 +149,30 @@ function runPnpmInstall(authToken) {
   }
 
   try {
-    if (authToken) createTempUserConfig(authToken)
+    if (authToken) {
+      createTempUserConfig(authToken)
+      createTempPnpmfile(rewriteMap)
+    }
 
     execSync(`pnpm install ${installArgs}`, {
       cwd: ROOT_DIR,
       stdio: 'inherit',
     })
-
-    return true
   } catch (err) {
     console.error('[install.js] Failed to install dependencies:', err)
+    throw err
   } finally {
     if (authToken) {
       try {
         removeTempUserConfig()
       } catch (err) {
         console.warn('[install.js] Failed to remove temp user config:', err)
+      }
+
+      try {
+        removeTempPnpmfile()
+      } catch (err) {
+        console.warn('[install.js] Failed to remove temp pnpmfile:', err)
       }
     }
   }
@@ -178,4 +202,41 @@ function createTempUserConfig(token) {
  */
 function removeTempUserConfig() {
   fs.rmSync(TEMP_USER_CONFIG_PATH, { force: true })
+}
+
+/**
+ * Creates a temporary pnpm hook file that rewrites workspace manifests in memory.
+ *
+ * @see https://pnpm.io/pnpmfile
+ */
+function createTempPnpmfile(rewriteMap) {
+  const pnpmfile = `module.exports = {
+  hooks: {
+    readPackage(pkg) {
+      const rewrites = ${JSON.stringify(rewriteMap, null, 2)}[pkg.name]
+      if (!rewrites) return pkg
+
+      for (const section of ['dependencies', 'devDependencies']) {
+        if (!pkg[section]) continue
+        for (const depName of Object.keys(rewrites)) {
+          if (pkg[section][depName]) {
+            pkg[section][depName] = rewrites[depName]
+          }
+        }
+      }
+
+      return pkg
+    },
+  },
+}
+`
+
+  fs.writeFileSync(TEMP_PNPMFILE_PATH, pnpmfile)
+}
+
+/**
+ * Deletes the temporary pnpm hook file if it exists.
+ */
+function removeTempPnpmfile() {
+  fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
 }
