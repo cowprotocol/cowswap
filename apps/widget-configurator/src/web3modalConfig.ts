@@ -1,5 +1,5 @@
 import { CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 
@@ -28,18 +28,20 @@ const ethersConfig = defaultConfig({
 export function initWeb3Modal() {
   createWeb3Modal({
     ethersConfig,
-    chains: Object.keys(CHAIN_INFO).map((_chainId) => {
-      const chainId = +_chainId as SupportedChainId
-      const info = CHAIN_INFO[chainId]
+    chains: Object.keys(CHAIN_INFO)
+      .map((id) => +id)
+      .filter(isEvmChain)
+      .map((chainId) => {
+        const info = CHAIN_INFO[chainId]
 
-      return {
-        chainId,
-        name: info.label,
-        rpcUrl: RPC_URLS[chainId],
-        explorerUrl: info.explorer,
-        currency: info.nativeCurrency.symbol || '',
-      }
-    }),
+        return {
+          chainId,
+          name: info.label,
+          rpcUrl: RPC_URLS[chainId],
+          explorerUrl: info.explorer,
+          currency: info.nativeCurrency.symbol || '',
+        }
+      }),
     projectId,
     enableAnalytics: false,
   })
