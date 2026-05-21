@@ -6,6 +6,8 @@ import {
   resolveAffectedPackages,
   changesetFilename,
   changesetContent,
+  isReleaseCommitSubject,
+  resolveBaselineRef,
 } from './commits-to-changesets-lib.mjs'
 
 describe('parseConventionalCommit', () => {
@@ -184,5 +186,91 @@ feat: bring cow.fi back (sdk) (#7359)
   it('preserves quotes in package name', () => {
     const out = changesetContent('@scope/name', 'patch', 'fix: x')
     assert.ok(out.startsWith('---\n"@scope/name": patch\n---\n'))
+  })
+})
+
+describe('isReleaseCommitSubject', () => {
+  it('matches squash-merged release PR subject (chore(main): release (#N))', () => {
+    assert.equal(isReleaseCommitSubject('chore(main): release (#7554)'), true)
+  })
+
+  it('matches bare release subject (no PR number)', () => {
+    assert.equal(isReleaseCommitSubject('chore(main): release'), true)
+  })
+
+  it('rejects similar-looking commits that are not release-PR merges', () => {
+    assert.equal(isReleaseCommitSubject('chore(main): release notes update'), false)
+    assert.equal(isReleaseCommitSubject('chore: release foo'), false)
+    assert.equal(isReleaseCommitSubject('chore(main): bump deps'), false)
+    assert.equal(isReleaseCommitSubject('feat: add release flow'), false)
+  })
+
+  it('handles empty / null / undefined subjects', () => {
+    assert.equal(isReleaseCommitSubject(''), false)
+    assert.equal(isReleaseCommitSubject(null), false)
+    assert.equal(isReleaseCommitSubject(undefined), false)
+  })
+
+  it('tolerates surrounding whitespace', () => {
+    assert.equal(isReleaseCommitSubject('  chore(main): release (#7554)  '), true)
+  })
+})
+
+describe('resolveBaselineRef', () => {
+  it('env override wins over everything else', () => {
+    const r = resolveBaselineRef({
+      envBaseline: 'abc123',
+      latestReleaseTag: 'release-20260519T121234Z',
+      releasePrCommit: 'def456',
+    })
+    assert.deepEqual(r, { ref: 'abc123', source: 'env' })
+  })
+
+  it('release-PR merge commit wins over the release tag (the race-condition fix)', () => {
+    // On the workflow run triggered by the release-PR merge, the publish
+    // job hasn't yet pushed the new release-* tag. Without this, the
+    // converter would re-emit changesets the PR just consumed.
+    const r = resolveBaselineRef({
+      envBaseline: '',
+      latestReleaseTag: 'release-20260519T121234Z',
+      releasePrCommit: 'ca8468a8',
+    })
+    assert.deepEqual(r, { ref: 'ca8468a8', source: 'release-pr-merge' })
+  })
+
+  it('falls back to release tag when no newer release-PR commit exists', () => {
+    const r = resolveBaselineRef({
+      envBaseline: '',
+      latestReleaseTag: 'release-20260519T121234Z',
+      releasePrCommit: null,
+    })
+    assert.deepEqual(r, { ref: 'release-20260519T121234Z', source: 'release-tag' })
+  })
+
+  it('returns source=none for bootstrap (no env, no tag)', () => {
+    const r = resolveBaselineRef({
+      envBaseline: '',
+      latestReleaseTag: null,
+      releasePrCommit: null,
+    })
+    assert.deepEqual(r, { ref: null, source: 'none' })
+  })
+
+  it('trims whitespace around env baseline', () => {
+    const r = resolveBaselineRef({
+      envBaseline: '  abc123  ',
+      latestReleaseTag: null,
+      releasePrCommit: null,
+    })
+    assert.deepEqual(r, { ref: 'abc123', source: 'env' })
+  })
+
+  it('treats whitespace-only env baseline as unset', () => {
+    const r = resolveBaselineRef({
+      envBaseline: '   ',
+      latestReleaseTag: 'release-tag',
+      releasePrCommit: null,
+    })
+    assert.deepEqual(r, { ref: 'release-tag', source: 'release-tag' })
   })
 })

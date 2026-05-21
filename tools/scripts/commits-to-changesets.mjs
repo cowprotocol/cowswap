@@ -9,6 +9,8 @@ import {
   resolveAffectedPackages,
   changesetFilename,
   changesetContent,
+  isReleaseCommitSubject,
+  resolveBaselineRef,
 } from './commits-to-changesets-lib.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -33,23 +35,64 @@ function tryGit(args) {
   }
 }
 
-function resolveBaseline() {
-  const fromEnv = (process.env.BASELINE_REF || '').trim()
-  if (fromEnv) {
-    console.log(`[converter] Using BASELINE_REF=${fromEnv}`)
-    return fromEnv
+// Most recent `chore(main): release` commit reachable from HEAD on main's
+// first-parent line, since `sinceRef`. Returns null if none. See
+// `resolveBaselineRef` in the lib for why we look for this.
+function findRecentReleasePrCommit(sinceRef) {
+  const raw = tryGit([
+    'log',
+    `${sinceRef}..HEAD`,
+    '--first-parent',
+    '--format=%H%x09%s',
+  ])
+  if (!raw) return null
+  for (const line of raw.split('\n')) {
+    const tab = line.indexOf('\t')
+    if (tab < 0) continue
+    const sha = line.slice(0, tab).trim()
+    const subject = line.slice(tab + 1)
+    if (sha && isReleaseCommitSubject(subject)) return sha
   }
-  const tag = tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
-  if (tag) {
-    console.log(`[converter] Using latest release tag: ${tag}`)
-    return tag
-  }
-  console.warn(
-    '[converter] No baseline tag found and BASELINE_REF not set. ' +
-      'No changesets will be generated. ' +
-      'To bootstrap, re-run via workflow_dispatch with `baseline_ref` set.',
-  )
   return null
+}
+
+function resolveBaseline() {
+  const envBaseline = (process.env.BASELINE_REF || '').trim()
+  const latestReleaseTag = envBaseline
+    ? null
+    : tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
+  const releasePrCommit =
+    !envBaseline && latestReleaseTag ? findRecentReleasePrCommit(latestReleaseTag) : null
+
+  const { ref, source } = resolveBaselineRef({
+    envBaseline,
+    latestReleaseTag,
+    releasePrCommit,
+  })
+
+  switch (source) {
+    case 'env':
+      console.log(`[converter] Using BASELINE_REF=${ref}`)
+      break
+    case 'release-pr-merge':
+      console.log(
+        `[converter] Using release-PR merge commit ${ref} as baseline ` +
+          `(newer than last release tag ${latestReleaseTag} — avoids re-emitting ` +
+          `changesets the just-merged release PR already consumed)`,
+      )
+      break
+    case 'release-tag':
+      console.log(`[converter] Using latest release tag: ${ref}`)
+      break
+    case 'none':
+      console.warn(
+        '[converter] No baseline tag found and BASELINE_REF not set. ' +
+          'No changesets will be generated. ' +
+          'To bootstrap, re-run via workflow_dispatch with `baseline_ref` set.',
+      )
+      break
+  }
+  return ref
 }
 
 function loadTrackedPackages() {
