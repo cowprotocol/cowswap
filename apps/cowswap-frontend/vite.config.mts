@@ -70,7 +70,9 @@ export default defineConfig(({ mode, isPreview }) => {
       filename: 'service-worker.ts',
       minify: true,
       injectManifest: {
-        maximumFileSizeToCacheInBytes: 7000000, // 7mb
+        // Preview build currently emits a large main chunk.
+        // If this value is smaller, pnpm preview will fail to start and Cypress will hang in CI and eventually timeout.
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MiB
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
