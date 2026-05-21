@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.5.1
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.0.5
+  - @cowprotocol/analytics@3.3.1
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/events@4.4.1
+  - @cowprotocol/types@4.3.2
+  - @cowprotocol/widget-react@3.0.5
+
 ## 3.5.0
 
 ### Minor Changes
