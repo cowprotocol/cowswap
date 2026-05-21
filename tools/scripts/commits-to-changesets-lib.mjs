@@ -7,8 +7,7 @@ const TYPE_BUMP = {
   fix: 'patch',
 }
 
-const CONVENTIONAL_RE =
-  /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^)]+)\))?(?<bang>!)?:\s+(?<rest>.+)$/
+const CONVENTIONAL_RE = /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^)]+)\))?(?<bang>!)?:\s+(?<rest>.+)$/
 
 // Returns { parsedOk, bump, type, scope, breaking }. `bump` is one of
 // 'major' | 'minor' | 'patch' | null. A `null` bump means "skip this commit"
@@ -93,4 +92,24 @@ export function resolveBaselineRef({ envBaseline, latestReleaseTag, releasePrCom
   if (releasePrCommit) return { ref: releasePrCommit, source: 'release-pr-merge' }
   if (latestReleaseTag) return { ref: latestReleaseTag, source: 'release-tag' }
   return { ref: null, source: 'none' }
+}
+
+// Most recent `chore(main): release` commit reachable from HEAD on main's
+// first-parent line, since `sinceRef`. Returns null if none. See
+// `resolveBaselineRef` in the lib for why we look for this.
+//
+// `runGit` is injectable so the function is unit-testable without spawning
+// `git`; the default invokes the module-private `tryGit`.
+
+export function findRecentReleasePrCommit(sinceRef, runGit = tryGit) {
+  const raw = runGit(['log', `${sinceRef}..HEAD`, '--first-parent', '--format=%H%x09%s'])
+  if (!raw) return null
+  for (const line of raw.split('\n')) {
+    const tab = line.indexOf('\t')
+    if (tab < 0) continue
+    const sha = line.slice(0, tab).trim()
+    const subject = line.slice(tab + 1)
+    if (sha && isReleaseCommitSubject(subject)) return sha
+  }
+  return null
 }

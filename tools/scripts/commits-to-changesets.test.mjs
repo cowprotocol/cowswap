@@ -8,6 +8,7 @@ import {
   changesetContent,
   isReleaseCommitSubject,
   resolveBaselineRef,
+  findRecentReleasePrCommit,
 } from './commits-to-changesets-lib.mjs'
 
 describe('parseConventionalCommit', () => {
@@ -125,10 +126,7 @@ describe('resolveAffectedPackages', () => {
   const pkgs = ['libs/events', 'libs/types', 'apps/explorer']
 
   it('multiple packages in one commit', () => {
-    const r = resolveAffectedPackages(
-      ['libs/events/src/a.ts', 'libs/types/src/b.ts'],
-      pkgs,
-    )
+    const r = resolveAffectedPackages(['libs/events/src/a.ts', 'libs/types/src/b.ts'], pkgs)
     assert.deepEqual([...r].sort(), ['libs/events', 'libs/types'])
   })
 
@@ -138,35 +136,23 @@ describe('resolveAffectedPackages', () => {
   })
 
   it('mix of tracked and untracked', () => {
-    const r = resolveAffectedPackages(
-      ['libs/events/src/a.ts', 'tools/x.js'],
-      pkgs,
-    )
+    const r = resolveAffectedPackages(['libs/events/src/a.ts', 'tools/x.js'], pkgs)
     assert.deepEqual([...r].sort(), ['libs/events'])
   })
 
   it('deduplicates multiple files in same package', () => {
-    const r = resolveAffectedPackages(
-      ['libs/events/src/a.ts', 'libs/events/src/b.ts', 'libs/events/README.md'],
-      pkgs,
-    )
+    const r = resolveAffectedPackages(['libs/events/src/a.ts', 'libs/events/src/b.ts', 'libs/events/README.md'], pkgs)
     assert.deepEqual([...r].sort(), ['libs/events'])
   })
 })
 
 describe('changesetFilename', () => {
   it('uses 7-char sha and slug', () => {
-    assert.equal(
-      changesetFilename('abcdef1234567890', 'libs/events'),
-      'auto-abcdef1-libs-events.md',
-    )
+    assert.equal(changesetFilename('abcdef1234567890', 'libs/events'), 'auto-abcdef1-libs-events.md')
   })
 
   it('handles app paths', () => {
-    assert.equal(
-      changesetFilename('0123456789', 'apps/cowswap-frontend'),
-      'auto-0123456-apps-cowswap-frontend.md',
-    )
+    assert.equal(changesetFilename('0123456789', 'apps/cowswap-frontend'), 'auto-0123456-apps-cowswap-frontend.md')
   })
 })
 
@@ -226,7 +212,7 @@ describe('resolveBaselineRef', () => {
     assert.deepEqual(r, { ref: 'abc123', source: 'env' })
   })
 
-  it('release-PR merge commit wins over the release tag (the race-condition fix)', () => {
+  it('release-PR merge commit wins over the release tag', () => {
     // On the workflow run triggered by the release-PR merge, the publish
     // job hasn't yet pushed the new release-* tag. Without this, the
     // converter would re-emit changesets the PR just consumed.
@@ -272,5 +258,68 @@ describe('resolveBaselineRef', () => {
       releasePrCommit: null,
     })
     assert.deepEqual(r, { ref: 'release-tag', source: 'release-tag' })
+  })
+})
+
+describe('findRecentReleasePrCommit', () => {
+  // Builds a fake `runGit` that returns a canned `git log` payload regardless
+  // of input, while recording the args it was called with so we can assert
+  // the underlying command is shaped correctly.
+  function fakeGit(output) {
+    const calls = []
+    const fn = (args) => {
+      calls.push(args)
+      return output
+    }
+    fn.calls = calls
+    return fn
+  }
+
+  // `git log --format=%H%x09%s` yields `<sha>\t<subject>` lines, newest-first.
+  const TAB = '\t'
+  const releaseLine = (sha, n) => `${sha}${TAB}chore(main): release (#${n})`
+  const featLine = (sha, msg) => `${sha}${TAB}feat: ${msg}`
+  const fixLine = (sha, msg) => `${sha}${TAB}fix: ${msg}`
+
+  it('returns the most recent matching commit SHA (first line in newest-first log)', () => {
+    const output = [
+      featLine('feed0001', 'newer feature'),
+      releaseLine('ca8468a8ae98224ad9798d902e04bfc1729512cb', 7554),
+      fixLine('abc0001', 'older fix'),
+    ].join('\n')
+    const result = findRecentReleasePrCommit('release-tag', fakeGit(output))
+    assert.equal(result, 'ca8468a8ae98224ad9798d902e04bfc1729512cb')
+  })
+
+  it('returns the FIRST matching commit when multiple release commits exist', () => {
+    // Two release-PR merges in the range: the newer one (first in
+    // newest-first output) must win.
+    const output = [
+      releaseLine('newer000', 7600),
+      featLine('feed0001', 'in-between work'),
+      releaseLine('older000', 7554),
+    ].join('\n')
+    const result = findRecentReleasePrCommit('release-tag', fakeGit(output))
+    assert.equal(result, 'newer000')
+  })
+
+  it('matches the bare `chore(main): release` subject (no PR number)', () => {
+    const output = `deadbee${TAB}chore(main): release`
+    assert.equal(findRecentReleasePrCommit('release-tag', fakeGit(output)), 'deadbee')
+  })
+
+  it('returns null when no commits match the release-PR subject', () => {
+    const output = [
+      featLine('feed0001', 'add a thing'),
+      fixLine('abc0001', 'fix a thing'),
+      `def0002${TAB}chore(main): release notes update`, // close but no cigar
+      `ghi0003${TAB}chore: release foo`,
+    ].join('\n')
+    assert.equal(findRecentReleasePrCommit('release-tag', fakeGit(output)), null)
+  })
+
+  it('skips lines with empty SHA', () => {
+    const output = [`${TAB}chore(main): release (#9999)`, releaseLine('aabbcc1', 7554)].join('\n')
+    assert.equal(findRecentReleasePrCommit('release-tag', fakeGit(output)), 'aabbcc1')
   })
 })

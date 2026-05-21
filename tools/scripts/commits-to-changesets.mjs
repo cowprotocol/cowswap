@@ -35,34 +35,10 @@ function tryGit(args) {
   }
 }
 
-// Most recent `chore(main): release` commit reachable from HEAD on main's
-// first-parent line, since `sinceRef`. Returns null if none. See
-// `resolveBaselineRef` in the lib for why we look for this.
-function findRecentReleasePrCommit(sinceRef) {
-  const raw = tryGit([
-    'log',
-    `${sinceRef}..HEAD`,
-    '--first-parent',
-    '--format=%H%x09%s',
-  ])
-  if (!raw) return null
-  for (const line of raw.split('\n')) {
-    const tab = line.indexOf('\t')
-    if (tab < 0) continue
-    const sha = line.slice(0, tab).trim()
-    const subject = line.slice(tab + 1)
-    if (sha && isReleaseCommitSubject(subject)) return sha
-  }
-  return null
-}
-
 function resolveBaseline() {
   const envBaseline = (process.env.BASELINE_REF || '').trim()
-  const latestReleaseTag = envBaseline
-    ? null
-    : tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
-  const releasePrCommit =
-    !envBaseline && latestReleaseTag ? findRecentReleasePrCommit(latestReleaseTag) : null
+  const latestReleaseTag = envBaseline ? null : tryGit(['describe', '--match', 'release-*', '--abbrev=0'])
+  const releasePrCommit = !envBaseline && latestReleaseTag ? findRecentReleasePrCommit(latestReleaseTag) : null
 
   const { ref, source } = resolveBaselineRef({
     envBaseline,
@@ -96,9 +72,7 @@ function resolveBaseline() {
 }
 
 function loadTrackedPackages() {
-  const registry = JSON.parse(
-    readFileSync(join(rootDir, 'tools/release/tracked-packages.json'), 'utf-8'),
-  )
+  const registry = JSON.parse(readFileSync(join(rootDir, 'tools/release/tracked-packages.json'), 'utf-8'))
   const result = []
   for (const path of registry.packages) {
     const pkgJsonPath = join(rootDir, path, 'package.json')
@@ -111,13 +85,7 @@ function loadTrackedPackages() {
 
 function getCommits(baseline) {
   const format = `${COMMIT_SEP}%H${FIELD_SEP}%s${FIELD_SEP}%b`
-  const raw = git([
-    'log',
-    '--no-merges',
-    '--reverse',
-    `${baseline}..HEAD`,
-    `--format=${format}`,
-  ])
+  const raw = git(['log', '--no-merges', '--reverse', `${baseline}..HEAD`, `--format=${format}`])
   if (!raw) return []
   return raw
     .split(COMMIT_SEP)
