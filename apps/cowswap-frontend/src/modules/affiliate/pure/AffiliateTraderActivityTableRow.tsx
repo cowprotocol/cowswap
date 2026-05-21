@@ -135,6 +135,8 @@ function EligibilityReasonMessage({ reason }: { reason: TraderActivityEligibilit
       return <Trans>This trade fee was too low to qualify for affiliate rewards.</Trans>
     case 'ref_after_first_trade':
       return <Trans>The referral code was applied after the trader&apos;s first qualifying trade.</Trans>
+    case 'time_cap_exceeded':
+      return <Trans>The referral code expired before this trade was executed.</Trans>
     case 'volume_cap_reached':
       return <Trans>The trader already reached the rewardable volume cap for this referral code.</Trans>
   }

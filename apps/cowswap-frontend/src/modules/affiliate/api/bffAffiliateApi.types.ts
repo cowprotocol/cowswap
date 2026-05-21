@@ -61,6 +61,7 @@ export type TraderActivityEligibilityReason =
   | 'integrator_ignored'
   | 'low_fee_excluded'
   | 'ref_after_first_trade'
+  | 'time_cap_exceeded'
   | 'volume_cap_reached'
 
 export interface TraderActivityResponse {

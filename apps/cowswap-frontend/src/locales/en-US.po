@@ -3272,6 +3272,10 @@ msgstr "Maximize your yield on existing LP positions"
 #~ msgid "Pool description"
 #~ msgstr "Pool description"
 
+#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
+msgid "The referral code expired before this trade was executed."
+msgstr "The referral code expired before this trade was executed."
+
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "6 Hours"
 msgstr "6 Hours"
