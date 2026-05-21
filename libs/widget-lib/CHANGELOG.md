@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.5
+
+### Patch Changes
+
+- fix(widget): support non-browser environment (#7549)
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.4.1
+  - @cowprotocol/iframe-transport@2.2.6
+
 ## 4.0.4
 
 ### Patch Changes

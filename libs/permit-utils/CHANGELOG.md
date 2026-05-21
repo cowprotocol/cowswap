@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.2.5
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.6
+
 ## 3.2.4
 
 ### Patch Changes
