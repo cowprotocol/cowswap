@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.3.1
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/types@4.3.2
+
 ## 3.3.0
 
 ### Minor Changes
