@@ -69,6 +69,7 @@ export async function getSafeInfo(chainId: number, safeAddress: string): Promise
   try {
     const client = await _getClientOrThrow(chainId)
 
+    console.log('[COW][SafeAPI] Fetch Safe info')
     return client.getSafeInfo(safeAddress)
   } catch (error) {
     return Promise.reject(error)
@@ -82,6 +83,7 @@ export async function getSafeTransaction(
   console.log('[COW][SAFE-API] getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
+  console.log('[COW][SafeAPI] Fetch Safe transaction')
   return client.getTransaction(safeTxHash)
 }
 

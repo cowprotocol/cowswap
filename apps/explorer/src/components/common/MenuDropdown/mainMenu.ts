@@ -1,8 +1,8 @@
-import IMAGE_APPDATA from 'assets/img/code.svg'
-import IMAGE_COW from 'assets/img/CowProtocol-logo.svg'
-import IMAGE_DISCORD from 'assets/img/discord.svg'
-import IMAGE_DOC from 'assets/img/doc.svg'
-import IMAGE_ANALYTICS from 'assets/img/pie.svg'
+import svgCodeSrc from 'assets/img/code.svg'
+import svgCowProtocolSrc from 'assets/img/CowProtocol-logo.svg'
+import svgDiscordSrc from 'assets/img/discord.svg'
+import svgDocSrc from 'assets/img/doc.svg'
+import svgPieSrc from 'assets/img/pie.svg'
 import { PiMathOperationsFill } from 'react-icons/pi'
 
 import { MenuItemKind, MenuLink, MenuTreeItem } from './types'
@@ -31,7 +31,7 @@ export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
     {
       title: 'AppData',
       url: Routes.APPDATA,
-      iconSVG: IMAGE_APPDATA,
+      iconSVG: svgCodeSrc,
     },
   ]
 
@@ -51,25 +51,25 @@ export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
               title: 'CoW Swap',
               url: COWSWAP_LINK,
               kind: MenuItemKind.EXTERNAL_LINK,
-              iconSVG: IMAGE_COW,
+              iconSVG: svgCowProtocolSrc,
             },
             {
               title: 'CoW Protocol',
               url: PROTOCOL_LINK,
               kind: MenuItemKind.EXTERNAL_LINK,
-              iconSVG: IMAGE_COW,
+              iconSVG: svgCowProtocolSrc,
             },
             {
               title: 'Documentation',
               url: DOCS_LINK,
               kind: MenuItemKind.EXTERNAL_LINK,
-              iconSVG: IMAGE_DOC,
+              iconSVG: svgDocSrc,
             },
             {
               title: 'Analytics',
               url: DUNE_DASHBOARD_LINK,
               kind: MenuItemKind.EXTERNAL_LINK,
-              iconSVG: IMAGE_ANALYTICS,
+              iconSVG: svgPieSrc,
             },
           ],
         },
@@ -79,7 +79,7 @@ export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
             {
               title: 'Discord',
               url: DISCORD_LINK,
-              iconSVG: IMAGE_DISCORD, // If icon is a <SVG> inline component
+              iconSVG: svgDiscordSrc, // If icon is a <SVG> inline component
               kind: MenuItemKind.EXTERNAL_LINK,
             },
           ],

@@ -22,10 +22,16 @@ export function OrdersNotificationsUpdater(): null {
 
           if (!content) return
 
+          const duration =
+            eventTyped === OrderStatusEvents.ON_POSTED_ORDER && 'isEthFlow' in payload && !!payload.isEthFlow
+              ? 20_000
+              : undefined
+
           addSnackbar({
             id: eventTyped,
             icon,
             content,
+            duration,
           })
         },
       } as OrderStatusEventListener

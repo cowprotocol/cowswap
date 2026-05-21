@@ -5,7 +5,7 @@ import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import ICON_ARROW from 'assets/icon/arrow.svg'
+import iconArrowSrc from 'assets/icon/arrow.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -71,7 +71,7 @@ export function PermitModal(props: PermitModalProps) {
     () =>
       step === 'approve' ? null : (
         <p>
-          <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} /> <ArrowRight src={ICON_ARROW} />{' '}
+          <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} /> <ArrowRight src={iconArrowSrc} />{' '}
           <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
         </p>
       ),

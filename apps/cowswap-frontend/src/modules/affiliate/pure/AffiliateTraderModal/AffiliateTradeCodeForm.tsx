@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useId } from 'react'
 
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -78,7 +78,7 @@ export function AffiliateTradeCodeForm({
       }}
     >
       <Body>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
           <Trans>Earn while you trade</Trans>
         </Title>

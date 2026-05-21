@@ -21,6 +21,7 @@ export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffilia
 export { useAffiliateTraderStats } from './hooks/useAffiliateTraderStats'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 export { useTraderActivity } from './hooks/useTraderActivity'
+export { useNotifyAffiliateLinkedCode } from './hooks/useNotifyAffiliateLinkedCode'
 
 export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
 

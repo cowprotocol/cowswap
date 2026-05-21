@@ -1,330 +1,311 @@
 # Changelog
 
-## [2.0.22](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.21...snackbars-v2.0.22) (2026-05-12)
+## 2.1.1
 
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.6.0
+  - @cowprotocol/common-hooks@3.2.4
+
+## 2.1.0
+
+### Minor Changes
+
+- feat(affiliate): linked notification (#7514)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.5.0
+  - @cowprotocol/common-hooks@3.2.3
+
+## [2.0.22](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.21...snackbars-v2.0.22) (2026-05-12)
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.2.2
-    * @cowprotocol/ui bumped to 3.4.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.2.2
+    - @cowprotocol/ui bumped to 3.4.0
 
 ## [2.0.21](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.20...snackbars-v2.0.21) (2026-04-22)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.2.1
-    * @cowprotocol/ui bumped to 3.3.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.2.1
+    - @cowprotocol/ui bumped to 3.3.1
 
 ## [2.0.20](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.19...snackbars-v2.0.20) (2026-04-16)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.2.0
-    * @cowprotocol/ui bumped to 3.3.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.2.0
+    - @cowprotocol/ui bumped to 3.3.0
 
 ## [2.0.19](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.18...snackbars-v2.0.19) (2026-04-15)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.1.2
-    * @cowprotocol/ui bumped to 3.2.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.1.2
+    - @cowprotocol/ui bumped to 3.2.2
 
 ## [2.0.18](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.17...snackbars-v2.0.18) (2026-04-15)
 
-
 ### 🔧 Miscellaneous
 
-* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
-
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.1.1
-    * @cowprotocol/ui bumped to 3.2.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.1.1
+    - @cowprotocol/ui bumped to 3.2.1
 
 ## [2.0.17](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.16...snackbars-v2.0.17) (2026-04-14)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.1.0
-    * @cowprotocol/ui bumped to 3.2.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.1.0
+    - @cowprotocol/ui bumped to 3.2.0
 
 ## [2.0.16](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.15...snackbars-v2.0.16) (2026-04-08)
 
-
 ### 🐛 Bug Fixes
 
-* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
-
+- always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
 
 ### 🔧 Miscellaneous
 
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
-
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.0.4
-    * @cowprotocol/ui bumped to 3.1.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.0.4
+    - @cowprotocol/ui bumped to 3.1.3
 
 ## [2.0.15](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.14...snackbars-v2.0.15) (2026-04-07)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.0.3
-    * @cowprotocol/ui bumped to 3.1.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.0.3
+    - @cowprotocol/ui bumped to 3.1.2
 
 ## [2.0.14](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.13...snackbars-v2.0.14) (2026-04-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/ui bumped to 3.1.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/ui bumped to 3.1.1
 
 ## [2.0.13](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.12...snackbars-v2.0.13) (2026-04-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/ui bumped to 3.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/ui bumped to 3.1.0
 
 ## [2.0.12](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.11...snackbars-v2.0.12) (2026-03-19)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.0.2
-    * @cowprotocol/ui bumped to 3.0.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.0.2
+    - @cowprotocol/ui bumped to 3.0.2
 
 ## [2.0.11](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.10...snackbars-v2.0.11) (2026-03-18)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.0.1
-    * @cowprotocol/ui bumped to 3.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.0.1
+    - @cowprotocol/ui bumped to 3.0.1
 
 ## [2.0.10](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.9...snackbars-v2.0.10) (2026-03-11)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 3.0.0
-    * @cowprotocol/ui bumped to 3.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.0.0
+    - @cowprotocol/ui bumped to 3.0.0
 
 ## [2.0.9](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.8...snackbars-v2.0.9) (2026-03-10)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.4.0
-    * @cowprotocol/ui bumped to 2.4.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.4.0
+    - @cowprotocol/ui bumped to 2.4.0
 
 ## [2.0.8](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.7...snackbars-v2.0.8) (2026-02-25)
 
-
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.3.2
-    * @cowprotocol/ui bumped to 2.3.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.3.2
+    - @cowprotocol/ui bumped to 2.3.2
 
 ## [2.0.7](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.6...snackbars-v2.0.7) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.3.1
-    * @cowprotocol/ui bumped to 2.3.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.3.1
+    - @cowprotocol/ui bumped to 2.3.1
 
 ## [2.0.6](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.5...snackbars-v2.0.6) (2026-02-20)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.3.0
-    * @cowprotocol/ui bumped to 2.3.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.3.0
+    - @cowprotocol/ui bumped to 2.3.0
 
 ## [2.0.5](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.4...snackbars-v2.0.5) (2026-02-17)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.2.2
-    * @cowprotocol/ui bumped to 2.2.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.2.2
+    - @cowprotocol/ui bumped to 2.2.2
 
 ## [2.0.4](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.3...snackbars-v2.0.4) (2026-02-16)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.2.1
-    * @cowprotocol/ui bumped to 2.2.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.2.1
+    - @cowprotocol/ui bumped to 2.2.1
 
 ## [2.0.3](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.2...snackbars-v2.0.3) (2026-02-13)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.2.0
-    * @cowprotocol/ui bumped to 2.2.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.2.0
+    - @cowprotocol/ui bumped to 2.2.0
 
 ## [2.0.2](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.1...snackbars-v2.0.2) (2026-02-05)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.1.0
-    * @cowprotocol/ui bumped to 2.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.1.0
+    - @cowprotocol/ui bumped to 2.1.0
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.0.0...snackbars-v2.0.1) (2026-02-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.0.1
-    * @cowprotocol/ui bumped to 2.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.0.1
+    - @cowprotocol/ui bumped to 2.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.2.0...snackbars-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.0.0
-    * @cowprotocol/ui bumped to 2.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.0.0
+    - @cowprotocol/ui bumped to 2.0.0
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.4...snackbars-v1.2.0) (2025-10-23)
 
-
 ### Features
 
-* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+- **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
 
 ## [1.1.4](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.3...snackbars-v1.1.4) (2025-08-21)
 
-
 ### Bug Fixes
 
-* avoid ResizeObserver render errors ([#6144](https://github.com/cowprotocol/cowswap/issues/6144)) ([5c8b029](https://github.com/cowprotocol/cowswap/commit/5c8b02988da94540034bb6045618fd2084800bf3))
+- avoid ResizeObserver render errors ([#6144](https://github.com/cowprotocol/cowswap/issues/6144)) ([5c8b029](https://github.com/cowprotocol/cowswap/commit/5c8b02988da94540034bb6045618fd2084800bf3))
 
 ## [1.1.3](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.2...snackbars-v1.1.3) (2025-06-18)
 
-
 ### Bug Fixes
 
-* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+- make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
 
 ## [1.1.2](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.1...snackbars-v1.1.2) (2025-05-19)
 
-
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
 
 ## [1.1.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.0...snackbars-v1.1.1) (2024-12-23)
 
-
 ### Bug Fixes
 
-* **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
+- **snackbars:** stick snackbars widget to header menu ([4582d67](https://github.com/cowprotocol/cowswap/commit/4582d67156364fe1866a40227f76c8101d11e1bd))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.0.1...snackbars-v1.1.0) (2024-06-24)
 
-
 ### Features
 
-* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
-
+- **rebranding:** merge 📦 Big Package "Re-branding" 📦 ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
 
 ### Bug Fixes
 
-* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+- **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
 
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.0.0...snackbars-v1.0.1) (2024-04-18)
 
-
 ### Bug Fixes
 
-* **snackbars:** remove scrollbar from body when overlay is displayed ([#4242](https://github.com/cowprotocol/cowswap/issues/4242)) ([8174033](https://github.com/cowprotocol/cowswap/commit/817403337635a26b9e311d333ce0eada25521b60))
+- **snackbars:** remove scrollbar from body when overlay is displayed ([#4242](https://github.com/cowprotocol/cowswap/issues/4242)) ([8174033](https://github.com/cowprotocol/cowswap/commit/817403337635a26b9e311d333ce0eada25521b60))
 
 ## 1.0.0 (2024-03-29)
 
-
 ### Features
 
-* **events:** fire on-chain transactions events ([#4045](https://github.com/cowprotocol/cowswap/issues/4045)) ([362b937](https://github.com/cowprotocol/cowswap/commit/362b9371e8d0ad09ea5501e5a58608c28eb5cf43))
-
+- **events:** fire on-chain transactions events ([#4045](https://github.com/cowprotocol/cowswap/issues/4045)) ([362b937](https://github.com/cowprotocol/cowswap/commit/362b9371e8d0ad09ea5501e5a58608c28eb5cf43))
 
 ### Bug Fixes
 
-* **notification:** display order type accordingly to the order ([#3731](https://github.com/cowprotocol/cowswap/issues/3731)) ([2faf42e](https://github.com/cowprotocol/cowswap/commit/2faf42eff2d33a1c78a023a43afaf8bb4e70a3ea))
+- **notification:** display order type accordingly to the order ([#3731](https://github.com/cowprotocol/cowswap/issues/3731)) ([2faf42e](https://github.com/cowprotocol/cowswap/commit/2faf42eff2d33a1c78a023a43afaf8bb4e70a3ea))
