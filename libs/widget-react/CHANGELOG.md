@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.0.5
+  - @cowprotocol/events@4.4.1
+  - @cowprotocol/types@4.3.2
+
 ## 3.0.4
 
 ### Patch Changes
