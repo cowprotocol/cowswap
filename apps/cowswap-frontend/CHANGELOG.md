@@ -1,5 +1,46 @@
 # Changelog
 
+## 3.12.0
+
+### Minor Changes
+
+- feat(wallet): add ConnectWalletButton and isConnectionRestoring state (#7468)
+
+- feat(twap): add caching to safe api requests (#7529)
+
+### Patch Changes
+
+- fix: fix USDT approval after Viem (#7541)
+
+- fix(twap): fallback TWAP history requests to public API (#7540)
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- fix: detect failed onchain TXs (#7421)
+
+- fix(account): restore COW-from-locked-GNO claim flow (#7536)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.0
+  - @cowprotocol/ui@3.6.0
+  - @cowprotocol/widget-lib@4.0.5
+  - @cowprotocol/analytics@3.3.1
+  - @cowprotocol/balances-and-allowances@3.2.5
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/core@3.3.0
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/ens@3.2.4
+  - @cowprotocol/events@4.4.1
+  - @cowprotocol/multicall@3.2.3
+  - @cowprotocol/permit-utils@3.2.5
+  - @cowprotocol/tokens@3.6.1
+  - @cowprotocol/types@4.3.2
+  - @cowprotocol/snackbars@2.1.1
+  - @cowprotocol/iframe-transport@2.2.6
+  - @cowprotocol/hook-dapp-lib@2.2.6
+
 ## 3.11.0
 
 ### Minor Changes
