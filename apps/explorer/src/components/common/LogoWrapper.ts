@@ -1,5 +1,5 @@
-import etherscan from 'assets/img/etherscan-logo.svg'
-import github from 'assets/img/github-logo.png'
+import svgEtherscanSrc from 'assets/img/etherscan-logo.svg'
+import imgGithubSrc from 'assets/img/github-logo.png'
 import styled from 'styled-components/macro'
 
 export default styled.img`
@@ -25,6 +25,6 @@ export default styled.img`
   }
 `
 export const LOGO_MAP = {
-  github,
-  etherscan,
+  imgGithubSrc,
+  svgEtherscanSrc,
 }

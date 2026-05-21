@@ -1,4 +1,4 @@
-import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
 import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
@@ -140,7 +140,7 @@ export const TokenWrapper = styled.div<{
         top: 0;
         width: var(--size);
         height: var(--size);
-        background: url(${IMAGE_STAR_SHINE}) no-repeat;
+        background: url(${svgStarShineSrc}) no-repeat;
         background-size: 100% 100%;
         animation: star-shine 1s infinite;
 

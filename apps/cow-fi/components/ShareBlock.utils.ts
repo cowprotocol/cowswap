@@ -34,20 +34,3 @@ export function openShare(href: string): void {
     popup.opener = null
   }
 }
-
-export async function copyUrl(url: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(url)
-    return
-  } catch {}
-
-  const ta = document.createElement('textarea')
-  ta.value = url
-  ta.style.position = 'fixed'
-  ta.style.left = '-9999px'
-  document.body.appendChild(ta)
-  ta.focus()
-  ta.select()
-  document.execCommand('copy')
-  document.body.removeChild(ta)
-}

@@ -1,3 +1,4 @@
+export { AffiliateFeedbackButton } from './containers/AffiliateFeedbackButton.container'
 export { AffiliatePartnerCodeCreation } from './containers/AffiliatePartnerCodeCreation'
 export { AffiliatePartnerCodeInfo } from './containers/AffiliatePartnerCodeInfo'
 export { AffiliatePartnerNextPayout } from './containers/AffiliatePartnerNextPayout'
@@ -18,6 +19,7 @@ export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowA
 export { useAffiliateStateViewAnalytics } from './hooks/useAffiliateStateViewAnalytics'
 export { useAffiliateTraderWallet, TraderWalletStatus } from './hooks/useAffiliateTraderWallet'
 export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
+export { useNotifyAffiliateLinkedCode } from './hooks/useNotifyAffiliateLinkedCode'
 
 export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
 

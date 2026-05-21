@@ -11,4 +11,5 @@ minimumReleaseAgeExclude:
   - next
   - typescript
   - '@types/*'
+  - '@next/*'
   - '@cowprotocol/*'

@@ -22,6 +22,8 @@ export interface PersistBalancesAndAllowancesParams {
   tokenAddresses: string[]
   balancesQueryConfig?: BalancesQueryConfig
   setLoadingState?: boolean
+  // Increment to force an immediate refetch (e.g. after an order is filled)
+  refreshTrigger?: number
 
   onBalancesLoaded?(loaded: boolean): void
 
@@ -37,6 +39,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
     setLoadingState,
     balancesQueryConfig,
     onBalancesLoaded,
+    refreshTrigger,
     query: queryOptions,
   } = params
 
@@ -56,6 +59,9 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       functionName: 'balanceOf',
       args: [account as `0x${string}`],
     })),
+    // refetches whenever it changes
+    // (is needed when order has been filled or a bridge transfer has completed)
+    scopeKey: refreshTrigger !== undefined ? String(refreshTrigger) : undefined,
     query: {
       ...queryOptions,
       refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,

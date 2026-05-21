@@ -4,8 +4,8 @@ import './polyfills'
 import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
+import svgMoonSrc from '@cowprotocol/assets/cow-swap/moon.svg'
+import svgSunSrc from '@cowprotocol/assets/cow-swap/sun.svg'
 import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
@@ -50,7 +50,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   return (
     <ThemeContext.Provider value={theme}>
       <DarkModeToggleButton onClick={toggleDarkMode}>
-        <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={description} /> {label}
+        <SVG src={darkMode ? svgSunSrc : svgMoonSrc} description={description} /> {label}
       </DarkModeToggleButton>
 
       {children}

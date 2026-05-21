@@ -4,6 +4,7 @@ import { ReactNode, Suspense } from 'react'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
+import { useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -20,6 +21,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
+import { TradeRouteRedirect } from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -33,11 +35,13 @@ import {
   TwapFormState,
 } from 'modules/twap'
 
+import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export function AdvancedOrdersPage(): ReactNode {
+  const params = useParams()
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -55,6 +59,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
 
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+
+  if (!params.chainId) {
+    return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
+  }
 
   return (
     <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
