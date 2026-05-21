@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 
 import { i18n } from '@lingui/core'
@@ -26,7 +26,10 @@ jest.mock('@cowprotocol/cow-sdk', () => {
     ...actual,
     isBtcAddress: jest.fn((v: string) => v === 'bc1qvalid'),
     isSolanaAddress: jest.fn((v: string) => v === 'SolValid1111111111111111111111111111111111111'),
-    isEvmChain: jest.fn((id: number) => id in actual.SupportedChainId),
+    // SOLANA lives in `SupportedChainId` post-SDK-migration but isn't an EVM chain;
+    // explicit guard matches the real `isEvmChain` behaviour so SOL targets are routed
+    // through the non-EVM branch (e.g. explorer-link rendering needs `isNonEvm = true`).
+    isEvmChain: jest.fn((id: number) => id in actual.SupportedChainId && id !== actual.SupportedChainId.SOLANA),
   }
 })
 
