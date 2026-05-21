@@ -2,23 +2,12 @@ import { Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState } f
 
 import { TokenInfo } from '@cowprotocol/types'
 
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material'
+import { Box, Button, Chip, ListItemText } from '@mui/material'
 
 import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../../configurator.types'
+import { SelectInput } from '../ui/controls/Select/SelectInput'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -40,28 +29,31 @@ type TokenListControlProps = {
 
 interface TokenListSelectProps {
   label: string
-  labelId: string
+  name: TokenListScope
   selectedUrls: string[]
-  options: ReactNode
-  onChange(event: SelectChangeEvent<string[]>): void
+  options: { label: string; value: string }[]
+  onChange(scope: TokenListScope, selectedUrls: string[]): void
 }
 
 interface TokenListSelectionsProps {
   tokenListUrls: TokenListItem[]
-  onChangeByScope: Record<TokenListScope, (event: SelectChangeEvent<string[]>) => void>
+  onChangeByScope: Record<TokenListScope, (scope: TokenListScope, selectedUrls: string[]) => void>
 }
 
-const TOKEN_LIST_SELECT_CONFIG: { label: string; labelId: string; scope: TokenListScope }[] = [
-  { label: 'Active Token Lists', labelId: 'token-list-chip-label', scope: 'enabled' },
-  { label: 'Sell Token Lists', labelId: 'sell-token-list-chip-label', scope: 'enabledForSell' },
-  { label: 'Buy Token Lists', labelId: 'buy-token-list-chip-label', scope: 'enabledForBuy' },
+const TOKEN_LIST_SELECT_CONFIG: { label: string; scope: TokenListScope }[] = [
+  { label: 'Active Token Lists', scope: 'enabled' },
+  { label: 'Sell Token Lists', scope: 'enabledForSell' },
+  { label: 'Buy Token Lists', scope: 'enabledForBuy' },
 ]
 
 const getSelectedTokenListUrls = (tokenListUrls: TokenListItem[], scope: TokenListScope): string[] => {
   return tokenListUrls.filter((list) => list[scope]).map((list) => list.url)
 }
 
-const getTokenListOptions = (tokenListUrls: TokenListItem[], scope: TokenListScope): ReactNode[] => {
+const getTokenListOptions = (
+  tokenListUrls: TokenListItem[],
+  scope: TokenListScope,
+): { label: string; value: string }[] => {
   return [...tokenListUrls]
     .sort((a, b) => {
       if (a[scope] === b[scope]) {
@@ -70,11 +62,27 @@ const getTokenListOptions = (tokenListUrls: TokenListItem[], scope: TokenListSco
 
       return a[scope] ? -1 : 1
     })
-    .map((list) => (
-      <MenuItem key={`${scope}-${list.url}`} value={list.url}>
-        <Checkbox checked={list[scope]} />
+    .map((list) => ({ label: list.url, value: list.url }))
+}
+
+function TokenListSelect({ label, name, selectedUrls, options, onChange }: TokenListSelectProps): ReactNode {
+  return (
+    <SelectInput
+      id={`token-list-${name}`}
+      name={name}
+      label={label}
+      multiple
+      multilineSelectedValue
+      value={selectedUrls}
+      options={options}
+      menuProps={MENU_PROPS}
+      onChange={(scope, value) => {
+        if (!Array.isArray(value)) return
+        onChange(scope as TokenListScope, value as string[])
+      }}
+      renderOptionLabel={(option) => (
         <ListItemText
-          primary={list.url}
+          primary={option.label}
           disableTypography={true}
           style={{
             fontSize: '13px',
@@ -82,43 +90,26 @@ const getTokenListOptions = (tokenListUrls: TokenListItem[], scope: TokenListSco
             wordBreak: 'break-word',
           }}
         />
-      </MenuItem>
-    ))
-}
-
-function TokenListSelect({ label, labelId, selectedUrls, options, onChange }: TokenListSelectProps): ReactNode {
-  return (
-    <FormControl sx={{ width: '100%' }}>
-      <InputLabel id={labelId}>{label}</InputLabel>
-      <Select
-        labelId={labelId}
-        multiple
-        value={selectedUrls}
-        onChange={onChange}
-        input={<OutlinedInput label={label} />}
-        renderValue={(selected) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((url) => (
-              <Chip key={url} label={url} />
-            ))}
-          </Box>
-        )}
-        MenuProps={MENU_PROPS}
-      >
-        {options}
-      </Select>
-    </FormControl>
+      )}
+      renderValue={(selected) => (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          {(Array.isArray(selected) ? selected : []).map((url) => (
+            <Chip key={url} label={url} />
+          ))}
+        </Box>
+      )}
+    />
   )
 }
 
 function TokenListSelections({ tokenListUrls, onChangeByScope }: TokenListSelectionsProps): ReactNode {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {TOKEN_LIST_SELECT_CONFIG.map(({ label, labelId, scope }) => (
+      {TOKEN_LIST_SELECT_CONFIG.map(({ label, scope }) => (
         <TokenListSelect
           key={scope}
           label={label}
-          labelId={labelId}
+          name={scope}
           selectedUrls={getSelectedTokenListUrls(tokenListUrls, scope)}
           options={getTokenListOptions(tokenListUrls, scope)}
           onChange={onChangeByScope[scope]}
@@ -142,11 +133,9 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
 
   const onChangeByScope = useMemo(
     () => ({
-      enabled: (event: SelectChangeEvent<string[]>) => setTokenListScope('enabled', event.target.value as string[]),
-      enabledForSell: (event: SelectChangeEvent<string[]>) =>
-        setTokenListScope('enabledForSell', event.target.value as string[]),
-      enabledForBuy: (event: SelectChangeEvent<string[]>) =>
-        setTokenListScope('enabledForBuy', event.target.value as string[]),
+      enabled: (_: TokenListScope, selectedUrls: string[]) => setTokenListScope('enabled', selectedUrls),
+      enabledForSell: (_: TokenListScope, selectedUrls: string[]) => setTokenListScope('enabledForSell', selectedUrls),
+      enabledForBuy: (_: TokenListScope, selectedUrls: string[]) => setTokenListScope('enabledForBuy', selectedUrls),
     }),
     [setTokenListScope],
   )

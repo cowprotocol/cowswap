@@ -2,13 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { TradeType } from '@cowprotocol/widget-lib'
 
-import Checkbox from '@mui/material/Checkbox'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import ListItemText from '@mui/material/ListItemText'
-import MenuItem from '@mui/material/MenuItem'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { SelectInput } from './SelectInput'
 
 const LABEL = 'Trade types'
 
@@ -19,34 +13,23 @@ export function TradeModesControl({
 }): ReactNode {
   const [tradeModes, setTradeModes] = state
 
-  const handleTradeModeChange = (event: SelectChangeEvent<TradeType[]>): void => {
-    const value = event.target.value
-    const nextTradeModes = typeof value === 'string' ? (value.split(',') as TradeType[]) : value
-
+  const handleTradeModeChange = (_: string, value: TradeType[] | '' | TradeType): void => {
+    const nextTradeModes = Array.isArray(value) ? value : []
     if (!nextTradeModes.length) return
 
     setTradeModes(nextTradeModes)
   }
 
   return (
-    <FormControl sx={{ width: '100%' }}>
-      <InputLabel>{LABEL}</InputLabel>
-      <Select
-        id="trade-mode-select"
-        multiple
-        size="small"
-        value={tradeModes}
-        onChange={handleTradeModeChange}
-        input={<OutlinedInput id="trade-mode-select-outlined" label={LABEL} />}
-        renderValue={(selected) => selected.join(', ')}
-      >
-        {Object.values(TradeType).map((option) => (
-          <MenuItem key={option} value={option}>
-            <Checkbox checked={tradeModes.indexOf(option) > -1} />
-            <ListItemText primary={option} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <SelectInput
+      id="trade-mode-select"
+      name="enabledTradeTypes"
+      label={LABEL}
+      multiple
+      value={tradeModes}
+      options={Object.values(TradeType).map((option) => ({ label: option, value: option }))}
+      onChange={handleTradeModeChange}
+      renderValue={(selected) => (Array.isArray(selected) ? selected.join(', ') : selected)}
+    />
   )
 }

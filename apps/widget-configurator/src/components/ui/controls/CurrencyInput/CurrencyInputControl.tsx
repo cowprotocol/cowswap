@@ -1,7 +1,7 @@
-import { ChangeEvent, Dispatch, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import Autocomplete from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
+import { NumberInput } from '../NumberInput/NumberInput.component'
+import { SelectInput } from '../Select/SelectInput'
 
 const TokenOptions = ['COW', 'USDC', 'WBTC']
 
@@ -10,36 +10,34 @@ export interface CurrencyInputProps {
   tokenIdState: [string, Dispatch<SetStateAction<string>>]
   tokenAmountState: [number, Dispatch<SetStateAction<number>>]
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CurrencyInputControl(props: CurrencyInputProps) {
+
+export function CurrencyInputControl(props: CurrencyInputProps): ReactNode {
   const { tokenIdState, tokenAmountState, label } = props
   const [tokenId, setTokenId] = tokenIdState
   const [amount, setAmount] = tokenAmountState
 
   return (
     <>
-      <Autocomplete
-        value={tokenId}
-        onChange={(event: ChangeEvent<unknown>, newValue: string | null) => {
-          setTokenId(newValue || '')
-        }}
-        inputValue={tokenId || ''}
-        onInputChange={(event: ChangeEvent<unknown>, newInputValue: string) => {
-          setTokenId(newInputValue || '')
-        }}
+      <SelectInput
         id={'selectTokenId' + label}
-        options={TokenOptions}
-        size="small"
-        renderInput={(params) => <TextField {...params} label={label} />}
+        name={'selectTokenId' + label}
+        label={label}
+        value={TokenOptions.includes(tokenId) ? tokenId : ''}
+        options={TokenOptions.map((option) => ({ label: option, value: option }))}
+        onChange={(_, value) => {
+          if (Array.isArray(value)) return
+          setTokenId(value)
+        }}
       />
 
-      <TextField
+      <NumberInput
         id={'selectTokenAmount' + label}
+        name={'selectTokenAmount' + label}
         label={label}
         value={amount}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setAmount(Number(e.target.value || 0))}
-        size="small"
+        onChange={(_, value) => setAmount(value ?? 0)}
+        emptyValue={0}
+        inputProps={{ min: 0, step: 'any' }}
       />
     </>
   )

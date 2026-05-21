@@ -1,6 +1,6 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { ReactNode } from 'react'
 
-import { PartnerFeeControl } from '../../../controls/PartnerFeeControl'
+import { NumberInput } from '../../../ui/controls/NumberInput/NumberInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 
@@ -10,13 +10,24 @@ interface IntegrationsSectionFormProps {
 }
 
 export function IntegrationsSectionForm({ values, onChange }: IntegrationsSectionFormProps): ReactNode {
-  const partnerFeeBpsState: [number, Dispatch<SetStateAction<number>>] = [
-    values.partnerFeeBps,
-    (nextValue) => {
-      const resolvedValue = typeof nextValue === 'function' ? nextValue(values.partnerFeeBps) : nextValue
-      onChange('partnerFeeBps', resolvedValue)
-    },
-  ]
-
-  return <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
+  return (
+    <NumberInput
+      id="partnerFeePercent"
+      name="partnerFeeBps"
+      label="Partner fee BPS"
+      value={values.partnerFeeBps}
+      onChange={onChange}
+      emptyValue={0}
+      parseValue={(rawValue) => {
+        const roundedValue = Math.ceil(Number(rawValue))
+        const boundedValue = Math.min(Math.max(roundedValue, 0), 100)
+        return Number.isNaN(boundedValue) ? 0 : boundedValue
+      }}
+      inputProps={{
+        min: 0,
+        max: 100,
+        step: 1,
+      }}
+    />
+  )
 }

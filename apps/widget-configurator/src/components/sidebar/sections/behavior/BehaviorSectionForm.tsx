@@ -1,8 +1,7 @@
-import type { ChangeEvent, ReactNode } from 'react'
-
-import TextField from '@mui/material/TextField'
+import type { ReactNode } from 'react'
 
 import { BooleanSwitchControl } from '../../../ui/controls/BooleanSwitch/BooleanSwitchControl'
+import { NumberInput } from '../../../ui/controls/NumberInput/NumberInput.component'
 
 import type { UseToastsManagerReturn } from '../../../../hooks/useToastsManager'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -14,20 +13,6 @@ export interface BehaviorSectionFormProps {
 }
 
 export function BehaviorSectionForm({ values, onChange, toastManager }: BehaviorSectionFormProps): ReactNode {
-  const setBlockPriceImpactAboveValue = (event: ChangeEvent<HTMLInputElement>): void => {
-    const nextValue = event.target.value.trim()
-
-    if (!nextValue) {
-      onChange('disableTradeWhenPriceImpactIsHigherThan', undefined)
-      return
-    }
-
-    const parsedValue = Number(nextValue)
-    if (Number.isNaN(parsedValue)) return
-
-    onChange('disableTradeWhenPriceImpactIsHigherThan', parsedValue)
-  }
-
   return (
     <>
       <BooleanSwitchControl
@@ -76,16 +61,13 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         label="Block trade if price impact is unknown"
         onChange={(enabled) => onChange('disableTradeWhenPriceImpactIsUnknown', enabled)}
       />
-      <TextField
-        fullWidth
-        margin="dense"
+      <NumberInput
         name="disableTradeWhenPriceImpactIsHigherThan"
         id="disableTradeWhenPriceImpactIsHigherThan"
         label="Block trade above price impact (%)"
-        type="number"
-        value={values.disableTradeWhenPriceImpactIsHigherThan ?? ''}
-        onChange={setBlockPriceImpactAboveValue}
-        size="medium"
+        value={values.disableTradeWhenPriceImpactIsHigherThan}
+        onChange={onChange}
+        emptyValue={undefined}
         helperText="Leave empty to disable"
         inputProps={{
           min: 0,

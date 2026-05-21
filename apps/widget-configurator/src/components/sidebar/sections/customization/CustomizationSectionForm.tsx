@@ -1,15 +1,12 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { ReactNode } from 'react'
 
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { CustomImagesControl } from '../../../controls/CustomImagesControl'
-import { CustomSoundsControl } from '../../../controls/CustomSoundsControl'
+import { TextInput } from '../../../ui/controls/TextInput/TextInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 
-function resolveNextState<T>(current: T, next: SetStateAction<T>): T {
-  return typeof next === 'function' ? (next as (prevState: T) => T)(current) : next
-}
+type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
 
 interface CustomizationSectionFormProps {
   values: ConfiguratorFormValues
@@ -17,20 +14,46 @@ interface CustomizationSectionFormProps {
 }
 
 export function CustomizationSectionForm({ values, onChange }: CustomizationSectionFormProps): ReactNode {
-  const customImagesState: [CowSwapWidgetParams['images'], Dispatch<SetStateAction<CowSwapWidgetParams['images']>>] = [
-    values.customImages,
-    (nextValue) => onChange('customImages', resolveNextState(values.customImages, nextValue)),
-  ]
+  const customImages = values.customImages || {}
+  const customSounds = values.customSounds || {}
 
-  const customSoundsState: [CowSwapWidgetParams['sounds'], Dispatch<SetStateAction<CowSwapWidgetParams['sounds']>>] = [
-    values.customSounds,
-    (nextValue) => onChange('customSounds', resolveNextState(values.customSounds, nextValue)),
-  ]
+  const valueNullAsString = (value: string | undefined | null): string => (value === null ? 'null' : value || '')
+  const handleSoundChange =
+    (type: WidgetSounds) =>
+    (name: string, value: string | null): void => {
+      const nextValue = value === 'null' ? null : value || ''
+      onChange('customSounds', { ...customSounds, [type]: nextValue })
+    }
 
   return (
     <>
-      <CustomImagesControl state={customImagesState} />
-      <CustomSoundsControl state={customSoundsState} />
+      <TextInput
+        name="customImages-emptyOrders"
+        label="Empty orders image URL"
+        value={customImages.emptyOrders || ''}
+        onChange={(_, value) => onChange('customImages', { ...customImages, emptyOrders: value || '' })}
+      />
+      <TextInput
+        name="customSounds-postOrder"
+        label="Submitted order sound URL"
+        value={valueNullAsString(customSounds.postOrder)}
+        onChange={handleSoundChange('postOrder')}
+        helperText='Set literal "null" to disable this sound.'
+      />
+      <TextInput
+        name="customSounds-orderExecuted"
+        label="Executed order sound URL"
+        value={valueNullAsString(customSounds.orderExecuted)}
+        onChange={handleSoundChange('orderExecuted')}
+        helperText='Set literal "null" to disable this sound.'
+      />
+      <TextInput
+        name="customSounds-orderError"
+        label="Failed order sound URL"
+        value={valueNullAsString(customSounds.orderError)}
+        onChange={handleSoundChange('orderError')}
+        helperText='Set literal "null" to disable this sound.'
+      />
     </>
   )
 }

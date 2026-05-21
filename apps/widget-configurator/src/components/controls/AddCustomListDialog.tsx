@@ -1,31 +1,14 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormHelperText,
-  Tab,
-  TextField,
-} from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, TextField } from '@mui/material'
 import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
 import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
-
-const jsonTextAreaStyles = {
-  fontFamily: 'monospace',
-  width: '100%',
-  height: '200px',
-  resize: 'none',
-  marginTop: '10px',
-}
+import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
 
 type AddCustomListDialogProps = {
   open: boolean
@@ -48,7 +31,7 @@ export function AddCustomListDialog({
   const [customListUrl, setCustomListUrl] = useState<string>('')
   const [hasErrors, setHasErrors] = useState(false)
   const [hasJsonErrors, setHasJsonErrors] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [customTokensJson, setCustomTokensJson] = useState<string | null>('')
 
   const [customTokens, setCustomTokens] = useState<TokenInfo[]>([])
 
@@ -64,6 +47,7 @@ export function AddCustomListDialog({
     // Reset custom tokens
     setCustomTokens([])
     setHasJsonErrors(false)
+    setCustomTokensJson('')
   }
 
   // TODO: Add proper return type annotation
@@ -84,17 +68,18 @@ export function AddCustomListDialog({
   }
 
   // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleJsonInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setHasJsonErrors(false)
 
-    if (!e.target.value) {
+  const handleJsonInputChange = (_name: string, value: string | null): void => {
+    setHasJsonErrors(false)
+    setCustomTokensJson(value)
+
+    if (!value?.trim()) {
       setCustomTokens([])
       return
     }
 
     try {
-      const parsedTokens = parseCustomTokensInput(e.target.value)
+      const parsedTokens = parseCustomTokensInput(value)
 
       if (parsedTokens) {
         setCustomTokens(parsedTokens)
@@ -122,9 +107,7 @@ export function AddCustomListDialog({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const addJsonExample = () => {
-    if (textareaRef.current) {
-      textareaRef.current.value = JSON.stringify(DEFAULT_CUSTOM_TOKENS, null, 2)
-    }
+    setCustomTokensJson(JSON.stringify(DEFAULT_CUSTOM_TOKENS, null, 2))
     setCustomTokens(DEFAULT_CUSTOM_TOKENS)
     setHasJsonErrors(false)
   }
@@ -162,9 +145,15 @@ export function AddCustomListDialog({
           />
         </CustomTabPanel>
         <CustomTabPanel value={tabIndex} index={1}>
-          <textarea ref={textareaRef} style={jsonTextAreaStyles as never} onChange={handleJsonInputChange}></textarea>
+          <JsonInput
+            name="customTokensJson"
+            label="Custom tokens JSON"
+            value={customTokensJson}
+            onChange={handleJsonInputChange}
+            error={hasJsonErrors}
+            helperText={hasJsonErrors ? 'Enter a token array or token list JSON' : undefined}
+          />
           <Button onClick={addJsonExample}>Add an example</Button>
-          {hasJsonErrors && <FormHelperText error>Enter a token array or token list JSON</FormHelperText>}
         </CustomTabPanel>
       </DialogContent>
       <DialogActions>

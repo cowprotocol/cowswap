@@ -2,8 +2,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { ThemeControl, type ThemeOptionValue } from './ThemeControl'
 
-function renderThemeControl(props: { selectedValue: ThemeOptionValue; onChange: (v: ThemeOptionValue) => void }): void {
-  render(<ThemeControl selectedValue={props.selectedValue} onChange={props.onChange} />)
+function renderThemeControl(props: {
+  selectedValue: ThemeOptionValue
+  onChange: (name: string, value: ThemeOptionValue) => void
+}): void {
+  render(<ThemeControl name="theme" selectedValue={props.selectedValue} onChange={props.onChange} />)
 }
 
 describe('ThemeControl', () => {
@@ -23,6 +26,6 @@ describe('ThemeControl', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'))
     fireEvent.click(screen.getByRole('option', { name: 'Light' }))
 
-    expect(onChange).toHaveBeenCalledWith('light')
+    expect(onChange).toHaveBeenCalledWith('theme', 'light')
   })
 })

@@ -2,10 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { LOCALE_DISPLAY_NAMES, SupportedLocale, SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+import { SelectInput } from './SelectInput'
 
 const LABEL = 'Forced locale'
 const LABEL_ID = 'select-locale-label'
@@ -16,33 +13,28 @@ export function LocaleControl({ state }: { state: LocaleControlState }): ReactNo
   const [locale, setLocale] = state
 
   return (
-    <FormControl sx={{ width: '100%' }}>
-      <InputLabel id={LABEL_ID} shrink>
-        {LABEL}
-      </InputLabel>
-      <Select
-        labelId={LABEL_ID}
-        id="select-locale"
-        value={locale}
-        onChange={(event) => setLocale(event.target.value as SupportedLocale | '')}
-        displayEmpty
-        label={LABEL}
-        size="small"
-        renderValue={(selected) => {
-          if (!selected) {
-            return 'Browser default'
-          }
+    <SelectInput
+      labelId={LABEL_ID}
+      id="select-locale"
+      name="locale"
+      label={LABEL}
+      value={locale}
+      displayEmpty
+      options={[
+        { label: 'Browser default', value: '' },
+        ...SUPPORTED_LOCALES.map((option) => ({ label: LOCALE_DISPLAY_NAMES[option] || option, value: option })),
+      ]}
+      onChange={(_, value) => {
+        if (Array.isArray(value)) return
+        setLocale(value as SupportedLocale | '')
+      }}
+      renderValue={(selected) => {
+        if (!selected || Array.isArray(selected)) {
+          return 'Browser default'
+        }
 
-          return LOCALE_DISPLAY_NAMES[selected as SupportedLocale] || selected
-        }}
-      >
-        <MenuItem value="">Browser default</MenuItem>
-        {SUPPORTED_LOCALES.map((option) => (
-          <MenuItem key={option} value={option}>
-            {LOCALE_DISPLAY_NAMES[option] || option}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+        return LOCALE_DISPLAY_NAMES[selected as SupportedLocale] || selected
+      }}
+    />
   )
 }

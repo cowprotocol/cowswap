@@ -315,10 +315,17 @@ export function Sidebar({
 
   - [x] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
   - [x] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
+  - [x] Add name to all fields.
+  - [x] Create reusable TextInput, NumberInput and SelectInput components.
 
+  - [ ] Refactor patterns like this:
+    export interface CurrentTradeTypeControlProps {
+      state: [TradeType, Dispatch<SetStateAction<TradeType>>]
+    }
+
+  - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value.
+  - [ ] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
   - [ ] Add toggle to disable scrollbars.
-  - [ ] Add name to all fields.
-  - [ ] Create reusable TextInput, NumberInput and SelectInput components.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
   */
 

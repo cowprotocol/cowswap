@@ -15,7 +15,7 @@ export interface ThemeColorsSectionFormProps {
 export function ThemeColorsSectionForm({ values, onChange, paletteManager }: ThemeColorsSectionFormProps): ReactNode {
   return (
     <>
-      <ThemeControl selectedValue={values.theme as ThemeOptionValue} onChange={(value) => onChange('theme', value)} />
+      <ThemeControl name="theme" selectedValue={values.theme as ThemeOptionValue} onChange={onChange} />
       <PaletteControl paletteManager={paletteManager} />
     </>
   )

@@ -1,12 +1,9 @@
-import { Dispatch, SetStateAction } from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isChainDeprecated, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+import { SelectInput } from './SelectInput'
 
 export type NetworkOption = {
   chainId: SupportedChainId
@@ -22,24 +19,19 @@ const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId
 
 const LABEL = 'Network'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getNetworkOption = (chainId: SupportedChainId) => NetworkOptions.find((item) => item.chainId === chainId)
+export const getNetworkOption = (chainId: SupportedChainId): NetworkOption | undefined =>
+  NetworkOptions.find((item) => item.chainId === chainId)
 
-type NetworkControlProps = {
+export interface NetworkControlProps {
   standaloneMode: boolean
   state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>]
   availableChains: SupportedChainId[]
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NetworkControl({ state, standaloneMode, availableChains }: NetworkControlProps) {
+export function NetworkControl({ state, standaloneMode, availableChains }: NetworkControlProps): ReactNode {
   const [network, setNetwork] = state
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const switchNetwork = (chainId: number) => {
+  const switchNetwork = (chainId: number): void => {
     const targetChainId = chainId || DEFAULT_CHAIN_ID
     const targetNetwork = getNetworkOption(targetChainId)
 
@@ -49,32 +41,27 @@ export function NetworkControl({ state, standaloneMode, availableChains }: Netwo
   }
 
   return (
-    <FormControl sx={{ width: '100%' }} disabled={standaloneMode}>
-      <InputLabel>{LABEL}</InputLabel>
-      <Select
-        id="controllable-states-network"
-        value={network?.chainId || DEFAULT_CHAIN_ID}
-        onChange={(event) => switchNetwork(event.target.value as number)}
-        autoWidth
-        label={LABEL}
-        disabled={standaloneMode}
-        size="small"
-      >
-        {availableChains.map((chainId) => {
+    <SelectInput
+      id="controllable-states-network"
+      name="chainId"
+      label={LABEL}
+      value={network?.chainId || DEFAULT_CHAIN_ID}
+      disabled={standaloneMode}
+      options={availableChains
+        .map((chainId) => {
           const option = NetworkOptions.find((o) => o.chainId === chainId)
-
           if (!option) return null
 
-          const isDeprecated = isChainDeprecated(chainId)
-
-          return (
-            <MenuItem key={option.chainId} value={option.chainId}>
-              {option.label}
-              {isDeprecated && ' (deprecated)'}
-            </MenuItem>
-          )
-        })}
-      </Select>
-    </FormControl>
+          return {
+            label: `${option.label}${isChainDeprecated(chainId) ? ' (deprecated)' : ''}`,
+            value: option.chainId,
+          }
+        })
+        .filter((option): option is { label: string; value: SupportedChainId } => option !== null)}
+      onChange={(_, value) => {
+        if (value === '' || Array.isArray(value)) return
+        switchNetwork(value as number)
+      }}
+    />
   )
 }

@@ -3,11 +3,9 @@ import { type ComponentType, type ReactNode } from 'react'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import Box from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select, { type SelectChangeEvent } from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
+
+import { SelectInput, type SelectInputOption } from '../ui/controls/Select/SelectInput'
 
 export type ThemeOptionValue = 'light' | 'dark'
 
@@ -45,37 +43,37 @@ function ThemeOptionContent({ icon: Icon, label }: Pick<ThemeOption, 'icon' | 'l
 
 export interface ThemeControlProps {
   /** Current select value: `auto` or an explicit palette mode. */
+  name: string
   selectedValue: ThemeOptionValue
-  onChange: (value: ThemeOptionValue) => void
+  onChange: (name: string, value: ThemeOptionValue) => void
 }
 
-export function ThemeControl({ selectedValue, onChange }: ThemeControlProps): ReactNode {
-  const handleThemeChange = (event: SelectChangeEvent<ThemeOptionValue>): void => {
-    onChange(event.target.value as ThemeOptionValue)
-  }
-
+export function ThemeControl({ name, selectedValue, onChange }: ThemeControlProps): ReactNode {
   return (
-    <FormControl sx={{ width: '100%' }}>
-      <InputLabel id="select-theme-label">Theme</InputLabel>
-      <Select
-        labelId="select-theme-label"
-        id="select-theme"
-        value={selectedValue}
-        onChange={handleThemeChange}
-        label="Theme"
-        size="small"
-        renderValue={(value) => {
-          const selectedOption = getThemeOption(value as ThemeOptionValue)
+    <SelectInput
+      labelId="select-theme-label"
+      id="select-theme"
+      name={name}
+      value={selectedValue}
+      label="Theme"
+      options={THEME_OPTIONS.map<SelectInputOption<ThemeOptionValue>>((option) => ({
+        label: option.label,
+        value: option.value,
+      }))}
+      onChange={(_, value) => {
+        if (value === '' || Array.isArray(value)) return
+        onChange(name, value as ThemeOptionValue)
+      }}
+      renderOptionLabel={(option) => {
+        const themeOption = getThemeOption(option.value as ThemeOptionValue)
+        return <ThemeOptionContent icon={themeOption.icon} label={themeOption.label} />
+      }}
+      renderValue={(value) => {
+        if (value === '' || Array.isArray(value)) return null
+        const selectedOption = getThemeOption(value as ThemeOptionValue)
 
-          return <ThemeOptionContent icon={selectedOption.icon} label={selectedOption.label} />
-        }}
-      >
-        {THEME_OPTIONS.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            <ThemeOptionContent icon={option.icon} label={option.label} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+        return <ThemeOptionContent icon={selectedOption.icon} label={selectedOption.label} />
+      }}
+    />
   )
 }
