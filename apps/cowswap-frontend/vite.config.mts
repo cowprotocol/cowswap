@@ -225,65 +225,7 @@ export default defineConfig(({ mode, isPreview }) => {
             return 'static/[name]-[hash].js'
           },
 
-          // eslint-disable-next-line complexity
           manualChunks(id) {
-            // Keep known heavy app domains out of the main entry chunk.
-            if (
-              id.includes('/apps/cowswap-frontend/src/modules/trade/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/tradeQuote/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/tradeFlow/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/tradeFormValidation/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/tradeWidgetAddons/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/swap/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/erc20Approve/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/permit/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/ethFlow/')
-            ) {
-              return 'trade-modules'
-            }
-            if (
-              id.includes('/apps/cowswap-frontend/src/modules/orders/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/ordersTable/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/orderProgressBar/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/onchainTransactions/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/advancedOrders/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/twap/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/limitOrders/')
-            ) {
-              return 'orders-modules'
-            }
-            if (
-              id.includes('/apps/cowswap-frontend/src/modules/tokensList/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/bridge/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/combinedBalances/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/usdAmount/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/accountProxy/') ||
-              id.includes('/apps/cowswap-frontend/src/modules/yield/')
-            ) {
-              return 'portfolio-modules'
-            }
-
-            // Split the wallet stack by sub-domain so it does not collapse into one huge vendor chunk.
-            if (id.includes('/node_modules/@reown/')) return 'vendor-reown'
-            if (id.includes('/node_modules/@mantine/') || id.includes('/node_modules/@base-ui/')) return 'vendor-ui-kit'
-            if (
-              id.includes('/node_modules/wagmi/') ||
-              id.includes('/node_modules/@wagmi/') ||
-              id.includes('/node_modules/viem/') ||
-              id.includes('/node_modules/@walletconnect/')
-            ) {
-              return 'vendor-wallet'
-            }
-
-            if (
-              id.includes('/node_modules/axios/') ||
-              id.includes('/node_modules/graphql/') ||
-              id.includes('/node_modules/timeago.js/') ||
-              id.includes('/node_modules/qrcode/')
-            ) {
-              return 'vendor-data-utils'
-            }
-
             if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
