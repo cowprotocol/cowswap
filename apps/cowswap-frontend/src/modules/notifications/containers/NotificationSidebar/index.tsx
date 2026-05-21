@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
-import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
+import iconNotificationSettingsSrc from '@cowprotocol/assets/images/icon-notification-settings.svg'
 import { useMediaQuery, useOnClickOutside, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
@@ -95,7 +95,7 @@ function NotificationsHeader({
                 label: 'notification sidebar',
               })}
             >
-              <SVG src={ICON_NOTIFICATION_SETTINGS} />
+              <SVG src={iconNotificationSettingsSrc} />
             </NotificationSettingsIcon>
           </NotificationSettingsPopover>
         ) : (

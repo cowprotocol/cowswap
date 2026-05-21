@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.3.0
+
+### Minor Changes
+
+- feat(twap): add caching to safe api requests (#7529)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.1
+
 ## 3.2.3
 
 ### Patch Changes

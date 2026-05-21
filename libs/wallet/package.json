@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/wallet",
-  "version": "3.3.2",
+  "version": "3.4.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.2",
+    "@cowprotocol/cow-sdk": "9.1.1",
     "@reown/appkit": "1.8.16",
     "@reown/appkit-adapter-wagmi": "1.8.16",
     "@cowprotocol/assets": "workspace:*",

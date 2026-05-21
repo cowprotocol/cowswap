@@ -1,11 +1,11 @@
-import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
 import { ERC20_ABI, ERC4626_ABI } from './abis'
 import { getPublicClient } from './client'
 
-import { useNetworkId } from '../../state/network/hooks'
+import { useEvmNetworkId } from '../../state/network/hooks'
 
 export interface VaultAsset {
   address: string
@@ -25,7 +25,7 @@ function resolveErc20Meta(data: MulticallEntry[] | undefined): Erc20Meta | undef
 }
 
 export function useVaultAsset(vaultAddress: AddressKey): VaultAsset | undefined {
-  const chainId = useNetworkId() as SupportedChainId | null
+  const chainId = useEvmNetworkId()
 
   const { data: assetAddress } = useSWR<string>(
     chainId && vaultAddress ? `vault-asset:${chainId}:${vaultAddress}` : null,

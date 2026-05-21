@@ -30,7 +30,7 @@ import { widgetIframeTransport } from './widgetIframeTransport'
 import type * as CSS from 'csstype'
 
 const noopHandler: CowSwapWidgetHandler = {
-  iframe: document.createElement('iframe'),
+  iframe: null as never,
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,

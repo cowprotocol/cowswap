@@ -9,7 +9,10 @@ interface Market<T = string> {
   quoteToken: T
 }
 
-const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
+// 4001 is the standard EIP-1193 user rejection code.
+// -32000 is a generic server error used by nodes for things like "intrinsic gas too low";
+// it is NOT included here because relying on it alone causes node errors to be silently swallowed.
+const PROVIDER_REJECT_REQUEST_CODES = [4001] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
   'User rejected',
@@ -123,7 +126,12 @@ export function getChainIdValues(): ChainId[] {
  */
 export function getProviderErrorMessage(error: unknown): string | undefined {
   if (typeof error === 'string') return error
-  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  if (error && typeof error === 'object') {
+    // Prefer viem's shortMessage (concise, human-readable) over the full message
+    // which includes verbose request arguments and hex data.
+    if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
+    if ('message' in error) return error.message as string
+  }
   return error?.toString()
 }
 
