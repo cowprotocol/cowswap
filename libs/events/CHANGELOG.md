@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.4.2
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.3.3
+
 ## 4.4.1
 
 ### Patch Changes

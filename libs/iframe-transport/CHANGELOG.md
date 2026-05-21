@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.3.3
+
 ## 2.2.6
 
 ### Patch Changes

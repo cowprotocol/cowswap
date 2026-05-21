@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.7.0
+
+### Minor Changes
+
+- feat(wallet): add ConnectWalletButton and isConnectionRestoring state (#7468)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.3.2
+  - @cowprotocol/common-const@3.3.2
+  - @cowprotocol/common-hooks@3.2.5
+  - @cowprotocol/common-utils@3.4.2
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.0.2
+  - @cowprotocol/types@4.3.3
+
 ## 3.6.0
 
 ### Minor Changes

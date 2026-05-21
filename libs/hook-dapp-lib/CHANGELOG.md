@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.2.7
+
 ## 2.2.6
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.6.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.5.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/analytics@3.3.2
+  - @cowprotocol/common-const@3.3.2
+  - @cowprotocol/common-hooks@3.2.5
+  - @cowprotocol/common-utils@3.4.2
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/events@4.4.2
+  - @cowprotocol/types@4.3.3
+  - @cowprotocol/widget-react@3.0.6
+
 ## 2.6.1
 
 ### Patch Changes

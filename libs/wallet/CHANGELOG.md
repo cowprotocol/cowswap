@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.5.0
+
+### Minor Changes
+
+- feat: improve safe wallet detection (#7544)
+
+- feat(wallet): add ConnectWalletButton and isConnectionRestoring state (#7468)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- fix(wallet): use Eip6963 info from viem (#7538)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/common-const@3.3.2
+  - @cowprotocol/common-hooks@3.2.5
+  - @cowprotocol/common-utils@3.4.2
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.0.2
+  - @cowprotocol/ens@3.2.5
+  - @cowprotocol/types@4.3.3
+  - @cowprotocol/iframe-transport@2.2.7
+
 ## 3.4.0
 
 ### Minor Changes

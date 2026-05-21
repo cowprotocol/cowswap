@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/common-hooks@3.2.5
+
 ## 2.1.1
 
 ### Patch Changes

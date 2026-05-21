@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
 ## 1.0.1
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.4.2
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- fix: detect failed onchain TXs (#7421)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.2
+  - @cowprotocol/currency@1.0.2
+  - @cowprotocol/types@4.3.3
+
 ## 3.4.1
 
 ### Patch Changes
