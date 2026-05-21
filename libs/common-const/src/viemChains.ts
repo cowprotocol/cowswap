@@ -18,8 +18,6 @@ import {
 
 /**
  * viem `Chain` definitions for every EVM chain known to cow-sdk.
- * `OPTIMISM` is included because it is in `EvmChains`; trading from Optimism is not
- * supported today, but the entry is required for `Record<EvmChains, Chain>` exhaustiveness.
  */
 export const VIEM_CHAINS: Record<EvmChains, Chain> = {
   [EvmChains.MAINNET]: mainnet,

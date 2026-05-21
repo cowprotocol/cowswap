@@ -65,10 +65,10 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
   try {
     const client = await _getClientOrThrow(chainId)
 
+    console.log('[COW][SafeAPI] Fetch Safe info')
     return client.getSafeInfo(safeAddress)
   } catch (error) {
     return Promise.reject(error)
@@ -79,9 +79,9 @@ export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
 ): Promise<SafeMultisigTransactionResponse> {
-  console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
+  console.log('[COW][SafeAPI] Fetch Safe transaction')
   return client.getTransaction(safeTxHash)
 }
 

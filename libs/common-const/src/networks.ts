@@ -42,6 +42,7 @@ const DEFAULT_RPC_URL: Record<EvmChains, { url: HttpsString; usesInfura: boolean
  * Includes `OPTIMISM` because it lives in `EvmChains`; on-chain trading there is not
  * supported by CoW Protocol today and its entry is a stub for future migration.
  */
+// todo this will be replaced when pr https://github.com/cowprotocol/cow-sdk/pull/873 be merged
 export const RPC_URLS: Record<EvmChains, HttpsString> = (Object.keys(RPC_URL_ENVS) as unknown as EvmChains[]).reduce(
   (acc, chainId) => {
     acc[Number(chainId) as EvmChains] = getRpcUrl(Number(chainId) as EvmChains)
