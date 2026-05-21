@@ -168,6 +168,6 @@ const Table = styled.table`
   }
 
   ${Media.upToSmall()} {
-    min-width: 720px;
+    min-width: 540px;
   }
 `
