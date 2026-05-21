@@ -366,6 +366,7 @@ module.exports = [
     rules: {
       complexity: ['error', 100],
       'max-lines-per-function': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+      '@typescript-eslint/no-restricted-imports': 'warn',
     },
   },
 
