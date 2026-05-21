@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
@@ -14,8 +14,7 @@ import { logCaptcha } from '../logger'
 import { captchaJwtAtom } from '../state/captchaJwtAtom'
 
 export function CaptchaWidget(): ReactNode {
-  const setCaptchaJwt = useSetAtom(captchaJwtAtom)
-  const captchaJwt = useAtomValue(captchaJwtAtom)
+  const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
