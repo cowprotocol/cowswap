@@ -1,7 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import type { TypedDataField } from '@ethersproject/abstract-signer'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
 
@@ -22,11 +21,14 @@ import {
 } from '../config/affiliateProgram.const'
 
 const EMPTY_VALUE_LABEL = '-'
+const APP_DATA_HASH_PATTERN = /^0x[a-fA-F0-9]{64}$/
 
 const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
+
+type TypedDataField = { name: string; type: string }
 
 const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
@@ -72,13 +74,13 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   if (!response) return undefined
 
   if (typeof response === 'string') {
-    return response
+    return getFullAppDataString(response)
   }
 
   const fullAppData =
-    readStringField(response, 'fullAppData') ||
-    readStringField(response, 'full_app_data') ||
-    readStringField(response, 'appData')
+    getFullAppDataString(readStringField(response, 'fullAppData')) ||
+    getFullAppDataString(readStringField(response, 'full_app_data')) ||
+    getFullAppDataString(readStringField(response, 'appData'))
 
   if (fullAppData) {
     return fullAppData
@@ -90,6 +92,14 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   }
 
   return undefined
+}
+
+function getFullAppDataString(value: string | undefined): string | undefined {
+  if (!value || APP_DATA_HASH_PATTERN.test(value.trim())) {
+    return undefined
+  }
+
+  return value
 }
 
 export function formatCompactNumber(value?: number): string {
@@ -165,7 +175,13 @@ export function getLocalTrades(account: Address | undefined, ordersState: Orders
   const result: SerializedOrder[] = []
 
   for (const [networkId, networkState] of Object.entries(ordersState)) {
-    const fullState = { ...getDefaultNetworkState(Number(networkId)), ...(networkState || {}) }
+    const chainId = Number(networkId)
+
+    if (!isSupportedTradingNetwork(chainId)) {
+      continue
+    }
+
+    const fullState = { ...getDefaultNetworkState(chainId as SupportedChainId), ...(networkState || {}) }
     const ordersMap = flatOrdersStateNetwork(fullState)
 
     for (const orderState of Object.values(ordersMap)) {

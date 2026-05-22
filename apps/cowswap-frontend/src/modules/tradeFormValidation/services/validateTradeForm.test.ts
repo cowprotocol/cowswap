@@ -32,6 +32,7 @@ describe('validateTradeForm - xStock logic', () => {
       recipient: '0x123',
       isQuoteBasedOrder: true,
       tradeType: TradeType.SWAP,
+      slippage: null,
     },
     tradeQuote: { isLoading: false } as unknown as TradeQuoteState,
     isOnline: true,
@@ -48,12 +49,14 @@ describe('validateTradeForm - xStock logic', () => {
     intermediateTokenToBeImported: false,
     isAccountProxyLoading: false,
     isProxySetupValid: true,
-    customTokenError: null,
+    customTokenError: undefined,
     isRestrictedForCountry: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
     isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
   }
 
   test('shows xStock minimum trade size for sell orders when xStock sell amount is below $10', () => {
@@ -181,5 +184,92 @@ describe('validateTradeForm - xStock logic', () => {
 
     const result = validateTradeForm(context)
     expect(result).toEqual([TradeFormValidation.XstockMinimumTradeSize])
+  })
+})
+
+describe('validateTradeForm - price impact loading', () => {
+  const baseContext: Partial<TradeFormValidationContext> = {
+    derivedTradeState: {
+      orderKind: OrderKind.SELL,
+      inputCurrencyAmount: mockCurrencyAmount('100'),
+      outputCurrencyAmount: mockCurrencyAmount('100'),
+      inputCurrency: { address: '0x1', chainId: 1 } as unknown as Currency,
+      outputCurrency: { address: '0x2', chainId: 1 } as unknown as Currency,
+      inputCurrencyBalance: mockCurrencyAmount('1000'),
+      outputCurrencyBalance: mockCurrencyAmount('1000'),
+      inputCurrencyFiatAmount: null,
+      outputCurrencyFiatAmount: null,
+      recipient: '0x123',
+      isQuoteBasedOrder: true,
+      tradeType: TradeType.SWAP,
+      slippage: null,
+    },
+    tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+    isOnline: true,
+    isSupportedWallet: true,
+    account: '0x123',
+    isApproveRequired: ApproveRequiredReason.NotRequired,
+    isWrapUnwrap: false,
+    isSafeReadonlyUser: false,
+    isSwapUnsupported: false,
+    recipientEnsAddress: null,
+    isInsufficientBalanceOrderAllowed: false,
+    isProviderNetworkUnsupported: false,
+    isProviderNetworkDeprecated: false,
+    intermediateTokenToBeImported: false,
+    isAccountProxyLoading: false,
+    isProxySetupValid: true,
+    customTokenError: undefined,
+    isRestrictedForCountry: false,
+    isBalancesLoading: false,
+    isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
+    isNonEvmReceiverConfirmed: false,
+  }
+
+  test('adds ImpactLoading when tradePriceImpact is loading', () => {
+    const context = {
+      ...baseContext,
+      tradePriceImpact: { loading: true, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.ImpactLoading)
+  })
+
+  test('does not add ImpactLoading when tradePriceImpact has finished loading', () => {
+    const context = {
+      ...baseContext,
+      tradePriceImpact: { loading: false, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.ImpactLoading)
+  })
+
+  test('does not add ImpactLoading for wrap/unwrap flow even if tradePriceImpact is loading', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      tradePriceImpact: { loading: true, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.ImpactLoading)
+  })
+
+  test('adds ImpactLoading alongside QuoteLoading when both are pending', () => {
+    const context = {
+      ...baseContext,
+      tradeQuote: { isLoading: true, quote: undefined } as unknown as TradeQuoteState,
+      tradePriceImpact: { loading: true, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.QuoteLoading)
+    expect(result).toContain(TradeFormValidation.ImpactLoading)
   })
 })

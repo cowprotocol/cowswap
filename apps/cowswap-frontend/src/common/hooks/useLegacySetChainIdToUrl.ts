@@ -7,8 +7,16 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
+// Trade routes that handle their own chain resolution (e.g. via SwapPageRedirect).
+// Setting ?chain= on these paths causes unnecessary navigation that races with their own redirect logic.
+const CHAINLESS_TRADE_ROUTES = ['/swap', '/limit', '/advanced', '/yield']
+
 /**
- * Changing chainId in query parameters: ?chain=mainnet
+ * Updates the URL to reflect the selected chain:
+ * - When the path has a chain segment (e.g. /42161/swap), replaces it with the new chainId so the URL stays in sync.
+ * - When on the root path (/) or a chainId-less trade route (/swap, /limit, etc.), does nothing —
+ *   the router's redirect flow will resolve to the correct trade URL.
+ * - Otherwise sets the legacy query parameter ?chain=...
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
   const navigate = useNavigate()
@@ -16,16 +24,28 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
 
   return useCallback(
     (chainId: SupportedChainId) => {
-      // Don't set chainId as query parameter when it's already set as /{chainId}
-      if (/^\/\d+\//.test(location.pathname)) return
+      const pathname = location.pathname
+
+      // Path-based chain (e.g. /42161/swap): replace the chain segment so the URL updates and connect flow uses it
+      if (/^\/\d+\//.test(pathname)) {
+        const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
+        navigate({ pathname: newPathname, search: location.search }, { replace: true })
+        return
+      }
+
+      // On the root path or chainId-less trade routes, the page itself handles chain resolution.
+      // Setting ?chain= here races with that redirect logic and can leave the widget stuck.
+      if (pathname === '/') return
+      if (CHAINLESS_TRADE_ROUTES.some((r) => pathname === r || pathname.startsWith(r + '/'))) return
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
+      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
       navigate(
         {
-          pathname: location.pathname,
-          search: replaceURLParam(location.search, 'chain', chainInfo.name),
+          pathname,
+          search: newSearch,
         },
         { replace: true },
       )

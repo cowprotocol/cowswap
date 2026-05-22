@@ -4,11 +4,10 @@ import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
-import { BigNumber } from '@ethersproject/bignumber'
 
 export interface TokenToRefund {
   token: TokenWithLogo
-  balance: BigNumber
+  balance: bigint
 }
 
 export function useTokensToRefund(): TokenToRefund[] | undefined {
@@ -21,7 +20,7 @@ export function useTokensToRefund(): TokenToRefund[] | undefined {
         const token = tokensByAddress[getAddressKey(tokenAddress)]
         const balance = balances.values[tokenAddress]
 
-        if (token && balance?.gt(0)) {
+        if (token && balance && balance > 0n) {
           acc.push({
             balance,
             token,
@@ -31,9 +30,9 @@ export function useTokensToRefund(): TokenToRefund[] | undefined {
         return acc
       }, [])
       .sort((a, b) => {
-        if (a.balance.eq(b.balance)) return 0
+        if (a.balance === b.balance) return 0
 
-        return b.balance.gt(a.balance) ? 1 : -1
+        return a.balance > b.balance ? -1 : 1
       })
   }, [balances.values, tokensByAddress])
 }

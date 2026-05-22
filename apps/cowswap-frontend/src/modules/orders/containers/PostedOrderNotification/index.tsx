@@ -20,6 +20,7 @@ export function PostedOrderNotification({ title, messageType, payload }: PostedO
       chainId={payload.orderDetails.chainId}
       orderUid={payload.orderDetails.orderUid}
       orderInfo={mapOrderNotificationInfo(payload)}
+      transactionHash={payload.orderDetails.orderCreationHash}
     />
   )
 }

@@ -1,396 +1,453 @@
 # Changelog
 
-## [3.0.5](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.4...analytics-v3.0.5) (2026-04-08)
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.3.0...analytics-v3.3.1) (2026-05-22)
 
+### Patch Changes
 
-### 🔧 Miscellaneous
+- fix: patch estimated gas value to hex-encode (#7524)
 
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/events@4.4.1
 
+## 3.3.0
+
+### Minor Changes
+
+- feat: enhance analytics for bridging and cross-chain orders (#7318)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.0
+  - @cowprotocol/common-utils@3.4.0
+  - @cowprotocol/events@4.4.0
+  - @cowprotocol/common-hooks@3.2.3
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.2.1...analytics-v3.2.2) (2026-05-12)
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.4
-    * @cowprotocol/common-hooks bumped to 3.0.4
-    * @cowprotocol/common-utils bumped to 3.0.4
-    * @cowprotocol/events bumped to 4.1.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.2.2
+    - @cowprotocol/common-utils bumped to 3.3.2
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.2.0...analytics-v3.2.1) (2026-04-22)
+
+### 🐛 Bug Fixes
+
+- take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.1
+    - @cowprotocol/common-hooks bumped to 3.2.1
+    - @cowprotocol/common-utils bumped to 3.3.1
+    - @cowprotocol/events bumped to 4.3.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.1.2...analytics-v3.2.0) (2026-04-16)
+
+### ✨ Features
+
+- bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.0
+    - @cowprotocol/common-hooks bumped to 3.2.0
+    - @cowprotocol/common-utils bumped to 3.3.0
+    - @cowprotocol/events bumped to 4.3.0
+
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.1.1...analytics-v3.1.2) (2026-04-15)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.2
+    - @cowprotocol/common-hooks bumped to 3.1.2
+    - @cowprotocol/common-utils bumped to 3.2.1
+
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.1.0...analytics-v3.1.1) (2026-04-15)
+
+### 🔧 Miscellaneous
+
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.1
+    - @cowprotocol/common-hooks bumped to 3.1.1
+    - @cowprotocol/common-utils bumped to 3.2.0
+    - @cowprotocol/events bumped to 4.2.1
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.5...analytics-v3.1.0) (2026-04-14)
+
+### ✨ Features
+
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.0
+    - @cowprotocol/common-hooks bumped to 3.1.0
+    - @cowprotocol/common-utils bumped to 3.1.0
+    - @cowprotocol/events bumped to 4.2.0
+
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.4...analytics-v3.0.5) (2026-04-08)
+
+### 🔧 Miscellaneous
+
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.4
+    - @cowprotocol/common-hooks bumped to 3.0.4
+    - @cowprotocol/common-utils bumped to 3.0.4
+    - @cowprotocol/events bumped to 4.1.2
 
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.3...analytics-v3.0.4) (2026-04-07)
 
-
 ### 🐛 Bug Fixes
 
-* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
-
+- fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.3
-    * @cowprotocol/common-hooks bumped to 3.0.3
-    * @cowprotocol/common-utils bumped to 3.0.3
-    * @cowprotocol/events bumped to 4.1.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.3
+    - @cowprotocol/common-hooks bumped to 3.0.3
+    - @cowprotocol/common-utils bumped to 3.0.3
+    - @cowprotocol/events bumped to 4.1.1
 
 ## [3.0.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.2...analytics-v3.0.3) (2026-04-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/events bumped to 4.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/events bumped to 4.1.0
 
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.1...analytics-v3.0.2) (2026-03-19)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.2
-    * @cowprotocol/common-hooks bumped to 3.0.2
-    * @cowprotocol/common-utils bumped to 3.0.2
-    * @cowprotocol/events bumped to 4.0.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.2
+    - @cowprotocol/common-hooks bumped to 3.0.2
+    - @cowprotocol/common-utils bumped to 3.0.2
+    - @cowprotocol/events bumped to 4.0.2
 
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.0.0...analytics-v3.0.1) (2026-03-18)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.1
-    * @cowprotocol/common-hooks bumped to 3.0.1
-    * @cowprotocol/common-utils bumped to 3.0.1
-    * @cowprotocol/events bumped to 4.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.1
+    - @cowprotocol/common-hooks bumped to 3.0.1
+    - @cowprotocol/common-utils bumped to 3.0.1
+    - @cowprotocol/events bumped to 4.0.1
 
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.4.0...analytics-v3.0.0) (2026-03-11)
 
-
 ### ⚠ BREAKING CHANGES
 
-* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+- Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
 
 ### ✨ Features
 
-* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
-
+- remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
 
 ### 🔧 Miscellaneous
 
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
-
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.0
-    * @cowprotocol/common-hooks bumped to 3.0.0
-    * @cowprotocol/common-utils bumped to 3.0.0
-    * @cowprotocol/events bumped to 4.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.0
+    - @cowprotocol/common-hooks bumped to 3.0.0
+    - @cowprotocol/common-utils bumped to 3.0.0
+    - @cowprotocol/events bumped to 4.0.0
 
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.3.2...analytics-v2.4.0) (2026-03-10)
 
-
 ### ✨ Features
 
-* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
-
+- integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
-
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
-
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.4.0
-    * @cowprotocol/common-hooks bumped to 2.4.0
-    * @cowprotocol/common-utils bumped to 2.4.0
-    * @cowprotocol/events bumped to 3.4.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.4.0
+    - @cowprotocol/common-hooks bumped to 2.4.0
+    - @cowprotocol/common-utils bumped to 2.4.0
+    - @cowprotocol/events bumped to 3.4.0
 
 ## [2.3.2](https://github.com/cowprotocol/cowswap/compare/analytics-v2.3.1...analytics-v2.3.2) (2026-02-25)
 
-
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.2
-    * @cowprotocol/common-hooks bumped to 2.3.2
-    * @cowprotocol/common-utils bumped to 2.3.2
-    * @cowprotocol/events bumped to 3.3.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.2
+    - @cowprotocol/common-hooks bumped to 2.3.2
+    - @cowprotocol/common-utils bumped to 2.3.2
+    - @cowprotocol/events bumped to 3.3.2
 
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/analytics-v2.3.0...analytics-v2.3.1) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.1
-    * @cowprotocol/common-hooks bumped to 2.3.1
-    * @cowprotocol/common-utils bumped to 2.3.1
-    * @cowprotocol/events bumped to 3.3.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.1
+    - @cowprotocol/common-hooks bumped to 2.3.1
+    - @cowprotocol/common-utils bumped to 2.3.1
+    - @cowprotocol/events bumped to 3.3.1
 
 ## [2.3.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.2.2...analytics-v2.3.0) (2026-02-20)
 
-
 ### ✨ Features
 
-* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
-
+- **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.0
-    * @cowprotocol/common-hooks bumped to 2.3.0
-    * @cowprotocol/common-utils bumped to 2.3.0
-    * @cowprotocol/events bumped to 3.3.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.0
+    - @cowprotocol/common-hooks bumped to 2.3.0
+    - @cowprotocol/common-utils bumped to 2.3.0
+    - @cowprotocol/events bumped to 3.3.0
 
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/analytics-v2.2.1...analytics-v2.2.2) (2026-02-17)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.2
-    * @cowprotocol/common-hooks bumped to 2.2.2
-    * @cowprotocol/common-utils bumped to 2.2.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.2
+    - @cowprotocol/common-hooks bumped to 2.2.2
+    - @cowprotocol/common-utils bumped to 2.2.2
 
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/analytics-v2.2.0...analytics-v2.2.1) (2026-02-16)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.1
-    * @cowprotocol/common-hooks bumped to 2.2.1
-    * @cowprotocol/common-utils bumped to 2.2.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.1
+    - @cowprotocol/common-hooks bumped to 2.2.1
+    - @cowprotocol/common-utils bumped to 2.2.1
 
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.1.0...analytics-v2.2.0) (2026-02-13)
 
-
 ### ✨ Features
 
-* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
-
+- replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.0
-    * @cowprotocol/common-hooks bumped to 2.2.0
-    * @cowprotocol/common-utils bumped to 2.2.0
-    * @cowprotocol/events bumped to 3.2.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.0
+    - @cowprotocol/common-hooks bumped to 2.2.0
+    - @cowprotocol/common-utils bumped to 2.2.0
+    - @cowprotocol/events bumped to 3.2.0
 
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/analytics-v2.0.1...analytics-v2.1.0) (2026-02-05)
 
-
 ### ✨ Features
 
-* **analytics:** 1 - enhance order lifecycle analytics ([#6402](https://github.com/cowprotocol/cowswap/issues/6402)) ([4e12fbf](https://github.com/cowprotocol/cowswap/commit/4e12fbf3a78a777445fbf5841c79ce5f14afb815))
-* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
-
+- **analytics:** 1 - enhance order lifecycle analytics ([#6402](https://github.com/cowprotocol/cowswap/issues/6402)) ([4e12fbf](https://github.com/cowprotocol/cowswap/commit/4e12fbf3a78a777445fbf5841c79ce5f14afb815))
+- **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
 
 ### 🔧 Miscellaneous
 
-* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
-
+- update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.1.0
-    * @cowprotocol/common-hooks bumped to 2.1.0
-    * @cowprotocol/common-utils bumped to 2.1.0
-    * @cowprotocol/events bumped to 3.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.1.0
+    - @cowprotocol/common-hooks bumped to 2.1.0
+    - @cowprotocol/common-utils bumped to 2.1.0
+    - @cowprotocol/events bumped to 3.1.0
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/analytics-v2.0.0...analytics-v2.0.1) (2026-02-02)
 
-
 ### Bug Fixes
 
-* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
-
+- **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.0.1
-    * @cowprotocol/common-utils bumped to 2.0.1
-    * @cowprotocol/events bumped to 3.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.0.1
+    - @cowprotocol/common-utils bumped to 2.0.1
+    - @cowprotocol/events bumped to 3.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.14.0...analytics-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-hooks bumped to 2.0.0
-    * @cowprotocol/common-utils bumped to 2.0.0
-    * @cowprotocol/events bumped to 3.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 2.0.0
+    - @cowprotocol/common-utils bumped to 2.0.0
+    - @cowprotocol/events bumped to 3.0.0
 
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.13.0...analytics-v1.14.0) (2025-11-24)
 
-
 ### Features
 
-* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+- **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
 
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.12.0...analytics-v1.13.0) (2025-07-30)
 
-
 ### Features
 
-* **bridge:** add bridging analytics ([#6029](https://github.com/cowprotocol/cowswap/issues/6029)) ([8940b85](https://github.com/cowprotocol/cowswap/commit/8940b857f2acc6cf0819b5b024d11a2080db3ab5))
+- **bridge:** add bridging analytics ([#6029](https://github.com/cowprotocol/cowswap/issues/6029)) ([8940b85](https://github.com/cowprotocol/cowswap/commit/8940b857f2acc6cf0819b5b024d11a2080db3ab5))
 
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.2...analytics-v1.12.0) (2025-06-18)
 
-
 ### Features
 
-* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+- **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
 
 ## [1.11.2](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.1...analytics-v1.11.2) (2025-05-19)
 
-
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
 
 ## [1.11.1](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.0...analytics-v1.11.1) (2025-04-25)
 
-
 ### Bug Fixes
 
-* **deps-update:** bump react-router-dom from 6.24.0 to 7.5.1 ([#5618](https://github.com/cowprotocol/cowswap/issues/5618)) ([2470bfa](https://github.com/cowprotocol/cowswap/commit/2470bfaf7ec0629223ea4dd5b42f090dd58a45df))
+- **deps-update:** bump react-router-dom from 6.24.0 to 7.5.1 ([#5618](https://github.com/cowprotocol/cowswap/issues/5618)) ([2470bfa](https://github.com/cowprotocol/cowswap/commit/2470bfaf7ec0629223ea4dd5b42f090dd58a45df))
 
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.10.0...analytics-v1.11.0) (2025-03-27)
 
-
 ### Features
 
-* enhance event tracking and analytics integration ([#5507](https://github.com/cowprotocol/cowswap/issues/5507)) ([39ea64d](https://github.com/cowprotocol/cowswap/commit/39ea64d7e7c7fe908327590b998bf6efc82c1b07))
+- enhance event tracking and analytics integration ([#5507](https://github.com/cowprotocol/cowswap/issues/5507)) ([39ea64d](https://github.com/cowprotocol/cowswap/commit/39ea64d7e7c7fe908327590b998bf6efc82c1b07))
 
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.9.0...analytics-v1.10.0) (2025-02-25)
 
-
 ### Features
 
-* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
+- **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
 
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.8.0...analytics-v1.9.0) (2024-12-11)
 
-
 ### Features
 
-* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+- **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
 
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.7.0...analytics-v1.8.0) (2024-09-30)
 
-
 ### Features
 
-* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+- **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
 
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.6.0...analytics-v1.7.0) (2024-09-17)
 
-
 ### Features
 
-* **smart-slippage:** improve ux ([#4826](https://github.com/cowprotocol/cowswap/issues/4826)) ([ce3ba87](https://github.com/cowprotocol/cowswap/commit/ce3ba875c5f6ebce3032e89ec5b231f59a9a4fc1))
+- **smart-slippage:** improve ux ([#4826](https://github.com/cowprotocol/cowswap/issues/4826)) ([ce3ba87](https://github.com/cowprotocol/cowswap/commit/ce3ba875c5f6ebce3032e89ec5b231f59a9a4fc1))
 
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.5.0...analytics-v1.6.0) (2024-08-27)
 
-
 ### Features
 
-* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+- **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
 
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.4.0...analytics-v1.5.0) (2024-07-18)
 
-
 ### Features
 
-* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+- refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
 
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.3.0...analytics-v1.4.0) (2024-07-12)
 
-
 ### Features
 
-* hook store & hook Dapps 🪝 ([#4652](https://github.com/cowprotocol/cowswap/issues/4652)) ([b38321e](https://github.com/cowprotocol/cowswap/commit/b38321e0665e1ad5f0633868f8934128601ad313))
+- hook store & hook Dapps 🪝 ([#4652](https://github.com/cowprotocol/cowswap/issues/4652)) ([b38321e](https://github.com/cowprotocol/cowswap/commit/b38321e0665e1ad5f0633868f8934128601ad313))
 
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.2.0...analytics-v1.3.0) (2024-06-24)
 
-
 ### Features
 
-* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+- **rebranding:** merge 📦 Big Package "Re-branding" 📦 ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.1.0...analytics-v1.2.0) (2024-05-22)
 
-
 ### Features
 
-* **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
+- **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.0.0...analytics-v1.1.0) (2024-04-11)
 
-
 ### Features
 
-* **recreate:** add analytics events for recreate modal ([#4134](https://github.com/cowprotocol/cowswap/issues/4134)) ([fb3a0b9](https://github.com/cowprotocol/cowswap/commit/fb3a0b962833be594f15fd54661bd16c2f482481))
+- **recreate:** add analytics events for recreate modal ([#4134](https://github.com/cowprotocol/cowswap/issues/4134)) ([fb3a0b9](https://github.com/cowprotocol/cowswap/commit/fb3a0b962833be594f15fd54661bd16c2f482481))
 
 ## 1.0.0 (2024-03-29)
 
-
 ### Features
 
-* **fee=0:** classify order types ([#3559](https://github.com/cowprotocol/cowswap/issues/3559)) ([a2f8def](https://github.com/cowprotocol/cowswap/commit/a2f8def2f203301885e4548b49f73336abbabe21))
-* **settings:** remove expert mode ([#3905](https://github.com/cowprotocol/cowswap/issues/3905)) ([4f98075](https://github.com/cowprotocol/cowswap/commit/4f98075dbcacdbf49e9f43fb2a0936411d6a7365))
-
+- **fee=0:** classify order types ([#3559](https://github.com/cowprotocol/cowswap/issues/3559)) ([a2f8def](https://github.com/cowprotocol/cowswap/commit/a2f8def2f203301885e4548b49f73336abbabe21))
+- **settings:** remove expert mode ([#3905](https://github.com/cowprotocol/cowswap/issues/3905)) ([4f98075](https://github.com/cowprotocol/cowswap/commit/4f98075dbcacdbf49e9f43fb2a0936411d6a7365))
 
 ### Bug Fixes
 
-* **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([bfb6c01](https://github.com/cowprotocol/cowswap/commit/bfb6c01e9f3e744a47774cb52836469c2ad2f09f))
-* **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([9579c97](https://github.com/cowprotocol/cowswap/commit/9579c97912e715efb4e633c293c236917003d42a))
+- **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([bfb6c01](https://github.com/cowprotocol/cowswap/commit/bfb6c01e9f3e744a47774cb52836469c2ad2f09f))
+- **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([9579c97](https://github.com/cowprotocol/cowswap/commit/9579c97912e715efb4e633c293c236917003d42a))

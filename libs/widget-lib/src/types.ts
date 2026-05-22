@@ -20,6 +20,34 @@ export type FlexibleConfig<T> =
   | PerTradeTypeConfig<PerNetworkConfig<T>>
   | PerNetworkConfig<PerTradeTypeConfig<T>>
 
+/**
+ * A single forbidden sell→buy token combination for the widget.
+ *
+ * Used as an entry in {@link CowSwapWidgetParams.tokenPairConstraints} to
+ * prevent users from creating orders that swap the given `sell` token for
+ * the given `buy` token (in that direction). Reversing the direction —
+ * trading `buy` for `sell` — is **not** blocked unless an explicit entry
+ * for the reverse pair is also supplied.
+ *
+ * Addresses are matched case-insensitively against the user's selected
+ * tokens; `chainId` must match the active widget chain for the entry to
+ * apply.
+ *
+ * @example
+ * ```ts
+ * tokenPairConstraints: [
+ *   {
+ *     sell: { address: '0xA0b8...eB48', chainId: SupportedChainId.MAINNET },
+ *     buy:  { address: '0xdAC1...1ec7', chainId: SupportedChainId.MAINNET },
+ *   },
+ * ]
+ * ```
+ */
+export type TokenPairConstraint = {
+  sell: { address: string; chainId: SupportedChainId }
+  buy: { address: string; chainId: SupportedChainId }
+}
+
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
   READY = 'READY',
@@ -291,8 +319,19 @@ export interface CowSwapWidgetParams {
    * The base url of the widget implementation
    * The parameter can have the URL directly, or an object with the environment property,
    * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
+   *
+   * For security, values are validated before loading the iframe: only `https` origins are accepted,
+   * except `http` on local dev hosts (localhost, 127.0.0.1, ::1, *.localhost). Invalid URLs
+   * (unparsable, credentials, or disallowed scheme/host) either throw or log and fall back to the
+   * production host, depending on `SHOULD_THROW_IF_INVALID_URL` exported from `@cowprotocol/widget-lib`.
    */
   baseUrl?: string
+
+  /**
+   * Overrides the origin trusted for postMessage communication with the widget iframe.
+   * Defaults to the origin derived from `baseUrl` / iframe src.
+   */
+  trustedOrigin?: string
 
   /**
    * Sell token, and optionally the amount.
@@ -365,6 +404,12 @@ export interface CowSwapWidgetParams {
   disableToastMessages?: boolean
 
   /**
+   * When `true`, the host page will not use `window.open` to open links requested by the widget.
+   * Defaults to `false`.
+   */
+  disableWindowOpen?: boolean
+
+  /**
    * Option to hide the logo in the widget.
    */
   hideLogo?: boolean
@@ -432,6 +477,11 @@ export interface CowSwapWidgetParams {
     whenPriceImpactIsUnknown?: boolean
     whenPriceImpactIsHigherThan?: number
   }
+
+  /**
+   * Disables trading of specific token pair
+   */
+  tokenPairConstraints?: TokenPairConstraint[]
 
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult

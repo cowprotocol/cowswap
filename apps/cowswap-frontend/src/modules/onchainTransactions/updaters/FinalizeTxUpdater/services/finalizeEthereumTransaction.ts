@@ -1,5 +1,3 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-
 import { finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
@@ -9,6 +7,8 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 import { ONCHAIN_TRANSACTIONS_EVENTS, OnchainTxEvents } from '../../../onchainTransactionsEvents'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
+
+import type { TransactionReceipt, Hex } from 'viem'
 
 export function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
@@ -29,11 +29,11 @@ export function finalizeEthereumTransaction(
       hash,
       receipt: {
         blockHash: receipt.blockHash,
-        blockNumber: receipt.blockNumber,
-        contractAddress: receipt.contractAddress,
+        blockNumber: Number(receipt.blockNumber),
+        contractAddress: receipt.contractAddress ?? null,
         from: receipt.from,
         status: receipt.status,
-        to: receipt.to,
+        to: receipt.to ?? null,
         transactionHash: receipt.transactionHash,
         transactionIndex: receipt.transactionIndex,
       },
@@ -54,12 +54,12 @@ export function finalizeEthereumTransaction(
 
   emitOnchainTransactionEvent({
     receipt: {
-      to: receipt.to,
+      to: receipt.to || '',
       from: receipt.from,
-      contractAddress: receipt.contractAddress,
-      transactionHash: safeTransactionHash || receipt.transactionHash,
-      blockNumber: receipt.blockNumber,
-      status: receipt.status,
+      contractAddress: receipt.contractAddress || '',
+      transactionHash: (safeTransactionHash as Hex) || receipt.transactionHash,
+      blockNumber: Number(receipt.blockNumber),
+      status: receipt.status === 'success' ? 1 : 0,
       replacementType: transaction.replacementType,
     },
     summary: transaction.summary || '',

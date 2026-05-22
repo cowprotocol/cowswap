@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "3.0.4",
+  "version": "3.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/cowprotocol/cowswap.git",
@@ -23,22 +23,14 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "8.0.5",
-    "@1inch/permit-signed-approvals-utils": "^1.5.1",
+    "@cowprotocol/cow-sdk": "9.1.1",
+    "@1inch/permit-signed-approvals-utils": "1.5.2",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
-    "@ethersproject/abi": "5.7.0",
-    "@ethersproject/abstract-signer": "5.7.0",
-    "@ethersproject/address": "5.7.0",
-    "@ethersproject/bignumber": "5.7.0",
-    "@ethersproject/constants": "5.7.0",
-    "@ethersproject/contracts": "5.7.0",
-    "@ethersproject/providers": "5.7.0",
-    "@ethersproject/wallet": "5.7.0",
-    "ethers": "5.7.2",
-    "ms.macro": "^2.0.0",
-    "viem": "^2.42.1"
+    "ms.macro": "2.0.0",
+    "viem": "2.48.8",
+    "wagmi": "3.6.9"
   },
   "devDependencies": {
-    "@types/ms.macro": "^2.0.0"
+    "@types/ms.macro": "2.0.0"
   }
 }

@@ -1,830 +1,866 @@
 # Changelog
 
-## [3.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.2...tokens-v3.2.0) (2026-04-08)
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.6.0...tokens-v3.6.1) (2026-05-22)
 
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.6.0
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/core@3.3.0
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/types@4.3.2
+
+## 3.6.0
+
+### Minor Changes
+
+- feat: allow xStocks token list tag (#7510)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.5.0
+  - @cowprotocol/common-const@3.3.0
+  - @cowprotocol/common-utils@3.4.0
+  - @cowprotocol/core@3.2.3
+  - @cowprotocol/common-hooks@3.2.3
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.4.1...tokens-v3.5.0) (2026-05-12)
 
 ### ✨ Features
 
-* handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+- add token lists for non-supported chains ([#7262](https://github.com/cowprotocol/cowswap/issues/7262)) ([c356c12](https://github.com/cowprotocol/cowswap/commit/c356c125015a31556eed8acc2460e172ee8b20ae))
 
+### 🧪 Tests
 
-### 🔧 Miscellaneous
-
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
-
+- fix e2e tests after viem migration ([#7336](https://github.com/cowprotocol/cowswap/issues/7336)) ([49c8237](https://github.com/cowprotocol/cowswap/commit/49c82371859cfc50a590b15fff3906b05a1ed609))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.4
-    * @cowprotocol/common-hooks bumped to 3.0.4
-    * @cowprotocol/common-utils bumped to 3.0.4
-    * @cowprotocol/core bumped to 3.0.4
-    * @cowprotocol/types bumped to 4.1.2
-    * @cowprotocol/ui bumped to 3.1.3
-    * @cowprotocol/wallet-provider bumped to 2.1.12
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-hooks bumped to 3.2.2
+    - @cowprotocol/common-utils bumped to 3.3.2
+    - @cowprotocol/core bumped to 3.2.2
+    - @cowprotocol/ui bumped to 3.4.0
+
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.4.0...tokens-v3.4.1) (2026-04-22)
+
+### 🐛 Bug Fixes
+
+- take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.1
+    - @cowprotocol/common-hooks bumped to 3.2.1
+    - @cowprotocol/common-utils bumped to 3.3.1
+    - @cowprotocol/core bumped to 3.2.1
+    - @cowprotocol/types bumped to 4.3.1
+    - @cowprotocol/ui bumped to 3.3.1
+    - @cowprotocol/wallet-provider bumped to 2.1.17
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.2...tokens-v3.4.0) (2026-04-16)
+
+### ✨ Features
+
+- bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.0
+    - @cowprotocol/common-hooks bumped to 3.2.0
+    - @cowprotocol/common-utils bumped to 3.3.0
+    - @cowprotocol/core bumped to 3.2.0
+    - @cowprotocol/types bumped to 4.3.0
+    - @cowprotocol/ui bumped to 3.3.0
+    - @cowprotocol/wallet-provider bumped to 2.1.16
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.1...tokens-v3.3.2) (2026-04-15)
+
+### 🐛 Bug Fixes
+
+- revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+- revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.2
+    - @cowprotocol/common-hooks bumped to 3.1.2
+    - @cowprotocol/common-utils bumped to 3.2.1
+    - @cowprotocol/core bumped to 3.1.2
+    - @cowprotocol/ui bumped to 3.2.2
+    - @cowprotocol/wallet-provider bumped to 2.1.15
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.3.0...tokens-v3.3.1) (2026-04-15)
+
+### 🔧 Miscellaneous
+
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.1
+    - @cowprotocol/common-hooks bumped to 3.1.1
+    - @cowprotocol/common-utils bumped to 3.2.0
+    - @cowprotocol/core bumped to 3.1.1
+    - @cowprotocol/types bumped to 4.2.1
+    - @cowprotocol/ui bumped to 3.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.14
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.2.0...tokens-v3.3.0) (2026-04-14)
+
+### ✨ Features
+
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.0
+    - @cowprotocol/common-hooks bumped to 3.1.0
+    - @cowprotocol/common-utils bumped to 3.1.0
+    - @cowprotocol/core bumped to 3.1.0
+    - @cowprotocol/types bumped to 4.2.0
+    - @cowprotocol/ui bumped to 3.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.13
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.2...tokens-v3.2.0) (2026-04-08)
+
+### ✨ Features
+
+- handle xstock buy min amount ([#7199](https://github.com/cowprotocol/cowswap/issues/7199)) ([706fd63](https://github.com/cowprotocol/cowswap/commit/706fd63fbe016cc6a43faadac68160047cc50d8c))
+
+### 🔧 Miscellaneous
+
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.4
+    - @cowprotocol/common-hooks bumped to 3.0.4
+    - @cowprotocol/common-utils bumped to 3.0.4
+    - @cowprotocol/core bumped to 3.0.4
+    - @cowprotocol/types bumped to 4.1.2
+    - @cowprotocol/ui bumped to 3.1.3
+    - @cowprotocol/wallet-provider bumped to 2.1.12
 
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.1...tokens-v3.1.2) (2026-04-07)
 
-
 ### 🐛 Bug Fixes
 
-* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
-
+- fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.3
-    * @cowprotocol/common-hooks bumped to 3.0.3
-    * @cowprotocol/common-utils bumped to 3.0.3
-    * @cowprotocol/core bumped to 3.0.3
-    * @cowprotocol/types bumped to 4.1.1
-    * @cowprotocol/ui bumped to 3.1.2
-    * @cowprotocol/wallet-provider bumped to 2.1.11
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.3
+    - @cowprotocol/common-hooks bumped to 3.0.3
+    - @cowprotocol/common-utils bumped to 3.0.3
+    - @cowprotocol/core bumped to 3.0.3
+    - @cowprotocol/types bumped to 4.1.1
+    - @cowprotocol/ui bumped to 3.1.2
+    - @cowprotocol/wallet-provider bumped to 2.1.11
 
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.1.0...tokens-v3.1.1) (2026-04-06)
 
-
 ### 🐛 Bug Fixes
 
-* **widget:** restrict token search to current token lists if set ([#7254](https://github.com/cowprotocol/cowswap/issues/7254)) ([3644dd0](https://github.com/cowprotocol/cowswap/commit/3644dd0548e8c4f2506b5566224c838923b34079))
+- **widget:** restrict token search to current token lists if set ([#7254](https://github.com/cowprotocol/cowswap/issues/7254)) ([3644dd0](https://github.com/cowprotocol/cowswap/commit/3644dd0548e8c4f2506b5566224c838923b34079))
 
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.3...tokens-v3.1.0) (2026-04-02)
 
-
 ### ✨ Features
 
-* **widget:** control available tokens to select to sell or buy ([#7201](https://github.com/cowprotocol/cowswap/issues/7201)) ([7a74e24](https://github.com/cowprotocol/cowswap/commit/7a74e242deee18b47b36aaf5efefa0d4fb108973))
-
+- **widget:** control available tokens to select to sell or buy ([#7201](https://github.com/cowprotocol/cowswap/issues/7201)) ([7a74e24](https://github.com/cowprotocol/cowswap/commit/7a74e242deee18b47b36aaf5efefa0d4fb108973))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/ui bumped to 3.1.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/ui bumped to 3.1.1
 
 ## [3.0.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.2...tokens-v3.0.3) (2026-04-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/ui bumped to 3.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/ui bumped to 3.1.0
 
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.1...tokens-v3.0.2) (2026-03-19)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.2
-    * @cowprotocol/common-hooks bumped to 3.0.2
-    * @cowprotocol/common-utils bumped to 3.0.2
-    * @cowprotocol/core bumped to 3.0.2
-    * @cowprotocol/types bumped to 4.1.0
-    * @cowprotocol/ui bumped to 3.0.2
-    * @cowprotocol/wallet-provider bumped to 2.1.10
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.2
+    - @cowprotocol/common-hooks bumped to 3.0.2
+    - @cowprotocol/common-utils bumped to 3.0.2
+    - @cowprotocol/core bumped to 3.0.2
+    - @cowprotocol/types bumped to 4.1.0
+    - @cowprotocol/ui bumped to 3.0.2
+    - @cowprotocol/wallet-provider bumped to 2.1.10
 
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.0.0...tokens-v3.0.1) (2026-03-18)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.1
-    * @cowprotocol/common-hooks bumped to 3.0.1
-    * @cowprotocol/common-utils bumped to 3.0.1
-    * @cowprotocol/core bumped to 3.0.1
-    * @cowprotocol/types bumped to 4.0.1
-    * @cowprotocol/ui bumped to 3.0.1
-    * @cowprotocol/wallet-provider bumped to 2.1.9
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.1
+    - @cowprotocol/common-hooks bumped to 3.0.1
+    - @cowprotocol/common-utils bumped to 3.0.1
+    - @cowprotocol/core bumped to 3.0.1
+    - @cowprotocol/types bumped to 4.0.1
+    - @cowprotocol/ui bumped to 3.0.1
+    - @cowprotocol/wallet-provider bumped to 2.1.9
 
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.5.0...tokens-v3.0.0) (2026-03-11)
 
-
 ### ⚠ BREAKING CHANGES
 
-* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+- Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
 
 ### ✨ Features
 
-* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
-
+- remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
 
 ### 🔧 Miscellaneous
 
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
-
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.0
-    * @cowprotocol/common-hooks bumped to 3.0.0
-    * @cowprotocol/common-utils bumped to 3.0.0
-    * @cowprotocol/core bumped to 3.0.0
-    * @cowprotocol/types bumped to 4.0.0
-    * @cowprotocol/ui bumped to 3.0.0
-    * @cowprotocol/wallet-provider bumped to 2.1.8
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.0
+    - @cowprotocol/common-hooks bumped to 3.0.0
+    - @cowprotocol/common-utils bumped to 3.0.0
+    - @cowprotocol/core bumped to 3.0.0
+    - @cowprotocol/types bumped to 4.0.0
+    - @cowprotocol/ui bumped to 3.0.0
+    - @cowprotocol/wallet-provider bumped to 2.1.8
 
 ## [2.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.4.0...tokens-v2.5.0) (2026-03-10)
 
-
 ### ✨ Features
 
-* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
-
+- integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
-
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
-
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.4.0
-    * @cowprotocol/common-hooks bumped to 2.4.0
-    * @cowprotocol/common-utils bumped to 2.4.0
-    * @cowprotocol/core bumped to 2.5.0
-    * @cowprotocol/types bumped to 3.4.0
-    * @cowprotocol/ui bumped to 2.4.0
-    * @cowprotocol/wallet-provider bumped to 2.1.7
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.4.0
+    - @cowprotocol/common-hooks bumped to 2.4.0
+    - @cowprotocol/common-utils bumped to 2.4.0
+    - @cowprotocol/core bumped to 2.5.0
+    - @cowprotocol/types bumped to 3.4.0
+    - @cowprotocol/ui bumped to 2.4.0
+    - @cowprotocol/wallet-provider bumped to 2.1.7
 
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.3.1...tokens-v2.4.0) (2026-02-25)
 
-
 ### ✨ Features
 
-* add xstocks token list ([#7073](https://github.com/cowprotocol/cowswap/issues/7073)) ([f532f26](https://github.com/cowprotocol/cowswap/commit/f532f26aa0d87ee32cac3d5be7ab9ab5f28abb02))
-
+- add xstocks token list ([#7073](https://github.com/cowprotocol/cowswap/issues/7073)) ([f532f26](https://github.com/cowprotocol/cowswap/commit/f532f26aa0d87ee32cac3d5be7ab9ab5f28abb02))
 
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.2
-    * @cowprotocol/common-hooks bumped to 2.3.2
-    * @cowprotocol/common-utils bumped to 2.3.2
-    * @cowprotocol/core bumped to 2.4.0
-    * @cowprotocol/types bumped to 3.3.2
-    * @cowprotocol/ui bumped to 2.3.2
-    * @cowprotocol/wallet-provider bumped to 2.1.6
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.2
+    - @cowprotocol/common-hooks bumped to 2.3.2
+    - @cowprotocol/common-utils bumped to 2.3.2
+    - @cowprotocol/core bumped to 2.4.0
+    - @cowprotocol/types bumped to 3.3.2
+    - @cowprotocol/ui bumped to 2.3.2
+    - @cowprotocol/wallet-provider bumped to 2.1.6
 
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.3.0...tokens-v2.3.1) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.1
-    * @cowprotocol/common-hooks bumped to 2.3.1
-    * @cowprotocol/common-utils bumped to 2.3.1
-    * @cowprotocol/core bumped to 2.3.1
-    * @cowprotocol/types bumped to 3.3.1
-    * @cowprotocol/ui bumped to 2.3.1
-    * @cowprotocol/wallet-provider bumped to 2.1.5
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.1
+    - @cowprotocol/common-hooks bumped to 2.3.1
+    - @cowprotocol/common-utils bumped to 2.3.1
+    - @cowprotocol/core bumped to 2.3.1
+    - @cowprotocol/types bumped to 3.3.1
+    - @cowprotocol/ui bumped to 2.3.1
+    - @cowprotocol/wallet-provider bumped to 2.1.5
 
 ## [2.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.2...tokens-v2.3.0) (2026-02-20)
 
-
 ### ✨ Features
 
-* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
-
+- **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.0
-    * @cowprotocol/common-hooks bumped to 2.3.0
-    * @cowprotocol/common-utils bumped to 2.3.0
-    * @cowprotocol/core bumped to 2.3.0
-    * @cowprotocol/types bumped to 3.3.0
-    * @cowprotocol/ui bumped to 2.3.0
-    * @cowprotocol/wallet-provider bumped to 2.1.4
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.0
+    - @cowprotocol/common-hooks bumped to 2.3.0
+    - @cowprotocol/common-utils bumped to 2.3.0
+    - @cowprotocol/core bumped to 2.3.0
+    - @cowprotocol/types bumped to 3.3.0
+    - @cowprotocol/ui bumped to 2.3.0
+    - @cowprotocol/wallet-provider bumped to 2.1.4
 
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.1...tokens-v2.2.2) (2026-02-17)
 
-
 ### 🐛 Bug Fixes
 
-* **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
-
+- **ink:** move usdc back to ink favorites ([#7024](https://github.com/cowprotocol/cowswap/issues/7024)) ([cec6c39](https://github.com/cowprotocol/cowswap/commit/cec6c39d85d27d30a7fe4607065ccf60cfde4fa6))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.2
-    * @cowprotocol/common-hooks bumped to 2.2.2
-    * @cowprotocol/common-utils bumped to 2.2.2
-    * @cowprotocol/core bumped to 2.2.2
-    * @cowprotocol/ui bumped to 2.2.2
-    * @cowprotocol/wallet-provider bumped to 2.1.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.2
+    - @cowprotocol/common-hooks bumped to 2.2.2
+    - @cowprotocol/common-utils bumped to 2.2.2
+    - @cowprotocol/core bumped to 2.2.2
+    - @cowprotocol/ui bumped to 2.2.2
+    - @cowprotocol/wallet-provider bumped to 2.1.3
 
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.2.0...tokens-v2.2.1) (2026-02-16)
 
-
 ### 🐛 Bug Fixes
 
-* **ink:** add USDC.e to Ink ([#7017](https://github.com/cowprotocol/cowswap/issues/7017)) ([ed2245f](https://github.com/cowprotocol/cowswap/commit/ed2245ff35f36c60dd48cae00bd3ba35aa9cfd57))
-
+- **ink:** add USDC.e to Ink ([#7017](https://github.com/cowprotocol/cowswap/issues/7017)) ([ed2245f](https://github.com/cowprotocol/cowswap/commit/ed2245ff35f36c60dd48cae00bd3ba35aa9cfd57))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.1
-    * @cowprotocol/common-hooks bumped to 2.2.1
-    * @cowprotocol/common-utils bumped to 2.2.1
-    * @cowprotocol/core bumped to 2.2.1
-    * @cowprotocol/ui bumped to 2.2.1
-    * @cowprotocol/wallet-provider bumped to 2.1.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.1
+    - @cowprotocol/common-hooks bumped to 2.2.1
+    - @cowprotocol/common-utils bumped to 2.2.1
+    - @cowprotocol/core bumped to 2.2.1
+    - @cowprotocol/ui bumped to 2.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.2
 
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.1.0...tokens-v2.2.0) (2026-02-13)
 
-
 ### ✨ Features
 
-* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
-
+- replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.0
-    * @cowprotocol/common-hooks bumped to 2.2.0
-    * @cowprotocol/common-utils bumped to 2.2.0
-    * @cowprotocol/core bumped to 2.2.0
-    * @cowprotocol/types bumped to 3.2.0
-    * @cowprotocol/ui bumped to 2.2.0
-    * @cowprotocol/wallet-provider bumped to 2.1.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.0
+    - @cowprotocol/common-hooks bumped to 2.2.0
+    - @cowprotocol/common-utils bumped to 2.2.0
+    - @cowprotocol/core bumped to 2.2.0
+    - @cowprotocol/types bumped to 3.2.0
+    - @cowprotocol/ui bumped to 2.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.1
 
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v2.0.1...tokens-v2.1.0) (2026-02-05)
 
-
 ### ✨ Features
 
-* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
-
+- **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
 
 ### 🔧 Miscellaneous
 
-* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
-
+- update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.1.0
-    * @cowprotocol/common-hooks bumped to 2.1.0
-    * @cowprotocol/common-utils bumped to 2.1.0
-    * @cowprotocol/core bumped to 2.1.0
-    * @cowprotocol/cowswap-abis bumped to 3.0.0
-    * @cowprotocol/types bumped to 3.1.0
-    * @cowprotocol/ui bumped to 2.1.0
-    * @cowprotocol/wallet-provider bumped to 2.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.1.0
+    - @cowprotocol/common-hooks bumped to 2.1.0
+    - @cowprotocol/common-utils bumped to 2.1.0
+    - @cowprotocol/core bumped to 2.1.0
+    - @cowprotocol/cowswap-abis bumped to 3.0.0
+    - @cowprotocol/types bumped to 3.1.0
+    - @cowprotocol/ui bumped to 2.1.0
+    - @cowprotocol/wallet-provider bumped to 2.1.0
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/tokens-v2.0.0...tokens-v2.0.1) (2026-02-02)
 
-
 ### Bug Fixes
 
-* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
-
+- **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.0.1
-    * @cowprotocol/common-hooks bumped to 2.0.1
-    * @cowprotocol/common-utils bumped to 2.0.1
-    * @cowprotocol/core bumped to 2.0.1
-    * @cowprotocol/types bumped to 3.0.1
-    * @cowprotocol/ui bumped to 2.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.0.1
+    - @cowprotocol/common-hooks bumped to 2.0.1
+    - @cowprotocol/common-utils bumped to 2.0.1
+    - @cowprotocol/core bumped to 2.0.1
+    - @cowprotocol/types bumped to 3.0.1
+    - @cowprotocol/ui bumped to 2.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.33.0...tokens-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.0.0
-    * @cowprotocol/common-hooks bumped to 2.0.0
-    * @cowprotocol/common-utils bumped to 2.0.0
-    * @cowprotocol/core bumped to 2.0.0
-    * @cowprotocol/cowswap-abis bumped to 2.0.0
-    * @cowprotocol/types bumped to 3.0.0
-    * @cowprotocol/ui bumped to 2.0.0
-    * @cowprotocol/wallet-provider bumped to 2.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.0.0
+    - @cowprotocol/common-hooks bumped to 2.0.0
+    - @cowprotocol/common-utils bumped to 2.0.0
+    - @cowprotocol/core bumped to 2.0.0
+    - @cowprotocol/cowswap-abis bumped to 2.0.0
+    - @cowprotocol/types bumped to 3.0.0
+    - @cowprotocol/ui bumped to 2.0.0
+    - @cowprotocol/wallet-provider bumped to 2.0.0
 
 ## [1.33.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.32.0...tokens-v1.33.0) (2026-01-26)
 
-
 ### Features
 
-* new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
-
+- new token selector ([#6790](https://github.com/cowprotocol/cowswap/issues/6790)) ([ccac201](https://github.com/cowprotocol/cowswap/commit/ccac201c860c66e1374798f712999a5962d1bdd5))
 
 ### Bug Fixes
 
-* **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
+- **bridge:** do not reset assets when change sell token ([#6851](https://github.com/cowprotocol/cowswap/issues/6851)) ([b30ca82](https://github.com/cowprotocol/cowswap/commit/b30ca8234f1e1d2d07eca7804b76157344328470))
 
 ## [1.32.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.1...tokens-v1.32.0) (2026-01-09)
 
-
 ### Features
 
-* implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
-* show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
-* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
-
+- implement consent for all flows ([#6769](https://github.com/cowprotocol/cowswap/issues/6769)) ([ba12026](https://github.com/cowprotocol/cowswap/commit/ba12026ef8a73fde2f38f448e0a581476518e843))
+- show consents before import modal ([#6770](https://github.com/cowprotocol/cowswap/issues/6770)) ([e928b80](https://github.com/cowprotocol/cowswap/commit/e928b806c45b435f830e8ebfa18090319c58659b))
+- **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
 
 ### Bug Fixes
 
-* ondo tokens with bad formatting ([#6794](https://github.com/cowprotocol/cowswap/issues/6794)) ([c967eae](https://github.com/cowprotocol/cowswap/commit/c967eaef997cf168a37ec87d92fa834e44d5e1f2))
-* **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
+- ondo tokens with bad formatting ([#6794](https://github.com/cowprotocol/cowswap/issues/6794)) ([c967eae](https://github.com/cowprotocol/cowswap/commit/c967eaef997cf168a37ec87d92fa834e44d5e1f2))
+- **plasma:** minor fixes for plasma chain ([#6795](https://github.com/cowprotocol/cowswap/issues/6795)) ([13b9ffe](https://github.com/cowprotocol/cowswap/commit/13b9ffefe73f27b5a812179840cdcf3f177a0807))
 
 ## [1.31.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.0...tokens-v1.31.1) (2025-12-16)
 
-
 ### Bug Fixes
 
-* token lists missing after migration ([#6704](https://github.com/cowprotocol/cowswap/issues/6704)) ([8b78d0a](https://github.com/cowprotocol/cowswap/commit/8b78d0a0b595497f41fb55a3c69b095efe08a978))
+- token lists missing after migration ([#6704](https://github.com/cowprotocol/cowswap/issues/6704)) ([8b78d0a](https://github.com/cowprotocol/cowswap/commit/8b78d0a0b595497f41fb55a3c69b095efe08a978))
 
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.30.0...tokens-v1.31.0) (2025-12-16)
 
-
 ### Features
 
-* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
-
+- move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
 
 ### Bug Fixes
 
-* **bridge:** fix cross-chain swap quote details ([#6597](https://github.com/cowprotocol/cowswap/issues/6597)) ([f0b5e54](https://github.com/cowprotocol/cowswap/commit/f0b5e542daca20585fc0c5ec989697cd9e202a90))
-* remember deleted token lists ([#6580](https://github.com/cowprotocol/cowswap/issues/6580)) ([66c6d07](https://github.com/cowprotocol/cowswap/commit/66c6d07edee7ec03ea763b1feaaa1b688df1e8b8))
-* remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
-* token images missing from bridge response ([#6680](https://github.com/cowprotocol/cowswap/issues/6680)) ([d20800f](https://github.com/cowprotocol/cowswap/commit/d20800f4a79f354d11ab4070ce3ac656fe817220))
+- **bridge:** fix cross-chain swap quote details ([#6597](https://github.com/cowprotocol/cowswap/issues/6597)) ([f0b5e54](https://github.com/cowprotocol/cowswap/commit/f0b5e542daca20585fc0c5ec989697cd9e202a90))
+- remember deleted token lists ([#6580](https://github.com/cowprotocol/cowswap/issues/6580)) ([66c6d07](https://github.com/cowprotocol/cowswap/commit/66c6d07edee7ec03ea763b1feaaa1b688df1e8b8))
+- remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
+- token images missing from bridge response ([#6680](https://github.com/cowprotocol/cowswap/issues/6680)) ([d20800f](https://github.com/cowprotocol/cowswap/commit/d20800f4a79f354d11ab4070ce3ac656fe817220))
 
 ## [1.30.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.29.0...tokens-v1.30.0) (2025-11-24)
 
-
 ### Features
 
-* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
-* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+- **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+- **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
 
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.28.0...tokens-v1.29.0) (2025-11-10)
 
-
 ### Features
 
-* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
-
+- **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
 
 ### Bug Fixes
 
-* **linea:** add USDT as a favourite token ([#6498](https://github.com/cowprotocol/cowswap/issues/6498)) ([5741c7f](https://github.com/cowprotocol/cowswap/commit/5741c7fcd0d916b2206c29e83b27fc21e752e374))
+- **linea:** add USDT as a favourite token ([#6498](https://github.com/cowprotocol/cowswap/issues/6498)) ([5741c7f](https://github.com/cowprotocol/cowswap/commit/5741c7fcd0d916b2206c29e83b27fc21e752e374))
 
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.27.0...tokens-v1.28.0) (2025-10-23)
 
-
 ### Features
 
-* add ondo token list to bnb ([#6398](https://github.com/cowprotocol/cowswap/issues/6398)) ([ae9d050](https://github.com/cowprotocol/cowswap/commit/ae9d050bddf99c328c512a6dc3c2bda88dfc7271))
+- add ondo token list to bnb ([#6398](https://github.com/cowprotocol/cowswap/issues/6398)) ([ae9d050](https://github.com/cowprotocol/cowswap/commit/ae9d050bddf99c328c512a6dc3c2bda88dfc7271))
 
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.26.0...tokens-v1.27.0) (2025-09-25)
 
-
 ### Features
 
-* **bnb:** add BNB favorite tokens ([#6291](https://github.com/cowprotocol/cowswap/issues/6291)) ([db3b963](https://github.com/cowprotocol/cowswap/commit/db3b963e0032a13aa60972845c8502d53e0ef539))
+- **bnb:** add BNB favorite tokens ([#6291](https://github.com/cowprotocol/cowswap/issues/6291)) ([db3b963](https://github.com/cowprotocol/cowswap/commit/db3b963e0032a13aa60972845c8502d53e0ef539))
 
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.2...tokens-v1.26.0) (2025-09-17)
 
-
 ### Features
 
-* remove Ondo tokens from curated token list ([#6276](https://github.com/cowprotocol/cowswap/issues/6276)) ([68b8cbd](https://github.com/cowprotocol/cowswap/commit/68b8cbd64569fdc1f9734fb678b6c19d978b38ab))
+- remove Ondo tokens from curated token list ([#6276](https://github.com/cowprotocol/cowswap/issues/6276)) ([68b8cbd](https://github.com/cowprotocol/cowswap/commit/68b8cbd64569fdc1f9734fb678b6c19d978b38ab))
 
 ## [1.25.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.1...tokens-v1.25.2) (2025-09-12)
 
-
 ### Bug Fixes
 
-* **tokens:** remove mismatched network tokens from localStorage ([#6234](https://github.com/cowprotocol/cowswap/issues/6234)) ([ab57ec0](https://github.com/cowprotocol/cowswap/commit/ab57ec0ca185d34167f69b3b2b508e121a0a1deb))
+- **tokens:** remove mismatched network tokens from localStorage ([#6234](https://github.com/cowprotocol/cowswap/issues/6234)) ([ab57ec0](https://github.com/cowprotocol/cowswap/commit/ab57ec0ca185d34167f69b3b2b508e121a0a1deb))
 
 ## [1.25.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.0...tokens-v1.25.1) (2025-08-29)
 
-
 ### Bug Fixes
 
-* **ondo:** allow ondo token list tag ([#6197](https://github.com/cowprotocol/cowswap/issues/6197)) ([55ebdd8](https://github.com/cowprotocol/cowswap/commit/55ebdd899faf91d2d625ee0b2a78d2b7eee227b8))
+- **ondo:** allow ondo token list tag ([#6197](https://github.com/cowprotocol/cowswap/issues/6197)) ([55ebdd8](https://github.com/cowprotocol/cowswap/commit/55ebdd899faf91d2d625ee0b2a78d2b7eee227b8))
 
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.2...tokens-v1.25.0) (2025-08-28)
 
-
 ### Features
 
-* add ondo token list for us ([#6185](https://github.com/cowprotocol/cowswap/issues/6185)) ([18e3179](https://github.com/cowprotocol/cowswap/commit/18e31798ec4130b672aa4c5294700c2252cf730f))
-* handle weekend for ondo tokens ([#6183](https://github.com/cowprotocol/cowswap/issues/6183)) ([cb3af07](https://github.com/cowprotocol/cowswap/commit/cb3af077192a24d09e23272fbcbfef69ea0f5812))
-
+- add ondo token list for us ([#6185](https://github.com/cowprotocol/cowswap/issues/6185)) ([18e3179](https://github.com/cowprotocol/cowswap/commit/18e31798ec4130b672aa4c5294700c2252cf730f))
+- handle weekend for ondo tokens ([#6183](https://github.com/cowprotocol/cowswap/issues/6183)) ([cb3af07](https://github.com/cowprotocol/cowswap/commit/cb3af077192a24d09e23272fbcbfef69ea0f5812))
 
 ### Bug Fixes
 
-* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
-* **tokens:** check token lists loading state ([#6190](https://github.com/cowprotocol/cowswap/issues/6190)) ([3a0c358](https://github.com/cowprotocol/cowswap/commit/3a0c3585db8375c57af245ed55a272f72a67f4e2))
+- **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+- **tokens:** check token lists loading state ([#6190](https://github.com/cowprotocol/cowswap/issues/6190)) ([3a0c358](https://github.com/cowprotocol/cowswap/commit/3a0c3585db8375c57af245ed55a272f72a67f4e2))
 
 ## [1.24.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.1...tokens-v1.24.2) (2025-08-14)
 
-
 ### Bug Fixes
 
-* **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
+- **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
 
 ## [1.24.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.0...tokens-v1.24.1) (2025-08-12)
 
-
 ### Bug Fixes
 
-* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
-* **tokens:** check lists instead of tokens to prevent flickering ([#6125](https://github.com/cowprotocol/cowswap/issues/6125)) ([2705327](https://github.com/cowprotocol/cowswap/commit/2705327508f29079e6e5b4a8dc11b4dc0c5fb9cc))
+- **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+- **tokens:** check lists instead of tokens to prevent flickering ([#6125](https://github.com/cowprotocol/cowswap/issues/6125)) ([2705327](https://github.com/cowprotocol/cowswap/commit/2705327508f29079e6e5b4a8dc11b4dc0c5fb9cc))
 
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.1...tokens-v1.24.0) (2025-08-07)
 
-
 ### Features
 
-* **token-lists:** add Ondo tokens list to Mainnet ([#6115](https://github.com/cowprotocol/cowswap/issues/6115)) ([4e43496](https://github.com/cowprotocol/cowswap/commit/4e4349695be807febdcb52aec4b06adf68c950cf))
+- **token-lists:** add Ondo tokens list to Mainnet ([#6115](https://github.com/cowprotocol/cowswap/issues/6115)) ([4e43496](https://github.com/cowprotocol/cowswap/commit/4e4349695be807febdcb52aec4b06adf68c950cf))
 
 ## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
 
-
 ### Bug Fixes
 
-* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+- get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
 
 ## [1.23.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.22.0...tokens-v1.23.0) (2025-07-30)
 
-
 ### Features
 
-* **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
-* **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
-
+- **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
+- **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
 
 ### Bug Fixes
 
-* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+- migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
 
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
 
-
 ### Features
 
-* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+- **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
 
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.20.0...tokens-v1.21.0) (2025-06-20)
 
-
 ### Features
 
-* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+- account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
 
 ## [1.20.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.1...tokens-v1.20.0) (2025-06-18)
 
-
 ### Features
 
-* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
-* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
-
+- **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+- **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
 
 ### Bug Fixes
 
-* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
-* **token-logo:** fix network logo size in mobile ([#5809](https://github.com/cowprotocol/cowswap/issues/5809)) ([6c4d2f4](https://github.com/cowprotocol/cowswap/commit/6c4d2f47771f3868a3fe530bc9ac1779175b2db5))
-* **tokens:** remove user-added tokens twice ([#5748](https://github.com/cowprotocol/cowswap/issues/5748)) ([78b9bc6](https://github.com/cowprotocol/cowswap/commit/78b9bc6b519ebc8aafe13a9be3194f1377d3461c))
+- make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+- **token-logo:** fix network logo size in mobile ([#5809](https://github.com/cowprotocol/cowswap/issues/5809)) ([6c4d2f4](https://github.com/cowprotocol/cowswap/commit/6c4d2f47771f3868a3fe530bc9ac1779175b2db5))
+- **tokens:** remove user-added tokens twice ([#5748](https://github.com/cowprotocol/cowswap/issues/5748)) ([78b9bc6](https://github.com/cowprotocol/cowswap/commit/78b9bc6b519ebc8aafe13a9be3194f1377d3461c))
 
 ## [1.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.0...tokens-v1.19.1) (2025-05-22)
 
-
 ### Bug Fixes
 
-* remove UserAddedTokensUpdater ([#5744](https://github.com/cowprotocol/cowswap/issues/5744)) ([19b4055](https://github.com/cowprotocol/cowswap/commit/19b40554a578843241f02f518438208d9128edc9))
+- remove UserAddedTokensUpdater ([#5744](https://github.com/cowprotocol/cowswap/issues/5744)) ([19b4055](https://github.com/cowprotocol/cowswap/commit/19b40554a578843241f02f518438208d9128edc9))
 
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.18.0...tokens-v1.19.0) (2025-05-21)
 
-
 ### Features
 
-* **tokens:** remove user-added tokens if they are in lists ([e875d59](https://github.com/cowprotocol/cowswap/commit/e875d59ca2a9fbe114412926443dcf4d90343b04))
-
+- **tokens:** remove user-added tokens if they are in lists ([e875d59](https://github.com/cowprotocol/cowswap/commit/e875d59ca2a9fbe114412926443dcf4d90343b04))
 
 ### Bug Fixes
 
-* **tokens:** merge token tags from different sources ([2915da1](https://github.com/cowprotocol/cowswap/commit/2915da16429fe84cdf07b37c32566593685bc889))
+- **tokens:** merge token tags from different sources ([2915da1](https://github.com/cowprotocol/cowswap/commit/2915da16429fe84cdf07b37c32566593685bc889))
 
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.1...tokens-v1.18.0) (2025-05-19)
 
-
 ### Features
 
-* **bridge:** use real bridge provider ([#5588](https://github.com/cowprotocol/cowswap/issues/5588)) ([63981ab](https://github.com/cowprotocol/cowswap/commit/63981ab03a92e115d967ec482e9fec04abb9d9f5))
-
+- **bridge:** use real bridge provider ([#5588](https://github.com/cowprotocol/cowswap/issues/5588)) ([63981ab](https://github.com/cowprotocol/cowswap/commit/63981ab03a92e115d967ec482e9fec04abb9d9f5))
 
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
 
 ## [1.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.17.0...tokens-v1.17.1) (2025-05-07)
 
-
 ### Bug Fixes
 
-* **tokens:** fix token import logic for user-added tokens ([#5668](https://github.com/cowprotocol/cowswap/issues/5668)) ([73aeba3](https://github.com/cowprotocol/cowswap/commit/73aeba388892106cb7bf7c9b5addef6d679d491d))
+- **tokens:** fix token import logic for user-added tokens ([#5668](https://github.com/cowprotocol/cowswap/issues/5668)) ([73aeba3](https://github.com/cowprotocol/cowswap/commit/73aeba388892106cb7bf7c9b5addef6d679d491d))
 
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.16.0...tokens-v1.17.0) (2025-03-27)
 
-
 ### Features
 
-* **bridge:** disable bridging sc wallets ([#5536](https://github.com/cowprotocol/cowswap/issues/5536)) ([98372ec](https://github.com/cowprotocol/cowswap/commit/98372ec6b5d2fd8b4f97147197154ae3830497d8))
+- **bridge:** disable bridging sc wallets ([#5536](https://github.com/cowprotocol/cowswap/issues/5536)) ([98372ec](https://github.com/cowprotocol/cowswap/commit/98372ec6b5d2fd8b4f97147197154ae3830497d8))
 
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.15.0...tokens-v1.16.0) (2025-03-20)
 
-
 ### Features
 
-* **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
-* **bridge:** do not fetch balances too often ([#5509](https://github.com/cowprotocol/cowswap/issues/5509)) ([a673668](https://github.com/cowprotocol/cowswap/commit/a6736681aadc2e1e42dea3ca13827728976e4ce2))
-* **bridge:** select sell token from another chain ([#5521](https://github.com/cowprotocol/cowswap/issues/5521)) ([f0fc900](https://github.com/cowprotocol/cowswap/commit/f0fc900c7035e47331e07b0d5b7a31674dc7bc13))
+- **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
+- **bridge:** do not fetch balances too often ([#5509](https://github.com/cowprotocol/cowswap/issues/5509)) ([a673668](https://github.com/cowprotocol/cowswap/commit/a6736681aadc2e1e42dea3ca13827728976e4ce2))
+- **bridge:** select sell token from another chain ([#5521](https://github.com/cowprotocol/cowswap/issues/5521)) ([f0fc900](https://github.com/cowprotocol/cowswap/commit/f0fc900c7035e47331e07b0d5b7a31674dc7bc13))
 
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.1...tokens-v1.15.0) (2025-03-10)
 
-
 ### Features
 
-* **trade:** cache quotes ([#5473](https://github.com/cowprotocol/cowswap/issues/5473)) ([edf8d5f](https://github.com/cowprotocol/cowswap/commit/edf8d5fb239e1491c30a0de474cbc5d1fca7b2a7))
+- **trade:** cache quotes ([#5473](https://github.com/cowprotocol/cowswap/issues/5473)) ([edf8d5f](https://github.com/cowprotocol/cowswap/commit/edf8d5fb239e1491c30a0de474cbc5d1fca7b2a7))
 
 ## [1.14.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.14.0...tokens-v1.14.1) (2025-02-05)
 
-
 ### Bug Fixes
 
-* display error message for token import ([#5312](https://github.com/cowprotocol/cowswap/issues/5312)) ([3991be9](https://github.com/cowprotocol/cowswap/commit/3991be9d3f343612a96cced47abfd75da5741aa1))
+- display error message for token import ([#5312](https://github.com/cowprotocol/cowswap/issues/5312)) ([3991be9](https://github.com/cowprotocol/cowswap/commit/3991be9d3f343612a96cced47abfd75da5741aa1))
 
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.1...tokens-v1.14.0) (2025-01-09)
 
-
 ### Features
 
-* **token-lists:** remove outdated token lists ([#5233](https://github.com/cowprotocol/cowswap/issues/5233)) ([6f73dfc](https://github.com/cowprotocol/cowswap/commit/6f73dfc1c604393f4c4a54fe207893b698bba4a8))
+- **token-lists:** remove outdated token lists ([#5233](https://github.com/cowprotocol/cowswap/issues/5233)) ([6f73dfc](https://github.com/cowprotocol/cowswap/commit/6f73dfc1c604393f4c4a54fe207893b698bba4a8))
 
 ## [1.13.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.13.0...tokens-v1.13.1) (2024-12-18)
 
-
 ### Bug Fixes
 
-* remove Kleros token list because it's too big ([#5217](https://github.com/cowprotocol/cowswap/issues/5217)) ([745e17f](https://github.com/cowprotocol/cowswap/commit/745e17f1515024f67c162091a42f3fd2864f894e))
+- remove Kleros token list because it's too big ([#5217](https://github.com/cowprotocol/cowswap/issues/5217)) ([745e17f](https://github.com/cowprotocol/cowswap/commit/745e17f1515024f67c162091a42f3fd2864f894e))
 
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.12.0...tokens-v1.13.0) (2024-12-11)
 
-
 ### Features
 
-* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
+- **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
 
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.11.0...tokens-v1.12.0) (2024-12-03)
 
-
 ### Features
 
-* add default list for tokens in base ([#5141](https://github.com/cowprotocol/cowswap/issues/5141)) ([973b93a](https://github.com/cowprotocol/cowswap/commit/973b93a3bb11658bbfba51224a8062588655f5ef))
-* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
-* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
-* improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
+- add default list for tokens in base ([#5141](https://github.com/cowprotocol/cowswap/issues/5141)) ([973b93a](https://github.com/cowprotocol/cowswap/commit/973b93a3bb11658bbfba51224a8062588655f5ef))
+- allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+- **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+- improve custom hook validation messages ([#5123](https://github.com/cowprotocol/cowswap/issues/5123)) ([91bab8d](https://github.com/cowprotocol/cowswap/commit/91bab8dc3b124a32790c3bb1955b01dd3a75ea7b))
 
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.10.0...tokens-v1.11.0) (2024-11-06)
 
-
 ### Features
 
-* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
-* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
-* **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
-* **yield:** fetch balances for LP-tokens ([#5005](https://github.com/cowprotocol/cowswap/issues/5005)) ([2877df5](https://github.com/cowprotocol/cowswap/commit/2877df52be2fd519a20157a1cd91a2e18e954dae))
-* **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
+- **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+- **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+- **yield:** display pools info in widget ([#5046](https://github.com/cowprotocol/cowswap/issues/5046)) ([562d020](https://github.com/cowprotocol/cowswap/commit/562d0207d1acf4e1735c4b3f629ff63dd65d3725))
+- **yield:** fetch balances for LP-tokens ([#5005](https://github.com/cowprotocol/cowswap/issues/5005)) ([2877df5](https://github.com/cowprotocol/cowswap/commit/2877df52be2fd519a20157a1cd91a2e18e954dae))
+- **yield:** use lp-token in widget ([#5013](https://github.com/cowprotocol/cowswap/issues/5013)) ([b66d206](https://github.com/cowprotocol/cowswap/commit/b66d2068a9f3bcaddc8da7df5499c17fc05f693f))
 
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.9.0...tokens-v1.10.0) (2024-10-10)
 
-
 ### Features
 
-* add balancer token list to arb1 ([#4975](https://github.com/cowprotocol/cowswap/issues/4975)) ([54c0f6c](https://github.com/cowprotocol/cowswap/commit/54c0f6c42937840e48e95d85c139874ca8b76737))
-
+- add balancer token list to arb1 ([#4975](https://github.com/cowprotocol/cowswap/issues/4975)) ([54c0f6c](https://github.com/cowprotocol/cowswap/commit/54c0f6c42937840e48e95d85c139874ca8b76737))
 
 ### Bug Fixes
 
-* **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
+- **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
 
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.1...tokens-v1.9.0) (2024-09-30)
 
-
 ### Features
 
-* **tokens:** add Curve Tokenlists ([#4894](https://github.com/cowprotocol/cowswap/issues/4894)) ([69ec27c](https://github.com/cowprotocol/cowswap/commit/69ec27cb79669e1e46cc543224a3418c1b98449b))
-
+- **tokens:** add Curve Tokenlists ([#4894](https://github.com/cowprotocol/cowswap/issues/4894)) ([69ec27c](https://github.com/cowprotocol/cowswap/commit/69ec27cb79669e1e46cc543224a3418c1b98449b))
 
 ### Bug Fixes
 
-* **token-list:** increase token symbol validation length ([#4913](https://github.com/cowprotocol/cowswap/issues/4913)) ([47b7115](https://github.com/cowprotocol/cowswap/commit/47b7115f75487667f4f850dfb5469e6bbe22aba5))
+- **token-list:** increase token symbol validation length ([#4913](https://github.com/cowprotocol/cowswap/issues/4913)) ([47b7115](https://github.com/cowprotocol/cowswap/commit/47b7115f75487667f4f850dfb5469e6bbe22aba5))
 
 ## [1.8.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.0...tokens-v1.8.1) (2024-09-05)
 
-
 ### Bug Fixes
 
-* **progress-bar:** fix styling issues ([#4841](https://github.com/cowprotocol/cowswap/issues/4841)) ([083d489](https://github.com/cowprotocol/cowswap/commit/083d489198033516d58e769075707d42e4fcaedc))
+- **progress-bar:** fix styling issues ([#4841](https://github.com/cowprotocol/cowswap/issues/4841)) ([083d489](https://github.com/cowprotocol/cowswap/commit/083d489198033516d58e769075707d42e4fcaedc))
 
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.7.0...tokens-v1.8.0) (2024-08-27)
 
-
 ### Features
 
-* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+- **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
 
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.6.1...tokens-v1.7.0) (2024-08-14)
 
-
 ### Features
 
-* improve finding tokens in other networks ([#4794](https://github.com/cowprotocol/cowswap/issues/4794)) ([87ee5aa](https://github.com/cowprotocol/cowswap/commit/87ee5aac719db1fcaecd17d06bddecda172e8a95))
-
+- improve finding tokens in other networks ([#4794](https://github.com/cowprotocol/cowswap/issues/4794)) ([87ee5aa](https://github.com/cowprotocol/cowswap/commit/87ee5aac719db1fcaecd17d06bddecda172e8a95))
 
 ### Bug Fixes
 
-* replace gateway.ipfs.io with ipfs.io ([#4788](https://github.com/cowprotocol/cowswap/issues/4788)) ([df1235b](https://github.com/cowprotocol/cowswap/commit/df1235b20ab9a888e085d1d90a9e5ab73da54d13))
+- replace gateway.ipfs.io with ipfs.io ([#4788](https://github.com/cowprotocol/cowswap/issues/4788)) ([df1235b](https://github.com/cowprotocol/cowswap/commit/df1235b20ab9a888e085d1d90a9e5ab73da54d13))
 
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.6.0...tokens-v1.6.1) (2024-08-02)
 
-
 ### Bug Fixes
 
-* fix race condition with unsuported tokens ([#4762](https://github.com/cowprotocol/cowswap/issues/4762)) ([ee70bb0](https://github.com/cowprotocol/cowswap/commit/ee70bb0b10e98621909d1811c4fece520ae5c6b3))
+- fix race condition with unsuported tokens ([#4762](https://github.com/cowprotocol/cowswap/issues/4762)) ([ee70bb0](https://github.com/cowprotocol/cowswap/commit/ee70bb0b10e98621909d1811c4fece520ae5c6b3))
 
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.2...tokens-v1.6.0) (2024-07-18)
 
-
 ### Features
 
-* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+- refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
 
 ## [1.5.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.1...tokens-v1.5.2) (2024-07-05)
 
-
 ### Bug Fixes
 
-* **favorite:** replace gchain USDC favorite with USDC.e ([#4664](https://github.com/cowprotocol/cowswap/issues/4664)) ([99e5605](https://github.com/cowprotocol/cowswap/commit/99e56059aeaee28fac69ad425a156ebd08d00f4a))
+- **favorite:** replace gchain USDC favorite with USDC.e ([#4664](https://github.com/cowprotocol/cowswap/issues/4664)) ([99e5605](https://github.com/cowprotocol/cowswap/commit/99e56059aeaee28fac69ad425a156ebd08d00f4a))
 
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.0...tokens-v1.5.1) (2024-06-27)
 
-
 ### Bug Fixes
 
-* fix inconsistent use of the word favourite between US/UK version ([#4572](https://github.com/cowprotocol/cowswap/issues/4572)) ([c60f8b4](https://github.com/cowprotocol/cowswap/commit/c60f8b409291d6acd1ee997b3cb2fcac24acb325))
+- fix inconsistent use of the word favourite between US/UK version ([#4572](https://github.com/cowprotocol/cowswap/issues/4572)) ([c60f8b4](https://github.com/cowprotocol/cowswap/commit/c60f8b409291d6acd1ee997b3cb2fcac24acb325))
 
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.1...tokens-v1.5.0) (2024-06-24)
 
-
 ### Features
 
-* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+- **rebranding:** merge 📦 Big Package "Re-branding" 📦 ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
 
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.0...tokens-v1.4.1) (2024-06-18)
 
-
 ### Bug Fixes
 
-* **tokens:** remove duplicates from token search result ([#4535](https://github.com/cowprotocol/cowswap/issues/4535)) ([563640e](https://github.com/cowprotocol/cowswap/commit/563640e9563c23ecc0fbdb68e6b245eb07bcba79))
+- **tokens:** remove duplicates from token search result ([#4535](https://github.com/cowprotocol/cowswap/issues/4535)) ([563640e](https://github.com/cowprotocol/cowswap/commit/563640e9563c23ecc0fbdb68e6b245eb07bcba79))
 
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.1...tokens-v1.4.0) (2024-06-06)
 
-
 ### Features
 
-* use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
+- use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
 
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.0...tokens-v1.3.1) (2024-06-04)
 
-
 ### Bug Fixes
 
-* **arbitrum:** replace GNO with COW in fav tokens ([#4503](https://github.com/cowprotocol/cowswap/issues/4503)) ([518cf58](https://github.com/cowprotocol/cowswap/commit/518cf583667a53ecf724f1353306a5398edf1034))
+- **arbitrum:** replace GNO with COW in fav tokens ([#4503](https://github.com/cowprotocol/cowswap/issues/4503)) ([518cf58](https://github.com/cowprotocol/cowswap/commit/518cf583667a53ecf724f1353306a5398edf1034))
 
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.2.0...tokens-v1.3.0) (2024-05-29)
 
-
 ### Features
 
-* add arbitrum uni token list ([#4488](https://github.com/cowprotocol/cowswap/issues/4488)) ([057bc68](https://github.com/cowprotocol/cowswap/commit/057bc689771bd256d667f3335a3da0b683f1bd8d))
-* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+- add arbitrum uni token list ([#4488](https://github.com/cowprotocol/cowswap/issues/4488)) ([057bc68](https://github.com/cowprotocol/cowswap/commit/057bc689771bd256d667f3335a3da0b683f1bd8d))
+- **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.1.1...tokens-v1.2.0) (2024-05-02)
 
-
 ### Features
 
-* add coingecko token list to Gnosis chain ([#4305](https://github.com/cowprotocol/cowswap/issues/4305)) ([41d5067](https://github.com/cowprotocol/cowswap/commit/41d5067c7227a321f582a381e039e05997b79908))
+- add coingecko token list to Gnosis chain ([#4305](https://github.com/cowprotocol/cowswap/issues/4305)) ([41d5067](https://github.com/cowprotocol/cowswap/commit/41d5067c7227a321f582a381e039e05997b79908))
 
 ## [1.1.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.1.0...tokens-v1.1.1) (2024-04-18)
 
-
 ### Bug Fixes
 
-* display initial for tokens without image ([#4230](https://github.com/cowprotocol/cowswap/issues/4230)) ([ca7d62c](https://github.com/cowprotocol/cowswap/commit/ca7d62c1469bb54a6955d3007a779b23ea3985e6))
-* **sentry:** ignore some sentry geoblock errors ([#4250](https://github.com/cowprotocol/cowswap/issues/4250)) ([daf929e](https://github.com/cowprotocol/cowswap/commit/daf929ee5f628acac94f5bacef57f1db5cdd46c8))
-* **trade:** take time offset into account for quote and order validTo ([#4236](https://github.com/cowprotocol/cowswap/issues/4236)) ([7184ad4](https://github.com/cowprotocol/cowswap/commit/7184ad4655c3ae74fde084e306426fc49a11a360))
+- display initial for tokens without image ([#4230](https://github.com/cowprotocol/cowswap/issues/4230)) ([ca7d62c](https://github.com/cowprotocol/cowswap/commit/ca7d62c1469bb54a6955d3007a779b23ea3985e6))
+- **sentry:** ignore some sentry geoblock errors ([#4250](https://github.com/cowprotocol/cowswap/issues/4250)) ([daf929e](https://github.com/cowprotocol/cowswap/commit/daf929ee5f628acac94f5bacef57f1db5cdd46c8))
+- **trade:** take time offset into account for quote and order validTo ([#4236](https://github.com/cowprotocol/cowswap/issues/4236)) ([7184ad4](https://github.com/cowprotocol/cowswap/commit/7184ad4655c3ae74fde084e306426fc49a11a360))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.0.1...tokens-v1.1.0) (2024-04-11)
 
-
 ### Features
 
-* **widget:** use custom tokens as virtual list ([#4164](https://github.com/cowprotocol/cowswap/issues/4164)) ([8424a33](https://github.com/cowprotocol/cowswap/commit/8424a337f2ea2fd21cc3cb664d2f91facace00fb))
+- **widget:** use custom tokens as virtual list ([#4164](https://github.com/cowprotocol/cowswap/issues/4164)) ([8424a33](https://github.com/cowprotocol/cowswap/commit/8424a337f2ea2fd21cc3cb664d2f91facace00fb))
 
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.0.0...tokens-v1.0.1) (2024-04-02)
 
-
 ### Bug Fixes
 
-* **april-fools:** revert april fools ([#4116](https://github.com/cowprotocol/cowswap/issues/4116)) ([c8fb7d1](https://github.com/cowprotocol/cowswap/commit/c8fb7d1cb124f154e1b317c3e6fd503a65a12336))
+- **april-fools:** revert april fools ([#4116](https://github.com/cowprotocol/cowswap/issues/4116)) ([c8fb7d1](https://github.com/cowprotocol/cowswap/commit/c8fb7d1cb124f154e1b317c3e6fd503a65a12336))
 
 ## 1.0.0 (2024-03-29)
 
-
 ### Features
 
-* add tag styling for tokenlist ([#3686](https://github.com/cowprotocol/cowswap/issues/3686)) ([d4d87a6](https://github.com/cowprotocol/cowswap/commit/d4d87a628eb4c41587071ce56e756a6253c7e77b))
-* **april-fools:** add `I'm Feeling Lucky` ([#4094](https://github.com/cowprotocol/cowswap/issues/4094)) ([895991b](https://github.com/cowprotocol/cowswap/commit/895991bbdaa6fb496483a8c369b1b0f445828db5))
-* limit assets to trade for US users ([#3853](https://github.com/cowprotocol/cowswap/issues/3853)) ([c6e4c0d](https://github.com/cowprotocol/cowswap/commit/c6e4c0d12a0b1431e3a4e06b9f164671599587ef))
-* **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
-* remove goerli ([#3735](https://github.com/cowprotocol/cowswap/issues/3735)) ([2eaae50](https://github.com/cowprotocol/cowswap/commit/2eaae5063f1623d03328e4c2a0fb49c7799ff0a3))
-* **token-lists:** limit token lists by 5000 tokens ([#3881](https://github.com/cowprotocol/cowswap/issues/3881)) ([d8a5816](https://github.com/cowprotocol/cowswap/commit/d8a581652fcca40fc8ec2f63e904855b616951c6))
-* **widget:** custom token lists in widget ([#3390](https://github.com/cowprotocol/cowswap/issues/3390)) ([7eabe06](https://github.com/cowprotocol/cowswap/commit/7eabe06d043703718d742809791eda555dff5058))
-
+- add tag styling for tokenlist ([#3686](https://github.com/cowprotocol/cowswap/issues/3686)) ([d4d87a6](https://github.com/cowprotocol/cowswap/commit/d4d87a628eb4c41587071ce56e756a6253c7e77b))
+- **april-fools:** add `I'm Feeling Lucky` ([#4094](https://github.com/cowprotocol/cowswap/issues/4094)) ([895991b](https://github.com/cowprotocol/cowswap/commit/895991bbdaa6fb496483a8c369b1b0f445828db5))
+- limit assets to trade for US users ([#3853](https://github.com/cowprotocol/cowswap/issues/3853)) ([c6e4c0d](https://github.com/cowprotocol/cowswap/commit/c6e4c0d12a0b1431e3a4e06b9f164671599587ef))
+- **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
+- remove goerli ([#3735](https://github.com/cowprotocol/cowswap/issues/3735)) ([2eaae50](https://github.com/cowprotocol/cowswap/commit/2eaae5063f1623d03328e4c2a0fb49c7799ff0a3))
+- **token-lists:** limit token lists by 5000 tokens ([#3881](https://github.com/cowprotocol/cowswap/issues/3881)) ([d8a5816](https://github.com/cowprotocol/cowswap/commit/d8a581652fcca40fc8ec2f63e904855b616951c6))
+- **widget:** custom token lists in widget ([#3390](https://github.com/cowprotocol/cowswap/issues/3390)) ([7eabe06](https://github.com/cowprotocol/cowswap/commit/7eabe06d043703718d742809791eda555dff5058))
 
 ### Bug Fixes
 
-* **april-fools:** replace dpaste lists with a version stored on github ([#4112](https://github.com/cowprotocol/cowswap/issues/4112)) ([9ba35d9](https://github.com/cowprotocol/cowswap/commit/9ba35d9ba1f45b834f172d030e27d29ebc6b9774))
-* don't crash when there is a new network in lists state ([#3589](https://github.com/cowprotocol/cowswap/issues/3589)) ([246db74](https://github.com/cowprotocol/cowswap/commit/246db7408b14ac737f39a7cde9717e39c84be26d))
-* don't crash when there is no fav tokens in new network ([#3651](https://github.com/cowprotocol/cowswap/issues/3651)) ([c6aa91e](https://github.com/cowprotocol/cowswap/commit/c6aa91eb144a427ee5500602067f8140b79719f1))
-* merge localStorage state with initial state to prevent empty states ([#3604](https://github.com/cowprotocol/cowswap/issues/3604)) ([9cd4bf5](https://github.com/cowprotocol/cowswap/commit/9cd4bf53807e307c213c547c762907b71bb5b343))
-* push log into Sentry when US user is detected ([#3924](https://github.com/cowprotocol/cowswap/issues/3924)) ([bce2f42](https://github.com/cowprotocol/cowswap/commit/bce2f425320b4fca7b901e35860f4cb440bf581d))
-* **token-search:** fix token search results ([#3607](https://github.com/cowprotocol/cowswap/issues/3607)) ([955d93f](https://github.com/cowprotocol/cowswap/commit/955d93fd2fce614ff6eb85b358f72ba6c77a1f51))
-* **token-search:** ignore search input case when triggering the search ([#3620](https://github.com/cowprotocol/cowswap/issues/3620)) ([4568b21](https://github.com/cowprotocol/cowswap/commit/4568b21d31825eed1197d3e08c7f6f8f071cdf54))
-* **tokens:** don't list tokens from other chains ([#4060](https://github.com/cowprotocol/cowswap/issues/4060)) ([f1fd0fc](https://github.com/cowprotocol/cowswap/commit/f1fd0fcce90bc53a493e412cb175497c6e74b6a8))
-* **widget:** simplify token lists config ([#3652](https://github.com/cowprotocol/cowswap/issues/3652)) ([08aacdb](https://github.com/cowprotocol/cowswap/commit/08aacdb09602f48408cfe132bb9e5440fd774063))
-* **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([025d223](https://github.com/cowprotocol/cowswap/commit/025d2238fd06e14d2bd471f73f02379e86ff94c1))
-* **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([eed09c8](https://github.com/cowprotocol/cowswap/commit/eed09c81f941c5d5e11cc9daed92aaf0faa0922e))
+- **april-fools:** replace dpaste lists with a version stored on github ([#4112](https://github.com/cowprotocol/cowswap/issues/4112)) ([9ba35d9](https://github.com/cowprotocol/cowswap/commit/9ba35d9ba1f45b834f172d030e27d29ebc6b9774))
+- don't crash when there is a new network in lists state ([#3589](https://github.com/cowprotocol/cowswap/issues/3589)) ([246db74](https://github.com/cowprotocol/cowswap/commit/246db7408b14ac737f39a7cde9717e39c84be26d))
+- don't crash when there is no fav tokens in new network ([#3651](https://github.com/cowprotocol/cowswap/issues/3651)) ([c6aa91e](https://github.com/cowprotocol/cowswap/commit/c6aa91eb144a427ee5500602067f8140b79719f1))
+- merge localStorage state with initial state to prevent empty states ([#3604](https://github.com/cowprotocol/cowswap/issues/3604)) ([9cd4bf5](https://github.com/cowprotocol/cowswap/commit/9cd4bf53807e307c213c547c762907b71bb5b343))
+- push log into Sentry when US user is detected ([#3924](https://github.com/cowprotocol/cowswap/issues/3924)) ([bce2f42](https://github.com/cowprotocol/cowswap/commit/bce2f425320b4fca7b901e35860f4cb440bf581d))
+- **token-search:** fix token search results ([#3607](https://github.com/cowprotocol/cowswap/issues/3607)) ([955d93f](https://github.com/cowprotocol/cowswap/commit/955d93fd2fce614ff6eb85b358f72ba6c77a1f51))
+- **token-search:** ignore search input case when triggering the search ([#3620](https://github.com/cowprotocol/cowswap/issues/3620)) ([4568b21](https://github.com/cowprotocol/cowswap/commit/4568b21d31825eed1197d3e08c7f6f8f071cdf54))
+- **tokens:** don't list tokens from other chains ([#4060](https://github.com/cowprotocol/cowswap/issues/4060)) ([f1fd0fc](https://github.com/cowprotocol/cowswap/commit/f1fd0fcce90bc53a493e412cb175497c6e74b6a8))
+- **widget:** simplify token lists config ([#3652](https://github.com/cowprotocol/cowswap/issues/3652)) ([08aacdb](https://github.com/cowprotocol/cowswap/commit/08aacdb09602f48408cfe132bb9e5440fd774063))
+- **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([025d223](https://github.com/cowprotocol/cowswap/commit/025d2238fd06e14d2bd471f73f02379e86ff94c1))
+- **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([eed09c8](https://github.com/cowprotocol/cowswap/commit/eed09c81f941c5d5e11cc9daed92aaf0faa0922e))

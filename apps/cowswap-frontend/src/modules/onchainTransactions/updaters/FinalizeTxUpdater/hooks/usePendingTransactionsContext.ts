@@ -1,7 +1,8 @@
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAsyncMemo } from 'use-async-memo'
+import { useConfig } from 'wagmi'
+import { getTransactionCount } from 'wagmi/actions'
 
 import { useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAppDispatch } from 'legacy/state/hooks'
@@ -15,10 +16,8 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
 
-export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthereumTransactions | null {
+  const config = useConfig()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
@@ -33,9 +32,11 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
 
   return useAsyncMemo(
     async () => {
-      if (!provider || !lastBlockNumber || !account) return null
+      if (!lastBlockNumber || !account || !hasPendingTxs) return null
 
-      const transactionsCount = await provider.getTransactionCount(account)
+      // Fallback to 0 on failure so receipt checking can still run even when the nonce fetch fails
+      // (e.g. temporary RPC errors). The nonce-based replacement check will simply be skipped.
+      const transactionsCount = await getTransactionCount(config, { address: account }).catch(() => 0)
 
       const params: CheckEthereumTransactions = {
         chainId,
@@ -58,7 +59,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       chainId,
       account,
       isSafeWallet,
-      provider,
+      config,
       lastBlockNumber,
       dispatch,
       getReceipt,
@@ -67,6 +68,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       cancelOrdersBatch,
       getTwapOrderById,
       safeInfo,
+      hasPendingTxs,
     ],
     null,
   )

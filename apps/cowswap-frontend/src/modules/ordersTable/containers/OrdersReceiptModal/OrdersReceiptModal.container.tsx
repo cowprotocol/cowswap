@@ -26,7 +26,7 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const order = useSelectedOrder()
   const { chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
-  const { name: receiverEnsName } = useENS(order?.receiver)
+  const { name: receiverEnsName } = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined)
 
   const twapOrderById = useTwapOrderById(order?.id)
   const twapOrderByChildId = useTwapOrderByChildId(order?.id)

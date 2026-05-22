@@ -1,4 +1,4 @@
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from 'viem'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
@@ -108,7 +108,7 @@ describe('Fee: Complex fetch and persist fee', () => {
       cy.wait('@feeRequest')
         .its('response.body')
         .then(($body) => {
-          const body = JSON.parse($body)
+          const body = typeof $body === 'string' ? JSON.parse($body) : $body
           // @ts-expect-error - cypress untyped method
           const mockedTime = new Date($clock.details().now)
 
@@ -141,7 +141,6 @@ describe('Fee: simple checks it exists', () => {
     // WHEN: Select COW token as output and sells 0.1 WETH
     cy.visit('/#/11155111/swap')
     cy.unlockCrossChainSwap()
-    cy.swapSelectInput(DEFAULT_SELL_TOKEN)
     cy.wait(1000)
     cy.swapSelectOutput(COW)
     cy.swapEnterInputAmount(DEFAULT_SELL_TOKEN, INPUT_AMOUNT)

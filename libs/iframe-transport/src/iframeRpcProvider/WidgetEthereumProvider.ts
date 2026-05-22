@@ -20,6 +20,7 @@ import {
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 
+import { getParentOrigin } from '../getParentOrigin'
 import {
   JsonRpcErrorResponseMessage,
   JsonRpcRequest,
@@ -50,6 +51,7 @@ type RpcCallback = (error: any, response: any) => void
 const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
+const DEFAULT_TARGET_ORIGIN = 'https://swap.cow.fi'
 
 /**
  * Export the type information about the different events that are emitted.
@@ -138,6 +140,13 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   request({ method, params }: JsonRpcRequest) {
+    // Block wallet_revokePermissions — wagmi calls this on disconnect, but via the
+    // IframeRpcProviderBridge it would revoke permissions for the *parent dapp's* origin
+    // (e.g. the configurator), disconnecting the dapp's wallet entirely and making
+    // subsequent connections impossible. shimDisconnect handles local disconnect state.
+    if (method === 'wallet_revokePermissions') {
+      return Promise.resolve(null)
+    }
     return this.send(method, params)
   }
 
@@ -163,6 +172,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private readonly timeoutMilliseconds: number
   private readonly eventSource: Window
   private readonly eventTarget: Window
+  private readonly targetOrigin: string
   private readonly completers: {
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,6 +182,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   private providerMetaInfoCallback?: (data: ProviderMetaInfoPayload) => void
 
   public constructor({
+    targetOrigin,
     timeoutMilliseconds = DEFAULT_TIMEOUT_MILLISECONDS,
     eventSource = window,
     eventTarget = window.parent,
@@ -182,25 +193,31 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.timeoutMilliseconds = timeoutMilliseconds
     this.eventSource = eventSource
     this.eventTarget = eventTarget
+    this.targetOrigin = targetOrigin || getParentOrigin() || DEFAULT_TARGET_ORIGIN
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
       (message) => {
         this.handleRpcRequests(message)
       },
+      this.targetOrigin,
     )
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_ON_EVENT,
       (message) => {
         this.handleOnEvent(message)
       },
+      this.targetOrigin,
     )
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
       (message) => {
         this.providerMetaInfo = message
@@ -209,6 +226,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
           this.providerMetaInfoCallback(this.providerMetaInfo)
         }
       },
+      this.targetOrigin,
     )
   }
 
@@ -235,9 +253,14 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     )
 
     // Send the JSON RPC to the event source.
-    iframeRpcProviderTransport.postMessageToWindow(this.eventTarget, IframeRpcProviderEvents.PROVIDER_RPC_REQUEST, {
-      rpcRequest,
-    })
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.eventTarget,
+      IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
+      {
+        rpcRequest,
+      },
+      this.targetOrigin,
+    )
 
     // Delete the completer within the timeout and reject the promise.
     setTimeout(() => {
@@ -335,6 +358,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
         this.eventTarget,
         IframeRpcProviderEvents.REQUEST_PROVIDER_META_INFO,
         null,
+        this.targetOrigin,
       )
     }
   }

@@ -1,5 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
-import { useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'

@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+
+import { useConfig } from 'wagmi'
+import { getTransactionCount } from 'wagmi/actions'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
@@ -18,12 +20,16 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  * Return helpers to add a new pending transaction
  */
 export function useTransactionAdder(): TransactionAdder {
+  const config = useConfig()
   const { chainId, account } = useWalletInfo()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
+  const allTxs = useAllTransactions()
+
+  const maxPendingNonce = useMemo(() => {
+    const nonces = Object.values(allTxs).map((tx) => tx.nonce)
+    return nonces.length > 0 ? Math.max(...nonces) : -1
+  }, [allTxs])
 
   return useCallback(
     async (addTransactionParams: AddTransactionHookParams) => {
@@ -35,10 +41,11 @@ export function useTransactionAdder(): TransactionAdder {
         throw Error('No transaction hash found')
       }
 
-      if (!provider) return
-
       try {
-        const nonce = await provider.getTransactionCount(account)
+        // Use 'pending' so the next tx gets the next nonce when multiple txs are sent in quick succession (e.g. wrap then unwrap).
+        // Also account for our own pending txs in case the node hasn't seen them yet.
+        const chainNonce = await getTransactionCount(config, { address: account, blockTag: 'pending' })
+        const nonce = Math.max(chainNonce, maxPendingNonce + 1)
 
         dispatch(
           addTransaction({
@@ -53,7 +60,7 @@ export function useTransactionAdder(): TransactionAdder {
         console.error('Cannot add a transaction', e)
       }
     },
-    [dispatch, chainId, account, isSafeWallet, provider],
+    [dispatch, chainId, account, isSafeWallet, config, maxPendingNonce],
   )
 }
 

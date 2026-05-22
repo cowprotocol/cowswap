@@ -1,250 +1,248 @@
 # Changelog
 
-## [4.1.2](https://github.com/cowprotocol/cowswap/compare/types-v4.1.1...types-v4.1.2) (2026-04-08)
+## [4.3.2](https://github.com/cowprotocol/cowswap/compare/types-v4.3.1...types-v4.3.2) (2026-05-22)
 
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.0.1
+
+## [4.3.1](https://github.com/cowprotocol/cowswap/compare/types-v4.3.0...types-v4.3.1) (2026-04-22)
+
+### 🐛 Bug Fixes
+
+- take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
+
+## [4.3.0](https://github.com/cowprotocol/cowswap/compare/types-v4.2.1...types-v4.3.0) (2026-04-16)
+
+### ✨ Features
+
+- bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
+
+## [4.2.1](https://github.com/cowprotocol/cowswap/compare/types-v4.2.0...types-v4.2.1) (2026-04-15)
 
 ### 🔧 Miscellaneous
 
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
+
+## [4.2.0](https://github.com/cowprotocol/cowswap/compare/types-v4.1.2...types-v4.2.0) (2026-04-14)
+
+### ✨ Features
+
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
+
+## [4.1.2](https://github.com/cowprotocol/cowswap/compare/types-v4.1.1...types-v4.1.2) (2026-04-08)
+
+### 🔧 Miscellaneous
+
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
 
 ## [4.1.1](https://github.com/cowprotocol/cowswap/compare/types-v4.1.0...types-v4.1.1) (2026-04-07)
 
-
 ### 🐛 Bug Fixes
 
-* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
+- fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
 
 ## [4.1.0](https://github.com/cowprotocol/cowswap/compare/types-v4.0.1...types-v4.1.0) (2026-03-19)
 
-
 ### ✨ Features
 
-* publish libs tp npm ([#7191](https://github.com/cowprotocol/cowswap/issues/7191)) ([c6177bb](https://github.com/cowprotocol/cowswap/commit/c6177bb9a8c828c7c3f82aceb6fcef00da15cdcf))
+- publish libs tp npm ([#7191](https://github.com/cowprotocol/cowswap/issues/7191)) ([c6177bb](https://github.com/cowprotocol/cowswap/commit/c6177bb9a8c828c7c3f82aceb6fcef00da15cdcf))
 
 ## [4.0.1](https://github.com/cowprotocol/cowswap/compare/types-v4.0.0...types-v4.0.1) (2026-03-18)
 
-
 ### 🐛 Bug Fixes
 
-* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
+- update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
 
 ## [4.0.0](https://github.com/cowprotocol/cowswap/compare/types-v3.4.0...types-v4.0.0) (2026-03-11)
 
-
 ### ⚠ BREAKING CHANGES
 
-* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+- Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
 
 ### ✨ Features
 
-* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
-
+- remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
 
 ### 🔧 Miscellaneous
 
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
 
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/types-v3.3.2...types-v3.4.0) (2026-03-10)
 
-
 ### ✨ Features
 
-* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
-
+- integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
-
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
 
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/types-v3.3.1...types-v3.3.2) (2026-02-25)
 
-
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ## [3.3.1](https://github.com/cowprotocol/cowswap/compare/types-v3.3.0...types-v3.3.1) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/types-v3.2.0...types-v3.3.0) (2026-02-20)
 
-
 ### ✨ Features
 
-* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
+- **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
 
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/types-v3.1.0...types-v3.2.0) (2026-02-13)
 
-
 ### ✨ Features
 
-* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
+- replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
 
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/types-v3.0.1...types-v3.1.0) (2026-02-05)
 
-
 ### ✨ Features
 
-* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
-
+- **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
 
 ### 🔧 Miscellaneous
 
-* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
+- update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
 
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/types-v3.0.0...types-v3.0.1) (2026-02-02)
 
-
 ### Bug Fixes
 
-* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
+- **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
 
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/types-v2.1.1...types-v3.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ## [2.1.1](https://github.com/cowprotocol/cowswap/compare/types-v2.1.0...types-v2.1.1) (2025-12-16)
 
-
 ### Bug Fixes
 
-* **bridge:** fix displayed bridge quote amounts ([#6670](https://github.com/cowprotocol/cowswap/issues/6670)) ([623e0e5](https://github.com/cowprotocol/cowswap/commit/623e0e5b09c33132debdfd06493c357c0af8aa80))
+- **bridge:** fix displayed bridge quote amounts ([#6670](https://github.com/cowprotocol/cowswap/issues/6670)) ([623e0e5](https://github.com/cowprotocol/cowswap/commit/623e0e5b09c33132debdfd06493c357c0af8aa80))
 
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/types-v2.0.1...types-v2.1.0) (2025-11-24)
 
-
 ### Features
 
-* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+- **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/types-v2.0.0...types-v2.0.1) (2025-09-22)
 
-
 ### Bug Fixes
 
-* **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
+- **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/types-v1.9.0...types-v2.0.0) (2025-09-12)
 
-
 ### ⚠ BREAKING CHANGES
 
-* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
+- add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
 
 ### Features
 
-* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
+- add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
 
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/types-v1.8.0...types-v1.9.0) (2025-07-30)
 
-
 ### Features
 
-* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
-* **bridge:** use stored bridge quotes in order progress bar ([#5961](https://github.com/cowprotocol/cowswap/issues/5961)) ([93825f0](https://github.com/cowprotocol/cowswap/commit/93825f087f501c3d86364c845b23812612b49e34))
+- **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+- **bridge:** use stored bridge quotes in order progress bar ([#5961](https://github.com/cowprotocol/cowswap/issues/5961)) ([93825f0](https://github.com/cowprotocol/cowswap/commit/93825f087f501c3d86364c845b23812612b49e34))
 
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/types-v1.7.1...types-v1.8.0) (2025-07-03)
 
-
 ### Features
 
-* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+- **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
 
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/types-v1.7.0...types-v1.7.1) (2025-06-18)
 
-
 ### Bug Fixes
 
-* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+- make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
 
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/types-v1.6.0...types-v1.7.0) (2025-05-19)
 
-
 ### Features
 
-* **bridge:** use real bridge provider ([#5588](https://github.com/cowprotocol/cowswap/issues/5588)) ([63981ab](https://github.com/cowprotocol/cowswap/commit/63981ab03a92e115d967ec482e9fec04abb9d9f5))
-
+- **bridge:** use real bridge provider ([#5588](https://github.com/cowprotocol/cowswap/issues/5588)) ([63981ab](https://github.com/cowprotocol/cowswap/commit/63981ab03a92e115d967ec482e9fec04abb9d9f5))
 
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
 
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/types-v1.5.1...types-v1.6.0) (2025-03-20)
 
-
 ### Features
 
-* **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
-* **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
+- **bridge:** add network logo token icon ([#5511](https://github.com/cowprotocol/cowswap/issues/5511)) ([1e74585](https://github.com/cowprotocol/cowswap/commit/1e74585ebe0d4a2d9f1a535972192b820a643869))
+- **bridge:** display tokens in selector from bridge provider ([#5489](https://github.com/cowprotocol/cowswap/issues/5489)) ([b5b08ee](https://github.com/cowprotocol/cowswap/commit/b5b08ee8da9c1746bd3b2147444c2090afdf3950))
 
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/types-v1.5.0...types-v1.5.1) (2025-02-03)
 
-
 ### Bug Fixes
 
-* display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
+- display Metamask warning only for extension/mobile wallets ([#5370](https://github.com/cowprotocol/cowswap/issues/5370)) ([abb5683](https://github.com/cowprotocol/cowswap/commit/abb56834b1e21029ca66362f3b721cd47e080547))
 
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/types-v1.4.0...types-v1.5.0) (2024-12-03)
 
-
 ### Features
 
-* allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
+- allow adding networks without invalidating local-storage ([#5134](https://github.com/cowprotocol/cowswap/issues/5134)) ([995b4c0](https://github.com/cowprotocol/cowswap/commit/995b4c05da90356c6621a92dc58efbd6f37349ff))
 
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/types-v1.3.0...types-v1.4.0) (2024-11-06)
 
-
 ### Features
 
-* **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
-* **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
+- **yield:** define token category by default for selection ([#5018](https://github.com/cowprotocol/cowswap/issues/5018)) ([7c18b7d](https://github.com/cowprotocol/cowswap/commit/7c18b7d85de6feac9c7e64740a93572f3af3c273))
+- **yield:** display cow amm banner conditionally ([#5035](https://github.com/cowprotocol/cowswap/issues/5035)) ([1a517a3](https://github.com/cowprotocol/cowswap/commit/1a517a3f21b94c10b8e59e68bc49a569c1be904b))
 
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/types-v1.2.0...types-v1.3.0) (2024-10-29)
 
-
 ### Features
 
-* setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
+- setup vampire attack widget ([#4950](https://github.com/cowprotocol/cowswap/issues/4950)) ([99c4c42](https://github.com/cowprotocol/cowswap/commit/99c4c42aec60a734a37926935be5dca6cd4cf11c))
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/types-v1.1.0...types-v1.2.0) (2024-09-17)
 
-
 ### Features
 
-* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
-
+- **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
 
 ### Bug Fixes
 
-* **libs:** fix import error on multiple libs ([#4869](https://github.com/cowprotocol/cowswap/issues/4869)) ([8cfd70b](https://github.com/cowprotocol/cowswap/commit/8cfd70b6000a1a021b76ad1f924829cb42cb2bcd))
+- **libs:** fix import error on multiple libs ([#4869](https://github.com/cowprotocol/cowswap/issues/4869)) ([8cfd70b](https://github.com/cowprotocol/cowswap/commit/8cfd70b6000a1a021b76ad1f924829cb42cb2bcd))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/types-v1.0.0...types-v1.1.0) (2024-07-12)
 
-
 ### Features
 
-* hook store & hook Dapps 🪝 ([#4652](https://github.com/cowprotocol/cowswap/issues/4652)) ([b38321e](https://github.com/cowprotocol/cowswap/commit/b38321e0665e1ad5f0633868f8934128601ad313))
+- hook store & hook Dapps 🪝 ([#4652](https://github.com/cowprotocol/cowswap/issues/4652)) ([b38321e](https://github.com/cowprotocol/cowswap/commit/b38321e0665e1ad5f0633868f8934128601ad313))
 
 ## 1.0.0 (2024-03-29)
 
-
 ### Bug Fixes
 
-* **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([bfb6c01](https://github.com/cowprotocol/cowswap/commit/bfb6c01e9f3e744a47774cb52836469c2ad2f09f))
-* **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([9579c97](https://github.com/cowprotocol/cowswap/commit/9579c97912e715efb4e633c293c236917003d42a))
+- **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([bfb6c01](https://github.com/cowprotocol/cowswap/commit/bfb6c01e9f3e744a47774cb52836469c2ad2f09f))
+- **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([9579c97](https://github.com/cowprotocol/cowswap/commit/9579c97912e715efb4e633c293c236917003d42a))
