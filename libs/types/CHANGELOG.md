@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.3.2
+## [4.3.2](https://github.com/cowprotocol/cowswap/compare/types-v4.3.1...types-v4.3.2) (2026-05-22)
 
 ### Patch Changes
 

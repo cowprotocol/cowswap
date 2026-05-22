@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.12.0
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.11.0...cowswap-v3.12.0) (2026-05-22)
 
 ### Minor Changes
 
