@@ -56,6 +56,7 @@ describe('validateTradeForm - xStock logic', () => {
     isInputCurrencyXstock: false,
     isOutputCurrencyXstock: false,
     injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
   }
 
   test('shows xStock minimum trade size for sell orders when xStock sell amount is below $10', () => {
