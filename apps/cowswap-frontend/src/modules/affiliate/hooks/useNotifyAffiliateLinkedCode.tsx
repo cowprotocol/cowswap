@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 
 import type { Order } from 'legacy/state/orders/actions'
@@ -15,7 +16,7 @@ import { affiliateTraderSavedCodeAtom, setAffiliateTraderSavedCodeAtom } from '.
 
 interface NotifyAffiliateLinkedCodeParams {
   order: Order | undefined
-  chainId: number
+  chainId: SupportedChainId
 }
 
 export function useNotifyAffiliateLinkedCode({ order, chainId }: NotifyAffiliateLinkedCodeParams): void {
