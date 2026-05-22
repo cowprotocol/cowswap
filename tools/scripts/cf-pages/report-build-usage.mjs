@@ -41,25 +41,30 @@ async function getAllProjects() {
   return projects
 }
 
-function countBillable(deployments) {
-  return deployments.filter((d) => new Date(d.created_on) >= startOfMonth && !d.is_skipped).length
+function countDeployments(deployments) {
+  const thisMonth = deployments.filter((d) => new Date(d.created_on) >= startOfMonth)
+  return { billable: thisMonth.filter((d) => !d.is_skipped).length, total: thisMonth.length }
 }
 
-async function getMonthlyBuildCount(projectName) {
+async function getMonthlyBuildCounts(projectName) {
   const deploymentsPath = (page) => `projects/${projectName}/deployments?page=${page}`
 
   const first = await cfFetch(accountId, apiToken, deploymentsPath(1))
   const totalPages = first.result_info?.total_pages ?? 1
-  let count = countBillable(first.result ?? [])
+  let { billable, total } = countDeployments(first.result ?? [])
 
   if (totalPages > 1) {
     const rest = await Promise.all(
       Array.from({ length: totalPages - 1 }, (_, i) => cfFetch(accountId, apiToken, deploymentsPath(i + 2))),
     )
-    for (const data of rest) count += countBillable(data.result ?? [])
+    for (const data of rest) {
+      const counts = countDeployments(data.result ?? [])
+      billable += counts.billable
+      total += counts.total
+    }
   }
 
-  return count
+  return { billable, total }
 }
 
 async function mapConcurrent(items, concurrency, fn) {
@@ -87,8 +92,8 @@ async function main() {
   console.log(`Found ${projects.length} project(s). Counting billable builds for this month...\n`)
 
   const rows = await mapConcurrent(projects, concurrency, async (project) => {
-    const count = await getMonthlyBuildCount(project)
-    return { Project: project, 'Billable Builds': count }
+    const { billable, total } = await getMonthlyBuildCounts(project)
+    return { Project: project, 'Total Builds': total, 'Billable Builds': billable }
   })
   const grandTotal = rows.reduce((sum, r) => sum + r['Billable Builds'], 0)
 
