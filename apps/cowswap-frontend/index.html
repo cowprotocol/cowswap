@@ -21,6 +21,12 @@
   <meta name="msapplication-TileColor" content="#000000" />
   <meta name="theme-color" content="#ffffff" />
 
+  <!-- iOS PWA: required so Share → Add to Home Screen produces a real standalone app, not a Safari bookmark -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CoW Swap" />
+
   <!-- Preload critical fonts -->
   <link rel="preload" href="/static/Inter-roman.var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/static/Inter-italic.var.woff2" as="font" type="font/woff2" crossorigin />
