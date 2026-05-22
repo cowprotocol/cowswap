@@ -15,9 +15,6 @@ const getBaseUrl = (): string => {
   if (isDev) return 'https://dev.swap.cow.fi'
 
   if (isVercel) {
-    // TODO: revert after testing
-    return 'https://swap-dev-git-bruno-cow-934-cb-option-is-not-f3ac92-cowswap-dev.vercel.app'
-
     const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
 
     return `https://swap-dev-git-${prKey}${vercelSuffix}`
