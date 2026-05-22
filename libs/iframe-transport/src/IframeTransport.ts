@@ -11,7 +11,7 @@ function logWidget(...args: unknown[]): void {
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
 }
 
-function isLocalEnvOrigin(origin: string): boolean {
+export function isLocalEnvOrigin(origin: string): boolean {
   try {
     const { hostname } = new URL(origin)
 

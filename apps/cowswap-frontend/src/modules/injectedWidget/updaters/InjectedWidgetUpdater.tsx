@@ -5,6 +5,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
+  UpdateAppDataPayload,
   UpdateParamsPayload,
   widgetIframeTransport,
   WidgetMethodsEmit,
@@ -26,6 +27,7 @@ import {
   cacheWidgetMessage,
   clearCachedWidgetMessage,
   getCachedWidgetMessageMethods,
+  registerCachedMessageHandler,
   replayCachedWidgetMessage,
 } from '../utils/widgetMessagesCache.utils'
 ;(function initInjectedWidget() {
@@ -88,54 +90,60 @@ export function InjectedWidgetUpdater(): ReactNode {
       return
     }
 
+    const updateParamsHandler = (data: UpdateParamsPayload): void => {
+      if (
+        // If the data is the same as the previous data
+        prevData.current &&
+        deepEqual(prevData.current, data) &&
+        // And the pathname is the same as the current widget pathname, do nothing
+        // This is needed since the app updates the pathname independently of the widget params
+        window.location.pathname === data.urlParams.pathname
+      ) {
+        return
+      }
+
+      // Update params
+      prevData.current = data
+
+      const appParams = data.appParams
+      const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
+
+      const errors = validateWidgetParams(appParams)
+      setHooksEnabled(hooksEnabled)
+
+      updateParams({
+        params: appParams,
+        errors,
+      })
+
+      // Navigate to the new path
+      navigate(data.urlParams, { replace: true })
+    }
+
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
       window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
-      (data) => {
-        if (
-          // If the data is the same as the previous data
-          prevData.current &&
-          deepEqual(prevData.current, data) &&
-          // And the pathname is the same as the current widget pathname, do nothing
-          // This is needed since the app updates the pathname independently of the widget params
-          window.location.pathname === data.urlParams.pathname
-        ) {
-          return
-        }
-
-        // Update params
-        prevData.current = data
-
-        const appParams = data.appParams
-        const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
-
-        const errors = validateWidgetParams(appParams)
-        setHooksEnabled(hooksEnabled)
-
-        updateParams({
-          params: appParams,
-          errors,
-        })
-
-        // Navigate to the new path
-        navigate(data.urlParams, { replace: true })
-      },
+      updateParamsHandler,
       parentOrigin,
     )
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_PARAMS, updateParamsHandler)
+
+    const updateAppDataHandler = (data: UpdateAppDataPayload): void => {
+      if (data.metaData) {
+        updateMetaData(data.metaData)
+      }
+    }
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
       window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
-      (data) => {
-        if (data.metaData) {
-          updateMetaData(data.metaData)
-        }
-      },
+      updateAppDataHandler,
       parentOrigin,
     )
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_APP_DATA, updateAppDataHandler)
 
     // Process all cached messages
     getCachedWidgetMessageMethods().forEach((method) => {

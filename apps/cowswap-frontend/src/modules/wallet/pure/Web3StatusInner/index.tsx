@@ -4,11 +4,11 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween, Media } from '@cowprotocol/ui'
-import { ConnectionType } from '@cowprotocol/wallet'
+import { type ConnectionType } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import ICON_WALLET from 'assets/icon/wallet.svg'
+import iconWalletSrc from 'assets/icon/wallet.svg'
 import { AlertTriangle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
@@ -20,6 +20,7 @@ import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
   account?: string
+  isConnectionRestoring?: boolean
   pendingCount: number
   connectWallet: Command
   connectionType: ConnectionType
@@ -28,7 +29,15 @@ export interface Web3StatusInnerProps {
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
-  const { account, pendingCount, ensName, connectionType, connectWallet, showUnfillableOrdersAlert } = props
+  const {
+    account,
+    isConnectionRestoring,
+    pendingCount,
+    ensName,
+    connectionType,
+    connectWallet,
+    showUnfillableOrdersAlert,
+  } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
@@ -68,6 +77,16 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
     )
   }
 
+  if (isConnectionRestoring) {
+    return (
+      <Web3StatusConnect id="wallet-restoring" disabled faded>
+        <Text>
+          <Trans>Restoring wallet...</Trans>
+        </Text>
+      </Web3StatusConnect>
+    )
+  }
+
   return (
     <Web3StatusConnect
       id="connect-wallet"
@@ -78,7 +97,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
       <Text>
         <Trans>Connect wallet</Trans>
       </Text>
-      <SVG src={ICON_WALLET} title={t`Wallet`} />
+      <SVG src={iconWalletSrc} title={t`Wallet`} />
     </Web3StatusConnect>
   )
 }

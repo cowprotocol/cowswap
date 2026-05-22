@@ -4,11 +4,8 @@ import {
   COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
-  MERKLE_DROP_CONTRACT_ADDRESSES,
-  TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MerkleDropAbi, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -18,41 +15,14 @@ import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useContract } from 'common/hooks/useContract'
+import { useMerkleDropContract, useTokenDistroContract } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
-interface MerkleDropContract {
-  claim(index: number, amount: string, proof: string[]): Promise<{ hash: `0x${string}` }>
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- return type is complex (UseContractResult<Abi>)
-function useMerkleDropContract() {
-  const { chainId } = useWalletInfo()
-  return useContract<MerkleDropContract | null>(
-    chainId != null ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId] : undefined,
-    MerkleDropAbi,
-    true,
-  )
-}
-
-interface TokenDistroContract {
-  balances(account: string): Promise<{ claimed: bigint }>
-  claim(): Promise<{ hash: `0x${string}` }>
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- return type is complex (UseContractResult<Abi>)
-function useTokenDistroContract() {
-  const { chainId } = useWalletInfo()
-  return useContract<TokenDistroContract | null>(
-    chainId != null ? TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId] : undefined,
-    TokenDistroAbi,
-    true,
-  )
-}
+type TokenDistroContract = NonNullable<ReturnType<typeof useTokenDistroContract>['contract']>
 
 export const useAllocation = (): CurrencyAmount<Currency> => {
   const { t } = useLingui()
@@ -154,7 +124,7 @@ export function useClaimCowFromLockedGnoCallback({
       throw new Error(t`Not connected`)
     }
 
-    if (!merkleDrop || !tokenDistro) {
+    if (!merkleDrop || !tokenDistro || !tokenDistroChainId) {
       throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 

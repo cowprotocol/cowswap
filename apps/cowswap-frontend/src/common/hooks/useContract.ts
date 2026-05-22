@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import {
   getEthFlowContractAddresses,
+  MERKLE_DROP_CONTRACT_ADDRESSES,
+  TOKEN_DISTRO_CONTRACT_ADDRESSES,
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
@@ -11,7 +13,14 @@ import {
   CowEnv,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import { CoWSwapEthFlowAbi, GPv2SettlementAbi, vCowAbi, WethAbi } from '@cowprotocol/cowswap-abis'
+import {
+  CoWSwapEthFlowAbi,
+  GPv2SettlementAbi,
+  MerkleDropAbi,
+  TokenDistroAbi,
+  vCowAbi,
+  WethAbi,
+} from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { type Address, erc20Abi } from 'viem'
@@ -208,6 +217,88 @@ export function useVCowContract(): {
         }),
     }
   }, [vCowAddress, chainId, publicClient, walletClient])
+
+  return useMemo(
+    () => ({
+      contract,
+      chainId: chainId ?? undefined,
+    }),
+    [contract, chainId],
+  )
+}
+
+export function useMerkleDropContract(): {
+  contract: {
+    claim: (index: number, amount: string, proof: string[]) => Promise<{ hash: `0x${string}` }>
+  } | null
+  chainId: SupportedChainId | undefined
+} {
+  const { chainId } = useWalletInfo()
+  const { data: walletClient } = useWalletClient()
+  const address = chainId ? MERKLE_DROP_CONTRACT_ADDRESSES[chainId] : ''
+
+  const contract = useMemo(() => {
+    if (!address || !chainId || !walletClient) return null
+    const contractAddress = address as Address
+    return {
+      claim: async (index: number, amount: string, proof: string[]) => {
+        const hash = await walletClient.writeContract({
+          address: contractAddress,
+          abi: MerkleDropAbi,
+          functionName: 'claim',
+          args: [BigInt(index), BigInt(amount), proof as readonly `0x${string}`[]],
+          account: walletClient.account,
+        })
+        return { hash }
+      },
+    }
+  }, [address, chainId, walletClient])
+
+  return useMemo(
+    () => ({
+      contract,
+      chainId: chainId ?? undefined,
+    }),
+    [contract, chainId],
+  )
+}
+
+export function useTokenDistroContract(): {
+  contract: {
+    balances: (account: string) => Promise<{ claimed: bigint }>
+    claim: () => Promise<{ hash: `0x${string}` }>
+  } | null
+  chainId: SupportedChainId | undefined
+} {
+  const { chainId } = useWalletInfo()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const address = chainId ? TOKEN_DISTRO_CONTRACT_ADDRESSES[chainId] : ''
+
+  const contract = useMemo(() => {
+    if (!address || !chainId || !publicClient || !walletClient) return null
+    const contractAddress = address as Address
+    return {
+      balances: async (account: string) => {
+        const [, claimed] = await publicClient.readContract({
+          address: contractAddress,
+          abi: TokenDistroAbi,
+          functionName: 'balances',
+          args: [account as Address],
+        })
+        return { claimed }
+      },
+      claim: async () => {
+        const hash = await walletClient.writeContract({
+          address: contractAddress,
+          abi: TokenDistroAbi,
+          functionName: 'claim',
+          account: walletClient.account,
+        })
+        return { hash }
+      },
+    }
+  }, [address, chainId, publicClient, walletClient])
 
   return useMemo(
     () => ({

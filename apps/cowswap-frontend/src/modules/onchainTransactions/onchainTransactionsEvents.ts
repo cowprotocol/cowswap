@@ -13,15 +13,21 @@ interface TxReplacedPayload {
   transaction: EnhancedTransactionDetails
 }
 
+interface TxCancelledNotBroadcastPayload {
+  transaction: EnhancedTransactionDetails
+}
+
 export enum OnchainTxEvents {
   BEFORE_TX_FINALIZE = 'BEFORE_TX_FINALIZE',
   TX_REPLACED = 'TX_REPLACED',
+  TX_CANCELLED_NOT_BROADCAST = 'TX_CANCELLED_NOT_BROADCAST',
 }
 
 // Define types for event payloads
 export interface OnchainTxEventPayloadMap {
   [OnchainTxEvents.BEFORE_TX_FINALIZE]: FinalizeTxPayload
   [OnchainTxEvents.TX_REPLACED]: TxReplacedPayload
+  [OnchainTxEvents.TX_CANCELLED_NOT_BROADCAST]: TxCancelledNotBroadcastPayload
 }
 
 export const ONCHAIN_TRANSACTIONS_EVENTS = Object.freeze(

@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
-import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
@@ -204,7 +204,7 @@ export function FinishedStep({
             label: shouldShowSurplus ? 'Surplus' : 'Tip',
           })}
         >
-          <SVG src={ICON_SOCIAL_X} />
+          <SVG src={iconSocialXSrc} />
           <span>
             <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
           </span>

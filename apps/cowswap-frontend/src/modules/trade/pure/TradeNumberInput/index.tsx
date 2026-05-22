@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
@@ -46,13 +46,13 @@ export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {
     <ArrowsWrapper>
       <span role="button" aria-label={t`Increase Value`} aria-disabled="false" onClick={onClickUp}>
         <span role="img" aria-label={t`up`}>
-          <SVG src={carretDown} />
+          <SVG src={svgCarretDownSrc} />
         </span>
       </span>
 
       <span role="button" aria-label={t`Decrease Value`} aria-disabled="false" onClick={onClickDown}>
         <span role="img" aria-label={t`down`}>
-          <SVG src={carretDown} />
+          <SVG src={svgCarretDownSrc} />
         </span>
       </span>
     </ArrowsWrapper>

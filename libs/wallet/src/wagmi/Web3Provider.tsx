@@ -8,6 +8,7 @@ import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
+import { markInitialReconnectSettled } from './initialReconnectLifecycle'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
@@ -39,9 +40,13 @@ function reconnectWidgetConnector(): (() => void) | undefined {
     // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
     // connector was previously "disconnected" (which can happen on widget recreations).
     void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
-    reconnect(config, { connectors: [widgetConnector] }).catch((error) => {
-      console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
-    })
+    reconnect(config, { connectors: [widgetConnector] })
+      .catch((error) => {
+        console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
+      })
+      .finally(() => {
+        markInitialReconnectSettled()
+      })
   }
 
   doReconnect()
@@ -79,7 +84,12 @@ function ReconnectOnMount(): null {
   useEffect((): (() => void) | void => {
     // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
     // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
-    if (isEmbeddedInIframe() && !isInjectedWidget()) return
+    if (isEmbeddedInIframe() && !isInjectedWidget()) {
+      // SafeConnectionHandler drives the connection here; we won't observe a wagmi reconnect lifecycle,
+      // so settle immediately to avoid the restoring spinner getting stuck in this context.
+      markInitialReconnectSettled()
+      return
+    }
 
     if (isInjectedWidget()) {
       // In widget context, use reconnect() (not connect()) to avoid triggering wallet popups.
@@ -114,6 +124,8 @@ function ReconnectOnMount(): null {
             console.debug('[ReconnectOnMount] mobile reconnect result', res)
           } catch (error) {
             console.debug('[ReconnectOnMount] mobile reconnect failed', error)
+          } finally {
+            markInitialReconnectSettled()
           }
         })()
         return
@@ -126,6 +138,9 @@ function ReconnectOnMount(): null {
       })
       .catch((error: unknown) => {
         console.error('[ReconnectOnMount] error', error)
+      })
+      .finally(() => {
+        markInitialReconnectSettled()
       })
   }, [])
   return null
