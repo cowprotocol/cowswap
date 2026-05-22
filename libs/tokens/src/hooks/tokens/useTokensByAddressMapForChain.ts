@@ -17,10 +17,6 @@ import { ListState } from '../../types'
  * Lists are processed in priority order (lower priority value = higher precedence).
  * Useful for bridge scenarios where you need tokens from the destination chain.
  *
- * Reads from `listsStatesByChainAtom`, which now covers Solana too (its token list is
- * part of `DEFAULT_TOKENS_LISTS` since cow-sdk's Solana-as-supported migration). For
- * bridge-only `AdditionalTargetChainId` chains (BITCOIN) the result is an empty map until
- * a dedicated source is wired in.
  */
 export function useTokensByAddressMapForChain(chainId: SupportedChainId | undefined): TokensByAddress
 export function useTokensByAddressMapForChain(chainId: TargetChainId | undefined): TokensByAddress

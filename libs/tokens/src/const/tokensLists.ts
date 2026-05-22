@@ -7,12 +7,7 @@ import { ListSourceConfig, ListsSourcesByNetwork } from '../types'
 
 export const LP_TOKEN_LISTS = lpTokensList as Array<ListSourceConfig>
 
-// `tokensList.json` doesn't have a Solana entry yet — fall back to an empty array per chain
-// when the chainId isn't represented in the JSON.
-const tokensListByChainId = tokensList as Record<string, Array<ListSourceConfig>>
-export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks(
-  (chainId) => tokensListByChainId[String(chainId)] ?? [],
-)
+export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks((chainId) => tokensList[chainId])
 
 export const UNISWAP_TOKENS_LIST = 'https://ipfs.io/ipns/tokens.uniswap.org'
 
