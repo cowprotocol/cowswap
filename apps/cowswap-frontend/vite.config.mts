@@ -71,6 +71,11 @@ export default defineConfig(({ mode, isPreview }) => {
       srcDir: 'src',
       filename: 'service-worker.ts',
       minify: true,
+      // The app already ships its own /manifest.json from public/ and references it
+      // from index.html. Disable the plugin's auto-generated manifest.webmanifest so
+      // it doesn't (a) emit a stub with no icons and (b) inject a second
+      // <link rel="manifest"> tag before </head>.
+      manifest: false,
       injectManifest: {
         maximumFileSizeToCacheInBytes: 7000000, // 7mb
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
