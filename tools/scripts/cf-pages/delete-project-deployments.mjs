@@ -12,17 +12,22 @@
  * ENV VARS:
  *   CF_ACCOUNT_ID    (required)  Cloudflare account ID
  *   CF_API_TOKEN     (required)  Cloudflare API token
- *   CF_PROJECT_NAME  (optional)  CF Pages project name. Default: swap-dev
+ *   CF_PROJECT_NAME  (required)  CF Pages project name
  *
  * API TOKEN PERMISSIONS (https://dash.cloudflare.com/profile/api-tokens):
  *   Account > Cloudflare Pages > Edit
  *   Scope: Account Resources > Include > <your account>
  */
 
-import { getCfCredentials, cfFetch } from './cf-api.mjs'
+import { cfFetch, getCfCredentials } from './cf-api.mjs'
 
 const { accountId, apiToken } = getCfCredentials()
-const projectName = process.env.CF_PROJECT_NAME ?? 'swap-dev'
+const projectName = process.env.CF_PROJECT_NAME
+
+if (!projectName) {
+  process.stdout.write('No project name provided. CF_PROJECT_NAME is required')
+  process.exit(1)
+}
 
 async function main() {
   while (true) {
