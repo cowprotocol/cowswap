@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
+import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/react/macro'
@@ -89,7 +89,7 @@ export function ReceiverPanelBody({
       {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ReceiverInputWrapper>
         <ReceiverInputRow>
-          {isValid && !loading && <ValidCheckmark src={OrderCheckIcon} aria-hidden="true" />}
+          {isValid && !loading && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
           <ReceiverInput
             className={className}
             type="text"
