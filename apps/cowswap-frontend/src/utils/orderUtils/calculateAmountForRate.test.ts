@@ -1,8 +1,6 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
-import JSBI from 'jsbi'
-
 describe('calculateAmountForRate', () => {
   it('When multiply an amount to a price instead of fraction, then the result will be zero', () => {
     const priceAsFraction = new Fraction('320778000000000000000000000000000000', '99995600000000000000000000000000') // 3207.921148
@@ -35,15 +33,12 @@ describe('calculateAmountForRate', () => {
     /**
      * The code below is the same if we multiply CurrencyAmount to Price
      * I just revealed it to demonstrate a problem
-     * When we do this multiplication, we get a new Fraction where numerator and denominator have different length
+     * When we do this multiplication, we get a new Fraction where numerator < denominator
      */
-    expect(JSBI.multiply(value.numerator, price.numerator).toString()).toBe('3208940687000000')
-    expect(JSBI.multiply(value.denominator, price.denominator).toString()).toBe('1000000000000000000')
+    expect((value.numerator * price.numerator).toString()).toBe('3208940687000000')
+    expect((value.denominator * price.denominator).toString()).toBe('1000000000000000000')
 
-    const multiplied = new Fraction(
-      JSBI.multiply(value.numerator, price.numerator),
-      JSBI.multiply(value.denominator, price.denominator),
-    )
+    const multiplied = new Fraction(value.numerator * price.numerator, value.denominator * price.denominator)
 
     /**
      * This is still valid fraction, and it does make sense, but let's see what we get below
@@ -54,13 +49,11 @@ describe('calculateAmountForRate', () => {
     expect(multiplied.denominator.toString()).toBe('1000000000000000000') // length 19
 
     /**
-     * Inside of JSBI.divide() it compares number lengths using __absoluteCompare() and if they are different it just returns zero
+     * Because numerator < denominator the floor-division quotient is 0.
      * *** It happens, because the Price was constructed from CurrencyAmounts with different decimals
-     * *** To avoid that FractionUtils.fromPrice() in order to normalize the Fraction
+     * *** To avoid that use FractionUtils.fromPrice() in order to normalize the Fraction
      */
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((JSBI as any).__absoluteCompare(multiplied.numerator, multiplied.denominator)).toBe(-1)
-    expect(JSBI.divide(multiplied.numerator, multiplied.denominator).toString()).toBe('0')
+    expect(multiplied.numerator < multiplied.denominator).toBe(true)
+    expect((multiplied.numerator / multiplied.denominator).toString()).toBe('0')
   })
 })

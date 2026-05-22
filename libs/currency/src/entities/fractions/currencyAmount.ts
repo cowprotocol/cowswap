@@ -1,7 +1,5 @@
 import { MAX_UINT256 } from '@cowprotocol/cow-sdk'
 
-import JSBI from 'jsbi'
-
 import { Fraction } from './fraction'
 
 import { applyFormat, FormatOptions, stripTrailingZeros } from '../../utils/applyFormat'
@@ -9,11 +7,9 @@ import { toFixed as divToFixed } from '../../utils/toFixed'
 import { BigintIsh, Rounding } from '../constants'
 import { Currency } from '../currency'
 
-const MAX_UINT = JSBI.BigInt(MAX_UINT256.toString())
-
 export class CurrencyAmount<T extends Currency> extends Fraction {
   readonly currency: T
-  readonly decimalScale: JSBI
+  readonly decimalScale: bigint
 
   /**
    * Returns a new currency amount instance from the unitless amount of token, i.e. the raw amount
@@ -40,9 +36,9 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
 
   protected constructor(currency: T, numerator: BigintIsh, denominator?: BigintIsh) {
     super(numerator, denominator)
-    if (!JSBI.lessThanOrEqual(this.quotient, MAX_UINT)) throw new Error('AMOUNT')
+    if (this.quotient > MAX_UINT256) throw new Error('AMOUNT')
     this.currency = currency
-    this.decimalScale = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals))
+    this.decimalScale = 10n ** BigInt(currency.decimals)
   }
 
   override add(other: CurrencyAmount<T>): CurrencyAmount<T> {
