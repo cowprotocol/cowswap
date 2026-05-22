@@ -10,7 +10,7 @@
  *   CF_API_TOKEN     (required)  Cloudflare API token
  *   CF_PROJECT_NAME  (optional)  CF Pages project name. Default: swap-dev
  *
- * CSV FORMAT (header row required):
+ * CSV FORMAT (header row optional):
  *   name,value,type
  *
  *   name   Variable name (e.g. REACT_APP_API_URL)
@@ -38,7 +38,7 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { getCfCredentials, cfFetch, cfError } from './cf-api.mjs'
+import { cfError, cfFetch, getCfCredentials } from './cf-api.mjs'
 
 const { accountId, apiToken } = getCfCredentials()
 const projectName = process.env.CF_PROJECT_NAME ?? 'swap-dev'
@@ -129,8 +129,6 @@ const lines = content.split('\n')
 const envVars = {}
 
 for (let row = 0; row < lines.length; row++) {
-  if (row === 0) continue // skip header
-
   const trimmed = lines[row].trim()
   if (!trimmed || trimmed.startsWith('#')) continue
 
@@ -141,6 +139,11 @@ for (let row = 0; row < lines.length; row++) {
 
   if (!name) {
     console.log(`WARNING: Row ${row + 1} has an empty name — skipping.`)
+    continue
+  }
+
+  if (name.toLowerCase() === 'name') {
+    // Header row, skip it
     continue
   }
 
