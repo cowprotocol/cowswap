@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.6.1
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.6.0...tokens-v3.6.1) (2026-05-22)
 
 ### Patch Changes
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.5
+## [4.0.5](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.4...widget-lib-v4.0.5) (2026-05-22)
 
 ### Patch Changes
 

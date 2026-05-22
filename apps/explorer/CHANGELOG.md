@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.4.1
+## [4.4.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.0...explorer-v4.4.1) (2026-05-22)
 
 ### Patch Changes
 
