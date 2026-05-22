@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.6.1
+## [2.6.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.6.0...cow-fi-v2.6.1) (2026-05-22)
 
 ### Patch Changes
 
