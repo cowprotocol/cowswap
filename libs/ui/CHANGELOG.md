@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.6.0
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.5.0...ui-v3.6.0) (2026-05-22)
 
 ### Minor Changes
 
