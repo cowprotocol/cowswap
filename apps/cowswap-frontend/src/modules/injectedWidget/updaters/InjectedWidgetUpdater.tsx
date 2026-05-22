@@ -30,49 +30,6 @@ import {
   registerCachedMessageHandler,
   replayCachedWidgetMessage,
 } from '../utils/widgetMessagesCache.utils'
-;(function initInjectedWidget() {
-  const isInIframe = window.parent !== window.self
-
-  const parent = window.parent
-  const parentOrigin = getParentOrigin()
-
-  if (!parent || !isInIframe || !parentOrigin) return
-
-  /**
-   * To avoid delays, immediately send an activation message and start listening messages
-   */
-  window.addEventListener('message', cacheWidgetMessage)
-  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
-
-  /**
-   * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
-   *
-   * IMPORTANT: Do not call the native window.open for deeplinks here: createCowSwapWidget registers
-   * interceptDeepLinks which opens in the parent, so calling both would open two tabs / popups.
-   *
-   * Exception: when the call passes window features (e.g. `width=...,height=...`), it's a real popup
-   * that needs bidirectional postMessage with the opener (e.g. Coinbase Wallet SDK's keys.coinbase.com
-   * popup). Those must open from the iframe itself so the SDK gets a real cross-origin Window back.
-   */
-  const nativeWindowOpen = window.open.bind(window)
-  window.open = function (...args) {
-    const [href = '', target = '', features = ''] = args
-
-    const isPopupWithFeatures = typeof features === 'string' && /\b(width|height)\s*=/.test(features)
-    if (isPopupWithFeatures) {
-      return nativeWindowOpen(href, target, features)
-    }
-
-    widgetIframeTransport.postMessageToWindow(
-      parent,
-      WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel: features },
-      parentOrigin,
-    )
-
-    return window
-  }
-})()
 
 export function InjectedWidgetUpdater(): ReactNode {
   const [

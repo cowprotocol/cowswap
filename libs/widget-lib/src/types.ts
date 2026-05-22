@@ -55,7 +55,6 @@ export enum WidgetMethodsEmit {
   SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
   PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
-  INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
   PROCESS_HOOK = 'PROCESS_HOOK',
 }
 
@@ -500,7 +499,6 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
-  [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
   [WidgetMethodsEmit.PROCESS_HOOK]: WidgetHookPayload<WidgetHookEvents>
 }
 
@@ -577,12 +575,6 @@ export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetM
 
 export interface ProviderRpcRequestPayload {
   rpcRequest: JsonRpcRequestMessage
-}
-
-export interface WindowOpenPayload {
-  href: string | URL
-  target: string
-  rel: string
 }
 
 export interface JsonRpcRequestMessage {
