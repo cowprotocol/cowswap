@@ -48,7 +48,7 @@
     "react-dom": "19.1.2",
     "react-inlinesvg": "4.2.0",
     "react-syntax-highlighter": "15.5.0",
-    "viem": "^2.48.8",
+    "viem": "2.48.8",
     "wagmi": "3.6.9"
   },
   "devDependencies": {
