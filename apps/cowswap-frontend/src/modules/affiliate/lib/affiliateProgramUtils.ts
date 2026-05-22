@@ -1,6 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
 
@@ -175,7 +175,13 @@ export function getLocalTrades(account: Address | undefined, ordersState: Orders
   const result: SerializedOrder[] = []
 
   for (const [networkId, networkState] of Object.entries(ordersState)) {
-    const fullState = { ...getDefaultNetworkState(Number(networkId)), ...(networkState || {}) }
+    const chainId = Number(networkId)
+
+    if (!isSupportedTradingNetwork(chainId)) {
+      continue
+    }
+
+    const fullState = { ...getDefaultNetworkState(chainId as SupportedChainId), ...(networkState || {}) }
     const ordersMap = flatOrdersStateNetwork(fullState)
 
     for (const orderState of Object.values(ordersMap)) {

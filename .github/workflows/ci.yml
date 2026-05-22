@@ -44,7 +44,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Cache generated files
         id: cache-generated-files
@@ -75,7 +75,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Load generated files
         id: cache-generated-files
@@ -114,7 +114,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Load generated files
         id: cache-generated-files
@@ -148,7 +148,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Run AGENTS harness checks
         run: pnpm run agents:check
@@ -174,7 +174,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Load generated files
         id: cache-generated-files
@@ -209,7 +209,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Install Cypress binary
         working-directory: apps/cowswap-frontend-e2e

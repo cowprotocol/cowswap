@@ -24,6 +24,6 @@
     }
   },
   "dependencies": {
-    "color2k": "^2.0.2"
+    "color2k": "2.0.2"
   }
 }
