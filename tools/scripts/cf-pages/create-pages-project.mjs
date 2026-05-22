@@ -12,9 +12,6 @@
  *   CF_ACCOUNT_ID  (required unless --dry-run)  Cloudflare account ID
  *   CF_API_TOKEN   (required unless --dry-run)   Cloudflare API token
  *
- * Only CF_ACCOUNT_ID and CF_API_TOKEN are read from the environment.
- * Pass every other setting as a positional argument or CLI option.
- *
  * OPTIONS:
  *   --dry-run                                        Print the API payload, do not create anything
  *   --project-name <name>                            CF Pages project name
@@ -35,8 +32,7 @@
  *   --help                                           Show this help message
  *
  * PATH_INCLUDES DEFAULT:
- *   apps/cowswap-frontend/* is always watched. --path-include values are appended.
- *   To watch additional paths by default, edit PATH_INCLUDES near the top of this file:
+ *   To watch additional paths by default, edit PATH_INCLUDES:
  *     const PATH_INCLUDES = ['apps/cowswap-frontend/*', 'libs/*']
  *   --path-include values will be appended to that default.
  *
@@ -47,26 +43,6 @@
 
 import { readFileSync } from 'node:fs'
 import { cfError, cfFetch } from './cf-api.mjs'
-
-const UNSUPPORTED_ENV_VARS = [
-  'DRY_RUN',
-  'CF_PROJECT_NAME',
-  'CF_PAGES_BRANCH',
-  'CF_PRODUCTION_BRANCH',
-  'CF_SOURCE_TYPE',
-  'CF_REPO_OWNER',
-  'CF_REPO_NAME',
-  'CF_REPO_ID',
-  'CF_REPO_OWNER_ID',
-  'CF_BUILD_COMMAND',
-  'CF_DESTINATION_DIR',
-  'CF_ROOT_DIR',
-  'CF_BUILD_CACHING',
-  'CF_PREVIEW_DEPLOYMENT_SETTING',
-  'CF_PRODUCTION_DEPLOYMENTS_ENABLED',
-  'CF_PATH_INCLUDES',
-  'CF_PATH_EXCLUDES',
-]
 
 let projectName = ''
 let productionBranch = ''
@@ -171,12 +147,6 @@ for (let i = 0; i < args.length; i++) {
 
 let errors = 0
 
-for (const v of UNSUPPORTED_ENV_VARS) {
-  if (v in process.env) {
-    process.stderr.write(`ERROR: ${v} env var is not supported. Pass non-credential settings as CLI args/options.\n`)
-    errors++
-  }
-}
 if (!projectName) {
   process.stderr.write('ERROR: project name is required as an argument or --project-name.\n')
   errors++
