@@ -54,6 +54,10 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
     },
 
+    build: {
+      emptyOutDir: true,
+    },
+
     plugins,
   }
 })
