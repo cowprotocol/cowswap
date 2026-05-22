@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.5
+## [3.0.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.0.4...widget-react-v3.0.5) (2026-05-22)
 
 ### Patch Changes
 

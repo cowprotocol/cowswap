@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.5
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.4...balances-and-allowances-v3.2.5) (2026-05-22)
 
 ### Patch Changes
 
