@@ -41,20 +41,24 @@ async function getAllProjects() {
   return projects
 }
 
+function countBillable(deployments) {
+  return deployments.filter((d) => new Date(d.created_on) >= startOfMonth && !d.is_skipped).length
+}
+
 async function getMonthlyBuildCount(projectName) {
-  let count = 0
-  let page = 1
+  const deploymentsPath = (page) => `projects/${projectName}/deployments?page=${page}`
 
-  while (true) {
-    const data = await cfFetch(accountId, apiToken, `projects/${projectName}/deployments?page=${page}`)
-    const deployments = data.result ?? []
-    if (deployments.length === 0) break
+  const first = await cfFetch(accountId, apiToken, deploymentsPath(1))
+  const totalPages = first.result_info?.total_pages ?? 1
+  let count = countBillable(first.result ?? [])
 
-    for (const deploy of deployments) {
-      if (new Date(deploy.created_on) >= startOfMonth && !deploy.is_skipped) count++
-    }
-    page++
+  if (totalPages > 1) {
+    const rest = await Promise.all(
+      Array.from({ length: totalPages - 1 }, (_, i) => cfFetch(accountId, apiToken, deploymentsPath(i + 2))),
+    )
+    for (const data of rest) count += countBillable(data.result ?? [])
   }
+
   return count
 }
 
