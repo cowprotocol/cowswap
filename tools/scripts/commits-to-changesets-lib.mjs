@@ -7,8 +7,7 @@ const TYPE_BUMP = {
   fix: 'patch',
 }
 
-const CONVENTIONAL_RE =
-  /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^)]+)\))?(?<bang>!)?:\s+(?<rest>.+)$/
+const CONVENTIONAL_RE = /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^)]+)\))?(?<bang>!)?:\s+(?<rest>.+)$/
 
 // Returns { parsedOk, bump, type, scope, breaking }. `bump` is one of
 // 'major' | 'minor' | 'patch' | null. A `null` bump means "skip this commit"
@@ -63,4 +62,54 @@ export function changesetContent(packageName, bump, summary) {
 
 ${summary}
 `
+}
+
+// Subject of a release-PR merge commit on main. The release workflow configures
+// changesets/action with `title: "chore(main): release"`, so GitHub's squash
+// merge produces `chore(main): release (#N)`. The `(#N)` suffix is optional to
+// also cover the rare direct-push case (no PR).
+export const RELEASE_COMMIT_SUBJECT_RE = /^chore\(main\): release( \(#\d+\))?$/
+
+export function isReleaseCommitSubject(subject) {
+  return RELEASE_COMMIT_SUBJECT_RE.test((subject || '').trim())
+}
+
+// Pure resolver for the converter's baseline ref. Precedence:
+//   1. envBaseline   — workflow_dispatch override.
+//   2. releasePrCommit — a `chore(main): release` commit on main that's
+//      newer than the latest `release-*` tag. Required because the
+//      `release-*` tag is only pushed at the END of the publish job, but
+//      the converter runs at the START of the same workflow — so on the
+//      run that processes a release-PR merge, the tag still points at the
+//      *previous* baseline. Without this hop the converter re-emits the
+//      changesets the just-merged release PR consumed, spawning a phantom
+//      duplicate version PR.
+//   3. latestReleaseTag — steady-state path.
+//   4. null → caller logs a bootstrap warning.
+export function resolveBaselineRef({ envBaseline, latestReleaseTag, releasePrCommit }) {
+  const env = (envBaseline || '').trim()
+  if (env) return { ref: env, source: 'env' }
+  if (releasePrCommit) return { ref: releasePrCommit, source: 'release-pr-merge' }
+  if (latestReleaseTag) return { ref: latestReleaseTag, source: 'release-tag' }
+  return { ref: null, source: 'none' }
+}
+
+// Most recent `chore(main): release` commit reachable from HEAD on main's
+// first-parent line, since `sinceRef`. Returns null if none. See
+// `resolveBaselineRef` in the lib for why we look for this.
+//
+// `runGit` is injectable so the function is unit-testable without spawning
+// `git`; the default invokes the module-private `tryGit`.
+
+export function findRecentReleasePrCommit(sinceRef, runGit = tryGit) {
+  const raw = runGit(['log', `${sinceRef}..HEAD`, '--first-parent', '--format=%H%x09%s'])
+  if (!raw) return null
+  for (const line of raw.split('\n')) {
+    const tab = line.indexOf('\t')
+    if (tab < 0) continue
+    const sha = line.slice(0, tab).trim()
+    const subject = line.slice(tab + 1)
+    if (sha && isReleaseCommitSubject(subject)) return sha
+  }
+  return null
 }
