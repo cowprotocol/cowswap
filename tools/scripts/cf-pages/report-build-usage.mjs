@@ -22,6 +22,9 @@ import { getCfCredentials, cfFetch } from './cf-api.mjs'
 
 const { accountId, apiToken } = getCfCredentials()
 
+const concurrencyArg = process.argv.find((a) => a.startsWith('--concurrency='))
+const concurrency = concurrencyArg ? parseInt(concurrencyArg.split('=')[1], 10) : 2
+
 const now = new Date()
 const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
 
@@ -41,24 +44,31 @@ async function getAllProjects() {
 async function getMonthlyBuildCount(projectName) {
   let count = 0
   let page = 1
-  let hasMore = true
 
-  while (hasMore) {
+  while (true) {
     const data = await cfFetch(accountId, apiToken, `projects/${projectName}/deployments?page=${page}`)
     const deployments = data.result ?? []
     if (deployments.length === 0) break
 
     for (const deploy of deployments) {
-      if (new Date(deploy.created_on) >= startOfMonth) {
-        if (!deploy.is_skipped) count++
-      } else {
-        hasMore = false
-        break
-      }
+      if (new Date(deploy.created_on) >= startOfMonth && !deploy.is_skipped) count++
     }
     page++
   }
   return count
+}
+
+async function mapConcurrent(items, concurrency, fn) {
+  const results = new Array(items.length)
+  let idx = 0
+  async function worker() {
+    while (idx < items.length) {
+      const i = idx++
+      results[i] = await fn(items[i])
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker))
+  return results
 }
 
 async function main() {
@@ -72,14 +82,11 @@ async function main() {
 
   console.log(`Found ${projects.length} project(s). Counting billable builds for this month...\n`)
 
-  let grandTotal = 0
-  const rows = []
-
-  for (const project of projects) {
+  const rows = await mapConcurrent(projects, concurrency, async (project) => {
     const count = await getMonthlyBuildCount(project)
-    grandTotal += count
-    rows.push({ Project: project, 'Billable Builds': count })
-  }
+    return { Project: project, 'Billable Builds': count }
+  })
+  const grandTotal = rows.reduce((sum, r) => sum + r['Billable Builds'], 0)
 
   console.table(rows)
   console.log(`\n========================================`)
