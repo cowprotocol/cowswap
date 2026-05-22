@@ -46,9 +46,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
-  // wagmi + viem only speak EVM. For non-EVM chains (Solana) we don't have a public client,
-  // so `useReadContracts` would dispatch ERC20 calls against a non-EVM RPC and either fail
-  // or spam noise. Hard-gate the query here until a Solana balance source is wired up.
+  // wagmi + viem only support evm chains
   const isEvm = isEvmChain(chainId)
 
   const {

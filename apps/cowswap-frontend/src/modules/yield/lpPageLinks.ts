@@ -13,7 +13,7 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '', // TODO: confirm
-  [SupportedChainId.SOLANA]: '', // CoW AMM is EVM-only.
+  [SupportedChainId.SOLANA]: '',
 }
 
 // Reference: https://api-docs.uniswap.org/guides/supported_chains
@@ -30,7 +30,7 @@ const UNI_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
-  [SupportedChainId.SOLANA]: '', // Uniswap on Solana is a different product (Uniswap X / Lens).
+  [SupportedChainId.SOLANA]: '', // doesn't support
 }
 
 // Reference: https://www.sushi.com/faq/general/about-sushi/which-chains-are-sushi-on
@@ -47,7 +47,7 @@ const SUSHI_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
-  [SupportedChainId.SOLANA]: '', // SushiSwap on Solana uses a different routing layer.
+  [SupportedChainId.SOLANA]: '', // Doesnt' support
 }
 
 // Reference: https://pancakeswap.finance/info/linea
@@ -64,7 +64,7 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
-  [SupportedChainId.SOLANA]: '', // PancakeSwap on Solana is BNB-bridged, not native.
+  [SupportedChainId.SOLANA]: '',
 }
 
 export const LP_PAGE_LINKS: Record<LpTokenProvider, (chainId: SupportedChainId, address: string) => string | null> = {

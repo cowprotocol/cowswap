@@ -763,8 +763,6 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
   [SupportedChainId.INK]: new Set(INK_STABLECOINS),
-  // Solana stablecoin tracking isn't wired up yet. Note: Solana addresses are base58
-  // and case-sensitive — when populated, do NOT `.toLowerCase()` like EVM addresses.
   [SupportedChainId.SOLANA]: new Set([USDC_SOLANA.address]),
 }
 
