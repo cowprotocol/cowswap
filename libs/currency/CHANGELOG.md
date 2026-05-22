@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.1
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.0.0...currency-v1.0.1) (2026-05-22)
 
 ### Patch Changes
 

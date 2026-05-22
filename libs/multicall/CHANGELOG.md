@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.3
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.2...multicall-v3.2.3) (2026-05-22)
 
 ### Patch Changes
 
