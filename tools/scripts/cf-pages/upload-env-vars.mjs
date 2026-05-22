@@ -3,12 +3,11 @@
  * Upload environment variables to a Cloudflare Pages project from a CSV file.
  *
  * USAGE:
- *   node upload-env-vars.mjs <path/to/vars.csv> [--overwrite]
+ *   node upload-env-vars.mjs <path/to/vars.csv> --project <name> [--env <production|preview|both>] [--overwrite]
  *
  * ENV VARS:
- *   CF_ACCOUNT_ID    (required)  Cloudflare account ID
- *   CF_API_TOKEN     (required)  Cloudflare API token
- *   CF_PROJECT_NAME  (optional)  CF Pages project name. Default: swap-dev
+ *   CF_ACCOUNT_ID  (required)  Cloudflare account ID
+ *   CF_API_TOKEN   (required)  Cloudflare API token
  *
  * CSV FORMAT (header row optional):
  *   name,value,type
@@ -28,6 +27,8 @@
  *     MY_VAR,"value,with,commas",text
  *
  * OPTIONS:
+ *   --project      CF Pages project name (required).
+ *   --env          Target environment: production, preview, or both. Default: production.
  *   --overwrite    Overwrite variables that already exist in the target environment.
  *                  Without this flag, existing variables are skipped.
  *
@@ -41,25 +42,41 @@ import { readFileSync } from 'node:fs'
 import { cfError, cfFetch, getCfCredentials } from './cf-api.mjs'
 
 const { accountId, apiToken } = getCfCredentials()
-const projectName = process.env.CF_PROJECT_NAME ?? 'swap-dev'
 
-const TARGET_ENV = 'production'
+const VALID_ENVS = ['production', 'preview', 'both']
 
 const [, , csvFile, ...restArgs] = process.argv
 
 if (!csvFile) {
-  process.stderr.write('Usage: node upload-env-vars.mjs <path/to/vars.csv> [--overwrite]\n')
+  process.stderr.write(
+    'Usage: node upload-env-vars.mjs <path/to/vars.csv> --project <name> [--env <production|preview|both>] [--overwrite]\n',
+  )
   process.exit(1)
 }
 
 let overwrite = false
-for (const arg of restArgs) {
+let targetEnv = 'production'
+let projectName = ''
+for (let i = 0; i < restArgs.length; i++) {
+  const arg = restArgs[i]
   if (arg === '--overwrite') {
     overwrite = true
+  } else if (arg === '--project') {
+    const val = restArgs[++i]
+    if (!val) cfError('--project requires a value')
+    projectName = val
+  } else if (arg === '--env') {
+    const val = restArgs[++i]
+    if (!val || !VALID_ENVS.includes(val)) {
+      cfError(`--env must be one of: ${VALID_ENVS.join(', ')}`)
+    }
+    targetEnv = val
   } else if (arg.startsWith('--')) {
     cfError(`Unknown option: ${arg}`)
   }
 }
+
+if (!projectName) cfError('--project <name> is required')
 
 let content
 try {
@@ -115,12 +132,19 @@ async function fetchExistingVarNames(env) {
   return Object.keys(data.result?.deployment_configs?.[env]?.env_vars ?? {})
 }
 
-let existingVars = []
+let existingProduction = []
+let existingPreview = []
 
 if (!overwrite) {
   console.log(`Fetching existing variables from '${projectName}'...`)
-  existingVars = await fetchExistingVarNames(TARGET_ENV)
-  console.log(`  ${TARGET_ENV}: ${existingVars.length} existing variable(s)`)
+  if (targetEnv === 'production' || targetEnv === 'both') {
+    existingProduction = await fetchExistingVarNames('production')
+    console.log(`  production: ${existingProduction.length} existing variable(s)`)
+  }
+  if (targetEnv === 'preview' || targetEnv === 'both') {
+    existingPreview = await fetchExistingVarNames('preview')
+    console.log(`  preview: ${existingPreview.length} existing variable(s)`)
+  }
 }
 
 console.log(`Reading variables from '${csvFile}'...`)
@@ -154,9 +178,14 @@ for (let row = 0; row < lines.length; row++) {
     cfError(`Row ${row + 1} (${name}): type must be 'text' or 'secret', got '${rawType}'`)
   }
 
-  if (!overwrite && existingVars.includes(name)) {
-    console.log(`  ~ ${name} (skipped — already exists in ${TARGET_ENV})`)
-    continue
+  if (!overwrite) {
+    const skipInProduction = targetEnv === 'production' && existingProduction.includes(name)
+    const skipInPreview = targetEnv === 'preview' && existingPreview.includes(name)
+    const skipInBoth = targetEnv === 'both' && existingProduction.includes(name) && existingPreview.includes(name)
+    if (skipInProduction || skipInPreview || skipInBoth) {
+      console.log(`  ~ ${name} (skipped — already exists in ${targetEnv})`)
+      continue
+    }
   }
 
   envVars[name] = { value, type: cfType }
@@ -168,13 +197,14 @@ if (Object.keys(envVars).length === 0) {
   process.exit(0)
 }
 
-const payload = {
-  deployment_configs: {
-    [TARGET_ENV]: { env_vars: envVars },
-  },
-}
+const envConfigs =
+  targetEnv === 'both'
+    ? { production: { env_vars: envVars }, preview: { env_vars: envVars } }
+    : { [targetEnv]: { env_vars: envVars } }
 
-console.log(`\nUploading to project '${projectName}' [${TARGET_ENV}]...`)
+const payload = { deployment_configs: envConfigs }
+
+console.log(`\nUploading to project '${projectName}' [${targetEnv}]...`)
 
 await cfFetch(accountId, apiToken, `projects/${projectName}`, {
   method: 'PATCH',
