@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { InfoTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -60,7 +60,7 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
           <styledEl.StyledMenuButton>
             <styledEl.LabelText>{labelText}</styledEl.LabelText>
             <styledEl.StyledSVG
-              src={IMAGE_CARET_DOWN}
+              src={svgCarretDownSrc}
               description={t`dropdown icon`}
               className={isExpanded ? 'expanded' : ''}
             />

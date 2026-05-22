@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -12,7 +12,7 @@ export function AffiliateTraderModalUnsupported(): ReactNode {
   return (
     <>
       <Body>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
           <Trans>Earn while you trade</Trans>
         </Title>

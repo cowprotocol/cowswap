@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
+import svgCheckSrc from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
@@ -88,7 +88,7 @@ export function LimitOrdersPromoBanner({
         {BULLET_POINTS.map((point, index) => (
           <li key={index}>
             <span>
-              <SVG src={iconCompleted} />
+              <SVG src={svgCheckSrc} />
             </span>
             {i18n._(point)}
           </li>

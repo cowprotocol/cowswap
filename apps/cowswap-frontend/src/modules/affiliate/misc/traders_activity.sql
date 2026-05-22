@@ -164,6 +164,7 @@ select
   trades.block_time as creation_date,
   trades.trader_address,
   trades.usd_value,
+  trades.protocol_fee_volume_bps as fee_bps,
   coalesce(capped_trades.eligible_volume_usd, cast(0 as double)) as eligible_volume_usd,
   coalesce(capped_trades.eligible_volume_usd, cast(0 as double)) > 0 as is_eligible,
   trades.referrer_code,

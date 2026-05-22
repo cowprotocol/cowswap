@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/cow-swap/carret-down.svg'
 
 import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
@@ -17,7 +17,7 @@ export function ToggleArrow({ isOpen, title, size }: ToggleArrowProps): React.Re
   const SvgTitle = title ?? (isOpen ? t`Close` : t`Open`)
   return (
     <StyledToggleArrow size={size} isOpen={isOpen}>
-      <SVG src={CarretIcon} title={SvgTitle} />
+      <SVG src={svgCarretDownSrc} title={SvgTitle} />
     </StyledToggleArrow>
   )
 }

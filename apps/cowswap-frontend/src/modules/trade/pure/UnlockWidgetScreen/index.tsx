@@ -1,6 +1,6 @@
 import { isValidElement } from 'react'
 
-import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
+import svgCheckSrc from '@cowprotocol/assets/cow-swap/check.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
 
@@ -52,7 +52,7 @@ export function UnlockWidgetScreen({
           {items.map(({ isNew, content }, index) => (
             <li key={index} data-is-new={isNew || null}>
               <span>
-                <SVG src={iconCompleted} />
+                <SVG src={svgCheckSrc} />
               </span>{' '}
               {isValidElement(content) ? content : i18n._(content as MessageDescriptor)}
             </li>
