@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.5.1
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.5.0...widget-configurator-v3.5.1) (2026-05-22)
 
 ### Patch Changes
 

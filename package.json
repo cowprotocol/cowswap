@@ -52,7 +52,7 @@
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
     "changeset": "changeset",
-    "changeset:version": "changeset version",
+    "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
