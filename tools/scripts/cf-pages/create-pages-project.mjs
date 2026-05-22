@@ -58,7 +58,7 @@ let buildCaching = 'true'
 let previewDeploymentSetting = 'none'
 let productionDeploymentsEnabled = 'true'
 let isDryRun = false
-const PATH_INCLUDES = ['apps/cowswap-frontend/*']
+const PATH_INCLUDES = []
 const PATH_EXCLUDES = []
 
 const args = process.argv.slice(2)
