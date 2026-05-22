@@ -89,11 +89,21 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 4. Handle widget height changes
   windowListeners.push(...listenToHeightChanges(iframe, iframeOrigin, params.height, params.maxHeight))
 
+  // 5. Intercept deeplinks navigation in the iframe
+  let interceptDeepLinksListener: WindowListener | null = null
+
   function updateInterceptDeepLinks(): void {
     if (!iframeWindow) return
 
+    if (interceptDeepLinksListener) {
+      window.removeEventListener('message', interceptDeepLinksListener)
+    }
+
     // If `window.open` is disabled, do not intercept deep links.
     if (currentParams.disableWindowOpen) return
+
+    interceptDeepLinksListener = interceptDeepLinks(iframeOrigin, iframeWindow)
+    windowListeners.push(interceptDeepLinksListener)
   }
   // 6. Handle two-way communication of widget hooks
   let widgetHooksListener: WindowListener | null = null
@@ -288,6 +298,49 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
     },
     iframeOrigin,
   )
+}
+
+/**
+ * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
+ */
+function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowListener {
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    iframeWindow,
+    WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+    ({ href, rel, target }) => {
+      const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
+
+      if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
+        window.open(resolvedUrl, target, rel)
+      }
+    },
+    iframeOrigin,
+  )
+}
+
+function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
+  const trimmedUrl = url.trim()
+
+  if (!trimmedUrl) {
+    return null
+  }
+
+  try {
+    return new URL(trimmedUrl, iframeOrigin).toString()
+  } catch {
+    return null
+  }
+}
+
+function isAllowedWindowOpenUrl(url: string): boolean {
+  try {
+    const protocol = new URL(url).protocol
+
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
 }
 
 /**
