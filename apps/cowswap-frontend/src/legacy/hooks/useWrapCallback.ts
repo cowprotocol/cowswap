@@ -4,6 +4,7 @@ import {
   calculateGasMargin,
   formatTokenAmount,
   getIsNativeToken,
+  getProviderErrorMessage,
   getRawCurrentChainIdFromUrl,
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
@@ -46,6 +47,7 @@ export interface WrapUnwrapContext {
   addTransaction: TransactionAdder
   closeModals: Command
   openTransactionConfirmationModal: Command
+  openErrorModal: (message: string) => void
   analytics: ReturnType<typeof useCowAnalytics>
 }
 
@@ -73,6 +75,7 @@ export async function wrapUnwrapCallback(
     addTransaction,
     openTransactionConfirmationModal,
     closeModals,
+    openErrorModal,
     analytics,
   } = context
   const isNativeIn = getIsNativeToken(amount.currency)
@@ -98,8 +101,6 @@ export async function wrapUnwrapCallback(
 
     return { hash }
   } catch (error: unknown) {
-    useModals && closeModals()
-
     const isRejected = isRejectRequestProviderError(error)
     const action = isRejected ? t`Reject` : t`Error`
     sendWrapEvent(analytics, action as WrapAction, operationMessage, amount)
@@ -108,6 +109,13 @@ export async function wrapUnwrapCallback(
     console.error(errorMessage, error)
 
     if (isRejected) {
+      useModals && closeModals()
+      return null
+    }
+
+    if (useModals) {
+      // Show the error inside the modal (transitions from pending → error screen)
+      openErrorModal(getProviderErrorMessage(error) || t`Transaction failed`)
       return null
     }
 

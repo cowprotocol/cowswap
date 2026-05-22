@@ -8,7 +8,6 @@ export const Wrapper = styled.div<{ columnViewMobile?: boolean }>`
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 0 2rem;
   ${ScrollBarStyle};
 
   ${({ columnViewMobile }) =>
@@ -75,7 +74,8 @@ export const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boo
   }
 
   thead th,
-  tbody td {
+  tbody td,
+  tbody th {
     padding: 1.2rem 1rem;
     font-size: inherit;
     line-height: 1.2;

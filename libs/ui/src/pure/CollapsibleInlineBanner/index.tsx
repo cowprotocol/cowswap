@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/cow-swap/carret-down.svg'
 
 import SVG from 'react-inlinesvg'
 
@@ -46,7 +46,7 @@ export function CollapsibleInlineBanner({
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <StyledToggleArrow isOpen={isExpanded}>
-              <SVG src={CarretIcon} />
+              <SVG src={svgCarretDownSrc} />
             </StyledToggleArrow>
           </ToggleIconContainer>
         </ClickableWrapper>

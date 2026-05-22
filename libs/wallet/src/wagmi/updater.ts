@@ -1,22 +1,22 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
-import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
 
-import { useSetEip6963Provider } from '../api/hooks'
+import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { multiInjectedProvidersAtom } from '../api/state/multiInjectedProvidersAtom'
-import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
@@ -41,9 +41,11 @@ function useBrowserUrlKey(): string {
 
 function useWalletInfo(): WalletInfo {
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected } = useConnection()
+  const { address, chainId, isConnected, status } = useConnection()
+  const isConnectionRestoring = status === 'reconnecting'
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
+  const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
 
   useEffect(() => {
     if (!isConnected) {
@@ -55,12 +57,14 @@ function useWalletInfo(): WalletInfo {
     }
   }, [isConnected, chainId, isChainIdUnsupported])
 
-  return useMemo(() => {
+  const walletInfo = useMemo(() => {
     void urlKey
 
     let resolvedChainId: SupportedChainId
     if (!isConnected) {
-      resolvedChainId = getCurrentChainIdFromUrl()
+      // Use chain from URL if present; otherwise preserve the last resolved chainId
+      // (e.g. when navigating from a path-based route like /56/swap to /account which has no chain in URL)
+      resolvedChainId = getRawCurrentChainIdFromUrl() ?? lastResolvedChainId
     } else if (isChainIdUnsupported) {
       resolvedChainId = getCurrentChainIdFromUrl()
     } else if (chainId) {
@@ -73,8 +77,24 @@ function useWalletInfo(): WalletInfo {
       chainId: resolvedChainId,
       active: isConnected,
       account: address,
+      isConnectionRestoring,
     }
-  }, [address, chainId, isConnected, isChainIdUnsupported, lastStableChainId, urlKey])
+  }, [
+    address,
+    chainId,
+    isConnected,
+    isChainIdUnsupported,
+    isConnectionRestoring,
+    lastStableChainId,
+    lastResolvedChainId,
+    urlKey,
+  ])
+
+  useEffect(() => {
+    setLastResolvedChainId(walletInfo.chainId)
+  }, [walletInfo.chainId])
+
+  return walletInfo
 }
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
@@ -84,11 +104,12 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDetails {
+function useWalletDetails(account?: Address): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData(standaloneMode)
+  const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
+  const isMetaMask = useIsMetamaskBrowserExtensionWallet()
 
   return useMemo(() => {
     return {
@@ -98,57 +119,27 @@ function useWalletDetails(account?: Address, standaloneMode?: boolean): WalletDe
       ensName: ensName || undefined,
       isSupportedWallet: checkIsSupportedWallet(walletName),
 
-      // TODO: For now, all SC wallets use pre-sign instead of offchain signing
-      // In the future, once the API adds EIP-1271 support, we can allow some SC wallets to use offchain signing
-      allowsOffchainSigning: !isSmartContractWallet,
+      // EOAs can always sign off-chain. MetaMask smart accounts also support EIP-1271 off-chain
+      // signing. All other smart contract wallets (Coinbase Smart Wallet, ERC-4337, Safe, etc.)
+      // must use on-chain pre-signing.
+      allowsOffchainSigning: !isSmartContractWallet || isMetaMask,
       isSafeApp,
     }
-  }, [isSmartContractWallet, isSafeApp, walletName, icon, ensName])
+  }, [isSmartContractWallet, isSafeApp, isMetaMask, walletName, icon, ensName])
 }
 
 // used for on-chain calls
 let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
-interface WalletUpdaterProps {
-  standaloneMode?: boolean
-}
-
-export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
-  const { connector } = useConnection()
+export function WalletUpdater(): null {
   const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account, standaloneMode)
+  const walletDetails = useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
-  const setEip6963Provider = useSetEip6963Provider()
-  const eip6963Providers = useAtomValue(multiInjectedProvidersAtom)
-
-  // Detect and set the EIP-6963 provider RDNS when an injected wallet connects
-  useEffect(() => {
-    if (
-      !connector ||
-      (connector.type !== ConnectionType.INJECTED && connector.type !== 'announced') ||
-      !eip6963Providers.length
-    ) {
-      return
-    }
-
-    const detect = async (): Promise<void> => {
-      try {
-        const connectorProvider = await connector.getProvider()
-        const match = eip6963Providers.find((p) => p.provider === connectorProvider)
-        if (match) {
-          setEip6963Provider(match.info.rdns)
-        }
-      } catch {
-        // ignore
-      }
-    }
-    detect()
-  }, [connector, eip6963Providers, setEip6963Provider])
 
   useEffect(() => {
     setWalletInfo(walletInfo)
@@ -169,9 +160,21 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps): null {
   return null
 }
 
+function useShouldFetchSafeInfo(): boolean {
+  const accountType = useAccountType()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (!isSafeViaWc) return false
+  if (accountType === AccountType.EOA) return false
+  if (accountType === AccountType.EIP7702EOA) return false
+
+  return true
+}
+
 function useSafeInfo(): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
   const { account, chainId } = useWalletInfo()
+  const shouldFetchSafeInfo = useShouldFetchSafeInfo()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
 
@@ -197,7 +200,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
           setSafeInfo(undefined)
         }
       } else {
-        if (chainId && account) {
+        if (chainId && account && shouldFetchSafeInfo) {
           try {
             const _safeInfo = await getSafeInfo(chainId, account)
             const { address, threshold, owners, nonce } = _safeInfo
@@ -243,7 +246,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
     }
-  }, [chainId, account, safeAppsSdk])
+  }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
 
   return safeInfo
 }

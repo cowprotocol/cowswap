@@ -2,10 +2,9 @@
 import type { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-affiliate-hero.svg'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import iconCowLensSrc from '@cowprotocol/assets/images/icon-cow-lens.svg'
+import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
+import svgAffiliateHeroSrc from '@cowprotocol/assets/images/image-affiliate-hero.svg'
 import { Media, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -14,7 +13,6 @@ import styled from 'styled-components/macro'
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
-import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import {
   AFFILIATE_PROGRAM_CTA,
   AFFILIATE_PROGRAM_DOCS_CTA,
@@ -93,7 +91,7 @@ function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
         color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
         marginMobile="24px auto 56px"
       >
-        <LazySVG src={IMG_COWSWAP_HERO} />
+        <LazySVG src={svgAffiliateHeroSrc} />
       </HeroImage>
     </HeroContainer>
   )
@@ -108,7 +106,7 @@ function HowItWorksSection(): ReactNode {
       <ContainerCardSection gap={64}>
         <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} margin="0 auto" gap={64}>
           <SectionTitleIcon $multiple $size={110}>
-            <LazySVG src={IMG_ICON_COW_LENS} style={{ filter: 'brightness(0) saturate(100%) invert(100%)' }} />
+            <LazySVG src={iconCowLensSrc} style={{ filter: 'brightness(0) saturate(100%) invert(100%)' }} />
           </SectionTitleIcon>
           <SectionTitleText>The more you moo, the more you earn</SectionTitleText>
           <SectionTitleDescription color={`var(${UI.COLOR_NEUTRAL_70})`} fontSize={30} maxWidth={760}>
@@ -197,7 +195,7 @@ function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode
       <ContainerCardSection padding="0">
         <SectionTitleWrapper margin="6rem auto 0">
           <SectionTitleIcon $size={62}>
-            <LazySVG src={IMG_ICON_FAQ} />
+            <LazySVG src={iconFaqSrc} />
           </SectionTitleIcon>
           <SectionTitleText>FAQs</SectionTitleText>
         </SectionTitleWrapper>
@@ -255,10 +253,6 @@ function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
 }
 export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
-  const { isAffiliateProgramEnabled } = useFeatureFlags()
-
-  if (isAffiliateProgramEnabled === undefined) return null
-  if (isAffiliateProgramEnabled === false) return <NotFoundPageComponent />
 
   const sendEvent = (action: string): void => {
     analytics.sendEvent({ category: CowFiCategory.COWSWAP, action })

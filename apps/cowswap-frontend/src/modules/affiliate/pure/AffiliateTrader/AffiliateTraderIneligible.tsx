@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import SAD_COW_FACE_ILLUSTRATION from '@cowprotocol/assets/cow-swap/sad-cow-face.svg'
+import svgSadCowFaceSrc from '@cowprotocol/assets/cow-swap/sad-cow-face.svg'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -10,7 +10,7 @@ import { TraderIneligible } from '../TraderIneligible'
 export function AffiliateTraderIneligible(): ReactNode {
   return (
     <IneligibleCard>
-      <IneligibleImage src={SAD_COW_FACE_ILLUSTRATION} ariaHidden />
+      <IneligibleImage src={svgSadCowFaceSrc} ariaHidden />
 
       <IneligibleTitle>
         <Trans>Your wallet is ineligible</Trans>

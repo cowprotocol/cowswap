@@ -20,6 +20,34 @@ export type FlexibleConfig<T> =
   | PerTradeTypeConfig<PerNetworkConfig<T>>
   | PerNetworkConfig<PerTradeTypeConfig<T>>
 
+/**
+ * A single forbidden sell→buy token combination for the widget.
+ *
+ * Used as an entry in {@link CowSwapWidgetParams.tokenPairConstraints} to
+ * prevent users from creating orders that swap the given `sell` token for
+ * the given `buy` token (in that direction). Reversing the direction —
+ * trading `buy` for `sell` — is **not** blocked unless an explicit entry
+ * for the reverse pair is also supplied.
+ *
+ * Addresses are matched case-insensitively against the user's selected
+ * tokens; `chainId` must match the active widget chain for the entry to
+ * apply.
+ *
+ * @example
+ * ```ts
+ * tokenPairConstraints: [
+ *   {
+ *     sell: { address: '0xA0b8...eB48', chainId: SupportedChainId.MAINNET },
+ *     buy:  { address: '0xdAC1...1ec7', chainId: SupportedChainId.MAINNET },
+ *   },
+ * ]
+ * ```
+ */
+export type TokenPairConstraint = {
+  sell: { address: string; chainId: SupportedChainId }
+  buy: { address: string; chainId: SupportedChainId }
+}
+
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
   READY = 'READY',
@@ -449,6 +477,11 @@ export interface CowSwapWidgetParams {
     whenPriceImpactIsUnknown?: boolean
     whenPriceImpactIsHigherThan?: number
   }
+
+  /**
+   * Disables trading of specific token pair
+   */
+  tokenPairConstraints?: TokenPairConstraint[]
 
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult

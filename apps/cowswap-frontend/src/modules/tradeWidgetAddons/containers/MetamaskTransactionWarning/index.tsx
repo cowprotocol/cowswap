@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
@@ -123,7 +123,9 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
   const { data: walletClient } = useWalletClient()
 
   useEffect(() => {
-    if (!isMetamask || !walletClient) {
+    // The bug only affects the browser extension. On mobile devices (including
+    // MetaMask's in-app browser) the warning should never appear.
+    if (!isMetamask || !walletClient || isMobile) {
       setIsAffected(false)
       return
     }

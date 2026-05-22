@@ -32,7 +32,7 @@ const DEFAULT_WIDTH = '450px'
 const HEIGHT_THRESHOLD = 20
 
 const noopHandler: CowSwapWidgetHandler = {
-  iframe: document.createElement('iframe'),
+  iframe: null as never,
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
@@ -69,10 +69,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
 
-  if (onReady) {
-    windowListeners.push(listenToReady(iframe.contentWindow || window, iframeOrigin, onReady))
-  }
-
   // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
   container.appendChild(iframe)
@@ -81,6 +77,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   if (!iframeWindow) {
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
+  }
+
+  if (onReady) {
+    windowListeners.push(listenToReady(iframeWindow, iframeOrigin, onReady))
   }
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)

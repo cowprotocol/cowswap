@@ -1,38 +1,44 @@
-import { widgetIframeTransport } from '@cowprotocol/widget-lib'
+import { getParentOrigin, isLocalEnvOrigin } from '@cowprotocol/iframe-transport'
+import { widgetIframeTransport, WidgetMethodsListen } from '@cowprotocol/widget-lib'
 
 interface CachedMessageEnvelope {
   data: unknown
-  origin: string
 }
 
 const messagesCache: Record<string, CachedMessageEnvelope> = {}
+const handlers: Record<string, (data: never) => void> = {}
+
+export function registerCachedMessageHandler(method: WidgetMethodsListen, handler: (data: never) => void): void {
+  handlers[method] = handler
+}
 
 export function cacheWidgetMessage(event: MessageEvent): void {
   const method = getEventMethod(event)
+  if (!method) return
 
-  if (!method) {
-    return
+  const trustedOrigin = getParentOrigin()
+  if (!trustedOrigin) return
+
+  if (event.origin !== trustedOrigin) return
+
+  if (event.source !== window.parent) {
+    const isLocalEnv = isLocalEnvOrigin(event.origin) || isLocalEnvOrigin(trustedOrigin)
+    if (!isLocalEnv) return
   }
 
   messagesCache[method] = {
     data: event.data,
-    origin: event.origin,
   }
 }
 
 export function replayCachedWidgetMessage(method: string): void {
   const cachedMessage = messagesCache[method]
+  if (!cachedMessage) return
 
-  if (!cachedMessage) {
-    return
-  }
+  const handler = handlers[method]
+  if (!handler) return
 
-  window.dispatchEvent(
-    new MessageEvent('message', {
-      origin: cachedMessage.origin,
-      data: cachedMessage.data,
-    }),
-  )
+  handler(cachedMessage.data as never)
 }
 
 export function getCachedWidgetMessageMethods(): string[] {
@@ -41,6 +47,7 @@ export function getCachedWidgetMessageMethods(): string[] {
 
 export function clearCachedWidgetMessage(method: string): void {
   delete messagesCache[method]
+  delete handlers[method]
 }
 
 export function clearCachedWidgetMessages(): void {

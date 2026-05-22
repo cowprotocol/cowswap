@@ -1,8 +1,8 @@
-import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
-import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
-import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
-import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
-import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import iconSocialDiscordSrc from '@cowprotocol/assets/images/icon-social-discord.svg'
+import iconSocialForumSrc from '@cowprotocol/assets/images/icon-social-forum.svg'
+import iconSocialGithubSrc from '@cowprotocol/assets/images/icon-social-github.svg'
+import iconSocialSnapshotSrc from '@cowprotocol/assets/images/icon-social-snapshot.svg'
+import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 
 import { ProductVariant } from '../../pure/ProductLogo'
 
@@ -14,35 +14,35 @@ export const SOCIAL_LINKS = [
   {
     href: 'https://x.com/CoWSwap',
     label: 'Twitter/X',
-    icon: IMG_ICON_SOCIAL_X,
+    icon: iconSocialXSrc,
     external: true,
     utmContent: 'social-twitter',
   },
   {
     href: 'https://discord.com/invite/cowprotocol',
     label: 'Discord',
-    icon: IMG_ICON_SOCIAL_DISCORD,
+    icon: iconSocialDiscordSrc,
     external: true,
     utmContent: 'social-discord',
   },
   {
     href: 'https://github.com/cowprotocol',
     label: 'GitHub',
-    icon: IMG_ICON_SOCIAL_GITHUB,
+    icon: iconSocialGithubSrc,
     external: true,
     utmContent: 'social-github',
   },
   {
     href: 'https://forum.cow.fi/',
     label: 'Forum',
-    icon: IMG_ICON_SOCIAL_FORUM,
+    icon: iconSocialForumSrc,
     external: true,
     utmContent: 'social-forum',
   },
   {
     href: 'https://snapshot.org/#/cow.eth',
     label: 'Snapshot',
-    icon: IMG_ICON_SOCIAL_SNAPSHOT,
+    icon: iconSocialSnapshotSrc,
     external: true,
     utmContent: 'social-snapshot',
   },
@@ -151,7 +151,7 @@ const FOOTER_NAV_GROUP_MISC = {
   ],
 } as const satisfies NavItemProps
 
-export function getAboutFooterNavChildren(isAffiliateProgramEnabled: boolean): NavItemChildrenProps[] {
+export function getAboutFooterNavChildren(): NavItemChildrenProps[] {
   return [
     {
       href: 'https://docs.cow.fi/governance',
@@ -180,21 +180,18 @@ export function getAboutFooterNavChildren(isAffiliateProgramEnabled: boolean): N
       external: true,
       utmContent: 'footer-misc-bug-bounty',
     },
-    ...(isAffiliateProgramEnabled
-      ? [
-          {
-            label: 'Affiliate Program',
-            href: '/affiliate-program',
-            utmContent: 'footer-about-affiliate-program',
-          },
-        ]
-      : []),
+    {
+      label: 'Affiliate Program',
+      href: 'https://cow.fi/affiliate-program',
+      external: true,
+      utmContent: 'footer-about-affiliate-program',
+    },
   ]
 }
 
-export function getGlobalFooterNavItems(isAffiliateProgramEnabled: boolean): NavItemProps[] {
+export function getGlobalFooterNavItems(): NavItemProps[] {
   return [
-    { label: 'About', children: getAboutFooterNavChildren(isAffiliateProgramEnabled) },
+    { label: 'About', children: getAboutFooterNavChildren() },
     FOOTER_NAV_GROUP_PRODUCTS,
     FOOTER_NAV_GROUP_HELP,
     FOOTER_NAV_GROUP_MISC,

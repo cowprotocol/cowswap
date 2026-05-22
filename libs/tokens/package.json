@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/tokens",
-  "version": "3.4.0",
+  "version": "3.6.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.0",
+    "@cowprotocol/cow-sdk": "9.1.1",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
@@ -45,7 +45,7 @@
     "styled-components": "5.3.11",
     "swr": "^2.3.3",
     "viem": "^2.45.1",
-    "wagmi": "3.4.2"
+    "wagmi": "3.6.9"
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",

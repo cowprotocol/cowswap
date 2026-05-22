@@ -5,7 +5,7 @@ import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import IMAGE_CARET from 'assets/icon/caret.svg'
+import iconCaretSrc from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
@@ -88,7 +88,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
 
       const routeBasePath = addChainIdToRoute(item.route, chainId)
-      const isActive = location.pathname.startsWith(routeBasePath)
+      const hooksBasePath = addChainIdToRoute(Routes.HOOKS, chainId)
+      const isActive =
+        location.pathname.startsWith(routeBasePath) &&
+        (item.route === Routes.HOOKS || !location.pathname.startsWith(hooksBasePath))
 
       return (
         <MenuItem
@@ -126,7 +129,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       >
         <styledEl.DropdownButton>
           {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
+          {!singleMenuItem ? <SVG src={iconCaretSrc} title={t`select`} /> : null}
         </styledEl.DropdownButton>
       </styledEl.MenuItem>
 

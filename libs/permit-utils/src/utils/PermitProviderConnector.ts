@@ -54,26 +54,25 @@ export class PermitProviderConnector implements ProviderConnector {
   }
 
   decodeABIParameters<T>(types: AbiInput[], hex: Hex): T {
-    const decodedValues = decodeAbiParameters(types, hex)
+    const decoded = decodeAbiParameters(types, hex)
 
-    // Ethersjs decodes numbers as BigNumber instances
-    // However, 1inch utils do not deal with BigNumber instances,
-    // so we need this mess to convert them to hex strings, which 1inch understands
-    // TODO: Any way to make this typing mess any cleaner?
-    if (decodedValues && typeof decodedValues === 'object') {
-      const copy: Record<string, unknown> = {}
-
-      Object.entries(decodedValues).forEach(([key, value]) => {
-        if (typeof value === 'bigint') {
-          copy[key] = toHex(value)
-        } else {
-          copy[key] = value
-        }
-      })
-
-      return copy as T
-    }
-
-    return decodedValues
+    // ethers' result was a hybrid array/object — callers in 1inch utils destructure
+    // by parameter name (eg `const { owner, spender } = decodeABIParameters(...)`).
+    // viem's `decodeAbiParameters returns a plain tuple, so
+    // destructuring by name yields undefined. Reconstruct the hybrid shape by keying
+    // values under both numeric index and the ABI parameter name.
+    //
+    // Also: 1inch utils don't understand bigint (ethers used BigNumber), so we coerce
+    // bigint values to hex strings — preserving the original viem-migration behavior.
+    const result: Record<string | number, unknown> = {}
+    types.forEach((input, i) => {
+      const raw = decoded[i]
+      const value = typeof raw === 'bigint' ? toHex(raw) : raw
+      result[i] = value
+      if (input.name) {
+        result[input.name] = value
+      }
+    })
+    return result as T
   }
 }
