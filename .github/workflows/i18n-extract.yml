@@ -13,6 +13,9 @@ permissions:
 
 env:
   NODE_VERSION: lts/jod
+  # needed by tools/scripts/install-sdk-preview.js when package.json pins a `pr-NNN`
+  # SDK preview build — install:ci writes an .npmrc that auths to GitHub Packages.
+  PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
 
 jobs:
   i18n-extract:
@@ -38,7 +41,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Extract i18n strings
         run: pnpm run i18n:extract
