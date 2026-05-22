@@ -29,15 +29,24 @@ if (!projectName) {
   process.exit(1)
 }
 
+const MAX_ATTEMPTS = 3
+
 async function main() {
+  const attempts = new Map()
+
   while (true) {
     console.log('Fetching a batch of deployments...')
 
     const data = await cfFetch(accountId, apiToken, `projects/${projectName}/deployments`)
-    const ids = (data.result ?? []).map((d) => d.id)
+    const allIds = (data.result ?? []).map((d) => d.id)
+    const ids = allIds.filter((id) => (attempts.get(id) ?? 0) < MAX_ATTEMPTS)
 
     if (ids.length === 0) {
-      console.log('No more deployments found. It is now safe to delete the project.')
+      if (allIds.length > 0) {
+        console.error(`WARNING: ${allIds.length} deployment(s) could not be deleted after ${MAX_ATTEMPTS} attempts.`)
+      } else {
+        console.log('No more deployments found. It is now safe to delete the project.')
+      }
       break
     }
 
@@ -49,7 +58,13 @@ async function main() {
           await cfFetch(accountId, apiToken, `projects/${projectName}/deployments/${id}`, { method: 'DELETE' })
           console.log(`Deleted deployment: ${id}`)
         } catch (err) {
-          console.error(`WARNING: Could not delete deployment ${id}: ${err.message}`)
+          const count = (attempts.get(id) ?? 0) + 1
+          attempts.set(id, count)
+          if (count >= MAX_ATTEMPTS) {
+            console.error(`WARNING: Giving up on deployment ${id} after ${count} failed attempts: ${err.message}`)
+          } else {
+            console.error(`WARNING: Could not delete deployment ${id} (attempt ${count}/${MAX_ATTEMPTS}): ${err.message}`)
+          }
         }
       }),
     )
