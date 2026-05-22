@@ -3,7 +3,7 @@
  * Upload environment variables to a Cloudflare Pages project from a CSV file.
  *
  * USAGE:
- *   node upload-env-vars.mjs <path/to/vars.csv> [--no-overwrite]
+ *   node upload-env-vars.mjs <path/to/vars.csv> [--overwrite]
  *
  * ENV VARS:
  *   CF_ACCOUNT_ID    (required)  Cloudflare account ID
@@ -28,8 +28,8 @@
  *     MY_VAR,"value,with,commas",text
  *
  * OPTIONS:
- *   --no-overwrite    Skip variables that already exist in the target environment.
- *                     Without this flag, existing variables are overwritten.
+ *   --overwrite    Overwrite variables that already exist in the target environment.
+ *                  Without this flag, existing variables are skipped.
  *
  * API TOKEN PERMISSIONS (https://dash.cloudflare.com/profile/api-tokens):
  *   Account > Cloudflare Pages > Edit
@@ -48,14 +48,14 @@ const TARGET_ENV = 'production'
 const [, , csvFile, ...restArgs] = process.argv
 
 if (!csvFile) {
-  process.stderr.write('Usage: node upload-env-vars.mjs <path/to/vars.csv> [--no-overwrite]\n')
+  process.stderr.write('Usage: node upload-env-vars.mjs <path/to/vars.csv> [--overwrite]\n')
   process.exit(1)
 }
 
-let noOverwrite = false
+let overwrite = false
 for (const arg of restArgs) {
-  if (arg === '--no-overwrite') {
-    noOverwrite = true
+  if (arg === '--overwrite') {
+    overwrite = true
   } else if (arg.startsWith('--')) {
     cfError(`Unknown option: ${arg}`)
   }
@@ -117,7 +117,7 @@ async function fetchExistingVarNames(env) {
 
 let existingVars = []
 
-if (noOverwrite) {
+if (!overwrite) {
   console.log(`Fetching existing variables from '${projectName}'...`)
   existingVars = await fetchExistingVarNames(TARGET_ENV)
   console.log(`  ${TARGET_ENV}: ${existingVars.length} existing variable(s)`)
@@ -151,7 +151,7 @@ for (let row = 0; row < lines.length; row++) {
     cfError(`Row ${row + 1} (${name}): type must be 'text' or 'secret', got '${rawType}'`)
   }
 
-  if (noOverwrite && existingVars.includes(name)) {
+  if (!overwrite && existingVars.includes(name)) {
     console.log(`  ~ ${name} (skipped — already exists in ${TARGET_ENV})`)
     continue
   }
