@@ -62,6 +62,7 @@ Normative language:
 - Hardening roadmap (next enforcement steps): [`docs/HARNESS_HARDENING.md`](./docs/HARNESS_HARDENING.md)
 - Frontend-specific additive rules: [`apps/cowswap-frontend/AGENTS.md`](./apps/cowswap-frontend/AGENTS.md)
 - Other app-local commands/overrides: `apps/*/AGENTS.md`
+- E2E (Playwright) design spec: [`docs/superpowers/specs/2026-05-23-playwright-e2e-design.md`](./docs/superpowers/specs/2026-05-23-playwright-e2e-design.md) and implementation plan: [`docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md`](./docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md). New checklist-driven tests live in `apps/cowswap-frontend-e2e-pw/`. Existing Cypress at `apps/cowswap-frontend-e2e/` is frozen.
 
 ## Branch-Scoped AGENTS Task Protocol
 
