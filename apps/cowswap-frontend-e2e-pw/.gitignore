@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+.playwright/
+.synpress-cache/
+src/checklist/checklist.json
+coverage-report.md

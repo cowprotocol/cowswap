@@ -1,0 +1,51 @@
+{
+  "name": "cowswap-frontend-e2e-pw",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/cowswap-frontend-e2e-pw/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "playwright test"
+      }
+    },
+    "e2e:smoke": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "playwright test --grep @smoke"
+      }
+    },
+    "e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "playwright test --ui"
+      }
+    },
+    "e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "tsx src/checklist/coverageReport.ts"
+      }
+    },
+    "sync-checklist": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "tsx src/support/syncChecklist.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/cowswap-frontend-e2e-pw/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["cowswap-frontend"]
+}
