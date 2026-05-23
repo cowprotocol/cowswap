@@ -6,13 +6,19 @@ import { createWalletApi, type WalletApi } from './wallet'
 import { installBff, type BffMock } from '../mocks/bff'
 import { installCowOrderApi, type CowOrderApiMock } from '../mocks/cowOrderApi'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
+import { AccountPage } from '../pages/AccountPage'
 import { ConfirmModal } from '../pages/ConfirmModal'
+import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
+import { TwapPage } from '../pages/TwapPage'
 import { synpressTest } from '../support/synpress'
 
 interface E2EFixtures {
   wallet: WalletApi
   swapPage: SwapPage
+  limitPage: LimitPage
+  twapPage: TwapPage
+  accountPage: AccountPage
   confirmModal: ConfirmModal
   rpcProxy: RpcProxyHandle
   mocks: {
@@ -30,6 +36,18 @@ export const test = synpressTest.extend<E2EFixtures>({
   swapPage: async ({ page }, use) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(new SwapPage(page))
+  },
+  limitPage: async ({ page }, use) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    await use(new LimitPage(page))
+  },
+  twapPage: async ({ page }, use) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    await use(new TwapPage(page))
+  },
+  accountPage: async ({ page }, use) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    await use(new AccountPage(page))
   },
   confirmModal: async ({ page }, use) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
