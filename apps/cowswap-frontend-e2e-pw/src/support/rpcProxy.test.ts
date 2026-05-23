@@ -70,3 +70,24 @@ test('reset() clears stubs for a worker partition', async () => {
   // With no stub and a dummy upstream URL, the proxy returns an error rather than fabricating a balance.
   assert.ok(r.error, 'expected error when no stub and no usable upstream')
 })
+
+test('admin/setBalance and reset work over HTTP', async () => {
+  await fetch(`${proxy.url}/admin/setBalance`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ chainId: CHAIN_IDS.MAINNET, workerId: 'w0', address: '0xabc', valueHex: '0xff' }),
+  })
+  const r = (await postRpc(`${proxy.url}/rpc/${CHAIN_IDS.MAINNET}/w0`, {
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'eth_getBalance',
+    params: ['0xabc', 'latest'],
+  })) as { result: string }
+  assert.equal(r.result, '0xff')
+
+  await fetch(`${proxy.url}/admin/reset`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ workerId: 'w0' }),
+  })
+})

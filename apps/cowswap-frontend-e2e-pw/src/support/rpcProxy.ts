@@ -85,6 +85,21 @@ function send(res: ServerResponse, body: JsonRpcResponse): void {
   res.end(JSON.stringify(body))
 }
 
+function okJson(res: ServerResponse, obj: unknown): void {
+  res.writeHead(200, { 'content-type': 'application/json' })
+  res.end(JSON.stringify(obj))
+}
+
+function badRequest(res: ServerResponse, message: string): void {
+  res.writeHead(400, { 'content-type': 'application/json' })
+  res.end(JSON.stringify({ error: message }))
+}
+
+function clearWorker(balances: Stubs, calls: Stubs, workerId: string): void {
+  for (const k of [...balances.keys()]) if (k.startsWith(`${workerId}|`)) balances.delete(k)
+  for (const k of [...calls.keys()]) if (k.startsWith(`${workerId}|`)) calls.delete(k)
+}
+
 const balanceKey = (workerId: string, chainId: number, address: string): StubKey =>
   `${workerId}|${chainId}|${address.toLowerCase()}`
 
@@ -154,6 +169,81 @@ async function dispatch(ctx: HandlerContext, body: JsonRpcRequest): Promise<Json
   }
 }
 
+function parseJson(raw: string): unknown {
+  try {
+    return JSON.parse(raw) as unknown
+  } catch {
+    return undefined
+  }
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  if (typeof value !== 'object' || value === null) return undefined
+  return value as Record<string, unknown>
+}
+
+async function handleAdminSetBalance(req: IncomingMessage, res: ServerResponse, balances: Stubs): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req)))
+  if (!body) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  const { chainId, workerId, address, valueHex } = body
+  if (
+    typeof chainId !== 'number' ||
+    typeof workerId !== 'string' ||
+    typeof address !== 'string' ||
+    typeof valueHex !== 'string'
+  ) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  balances.set(balanceKey(workerId, chainId, address), valueHex)
+  okJson(res, { ok: true })
+}
+
+async function handleAdminStubCall(req: IncomingMessage, res: ServerResponse, calls: Stubs): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req)))
+  if (!body) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  const { chainId, workerId, to, dataPrefix, returnHex } = body
+  if (
+    typeof chainId !== 'number' ||
+    typeof workerId !== 'string' ||
+    typeof to !== 'string' ||
+    typeof dataPrefix !== 'string' ||
+    typeof returnHex !== 'string'
+  ) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  calls.set(callKey(workerId, chainId, to, dataPrefix), returnHex)
+  okJson(res, { ok: true })
+}
+
+async function handleAdminReset(
+  req: IncomingMessage,
+  res: ServerResponse,
+  balances: Stubs,
+  calls: Stubs,
+): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req))) ?? {}
+  const { workerId } = body
+  if (workerId !== undefined && typeof workerId !== 'string') {
+    badRequest(res, 'invalid body')
+    return
+  }
+  if (typeof workerId === 'string') {
+    clearWorker(balances, calls, workerId)
+  } else {
+    balances.clear()
+    calls.clear()
+  }
+  okJson(res, { ok: true })
+}
+
 async function handleRequest(
   req: IncomingMessage,
   res: ServerResponse,
@@ -162,6 +252,18 @@ async function handleRequest(
   forward: HandlerContext['forward'],
 ): Promise<void> {
   const url = new URL(req.url ?? '/', 'http://localhost')
+  if (req.method === 'POST' && url.pathname === '/admin/setBalance') {
+    await handleAdminSetBalance(req, res, balances)
+    return
+  }
+  if (req.method === 'POST' && url.pathname === '/admin/stubCall') {
+    await handleAdminStubCall(req, res, calls)
+    return
+  }
+  if (req.method === 'POST' && url.pathname === '/admin/reset') {
+    await handleAdminReset(req, res, balances, calls)
+    return
+  }
   const match = url.pathname.match(/^\/rpc\/(\d+)\/(w\d+)$/)
   if (!match || req.method !== 'POST') {
     res.writeHead(404).end()
@@ -212,8 +314,7 @@ export async function createRpcProxy(opts: CreateRpcProxyOpts): Promise<RpcProxy
         calls.clear()
         return
       }
-      for (const k of [...balances.keys()]) if (k.startsWith(`${workerId}|`)) balances.delete(k)
-      for (const k of [...calls.keys()]) if (k.startsWith(`${workerId}|`)) calls.delete(k)
+      clearWorker(balances, calls, workerId)
     },
     async close() {
       await new Promise<void>((resolve) => server.close(() => resolve()))
