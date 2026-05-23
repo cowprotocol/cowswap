@@ -23,6 +23,10 @@ test.after(async () => {
   await proxy.close()
 })
 
+test.beforeEach(async () => {
+  proxy.reset()
+})
+
 test('eth_chainId returns the path-encoded chainId in hex', async () => {
   const r = (await postRpc(`${proxy.url}/rpc/${CHAIN_IDS.MAINNET}/w0`, {
     jsonrpc: '2.0',

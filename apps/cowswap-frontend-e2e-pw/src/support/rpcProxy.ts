@@ -1,7 +1,5 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
 
-import { CHAIN_IDS } from './constants'
-
 import type { AddressInfo } from 'node:net'
 
 type StubKey = string
@@ -108,14 +106,27 @@ async function tryForward(
 }
 
 async function handleGetBalance(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
-  const [addr] = params as [string]
+  const first = params[0]
+  if (typeof first !== 'string') {
+    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_getBalance' } }
+  }
+  const addr: string = first
   const stubbed = ctx.balances.get(balanceKey(ctx.workerId, ctx.chainId, addr))
   if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
   return tryForward(ctx, id, 'eth_getBalance', params)
 }
 
 async function handleCall(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
-  const [callObj] = params as [{ to: string; data?: string }]
+  const first = params[0]
+  if (
+    typeof first !== 'object' ||
+    first === null ||
+    !('to' in first) ||
+    typeof (first as { to: unknown }).to !== 'string'
+  ) {
+    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_call' } }
+  }
+  const callObj = first as { to: string; data?: string }
   const data = (callObj.data ?? '').slice(0, 10) // 0x + 4-byte selector
   const stubbed = ctx.calls.get(callKey(ctx.workerId, ctx.chainId, callObj.to, data))
   if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
@@ -208,6 +219,4 @@ export async function createRpcProxy(opts: CreateRpcProxyOpts): Promise<RpcProxy
       await new Promise<void>((resolve) => server.close(() => resolve()))
     },
   }
-  // Note: CHAIN_IDS imported solely for type-checking by downstream callers; intentionally unused here.
-  void CHAIN_IDS
 }
