@@ -12,7 +12,6 @@
     "@playwright/test": "1.49.1",
     "@synthetixio/synpress": "4.0.10",
     "@synthetixio/synpress-metamask": "0.0.14",
-    "exceljs": "4.4.0",
-    "typescript": "5.9.3"
+    "exceljs": "4.4.0"
   }
 }
