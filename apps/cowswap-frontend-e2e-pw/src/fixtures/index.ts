@@ -4,7 +4,9 @@ import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
 import { createWalletApi, type WalletApi } from './wallet'
 
 import { installBff, type BffMock } from '../mocks/bff'
+import { installBungee, type BungeeMock } from '../mocks/bungee'
 import { installCowOrderApi, type CowOrderApiMock } from '../mocks/cowOrderApi'
+import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { AccountPage } from '../pages/AccountPage'
@@ -27,6 +29,8 @@ interface E2EFixtures {
     bff: BffMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
+    bungee: BungeeMock
+    nearIntents: NearIntentsMock
   }
 }
 
@@ -68,10 +72,14 @@ export const test = synpressTest.extend<E2EFixtures>({
     const bff = installBff(context)
     const tokenLists = installTokenLists(context)
     const safeSdk = installSafeSdk(context)
+    const bungee = installBungee(context)
+    const nearIntents = installNearIntents(context)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    await use({ cowOrderApi, bff, tokenLists, safeSdk })
+    await use({ cowOrderApi, bff, tokenLists, safeSdk, bungee, nearIntents })
     bff.reset()
     tokenLists.reset()
+    bungee.reset()
+    nearIntents.reset()
     await safeSdk.disable()
     await cowOrderApi.reset()
   },
