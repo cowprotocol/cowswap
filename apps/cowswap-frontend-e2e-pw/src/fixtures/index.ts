@@ -5,6 +5,7 @@ import { createWalletApi, type WalletApi } from './wallet'
 
 import { installBff, type BffMock } from '../mocks/bff'
 import { installCowOrderApi, type CowOrderApiMock } from '../mocks/cowOrderApi'
+import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { AccountPage } from '../pages/AccountPage'
 import { ConfirmModal } from '../pages/ConfirmModal'
@@ -25,6 +26,7 @@ interface E2EFixtures {
     cowOrderApi: CowOrderApiMock
     bff: BffMock
     tokenLists: TokenListsMock
+    safeSdk: SafeSdkMock
   }
 }
 
@@ -65,10 +67,12 @@ export const test = synpressTest.extend<E2EFixtures>({
     const cowOrderApi = installCowOrderApi(context, page)
     const bff = installBff(context)
     const tokenLists = installTokenLists(context)
+    const safeSdk = installSafeSdk(context)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    await use({ cowOrderApi, bff, tokenLists })
+    await use({ cowOrderApi, bff, tokenLists, safeSdk })
     bff.reset()
     tokenLists.reset()
+    await safeSdk.disable()
     await cowOrderApi.reset()
   },
 })
