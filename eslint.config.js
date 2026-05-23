@@ -367,6 +367,15 @@ module.exports = [
     },
   },
 
+  // Playwright E2E spec files contain large describe blocks of scaffolded placeholders.
+  {
+    files: ['apps/cowswap-frontend-e2e-pw/**/*.spec.ts'],
+    rules: {
+      complexity: ['error', 100],
+      'max-lines-per-function': 'off',
+    },
+  },
+
   // cow-fi Next.js config
   {
     files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
