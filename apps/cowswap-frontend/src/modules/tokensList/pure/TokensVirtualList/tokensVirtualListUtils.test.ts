@@ -138,4 +138,80 @@ describe('buildVirtualRows', () => {
     const titleRow = result.find((r) => r.type === 'title' && r.label === 'Recent')
     expect(titleRow).toBeDefined()
   })
+
+  describe('hideRecentTokens', () => {
+    it('should hide recent title and token rows when hideRecentTokens is true', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        recentTokens: [mockToken],
+        hideRecentTokens: true,
+      })
+
+      const recentTitle = result.find((r) => r.type === 'title' && r.label === 'Recent')
+      expect(recentTitle).toBeUndefined()
+    })
+
+    it('should show recent tokens when hideRecentTokens is false (default)', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        recentTokens: [mockToken],
+        hideRecentTokens: false,
+      })
+
+      const recentTitle = result.find((r) => r.type === 'title' && r.label === 'Recent')
+      expect(recentTitle).toBeDefined()
+    })
+  })
+
+  describe('hideFavoriteTokens', () => {
+    it('should hide favorite section when hideFavoriteTokens is true', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        favoriteTokens: [mockToken],
+        hideFavoriteTokens: true,
+      })
+
+      const favSection = result.find((r) => r.type === 'favorite-section')
+      expect(favSection).toBeUndefined()
+    })
+
+    it('should show favorite section when hideFavoriteTokens is false (default)', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        favoriteTokens: [mockToken],
+        hideFavoriteTokens: false,
+      })
+
+      const favSection = result.find((r) => r.type === 'favorite-section')
+      expect(favSection).toBeDefined()
+    })
+  })
+
+  describe('All tokens title', () => {
+    it('does not render the title when recent and favorite sections are both hidden', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        sortedTokens: [mockToken],
+        recentTokens: [mockToken],
+        favoriteTokens: [mockBridgeableToken],
+        hideRecentTokens: true,
+        hideFavoriteTokens: true,
+      })
+
+      const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
+      expect(allTokensTitle).toBeUndefined()
+    })
+
+    it('renders the title when at least one extra section is visible', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        sortedTokens: [mockToken],
+        recentTokens: [mockToken],
+        hideFavoriteTokens: true,
+      })
+
+      const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
+      expect(allTokensTitle).toBeDefined()
+    })
+  })
 })

@@ -5,39 +5,34 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import ms from 'ms.macro'
-import { SWRConfiguration } from 'swr'
 
-import { BalancesBffUpdater } from './BalancesBffUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
-import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
+import { BASIC_BALANCES_QUERY_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
+const RPC_BALANCES_QUERY_CONFIG = { ...BASIC_BALANCES_QUERY_CONFIG, refetchInterval: ms`31s` }
 
 const EMPTY_TOKENS: string[] = []
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
-  invalidateCacheTrigger: number
   excludedTokens: Set<string>
-  isBffSwitchedOn: boolean
-  isBffEnabled?: boolean
+  // Increment to force an immediate refetch (e.g. after an order is filled)
+  refreshTrigger?: number
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
-  invalidateCacheTrigger,
-  isBffSwitchedOn,
   excludedTokens,
-  isBffEnabled,
+  refreshTrigger,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -64,39 +59,27 @@ export function BalancesAndAllowancesUpdater({
     }, [])
   }, [allTokens, chainId, targetChainTokensMap])
 
-  const rpcBalancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_SWR_CONFIG)
+  const rpcBalancesQueryConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_QUERY_CONFIG)
+
   // Add native token balance to the store as well
   useEffect(() => {
-    if (isBffSwitchedOn) return
-
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
-      updateTokenBalance(nativeToken.address, nativeTokenBalance)
+      updateTokenBalance(nativeToken.address, nativeTokenBalance.value)
     }
-  }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
-
-  const enableRpcFallback = !isBffSwitchedOn || !isBffEnabled
+  }, [nativeTokenBalance, chainId, updateTokenBalance])
 
   return (
     <>
-      {isBffEnabled && (
-        <BalancesBffUpdater
-          account={account}
-          chainId={chainId}
-          invalidateCacheTrigger={invalidateCacheTrigger}
-          tokenAddresses={tokenAddresses}
-        />
-      )}
-      {enableRpcFallback && (
-        <BalancesRpcCallUpdater
-          account={account}
-          chainId={chainId}
-          tokenAddresses={tokenAddresses}
-          balancesSwrConfig={rpcBalancesSwrConfig}
-          setLoadingState
-        />
-      )}
+      <BalancesRpcCallUpdater
+        account={account}
+        chainId={chainId}
+        tokenAddresses={tokenAddresses}
+        balancesQueryConfig={rpcBalancesQueryConfig}
+        refreshTrigger={refreshTrigger}
+        setLoadingState
+      />
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>

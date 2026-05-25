@@ -1,14 +1,14 @@
 import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { MultiCallUpdater } from '@cowprotocol/multicall'
 import {
+  AdditionalChainTokensListsUpdater,
   RestrictedTokensListUpdater,
   TokensListsTagsUpdater,
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { HwAccountIndexUpdater, LegacyWalletUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -22,7 +22,7 @@ import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'mo
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
-import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater, WidgetStandaloneModeUpdater } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import {
   OrderProgressEventsUpdater,
@@ -31,7 +31,13 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { GeoDataUpdater } from 'modules/rwa'
-import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
+import { useSwapRawState } from 'modules/swap'
+import {
+  BlockedListSourcesUpdater,
+  RecentTokensStorageUpdater,
+  useSelectTokenWidgetState,
+  useSourceChainId,
+} from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
@@ -55,6 +61,7 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { WalletChainUrlSyncUpdater } from 'common/updaters/WalletChainUrlSyncUpdater'
 import { WalletSessionDurationUpdater } from 'common/updaters/WalletSessionDurationUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
@@ -62,12 +69,12 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-
-  const { standaloneMode } = useInjectedWidgetParams()
+  const { targetChainId } = useSwapRawState()
+  const { selectedTargetChainId } = useSelectTokenWidgetState()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
-  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
+  const { chainId: sourceChainId } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
@@ -81,12 +88,8 @@ export function Updaters(): ReactNode {
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
-      {/*Set custom chainId only when it differs from the wallet chainId*/}
-      {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
-      <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
-      <WalletUpdater standaloneMode={standaloneMode} />
-      <LegacyWalletUpdater standaloneMode={standaloneMode} />
-      <HwAccountIndexUpdater />
+      <WalletUpdater />
+      <WalletChainUrlSyncUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
       <PendingOrdersUpdater />
@@ -99,6 +102,7 @@ export function Updaters(): ReactNode {
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
+      <WidgetStandaloneModeUpdater />
       <CowEventsUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
@@ -119,6 +123,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+      <AdditionalChainTokensListsUpdater targetChainId={selectedTargetChainId ?? targetChainId} />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
       <RecentTokensStorageUpdater />

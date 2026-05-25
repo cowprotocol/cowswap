@@ -1,10 +1,11 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -25,7 +26,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { useAppKitTheme } from '@reown/appkit/react'
+import { useConnection } from 'wagmi'
 
 import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -33,12 +35,14 @@ import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
 import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { DeadlineControl } from './controls/DeadlineControl'
+import { LocaleControl } from './controls/LocaleControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
+import { WidgetHooksControl } from './controls/WidgetHooksControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
@@ -74,8 +78,8 @@ export type WidgetMode = 'dapp' | 'standalone'
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Configurator({ title }: { title: string }) {
-  const { setThemeMode } = useWeb3ModalTheme()
-  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
+  const { setThemeMode } = useAppKitTheme()
+  const { chainId: walletChainId, isConnected } = useConnection()
   const provider = useProvider()
   const cowAnalytics = useCowAnalytics()
 
@@ -99,8 +103,14 @@ export function Configurator({ title }: { title: string }) {
   const tradeTypeState = useState<TradeType>(TRADE_MODES[0])
   const [currentTradeType] = tradeTypeState
 
+  const localeState = useState<SupportedLocale | ''>('')
+  const [locale] = localeState
+
   const tradeModesState = useState<TradeType[]>(TRADE_MODES)
   const [enabledTradeTypes] = tradeModesState
+
+  const widgetHooksState = useState<WidgetHookEvents[]>([])
+  const [enabledWidgetHooks] = widgetHooksState
 
   const sellTokenState = useState<string>(DEFAULT_STATE.sellToken)
   const sellTokenAmountState = useState<number>(DEFAULT_STATE.sellAmount)
@@ -139,6 +149,7 @@ export function Configurator({ title }: { title: string }) {
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
+  const [boxShadow, setBoxShadow] = useState<string>('')
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
@@ -148,11 +159,50 @@ export function Configurator({ title }: { title: string }) {
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
   const toggleDisableProgressBar = useCallback(() => setDisableProgressBar((curr) => !curr), [])
 
+  const [disablePostTradeTips, setDisablePostTradeTips] = useState<boolean>(false)
+  const toggleDisablePostTradeTips = useCallback(() => setDisablePostTradeTips((curr) => !curr), [])
+
+  const [disableCrossChainSwap, setDisableCrossChainSwap] = useState<boolean>(false)
+  const toggleDisableCrossChainSwap = useCallback(() => setDisableCrossChainSwap((curr) => !curr), [])
+
+  const [disableTokenImport, setDisableTokenImport] = useState<boolean>(false)
+  const toggleDisableTokenImport = useCallback(() => setDisableTokenImport((curr) => !curr), [])
+
+  const [hideRecentTokens, setHideRecentTokens] = useState<boolean>(false)
+  const toggleHideRecentTokens = useCallback(() => setHideRecentTokens((curr) => !curr), [])
+
+  const [hideFavoriteTokens, setHideFavoriteTokens] = useState<boolean>(false)
+  const toggleHideFavoriteTokens = useCallback(() => setHideFavoriteTokens((curr) => !curr), [])
+
   const [hideBridgeInfo, setHideBridgeInfo] = useState<boolean | undefined>(false)
   const toggleHideBridgeInfo = useCallback(() => setHideBridgeInfo((curr) => !curr), [])
 
   const [hideOrdersTable, setHideOrdersTable] = useState<boolean | undefined>(false)
   const toggleHideOrdersTable = useCallback(() => setHideOrdersTable((curr) => !curr), [])
+
+  const [disableTradeWhenPriceImpactIsUnknown, setDisableTradeWhenPriceImpactIsUnknown] = useState(false)
+  const selectBlockUnknownPriceImpact = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setDisableTradeWhenPriceImpactIsUnknown(event.target.value === 'true')
+  }, [])
+
+  const [disableTradeWhenPriceImpactIsHigherThan, setDisableTradeWhenPriceImpactIsHigherThan] = useState<
+    number | undefined
+  >()
+  const setBlockPriceImpactAboveValue = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value.trim()
+
+    if (!nextValue) {
+      setDisableTradeWhenPriceImpactIsHigherThan(undefined)
+
+      return
+    }
+
+    const parsedValue = Number(nextValue)
+
+    if (Number.isNaN(parsedValue)) return
+
+    setDisableTradeWhenPriceImpactIsHigherThan(parsedValue)
+  }, [])
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -171,10 +221,13 @@ export function Configurator({ title }: { title: string }) {
     swapDeadline,
     limitDeadline,
     advancedDeadline,
-    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : (walletChainId as SupportedChainId),
+    locale: locale || undefined,
     theme: mode,
+    boxShadow: boxShadow || undefined,
     currentTradeType,
     enabledTradeTypes,
+    enabledWidgetHooks,
     sellToken,
     sellTokenAmount,
     buyToken,
@@ -187,8 +240,15 @@ export function Configurator({ title }: { title: string }) {
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
+    disablePostTradeTips,
+    disableCrossChainSwap,
+    disableTokenImport,
+    hideRecentTokens,
+    hideFavoriteTokens,
     hideBridgeInfo,
     hideOrdersTable,
+    disableTradeWhenPriceImpactIsUnknown,
+    disableTradeWhenPriceImpactIsHigherThan,
   }
 
   const rawParamsObject = useMemo(() => {
@@ -270,11 +330,8 @@ export function Configurator({ title }: { title: string }) {
             </FormControl>
             {!standaloneMode && (
               <div style={WalletConnectionWrapper}>
-                {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
-                {/* Error: apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.*/}
-                {/* Fix from https://github.com/reown-com/appkit/issues/3093 */}
                 {/* @ts-ignore */}
-                <w3m-button />
+                <appkit-button />
               </div>
             )}
           </>
@@ -286,9 +343,24 @@ export function Configurator({ title }: { title: string }) {
 
         <PaletteControl paletteManager={paletteManager} />
 
+        <TextField
+          fullWidth
+          margin="dense"
+          id="boxShadow"
+          label="Widget shadow"
+          helperText='CSS box-shadow value. Use "none" to disable it.'
+          value={boxShadow}
+          onChange={(event) => setBoxShadow(event.target.value)}
+          size="medium"
+        />
+
         <TradeModesControl state={tradeModesState} />
 
+        <WidgetHooksControl state={widgetHooksState} />
+
         <CurrentTradeTypeControl state={tradeTypeState} />
+
+        <LocaleControl state={localeState} />
 
         {!IS_IFRAME && (
           <NetworkControl
@@ -354,6 +426,58 @@ export function Configurator({ title }: { title: string }) {
         </FormControl>
 
         <FormControl component="fieldset">
+          <FormLabel component="legend">Post-trade CoW Swap tips:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disablePostTradeTips}
+            onChange={toggleDisablePostTradeTips}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Show post-trade tips" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide post-trade tips" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Cross-chain swaps:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disableCrossChainSwap}
+            onChange={toggleDisableCrossChainSwap}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Enable cross-chain swaps" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable cross-chain swaps" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Custom tokens and lists:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={disableTokenImport} onChange={toggleDisableTokenImport}>
+            <FormControlLabel value="false" control={<Radio />} label="Allow importing custom tokens/lists" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable importing custom tokens/lists" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Recent tokens:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideRecentTokens} onChange={toggleHideRecentTokens}>
+            <FormControlLabel value="false" control={<Radio />} label="Show recent tokens" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide recent tokens" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Favorite tokens:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={hideFavoriteTokens} onChange={toggleHideFavoriteTokens}>
+            <FormControlLabel value="false" control={<Radio />} label="Show favorite tokens" />
+            <FormControlLabel value="true" control={<Radio />} label="Hide favorite tokens" />
+          </RadioGroup>
+        </FormControl>
+
+        <FormControl component="fieldset">
           <FormLabel component="legend">Hide bridge info:</FormLabel>
           <RadioGroup row aria-label="mode" name="mode" value={hideBridgeInfo} onChange={toggleHideBridgeInfo}>
             <FormControlLabel value="false" control={<Radio />} label="Show bridge info" />
@@ -368,7 +492,35 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="true" control={<Radio />} label="Hide orders table" />
           </RadioGroup>
         </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Disable trade when price impact is unknown:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="disable-trade-when-price-impact-is-unknown"
+            name="disable-trade-when-price-impact-is-unknown"
+            value={disableTradeWhenPriceImpactIsUnknown}
+            onChange={selectBlockUnknownPriceImpact}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Allow trade" />
+            <FormControlLabel value="true" control={<Radio />} label="Disable trade" />
+          </RadioGroup>
+        </FormControl>
 
+        <TextField
+          fullWidth
+          margin="dense"
+          id="disableTradeWhenPriceImpactIsHigherThan"
+          label="Disable trade when price impact is higher than (%)"
+          type="number"
+          value={disableTradeWhenPriceImpactIsHigherThan ?? ''}
+          onChange={setBlockPriceImpactAboveValue}
+          size="medium"
+          helperText="Leave empty to disable"
+          inputProps={{
+            min: 0,
+            step: 'any',
+          }}
+        />
         <TextField
           fullWidth
           margin="dense"
@@ -431,6 +583,7 @@ export function Configurator({ title }: { title: string }) {
                 params={params}
                 provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
                 listeners={listeners}
+                onReady={() => console.log('[configurator:onReady] Widget ready')}
               />
             )}
           </>

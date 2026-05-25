@@ -5,6 +5,7 @@ migrateNetworkMismatchUserAddedTokens()
 migrateTokenListsFromGithubCdn()
 
 // Updaters
+export { AdditionalChainTokensListsUpdater } from './updaters/AdditionalChainTokensListsUpdater'
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
@@ -38,6 +39,7 @@ export { useRemoveUserToken } from './hooks/tokens/userAdded/useRemoveUserToken'
 export { useResetUserTokens } from './hooks/tokens/userAdded/useResetUserTokens'
 export { useRemoveList } from './hooks/lists/useRemoveList'
 export { useToggleList } from './hooks/lists/useToggleList'
+export { useIsXstockToken } from './hooks/lists/useIsXstockToken'
 export { useListsEnabledState } from './hooks/lists/useListsEnabledState'
 export { useAddUnsupportedToken } from './hooks/tokens/unsupported/useAddUnsupportedToken'
 export { useRemoveUnsupportedToken } from './hooks/tokens/unsupported/useRemoveUnsupportedToken'
@@ -58,8 +60,14 @@ export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
+
+// State
 export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
+export { environmentAtom } from './state/environmentAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
+export { allActiveTokensAtom } from './state/tokens/allTokensAtom'
+export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
+export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
 
 // Utils
 export { getTokenId } from '@cowprotocol/cow-sdk'

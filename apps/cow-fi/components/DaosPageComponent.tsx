@@ -3,10 +3,10 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconCrownCowSrc from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import iconGhostSrc from '@cowprotocol/assets/images/icon-ghost.svg'
+import iconOwlSrc from '@cowprotocol/assets/images/icon-owl.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -53,7 +53,7 @@ export function DaosPageComponent() {
           <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
         </HeroContent>
         <HeroImage width={470} height={400} color={Color.cowfi_purple3}>
-          <LazySVG src={IMG_ICON_BULB_COW} />
+          <LazySVG src={iconBulbCowSrc} />
         </HeroImage>
       </HeroContainer>
 
@@ -79,7 +79,7 @@ export function DaosPageComponent() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
-              <LazySVG src={IMG_ICON_CROWN_COW} />
+              <LazySVG src={iconCrownCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
             <SectionTitleDescription maxWidth={900}>
@@ -287,7 +287,7 @@ export function DaosPageComponent() {
           </TopicList>
 
           <Link
-            href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb"
+            href="https://docs.cow.fi/category/order-types"
             linkType={LinkType.SectionTitleButton}
             utmContent="link-to-advanced-order-types"
             margin="24px auto 0"
@@ -309,9 +309,9 @@ export function DaosPageComponent() {
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
             <SectionTitleIcon $multiple>
-              <LazySVG src={IMG_ICON_OWL} />
+              <LazySVG src={iconOwlSrc} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <LazySVG src={IMG_ICON_GHOST} />
+              <LazySVG src={iconGhostSrc} />
             </SectionTitleIcon>
             <SectionTitleText>Trusted by the best</SectionTitleText>
           </SectionTitleWrapper>

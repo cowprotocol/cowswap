@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useWindowSize } from '@cowprotocol/common-hooks'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
@@ -12,7 +13,7 @@ import { bindPopper, removePopper, updateLayout } from './utils'
 
 import { Order } from '../../../api/operator'
 import { traceToTransfersAndTrades } from '../../../api/tenderly'
-import UnknownToken from '../../../assets/img/question1.svg'
+import svgQuestion1Src from '../../../assets/img/question1.svg'
 import { useMultipleErc20 } from '../../../hooks/useErc20'
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { useTransactionData } from '../../../hooks/useTransactionData'
@@ -194,7 +195,7 @@ function getStylesheets(
       // Right now unknown token image will only be used when the address is undefined
       // which is not likely
       // A way to deal with this would be to first fetch the image and when it fails set the fallback image
-      const image = getImageUrl(node.data.address) || UnknownToken
+      const image = getImageUrl(node.data.address) || svgQuestion1Src
 
       stylesheets.push({
         selector: `node[id="${node.data.id}"]`,
@@ -255,8 +256,8 @@ export function useTxBatchData(
   const orderTokens = useMemo(
     () =>
       orders?.reduce((acc, order) => {
-        if (order.sellToken) acc[order.sellToken.address.toLowerCase()] = order.sellToken
-        if (order.buyToken) acc[order.buyToken.address.toLowerCase()] = order.buyToken
+        if (order.sellToken) acc[getAddressKey(order.sellToken.address)] = order.sellToken
+        if (order.buyToken) acc[getAddressKey(order.buyToken.address)] = order.buyToken
 
         return acc
       }, {}) || {},

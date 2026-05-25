@@ -9,7 +9,7 @@ import {
   OrderCompetitionStatus,
   SolverCompetitionResponse,
 } from 'api/operator'
-import { SolverInfo, fetchSolversInfo } from 'utils/fetchSolversInfo'
+import { fetchSolversInfo, SolverInfo } from 'utils/fetchSolversInfo'
 
 import { useOrderSolver } from '../../hooks/useOrderSolver'
 
@@ -60,7 +60,7 @@ const CROSS_NETWORK_SOLVER: SolverInfo = {
 
 function createMockOrder(overrides: Partial<Order> = {}): Order {
   return {
-    uid: 'order-abc-123',
+    uid: '0x1',
     owner: '0x1234',
     receiver: '0x5678',
     kind: 'sell',
@@ -102,7 +102,7 @@ function mockCompetitionStatus(solverName: string): OrderCompetitionStatus {
   }
 }
 
-function mockSolverCompetitionResponse(solverName: string): SolverCompetitionResponse {
+function mockSolverCompetitionResponse(solverName: string, orderId = '0x1'): SolverCompetitionResponse {
   return {
     auctionId: 1,
     solutions: [
@@ -111,7 +111,7 @@ function mockSolverCompetitionResponse(solverName: string): SolverCompetitionRes
         isWinner: true,
         solverAddress: '0xsolver',
         ranking: 1,
-        orders: [],
+        orders: [{ id: orderId }],
       } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
     ],
   } as SolverCompetitionResponse

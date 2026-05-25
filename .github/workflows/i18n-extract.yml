@@ -1,0 +1,59 @@
+name: i18n Extract
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: lts/jod
+  # needed by tools/scripts/install-sdk-preview.js when package.json pins a `pr-NNN`
+  # SDK preview build — install:ci writes an .npmrc that auths to GitHub Packages.
+  PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
+
+jobs:
+  i18n-extract:
+    name: Extract i18n strings
+    runs-on: ubuntu-latest
+    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks)
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+
+      - name: Set up node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm run install:ci
+
+      - name: Extract i18n strings
+        run: pnpm run i18n:extract
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet 'apps/cowswap-frontend/src/locales/*.po'; then
+            echo "No i18n changes detected in changed files"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add 'apps/cowswap-frontend/src/locales/*.po'
+            git commit -m "chore(i18n): extract i18n strings [automatic]"
+            git push
+          fi

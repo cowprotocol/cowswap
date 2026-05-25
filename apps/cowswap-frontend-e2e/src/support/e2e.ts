@@ -19,6 +19,20 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing'
 import './commands'
 import { injected } from './ethereum'
 
+// Wagmi storage key prefix (must match the `key` in wagmi's createStorage config)
+const WAGMI_STORAGE_KEY = 'cowswap-wallet'
+
+/**
+ * Seed wagmi's sessionStorage entries so the injected connector is recognised
+ * as "previously connected" and `reconnect()` will auto-connect on mount.
+ */
+function seedWagmiConnectionState(storage: Storage): void {
+  // Mark the injected connector as previously connected
+  storage.setItem(`${WAGMI_STORAGE_KEY}.injected.connected`, 'true')
+  // Set the recent connector so reconnect prioritises it
+  storage.setItem(`${WAGMI_STORAGE_KEY}.recentConnectorId`, '"injected"')
+}
+
 declare global {
   namespace Cypress {
     interface ApplicationWindow {
@@ -40,7 +54,8 @@ Cypress.Commands.overwrite(
       url: url.toString(),
       onBeforeLoad(win) {
         options?.onBeforeLoad?.(win)
-        win.localStorage.clear()
+        win.sessionStorage.clear()
+        seedWagmiConnectionState(win.sessionStorage)
         win.ethereum = injected
       },
     })
@@ -89,6 +104,9 @@ const cachedUrls = [
 ]
 
 beforeEach(() => {
+  // Clear cache before each test to prevent cross-spec contamination
+  cypressCache.clear()
+
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
   cy.intercept(/infura.io/, (req) => {
@@ -119,7 +137,8 @@ beforeEach(() => {
   })
 
   cy.on('window:before:load', (win) => {
-    win.localStorage.clear()
+    win.sessionStorage.clear()
+    seedWagmiConnectionState(win.sessionStorage)
     win.ethereum = injected
   })
 })

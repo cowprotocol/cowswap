@@ -5,7 +5,7 @@ import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 
 import * as styledEl from './styled'
 
@@ -47,7 +47,7 @@ export function ImportListModal(props: ImportListModalProps): ReactNode {
       </styledEl.ListInfo>
       {isBlocked ? (
         <styledEl.BlockedWarning>
-          <AlertCircle size={18} />
+          <AlertTriangle size={18} />
           {blockReason || defaultBlockReason}
         </styledEl.BlockedWarning>
       ) : (

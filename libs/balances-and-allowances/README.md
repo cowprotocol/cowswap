@@ -3,7 +3,7 @@
 This lib is responsible for fetching balances and allowances for all tokens in the app.
 
 The most of the lib logic is concentrated in the `BalancesAndAllowancesUpdater`.  
-The updater depends on two main libraries `@cowprotocol/tokens` and `@cowprotocol/multicall`.  
+The updater depends on `@cowprotocol/tokens`.  
 From tokens lib it gets the list of tokens using `useAllTokens()` hook and does multicall for them using `multicall` lib and just stores results into jotai stores.
 
 ## Usage

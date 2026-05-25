@@ -5,7 +5,7 @@ import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import IMAGE_CARET from 'assets/icon/caret.svg'
+import iconCaretSrc from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
@@ -43,7 +43,7 @@ interface TradeWidgetLinksProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
@@ -87,7 +87,11 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           ? addChainIdToRoute(item.route, chainId)
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
 
-      const isActive = location.pathname.startsWith(routePath.split('?')[0])
+      const routeBasePath = addChainIdToRoute(item.route, chainId)
+      const hooksBasePath = addChainIdToRoute(Routes.HOOKS, chainId)
+      const isActive =
+        location.pathname.startsWith(routeBasePath) &&
+        (item.route === Routes.HOOKS || !location.pathname.startsWith(hooksBasePath))
 
       return (
         <MenuItem
@@ -125,7 +129,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       >
         <styledEl.DropdownButton>
           {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
+          {!singleMenuItem ? <SVG src={iconCaretSrc} title={t`select`} /> : null}
         </styledEl.DropdownButton>
       </styledEl.MenuItem>
 

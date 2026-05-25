@@ -1,3 +1,10 @@
+import {
+  ALL_SUPPORTED_CHAINS_MAP,
+  areAddressesEqual,
+  getAddressKey,
+  SupportedChainId,
+  WRAPPED_NATIVE_CURRENCIES,
+} from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
@@ -21,10 +28,31 @@ export function useCrossChainTokens(crossChainOrder: CrossChainOrder): CrossChai
 
   const { data: destinationChainTokens } = useBridgeProviderBuyTokens(provider, destinationChainId)
 
-  const sourceToken = sourceTokens && sourceTokens[inputTokenAddress.toLowerCase()]
-  const intermediateToken = sourceTokens && sourceTokens[order.buyToken.toLowerCase()]
+  const sourceToken = sourceTokens && sourceTokens[getAddressKey(inputTokenAddress)]
+  const intermediateToken = sourceTokens && sourceTokens[getAddressKey(order.buyToken)]
   const destinationToken =
-    destinationChainTokens && outputTokenAddress ? destinationChainTokens[outputTokenAddress.toLowerCase()] : undefined
+    destinationChainTokens && outputTokenAddress
+      ? resolveDestinationToken(destinationChainId, destinationChainTokens, outputTokenAddress)
+      : undefined
 
   return { sourceToken, intermediateToken, destinationToken }
+}
+
+function resolveDestinationToken(
+  destinationChainId: SupportedChainId,
+  destinationChainTokens: Record<string, TokenInfo>,
+  outputTokenAddress: string,
+): TokenInfo | undefined {
+  const address = getAddressKey(outputTokenAddress)
+  const token = destinationChainTokens[address]
+  const wrapped = WRAPPED_NATIVE_CURRENCIES[destinationChainId]
+  const destinationChain = ALL_SUPPORTED_CHAINS_MAP[destinationChainId]
+
+  // Bungee has problems with WETH/ETH
+  // So we need to map them
+  if (!token && wrapped && areAddressesEqual(wrapped.address, address)) {
+    return destinationChain.nativeCurrency as TokenInfo
+  }
+
+  return token
 }

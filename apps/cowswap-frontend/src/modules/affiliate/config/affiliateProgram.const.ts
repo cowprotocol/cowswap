@@ -20,7 +20,7 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
 ] as const
 
 export const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
-export const PAST_ORDERS_SCAN_LIMIT = 10
+export const PAST_ORDERS_SCAN_LIMIT = 10 // per chain and env
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
@@ -29,8 +29,7 @@ export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.m
   (chainId) => CHAIN_INFO[chainId].label,
 )
 
-// TODO: replace placeholder URL once the referral docs are provisioned
-export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.fi/learn'
+export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.fi/affiliate-program'
 export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'
 
 export const AFFILIATE_REWARDS_CURRENCY = 'USDC'

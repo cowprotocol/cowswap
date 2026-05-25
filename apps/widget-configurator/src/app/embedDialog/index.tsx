@@ -1,10 +1,11 @@
 import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
-import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
-import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
-import TSIcon from '@cowprotocol/assets/cow-swap/ts.svg'
+import svgHtmlSrc from '@cowprotocol/assets/cow-swap/html.svg'
+import svgJsSrc from '@cowprotocol/assets/cow-swap/js.svg'
+import svgReactSrc from '@cowprotocol/assets/cow-swap/react.svg'
+import svgTsSrc from '@cowprotocol/assets/cow-swap/ts.svg'
+import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
@@ -45,28 +46,28 @@ const TABS: TabInfo[] = [
     label: 'React Typescript',
     language: 'typescript',
     snippetFromParams: reactTsExample,
-    icon: ReactIcon,
+    icon: svgReactSrc,
   },
   {
     id: 1,
     label: 'Typescript',
     language: 'typescript',
     snippetFromParams: tsExample,
-    icon: TSIcon,
+    icon: svgTsSrc,
   },
   {
     id: 2,
     label: 'Javascript',
     language: 'javascript',
     snippetFromParams: jsExample,
-    icon: JSIcon,
+    icon: svgJsSrc,
   },
   {
     id: 3,
     label: 'Pure HTML',
     language: 'html',
     snippetFromParams: vanillaNoDepsExample,
-    icon: HTMLIcon,
+    icon: svgHtmlSrc,
   },
 ]
 
@@ -100,10 +101,11 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
   const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [, copyToClipboard] = useCopyClipboard(3000)
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(code)
+    copyToClipboard(code)
     cowAnalytics.sendEvent({
       category: AnalyticsCategory.WIDGET_CONFIGURATOR,
       action: 'Copy code',

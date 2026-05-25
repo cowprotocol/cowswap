@@ -1,790 +1,1005 @@
 # Changelog
 
-## [2.3.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.3.1...cow-fi-v2.3.2) (2026-03-19)
+## [2.6.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.6.0...cow-fi-v2.6.1) (2026-05-22)
 
+### Patch Changes
 
-### Dependencies
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.0
+  - @cowprotocol/ui@3.6.0
+  - @cowprotocol/analytics@3.3.1
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/core@3.3.0
+  - @cowprotocol/events@4.4.1
+  - @cowprotocol/types@4.3.2
+  - @cowprotocol/widget-react@3.0.5
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 3.0.2
-    * @cowprotocol/common-const bumped to 3.0.2
-    * @cowprotocol/common-hooks bumped to 3.0.2
-    * @cowprotocol/common-utils bumped to 3.0.2
-    * @cowprotocol/core bumped to 3.0.2
-    * @cowprotocol/events bumped to 4.0.2
-    * @cowprotocol/types bumped to 4.1.0
-    * @cowprotocol/ui bumped to 3.0.2
-    * @cowprotocol/wallet bumped to 3.0.2
-    * @cowprotocol/wallet-provider bumped to 2.1.10
-    * @cowprotocol/widget-react bumped to 1.1.0
+## 2.6.0
 
-## [2.3.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.3.0...cow-fi-v2.3.1) (2026-03-18)
+### Minor Changes
 
+- feat: migrate from release-please to changesets (#7501)
 
-### Dependencies
+### Patch Changes
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 3.0.1
-    * @cowprotocol/common-const bumped to 3.0.1
-    * @cowprotocol/common-hooks bumped to 3.0.1
-    * @cowprotocol/common-utils bumped to 3.0.1
-    * @cowprotocol/core bumped to 3.0.1
-    * @cowprotocol/events bumped to 4.0.1
-    * @cowprotocol/types bumped to 4.0.1
-    * @cowprotocol/ui bumped to 3.0.1
-    * @cowprotocol/wallet bumped to 3.0.1
-    * @cowprotocol/wallet-provider bumped to 2.1.9
-    * @cowprotocol/widget-react bumped to 1.0.11
+- fix: resolve transitive deps
 
-## [2.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.2.0...cow-fi-v2.3.0) (2026-03-11)
+- Updated dependencies []:
+  - @cowprotocol/ui@3.5.0
+  - @cowprotocol/common-const@3.3.0
+  - @cowprotocol/common-utils@3.4.0
+  - @cowprotocol/analytics@3.3.0
+  - @cowprotocol/events@4.4.0
+  - @cowprotocol/core@3.2.3
+  - @cowprotocol/wallet@3.3.2
+  - @cowprotocol/common-hooks@3.2.3
+  - @cowprotocol/widget-react@3.0.4
 
-
-### ✨ Features
-
-* implement dynamic navigation items based on solvers feature flag ([#7126](https://github.com/cowprotocol/cowswap/issues/7126)) ([eba8bf9](https://github.com/cowprotocol/cowswap/commit/eba8bf938c07d70d0cea76cec6628fc5bd9c25f9))
-
-
-### 🔧 Miscellaneous
-
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
-
+## [2.5.9](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.8...cow-fi-v2.5.9) (2026-05-13)
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 3.0.0
-    * @cowprotocol/common-const bumped to 3.0.0
-    * @cowprotocol/common-hooks bumped to 3.0.0
-    * @cowprotocol/common-utils bumped to 3.0.0
-    * @cowprotocol/core bumped to 3.0.0
-    * @cowprotocol/events bumped to 4.0.0
-    * @cowprotocol/types bumped to 4.0.0
-    * @cowprotocol/ui bumped to 3.0.0
-    * @cowprotocol/wallet bumped to 3.0.0
-    * @cowprotocol/wallet-provider bumped to 2.1.8
-    * @cowprotocol/widget-react bumped to 1.0.10
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/wallet bumped to 3.3.1
+    - @cowprotocol/widget-react bumped to 3.0.3
 
-## [2.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.5...cow-fi-v2.2.0) (2026-03-10)
-
-
-### ✨ Features
-
-* **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
-
+## [2.5.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.7...cow-fi-v2.5.8) (2026-05-12)
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+- resolve transitive deps ([57d4b0f](https://github.com/cowprotocol/cowswap/commit/57d4b0f3236bdec7d3cd489fd663557ea31e6062))
 
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.2.2
+    - @cowprotocol/assets bumped to 2.3.0
+    - @cowprotocol/common-hooks bumped to 3.2.2
+    - @cowprotocol/common-utils bumped to 3.3.2
+    - @cowprotocol/core bumped to 3.2.2
+    - @cowprotocol/ui bumped to 3.4.0
+    - @cowprotocol/wallet bumped to 3.3.0
+
+## [2.5.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.6...cow-fi-v2.5.7) (2026-05-08)
+
+### 🐛 Bug Fixes
+
+- bump next version ([#7471](https://github.com/cowprotocol/cowswap/issues/7471)) ([5f0d60f](https://github.com/cowprotocol/cowswap/commit/5f0d60f1933ca435e49138c8c2133341bfd5bf9e))
+
+## [2.5.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.5...cow-fi-v2.5.6) (2026-04-30)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 3.0.2
+
+## [2.5.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.4...cow-fi-v2.5.5) (2026-04-22)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.2.1
+    - @cowprotocol/common-const bumped to 3.2.1
+    - @cowprotocol/common-hooks bumped to 3.2.1
+    - @cowprotocol/common-utils bumped to 3.3.1
+    - @cowprotocol/core bumped to 3.2.1
+    - @cowprotocol/events bumped to 4.3.1
+    - @cowprotocol/types bumped to 4.3.1
+    - @cowprotocol/ui bumped to 3.3.1
+    - @cowprotocol/wallet bumped to 3.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.17
+    - @cowprotocol/widget-react bumped to 3.0.1
+
+## [2.5.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.3...cow-fi-v2.5.4) (2026-04-16)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.2.0
+    - @cowprotocol/common-const bumped to 3.2.0
+    - @cowprotocol/common-hooks bumped to 3.2.0
+    - @cowprotocol/common-utils bumped to 3.3.0
+    - @cowprotocol/core bumped to 3.2.0
+    - @cowprotocol/events bumped to 4.3.0
+    - @cowprotocol/types bumped to 4.3.0
+    - @cowprotocol/ui bumped to 3.3.0
+    - @cowprotocol/wallet bumped to 3.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.16
+    - @cowprotocol/widget-react bumped to 3.0.0
+
+## [2.5.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.2...cow-fi-v2.5.3) (2026-04-15)
+
+### 🐛 Bug Fixes
+
+- revert back to cow.fi ([1043485](https://github.com/cowprotocol/cowswap/commit/10434853e5b29991ccf94eb15989ba76449caec3))
+- revert back to cow.fi ([5192a14](https://github.com/cowprotocol/cowswap/commit/5192a14f90bc4f8863327d1afa07c97cec25a2d1))
+- update grants link to point to the correct URL ([#7346](https://github.com/cowprotocol/cowswap/issues/7346)) ([b975cc4](https://github.com/cowprotocol/cowswap/commit/b975cc4d6c217f9b04776f4e2aa6769fe764600b))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.1.2
+    - @cowprotocol/common-const bumped to 3.1.2
+    - @cowprotocol/common-hooks bumped to 3.1.2
+    - @cowprotocol/common-utils bumped to 3.2.1
+    - @cowprotocol/core bumped to 3.1.2
+    - @cowprotocol/ui bumped to 3.2.2
+    - @cowprotocol/wallet bumped to 3.1.2
+    - @cowprotocol/wallet-provider bumped to 2.1.15
+    - @cowprotocol/widget-react bumped to 2.0.2
+
+## [2.5.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.1...cow-fi-v2.5.2) (2026-04-15)
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.4.0
-    * @cowprotocol/assets bumped to 2.1.0
-    * @cowprotocol/common-const bumped to 2.4.0
-    * @cowprotocol/common-hooks bumped to 2.4.0
-    * @cowprotocol/common-utils bumped to 2.4.0
-    * @cowprotocol/core bumped to 2.5.0
-    * @cowprotocol/events bumped to 3.4.0
-    * @cowprotocol/types bumped to 3.4.0
-    * @cowprotocol/ui bumped to 2.4.0
-    * @cowprotocol/wallet bumped to 2.4.0
-    * @cowprotocol/wallet-provider bumped to 2.1.7
-    * @cowprotocol/widget-react bumped to 1.0.9
-
-## [2.1.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.4...cow-fi-v2.1.5) (2026-02-25)
-
-
-### 🔧 Miscellaneous
-
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.3.2
-    * @cowprotocol/common-const bumped to 2.3.2
-    * @cowprotocol/common-hooks bumped to 2.3.2
-    * @cowprotocol/common-utils bumped to 2.3.2
-    * @cowprotocol/core bumped to 2.4.0
-    * @cowprotocol/events bumped to 3.3.2
-    * @cowprotocol/types bumped to 3.3.2
-    * @cowprotocol/ui bumped to 2.3.2
-    * @cowprotocol/wallet bumped to 2.3.2
-    * @cowprotocol/wallet-provider bumped to 2.1.6
-    * @cowprotocol/widget-react bumped to 1.0.8
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.1.1
+    - @cowprotocol/common-const bumped to 3.1.1
+    - @cowprotocol/common-hooks bumped to 3.1.1
+    - @cowprotocol/common-utils bumped to 3.2.0
+    - @cowprotocol/core bumped to 3.1.1
+    - @cowprotocol/events bumped to 4.2.1
+    - @cowprotocol/types bumped to 4.2.1
+    - @cowprotocol/ui bumped to 3.2.1
+    - @cowprotocol/wallet bumped to 3.1.1
+    - @cowprotocol/wallet-provider bumped to 2.1.14
+    - @cowprotocol/widget-react bumped to 2.0.1
 
-## [2.1.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.3...cow-fi-v2.1.4) (2026-02-24)
-
-
-### 🔧 Miscellaneous
-
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+## [2.5.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.5.0...cow-fi-v2.5.1) (2026-04-15)
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.3.1
-    * @cowprotocol/common-const bumped to 2.3.1
-    * @cowprotocol/common-hooks bumped to 2.3.1
-    * @cowprotocol/common-utils bumped to 2.3.1
-    * @cowprotocol/core bumped to 2.3.1
-    * @cowprotocol/events bumped to 3.3.1
-    * @cowprotocol/types bumped to 3.3.1
-    * @cowprotocol/ui bumped to 2.3.1
-    * @cowprotocol/wallet bumped to 2.3.1
-    * @cowprotocol/wallet-provider bumped to 2.1.5
-    * @cowprotocol/widget-react bumped to 1.0.7
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 2.0.0
 
-## [2.1.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.2...cow-fi-v2.1.3) (2026-02-20)
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.3.0
-    * @cowprotocol/common-const bumped to 2.3.0
-    * @cowprotocol/common-hooks bumped to 2.3.0
-    * @cowprotocol/common-utils bumped to 2.3.0
-    * @cowprotocol/core bumped to 2.3.0
-    * @cowprotocol/events bumped to 3.3.0
-    * @cowprotocol/types bumped to 3.3.0
-    * @cowprotocol/ui bumped to 2.3.0
-    * @cowprotocol/wallet bumped to 2.3.0
-    * @cowprotocol/wallet-provider bumped to 2.1.4
-    * @cowprotocol/widget-react bumped to 1.0.6
-
-## [2.1.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.1...cow-fi-v2.1.2) (2026-02-17)
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.2.2
-    * @cowprotocol/common-const bumped to 2.2.2
-    * @cowprotocol/common-hooks bumped to 2.2.2
-    * @cowprotocol/common-utils bumped to 2.2.2
-    * @cowprotocol/core bumped to 2.2.2
-    * @cowprotocol/ui bumped to 2.2.2
-    * @cowprotocol/wallet bumped to 2.2.2
-    * @cowprotocol/wallet-provider bumped to 2.1.3
-
-## [2.1.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.0...cow-fi-v2.1.1) (2026-02-16)
-
-
-### Dependencies
-
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.2.1
-    * @cowprotocol/common-const bumped to 2.2.1
-    * @cowprotocol/common-hooks bumped to 2.2.1
-    * @cowprotocol/common-utils bumped to 2.2.1
-    * @cowprotocol/core bumped to 2.2.1
-    * @cowprotocol/ui bumped to 2.2.1
-    * @cowprotocol/wallet bumped to 2.2.1
-    * @cowprotocol/wallet-provider bumped to 2.1.2
-
-## [2.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.4...cow-fi-v2.1.0) (2026-02-13)
-
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.9...cow-fi-v2.5.0) (2026-04-14)
 
 ### ✨ Features
 
-* **cow-fi:** add affiliate program terms page ([#6986](https://github.com/cowprotocol/cowswap/issues/6986)) ([833d6b5](https://github.com/cowprotocol/cowswap/commit/833d6b5dfd920939730a37bcf3a985b0e37896a1))
-
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.2.0
-    * @cowprotocol/common-const bumped to 2.2.0
-    * @cowprotocol/common-hooks bumped to 2.2.0
-    * @cowprotocol/common-utils bumped to 2.2.0
-    * @cowprotocol/core bumped to 2.2.0
-    * @cowprotocol/events bumped to 3.2.0
-    * @cowprotocol/types bumped to 3.2.0
-    * @cowprotocol/ui bumped to 2.2.0
-    * @cowprotocol/wallet bumped to 2.2.0
-    * @cowprotocol/wallet-provider bumped to 2.1.1
-    * @cowprotocol/widget-react bumped to 1.0.5
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.1.0
+    - @cowprotocol/common-const bumped to 3.1.0
+    - @cowprotocol/common-hooks bumped to 3.1.0
+    - @cowprotocol/common-utils bumped to 3.1.0
+    - @cowprotocol/core bumped to 3.1.0
+    - @cowprotocol/events bumped to 4.2.0
+    - @cowprotocol/types bumped to 4.2.0
+    - @cowprotocol/ui bumped to 3.2.0
+    - @cowprotocol/wallet bumped to 3.1.0
+    - @cowprotocol/wallet-provider bumped to 2.1.13
+    - @cowprotocol/widget-react bumped to 1.3.6
+
+## [2.4.9](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.8...cow-fi-v2.4.9) (2026-04-14)
+
+### 🐛 Bug Fixes
+
+- add maintenance message for swap and explorer ([#7327](https://github.com/cowprotocol/cowswap/issues/7327)) ([c4c1a4a](https://github.com/cowprotocol/cowswap/commit/c4c1a4a1fe2bc30a5c6abbd0144c972924f25a7d))
+
+## [2.4.8](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.7...cow-fi-v2.4.8) (2026-04-10)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/wallet bumped to 3.0.7
+    - @cowprotocol/widget-react bumped to 1.3.5
+
+## [2.4.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.6...cow-fi-v2.4.7) (2026-04-08)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.5
+    - @cowprotocol/assets bumped to 2.2.1
+    - @cowprotocol/common-const bumped to 3.0.4
+    - @cowprotocol/common-hooks bumped to 3.0.4
+    - @cowprotocol/common-utils bumped to 3.0.4
+    - @cowprotocol/core bumped to 3.0.4
+    - @cowprotocol/events bumped to 4.1.2
+    - @cowprotocol/types bumped to 4.1.2
+    - @cowprotocol/ui bumped to 3.1.3
+    - @cowprotocol/wallet bumped to 3.0.6
+    - @cowprotocol/wallet-provider bumped to 2.1.12
+    - @cowprotocol/widget-react bumped to 1.3.4
+
+## [2.4.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.5...cow-fi-v2.4.6) (2026-04-07)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.3.3
+
+## [2.4.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.4...cow-fi-v2.4.5) (2026-04-07)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.3.2
+
+## [2.4.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.3...cow-fi-v2.4.4) (2026-04-07)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.4
+    - @cowprotocol/common-const bumped to 3.0.3
+    - @cowprotocol/common-hooks bumped to 3.0.3
+    - @cowprotocol/common-utils bumped to 3.0.3
+    - @cowprotocol/core bumped to 3.0.3
+    - @cowprotocol/events bumped to 4.1.1
+    - @cowprotocol/types bumped to 4.1.1
+    - @cowprotocol/ui bumped to 3.1.2
+    - @cowprotocol/wallet bumped to 3.0.5
+    - @cowprotocol/wallet-provider bumped to 2.1.11
+    - @cowprotocol/widget-react bumped to 1.3.1
+
+## [2.4.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.2...cow-fi-v2.4.3) (2026-04-06)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.3.0
+
+## [2.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.1...cow-fi-v2.4.2) (2026-04-03)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.2.1
+
+## [2.4.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.4.0...cow-fi-v2.4.1) (2026-04-02)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.3
+    - @cowprotocol/events bumped to 4.1.0
+    - @cowprotocol/ui bumped to 3.1.1
+    - @cowprotocol/wallet bumped to 3.0.4
+    - @cowprotocol/widget-react bumped to 1.2.0
+
+## [2.4.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.3.2...cow-fi-v2.4.0) (2026-04-02)
+
+### ✨ Features
+
+- **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
+### 🐛 Bug Fixes
+
+- **affiliate:** update affiliate program documentation URLs ([#7239](https://github.com/cowprotocol/cowswap/issues/7239)) ([b83fb63](https://github.com/cowprotocol/cowswap/commit/b83fb63eaf4b81b6a040f35a65e47b99675f4ad0))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/assets bumped to 2.2.0
+    - @cowprotocol/ui bumped to 3.1.0
+    - @cowprotocol/wallet bumped to 3.0.3
+
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.3.1...cow-fi-v2.3.2) (2026-03-19)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.2
+    - @cowprotocol/common-const bumped to 3.0.2
+    - @cowprotocol/common-hooks bumped to 3.0.2
+    - @cowprotocol/common-utils bumped to 3.0.2
+    - @cowprotocol/core bumped to 3.0.2
+    - @cowprotocol/events bumped to 4.0.2
+    - @cowprotocol/types bumped to 4.1.0
+    - @cowprotocol/ui bumped to 3.0.2
+    - @cowprotocol/wallet bumped to 3.0.2
+    - @cowprotocol/wallet-provider bumped to 2.1.10
+    - @cowprotocol/widget-react bumped to 1.1.0
+
+## [2.3.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.3.0...cow-fi-v2.3.1) (2026-03-18)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.1
+    - @cowprotocol/common-const bumped to 3.0.1
+    - @cowprotocol/common-hooks bumped to 3.0.1
+    - @cowprotocol/common-utils bumped to 3.0.1
+    - @cowprotocol/core bumped to 3.0.1
+    - @cowprotocol/events bumped to 4.0.1
+    - @cowprotocol/types bumped to 4.0.1
+    - @cowprotocol/ui bumped to 3.0.1
+    - @cowprotocol/wallet bumped to 3.0.1
+    - @cowprotocol/wallet-provider bumped to 2.1.9
+    - @cowprotocol/widget-react bumped to 1.0.11
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.2.0...cow-fi-v2.3.0) (2026-03-11)
+
+### ✨ Features
+
+- implement dynamic navigation items based on solvers feature flag ([#7126](https://github.com/cowprotocol/cowswap/issues/7126)) ([eba8bf9](https://github.com/cowprotocol/cowswap/commit/eba8bf938c07d70d0cea76cec6628fc5bd9c25f9))
+
+### 🔧 Miscellaneous
+
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 3.0.0
+    - @cowprotocol/common-const bumped to 3.0.0
+    - @cowprotocol/common-hooks bumped to 3.0.0
+    - @cowprotocol/common-utils bumped to 3.0.0
+    - @cowprotocol/core bumped to 3.0.0
+    - @cowprotocol/events bumped to 4.0.0
+    - @cowprotocol/types bumped to 4.0.0
+    - @cowprotocol/ui bumped to 3.0.0
+    - @cowprotocol/wallet bumped to 3.0.0
+    - @cowprotocol/wallet-provider bumped to 2.1.8
+    - @cowprotocol/widget-react bumped to 1.0.10
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.5...cow-fi-v2.2.0) (2026-03-10)
+
+### ✨ Features
+
+- **explorer:** add solvers page and integrate solvers info fetching ([#7037](https://github.com/cowprotocol/cowswap/issues/7037)) ([2d14185](https://github.com/cowprotocol/cowswap/commit/2d14185ce7e0742713afbd935729d652ee31b83c))
+
+### 🐛 Bug Fixes
+
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
+
+### 🔧 Miscellaneous
+
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.4.0
+    - @cowprotocol/assets bumped to 2.1.0
+    - @cowprotocol/common-const bumped to 2.4.0
+    - @cowprotocol/common-hooks bumped to 2.4.0
+    - @cowprotocol/common-utils bumped to 2.4.0
+    - @cowprotocol/core bumped to 2.5.0
+    - @cowprotocol/events bumped to 3.4.0
+    - @cowprotocol/types bumped to 3.4.0
+    - @cowprotocol/ui bumped to 2.4.0
+    - @cowprotocol/wallet bumped to 2.4.0
+    - @cowprotocol/wallet-provider bumped to 2.1.7
+    - @cowprotocol/widget-react bumped to 1.0.9
+
+## [2.1.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.4...cow-fi-v2.1.5) (2026-02-25)
+
+### 🔧 Miscellaneous
+
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.3.2
+    - @cowprotocol/common-const bumped to 2.3.2
+    - @cowprotocol/common-hooks bumped to 2.3.2
+    - @cowprotocol/common-utils bumped to 2.3.2
+    - @cowprotocol/core bumped to 2.4.0
+    - @cowprotocol/events bumped to 3.3.2
+    - @cowprotocol/types bumped to 3.3.2
+    - @cowprotocol/ui bumped to 2.3.2
+    - @cowprotocol/wallet bumped to 2.3.2
+    - @cowprotocol/wallet-provider bumped to 2.1.6
+    - @cowprotocol/widget-react bumped to 1.0.8
+
+## [2.1.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.3...cow-fi-v2.1.4) (2026-02-24)
+
+### 🔧 Miscellaneous
+
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.3.1
+    - @cowprotocol/common-const bumped to 2.3.1
+    - @cowprotocol/common-hooks bumped to 2.3.1
+    - @cowprotocol/common-utils bumped to 2.3.1
+    - @cowprotocol/core bumped to 2.3.1
+    - @cowprotocol/events bumped to 3.3.1
+    - @cowprotocol/types bumped to 3.3.1
+    - @cowprotocol/ui bumped to 2.3.1
+    - @cowprotocol/wallet bumped to 2.3.1
+    - @cowprotocol/wallet-provider bumped to 2.1.5
+    - @cowprotocol/widget-react bumped to 1.0.7
+
+## [2.1.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.2...cow-fi-v2.1.3) (2026-02-20)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.3.0
+    - @cowprotocol/common-const bumped to 2.3.0
+    - @cowprotocol/common-hooks bumped to 2.3.0
+    - @cowprotocol/common-utils bumped to 2.3.0
+    - @cowprotocol/core bumped to 2.3.0
+    - @cowprotocol/events bumped to 3.3.0
+    - @cowprotocol/types bumped to 3.3.0
+    - @cowprotocol/ui bumped to 2.3.0
+    - @cowprotocol/wallet bumped to 2.3.0
+    - @cowprotocol/wallet-provider bumped to 2.1.4
+    - @cowprotocol/widget-react bumped to 1.0.6
+
+## [2.1.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.1...cow-fi-v2.1.2) (2026-02-17)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.2.2
+    - @cowprotocol/common-const bumped to 2.2.2
+    - @cowprotocol/common-hooks bumped to 2.2.2
+    - @cowprotocol/common-utils bumped to 2.2.2
+    - @cowprotocol/core bumped to 2.2.2
+    - @cowprotocol/ui bumped to 2.2.2
+    - @cowprotocol/wallet bumped to 2.2.2
+    - @cowprotocol/wallet-provider bumped to 2.1.3
+
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.1.0...cow-fi-v2.1.1) (2026-02-16)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.2.1
+    - @cowprotocol/common-const bumped to 2.2.1
+    - @cowprotocol/common-hooks bumped to 2.2.1
+    - @cowprotocol/common-utils bumped to 2.2.1
+    - @cowprotocol/core bumped to 2.2.1
+    - @cowprotocol/ui bumped to 2.2.1
+    - @cowprotocol/wallet bumped to 2.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.2
+
+## [2.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.4...cow-fi-v2.1.0) (2026-02-13)
+
+### ✨ Features
+
+- **cow-fi:** add affiliate program terms page ([#6986](https://github.com/cowprotocol/cowswap/issues/6986)) ([833d6b5](https://github.com/cowprotocol/cowswap/commit/833d6b5dfd920939730a37bcf3a985b0e37896a1))
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.2.0
+    - @cowprotocol/common-const bumped to 2.2.0
+    - @cowprotocol/common-hooks bumped to 2.2.0
+    - @cowprotocol/common-utils bumped to 2.2.0
+    - @cowprotocol/core bumped to 2.2.0
+    - @cowprotocol/events bumped to 3.2.0
+    - @cowprotocol/types bumped to 3.2.0
+    - @cowprotocol/ui bumped to 2.2.0
+    - @cowprotocol/wallet bumped to 2.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.1
+    - @cowprotocol/widget-react bumped to 1.0.5
 
 ## [2.0.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.3...cow-fi-v2.0.4) (2026-02-10)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/widget-react bumped to 1.0.4
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.0.4
 
 ## [2.0.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.2...cow-fi-v2.0.3) (2026-02-09)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/widget-react bumped to 1.0.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/widget-react bumped to 1.0.3
 
 ## [2.0.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.1...cow-fi-v2.0.2) (2026-02-05)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.1.0
-    * @cowprotocol/assets bumped to 2.0.1
-    * @cowprotocol/balances-and-allowances bumped to 2.1.0
-    * @cowprotocol/common-const bumped to 2.1.0
-    * @cowprotocol/common-hooks bumped to 2.1.0
-    * @cowprotocol/common-utils bumped to 2.1.0
-    * @cowprotocol/core bumped to 2.1.0
-    * @cowprotocol/cowswap-abis bumped to 3.0.0
-    * @cowprotocol/ens bumped to 2.1.0
-    * @cowprotocol/events bumped to 3.1.0
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.2
-    * @cowprotocol/iframe-transport bumped to 2.0.2
-    * @cowprotocol/multicall bumped to 2.1.0
-    * @cowprotocol/permit-utils bumped to 2.1.0
-    * @cowprotocol/snackbars bumped to 2.0.2
-    * @cowprotocol/tokens bumped to 2.1.0
-    * @cowprotocol/types bumped to 3.1.0
-    * @cowprotocol/ui bumped to 2.1.0
-    * @cowprotocol/ui-utils bumped to 2.0.1
-    * @cowprotocol/wallet bumped to 2.1.0
-    * @cowprotocol/wallet-provider bumped to 2.1.0
-    * @cowprotocol/widget-lib bumped to 1.1.0
-    * @cowprotocol/widget-react bumped to 1.0.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.1.0
+    - @cowprotocol/assets bumped to 2.0.1
+    - @cowprotocol/balances-and-allowances bumped to 2.1.0
+    - @cowprotocol/common-const bumped to 2.1.0
+    - @cowprotocol/common-hooks bumped to 2.1.0
+    - @cowprotocol/common-utils bumped to 2.1.0
+    - @cowprotocol/core bumped to 2.1.0
+    - @cowprotocol/cowswap-abis bumped to 3.0.0
+    - @cowprotocol/ens bumped to 2.1.0
+    - @cowprotocol/events bumped to 3.1.0
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.2
+    - @cowprotocol/iframe-transport bumped to 2.0.2
+    - @cowprotocol/multicall bumped to 2.1.0
+    - @cowprotocol/permit-utils bumped to 2.1.0
+    - @cowprotocol/snackbars bumped to 2.0.2
+    - @cowprotocol/tokens bumped to 2.1.0
+    - @cowprotocol/types bumped to 3.1.0
+    - @cowprotocol/ui bumped to 2.1.0
+    - @cowprotocol/ui-utils bumped to 2.0.1
+    - @cowprotocol/wallet bumped to 2.1.0
+    - @cowprotocol/wallet-provider bumped to 2.1.0
+    - @cowprotocol/widget-lib bumped to 1.1.0
+    - @cowprotocol/widget-react bumped to 1.0.2
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.0.0...cow-fi-v2.0.1) (2026-02-02)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.0.1
-    * @cowprotocol/balances-and-allowances bumped to 2.0.1
-    * @cowprotocol/common-const bumped to 2.0.1
-    * @cowprotocol/common-hooks bumped to 2.0.1
-    * @cowprotocol/common-utils bumped to 2.0.1
-    * @cowprotocol/core bumped to 2.0.1
-    * @cowprotocol/ens bumped to 2.0.1
-    * @cowprotocol/events bumped to 3.0.1
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
-    * @cowprotocol/iframe-transport bumped to 2.0.1
-    * @cowprotocol/multicall bumped to 2.0.1
-    * @cowprotocol/permit-utils bumped to 2.0.1
-    * @cowprotocol/snackbars bumped to 2.0.1
-    * @cowprotocol/tokens bumped to 2.0.1
-    * @cowprotocol/types bumped to 3.0.1
-    * @cowprotocol/ui bumped to 2.0.1
-    * @cowprotocol/wallet bumped to 2.0.1
-    * @cowprotocol/widget-lib bumped to 1.0.1
-    * @cowprotocol/widget-react bumped to 1.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.0.1
+    - @cowprotocol/balances-and-allowances bumped to 2.0.1
+    - @cowprotocol/common-const bumped to 2.0.1
+    - @cowprotocol/common-hooks bumped to 2.0.1
+    - @cowprotocol/common-utils bumped to 2.0.1
+    - @cowprotocol/core bumped to 2.0.1
+    - @cowprotocol/ens bumped to 2.0.1
+    - @cowprotocol/events bumped to 3.0.1
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.1
+    - @cowprotocol/iframe-transport bumped to 2.0.1
+    - @cowprotocol/multicall bumped to 2.0.1
+    - @cowprotocol/permit-utils bumped to 2.0.1
+    - @cowprotocol/snackbars bumped to 2.0.1
+    - @cowprotocol/tokens bumped to 2.0.1
+    - @cowprotocol/types bumped to 3.0.1
+    - @cowprotocol/ui bumped to 2.0.1
+    - @cowprotocol/wallet bumped to 2.0.1
+    - @cowprotocol/widget-lib bumped to 1.0.1
+    - @cowprotocol/widget-react bumped to 1.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.32.0...cow-fi-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
-* **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
-* **mev-blocker:** update redirect page with announcement link and new subtitle ([#6897](https://github.com/cowprotocol/cowswap/issues/6897)) ([2010bf8](https://github.com/cowprotocol/cowswap/commit/2010bf8750ddd19361d8d7424c92bbacb62e60fa))
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- add repo-wide AGENTS.md with app-specific overlays ([#6865](https://github.com/cowprotocol/cowswap/issues/6865)) ([a2a4239](https://github.com/cowprotocol/cowswap/commit/a2a4239b11691585396f1959475cbbcf535e2853))
+- **limit:** load more orders button [#6853](https://github.com/cowprotocol/cowswap/issues/6853) ([b647396](https://github.com/cowprotocol/cowswap/commit/b647396c09f00b878ae06d0b0932c40512c0cba1))
+- **mev-blocker:** update redirect page with announcement link and new subtitle ([#6897](https://github.com/cowprotocol/cowswap/issues/6897)) ([2010bf8](https://github.com/cowprotocol/cowswap/commit/2010bf8750ddd19361d8d7424c92bbacb62e60fa))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/analytics bumped to 2.0.0
-    * @cowprotocol/assets bumped to 2.0.0
-    * @cowprotocol/balances-and-allowances bumped to 2.0.0
-    * @cowprotocol/common-const bumped to 2.0.0
-    * @cowprotocol/common-hooks bumped to 2.0.0
-    * @cowprotocol/common-utils bumped to 2.0.0
-    * @cowprotocol/core bumped to 2.0.0
-    * @cowprotocol/cowswap-abis bumped to 2.0.0
-    * @cowprotocol/ens bumped to 2.0.0
-    * @cowprotocol/events bumped to 3.0.0
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
-    * @cowprotocol/iframe-transport bumped to 2.0.0
-    * @cowprotocol/multicall bumped to 2.0.0
-    * @cowprotocol/permit-utils bumped to 2.0.0
-    * @cowprotocol/snackbars bumped to 2.0.0
-    * @cowprotocol/tokens bumped to 2.0.0
-    * @cowprotocol/types bumped to 3.0.0
-    * @cowprotocol/ui bumped to 2.0.0
-    * @cowprotocol/ui-utils bumped to 2.0.0
-    * @cowprotocol/wallet bumped to 2.0.0
-    * @cowprotocol/wallet-provider bumped to 2.0.0
-    * @cowprotocol/widget-lib bumped to 1.0.0
-    * @cowprotocol/widget-react bumped to 1.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/analytics bumped to 2.0.0
+    - @cowprotocol/assets bumped to 2.0.0
+    - @cowprotocol/balances-and-allowances bumped to 2.0.0
+    - @cowprotocol/common-const bumped to 2.0.0
+    - @cowprotocol/common-hooks bumped to 2.0.0
+    - @cowprotocol/common-utils bumped to 2.0.0
+    - @cowprotocol/core bumped to 2.0.0
+    - @cowprotocol/cowswap-abis bumped to 2.0.0
+    - @cowprotocol/ens bumped to 2.0.0
+    - @cowprotocol/events bumped to 3.0.0
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.0
+    - @cowprotocol/iframe-transport bumped to 2.0.0
+    - @cowprotocol/multicall bumped to 2.0.0
+    - @cowprotocol/permit-utils bumped to 2.0.0
+    - @cowprotocol/snackbars bumped to 2.0.0
+    - @cowprotocol/tokens bumped to 2.0.0
+    - @cowprotocol/types bumped to 3.0.0
+    - @cowprotocol/ui bumped to 2.0.0
+    - @cowprotocol/ui-utils bumped to 2.0.0
+    - @cowprotocol/wallet bumped to 2.0.0
+    - @cowprotocol/wallet-provider bumped to 2.0.0
+    - @cowprotocol/widget-lib bumped to 1.0.0
+    - @cowprotocol/widget-react bumped to 1.0.0
 
 ## [1.32.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.31.0...cow-fi-v1.32.0) (2026-01-26)
 
-
 ### Features
 
-* update MEV Blocker redirection and layout ([#6843](https://github.com/cowprotocol/cowswap/issues/6843)) ([9b61b16](https://github.com/cowprotocol/cowswap/commit/9b61b1694d045a872af212fafb56a6182ad9276f))
+- update MEV Blocker redirection and layout ([#6843](https://github.com/cowprotocol/cowswap/issues/6843)) ([9b61b16](https://github.com/cowprotocol/cowswap/commit/9b61b1694d045a872af212fafb56a6182ad9276f))
 
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.30.0...cow-fi-v1.31.0) (2026-01-09)
 
-
 ### Features
 
-* **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
+- **trade:** implement consent logic for restricted tokens list ([#6617](https://github.com/cowprotocol/cowswap/issues/6617)) ([14686d1](https://github.com/cowprotocol/cowswap/commit/14686d1c71bae6ceacc14f86679412f06e7297c5))
 
 ## [1.30.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.29.0...cow-fi-v1.30.0) (2025-12-24)
 
-
 ### Features
 
-* disable develop.cow.fi SEO indexing ([#6614](https://github.com/cowprotocol/cowswap/issues/6614)) ([6ce7c57](https://github.com/cowprotocol/cowswap/commit/6ce7c57534e275b57be97a425cd7e7692c2fa07d))
+- disable develop.cow.fi SEO indexing ([#6614](https://github.com/cowprotocol/cowswap/issues/6614)) ([6ce7c57](https://github.com/cowprotocol/cowswap/commit/6ce7c57534e275b57be97a425cd7e7692c2fa07d))
 
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.1...cow-fi-v1.29.0) (2025-12-16)
 
-
 ### Features
 
-* add link to bug bounty program ([#6612](https://github.com/cowprotocol/cowswap/issues/6612)) ([3cf7a8d](https://github.com/cowprotocol/cowswap/commit/3cf7a8dbb04bc512da0494701d70555239d0d473))
-* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+- add link to bug bounty program ([#6612](https://github.com/cowprotocol/cowswap/issues/6612)) ([3cf7a8d](https://github.com/cowprotocol/cowswap/commit/3cf7a8dbb04bc512da0494701d70555239d0d473))
+- move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
 
 ## [1.28.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.0...cow-fi-v1.28.1) (2025-11-25)
 
-
 ### Bug Fixes
 
-* **cow-fi:** add Linea to chains list ([#6472](https://github.com/cowprotocol/cowswap/issues/6472)) ([b09aded](https://github.com/cowprotocol/cowswap/commit/b09adedc60cabef8d41d9471a884b06cb689c066))
+- **cow-fi:** add Linea to chains list ([#6472](https://github.com/cowprotocol/cowswap/issues/6472)) ([b09aded](https://github.com/cowprotocol/cowswap/commit/b09adedc60cabef8d41d9471a884b06cb689c066))
 
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.27.0...cow-fi-v1.28.0) (2025-11-10)
 
-
 ### Features
 
-* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+- **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
 
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.3...cow-fi-v1.27.0) (2025-10-14)
 
-
 ### Features
 
-* **cowfi:** enhance 404 page with CowSaucer animation and layout adj… ([#6321](https://github.com/cowprotocol/cowswap/issues/6321)) ([40bbf46](https://github.com/cowprotocol/cowswap/commit/40bbf46fcc7634a018b486c2bc49beab9e25a68f))
+- **cowfi:** enhance 404 page with CowSaucer animation and layout adj… ([#6321](https://github.com/cowprotocol/cowswap/issues/6321)) ([40bbf46](https://github.com/cowprotocol/cowswap/commit/40bbf46fcc7634a018b486c2bc49beab9e25a68f))
 
 ## [1.26.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.2...cow-fi-v1.26.3) (2025-10-02)
 
-
 ### Bug Fixes
 
-* linter file errors ([#6318](https://github.com/cowprotocol/cowswap/issues/6318)) ([21fc2d1](https://github.com/cowprotocol/cowswap/commit/21fc2d158524bbf91b0579b4e9ec4a75f7837123))
+- linter file errors ([#6318](https://github.com/cowprotocol/cowswap/issues/6318)) ([21fc2d1](https://github.com/cowprotocol/cowswap/commit/21fc2d158524bbf91b0579b4e9ec4a75f7837123))
 
 ## [1.26.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.1...cow-fi-v1.26.2) (2025-09-25)
 
-
 ### Bug Fixes
 
-* **cowfi:** update chains info on CoW protocol and CoW Swap pages ([#6159](https://github.com/cowprotocol/cowswap/issues/6159)) ([5ebdd51](https://github.com/cowprotocol/cowswap/commit/5ebdd513b3209495aa05710b05dc863f4b3ef47a))
+- **cowfi:** update chains info on CoW protocol and CoW Swap pages ([#6159](https://github.com/cowprotocol/cowswap/issues/6159)) ([5ebdd51](https://github.com/cowprotocol/cowswap/commit/5ebdd513b3209495aa05710b05dc863f4b3ef47a))
 
 ## [1.26.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.0...cow-fi-v1.26.1) (2025-09-22)
 
-
 ### Bug Fixes
 
-* **cow-fi:** update description in refer-to-earn layout for clarity ([#6245](https://github.com/cowprotocol/cowswap/issues/6245)) ([b21e160](https://github.com/cowprotocol/cowswap/commit/b21e160f6f6d9f29de7b1424a38e8789b34ed57e))
+- **cow-fi:** update description in refer-to-earn layout for clarity ([#6245](https://github.com/cowprotocol/cowswap/issues/6245)) ([b21e160](https://github.com/cowprotocol/cowswap/commit/b21e160f6f6d9f29de7b1424a38e8789b34ed57e))
 
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.25.0...cow-fi-v1.26.0) (2025-09-11)
 
-
 ### Features
 
-* **cow-fi:** add redirect for MEV blocker to external site ([#6220](https://github.com/cowprotocol/cowswap/issues/6220)) ([dbd887a](https://github.com/cowprotocol/cowswap/commit/dbd887a0568cfc0fc09316ff54c2a4ab8c40fe71))
+- **cow-fi:** add redirect for MEV blocker to external site ([#6220](https://github.com/cowprotocol/cowswap/issues/6220)) ([dbd887a](https://github.com/cowprotocol/cowswap/commit/dbd887a0568cfc0fc09316ff54c2a4ab8c40fe71))
 
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.1...cow-fi-v1.25.0) (2025-08-21)
 
-
 ### Features
 
-* **cowfi:** add CMS pages for all legal content ([#6100](https://github.com/cowprotocol/cowswap/issues/6100)) ([7ccfc07](https://github.com/cowprotocol/cowswap/commit/7ccfc07a702fd60d7928586cb95ad924bae03967))
+- **cowfi:** add CMS pages for all legal content ([#6100](https://github.com/cowprotocol/cowswap/issues/6100)) ([7ccfc07](https://github.com/cowprotocol/cowswap/commit/7ccfc07a702fd60d7928586cb95ad924bae03967))
 
 ## [1.24.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.0...cow-fi-v1.24.1) (2025-08-04)
 
-
 ### Bug Fixes
 
-* **cow-fi:** enhance caching strategy and middleware for /learn routes to improve performance ([#6084](https://github.com/cowprotocol/cowswap/issues/6084)) ([f51652a](https://github.com/cowprotocol/cowswap/commit/f51652ac1c979aa8f3fde5a3af1003f9595d7722))
-* **cow-fi:** ISR optimization to prevent cache-busting in learn pages ([#6079](https://github.com/cowprotocol/cowswap/issues/6079)) ([6ace758](https://github.com/cowprotocol/cowswap/commit/6ace75842a7a5b686e3649f002b323309c47874d))
-* **cow-fi:** update articles page with caching strategy and type annotations … ([#6066](https://github.com/cowprotocol/cowswap/issues/6066)) ([a117209](https://github.com/cowprotocol/cowswap/commit/a117209a5dfdfd83aea83c606114211d9d5383c7))
+- **cow-fi:** enhance caching strategy and middleware for /learn routes to improve performance ([#6084](https://github.com/cowprotocol/cowswap/issues/6084)) ([f51652a](https://github.com/cowprotocol/cowswap/commit/f51652ac1c979aa8f3fde5a3af1003f9595d7722))
+- **cow-fi:** ISR optimization to prevent cache-busting in learn pages ([#6079](https://github.com/cowprotocol/cowswap/issues/6079)) ([6ace758](https://github.com/cowprotocol/cowswap/commit/6ace75842a7a5b686e3649f002b323309c47874d))
+- **cow-fi:** update articles page with caching strategy and type annotations … ([#6066](https://github.com/cowprotocol/cowswap/issues/6066)) ([a117209](https://github.com/cowprotocol/cowswap/commit/a117209a5dfdfd83aea83c606114211d9d5383c7))
 
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.23.0...cow-fi-v1.24.0) (2025-07-03)
 
-
 ### Features
 
-* **cow-fi-tokens:** refactor and add more networks to the token details page swap w… ([#5900](https://github.com/cowprotocol/cowswap/issues/5900)) ([14952b3](https://github.com/cowprotocol/cowswap/commit/14952b3f852cf61698ecad20061af6f244a43517))
-* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
-* update `cow.fi` `/tokens` page ([#5889](https://github.com/cowprotocol/cowswap/issues/5889)) ([c3d969d](https://github.com/cowprotocol/cowswap/commit/c3d969d74de12b6cefcd1140f99ad3aeadbc0b3e))
-* update FAQs list of supported networks ([#5901](https://github.com/cowprotocol/cowswap/issues/5901)) ([d0de55a](https://github.com/cowprotocol/cowswap/commit/d0de55a8d7868ef239e7264d0310aff53f81b6dd))
+- **cow-fi-tokens:** refactor and add more networks to the token details page swap w… ([#5900](https://github.com/cowprotocol/cowswap/issues/5900)) ([14952b3](https://github.com/cowprotocol/cowswap/commit/14952b3f852cf61698ecad20061af6f244a43517))
+- **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+- update `cow.fi` `/tokens` page ([#5889](https://github.com/cowprotocol/cowswap/issues/5889)) ([c3d969d](https://github.com/cowprotocol/cowswap/commit/c3d969d74de12b6cefcd1140f99ad3aeadbc0b3e))
+- update FAQs list of supported networks ([#5901](https://github.com/cowprotocol/cowswap/issues/5901)) ([d0de55a](https://github.com/cowprotocol/cowswap/commit/d0de55a8d7868ef239e7264d0310aff53f81b6dd))
 
 ## [1.23.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.7...cow-fi-v1.23.0) (2025-06-18)
 
-
 ### Features
 
-* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
-
+- **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
 
 ### Bug Fixes
 
-* punctuation on the careers page disclaimer ([#5796](https://github.com/cowprotocol/cowswap/issues/5796)) ([e378e84](https://github.com/cowprotocol/cowswap/commit/e378e8422ad296f59717cdfa6363d091d5408a1b))
-* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+- punctuation on the careers page disclaimer ([#5796](https://github.com/cowprotocol/cowswap/issues/5796)) ([e378e84](https://github.com/cowprotocol/cowswap/commit/e378e8422ad296f59717cdfa6363d091d5408a1b))
+- reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
 
 ## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
 
-
 ### Bug Fixes
 
-* **cowfi:** link featured articles with href ([#5765](https://github.com/cowprotocol/cowswap/issues/5765)) ([12794dc](https://github.com/cowprotocol/cowswap/commit/12794dcbe0df0e7f25d5da25fc446e2eee6f95bd))
+- **cowfi:** link featured articles with href ([#5765](https://github.com/cowprotocol/cowswap/issues/5765)) ([12794dc](https://github.com/cowprotocol/cowswap/commit/12794dcbe0df0e7f25d5da25fc446e2eee6f95bd))
 
 ## [1.22.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.5...cow-fi-v1.22.6) (2025-05-28)
 
-
 ### Bug Fixes
 
-* **cowfi:** simplify revalidation paths in route.ts ([#5736](https://github.com/cowprotocol/cowswap/issues/5736)) ([fc7e4b5](https://github.com/cowprotocol/cowswap/commit/fc7e4b5c5e8822612e579f11b8ee3af78dc2904c))
-* **cowfi:** update comment and simplify revalidation logic in route.ts ([#5753](https://github.com/cowprotocol/cowswap/issues/5753)) ([68a0fe8](https://github.com/cowprotocol/cowswap/commit/68a0fe85ae5c25286541cfda9ae83d9eaeb81500))
+- **cowfi:** simplify revalidation paths in route.ts ([#5736](https://github.com/cowprotocol/cowswap/issues/5736)) ([fc7e4b5](https://github.com/cowprotocol/cowswap/commit/fc7e4b5c5e8822612e579f11b8ee3af78dc2904c))
+- **cowfi:** update comment and simplify revalidation logic in route.ts ([#5753](https://github.com/cowprotocol/cowswap/issues/5753)) ([68a0fe8](https://github.com/cowprotocol/cowswap/commit/68a0fe85ae5c25286541cfda9ae83d9eaeb81500))
 
 ## [1.22.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.4...cow-fi-v1.22.5) (2025-05-20)
 
-
 ### Bug Fixes
 
-* **cowfi:** update revalidation paths for article layout ([#5717](https://github.com/cowprotocol/cowswap/issues/5717)) ([c5e7d9e](https://github.com/cowprotocol/cowswap/commit/c5e7d9eea81062429ce7932cd594a1aae9c03cff))
+- **cowfi:** update revalidation paths for article layout ([#5717](https://github.com/cowprotocol/cowswap/issues/5717)) ([c5e7d9e](https://github.com/cowprotocol/cowswap/commit/c5e7d9eea81062429ce7932cd594a1aae9c03cff))
 
 ## [1.22.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.3...cow-fi-v1.22.4) (2025-05-16)
 
-
 ### Bug Fixes
 
-* **cowfi:** update article link generation to use slug variable ([#5689](https://github.com/cowprotocol/cowswap/issues/5689)) ([74f9821](https://github.com/cowprotocol/cowswap/commit/74f98211ee2800364f0d48a404510b83ba5dfa4d))
+- **cowfi:** update article link generation to use slug variable ([#5689](https://github.com/cowprotocol/cowswap/issues/5689)) ([74f9821](https://github.com/cowprotocol/cowswap/commit/74f98211ee2800364f0d48a404510b83ba5dfa4d))
 
 ## [1.22.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.2...cow-fi-v1.22.3) (2025-05-14)
 
-
 ### Bug Fixes
 
-* update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
+- update curve link ([#5694](https://github.com/cowprotocol/cowswap/issues/5694)) ([718c9b1](https://github.com/cowprotocol/cowswap/commit/718c9b16490fcc27eccbe7b35c033002fe94701a))
 
 ## [1.22.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.1...cow-fi-v1.22.2) (2025-05-01)
 
-
 ### Bug Fixes
 
-* **cowfi:** fix learn ([#5655](https://github.com/cowprotocol/cowswap/issues/5655)) ([3fa654c](https://github.com/cowprotocol/cowswap/commit/3fa654cf465038435a880d04c063cacbab245433))
-* **learn:** fixing CMS article 404s with improved error handling and retry logic ([#5632](https://github.com/cowprotocol/cowswap/issues/5632)) ([75fb06d](https://github.com/cowprotocol/cowswap/commit/75fb06daf4895fac03d754ebc2df5564e8fa48c5))
+- **cowfi:** fix learn ([#5655](https://github.com/cowprotocol/cowswap/issues/5655)) ([3fa654c](https://github.com/cowprotocol/cowswap/commit/3fa654cf465038435a880d04c063cacbab245433))
+- **learn:** fixing CMS article 404s with improved error handling and retry logic ([#5632](https://github.com/cowprotocol/cowswap/issues/5632)) ([75fb06d](https://github.com/cowprotocol/cowswap/commit/75fb06daf4895fac03d754ebc2df5564e8fa48c5))
 
 ## [1.22.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.0...cow-fi-v1.22.1) (2025-04-25)
 
-
 ### Bug Fixes
 
-* add space before the link on mev blocker FAQ ([39c290a](https://github.com/cowprotocol/cowswap/commit/39c290a5729765f9f99eb542d36e04c9adc28f7b))
+- add space before the link on mev blocker FAQ ([39c290a](https://github.com/cowprotocol/cowswap/commit/39c290a5729765f9f99eb542d36e04c9adc28f7b))
 
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.1...cow-fi-v1.22.0) (2025-03-20)
 
-
 ### Features
 
-* **learn:** enhance search and article fetching functionality ([#5461](https://github.com/cowprotocol/cowswap/issues/5461)) ([8344440](https://github.com/cowprotocol/cowswap/commit/8344440e8136a2f20fc9c0888ec6a39d64f6214c))
-
+- **learn:** enhance search and article fetching functionality ([#5461](https://github.com/cowprotocol/cowswap/issues/5461)) ([8344440](https://github.com/cowprotocol/cowswap/commit/8344440e8136a2f20fc9c0888ec6a39d64f6214c))
 
 ### Bug Fixes
 
-* **cow.fi:** update navigation to relevant links on Daos and CoW Protocol pages ([#5518](https://github.com/cowprotocol/cowswap/issues/5518)) ([64c057a](https://github.com/cowprotocol/cowswap/commit/64c057a7d9f28fcae8a6e4ae1728c61708d88e2c))
+- **cow.fi:** update navigation to relevant links on Daos and CoW Protocol pages ([#5518](https://github.com/cowprotocol/cowswap/issues/5518)) ([64c057a](https://github.com/cowprotocol/cowswap/commit/64c057a7d9f28fcae8a6e4ae1728c61708d88e2c))
 
 ## [1.21.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.21.0...cow-fi-v1.21.1) (2025-03-10)
 
-
 ### Bug Fixes
 
-* some typos on the terms page ([#5468](https://github.com/cowprotocol/cowswap/issues/5468)) ([7dcaa06](https://github.com/cowprotocol/cowswap/commit/7dcaa06b90a6f6ae69027a2d8e958f5032fab73c))
+- some typos on the terms page ([#5468](https://github.com/cowprotocol/cowswap/issues/5468)) ([7dcaa06](https://github.com/cowprotocol/cowswap/commit/7dcaa06b90a6f6ae69027a2d8e958f5032fab73c))
 
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.20.0...cow-fi-v1.21.0) (2025-02-27)
 
-
 ### Features
 
-* **cow-fi:** update base token reward T&C ([#5460](https://github.com/cowprotocol/cowswap/issues/5460)) ([485f2b4](https://github.com/cowprotocol/cowswap/commit/485f2b494848aaf8816854fe0c604d8bda84ac5b))
-
+- **cow-fi:** update base token reward T&C ([#5460](https://github.com/cowprotocol/cowswap/issues/5460)) ([485f2b4](https://github.com/cowprotocol/cowswap/commit/485f2b494848aaf8816854fe0c604d8bda84ac5b))
 
 ### Bug Fixes
 
-* TX amount change on MEV blocker page ([#5453](https://github.com/cowprotocol/cowswap/issues/5453)) ([9ee3d08](https://github.com/cowprotocol/cowswap/commit/9ee3d088a0e2d21c60ac7d632c18170ca44aa50a))
+- TX amount change on MEV blocker page ([#5453](https://github.com/cowprotocol/cowswap/issues/5453)) ([9ee3d08](https://github.com/cowprotocol/cowswap/commit/9ee3d088a0e2d21c60ac7d632c18170ca44aa50a))
 
 ## [1.20.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.4...cow-fi-v1.20.0) (2025-02-25)
 
-
 ### Features
 
-* **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
-
+- **analytics:** migrate to GTM-based analytics ([#5360](https://github.com/cowprotocol/cowswap/issues/5360)) ([f404d02](https://github.com/cowprotocol/cowswap/commit/f404d0280d9d1d86cc249d70852a5c0ec9827475))
 
 ### Bug Fixes
 
-* update email contact from people@cow.fi to jobs@cow.fi ([#5438](https://github.com/cowprotocol/cowswap/issues/5438)) ([297c2f4](https://github.com/cowprotocol/cowswap/commit/297c2f406c83bc4f8554dcd33b2d8e913c5455d9))
-* update some stats on Cow.fi pages ([#5441](https://github.com/cowprotocol/cowswap/issues/5441)) ([4ec735f](https://github.com/cowprotocol/cowswap/commit/4ec735fdf0f9620422b24d585f3eccb8fb27aa1a))
+- update email contact from people@cow.fi to jobs@cow.fi ([#5438](https://github.com/cowprotocol/cowswap/issues/5438)) ([297c2f4](https://github.com/cowprotocol/cowswap/commit/297c2f406c83bc4f8554dcd33b2d8e913c5455d9))
+- update some stats on Cow.fi pages ([#5441](https://github.com/cowprotocol/cowswap/issues/5441)) ([4ec735f](https://github.com/cowprotocol/cowswap/commit/4ec735fdf0f9620422b24d585f3eccb8fb27aa1a))
 
 ## [1.19.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.3...cow-fi-v1.19.4) (2025-02-05)
 
-
 ### Bug Fixes
 
-* **cow-fi:** add loading effect for widget and daos page ([#5319](https://github.com/cowprotocol/cowswap/issues/5319)) ([94a6e44](https://github.com/cowprotocol/cowswap/commit/94a6e441544a66db2b2857217b5129ff3d856780))
-* **legal:** update legal page links ([#5259](https://github.com/cowprotocol/cowswap/issues/5259)) ([94b4437](https://github.com/cowprotocol/cowswap/commit/94b4437a36e7dbf3667b6e1bdd461ba46716392c))
-* **mev-blocker:** fix typo on /maxbackruns endpoint ([#5377](https://github.com/cowprotocol/cowswap/issues/5377)) ([c7c9d9e](https://github.com/cowprotocol/cowswap/commit/c7c9d9e861607df0325bec80030109e0cb4d7d50))
+- **cow-fi:** add loading effect for widget and daos page ([#5319](https://github.com/cowprotocol/cowswap/issues/5319)) ([94a6e44](https://github.com/cowprotocol/cowswap/commit/94a6e441544a66db2b2857217b5129ff3d856780))
+- **legal:** update legal page links ([#5259](https://github.com/cowprotocol/cowswap/issues/5259)) ([94b4437](https://github.com/cowprotocol/cowswap/commit/94b4437a36e7dbf3667b6e1bdd461ba46716392c))
+- **mev-blocker:** fix typo on /maxbackruns endpoint ([#5377](https://github.com/cowprotocol/cowswap/issues/5377)) ([c7c9d9e](https://github.com/cowprotocol/cowswap/commit/c7c9d9e861607df0325bec80030109e0cb4d7d50))
 
 ## [1.19.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.2...cow-fi-v1.19.3) (2024-12-16)
 
-
 ### Bug Fixes
 
-* **cowfi:** fix pages crashes ([#5206](https://github.com/cowprotocol/cowswap/issues/5206)) ([525d079](https://github.com/cowprotocol/cowswap/commit/525d0794c10e0950dc0036f2f9c2e8e728117969))
+- **cowfi:** fix pages crashes ([#5206](https://github.com/cowprotocol/cowswap/issues/5206)) ([525d079](https://github.com/cowprotocol/cowswap/commit/525d0794c10e0950dc0036f2f9c2e8e728117969))
 
 ## [1.19.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.1...cow-fi-v1.19.2) (2024-12-12)
 
-
 ### Bug Fixes
 
-* **cowfi:** reduce cms requests cache time to 5 min ([#5196](https://github.com/cowprotocol/cowswap/issues/5196)) ([8893f35](https://github.com/cowprotocol/cowswap/commit/8893f35e177f86eef15ad2790034b705cf91e349))
+- **cowfi:** reduce cms requests cache time to 5 min ([#5196](https://github.com/cowprotocol/cowswap/issues/5196)) ([8893f35](https://github.com/cowprotocol/cowswap/commit/8893f35e177f86eef15ad2790034b705cf91e349))
 
 ## [1.19.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.19.0...cow-fi-v1.19.1) (2024-12-12)
 
-
 ### Bug Fixes
 
-* **cow-fi:** add info about base launch ([#5194](https://github.com/cowprotocol/cowswap/issues/5194)) ([6bd2015](https://github.com/cowprotocol/cowswap/commit/6bd20155a2211bba95e5cdd8dab2e108b4783a13))
+- **cow-fi:** add info about base launch ([#5194](https://github.com/cowprotocol/cowswap/issues/5194)) ([6bd2015](https://github.com/cowprotocol/cowswap/commit/6bd20155a2211bba95e5cdd8dab2e108b4783a13))
 
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.18.0...cow-fi-v1.19.0) (2024-12-11)
 
-
 ### Features
 
-* **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
-
+- **cow-fi:** upgrade project structure to /app ([#5167](https://github.com/cowprotocol/cowswap/issues/5167)) ([ed152f7](https://github.com/cowprotocol/cowswap/commit/ed152f7ac0fa62ab2c0b9c93035a551c3b8cb4b6))
 
 ### Bug Fixes
 
-* add Base to CoW Protocol FAQ on cow.fi ([#5179](https://github.com/cowprotocol/cowswap/issues/5179)) ([a38a3e5](https://github.com/cowprotocol/cowswap/commit/a38a3e5b0cb82d3ad1863f980cfa062d3e8d9954))
+- add Base to CoW Protocol FAQ on cow.fi ([#5179](https://github.com/cowprotocol/cowswap/issues/5179)) ([a38a3e5](https://github.com/cowprotocol/cowswap/commit/a38a3e5b0cb82d3ad1863f980cfa062d3e8d9954))
 
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.17.0...cow-fi-v1.18.0) (2024-12-09)
 
-
 ### Features
 
-* **cow-fi:** cache data and pages ([#5169](https://github.com/cowprotocol/cowswap/issues/5169)) ([39c94cc](https://github.com/cowprotocol/cowswap/commit/39c94cca11db8a97d9add3ac05c1623755ecd2b3))
+- **cow-fi:** cache data and pages ([#5169](https://github.com/cowprotocol/cowswap/issues/5169)) ([39c94cc](https://github.com/cowprotocol/cowswap/commit/39c94cca11db8a97d9add3ac05c1623755ecd2b3))
 
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.16.0...cow-fi-v1.17.0) (2024-12-04)
 
-
 ### Features
 
-* upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
-
+- upgrade react@19 and next@15 ([#5147](https://github.com/cowprotocol/cowswap/issues/5147)) ([a00b1b9](https://github.com/cowprotocol/cowswap/commit/a00b1b930602ab1e6b2f0b3cd148497f68bf4cb5))
 
 ### Bug Fixes
 
-* remove props from mevblocker page ([#5148](https://github.com/cowprotocol/cowswap/issues/5148)) ([a20de89](https://github.com/cowprotocol/cowswap/commit/a20de895471fbe957e223fad039f89a182b674bd))
+- remove props from mevblocker page ([#5148](https://github.com/cowprotocol/cowswap/issues/5148)) ([a20de89](https://github.com/cowprotocol/cowswap/commit/a20de895471fbe957e223fad039f89a182b674bd))
 
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.15.0...cow-fi-v1.16.0) (2024-10-29)
 
-
 ### Features
 
-* fix path ([#5022](https://github.com/cowprotocol/cowswap/issues/5022)) ([92ad33c](https://github.com/cowprotocol/cowswap/commit/92ad33c5d6a280bd1a9e40e6cf49486f6f71130a))
+- fix path ([#5022](https://github.com/cowprotocol/cowswap/issues/5022)) ([92ad33c](https://github.com/cowprotocol/cowswap/commit/92ad33c5d6a280bd1a9e40e6cf49486f6f71130a))
 
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.14.0...cow-fi-v1.15.0) (2024-10-10)
 
-
 ### Features
 
-* **cow.fi:** modify sitemap lastmod and lazy load twitter js ([#4951](https://github.com/cowprotocol/cowswap/issues/4951)) ([6017924](https://github.com/cowprotocol/cowswap/commit/6017924aec4df1a53181b5ab4c818afc5d2c5091))
+- **cow.fi:** modify sitemap lastmod and lazy load twitter js ([#4951](https://github.com/cowprotocol/cowswap/issues/4951)) ([6017924](https://github.com/cowprotocol/cowswap/commit/6017924aec4df1a53181b5ab4c818afc5d2c5091))
 
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.13.0...cow-fi-v1.14.0) (2024-09-30)
 
-
 ### Features
 
-* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
-* **hooks-store:** support iframe hook-dapps ([#4885](https://github.com/cowprotocol/cowswap/issues/4885)) ([5116f29](https://github.com/cowprotocol/cowswap/commit/5116f296a0e4866d0a51a806b7abe55e809d26e9))
+- **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+- **hooks-store:** support iframe hook-dapps ([#4885](https://github.com/cowprotocol/cowswap/issues/4885)) ([5116f29](https://github.com/cowprotocol/cowswap/commit/5116f296a0e4866d0a51a806b7abe55e809d26e9))
 
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.12.0...cow-fi-v1.13.0) (2024-09-12)
 
-
 ### Features
 
-* **cow-fi:** update content ([#4877](https://github.com/cowprotocol/cowswap/issues/4877)) ([9c35cbd](https://github.com/cowprotocol/cowswap/commit/9c35cbd1b9f0f92359d9408e1b852b829433c987))
+- **cow-fi:** update content ([#4877](https://github.com/cowprotocol/cowswap/issues/4877)) ([9c35cbd](https://github.com/cowprotocol/cowswap/commit/9c35cbd1b9f0f92359d9408e1b852b829433c987))
 
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.11.0...cow-fi-v1.12.0) (2024-09-03)
 
-
 ### Features
 
-* **cow-fi:** change greenhouse to ashbyhq ([#4849](https://github.com/cowprotocol/cowswap/issues/4849)) ([73ff905](https://github.com/cowprotocol/cowswap/commit/73ff905b3b206a440b07afc0d5d7edff6297bcd1))
+- **cow-fi:** change greenhouse to ashbyhq ([#4849](https://github.com/cowprotocol/cowswap/issues/4849)) ([73ff905](https://github.com/cowprotocol/cowswap/commit/73ff905b3b206a440b07afc0d5d7edff6297bcd1))
 
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.10.0...cow-fi-v1.11.0) (2024-08-27)
 
-
 ### Features
 
-* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
-* update refer to earn text ([#4821](https://github.com/cowprotocol/cowswap/issues/4821)) ([c90dba0](https://github.com/cowprotocol/cowswap/commit/c90dba0c1bfbf1923354e08476eaaf2e039d73b2))
+- **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+- update refer to earn text ([#4821](https://github.com/cowprotocol/cowswap/issues/4821)) ([c90dba0](https://github.com/cowprotocol/cowswap/commit/c90dba0c1bfbf1923354e08476eaaf2e039d73b2))
 
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.9.0...cow-fi-v1.10.0) (2024-08-09)
 
-
 ### Features
 
-* switch cowfi header cta button ([#4769](https://github.com/cowprotocol/cowswap/issues/4769)) ([f87c0fe](https://github.com/cowprotocol/cowswap/commit/f87c0feee1bd3dce0a524ff61b54c86265b81605))
+- switch cowfi header cta button ([#4769](https://github.com/cowprotocol/cowswap/issues/4769)) ([f87c0fe](https://github.com/cowprotocol/cowswap/commit/f87c0feee1bd3dce0a524ff61b54c86265b81605))
 
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.8.0...cow-fi-v1.9.0) (2024-07-31)
 
-
 ### Features
 
-* add click event add rpc ([#4746](https://github.com/cowprotocol/cowswap/issues/4746)) ([0571451](https://github.com/cowprotocol/cowswap/commit/057145196a5f756978e5fe6132f1570520c0ae8e))
+- add click event add rpc ([#4746](https://github.com/cowprotocol/cowswap/issues/4746)) ([0571451](https://github.com/cowprotocol/cowswap/commit/057145196a5f756978e5fe6132f1570520c0ae8e))
 
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.7.0...cow-fi-v1.8.0) (2024-07-18)
 
-
 ### Features
 
-* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
-
+- refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
 
 ### Bug Fixes
 
-* cowfi em element styles ([#4724](https://github.com/cowprotocol/cowswap/issues/4724)) ([a78364e](https://github.com/cowprotocol/cowswap/commit/a78364e0f50e542643d34340b72a93350342e7f2))
-* invalid HTML tag nesting ([#4708](https://github.com/cowprotocol/cowswap/issues/4708)) ([f6b09a0](https://github.com/cowprotocol/cowswap/commit/f6b09a0ba5e12b65b85d53b68f993fe690c0eddb))
+- cowfi em element styles ([#4724](https://github.com/cowprotocol/cowswap/issues/4724)) ([a78364e](https://github.com/cowprotocol/cowswap/commit/a78364e0f50e542643d34340b72a93350342e7f2))
+- invalid HTML tag nesting ([#4708](https://github.com/cowprotocol/cowswap/issues/4708)) ([f6b09a0](https://github.com/cowprotocol/cowswap/commit/f6b09a0ba5e12b65b85d53b68f993fe690c0eddb))
 
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.6.0...cow-fi-v1.7.0) (2024-07-12)
 
-
 ### Features
 
-* sitemap.xml generating cow.fi ([#4687](https://github.com/cowprotocol/cowswap/issues/4687)) ([571bb7d](https://github.com/cowprotocol/cowswap/commit/571bb7d2fabedceb5484bf59e3c26b39de3e5717))
+- sitemap.xml generating cow.fi ([#4687](https://github.com/cowprotocol/cowswap/issues/4687)) ([571bb7d](https://github.com/cowprotocol/cowswap/commit/571bb7d2fabedceb5484bf59e3c26b39de3e5717))
 
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.5.0...cow-fi-v1.6.0) (2024-07-05)
 
-
 ### Features
 
-* pages cleanup ([#4623](https://github.com/cowprotocol/cowswap/issues/4623)) ([47d8138](https://github.com/cowprotocol/cowswap/commit/47d813882a1b9fbd848a1feed66bec86f626d271))
+- pages cleanup ([#4623](https://github.com/cowprotocol/cowswap/issues/4623)) ([47d8138](https://github.com/cowprotocol/cowswap/commit/47d813882a1b9fbd848a1feed66bec86f626d271))
 
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.2...cow-fi-v1.5.0) (2024-06-27)
 
-
 ### Features
 
-* add og images for cow.fi product page ([#4620](https://github.com/cowprotocol/cowswap/issues/4620)) ([4101624](https://github.com/cowprotocol/cowswap/commit/4101624fe90b360ce511a03d78baf49442a655c2))
-* add products page ([#4621](https://github.com/cowprotocol/cowswap/issues/4621)) ([4adccb3](https://github.com/cowprotocol/cowswap/commit/4adccb3cd9f54d1a6398c618512bd47bdc711d0f))
-* update legal pages ([#4619](https://github.com/cowprotocol/cowswap/issues/4619)) ([de136fe](https://github.com/cowprotocol/cowswap/commit/de136fe708aabb32ae9e23ae9170d296956fd737))
+- add og images for cow.fi product page ([#4620](https://github.com/cowprotocol/cowswap/issues/4620)) ([4101624](https://github.com/cowprotocol/cowswap/commit/4101624fe90b360ce511a03d78baf49442a655c2))
+- add products page ([#4621](https://github.com/cowprotocol/cowswap/issues/4621)) ([4adccb3](https://github.com/cowprotocol/cowswap/commit/4adccb3cd9f54d1a6398c618512bd47bdc711d0f))
+- update legal pages ([#4619](https://github.com/cowprotocol/cowswap/issues/4619)) ([de136fe](https://github.com/cowprotocol/cowswap/commit/de136fe708aabb32ae9e23ae9170d296956fd737))
 
 ## [1.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.1...cow-fi-v1.4.2) (2024-06-25)
 
-
 ### Bug Fixes
 
-* **cow-fi:** improve twitter ports loading ([#4606](https://github.com/cowprotocol/cowswap/issues/4606)) ([989091b](https://github.com/cowprotocol/cowswap/commit/989091b74000b6142eb31fce18ec71b7e5fe4dfc))
+- **cow-fi:** improve twitter ports loading ([#4606](https://github.com/cowprotocol/cowswap/issues/4606)) ([989091b](https://github.com/cowprotocol/cowswap/commit/989091b74000b6142eb31fce18ec71b7e5fe4dfc))
 
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.0...cow-fi-v1.4.1) (2024-06-25)
 
-
 ### Bug Fixes
 
-* **cow-fi:** lazy load tweets in cowswap page ([#4602](https://github.com/cowprotocol/cowswap/issues/4602)) ([fef3910](https://github.com/cowprotocol/cowswap/commit/fef3910927b7cc2252c11533467f9c109903a2f5))
-* improve UI responsiveness ([#4593](https://github.com/cowprotocol/cowswap/issues/4593)) ([2ba1492](https://github.com/cowprotocol/cowswap/commit/2ba14925c590b5939d26658543c16a512fff7bf1))
+- **cow-fi:** lazy load tweets in cowswap page ([#4602](https://github.com/cowprotocol/cowswap/issues/4602)) ([fef3910](https://github.com/cowprotocol/cowswap/commit/fef3910927b7cc2252c11533467f9c109903a2f5))
+- improve UI responsiveness ([#4593](https://github.com/cowprotocol/cowswap/issues/4593)) ([2ba1492](https://github.com/cowprotocol/cowswap/commit/2ba14925c590b5939d26658543c16a512fff7bf1))
 
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.3.0...cow-fi-v1.4.0) (2024-06-24)
 
-
 ### Features
 
-* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
-* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
-
+- **rebranding:** merge 📦 Big Package "Re-branding" 📦 ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+- theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
 
 ### Bug Fixes
 
-* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+- **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
 
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.2.1...cow-fi-v1.3.0) (2024-06-18)
 
-
 ### Features
 
-* update T&C for arb1 ([#4552](https://github.com/cowprotocol/cowswap/issues/4552)) ([f43786e](https://github.com/cowprotocol/cowswap/commit/f43786e90a040c42a0cb58c38c8280a0cd5a5acb))
+- update T&C for arb1 ([#4552](https://github.com/cowprotocol/cowswap/issues/4552)) ([f43786e](https://github.com/cowprotocol/cowswap/commit/f43786e90a040c42a0cb58c38c8280a0cd5a5acb))
 
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.2.0...cow-fi-v1.2.1) (2024-06-06)
 
-
 ### Bug Fixes
 
-* force release please to make a release ([#4517](https://github.com/cowprotocol/cowswap/issues/4517)) ([a5029cd](https://github.com/cowprotocol/cowswap/commit/a5029cd122d9fb2420680b2164573fa182b16bd3))
+- force release please to make a release ([#4517](https://github.com/cowprotocol/cowswap/issues/4517)) ([a5029cd](https://github.com/cowprotocol/cowswap/commit/a5029cd122d9fb2420680b2164573fa182b16bd3))
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.1.0...cow-fi-v1.2.0) (2024-06-06)
 
-
 ### Features
 
-* use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
+- use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.0.0...cow-fi-v1.1.0) (2024-05-29)
 
-
 ### Features
 
-* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
-
+- **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
 
 ### Bug Fixes
 
-* navigate with widget awareness ([#4471](https://github.com/cowprotocol/cowswap/issues/4471)) ([f0c4134](https://github.com/cowprotocol/cowswap/commit/f0c41344eea751006a4fe0b66865b2c5c30a5310))
+- navigate with widget awareness ([#4471](https://github.com/cowprotocol/cowswap/issues/4471)) ([f0c4134](https://github.com/cowprotocol/cowswap/commit/f0c41344eea751006a4fe0b66865b2c5c30a5310))
 
 ## 1.0.0 (2024-05-22)
 
-
 ### Features
 
-* add SEO image and fallback to cover image ([#4427](https://github.com/cowprotocol/cowswap/issues/4427)) ([7a83add](https://github.com/cowprotocol/cowswap/commit/7a83add4d3d59548d36b552e5bf95d5ad90d7296))
-* **cms:** add blog page with an article ([#4421](https://github.com/cowprotocol/cowswap/issues/4421)) ([5cfde16](https://github.com/cowprotocol/cowswap/commit/5cfde16ca25b442cb88abbd957339a9c4a56643a))
-* **cms:** markup Category page and display all articles ([#4334](https://github.com/cowprotocol/cowswap/issues/4334)) ([57a9657](https://github.com/cowprotocol/cowswap/commit/57a965717ec5f5d7058b3ff23963256206744a22))
-* **cow-fi:** migrate cow-fi to monorepo ([#4332](https://github.com/cowprotocol/cowswap/issues/4332)) ([5cb9821](https://github.com/cowprotocol/cowswap/commit/5cb9821147b2ba1c471287582f54637d79de995b))
-* **learn:** add feature flag for learn ([#4436](https://github.com/cowprotocol/cowswap/issues/4436)) ([1ecbc4f](https://github.com/cowprotocol/cowswap/commit/1ecbc4f96266f85a077c8b8d8b56dec4b82c8311))
-
+- add SEO image and fallback to cover image ([#4427](https://github.com/cowprotocol/cowswap/issues/4427)) ([7a83add](https://github.com/cowprotocol/cowswap/commit/7a83add4d3d59548d36b552e5bf95d5ad90d7296))
+- **cms:** add blog page with an article ([#4421](https://github.com/cowprotocol/cowswap/issues/4421)) ([5cfde16](https://github.com/cowprotocol/cowswap/commit/5cfde16ca25b442cb88abbd957339a9c4a56643a))
+- **cms:** markup Category page and display all articles ([#4334](https://github.com/cowprotocol/cowswap/issues/4334)) ([57a9657](https://github.com/cowprotocol/cowswap/commit/57a965717ec5f5d7058b3ff23963256206744a22))
+- **cow-fi:** migrate cow-fi to monorepo ([#4332](https://github.com/cowprotocol/cowswap/issues/4332)) ([5cb9821](https://github.com/cowprotocol/cowswap/commit/5cb9821147b2ba1c471287582f54637d79de995b))
+- **learn:** add feature flag for learn ([#4436](https://github.com/cowprotocol/cowswap/issues/4436)) ([1ecbc4f](https://github.com/cowprotocol/cowswap/commit/1ecbc4f96266f85a077c8b8d8b56dec4b82c8311))
 
 ### Bug Fixes
 
-* **cow-fi:** fix buttons style ([#4361](https://github.com/cowprotocol/cowswap/issues/4361)) ([6283bdd](https://github.com/cowprotocol/cowswap/commit/6283bddab696da777b679624a0d19a85c16d245c))
-* **cow-fi:** hide link to Learn page ([#4356](https://github.com/cowprotocol/cowswap/issues/4356)) ([a261d38](https://github.com/cowprotocol/cowswap/commit/a261d3813227441bf295800af639a58e31e64f11))
+- **cow-fi:** fix buttons style ([#4361](https://github.com/cowprotocol/cowswap/issues/4361)) ([6283bdd](https://github.com/cowprotocol/cowswap/commit/6283bddab696da777b679624a0d19a85c16d245c))
+- **cow-fi:** hide link to Learn page ([#4356](https://github.com/cowprotocol/cowswap/issues/4356)) ([a261d38](https://github.com/cowprotocol/cowswap/commit/a261d3813227441bf295800af639a58e31e64f11))

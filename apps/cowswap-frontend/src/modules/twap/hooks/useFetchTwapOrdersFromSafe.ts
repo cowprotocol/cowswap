@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 
 import ms from 'ms.macro'
 
-import { fetchTwapOrdersFromSafe } from '../services/fetchTwapOrdersFromSafe'
+import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
+
+import { fetchCachedTwapOrdersFromSafe } from '../services/fetchCachedTwapOrdersFromSafe'
 import { TwapOrdersSafeData } from '../types'
 
-const PENDING_TWAP_UPDATE_INTERVAL = ms`45s`
+const TWAP_SAFE_ORDERS_UPDATE_INTERVAL = ms`1m`
 
 export function useFetchTwapOrdersFromSafe({
   chainId,
@@ -17,7 +18,7 @@ export function useFetchTwapOrdersFromSafe({
 }: {
   chainId: SupportedChainId
   safeAddress: string
-  composableCowContract: ComposableCoW
+  composableCowContract: ComposableCowContractData
 }): TwapOrdersSafeData[] {
   const [ordersSafeData, setOrdersSafeData] = useState<TwapOrdersSafeData[]>([])
   const updateInProgressRef = useRef(false)
@@ -28,12 +29,12 @@ export function useFetchTwapOrdersFromSafe({
 
       updateInProgressRef.current = true
 
-      fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setOrdersSafeData).finally(() => {
+      fetchCachedTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setOrdersSafeData).finally(() => {
         updateInProgressRef.current = false
       })
     }
 
-    const interval = setInterval(persistOrders, PENDING_TWAP_UPDATE_INTERVAL)
+    const interval = setInterval(persistOrders, TWAP_SAFE_ORDERS_UPDATE_INTERVAL)
 
     persistOrders()
 

@@ -42,10 +42,6 @@ jest.mock('../../components/orders/OrderHooksDetails', () => ({
   ),
 }))
 
-jest.mock('../../components/AppData/DecodeAppData', () => ({
-  DecodeAppData: (): React.ReactNode => <span>DecodeAppData</span>,
-}))
-
 jest.mock('../../components/common/Spinner', () => ({
   __esModule: true,
   default: (): React.ReactNode => <span>Spinner</span>,

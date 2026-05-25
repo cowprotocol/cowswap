@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useConnectionType, useIsRestoringConnection, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -11,8 +11,6 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner/Web3StatusInner.pure'
 import { Web3StatusWrapper } from '../../pure/Web3StatusInner/Web3StatusInner.styled'
-import { AccountSelectorModal } from '../AccountSelectorModal'
-import { WalletModal } from '../WalletModal'
 
 export interface Web3StatusProps {
   className?: string
@@ -23,6 +21,7 @@ export interface Web3StatusProps {
 export function Web3Status({ className, onClick, joinedLeft = false }: Web3StatusProps): ReactNode {
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
+  const isConnectionRestoring = useIsRestoringConnection()
   const { ensName } = useWalletDetails()
 
   const toggleWalletModal = useToggleWalletModal()
@@ -39,9 +38,8 @@ export function Web3Status({ className, onClick, joinedLeft = false }: Web3Statu
         ensName={ensName}
         connectWallet={toggleWalletModal}
         connectionType={connectionType}
+        isConnectionRestoring={isConnectionRestoring}
       />
-      <WalletModal />
-      <AccountSelectorModal />
     </Web3StatusWrapper>
   )
 }

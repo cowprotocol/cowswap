@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
@@ -52,7 +51,8 @@ export function TradeWidgetModals({
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
   const { field } = useSelectTokenWidgetState()
-  const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
+  const [{ isOpen: isWrapNativeOpen, errorMessage: wrapNativeError }, setWrapNativeScreenState] =
+    useWrapNativeScreenState()
   const {
     approveInProgress,
     isPendingInProgress,
@@ -107,6 +107,16 @@ export function TradeWidgetModals({
   const error = tokenListAddingError || approveError || confirmError
 
   /**
+   * Reset trade confirm state on unmount so SurplusModalSetup
+   * doesn't see stale isOpen/transactionHash after navigation
+   */
+  useEffect(() => {
+    return () => {
+      closeTradeConfirm()
+    }
+  }, [closeTradeConfirm])
+
+  /**
    * Close all modals besides auto-import on account change
    */
   useEffect(() => {
@@ -154,6 +164,14 @@ export function TradeWidgetModals({
   }
 
   if (isWrapNativeOpen) {
+    if (wrapNativeError) {
+      return (
+        <TransactionErrorContent
+          message={wrapNativeError}
+          onDismiss={() => setWrapNativeScreenState({ isOpen: false })}
+        />
+      )
+    }
     return <WrapNativeModal />
   }
 

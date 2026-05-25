@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
-import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
+import { useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
@@ -12,6 +13,8 @@ import { Field } from 'legacy/state/types'
 
 import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
+
+import { tokensToSelectAtom } from '../state/tokensToSelectAtom'
 
 const EMPTY_TOKENS: TokenWithLogo[] = []
 
@@ -29,7 +32,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   const favoriteTokens = useFavoriteTokens()
   const { selectedTargetChainId = chainId, field, oppositeToken } = useSelectTokenWidgetState()
   const chainsToSelect = useChainsToSelect()
-  const allTokens = useAllActiveTokens().tokens
+  const allTokens = useAtomValue(tokensToSelectAtom)
   const targetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId
 
   const sourceChainId = useMemo(() => {

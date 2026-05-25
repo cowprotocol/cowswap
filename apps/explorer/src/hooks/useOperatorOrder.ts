@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import {
@@ -131,7 +132,7 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
   const { value, isLoading: areErc20Loading, error: errors = {} } = useMultipleErc20({ networkId, addresses })
 
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+
   return useMemo(() => {
     if (orderError) {
       // eslint-disable-next-line react-hooks/immutability
@@ -140,9 +141,9 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
 
     if (order && value) {
       // eslint-disable-next-line react-hooks/immutability
-      order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
+      order.buyToken = value[getAddressKey(order?.buyTokenAddress || '')]
       // eslint-disable-next-line react-hooks/immutability
-      order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
+      order.sellToken = value[getAddressKey(order?.sellTokenAddress || '')]
     }
 
     return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }

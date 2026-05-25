@@ -76,6 +76,7 @@ export const WidgetOverlay = styled.div`
 
   ${Media.upToMedium()} {
     padding: 0;
+    background: ${({ theme }) => (theme.isWidget ? 'transparent' : undefined)};
   }
 `
 

@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
+import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
 import {
@@ -16,7 +17,7 @@ import {
 import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../consts'
-import { validateURL } from '../utils/validateURL'
+import { parseCustomTokensInput } from '../utils/parseCustomTokensInput'
 
 const jsonTextAreaStyles = {
   fontFamily: 'monospace',
@@ -79,7 +80,7 @@ export function AddCustomListDialog({
 
     setCustomListUrl(value)
 
-    setHasErrors(value ? !validateURL(value) : false)
+    setHasErrors(value ? !isValidTokenListSource(value) : false)
   }
 
   // TODO: Add proper return type annotation
@@ -93,9 +94,9 @@ export function AddCustomListDialog({
     }
 
     try {
-      const parsedTokens = JSON.parse(e.target.value)
+      const parsedTokens = parseCustomTokensInput(e.target.value)
 
-      if (Array.isArray(parsedTokens)) {
+      if (parsedTokens) {
         setCustomTokens(parsedTokens)
       } else {
         setHasJsonErrors(true)
@@ -163,7 +164,7 @@ export function AddCustomListDialog({
         <CustomTabPanel value={tabIndex} index={1}>
           <textarea ref={textareaRef} style={jsonTextAreaStyles as never} onChange={handleJsonInputChange}></textarea>
           <Button onClick={addJsonExample}>Add an example</Button>
-          {hasJsonErrors && <FormHelperText error>Enter valid JSON</FormHelperText>}
+          {hasJsonErrors && <FormHelperText error>Enter a token array or token list JSON</FormHelperText>}
         </CustomTabPanel>
       </DialogContent>
       <DialogActions>

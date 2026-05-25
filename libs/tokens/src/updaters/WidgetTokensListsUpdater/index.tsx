@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/index'
+import { useSetAtom, useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'
@@ -17,7 +16,10 @@ import { WidgetVirtualListUpdater } from '../WidgetVirtualListUpdater'
 
 export interface CustomTokensListsUpdaterProps {
   tokenLists?: string[]
+  sellTokenLists?: string[]
+  buyTokenLists?: string[]
   customTokens?: TokenInfo[]
+  hideFavoriteTokens?: boolean
   appCode?: string
   onTokenListAddingError(error: Error): void
   onRemoveList: (source: string) => void
@@ -31,31 +33,47 @@ export interface CustomTokensListsUpdaterProps {
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
 export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): ReactNode {
-  const { tokenLists, appCode, customTokens, onTokenListAddingError, onRemoveList, onAddList } = props
+  const {
+    tokenLists,
+    sellTokenLists,
+    buyTokenLists,
+    appCode,
+    customTokens,
+    hideFavoriteTokens,
+    onTokenListAddingError,
+    onRemoveList,
+    onAddList,
+  } = props
   const addList = useAddList(onAddList)
   const removeList = useRemoveList(onRemoveList)
 
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
 
-  useEffect(() => {
-    const selectedLists = tokenLists ? { selectedLists: tokenLists.map((list) => list.toLowerCase()) } : undefined
+  // All widget-specific lists across all three list types
+  const allWidgetLists = useMemo(() => {
+    return [...(tokenLists || []), ...(sellTokenLists || []), ...(buyTokenLists || [])]
+  }, [tokenLists, sellTokenLists, buyTokenLists])
 
-    setEnvironment({ widgetAppCode: appCode, ...selectedLists })
-  }, [setEnvironment, appCode, tokenLists])
+  useEffect(() => {
+    setEnvironment({
+      hideFavoriteTokens,
+      widgetAppCode: appCode,
+      selectedLists: allWidgetLists?.map((list) => list.toLowerCase()),
+      sellSelectedLists: sellTokenLists?.map((list) => list.toLowerCase()),
+      buySelectedLists: buyTokenLists?.map((list) => list.toLowerCase()),
+    })
+  }, [setEnvironment, appCode, allWidgetLists, sellTokenLists, buyTokenLists, hideFavoriteTokens])
 
   // Take only lists that are not already in the default token lists
   const listsToImport = useMemo(() => {
-    if (!tokenLists?.length) return undefined
+    if (!allWidgetLists.length) return undefined
 
-    return tokenLists.filter((list) => {
+    return allWidgetLists.filter((list) => {
       const listUrl = list.toLowerCase()
-
-      const listExists = allTokensLists.find((list) => list.source.toLowerCase() === listUrl)
-
-      return !listExists
+      return !allTokensLists.find((existing) => existing.source.toLowerCase() === listUrl)
     })
-  }, [tokenLists, allTokensLists])
+  }, [allWidgetLists, allTokensLists])
 
   const { data: fetchedLists } = useSWR<ListState[] | null>(
     ['useSearchList', listsToImport],
@@ -95,19 +113,19 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
    * Since token lists are stored in the local storage, we need to remove previously added widget-specific lists
    */
   useEffect(() => {
-    if (!appCode || !tokenLists?.length) return
+    if (!appCode || !allWidgetLists.length) return
 
-    const enabledTokenListsUrls = tokenLists.map((list) => list.toLowerCase())
+    const enabledUrls = new Set(allWidgetLists.map((list) => list.toLowerCase()))
 
-    // Find all lists that are added for this widget and are not in the provided token lists
+    // Find all lists that are added for this widget and are no longer in any of the provided list types
     const listsToRemove = allTokensLists.filter((list) => {
-      return list.widgetAppCode === appCode && !enabledTokenListsUrls.includes(list.source.toLowerCase())
+      return list.widgetAppCode === appCode && !enabledUrls.has(list.source.toLowerCase())
     })
 
     listsToRemove.forEach((list) => {
       removeList(list)
     })
-  }, [allTokensLists, removeList, appCode, tokenLists])
+  }, [allTokensLists, removeList, appCode, allWidgetLists])
 
   return <WidgetVirtualListUpdater appCode={appCode} customTokens={customTokens} />
 }

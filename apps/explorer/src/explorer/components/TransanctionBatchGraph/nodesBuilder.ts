@@ -1,6 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
-import { getBlockExplorerUrl, isSellOrder, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, getBlockExplorerUrl, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getAddressKey, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 import { ElementDefinition } from 'cytoscape'
@@ -19,7 +19,7 @@ import {
 
 import { Order } from '../../../api/operator'
 import { Account, ALIAS_TRADER_NAME, Trade, Transfer } from '../../../api/tenderly'
-import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
+import { APP_NAME, NATIVE_TOKEN_ADDRESS_NORMALIZED, WRAPPED_NATIVE_ADDRESS } from '../../../const'
 import { SingleErc20State } from '../../../state/erc20'
 import { Network } from '../../../types'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from '../../../utils'
@@ -365,10 +365,10 @@ export function getNotesAndEdges(
 }
 
 export function getTokenAddress(address: string, networkId: SupportedChainId): string {
-  if (address.toLowerCase() === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
-    return WRAPPED_NATIVE_ADDRESS[networkId].toLowerCase()
+  if (areAddressesEqual(address, NATIVE_TOKEN_ADDRESS_NORMALIZED)) {
+    return getAddressKey(WRAPPED_NATIVE_ADDRESS[networkId])
   }
-  return address.toLowerCase()
+  return getAddressKey(address)
 }
 
 export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(

@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.1...assets-v2.3.0) (2026-05-12)
+
+
+### ✨ Features
+
+* prettify receiver component ([#7339](https://github.com/cowprotocol/cowswap/issues/7339)) ([3ff9551](https://github.com/cowprotocol/cowswap/commit/3ff9551f1761934f769fe3591c135454232eb1ea))
+
+## [2.2.1](https://github.com/cowprotocol/cowswap/compare/assets-v2.2.0...assets-v2.2.1) (2026-04-08)
+
+
+### 🐛 Bug Fixes
+
+* always use AlertTriangle, not alertCircle ([#7206](https://github.com/cowprotocol/cowswap/issues/7206)) ([19378d4](https://github.com/cowprotocol/cowswap/commit/19378d4608378e9f65e267120476a9818a4b4e6c))
+
+## [2.2.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.1.0...assets-v2.2.0) (2026-04-02)
+
+
+### ✨ Features
+
+* **affiliate:** add affiliate program page to cow-fi ([#7232](https://github.com/cowprotocol/cowswap/issues/7232)) ([fbf93d7](https://github.com/cowprotocol/cowswap/commit/fbf93d71b6c423d3378eb9b7d51ab09082f770a9))
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.0.1...assets-v2.1.0) (2026-03-10)
 
 

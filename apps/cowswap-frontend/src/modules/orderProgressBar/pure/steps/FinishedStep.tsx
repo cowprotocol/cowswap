@@ -1,6 +1,6 @@
-import React, { ReactNode, useCallback, useMemo, useState, Suspense, lazy } from 'react'
+import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
-import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
@@ -18,6 +18,8 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -60,6 +62,7 @@ export function FinishedStep({
   debugForceShowSurplus,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
+  const { disablePostTradeTips } = useInjectedWidgetParams()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
@@ -90,11 +93,8 @@ export function FinishedStep({
     }
   }, [chainId, t])
 
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  const twitterUrl = useMemo(() => {
+    return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
   // If order is not set, return null
@@ -192,19 +192,24 @@ export function FinishedStep({
       </styledEl.ConclusionContent>
 
       {children}
-      <styledEl.ShareButton
-        data-click-event={toCowSwapGtmEvent({
-          category: CowSwapAnalyticsCategory.PROGRESS_BAR,
-          action: 'Click Share Button',
-          label: shouldShowSurplus ? 'Surplus' : 'Tip',
-        })}
-        onClick={shareOnTwitter}
-      >
-        <SVG src={ICON_SOCIAL_X} />
-        <span>
-          <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-        </span>
-      </styledEl.ShareButton>
+      {(!disablePostTradeTips || shouldShowSurplus) && (
+        <styledEl.ShareButton
+          as="a"
+          href={twitterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+            action: 'Click Share Button',
+            label: shouldShowSurplus ? 'Surplus' : 'Tip',
+          })}
+        >
+          <SVG src={iconSocialXSrc} />
+          <span>
+            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+          </span>
+        </styledEl.ShareButton>
+      )}
     </styledEl.FinishedStepContainer>
   )
 }

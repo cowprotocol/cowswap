@@ -12,15 +12,6 @@ interface BaseQuoteVerificationProps {
 
 const VERIFICATION_ICON_VIEW_BOX = '2 1.5 20 21'
 
-const CompactIconTooltip = styled(HoverTooltip)`
-  > div {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-  }
-`
-
 const VerifiedIcon = styled(BiCheckShield).attrs({ viewBox: VERIFICATION_ICON_VIEW_BOX })`
   --size: 13px;
   display: block;
@@ -87,11 +78,11 @@ export function QuoteVerificationIcon({ isVerified }: BaseQuoteVerificationProps
   const isVerifiedState = !!isVerified
 
   return (
-    <CompactIconTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
+    <HoverTooltip wrapInContainer content={getVerificationTooltipText(isVerifiedState)}>
       <CompactIconWrapper>
         <VerificationIcon isVerified={isVerifiedState} />
       </CompactIconWrapper>
-    </CompactIconTooltip>
+    </HoverTooltip>
   )
 }
 

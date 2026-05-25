@@ -1,37 +1,37 @@
 import { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_DOCS from '@cowprotocol/assets/images/image-docs.svg'
-import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
-import IMG_HOOKS from '@cowprotocol/assets/images/image-hooks.svg'
-import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
-import IMG_PROGRAMMATIC_ORDERS from '@cowprotocol/assets/images/image-programmatic-orders.svg'
-import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
-import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
-import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
-import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
-import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
-import IMG_LOGO_ALCHEMIX from '@cowprotocol/assets/images/logo-alchemix.svg'
-import IMG_LOGO_ARAGON from '@cowprotocol/assets/images/logo-aragon.svg'
-import IMG_LOGO_AURA from '@cowprotocol/assets/images/logo-aura.svg'
-import IMG_LOGO_BALANCER from '@cowprotocol/assets/images/logo-balancer.svg'
-import IMG_LOGO_CURVE_TEXT from '@cowprotocol/assets/images/logo-curve-text.svg'
-import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
-import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
-import IMG_LOGO_GNOSIS from '@cowprotocol/assets/images/logo-gnosis.svg'
-import IMG_LOGO_INDEX_COOP from '@cowprotocol/assets/images/logo-index.svg'
-import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
-import IMG_LOGO_MAKER from '@cowprotocol/assets/images/logo-maker.svg'
-import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
-import IMG_LOGO_PLEASER_DAO from '@cowprotocol/assets/images/logo-pleasrdao.svg'
-import IMG_LOGO_POLYGON from '@cowprotocol/assets/images/logo-polygon.svg'
-import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_SHAPESHIFT from '@cowprotocol/assets/images/logo-shapeshift.svg'
-import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
-import IMG_LOGO_SYNTHETIX from '@cowprotocol/assets/images/logo-synthetix.svg'
-import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
+import svgDocsSrc from '@cowprotocol/assets/images/image-docs.svg'
+import svgGrantColorSrc from '@cowprotocol/assets/images/image-grant-color.svg'
+import svgHooksSrc from '@cowprotocol/assets/images/image-hooks.svg'
+import svgMilkmanSrc from '@cowprotocol/assets/images/image-milkman.svg'
+import svgProgrammaticOrdersSrc from '@cowprotocol/assets/images/image-programmatic-orders.svg'
+import svgSmartordersSrc from '@cowprotocol/assets/images/image-smartorders.svg'
+import svgSurplusSrc from '@cowprotocol/assets/images/image-surplus.svg'
+import svgTwapSrc from '@cowprotocol/assets/images/image-twap.svg'
+import svgWidgetSrc from '@cowprotocol/assets/images/image-widget.svg'
+import iconAaveSrc from '@cowprotocol/assets/images/logo-aave-icon.svg'
+import svgAlchemixSrc from '@cowprotocol/assets/images/logo-alchemix.svg'
+import svgAragonSrc from '@cowprotocol/assets/images/logo-aragon.svg'
+import svgAuraSrc from '@cowprotocol/assets/images/logo-aura.svg'
+import svgBalancerSrc from '@cowprotocol/assets/images/logo-balancer.svg'
+import svgCurveTextSrc from '@cowprotocol/assets/images/logo-curve-text.svg'
+import iconEnsSrc from '@cowprotocol/assets/images/logo-ens-icon.svg'
+import svgFraxSrc from '@cowprotocol/assets/images/logo-frax.svg'
+import svgGnosisSrc from '@cowprotocol/assets/images/logo-gnosis.svg'
+import svgIndexSrc from '@cowprotocol/assets/images/logo-index.svg'
+import svgKarpatkeySrc from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import svgLidoSrc from '@cowprotocol/assets/images/logo-lido.svg'
+import svgMakerSrc from '@cowprotocol/assets/images/logo-maker.svg'
+import iconNexusSrc from '@cowprotocol/assets/images/logo-nexus-icon.svg'
+import svgPleasrdaoSrc from '@cowprotocol/assets/images/logo-pleasrdao.svg'
+import svgPolygonSrc from '@cowprotocol/assets/images/logo-polygon.svg'
+import svgRhinoSrc from '@cowprotocol/assets/images/logo-rhino.svg'
+import svgSafeSrc from '@cowprotocol/assets/images/logo-safe.svg'
+import svgShapeshiftSrc from '@cowprotocol/assets/images/logo-shapeshift.svg'
+import svgStakedaoSrc from '@cowprotocol/assets/images/logo-stakedao.svg'
+import svgSynthetixSrc from '@cowprotocol/assets/images/logo-synthetix.svg'
+import svgTellerSrc from '@cowprotocol/assets/images/logo-teller.svg'
 import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { Color } from '@cowprotocol/ui'
 
@@ -429,7 +429,7 @@ export const ADVANCED_ORDER_TYPES = [
     bgColor: Color.cowfi_purple1,
     textColor: Color.cowfi_purple2,
     titleColor: Color.neutral98,
-    imageSrc: IMG_SURPLUS,
+    imageSrc: svgSurplusSrc,
   },
   {
     title: 'TWAP orders',
@@ -438,7 +438,7 @@ export const ADVANCED_ORDER_TYPES = [
     bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple1,
     titleColor: Color.cowfi_purple_dark,
-    imageSrc: IMG_TWAP,
+    imageSrc: svgTwapSrc,
   },
   {
     title: 'Milkman orders',
@@ -447,7 +447,7 @@ export const ADVANCED_ORDER_TYPES = [
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.neutral98,
-    imageSrc: IMG_MILKMAN,
+    imageSrc: svgMilkmanSrc,
   },
 ]
 
@@ -458,7 +458,7 @@ export const UNIQUE_TRADING_LOGIC = [
     bgColor: Color.cowfi_purple2,
     textColor: Color.cowfi_purple1,
     titleColor: Color.cowfi_purple_dark,
-    imageSrc: IMG_SMARTORDERS,
+    imageSrc: svgSmartordersSrc,
   },
   {
     title: 'Programmatic orders',
@@ -466,7 +466,7 @@ export const UNIQUE_TRADING_LOGIC = [
     bgColor: Color.cowfi_purple_dark,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.neutral98,
-    imageSrc: IMG_PROGRAMMATIC_ORDERS,
+    imageSrc: svgProgrammaticOrdersSrc,
   },
   {
     title: 'Hooks',
@@ -475,14 +475,14 @@ export const UNIQUE_TRADING_LOGIC = [
     bgColor: Color.cowfi_purple3,
     textColor: Color.cowfi_purple_bright,
     titleColor: Color.neutral98,
-    imageSrc: IMG_HOOKS,
+    imageSrc: svgHooksSrc,
   },
 ]
 
 export const TOP_LOGOS = [
-  { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
-  { src: IMG_LOGO_CURVE_TEXT, alt: 'Curve', url: 'https://curve.finance/' },
-  { src: IMG_LOGO_SAFE, alt: 'Safe', url: 'https://safe.global/' },
+  { src: svgLidoSrc, alt: 'Lido', url: 'https://lido.fi/' },
+  { src: svgCurveTextSrc, alt: 'Curve', url: 'https://curve.finance/' },
+  { src: svgSafeSrc, alt: 'Safe', url: 'https://safe.global/' },
 ]
 
 export const CASE_STUDIES = [
@@ -490,40 +490,40 @@ export const CASE_STUDIES = [
     title: 'Aave',
     description: 'Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool',
     link: '/learn/aave-trade-breakdown',
-    logo: IMG_LOGO_AAVE,
+    logo: iconAaveSrc,
   },
   {
     title: 'ENS',
     description: 'ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap',
     link: '/learn/ens-trade-breakdown',
-    logo: IMG_LOGO_ENS,
+    logo: iconEnsSrc,
   },
   {
     title: 'Nexus Mutual',
     description:
       'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a liquid staking token',
     link: '/learn/nexus-mutual-trade-breakdown',
-    logo: IMG_LOGO_NEXUS,
+    logo: iconNexusSrc,
   },
 ]
 
 export const ALL_LOGOS = [
-  { src: IMG_LOGO_GNOSIS, alt: 'Gnosis', url: 'https://www.gnosis.io/' },
-  { src: IMG_LOGO_BALANCER, alt: 'Balancer', url: 'https://balancer.fi/' },
-  { src: IMG_LOGO_AURA, alt: 'Aura', url: 'https://aura.finance/' },
-  { src: IMG_LOGO_KARPATKEY, alt: 'Karpatkey', url: 'https://www.karpatkey.com/' },
-  { src: IMG_LOGO_SHAPESHIFT, alt: 'Shapeshift', url: 'https://shapeshift.com/' },
-  { src: IMG_LOGO_MAKER, alt: 'Maker', url: 'https://makerdao.com/' },
-  { src: IMG_LOGO_SYNTHETIX, alt: 'Synthetix', url: 'https://synthetix.io/' },
-  { src: IMG_LOGO_ARAGON, alt: 'Aragon', url: 'https://aragon.org/' },
-  { src: IMG_LOGO_PLEASER_DAO, alt: 'Pleaser DAO', url: 'https://pleasr.org/' },
-  { src: IMG_LOGO_POLYGON, alt: 'Polygon', url: 'https://polygon.technology/' },
-  { src: IMG_LOGO_INDEX_COOP, alt: 'Index Coop', url: 'https://indexcoop.com/' },
-  { src: IMG_LOGO_ALCHEMIX, alt: 'Alchemix', url: 'https://alchemix.fi/' },
-  { src: IMG_LOGO_STAKE_DAO, alt: 'StakeDAO', url: 'https://stakedao.org/' },
-  { src: IMG_LOGO_RHINO_FI, alt: 'RhinoFi', url: 'https://rhino.fi/' },
-  { src: IMG_LOGO_TELLER_FINANCE, alt: 'Teller Finance', url: 'https://teller.finance/' },
-  { src: IMG_LOGO_FRAX_FINANCE, alt: 'Frax Finance', url: 'https://frax.finance/' },
+  { src: svgGnosisSrc, alt: 'Gnosis', url: 'https://www.gnosis.io/' },
+  { src: svgBalancerSrc, alt: 'Balancer', url: 'https://balancer.fi/' },
+  { src: svgAuraSrc, alt: 'Aura', url: 'https://aura.finance/' },
+  { src: svgKarpatkeySrc, alt: 'Karpatkey', url: 'https://www.karpatkey.com/' },
+  { src: svgShapeshiftSrc, alt: 'Shapeshift', url: 'https://shapeshift.com/' },
+  { src: svgMakerSrc, alt: 'Maker', url: 'https://makerdao.com/' },
+  { src: svgSynthetixSrc, alt: 'Synthetix', url: 'https://synthetix.io/' },
+  { src: svgAragonSrc, alt: 'Aragon', url: 'https://aragon.org/' },
+  { src: svgPleasrdaoSrc, alt: 'Pleaser DAO', url: 'https://pleasr.org/' },
+  { src: svgPolygonSrc, alt: 'Polygon', url: 'https://polygon.technology/' },
+  { src: svgIndexSrc, alt: 'Index Coop', url: 'https://indexcoop.com/' },
+  { src: svgAlchemixSrc, alt: 'Alchemix', url: 'https://alchemix.fi/' },
+  { src: svgStakedaoSrc, alt: 'StakeDAO', url: 'https://stakedao.org/' },
+  { src: svgRhinoSrc, alt: 'RhinoFi', url: 'https://rhino.fi/' },
+  { src: svgTellerSrc, alt: 'Teller Finance', url: 'https://teller.finance/' },
+  { src: svgFraxSrc, alt: 'Frax Finance', url: 'https://frax.finance/' },
 ]
 
 export const COW_PROTOCOL_SECTIONS = [
@@ -538,7 +538,7 @@ export const COW_PROTOCOL_SECTIONS = [
     linkText: 'Read the docs',
     linkEvent: 'click-docs',
     linkUtmContent: 'cow-protocol-docs',
-    imageSrc: IMG_DOCS,
+    imageSrc: svgDocsSrc,
   },
   {
     title: 'For DeFi projects',
@@ -550,7 +550,7 @@ export const COW_PROTOCOL_SECTIONS = [
     linkHref: '/widget',
     linkText: 'Integrate the widget',
     linkEvent: 'click-integrate-widget',
-    imageSrc: IMG_WIDGET,
+    imageSrc: svgWidgetSrc,
   },
   {
     title: 'For anyone',
@@ -559,10 +559,10 @@ export const COW_PROTOCOL_SECTIONS = [
     bgColor: Color.cowfi_purple_bright,
     textColor: Color.cowfi_purple3,
     titleColor: Color.cowfi_purple_dark,
-    linkHref: 'https://grants.cow.fi/',
+    linkHref: 'https://docs.cow.fi/',
     linkText: 'Apply for a grant',
     linkEvent: 'click-apply-for-a-grant',
     linkUtmContent: 'cow-protocol-grants',
-    imageSrc: IMG_GRANT_COLOR,
+    imageSrc: svgGrantColorSrc,
   },
 ]

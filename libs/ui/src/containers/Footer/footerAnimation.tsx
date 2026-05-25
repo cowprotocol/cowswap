@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow-dark-mode.svg'
+import svgFlyingWinkCowDarkModeSrc from '@cowprotocol/assets/images/flying-wink-cow-dark-mode.svg'
 
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
@@ -96,11 +96,11 @@ export const FooterAnimation = () => {
       <ScrollingContent ref={contentRef}>
         <ScrollingContentWrapper>
           <b>MOOOOOOOOOOOOOOOOOO</b>
-          <SVG src={IMG_FLYING_WINK_COW_DARK} />
+          <SVG src={svgFlyingWinkCowDarkModeSrc} />
         </ScrollingContentWrapper>
         <ScrollingContentWrapper>
           <b>MOOOOOOOOOOOOOOOOOO</b>
-          <SVG src={IMG_FLYING_WINK_COW_DARK} />
+          <SVG src={svgFlyingWinkCowDarkModeSrc} />
         </ScrollingContentWrapper>
       </ScrollingContent>
     </FooterAnimationContainer>

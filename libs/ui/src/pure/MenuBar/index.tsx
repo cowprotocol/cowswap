@@ -10,12 +10,12 @@ import React, {
   useState,
 } from 'react'
 
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
-import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
-import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import svgArrowRightSrc from '@cowprotocol/assets/images/arrow-right.svg'
+import svgCarretDownSrc from '@cowprotocol/assets/images/carret-down.svg'
+import svgMenuGridDotsSrc from '@cowprotocol/assets/images/menu-grid-dots.svg'
+import svgMenuHamburgerSrc from '@cowprotocol/assets/images/menu-hamburger.svg'
+import svgSettingsGlobalSrc from '@cowprotocol/assets/images/settings-global.svg'
+import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
 import { useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 
@@ -245,7 +245,7 @@ const DropdownContentItem: React.FC<{
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line max-lines-per-function, complexity
+  // eslint-disable-next-line max-lines-per-function
 }> = ({ item, closeMenu, LinkComponent }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
@@ -319,7 +319,7 @@ const DropdownContentItem: React.FC<{
         <LinkComponent href={item.href}>
           {renderItemContent()}
           {item.href && !item.children && (
-            <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+            <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
           )}
         </LinkComponent>
       </DropdownContentItemButton>
@@ -337,7 +337,7 @@ const DropdownContentItem: React.FC<{
           hoverColor={item.hoverColor}
         >
           {renderItemContent()}
-          <SVG src={IMG_ICON_CARRET_DOWN} />
+          <SVG src={svgCarretDownSrc} />
         </StyledDropdownContentItem>
         {isChildrenVisible && (
           <DropdownContentWrapper
@@ -368,8 +368,8 @@ const DropdownContentItem: React.FC<{
     >
       <LinkComponent href={href}>
         {renderItemContent()}
-        {item.external && !item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right external" />}
-        {!item.external && !item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
+        {item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right external" />}
+        {!item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right" />}
       </LinkComponent>
     </StyledDropdownContentItem>
   )
@@ -407,7 +407,7 @@ const NavDaoTrigger: React.FC<{
         onClick={handleToggle}
         isOpen={isOpen}
       >
-        <SVG src={IMG_ICON_MENU_DOTS} />
+        <SVG src={svgMenuGridDotsSrc} />
       </NavDaoTriggerElement>
       {isOpen &&
         (mobileMode ? (
@@ -464,7 +464,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
             {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
           </Badge>
         )}
-        {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
+        {item.children && <SVG src={svgCarretDownSrc} />}
       </RootNavItem>
       {isOpen && (
         <DropdownContentWrapper
@@ -490,7 +490,7 @@ interface DropdownContentWrapperProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   content,
   isThirdLevel = false,
@@ -526,7 +526,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line complexity */}
+      {}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
@@ -546,9 +546,9 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
               </DropdownContentItemTitle>
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
-            {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
+            {item.children && <SVG src={svgCarretDownSrc} />}
             {!item.children && (
-              <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+              <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
             )}
             {item.children && visibleThirdLevel === index && (
               <DropdownContentWrapper
@@ -650,7 +650,7 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
             <CountryFlag locale={i18n.locale} />
           </DropdownContentItemTitle>
         </DropdownContentItemText>
-        <SVG src={IMG_ICON_CARRET_DOWN} />
+        <SVG src={svgCarretDownSrc} />
         {!mobileMode && languagesContent}
       </div>
       {mobileMode && languagesContent}
@@ -719,7 +719,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         <DropdownContentItemText>
           <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
         </DropdownContentItemText>
-        <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+        <SVG src={svgArrowRightSrc} className="arrow-icon-right" />
       </>
     )
 
@@ -967,7 +967,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     <DropdownContentItemText>
                       <DropdownContentItemTitleNoWrap>{item.label}</DropdownContentItemTitleNoWrap>
                     </DropdownContentItemText>
-                    <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+                    <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </LinkComponent>
                 </DropdownContentItemButton>
               )
@@ -975,7 +975,7 @@ export const MenuBar = (props: MenuBarProps) => {
           {showGlobalSettings && settingsNavItems && (
             <>
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
-                <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
+                <SVG src={svgSettingsGlobalSrc} />
               </GlobalSettingsButton>
               {isSettingsOpen &&
                 (isMedium ? (
@@ -1013,7 +1013,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
         {isMobile && (
           <MobileMenuTrigger ref={mobileMenuTriggerRef} mobileMode={isMobile} onClick={handleMobileMenuToggle}>
-            <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+            <SVG src={isMobileMenuOpen ? svgXSrc : svgMenuHamburgerSrc} />
           </MobileMenuTrigger>
         )}
       </MenuBarInner>
@@ -1052,10 +1052,7 @@ export const MenuBar = (props: MenuBarProps) => {
                         <DropdownContentItemText>
                           <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
                         </DropdownContentItemText>
-                        <SVG
-                          src={IMG_ICON_ARROW_RIGHT}
-                          className={`arrow-icon-right ${item.external ? 'external' : ''}`}
-                        />
+                        <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                       </LinkComponent>
                     </DropdownContentItemButton>
                   )

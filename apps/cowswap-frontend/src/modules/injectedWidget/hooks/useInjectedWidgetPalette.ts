@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPalette } from '@cowprotocol/widget-lib'
 
 import { useLocation } from 'react-router'
 
 // The theme palette provided by a consumer
-export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPaletteParams> | undefined {
+export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | undefined {
   const { search } = useLocation()
 
   return useMemo(() => {

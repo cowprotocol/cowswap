@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo, useState } from 'react'
 
-import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
@@ -23,6 +23,7 @@ import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
 import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
+import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
@@ -31,9 +32,6 @@ import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
-
-// Initialize static analytics instance
-const pixel = initPixelAnalytics()
 
 interface AppContainerProps {
   children: ReactNode | ReactNode[]
@@ -60,17 +58,12 @@ interface FooterSectionProps {
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const cowAnalytics = useCowAnalytics()
-  const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
-  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
     chainId,
     walletName,
-    cowAnalytics,
-    pixelAnalytics: pixel,
-    webVitalsAnalytics: webVitals,
     marketDimension: useGetMarketDimension() || undefined,
     injectedWidgetAppId: useInjectedWidgetMetaData()?.appCode,
   })
@@ -111,6 +104,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
       <styledEl.AppWrapper>
         <URLWarning />
+        <RecoveryBanner />
         <InvalidLocalTimeWarning />
 
         <OrdersPanel />
@@ -139,7 +133,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
+        <AffiliateTraderModal />
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
   )

@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode } from 'react'
 
-import QuestionImage from '@cowprotocol/assets/svg/question.svg'
+import svgQuestionSrc from '@cowprotocol/assets/svg/question.svg'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { UI } from '../../enum'
 import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 
-const DefaultQuestionIcon = <SVG src={QuestionImage} />
+const DefaultQuestionIcon = <SVG src={svgQuestionSrc} />
 
 export const QuestionTooltipIconWrapper = styled.div<{ $size?: number; $dimmed?: boolean }>`
   position: relative;
