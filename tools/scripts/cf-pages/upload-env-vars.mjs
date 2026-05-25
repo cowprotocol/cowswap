@@ -127,6 +127,39 @@ function parseCSVLine(line) {
   return fields
 }
 
+function normalizeCSVFields(fields) {
+  return fields.map((field) => field.replace(/\r+$/, ''))
+}
+
+function buildEnvVarConfigs({
+  name,
+  envVar,
+  targetEnv,
+  overwrite,
+  existingProduction,
+  existingPreview,
+  productionEnvVars,
+  previewEnvVars,
+}) {
+  const addedEnvs = []
+
+  if (targetEnv === 'production' || targetEnv === 'both') {
+    if (overwrite || !existingProduction.includes(name)) {
+      productionEnvVars[name] = envVar
+      addedEnvs.push('production')
+    }
+  }
+
+  if (targetEnv === 'preview' || targetEnv === 'both') {
+    if (overwrite || !existingPreview.includes(name)) {
+      previewEnvVars[name] = envVar
+      addedEnvs.push('preview')
+    }
+  }
+
+  return { addedEnvs }
+}
+
 async function fetchExistingVarNames(env) {
   const data = await cfFetch(accountId, apiToken, `projects/${projectName}`).catch((err) => cfError(err.message))
   return Object.keys(data.result?.deployment_configs?.[env]?.env_vars ?? {})
@@ -150,13 +183,14 @@ if (!overwrite) {
 console.log(`Reading variables from '${csvFile}'...`)
 
 const lines = content.split('\n')
-const envVars = {}
+const productionEnvVars = {}
+const previewEnvVars = {}
 
 for (let row = 0; row < lines.length; row++) {
   const trimmed = lines[row].trim()
   if (!trimmed || trimmed.startsWith('#')) continue
 
-  const fields = parseCSVLine(lines[row])
+  const fields = normalizeCSVFields(parseCSVLine(lines[row]))
   const name = fields[0]?.trim()
   const value = fields[1] ?? ''
   const rawType = (fields[2] ?? '').trim().toLowerCase()
@@ -178,29 +212,39 @@ for (let row = 0; row < lines.length; row++) {
     cfError(`Row ${row + 1} (${name}): type must be 'text' or 'secret', got '${rawType}'`)
   }
 
-  if (!overwrite) {
-    const skipInProduction = targetEnv === 'production' && existingProduction.includes(name)
-    const skipInPreview = targetEnv === 'preview' && existingPreview.includes(name)
-    const skipInBoth = targetEnv === 'both' && existingProduction.includes(name) && existingPreview.includes(name)
-    if (skipInProduction || skipInPreview || skipInBoth) {
-      console.log(`  ~ ${name} (skipped — already exists in ${targetEnv})`)
-      continue
-    }
+  const { addedEnvs } = buildEnvVarConfigs({
+    name,
+    envVar: { value, type: cfType },
+    targetEnv,
+    overwrite,
+    existingProduction,
+    existingPreview,
+    productionEnvVars,
+    previewEnvVars,
+  })
+
+  if (addedEnvs.length === 0) {
+    console.log(`  ~ ${name} (skipped — already exists in ${targetEnv})`)
+    continue
   }
 
-  envVars[name] = { value, type: cfType }
   console.log(`  + ${name} (${rawType})`)
 }
 
-if (Object.keys(envVars).length === 0) {
+const hasProductionVars = Object.keys(productionEnvVars).length > 0
+const hasPreviewVars = Object.keys(previewEnvVars).length > 0
+
+if (!hasProductionVars && !hasPreviewVars) {
   console.log('No variables found in CSV. Nothing to upload.')
   process.exit(0)
 }
 
 const envConfigs =
   targetEnv === 'both'
-    ? { production: { env_vars: envVars }, preview: { env_vars: envVars } }
-    : { [targetEnv]: { env_vars: envVars } }
+    ? { production: { env_vars: productionEnvVars }, preview: { env_vars: previewEnvVars } }
+    : targetEnv === 'production'
+      ? { production: { env_vars: productionEnvVars } }
+      : { preview: { env_vars: previewEnvVars } }
 
 const payload = { deployment_configs: envConfigs }
 

@@ -22,8 +22,22 @@ import { getCfCredentials, cfFetch } from './cf-api.mjs'
 
 const { accountId, apiToken } = getCfCredentials()
 
-const concurrencyArg = process.argv.find((a) => a.startsWith('--concurrency='))
-const concurrency = concurrencyArg ? parseInt(concurrencyArg.split('=')[1], 10) : 2
+const DEFAULT_CONCURRENCY = 2
+
+function normalizeConcurrency(value) {
+  return Number.isInteger(value) && value > 0 ? value : DEFAULT_CONCURRENCY
+}
+
+function parseConcurrency(args) {
+  const concurrencyArg = args.find((a) => a.startsWith('--concurrency='))
+  if (!concurrencyArg) return DEFAULT_CONCURRENCY
+
+  const parsed = parseInt(concurrencyArg.split('=')[1], 10)
+
+  return normalizeConcurrency(parsed)
+}
+
+const concurrency = parseConcurrency(process.argv.slice(2))
 
 const now = new Date()
 const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))
@@ -69,6 +83,7 @@ async function getMonthlyBuildCounts(projectName) {
 
 async function mapConcurrent(items, concurrency, fn) {
   const results = new Array(items.length)
+  const workerCount = Math.min(normalizeConcurrency(concurrency), items.length)
   let idx = 0
   async function worker() {
     while (idx < items.length) {
@@ -76,7 +91,7 @@ async function mapConcurrent(items, concurrency, fn) {
       results[i] = await fn(items[i])
     }
   }
-  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker))
+  await Promise.all(Array.from({ length: workerCount }, worker))
   return results
 }
 
