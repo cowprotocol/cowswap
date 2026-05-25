@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -330,30 +331,6 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
     return new URL(trimmedUrl, iframeOrigin).toString()
   } catch {
     return null
-  }
-}
-
-const BLOCKED_PROTOCOLS = new Set(['javascript:', 'data:', 'vbscript:', 'file:', 'filesystem:'])
-
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
-
-    if (BLOCKED_PROTOCOLS.has(protocol)) {
-      return false
-    }
-
-    // Allow custom deeplinks like:
-    // bnc://app.binance.com
-    // metamask://
-    // trust://
-    //
-    // Require:
-    // - protocol contains only safe chars
-    // - URL has // authority section
-    return /^[a-z][a-z0-9+.-]*:$/.test(protocol) && url.includes('://')
-  } catch {
-    return false
   }
 }
 
