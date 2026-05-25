@@ -112,14 +112,27 @@ function pinNonSdkPackagesToNpmjs() {
         if (!depName.startsWith('@cowprotocol/')) continue
         if (isSdkPackage(depName)) continue
         if (deps[depName].startsWith('workspace:')) continue
-        if (deps[depName].startsWith('https://')) continue
 
-        const tarballUrl = getNpmjsTarballUrl(depName, deps[depName])
+        // Non-SDK @cowprotocol packages (e.g. @cowprotocol/cms, @cowprotocol/cow-runner-game)
+        // are only published to npmjs, not to GitHub Packages. With `@cowprotocol:registry`
+        // pointed at GitHub Packages for the SDK preview, pnpm would otherwise route ALL
+        // @cowprotocol/* fetches there and 404 on these.
+        //
+        // We can't rely on a `https://...tgz` specifier already being in package.json:
+        // pnpm's lockfile compacts those entries to `version + integrity` (no `tarball:`
+        // field), and on a fresh install pnpm reconstructs the fetch URL from the active
+        // scope registry — which is wrong here. Rewriting the workspace manifest at
+        // `readPackage` time forces pnpm to see a URL specifier and fetch it directly,
+        // bypassing the scope registry entirely.
+        const existingSpec = deps[depName]
+        const tarballUrl = existingSpec.startsWith('https://')
+          ? existingSpec
+          : getNpmjsTarballUrl(depName, existingSpec)
 
         if (!rewriteMap[packageName]) rewriteMap[packageName] = {}
 
         rewriteMap[packageName][depName] = tarballUrl
-        console.log(`[install.js] pinning ${packageName} -> ${depName}@${deps[depName]} -> ${tarballUrl}`)
+        console.log(`[install.js] pinning ${packageName} -> ${depName}@${existingSpec} -> ${tarballUrl}`)
       }
     }
   }
