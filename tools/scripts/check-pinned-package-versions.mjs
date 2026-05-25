@@ -56,8 +56,7 @@ function isPinnedVersion(spec) {
   if (npmAliasExactRegex.test(spec)) return true
 
   if (
-    spec.startsWith('http://') ||
-    spec.startsWith('https://') ||
+    (spec.startsWith('https://') && spec.endsWith('.tgz')) ||
     spec.startsWith('file:') ||
     spec.startsWith('link:') ||
     spec.startsWith('portal:') ||
