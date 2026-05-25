@@ -1,403 +1,371 @@
 # Changelog
 
-## [3.2.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.1...ens-v3.2.2) (2026-05-12)
+## [3.2.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.3...ens-v3.2.4) (2026-05-22)
 
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-utils@3.4.1
+
+## 3.2.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.0
+  - @cowprotocol/common-utils@3.4.0
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.1...ens-v3.2.2) (2026-05-12)
 
 ### 🐛 Bug Fixes
 
-* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
-
+- **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-utils bumped to 3.3.2
-    * @cowprotocol/cowswap-abis bumped to 4.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-utils bumped to 3.3.2
+    - @cowprotocol/cowswap-abis bumped to 4.0.0
 
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.0...ens-v3.2.1) (2026-04-22)
 
-
 ### 🐛 Bug Fixes
 
-* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
-
+- take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.2.1
-    * @cowprotocol/common-utils bumped to 3.3.1
-    * @cowprotocol/wallet-provider bumped to 2.1.17
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.1
+    - @cowprotocol/common-utils bumped to 3.3.1
+    - @cowprotocol/wallet-provider bumped to 2.1.17
 
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.2...ens-v3.2.0) (2026-04-16)
 
-
 ### ✨ Features
 
-* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
-
+- bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.2.0
-    * @cowprotocol/common-utils bumped to 3.3.0
-    * @cowprotocol/wallet-provider bumped to 2.1.16
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.2.0
+    - @cowprotocol/common-utils bumped to 3.3.0
+    - @cowprotocol/wallet-provider bumped to 2.1.16
 
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.1...ens-v3.1.2) (2026-04-15)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.1.2
-    * @cowprotocol/common-utils bumped to 3.2.1
-    * @cowprotocol/wallet-provider bumped to 2.1.15
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.2
+    - @cowprotocol/common-utils bumped to 3.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.15
 
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.1.0...ens-v3.1.1) (2026-04-15)
 
-
 ### 🔧 Miscellaneous
 
-* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
-
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.1.1
-    * @cowprotocol/common-utils bumped to 3.2.0
-    * @cowprotocol/wallet-provider bumped to 2.1.14
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.1
+    - @cowprotocol/common-utils bumped to 3.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.14
 
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.4...ens-v3.1.0) (2026-04-14)
 
-
 ### ✨ Features
 
-* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
-
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.1.0
-    * @cowprotocol/common-utils bumped to 3.1.0
-    * @cowprotocol/wallet-provider bumped to 2.1.13
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.1.0
+    - @cowprotocol/common-utils bumped to 3.1.0
+    - @cowprotocol/wallet-provider bumped to 2.1.13
 
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.3...ens-v3.0.4) (2026-04-08)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
-
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.4
-    * @cowprotocol/common-utils bumped to 3.0.4
-    * @cowprotocol/wallet-provider bumped to 2.1.12
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.4
+    - @cowprotocol/common-utils bumped to 3.0.4
+    - @cowprotocol/wallet-provider bumped to 2.1.12
 
 ## [3.0.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.2...ens-v3.0.3) (2026-04-07)
 
-
 ### 🐛 Bug Fixes
 
-* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
-
+- fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.3
-    * @cowprotocol/common-utils bumped to 3.0.3
-    * @cowprotocol/wallet-provider bumped to 2.1.11
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.3
+    - @cowprotocol/common-utils bumped to 3.0.3
+    - @cowprotocol/wallet-provider bumped to 2.1.11
 
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.1...ens-v3.0.2) (2026-03-19)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.2
-    * @cowprotocol/common-utils bumped to 3.0.2
-    * @cowprotocol/wallet-provider bumped to 2.1.10
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.2
+    - @cowprotocol/common-utils bumped to 3.0.2
+    - @cowprotocol/wallet-provider bumped to 2.1.10
 
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.0.0...ens-v3.0.1) (2026-03-18)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.1
-    * @cowprotocol/common-utils bumped to 3.0.1
-    * @cowprotocol/wallet-provider bumped to 2.1.9
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.1
+    - @cowprotocol/common-utils bumped to 3.0.1
+    - @cowprotocol/wallet-provider bumped to 2.1.9
 
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.4.0...ens-v3.0.0) (2026-03-11)
 
-
 ### ⚠ BREAKING CHANGES
 
-* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+- Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
 
 ### ✨ Features
 
-* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
-
+- remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
 
 ### 🔧 Miscellaneous
 
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
-
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 3.0.0
-    * @cowprotocol/common-utils bumped to 3.0.0
-    * @cowprotocol/wallet-provider bumped to 2.1.8
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 3.0.0
+    - @cowprotocol/common-utils bumped to 3.0.0
+    - @cowprotocol/wallet-provider bumped to 2.1.8
 
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.3.2...ens-v2.4.0) (2026-03-10)
 
-
 ### ✨ Features
 
-* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
-
+- integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
-
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
-
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.4.0
-    * @cowprotocol/common-utils bumped to 2.4.0
-    * @cowprotocol/wallet-provider bumped to 2.1.7
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.4.0
+    - @cowprotocol/common-utils bumped to 2.4.0
+    - @cowprotocol/wallet-provider bumped to 2.1.7
 
 ## [2.3.2](https://github.com/cowprotocol/cowswap/compare/ens-v2.3.1...ens-v2.3.2) (2026-02-25)
 
-
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.2
-    * @cowprotocol/common-utils bumped to 2.3.2
-    * @cowprotocol/wallet-provider bumped to 2.1.6
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.2
+    - @cowprotocol/common-utils bumped to 2.3.2
+    - @cowprotocol/wallet-provider bumped to 2.1.6
 
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/ens-v2.3.0...ens-v2.3.1) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.1
-    * @cowprotocol/common-utils bumped to 2.3.1
-    * @cowprotocol/wallet-provider bumped to 2.1.5
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.1
+    - @cowprotocol/common-utils bumped to 2.3.1
+    - @cowprotocol/wallet-provider bumped to 2.1.5
 
 ## [2.3.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.2.2...ens-v2.3.0) (2026-02-20)
 
-
 ### ✨ Features
 
-* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
-
+- **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.3.0
-    * @cowprotocol/common-utils bumped to 2.3.0
-    * @cowprotocol/wallet-provider bumped to 2.1.4
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.3.0
+    - @cowprotocol/common-utils bumped to 2.3.0
+    - @cowprotocol/wallet-provider bumped to 2.1.4
 
 ## [2.2.2](https://github.com/cowprotocol/cowswap/compare/ens-v2.2.1...ens-v2.2.2) (2026-02-17)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.2
-    * @cowprotocol/common-utils bumped to 2.2.2
-    * @cowprotocol/wallet-provider bumped to 2.1.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.2
+    - @cowprotocol/common-utils bumped to 2.2.2
+    - @cowprotocol/wallet-provider bumped to 2.1.3
 
 ## [2.2.1](https://github.com/cowprotocol/cowswap/compare/ens-v2.2.0...ens-v2.2.1) (2026-02-16)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.1
-    * @cowprotocol/common-utils bumped to 2.2.1
-    * @cowprotocol/wallet-provider bumped to 2.1.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.1
+    - @cowprotocol/common-utils bumped to 2.2.1
+    - @cowprotocol/wallet-provider bumped to 2.1.2
 
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.1.0...ens-v2.2.0) (2026-02-13)
 
-
 ### ✨ Features
 
-* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
-
+- replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.2.0
-    * @cowprotocol/common-utils bumped to 2.2.0
-    * @cowprotocol/wallet-provider bumped to 2.1.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.2.0
+    - @cowprotocol/common-utils bumped to 2.2.0
+    - @cowprotocol/wallet-provider bumped to 2.1.1
 
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/ens-v2.0.1...ens-v2.1.0) (2026-02-05)
 
-
 ### ✨ Features
 
-* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
-
+- **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
 
 ### 🔧 Miscellaneous
 
-* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
-
+- update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.1.0
-    * @cowprotocol/common-utils bumped to 2.1.0
-    * @cowprotocol/cowswap-abis bumped to 3.0.0
-    * @cowprotocol/wallet-provider bumped to 2.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.1.0
+    - @cowprotocol/common-utils bumped to 2.1.0
+    - @cowprotocol/cowswap-abis bumped to 3.0.0
+    - @cowprotocol/wallet-provider bumped to 2.1.0
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/ens-v2.0.0...ens-v2.0.1) (2026-02-02)
 
-
 ### Bug Fixes
 
-* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
-
+- **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.0.1
-    * @cowprotocol/common-utils bumped to 2.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.0.1
+    - @cowprotocol/common-utils bumped to 2.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.7.0...ens-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/common-const bumped to 2.0.0
-    * @cowprotocol/common-utils bumped to 2.0.0
-    * @cowprotocol/cowswap-abis bumped to 2.0.0
-    * @cowprotocol/wallet-provider bumped to 2.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/common-const bumped to 2.0.0
+    - @cowprotocol/common-utils bumped to 2.0.0
+    - @cowprotocol/cowswap-abis bumped to 2.0.0
+    - @cowprotocol/wallet-provider bumped to 2.0.0
 
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.6.0...ens-v1.7.0) (2025-11-24)
 
-
 ### Features
 
-* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+- **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
 
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.5.0...ens-v1.6.0) (2025-11-10)
 
-
 ### Features
 
-* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+- **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
 
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.4.0...ens-v1.5.0) (2025-08-21)
 
-
 ### Features
 
-* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+- **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
 
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.3.1...ens-v1.4.0) (2025-06-18)
 
-
 ### Features
 
-* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+- **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
 
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/ens-v1.3.0...ens-v1.3.1) (2025-05-19)
 
-
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
 
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.2.0...ens-v1.3.0) (2024-12-03)
 
-
 ### Features
 
-* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+- **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
 
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.1.0...ens-v1.2.0) (2024-05-29)
 
-
 ### Features
 
-* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+- **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
 
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.0.0...ens-v1.1.0) (2024-05-22)
 
-
 ### Features
 
-* **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
+- **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
 
 ## 1.0.0 (2024-03-29)
 
-
 ### Bug Fixes
 
-* network setup and recipient resetting ([#3758](https://github.com/cowprotocol/cowswap/issues/3758)) ([a28f858](https://github.com/cowprotocol/cowswap/commit/a28f858b9915e50d847ad71d7e041c4ba07d9afd))
+- network setup and recipient resetting ([#3758](https://github.com/cowprotocol/cowswap/issues/3758)) ([a28f858](https://github.com/cowprotocol/cowswap/commit/a28f858b9915e50d847ad71d7e041c4ba07d9afd))

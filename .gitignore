@@ -5,6 +5,7 @@ build
 dist
 tmp
 /out-tsc
+*tsbuildinfo
 
 # dependencies
 node_modules
@@ -74,6 +75,3 @@ CLAUDE.md
 
 # Serena project files
 .serena/
-
-# Github
-/.npmrc

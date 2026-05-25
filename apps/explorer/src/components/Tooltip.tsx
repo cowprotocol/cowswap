@@ -3,7 +3,7 @@ import React, { ReactNode, CSSProperties, useCallback, PropsWithChildren } from 
 import { Color } from '@cowprotocol/ui'
 
 import { State, Placement } from '@popperjs/core'
-import questionImg from 'assets/img/question.svg'
+import svgQuestionSrc from 'assets/img/question.svg'
 import Portal from 'components/Portal'
 import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePopper'
 import SVG from 'react-inlinesvg'
@@ -179,5 +179,7 @@ const HelperSpan = styled.span`
 `
 
 export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = 'top', offset }) => {
-  return <BaseIconTooltipOnClick sourceIconSvg={questionImg} tooltip={tooltip} placement={placement} offset={offset} />
+  return (
+    <BaseIconTooltipOnClick sourceIconSvg={svgQuestionSrc} tooltip={tooltip} placement={placement} offset={offset} />
+  )
 }

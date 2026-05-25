@@ -17,6 +17,7 @@ import {
   PartnerInfoResponse,
   PartnerCreateRequest,
   PartnerStatsResponse,
+  TraderActivityResponse,
   TraderInfoResponse,
   TraderStatsResponse,
 } from './bffAffiliateApi.types'
@@ -145,6 +146,14 @@ class BffAffiliateApi {
   async getAffiliateStats(account: string): Promise<PartnerStatsResponse | null> {
     const url = this.buildUrl(`affiliate/affiliate-stats/${account}`)
     const { response, data, text } = await this.fetchJsonResponse<PartnerStatsResponse>(url)
+    if (response.status === 404) return null
+    if (response.ok) return data ?? null
+    throw new ApiError(response.status, text, data as ApiErrorPayload)
+  }
+
+  async getTraderActivity(account: string): Promise<TraderActivityResponse | null> {
+    const url = this.buildUrl(`affiliate/trader-activity/${account}`)
+    const { response, data, text } = await this.fetchJsonResponse<TraderActivityResponse>(url)
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)

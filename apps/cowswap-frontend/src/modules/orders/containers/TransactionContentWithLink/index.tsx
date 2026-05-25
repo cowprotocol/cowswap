@@ -7,6 +7,8 @@ import styled from 'styled-components/macro'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { useOrder } from 'legacy/state/orders/hooks'
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;
@@ -30,13 +32,17 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
   const { transactionHash, orderUid, children, isEthFlow } = props
+  const { status } = useOrder({ id: orderUid, chainId }) || {}
 
   const isOrder = isCowOrder('transaction', orderUid)
   const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid))
   const isSafeTx = !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
 
+  const isEthFlowCreating =
+    isEthFlow && transactionHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status)
+
   const tx = {
-    hash: (isOrder && !isEthFlow ? orderUid : transactionHash || orderUid) || '',
+    hash: (isOrder && !isEthFlow ? orderUid : isEthFlowCreating ? transactionHash : orderUid) || '',
     hashType: (isSafeOrder || isSafeTx) && !isOrder ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: transactionHash || '',
