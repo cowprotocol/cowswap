@@ -20,14 +20,19 @@ export function useResetRecipientOnChainChange(
     stableRef.current.recipient = recipient
   })
 
-  const prevTargetChainId = useRef<TargetChainId | undefined>(undefined)
+  const hasInitialized = useRef(false)
   useEffect(() => {
-    const prev = prevTargetChainId.current
-    prevTargetChainId.current = targetChainId
-
-    // Skip the initial `undefined -> chainId` transition: that's app init, not a
-    // user-driven chain change, and treating it as one wipes a URL-provided recipient.
-    if (prev === undefined) return
+    // Absorb the initial hydration (`undefined -> chainId` at app start) exactly once:
+    // that's app init, not a user-driven chain change, and treating it as one wipes a
+    // URL-provided recipient. After the first defined chain is seen, validate every
+    // subsequent change — including later `undefined -> chainId` transitions, e.g. the
+    // buy token being cleared and then a non-EVM chain (BTC/SOL) selected.
+    if (!hasInitialized.current) {
+      if (targetChainId !== undefined) {
+        hasInitialized.current = true
+      }
+      return
+    }
 
     const { recipient: currentRecipient, onChangeRecipient: onChange } = stableRef.current
     if (currentRecipient && !getAddressValidationStrategy(targetChainId).isValidAddress(currentRecipient)) {

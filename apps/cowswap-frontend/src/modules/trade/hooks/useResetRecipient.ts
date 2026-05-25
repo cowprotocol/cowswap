@@ -69,14 +69,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     if (recipientOverrideWasRemoved && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [
-    recipient,
-    postHooksRecipientOverride,
-    prevPostHooksRecipientOverride,
-    isNativeIn,
-    hasRecipientInUrl,
-    onChangeRecipient,
-  ])
+  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, hasRecipientInUrl, onChangeRecipient])
 
   /**
    * Remove recipient when going out from hooks-store page, but preserve any recipient set via URL
