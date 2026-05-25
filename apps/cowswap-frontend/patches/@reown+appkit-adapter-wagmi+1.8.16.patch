@@ -23,6 +23,28 @@ diff --git a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js b/n
              }
          }
          const safeConnector = await getSafeConnector(this.wagmiConfig.connectors);
+@@ -507,18 +507,19 @@
+             this.balancePromises[caipAddress] = new Promise(async (resolve) => {
+                 try {
+                     const chainId = Number(params.chainId);
+                     const balance = await getBalance(this.wagmiConfig, {
+                         address: params.address,
+                         chainId,
+                         token: params.tokens?.[caipNetwork.caipNetworkId]?.address
+                     });
++                    const formatted = balance.formatted ?? formatUnits(balance.value, balance.decimals);
+                     StorageUtil.updateNativeBalanceCache({
+                         caipAddress,
+-                        balance: balance.formatted,
++                        balance: formatted,
+                         symbol: balance.symbol,
+                         timestamp: Date.now()
+                     });
+-                    resolve({ balance: balance.formatted, symbol: balance.symbol });
++                    resolve({ balance: formatted, symbol: balance.symbol });
+                 }
+                 catch (error) {
+                     console.warn('Appkit:WagmiAdapter:getBalance - Error getting balance', error);
 diff --git a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js
 --- a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js
 +++ b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/utils/helpers.js

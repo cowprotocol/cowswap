@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { assignElementStyles } from './applyElementStyles'
 import {
   DEFAULT_WIDGET_PARAMS,
@@ -351,16 +352,6 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
     return new URL(trimmedUrl, iframeOrigin).toString()
   } catch {
     return null
-  }
-}
-
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
-
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
   }
 }
 

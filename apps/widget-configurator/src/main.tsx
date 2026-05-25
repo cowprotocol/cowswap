@@ -6,15 +6,18 @@ import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
+import { WagmiProvider } from 'wagmi'
 
 import { Configurator } from './components/configurator/configurator.component'
 import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
 import { commonTypography } from './theme/commonTypography'
 import { useColorMode } from './theme/hooks/useColorMode'
 import { darkPalette, lightPalette } from './theme/paletteOptions'
-import { initWeb3Modal } from './web3modalConfig'
+// Importing for side effects: createAppKit() runs at module load.
+import { wagmiConfig } from './wagmiConfig'
 import { WithLDProvider } from './WithLDProvider'
 
 // Initialize analytics instance
@@ -65,14 +68,14 @@ const configuratorControlStyles = {
   },
 }
 
+const queryClient = new QueryClient()
+
 const WrapperStyled = {
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
   width: '100%',
 }
-
-initWeb3Modal()
 
 function Root(): ReactNode {
   const colorMode = useColorMode()
@@ -112,20 +115,24 @@ function Root(): ReactNode {
 
   return (
     <StrictMode>
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <GlobalStyles styles={feixenFontStyles} />
-          <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
-          <Box sx={WrapperStyled}>
-            <WithLDProvider>
-              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                <Configurator title="CoW Widget" />
-              </CowAnalyticsProvider>
-            </WithLDProvider>
-          </Box>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <ColorModeContext.Provider value={colorMode}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <GlobalStyles styles={feixenFontStyles} />
+              <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
+              <Box sx={WrapperStyled}>
+                <WithLDProvider>
+                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                    <Configurator title="CoW Widget" />
+                  </CowAnalyticsProvider>
+                </WithLDProvider>
+              </Box>
+            </ThemeProvider>
+          </ColorModeContext.Provider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </StrictMode>
   )
 }
