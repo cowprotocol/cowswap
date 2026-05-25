@@ -281,15 +281,6 @@ export function toValidDate(value: string | undefined): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-export function toValidTimestamp(value: string | undefined): number {
-  if (!value) {
-    return 0
-  }
-
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? 0 : date.getTime()
-}
-
 function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
 }
