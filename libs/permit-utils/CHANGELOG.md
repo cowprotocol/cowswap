@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.5
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.4...permit-utils-v3.2.5) (2026-05-22)
 
 ### Patch Changes
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.3.1
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.0...common-const-v3.3.1) (2026-05-22)
 
 ### Patch Changes
 

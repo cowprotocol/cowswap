@@ -4,12 +4,176 @@ import { Fraction } from './fraction'
 
 import { Rounding } from '../constants'
 
+describe('Fraction — input type compatibility', () => {
+  it('accepts number inputs', () => {
+    const f = new Fraction(8, 3)
+    expect(f.numerator.toString()).toBe('8')
+    expect(f.denominator.toString()).toBe('3')
+  })
+
+  it('accepts string inputs', () => {
+    const f = new Fraction('8', '3')
+    expect(f.numerator.toString()).toBe('8')
+    expect(f.denominator.toString()).toBe('3')
+  })
+
+  it('accepts native bigint inputs', () => {
+    const f = new Fraction(8n, 3n)
+    expect(f.numerator.toString()).toBe('8')
+    expect(f.denominator.toString()).toBe('3')
+  })
+
+  it('accepts JSBI inputs', () => {
+    const f = new Fraction(JSBI.BigInt(8), JSBI.BigInt(3))
+    expect(f.numerator.toString()).toBe('8')
+    expect(f.denominator.toString()).toBe('3')
+  })
+
+  it('defaults denominator to 1', () => {
+    expect(new Fraction(5).denominator.toString()).toBe('1')
+  })
+
+  it('number, string and JSBI inputs produce equivalent fractions', () => {
+    const fromNumber = new Fraction(8, 3)
+    const fromString = new Fraction('8', '3')
+    const fromJsbi = new Fraction(JSBI.BigInt(8), JSBI.BigInt(3))
+    expect(fromNumber.numerator.toString()).toBe(fromString.numerator.toString())
+    expect(fromNumber.numerator.toString()).toBe(fromJsbi.numerator.toString())
+  })
+
+  it('native bigint inputs produce equivalent fractions (post-migration)', () => {
+    // This test will be red before the JSBI→bigint migration and green after.
+    const fromBigint = new Fraction(8n, 3n)
+    expect(fromBigint.numerator.toString()).toBe('8')
+    expect(fromBigint.denominator.toString()).toBe('3')
+  })
+})
+
+describe('Fraction — arithmetic with BigintIsh scalars', () => {
+  describe('#add with scalar', () => {
+    it('adds a number scalar', () => {
+      expect(new Fraction(1, 2).add(1).toFixed(1)).toBe('1.5')
+    })
+    it('adds a string scalar', () => {
+      expect(new Fraction(1, 2).add('3').toFixed(1)).toBe('3.5')
+    })
+    it('adds a native bigint scalar', () => {
+      expect(new Fraction(1, 2).add(2n).toFixed(1)).toBe('2.5')
+    })
+    it('adds a JSBI scalar', () => {
+      expect(new Fraction(1, 2).add(JSBI.BigInt(2)).toFixed(1)).toBe('2.5')
+    })
+  })
+
+  describe('#subtract with scalar', () => {
+    it('subtracts a number scalar', () => {
+      expect(new Fraction(5, 2).subtract(1).toFixed(1)).toBe('1.5')
+    })
+    it('subtracts a native bigint scalar', () => {
+      expect(new Fraction(5, 2).subtract(2n).toFixed(1)).toBe('0.5')
+    })
+    it('subtracts a JSBI scalar', () => {
+      expect(new Fraction(5, 2).subtract(JSBI.BigInt(1)).toFixed(1)).toBe('1.5')
+    })
+  })
+
+  describe('#multiply with scalar', () => {
+    it('multiplies by a number scalar', () => {
+      expect(new Fraction(1, 2).multiply(3).toFixed(1)).toBe('1.5')
+    })
+    it('multiplies by a native bigint scalar', () => {
+      expect(new Fraction(1, 2).multiply(3n).toFixed(1)).toBe('1.5')
+    })
+    it('multiplies by a JSBI scalar', () => {
+      expect(new Fraction(1, 2).multiply(JSBI.BigInt(3)).toFixed(1)).toBe('1.5')
+    })
+  })
+
+  describe('#divide with scalar', () => {
+    it('divides by a number scalar', () => {
+      expect(new Fraction(3, 1).divide(2).toFixed(1)).toBe('1.5')
+    })
+    it('divides by a native bigint scalar', () => {
+      expect(new Fraction(3, 1).divide(2n).toFixed(1)).toBe('1.5')
+    })
+    it('divides by a JSBI scalar', () => {
+      expect(new Fraction(3, 1).divide(JSBI.BigInt(2)).toFixed(1)).toBe('1.5')
+    })
+  })
+})
+
+describe('Fraction — core operations (string assertions)', () => {
+  describe('#quotient', () => {
+    it('floor division', () => {
+      expect(new Fraction(8, 3).quotient.toString()).toBe('2')
+      expect(new Fraction(12, 4).quotient.toString()).toBe('3')
+      expect(new Fraction(16, 5).quotient.toString()).toBe('3')
+    })
+  })
+
+  describe('#remainder', () => {
+    it('returns fraction after division', () => {
+      expect(new Fraction(8, 3).remainder.numerator.toString()).toBe('2')
+      expect(new Fraction(8, 3).remainder.denominator.toString()).toBe('3')
+      expect(new Fraction(12, 4).remainder.numerator.toString()).toBe('0')
+      expect(new Fraction(16, 5).remainder.numerator.toString()).toBe('1')
+    })
+  })
+
+  describe('#invert', () => {
+    it('flips num and denom', () => {
+      expect(new Fraction(5, 10).invert().numerator.toString()).toBe('10')
+      expect(new Fraction(5, 10).invert().denominator.toString()).toBe('5')
+    })
+  })
+
+  describe('#add', () => {
+    it('multiples denoms and adds nums', () => {
+      const result = new Fraction(1, 10).add(new Fraction(4, 12))
+      expect(result.numerator.toString()).toBe('52')
+      expect(result.denominator.toString()).toBe('120')
+    })
+    it('same denom', () => {
+      const result = new Fraction(1, 5).add(new Fraction(2, 5))
+      expect(result.numerator.toString()).toBe('3')
+      expect(result.denominator.toString()).toBe('5')
+    })
+  })
+
+  describe('#subtract', () => {
+    it('multiples denoms and subtracts nums', () => {
+      const result = new Fraction(1, 10).subtract(new Fraction(4, 12))
+      expect(result.numerator.toString()).toBe('-28')
+      expect(result.denominator.toString()).toBe('120')
+    })
+    it('same denom', () => {
+      const result = new Fraction(3, 5).subtract(new Fraction(2, 5))
+      expect(result.numerator.toString()).toBe('1')
+      expect(result.denominator.toString()).toBe('5')
+    })
+  })
+
+  describe('#multiply', () => {
+    it('correct', () => {
+      expect(new Fraction(1, 10).multiply(new Fraction(4, 12)).numerator.toString()).toBe('4')
+      expect(new Fraction(1, 10).multiply(new Fraction(4, 12)).denominator.toString()).toBe('120')
+    })
+  })
+
+  describe('#divide', () => {
+    it('correct', () => {
+      expect(new Fraction(1, 10).divide(new Fraction(4, 12)).numerator.toString()).toBe('12')
+      expect(new Fraction(1, 10).divide(new Fraction(4, 12)).denominator.toString()).toBe('40')
+    })
+  })
+})
+
 describe('Fraction', () => {
   describe('#quotient', () => {
     it('floor division', () => {
-      expect(new Fraction(JSBI.BigInt(8), JSBI.BigInt(3)).quotient).toEqual(JSBI.BigInt(2)) // one below
-      expect(new Fraction(JSBI.BigInt(12), JSBI.BigInt(4)).quotient).toEqual(JSBI.BigInt(3)) // exact
-      expect(new Fraction(JSBI.BigInt(16), JSBI.BigInt(5)).quotient).toEqual(JSBI.BigInt(3)) // one above
+      expect(new Fraction(JSBI.BigInt(8), JSBI.BigInt(3)).quotient).toEqual(2n) // one below
+      expect(new Fraction(JSBI.BigInt(12), JSBI.BigInt(4)).quotient).toEqual(3n) // exact
+      expect(new Fraction(JSBI.BigInt(16), JSBI.BigInt(5)).quotient).toEqual(3n) // one above
     })
   })
   describe('#remainder', () => {
@@ -27,8 +191,8 @@ describe('Fraction', () => {
   })
   describe('#invert', () => {
     it('flips num and denom', () => {
-      expect(new Fraction(JSBI.BigInt(5), JSBI.BigInt(10)).invert().numerator).toEqual(JSBI.BigInt(10))
-      expect(new Fraction(JSBI.BigInt(5), JSBI.BigInt(10)).invert().denominator).toEqual(JSBI.BigInt(5))
+      expect(new Fraction(JSBI.BigInt(5), JSBI.BigInt(10)).invert().numerator).toEqual(10n)
+      expect(new Fraction(JSBI.BigInt(5), JSBI.BigInt(10)).invert().denominator).toEqual(5n)
     })
   })
   describe('#add', () => {

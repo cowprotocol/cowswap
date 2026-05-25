@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.4
+## [3.2.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.3...ens-v3.2.4) (2026-05-22)
 
 ### Patch Changes
 

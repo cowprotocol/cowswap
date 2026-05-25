@@ -1,10 +1,8 @@
-import JSBI from 'jsbi'
-
 import { Fraction } from './fraction'
 
 import { BigintIsh, Rounding } from '../constants'
 
-const ONE_HUNDRED = new Fraction(JSBI.BigInt(100))
+const ONE_HUNDRED = new Fraction(100n)
 
 export class Percent extends Fraction {
   /**

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.1
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.1.0...snackbars-v2.1.1) (2026-05-22)
 
 ### Patch Changes
 

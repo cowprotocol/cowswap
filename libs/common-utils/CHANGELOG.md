@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.4.1
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.4.0...common-utils-v3.4.1) (2026-05-22)
 
 ### Patch Changes
 

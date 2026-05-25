@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.4
+## [3.2.4](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.2.3...common-hooks-v3.2.4) (2026-05-22)
 
 ### Patch Changes
 
