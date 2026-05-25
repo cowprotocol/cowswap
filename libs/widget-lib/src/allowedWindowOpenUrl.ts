@@ -1,5 +1,6 @@
 const KNOWN_MOBILE_WALLET_PROTOCOLS = new Set([
   'wc:', // default Wallet-connect protocol
+  'metamask:',
   'imtokenv2:',
   'trustassetapp:',
   'okex:',
