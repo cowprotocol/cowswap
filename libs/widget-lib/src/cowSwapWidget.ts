@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -330,16 +331,6 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
     return new URL(trimmedUrl, iframeOrigin).toString()
   } catch {
     return null
-  }
-}
-
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
-
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
   }
 }
 
