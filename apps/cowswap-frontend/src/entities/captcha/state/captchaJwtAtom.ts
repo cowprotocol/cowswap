@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJwtExpiresAt, isJwtExpired } from '@cowprotocol/common-utils'
 
-import { CAPTCHA_JWT_EXPIRY_BUFFER_MS } from '../config/captcha.const'
+import ms from 'ms.macro'
 
 export interface CaptchaJwt {
   token: string
@@ -11,6 +11,7 @@ export interface CaptchaJwt {
 }
 
 const CAPTCHA_JWT_STORAGE_KEY = 'captchaJwtAtom:v0'
+const CAPTCHA_JWT_EXPIRY_BUFFER_MS = ms`10s`
 
 /**
  * Stores the exchanged captcha JWT that is sent to the backend.

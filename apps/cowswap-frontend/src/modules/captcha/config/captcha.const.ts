@@ -1,8 +1,6 @@
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { ORDER_BOOK_PROD_CONFIG, ORDER_BOOK_STAGING_CONFIG, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import ms from 'ms.macro'
-
 export const TURNSTILE_DEMO_INTERACTIVE_SITE_KEY = '3x00000000000000000000FF'
 export const TURNSTILE_SITE_KEY = process.env.REACT_APP_TURNSTILE_SITE_KEY || ''
 
@@ -10,7 +8,6 @@ const fallbackOrderBookUrls = isBarnBackendEnv ? ORDER_BOOK_STAGING_CONFIG : ORD
 const orderBookUrls = getOrderBookUrls(process.env.REACT_APP_ORDER_BOOK_URLS)
 
 export const TURNSTILE_AUTH_URL = `${getOrderBookOrigin(orderBookUrls[SupportedChainId.MAINNET])}/auth/turnstile`
-export const CAPTCHA_JWT_EXPIRY_BUFFER_MS = ms`10s`
 
 function getOrderBookUrls(envOrderBookUrls: string | undefined): Record<SupportedChainId, string> {
   if (!envOrderBookUrls) return fallbackOrderBookUrls

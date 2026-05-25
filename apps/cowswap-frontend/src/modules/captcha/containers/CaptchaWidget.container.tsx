@@ -6,12 +6,12 @@ import { getJwtTtl } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
+import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
 import { logCaptcha } from '../logger'
-import { captchaJwtAtom } from '../state/captchaJwtAtom'
 
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
