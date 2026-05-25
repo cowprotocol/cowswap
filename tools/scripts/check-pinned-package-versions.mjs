@@ -11,22 +11,11 @@ const dependencySections = [
   'dependencies',
   'devDependencies',
   'optionalDependencies',
-  'peerDependencies',
   'resolutions',
 ]
 
-const ignoredDirs = new Set([
-  '.git',
-  '.next',
-  '.nx',
-  '.turbo',
-  '.yarn',
-  'build',
-  'coverage',
-  'dist',
-  'node_modules',
-  'out',
-])
+const scanRoots = ['apps', 'libs']
+const ignoredDirs = new Set(['node_modules'])
 
 const exactSemverRegex = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const npmAliasExactRegex = /^npm:.+@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
@@ -93,7 +82,17 @@ function checkPnpmOverrides(filePath, packageJson) {
 }
 
 function main() {
-  walkDirectory(repoRoot)
+  const rootPackageJsonPath = path.join(repoRoot, 'package.json')
+
+  if (fs.existsSync(rootPackageJsonPath)) {
+    packageJsonFiles.push(rootPackageJsonPath)
+  }
+
+  for (const root of scanRoots) {
+    const rootPath = path.join(repoRoot, root)
+    if (!fs.existsSync(rootPath)) continue
+    walkDirectory(rootPath)
+  }
 
   for (const packageJsonPath of packageJsonFiles) {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
