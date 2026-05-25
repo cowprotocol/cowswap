@@ -145,16 +145,15 @@ function pinNonSdkPackagesToNpmjs() {
  *
  * Uses a frozen lockfile by default. When `authToken` is provided (SDK preview install)
  * it writes a temporary user-level `.npmrc` to `os.tmpdir()` containing the GitHub Packages
- * registry/auth (and an optional rewrite pnpmfile) and points pnpm at it via
- * `NPM_CONFIG_USERCONFIG`, then runs with `--no-frozen-lockfile`. The token lives only
+ * auth (and an optional rewrite pnpmfile) and points pnpm at it via
+ * `PNPM_CONFIG_USERCONFIG`, then runs with `--no-frozen-lockfile`. The token lives only
  * in the temp file (outside the repo, mode 0600) for the duration of the install and is
  * removed in `finally`; the tracked project `.npmrc` is never modified, so no crash or
  * SIGKILL path can leak the token into a committable file.
  *
- * Why a temp file rather than `npm_config_*` env vars: pnpm's parser of `npm_config_*`
- * env keys does not reliably recognise tokens whose config key contains `//` and `:`
- * (e.g. `//npm.pkg.github.com/:_authToken`). The temp-userconfig pattern is the
- * documented, well-supported path for this on CI.
+ * Why a temp userconfig rather than `npm_config_*` env vars: pnpm 10+ no longer reads
+ * `npm_config_*` env vars at all (see pnpm/pnpm#9491 and https://pnpm.io/configuring).
+ * The pnpm-specific way to point at a custom user `.npmrc` is `PNPM_CONFIG_USERCONFIG`.
  */
 function runPnpmInstall(authToken, rewriteMap = {}) {
   if (!authToken) {
@@ -175,7 +174,7 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
 
   writeTempUserConfig(authToken, hasRewrites)
-  const childEnv = { ...process.env, NPM_CONFIG_USERCONFIG: TEMP_USER_CONFIG_PATH }
+  const childEnv = { ...process.env, PNPM_CONFIG_USERCONFIG: TEMP_USER_CONFIG_PATH }
 
   try {
     if (hasRewrites) createTempPnpmfile(rewriteMap)
@@ -203,7 +202,7 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
 
 /**
  * Writes a temporary user-level npm config (in `os.tmpdir()`) with the GitHub Packages
- * auth required for SDK preview installs. pnpm reads it through `NPM_CONFIG_USERCONFIG`
+ * auth required for SDK preview installs. pnpm reads it through `PNPM_CONFIG_USERCONFIG`
  * and merges it with the project `.npmrc`. The file is created with mode 0600 so only
  * the current user can read the token.
  *
