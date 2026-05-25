@@ -75,7 +75,7 @@ export function AffiliateTraderActivityTable(props: AffiliateTraderActivityTable
             </thead>
             <tbody>
               {rowsPage.map((row) => (
-                <AffiliateTraderActivityTableRow row={row} key={row.order_uid} />
+                <AffiliateTraderActivityTableRow row={row} key={`${row.tx_hash}:${row.order_uid}`} />
               ))}
             </tbody>
           </Table>
