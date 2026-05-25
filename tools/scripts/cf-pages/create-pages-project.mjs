@@ -71,7 +71,7 @@ if (args.includes('--help')) {
 }
 
 function requireValue(flag, args, i) {
-  if (i + 1 >= args.length) {
+  if (i + 1 >= args.length || args[i + 1].startsWith('-')) {
     process.stderr.write(`ERROR: ${flag} requires a value.\n`)
     process.exit(1)
   }
