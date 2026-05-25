@@ -4,12 +4,13 @@ import styled from 'styled-components/macro'
 
 import { Card } from 'pages/Account/styled'
 
-const DEFAULT_CARD_MAX_WIDTH = 540
-
-export const IneligibleCard = styled(Card)<{ $maxWidth?: number }>`
-  max-width: ${({ $maxWidth }) => `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`};
+export const IneligibleCard = styled(Card)`
+  max-width: 100%;
+  min-height: 380px;
+  display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 20px;
   position: relative;
