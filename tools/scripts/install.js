@@ -1,13 +1,11 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
-const os = require('os')
 const path = require('path')
 
 const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
-const TEMP_USER_CONFIG_PATH = path.join(os.tmpdir(), `cowswap-sdk-preview-${process.pid}.npmrc`)
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
 const sdkPrVersionRegex = /pr-\d+/
@@ -144,16 +142,25 @@ function pinNonSdkPackagesToNpmjs() {
  * Runs pnpm install in the repository root.
  *
  * Uses a frozen lockfile by default. When `authToken` is provided (SDK preview install)
- * it writes a temporary user-level `.npmrc` to `os.tmpdir()` containing the GitHub Packages
- * auth (and an optional rewrite pnpmfile) and points pnpm at it via
- * `PNPM_CONFIG_USERCONFIG`, then runs with `--no-frozen-lockfile`. The token lives only
- * in the temp file (outside the repo, mode 0600) for the duration of the install and is
- * removed in `finally`; the tracked project `.npmrc` is never modified, so no crash or
- * SIGKILL path can leak the token into a committable file.
+ * it exposes the GitHub Packages auth token to the child pnpm via the
+ * `GITHUB_PACKAGES_TOKEN` env var; the project `.npmrc` references that var with
+ * `//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}`, and pnpm interpolates it
+ * from the environment when reading the config. The token never lives on disk in the
+ * working tree — neither in `.npmrc` (only the `${...}` placeholder is committed) nor
+ * in any temp file we create.
  *
- * Why a temp userconfig rather than `npm_config_*` env vars: pnpm 10+ no longer reads
- * `npm_config_*` env vars at all (see pnpm/pnpm#9491 and https://pnpm.io/configuring).
- * The pnpm-specific way to point at a custom user `.npmrc` is `PNPM_CONFIG_USERCONFIG`.
+ * We deliberately do NOT set `@cowprotocol:registry` to GitHub Packages: all SDK preview
+ * lockfile entries already carry `tarball: https://npm.pkg.github.com/download/...`, so
+ * pnpm fetches them by URL and the host-scoped auth header applies. Non-SDK
+ * `@cowprotocol/*` packages (`@cowprotocol/cms`, `@cowprotocol/cow-runner-game`) live
+ * only on npmjs and reconstruct via the default registry — a scope override would 404
+ * on them.
+ *
+ * Why env-var interpolation in `.npmrc` rather than `pnpm_config_*` env vars or
+ * `PNPM_CONFIG_USERCONFIG`: pnpm 10.30.3 no longer reads `npm_config_*`, its
+ * `pnpm_config_*` env-var parser does not reliably handle auth-token keys containing
+ * `//` and `:`, and `PNPM_CONFIG_USERCONFIG` (pnpm/pnpm#9491) is still an unmerged PR.
+ * `${VAR}` interpolation in `.npmrc` is the long-standing, supported npm/pnpm path.
  */
 function runPnpmInstall(authToken, rewriteMap = {}) {
   if (!authToken) {
@@ -163,9 +170,8 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
   }
 
   // An empty rewrite map is valid: non-SDK @cowprotocol packages may already be pinned
-  // to npmjs tarball URLs directly in package.json (see the `startsWith('https://')`
-  // skip in pinNonSdkPackagesToNpmjs), leaving nothing to rewrite. Warn so a silent
-  // regression in `pinNonSdkPackagesToNpmjs` would still be visible in logs.
+  // to npmjs tarball URLs directly in package.json. Warn so a silent regression in
+  // `pinNonSdkPackagesToNpmjs` would still be visible in logs.
   const hasRewrites = Object.keys(rewriteMap).length > 0
   if (!hasRewrites) {
     console.warn('[install.js] Auth token provided but rewrite map is empty — no @cowprotocol/* pinning needed.')
@@ -173,23 +179,23 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
 
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
 
-  writeTempUserConfig(authToken, hasRewrites)
-  const childEnv = { ...process.env, PNPM_CONFIG_USERCONFIG: TEMP_USER_CONFIG_PATH }
+  const childEnv = { ...process.env, GITHUB_PACKAGES_TOKEN: authToken }
 
   try {
     if (hasRewrites) createTempPnpmfile(rewriteMap)
 
     // `--no-frozen-lockfile` on the CLI overrides `frozen-lockfile=true` from .npmrc.
-    execSync('pnpm install --no-frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv })
+    // `--config.pnpmfile=...` points pnpm at the temp rewrite hook when needed.
+    const pnpmfileArg = hasRewrites ? ` --config.pnpmfile="${TEMP_PNPMFILE_PATH}"` : ''
+    execSync(`pnpm install --no-frozen-lockfile${pnpmfileArg}`, {
+      cwd: ROOT_DIR,
+      stdio: 'inherit',
+      env: childEnv,
+    })
   } catch (err) {
     console.error('[install.js] Failed to install dependencies:', err)
     throw err
   } finally {
-    try {
-      fs.rmSync(TEMP_USER_CONFIG_PATH, { force: true })
-    } catch (err) {
-      console.warn('[install.js] Failed to remove temp user config:', err)
-    }
     if (hasRewrites) {
       try {
         removeTempPnpmfile()
@@ -198,35 +204,6 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
       }
     }
   }
-}
-
-/**
- * Writes a temporary user-level npm config (in `os.tmpdir()`) with the GitHub Packages
- * auth required for SDK preview installs. pnpm reads it through `PNPM_CONFIG_USERCONFIG`
- * and merges it with the project `.npmrc`. The file is created with mode 0600 so only
- * the current user can read the token.
- *
- * We only write the auth token (host-based, applies to any fetch hitting
- * `npm.pkg.github.com`). We intentionally do NOT set `@cowprotocol:registry`:
- *
- * - All SDK preview entries (`cow-sdk`, `sdk-*` at `*-pr-*` versions) already have a
- *   `tarball: https://npm.pkg.github.com/download/...` field in `pnpm-lock.yaml`, so
- *   pnpm fetches them directly via that URL and the host-based auth header applies.
- * - Non-SDK `@cowprotocol/*` packages (e.g. `@cowprotocol/cms`,
- *   `@cowprotocol/cow-runner-game`) only live on npmjs. Their lockfile entries have no
- *   `tarball:` field, so pnpm reconstructs the fetch URL from the active registry
- *   config. With a `@cowprotocol:registry=https://npm.pkg.github.com` scope override
- *   pnpm would route them to GitHub Packages and 404; without the override pnpm uses
- *   the default `https://registry.npmjs.org/` and reconstructs the correct URL.
- */
-function writeTempUserConfig(token, hasRewrites) {
-  const lines = [
-    '# Generated by tools/scripts/install.js for the SDK preview install (removed after install).',
-    `//npm.pkg.github.com/:_authToken=${token}`,
-  ]
-  if (hasRewrites) lines.push(`pnpmfile=${TEMP_PNPMFILE_PATH}`)
-  lines.push('')
-  fs.writeFileSync(TEMP_USER_CONFIG_PATH, lines.join('\n'), { mode: 0o600 })
 }
 
 /**
