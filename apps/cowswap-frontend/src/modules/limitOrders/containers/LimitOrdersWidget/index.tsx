@@ -6,7 +6,6 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { msg, t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { CaptchaWidget } from 'entities/captcha'
 import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
@@ -232,7 +231,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
-          <CaptchaWidget />
 
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />
