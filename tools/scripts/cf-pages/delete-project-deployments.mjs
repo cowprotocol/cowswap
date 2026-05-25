@@ -25,7 +25,7 @@ const { accountId, apiToken } = getCfCredentials()
 const projectName = process.env.CF_PROJECT_NAME
 
 if (!projectName) {
-  process.stdout.write('No project name provided. CF_PROJECT_NAME is required')
+  process.stderr.write('No project name provided. CF_PROJECT_NAME is required')
   process.exit(1)
 }
 
