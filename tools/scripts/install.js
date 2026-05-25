@@ -5,7 +5,6 @@ const path = require('path')
 const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
-const ROOT_NPMRC_PATH = path.join(ROOT_DIR, '.npmrc')
 const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
@@ -130,9 +129,10 @@ function pinNonSdkPackagesToNpmjs() {
  * Runs pnpm install in the repository root.
  *
  * Uses a frozen lockfile by default. When `authToken` is provided (SDK preview install)
- * it temporarily extends the project `.npmrc` with the GitHub Packages registry/auth
- * (pnpm has no `--userconfig` flag), optionally points pnpm at a rewrite pnpmfile, runs
- * with `--no-frozen-lockfile`, then restores `.npmrc`.
+ * it injects the GitHub Packages registry/auth (and an optional rewrite pnpmfile) into
+ * the child pnpm process via `npm_config_*` env vars, then runs with
+ * `--no-frozen-lockfile`. The auth token never touches the filesystem, so a crash,
+ * SIGKILL, or Ctrl-C cannot leave a secret in the tracked `.npmrc`.
  */
 function runPnpmInstall(authToken, rewriteMap = {}) {
   if (!authToken) {
@@ -143,29 +143,37 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
 
   // An empty rewrite map is valid: non-SDK @cowprotocol packages may already be pinned
   // to npmjs tarball URLs directly in package.json (see the `startsWith('https://')`
-  // skip in pinNonSdkPackagesToNpmjs), leaving nothing to rewrite.
+  // skip in pinNonSdkPackagesToNpmjs), leaving nothing to rewrite. Warn so a silent
+  // regression in `pinNonSdkPackagesToNpmjs` would still be visible in logs.
   const hasRewrites = Object.keys(rewriteMap).length > 0
-  const npmrcBackup = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8') : null
+  if (!hasRewrites) {
+    console.warn('[install.js] Auth token provided but rewrite map is empty — no @cowprotocol/* pinning needed.')
+  }
 
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
 
+  // pnpm follows the npm convention of reading config from `npm_config_<key>` env vars.
+  // Passing the registry/auth this way keeps the token off disk entirely.
+  const childEnv = {
+    ...process.env,
+    'npm_config_@cowprotocol:registry': 'https://npm.pkg.github.com',
+    'npm_config_//npm.pkg.github.com/:_authToken': authToken,
+  }
+
+  if (hasRewrites) {
+    // `pnpmfile` is a pnpm-specific config key (no secret); pnpm resolves it relative to cwd.
+    childEnv.npm_config_pnpmfile = TEMP_PNPMFILE_PATH
+  }
+
   try {
     if (hasRewrites) createTempPnpmfile(rewriteMap)
-    extendNpmrcForPreview(authToken, hasRewrites)
 
     // `--no-frozen-lockfile` on the CLI overrides `frozen-lockfile=true` from .npmrc.
-    execSync('pnpm install --no-frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit' })
+    execSync('pnpm install --no-frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv })
   } catch (err) {
     console.error('[install.js] Failed to install dependencies:', err)
     throw err
   } finally {
-    // Restore the original .npmrc (drop the appended registry/auth/pnpmfile lines).
-    if (npmrcBackup !== null) {
-      fs.writeFileSync(ROOT_NPMRC_PATH, npmrcBackup)
-    } else {
-      fs.rmSync(ROOT_NPMRC_PATH, { force: true })
-    }
-
     if (hasRewrites) {
       try {
         removeTempPnpmfile()
@@ -174,31 +182,6 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
       }
     }
   }
-}
-
-/**
- * Temporarily extends the project `.npmrc` with the GitHub Packages registry/auth
- * required to install SDK preview builds. pnpm always reads the project `.npmrc` and
- * has no `--userconfig` flag, so this is the reliable way to inject the config.
- * The caller restores the original file afterwards.
- */
-function extendNpmrcForPreview(token, hasRewrites) {
-  const base = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8').trimEnd() : ''
-  const lines = [
-    base,
-    '',
-    '# Appended by tools/scripts/install.js for the SDK preview install (restored afterwards)',
-    '@cowprotocol:registry=https://npm.pkg.github.com',
-    `//npm.pkg.github.com/:_authToken=${token}`,
-  ]
-
-  // Point pnpm at the in-memory rewrite hook via the `pnpmfile` config key.
-  if (hasRewrites) {
-    lines.push(`pnpmfile=${path.basename(TEMP_PNPMFILE_PATH)}`)
-  }
-
-  lines.push('')
-  fs.writeFileSync(ROOT_NPMRC_PATH, lines.join('\n'))
 }
 
 /**
