@@ -5,5 +5,6 @@ export function formatDate(date: Date): string {
     month: 'short', // numeric, 2-digit, long, short, narrow
     hour: 'numeric', // numeric, 2-digit
     minute: 'numeric', // numeric, 2-digit
+    timeZone: 'UTC',
   })
 }
