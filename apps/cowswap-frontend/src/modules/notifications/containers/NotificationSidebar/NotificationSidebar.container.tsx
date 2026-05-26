@@ -6,6 +6,7 @@ import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { createPortal } from 'react-dom'
 import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -167,7 +168,7 @@ export function NotificationSidebar({
   // Force re-mount of NotificationsList when returning from settings to refresh subscription status
   const listKey = `notifications-list-${isSettingsOpen}`
 
-  return (
+  const notificationSidebarElement = (
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
       {isSettingsOpen ? (
         <NotificationSettings>
@@ -194,4 +195,8 @@ export function NotificationSidebar({
       )}
     </Sidebar>
   )
+
+  const portalTarget = typeof document !== 'undefined' ? document.body : null
+
+  return portalTarget ? createPortal(notificationSidebarElement, portalTarget) : notificationSidebarElement
 }

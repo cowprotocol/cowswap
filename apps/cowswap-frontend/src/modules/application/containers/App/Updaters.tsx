@@ -30,6 +30,7 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
+import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { GeoDataUpdater } from 'modules/rwa'
 import { useSwapRawState } from 'modules/swap'
 import {
@@ -115,6 +116,7 @@ export function Updaters(): ReactNode {
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
       <ProviderNetworkSupportedUpdater />
+      <TradeOrdersPermitUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}

@@ -12,13 +12,13 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
-import { AccountElement } from 'legacy/components/Header/AccountElement/AccountElement.pure'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { WalletStatusButton } from 'modules/wallet/containers/Web3Status/Web3Status.container'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -229,7 +229,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
+          {isInjectedWidgetMode && standaloneMode !== false && <WalletStatusButton variant="widget" />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>

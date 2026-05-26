@@ -7,7 +7,7 @@ export const Button = styled(ButtonSecondary).attrs({
   width: 'auto',
   padding: '0 16px',
   $gap: '8px',
-  $borderRadius: '24px 6px 6px 24px !important',
+  $borderRadius: '21px 6px 6px 21px !important',
 })`
   align-self: stretch;
   flex-flow: row nowrap;
