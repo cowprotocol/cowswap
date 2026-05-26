@@ -2,6 +2,8 @@ import { CowAnalyticsGtm } from './CowAnalyticsGtm'
 
 import { AnalyticsContext } from '../CowAnalytics'
 
+import type { GtmEvent } from '../types'
+
 type DataLayerEntry = Record<string, unknown>
 
 function getLastEvent(eventName: string): DataLayerEntry | undefined {
@@ -80,6 +82,33 @@ describe('CowAnalyticsGtm wallet lifecycle events', () => {
       walletName: 'Rabby',
       dimension_walletName: 'Rabby',
       dimension_userAddress: '0x3333333333333333333333333333333333333333',
+    })
+  })
+
+  it('keeps false bridge flags on trade events', () => {
+    const bridgeRejectEvent: GtmEvent<string> = {
+      category: 'Trade',
+      action: 'Reject',
+      label: 'SWAP|COW',
+      isBridgeOrder: true,
+    }
+
+    const regularRejectEvent: GtmEvent<string> = {
+      category: 'Trade',
+      action: 'Reject',
+      label: 'SWAP|COW',
+      isBridgeOrder: false,
+    }
+
+    analytics.sendEvent(bridgeRejectEvent)
+    analytics.sendEvent(regularRejectEvent)
+
+    expect(getLastEvent('Reject')).toMatchObject({
+      event: 'Reject',
+      category: 'Trade',
+      action: 'Reject',
+      label: 'SWAP|COW',
+      isBridgeOrder: false,
     })
   })
 })

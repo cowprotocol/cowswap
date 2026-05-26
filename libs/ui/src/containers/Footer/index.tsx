@@ -1,7 +1,7 @@
 import { ReactNode, useRef, useState } from 'react'
 
 import { Category, toGtmEvent } from '@cowprotocol/analytics'
-import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
+import svgArrowRightCircularSrc from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
@@ -9,8 +9,8 @@ import SVG from 'react-inlinesvg'
 import {
   getGlobalFooterNavItems,
   GLOBAL_FOOTER_DESCRIPTION,
-  SOCIAL_LINKS,
   PRODUCT_LOGO_LINKS,
+  SOCIAL_LINKS,
 } from './footer.constants'
 import { FooterAnimation } from './footerAnimation'
 import {
@@ -197,7 +197,7 @@ export const Footer = ({
         <BottomRight>
           {additionalFooterContent && additionalFooterContent}
           <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
-            <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
+            <SVG src={svgArrowRightCircularSrc} title="Toggle Footer" />
           </ToggleFooterButton>
         </BottomRight>
       </FooterBottom>

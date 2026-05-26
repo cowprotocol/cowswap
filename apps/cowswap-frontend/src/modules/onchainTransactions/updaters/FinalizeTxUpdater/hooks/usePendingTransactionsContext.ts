@@ -16,7 +16,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
 
-export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
+export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthereumTransactions | null {
   const config = useConfig()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
@@ -32,9 +32,11 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
 
   return useAsyncMemo(
     async () => {
-      if (!lastBlockNumber || !account) return null
+      if (!lastBlockNumber || !account || !hasPendingTxs) return null
 
-      const transactionsCount = await getTransactionCount(config, { address: account })
+      // Fallback to 0 on failure so receipt checking can still run even when the nonce fetch fails
+      // (e.g. temporary RPC errors). The nonce-based replacement check will simply be skipped.
+      const transactionsCount = await getTransactionCount(config, { address: account }).catch(() => 0)
 
       const params: CheckEthereumTransactions = {
         chainId,
@@ -66,6 +68,7 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       cancelOrdersBatch,
       getTwapOrderById,
       safeInfo,
+      hasPendingTxs,
     ],
     null,
   )

@@ -3,8 +3,8 @@
 import type { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import iconGhostSrc from '@cowprotocol/assets/images/icon-ghost.svg'
+import iconOwlSrc from '@cowprotocol/assets/images/icon-owl.svg'
 import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowSwapWidget, type CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
@@ -275,9 +275,9 @@ export default function Page(): ReactNode {
         <ContainerCardSection>
           <SectionTitleWrapper>
             <SectionTitleIcon $multiple>
-              <LazySVG src={IMG_ICON_OWL} />
+              <LazySVG src={iconOwlSrc} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <LazySVG src={IMG_ICON_GHOST} />
+              <LazySVG src={iconGhostSrc} />
             </SectionTitleIcon>
             <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
           </SectionTitleWrapper>

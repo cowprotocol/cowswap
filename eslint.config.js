@@ -158,10 +158,6 @@ module.exports = [
                 "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
             },
             {
-              name: 'ethers',
-              message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
-            },
-            {
               name: 'styled-components',
               message: 'Please import from styled-components/macro.',
             },
@@ -194,6 +190,24 @@ module.exports = [
           selector: 'ImportExpression[source.value="@1inch/permit-signed-approvals-utils"]',
           message: 'Please import dynamically from @cowprotocol/permit-utils',
         },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] > ImportDefaultSpecifier:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Default import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] > ImportNamespaceSpecifier:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Namespace import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
+        {
+          selector:
+            'ImportDeclaration[source.value=/\\.svg$/] ImportSpecifier[imported.type=Identifier][imported.name=default]:not([local.name=/^(icon|svg)[A-Za-z0-9]+Src$/])',
+          message:
+            'Default re-export import from .svg must be named iconSomethingSrc or svgSomethingSrc (camelCase body + Src suffix).',
+        },
       ],
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
@@ -217,7 +231,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
               group: 'external',
               position: 'before',
             },
@@ -280,6 +294,12 @@ module.exports = [
         {
           paths: [
             {
+              name: '@cowprotocol/cow-sdk',
+              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
+              message:
+                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
+            },
+            {
               name: 'react-router',
               importNames: ['useNavigate'],
               message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
@@ -325,6 +345,12 @@ module.exports = [
               message:
                 'common/** must stay module-agnostic. Move domain logic into modules/<domain> or extract shared logic into common/lib.',
             },
+            {
+              name: '@cowprotocol/cow-sdk',
+              importNames: ['COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS', 'COW_PROTOCOL_VAULT_RELAYER_ADDRESS'],
+              message:
+                "Please import COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS and COW_PROTOCOL_VAULT_RELAYER_ADDRESS from '@cowprotocol/common-utils', which provides environment-aware versions of these constants.",
+            },
           ],
           patterns: ['modules/*'],
         },
@@ -346,6 +372,7 @@ module.exports = [
     rules: {
       complexity: ['error', 100],
       'max-lines-per-function': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+      '@typescript-eslint/no-restricted-imports': 'warn',
     },
   },
 

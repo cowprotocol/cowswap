@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { Wrapper, Button, Input, SearchIcon, Placeholder } from './Search.styled'
 
-import searchImg from '../../../../assets/img/search2.svg'
+import svgSearch2Src from '../../../../assets/img/search2.svg'
 import { useSearchSubmit } from '../../../../hooks/useSearchSubmit'
 
 // assets
@@ -34,7 +34,7 @@ export const Search: React.FC<SearchProps> = (props) => {
       className={className}
     >
       <Button type="submit">
-        <SearchIcon src={searchImg} />
+        <SearchIcon src={svgSearch2Src} />
       </Button>
       <Input
         autoComplete="off"

@@ -18,7 +18,7 @@ export function FinalizeTxUpdater() {
 
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
-  const params = usePendingTransactionsContext()
+  const params = usePendingTransactionsContext(transactions.length > 0)
 
   useEffect(() => {
     if (!params) return

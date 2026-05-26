@@ -3,7 +3,7 @@
 import type { ImgHTMLAttributes, ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CmsImage, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { usePathname } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
@@ -13,6 +13,7 @@ import styled from 'styled-components/macro'
 import { Article, SharedRichTextComponent } from '../services/cms'
 
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { CmsImage } from '@/components/CmsImage'
 import { LazyImage } from '@/components/LazyImage'
 import { Link } from '@/components/Link'
 import { SearchBar } from '@/components/SearchBar'

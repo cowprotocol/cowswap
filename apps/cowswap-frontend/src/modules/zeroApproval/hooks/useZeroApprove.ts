@@ -73,6 +73,7 @@ async function waitForSafeTransactionExecution({
   return await pollUntil(
     async () => {
       try {
+        console.log('[COW][SafeAPI] Wait for Safe transaction execution')
         return await safeApiKit.getTransaction(txHash)
       } catch {
         return null
