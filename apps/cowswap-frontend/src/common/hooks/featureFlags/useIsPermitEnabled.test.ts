@@ -49,12 +49,12 @@ describe('useIsPermitEnabled', () => {
     expect(result.current).toBe(false)
   })
 
-  it('returns false when disableEIP2612Permits is true and wallet is a smart contract', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(true)
-    mockUseInjectedWidgetParams.mockReturnValue({ disableEIP2612Permits: true })
+  it('returns true when disableEIP2612Permits is false and wallet is EOA', () => {
+    mockUseIsSmartContractWallet.mockReturnValue(false)
+    mockUseInjectedWidgetParams.mockReturnValue({ disableEIP2612Permits: false })
 
     const { result } = renderHook(() => useIsPermitEnabled())
 
-    expect(result.current).toBe(false)
+    expect(result.current).toBe(true)
   })
 })
