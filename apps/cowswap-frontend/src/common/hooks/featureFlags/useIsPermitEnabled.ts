@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 export function useIsPermitEnabled(): boolean {
   const { disableEIP2612Permits } = useInjectedWidgetParams()
