@@ -2,6 +2,8 @@ import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 
+import { useInjectedWidgetParams } from '../../injectedWidget'
+
 /**
  * Returns whether the recipient input should be shown.
  *
@@ -16,8 +18,11 @@ export function useIsWithRecipient(showRecipient: boolean): boolean {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isNonEvmBridging = useIsNonEvmBridging()
   const tradeStateFromUrl = useTradeStateFromUrl()
+  const disableCustomRecipient = useInjectedWidgetParams()
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+
+  if (disableCustomRecipient) return false
 
   return !isWrapOrUnwrap && (isNonEvmBridging || hasRecipientInUrl || showRecipient)
 }
