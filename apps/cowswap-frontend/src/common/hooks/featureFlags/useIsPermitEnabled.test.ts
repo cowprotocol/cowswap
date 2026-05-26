@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsPermitEnabled } from './useIsPermitEnabled'
 
@@ -11,7 +9,7 @@ jest.mock('@cowprotocol/wallet', () => ({
   useIsSmartContractWallet: jest.fn(),
 }))
 
-jest.mock('modules/injectedWidget', () => ({
+jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: jest.fn(),
 }))
 
