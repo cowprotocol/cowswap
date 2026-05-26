@@ -11,6 +11,7 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
 
+import { useInjectedWidgetParams } from '../../injectedWidget'
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
@@ -18,6 +19,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
@@ -42,13 +44,18 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId changes
+   * Reset recipient whenever chainId or disableCustomRecipient changes
    */
   useEffect(() => {
+    if (disableCustomRecipient) {
+      onChangeRecipient(null)
+      return
+    }
+
     if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
+  }, [chainId, disableCustomRecipient, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
 
   /**
    * Remove recipient override when its source hook was deleted

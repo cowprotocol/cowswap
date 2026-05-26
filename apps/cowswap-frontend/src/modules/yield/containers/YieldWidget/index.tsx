@@ -12,6 +12,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { Field } from 'legacy/state/types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { SelectTokenWidget } from 'modules/tokensList'
 import { TradeWidget, TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
@@ -80,6 +81,7 @@ export function YieldWidget() {
   const poolsInfo = usePoolsInfo()
   const vampireAttackContext = useVampireAttack()
   const vampireAttackTarget = useVampireAttackFirstTarget()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
 
   const {
     inputCurrency,
@@ -185,7 +187,13 @@ export function YieldWidget() {
       <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
     ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
-    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    settingsWidget: (
+      <SettingsTab
+        recipientToggleState={recipientToggleState}
+        deadlineState={deadlineState}
+        isRecipientToggleHidden={disableCustomRecipient}
+      />
+    ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null) => {
         return (

@@ -11,6 +11,7 @@ import {
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
@@ -30,6 +31,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const {
     showRecipient,
     partialFillsEnabled,
@@ -94,12 +96,14 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
       <SettingsContainer>
         <SettingsDropdownSection title={t`Limit Settings`}>
           <SettingsBoxGroup>
-            <SettingsBox
-              title={t`Custom Recipient`}
-              tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-              checked={showRecipient}
-              toggle={handleRecipientToggle}
-            />
+            {!disableCustomRecipient && (
+              <SettingsBox
+                title={t`Custom Recipient`}
+                tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                checked={showRecipient}
+                toggle={handleRecipientToggle}
+              />
+            )}
 
             <SettingsBox
               title={t`Enable Partial Executions`}
