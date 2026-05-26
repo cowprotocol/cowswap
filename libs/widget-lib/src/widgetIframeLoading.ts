@@ -26,7 +26,11 @@ const ERROR_EL_STYLES = {
 
 type IframeLoadingState = { cancelWidgetLoading: () => void; onWidgetReady: () => void }
 
-export function widgetIframeLoading(container: HTMLElement, iframe: HTMLIFrameElement): IframeLoadingState {
+export function widgetIframeLoading(
+  container: HTMLElement,
+  iframe: HTMLIFrameElement,
+  onWidgetLoadingError?: () => void,
+): IframeLoadingState {
   let cancelled = false
 
   function onIframeLoadingError(): void {
@@ -38,6 +42,7 @@ export function widgetIframeLoading(container: HTMLElement, iframe: HTMLIFrameEl
 
     container.innerHTML = ''
     container.appendChild(errorContent)
+    onWidgetLoadingError?.()
   }
 
   iframe.addEventListener('error', (iframeLoadingError) => {
