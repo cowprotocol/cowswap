@@ -1,7 +1,11 @@
 import { loadEnv } from 'vite'
 
+export function getReactAppEnvRecord(mode: string): Record<string, string> {
+  return loadEnv(mode, process.cwd(), ['REACT_APP_'])
+}
+
 export function getReactProcessEnv(mode: string): { [key: string]: string } {
-  const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
+  const env = getReactAppEnvRecord(mode)
 
   // expose .env as process.env instead of import.meta since jest does not import meta yet
   return Object.entries(env).reduce((prev, [key, val]) => {

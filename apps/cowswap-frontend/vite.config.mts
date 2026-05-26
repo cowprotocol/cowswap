@@ -18,8 +18,9 @@ import * as path from 'path'
 import pkg from './package.json'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
-import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { getReactAppEnvRecord, getReactProcessEnv } from '../../tools/getReactProcessEnv'
 import { NODE_STD_LIBS } from '../../tools/nodeStdLibs'
+import { reactAppEnvPostDefinePlugin } from '../../tools/vite-plugins/reactAppEnvPostDefinePlugin'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -41,6 +42,7 @@ const sentryReleaseName = `CowSwap@v${pkg.version}`
 // eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode, isPreview }) => {
   const isProduction = mode === 'production'
+  const reactAppEnvRecord = getReactAppEnvRecord(mode)
 
   const plugins: PluginOption[] = [
     nodePolyfills({
@@ -52,6 +54,7 @@ export default defineConfig(({ mode, isPreview }) => {
       },
       protocolImports: true,
     }),
+    reactAppEnvPostDefinePlugin(reactAppEnvRecord),
     react(),
     viteTsConfigPaths({
       root: '../../',
