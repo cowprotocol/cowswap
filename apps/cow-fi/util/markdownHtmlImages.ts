@@ -11,6 +11,7 @@ interface MarkdownAstNode {
 
 const HTML_ATTRIBUTE_REGEXP = /([a-zA-Z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g
 const HTML_COMMENT_REGEXP = /<!--[\s\S]*?-->/g
+const UNSAFE_HTML_BLOCK_REGEXP = /<(script|style|iframe|object|embed|svg)\b[\s\S]*?<\/\1>/gi
 const ASCII_CONTROL_CHARACTERS_REGEXP = /[\u0000-\u001f\u007f]/
 const URL_SCHEME_REGEXP = /^[a-z][a-z0-9+.-]*:/i
 const ALLOWED_IMAGE_CONTAINER_TAGS = new Set([
@@ -51,6 +52,25 @@ export function getAllowedHtmlImages(html: string): AllowedHtmlImage[] {
     if (image) images.push(image)
     return images
   }, [])
+}
+
+export function sanitizeCmsMarkdown(content: string): string {
+  return content
+    .replace(HTML_COMMENT_REGEXP, '')
+    .replace(UNSAFE_HTML_BLOCK_REGEXP, '')
+    .replace(/<img\b[^>]*>/gi, (imageTag) => {
+      const image = getImageFromTag(imageTag)
+      return image ? `\n\n![${escapeMarkdownImageAlt(image.alt)}](${image.src})\n\n` : ''
+    })
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|section|article|blockquote|h[1-6]|li)>/gi, '\n\n')
+    .replace(/<li\b[^>]*>/gi, '- ')
+    .replace(/<\/?(ul|ol)\b[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .trim()
+    .replace(/&(#x[\da-f]+|#\d+|amp|apos|gt|lt|quot);/gi, (match, entity: string) => decodeHtmlEntity(match, entity))
 }
 
 function getImageFromTag(imageTag: string): AllowedHtmlImage | null {
@@ -173,21 +193,27 @@ function isSafeImageSrc(src: string): boolean {
 }
 
 function decodeHtmlAttribute(value: string): string {
-  return value.replace(/&(#x[\da-f]+|#\d+|amp|apos|gt|lt|quot);/gi, (match, entity: string) => {
-    const normalizedEntity = entity.toLowerCase()
-    const namedEntity = HTML_ENTITIES[normalizedEntity as keyof typeof HTML_ENTITIES]
-    if (namedEntity) return namedEntity
+  return value.replace(/&(#x[\da-f]+|#\d+|amp|apos|gt|lt|quot);/gi, decodeHtmlEntity)
+}
 
-    const radix = normalizedEntity.startsWith('#x') ? 16 : 10
-    const numericValue = Number.parseInt(normalizedEntity.replace(/^#x?/i, ''), radix)
-    if (!Number.isFinite(numericValue)) return match
+function decodeHtmlEntity(match: string, entity: string): string {
+  const normalizedEntity = entity.toLowerCase()
+  const namedEntity = HTML_ENTITIES[normalizedEntity as keyof typeof HTML_ENTITIES]
+  if (namedEntity) return namedEntity
 
-    try {
-      return String.fromCodePoint(numericValue)
-    } catch {
-      return match
-    }
-  })
+  const radix = normalizedEntity.startsWith('#x') ? 16 : 10
+  const numericValue = Number.parseInt(normalizedEntity.replace(/^#x?/i, ''), radix)
+  if (!Number.isFinite(numericValue)) return match
+
+  try {
+    return String.fromCodePoint(numericValue)
+  } catch {
+    return match
+  }
+}
+
+function escapeMarkdownImageAlt(alt: string): string {
+  return alt.replace(/([\\\]])/g, '\\$1')
 }
 
 function isMarkdownAstNode(node: unknown): node is MarkdownAstNode {

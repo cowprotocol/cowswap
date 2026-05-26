@@ -1,4 +1,9 @@
-import { getAllowedHtmlImage, getAllowedHtmlImages, remarkAllowedHtmlImages } from './markdownHtmlImages'
+import {
+  getAllowedHtmlImage,
+  getAllowedHtmlImages,
+  remarkAllowedHtmlImages,
+  sanitizeCmsMarkdown,
+} from './markdownHtmlImages'
 
 interface TestMarkdownNode {
   type: string
@@ -10,6 +15,26 @@ interface TestMarkdownNode {
 }
 
 describe('markdownHtmlImages', () => {
+  it('keeps CMS HTML paragraph text renderable after raw HTML is skipped', () => {
+    expect(
+      sanitizeCmsMarkdown(
+        '<p>Linked orders are advanced trading instructions where two or more orders are tied together by conditions.</p><p>CoW Swap protects against downside risk.</p>',
+      ),
+    ).toBe(
+      'Linked orders are advanced trading instructions where two or more orders are tied together by conditions.\n\nCoW Swap protects against downside risk.',
+    )
+  })
+
+  it('drops unsafe HTML blocks while preserving safe text', () => {
+    expect(sanitizeCmsMarkdown('<p>Safe text</p><script>alert(1)</script><svg><circle /></svg>')).toBe('Safe text')
+  })
+
+  it('turns safe image tags into markdown images', () => {
+    expect(sanitizeCmsMarkdown('<p><img src="/uploads/cow.png" alt="CoW &amp; Swap"></p>')).toBe(
+      '![CoW & Swap](/uploads/cow.png)',
+    )
+  })
+
   it('extracts safe CMS image attributes from a raw HTML image tag', () => {
     expect(getAllowedHtmlImage('<img src="https://cms.cow.fi/uploads/cow.png" alt="CoW &amp; Swap">')).toEqual({
       src: 'https://cms.cow.fi/uploads/cow.png',

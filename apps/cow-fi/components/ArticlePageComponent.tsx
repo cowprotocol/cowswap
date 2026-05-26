@@ -37,7 +37,7 @@ import {
   StickyMenu,
 } from '@/styles/styled'
 import { formatDate } from '@/util/formatDate'
-import { remarkAllowedHtmlImages } from '@/util/markdownHtmlImages'
+import { remarkAllowedHtmlImages, sanitizeCmsMarkdown } from '@/util/markdownHtmlImages'
 
 const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || ''
 
@@ -351,9 +351,11 @@ function MarkdownImage({ src, alt, ...props }: ImgHTMLAttributes<HTMLImageElemen
 }
 
 function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }): ReactNode {
+  const content = sanitizeCmsMarkdown(sharedRichText.body || '')
+
   return (
     <ReactMarkdown skipHtml remarkPlugins={[remarkAllowedHtmlImages]} components={{ img: MarkdownImage }}>
-      {sharedRichText.body || ''}
+      {content}
     </ReactMarkdown>
   )
 }
