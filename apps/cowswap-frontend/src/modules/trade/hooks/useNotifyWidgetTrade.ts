@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, percentToBps } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
@@ -66,6 +66,7 @@ function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
   }
 }
 
+// eslint-disable-next-line complexity
 function getTradeParamsEventPayload(
   tradeType: TradeType,
   state: TradeDerivedState,
@@ -73,6 +74,7 @@ function getTradeParamsEventPayload(
 ): OnTradeParamsPayload {
   return {
     orderType: TradeTypeToUiOrderType[tradeType],
+    chainId: state.inputCurrency?.chainId ?? state.outputCurrency?.chainId,
     sellToken: currencyToTokenInfo(state.inputCurrency),
     buyToken: currencyToTokenInfo(state.outputCurrency),
     sellTokenAmount: currencyAmountToAtomsAndUnits(state.inputCurrencyAmount),
@@ -89,5 +91,6 @@ function getTradeParamsEventPayload(
       : ZERO_AMOUNT,
     recipient: state.recipient || undefined,
     orderKind: state.orderKind,
+    slippageBps: state.slippage ? percentToBps(state.slippage) : undefined,
   }
 }

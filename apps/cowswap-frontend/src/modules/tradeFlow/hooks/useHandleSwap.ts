@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react'
 
+import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
@@ -9,7 +10,13 @@ import { Field } from 'legacy/state/types'
 
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
-import { TradeWidgetActions, logTradeFlow, useTradeFlowAnalytics, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeWidgetActions,
+  logTradeFlow,
+  useDerivedTradeState,
+  useTradeFlowAnalytics,
+  useTradePriceImpact,
+} from 'modules/trade'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
@@ -38,6 +45,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
+  const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
     Boolean(
@@ -61,6 +69,9 @@ export function useHandleSwap(
         outputAmount: tradeFlowContext.context.outputAmount,
         recipient: tradeFlowContext.swapFlowAnalyticsContext.recipient,
         orderKind: tradeFlowContext.orderParams.kind,
+        chainId: tradeFlowContext.orderParams.chainId,
+        validTo: tradeFlowContext.orderParams.validTo,
+        slippageBps: derivedTradeState?.slippage ? percentToBps(derivedTradeState.slippage) : undefined,
       }),
     )
 
@@ -96,6 +107,7 @@ export function useHandleSwap(
     safeBundleFlowContext,
     onChangeRecipient,
     onUserInput,
+    derivedTradeState?.slippage,
   ])
 
   return { callback, contextIsReady }
