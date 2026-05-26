@@ -35,6 +35,7 @@ Normative language:
 - `MUST` keep diffs scoped to the task and avoid unrelated edits.
 - `MUST` preserve module boundaries and import direction constraints already enforced by lint.
 - `MUST` prefer existing shared utilities/hooks over creating near-duplicates.
+- `MUST` pin dependency versions in `package.json` files (exact semver) for `dependencies`, `devDependencies`, `optionalDependencies`, `resolutions`, and `pnpm.overrides`; `workspace:*` and explicit package artifact sources (`https://...tgz`, `file:`, `link:`, `portal:`, `patch:`) are allowed. `peerDependencies` MAY use semver ranges because they express integrator compatibility.
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
 - Both SWR and Jotai `atomWithQuery` are acceptable for data fetching. The team is evaluating migration; no forced migration yet.
 - Avoid introducing new `common/** -> modules/**` imports; treat existing cases as legacy debt and track cleanup in `docs/QUALITY.md`.
