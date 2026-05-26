@@ -15,18 +15,15 @@ export function Toggle({
   selectPartialApprove,
   amountToApprove,
   changeApproveAmount,
-  disabled = false,
 }: {
   isPartialApproveSelected: boolean
   selectPartialApprove: (isPartialApproveEnabled: boolean) => void
   amountToApprove: CurrencyAmount<Currency>
   changeApproveAmount?: () => void
-  disabled?: boolean
 }): ReactNode {
   const { t } = useLingui()
 
   const handleSelect = (value: boolean): void => {
-    if (disabled) return
     selectPartialApprove(value)
   }
 
@@ -35,7 +32,7 @@ export function Toggle({
       <Option isActive={isPartialApproveSelected} onClick={() => handleSelect(true)} title={t`Partial approval`}>
         <styledEl.PartialAmountWrapper
           onClick={() => {
-            if (isPartialApproveSelected && changeApproveAmount && !disabled) {
+            if (isPartialApproveSelected && changeApproveAmount) {
               changeApproveAmount()
             }
           }}

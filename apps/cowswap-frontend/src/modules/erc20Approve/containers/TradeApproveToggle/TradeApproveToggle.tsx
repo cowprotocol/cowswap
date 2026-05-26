@@ -17,13 +17,14 @@ export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeA
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
 
+  if (isInfiniteApproveDisabled) return null
+
   return (
     <Toggle
       isPartialApproveSelected={isPartialApproveSelectedByUser}
       selectPartialApprove={setIsPartialApproveSelectedByUser}
       amountToApprove={amountToApprove}
       changeApproveAmount={updateModalState}
-      disabled={isInfiniteApproveDisabled}
     />
   )
 }
