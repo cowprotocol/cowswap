@@ -18,7 +18,7 @@ export function useIsWithRecipient(showRecipient: boolean): boolean {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isNonEvmBridging = useIsNonEvmBridging()
   const tradeStateFromUrl = useTradeStateFromUrl()
-  const disableCustomRecipient = useInjectedWidgetParams()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
 
