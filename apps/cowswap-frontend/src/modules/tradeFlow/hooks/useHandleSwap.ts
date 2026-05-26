@@ -76,6 +76,7 @@ export function useHandleSwap(
     )
 
     if (!isWidgetHookPassed) {
+      flowInProgressRef.current = false
       return
     }
 
