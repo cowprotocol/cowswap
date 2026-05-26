@@ -5,6 +5,7 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
+import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
 import { useHasCachedPermit } from 'modules/permit'
 import { useGetConfirmButtonLabel, useIsCurrentTradeBridging } from 'modules/trade'
 
@@ -55,15 +56,19 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
   const approveLabel = useGetConfirmButtonLabel('approve', isCurrentTradeBridging)
   const swapLabel = useGetConfirmButtonLabel('swap', isCurrentTradeBridging)
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
 
   if (!supportsPartialApprove) {
+    const legacyApproveAmount = isInfiniteApproveDisabled
+      ? BigInt(amountToApprove.quotient.toString())
+      : MAX_APPROVE_AMOUNT
     return (
       <>
         <LegacyApproveButton
           currency={amountToApprove.currency}
           state={approvalState}
           isDisabled={isDisabled}
-          onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
+          onClick={() => handleApprove(legacyApproveAmount)}
           clickEvent={approveClickEvent}
         />
         {children}
