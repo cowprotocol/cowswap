@@ -3193,7 +3193,7 @@ msgstr "Rewards end"
 #~ msgid "The input token cannot be transferred. There may be an issue with the input token."
 #~ msgstr "The input token cannot be transferred. There may be an issue with the input token."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/Web3StatusInner.pure.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/Web3Status/Web3Status.container.tsx
 msgid "{pendingCount} Pending"
 msgstr "{pendingCount} Pending"
 
@@ -4243,7 +4243,7 @@ msgstr "Only the {limit} most recent orders were searched."
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/Web3StatusInner.pure.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/Web3Status/Web3Status.container.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
 
@@ -7067,7 +7067,7 @@ msgstr "Default approve"
 msgid "Order cannot be filled due to insufficient balance on the current account."
 msgstr "Order cannot be filled due to insufficient balance on the current account."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/Web3StatusInner.pure.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/Web3Status/Web3Status.container.tsx
 msgid "Restoring wallet..."
 msgstr "Restoring wallet..."
 
@@ -7084,7 +7084,7 @@ msgstr "Fetching balances"
 msgid "This code is taken. Generate another one."
 msgstr "This code is taken. Generate another one."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/Web3StatusInner.pure.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/Web3Status/Web3Status.container.tsx
 msgid "Wallet"
 msgstr "Wallet"
 
