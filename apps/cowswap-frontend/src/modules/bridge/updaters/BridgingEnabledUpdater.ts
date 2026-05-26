@@ -5,8 +5,8 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSafeApp } from '@cowprotocol/wallet'
 
 import { useHasBridgeProviders } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTradeTypeInfo } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
