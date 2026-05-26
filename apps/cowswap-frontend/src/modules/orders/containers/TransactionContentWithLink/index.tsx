@@ -35,6 +35,7 @@ interface TransactionContentWithLinkProps {
   isSafeTx?: boolean
 }
 
+// eslint-disable-next-line complexity
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps): ReactNode {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
