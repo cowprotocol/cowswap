@@ -19,6 +19,7 @@ import {
   WindowListener,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 const DEFAULT_HEIGHT = '640px'
@@ -74,15 +75,20 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   container.innerHTML = ''
   container.appendChild(iframe)
 
+  const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(container, iframe)
+
   const { contentWindow: iframeWindow } = iframe
   if (!iframeWindow) {
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
   }
 
-  if (onReady) {
-    windowListeners.push(listenToReady(iframeWindow, iframeOrigin, onReady))
-  }
+  windowListeners.push(
+    listenToReady(iframeWindow, iframeOrigin, () => {
+      onReady?.()
+      onWidgetReady()
+    }),
+  )
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
@@ -165,6 +171,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       // Destroy the iframe
       container.removeChild(iframe)
+
+      cancelWidgetLoading()
     },
   }
 }
