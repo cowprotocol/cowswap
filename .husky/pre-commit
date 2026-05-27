@@ -1,2 +1,3 @@
 #!/bin/sh
+node tools/scripts/check-pinned-package-versions.mjs || exit 1
 npx lint-staged --relative
