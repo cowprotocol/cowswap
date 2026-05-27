@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 
 import { isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -12,7 +13,7 @@ import { markInitialReconnectSettled } from './initialReconnectLifecycle'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
-import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { OPEN_WALLET_MODAL_EVENT, SAFE_APP_ORIGIN } from '../constants'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
@@ -161,16 +162,19 @@ function OpenWalletModalOnCustomEvent(): null {
 
 interface Web3ProviderProps {
   children: ReactNode
+  standaloneMode?: boolean
 }
 
 export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
+  const isOpenInSafeApp = getParentOrigin() === SAFE_APP_ORIGIN
+
   return (
     <WagmiProvider config={config} reconnectOnMount={false}>
       <ReconnectOnMount />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>
         <SafeProvider>
-          <SafeConnectionHandler>{children}</SafeConnectionHandler>
+          {isOpenInSafeApp ? <SafeConnectionHandler>{children}</SafeConnectionHandler> : children}
         </SafeProvider>
       </QueryClientProvider>
     </WagmiProvider>
