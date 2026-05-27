@@ -9,4 +9,10 @@ export type OnTransactionPayload = {
     replacementType?: 'speedup' | 'cancel' | 'replaced'
   }
   summary: string
+  /**
+   * True when `receipt.transactionHash` is a Safe transaction hash (safeTxHash) rather than
+   * an on-chain Ethereum transaction hash. Only Safe transaction hashes can be used to build
+   * a working `app.safe.global` deep link.
+   */
+  isSafeTx?: boolean
 }
