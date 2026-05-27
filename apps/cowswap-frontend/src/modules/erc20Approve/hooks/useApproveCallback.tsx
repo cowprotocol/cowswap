@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { calculateGasMargin, delay, getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,7 +20,7 @@ export async function estimateApprove(
   spender: string,
   amountToApprove: bigint,
   account: Address,
-  chainId: number,
+  chainId: EvmChains,
 ): Promise<{ gasLimit: bigint }> {
   for (let attempt = 1; attempt <= MAX_WALLET_RETRIES; attempt++) {
     try {
@@ -41,8 +41,8 @@ export async function estimateApprove(
   }
 
   console.log('[estimateApproveGas] Wallet retries exhausted, switching to fallback RPC provider')
-  const rpcUrl = RPC_URLS[chainId as SupportedChainId]
-  const chain = VIEM_CHAINS[chainId as SupportedChainId]
+  const rpcUrl = RPC_URLS[chainId]
+  const chain = VIEM_CHAINS[chainId]
 
   if (rpcUrl && chain) {
     try {
@@ -87,6 +87,11 @@ export function useApproveCallback(
 
       if (!tokenChainId || !token || !publicClient || !walletClient?.account || !spender) {
         console.error('Wrong input for approve: ', { tokenChainId, token, amountToApproveStr, spender })
+        return
+      }
+
+      if (!isEvmChain(tokenChainId)) {
+        console.error('Wrong chainId for approve: ', { tokenChainId, token, amountToApproveStr, spender })
         return
       }
 

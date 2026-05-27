@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.3.0...analytics-v3.3.1) (2026-05-22)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/events@4.4.1
+
 ## 3.3.0
 
 ### Minor Changes

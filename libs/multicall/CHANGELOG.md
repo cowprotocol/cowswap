@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.2...multicall-v3.2.3) (2026-05-22)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.0
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/types@4.3.2
+
 ## 3.2.2
 
 ### Patch Changes

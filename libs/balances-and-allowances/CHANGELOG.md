@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.4...balances-and-allowances-v3.2.5) (2026-05-22)
+
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.0
+  - @cowprotocol/common-const@3.3.1
+  - @cowprotocol/common-hooks@3.2.4
+  - @cowprotocol/common-utils@3.4.1
+  - @cowprotocol/core@3.3.0
+  - @cowprotocol/currency@1.0.1
+  - @cowprotocol/multicall@3.2.3
+  - @cowprotocol/tokens@3.6.1
+  - @cowprotocol/types@4.3.2
+
 ## 3.2.4
 
 ### Patch Changes

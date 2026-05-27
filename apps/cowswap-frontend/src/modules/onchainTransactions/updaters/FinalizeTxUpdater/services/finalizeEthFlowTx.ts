@@ -38,6 +38,8 @@ export function finalizeEthFlowTx(
           replacementType: transaction.replacementType,
         },
         summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
+        // `receipt.transactionHash` is an on-chain Ethereum tx hash, not a safeTxHash.
+        isSafeTx: false,
       })
     }
   }

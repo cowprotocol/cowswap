@@ -3,6 +3,7 @@ import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } fr
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, SupportedLocale } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
@@ -25,7 +26,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { useAppKitTheme } from '@reown/appkit/react'
+import { useConnection } from 'wagmi'
 
 import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -76,8 +78,8 @@ export type WidgetMode = 'dapp' | 'standalone'
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Configurator({ title }: { title: string }) {
-  const { setThemeMode } = useWeb3ModalTheme()
-  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
+  const { setThemeMode } = useAppKitTheme()
+  const { chainId: walletChainId, isConnected } = useConnection()
   const provider = useProvider()
   const cowAnalytics = useCowAnalytics()
 
@@ -219,7 +221,7 @@ export function Configurator({ title }: { title: string }) {
     swapDeadline,
     limitDeadline,
     advancedDeadline,
-    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : (walletChainId as SupportedChainId),
     locale: locale || undefined,
     theme: mode,
     boxShadow: boxShadow || undefined,
@@ -328,11 +330,8 @@ export function Configurator({ title }: { title: string }) {
             </FormControl>
             {!standaloneMode && (
               <div style={WalletConnectionWrapper}>
-                {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
-                {/* Error: apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.*/}
-                {/* Fix from https://github.com/reown-com/appkit/issues/3093 */}
                 {/* @ts-ignore */}
-                <w3m-button />
+                <appkit-button />
               </div>
             )}
           </>

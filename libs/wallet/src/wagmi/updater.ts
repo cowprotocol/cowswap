@@ -4,14 +4,15 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
 import { useConnection, useEnsName } from 'wagmi'
 
-import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
+import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
@@ -159,9 +160,21 @@ export function WalletUpdater(): null {
   return null
 }
 
+function useShouldFetchSafeInfo(): boolean {
+  const accountType = useAccountType()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  if (!isSafeViaWc) return false
+  if (accountType === AccountType.EOA) return false
+  if (accountType === AccountType.EIP7702EOA) return false
+
+  return true
+}
+
 function useSafeInfo(): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
   const { account, chainId } = useWalletInfo()
+  const shouldFetchSafeInfo = useShouldFetchSafeInfo()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
 
@@ -183,11 +196,11 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
             }
           })
         } catch {
-          console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
+          console.debug(`[COW][WalletUpdater] Error fetching safe info over iframe ${account}`)
           setSafeInfo(undefined)
         }
       } else {
-        if (chainId && account) {
+        if (chainId && account && shouldFetchSafeInfo) {
           try {
             const _safeInfo = await getSafeInfo(chainId, account)
             const { address, threshold, owners, nonce } = _safeInfo
@@ -202,7 +215,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               isReadOnly: false,
             }))
           } catch {
-            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+            console.debug(`[COW][WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
           }
         } else {
@@ -233,7 +246,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
     }
-  }, [chainId, account, safeAppsSdk])
+  }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
 
   return safeInfo
 }
