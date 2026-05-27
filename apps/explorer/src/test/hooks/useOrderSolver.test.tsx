@@ -119,6 +119,7 @@ function mockSolverCompetitionResponse(solverName: string, orderId = '0x1'): Sol
 
 describe('useOrderSolver', () => {
   beforeEach(() => {
+    jest.useRealTimers()
     mockedUseNetworkId.mockReset()
     mockedGetOrderCompetitionStatus.mockReset()
     mockedGetSolverCompetitionByTxHash.mockReset()
@@ -346,6 +347,33 @@ describe('useOrderSolver', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(result.current.solver).toBeUndefined()
+  })
+
+  it('settles loading when competition endpoints are unavailable after delay', async () => {
+    jest.useFakeTimers()
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+    mockedGetOrderCompetitionStatus.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('competition timeout')), 50)
+        }),
+    )
+    mockedGetSolverCompetitionByTxHash.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('solver competition timeout')), 50)
+        }),
+    )
+
+    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+    expect(result.current.isLoading).toBe(true)
+
+    await jest.advanceTimersByTimeAsync(51)
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+    expect(result.current.solver).toBeUndefined()
+    jest.useRealTimers()
   })
 
   it('clears stale solver when navigating to an order with no solver data', async () => {
