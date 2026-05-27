@@ -202,8 +202,10 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
       throw error
     })
 
-  const orderPromisesBarn = orderBookSDK
-    .getTxOrders(txHash, { ...context, env: 'staging' })
+  const orderPromisesBarn = withBarnTimeout(
+    orderBookSDK.getTxOrders(txHash, { ...context, env: 'staging' }),
+    'getTxOrders',
+  )
     .then(rejectIfEmpty)
     .catch((error) => {
       if (!(error instanceof EmptyTxOrdersResultError)) {

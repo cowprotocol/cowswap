@@ -5,6 +5,7 @@ import {
   getOrderCompetitionStatus,
   getSolverCompetitionByTxHash,
   getTrades,
+  getTxOrders,
 } from '../../../api/operator/operatorApi'
 import { OrderCompetitionStatus, RawOrder, RawTrade, SolverCompetitionResponse } from '../../../api/operator/types'
 
@@ -14,6 +15,7 @@ jest.mock('cowSdk', () => ({
     getTrades: jest.fn(),
     getOrderCompetitionStatus: jest.fn(),
     getSolverCompetition: jest.fn(),
+    getTxOrders: jest.fn(),
   },
 }))
 
@@ -35,6 +37,7 @@ describe('operatorApi competition fallbacks', () => {
     mockedOrderBookSDK.getTrades.mockReset()
     mockedOrderBookSDK.getOrderCompetitionStatus.mockReset()
     mockedOrderBookSDK.getSolverCompetition.mockReset()
+    mockedOrderBookSDK.getTxOrders.mockReset()
     consoleErrorSpy.mockClear()
   })
 
@@ -174,5 +177,16 @@ describe('operatorApi competition fallbacks', () => {
     await jest.advanceTimersByTimeAsync(12_001)
 
     await expect(resultPromise).resolves.toBeUndefined()
+  })
+
+  it('returns empty tx orders when prod is empty and staging times out', async () => {
+    jest.useFakeTimers()
+    mockedOrderBookSDK.getTxOrders.mockResolvedValueOnce([]).mockImplementationOnce(() => unresolvedPromise())
+
+    const resultPromise = getTxOrders({ networkId: 1, txHash: '0xtx-empty' })
+
+    await jest.advanceTimersByTimeAsync(12_001)
+
+    await expect(resultPromise).resolves.toEqual([])
   })
 })
