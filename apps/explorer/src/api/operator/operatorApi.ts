@@ -19,30 +19,27 @@ export { getAccountOrders } from './accountOrderUtils'
 
 const ENV_REQUEST_TIMEOUT_MS = 12_000
 
-function withRequestTimeout<T>(promise: Promise<T>, env: 'PROD' | 'BARN', operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: ${env}`)
+function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: BARN`)
 }
 
 /**
  * Gets a single order by id.
  *
  * Uses `Promise.any` to fetch from both prod and barn at the same time. The first fulfilled promise wins.
- * Each env request is time-bounded to avoid hanging forever when one env stalls.
+ * Only BARN requests are time-bounded to avoid hangs in the optional fallback env.
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { networkId, orderId } = params
   const context = { chainId: networkId, backoffOpts }
 
-  const orderPromise = withRequestTimeout(orderBookSDK.getOrder(orderId, context), 'PROD', 'getOrder').catch(
-    (error) => {
-      console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
-      throw error
-    },
-  )
+  const orderPromise = orderBookSDK.getOrder(orderId, context).catch((error) => {
+    console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
+    throw error
+  })
 
-  const orderPromiseBarn = withRequestTimeout(
+  const orderPromiseBarn = withBarnTimeout(
     orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }),
-    'BARN',
     'getOrder',
   ).catch((error) => {
     console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
@@ -56,7 +53,7 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
  * Gets order competition status from prod and staging (barn).
  *
  * Uses `Promise.any`, so the first fulfilled response wins.
- * Each env request is time-bounded to avoid hanging forever when one env stalls.
+ * Only BARN requests are time-bounded to avoid hangs in the optional fallback env.
  * Returns `undefined` if neither environment has status data.
  */
 export async function getOrderCompetitionStatus(
@@ -65,11 +62,8 @@ export async function getOrderCompetitionStatus(
   const { networkId, orderId } = params
   const context = { chainId: networkId, backoffOpts }
 
-  const statusPromise = withRequestTimeout(
-    orderBookSDK.getOrderCompetitionStatus(orderId, context),
-    'PROD',
-    'getOrderCompetitionStatus',
-  )
+  const statusPromise = orderBookSDK
+    .getOrderCompetitionStatus(orderId, context)
     .then((result) => ensureOrderCompetitionStatus(result, 'PROD'))
     .catch((error) => {
       if (!(error instanceof EmptyCompetitionResultError)) {
@@ -78,9 +72,8 @@ export async function getOrderCompetitionStatus(
       throw error
     })
 
-  const statusPromiseBarn = withRequestTimeout(
+  const statusPromiseBarn = withBarnTimeout(
     orderBookSDK.getOrderCompetitionStatus(orderId, { ...context, env: 'staging' }),
-    'BARN',
     'getOrderCompetitionStatus',
   )
     .then((result) => ensureOrderCompetitionStatus(result, 'BARN'))
@@ -98,7 +91,7 @@ export async function getOrderCompetitionStatus(
  * Gets solver competition data by transaction hash from prod and staging (barn).
  *
  * Uses `Promise.any`, so the first fulfilled response wins.
- * Each env request is time-bounded to avoid hanging forever when one env stalls.
+ * Only BARN requests are time-bounded to avoid hangs in the optional fallback env.
  * Returns `undefined` if neither environment has competition data.
  */
 export async function getSolverCompetitionByTxHash(
@@ -107,11 +100,8 @@ export async function getSolverCompetitionByTxHash(
   const { networkId, txHash } = params
   const context = { chainId: networkId, backoffOpts }
 
-  const prodPromise = withRequestTimeout(
-    orderBookSDK.getSolverCompetition(txHash, context),
-    'PROD',
-    'getSolverCompetitionByTxHash',
-  )
+  const prodPromise = orderBookSDK
+    .getSolverCompetition(txHash, context)
     .then((result) => ensureSolverCompetition(result, 'PROD'))
     .catch((error) => {
       if (!(error instanceof EmptyCompetitionResultError)) {
@@ -120,9 +110,8 @@ export async function getSolverCompetitionByTxHash(
       throw error
     })
 
-  const barnPromise = withRequestTimeout(
+  const barnPromise = withBarnTimeout(
     orderBookSDK.getSolverCompetition(txHash, { ...context, env: 'staging' }),
-    'BARN',
     'getSolverCompetitionByTxHash',
   )
     .then((result) => ensureSolverCompetition(result, 'BARN'))
@@ -151,15 +140,10 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
 
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid, offset, limit })
 
-  const tradesPromise = withRequestTimeout(
-    orderBookSDK.getTrades({ owner, orderUid, offset, limit }, context),
-    'PROD',
-    'getTrades',
-  )
+  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid, offset, limit }, context)
 
-  const tradesPromiseBarn = withRequestTimeout(
+  const tradesPromiseBarn = withBarnTimeout(
     orderBookSDK.getTrades({ owner, orderUid, offset, limit }, { ...context, env: 'staging' }),
-    'BARN',
     'getTrades',
   )
 
