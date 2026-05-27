@@ -139,11 +139,11 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'sepolia',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
   },
-  [AdditionalTargetChainId.SOLANA]: {
+  [SupportedChainId.SOLANA]: {
     ...mapChainInfoToBaseChainInfo(solana),
     name: 'solana',
     urlAlias: 'solana',
-    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.SOLANA],
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SOLANA],
   },
   [AdditionalTargetChainId.BITCOIN]: {
     ...mapChainInfoToBaseChainInfo(bitcoin),
@@ -192,7 +192,7 @@ export const SORTED_DST_CHAIN_IDS: TargetChainId[] = [
   SupportedChainId.PLASMA, // TODO: decide where to place Plasma
   SupportedChainId.INK, // TODO: decide where to place Ink
   SupportedChainId.GNOSIS_CHAIN,
-  AdditionalTargetChainId.SOLANA,
+  SupportedChainId.SOLANA,
   AdditionalTargetChainId.BITCOIN,
   SupportedChainId.SEPOLIA,
 ]

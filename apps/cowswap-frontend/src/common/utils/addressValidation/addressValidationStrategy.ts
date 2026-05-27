@@ -6,6 +6,7 @@ import {
   isEvmChain,
   isSolanaAddress,
   SOL_ADDRESS_PATTERN,
+  SupportedChainId,
   TargetChainId,
 } from '@cowprotocol/cow-sdk'
 
@@ -51,7 +52,7 @@ export function getAddressValidationStrategy(targetChainId?: TargetChainId): Add
   if (targetChainId === AdditionalTargetChainId.BITCOIN) {
     return btcStrategy
   }
-  if (targetChainId === AdditionalTargetChainId.SOLANA) {
+  if (targetChainId === SupportedChainId.SOLANA) {
     return solanaStrategy
   }
   // Unknown non-EVM chain: fall back to EVM validation.
