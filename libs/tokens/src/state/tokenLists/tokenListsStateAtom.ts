@@ -32,7 +32,7 @@ const UNISWAP_TOKEN_LIST_URL: Partial<Record<SupportedChainId, string>> = {
   [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`,
   [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`,
   [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`,
-}
+} as const satisfies Partial<Record<SupportedChainId, string>>
 
 const curatedListSourceAtom = atom((get): ListSourceConfig[] => {
   const chainId = get(environmentAtom).chainId
