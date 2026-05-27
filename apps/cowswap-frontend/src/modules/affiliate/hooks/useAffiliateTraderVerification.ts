@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { ApiError } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
@@ -12,7 +13,6 @@ import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { formatRefCode } from '../lib/affiliateProgramUtils'
 import { setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
-import { ApiError } from '../utils/api-utils'
 import { logAffiliate } from '../utils/logger'
 
 export interface UseAffiliateTraderVerificationResult {
@@ -83,6 +83,10 @@ async function verifyTraderAffiliateCode(
   setSavedCode({ savedCode: formattedCode, isLinked: false })
   setError(undefined)
   trackTraderVerificationCompleted(analytics, AffiliateVerificationResult.SUCCESS)
+}
+
+interface VerificationParams {
+  setError(error?: string): void
 }
 
 export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
