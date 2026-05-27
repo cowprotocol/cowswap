@@ -1,5 +1,5 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
-import { formatLocaleNumber } from '@cowprotocol/common-utils'
+import { formatLocaleNumber, isRecord, JsonRecord, readStringField } from '@cowprotocol/common-utils'
 import { Address, areAddressesEqual, EnrichedOrder, OrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
@@ -53,8 +53,6 @@ type AffiliatePartnerTypedDataMsg = {
   types: Record<string, TypedDataField[]>
   message: TypedDataMsg
 }
-
-type JsonRecord = Record<string, object | string | number | boolean | null>
 
 type TypedDataMsg = { walletAddress: string; code: string; chainId: number }
 
@@ -223,7 +221,7 @@ export function getRefCodeFromAppData(fullAppData: string | undefined): string |
     return undefined
   }
 
-  return formatRefCode(readStringFromRecord(referrer, 'code'))
+  return formatRefCode(readStringField(referrer, 'code'))
 }
 
 export function getReferralLink(refCode: string): string {
@@ -243,6 +241,11 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
   const { status } = order
 
   if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
+
+  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
+  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
+
+  if (!executedBuy && !executedSell) return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
@@ -278,26 +281,6 @@ export function toValidDate(value: string | undefined): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-function isRecord(value: unknown): value is JsonRecord {
-  return typeof value === 'object' && value !== null
-}
-
 function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
-}
-
-function readStringField(value: AppDataResponse | undefined, key: keyof AppDataResponse): string | undefined {
-  if (!value) return undefined
-
-  const raw = value[key]
-
-  return typeof raw === 'string' ? raw : undefined
-}
-
-function readStringFromRecord(value: JsonRecord | undefined, key: string): string | undefined {
-  if (!value) return undefined
-
-  const raw = value[key]
-
-  return typeof raw === 'string' ? raw : undefined
 }

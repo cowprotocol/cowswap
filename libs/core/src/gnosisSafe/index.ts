@@ -50,7 +50,9 @@ export async function createSafeApiKitInstance(chainId: number): Promise<SafeApi
     return null
   }
   if (!SAFE_API_AUTH_TOKEN) {
-    console.warn('No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.')
+    console.warn(
+      '[COW][SAFE] No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.',
+    )
   }
   const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
   return new SafeApiKit({
@@ -67,6 +69,7 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
+  console.log('[COW][SAFE-API] getSafeInfo', chainId, safeAddress)
   try {
     const client = await _getClientOrThrow(chainId)
 
@@ -81,6 +84,7 @@ export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
 ): Promise<SafeMultisigTransactionResponse> {
+  console.log('[COW][SAFE-API] getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
   console.log('[COW][SafeAPI] Fetch Safe transaction')
@@ -90,7 +94,7 @@ export async function getSafeTransaction(
 export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
   const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
+  return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {

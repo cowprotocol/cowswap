@@ -41,7 +41,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm run install:ci --frozen-lockfile
+        run: pnpm run install:ci
 
       - name: Extract i18n strings
         run: pnpm run i18n:extract
