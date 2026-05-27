@@ -59,7 +59,7 @@ export const config: VercelConfig = {
       // Controls which resources the browser is allowed to load; prevents XSS and data injection attacks.
       { key: 'Content-Security-Policy', value: csp },
       // Isolates the browsing context from cross-origin documents and windows.
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
       // Restricts this document/resource to be used from same-origin contexts.
       { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
       // Legacy defense-in-depth for browsers that still rely on X-Frame-Options.
