@@ -1,5 +1,5 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { ALL_CHAINS_MAP, getAddressKey, isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
+import { ALL_CHAINS_MAP, getAddressKey, isNonEvmChain } from '@cowprotocol/cow-sdk'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
@@ -16,9 +16,9 @@ export function useBridgeProviderBuyTokens(
 
       const { tokens } = await provider.getBuyTokens({ buyChainId })
 
-      // For non-EVM chains, native tokens may come back without an address.
-      // Fall back to the chain's native currency so they are keyed correctly.
-      const nativeCurrency = isAdditionalTargetChain(buyChainId) ? ALL_CHAINS_MAP[buyChainId].nativeCurrency : undefined
+      // For non-EVM chains (BTC, Solana), native tokens may come back without an address.
+      // Fall back to the chain's native currency so they are keyed correctly and keep a logo.
+      const nativeCurrency = isNonEvmChain(buyChainId) ? ALL_CHAINS_MAP[buyChainId].nativeCurrency : undefined
 
       return tokens?.reduce<Record<string, TokenInfo>>((acc, val) => {
         const address = val.address || nativeCurrency?.address
