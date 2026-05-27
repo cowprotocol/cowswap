@@ -30,7 +30,7 @@ const csp = buildCsp([
   ['media-src', ["'self'", 'data:', 'blob:']],
   // Configurator preview iframe can target external baseUrl values (prod/dev vercel) and localhost.
   ['frame-src', ["'self'", 'https:', 'http://localhost:3000']],
-  ['frame-ancestors', ["'none'"]],
+  ['frame-ancestors', ['*']],
   ['worker-src', ["'self'"]],
   ['manifest-src', ["'self'"]],
   ['base-uri', ["'self'"]],
