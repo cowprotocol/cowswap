@@ -111,6 +111,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   // Balances are only fetched for EVM chains (wagmi + BFF are EVM-only). Bridge-only
   // destinations like Solana or Bitcoin land here too — for them, skip the balance column
   // entirely instead of rendering an indefinite loading skeleton.
+  // todo remove it when FE supports Solana rpc connection
   const canShowBalances = isEvmChain(token.chainId)
   const shouldShowBalances = isWalletConnected && canShowBalances
   const shouldFormatBalances = shouldShowBalances && hasIntersected
