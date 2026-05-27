@@ -11,7 +11,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
-  const { params, provider, listeners, onReady } = props
+  const { params, provider, listeners, onReady, disableIframeSafeSdkBridge } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
@@ -72,6 +72,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
           provider: providerRef.current,
           listeners,
           onReady,
+          disableIframeSafeSdkBridge,
         })
         listenersRef.current = listeners
       })
@@ -80,7 +81,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
     }
     // Trigger only on params changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, tryOrHandleError])
+  }, [params, disableIframeSafeSdkBridge, tryOrHandleError])
 
   // Update widget provider (if it changes)
   useEffect(() => {
@@ -111,12 +112,13 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
           provider: providerRef.current,
           listeners,
           onReady,
+          disableIframeSafeSdkBridge,
         })
       })
     }
     // Trigger only on provider changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onReady, provider, tryOrHandleError])
+  }, [onReady, provider, disableIframeSafeSdkBridge, tryOrHandleError])
 
   // Update widget listeners (if they change)
   useEffect(() => {
