@@ -351,29 +351,32 @@ describe('useOrderSolver', () => {
 
   it('settles loading when competition endpoints are unavailable after delay', async () => {
     jest.useFakeTimers()
-    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-    mockedGetOrderCompetitionStatus.mockImplementationOnce(
-      () =>
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('competition timeout')), 50)
-        }),
-    )
-    mockedGetSolverCompetitionByTxHash.mockImplementationOnce(
-      () =>
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('solver competition timeout')), 50)
-        }),
-    )
+    try {
+      mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+      mockedGetOrderCompetitionStatus.mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('competition timeout')), 50)
+          }),
+      )
+      mockedGetSolverCompetitionByTxHash.mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('solver competition timeout')), 50)
+          }),
+      )
 
-    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+      const { result } = renderHook(() => useOrderSolver(createMockOrder()))
 
-    expect(result.current.isLoading).toBe(true)
+      expect(result.current.isLoading).toBe(true)
 
-    await jest.advanceTimersByTimeAsync(51)
+      await jest.advanceTimersByTimeAsync(51)
 
-    await waitFor(() => expect(result.current.isLoading).toBe(false))
-    expect(result.current.solver).toBeUndefined()
-    jest.useRealTimers()
+      await waitFor(() => expect(result.current.isLoading).toBe(false))
+      expect(result.current.solver).toBeUndefined()
+    } finally {
+      jest.useRealTimers()
+    }
   })
 
   it('clears stale solver when navigating to an order with no solver data', async () => {
