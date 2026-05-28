@@ -3,278 +3,110 @@ const fs = require('fs')
 const path = require('path')
 
 const ROOT_DIR = path.resolve(__dirname, '../..')
-const APPS_DIR = path.join(ROOT_DIR, 'apps')
-const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 const ROOT_NPMRC_PATH = path.join(ROOT_DIR, '.npmrc')
-const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
 const sdkPrVersionRegex = /pr-\d+/
-const sdkPrefix = '@cowprotocol/'
-const hasSdkPrVersion = Object.keys(packageJson.dependencies)
-  .filter((key) => key.startsWith(sdkPrefix))
-  .some((key) => {
-    const version = packageJson.dependencies[key]
 
-    return sdkPrVersionRegex.test(version)
-  })
+const hasSdkPrVersion = Object.values(packageJson.dependencies || {}).some((v) => sdkPrVersionRegex.test(String(v)))
 
-if (!hasSdkPrVersion) {
-  console.log('[install.js] No SDK PR version found in apps/cowswap-frontend/package.json.')
-
-  try {
-    runPnpmInstall()
-  } catch (err) {
-    console.error('[install.js] Failed to install dependencies:', err)
-    process.exit(1)
-  }
-
-  return
-}
-
-console.log('[install.js] SDK PR version found in apps/cowswap-frontend/package.json.')
-
-const PACKAGE_READ_AUTH_TOKEN = process.env.PACKAGE_READ_AUTH_TOKEN
-
-if (!PACKAGE_READ_AUTH_TOKEN) {
-  console.error('[install.js] PACKAGE_READ_AUTH_TOKEN env var is missing. Could not complete installation.')
-  process.exit(1)
-  return
-}
-
-// The scope-wide @cowprotocol:registry redirects ALL @cowprotocol/* packages to GitHub Packages.
-// Non-SDK packages (e.g. @cowprotocol/cms) are only on npmjs and would fail to install.
-// Fix: pin them to explicit npmjs tarball URLs so pnpm fetches them directly, bypassing the scope registry.
-let rewriteMap
+const isRegenerate = process.argv.includes('--regenerate')
 
 try {
-  rewriteMap = pinNonSdkPackagesToNpmjs()
+  if (isRegenerate) {
+    regenerate()
+  } else {
+    install()
+  }
 } catch (err) {
-  console.error('[install.js] Failed to pin non-SDK packages to npmjs:', err)
+  console.error('[install.js]', err.message || err)
   process.exit(1)
 }
 
-try {
-  runPnpmInstall(PACKAGE_READ_AUTH_TOKEN, rewriteMap)
-} catch (err) {
-  console.error('[install.js] Failed to install dependencies:', err)
-  process.exit(1)
-}
-
 /**
- * Returns whether a package name belongs to the SDK set handled via GitHub Packages.
- */
-function isSdkPackage(name) {
-  return name === '@cowprotocol/cow-sdk' || name.startsWith('@cowprotocol/sdk-')
-}
-
-/**
- * Builds an npmjs tarball URL for a scoped CoW package version.
- */
-function getNpmjsTarballUrl(name, version) {
-  // Strip version range prefixes (^, ~, >=, etc.) to get the exact version
-  const exactVersion = version.replace(/^[\^~>=<]+/, '')
-  const unscoped = name.replace(/^@cowprotocol\//, '')
-  return `https://registry.npmjs.org/${name}/-/${unscoped}-${exactVersion}.tgz`
-}
-
-/**
- * Rewrites non-SDK @cowprotocol dependencies to npmjs tarball URLs.
+ * Default path. Used by CI, Vercel, and regular local installs.
  *
- * This avoids failures caused by routing the whole scope to GitHub Packages.
+ * Always runs `pnpm install --frozen-lockfile`. The lockfile is the single source
+ * of truth: every @cowprotocol/* package — both GitHub-Packages-hosted SDK previews
+ * and npmjs-hosted non-SDK packages (cms, cow-runner-game) — must already carry an
+ * explicit `tarball:` field in its resolution block, so pnpm fetches the right URL
+ * without consulting the scope registry. That field is produced (and committed) by
+ * the `--regenerate` mode below.
+ *
+ * For SDK preview tarballs hosted on `npm.pkg.github.com`, the committed `.npmrc`
+ * carries `//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}`. We expose
+ * `PACKAGE_READ_AUTH_TOKEN` under that env var name so pnpm can interpolate it.
  */
-function pinNonSdkPackagesToNpmjs() {
-  const packageJsonPaths = []
-  const rewriteMap = {}
+function install() {
+  const childEnv = { ...process.env }
 
-  for (const baseDir of [APPS_DIR, LIBS_DIR]) {
-    if (!fs.existsSync(baseDir)) continue
-    const entries = fs.readdirSync(baseDir, { withFileTypes: true })
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue
-      const pkgPath = path.join(baseDir, entry.name, 'package.json')
-      if (fs.existsSync(pkgPath)) packageJsonPaths.push(pkgPath)
+  if (hasSdkPrVersion) {
+    const token = process.env.PACKAGE_READ_AUTH_TOKEN
+    if (!token) {
+      throw new Error(
+        'apps/cowswap-frontend/package.json pins a pr-NNN SDK preview, but ' +
+          'PACKAGE_READ_AUTH_TOKEN env var is not set — cannot fetch from GitHub Packages.',
+      )
     }
+    childEnv.GITHUB_PACKAGES_TOKEN = token
   }
 
-  for (const pkgPath of packageJsonPaths) {
-    const content = fs.readFileSync(pkgPath, 'utf-8')
-    const pkg = JSON.parse(content)
-    const packageName = pkg.name
-    if (!packageName) continue
-
-    for (const section of ['dependencies', 'devDependencies']) {
-      const deps = pkg[section]
-      if (!deps) continue
-
-      for (const depName of Object.keys(deps)) {
-        if (!depName.startsWith('@cowprotocol/')) continue
-        if (isSdkPackage(depName)) continue
-        if (deps[depName].startsWith('workspace:')) continue
-
-        // Non-SDK @cowprotocol packages (e.g. @cowprotocol/cms, @cowprotocol/cow-runner-game)
-        // are only published to npmjs, not to GitHub Packages. With `@cowprotocol:registry`
-        // pointed at GitHub Packages for the SDK preview, pnpm would otherwise route ALL
-        // @cowprotocol/* fetches there and 404 on these.
-        //
-        // We can't rely on a `https://...tgz` specifier already being in package.json:
-        // pnpm's lockfile compacts those entries to `version + integrity` (no `tarball:`
-        // field), and on a fresh install pnpm reconstructs the fetch URL from the active
-        // scope registry — which is wrong here. Rewriting the workspace manifest at
-        // `readPackage` time forces pnpm to see a URL specifier and fetch it directly,
-        // bypassing the scope registry entirely.
-        const existingSpec = deps[depName]
-        const tarballUrl = existingSpec.startsWith('https://')
-          ? existingSpec
-          : getNpmjsTarballUrl(depName, existingSpec)
-
-        if (!rewriteMap[packageName]) rewriteMap[packageName] = {}
-
-        rewriteMap[packageName][depName] = tarballUrl
-        console.log(`[install.js] pinning ${packageName} -> ${depName}@${existingSpec} -> ${tarballUrl}`)
-      }
-    }
-  }
-
-  return rewriteMap
+  console.log('[install.js] Running pnpm install --frozen-lockfile...')
+  execSync('pnpm install --frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv })
 }
 
 /**
- * Runs pnpm install in the repository root.
+ * Developer path. Run after bumping an @cowprotocol/cow-sdk or @cowprotocol/sdk-*
+ * preview version in any workspace package.json, to regenerate pnpm-lock.yaml
+ * against GitHub Packages. Then commit pnpm-lock.yaml.
  *
- * Uses a frozen lockfile by default. When `authToken` is provided (SDK preview install)
- * it exposes the GitHub Packages auth token to the child pnpm via the
- * `GITHUB_PACKAGES_TOKEN` env var; the project `.npmrc` references that var with
- * `//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}`, and pnpm interpolates it
- * from the environment when reading the config. The token never lives on disk in the
- * working tree — neither in `.npmrc` (only the `${...}` placeholder is committed) nor
- * in any temp file we create.
+ * Why a separate mode rather than always `--no-frozen-lockfile`:
+ *   - Scope-redirecting @cowprotocol to GitHub Packages is needed only to RESOLVE
+ *     newly-bumped preview versions whose metadata isn't yet in the lockfile.
+ *     Doing it on every install is fragile: pnpm can re-derive non-SDK packages
+ *     without their `tarball: https://registry.npmjs.org/...` field and then 404
+ *     against GitHub. Keeping the default path on `--frozen-lockfile` avoids that.
  *
- * We DO need to set `@cowprotocol:registry` to GitHub Packages — but only temporarily,
- * for the duration of the install. The earlier reasoning ("lockfile entries already carry
- * `tarball: https://npm.pkg.github.com/download/...`") only holds in the steady state.
- * The whole point of `--no-frozen-lockfile` here is to RESOLVE newly-bumped preview
- * versions whose entries are NOT yet in the lockfile: pnpm has to query a registry for
- * `@cowprotocol/sdk-*@<pr-hash>` metadata, and without the override it asks the default
- * `registry.npmjs.org` and 404s (previews are GitHub-Packages-only).
- *
- * Non-SDK packages (`@cowprotocol/cms`, `@cowprotocol/cow-runner-game`) are insulated by
- * their lockfile resolution carrying `tarball: https://registry.npmjs.org/...` — pnpm
- * fetches them by that URL directly, scope override ignored.
- *
- * Why env-var interpolation in `.npmrc` rather than `pnpm_config_*` env vars or
- * `PNPM_CONFIG_USERCONFIG`: pnpm 10.30.3 no longer reads `npm_config_*`, its
- * `pnpm_config_*` env-var parser does not reliably handle auth-token keys containing
- * `//` and `:`, and `PNPM_CONFIG_USERCONFIG` (pnpm/pnpm#9491) is still an unmerged PR.
- * `${VAR}` interpolation in `.npmrc` is the long-standing, supported npm/pnpm path.
+ * What this mode does:
+ *   1. Backs up the project `.npmrc`.
+ *   2. Appends `@cowprotocol:registry=https://npm.pkg.github.com` so pnpm can
+ *      fetch preview metadata.
+ *   3. Runs `pnpm install --no-frozen-lockfile`. During resolution the scope
+ *      registry (GitHub) doesn't match the cms/cow-runner-game tarball host
+ *      (npmjs), so pnpm stores explicit `tarball:` fields for BOTH SDK previews
+ *      (GitHub URLs) and non-SDK packages (npmjs URLs). That's exactly what the
+ *      frozen install path above relies on.
+ *   4. Restores the original `.npmrc` regardless of outcome.
  */
-function runPnpmInstall(authToken, rewriteMap = {}) {
-  if (!authToken) {
-    console.log('[install.js] Installing normally (pnpm install --frozen-lockfile)...')
-    execSync('pnpm install --frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit' })
-    return
+function regenerate() {
+  if (!hasSdkPrVersion) {
+    throw new Error('--regenerate: no pr-NNN SDK preview in apps/cowswap-frontend/package.json; nothing to do.')
+  }
+  const token = process.env.PACKAGE_READ_AUTH_TOKEN
+  if (!token) {
+    throw new Error('--regenerate: PACKAGE_READ_AUTH_TOKEN env var is required.')
   }
 
-  // An empty rewrite map is valid: non-SDK @cowprotocol packages may already be pinned
-  // to npmjs tarball URLs directly in package.json. Warn so a silent regression in
-  // `pinNonSdkPackagesToNpmjs` would still be visible in logs.
-  const hasRewrites = Object.keys(rewriteMap).length > 0
-  if (!hasRewrites) {
-    console.warn('[install.js] Auth token provided but rewrite map is empty — no @cowprotocol/* pinning needed.')
-  }
+  const childEnv = { ...process.env, GITHUB_PACKAGES_TOKEN: token }
+  const backup = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8') : null
 
-  console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
-
-  const childEnv = { ...process.env, GITHUB_PACKAGES_TOKEN: authToken }
-  const npmrcBackup = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8') : null
+  console.log('[install.js --regenerate] Regenerating pnpm-lock.yaml against GitHub Packages...')
 
   try {
-    if (hasRewrites) createTempPnpmfile(rewriteMap)
-    appendScopeRedirectToNpmrc()
+    const extended =
+      (backup ? backup.trimEnd() + '\n' : '') +
+      '# Appended by install.js --regenerate (restored on exit).\n' +
+      '@cowprotocol:registry=https://npm.pkg.github.com\n'
+    fs.writeFileSync(ROOT_NPMRC_PATH, extended)
 
-    // `--no-frozen-lockfile` on the CLI overrides `frozen-lockfile=true` from .npmrc.
-    // `--config.pnpmfile=...` points pnpm at the temp rewrite hook when needed.
-    const pnpmfileArg = hasRewrites ? ` --config.pnpmfile="${TEMP_PNPMFILE_PATH}"` : ''
-    execSync(`pnpm install --no-frozen-lockfile${pnpmfileArg}`, {
-      cwd: ROOT_DIR,
-      stdio: 'inherit',
-      env: childEnv,
-    })
-  } catch (err) {
-    console.error('[install.js] Failed to install dependencies:', err)
-    throw err
+    execSync('pnpm install --no-frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv })
+
+    console.log('[install.js --regenerate] Done. Commit pnpm-lock.yaml.')
   } finally {
-    // Restore the original .npmrc (drop the appended scope redirect).
-    if (npmrcBackup !== null) {
-      fs.writeFileSync(ROOT_NPMRC_PATH, npmrcBackup)
+    if (backup !== null) {
+      fs.writeFileSync(ROOT_NPMRC_PATH, backup)
     } else {
       fs.rmSync(ROOT_NPMRC_PATH, { force: true })
     }
-
-    if (hasRewrites) {
-      try {
-        removeTempPnpmfile()
-      } catch (err) {
-        console.warn('[install.js] Failed to remove temp pnpmfile:', err)
-      }
-    }
   }
-}
-
-/**
- * Temporarily appends `@cowprotocol:registry=https://npm.pkg.github.com` to the project
- * `.npmrc`. pnpm needs this to resolve preview-version metadata for `@cowprotocol/sdk-*`
- * from GitHub Packages on a fresh install (no lockfile entry yet). The caller restores
- * the original file in its `finally` block. Auth for that registry comes from the
- * `${GITHUB_PACKAGES_TOKEN}` line already in the committed `.npmrc`, interpolated from
- * the child env we set in `runPnpmInstall`.
- */
-function appendScopeRedirectToNpmrc() {
-  const base = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8').trimEnd() : ''
-  const extended = [
-    base,
-    '',
-    '# Appended by tools/scripts/install.js for SDK preview resolution (restored afterwards)',
-    '@cowprotocol:registry=https://npm.pkg.github.com',
-    '',
-  ].join('\n')
-
-  fs.writeFileSync(ROOT_NPMRC_PATH, extended)
-}
-
-/**
- * Creates a temporary pnpm hook file that rewrites workspace manifests in memory.
- *
- * @see https://pnpm.io/pnpmfile
- */
-function createTempPnpmfile(rewriteMap) {
-  const pnpmfile = `module.exports = {
-  hooks: {
-    readPackage(pkg) {
-      const rewrites = ${JSON.stringify(rewriteMap, null, 2)}[pkg.name]
-      if (!rewrites) return pkg
-
-      for (const section of ['dependencies', 'devDependencies']) {
-        if (!pkg[section]) continue
-        for (const depName of Object.keys(rewrites)) {
-          if (pkg[section][depName]) {
-            pkg[section][depName] = rewrites[depName]
-          }
-        }
-      }
-
-      return pkg
-    },
-  },
-}
-`
-
-  fs.writeFileSync(TEMP_PNPMFILE_PATH, pnpmfile)
-}
-
-/**
- * Deletes the temporary pnpm hook file if it exists.
- */
-function removeTempPnpmfile() {
-  fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
 }
