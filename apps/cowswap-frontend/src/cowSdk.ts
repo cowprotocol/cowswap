@@ -50,6 +50,14 @@ export const orderBookApi = new OrderBookApi({
 
 export const metadataApiSDK = new MetadataApi()
 
+export function setBearerToken(token: string | null): void {
+  if (token) {
+    orderBookApi.context.bearerToken = token
+  } else {
+    delete orderBookApi.context.bearerToken
+  }
+}
+
 export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()

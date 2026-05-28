@@ -61,7 +61,7 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
     ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_APPROVAL)
       ? {
           onBeforeApproval(payload) {
-            console.log('[Widget Hook] onBeforeApproval', payload)
+            console.log('[COW][HOOKS] onBeforeApproval', payload)
             return confirmWidgetHookAction(`Type "ok" to proceed with approval on chainId ${payload.chainId}`)
           },
         }
@@ -72,7 +72,7 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
             const sellToken = payload.sellToken?.symbol || 'unknown'
             const buyToken = payload.buyToken?.symbol || 'unknown'
 
-            console.log('[Widget Hook] onBeforeTrade', payload)
+            console.log('[COW][HOOKS] onBeforeTrade', payload)
             return confirmWidgetHookAction(
               `Type "ok" to proceed with ${payload.orderType} trade ${sellToken} -> ${buyToken}`,
             )
@@ -85,7 +85,7 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
             const sellToken = payload.sellToken?.symbol || 'unknown'
             const buyToken = payload.buyToken?.symbol || 'unknown'
 
-            console.log('[Widget Hook] onBeforeWrapOrUnwrap', payload)
+            console.log('[COW][HOOKS] onBeforeWrapOrUnwrap', payload)
             return confirmWidgetHookAction(`Type "ok" to proceed with wrap/unwrap ${sellToken} -> ${buyToken}`)
           },
         }
@@ -93,7 +93,7 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
     ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDER_CANCEL)
       ? {
           onBeforeOrderCancel(payload) {
-            console.log('[Widget Hook] onBeforeOrderCancel', payload)
+            console.log('[COW][HOOKS] onBeforeOrderCancel', payload)
             return confirmWidgetHookAction(`Type "ok" to cancel order ${payload.uid}`)
           },
         }
@@ -101,7 +101,7 @@ function getWidgetHooks(enabledWidgetHooks: WidgetHookEvents[]): CowSwapWidgetPa
     ...(enabledWidgetHooks.includes(WidgetHookEvents.ON_BEFORE_ORDERS_CANCEL)
       ? {
           onBeforeOrdersCancel(payload) {
-            console.log('[Widget Hook] onBeforeOrdersCancel', payload)
+            console.log('[COW][HOOKS] onBeforeOrdersCancel', payload)
             return confirmWidgetHookAction(`Type "ok" to cancel ${payload.length} orders`)
           },
         }

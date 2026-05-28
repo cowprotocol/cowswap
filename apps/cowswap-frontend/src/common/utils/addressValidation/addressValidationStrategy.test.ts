@@ -8,7 +8,9 @@ jest.mock('@cowprotocol/cow-sdk', () => {
     ...actual,
     isBtcAddress: jest.fn((v: string) => v === 'bc1validbtcaddress'),
     isSolanaAddress: jest.fn((v: string) => v === 'SolanaValidAddress1111111111111111111111111'),
-    isEvmChain: jest.fn((chainId: number) => chainId in actual.SupportedChainId),
+    isEvmChain: jest.fn(
+      (chainId: number) => chainId in actual.SupportedChainId && chainId !== actual.SupportedChainId.SOLANA,
+    ),
   }
 })
 
@@ -70,7 +72,7 @@ describe('getAddressValidationStrategy', () => {
   })
 
   describe('SOLANA chainId → Solana strategy', () => {
-    const strategy = getAddressValidationStrategy(AdditionalTargetChainId.SOLANA)
+    const strategy = getAddressValidationStrategy(SupportedChainId.SOLANA)
 
     it('returns supportsENS false', () => expect(strategy.supportsENS).toBe(false))
     it('returns placeholderKey solana', () => expect(strategy.placeholderKey).toBe('solana'))

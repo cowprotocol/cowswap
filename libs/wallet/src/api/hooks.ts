@@ -47,6 +47,7 @@ export function useIsTxBundlingSupported(): boolean | null {
   const isSmartContractWallet = useIsSmartContractWallet()
   const isSafeWallet = useIsSafeWallet()
 
+  // eslint-disable-next-line complexity
   const result = (() => {
     if (isSafeApp || isSafeViaWc) return true
     // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
@@ -55,7 +56,7 @@ export function useIsTxBundlingSupported(): boolean | null {
     // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
     if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
     if (isCapabilitiesLoading) return null
-    return capabilities?.atomic?.status === 'supported'
+    return Boolean(capabilities?.atomic?.status === 'supported' || capabilities?.atomicBatch?.supported)
   })()
 
   return result
