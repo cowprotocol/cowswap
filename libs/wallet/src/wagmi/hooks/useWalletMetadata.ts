@@ -76,6 +76,8 @@ export function useWalletMetaData(): WalletMetaData {
     return reownAppKit.subscribeWalletInfo((state) => {
       if (state) {
         setWalletMetaData({ walletName: state.name, icon: state.icon })
+      } else {
+        setWalletMetaData(null)
       }
     })
   }, [])
