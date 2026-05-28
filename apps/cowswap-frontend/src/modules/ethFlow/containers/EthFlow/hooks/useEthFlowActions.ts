@@ -70,6 +70,11 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     const approve = (): Promise<void> => {
       const usePartialAmount = isPartialApproveEnabledBySettings || isInfiniteApproveDisabled
       const unitsToApprove = usePartialAmount ? amountToApprove || MAX_APPROVE_AMOUNT : MAX_APPROVE_AMOUNT
+
+      if (isInfiniteApproveDisabled && !amountToApprove) {
+        throw new Error('Approve amount must be defined when isInfiniteApproveDisabled')
+      }
+
       return sendTransaction('approve', () => {
         return callbacks.approve(unitsToApprove).then((res): string | undefined => {
           const tx = res?.txResponse
