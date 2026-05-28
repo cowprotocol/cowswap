@@ -12,6 +12,7 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -38,7 +39,6 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 
 import { Container } from './styled'
 
-import { useInjectedWidgetParams } from '../../../injectedWidget'
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
