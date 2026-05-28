@@ -19,8 +19,6 @@ overrides:
 
 packageExtensionsChecksum: sha256-pRepWyCfyr/CPwq7w85jzIOlvbhWnZfcj1y272Xarmg=
 
-pnpmfileChecksum: sha256-sgu4W6bGO7yrfr19kIGis3q86VfwzbdR56lmSA25RVw=
-
 importers:
 
   .:
