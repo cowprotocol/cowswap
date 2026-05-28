@@ -32,7 +32,10 @@ export function useAccountState(): AccountState {
     subscriptions.push(
       reownAppKit.subscribeState((state) => {
         if (state.selectedNetworkId) {
-          setChainId(CAIP_TO_SUPPORTED_CHAIN_ID[state.selectedNetworkId])
+          const supportedChainId = CAIP_TO_SUPPORTED_CHAIN_ID[state.selectedNetworkId]
+          if (supportedChainId) {
+            setChainId(supportedChainId)
+          }
         }
       }),
     )
