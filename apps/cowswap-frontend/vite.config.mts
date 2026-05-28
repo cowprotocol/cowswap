@@ -2,13 +2,12 @@
 import { lingui } from '@lingui/vite-plugin'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
-import stdLibBrowser from 'node-stdlib-browser'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { meta } from 'vite-plugin-meta-tags'
-import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -20,13 +19,12 @@ import pkg from './package.json'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { NODE_STD_LIBS } from '../../tools/nodeStdLibs'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
 import type { PluginOption } from 'vite'
-
-const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
 // Trezor getAccountsAsync() requires crypto and stream (the module is lazy-loaded)
 const nodeDepsToInclude = ['crypto', 'stream']
@@ -46,7 +44,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   const plugins: PluginOption[] = [
     nodePolyfills({
-      exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
+      exclude: NODE_STD_LIBS.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
         Buffer: true,
         global: true,

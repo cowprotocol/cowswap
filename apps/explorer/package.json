@@ -32,7 +32,6 @@
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@cowprotocol/sdk-bridging": "4.1.0-pr-882-8cf5d5f7.0",
     "@cowprotocol/sdk-contracts-ts": "3.1.0-pr-882-8cf5d5f7.0",
-    "@cowprotocol/sdk-ethers-v5-adapter": "0.4.7-pr-882-8cf5d5f7.0",
     "@cowprotocol/sdk-subgraph": "1.1.0-pr-882-8cf5d5f7.0",
     "@cowprotocol/sdk-viem-adapter": "0.3.21-pr-882-8cf5d5f7.0",
     "@cowprotocol/types": "workspace:*",

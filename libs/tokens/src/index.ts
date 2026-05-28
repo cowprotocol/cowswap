@@ -5,7 +5,6 @@ migrateNetworkMismatchUserAddedTokens()
 migrateTokenListsFromGithubCdn()
 
 // Updaters
-export { AdditionalChainTokensListsUpdater } from './updaters/AdditionalChainTokensListsUpdater'
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
