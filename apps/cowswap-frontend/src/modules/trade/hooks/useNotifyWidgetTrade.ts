@@ -66,7 +66,6 @@ function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
   }
 }
 
-// eslint-disable-next-line complexity
 function getTradeParamsEventPayload(
   tradeType: TradeType,
   state: TradeDerivedState,
@@ -74,7 +73,7 @@ function getTradeParamsEventPayload(
 ): OnTradeParamsPayload {
   return {
     orderType: TradeTypeToUiOrderType[tradeType],
-    chainId: state.inputCurrency?.chainId ?? state.outputCurrency?.chainId,
+    chainId: state.inputCurrency?.chainId,
     sellToken: currencyToTokenInfo(state.inputCurrency),
     buyToken: currencyToTokenInfo(state.outputCurrency),
     sellTokenAmount: currencyAmountToAtomsAndUnits(state.inputCurrencyAmount),
