@@ -5,6 +5,7 @@ const path = require('path')
 const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
+const ROOT_NPMRC_PATH = path.join(ROOT_DIR, '.npmrc')
 const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
@@ -149,12 +150,17 @@ function pinNonSdkPackagesToNpmjs() {
  * working tree — neither in `.npmrc` (only the `${...}` placeholder is committed) nor
  * in any temp file we create.
  *
- * We deliberately do NOT set `@cowprotocol:registry` to GitHub Packages: all SDK preview
- * lockfile entries already carry `tarball: https://npm.pkg.github.com/download/...`, so
- * pnpm fetches them by URL and the host-scoped auth header applies. Non-SDK
- * `@cowprotocol/*` packages (`@cowprotocol/cms`, `@cowprotocol/cow-runner-game`) live
- * only on npmjs and reconstruct via the default registry — a scope override would 404
- * on them.
+ * We DO need to set `@cowprotocol:registry` to GitHub Packages — but only temporarily,
+ * for the duration of the install. The earlier reasoning ("lockfile entries already carry
+ * `tarball: https://npm.pkg.github.com/download/...`") only holds in the steady state.
+ * The whole point of `--no-frozen-lockfile` here is to RESOLVE newly-bumped preview
+ * versions whose entries are NOT yet in the lockfile: pnpm has to query a registry for
+ * `@cowprotocol/sdk-*@<pr-hash>` metadata, and without the override it asks the default
+ * `registry.npmjs.org` and 404s (previews are GitHub-Packages-only).
+ *
+ * Non-SDK packages (`@cowprotocol/cms`, `@cowprotocol/cow-runner-game`) are insulated by
+ * their lockfile resolution carrying `tarball: https://registry.npmjs.org/...` — pnpm
+ * fetches them by that URL directly, scope override ignored.
  *
  * Why env-var interpolation in `.npmrc` rather than `pnpm_config_*` env vars or
  * `PNPM_CONFIG_USERCONFIG`: pnpm 10.30.3 no longer reads `npm_config_*`, its
@@ -180,9 +186,11 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
 
   const childEnv = { ...process.env, GITHUB_PACKAGES_TOKEN: authToken }
+  const npmrcBackup = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8') : null
 
   try {
     if (hasRewrites) createTempPnpmfile(rewriteMap)
+    appendScopeRedirectToNpmrc()
 
     // `--no-frozen-lockfile` on the CLI overrides `frozen-lockfile=true` from .npmrc.
     // `--config.pnpmfile=...` points pnpm at the temp rewrite hook when needed.
@@ -196,6 +204,13 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
     console.error('[install.js] Failed to install dependencies:', err)
     throw err
   } finally {
+    // Restore the original .npmrc (drop the appended scope redirect).
+    if (npmrcBackup !== null) {
+      fs.writeFileSync(ROOT_NPMRC_PATH, npmrcBackup)
+    } else {
+      fs.rmSync(ROOT_NPMRC_PATH, { force: true })
+    }
+
     if (hasRewrites) {
       try {
         removeTempPnpmfile()
@@ -204,6 +219,27 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
       }
     }
   }
+}
+
+/**
+ * Temporarily appends `@cowprotocol:registry=https://npm.pkg.github.com` to the project
+ * `.npmrc`. pnpm needs this to resolve preview-version metadata for `@cowprotocol/sdk-*`
+ * from GitHub Packages on a fresh install (no lockfile entry yet). The caller restores
+ * the original file in its `finally` block. Auth for that registry comes from the
+ * `${GITHUB_PACKAGES_TOKEN}` line already in the committed `.npmrc`, interpolated from
+ * the child env we set in `runPnpmInstall`.
+ */
+function appendScopeRedirectToNpmrc() {
+  const base = fs.existsSync(ROOT_NPMRC_PATH) ? fs.readFileSync(ROOT_NPMRC_PATH, 'utf-8').trimEnd() : ''
+  const extended = [
+    base,
+    '',
+    '# Appended by tools/scripts/install.js for SDK preview resolution (restored afterwards)',
+    '@cowprotocol:registry=https://npm.pkg.github.com',
+    '',
+  ].join('\n')
+
+  fs.writeFileSync(ROOT_NPMRC_PATH, extended)
 }
 
 /**
