@@ -12,6 +12,7 @@ import { useWalletInfo } from '../hooks'
 
 export type WalletCapabilities = {
   atomic?: { status: 'supported' | 'ready' | 'unsupported' }
+  atomicBatch?: { supported: boolean }
 }
 
 function shouldCheckCapabilities(
