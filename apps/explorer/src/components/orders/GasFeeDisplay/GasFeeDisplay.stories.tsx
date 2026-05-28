@@ -47,3 +47,34 @@ TinyFee18DecimalsToken.args = {
   ...defaultProps,
   order: { ...order, executedFeeAmount: new BigNumber('1'), sellToken: WETH },
 }
+
+export const WithBreakdownSameToken = Template.bind({})
+WithBreakdownSameToken.args = {
+  ...defaultProps,
+  order: {
+    ...order,
+    executedFeeAmount: order.feeAmount,
+    fullyFilled: true,
+    totalFee: new BigNumber('200000'),
+    networkCosts: new BigNumber('150000'),
+    protocolFees: new BigNumber('50000'),
+    protocolFeeTokenAddress: order.sellTokenAddress,
+    executedFeeToken: order.sellTokenAddress,
+  },
+}
+
+// Surplus-side protocol fee: charged in the buy token while network costs stay in the sell token
+export const WithBreakdownSurplusToken = Template.bind({})
+WithBreakdownSurplusToken.args = {
+  ...defaultProps,
+  order: {
+    ...order,
+    executedFeeAmount: order.feeAmount,
+    fullyFilled: true,
+    totalFee: new BigNumber('200000'),
+    networkCosts: new BigNumber('200000'),
+    protocolFees: new BigNumber('1166200'),
+    protocolFeeTokenAddress: order.buyTokenAddress,
+    executedFeeToken: order.sellTokenAddress,
+  },
+}

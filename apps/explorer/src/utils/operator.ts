@@ -448,3 +448,42 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
 
   return surplus || ZERO_SURPLUS
 }
+
+type OrderFees = {
+  networkCosts: BigNumber | undefined
+  protocolFees: BigNumber | undefined
+  protocolFeeTokenAddress: string | undefined
+}
+const NO_FEES: OrderFees = { networkCosts: undefined, protocolFees: undefined, protocolFeeTokenAddress: undefined }
+
+export function getFees(order: Order, trades: Trade[]): OrderFees {
+  // Sum protocol-fee amounts grouped by token. In practice there is at most one token.
+  const feesByToken = new Map<string, BigNumber>()
+
+  trades.forEach(({ executedProtocolFees }) => {
+    executedProtocolFees?.forEach(({ amount, token }) => {
+      if (!amount || !token) return
+      const tokenFee = feesByToken.get(token) || ZERO_BIG_NUMBER
+      feesByToken.set(token, new BigNumber(amount).plus(tokenFee))
+    })
+  })
+
+  if (feesByToken.size === 0) return NO_FEES
+
+  if (feesByToken.size > 1) {
+    console.warn(`Order ${order.uid} has protocol fees in more than one token; skipping breakdown`)
+    return NO_FEES
+  }
+
+  const [protocolFeeTokenAddress, protocolFees] = Array.from(feesByToken.entries())[0]
+
+  // Protocol fee comes out of the surplus token (buy token for sell orders, sell token for buy orders),
+  // so it is usually a different token from `executedFeeToken` (where totalFee/network costs live).
+  // Only subtract when both are denominated in the same token.
+  const sameDenomination = order.executedFeeToken?.toLowerCase() === protocolFeeTokenAddress.toLowerCase()
+  const networkCosts = sameDenomination
+    ? BigNumber.max(order.totalFee.minus(protocolFees), ZERO_BIG_NUMBER)
+    : order.totalFee
+
+  return { protocolFees, networkCosts, protocolFeeTokenAddress }
+}

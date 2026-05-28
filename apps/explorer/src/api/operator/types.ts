@@ -101,6 +101,11 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedFee: BigNumber | null
   totalFee: BigNumber
+  // Derived client-side from trades' executedProtocolFees, not returned by the API.
+  // protocolFeeTokenAddress is the surplus-side token (may differ from executedFeeToken).
+  networkCosts?: BigNumber
+  protocolFees?: BigNumber
+  protocolFeeTokenAddress?: string
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -127,7 +132,7 @@ export type RawTrade = TradeMetaData
 /**
  * Enriched Trade type
  */
-export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
+export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash' | 'executedProtocolFees'> & {
   orderId: string
   kind?: OrderKind
   buyAmount: BigNumber
