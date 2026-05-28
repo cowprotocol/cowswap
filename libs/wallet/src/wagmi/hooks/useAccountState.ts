@@ -4,7 +4,6 @@ import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UseAppKitAccountReturn } from '@reown/appkit'
-import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 
 import { CAIP_TO_SUPPORTED_CHAIN_ID } from '../../constants'
@@ -12,7 +11,7 @@ import { reownAppKit } from '../config'
 
 export interface AccountState {
   chainId: SupportedChainId
-  address: Address | undefined
+  address: string | undefined
   isConnected: boolean
   status: 'reconnecting' | 'connected' | 'disconnected' | 'connecting' | undefined
 }
