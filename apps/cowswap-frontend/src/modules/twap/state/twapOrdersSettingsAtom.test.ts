@@ -8,7 +8,7 @@ describe('twapOrderSlippageAtom', () => {
     const slippage = store.get(twapOrderSlippageAtom)
 
     expect(Number(slippage.numerator)).toBe(1000)
-    expect(slippage.toFixed(2)).toBe('10')
+    expect(slippage.toFixed(2)).toBe('10.00')
   })
 
   it('converts custom percent input to bps', () => {
