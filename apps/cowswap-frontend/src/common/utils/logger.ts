@@ -12,7 +12,7 @@ const LOG_STYLE: Record<CowLogLevel, string> = {
 }
 
 function logCow(level: CowLogLevel, scope: string, ...args: unknown[]): void {
-  console[level](`%c [COW] [${scope}]`, LOG_STYLE[level], ...args)
+  console[level](`%c [COW][${scope}]`, LOG_STYLE[level], ...args)
 }
 
 function captureCowError(scope: string, args: unknown[]): void {
