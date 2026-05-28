@@ -27,10 +27,21 @@ export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>
   })
 }
 
-export function captureError(error: Error, errorType: ERROR_TYPES, params?: Record<string, unknown>): void {
+export function captureError(
+  error: Error,
+  errorType?: ERROR_TYPES,
+  params?: Record<string, unknown>,
+  extraTags?: Record<string, string>,
+): void {
   log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
+  const tags = {
+    captureType: 'manual',
+    ...(errorType ? { errorType } : undefined),
+    ...extraTags,
+  }
+
   Sentry.captureException(error, {
-    tags: { errorType, captureType: 'manual' },
+    tags,
     contexts: {
       params,
     },

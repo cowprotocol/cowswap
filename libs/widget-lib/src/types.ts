@@ -90,6 +90,7 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
+  enableSafeSdkBridge?: boolean
 }
 
 export interface JsonRpcRequest {
