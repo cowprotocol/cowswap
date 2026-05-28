@@ -1,8 +1,8 @@
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-
 import React, { useMemo } from 'react'
 
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { ZERO_BIG_NUMBER } from 'const'
 import styled from 'styled-components/macro'
 
@@ -17,44 +17,19 @@ const Wrapper = styled.div`
 
 export type Props = { order: Order }
 
-// TODO: Enable once API is ready
-// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
-//   // TODO: Simulating API call to fetch fee breakdown data
-//   return new Promise((resolve) => {
-//     resolve({
-//       networkCosts: 'TODO: Get network costs here',
-//       fee: 'TODO: Get fee here',
-//       total: initialFee,
-//     })
-//   })
-// }
-
-// TODO: Enable once API is ready
-// const renderFeeBreakdown = (data: any): React.ReactNode => {
-//   return (
-//     <table>
-//       <tbody>
-//         <tr>
-//           <td>Network Costs:</td>
-//           <td>{data.networkCosts}</td>
-//         </tr>
-//         <tr>
-//           <td>Fee:</td>
-//           <td>{data.fee}</td>
-//         </tr>
-//         <tr>
-//           <td>Total Costs & Fees:</td>
-//           <td>{data.total}</td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   )
-// }
-
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
+  const { order } = props
   const {
-    order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
-  } = props
+    feeAmount,
+    sellToken,
+    sellTokenAddress,
+    fullyFilled,
+    totalFee,
+    networkCosts,
+    protocolFees,
+    protocolFeeTokenAddress,
+    executedFeeToken,
+  } = order
 
   const { executedFeeFormatted, totalFeeFormatted, quoteSymbol } = useMemo(() => {
     if (!sellToken) {
@@ -89,14 +64,51 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
     [noFee, executedFeeFormatted, quoteSymbol, fullyFilled, feeAmount, totalFeeFormatted],
   )
 
+  const sameDenomination =
+    !!protocolFeeTokenAddress && executedFeeToken?.toLowerCase() === protocolFeeTokenAddress.toLowerCase()
+
   return (
     <Wrapper>
       {FeeElement}
-      {/*TODO: Enable once API is ready*/}
-      {/*<NumbersBreakdown*/}
-      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
-      {/*  renderContent={renderFeeBreakdown}*/}
-      {/*/>*/}
+      {networkCosts && protocolFees && (
+        <NumbersBreakdown>
+          <table>
+            <tbody>
+              <tr>
+                <td>Network Costs:</td>
+                <td>{formatFee(order, networkCosts, executedFeeToken)}</td>
+              </tr>
+              <tr>
+                <td>Fee:</td>
+                <td>{formatFee(order, protocolFees, protocolFeeTokenAddress)}</td>
+              </tr>
+              {sameDenomination && (
+                <tr>
+                  <td>Total Costs &amp; Fees:</td>
+                  <td>
+                    {executedFeeFormatted} {quoteSymbol}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </NumbersBreakdown>
+      )}
     </Wrapper>
   )
+}
+
+function formatFee(order: Order, amount: BigNumber, address: string | undefined): string {
+  const token = resolveToken(order, address)
+  if (!token) return address ? `${amount.toString(10)} ${address}` : amount.toString(10)
+  const { formattedAmount, symbol } = formatTokenAmount(amount, token)
+  return `${formattedAmount} ${symbol}`
+}
+
+function resolveToken(order: Order, address: string | undefined): TokenErc20 | undefined {
+  const target = address?.toLowerCase()
+  if (!target) return order.sellToken || undefined
+  if (order.sellToken?.address.toLowerCase() === target) return order.sellToken
+  if (order.buyToken?.address.toLowerCase() === target) return order.buyToken
+  return undefined
 }
