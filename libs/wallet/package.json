@@ -41,7 +41,7 @@
     "@metamask/jazzicon": "2.0.0",
     "@metamask/sdk": "0.31.4",
     "@reown/appkit": "1.8.19",
-    "@reown/appkit-adapter-solana": "1.8.20",
+    "@reown/appkit-adapter-solana": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@safe-global/api-kit": "4.0.1",
     "@safe-global/safe-apps-react-sdk": "4.7.2",
