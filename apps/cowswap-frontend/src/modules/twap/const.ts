@@ -10,8 +10,8 @@ import { MAX_ORDER_DEADLINE } from 'common/constants/common'
 
 import { TwapOrderExecutionInfo, TwapOrderStatus } from './types'
 
-// Keep denominator at 10_000 so numerator is directly interpreted as bps downstream.
-// See `getReceiveAmountInfo()` where `slippagePercentBps` is read from `slippagePercent.numerator`.
+// We define this as 1000/10000 rather than 10/100 so that the numerator is directly interpreted as BPS in
+// `getReceiveAmountInfo()` where `slippagePercentBps` is read from `slippagePercent.numerator`.
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(1000, 10000) // 10%
 
 export const MAX_TWAP_SLIPPAGE = 99.99 // 99.99%
