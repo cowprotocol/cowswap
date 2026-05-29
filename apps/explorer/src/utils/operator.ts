@@ -1,5 +1,5 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { AddressKey, areAddressesEqual, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -452,19 +452,20 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
 type OrderFees = {
   networkCosts: BigNumber | undefined
   protocolFees: BigNumber | undefined
-  protocolFeeTokenAddress: string | undefined
+  protocolFeeTokenAddress: AddressKey | undefined
 }
 const NO_FEES: OrderFees = { networkCosts: undefined, protocolFees: undefined, protocolFeeTokenAddress: undefined }
 
 export function getFees(order: Order, trades: Trade[]): OrderFees {
   // Sum protocol-fee amounts grouped by token. In practice there is at most one token.
-  const feesByToken = new Map<string, BigNumber>()
+  const feesByToken = new Map<AddressKey, BigNumber>()
 
   trades.forEach(({ executedProtocolFees }) => {
     executedProtocolFees?.forEach(({ amount, token }) => {
       if (!amount || !token) return
-      const tokenFee = feesByToken.get(token) || ZERO_BIG_NUMBER
-      feesByToken.set(token, new BigNumber(amount).plus(tokenFee))
+      const tokenKey = getAddressKey(token)
+      const tokenFee = feesByToken.get(tokenKey) || ZERO_BIG_NUMBER
+      feesByToken.set(tokenKey, new BigNumber(amount).plus(tokenFee))
     })
   })
 
@@ -480,7 +481,7 @@ export function getFees(order: Order, trades: Trade[]): OrderFees {
   // Protocol fee comes out of the surplus token (buy token for sell orders, sell token for buy orders),
   // so it is usually a different token from `executedFeeToken` (where totalFee/network costs live).
   // Only subtract when both are denominated in the same token.
-  const sameDenomination = order.executedFeeToken?.toLowerCase() === protocolFeeTokenAddress.toLowerCase()
+  const sameDenomination = areAddressesEqual(order.executedFeeToken, protocolFeeTokenAddress)
   const networkCosts = sameDenomination
     ? BigNumber.max(order.totalFee.minus(protocolFees), ZERO_BIG_NUMBER)
     : order.totalFee

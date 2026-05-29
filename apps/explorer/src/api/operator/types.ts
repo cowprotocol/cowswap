@@ -1,4 +1,5 @@
 import {
+  AddressKey,
   CompetitionOrderStatus,
   EnrichedOrder,
   OrderKind,
@@ -105,7 +106,7 @@ export type Order = Pick<
   // protocolFeeTokenAddress is the surplus-side token (may differ from executedFeeToken).
   networkCosts?: BigNumber
   protocolFees?: BigNumber
-  protocolFeeTokenAddress?: string
+  protocolFeeTokenAddress?: AddressKey
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean

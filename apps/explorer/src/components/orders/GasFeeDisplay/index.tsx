@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
 
+import { AddressKey, areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
@@ -64,8 +66,8 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
     [noFee, executedFeeFormatted, quoteSymbol, fullyFilled, feeAmount, totalFeeFormatted],
   )
 
-  const sameDenomination =
-    !!protocolFeeTokenAddress && executedFeeToken?.toLowerCase() === protocolFeeTokenAddress.toLowerCase()
+  const executedFeeTokenKey = executedFeeToken ? getAddressKey(executedFeeToken) : undefined
+  const sameDenomination = areAddressesEqual(executedFeeTokenKey, protocolFeeTokenAddress)
 
   return (
     <Wrapper>
@@ -76,7 +78,7 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
             <tbody>
               <tr>
                 <td>Network Costs:</td>
-                <td>{formatFee(order, networkCosts, executedFeeToken)}</td>
+                <td>{formatFee(order, networkCosts, executedFeeTokenKey)}</td>
               </tr>
               <tr>
                 <td>Fee:</td>
@@ -98,17 +100,16 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   )
 }
 
-function formatFee(order: Order, amount: BigNumber, address: string | undefined): string {
+function formatFee(order: Order, amount: BigNumber, address: AddressKey | undefined): string {
   const token = resolveToken(order, address)
   if (!token) return address ? `${amount.toString(10)} ${address}` : amount.toString(10)
   const { formattedAmount, symbol } = formatTokenAmount(amount, token)
   return `${formattedAmount} ${symbol}`
 }
 
-function resolveToken(order: Order, address: string | undefined): TokenErc20 | undefined {
-  const target = address?.toLowerCase()
-  if (!target) return order.sellToken || undefined
-  if (order.sellToken?.address.toLowerCase() === target) return order.sellToken
-  if (order.buyToken?.address.toLowerCase() === target) return order.buyToken
+function resolveToken(order: Order, address: AddressKey | undefined): TokenErc20 | undefined {
+  if (!address) return order.sellToken || undefined
+  if (areAddressesEqual(order.sellToken?.address, address)) return order.sellToken || undefined
+  if (areAddressesEqual(order.buyToken?.address, address)) return order.buyToken || undefined
   return undefined
 }
