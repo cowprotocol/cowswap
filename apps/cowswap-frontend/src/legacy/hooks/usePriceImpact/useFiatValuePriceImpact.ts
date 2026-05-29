@@ -13,7 +13,7 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
-const PRICE_IMPACT_LOADING_TIMEOUT = ms`2m`
+const PRICE_IMPACT_LOADING_TIMEOUT = ms`15s`
 
 export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; isLoading: boolean } | null {
   const state = useDerivedTradeState()
@@ -33,7 +33,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
   useEffect(() => {
-    if (!isTradeSetUp || !isLoading) {
+    if (!isTradeSetUp) {
       setHasLoadingTimedOut(false)
       return
     }
@@ -43,7 +43,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp, isLoading])
+  }, [isTradeSetUp])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
