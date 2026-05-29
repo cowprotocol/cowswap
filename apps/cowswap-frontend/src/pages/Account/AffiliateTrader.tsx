@@ -55,7 +55,12 @@ export default function AffiliateTrader(): ReactNode {
   // but not eligible for rewards (e.g. Sepolia). When the chain is globally
   // unsupported, the app-level banner already covers it.
   const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
-  const { data: activityOrders, isLoading: activityLoading } = useTraderActivity()
+  const showActivityTable =
+    walletStatus !== TraderWalletStatus.INELIGIBLE &&
+    walletStatus !== TraderWalletStatus.UNSUPPORTED &&
+    !showLoadingSkeleton &&
+    !!savedCode
+  const { data: activityOrders, isLoading: activityLoading } = useTraderActivity(showActivityTable)
 
   return (
     <>

@@ -1,14 +1,9 @@
-export const TIMEOUT_ERROR_MESSAGE = 'Unable to reach referral service'
+import { getTimeoutAbortController } from './request'
 
+export const TIMEOUT_ERROR_MESSAGE = 'Request timed out. Please try again.'
 export const JSON_HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
-}
-
-export type FetchJsonResponse<T> = {
-  response: Response
-  data?: T
-  text: string
 }
 
 export type ApiErrorPayload =
@@ -17,13 +12,15 @@ export type ApiErrorPayload =
     }
   | undefined
 
-export class RetryableResponseError extends Error {
-  readonly rawApiError: { status: number }
+export type FetchJsonResponse<T> = {
+  response: Response
+  data?: T
+  text: string
+}
 
-  constructor(status: number) {
-    super(`Retryable response (${status})`)
-    this.rawApiError = { status }
-  }
+interface FetchTimeoutOptions extends RequestInit {
+  timeout?: number
+  timeoutMessage?: string
 }
 
 enum RetryableStatusCode {
@@ -44,8 +41,31 @@ export class ApiError extends Error {
   readonly status: number
 
   constructor(status: number, text: string, data?: ApiErrorPayload) {
-    super(data?.message || text || `Referral service error (${status})`)
+    super(data?.message || text || `API error (${status})`)
     this.status = status
+  }
+}
+
+export class RetryableResponseError extends Error {
+  readonly rawApiError: { status: number }
+
+  constructor(status: number) {
+    super(`Retryable response (${status})`)
+    this.rawApiError = { status }
+  }
+}
+
+export async function fetchWithTimeout(input: RequestInfo | URL, options: FetchTimeoutOptions = {}): Promise<Response> {
+  const { timeout = 30000, timeoutMessage = TIMEOUT_ERROR_MESSAGE, ...fetchOptions } = options
+
+  try {
+    const response = await fetch(input, { signal: getTimeoutAbortController(timeout).signal, ...fetchOptions })
+    return response
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error(timeoutMessage)
+    }
+    throw error
   }
 }
 
@@ -62,26 +82,6 @@ export async function parseJsonResponse<T>(response: Response): Promise<FetchJso
   }
 
   return { response, data, text }
-}
-
-export async function fetchWithTimeout(input: RequestInfo, init: RequestInit, timeoutMs?: number): Promise<Response> {
-  if (!timeoutMs) {
-    return fetch(input, init)
-  }
-
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
-
-  try {
-    return await fetch(input, { ...init, signal: controller.signal })
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(TIMEOUT_ERROR_MESSAGE)
-    }
-    throw error
-  } finally {
-    clearTimeout(timeoutId)
-  }
 }
 
 export function unwrapOk<T>(result: FetchJsonResponse<T>, missingMessage: string): T {
