@@ -10,7 +10,7 @@ import {
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
 
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
@@ -32,10 +32,17 @@ import { LimitOrdersPage } from 'pages/LimitOrders/LimitOrders.page'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
 
+import { isDebugProgressBarRouteEnabled } from './RoutesApp.utils'
+
 // Async routes
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+const OrderProgressBarPlaygroundRoute = lazy(() =>
+  import(/* webpackChunkName: "order_progress_bar_playground" */ 'pages/debug/OrderProgressBarPlayground.page').then(
+    ({ OrderProgressBarPlaygroundPage }) => ({ default: OrderProgressBarPlaygroundPage }),
+  ),
+)
 
 // External routes
 const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
@@ -81,6 +88,9 @@ const lazyRoutes: LazyRouteProps[] = [
 ]
 
 export function RoutesApp(): ReactNode {
+  const { search } = useLocation()
+  const isDebugProgressBarEnabled = isDebugProgressBarRouteEnabled(search, process.env.NODE_ENV)
+
   return (
     <Routes>
       {/*Account*/}
@@ -109,6 +119,16 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+      {isDebugProgressBarEnabled && (
+        <Route
+          path={RoutesEnum.DEBUG_PROGRESS_BAR}
+          element={
+            <Suspense fallback={<Loading />}>
+              <OrderProgressBarPlaygroundRoute />
+            </Suspense>
+          }
+        />
+      )}
 
       {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 

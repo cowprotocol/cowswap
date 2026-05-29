@@ -12,7 +12,7 @@ import { OrderProgressStepFactory } from '../steps/stepsRegistry'
 const IS_DEBUG_MODE = false
 
 export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
-  const { stepName = OrderProgressBarStepName.INITIAL, debugMode = IS_DEBUG_MODE } = props
+  const { stepName = OrderProgressBarStepName.INITIAL, debugMode = IS_DEBUG_MODE, disableAnalytics = false } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const analytics = useCowAnalytics()
@@ -26,6 +26,10 @@ export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
 
   // Separate useEffect for initial step
   useEffect(() => {
+    if (disableAnalytics) {
+      return
+    }
+
     if (currentStep === OrderProgressBarStepName.INITIAL && !initialStepTriggeredRef.current) {
       startTimeRef.current = Date.now()
       initialStepTriggeredRef.current = true
@@ -36,10 +40,14 @@ export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
         value: 0, // This remains 0 for the initial step
       })
     }
-  }, [currentStep, analytics])
+  }, [currentStep, analytics, disableAnalytics])
 
   // useEffect for other steps
   useEffect(() => {
+    if (disableAnalytics) {
+      return
+    }
+
     if (currentStep === OrderProgressBarStepName.INITIAL) return // Skip for initial step
 
     const duration = getDuration()
@@ -66,7 +74,7 @@ export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
         initialStepTriggeredRef.current = false // Reset the initial step trigger flag
       }
     }
-  }, [currentStep, getDuration, analytics])
+  }, [currentStep, getDuration, analytics, disableAnalytics])
 
   return (
     <>

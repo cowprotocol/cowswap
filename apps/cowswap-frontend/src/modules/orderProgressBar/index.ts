@@ -9,6 +9,11 @@ export { SurplusModalSetup } from './containers/SurplusModalSetup'
 
 // Hooks
 export { OrderSubmittedContent } from './containers/OrderSubmittedContent'
+export { MINIMUM_STEP_DISPLAY_TIME, shouldApplyStepNameImmediately } from './hooks/useOrderProgressBarProps'
+
+// Pure components
+export { OrderProgressBar } from './pure/OrderProgressBar'
+export { EXECUTING_STEP_MIN_DISPLAY_TIME_MS, getCompletionDelayMs } from './updaters/utils'
 
 export * from './types'
 
