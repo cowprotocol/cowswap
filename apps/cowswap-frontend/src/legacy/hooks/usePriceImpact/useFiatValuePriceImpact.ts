@@ -12,6 +12,8 @@ import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
+import { logPriceImpact } from './logger'
+
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
 const PRICE_IMPACT_LOADING_TIMEOUT = ms`15s`
 
@@ -40,6 +42,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
 
     const timeoutId = setTimeout(() => {
       setHasLoadingTimedOut(true)
+      logPriceImpact.warn(`Price impact loading timed out after ${PRICE_IMPACT_LOADING_TIMEOUT / 1000}s`)
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
