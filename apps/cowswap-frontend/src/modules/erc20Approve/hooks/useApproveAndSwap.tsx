@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -39,7 +39,7 @@ export function useApproveAndSwap({
   const { account } = useWalletInfo()
   const tradeSpenderAddress = useTradeSpenderAddress()
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
-  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
 
@@ -73,7 +73,7 @@ export function useApproveAndSwap({
       onApproveConfirm,
       minAmountToSignForSwap,
       isPartialApproveEnabledByUser,
-      isInfiniteApproveDisabled,
+      isInfiniteApproveDisabled: isInfiniteApproveDisabledInWidget,
       handleApprove,
       updateTradeApproveState,
     })
@@ -81,7 +81,7 @@ export function useApproveAndSwap({
     handlePermit,
     amountToApprove,
     isPartialApproveEnabledByUser,
-    isInfiniteApproveDisabled,
+    isInfiniteApproveDisabledInWidget,
     handleApprove,
     onApproveConfirm,
     updateTradeApproveState,

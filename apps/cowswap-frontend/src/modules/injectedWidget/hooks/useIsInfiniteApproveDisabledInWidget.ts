@@ -1,5 +1,5 @@
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-export function useIsInfiniteApproveDisabled(): boolean {
+export function useIsInfiniteApproveDisabledInWidget(): boolean {
   return Boolean(useInjectedWidgetParams().disableInfiniteApprove)
 }

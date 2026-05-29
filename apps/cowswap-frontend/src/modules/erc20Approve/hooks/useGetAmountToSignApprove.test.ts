@@ -4,7 +4,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
@@ -36,8 +36,8 @@ jest.mock('modules/injectedWidget', () => ({
 }))
 
 const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
-const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabled as jest.MockedFunction<
-  typeof useIsInfiniteApproveDisabled
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabledInWidget
 >
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
 const mockUseGetPartialAmountToSignApprove = useGetPartialAmountToSignApprove as jest.MockedFunction<

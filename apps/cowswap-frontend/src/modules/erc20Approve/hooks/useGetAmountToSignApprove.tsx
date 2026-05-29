@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
@@ -24,7 +24,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
-  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget()
 
   return useMemo(() => {
     if (!partialAmountToSign) return null

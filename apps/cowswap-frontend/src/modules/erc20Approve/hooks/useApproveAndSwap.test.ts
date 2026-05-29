@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook, waitFor } from '@testing-library/react'
 
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -49,8 +49,8 @@ const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser 
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
 >
-const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabled as jest.MockedFunction<
-  typeof useIsInfiniteApproveDisabled
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabledInWidget
 >
 type WalletInfo = ReturnType<typeof useWalletInfo>
 

@@ -11,7 +11,7 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -182,7 +182,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const partialApprovalLocked = useIsInfiniteApproveDisabled()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const isConnected = Boolean(account)
@@ -207,7 +207,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
-        partialApprovalLocked={partialApprovalLocked}
+        partialApprovalLocked={isInfiniteApproveDisabledInWidget}
         isRecipientToggleDisabled={isRecipientRequired}
       />
     ),

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { useIsInfiniteApproveDisabled } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useDerivedTradeState } from 'modules/trade'
 
 import { useSetUserApproveAmountModalState } from '../../state'
@@ -17,7 +17,7 @@ interface Erc20ApproveProps {
 export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApproveProps): null {
   const setIsPartialApproveEnabled = useSetAtom(isPartialApproveEnabledAtom)
   const setIsPartialApproveSelectedByUser = useSetAtom(isPartialApproveSelectedByUserAtom)
-  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useDerivedTradeState() || {}
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -36,15 +36,15 @@ export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApprovePro
   // Store isPartialApprovalEnabled to local state to avoid DIP breach (erc20Approve module should not depend on Swap).
   // When the widget integrator sets disableInfiniteApprove, partial approval is forced on regardless of settings.
   useEffect(() => {
-    setIsPartialApproveEnabled(isPartialApprovalEnabled || isInfiniteApproveDisabled)
-  }, [setIsPartialApproveEnabled, isPartialApprovalEnabled, isInfiniteApproveDisabled])
+    setIsPartialApproveEnabled(isPartialApprovalEnabled || isInfiniteApproveDisabledInWidget)
+  }, [setIsPartialApproveEnabled, isPartialApprovalEnabled, isInfiniteApproveDisabledInWidget])
 
   // Same for the per-trade user selection: locked on while the widget integrator disables infinite approve.
   useEffect(() => {
-    if (isInfiniteApproveDisabled) {
+    if (isInfiniteApproveDisabledInWidget) {
       setIsPartialApproveSelectedByUser(true)
     }
-  }, [isInfiniteApproveDisabled, setIsPartialApproveSelectedByUser])
+  }, [isInfiniteApproveDisabledInWidget, setIsPartialApproveSelectedByUser])
 
   return null
 }
