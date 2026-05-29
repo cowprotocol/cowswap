@@ -50,7 +50,7 @@ describe('summarizeProductionDeployments', () => {
 
     assert.equal(summary.currentDeploymentInList, true)
     assert.equal(summary.currentDeploymentOutsideList, null)
-    assert.equal(summary.rows[0].Current, '-')
+    assert.equal(summary.rows[0].Current, undefined)
     assert.notEqual(summary.rows[1].Current, summary.rows[0].Current)
   })
 

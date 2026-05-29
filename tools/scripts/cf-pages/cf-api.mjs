@@ -10,7 +10,7 @@
  *   Scope: Account Resources > Include > <your account>
  */
 
-const CF_API_BASE = 'https://api.cloudflare.com/client/v4'
+const DEFAULT_CF_API_BASE = 'https://api.cloudflare.com/client/v4'
 
 /**
  * Reads CF_ACCOUNT_ID and CF_API_TOKEN from env.
@@ -37,7 +37,8 @@ export function getCfCredentials() {
  * @returns {Promise<any>} Parsed JSON response body
  */
 export async function cfFetch(accountId, apiToken, path, options = {}) {
-  const url = `${CF_API_BASE}/accounts/${accountId}/pages/${path}`
+  const apiBase = process.env.CF_API_BASE ?? DEFAULT_CF_API_BASE
+  const url = `${apiBase}/accounts/${accountId}/pages/${path}`
   let res
   try {
     res = await fetch(url, {
