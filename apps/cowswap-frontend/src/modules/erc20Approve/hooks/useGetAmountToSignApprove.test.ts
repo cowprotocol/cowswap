@@ -32,7 +32,7 @@ jest.mock('../state', () => ({
 }))
 
 jest.mock('modules/injectedWidget', () => ({
-  useIsInfiniteApproveDisabled: jest.fn(),
+  useIsInfiniteApproveDisabledInWidget: jest.fn(),
 }))
 
 const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>

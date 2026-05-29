@@ -33,7 +33,7 @@ jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
 jest.mock('../state')
 jest.mock('modules/injectedWidget', () => ({
-  useIsInfiniteApproveDisabled: jest.fn(),
+  useIsInfiniteApproveDisabledInWidget: jest.fn(),
 }))
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
