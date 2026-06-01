@@ -56,7 +56,7 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
 
   if (account) {
     return (
-      <styledEl.Web3StatusConnected id="web3-status-connected" $variant={variant} onClick={toggleAccountModal}>
+      <styledEl.WalletStatusButtonConnected id="web3-status-connected" $variant={variant} onClick={toggleAccountModal}>
         {pendingCount > 0 ? (
           <RowBetween gap="6px">
             <styledEl.Text>
@@ -78,22 +78,22 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
             <StatusIcon connectionType={connectionType} />
           </>
         )}
-      </styledEl.Web3StatusConnected>
+      </styledEl.WalletStatusButtonConnected>
     )
   }
 
   if (isConnectionRestoring) {
     return (
-      <styledEl.Web3StatusConnect id="wallet-restoring" $variant={variant} disabled>
+      <styledEl.WalletStatusButton id="wallet-restoring" $variant={variant} disabled>
         <styledEl.Text>
           <Trans>Restoring wallet...</Trans>
         </styledEl.Text>
-      </styledEl.Web3StatusConnect>
+      </styledEl.WalletStatusButton>
     )
   }
 
   return (
-    <styledEl.Web3StatusConnect
+    <styledEl.WalletStatusButton
       id="connect-wallet"
       $variant={variant}
       onClick={toggleWalletModal}
@@ -103,6 +103,6 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
         <Trans>Connect wallet</Trans>
       </styledEl.Text>
       {variant === 'widget' ? <SVG src={iconWalletSrc} title={t`Wallet`} /> : null}
-    </styledEl.Web3StatusConnect>
+    </styledEl.WalletStatusButton>
   )
 }

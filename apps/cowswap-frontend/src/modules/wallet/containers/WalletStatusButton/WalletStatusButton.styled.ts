@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { WalletStatusButtonVariant } from './WalletStatusButton.container'
 
-export const Web3StatusGeneric = styled(ButtonSecondary)<{ $variant: WalletStatusButtonVariant }>`
+export const WalletStatusButton = styled(ButtonSecondary)<{ $variant: WalletStatusButtonVariant }>`
   gap: 6px;
 
   &:disabled {
@@ -15,22 +15,23 @@ export const Web3StatusGeneric = styled(ButtonSecondary)<{ $variant: WalletStatu
     $variant === 'widget'
       ? css`
           padding: 5px 12px;
-          font-size: 14px !important;
-          font-weight: var(${UI.FONT_WEIGHT_MEDIUM}) !important;
-          background: transparent !important;
-          color: inherit !important;
+          font-size: 14px;
+          font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
           transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
-          opacity: 0.7;
           border-radius: 21px;
           width: auto;
           margin-left: auto;
           margin-right: 16px;
+          opacity: 0.7;
+          background: transparent;
+          color: inherit;
 
           &:hover,
           &:active,
           &:focus {
-            opacity: 1 !important;
-            background: var(${UI.COLOR_PAPER_DARKER}) !important;
+            opacity: 1;
+            background: var(${UI.COLOR_PAPER_DARKER});
+            color: inherit;
           }
 
           > svg {
@@ -46,8 +47,8 @@ export const Web3StatusGeneric = styled(ButtonSecondary)<{ $variant: WalletStatu
         `
       : css`
           padding: 0 16px;
-          border: 3px solid transparent !important;
-          background-clip: padding-box !important;
+          border: 3px solid transparent;
+          background-clip: padding-box;
           min-height: 42px;
           border-radius: ${$variant === 'navBarAffiliate' ? '6px 21px 21px 6px' : '21px'};
 
@@ -59,29 +60,19 @@ export const Web3StatusGeneric = styled(ButtonSecondary)<{ $variant: WalletStatu
                 flex: 1;
               `}
 
-          &:hover {
-            background-color: var(${UI.COLOR_PRIMARY_LIGHTER}) !important;
-            color: var(--cow-color-button-text) !important;
+          &:hover,
+          &:active,
+          &:focus {
+            background-color: var(${UI.COLOR_PRIMARY});
+            background-clip: padding-box;
+            color: var(--cow-color-button-text);
           }
         `}
 `
 
-export const Web3StatusConnect = styled(Web3StatusGeneric)<{ $variant: WalletStatusButtonVariant }>``
-
-export const Web3StatusConnected = styled(Web3StatusGeneric)<{ $variant: WalletStatusButtonVariant }>`
-  background: var(${UI.COLOR_PAPER});
+export const WalletStatusButtonConnected = styled(WalletStatusButton)<{ $variant: WalletStatusButtonVariant }>`
+  background-color: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  background-clip: padding-box !important;
-
-  &:hover {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_BUTTON_TEXT});
-  }
-
-  &:hover {
-    background-color: var(${UI.COLOR_PAPER_DARKEST});
-    color: inherit;
-  }
 `
 
 export const Text = styled.p`
