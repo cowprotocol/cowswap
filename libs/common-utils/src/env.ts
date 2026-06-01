@@ -53,7 +53,5 @@ export function getConfiguredEnvironmentNameFromEnvVars<EnvName extends string>(
     }
   }
 
-  // throw new Error(`Missing ${envVarNames.join(' or ')}. Expected one of: ${environments.join(', ')}`)
-
-  return 'local' as EnvName
+  throw new Error(`Missing ${envVarNames.join(' or ')}. Expected one of: ${environments.join(', ')}`)
 }
