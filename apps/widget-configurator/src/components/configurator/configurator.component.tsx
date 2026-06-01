@@ -7,7 +7,8 @@ import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Snackbar } from '@mui/material'
-import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { useAppKitTheme } from '@reown/appkit/react'
+import { useConnection } from 'wagmi'
 
 import { configuratorCheckeredCanvasSx, configuradorRootSx } from './configurator.styles'
 
@@ -32,8 +33,8 @@ declare global {
 // eslint-disable-next-line max-lines-per-function
 export function Configurator({ title }: { title: string }): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
-  const { setThemeMode } = useWeb3ModalTheme()
-  const { isConnected } = useWeb3ModalAccount()
+  const { setThemeMode } = useAppKitTheme()
+  const { isConnected } = useConnection()
   const provider = useProvider()
   const cowAnalytics = useCowAnalytics()
 

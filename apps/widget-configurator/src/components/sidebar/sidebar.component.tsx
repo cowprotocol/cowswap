@@ -6,7 +6,7 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
-import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useConnection } from 'wagmi'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'
@@ -219,7 +219,7 @@ export function Sidebar({
   const paletteManager = useColorPaletteManager(configuratorFormValues.theme)
   const { colorPalette, defaultPalette } = paletteManager
 
-  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
+  const { chainId: walletChainId, isConnected } = useConnection()
 
   const effectiveChainId = IS_IFRAME
     ? undefined
@@ -323,9 +323,9 @@ export function Sidebar({
       state: [TradeType, Dispatch<SetStateAction<TradeType>>]
     }
 
-  - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value.
+  - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value. Remove debug red/cyan backgrounds.
   - [ ] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
-  - [ ] Add toggle to disable scrollbars.
+  - [ ] Add toggle to disable scrollbars. Auto-resize is now doing that automatically, but it should not.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
   */
 

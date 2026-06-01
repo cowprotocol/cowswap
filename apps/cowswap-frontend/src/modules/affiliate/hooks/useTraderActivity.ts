@@ -11,11 +11,11 @@ import { logAffiliate } from '../utils/logger'
 
 const EMPTY_ROWS: TraderActivityRowResponse[] = []
 
-export function useTraderActivity(): SWRResponse<TraderActivityRowResponse[] | null, Error> {
+export function useTraderActivity(enabled = true): SWRResponse<TraderActivityRowResponse[] | null, Error> {
   const { account } = useWalletInfo()
 
   return useSWR<TraderActivityRowResponse[] | null, Error>(
-    account ? ['affiliate-trader-activity', account] : null,
+    enabled && account ? ['affiliate-trader-activity', account] : null,
     async ([_, account]: [string, string]) => {
       const response = await bffAffiliateApi.getTraderActivity(account)
       const rows = response?.rows ?? EMPTY_ROWS

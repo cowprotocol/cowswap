@@ -57,7 +57,7 @@ export interface CowSwapWidgetHandler {
  */
 
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady } = props
+  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
 
   let provider = providerAux
   let currentParams = deepMerge(params, DEFAULT_WIDGET_PARAMS)
@@ -136,8 +136,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams(iframeWindow, iframeOrigin, currentParams, provider)
   })
 
-  // 10. Listen for messages from the iframe
-  const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
+  // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
+  const iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
@@ -170,7 +170,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       }
 
       // Stop listening for SDK messages
-      iframeSafeSdkBridge.stopListening()
+      iframeSafeSdkBridge?.stopListening()
 
       // Destroy the iframe
       container.removeChild(iframe)

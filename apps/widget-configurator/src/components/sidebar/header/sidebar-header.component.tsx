@@ -77,11 +77,8 @@ export function SidebarHeader({ title, themeMode, standaloneMode, baseUrl }: Sid
         <>
           {!standaloneMode && (
             <Box sx={{ mt: '16px' }}>
-              {/* Attempt 2 at fixing issue on Vercel build (locally it builds fine) */}
-              {/* Error: apps/widget-configurator/src/app/configurator/index.tsx:272:17 - error TS2339: Property 'w3m-button' does not exist on type 'JSX.IntrinsicElements'.*/}
-              {/* Fix from https://github.com/reown-com/appkit/issues/3093 */}
               {/* @ts-ignore */}
-              <w3m-button />
+              <appkit-button />
             </Box>
           )}
         </>
