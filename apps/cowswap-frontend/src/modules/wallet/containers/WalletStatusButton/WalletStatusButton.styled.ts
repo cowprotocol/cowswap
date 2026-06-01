@@ -7,10 +7,6 @@ import { WalletStatusButtonVariant } from './WalletStatusButton.container'
 export const WalletStatusButton = styled(ButtonSecondary)<{ $variant: WalletStatusButtonVariant }>`
   gap: 6px;
 
-  &:disabled {
-    cursor: not-allowed;
-  }
-
   ${({ $variant }) =>
     $variant === 'widget'
       ? css`
@@ -58,12 +54,13 @@ export const WalletStatusButton = styled(ButtonSecondary)<{ $variant: WalletStat
               `
             : css`
                 flex: 1;
+                width: max-content;
               `}
 
           &:hover,
           &:active,
           &:focus {
-            background-color: var(${UI.COLOR_PRIMARY});
+            background-color: var(${UI.COLOR_PRIMARY_LIGHTER});
             background-clip: padding-box;
             color: var(--cow-color-button-text);
           }
@@ -73,6 +70,26 @@ export const WalletStatusButton = styled(ButtonSecondary)<{ $variant: WalletStat
 export const WalletStatusButtonConnected = styled(WalletStatusButton)<{ $variant: WalletStatusButtonVariant }>`
   background-color: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
+
+  &:disabled {
+    background-color: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT});
+    border: 3px solid transparent;
+    cursor: not-allowed;
+  }
+
+  ${({ $variant }) =>
+    $variant === 'navBarDefault' || $variant === 'navBarAffiliate'
+      ? css`
+          &:not(:disabled):hover,
+          &:not(:disabled):active,
+          &:not(:disabled):focus {
+            background-color: var(${UI.COLOR_PRIMARY});
+            background-clip: padding-box;
+            color: var(--cow-color-button-text);
+          }
+        `
+      : ''}
 `
 
 export const Text = styled.p`

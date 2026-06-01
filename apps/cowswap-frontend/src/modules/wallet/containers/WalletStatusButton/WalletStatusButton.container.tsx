@@ -42,7 +42,6 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
   const showUnfillableOrdersAlert = useShowUnfillableOrderAlert()
 
   const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
-  const isUpToTiny = useMediaQuery(Media.upToTiny(false))
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
@@ -72,9 +71,7 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
           </RowBetween>
         ) : (
           <>
-            <styledEl.Text>
-              {ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}
-            </styledEl.Text>
+            <styledEl.Text>{ensName || shortenAddress(account, isUpToExtraSmall ? 3 : 4)}</styledEl.Text>
             <StatusIcon connectionType={connectionType} />
           </>
         )}
@@ -84,11 +81,11 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
 
   if (isConnectionRestoring) {
     return (
-      <styledEl.WalletStatusButton id="wallet-restoring" $variant={variant} disabled>
+      <styledEl.WalletStatusButtonConnected id="wallet-restoring" $variant={variant} disabled>
         <styledEl.Text>
           <Trans>Restoring wallet...</Trans>
         </styledEl.Text>
-      </styledEl.WalletStatusButton>
+      </styledEl.WalletStatusButtonConnected>
     )
   }
 
