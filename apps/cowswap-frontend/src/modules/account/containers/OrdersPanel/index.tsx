@@ -116,7 +116,7 @@ const CloseButton = styled.button`
   &::before {
     content: '';
     position: absolute;
-    inset: -20px -30px -20px -20px;
+    inset: -24px -30px -20px -20px;
 
     ${Media.upToMedium()} {
       inset: -16px;

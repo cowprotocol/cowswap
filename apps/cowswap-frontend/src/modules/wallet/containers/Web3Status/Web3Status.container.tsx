@@ -41,7 +41,6 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
   const pendingCount = usePendingActivitiesCount()
   const showUnfillableOrdersAlert = useShowUnfillableOrderAlert()
 
-  const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
   const isUpToTiny = useMediaQuery(Media.upToTiny(false))
 
@@ -58,7 +57,7 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
   if (account) {
     return (
       <styledEl.Web3StatusConnected id="web3-status-connected" $variant={variant} onClick={toggleAccountModal}>
-        {hasPendingTransactions ? (
+        {pendingCount > 0 ? (
           <RowBetween gap="6px">
             <styledEl.Text>
               <Trans>{pendingCount} Pending</Trans>
@@ -72,9 +71,13 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
             )}
           </RowBetween>
         ) : (
-          <styledEl.Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</styledEl.Text>
+          <>
+            <styledEl.Text>
+              {ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}
+            </styledEl.Text>
+            <StatusIcon connectionType={connectionType} />
+          </>
         )}
-        {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </styledEl.Web3StatusConnected>
     )
   }
@@ -99,7 +102,7 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
       <styledEl.Text>
         <Trans>Connect wallet</Trans>
       </styledEl.Text>
-      <SVG src={iconWalletSrc} title={t`Wallet`} />
+      {variant === 'widget' ? <SVG src={iconWalletSrc} title={t`Wallet`} /> : null}
     </styledEl.Web3StatusConnect>
   )
 }

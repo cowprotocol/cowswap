@@ -58,23 +58,21 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
         <AffiliateTraderHeaderButton />
         <WalletStatusButton variant={shouldShowAffiliateTraderHeaderButton ? 'navBarAffiliate' : 'navBarDefault'} />
         {account && (
-          <>
-            <NotificationAlertPopover
-              show={shouldShowPopover}
-              onEnableAlerts={handleEnableAlerts}
-              onDismiss={dismiss}
-              containerRef={wrapperRef}
-            >
-              <NotificationBell
-                ref={notificationBellRef}
-                unreadCount={unreadNotificationsCount}
-                data-click-event={createNotificationClickEventData(
-                  unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
-                )}
-                onClick={handleBellClick}
-              />
-            </NotificationAlertPopover>
-          </>
+          <NotificationAlertPopover
+            show={shouldShowPopover}
+            onEnableAlerts={handleEnableAlerts}
+            onDismiss={dismiss}
+            containerRef={wrapperRef}
+          >
+            <NotificationBell
+              ref={notificationBellRef}
+              unreadCount={unreadNotificationsCount}
+              data-click-event={createNotificationClickEventData(
+                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+              )}
+              onClick={handleBellClick}
+            />
+          </NotificationAlertPopover>
         )}
       </Wrapper>
 

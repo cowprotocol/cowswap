@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-// TODO: Add global reset?
-
 export const IconButton = styled.button<{ hasNotification?: boolean }>`
   --height: 42px;
   --overlap: 16px;
