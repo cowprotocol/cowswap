@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useToggleAccountModal } from 'modules/account'
 import { AffiliateTraderHeaderButton, useShouldShowAffiliateTraderHeaderButton } from 'modules/affiliate'
 import {
   NotificationBell,
@@ -25,6 +26,7 @@ interface AccountElementProps {
 
 export function AccountElement({ className }: AccountElementProps): ReactNode {
   const { account } = useWalletInfo()
+  const toggleAccountModal = useToggleAccountModal()
   const shouldShowAffiliateTraderHeaderButton = useShouldShowAffiliateTraderHeaderButton()
   const unreadNotificationsCount = useUnreadSidebarNotificationsCount()
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
@@ -56,7 +58,10 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
     <>
       <Wrapper className={className} active={!!account} ref={wrapperRef}>
         <AffiliateTraderHeaderButton />
-        <WalletStatusButton variant={shouldShowAffiliateTraderHeaderButton ? 'navBarAffiliate' : 'navBarDefault'} />
+        <WalletStatusButton
+          variant={shouldShowAffiliateTraderHeaderButton ? 'navBarAffiliate' : 'navBarDefault'}
+          onWalletClick={toggleAccountModal}
+        />
         {account && (
           <NotificationAlertPopover
             show={shouldShowPopover}

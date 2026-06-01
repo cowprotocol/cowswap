@@ -13,8 +13,6 @@ import SVG from 'react-inlinesvg'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useToggleAccountModal } from 'modules/account/hooks/useToggleAccountModal'
-
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
@@ -27,15 +25,16 @@ export type WalletStatusButtonVariant = 'navBarDefault' | 'navBarAffiliate' | 'r
 
 export interface WalletStatusButtonProps {
   variant: WalletStatusButtonVariant
+  /** Called when the connected wallet button is clicked. Ignored for connect and restoring variants. */
+  onWalletClick?: () => void
 }
 
-export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactNode {
+export function WalletStatusButton({ variant, onWalletClick }: WalletStatusButtonProps): ReactNode {
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
   const isConnectionRestoring = useIsRestoringConnection()
   const { ensName } = useWalletDetails()
 
-  const toggleAccountModal = useToggleAccountModal()
   const toggleWalletModal = useToggleWalletModal()
 
   const pendingCount = usePendingActivitiesCount()
@@ -55,7 +54,7 @@ export function WalletStatusButton({ variant }: WalletStatusButtonProps): ReactN
 
   if (account) {
     return (
-      <styledEl.WalletStatusButtonConnected id="web3-status-connected" $variant={variant} onClick={toggleAccountModal}>
+      <styledEl.WalletStatusButtonConnected id="web3-status-connected" $variant={variant} onClick={onWalletClick}>
         {pendingCount > 0 ? (
           <RowBetween gap="6px">
             <styledEl.Text>
