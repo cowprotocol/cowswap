@@ -64,7 +64,8 @@ describe('getFees', () => {
     const trades = [makeTrade([{ amount: '100', token: OTHER_TOKEN }])]
     const result = getFees(makeOrder({ executedFeeToken: FEE_TOKEN, totalFee: new BigNumber('1000') }), trades)
     expect(result.protocolFees?.toString()).toBe('100')
-    expect(result.protocolFeeTokenAddress).toBe(OTHER_TOKEN)
+    // protocolFeeTokenAddress is normalized to a lowercase AddressKey
+    expect(result.protocolFeeTokenAddress).toBe(OTHER_TOKEN.toLowerCase())
     // totalFee is already pure network cost when denominations differ — no subtraction
     expect(result.networkCosts?.toString()).toBe('1000')
     expect(warnSpy).not.toHaveBeenCalled()
@@ -75,15 +76,13 @@ describe('getFees', () => {
     const result = getFees(makeOrder({ totalFee: new BigNumber('1000') }), trades)
     expect(result.protocolFees?.toString()).toBe('500')
     expect(result.networkCosts?.toString()).toBe('500')
-    expect(result.protocolFeeTokenAddress).toBe(FEE_TOKEN)
+    expect(result.protocolFeeTokenAddress).toBe(FEE_TOKEN.toLowerCase())
   })
 
   test('matches token addresses case-insensitively for the same-token branch', () => {
+    // checksummed executedFeeToken vs lowercase protocol-fee token must still be treated as the same token
     const trades = [makeTrade([{ amount: '100', token: FEE_TOKEN.toLowerCase() }])]
-    const result = getFees(
-      makeOrder({ executedFeeToken: FEE_TOKEN.toUpperCase(), totalFee: new BigNumber('500') }),
-      trades,
-    )
+    const result = getFees(makeOrder({ executedFeeToken: FEE_TOKEN, totalFee: new BigNumber('500') }), trades)
     expect(result.protocolFees?.toString()).toBe('100')
     expect(result.networkCosts?.toString()).toBe('400')
   })

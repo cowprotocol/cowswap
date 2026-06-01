@@ -1,12 +1,16 @@
 import React, { useMemo } from 'react'
 
-import { AddressKey, areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
+import { AddressKey, areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-import { ZERO_BIG_NUMBER } from 'const'
+import { WRAPPED_NATIVE_ADDRESS, ZERO_BIG_NUMBER } from 'const'
+import { useMultipleErc20 } from 'hooks/useErc20'
+import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
+import { Network } from 'types'
+import { isNativeToken } from 'utils'
 
 import { Order } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
@@ -69,6 +73,22 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const executedFeeTokenKey = executedFeeToken ? getAddressKey(executedFeeToken) : undefined
   const sameDenomination = areAddressesEqual(executedFeeTokenKey, protocolFeeTokenAddress)
 
+  // Network costs and protocol fees can be denominated in tokens other than the order's
+  // sell/buy token (e.g. WETH network costs on an ethflow order), so resolve them explicitly.
+  const networkId = useNetworkId() ?? undefined
+  const feeTokenAddresses = useMemo(
+    () => [executedFeeTokenKey, protocolFeeTokenAddress].filter((address): address is AddressKey => Boolean(address)),
+    [executedFeeTokenKey, protocolFeeTokenAddress],
+  )
+  const { value: feeTokens } = useMultipleErc20({ networkId, addresses: feeTokenAddresses })
+  const feeTokensByKey = useMemo(() => {
+    const map = new Map<AddressKey, TokenErc20>()
+    Object.values(feeTokens).forEach((token) => {
+      if (token) map.set(getAddressKey(token.address), token)
+    })
+    return map
+  }, [feeTokens])
+
   return (
     <Wrapper>
       {FeeElement}
@@ -78,11 +98,11 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
             <tbody>
               <tr>
                 <td>Network Costs:</td>
-                <td>{formatFee(order, networkCosts, executedFeeTokenKey)}</td>
+                <td>{formatFee(order, networkCosts, executedFeeTokenKey, feeTokensByKey, networkId)}</td>
               </tr>
               <tr>
                 <td>Fee:</td>
-                <td>{formatFee(order, protocolFees, protocolFeeTokenAddress)}</td>
+                <td>{formatFee(order, protocolFees, protocolFeeTokenAddress, feeTokensByKey, networkId)}</td>
               </tr>
               {sameDenomination && (
                 <tr>
@@ -100,16 +120,36 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   )
 }
 
-function formatFee(order: Order, amount: BigNumber, address: AddressKey | undefined): string {
-  const token = resolveToken(order, address)
+function formatFee(
+  order: Order,
+  amount: BigNumber,
+  address: AddressKey | undefined,
+  feeTokensByKey: Map<AddressKey, TokenErc20>,
+  networkId: Network | undefined,
+): string {
+  const token = resolveToken(order, address, feeTokensByKey, networkId)
   if (!token) return address ? `${amount.toString(10)} ${address}` : amount.toString(10)
   const { formattedAmount, symbol } = formatTokenAmount(amount, token)
   return `${formattedAmount} ${symbol}`
 }
 
-function resolveToken(order: Order, address: AddressKey | undefined): TokenErc20 | undefined {
+function resolveToken(
+  order: Order,
+  address: AddressKey | undefined,
+  feeTokensByKey: Map<AddressKey, TokenErc20>,
+  networkId: Network | undefined,
+): TokenErc20 | undefined {
   if (!address) return order.sellToken || undefined
   if (areAddressesEqual(order.sellToken?.address, address)) return order.sellToken || undefined
   if (areAddressesEqual(order.buyToken?.address, address)) return order.buyToken || undefined
-  return undefined
+  // Ethflow orders sell native ETH but pay network costs in the wrapped native (WETH) on-chain.
+  // Display them as the native token to stay consistent with the rest of the order details.
+  if (
+    networkId &&
+    isNativeToken(order.sellTokenAddress) &&
+    areAddressesEqual(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId], address)
+  ) {
+    return order.sellToken || undefined
+  }
+  return feeTokensByKey.get(getAddressKey(address)) || undefined
 }
