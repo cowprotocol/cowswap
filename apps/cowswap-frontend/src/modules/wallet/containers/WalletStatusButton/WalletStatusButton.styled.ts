@@ -2,7 +2,7 @@ import { ButtonSecondary, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
-import { WalletStatusButtonVariant } from './Web3Status.container'
+import { WalletStatusButtonVariant } from './WalletStatusButton.container'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)<{ $variant: WalletStatusButtonVariant }>`
   gap: 6px;

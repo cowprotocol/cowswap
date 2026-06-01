@@ -18,7 +18,7 @@ import { useToggleAccountModal } from 'modules/account/hooks/useToggleAccountMod
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import * as styledEl from './Web3Status.styled'
+import * as styledEl from './WalletStatusButton.styled'
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { StatusIcon } from '../../pure/StatusIcon'

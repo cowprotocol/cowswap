@@ -18,7 +18,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { WalletStatusButton } from 'modules/wallet/containers/Web3Status/Web3Status.container'
+import { WalletStatusButton } from 'modules/wallet/containers/WalletStatusButton/WalletStatusButton.container'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
