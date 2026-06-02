@@ -44,7 +44,7 @@ export function CaptchaWidget(): ReactNode {
   }, [captchaJwt, isCaptchaEnabled, siteKey])
 
   useEffect(() => {
-    if (isCaptchaEnabled) return
+    if (isCaptchaEnabled !== false) return
 
     exchangeRequestIdRef.current += 1
 

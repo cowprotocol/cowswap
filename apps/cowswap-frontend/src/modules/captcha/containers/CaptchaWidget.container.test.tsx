@@ -70,12 +70,18 @@ describe('CaptchaWidget', () => {
     useThemeMock.mockReturnValue({ darkMode: false } as ReturnType<typeof useTheme>)
   })
 
-  it('does not render or exchange tokens when the captcha flag is missing', () => {
-    renderWithStore()
+  it('does not clear stored captcha state when the captcha flag is missing', () => {
+    const store = createStore()
+    const jwt = createJwt()
+
+    store.set(captchaJwtAtom, jwt)
+
+    renderWithStore(store)
 
     expect(screen.queryByTestId('turnstile')).toBeNull()
     expect(exchangeTurnstileTokenMock).not.toHaveBeenCalled()
-    expect(setBearerTokenMock).toHaveBeenCalledWith(null)
+    expect(setBearerTokenMock).not.toHaveBeenCalled()
+    expect(store.get(captchaJwtAtom)?.token).toBe(jwt)
   })
 
   it('does not render when the captcha flag is disabled', () => {
