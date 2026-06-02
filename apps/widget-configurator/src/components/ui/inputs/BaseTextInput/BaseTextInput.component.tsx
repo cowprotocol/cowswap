@@ -2,11 +2,11 @@ import { ReactNode } from 'react'
 
 import { TextField, TextFieldProps } from '@mui/material'
 
-/** Matches 1.4rem input line (~23px) plus balanced vertical padding inside the outline. */
-export const BASE_TEXT_INPUT_HEIGHT = 48
+/** Shared input font size for configurator text fields and select options. */
+export const BASE_INPUT_FONT_SIZE = '1.4rem'
 
-// const INPUT_LINE_HEIGHT_PX = 23
-// const INPUT_VERTICAL_PADDING_PX = (BASE_TEXT_INPUT_HEIGHT - INPUT_LINE_HEIGHT_PX) / 2
+/** Matches {@link BASE_INPUT_FONT_SIZE} line (~23px) plus balanced vertical padding inside the outline. */
+export const BASE_TEXT_INPUT_HEIGHT = 48
 
 export interface BaseTextInputProps extends Omit<TextFieldProps, 'fullWidth' | 'margin' | 'size'> {
   name: string
@@ -23,7 +23,7 @@ export function BaseTextInput(props: BaseTextInputProps): ReactNode {
         ...resolvedSx,
         {
           '& .MuiInputBase-root': {
-            backgroundColor: 'red', // TODO: Transparent, for all
+            backgroundColor: 'transparent',
           },
           '& .MuiOutlinedInput-root:not(.MuiInputBase-multiline)': {
             height: BASE_TEXT_INPUT_HEIGHT,
@@ -31,6 +31,7 @@ export function BaseTextInput(props: BaseTextInputProps): ReactNode {
             boxSizing: 'border-box',
 
             '& .MuiOutlinedInput-input': {
+              fontSize: BASE_INPUT_FONT_SIZE,
               py: 0,
               px: '14px',
               height: '100%',

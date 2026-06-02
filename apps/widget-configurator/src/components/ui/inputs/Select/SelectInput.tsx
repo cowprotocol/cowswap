@@ -9,20 +9,24 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent, SelectProps } from '@mui/material/Select'
 
-import { configuratorMenuPaperSx } from '../../surface/surface.styles'
-import { BASE_TEXT_INPUT_HEIGHT } from '../BaseTextInput/BaseTextInput.component'
+import {
+  getSelectInputFormControlSx,
+  getSelectInputSx,
+  NO_MENU_ANIMATION_PROPS,
+  selectMenuItemSx,
+  selectMenuPaperSx,
+  selectOptionCheckIconSx,
+  selectOptionCheckboxSx,
+  selectOptionCheckPlaceholderSx,
+  selectOptionLabelSx,
+  selectOptionRowSx,
+} from './SelectInput.styles'
+
+import { configuratorSurfacePaperSx } from '../../surface/surface.styles'
+
+export { BASE_SELECT_OPTION_HEIGHT } from './SelectInput.styles'
 
 type PrimitiveValue = string | number
-
-const NO_MENU_ANIMATION_PROPS: SelectProps['MenuProps'] = {
-  transitionDuration: 0,
-  TransitionProps: {
-    timeout: 0,
-  },
-  PaperProps: {
-    sx: configuratorMenuPaperSx,
-  },
-}
 
 export type SelectInputValue<TValue extends PrimitiveValue> = TValue | '' | TValue[]
 
@@ -67,7 +71,7 @@ function coerceMultiValue<TValue extends PrimitiveValue>(
     .filter((item): item is TValue => item !== '')
 }
 
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line max-lines-per-function
 export function SelectInput<TValue extends PrimitiveValue = string>({
   name,
   label,
@@ -114,20 +118,20 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
   const renderOptionContent = (option: SelectInputOption<TValue>, selected: boolean): ReactNode => {
     const labelContent = renderOptionLabel ? renderOptionLabel(option) : option.label
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <Box sx={{ minWidth: 0, flex: '1 1 auto' }}>{labelContent}</Box>
+      <Box sx={selectOptionRowSx}>
+        <Box sx={selectOptionLabelSx}>{labelContent}</Box>
         {multiple ? (
           <Checkbox
             checked={selected}
-            sx={{ marginLeft: 'auto', padding: 0 }}
+            sx={selectOptionCheckboxSx}
             disableRipple
             tabIndex={-1}
             inputProps={{ 'aria-hidden': true }}
           />
         ) : selected ? (
-          <CheckIcon sx={{ marginLeft: 'auto' }} fontSize="small" />
+          <CheckIcon sx={selectOptionCheckIconSx} fontSize="small" />
         ) : (
-          <Box sx={{ width: 18, marginLeft: 'auto' }} />
+          <Box sx={selectOptionCheckPlaceholderSx} />
         )}
       </Box>
     )
@@ -139,7 +143,8 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
     PaperProps: {
       ...menuProps?.PaperProps,
       sx: [
-        configuratorMenuPaperSx,
+        configuratorSurfacePaperSx,
+        selectMenuPaperSx,
         ...(Array.isArray(menuProps?.PaperProps?.sx)
           ? menuProps.PaperProps.sx
           : menuProps?.PaperProps?.sx
@@ -150,7 +155,7 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
   }
 
   return (
-    <FormControl sx={{ width: fullWidth ? '100%' : undefined }}>
+    <FormControl sx={getSelectInputFormControlSx(fullWidth)}>
       <InputLabel id={resolvedLabelId} shrink={displayEmpty || multiple || undefined}>
         {label}
       </InputLabel>
@@ -167,49 +172,14 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
         IconComponent={ExpandMoreIcon}
         MenuProps={mergedMenuProps}
         renderValue={renderValue ?? defaultRenderValue}
-        sx={{
-          '& .MuiInputBase-root, &.MuiInputBase-root': {
-            backgroundColor: 'cyan',
-          },
-          '&.MuiOutlinedInput-root:not(.MuiInputBase-multiline)': multilineSelectedValue
-            ? {
-                minHeight: BASE_TEXT_INPUT_HEIGHT,
-              }
-            : {
-                height: BASE_TEXT_INPUT_HEIGHT,
-                minHeight: BASE_TEXT_INPUT_HEIGHT,
-              },
-          '& .MuiOutlinedInput-notchedOutline legend > span': {
-            display: 'inline-block',
-            paddingLeft: 0,
-            paddingRight: 0,
-          },
-          ...(multilineSelectedValue
-            ? {
-                '& .MuiSelect-select': {
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  flexWrap: 'wrap',
-                  whiteSpace: 'normal',
-                  rowGap: 4,
-                  columnGap: 4,
-                },
-              }
-            : undefined),
-        }}
+        sx={getSelectInputSx(multilineSelectedValue)}
       >
         {options.map((option) => (
           <MenuItem
             key={`${name}-${String(option.value)}`}
             value={option.value}
             disabled={option.disabled}
-            sx={{
-              minHeight: BASE_TEXT_INPUT_HEIGHT,
-              height: BASE_TEXT_INPUT_HEIGHT,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
+            sx={selectMenuItemSx}
           >
             {renderOptionContent(
               option,

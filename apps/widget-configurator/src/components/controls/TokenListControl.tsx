@@ -2,21 +2,22 @@ import { Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState } f
 
 import { TokenInfo } from '@cowprotocol/types'
 
-import { Box, Chip, ListItemText } from '@mui/material'
+import { Box, ListItemText } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../../configurator.types'
 import { LinkButton } from '../ui/buttons/link/LinkButton.component'
-import { SelectInput } from '../ui/inputs/Select/SelectInput'
+import { BASE_SELECT_OPTION_HEIGHT, SelectInput } from '../ui/inputs/Select/SelectInput'
+import { multiSelectValueItemSx, selectMultipleSelectedValueSx } from '../ui/inputs/Select/SelectInput.styles'
 
-const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
+
 const MENU_PROPS = {
   PaperProps: {
     style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      maxHeight: BASE_SELECT_OPTION_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
   },
@@ -93,9 +94,11 @@ function TokenListSelect({ label, name, selectedUrls, options, onChange }: Token
         />
       )}
       renderValue={(selected) => (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+        <Box sx={selectMultipleSelectedValueSx}>
           {(Array.isArray(selected) ? selected : []).map((url) => (
-            <Chip key={url} label={url} />
+            <Box key={url} component="span" sx={multiSelectValueItemSx}>
+              {url}
+            </Box>
           ))}
         </Box>
       )}
