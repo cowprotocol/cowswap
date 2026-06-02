@@ -8,7 +8,7 @@ import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
 import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
-import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
+import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
 
 type AddCustomListDialogProps = {
   open: boolean

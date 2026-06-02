@@ -7,10 +7,10 @@ import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './
 
 import { WIDGET_HOOKS_OPTIONS } from '../../../../configurator.constants'
 import { jsonHelperText } from '../../../../utils/jsonFieldParsing'
-import { JsonInput } from '../../../ui/controls/JsonInput/JsonInput.component'
-import { PresetsButtons } from '../../../ui/controls/PresetsButtons/PresetsButtons.component'
-import { SelectInput, SelectInputValue } from '../../../ui/controls/Select/SelectInput'
-import { TextInput } from '../../../ui/controls/TextInput/TextInput.component'
+import { JsonInput } from '../../../ui/inputs/JsonInput/JsonInput.component'
+import { PresetsButtons } from '../../../ui/inputs/PresetsButtons/PresetsButtons.component'
+import { SelectInput, SelectInputValue } from '../../../ui/inputs/Select/SelectInput'
+import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 

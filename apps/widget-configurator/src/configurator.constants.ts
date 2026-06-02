@@ -1,8 +1,8 @@
-import { COW_CDN } from '@cowprotocol/common-const'
+import { COW_CDN, SupportedLocale, LOCALE_DISPLAY_NAMES, SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import { SelectInputOption } from './components/ui/controls/Select/SelectInput'
+import { SelectInputOption } from './components/ui/inputs/Select/SelectInput'
 import { TokenListItem } from './configurator.types'
 
 // ENV:
@@ -24,6 +24,11 @@ export const WIDGET_PREVIEW_READY_FALLBACK_MS = 60_000
 export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi' as const
 
 // Form options:
+
+export const LOCALE_OPTIONS: SelectInputOption<SupportedLocale>[] = [
+  { label: 'Browser default', value: '' },
+  ...SUPPORTED_LOCALES.map((option) => ({ label: LOCALE_DISPLAY_NAMES[option] || option, value: option })),
+]
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 

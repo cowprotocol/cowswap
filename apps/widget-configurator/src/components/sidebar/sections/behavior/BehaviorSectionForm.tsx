@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { NumberInput } from '../../../ui/controls/NumberInput/NumberInput.component'
-import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
+import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
+import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
 import type { UseToastsManagerReturn } from '../../../../hooks/useToastsManager'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'

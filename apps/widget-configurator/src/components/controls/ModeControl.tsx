@@ -10,7 +10,8 @@ import RadioGroup from '@mui/material/RadioGroup'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { HelpTooltipButton } from '../../HelpTooltipButton/HelpTooltipButton'
+import { IS_IFRAME } from '../../configurator.constants'
+import { HelpTooltipButton } from '../ui/HelpTooltipButton/HelpTooltipButton'
 
 type WidgetMode = 'dapp' | 'standalone'
 
@@ -38,7 +39,7 @@ export function ModeControl({ value, onChange }: ModeControlProps): ReactNode {
   )
 
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" disabled={IS_IFRAME}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
         <FormLabel component="legend" sx={{ mb: 0 }}>
           Mode

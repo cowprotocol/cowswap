@@ -7,7 +7,7 @@ import { Box, Button, Chip, ListItemText } from '@mui/material'
 import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../../configurator.types'
-import { SelectInput } from '../ui/controls/Select/SelectInput'
+import { SelectInput } from '../ui/inputs/Select/SelectInput'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8

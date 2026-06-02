@@ -319,11 +319,7 @@ export function Sidebar({
   - [x] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
   - [x] Add name to all fields.
   - [x] Create reusable TextInput, NumberInput and SelectInput components.
-
-  - [ ] Refactor patterns like this:
-    export interface CurrentTradeTypeControlProps {
-      state: [TradeType, Dispatch<SetStateAction<TradeType>>]
-    }
+  - [x] Simply input change handling.
 
   - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value. Remove debug red/cyan backgrounds.
   - [ ] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.

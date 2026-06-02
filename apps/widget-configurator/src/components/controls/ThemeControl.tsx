@@ -5,7 +5,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import { SelectInput, type SelectInputOption } from '../ui/controls/Select/SelectInput'
+import { SelectInput, type SelectInputOption } from '../ui/inputs/Select/SelectInput'
 
 export type ThemeOptionValue = 'light' | 'dark'
 

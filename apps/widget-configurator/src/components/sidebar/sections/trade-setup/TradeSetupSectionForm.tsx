@@ -6,8 +6,8 @@ import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { IS_IFRAME, TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../../configurator.constants'
-import { SelectInput, SelectInputOption } from '../../../ui/controls/Select/SelectInput'
-import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
+import { SelectInput, SelectInputOption } from '../../../ui/inputs/Select/SelectInput'
+import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 

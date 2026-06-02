@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { NumberInput } from '../../../ui/controls/NumberInput/NumberInput.component'
+import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 

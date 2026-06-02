@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { TextInput } from '../../../ui/controls/TextInput/TextInput.component'
+import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 

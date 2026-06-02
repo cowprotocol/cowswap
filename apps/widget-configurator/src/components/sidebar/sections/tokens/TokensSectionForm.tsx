@@ -3,7 +3,7 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import type { TokenInfo } from '@cowprotocol/types'
 
 import { TokenListControl } from '../../../controls/TokenListControl'
-import { CurrencyInputControl } from '../../../ui/controls/CurrencyInput/CurrencyInputControl'
+import { CurrencyInputControl } from '../../../ui/inputs/CurrencyInput/CurrencyInputControl'
 
 import type { TokenListItem } from '../../../../configurator.types'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'

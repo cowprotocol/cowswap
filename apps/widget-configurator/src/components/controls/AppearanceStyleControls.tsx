@@ -5,8 +5,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import { jsonHelperText } from '../../utils/jsonFieldParsing'
-import { JsonInput } from '../ui/controls/JsonInput/JsonInput.component'
-import { PresetOption, PresetsButtons } from '../ui/controls/PresetsButtons/PresetsButtons.component'
+import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
+import { PresetOption, PresetsButtons } from '../ui/inputs/PresetsButtons/PresetsButtons.component'
 
 import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
 import type * as CSS from 'csstype'

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { AppearanceStyleControls } from '../../../controls/AppearanceStyleControls'
-import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
+import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
 import type { JsonState, OnJsonStateChange } from '../../../../hooks/useJsonState'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
