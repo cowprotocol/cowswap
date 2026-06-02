@@ -108,6 +108,11 @@ type IsolationWindow = Window & {
   __cowEip6963ReDispatched?: WeakSet<Event>
 }
 
+type Eip6963ProviderDetail = {
+  info: { name?: string; rdns?: string }
+  provider: EIP1193Provider
+}
+
 function getReDispatched(): WeakSet<Event> {
   const win = window as IsolationWindow
   if (!win.__cowEip6963ReDispatched) {
@@ -139,10 +144,7 @@ export function interceptEIP6963Providers(): void {
       if (reDispatched.has(event)) return
       event.stopImmediatePropagation()
 
-      const detail = (event as CustomEvent).detail as {
-        info: { name?: string; rdns?: string }
-        provider: EIP1193Provider
-      }
+      const detail = (event as CustomEvent<Eip6963ProviderDetail>).detail
 
       console.log(
         '[providerIsolation] intercepted eip6963:announceProvider for',
@@ -150,7 +152,7 @@ export function interceptEIP6963Providers(): void {
       )
 
       const newEvent = new CustomEvent('eip6963:announceProvider', {
-        detail: { info: detail.info, provider: createIsolatedProvider(detail.provider) },
+        detail: Object.freeze({ info: detail.info, provider: createIsolatedProvider(detail.provider) }),
       })
       reDispatched.add(newEvent)
       window.dispatchEvent(newEvent)
