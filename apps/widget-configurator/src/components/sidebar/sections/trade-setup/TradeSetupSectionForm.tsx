@@ -40,7 +40,6 @@ export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFor
   return (
     <>
       <SelectInput
-        id="trade-mode-select"
         name="enabledTradeTypes"
         label="Trade types"
         multiple
@@ -51,7 +50,6 @@ export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFor
       />
 
       <SelectInput
-        id="select-trade-type"
         name="currentTradeType"
         label="Current trade type"
         value={values.currentTradeType}
@@ -60,7 +58,6 @@ export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFor
       />
 
       <SelectInput
-        id="controllable-states-network"
         name="chainId"
         label="Network"
         value={values.chainId}

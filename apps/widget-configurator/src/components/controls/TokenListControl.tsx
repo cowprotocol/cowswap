@@ -68,7 +68,6 @@ const getTokenListOptions = (
 function TokenListSelect({ label, name, selectedUrls, options, onChange }: TokenListSelectProps): ReactNode {
   return (
     <SelectInput
-      id={`token-list-${name}`}
       name={name}
       label={label}
       multiple

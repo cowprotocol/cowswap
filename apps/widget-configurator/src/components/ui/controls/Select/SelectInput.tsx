@@ -58,7 +58,6 @@ export interface SelectInputProps<TValue extends PrimitiveValue = string> {
   options: readonly SelectInputOption<TValue>[]
   onChange: (name: string, value: SelectInputValue<TValue>) => void
   multiple?: boolean
-  id?: string
   size?: 'small' | 'medium'
   fullWidth?: boolean
   displayEmpty?: boolean
@@ -89,7 +88,6 @@ function coerceMultiValue<TValue extends PrimitiveValue>(
 
 // eslint-disable-next-line max-lines-per-function, complexity
 export function SelectInput<TValue extends PrimitiveValue = string>({
-  id,
   name,
   label,
   value,
@@ -105,7 +103,7 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
   renderValue,
   renderOptionLabel,
 }: SelectInputProps<TValue>): ReactNode {
-  const resolvedId = id ?? `select-${name}`
+  const resolvedId = `select-${name}`
   const resolvedLabelId = `${resolvedId}-label`
 
   const normalizedValue = multiple ? (Array.isArray(value) ? value : []) : (value as TValue | '')

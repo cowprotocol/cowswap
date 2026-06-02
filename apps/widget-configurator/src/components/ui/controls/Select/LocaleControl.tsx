@@ -13,7 +13,6 @@ export function LocaleControl({ state }: { state: LocaleControlState }): ReactNo
 
   return (
     <SelectInput
-      id="select-locale"
       name="locale"
       label={LABEL}
       value={locale}

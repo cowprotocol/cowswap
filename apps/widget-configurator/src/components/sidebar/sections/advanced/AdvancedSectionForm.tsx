@@ -62,7 +62,6 @@ export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormPro
       />
 
       <SelectInput
-        id="widget-hooks-select"
         name="enabledWidgetHooks"
         label="Widget hooks"
         multiple

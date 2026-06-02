@@ -19,7 +19,6 @@ export function CurrencyInputControl(props: CurrencyInputProps): ReactNode {
   return (
     <>
       <SelectInput
-        id={'selectTokenId' + label}
         name={'selectTokenId' + label}
         label={label}
         value={TokenOptions.includes(tokenId) ? tokenId : ''}
