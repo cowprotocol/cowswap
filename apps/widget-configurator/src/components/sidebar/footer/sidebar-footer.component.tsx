@@ -2,7 +2,6 @@ import React, { ReactNode, useContext } from 'react'
 
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
-import Tooltip from '@mui/material/Tooltip'
 import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
 
 import { UTM_PARAMS } from '../../../configurator.constants'
@@ -106,35 +105,30 @@ export function SidebarFooter({
             sx={{ mr: 'auto' }}
           />
 
-          <Tooltip title={reloadPreviewLabel} arrow placement="top">
-            <IconButton
-              icon={RefreshCw}
-              onClick={onForceWidgetReload}
-              aria-label={reloadPreviewLabel}
-              aria-busy={isWidgetSyncPending}
-              sx={{
-                '@keyframes cowConfiguratorRefreshSpin': {
-                  from: { transform: 'rotate(0deg)' },
-                  to: { transform: 'rotate(360deg)' },
-                },
-                ...(isWidgetSyncPending || !isWidgetReady
-                  ? {
-                      '& svg': {
-                        animation: 'cowConfiguratorRefreshSpin 1s linear infinite',
-                      },
-                    }
-                  : {}),
-              }}
-            />
-          </Tooltip>
+          <IconButton
+            icon={RefreshCw}
+            tooltip={reloadPreviewLabel}
+            onClick={onForceWidgetReload}
+            aria-label={reloadPreviewLabel}
+            aria-busy={isWidgetSyncPending}
+            sx={{
+              '@keyframes cowConfiguratorRefreshSpin': {
+                from: { transform: 'rotate(0deg)' },
+                to: { transform: 'rotate(360deg)' },
+              },
+              ...(isWidgetSyncPending || !isWidgetReady
+                ? {
+                    '& svg': {
+                      animation: 'cowConfiguratorRefreshSpin 1s linear infinite',
+                    },
+                  }
+                : {}),
+            }}
+          />
 
-          <Tooltip title={themeLabel} arrow placement="top">
-            <IconButton icon={ThemeIcon} onClick={toggleColorMode} aria-label={themeLabel} />
-          </Tooltip>
+          <IconButton icon={ThemeIcon} tooltip={themeLabel} onClick={toggleColorMode} aria-label={themeLabel} />
 
-          <Tooltip title={sidebarLabel} arrow placement="top">
-            <IconButton icon={SidebarIcon} onClick={onSidebarToggle} aria-label={sidebarLabel} />
-          </Tooltip>
+          <IconButton icon={SidebarIcon} tooltip={sidebarLabel} onClick={onSidebarToggle} aria-label={sidebarLabel} />
         </Box>
 
         <Box

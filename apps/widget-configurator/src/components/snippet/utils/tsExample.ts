@@ -10,8 +10,7 @@ import {
 } from '../snippet.const'
 
 export function tsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
-  return `
-${TS_IMPORT_STATEMENT} from '@cowprotocol/widget-lib'
+  return `${TS_IMPORT_STATEMENT} from '@cowprotocol/widget-lib'
 
 const container = document.getElementById('<YOUR_CONTAINER>')
 
@@ -21,6 +20,5 @@ const params: CowSwapWidgetParams = ${formatParameters(params, 0, true, defaultP
 ${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 
-const { updateParams } = createCowSwapWidget(container, { params, provider })
-  `
+const { updateParams } = createCowSwapWidget(container, { params, provider })`
 }

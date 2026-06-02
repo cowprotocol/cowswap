@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -8,16 +8,14 @@ import { IconButton } from '../../../buttons/icon/IconButton.component'
 
 import type { SxProps, Theme } from '@mui/material/styles'
 
-export interface ModalHeaderProps {
+export type ModalHeaderProps = PropsWithChildren<{
   titleId: string
   title: string
   onClose: () => void
-  tabs?: ReactNode
-  tabsSx?: SxProps<Theme>
   sx?: SxProps<Theme>
-}
+}>
 
-export function ModalHeader({ titleId, title, onClose, tabs, tabsSx, sx }: ModalHeaderProps): ReactNode {
+export function ModalHeader({ titleId, title, onClose, sx, children }: ModalHeaderProps): ReactNode {
   return (
     <Box
       sx={[
@@ -44,16 +42,10 @@ export function ModalHeader({ titleId, title, onClose, tabs, tabsSx, sx }: Modal
         <Typography id={titleId} component="h2" variant="h6" sx={{ fontWeight: 600, m: 0 }}>
           {title}
         </Typography>
-        <IconButton icon={X} aria-label="Close" onClick={onClose} />
+        <IconButton icon={X} tooltip="Close" aria-label="Close" onClick={onClose} />
       </Box>
 
-      {tabs ? (
-        <Box
-          sx={[{ borderTop: 1, borderColor: 'divider' }, ...(Array.isArray(tabsSx) ? tabsSx : tabsSx ? [tabsSx] : [])]}
-        >
-          {tabs}
-        </Box>
-      ) : null}
+      {children}
     </Box>
   )
 }

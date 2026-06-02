@@ -1,4 +1,4 @@
-import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import svgHtmlSrc from '@cowprotocol/assets/cow-swap/html.svg'
@@ -9,13 +9,9 @@ import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
-import { Tab } from '@mui/material'
-import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Snackbar from '@mui/material/Snackbar'
 import { useTheme } from '@mui/material/styles'
-import Tabs from '@mui/material/Tabs'
-import { Copy } from 'react-feather'
+import { Check, Copy } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -31,58 +27,54 @@ import { ColorPalette } from '../../configurator.types'
 import { Button } from '../ui/buttons/button/Button.component'
 import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
 import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
+import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
+import { ModalIconTabInfo, ModalTabs } from '../ui/surface/modal/tabs/ModalTabs.component'
 
-interface TabInfo {
-  id: number
-  label: string
-  language: string
-  snippetFromParams(params: CowSwapWidgetProps['params'], defaultPalette: ColorPalette): string
-  icon: string
-}
+type SnippetTabId = 'react' | 'typescript' | 'javascript' | 'html'
 
-const TABS: TabInfo[] = [
+type SnippetGenerator = (params: CowSwapWidgetProps['params'], defaultPalette: ColorPalette) => string
+
+const SNIPPET_TABS_ID_PREFIX = 'simple'
+
+const SNIPPET_TABS = [
   {
-    id: 0,
-    label: 'React Typescript',
-    language: 'typescript',
-    snippetFromParams: reactTsExample,
-    icon: svgReactSrc,
+    value: 'react',
+    tooltip: 'React Typescript',
+    icon: <SVG src={svgReactSrc} />,
   },
   {
-    id: 1,
-    label: 'Typescript',
-    language: 'typescript',
-    snippetFromParams: tsExample,
-    icon: svgTsSrc,
+    value: 'typescript',
+    tooltip: 'Typescript',
+    icon: <SVG src={svgTsSrc} />,
   },
   {
-    id: 2,
-    label: 'Javascript',
-    language: 'javascript',
-    snippetFromParams: jsExample,
-    icon: svgJsSrc,
+    value: 'javascript',
+    tooltip: 'Javascript',
+    icon: <SVG src={svgJsSrc} />,
   },
   {
-    id: 3,
-    label: 'Pure HTML',
-    language: 'html',
-    snippetFromParams: vanillaNoDepsExample,
-    icon: svgHtmlSrc,
+    value: 'html',
+    tooltip: 'Pure HTML',
+    icon: <SVG src={svgHtmlSrc} />,
   },
-]
+] as const satisfies ModalIconTabInfo<SnippetTabId>[]
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
+const DEFAULT_SNIPPET_TAB_ID = SNIPPET_TABS[0].value
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function a11yProps(id: number) {
-  return {
-    id: `simple-tab-${id}`,
-    'aria-controls': `simple-tabpanel-${id}`,
+const SNIPPET_TAB_CONFIG = {
+  react: { language: 'typescript', snippetFromParams: reactTsExample },
+  typescript: { language: 'typescript', snippetFromParams: tsExample },
+  javascript: { language: 'javascript', snippetFromParams: jsExample },
+  html: { language: 'html', snippetFromParams: vanillaNoDepsExample },
+} as const satisfies Record<
+  SnippetTabId,
+  {
+    language: string
+    snippetFromParams: SnippetGenerator
   }
-}
+>
+
+const COPY_FEEDBACK_MS = 3000
 
 export interface SnippetProps {
   params: CowSwapWidgetProps['params']
@@ -91,18 +83,16 @@ export interface SnippetProps {
   handleClose: Command
 }
 
-const SNIPPET_CONTENT_PADDING = 16
-
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function Snippet({ params, open, handleClose, defaultPalette }: SnippetProps): ReactNode {
   const theme = useTheme()
-  const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
-  const { id, language, snippetFromParams } = tabInfo
+  const [activeTabId, setActiveTabId] = useState<SnippetTabId>(DEFAULT_SNIPPET_TAB_ID)
+  const { language, snippetFromParams } = SNIPPET_TAB_CONFIG[activeTabId]
   const cowAnalytics = useCowAnalytics()
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [, copyToClipboard] = useCopyClipboard(3000)
+  const [isCopied, copyToClipboard] = useCopyClipboard(COPY_FEEDBACK_MS)
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleCopyClick = () => {
@@ -111,16 +101,6 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
       category: AnalyticsCategory.WIDGET_CONFIGURATOR,
       action: 'Copy code',
     })
-    setSnackbarOpen(true)
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    setSnackbarOpen(false)
   }
 
   useEffect(() => {
@@ -134,71 +114,61 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
 
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const code = useMemo(() => {
-    return snippetFromParams(params, defaultPalette)
+    return snippetFromParams(params, defaultPalette).trim()
   }, [snippetFromParams, params, defaultPalette])
 
-  const onChangeTab = useCallback((_event: SyntheticEvent, newValue: TabInfo) => setCurrentTabInfo(newValue), [])
+  const onChangeTab = useCallback((_event: SyntheticEvent, newValue: SnippetTabId) => {
+    setActiveTabId(newValue)
+  }, [])
 
   return (
-    <>
-      <Box
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
+    <Box
+      aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description"
+      sx={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        minHeight: 0,
+        backgroundColor: (t) => t.palette.background.paper,
+      }}
+    >
+      <ModalHeader
+        titleId="scroll-dialog-title"
+        title="Snippet for CoW Widget"
+        onClose={handleClose}
         sx={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          minHeight: 0,
+          position: 'sticky',
+          top: 0,
+          zIndex: 2,
           backgroundColor: (t) => t.palette.background.paper,
         }}
       >
-        <ModalHeader
-          titleId="scroll-dialog-title"
-          title="Snippet for CoW Widget"
-          onClose={handleClose}
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2,
-            backgroundColor: (t) => t.palette.background.paper,
-          }}
-          tabs={
-            <Tabs
-              value={tabInfo}
-              onChange={onChangeTab}
-              aria-label="languages"
-              sx={{
-                minHeight: 48,
-                '& .MuiTab-iconWrapper': {
-                  height: '16px',
-                  width: '16px',
-                  opacity: 0.75,
-                },
-                '& .Mui-selected .MuiTab-iconWrapper': {
-                  opacity: 1,
-                },
-              }}
-            >
-              {TABS.map((info) => {
-                return (
-                  <Tab
-                    key={info.id}
-                    label={info.label}
-                    icon={<SVG src={info.icon} />}
-                    value={info}
-                    {...a11yProps(info.id)}
-                  />
-                )
-              })}
-            </Tabs>
-          }
-          tabsSx={{ px: 1 }}
+        <ModalTabs
+          tabs={SNIPPET_TABS}
+          value={activeTabId}
+          onChange={onChangeTab}
+          ariaLabel="languages"
+          idPrefix={SNIPPET_TABS_ID_PREFIX}
+          sx={{ px: 2 }}
         />
+      </ModalHeader>
 
-        <Box
-          id="scroll-dialog-description"
+      <Box
+        id="scroll-dialog-description"
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <ModalTabPanel
+          tabValue={activeTabId}
+          value={activeTabId}
+          idPrefix={SNIPPET_TABS_ID_PREFIX}
           sx={{
             flex: 1,
             minHeight: 0,
@@ -206,47 +176,48 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
             flexDirection: 'column',
           }}
         >
-          <Box
-            role="tabpanel"
-            id={`simple-tabpanel-${id}`}
-            aria-labelledby={`simple-tab-${id}`}
-            sx={{
+          <SyntaxHighlighter
+            key={activeTabId}
+            showLineNumbers={true}
+            children={code}
+            language={language}
+            style={nightOwl}
+            customStyle={{
+              margin: 0,
               flex: 1,
               minHeight: 0,
-              display: 'flex',
-              flexDirection: 'column',
+              height: '100%',
+              overflow: 'auto',
+              padding: '16px',
+              fontSize: '0.8em',
+              backgroundColor: theme.palette.background.paper,
+              boxSizing: 'border-box',
             }}
-          >
-            <SyntaxHighlighter
-              showLineNumbers={true}
-              children={code}
-              language={language}
-              style={nightOwl}
-              customStyle={{
-                margin: 0,
-                flex: 1,
-                minHeight: 0,
-                height: '100%',
-                overflow: 'auto',
-                padding: SNIPPET_CONTENT_PADDING,
-                fontSize: '0.8em',
-                backgroundColor: theme.palette.background.paper,
-                boxSizing: 'border-box',
-              }}
-            />
-          </Box>
-        </Box>
-
-        <ModalFooter>
-          <Button label="Copy" onClick={handleCopyClick} endIcon={Copy} />
-        </ModalFooter>
+            codeTagProps={{
+              style: {
+                padding: 0,
+                background: 'transparent',
+              },
+            }}
+            lineNumberStyle={{
+              minWidth: '2.25em',
+              paddingRight: '1em',
+              paddingLeft: 0,
+              marginRight: 0,
+              userSelect: 'none',
+            }}
+          />
+        </ModalTabPanel>
       </Box>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Successfully copied to clipboard!
-        </Alert>
-      </Snackbar>
-    </>
+      <ModalFooter>
+        <Button
+          label={isCopied ? 'Copied' : 'Copy'}
+          onClick={handleCopyClick}
+          disabled={isCopied}
+          endIcon={isCopied ? Check : Copy}
+        />
+      </ModalFooter>
+    </Box>
   )
 }

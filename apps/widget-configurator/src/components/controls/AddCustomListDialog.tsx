@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
-import { Dialog, DialogContent, Tab, Tabs } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
@@ -14,6 +14,19 @@ import { TextInput } from '../ui/inputs/TextInput/TextInput.component'
 import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
 import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
 import { configuratorDialogPaperSx } from '../ui/surface/modal/modal.styles'
+import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
+import { ModalLabelTabInfo, ModalTabs } from '../ui/surface/modal/tabs/ModalTabs.component'
+
+const ADD_CUSTOM_LIST_TABS_ID_PREFIX = 'add-custom-list'
+
+type AddCustomListTabId = 'url' | 'json'
+
+const ADD_CUSTOM_LIST_TABS = [
+  { label: 'URL', value: 'url' },
+  { label: 'JSON', value: 'json' },
+] as const satisfies ModalLabelTabInfo<AddCustomListTabId>[]
+
+const DEFAULT_ADD_CUSTOM_LIST_TAB_ID = ADD_CUSTOM_LIST_TABS[0].value
 
 type AddCustomListDialogProps = {
   open: boolean
@@ -40,7 +53,7 @@ export function AddCustomListDialog({
 
   const [customTokens, setCustomTokens] = useState<TokenInfo[]>([])
 
-  const [tabIndex, setTabIndex] = useState(0)
+  const [tabValue, setTabValue] = useState<AddCustomListTabId>(DEFAULT_ADD_CUSTOM_LIST_TAB_ID)
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -57,8 +70,8 @@ export function AddCustomListDialog({
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabIndex(newValue)
+  const handleTabChange = (_: React.SyntheticEvent, newValue: AddCustomListTabId) => {
+    setTabValue(newValue)
     resetForm()
   }
 
@@ -131,26 +144,19 @@ export function AddCustomListDialog({
       aria-labelledby="add-custom-token-list-title"
       PaperProps={{ sx: configuratorDialogPaperSx }}
     >
-      <ModalHeader
-        titleId="add-custom-token-list-title"
-        title="Add Custom Token List"
-        onClose={onClose}
-        tabs={
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            variant="fullWidth"
-            aria-label="Add custom token list input type"
-            sx={{ minHeight: 48 }}
-          >
-            <Tab label="URL" id="add-custom-list-tab-0" aria-controls="add-custom-list-tabpanel-0" />
-            <Tab label="JSON" id="add-custom-list-tab-1" aria-controls="add-custom-list-tabpanel-1" />
-          </Tabs>
-        }
-      />
+      <ModalHeader titleId="add-custom-token-list-title" title="Add Custom Token List" onClose={onClose}>
+        <ModalTabs
+          tabs={ADD_CUSTOM_LIST_TABS}
+          value={tabValue}
+          onChange={handleTabChange}
+          ariaLabel="Add custom token list input type"
+          idPrefix={ADD_CUSTOM_LIST_TABS_ID_PREFIX}
+          sx={{ px: 2 }}
+        />
+      </ModalHeader>
 
       <DialogContent sx={{ px: 2, pt: 2, pb: 2 }}>
-        <CustomTabPanel value={tabIndex} index={0}>
+        <ModalTabPanel tabValue={tabValue} value="url" idPrefix={ADD_CUSTOM_LIST_TABS_ID_PREFIX}>
           <TextInput
             name="listUrl"
             label="List URL"
@@ -162,8 +168,8 @@ export function AddCustomListDialog({
             required
             autoComplete="off"
           />
-        </CustomTabPanel>
-        <CustomTabPanel value={tabIndex} index={1}>
+        </ModalTabPanel>
+        <ModalTabPanel tabValue={tabValue} value="json" idPrefix={ADD_CUSTOM_LIST_TABS_ID_PREFIX}>
           <JsonInput
             name="customTokensJson"
             label="Custom tokens JSON"
@@ -173,36 +179,12 @@ export function AddCustomListDialog({
             helperText={hasJsonErrors ? 'Enter a token array or token list JSON' : undefined}
           />
           <Button label="Add an example" onClick={addJsonExample} sx={{ mt: 1 }} />
-        </CustomTabPanel>
+        </ModalTabPanel>
       </DialogContent>
 
       <ModalFooter>
         <Button label="Add" disabled={hasErrors || hasJsonErrors} onClick={handleSubmit} endIcon={Plus} />
       </ModalFooter>
     </Dialog>
-  )
-}
-
-interface TabPanelProps {
-  children?: ReactNode
-  index: number
-  value: number
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`add-custom-list-tabpanel-${index}`}
-      aria-labelledby={`add-custom-list-tab-${index}`}
-      {...other}
-    >
-      {value === index && children}
-    </div>
   )
 }
