@@ -38,12 +38,17 @@ export function OrderPartialApprove({
   const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
 
   const finalAmountToApprove = useMemo(() => {
-    if (isInfiniteApproveDisabledInWidget || (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected)) {
+    if (isInfiniteApproveDisabledInWidget) {
+      return amountToApprove
+    }
+
+    if (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected) {
       return partialAmountToApproveFinal
     }
 
     return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
   }, [
+    amountToApprove,
     isPartialApprovalModeSelected,
     isPartialApproveEnabledBySettings,
     partialAmountToApproveFinal,
