@@ -1,8 +1,8 @@
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
-
-import { useInjectedWidgetParams } from '../../injectedWidget'
 
 /**
  * Returns whether the recipient input should be shown.

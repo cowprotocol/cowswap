@@ -6,12 +6,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
 
-import { useInjectedWidgetParams } from '../../injectedWidget'
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
