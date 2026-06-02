@@ -24,19 +24,22 @@ export function CaptchaWidget(): ReactNode {
   const theme = useTheme()
 
   useEffect(() => {
-    if (!isCaptchaEnabled) return
+    if (!isCaptchaEnabled) {
+      logCaptcha.debug('Disabled by feature flag')
+      return
+    }
 
     if (!siteKey) {
-      logCaptcha.warn('Missing env TURNSTILE_SITE_KEY, captcha widget disabled')
+      logCaptcha.warn('Disabled by missing env TURNSTILE_SITE_KEY')
       return
     }
 
     if (captchaJwt?.token) {
       setBearerToken(captchaJwt.token)
-      logCaptcha.info('Captcha JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
+      logCaptcha.info('JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
       setBearerToken(null)
-      logCaptcha.info('Captcha JWT cleared from orderbook context')
+      logCaptcha.info('JWT cleared from orderbook context')
     }
   }, [captchaJwt, isCaptchaEnabled, siteKey])
 
@@ -53,7 +56,7 @@ export function CaptchaWidget(): ReactNode {
     if (!isCaptchaEnabled || !captchaJwt) return
 
     const timeout = window.setTimeout(() => {
-      logCaptcha.warn('Captcha JWT expired')
+      logCaptcha.warn('JWT expired')
       setCaptchaJwt(null)
     }, getJwtTtl(captchaJwt.expiresAt))
 
@@ -103,14 +106,14 @@ export function CaptchaWidget(): ReactNode {
             return
           }
 
-          logCaptcha.info('Captcha JWT received', { requestId })
+          logCaptcha.info('JWT received', { requestId })
           setCaptchaJwt(jwt)
         } catch (error) {
           if (exchangeRequestIdRef.current !== requestId) {
             return
           }
 
-          logCaptcha.error('Captcha JWT exchange failed', { requestId, error })
+          logCaptcha.error('JWT exchange failed', { requestId, error })
           setCaptchaJwt(null)
         }
       }}
