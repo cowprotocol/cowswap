@@ -3,12 +3,22 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, TextField } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, Tab, Typography } from '@mui/material'
 import Tabs from '@mui/material/Tabs'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
 import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
 import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
+import { TextInput } from '../ui/inputs/TextInput/TextInput.component'
+
+const DIALOG_PAPER_SX = {
+  backgroundColor: 'background.paper',
+  border: '1px solid rgba(255, 255, 255, 0.12)',
+  boxShadow: 'none',
+  backgroundImage: 'none',
+  minWidth: 600,
+  overflow: 'hidden',
+} as const
 
 type AddCustomListDialogProps = {
   open: boolean
@@ -58,13 +68,12 @@ export function AddCustomListDialog({
   }
 
   // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleUrlInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
 
-    setCustomListUrl(value)
+  const handleUrlInputChange = (_name: string, value: string | null): void => {
+    const urlValue = value ?? ''
 
-    setHasErrors(value ? !isValidTokenListSource(value) : false)
+    setCustomListUrl(urlValue)
+    setHasErrors(urlValue ? !isValidTokenListSource(urlValue) : false)
   }
 
   // TODO: Add proper return type annotation
@@ -119,27 +128,48 @@ export function AddCustomListDialog({
   }, [customTokensDefault])
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Custom Token List</DialogTitle>
-      <DialogContent sx={{ minWidth: '600px' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
-            <Tab label="URL" />
-            <Tab label="JSON" />
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="add-custom-token-list-title"
+      PaperProps={{ sx: DIALOG_PAPER_SX }}
+    >
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Box sx={{ px: 2, pt: 2, pb: 1.5 }}>
+          <Typography id="add-custom-token-list-title" component="h2" variant="h6" sx={{ fontWeight: 600, m: 0 }}>
+            Add Custom Token List
+          </Typography>
+        </Box>
+
+        <Box sx={{ borderTop: 1, borderColor: 'divider' }}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            variant="fullWidth"
+            aria-label="Add custom token list input type"
+            sx={{ minHeight: 48 }}
+          >
+            <Tab label="URL" id="add-custom-list-tab-0" aria-controls="add-custom-list-tabpanel-0" />
+            <Tab label="JSON" id="add-custom-list-tab-1" aria-controls="add-custom-list-tabpanel-1" />
           </Tabs>
         </Box>
+      </Box>
+
+      <DialogContent sx={{ px: 2, pt: 3, pb: 2 }}>
         <CustomTabPanel value={tabIndex} index={0}>
-          <TextField
-            error={hasErrors}
-            margin="dense"
-            id="url"
+          <TextInput
+            name="listUrl"
             label="List URL"
             type="url"
-            fullWidth
-            variant="outlined"
             value={customListUrl}
             onChange={handleUrlInputChange}
-            helperText={hasErrors && 'Enter a valid URL'}
+            error={hasErrors}
+            helperText={hasErrors ? 'Enter a valid URL' : undefined}
             required
             autoComplete="off"
           />
@@ -156,7 +186,8 @@ export function AddCustomListDialog({
           <Button onClick={addJsonExample}>Add an example</Button>
         </CustomTabPanel>
       </DialogContent>
-      <DialogActions>
+
+      <DialogActions sx={{ px: 2, pb: 2, pt: 0 }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button disabled={hasErrors || hasJsonErrors} onClick={handleSubmit}>
           Add
@@ -181,8 +212,8 @@ function CustomTabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`add-custom-list-tabpanel-${index}`}
+      aria-labelledby={`add-custom-list-tab-${index}`}
       {...other}
     >
       {value === index && children}

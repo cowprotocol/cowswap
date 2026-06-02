@@ -325,6 +325,11 @@ export function Sidebar({
   - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value. Remove debug red/cyan backgrounds.
   - [ ] Add toggle to disable scrollbars. Auto-resize is now doing that automatically, but it should not.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
+  - [ ] Incorrect background color visible whn collapsing the sidebar.
+  - [ ] Widget URL "custom" value.
+
+  - [ ] Show iframe outline tooltip format is not the same as Mode.
+  - [ ] Env tooltip format no the same as Mode.
   */
 
   return (
