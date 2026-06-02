@@ -47,8 +47,6 @@ export function CaptchaWidget(): ReactNode {
 
     setBearerToken(null)
     if (captchaJwt) setCaptchaJwt(null)
-
-    logCaptcha.info(`Disabled by feature flag, cleared bearer token${captchaJwt ? ', cleared stored JWT' : ''}`)
   }, [captchaJwt, isCaptchaEnabled, setCaptchaJwt])
 
   useEffect(() => {
