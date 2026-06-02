@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { type ReactNode, useEffect, useState } from 'react'
 
 import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
@@ -6,16 +6,16 @@ import { Command, TokenInfo } from '@cowprotocol/types'
 import { Dialog, DialogContent } from '@mui/material'
 import { Plus } from 'react-feather'
 
-import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
-import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
-import { Button } from '../ui/buttons/button/Button.component'
-import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
-import { TextInput } from '../ui/inputs/TextInput/TextInput.component'
-import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
-import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
-import { configuratorDialogBackdropSx, configuratorDialogPaperSx } from '../ui/surface/modal/modal.styles'
-import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
-import { ModalLabelTabInfo, ModalTabs } from '../ui/surface/modal/tabs/ModalTabs.component'
+import { DEFAULT_CUSTOM_TOKENS } from '../../../../../configurator.constants'
+import { parseCustomTokensInput } from '../../../../../utils/parseCustomTokensInput'
+import { Button } from '../../../../ui/buttons/button/Button.component'
+import { JsonInput } from '../../../../ui/inputs/JsonInput/JsonInput.component'
+import { TextInput } from '../../../../ui/inputs/TextInput/TextInput.component'
+import { ModalFooter } from '../../../../ui/surface/modal/footer/ModalFooter.component'
+import { ModalHeader } from '../../../../ui/surface/modal/header/ModalHeader.component'
+import { configuratorDialogBackdropSx, configuratorDialogPaperSx } from '../../../../ui/surface/modal/modal.styles'
+import { ModalTabPanel } from '../../../../ui/surface/modal/tabs/ModalTabPanel.component'
+import { ModalLabelTabInfo, ModalTabs } from '../../../../ui/surface/modal/tabs/ModalTabs.component'
 
 const ADD_CUSTOM_LIST_TABS_ID_PREFIX = 'add-custom-list'
 
@@ -37,15 +37,14 @@ type AddCustomListDialogProps = {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function AddCustomListDialog({
+// eslint-disable-next-line max-lines-per-function
+export function AddCustomTokensDialog({
   open,
   onClose,
   onAddListUrl,
   onAddCustomTokens,
   customTokens: customTokensDefault,
-}: AddCustomListDialogProps) {
+}: AddCustomListDialogProps): ReactNode {
   const [customListUrl, setCustomListUrl] = useState<string>('')
   const [hasErrors, setHasErrors] = useState(false)
   const [hasJsonErrors, setHasJsonErrors] = useState(false)

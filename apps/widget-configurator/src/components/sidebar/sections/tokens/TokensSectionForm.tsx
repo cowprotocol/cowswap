@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useState } from 'react'
 import { Box } from '@mui/material'
 import { Plus } from 'react-feather'
 
+import { AddCustomTokensDialog } from './dialog/AddCustomTokensDialog.component'
 import { TOKEN_LIST_MENU_PROPS, TOKEN_LIST_SELECT_CONFIG } from './TokensSectionForm.constants'
 import {
   appendTokenListUrl,
@@ -12,7 +13,6 @@ import {
   type TokenListScope,
 } from './TokensSectionForm.utils'
 
-import { AddCustomListDialog } from '../../../controls/AddCustomListDialog'
 import { LinkButton } from '../../../ui/buttons/link/LinkButton.component'
 import { CurrencyInputControl } from '../../../ui/inputs/CurrencyInput/CurrencyInputControl'
 import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
@@ -75,7 +75,7 @@ export function TokensSectionForm({ values, onChange }: TokensSectionFormProps):
         />
       ))}
 
-      <AddCustomListDialog
+      <AddCustomTokensDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         customTokens={values.customTokens}
