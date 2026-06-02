@@ -119,5 +119,5 @@ function resolveToken(
   ) {
     return order.sellToken || undefined
   }
-  return feeTokensByKey.get(getAddressKey(address)) || undefined
+  return feeTokensByKey.get(address) || undefined
 }
