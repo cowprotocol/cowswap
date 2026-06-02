@@ -19,6 +19,7 @@ export function SidebarControls({ isSidebarOpen, toggleSidebarOpen, onResizeStar
   return (
     <Box sx={sidebarControlsZeroWidthColumnSx}>
       <IconButton
+        disableRipple
         title={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
         aria-label={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
         aria-hidden={isSidebarOpen}

@@ -121,7 +121,7 @@ function Root(): ReactNode {
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <GlobalStyles styles={feixenFontStyles} />
-              <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
+              <GlobalStyles styles={globalStyles(theme)} />
               <Box sx={WrapperStyled}>
                 <WithLDProvider>
                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>

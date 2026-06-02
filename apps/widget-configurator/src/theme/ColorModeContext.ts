@@ -19,7 +19,7 @@ export const ColorModeContext = createContext<ColorModeParams>({
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const globalStyles = (theme: Theme, mode: PaletteMode) => ({
+export const globalStyles = (theme: Theme) => ({
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",
     fontDisplay: 'fallback',
@@ -53,10 +53,7 @@ export const globalStyles = (theme: Theme, mode: PaletteMode) => ({
     fontVariant: 'none',
     fontFeatureSettings: "'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on",
     WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
-    backgroundAttachment: 'fixed',
-    backgroundColor: theme.palette.cow.background,
-    background: mode === 'light' && theme.palette.cow.gradient,
-    backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
+    backgroundColor: theme.palette.background.paper,
   },
   'w3m-modal': {
     zIndex: 1200,

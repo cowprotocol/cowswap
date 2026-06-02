@@ -23,7 +23,7 @@ export const sidebarToggleOpenButton: SxProps<Theme> = (theme: Theme) => ({
   transform: 'translate(-50%, -50%)',
   borderRadius: '50%',
   border: `none`,
-  backgroundColor: theme.palette.grey[theme.palette.mode === 'dark' ? 900 : 200],
+  backgroundColor: theme.palette.background.paper,
   color: theme.palette.primary.main,
   boxShadow: 'none',
   zIndex: 3,
@@ -36,7 +36,6 @@ export const sidebarToggleOpenButton: SxProps<Theme> = (theme: Theme) => ({
 
   '&:hover': {
     boxShadow: 'none',
-    backgroundColor: theme.palette.grey[theme.palette.mode === 'dark' ? 900 : 200],
     transform: 'translate(-50%, -50%) scale(2)',
   },
 })
