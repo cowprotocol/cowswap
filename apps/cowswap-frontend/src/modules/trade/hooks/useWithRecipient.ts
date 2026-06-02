@@ -1,4 +1,4 @@
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'

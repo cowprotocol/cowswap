@@ -5,8 +5,8 @@ import { SettingsDropdownSection, SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,

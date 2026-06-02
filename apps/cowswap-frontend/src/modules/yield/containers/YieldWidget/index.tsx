@@ -9,10 +9,10 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { SelectTokenWidget } from 'modules/tokensList'
 import { TradeWidget, TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'

@@ -4,9 +4,8 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'

@@ -10,8 +10,8 @@ import {
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
