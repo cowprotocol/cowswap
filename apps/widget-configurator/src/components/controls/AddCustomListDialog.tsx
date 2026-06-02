@@ -13,7 +13,7 @@ import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
 import { TextInput } from '../ui/inputs/TextInput/TextInput.component'
 import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
 import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
-import { configuratorDialogPaperSx } from '../ui/surface/modal/modal.styles'
+import { configuratorDialogBackdropSx, configuratorDialogPaperSx } from '../ui/surface/modal/modal.styles'
 import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
 import { ModalLabelTabInfo, ModalTabs } from '../ui/surface/modal/tabs/ModalTabs.component'
 
@@ -143,6 +143,7 @@ export function AddCustomListDialog({
       maxWidth="sm"
       aria-labelledby="add-custom-token-list-title"
       PaperProps={{ sx: configuratorDialogPaperSx }}
+      slotProps={{ backdrop: { sx: configuratorDialogBackdropSx } }}
     >
       <ModalHeader titleId="add-custom-token-list-title" title="Add Custom Token List" onClose={onClose}>
         <ModalTabs
