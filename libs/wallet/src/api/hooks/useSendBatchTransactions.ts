@@ -19,7 +19,7 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
   const safeAppsSdk = useSafeAppsSdk()
   const { chainId, account } = useWalletInfo()
   const { data: capabilities } = useWalletCapabilities()
-  const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported'
+  const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported' || capabilities?.atomicBatch?.supported
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
