@@ -1,11 +1,14 @@
 import React from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { Story, Meta } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
-import { ZERO_BIG_NUMBER } from 'const'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { RICH_ORDER, WETH } from '../../../test/data'
+import { ProtocolFeeType } from 'api/operator'
+
+import { RICH_ORDER, USDT, WETH } from '../../../test/data'
 
 import { GasFeeDisplay, Props } from '.'
 
@@ -22,59 +25,35 @@ const Template: Story<Props> = (args) => (
   </div>
 )
 
-const order = {
-  ...RICH_ORDER,
-  feeAmount: new BigNumber('200000'),
-  executedFeeAmount: ZERO_BIG_NUMBER,
-}
+const defaultProps: Props = { order: RICH_ORDER }
 
-const defaultProps: Props = { order }
+// No protocol fees -> renders a dash
+export const NoProtocolFees = Template.bind({})
+NoProtocolFees.args = { ...defaultProps }
 
-export const NoFee = Template.bind({})
-NoFee.args = { ...defaultProps }
-
-export const PartialFee = Template.bind({})
-PartialFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('100000') } }
-
-export const FullFee = Template.bind({})
-FullFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: order.feeAmount, fullyFilled: true } }
-
-export const TinyFee6DecimalsToken = Template.bind({})
-TinyFee6DecimalsToken.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('1') } }
-
-export const TinyFee18DecimalsToken = Template.bind({})
-TinyFee18DecimalsToken.args = {
-  ...defaultProps,
-  order: { ...order, executedFeeAmount: new BigNumber('1'), sellToken: WETH },
-}
-
-export const WithBreakdownSameToken = Template.bind({})
-WithBreakdownSameToken.args = {
-  ...defaultProps,
+// Single protocol fee, denominated in the buy token (surplus side)
+export const SingleProtocolFee = Template.bind({})
+SingleProtocolFee.args = {
   order: {
-    ...order,
-    executedFeeAmount: order.feeAmount,
-    fullyFilled: true,
-    totalFee: new BigNumber('200000'),
-    networkCosts: new BigNumber('150000'),
-    protocolFees: new BigNumber('50000'),
-    protocolFeeTokenAddress: order.sellTokenAddress,
-    executedFeeToken: order.sellTokenAddress,
+    ...RICH_ORDER,
+    protocolFees: [
+      { amount: new BigNumber('1166200'), tokenAddress: getAddressKey(USDT.address), type: ProtocolFeeType.Surplus },
+    ],
   },
 }
 
-// Surplus-side protocol fee: charged in the buy token while network costs stay in the sell token
-export const WithBreakdownSurplusToken = Template.bind({})
-WithBreakdownSurplusToken.args = {
-  ...defaultProps,
+// Multiple protocol fees of different types/tokens, each shown on its own labelled row
+export const MultipleProtocolFees = Template.bind({})
+MultipleProtocolFees.args = {
   order: {
-    ...order,
-    executedFeeAmount: order.feeAmount,
-    fullyFilled: true,
-    totalFee: new BigNumber('200000'),
-    networkCosts: new BigNumber('200000'),
-    protocolFees: new BigNumber('1166200'),
-    protocolFeeTokenAddress: order.buyTokenAddress,
-    executedFeeToken: order.sellTokenAddress,
+    ...RICH_ORDER,
+    protocolFees: [
+      { amount: new BigNumber('1166200'), tokenAddress: getAddressKey(USDT.address), type: ProtocolFeeType.Surplus },
+      {
+        amount: new BigNumber('50000000000000000'),
+        tokenAddress: getAddressKey(WETH.address),
+        type: ProtocolFeeType.PriceImprovement,
+      },
+    ],
   },
 }
