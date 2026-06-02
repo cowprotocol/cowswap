@@ -39,7 +39,7 @@ export function BaseButton({
       endIcon={
         EndIcon ? <EndIcon size={BUTTON_ICON_SIZE} strokeWidth={BUTTON_ICON_STROKE_WIDTH} aria-hidden /> : undefined
       }
-      sx={[buttonSx, ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}
+      sx={[...(Array.isArray(buttonSx) ? buttonSx : [buttonSx]), ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}
     >
       {label}
     </MuiButton>

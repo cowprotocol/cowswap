@@ -7,9 +7,9 @@ import {
 
 import type { SxProps, Theme } from '@mui/material/styles'
 
-export const buttonSx: SxProps<Theme> = {
+export const buttonSx = {
   ...sharedBorderSx,
   ...labelledButtonTypographySx,
   ...mediumButtonSizeSx,
   ...mediumEndIconSpacingSx,
-}
+} satisfies SxProps<Theme>

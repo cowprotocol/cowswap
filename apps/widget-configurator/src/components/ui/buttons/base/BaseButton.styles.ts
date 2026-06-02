@@ -8,27 +8,27 @@ export const labelledButtonTypographySx = {
   fontWeight: 'bold',
   textTransform: 'uppercase',
   color: 'text.primary',
-} as const
+} as const satisfies SxProps<Theme>
 
 export const sharedBorderSx = {
   borderRadius: 1,
   border: '1px solid',
   borderColor: 'divider',
-} as const
+} as const satisfies SxProps<Theme>
 
-export const mediumButtonSizeSx: SxProps<Theme> = {
+export const mediumButtonSizeSx = {
   pl: 1.5,
   pr: 2,
   py: 1,
   height: 40,
-}
+} as const satisfies SxProps<Theme>
 
-export const smallButtonSizeSx: SxProps<Theme> = {
+export const smallButtonSizeSx = {
   p: 1,
   height: 32,
   minWidth: 32,
-}
+} as const satisfies SxProps<Theme>
 
-export const mediumEndIconSpacingSx: SxProps<Theme> = {
+export const mediumEndIconSpacingSx = {
   '& .MuiButton-endIcon': { ml: 1.5 },
-}
+} as const satisfies SxProps<Theme>

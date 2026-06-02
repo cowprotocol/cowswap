@@ -2,8 +2,8 @@ import { labelledButtonTypographySx, sharedBorderSx, smallButtonSizeSx } from '.
 
 import type { SxProps, Theme } from '@mui/material/styles'
 
-export const smallButtonSx: SxProps<Theme> = {
+export const smallButtonSx = {
   ...sharedBorderSx,
   ...labelledButtonTypographySx,
   ...smallButtonSizeSx,
-}
+} satisfies SxProps<Theme>
