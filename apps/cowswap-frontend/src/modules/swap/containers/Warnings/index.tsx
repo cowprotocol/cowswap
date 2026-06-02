@@ -5,7 +5,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import {
   useIsCurrentTradeBridging,
   useIsNonEvmBridging,

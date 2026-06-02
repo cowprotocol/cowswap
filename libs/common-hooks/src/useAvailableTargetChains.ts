@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { getAvailableDestinationChains } from '@cowprotocol/common-utils'
-import { AdditionalTargetChainId, TargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { useFeatureFlags } from './useFeatureFlags'
 
@@ -23,7 +23,7 @@ export function useAvailableTargetChains(): TargetChainId[] {
     }
 
     if (!isSolBridgeEnabled) {
-      chainsToSkip.push(AdditionalTargetChainId.SOLANA)
+      chainsToSkip.push(SupportedChainId.SOLANA)
     }
 
     return getAvailableDestinationChains(chainsToSkip)
