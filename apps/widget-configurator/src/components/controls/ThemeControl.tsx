@@ -51,7 +51,6 @@ export interface ThemeControlProps {
 export function ThemeControl({ name, selectedValue, onChange }: ThemeControlProps): ReactNode {
   return (
     <SelectInput
-      labelId="select-theme-label"
       id="select-theme"
       name={name}
       value={selectedValue}

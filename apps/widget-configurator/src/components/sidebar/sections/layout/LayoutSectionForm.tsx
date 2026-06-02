@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { AppearanceStyleControls } from '../../../controls/AppearanceStyleControls'
-import { BooleanSwitchControl } from '../../../ui/controls/BooleanSwitch/BooleanSwitchControl'
+import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
 
 import type { JsonState, OnJsonStateChange } from '../../../../hooks/useJsonState'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -33,13 +33,13 @@ export function LayoutSectionForm({
 }: LayoutSectionFormProps): ReactNode {
   return (
     <>
-      <BooleanSwitchControl
+      <SwitchInput
         checked={values.autoResizeEnabled}
         label="Auto-resize iframe"
         onChange={(checked) => onChange('autoResizeEnabled', checked)}
         helperText="When enabled, the iframe height adjusts automatically to fit its content."
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={values.showIframeOutline}
         label="Show iframe outline"
         onChange={(checked) => onChange('showIframeOutline', checked)}

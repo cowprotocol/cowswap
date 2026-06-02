@@ -4,11 +4,9 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useConnection, useSwitchChain } from 'wagmi'
 
-import { getNetworkOption, NetworkOption } from '../components/ui/controls/Select/NetworkControl'
-
 export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
-  setNetworkControlState: (option: NetworkOption) => void,
+  setNetworkControlState: (chainId: SupportedChainId) => void,
   standaloneMode: boolean,
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
@@ -24,12 +22,8 @@ export function useSyncWidgetNetwork(
   useEffect(() => {
     if (!isConnected || !walletChainId) return
 
-    const newNetwork = getNetworkOption(walletChainId as SupportedChainId)
-
-    if (newNetwork) {
-      currentChainIdRef.current = walletChainId as SupportedChainId
-      setNetworkControlState(newNetwork)
-    }
+    currentChainIdRef.current = walletChainId as SupportedChainId
+    setNetworkControlState(walletChainId as SupportedChainId)
   }, [isConnected, walletChainId, setNetworkControlState])
 
   // Send a request to switch network when user changes network in the configurator

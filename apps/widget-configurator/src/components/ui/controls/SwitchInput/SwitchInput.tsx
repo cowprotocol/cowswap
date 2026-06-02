@@ -6,7 +6,7 @@ import Switch from '@mui/material/Switch'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
-interface BooleanSwitchControlProps {
+interface SwitchInputProps {
   checked: boolean
   label: string
   onChange: (checked: boolean) => void
@@ -14,13 +14,7 @@ interface BooleanSwitchControlProps {
   tooltip?: string
 }
 
-export function BooleanSwitchControl({
-  checked,
-  label,
-  onChange,
-  helperText,
-  tooltip,
-}: BooleanSwitchControlProps): ReactNode {
+export function SwitchInput({ checked, label, onChange, helperText, tooltip }: SwitchInputProps): ReactNode {
   const labelContent = tooltip ? (
     <Tooltip title={tooltip} arrow placement="top">
       <span>{label}</span>

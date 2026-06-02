@@ -1,19 +1,13 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TradeType } from '@cowprotocol/widget-lib'
+import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { IS_IFRAME } from '../../../../configurator.constants'
-import { BooleanSwitchControl } from '../../../ui/controls/BooleanSwitch/BooleanSwitchControl'
-import { CurrentTradeTypeControl } from '../../../ui/controls/Select/CurrentTradeTypeControl'
-import {
-  NetworkControl,
-  type NetworkOption,
-  getNetworkOption,
-  NetworkOptions,
-} from '../../../ui/controls/Select/NetworkControl'
-import { TradeModesControl } from '../../../ui/controls/Select/TradeModesControl'
+import { IS_IFRAME, TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../../configurator.constants'
+import { SelectInput, SelectInputOption } from '../../../ui/controls/Select/SelectInput'
+import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 
@@ -22,41 +16,60 @@ interface TradeSetupSectionFormProps {
   onChange: ConfiguratorFormChangeHandler
 }
 
-function resolveNextState<T>(current: T, next: SetStateAction<T>): T {
-  return typeof next === 'function' ? (next as (prevState: T) => T)(current) : next
-}
-
 export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFormProps): ReactNode {
   const availableChains = useAvailableChains()
-  const standaloneMode = values.widgetMode === 'standalone'
 
-  const tradeModesState: [TradeType[], Dispatch<SetStateAction<TradeType[]>>] = [
-    values.enabledTradeTypes,
-    (nextValue) => onChange('enabledTradeTypes', resolveNextState(values.enabledTradeTypes, nextValue)),
-  ]
+  const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {
+    const availableChainsSet = new Set(availableChains)
 
-  const tradeTypeState: [TradeType, Dispatch<SetStateAction<TradeType>>] = [
-    values.currentTradeType,
-    (nextValue) => onChange('currentTradeType', resolveNextState(values.currentTradeType, nextValue)),
-  ]
+    const chainOptions: SelectInputOption<SupportedChainId>[] = Object.entries(CHAIN_INFO).map(
+      ([chainIdStr, chainInfo]) => {
+        const chainId = +chainIdStr as SupportedChainId
 
-  const selectedNetwork = getNetworkOption(values.chainId) || NetworkOptions[0]
-  const networkState: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>] = [
-    selectedNetwork,
-    (nextValue) => {
-      const nextOption = resolveNextState(selectedNetwork, nextValue)
-      onChange('chainId', nextOption.chainId as SupportedChainId)
-    },
-  ]
+        return {
+          value: chainId,
+          label: `${chainInfo.label}${isChainDeprecated(chainId) ? ' (deprecated)' : ''}`,
+          disabled: !availableChainsSet.has(chainId),
+        }
+      },
+    )
+
+    return chainOptions
+  }, [availableChains])
 
   return (
     <>
-      <TradeModesControl state={tradeModesState} />
-      <CurrentTradeTypeControl state={tradeTypeState} />
-      {!IS_IFRAME ? (
-        <NetworkControl state={networkState} standaloneMode={standaloneMode} availableChains={availableChains} />
-      ) : null}
-      <BooleanSwitchControl
+      <SelectInput
+        id="trade-mode-select"
+        name="enabledTradeTypes"
+        label="Trade types"
+        multiple
+        value={values.enabledTradeTypes}
+        options={TRADE_MODES_OPTIONS}
+        onChange={onChange}
+        renderValue={(selected) => (Array.isArray(selected) ? selected.join(', ') : selected)}
+      />
+
+      <SelectInput
+        id="select-trade-type"
+        name="currentTradeType"
+        label="Current trade type"
+        value={values.currentTradeType}
+        options={TRADE_TYPE_OPTIONS}
+        onChange={onChange}
+      />
+
+      <SelectInput
+        id="controllable-states-network"
+        name="chainId"
+        label="Network"
+        value={values.chainId}
+        disabled={values.widgetMode === 'standalone' || IS_IFRAME}
+        options={chainOptions}
+        onChange={onChange}
+      />
+
+      <SwitchInput
         checked={!values.disableCrossChainSwap}
         label="Allow cross-chain swaps"
         onChange={(enabled) => onChange('disableCrossChainSwap', !enabled)}

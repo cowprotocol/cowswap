@@ -1,7 +1,8 @@
 import { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
-import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
@@ -36,7 +37,6 @@ import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
 import { AccordionFormSection } from '../ui/Accordion/AccordionFormSection'
-import { type NetworkOption, NetworkOptions } from '../ui/controls/Select/NetworkControl'
 
 import type { Theme } from '@mui/material/styles'
 import type * as CSS from 'csstype'
@@ -108,7 +108,7 @@ export function Sidebar({
     locale: '',
     enabledTradeTypes: TRADE_MODES,
     currentTradeType: TRADE_MODES[0],
-    chainId: NetworkOptions[0].chainId,
+    chainId: SupportedChainId.MAINNET,
     disableCrossChainSwap: false,
     sellToken: DEFAULT_STATE.sellToken,
     sellTokenAmount: DEFAULT_STATE.sellAmount,
@@ -187,13 +187,6 @@ export function Sidebar({
     },
     [],
   ) as ConfiguratorFormChangeHandler
-
-  const setNetworkControlState = useCallback(
-    (option: NetworkOption): void => {
-      handleConfiguratorFormChange('chainId', option.chainId)
-    },
-    [handleConfiguratorFormChange],
-  )
 
   const iframeStyleJson = useMemo(
     () => parseJsonField<CSS.Properties>(configuratorFormValues.iframeStyleJson, {}),
@@ -294,6 +287,15 @@ export function Sidebar({
   useEffect(() => {
     onStateChange(configuratorState)
   }, [configuratorState, onStateChange])
+
+  // Sync widget network with the selected network in the configurator:
+
+  const setNetworkControlState = useCallback(
+    (chainId: SupportedChainId): void => {
+      handleConfiguratorFormChange('chainId', chainId)
+    },
+    [handleConfiguratorFormChange],
+  )
 
   useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, standaloneMode)
 

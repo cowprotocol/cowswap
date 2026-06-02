@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { BooleanSwitchControl } from '../../../ui/controls/BooleanSwitch/BooleanSwitchControl'
 import { NumberInput } from '../../../ui/controls/NumberInput/NumberInput.component'
+import { SwitchInput } from '../../../ui/controls/SwitchInput/SwitchInput'
 
 import type { UseToastsManagerReturn } from '../../../../hooks/useToastsManager'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -15,48 +15,48 @@ export interface BehaviorSectionFormProps {
 export function BehaviorSectionForm({ values, onChange, toastManager }: BehaviorSectionFormProps): ReactNode {
   return (
     <>
-      <BooleanSwitchControl
+      <SwitchInput
         checked={toastManager.disableToastMessages}
         label="Use app toasts"
         helperText="When off, the widget keeps toast messages inside the iframe."
         onChange={toastManager.setToastMessagesInDappMode}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.disableProgressBar}
         label="Show progress bar"
         onChange={(enabled) => onChange('disableProgressBar', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.disablePostTradeTips}
         label="Show post-trade tips"
         onChange={(enabled) => onChange('disablePostTradeTips', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.disableTokenImport}
         label="Allow custom token imports"
         onChange={(enabled) => onChange('disableTokenImport', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.hideRecentTokens}
         label="Show recent tokens"
         onChange={(enabled) => onChange('hideRecentTokens', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.hideFavoriteTokens}
         label="Show favorite tokens"
         onChange={(enabled) => onChange('hideFavoriteTokens', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.hideBridgeInfo}
         label="Show bridge info"
         onChange={(enabled) => onChange('hideBridgeInfo', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={!values.hideOrdersTable}
         label="Show orders table"
         onChange={(enabled) => onChange('hideOrdersTable', !enabled)}
       />
-      <BooleanSwitchControl
+      <SwitchInput
         checked={values.disableTradeWhenPriceImpactIsUnknown}
         label="Block trade if price impact is unknown"
         onChange={(enabled) => onChange('disableTradeWhenPriceImpactIsUnknown', enabled)}

@@ -5,7 +5,6 @@ import { LOCALE_DISPLAY_NAMES, SupportedLocale, SUPPORTED_LOCALES } from '@cowpr
 import { SelectInput } from './SelectInput'
 
 const LABEL = 'Forced locale'
-const LABEL_ID = 'select-locale-label'
 
 type LocaleControlState = [SupportedLocale | '', Dispatch<SetStateAction<SupportedLocale | ''>>]
 
@@ -14,7 +13,6 @@ export function LocaleControl({ state }: { state: LocaleControlState }): ReactNo
 
   return (
     <SelectInput
-      labelId={LABEL_ID}
       id="select-locale"
       name="locale"
       label={LABEL}

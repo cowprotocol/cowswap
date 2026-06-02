@@ -2,6 +2,7 @@ import { COW_CDN } from '@cowprotocol/common-const'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { SelectInputOption } from './components/ui/controls/Select/SelectInput'
 import { TokenListItem } from './configurator.types'
 
 // ENV:
@@ -22,11 +23,25 @@ export const WIDGET_PREVIEW_READY_FALLBACK_MS = 60_000
 
 export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi' as const
 
-// CoW DAO addresses
+// Form options:
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 
-export const WIDGET_HOOKS = Object.values(WidgetHookEvents)
+export const TRADE_MODES_OPTIONS: SelectInputOption<TradeType>[] = TRADE_MODES.map((option) => ({
+  label: option,
+  value: option,
+}))
+
+export const TRADE_TYPE_OPTIONS: SelectInputOption<TradeType>[] = Object.values(TradeType).map((option) => ({
+  label: option,
+  value: option,
+}))
+
+export const WIDGET_HOOKS_OPTIONS: SelectInputOption<WidgetHookEvents>[] = Object.values(WidgetHookEvents).map(
+  (option) => ({ label: option, value: option }),
+)
+
+// CoW DAO addresses
 
 export const DEFAULT_STATE = {
   sellToken: 'USDC',
