@@ -3,9 +3,8 @@ import { type ReactNode, useEffect } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { COW_WIDGET_CONNECTOR_ID, useDisconnectWallet } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useConnection } from 'wagmi'
-
-import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
 
 /**
  * When the widget switches from standalone mode to dapp mode (without iframe recreation),

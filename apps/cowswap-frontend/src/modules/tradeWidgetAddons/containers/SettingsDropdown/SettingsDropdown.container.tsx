@@ -27,6 +27,7 @@ interface SettingsTabProps {
   hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
+  partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
   isRecipientToggleHidden?: boolean
 }
@@ -38,6 +39,7 @@ export function SettingsDropdown({
   hooksEnabledState,
   deadlineState,
   enablePartialApprovalState,
+  partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
   isRecipientToggleHidden = false,
 }: SettingsTabProps): ReactNode {
@@ -114,8 +116,9 @@ export function SettingsDropdown({
                     id="enable-partial-approvals-button"
                     title={t`Enable Partial Approvals`}
                     tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-                    checked={enablePartialApproval}
+                    checked={partialApprovalLocked ? true : enablePartialApproval}
                     toggle={toggleEnablePartialApproval}
+                    disabled={partialApprovalLocked}
                   />
                 ) : null}
 
