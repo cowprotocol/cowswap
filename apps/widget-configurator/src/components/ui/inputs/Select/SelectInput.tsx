@@ -9,29 +9,10 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent, SelectProps } from '@mui/material/Select'
 
+import { configuratorMenuPaperSx } from '../../surface/surface.styles'
 import { BASE_TEXT_INPUT_HEIGHT } from '../BaseTextInput/BaseTextInput.component'
 
 type PrimitiveValue = string | number
-
-const DEFAULT_MENU_PAPER_SX = {
-  backgroundColor: 'background.paper',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  boxShadow: 'none',
-  backgroundImage: 'none',
-  '& .MuiMenuItem-root': {
-    backgroundColor: 'transparent !important',
-  },
-  '& .MuiMenuItem-root.Mui-selected, & .MuiMenuItem-root.Mui-selected.Mui-focusVisible': {
-    backgroundColor: 'transparent !important',
-  },
-  '& .MuiMenuItem-root.Mui-focusVisible': {
-    backgroundColor: 'transparent !important',
-  },
-  '& .MuiMenuItem-root:hover, & .MuiMenuItem-root.Mui-selected:hover, & .MuiMenuItem-root.Mui-focusVisible:hover, & .MuiMenuItem-root.Mui-selected.Mui-focusVisible:hover':
-    {
-      backgroundColor: 'rgba(255, 255, 255, 0.06) !important',
-    },
-} as const
 
 const NO_MENU_ANIMATION_PROPS: SelectProps['MenuProps'] = {
   transitionDuration: 0,
@@ -39,7 +20,7 @@ const NO_MENU_ANIMATION_PROPS: SelectProps['MenuProps'] = {
     timeout: 0,
   },
   PaperProps: {
-    sx: DEFAULT_MENU_PAPER_SX,
+    sx: configuratorMenuPaperSx,
   },
 }
 
@@ -158,7 +139,7 @@ export function SelectInput<TValue extends PrimitiveValue = string>({
     PaperProps: {
       ...menuProps?.PaperProps,
       sx: [
-        DEFAULT_MENU_PAPER_SX,
+        configuratorMenuPaperSx,
         ...(Array.isArray(menuProps?.PaperProps?.sx)
           ? menuProps.PaperProps.sx
           : menuProps?.PaperProps?.sx

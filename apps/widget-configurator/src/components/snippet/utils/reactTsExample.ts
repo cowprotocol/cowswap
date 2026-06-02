@@ -12,7 +12,7 @@ ${REACT_IMPORT_STATEMENT} from '@cowprotocol/widget-react'
 // ${COMMENTS_BEFORE_PARAMS}
 const params: CowSwapWidgetParams = ${formatParameters(params, 0, true, defaultPalette)}
 
-// ${PROVIDER_PARAM_COMMENT}
+${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 
 function App() {

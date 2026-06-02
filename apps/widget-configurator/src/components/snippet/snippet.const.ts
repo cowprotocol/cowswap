@@ -2,8 +2,12 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 export const COMMENTS_BEFORE_PARAMS = ` Fill this form https://cowprotocol.typeform.com/to/rONXaxHV once you pick your "appCode"`
 
-export const PROVIDER_PARAM_COMMENT =
-  'Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com'
+export const PROVIDER_PARAM_COMMENT_LINES = [
+  'Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`,',
+  'but consider using something like https://web3modal.com',
+] as const
+
+export const PROVIDER_PARAM_COMMENT = PROVIDER_PARAM_COMMENT_LINES.map((line) => `// ${line}`).join('\n')
 
 export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, string>> = {
   // Basics:

@@ -3,22 +3,17 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { isValidTokenListSource } from '@cowprotocol/common-utils'
 import { Command, TokenInfo } from '@cowprotocol/types'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, Tab, Typography } from '@mui/material'
-import Tabs from '@mui/material/Tabs'
+import { Dialog, DialogContent, Tab, Tabs } from '@mui/material'
+import { Plus } from 'react-feather'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../configurator.constants'
 import { parseCustomTokensInput } from '../../utils/parseCustomTokensInput'
+import { Button } from '../ui/buttons/button/Button.component'
 import { JsonInput } from '../ui/inputs/JsonInput/JsonInput.component'
 import { TextInput } from '../ui/inputs/TextInput/TextInput.component'
-
-const DIALOG_PAPER_SX = {
-  backgroundColor: 'background.paper',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  boxShadow: 'none',
-  backgroundImage: 'none',
-  minWidth: 600,
-  overflow: 'hidden',
-} as const
+import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
+import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
+import { configuratorDialogPaperSx } from '../ui/surface/modal/modal.styles'
 
 type AddCustomListDialogProps = {
   open: boolean
@@ -131,22 +126,16 @@ export function AddCustomListDialog({
     <Dialog
       open={open}
       onClose={onClose}
+      fullWidth
+      maxWidth="sm"
       aria-labelledby="add-custom-token-list-title"
-      PaperProps={{ sx: DIALOG_PAPER_SX }}
+      PaperProps={{ sx: configuratorDialogPaperSx }}
     >
-      <Box
-        sx={{
-          borderBottom: 1,
-          borderColor: 'divider',
-        }}
-      >
-        <Box sx={{ px: 2, pt: 2, pb: 1.5 }}>
-          <Typography id="add-custom-token-list-title" component="h2" variant="h6" sx={{ fontWeight: 600, m: 0 }}>
-            Add Custom Token List
-          </Typography>
-        </Box>
-
-        <Box sx={{ borderTop: 1, borderColor: 'divider' }}>
+      <ModalHeader
+        titleId="add-custom-token-list-title"
+        title="Add Custom Token List"
+        onClose={onClose}
+        tabs={
           <Tabs
             value={tabIndex}
             onChange={handleTabChange}
@@ -157,10 +146,10 @@ export function AddCustomListDialog({
             <Tab label="URL" id="add-custom-list-tab-0" aria-controls="add-custom-list-tabpanel-0" />
             <Tab label="JSON" id="add-custom-list-tab-1" aria-controls="add-custom-list-tabpanel-1" />
           </Tabs>
-        </Box>
-      </Box>
+        }
+      />
 
-      <DialogContent sx={{ px: 2, pt: 3, pb: 2 }}>
+      <DialogContent sx={{ px: 2, pt: 2, pb: 2 }}>
         <CustomTabPanel value={tabIndex} index={0}>
           <TextInput
             name="listUrl"
@@ -183,16 +172,13 @@ export function AddCustomListDialog({
             error={hasJsonErrors}
             helperText={hasJsonErrors ? 'Enter a token array or token list JSON' : undefined}
           />
-          <Button onClick={addJsonExample}>Add an example</Button>
+          <Button label="Add an example" onClick={addJsonExample} sx={{ mt: 1 }} />
         </CustomTabPanel>
       </DialogContent>
 
-      <DialogActions sx={{ px: 2, pb: 2, pt: 0 }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button disabled={hasErrors || hasJsonErrors} onClick={handleSubmit}>
-          Add
-        </Button>
-      </DialogActions>
+      <ModalFooter>
+        <Button label="Add" disabled={hasErrors || hasJsonErrors} onClick={handleSubmit} endIcon={Plus} />
+      </ModalFooter>
     </Dialog>
   )
 }

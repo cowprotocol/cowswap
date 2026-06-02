@@ -14,7 +14,7 @@ const container = document.getElementById('<YOUR_CONTAINER>')
 // ${COMMENTS_BEFORE_PARAMS}
 const params = ${formatParameters(params, 0, false, defaultPalette)}
 
-// ${PROVIDER_PARAM_COMMENT}
+${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 
 const { updateParams } = createCowSwapWidget(container, { params, provider })

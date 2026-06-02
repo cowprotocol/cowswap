@@ -2,11 +2,13 @@ import { Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState } f
 
 import { TokenInfo } from '@cowprotocol/types'
 
-import { Box, Button, Chip, ListItemText } from '@mui/material'
+import { Box, Chip, ListItemText } from '@mui/material'
+import { Plus } from 'react-feather'
 
 import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../../configurator.types'
+import { LinkButton } from '../ui/buttons/link/LinkButton.component'
 import { SelectInput } from '../ui/inputs/Select/SelectInput'
 
 const ITEM_HEIGHT = 48
@@ -166,9 +168,7 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
           onAddCustomTokens={setCustomTokens}
         />
 
-        <Button sx={{ width: '100%' }} variant="outlined" onClick={() => setDialogOpen(true)}>
-          Add Custom List
-        </Button>
+        <LinkButton label="Add Custom List" endIcon={Plus} onClick={() => setDialogOpen(true)} />
       </Box>
     </>
   )

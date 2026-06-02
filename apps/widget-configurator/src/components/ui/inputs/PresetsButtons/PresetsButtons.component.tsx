@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
-import { Button, Box } from '@mui/material'
+import { Box } from '@mui/material'
+
+import { SmallButton } from '../../buttons/small/SmallButton.component'
 
 export interface PresetOption {
   label: string
@@ -16,27 +18,7 @@ export function PresetsButtons({ presets, onPresetClick }: PresetsButtonsProps):
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
       {presets.map((preset) => (
-        <Button
-          key={preset.value}
-          type="button"
-          variant="text"
-          size="medium"
-          onClick={() => onPresetClick(preset.value)}
-          sx={{
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            p: 1,
-            fontSize: '12px',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            color: 'text.primary',
-            height: 32,
-            minWidth: 32,
-          }}
-        >
-          {preset.label}{' '}
-        </Button>
+        <SmallButton key={preset.value} label={preset.label} onClick={() => onPresetClick(preset.value)} />
       ))}
     </Box>
   )

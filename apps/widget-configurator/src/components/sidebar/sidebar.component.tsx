@@ -330,6 +330,7 @@ export function Sidebar({
 
   - [ ] Show iframe outline tooltip format is not the same as Mode.
   - [ ] Env tooltip format no the same as Mode.
+  - [ ] Timeout/error when loading/reloading widget/iframe.
   */
 
   return (

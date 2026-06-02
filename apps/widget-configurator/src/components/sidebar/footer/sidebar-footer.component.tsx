@@ -1,14 +1,14 @@
 import React, { ReactNode, useContext } from 'react'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Tooltip from '@mui/material/Tooltip'
 import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
 
 import { UTM_PARAMS } from '../../../configurator.constants'
 import { ColorModeContext } from '../../../theme/ColorModeContext'
+import { Button } from '../../ui/buttons/button/Button.component'
+import { IconButton } from '../../ui/buttons/icon/IconButton.component'
 
 const WIDGET_WEB_URL = `https://cow.fi/widget/?${UTM_PARAMS}`
 const DEVELOPER_DOCS_URL = `https://docs.cow.fi/cow-protocol/tutorials/widget?${UTM_PARAMS}`
@@ -56,14 +56,6 @@ export function SidebarFooter({
     },
   } as const
 
-  const iconOnlyButtonSx = {
-    borderRadius: 1,
-    border: '1px solid',
-    borderColor: 'divider',
-    height: 40,
-    width: 40,
-  } as const
-
   let reloadPreviewLabel = ''
 
   if (isWidgetSyncPending) {
@@ -106,42 +98,21 @@ export function SidebarFooter({
           }}
         >
           <Button
-            type="button"
-            variant="text"
-            size="medium"
+            label={snippetLabel}
             onClick={onSnippetToggle}
             aria-label={snippetLabel}
             disabled={!isWidgetReady}
-            endIcon={<SnippetIcon size={20} strokeWidth={2} aria-hidden />}
-            sx={{
-              borderRadius: 1,
-              border: '1px solid',
-              borderColor: 'divider',
-              pl: 1.5,
-              pr: 2,
-              py: 1,
-              fontSize: '12px',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              color: 'text.primary',
-              height: 40,
-              mr: 'auto',
-
-              '& .MuiButton-endIcon': { ml: 1.5 },
-            }}
-          >
-            {snippetLabel}
-          </Button>
+            endIcon={SnippetIcon}
+            sx={{ mr: 'auto' }}
+          />
 
           <Tooltip title={reloadPreviewLabel} arrow placement="top">
             <IconButton
-              type="button"
+              icon={RefreshCw}
               onClick={onForceWidgetReload}
               aria-label={reloadPreviewLabel}
               aria-busy={isWidgetSyncPending}
-              size="small"
               sx={{
-                ...iconOnlyButtonSx,
                 '@keyframes cowConfiguratorRefreshSpin': {
                   from: { transform: 'rotate(0deg)' },
                   to: { transform: 'rotate(360deg)' },
@@ -154,33 +125,15 @@ export function SidebarFooter({
                     }
                   : {}),
               }}
-            >
-              <RefreshCw size={20} strokeWidth={2} aria-hidden />
-            </IconButton>
+            />
           </Tooltip>
 
           <Tooltip title={themeLabel} arrow placement="top">
-            <IconButton
-              type="button"
-              onClick={toggleColorMode}
-              aria-label={themeLabel}
-              size="small"
-              sx={iconOnlyButtonSx}
-            >
-              <ThemeIcon size={20} strokeWidth={2} aria-hidden />
-            </IconButton>
+            <IconButton icon={ThemeIcon} onClick={toggleColorMode} aria-label={themeLabel} />
           </Tooltip>
 
           <Tooltip title={sidebarLabel} arrow placement="top">
-            <IconButton
-              type="button"
-              onClick={onSidebarToggle}
-              aria-label={sidebarLabel}
-              size="small"
-              sx={iconOnlyButtonSx}
-            >
-              <SidebarIcon size={20} strokeWidth={2} aria-hidden />
-            </IconButton>
+            <IconButton icon={SidebarIcon} onClick={onSidebarToggle} aria-label={sidebarLabel} />
           </Tooltip>
         </Box>
 

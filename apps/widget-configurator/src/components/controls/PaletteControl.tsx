@@ -1,12 +1,13 @@
 import { ReactNode, useState } from 'react'
 
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Button, Collapse, FormControl, Stack } from '@mui/material'
+import { Box, Collapse, FormControl } from '@mui/material'
 import { MuiColorInput } from 'mui-color-input'
+import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { ColorPalette } from '../../configurator.types'
 import { ColorPaletteManager } from '../../hooks/useColorPaletteManager'
+import { LinkButton } from '../ui/buttons/link/LinkButton.component'
+import { SmallButton } from '../ui/buttons/small/SmallButton.component'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
@@ -35,21 +36,16 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
         ))}
       </Collapse>
 
-      <Stack spacing={1.2} sx={{ width: '100%', alignItems: 'center', mt: 1.2 }}>
-        <Button
-          endIcon={expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      <Box
+        sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 1.2 }}
+      >
+        <LinkButton
+          label={expanded ? 'Less Colors' : 'More Colors'}
+          endIcon={expanded ? ChevronUp : ChevronDown}
           onClick={() => setExpanded(!expanded)}
-          fullWidth
-          size="small"
-          sx={{ justifyContent: 'center' }}
-          variant="text"
-        >
-          {expanded ? 'Less Colors' : 'More Colors'}
-        </Button>
-        <Button fullWidth onClick={resetColorPalette} size="small" variant="outlined">
-          Reset Colors to Default
-        </Button>
-      </Stack>
+        />
+        <SmallButton label="Reset" onClick={resetColorPalette} />
+      </Box>
     </div>
   )
 }

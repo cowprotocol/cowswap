@@ -1,4 +1,4 @@
-import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import svgHtmlSrc from '@cowprotocol/assets/cow-swap/html.svg'
@@ -12,11 +12,10 @@ import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 import { Tab } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Snackbar from '@mui/material/Snackbar'
 import { useTheme } from '@mui/material/styles'
 import Tabs from '@mui/material/Tabs'
-import Typography from '@mui/material/Typography'
+import { Copy } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -29,6 +28,9 @@ import { tsExample } from './utils/tsExample'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorPalette } from '../../configurator.types'
+import { Button } from '../ui/buttons/button/Button.component'
+import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
+import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
 
 interface TabInfo {
   id: number
@@ -89,13 +91,14 @@ export interface SnippetProps {
   handleClose: Command
 }
 
+const SNIPPET_CONTENT_PADDING = 16
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function Snippet({ params, open, handleClose, defaultPalette }: SnippetProps): ReactNode {
   const theme = useTheme()
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo
-  const descriptionElementRef = useRef<HTMLDivElement | null>(null)
   const cowAnalytics = useCowAnalytics()
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -126,10 +129,6 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
         category: AnalyticsCategory.WIDGET_CONFIGURATOR,
         action: 'View code',
       })
-      const { current: descriptionElement } = descriptionElementRef
-      if (descriptionElement !== null) {
-        descriptionElement.focus()
-      }
     }
   }, [open, cowAnalytics])
 
@@ -150,52 +149,22 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
           inset: 0,
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          overflow: 'hidden',
           minHeight: 0,
           backgroundColor: (t) => t.palette.background.paper,
         }}
       >
-        <Box
-          ref={descriptionElementRef}
-          tabIndex={-1}
+        <ModalHeader
+          titleId="scroll-dialog-title"
+          title="Snippet for CoW Widget"
+          onClose={handleClose}
           sx={{
             position: 'sticky',
             top: 0,
             zIndex: 2,
-            flexShrink: 0,
             backgroundColor: (t) => t.palette.background.paper,
-            borderBottom: 1,
-            borderColor: 'divider',
           }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 1.5,
-              px: 2,
-              pt: 2,
-              pb: 1.5,
-            }}
-          >
-            <Typography id="scroll-dialog-title" component="h2" variant="h6" sx={{ fontWeight: 600, m: 0 }}>
-              Snippet for CoW Widget
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1, ml: 'auto' }}>
-              <Button variant="outlined" color="inherit" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="contained" onClick={handleCopyClick}>
-                Copy
-              </Button>
-            </Box>
-          </Box>
-
-          <Box sx={{ borderTop: 1, borderColor: 'divider', px: 1 }}>
+          tabs={
             <Tabs
               value={tabInfo}
               onChange={onChangeTab}
@@ -224,28 +193,53 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
                 )
               })}
             </Tabs>
-          </Box>
-        </Box>
+          }
+          tabsSx={{ px: 1 }}
+        />
 
         <Box
           id="scroll-dialog-description"
           sx={{
-            flexShrink: 0,
-            px: 2,
-            pb: 2,
-            pt: 1,
+            flex: 1,
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <div role="tabpanel" id={`simple-tabpanel-${id}`} aria-labelledby={`simple-tab-${id}`}>
+          <Box
+            role="tabpanel"
+            id={`simple-tabpanel-${id}`}
+            aria-labelledby={`simple-tab-${id}`}
+            sx={{
+              flex: 1,
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <SyntaxHighlighter
               showLineNumbers={true}
               children={code}
               language={language}
               style={nightOwl}
-              customStyle={{ fontSize: '0.8em', backgroundColor: theme.palette.background.paper }}
+              customStyle={{
+                margin: 0,
+                flex: 1,
+                minHeight: 0,
+                height: '100%',
+                overflow: 'auto',
+                padding: SNIPPET_CONTENT_PADDING,
+                fontSize: '0.8em',
+                backgroundColor: theme.palette.background.paper,
+                boxSizing: 'border-box',
+              }}
             />
-          </div>
+          </Box>
         </Box>
+
+        <ModalFooter>
+          <Button label="Copy" onClick={handleCopyClick} endIcon={Copy} />
+        </ModalFooter>
       </Box>
 
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
