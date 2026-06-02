@@ -13,6 +13,7 @@ import {
   usePartialApproveAmountModalState,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { OrderActionsWrapper } from './styled'
 
@@ -30,18 +31,25 @@ export function OrderPartialApprove({
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
   const isPartialApprovalModeSelected = useIsPartialApprovalModeSelected()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
 
   const currency = amountToApprove.currency
 
   const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
 
   const finalAmountToApprove = useMemo(() => {
-    if (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected) {
+    if (isInfiniteApproveDisabledInWidget || (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected)) {
       return partialAmountToApproveFinal
     }
 
     return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
-  }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
+  }, [
+    isPartialApprovalModeSelected,
+    isPartialApproveEnabledBySettings,
+    partialAmountToApproveFinal,
+    currency,
+    isInfiniteApproveDisabledInWidget,
+  ])
 
   if (isModalOpen) {
     return (

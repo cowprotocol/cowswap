@@ -9,6 +9,8 @@ import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useHasCachedPermit } from 'modules/permit'
 import { useGetConfirmButtonLabel, useIsCurrentTradeBridging } from 'modules/trade'
 
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
 
@@ -50,6 +52,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
 
   const spender = useTradeSpenderAddress()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const isPermitEnabled = useIsPermitEnabled()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
   const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
@@ -77,7 +80,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }
 
   const isPending = isExecuting || approvalState === ApprovalState.PENDING
-  const noCachedPermit = !cachedPermitLoading && !cachedPermit
+  const noCachedPermit = !isPermitEnabled || (!cachedPermitLoading && !cachedPermit)
 
   const label = props.label || (noCachedPermit ? approveLabel : swapLabel)
   const clickEvent = noCachedPermit ? approveClickEvent : (swapClickEvent ?? approveClickEvent)
