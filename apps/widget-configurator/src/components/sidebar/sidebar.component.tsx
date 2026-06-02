@@ -320,9 +320,9 @@ export function Sidebar({
   - [x] Add name to all fields.
   - [x] Create reusable TextInput, NumberInput and SelectInput components.
   - [x] Simply input change handling.
+  - [x] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
 
   - [ ] Further polish Select-based inputs and color inputs. Fix Number input with default value. Remove debug red/cyan backgrounds.
-  - [ ] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
   - [ ] Add toggle to disable scrollbars. Auto-resize is now doing that automatically, but it should not.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
   */

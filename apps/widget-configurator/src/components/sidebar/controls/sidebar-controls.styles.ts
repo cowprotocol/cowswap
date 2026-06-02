@@ -1,13 +1,15 @@
 import { SxProps } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 
-export const sidebarControlsZeroWidthColumnSx: SxProps<Theme> = {
+export const sidebarControlsZeroWidthColumnSx: SxProps<Theme> = (theme: Theme) => ({
   position: 'relative',
-  zIndex: 2000,
   width: 0,
   height: '100%',
   flexShrink: 0,
-}
+
+  // Above the preview area and sidebar, below AppKit (`w3m-modal`) and MUI modals:
+  zIndex: theme.zIndex.drawer,
+})
 
 export const sidebarToggleOpenButton: SxProps<Theme> = (theme: Theme) => ({
   position: 'absolute',
