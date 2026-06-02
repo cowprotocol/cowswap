@@ -1,24 +1,14 @@
-import { configuratorSurfacePaperSx } from '../../surface/surface.styles'
-import { BASE_INPUT_FONT_SIZE, BASE_TEXT_INPUT_HEIGHT } from '../BaseTextInput/BaseTextInput.component'
+import { configuratorSurfacePaperSx } from '../../../surface/surface.styles'
+import { BASE_INPUT_FONT_SIZE, BASE_TEXT_INPUT_HEIGHT } from '../../BaseTextInput/BaseTextInput.component'
 
 import type { SelectProps } from '@mui/material/Select'
-import type { SxProps, Theme } from '@mui/material/styles'
+import type { CSSObject, SxProps, Theme } from '@mui/material/styles'
 
 export const BASE_SELECT_OPTION_HEIGHT = 40
 
 const SELECT_OPTION_CHECK_PLACEHOLDER_WIDTH = 18
 
-type SelectMenuItemInteractionSx = {
-  backgroundColor: 'transparent'
-  '&.Mui-selected': {
-    backgroundColor: 'transparent'
-  }
-  '&:hover, &.Mui-focusVisible, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible': {
-    backgroundColor: string
-  }
-}
-
-const getSelectMenuItemInteractionSx = (theme: Theme): SelectMenuItemInteractionSx => ({
+const getSelectMenuItemInteractionSx = (theme: Theme): CSSObject => ({
   backgroundColor: 'transparent',
 
   '&.Mui-selected': {
@@ -37,7 +27,7 @@ export const selectMenuItemSx: SxProps<Theme> = (theme) => ({
   py: 1,
   px: 2,
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   gap: 2,
   whiteSpace: 'normal',
 
@@ -72,13 +62,20 @@ export const NO_MENU_ANIMATION_PROPS: SelectProps['MenuProps'] = {
 
 export const selectOptionRowSx = {
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   width: '100%',
 } as const satisfies SxProps<Theme>
 
 export const selectOptionLabelSx = {
   minWidth: 0,
   flex: '1 1 auto',
+} as const satisfies SxProps<Theme>
+
+export const selectOptionLabelContentSx = {
+  m: 0,
+  fontSize: BASE_INPUT_FONT_SIZE,
+  whiteSpace: 'initial',
+  wordBreak: 'break-word',
 } as const satisfies SxProps<Theme>
 
 export const selectOptionCheckboxSx = {
@@ -104,21 +101,8 @@ export const selectMultipleSelectedValueSx = {
 } as const satisfies SxProps<Theme>
 
 export const multiSelectValueItemSx = {
-  p: 0,
-  m: 0,
-  bgcolor: 'transparent',
-  borderRadius: 0,
-  boxShadow: 'none',
-  height: 'auto',
-  minHeight: 0,
   minWidth: 0,
   maxWidth: '100%',
-  fontSize: 'inherit',
-  lineHeight: 'inherit',
-  color: 'inherit',
-  textDecoration: 'underline',
-  textDecorationStyle: 'dotted',
-  textUnderlineOffset: '0.15em',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',

@@ -1,40 +1,43 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { ReactNode } from 'react'
 
 import { NumberInput } from '../NumberInput/NumberInput.component'
-import { SelectInput } from '../Select/SelectInput'
+import { SelectInput } from '../Select/single/SelectInput.component'
 
-const TokenOptions = ['COW', 'USDC', 'WBTC']
+import type { SelectInputOption } from '../Select/base/BaseSelectInput.types'
+
+const TOKEN_OPTIONS: SelectInputOption<string>[] = [
+  { label: 'COW', value: 'COW' },
+  { label: 'USDC', value: 'USDC' },
+  { label: 'WBTC', value: 'WBTC' },
+]
 
 export interface CurrencyInputProps {
   label: string
-  tokenIdState: [string, Dispatch<SetStateAction<string>>]
-  tokenAmountState: [number, Dispatch<SetStateAction<number>>]
+  name: string
+  tokenValue: string
+  tokenAmountValue: number
+  onChange: (name: string, value: string | number | null | undefined) => void
 }
 
-export function CurrencyInputControl(props: CurrencyInputProps): ReactNode {
-  const { tokenIdState, tokenAmountState, label } = props
-  const [tokenId, setTokenId] = tokenIdState
-  const [amount, setAmount] = tokenAmountState
+export function CurrencyInputControl({
+  label,
+  name,
+  tokenValue,
+  tokenAmountValue,
+  onChange,
+}: CurrencyInputProps): ReactNode {
+  const amountName = `${name}Amount`
+  const amountLabel = `${label} amount`
 
   return (
     <>
-      <SelectInput
-        name={'selectTokenId' + label}
-        label={label}
-        value={TokenOptions.includes(tokenId) ? tokenId : ''}
-        options={TokenOptions.map((option) => ({ label: option, value: option }))}
-        onChange={(_, value) => {
-          if (Array.isArray(value)) return
-          setTokenId(value)
-        }}
-      />
+      <SelectInput name={name} label={label} value={tokenValue} options={TOKEN_OPTIONS} onChange={onChange} />
 
       <NumberInput
-        id={'selectTokenAmount' + label}
-        name={'selectTokenAmount' + label}
-        label={label}
-        value={amount}
-        onChange={(_, value) => setAmount(value ?? 0)}
+        name={amountName}
+        label={amountLabel}
+        value={tokenAmountValue}
+        onChange={onChange}
         emptyValue={0}
         inputProps={{ min: 0, step: 'any' }}
       />

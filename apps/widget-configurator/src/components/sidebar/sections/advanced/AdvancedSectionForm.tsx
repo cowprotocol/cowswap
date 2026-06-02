@@ -1,7 +1,4 @@
 import type { ReactNode } from 'react'
-import { useCallback } from 'react'
-
-import type { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './AdvancedSectionForm.constants'
 
@@ -9,7 +6,7 @@ import { WIDGET_HOOKS_OPTIONS } from '../../../../configurator.constants'
 import { jsonHelperText } from '../../../../utils/jsonFieldParsing'
 import { JsonInput } from '../../../ui/inputs/JsonInput/JsonInput.component'
 import { PresetsButtons } from '../../../ui/inputs/PresetsButtons/PresetsButtons.component'
-import { SelectInput, SelectInputValue } from '../../../ui/inputs/Select/SelectInput'
+import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -33,16 +30,6 @@ function hasRawParamsError(rawValue: string | null): boolean {
 export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormProps): ReactNode {
   const rawParamsJsonError = hasRawParamsError(values.rawParamsJson)
 
-  const renderWidgetHooksValue = useCallback((value: SelectInputValue<WidgetHookEvents>): ReactNode => {
-    const selectedHooks = Array.isArray(value) ? value : []
-
-    if (selectedHooks.length === 0) {
-      return 'No hooks selected'
-    }
-
-    return selectedHooks.join(', ')
-  }, [])
-
   return (
     <>
       <PresetsButtons
@@ -61,15 +48,13 @@ export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormPro
         helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${ADVANCED_DEFAULT_BASE_URL}`}
       />
 
-      <SelectInput
+      <MultiSelectInput
         name="enabledWidgetHooks"
         label="Widget hooks"
-        multiple
-        displayEmpty
+        emptyLabel="No hooks selected"
         value={values.enabledWidgetHooks}
         options={WIDGET_HOOKS_OPTIONS}
         onChange={onChange}
-        renderValue={renderWidgetHooksValue}
       />
 
       <JsonInput

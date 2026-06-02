@@ -2,8 +2,12 @@ import { COW_CDN, SupportedLocale, LOCALE_DISPLAY_NAMES, SUPPORTED_LOCALES } fro
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import { SelectInputOption } from './components/ui/inputs/Select/SelectInput'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import LightModeIcon from '@mui/icons-material/LightMode'
+
 import { TokenListItem } from './configurator.types'
+
+import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseSelectInput.types'
 
 // ENV:
 
@@ -28,6 +32,13 @@ export const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&ut
 export const LOCALE_OPTIONS: SelectInputOption<SupportedLocale>[] = [
   { label: 'Browser default', value: '' },
   ...SUPPORTED_LOCALES.map((option) => ({ label: LOCALE_DISPLAY_NAMES[option] || option, value: option })),
+]
+
+export type ThemeOptionValue = 'light' | 'dark'
+
+export const THEME_OPTIONS: SelectInputOption<ThemeOptionValue>[] = [
+  { label: 'Light', value: 'light', icon: LightModeIcon },
+  { label: 'Dark', value: 'dark', icon: DarkModeIcon },
 ]
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]

@@ -6,9 +6,11 @@ import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { IS_IFRAME, TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../../configurator.constants'
-import { SelectInput, SelectInputOption } from '../../../ui/inputs/Select/SelectInput'
+import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
 import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
+import type { SelectInputOption } from '../../../ui/inputs/Select/base/BaseSelectInput.types'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
 
 interface TradeSetupSectionFormProps {
@@ -39,14 +41,12 @@ export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFor
 
   return (
     <>
-      <SelectInput
+      <MultiSelectInput
         name="enabledTradeTypes"
         label="Trade types"
-        multiple
         value={values.enabledTradeTypes}
         options={TRADE_MODES_OPTIONS}
         onChange={onChange}
-        renderValue={(selected) => (Array.isArray(selected) ? selected.join(', ') : selected)}
       />
 
       <SelectInput

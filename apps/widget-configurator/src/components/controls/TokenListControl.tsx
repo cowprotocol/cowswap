@@ -1,16 +1,18 @@
-import { Dispatch, ReactNode, SetStateAction, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'
 
-import { Box, ListItemText } from '@mui/material'
+import { Box } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../../configurator.types'
 import { LinkButton } from '../ui/buttons/link/LinkButton.component'
-import { BASE_SELECT_OPTION_HEIGHT, SelectInput } from '../ui/inputs/Select/SelectInput'
-import { multiSelectValueItemSx, selectMultipleSelectedValueSx } from '../ui/inputs/Select/SelectInput.styles'
+import { BASE_SELECT_OPTION_HEIGHT } from '../ui/inputs/Select/base/BaseSelectInput.styles'
+import { MultiSelectInput } from '../ui/inputs/Select/multi/MultiSelectInput.component'
+
+import type { ConfiguratorFormChangeHandler } from '../sidebar/sections/section.types'
 
 const ITEM_PADDING_TOP = 8
 
@@ -25,9 +27,10 @@ const MENU_PROPS = {
 
 type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
 
-type TokenListControlProps = {
-  tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
-  customTokensState: [TokenInfo[], Dispatch<SetStateAction<TokenInfo[]>>]
+interface TokenListControlProps {
+  tokenListUrls: TokenListItem[]
+  customTokens: TokenInfo[]
+  onChange: ConfiguratorFormChangeHandler
 }
 
 interface TokenListSelectProps {
@@ -70,45 +73,21 @@ const getTokenListOptions = (
 
 function TokenListSelect({ label, name, selectedUrls, options, onChange }: TokenListSelectProps): ReactNode {
   return (
-    <SelectInput
+    <MultiSelectInput
       name={name}
       label={label}
-      multiple
-      multilineSelectedValue
       value={selectedUrls}
       options={options}
+      withSeparator={false}
       menuProps={MENU_PROPS}
-      onChange={(scope, value) => {
-        if (!Array.isArray(value)) return
-        onChange(scope as TokenListScope, value as string[])
-      }}
-      renderOptionLabel={(option) => (
-        <ListItemText
-          primary={option.label}
-          disableTypography={true}
-          style={{
-            fontSize: '13px',
-            whiteSpace: 'initial',
-            wordBreak: 'break-word',
-          }}
-        />
-      )}
-      renderValue={(selected) => (
-        <Box sx={selectMultipleSelectedValueSx}>
-          {(Array.isArray(selected) ? selected : []).map((url) => (
-            <Box key={url} component="span" sx={multiSelectValueItemSx}>
-              {url}
-            </Box>
-          ))}
-        </Box>
-      )}
+      onChange={(scope, value) => onChange(scope as TokenListScope, value)}
     />
   )
 }
 
 function TokenListSelections({ tokenListUrls, onChangeByScope }: TokenListSelectionsProps): ReactNode {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <>
       {TOKEN_LIST_SELECT_CONFIG.map(({ label, scope }) => (
         <TokenListSelect
           key={scope}
@@ -119,20 +98,21 @@ function TokenListSelections({ tokenListUrls, onChangeByScope }: TokenListSelect
           onChange={onChangeByScope[scope]}
         />
       ))}
-    </Box>
+    </>
   )
 }
 
-export const TokenListControl = ({ tokenListUrlsState, customTokensState }: TokenListControlProps): ReactNode => {
-  const [tokenListUrls, setTokenListUrls] = tokenListUrlsState
-  const [customTokens, setCustomTokens] = customTokensState
+export const TokenListControl = ({ tokenListUrls, customTokens, onChange }: TokenListControlProps): ReactNode => {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const setTokenListScope = useCallback(
     (scope: TokenListScope, selectedUrls: string[]) => {
-      setTokenListUrls((prev) => prev.map((list) => ({ ...list, [scope]: selectedUrls.includes(list.url) })))
+      onChange(
+        'tokenListUrls',
+        tokenListUrls.map((list) => ({ ...list, [scope]: selectedUrls.includes(list.url) })),
+      )
     },
-    [setTokenListUrls],
+    [onChange, tokenListUrls],
   )
 
   const onChangeByScope = useMemo(
@@ -150,27 +130,27 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
 
       if (existing) return
 
-      setTokenListUrls((prev) => [
-        ...prev,
+      onChange('tokenListUrls', [
+        ...tokenListUrls,
         { url: newListUrl, enabled: true, enabledForSell: false, enabledForBuy: false },
       ])
     },
-    [tokenListUrls, setTokenListUrls],
+    [onChange, tokenListUrls],
   )
 
   return (
     <>
       <TokenListSelections tokenListUrls={tokenListUrls} onChangeByScope={onChangeByScope} />
 
-      <Box sx={{ mt: 2 }}>
-        <AddCustomListDialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          customTokens={customTokens}
-          onAddListUrl={handleAddListUrl}
-          onAddCustomTokens={setCustomTokens}
-        />
+      <AddCustomListDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        customTokens={customTokens}
+        onAddListUrl={handleAddListUrl}
+        onAddCustomTokens={(tokens) => onChange('customTokens', tokens)}
+      />
 
+      <Box>
         <LinkButton label="Add Custom List" endIcon={Plus} onClick={() => setDialogOpen(true)} />
       </Box>
     </>

@@ -1,11 +1,9 @@
 import type { ReactNode } from 'react'
 
-import { LOCALE_DISPLAY_NAMES, SupportedLocale } from '@cowprotocol/common-const'
-
 import { LOCALE_OPTIONS } from '../../../../configurator.constants'
 import { ModeControl } from '../../../controls/ModeControl'
 import { COMMENTS_BY_PARAM_NAME } from '../../../snippet/snippet.const'
-import { SelectInput } from '../../../ui/inputs/Select/SelectInput'
+import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -33,16 +31,9 @@ export function BasicsSectionForm({ values, onChange }: BasicsSectionFormProps):
         name="locale"
         label="Forced locale"
         value={values.locale}
-        displayEmpty
+        emptyLabel
         options={LOCALE_OPTIONS}
         onChange={onChange}
-        renderValue={(selected) => {
-          if (!selected || Array.isArray(selected)) {
-            return 'Browser default'
-          }
-
-          return LOCALE_DISPLAY_NAMES[selected as SupportedLocale] || selected
-        }}
       />
     </>
   )

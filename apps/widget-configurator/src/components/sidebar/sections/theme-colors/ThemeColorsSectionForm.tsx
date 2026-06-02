@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 
+import { THEME_OPTIONS, ThemeOptionValue } from '../../../../configurator.constants'
 import { PaletteControl } from '../../../controls/PaletteControl'
-import { ThemeControl, type ThemeOptionValue } from '../../../controls/ThemeControl'
+import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
 
 import type { useColorPaletteManager } from '../../../../hooks/useColorPaletteManager'
 import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
@@ -15,7 +16,14 @@ export interface ThemeColorsSectionFormProps {
 export function ThemeColorsSectionForm({ values, onChange, paletteManager }: ThemeColorsSectionFormProps): ReactNode {
   return (
     <>
-      <ThemeControl name="theme" selectedValue={values.theme as ThemeOptionValue} onChange={onChange} />
+      <SelectInput
+        name="theme"
+        value={values.theme as ThemeOptionValue}
+        label="Theme"
+        options={THEME_OPTIONS}
+        onChange={onChange}
+      />
+
       <PaletteControl paletteManager={paletteManager} />
     </>
   )
