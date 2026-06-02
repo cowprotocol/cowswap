@@ -6,7 +6,7 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
-import { isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenList } from '@uniswap/token-lists'
 
 import { createConfig, http } from 'wagmi'
@@ -104,22 +104,49 @@ function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): L
   }
 }
 
+/**
+ * Sanitize a token list, accepting both EVM and non-EVM (Solana) tokens.
+ *
+ * - EVM tokens: address is checksummed via `isAddress`; rejected if not valid hex.
+ * - Solana tokens: address kept as-is (base58 is case-sensitive); accepted if it matches
+ *   `isSolanaAddress`. Otherwise the token is dropped.
+ *
+ * If the resulting list contains any non-EVM tokens, we bypass the Uniswap `validateTokenList`
+ * schema (which only knows EVM addresses) and fall back to a shape-only sanity check.
+ */
 async function sanitizeList(list: TokenList): Promise<TokenList> {
-  // Remove tokens from the list that don't have valid addresses
+  let hasNonEvmTokens = false
+
   const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    const checksummed = isAddress(token.address.toLowerCase())
-    if (!checksummed) return acc
-    acc.push({ ...token, address: checksummed })
+    // `getAddressKey` lowercases EVM hex addresses and leaves non-EVM (base58) addresses
+    // untouched — exactly the normalization `isAddress` (case-insensitive on EVM hex) wants.
+    const checksummed = isAddress(getAddressKey(token.address))
+    if (checksummed) {
+      acc.push({ ...token, address: checksummed })
+      return acc
+    }
+    if (isSolanaAddress(token.address)) {
+      hasNonEvmTokens = true
+      acc.push(token)
+    }
     return acc
   }, [])
 
   const cleanedList = { ...list, tokens }
 
-  // Validate the list
+  if (hasNonEvmTokens) {
+    // Uniswap's `validateTokenList` schema rejects non-EVM addresses by construction.
+    if (!isValidTokenList(cleanedList)) {
+      throw new Error('Invalid token list format')
+    }
+    return cleanedList
+  }
+
   return validateTokenList(cleanedList)
 }
 
-// we can't use uniswap scheme to validate non-evm lists due to address difference
+/** Lightweight shape check used for token lists that contain non-EVM (Solana) addresses,
+ *  which the Uniswap JSON-schema validator can't parse. */
 function isValidTokenList(value: unknown): value is TokenList {
   if (!value || typeof value !== 'object') return false
   const v = value as Record<string, unknown>
@@ -129,29 +156,4 @@ function isValidTokenList(value: unknown): value is TokenList {
     v['version'] !== null &&
     Array.isArray(v['tokens'])
   )
-}
-
-/**
- * Like sanitizeList, but for non-EVM chains (e.g. Solana, BTC).
- * Validates list shape at runtime (response.json() is any), then filters tokens
- * whose addresses don't match any known non-EVM address pattern.
- */
-async function sanitizeAdditionalChainList(list: TokenList): Promise<TokenList> {
-  if (!isValidTokenList(list)) {
-    throw new Error('Invalid token list format')
-  }
-
-  const tokens = list.tokens.filter((token) => isSolanaAddress(token.address))
-  return { ...list, tokens }
-}
-
-/**
- * Fetches a token list for an additional target chain (non-EVM, e.g. Solana).
- * Unlike fetchTokenList, this skips EVM address checksum validation.
- * ENS resolution is not supported — non-EVM chains always use direct URLs.
- */
-export function fetchAdditionalChainTokenList(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source], sanitizeAdditionalChainList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
 }

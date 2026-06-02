@@ -2,6 +2,11 @@ jest.mock('react-markdown', () => () => null)
 
 jest.mock('lottie-react', () => () => null)
 
+jest.mock('@marsidev/react-turnstile', () => ({
+  __esModule: true,
+  Turnstile: () => null,
+}))
+
 jest.mock('quick-lru', () => {
   return {
     __esModule: true,

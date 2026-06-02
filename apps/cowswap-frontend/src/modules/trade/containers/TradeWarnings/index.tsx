@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { CaptchaWidget } from 'modules/captcha'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
 import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
@@ -22,6 +23,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
       {shouldZeroApprove && <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />}
       <NoImpactWarning />
       {enableSmartSlippage && <HighSuggestedSlippageWarning isTradePriceUpdating={isTradePriceUpdating} />}
+      <CaptchaWidget />
     </>
   )
 }

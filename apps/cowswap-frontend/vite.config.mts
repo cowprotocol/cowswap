@@ -2,13 +2,12 @@
 import { lingui } from '@lingui/vite-plugin'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
-import stdLibBrowser from 'node-stdlib-browser'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { meta } from 'vite-plugin-meta-tags'
-import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -20,13 +19,12 @@ import pkg from './package.json'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { NODE_STD_LIBS } from '../../tools/nodeStdLibs'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
 import type { PluginOption } from 'vite'
-
-const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
 // Trezor getAccountsAsync() requires crypto and stream (the module is lazy-loaded)
 const nodeDepsToInclude = ['crypto', 'stream']
@@ -46,7 +44,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   const plugins: PluginOption[] = [
     nodePolyfills({
-      exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
+      exclude: NODE_STD_LIBS.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
         Buffer: true,
         global: true,
@@ -180,6 +178,24 @@ export default defineConfig(({ mode, isPreview }) => {
       esbuildOptions: {
         // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
         mainFields: ['exports', 'module', 'main'],
+        plugins: [
+          {
+            // During pre-bundling, esbuild walks @base-org/account internals using relative
+            // paths, so the top-level resolve.alias entry isn't enough. This plugin rewrites
+            // any resolution that lands on getInjectedProvider.js to our local shim.
+            // See: src/shims/baseAccountGetInjectedProvider.ts
+            name: 'cow-base-account-getInjectedProvider-shim',
+            setup(build) {
+              const shim = path.resolve(__dirname, 'src/shims/baseAccountGetInjectedProvider.ts')
+              build.onResolve({ filter: /(^|[\\/])getInjectedProvider(\.js)?$/ }, (args) => {
+                if (args.importer.includes('@base-org/account')) {
+                  return { path: shim }
+                }
+                return null
+              })
+            },
+          },
+        ],
       },
       // Only include packages that are direct or resolvable from the app; transitive
       // WalletConnect deps (universal-provider, utils, sign-client) are not resolvable here.
@@ -189,6 +205,16 @@ export default defineConfig(({ mode, isPreview }) => {
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
+        // @base-org/account@2.4.0 (pinned exactly by @reown/appkit-utils@1.8.19) reads
+        // `window.top?.ethereum` without try/catch, which throws SecurityError when the
+        // widget is loaded in a cross-origin iframe (e.g. widget-configurator) and aborts
+        // the Base Account connector's connect() before its popup can open.
+        // The fix landed in @base-org/account@2.5.x; until AppKit relaxes the pin, redirect
+        // that single file to a local shim with the try/catch.
+        '@base-org/account/dist/interface/builder/core/getInjectedProvider.js': path.resolve(
+          __dirname,
+          'src/shims/baseAccountGetInjectedProvider.ts',
+        ),
       },
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],

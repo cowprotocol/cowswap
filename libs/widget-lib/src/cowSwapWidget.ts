@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -57,7 +58,7 @@ export interface CowSwapWidgetHandler {
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady } = props
+  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
   let provider = providerAux
   let currentParams = params
 
@@ -132,8 +133,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams(iframeWindow, iframeOrigin, currentParams, provider)
   })
 
-  // 10. Listen for messages from the iframe
-  const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
+  // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
+  const iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
@@ -160,7 +161,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       windowListeners.forEach((listener) => window.removeEventListener('message', listener))
 
       // Stop listening for SDK messages
-      iframeSafeSdkBridge.stopListening()
+      iframeSafeSdkBridge?.stopListening()
 
       // Destroy the iframe
       container.removeChild(iframe)
@@ -330,16 +331,6 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
     return new URL(trimmedUrl, iframeOrigin).toString()
   } catch {
     return null
-  }
-}
-
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
-
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
   }
 }
 
