@@ -1,12 +1,12 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { AddressKey, areAddressesEqual, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { FeePolicy, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import { Order, OrderStatus, ProtocolFee, ProtocolFeeType, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
@@ -449,42 +449,41 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
   return surplus || ZERO_SURPLUS
 }
 
-type OrderFees = {
-  networkCosts: BigNumber | undefined
-  protocolFees: BigNumber | undefined
-  protocolFeeTokenAddress: AddressKey | undefined
+/**
+ * Classifies a fee policy into a {@link ProtocolFeeType} based on its wrapper key
+ * (`{ surplus: {...} }` / `{ volume: {...} }` / `{ priceImprovement: {...} }`).
+ */
+function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
+  if (policy) {
+    if ('surplus' in policy) return ProtocolFeeType.Surplus
+    if ('volume' in policy) return ProtocolFeeType.Volume
+    if ('priceImprovement' in policy) return ProtocolFeeType.PriceImprovement
+  }
+  return ProtocolFeeType.Unknown
 }
-const NO_FEES: OrderFees = { networkCosts: undefined, protocolFees: undefined, protocolFeeTokenAddress: undefined }
 
-export function getFees(order: Order, trades: Trade[]): OrderFees {
-  // Sum protocol-fee amounts grouped by token. In practice there is at most one token.
-  const feesByToken = new Map<AddressKey, BigNumber>()
+/**
+ * Collects every protocol fee charged across the order's trades, as individual entries
+ * (in the order they were applied), each tagged with its fee policy type.
+ *
+ * We intentionally do not aggregate them or try to reconstruct network costs: `order.totalFee`
+ * (the executed fee) mixes network costs and protocol fees and cannot be split back apart
+ * reliably, so we only surface the protocol fees the API reports per trade.
+ */
+export function getProtocolFees(trades: Trade[]): ProtocolFee[] {
+  const protocolFees: ProtocolFee[] = []
 
-  trades.forEach(({ executedProtocolFees }) => {
-    executedProtocolFees?.forEach(({ amount, token }) => {
-      if (!amount || !token) return
-      const tokenKey = getAddressKey(token)
-      const tokenFee = feesByToken.get(tokenKey) || ZERO_BIG_NUMBER
-      feesByToken.set(tokenKey, new BigNumber(amount).plus(tokenFee))
-    })
-  })
-
-  if (feesByToken.size === 0) return NO_FEES
-
-  if (feesByToken.size > 1) {
-    console.warn(`Order ${order.uid} has protocol fees in more than one token; skipping breakdown`)
-    return NO_FEES
+  for (const { executedProtocolFees } of trades) {
+    if (!executedProtocolFees) continue
+    for (const { amount, token, policy } of executedProtocolFees) {
+      if (!amount || !token) continue
+      protocolFees.push({
+        amount: new BigNumber(amount),
+        tokenAddress: getAddressKey(token),
+        type: getProtocolFeeType(policy),
+      })
+    }
   }
 
-  const [protocolFeeTokenAddress, protocolFees] = Array.from(feesByToken.entries())[0]
-
-  // Protocol fee comes out of the surplus token (buy token for sell orders, sell token for buy orders),
-  // so it is usually a different token from `executedFeeToken` (where totalFee/network costs live).
-  // Only subtract when both are denominated in the same token.
-  const sameDenomination = areAddressesEqual(order.executedFeeToken, protocolFeeTokenAddress)
-  const networkCosts = sameDenomination
-    ? BigNumber.max(order.totalFee.minus(protocolFees), ZERO_BIG_NUMBER)
-    : order.totalFee
-
-  return { protocolFees, networkCosts, protocolFeeTokenAddress }
+  return protocolFees
 }

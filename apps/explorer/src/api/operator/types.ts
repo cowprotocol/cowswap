@@ -69,6 +69,27 @@ export type GetTxOrdersParams = WithNetworkId & {
 }
 
 /**
+ * How a protocol fee was calculated, derived from the trade's fee policy.
+ * Used to label each fee so the different fees on an order can be told apart.
+ */
+export enum ProtocolFeeType {
+  Surplus = 'surplus',
+  Volume = 'volume',
+  PriceImprovement = 'priceImprovement',
+  Unknown = 'unknown',
+}
+
+/**
+ * A single protocol fee charged on a trade, derived from the trade's executedProtocolFees.
+ * `tokenAddress` is a normalized AddressKey (the surplus-side token the fee is taken in).
+ */
+export type ProtocolFee = {
+  amount: BigNumber
+  tokenAddress: AddressKey
+  type: ProtocolFeeType
+}
+
+/**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
  * Some fields are kept as is.
@@ -102,11 +123,9 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedFee: BigNumber | null
   totalFee: BigNumber
-  // Derived client-side from trades' executedProtocolFees, not returned by the API.
-  // protocolFeeTokenAddress is the surplus-side token (may differ from executedFeeToken).
-  networkCosts?: BigNumber
-  protocolFees?: BigNumber
-  protocolFeeTokenAddress?: AddressKey
+  // Derived client-side from the trades' executedProtocolFees (not returned directly on the order).
+  // Each entry is kept separate rather than aggregated; network costs are intentionally not surfaced.
+  protocolFees?: ProtocolFee[]
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean

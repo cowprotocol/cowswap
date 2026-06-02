@@ -21,7 +21,7 @@ import { knownBridgeProviders } from 'sdk/cowSdk'
 import { useNetworkId } from 'state/network'
 import { SWRResponse } from 'swr'
 import { Errors } from 'types'
-import { formatPercentage, getFees } from 'utils'
+import { formatPercentage, getProtocolFees } from 'utils'
 
 import { useCrossChainOrder } from 'modules/bridge'
 
@@ -150,14 +150,14 @@ const tabItems = (
 
 /**
  * Returns the order enriched with fields derived from its trades:
- * - networkCosts/protocolFees/protocolFeeTokenAddress aggregated across trades
+ * - protocolFees: each protocol fee charged across the trades, kept separate
  * - txHash and executionDate when the order has a single trade (fill or kill,
  *   or a partial fill with a single trade so far)
  */
 function enrichOrderFromTrades(order: Order | null, trades: Trade[], hasMultipleTrades: boolean): Order | null {
   if (!order) return order
 
-  const enriched = { ...order, ...getFees(order, trades) }
+  const enriched = { ...order, protocolFees: getProtocolFees(trades) }
 
   if (trades.length === 1 && !hasMultipleTrades) {
     enriched.txHash = trades[0].txHash || undefined

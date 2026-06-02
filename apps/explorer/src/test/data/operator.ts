@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 
 import { USDT, WETH } from './erc20s'
 
-import { Order, RawOrder, RawTrade, OrderStatus as OrderStatusInner } from '../../api/operator'
+import { Order, OrderStatus as OrderStatusInner, RawOrder, RawTrade } from '../../api/operator/types'
 import { ZERO_BIG_NUMBER } from '../../const'
 
 export const RAW_ORDER = {
