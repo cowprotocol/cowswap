@@ -133,7 +133,7 @@ function useSetAlternativeRate(): null {
       updateLimitRateState({ marketRate: null })
 
       // Set new active rate
-      // The rate expects a raw fraction which is NOT a Price instace
+      // The rate expects a raw fraction which is NOT a Price instance
       const activeRate = FractionUtils.fromPrice(
         new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount }),
       )
