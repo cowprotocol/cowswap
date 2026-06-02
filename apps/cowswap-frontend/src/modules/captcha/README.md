@@ -6,6 +6,8 @@ On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `entiti
 
 Exchange URL: selected backend API origin plus `/auth/turnstile`.
 
+Feature flag: `isCaptchaEnabled`. Missing or false disables the widget, prevents token exchange, and clears any stored captcha JWT from the orderbook bearer token path.
+
 Deployment requirements:
 
 - Cloudflare Turnstile hostname management must include `localhost`, `vercel.app`, and `cow.fi`.

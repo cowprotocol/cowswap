@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
@@ -8,6 +8,8 @@ import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
@@ -15,12 +17,15 @@ import { logCaptcha } from '../logger'
 
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
+  const { isCaptchaEnabled } = useAtomValue(featureFlagsAtom)
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
   const theme = useTheme()
 
   useEffect(() => {
+    if (!isCaptchaEnabled) return
+
     if (!siteKey) {
       logCaptcha.warn('Missing env TURNSTILE_SITE_KEY, captcha widget disabled')
       return
@@ -33,10 +38,21 @@ export function CaptchaWidget(): ReactNode {
       setBearerToken(null)
       logCaptcha.info('Captcha JWT cleared from orderbook context')
     }
-  }, [captchaJwt, siteKey])
+  }, [captchaJwt, isCaptchaEnabled, siteKey])
 
   useEffect(() => {
-    if (!captchaJwt) return
+    if (isCaptchaEnabled) return
+
+    exchangeRequestIdRef.current += 1
+
+    setBearerToken(null)
+    if (captchaJwt) setCaptchaJwt(null)
+
+    logCaptcha.info(`Disabled by feature flag, cleared bearer token${captchaJwt ? ', cleared stored JWT' : ''}`)
+  }, [captchaJwt, isCaptchaEnabled, setCaptchaJwt])
+
+  useEffect(() => {
+    if (!isCaptchaEnabled || !captchaJwt) return
 
     const timeout = window.setTimeout(() => {
       logCaptcha.warn('Captcha JWT expired')
@@ -44,11 +60,11 @@ export function CaptchaWidget(): ReactNode {
     }, getJwtTtl(captchaJwt.expiresAt))
 
     return () => window.clearTimeout(timeout)
-  }, [captchaJwt, setCaptchaJwt])
+  }, [captchaJwt, isCaptchaEnabled, setCaptchaJwt])
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!siteKey || captchaJwt) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt) return null
 
   return (
     <Turnstile
