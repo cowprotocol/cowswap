@@ -9,7 +9,7 @@ import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
-import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED } from './providerIsolation'
+import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED, proxyByRdns } from './providerIsolation'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 
@@ -313,24 +313,79 @@ if (typeof window !== 'undefined') {
     async (current) => {
       const version = ++syncVersion
 
+      console.log('[config] activeProviderRef sync: current connector uid =', current, '| version =', version)
+
       if (!current) {
+        const next = hasEverConnected ? PROVIDER_DISCONNECTED : null
         // Distinguish "never connected yet" (null, let events through for reconnection)
         // from "was connected, now disconnected" (PROVIDER_DISCONNECTED, block events).
-        activeProviderRef.current = hasEverConnected ? PROVIDER_DISCONNECTED : null
+        activeProviderRef.current = next
+        console.log(
+          '[config] activeProviderRef set to',
+          next === null ? 'null' : 'PROVIDER_DISCONNECTED',
+          '| hasEverConnected =',
+          hasEverConnected,
+        )
         return
       }
       hasEverConnected = true
       const connector = config.connectors.find((c) => c.uid === current)
       if (!connector) {
-        activeProviderRef.current = PROVIDER_DISCONNECTED
+        // The UID is likely a stale value from wagmi's stored state (previous session).
+        // wagmi will fire another subscribe call once the correct connector is found/created.
+        //
+        // Critically, if MetaMask's proxy is already in the registry (it announces before
+        // wagmi finishes reconnecting), pre-set activeProviderRef to MetaMask's proxy NOW.
+        // This blocks Brave Wallet's accountsChanged/chainChanged from leaking through
+        // during the reconnect window (when activeProviderRef would otherwise be null,
+        // letting all wallet events pass through and causing heavy spurious state updates).
+        // Version 3 will override this with the actual active connector's proxy.
+        const tentativeProxy = proxyByRdns.get('io.metamask')
+        if (tentativeProxy) {
+          activeProviderRef.current = tentativeProxy
+          console.log(
+            '[config] stale UID',
+            current,
+            '— pre-set activeProviderRef to io.metamask proxy (reconnect window)',
+          )
+        } else {
+          console.log('[config] stale UID', current, '— no MetaMask proxy yet, waiting for reconnect')
+        }
         return
       }
+
+      console.log('[config] connector found:', connector.name, '| id:', connector.id, '| version =', version)
+
+      // For EIP-6963 connectors, the isolated proxy is already available in the registry
+      // (populated during the EIP-6963 announcement interception). Use it directly to avoid
+      // calling connector.getProvider(), which talks to the extension background page and
+      // can crash the renderer if the extension is in a bad state (e.g. Brave + MetaMask).
+      const eip6963Proxy = proxyByRdns.get(connector.id)
+      if (eip6963Proxy) {
+        if (version !== syncVersion) {
+          console.log('[config] stale (version', version, '!== syncVersion', syncVersion, ')')
+          return
+        }
+        activeProviderRef.current = eip6963Proxy
+        console.log('[config] activeProviderRef set to EIP-6963 proxy for', connector.id, '(', connector.name, ')')
+        return
+      }
+
+      // Fallback for non-EIP-6963 connectors (WalletConnect, Safe, injected without rdns, etc.)
+      console.log('[config] awaiting connector.getProvider() for', connector.name, '| version =', version)
       const provider = (await connector.getProvider().catch(() => null)) as EIP1193Provider | null
 
       // Ignore stale resolution — a newer subscribe call may have fired while we awaited.
-      if (version !== syncVersion) return
+      if (version !== syncVersion) {
+        console.log('[config] stale resolution ignored (version', version, '!== syncVersion', syncVersion, ')')
+        return
+      }
 
       activeProviderRef.current = provider
+      console.log(
+        '[config] activeProviderRef set to',
+        provider ? `provider(${connector.name})` : 'null(getProvider failed)',
+      )
     },
     { emitImmediately: true },
   )

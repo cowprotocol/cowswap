@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 
 import { useLocation, useParams } from 'react-router'
 
@@ -41,12 +41,10 @@ export function useSetupTradeStateFromUrl(): null {
     }
   }, [location.search, stringifiedParams])
 
-  /**
-   * useEffect() runs after the render completes and useMemo() runs during rendering.
-   * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
-   * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
-   */
-  useMemo(() => {
+  // useLayoutEffect fires synchronously after DOM mutations and before paint — fast enough
+  // for useSetupTradeState to pick up the new URL state on the very next render, while
+  // avoiding the React "update during render" violation that useMemo caused.
+  useLayoutEffect(() => {
     const state: TradeRawState = {
       chainId,
       targetChainId,

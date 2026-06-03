@@ -9,6 +9,7 @@ import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
 import { markInitialReconnectSettled } from './initialReconnectLifecycle'
+import { activeProviderRef, flushDeferredProviders, PROVIDER_DISCONNECTED } from './providerIsolation'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
@@ -80,6 +81,13 @@ function reconnectWidgetConnector(): (() => void) | undefined {
   }
 }
 
+// Module-level flag prevents React strict mode from calling reconnect(config) twice.
+// In development, strict mode mounts effects twice (mount → cleanup → remount) to
+// surface side-effect bugs. A second reconnect() fires another round of wallet provider
+// requests which, when MetaMask's streams are degraded, doubles the IPC pressure and
+// crashes the Brave renderer tab.
+let reconnectInitiated = false
+
 function ReconnectOnMount(): null {
   useEffect((): (() => void) | void => {
     // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
@@ -132,9 +140,23 @@ function ReconnectOnMount(): null {
       }
     }
 
+    if (reconnectInitiated) {
+      console.debug('[ReconnectOnMount] skipping duplicate reconnect (strict mode remount)')
+      return
+    }
+    reconnectInitiated = true
+
     void reconnect(config)
       .then((res: unknown) => {
         console.debug('[ReconnectOnMount] result', res)
+        // If reconnect settled with no connected wallet, block all unsolicited wallet events.
+        // Without this, activeProviderRef stays null and the isBlocked() guard in
+        // createIsolatedProvider lets all wallet events through — Brave Wallet's
+        // chainChanged('0x64') then triggers a wagmi chain-switch that crashes the tab.
+        if (Array.isArray(res) && res.length === 0) {
+          activeProviderRef.current = PROVIDER_DISCONNECTED
+          console.debug('[ReconnectOnMount] no wallet reconnected — blocking unsolicited wallet events')
+        }
       })
       .catch((error: unknown) => {
         console.error('[ReconnectOnMount] error', error)
@@ -151,6 +173,10 @@ function OpenWalletModalOnCustomEvent(): null {
     if (!reownAppKit) return
     const appKit = reownAppKit
     const handler = (): void => {
+      // Flush any EIP-6963 providers that were deferred during page load (PROVIDER_DISCONNECTED).
+      // This ensures wallets like Brave Wallet appear in the modal even though their announcement
+      // was suppressed at page load to prevent IPC-pressure-induced OOM crashes.
+      flushDeferredProviders()
       void appKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
