@@ -5,7 +5,7 @@ import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
-import { createTheme, PaletteOptions, ThemeProvider, type Theme } from '@mui/material/styles'
+import { createTheme, PaletteOptions, ThemeProvider, alpha, type Theme } from '@mui/material/styles'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
@@ -32,6 +32,17 @@ const feixenFontStyles = {
     fontWeight: 700,
     fontDisplay: 'swap',
   },
+}
+
+const OUTLINED_INPUT_BORDER_WIDTH = 1
+
+const OUTLINED_INPUT_BORDER_OPACITY = {
+  default: 0.23,
+  focus: 0.55,
+} as const
+
+function getOutlinedInputBorderColor(theme: Theme, opacity: number): string {
+  return alpha(theme.palette.text.primary, opacity)
 }
 
 const configuratorControlStyles = {
@@ -70,14 +81,20 @@ const configuratorControlStyles = {
   MuiOutlinedInput: {
     styleOverrides: {
       notchedOutline: ({ theme }: { theme: Theme }) => ({
-        borderColor: theme.palette.divider,
+        borderWidth: OUTLINED_INPUT_BORDER_WIDTH,
+        borderColor: getOutlinedInputBorderColor(theme, OUTLINED_INPUT_BORDER_OPACITY.default),
       }),
       root: ({ theme }: { theme: Theme }) => ({
         '&:hover:not(.Mui-disabled):not(.Mui-error) .MuiOutlinedInput-notchedOutline': {
-          borderColor: theme.palette.divider,
+          borderWidth: OUTLINED_INPUT_BORDER_WIDTH,
+          borderColor: getOutlinedInputBorderColor(theme, OUTLINED_INPUT_BORDER_OPACITY.default),
         },
         '&.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline': {
-          borderColor: theme.palette.divider,
+          borderWidth: OUTLINED_INPUT_BORDER_WIDTH,
+          borderColor: getOutlinedInputBorderColor(theme, OUTLINED_INPUT_BORDER_OPACITY.focus),
+        },
+        '&.Mui-focused.Mui-error .MuiOutlinedInput-notchedOutline': {
+          borderWidth: OUTLINED_INPUT_BORDER_WIDTH,
         },
       }),
     },
