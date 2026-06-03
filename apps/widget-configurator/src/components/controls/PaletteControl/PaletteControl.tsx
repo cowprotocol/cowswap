@@ -3,11 +3,11 @@ import { ReactNode, useState } from 'react'
 import { Box, Collapse } from '@mui/material'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
-import { ColorPalette } from '../../configurator.types'
-import { ColorPaletteManager } from '../../hooks/useColorPaletteManager'
-import { LinkButton } from '../ui/buttons/link/LinkButton.component'
-import { SmallButton } from '../ui/buttons/small/SmallButton.component'
-import { ColorInput } from '../ui/inputs/ColorInput/ColorInput.component'
+import { ColorPalette } from '../../../configurator.types'
+import { ColorPaletteManager } from '../../../hooks/useColorPaletteManager'
+import { LinkButton } from '../../ui/buttons/link/LinkButton.component'
+import { SmallButton } from '../../ui/buttons/small/SmallButton.component'
+import { ColorInput } from '../../ui/inputs/ColorInput/ColorInput.component'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 

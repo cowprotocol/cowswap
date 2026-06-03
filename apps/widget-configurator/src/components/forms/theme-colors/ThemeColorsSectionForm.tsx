@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { THEME_OPTIONS, ThemeOptionValue } from '../../../configurator.constants'
-import { PaletteControl } from '../../controls/PaletteControl'
+import { PaletteControl } from '../../controls/PaletteControl/PaletteControl'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 
 import type { useColorPaletteManager } from '../../../hooks/useColorPaletteManager'
