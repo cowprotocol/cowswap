@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react'
 
 import { AddressKey, areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Media } from '@cowprotocol/ui'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { WRAPPED_NATIVE_ADDRESS } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
 import { Network } from 'types'
-import { isNativeToken } from 'utils'
+import { abbreviateString, isNativeToken } from 'utils'
 
 import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
@@ -20,36 +19,6 @@ const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
   [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
   [ProtocolFeeType.Unknown]: 'Protocol fee',
 }
-
-const FeesTable = styled.div`
-  display: flex;
-  margin: 0.5rem 0;
-  border-radius: 0.6rem;
-  line-height: 1.6;
-  width: max-content;
-  align-items: flex-start;
-  word-break: break-all;
-  overflow: auto;
-  border: 1px solid rgb(151 151 184 / 10%);
-  background: rgb(151 151 184 / 10%);
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  td {
-    padding: 0.1rem 0.5rem;
-  }
-
-  tr:not(:last-child) td {
-    border-bottom: 1px solid rgb(151 151 184 / 15%);
-  }
-`
 
 export type Props = { order: Order }
 
@@ -74,7 +43,7 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   }
 
   return (
-    <FeesTable>
+    <NumbersBreakdown>
       <table>
         <tbody>
           {protocolFees.map((fee, index) => (
@@ -85,7 +54,7 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
           ))}
         </tbody>
       </table>
-    </FeesTable>
+    </NumbersBreakdown>
   )
 }
 
@@ -97,7 +66,9 @@ function formatFee(
 ): string {
   const { amount, tokenAddress } = fee
   const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
-  if (!token) return `${amount.toString(10)} ${tokenAddress}`
+  // Token metadata not loaded: we can't know decimals, so show the raw atom amount
+  // alongside a shortened address rather than an unreadable 42-char string.
+  if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
   const { formattedAmount, symbol } = formatTokenAmount(amount, token)
   return `${formattedAmount} ${symbol}`
 }
