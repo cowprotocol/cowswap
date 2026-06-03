@@ -58,7 +58,7 @@ export interface ConfiguratorFormValues {
 
   // Layout:
 
-  autoResizeEnabled: boolean
+  disableScrollbars: boolean
   showIframeOutline: boolean
   iframeStyleJson: string | null
   appWrapperStyleJson: string | null

@@ -170,7 +170,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Layout:
 
-    autoResizeEnabled,
+    disableScrollbars,
     iframeStyle,
     appWrapperStyle,
     bodyWrapperStyle,
@@ -248,7 +248,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Layout:
 
-    autoResizeEnabled,
+    disableScrollbars,
     iframeStyle,
     appWrapperStyle,
     bodyWrapperStyle,

@@ -443,12 +443,12 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
-   * Dynamically adjust the iframe height to match the content height.
-   * If enabled, no scrollbar will be shown inside the widget iframe.
+   * Hides scrollbars inside the widget iframe (`overflow: hidden` on the document).
+   * Only use when the host iframe height is driven by `var(--dynamicHeight)` and not constrained (e.g. no max-height).
    *
-   * Defaults to true.
+   * Defaults to false.
    */
-  autoResizeEnabled?: boolean
+  disableScrollbars?: boolean
 
   /**
    * Disables CoW Swap educational tips shown after a trade completes when no surplus message is available.

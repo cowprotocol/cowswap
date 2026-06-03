@@ -6,34 +6,31 @@ import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
-import { openModalState } from 'common/state/openModalState'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
+import { openModalState } from 'common/state/openModalState'
 
 export function IframeResizer(): null {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
-  const { autoResizeEnabled } = useInjectedWidgetParams()
+  const { disableScrollbars } = useInjectedWidgetParams()
 
   useLayoutEffect(() => {
     const parentOrigin = getParentOrigin()
 
-    // Checking for `autoResizeEnabled === undefined` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
-    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === undefined || !parentOrigin) return
+    if (!shouldPropagateHeightUpdates(parentOrigin)) return
 
-    if (autoResizeEnabled) {
+    if (disableScrollbars) {
       document.documentElement.style.overflow = 'hidden'
     } else {
       document.documentElement.style.removeProperty('overflow')
     }
-  }, [autoResizeEnabled])
+  }, [disableScrollbars])
 
-  // eslint-disable-next-line complexity
   useLayoutEffect(() => {
     const parentOrigin = getParentOrigin()
 
-    // Checking for `autoResizeEnabled === false` here to preserve the old behavior of the widget, when `autoResizeEnabled` didn't exist:
-    if (!isIframe() || !isInjectedWidget() || autoResizeEnabled === false || !parentOrigin) return
+    if (!shouldPropagateHeightUpdates(parentOrigin)) return
 
     const contentElement = getContentElement(document)
 
@@ -102,9 +99,13 @@ export function IframeResizer(): null {
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [isModalOpen, autoResizeEnabled])
+  }, [isModalOpen])
 
   return null
+}
+
+function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): parentOrigin is string {
+  return isIframe() && isInjectedWidget() && Boolean(parentOrigin)
 }
 
 function getContentElement(doc: Document): HTMLElement {

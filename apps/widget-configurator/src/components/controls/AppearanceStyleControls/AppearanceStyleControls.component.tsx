@@ -17,6 +17,12 @@ import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.co
 
 import type { SidebarSectionFormProps } from '../../forms/forms.types'
 
+const presetHelperTextSx = {
+  marginTop: '0.8rem',
+  color: 'text.secondary',
+  display: 'block',
+} as const
+
 export interface AppearanceStyleControlsProps extends SidebarSectionFormProps {
   paperBackgroundColor: string
 }
@@ -49,14 +55,21 @@ export function AppearanceStyleControls({
           Presets
         </Typography>
         <PresetsButtons presets={APPEARANCE_STYLE_PRESET_OPTIONS} onPresetClick={handlePresetClick} />
-        <Typography sx={{ marginTop: '0.8rem', color: 'text.secondary', display: 'block' }} variant="caption">
+        <Typography sx={presetHelperTextSx} variant="caption">
           Styles below may need adjusting for your environment (e.g. use position: fixed instead of position: absolute
           for some presets).
+        </Typography>
+        <Typography sx={presetHelperTextSx} variant="caption">
+          Remember to check the Limit and TWAP pages look properly with your layout. Consider disabling the orders table
+          in the Behavior section on narrow layouts.
+        </Typography>
+        <Typography sx={presetHelperTextSx} variant="caption">
+          You can adjust the iframe height dynamically based on its content using the var(--dynamicHeight) CSS variable.
         </Typography>
       </Box>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          Iframe (host)
+          #cowswap-iframe (host)
         </Typography>
         <JsonInput
           label="Iframe styles (JSON)"

@@ -24,7 +24,7 @@ jest.mock('@cowprotocol/ui', () => ({
   },
 }))
 
-jest.mock('../hooks/useInjectedWidgetParams', () => ({
+jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: jest.fn(() => ({})),
 }))
 

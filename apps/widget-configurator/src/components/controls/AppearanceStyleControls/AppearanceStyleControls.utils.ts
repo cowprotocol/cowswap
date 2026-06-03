@@ -55,6 +55,7 @@ export function getAppearanceStylePresets(
         inset: 0,
         width: '100%',
         height: '100%',
+        backgroundColor: paperBackgroundColor,
       },
     },
     'bottom-right-popup': {
@@ -106,7 +107,6 @@ export function getAppearanceStylePresets(
         width: '800px',
         height: '600px',
         minWidth: '75%',
-        minHeight: 'var(--dynamicHeight)',
         maxWidth: 'calc(100% - 32px)',
         maxHeight: 'calc(100% - 32px)',
         backgroundColor: paperBackgroundColor,

@@ -39,6 +39,8 @@ export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, s
   appWrapperStyle: 'Optional inline styles on the top-level app wrapper (inside the iframe)',
   bodyWrapperStyle: 'Optional inline styles on the body wrapper (inside the iframe)',
   cardStyle: 'Optional inline styles on the main trade widget card (inside the iframe)',
+  disableScrollbars:
+    'Hide scrollbars inside the widget. Only use with iframe height: var(--dynamicHeight) and no max-height constraint',
 
   // Behavior:
 

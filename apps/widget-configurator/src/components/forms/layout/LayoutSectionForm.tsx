@@ -13,10 +13,10 @@ export function LayoutSectionForm({ values, onChange, paperBackgroundColor }: La
   return (
     <>
       <SwitchInput
-        checked={values.autoResizeEnabled}
-        label="Auto-resize iframe"
-        onChange={(checked) => onChange('autoResizeEnabled', checked)}
-        helperText="When enabled, the iframe height adjusts automatically to fit its content."
+        checked={values.disableScrollbars}
+        label="Disable scrollbars"
+        onChange={(checked) => onChange('disableScrollbars', checked)}
+        helperText="Only disable scrollbars when your iframe height is adjusted dynamically using var(--dynamicHeight) and is not height-constrained (e.g. no max-height). Otherwise leave this off and use a fixed iframe height instead of var(--dynamicHeight)."
       />
       <SwitchInput
         checked={values.showIframeOutline}
