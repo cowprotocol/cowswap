@@ -300,41 +300,6 @@ export function Sidebar({
 
   useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, standaloneMode)
 
-  /*
-
-  TODO:
-
-  - [x] Classify state props into categories in type definition file.
-  - [x] Add field for appCode.
-  - [x] Automatically set baseUrl based on widget configurator env.
-  - [x] Add env indicator.
-  - [x] Allow wider sidebar to use it as mobile mode.
-  - [x] Add loader to widget, also when reloading / updating.
-  - [x] Add update/reload widget button if needed.
-  - [x] Make widget theme selector work.
-  - [x] Create PresetsButtons component.
-  - [x] Add presets for baseUrl and layout.
-  - [x] Fix sticky style issue.
-
-  - [x] Update AccordionSection so that we just pass title, currentTitle and onChange, and handle that with a single state variable and a single handler function.
-  - [x] Move fields to individual panels. Pass one prop per value and one single callback that takes a ChangeEvent or name + value.
-  - [x] Add name to all fields.
-  - [x] Create reusable TextInput, NumberInput and SelectInput components.
-  - [x] Simply input change handling.
-  - [x] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
-  - [x] Further polish Select-based inputs and color inputs.
-
-  - [ ] Fix Number input with default value.
-
-  - [ ] Add toggle to disable scrollbars. Auto-resize is now doing that automatically, but it should not.
-  - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.
-  - [ ] Widget URL "custom" value.
-
-  - [ ] Show iframe outline tooltip format is not the same as Mode.
-  - [ ] Env tooltip format no the same as Mode.
-  - [ ] Timeout/error when loading/reloading widget/iframe.
-  */
-
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>
       <Box sx={drawerPaperRowSx}>
