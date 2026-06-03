@@ -9,6 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
@@ -80,6 +81,7 @@ export function YieldWidget() {
   const poolsInfo = usePoolsInfo()
   const vampireAttackContext = useVampireAttack()
   const vampireAttackTarget = useVampireAttackFirstTarget()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
 
   const {
     inputCurrency,
@@ -185,7 +187,13 @@ export function YieldWidget() {
       <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
     ) : null,
     selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
-    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
+    settingsWidget: (
+      <SettingsTab
+        recipientToggleState={recipientToggleState}
+        deadlineState={deadlineState}
+        isRecipientToggleHidden={disableCustomRecipient}
+      />
+    ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null) => {
         return (
