@@ -2,9 +2,11 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
+import { StatefulValue } from '@cowprotocol/types'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -61,6 +63,8 @@ export interface SwapWidgetProps {
   allowSwapSameToken?: boolean
 }
 
+const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
@@ -68,13 +72,14 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const isRecipientRequired = useIsNonEvmBridging()
+  const isNonEvmBridging = useIsNonEvmBridging()
   const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
   const isFeeExceedsError = quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.FeeExceedsFrom
   const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
@@ -203,12 +208,13 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
-        recipientToggleState={recipientToggleState}
+        recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
         partialApprovalLocked={isInfiniteApproveDisabledInWidget}
-        isRecipientToggleDisabled={isRecipientRequired}
+        isRecipientToggleDisabled={isNonEvmBridging}
+        isRecipientToggleHidden={disableCustomRecipient}
       />
     ),
     bottomContent: useCallback(
