@@ -1,102 +1,115 @@
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-
 import React, { useMemo } from 'react'
 
-import { ZERO_BIG_NUMBER } from 'const'
-import styled from 'styled-components/macro'
+import { AddressKey, areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { Order } from 'api/operator'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+import { WRAPPED_NATIVE_ADDRESS } from 'const'
+import { useMultipleErc20 } from 'hooks/useErc20'
+import { useNetworkId } from 'state/network'
+import { Network } from 'types'
+import { abbreviateString, isNativeToken } from 'utils'
+
+import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-const Wrapper = styled.div`
-  > span {
-    margin: 0 0.5rem 0 0;
-  }
-`
+const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
+  [ProtocolFeeType.Surplus]: 'Surplus fee',
+  [ProtocolFeeType.Volume]: 'Volume fee',
+  [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
+  [ProtocolFeeType.Unknown]: 'Protocol fee',
+}
 
 export type Props = { order: Order }
 
-// TODO: Enable once API is ready
-// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
-//   // TODO: Simulating API call to fetch fee breakdown data
-//   return new Promise((resolve) => {
-//     resolve({
-//       networkCosts: 'TODO: Get network costs here',
-//       fee: 'TODO: Get fee here',
-//       total: initialFee,
-//     })
-//   })
-// }
-
-// TODO: Enable once API is ready
-// const renderFeeBreakdown = (data: any): React.ReactNode => {
-//   return (
-//     <table>
-//       <tbody>
-//         <tr>
-//           <td>Network Costs:</td>
-//           <td>{data.networkCosts}</td>
-//         </tr>
-//         <tr>
-//           <td>Fee:</td>
-//           <td>{data.fee}</td>
-//         </tr>
-//         <tr>
-//           <td>Total Costs & Fees:</td>
-//           <td>{data.total}</td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   )
-// }
-
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
-  const {
-    order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
-  } = props
+  const { order } = props
+  const { protocolFees } = order
 
-  const { executedFeeFormatted, totalFeeFormatted, quoteSymbol } = useMemo(() => {
-    if (!sellToken) {
-      return {
-        executedFeeFormatted: totalFee.toString(10),
-        totalFeeFormatted: feeAmount.toString(10),
-        quoteSymbol: sellTokenAddress,
-      }
-    }
+  const networkId = useNetworkId() ?? undefined
 
-    const { formattedAmount: executedFeeFormatted } = formatTokenAmount(totalFee, sellToken)
-    const { formattedAmount: totalFeeFormatted, symbol: quoteSymbol } = formatTokenAmount(feeAmount, sellToken)
+  const feeTokenAddresses = useMemo(() => (protocolFees ?? []).map((fee) => fee.tokenAddress), [protocolFees])
+  const { value: feeTokens } = useMultipleErc20({ networkId, addresses: feeTokenAddresses })
+  const feeTokensByKey = useMemo(() => {
+    const map = new Map<AddressKey, TokenErc20>()
+    Object.values(feeTokens).forEach((token) => {
+      if (token) map.set(getAddressKey(token.address), token)
+    })
+    return map
+  }, [feeTokens])
 
-    return { executedFeeFormatted, totalFeeFormatted, quoteSymbol }
-  }, [totalFee, feeAmount, sellToken, sellTokenAddress])
-
-  const noFee = useMemo(() => feeAmount.isZero() && totalFee.isZero(), [feeAmount, totalFee])
-
-  const FeeElement = useMemo(
-    () => (
-      <span>
-        {noFee ? '-' : `${executedFeeFormatted} ${quoteSymbol}`}
-        {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
-          <>
-            <span>
-              of {totalFeeFormatted} {quoteSymbol}
-            </span>
-          </>
-        )}
-      </span>
-    ),
-    [noFee, executedFeeFormatted, quoteSymbol, fullyFilled, feeAmount, totalFeeFormatted],
-  )
+  if (!protocolFees || protocolFees.length === 0) {
+    return <span>-</span>
+  }
 
   return (
-    <Wrapper>
-      {FeeElement}
-      {/*TODO: Enable once API is ready*/}
-      {/*<NumbersBreakdown*/}
-      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
-      {/*  renderContent={renderFeeBreakdown}*/}
-      {/*/>*/}
-    </Wrapper>
+    <NumbersBreakdown>
+      <table>
+        <tbody>
+          {protocolFees.map((fee, index) => (
+            <tr key={`${fee.tokenAddress}-${index}`}>
+              <td>{getFeeLabel(fee)}:</td>
+              <td>{formatFee(order, fee, feeTokensByKey, networkId)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </NumbersBreakdown>
   )
+}
+
+/**
+ * Builds the row label for a fee. A volume fee can appear more than once on an order (e.g. a
+ * protocol volume fee alongside a partner volume fee). The API doesn't tell us the fee owner, but
+ * each fee carries its own volume factor, so we surface the basis points to tell the otherwise
+ * identical "Volume fee" labels apart.
+ */
+function getFeeLabel(fee: ProtocolFee): string {
+  const label = PROTOCOL_FEE_LABELS[fee.type]
+  if (fee.type === ProtocolFeeType.Volume && fee.factor !== undefined) {
+    return `${label} (${formatBps(fee.factor)})`
+  }
+  return label
+}
+
+function formatBps(factor: number): string {
+  // The volume factor is a fraction of volume (1 bps = 0.0001). Fees are usually whole basis
+  // points, but keep up to two decimals for unusual factors, trimming trailing zeros.
+  const bps = Math.round(factor * 10000 * 100) / 100
+  return `${bps} bps`
+}
+
+function formatFee(
+  order: Order,
+  fee: ProtocolFee,
+  feeTokensByKey: Map<AddressKey, TokenErc20>,
+  networkId: Network | undefined,
+): string {
+  const { amount, tokenAddress } = fee
+  const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
+  // Token metadata not loaded: we can't know decimals, so show the raw atom amount
+  // alongside a shortened address rather than an unreadable 42-char string.
+  if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
+  const { formattedAmount, symbol } = formatTokenAmount(amount, token)
+  return `${formattedAmount} ${symbol}`
+}
+
+function resolveToken(
+  order: Order,
+  address: AddressKey,
+  feeTokensByKey: Map<AddressKey, TokenErc20>,
+  networkId: Network | undefined,
+): TokenErc20 | undefined {
+  if (areAddressesEqual(order.sellToken?.address, address)) return order.sellToken || undefined
+  if (areAddressesEqual(order.buyToken?.address, address)) return order.buyToken || undefined
+  // Ethflow orders sell native ETH but pay fees in the wrapped native (WETH) on-chain.
+  // Display them as the native token to stay consistent with the rest of the order details.
+  if (
+    networkId &&
+    isNativeToken(order.sellTokenAddress) &&
+    areAddressesEqual(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId], address)
+  ) {
+    return order.sellToken || undefined
+  }
+  return feeTokensByKey.get(address) || undefined
 }

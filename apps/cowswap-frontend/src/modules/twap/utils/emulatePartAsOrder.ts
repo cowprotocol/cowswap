@@ -1,3 +1,4 @@
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { EnrichedOrder, getAddressKey, OrderClass, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
@@ -24,6 +25,7 @@ export function emulatePartAsOrder(item: TwapPartOrderItem, parent: TwapOrderIte
     executedBuyAmount: '0',
     executedFeeAmount: '0',
     invalidated: isCancelling,
+    settlementContract: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[item.chainId],
   }
 }
 

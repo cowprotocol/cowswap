@@ -1,4 +1,5 @@
 import {
+  AddressKey,
   CompetitionOrderStatus,
   EnrichedOrder,
   OrderKind,
@@ -68,6 +69,35 @@ export type GetTxOrdersParams = WithNetworkId & {
 }
 
 /**
+ * How a protocol fee was calculated, derived from the trade's fee policy.
+ * Used to label each fee so the different fees on an order can be told apart.
+ */
+export enum ProtocolFeeType {
+  Surplus = 'surplus',
+  Volume = 'volume',
+  PriceImprovement = 'priceImprovement',
+  Unknown = 'unknown',
+}
+
+/**
+ * A single protocol fee charged on a trade, derived from the trade's executedProtocolFees.
+ * `tokenAddress` is a normalized AddressKey (the surplus-side token the fee is taken in).
+ */
+export type ProtocolFee = {
+  amount: BigNumber
+  tokenAddress: AddressKey
+  type: ProtocolFeeType
+  /**
+   * The fee policy's `factor`, when known. Its meaning is policy-specific: for
+   * {@link ProtocolFeeType.Volume} it's a fraction of trade volume, which we surface as basis
+   * points to tell otherwise identically labeled fees apart (e.g. a protocol volume fee vs a
+   * partner volume fee, which the API does not distinguish). For surplus / price-improvement fees
+   * it's a fraction of the surplus / improvement, so it is not shown as bps.
+   */
+  factor?: number
+}
+
+/**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
  * Some fields are kept as is.
@@ -101,6 +131,9 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedFee: BigNumber | null
   totalFee: BigNumber
+  // Derived client-side from the trades' executedProtocolFees (not returned directly on the order).
+  // Each entry is kept separate rather than aggregated; network costs are intentionally not surfaced.
+  protocolFees?: ProtocolFee[]
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -127,7 +160,7 @@ export type RawTrade = TradeMetaData
 /**
  * Enriched Trade type
  */
-export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
+export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash' | 'executedProtocolFees'> & {
   orderId: string
   kind?: OrderKind
   buyAmount: BigNumber

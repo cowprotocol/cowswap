@@ -25,7 +25,7 @@ import { formatPercentage } from 'utils'
 
 import { useCrossChainOrder } from 'modules/bridge'
 
-import { Order, ORDER_FINAL_FAILED_STATUSES, Trade } from 'api/operator'
+import { Order, ORDER_FINAL_FAILED_STATUSES, ProtocolFee, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { TitleUid, StyledExplorerTabs, TabContent } from './styled'
@@ -38,6 +38,8 @@ import { StatusLabel } from '../StatusLabel'
 type Props = {
   order: Order | null
   trades: Trade[]
+  // Order-level protocol fee breakdown, derived from *all* trades (not the current fills page).
+  protocolFees?: ProtocolFee[]
   isOrderLoading: boolean
   areTradesLoading: boolean
   errors: Errors
@@ -49,6 +51,7 @@ type Props = {
 }
 
 const DEFAULT_TAB = TabView[1]
+const NO_PROTOCOL_FEES: ProtocolFee[] = []
 
 function useQueryViewParams(): string {
   const query = useQuery()
@@ -70,6 +73,7 @@ const tabItems = (
   _order: Order | null,
   crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
+  protocolFees: ProtocolFee[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
@@ -80,7 +84,7 @@ const tabItems = (
   solvedBy?: OrderSolverInfo,
   isSolvedByLoading?: boolean,
 ): TabItemInterface[] => {
-  const order = getOrderWithTxHash(_order, trades, hasMultipleTrades)
+  const order = enrichOrderFromTrades(_order, trades, hasMultipleTrades, protocolFees)
   const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
@@ -149,15 +153,28 @@ const tabItems = (
 }
 
 /**
- * Get the order with txHash set if it has a single trade
- *
- * That is the case for any filled fill or kill or a partial fill that has a single trade
+ * Returns the order enriched with fields derived from its trades:
+ * - protocolFees: the order-level protocol fee breakdown (computed from *all* trades by the
+ *   caller, not just the current fills page, so it doesn't change as the user pages)
+ * - txHash and executionDate when the order has a single trade (fill or kill,
+ *   or a partial fill with a single trade so far)
  */
-function getOrderWithTxHash(order: Order | null, trades: Trade[], hasMultipleTrades: boolean): Order | null {
-  if (order && trades.length === 1 && !hasMultipleTrades) {
-    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
+function enrichOrderFromTrades(
+  order: Order | null,
+  trades: Trade[],
+  hasMultipleTrades: boolean,
+  protocolFees: ProtocolFee[],
+): Order | null {
+  if (!order) return order
+
+  const enriched = { ...order, protocolFees }
+
+  if (trades.length === 1 && !hasMultipleTrades) {
+    enriched.txHash = trades[0].txHash || undefined
+    enriched.executionDate = trades[0].executionTime || undefined
   }
-  return order
+
+  return enriched
 }
 
 function hasMultipleTradesForOrder(trades: Trade[], tableState: TableState): boolean {
@@ -173,6 +190,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     areTradesLoading,
     errors,
     trades,
+    protocolFees = NO_PROTOCOL_FEES,
     tableState,
     setPageSize,
     setPageOffset,
@@ -192,7 +210,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
   const hasMultipleTrades = hasMultipleTradesForOrder(trades, tableState)
   const isMultiFill = order?.partiallyFillable && !order.txHash && hasMultipleTrades
-  const orderWithTxHash = getOrderWithTxHash(order, trades, hasMultipleTrades)
+  const orderWithTxHash = enrichOrderFromTrades(order, trades, hasMultipleTrades, protocolFees)
   const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(
     showSolverDetails && !isMultiFill ? orderWithTxHash : null,
   )
@@ -264,6 +282,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             order,
             crossChainOrderResponse,
             trades,
+            protocolFees,
             areTradesLoading,
             isOrderLoading,
             onChangeTab,

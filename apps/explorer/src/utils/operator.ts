@@ -1,12 +1,12 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { FeePolicy, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import { Order, OrderStatus, ProtocolFee, ProtocolFeeType, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
@@ -447,4 +447,62 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
   const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
 
   return surplus || ZERO_SURPLUS
+}
+
+/**
+ * Classifies a fee policy into a {@link ProtocolFeeType} based on its wrapper key
+ * (`{ surplus: {...} }` / `{ volume: {...} }` / `{ priceImprovement: {...} }`).
+ */
+function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
+  if (policy) {
+    if ('surplus' in policy) return ProtocolFeeType.Surplus
+    if ('volume' in policy) return ProtocolFeeType.Volume
+    if ('priceImprovement' in policy) return ProtocolFeeType.PriceImprovement
+  }
+  return ProtocolFeeType.Unknown
+}
+
+/**
+ * Returns the fee policy's `factor`, when present. Its meaning is policy-specific: for `volume`
+ * it's a fraction of trade volume (surfaced as basis points to tell otherwise identical labels
+ * apart); for `surplus` / `priceImprovement` it's a fraction of the surplus / improvement.
+ */
+function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
+  if (policy) {
+    if ('surplus' in policy) return policy.surplus.factor
+    if ('volume' in policy) return policy.volume.factor
+    if ('priceImprovement' in policy) return policy.priceImprovement.factor
+  }
+  return undefined
+}
+
+/**
+ * Collects every protocol fee charged across the order's trades, as individual entries
+ * (in the order they were applied), each tagged with its fee policy type.
+ *
+ * We intentionally do not aggregate them or try to reconstruct network costs: `order.totalFee`
+ * (the executed fee) mixes network costs and protocol fees and cannot be split back apart
+ * reliably, so we only surface the protocol fees the API reports per trade.
+ */
+export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
+  const protocolFees: ProtocolFee[] = []
+
+  for (const { executedProtocolFees } of trades) {
+    if (!executedProtocolFees) continue
+    for (const { amount, token, policy } of executedProtocolFees) {
+      if (!amount || !token) continue
+      const parsedAmount = new BigNumber(amount)
+      // Skip non-positive fees: a policy can apply yet charge nothing (e.g. no surplus to
+      // capture), and a "0" fee row is just noise in the breakdown.
+      if (!parsedAmount.isGreaterThan(0)) continue
+      protocolFees.push({
+        amount: parsedAmount,
+        tokenAddress: getAddressKey(token),
+        type: getProtocolFeeType(policy),
+        factor: getProtocolFeeFactor(policy),
+      })
+    }
+  }
+
+  return protocolFees
 }
