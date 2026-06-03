@@ -470,7 +470,7 @@ function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
  * (the executed fee) mixes network costs and protocol fees and cannot be split back apart
  * reliably, so we only surface the protocol fees the API reports per trade.
  */
-export function getProtocolFees(trades: Trade[]): ProtocolFee[] {
+export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
   const protocolFees: ProtocolFee[] = []
 
   for (const { executedProtocolFees } of trades) {
