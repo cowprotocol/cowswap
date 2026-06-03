@@ -22,7 +22,7 @@ export function LayoutSectionForm({ values, onChange, paperBackgroundColor }: La
         checked={values.showIframeOutline}
         label="Show iframe outline"
         onChange={(checked) => onChange('showIframeOutline', checked)}
-        tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
+        helperText="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
       />
       <AppearanceStyleControls values={values} onChange={onChange} paperBackgroundColor={paperBackgroundColor} />
     </>

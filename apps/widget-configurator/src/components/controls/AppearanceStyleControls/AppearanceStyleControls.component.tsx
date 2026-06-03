@@ -49,6 +49,10 @@ export function AppearanceStyleControls({
           Presets
         </Typography>
         <PresetsButtons presets={APPEARANCE_STYLE_PRESET_OPTIONS} onPresetClick={handlePresetClick} />
+        <Typography sx={{ marginTop: '0.8rem', color: 'text.secondary', display: 'block' }} variant="caption">
+          Styles below may need adjusting for your environment (e.g. use position: fixed instead of position: absolute
+          for some presets).
+        </Typography>
       </Box>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
