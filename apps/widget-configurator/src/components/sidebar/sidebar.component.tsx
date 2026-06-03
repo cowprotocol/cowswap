@@ -36,6 +36,7 @@ import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
+import { DEFAULT_IFRAME_STYLE_JSON } from '../controls/AppearanceStyleControls'
 import { AccordionFormSection } from '../ui/Accordion/AccordionFormSection'
 
 import type { Theme } from '@mui/material/styles'
@@ -119,7 +120,7 @@ export function Sidebar({
     theme: 'light',
     autoResizeEnabled: true,
     showIframeOutline: true,
-    iframeStyleJson: '{}',
+    iframeStyleJson: DEFAULT_IFRAME_STYLE_JSON,
     appWrapperStyleJson: '{}',
     bodyWrapperStyleJson: '{}',
     cardStyleJson: '{}',
@@ -323,7 +324,7 @@ export function Sidebar({
   - [x] TokensDialog, Wagmi dialog, etc. sit below the sidebar handler.
   - [x] Further polish Select-based inputs and color inputs.
 
-  - [ ] Fix Number input with default value. Remove debug red/cyan backgrounds.
+  - [ ] Fix Number input with default value.
 
   - [ ] Add toggle to disable scrollbars. Auto-resize is now doing that automatically, but it should not.
   - [ ] Bug: when in dApp mode, reload the page with the wallet connected. You are connected outside, not within the widget.

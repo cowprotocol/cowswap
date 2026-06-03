@@ -11,13 +11,16 @@ import { PresetOption, PresetsButtons } from '../ui/inputs/PresetsButtons/Preset
 import type { JsonState, OnJsonStateChange } from '../../hooks/useJsonState'
 import type * as CSS from 'csstype'
 
+export const RESPONSIVE_BLOCK_IFRAME_STYLE: CSS.Properties = {
+  width: '100%',
+  height: 'var(--dynamicHeight)',
+}
+
+export const DEFAULT_IFRAME_STYLE_JSON = JSON.stringify(RESPONSIVE_BLOCK_IFRAME_STYLE, null, 2)
+
 const presetsOptions = [
   {
-    label: 'None',
-    value: 'none',
-  },
-  {
-    label: 'Responsive block',
+    label: 'Responsive block (default)',
     value: 'responsive-block',
   },
   {
@@ -36,6 +39,10 @@ const presetsOptions = [
     label: 'Modal',
     value: 'modal',
   },
+  {
+    label: 'None',
+    value: 'none',
+  },
 ] as const satisfies PresetOption[]
 
 type PresetKey = (typeof presetsOptions)[number]['value']
@@ -46,10 +53,7 @@ function getPresets(paperBackgroundColor: string): Record<PresetKey, Partial<Rec
   return {
     none: {},
     'responsive-block': {
-      iframe: {
-        width: '100%',
-        height: 'var(--dynamicHeight)',
-      },
+      iframe: RESPONSIVE_BLOCK_IFRAME_STYLE,
     },
     'full-screen': {
       iframe: {
@@ -109,8 +113,8 @@ function getPresets(paperBackgroundColor: string): Record<PresetKey, Partial<Rec
         height: '600px',
         minWidth: '75%',
         minHeight: 'var(--dynamicHeight)',
-        maxWidth: '100%',
-        maxHeight: '100%',
+        maxWidth: 'calc(100% - 32px)',
+        maxHeight: 'calc(100% - 32px)',
         backgroundColor: paperBackgroundColor,
       },
       bodyWrapper: {
