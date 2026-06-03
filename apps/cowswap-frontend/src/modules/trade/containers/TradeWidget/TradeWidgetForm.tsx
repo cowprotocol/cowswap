@@ -13,12 +13,12 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
-import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { WalletStatusButton } from 'modules/wallet'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -229,7 +229,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
+          {isInjectedWidgetMode && standaloneMode !== false && (
+            <WalletStatusButton variant="widget" onWalletClick={toggleAccountModal} />
+          )}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
