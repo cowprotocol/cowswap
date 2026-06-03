@@ -170,7 +170,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       iframeSafeSdkBridge?.stopListening()
 
       // Destroy the iframe
-      container.removeChild(iframe)
+      if (iframe && iframe.parentNode === container) container.removeChild(iframe)
 
       cancelWidgetLoading()
     },
