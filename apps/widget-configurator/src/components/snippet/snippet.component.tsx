@@ -15,16 +15,18 @@ import { Check, Copy } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { idea, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { vanillaNoDepsExample } from './utils/htmlExample'
-import { jsExample } from './utils/jsExample'
-import { reactTsExample } from './utils/reactTsExample'
-import { tsExample } from './utils/tsExample'
+import { vanillaNoDepsExample } from './code-example-templates/htmlExample'
+import { jsExample } from './code-example-templates/jsExample'
+import { reactTsExample } from './code-example-templates/reactTsExample'
+import { tsExample } from './code-example-templates/tsExample'
+import { withPaperBackground } from './snippet.utils'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorPalette } from '../../configurator.types'
 import { Button } from '../ui/buttons/button/Button.component'
+import { BASE_INPUT_FONT_SIZE } from '../ui/inputs/BaseTextInput/BaseTextInput.component'
 import { ModalFooter } from '../ui/surface/modal/footer/ModalFooter.component'
 import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
 import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
@@ -112,6 +114,12 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
     }
   }, [open, cowAnalytics])
 
+  const syntaxHighlighterStyle = useMemo(() => {
+    const baseStyle = theme.palette.mode === 'dark' ? vs2015 : idea
+
+    return withPaperBackground(baseStyle, theme.palette.background.paper)
+  }, [theme.palette.background.paper, theme.palette.mode])
+
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const code = useMemo(() => {
     return snippetFromParams(params, defaultPalette).trim()
@@ -181,7 +189,7 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
             showLineNumbers={true}
             children={code}
             language={language}
-            style={nightOwl}
+            style={syntaxHighlighterStyle}
             customStyle={{
               margin: 0,
               flex: 1,
@@ -189,7 +197,7 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
               height: '100%',
               overflow: 'auto',
               padding: '16px',
-              fontSize: '0.8em',
+              fontSize: BASE_INPUT_FONT_SIZE,
               backgroundColor: theme.palette.background.paper,
               boxSizing: 'border-box',
             }}
@@ -205,6 +213,7 @@ export function Snippet({ params, open, handleClose, defaultPalette }: SnippetPr
               paddingLeft: 0,
               marginRight: 0,
               userSelect: 'none',
+              fontSize: BASE_INPUT_FONT_SIZE,
             }}
           />
         </ModalTabPanel>

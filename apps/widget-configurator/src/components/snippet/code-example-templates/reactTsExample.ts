@@ -1,9 +1,9 @@
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { formatParameters } from './formatParameters'
+import { COMMENTS_BEFORE_PARAMS, REACT_IMPORT_STATEMENT, PROVIDER_PARAM_COMMENT } from './common/codeExample.constants'
+import { formatParameters } from './common/formatParameters.utils'
 
 import { ColorPalette } from '../../../configurator.types'
-import { COMMENTS_BEFORE_PARAMS, REACT_IMPORT_STATEMENT, PROVIDER_PARAM_COMMENT } from '../snippet.const'
 
 export function reactTsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `${REACT_IMPORT_STATEMENT} from '@cowprotocol/widget-react'

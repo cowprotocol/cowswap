@@ -1,9 +1,9 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { formatParameters } from './formatParameters'
+import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT_LINES } from './common/codeExample.constants'
+import { formatParameters } from './common/formatParameters.utils'
 
 import { ColorPalette } from '../../../configurator.types'
-import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT_LINES } from '../snippet.const'
 
 export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `<html lang="en">

@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import { IS_IFRAME, LOCALE_OPTIONS, WIDGET_MODE_OPTIONS } from '../../../configurator.constants'
-import { COMMENTS_BY_PARAM_NAME } from '../../snippet/snippet.const'
+import { COMMENTS_BY_PARAM_NAME } from '../../snippet/code-example-templates/common/codeExample.constants'
 import { RadioGroupInput } from '../../ui/inputs/RadioGroupInput/RadioGroupInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'

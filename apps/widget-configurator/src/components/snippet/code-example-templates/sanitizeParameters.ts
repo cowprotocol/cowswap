@@ -1,8 +1,12 @@
 import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
+import {
+  WIDGET_CONFIGURATOR_DEFAULT_BASE_URL,
+  WIDGET_SNIPPET_APP_CODE_PLACEHOLDER,
+} from './common/codeExample.constants'
+
 import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../../../configurator.constants'
 import { ColorPalette } from '../../../configurator.types'
-import { WIDGET_CONFIGURATOR_DEFAULT_BASE_URL, WIDGET_SNIPPET_APP_CODE_PLACEHOLDER } from '../snippet.const'
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)

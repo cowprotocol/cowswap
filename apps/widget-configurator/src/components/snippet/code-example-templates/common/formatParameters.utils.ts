@@ -1,9 +1,11 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { sanitizeParameters } from './sanitizeParameters'
+import { COMMENTS_BY_PARAM_NAME, COMMENTS_BY_PARAM_NAME_TYPESCRIPT } from './codeExample.constants'
 
-import { ColorPalette } from '../../../configurator.types'
-import { COMMENTS_BY_PARAM_NAME, COMMENTS_BY_PARAM_NAME_TYPESCRIPT } from '../snippet.const'
+import { ColorPalette } from '../../../../configurator.types'
+import { sanitizeParameters } from '../sanitizeParameters'
+
+const SNIPPET_JSON_INDENT = 2
 
 export function formatParameters(
   params: CowSwapWidgetParams,
@@ -12,7 +14,7 @@ export function formatParameters(
   defaultPalette: ColorPalette,
 ): string {
   const paramsSanitized = sanitizeParameters(params, defaultPalette)
-  const formattedParams = JSON.stringify(paramsSanitized, null, 4)
+  const formattedParams = JSON.stringify(paramsSanitized, null, SNIPPET_JSON_INDENT)
 
   // Add comments
   const commentsByParamName = isTypescript
