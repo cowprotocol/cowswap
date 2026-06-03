@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { AccountElement } from 'legacy/components/Header/AccountElement/AccountElement.pure'
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { NetworkSelector } from '../NetworkSelector/NetworkSelector.container'
 
