@@ -2,8 +2,20 @@ import { getSafeAbsoluteUrl, getSafeSameOriginOrAbsoluteUrl } from './safeLink'
 
 describe('safeLink', () => {
   describe('getSafeAbsoluteUrl', () => {
+    const originalNodeEnv = process.env.NODE_ENV
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv
+    })
+
     it('accepts https urls', () => {
       expect(getSafeAbsoluteUrl('https://cow.fi/learn')).toBe('https://cow.fi/learn')
+    })
+
+    it('accepts IPv6 localhost urls in development', () => {
+      process.env.NODE_ENV = 'development'
+
+      expect(getSafeAbsoluteUrl('http://[::1]:8003/path')).toBe('http://[::1]:8003/path')
     })
 
     it('rejects unsafe schemes', () => {
