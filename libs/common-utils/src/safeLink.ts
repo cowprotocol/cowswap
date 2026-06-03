@@ -27,7 +27,11 @@ export function getSafeAbsoluteUrl(href: string | null | undefined): string | nu
   try {
     const url = new URL(href)
 
-    return isAllowedHttpUrl(url) ? url.toString() : null
+    if (!isAllowedHttpUrl(url)) return null
+
+    const isBareOrigin = url.pathname === '/' && !url.search && !url.hash
+
+    return isBareOrigin ? url.origin : url.toString()
   } catch {
     return null
   }

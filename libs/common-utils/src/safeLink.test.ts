@@ -12,6 +12,10 @@ describe('safeLink', () => {
       expect(getSafeAbsoluteUrl('https://cow.fi/learn')).toBe('https://cow.fi/learn')
     })
 
+    it('keeps bare origins slash-stable', () => {
+      expect(getSafeAbsoluteUrl('https://etherscan.io')).toBe('https://etherscan.io')
+    })
+
     it('accepts IPv6 localhost urls in development', () => {
       process.env.NODE_ENV = 'development'
 
