@@ -4,6 +4,7 @@ import { ReactNode, Suspense } from 'react'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
@@ -17,7 +18,6 @@ import {
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
