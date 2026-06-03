@@ -7,7 +7,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
 
 import { DEFAULT_IFRAME_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
-import { ConfiguratorFormValues, TokenListItem } from './configurator.types'
+import { ConfiguratorFormValues, TokenListItem, WidgetMode } from './configurator.types'
 
 import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseSelectInput.types'
 
@@ -45,6 +45,11 @@ export type ThemeOptionValue = 'light' | 'dark'
 export const THEME_OPTIONS: SelectInputOption<ThemeOptionValue>[] = [
   { label: 'Light', value: 'light', icon: LightModeIcon },
   { label: 'Dark', value: 'dark', icon: DarkModeIcon },
+]
+
+export const WIDGET_MODE_OPTIONS: SelectInputOption<WidgetMode>[] = [
+  { label: 'Dapp mode', value: 'dapp' },
+  { label: 'Standalone mode', value: 'standalone' },
 ]
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]

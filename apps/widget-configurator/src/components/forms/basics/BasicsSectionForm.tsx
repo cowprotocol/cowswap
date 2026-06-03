@@ -1,12 +1,34 @@
 import type { ReactNode } from 'react'
 
-import { LOCALE_OPTIONS } from '../../../configurator.constants'
-import { ModeControl } from '../../controls/ModeControl'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+import { IS_IFRAME, LOCALE_OPTIONS, WIDGET_MODE_OPTIONS } from '../../../configurator.constants'
 import { COMMENTS_BY_PARAM_NAME } from '../../snippet/snippet.const'
+import { RadioGroupInput } from '../../ui/inputs/RadioGroupInput/RadioGroupInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
+
+const WIDGET_MODE_TOOLTIP = (
+  <Stack divider={<Divider flexItem />} spacing={1.2}>
+    <Typography sx={{ fontSize: '1.2rem', lineHeight: 1.45 }}>
+      <Box component="span" sx={{ fontWeight: 600 }}>
+        Dapp mode:
+      </Box>{' '}
+      the host app provides the wallet connection and network switching.
+    </Typography>
+    <Typography sx={{ fontSize: '1.2rem', lineHeight: 1.45 }}>
+      <Box component="span" sx={{ fontWeight: 600 }}>
+        Standalone mode:
+      </Box>{' '}
+      the widget uses its own wallet provider and shows its own connect wallet controls.
+    </Typography>
+  </Stack>
+)
 
 export function BasicsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
@@ -20,7 +42,16 @@ export function BasicsSectionForm({ values, onChange }: SidebarSectionFormProps)
         inputProps={{ maxLength: 50 }}
       />
 
-      <ModeControl value={values.widgetMode} onChange={onChange} />
+      <RadioGroupInput
+        name="widgetMode"
+        label="Mode"
+        value={values.widgetMode}
+        options={WIDGET_MODE_OPTIONS}
+        onChange={onChange}
+        disabled={IS_IFRAME}
+        tooltip={WIDGET_MODE_TOOLTIP}
+        tooltipAriaLabel="Explain widget modes"
+      />
 
       <SelectInput
         name="locale"
