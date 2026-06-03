@@ -6,8 +6,8 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
 import { correlatedTokensAtom } from 'entities/correlatedTokens'
+import { injectedWidgetPartnerFeeAtom } from 'entities/injectedWidget'
 
-import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 import { tradeQuotesAtom } from 'modules/tradeQuote'
 
