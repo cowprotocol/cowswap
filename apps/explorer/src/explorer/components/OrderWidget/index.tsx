@@ -2,7 +2,7 @@ import React from 'react'
 
 import { OrderDetails } from '../../../components/orders/OrderDetails'
 import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
-import { useOrderTrades } from '../../../hooks/useOperatorTrades'
+import { useOrderProtocolFees, useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { ORDER_QUERY_INTERVAL } from '../../const'
@@ -35,6 +35,10 @@ export const OrderWidget: React.FC = () => {
     hasNextPage,
   } = useOrderTrades(order, tableState.pageOffset, tableState.pageSize)
 
+  // Protocol fee breakdown is order-level, so it's derived from all trades rather than the
+  // currently selected fills page (which `useOrderTrades` is scoped to).
+  const { protocolFees } = useOrderProtocolFees(order)
+
   // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = hasNextPage
 
@@ -51,6 +55,7 @@ export const OrderWidget: React.FC = () => {
     <OrderDetails
       order={order}
       trades={trades}
+      protocolFees={protocolFees}
       isOrderLoading={isOrderLoading}
       areTradesLoading={areTradesLoading}
       errors={errors}
