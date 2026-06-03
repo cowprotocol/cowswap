@@ -1,7 +1,7 @@
 import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
 import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery, useTheme, useThrottleFn } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
@@ -22,7 +22,6 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'

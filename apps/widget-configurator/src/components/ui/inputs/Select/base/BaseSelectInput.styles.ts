@@ -1,4 +1,4 @@
-import { configuratorSurfacePaperSx } from '../../../surface/surface.styles'
+import { configuratorSurfacePaperProps } from '../../../surface/surface.styles'
 import { BASE_INPUT_FONT_SIZE, BASE_TEXT_INPUT_HEIGHT } from '../../BaseTextInput/BaseTextInput.component'
 
 import type { SelectProps } from '@mui/material/Select'
@@ -55,9 +55,7 @@ export const NO_MENU_ANIMATION_PROPS: SelectProps['MenuProps'] = {
   TransitionProps: {
     timeout: 0,
   },
-  PaperProps: {
-    sx: configuratorSurfacePaperSx,
-  },
+  PaperProps: configuratorSurfacePaperProps,
 }
 
 export const selectOptionRowSx = {

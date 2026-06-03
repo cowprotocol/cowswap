@@ -32,6 +32,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   useFeatureFlags: () => ({}),
   useTheme: () => ({ darkMode: false }),
   useMediaQuery: () => false,
+  useThrottleFn: (fn: unknown) => fn,
 }))
 
 jest.mock('@cowprotocol/common-utils', () => ({
@@ -125,10 +126,6 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
 jest.mock('common/hooks/useIsProviderNetworkDeprecated', () => ({
   useIsProviderNetworkDeprecated: () => false,
 }))
-jest.mock('common/hooks/useThrottleFn', () => ({
-  useThrottleFn: (fn: unknown) => fn,
-}))
-
 jest.mock('./styled', () => ({
   ContainerBox: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Header: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
