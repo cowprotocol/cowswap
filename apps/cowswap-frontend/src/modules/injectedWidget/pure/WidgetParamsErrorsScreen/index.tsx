@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/react/macro'
+import { WidgetParamsErrors } from 'entities/injectedWidget'
 import styled from 'styled-components/macro'
-
-import { WidgetParamsErrors } from '../../state/injectedWidgetParamsAtom'
 
 const Container = styled.div`
   position: fixed;

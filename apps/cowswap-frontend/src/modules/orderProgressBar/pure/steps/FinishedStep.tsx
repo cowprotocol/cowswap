@@ -12,14 +12,13 @@ import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/u
 
 import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
