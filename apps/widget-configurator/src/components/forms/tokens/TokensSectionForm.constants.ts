@@ -1,4 +1,4 @@
-import { BASE_SELECT_OPTION_HEIGHT } from '../../../ui/inputs/Select/base/BaseSelectInput.styles'
+import { BASE_SELECT_OPTION_HEIGHT } from '../../ui/inputs/Select/base/BaseSelectInput.styles'
 
 import type { TokenListScope } from './TokensSectionForm.utils'
 

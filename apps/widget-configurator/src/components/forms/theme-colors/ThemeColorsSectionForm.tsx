@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { THEME_OPTIONS, ThemeOptionValue } from '../../../../configurator.constants'
-import { PaletteControl } from '../../../controls/PaletteControl'
-import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
+import { THEME_OPTIONS, ThemeOptionValue } from '../../../configurator.constants'
+import { PaletteControl } from '../../controls/PaletteControl'
+import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 
-import type { useColorPaletteManager } from '../../../../hooks/useColorPaletteManager'
-import type { SidebarSectionFormProps } from '../section.types'
+import type { useColorPaletteManager } from '../../../hooks/useColorPaletteManager'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export interface ThemeColorsSectionFormProps extends SidebarSectionFormProps {
   paletteManager: ReturnType<typeof useColorPaletteManager>

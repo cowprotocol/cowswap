@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 
-import { AppearanceStyleControls } from '../../../controls/AppearanceStyleControls/AppearanceStyleControls.component'
-import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
+import { AppearanceStyleControls } from '../../controls/AppearanceStyleControls/AppearanceStyleControls.component'
+import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export interface LayoutSectionFormProps extends SidebarSectionFormProps {
   paperBackgroundColor: string

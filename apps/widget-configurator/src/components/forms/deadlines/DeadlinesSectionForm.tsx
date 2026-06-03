@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
+import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 function parseDeadlineValue(rawValue: string): number | undefined {
   const numericValue = Number(rawValue)

@@ -2,14 +2,14 @@ import type { ReactNode } from 'react'
 
 import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './AdvancedSectionForm.constants'
 
-import { WIDGET_HOOKS_OPTIONS } from '../../../../configurator.constants'
-import { useAsyncJsonError } from '../../../../hooks/useAsyncJsonError'
-import { JsonInput } from '../../../ui/inputs/JsonInput/JsonInput.component'
-import { PresetsButtons } from '../../../ui/inputs/PresetsButtons/PresetsButtons.component'
-import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
-import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
+import { WIDGET_HOOKS_OPTIONS } from '../../../configurator.constants'
+import { useAsyncJsonError } from '../../../hooks/useAsyncJsonError'
+import { JsonInput } from '../../ui/inputs/JsonInput/JsonInput.component'
+import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
+import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const rawParamsJsonError = useAsyncJsonError(values.rawParamsJson)

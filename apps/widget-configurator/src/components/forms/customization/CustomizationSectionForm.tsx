@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
+import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
 

@@ -13,11 +13,11 @@ import {
   type TokenListScope,
 } from './TokensSectionForm.utils'
 
-import { LinkButton } from '../../../ui/buttons/link/LinkButton.component'
-import { CurrencyInputControl } from '../../../ui/inputs/CurrencyInput/CurrencyInputControl'
-import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { LinkButton } from '../../ui/buttons/link/LinkButton.component'
+import { CurrencyInputControl } from '../../ui/inputs/CurrencyInput/CurrencyInputControl'
+import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export function TokensSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const [dialogOpen, setDialogOpen] = useState(false)

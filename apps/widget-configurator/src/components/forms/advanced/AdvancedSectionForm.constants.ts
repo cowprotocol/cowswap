@@ -1,5 +1,5 @@
-import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../../utils/baseUrl'
-import { PresetOption } from '../../../ui/inputs/PresetsButtons/PresetsButtons.component'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../utils/baseUrl'
+import { PresetOption } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
 
 export const ADVANCED_BASE_URL_PRESETS_OPTIONS: PresetOption[] = [
   { label: 'Local', value: 'http://localhost:3000' },

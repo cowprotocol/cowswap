@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { LOCALE_OPTIONS } from '../../../../configurator.constants'
-import { ModeControl } from '../../../controls/ModeControl'
-import { COMMENTS_BY_PARAM_NAME } from '../../../snippet/snippet.const'
-import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
-import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
+import { LOCALE_OPTIONS } from '../../../configurator.constants'
+import { ModeControl } from '../../controls/ModeControl'
+import { COMMENTS_BY_PARAM_NAME } from '../../snippet/snippet.const'
+import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
+import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 
-import type { SidebarSectionFormProps } from '../section.types'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export function BasicsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (

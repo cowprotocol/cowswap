@@ -15,7 +15,7 @@ import { useAsyncJsonError } from '../../../hooks/useAsyncJsonError'
 import { JsonInput } from '../../ui/inputs/JsonInput/JsonInput.component'
 import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
 
-import type { SidebarSectionFormProps } from '../../sidebar/sections/section.types'
+import type { SidebarSectionFormProps } from '../../forms/forms.types'
 
 export interface AppearanceStyleControlsProps extends SidebarSectionFormProps {
   paperBackgroundColor: string

@@ -1,4 +1,4 @@
-import { TokenListItem } from '../../../../configurator.types'
+import { TokenListItem } from '../../../configurator.types'
 
 export type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
 

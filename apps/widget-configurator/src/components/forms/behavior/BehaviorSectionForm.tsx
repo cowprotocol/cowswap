@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
-import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
+import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
+import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
 
-import type { UseToastsManagerReturn } from '../../../../hooks/useToastsManager'
-import type { SidebarSectionFormProps } from '../section.types'
+import type { UseToastsManagerReturn } from '../../../hooks/useToastsManager'
+import type { SidebarSectionFormProps } from '../forms.types'
 
 export interface BehaviorSectionFormProps extends SidebarSectionFormProps {
   toastManager: UseToastsManagerReturn

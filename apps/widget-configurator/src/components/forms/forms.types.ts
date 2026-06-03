@@ -1,4 +1,4 @@
-import type { ConfiguratorFormValues } from '../../../configurator.types'
+import type { ConfiguratorFormValues } from '../../configurator.types'
 
 export type ConfiguratorFormInputEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 
