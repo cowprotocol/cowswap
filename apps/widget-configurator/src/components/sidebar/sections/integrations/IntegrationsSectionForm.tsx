@@ -9,14 +9,31 @@ interface IntegrationsSectionFormProps {
   onChange: ConfiguratorFormChangeHandler
 }
 
+function formatBpsAsPercent(bps: number): string {
+  const percent = bps / 100
+
+  if (bps === 0) {
+    return '0%'
+  }
+
+  const formatted = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 4,
+  }).format(percent)
+
+  return `${formatted}%`
+}
+
 export function IntegrationsSectionForm({ values, onChange }: IntegrationsSectionFormProps): ReactNode {
   return (
     <NumberInput
       id="partnerFeePercent"
       name="partnerFeeBps"
-      label="Partner fee BPS"
+      label="Partner fee"
       value={values.partnerFeeBps}
       onChange={onChange}
+      unit="BPS"
+      helperText={formatBpsAsPercent(values.partnerFeeBps)}
       emptyValue={0}
       parseValue={(rawValue) => {
         const roundedValue = Math.ceil(Number(rawValue))
