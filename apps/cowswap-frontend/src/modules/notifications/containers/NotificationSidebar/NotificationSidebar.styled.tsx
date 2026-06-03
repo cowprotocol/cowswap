@@ -57,11 +57,12 @@ export const ArrowLeft = ({ onClick }: IconProps): ReactNode => (
 
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
+
   position: fixed;
   right: 0;
   top: 10px;
   width: var(--width);
-  height: 100vh;
+  height: calc(100dvh - 10px);
   background: var(${UI.COLOR_PAPER});
   border: ${({ theme }) => (theme.darkMode ? `1px solid var(${UI.COLOR_TEXT_OPACITY_10})` : 'none')};
   padding: 0;
@@ -81,6 +82,7 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
     border: 0;
     border-radius: 0;
     z-index: ${NOTIFICATION_SIDEBAR_Z_INDEX + 1};
+    height: 100dvh;
   }
 `
 
