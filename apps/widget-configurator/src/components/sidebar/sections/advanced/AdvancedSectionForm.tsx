@@ -45,7 +45,7 @@ export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormPro
         value={values.baseUrl}
         onChange={onChange}
         placeholder={ADVANCED_DEFAULT_BASE_URL}
-        helperText={`Optional. Sets baseUrl (overrides Raw JSON). Default preview URL: ${ADVANCED_DEFAULT_BASE_URL}`}
+        InputLabelProps={{ shrink: true }}
       />
 
       <MultiSelectInput

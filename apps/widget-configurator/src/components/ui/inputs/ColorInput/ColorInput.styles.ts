@@ -6,7 +6,7 @@ import type { SxProps, Theme } from '@mui/material/styles'
 /** ColorInput-only overrides; compose flat with {@link baseTextInputSx} in the component. */
 export const colorInputAdornedInputSx: SxProps<Theme> = {
   '& .MuiOutlinedInput-input.MuiInputBase-inputAdornedStart': {
-    paddingLeft: 0,
+    paddingLeft: '0 !important',
   },
 }
 
