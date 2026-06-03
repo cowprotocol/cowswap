@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 const DetailsWrapper = styled.div`
   display: flex;
-  margin: 1.8rem 0 1rem;
+  margin: 0 0 1rem;
   border-radius: 0.6rem;
   line-height: 1.6;
   width: max-content;

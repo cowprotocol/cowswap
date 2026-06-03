@@ -48,7 +48,7 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
         <tbody>
           {protocolFees.map((fee, index) => (
             <tr key={`${fee.tokenAddress}-${index}`}>
-              <td>{PROTOCOL_FEE_LABELS[fee.type]}:</td>
+              <td>{getFeeLabel(fee)}:</td>
               <td>{formatFee(order, fee, feeTokensByKey, networkId)}</td>
             </tr>
           ))}
@@ -56,6 +56,27 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
       </table>
     </NumbersBreakdown>
   )
+}
+
+/**
+ * Builds the row label for a fee. A volume fee can appear more than once on an order (e.g. a
+ * protocol volume fee alongside a partner volume fee). The API doesn't tell us the fee owner, but
+ * each fee carries its own volume factor, so we surface the basis points to tell the otherwise
+ * identical "Volume fee" labels apart.
+ */
+function getFeeLabel(fee: ProtocolFee): string {
+  const label = PROTOCOL_FEE_LABELS[fee.type]
+  if (fee.type === ProtocolFeeType.Volume && fee.factor !== undefined) {
+    return `${label} (${formatBps(fee.factor)})`
+  }
+  return label
+}
+
+function formatBps(factor: number): string {
+  // The volume factor is a fraction of volume (1 bps = 0.0001). Fees are usually whole basis
+  // points, but keep up to two decimals for unusual factors, trimming trailing zeros.
+  const bps = Math.round(factor * 10000 * 100) / 100
+  return `${bps} bps`
 }
 
 function formatFee(

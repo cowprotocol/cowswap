@@ -81,6 +81,33 @@ describe('getProtocolFees', () => {
     expect(result[0].type).toBe(ProtocolFeeType.Unknown)
   })
 
+  test('captures the policy factor so volume fees can be labeled with their bps', () => {
+    const trades = [
+      makeTrade([
+        { amount: '50', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } },
+        { amount: '100', token: FEE_TOKEN, policy: { volume: { factor: 0.0025 } } },
+      ]),
+    ]
+    const result = getProtocolFees(trades)
+    expect(result.map((fee) => fee.factor)).toEqual([0.0002, 0.0025])
+  })
+
+  test('leaves factor undefined when no fee policy is present', () => {
+    const result = getProtocolFees([makeTrade([{ amount: '100', token: FEE_TOKEN }])])
+    expect(result[0].factor).toBeUndefined()
+  })
+
+  test('skips fees with a non-positive amount', () => {
+    const trades = [
+      makeTrade([
+        { amount: '0', token: FEE_TOKEN },
+        { amount: '100', token: FEE_TOKEN },
+      ]),
+    ]
+    const result = getProtocolFees(trades)
+    expect(result.map((fee) => fee.amount.toString())).toEqual(['100'])
+  })
+
   test('keeps fees in the same token separate instead of aggregating them', () => {
     const trades = [makeTrade([{ amount: '300', token: FEE_TOKEN }]), makeTrade([{ amount: '200', token: FEE_TOKEN }])]
     const result = getProtocolFees(trades)
