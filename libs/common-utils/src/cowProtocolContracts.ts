@@ -6,6 +6,7 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS as COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
   ETH_FLOW_ADDRESSES,
+  isEvmChain,
 } from '@cowprotocol/cow-sdk'
 
 import { isBarnBackendEnv } from './environments'
@@ -20,7 +21,20 @@ export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS: AddressPerChain = isBarnBackend
   ? (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as AddressPerChain)
   : (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD as AddressPerChain)
 
+/**
+ * ETH-Flow is the EVM-only wrapper that lets users sell native ETH (and equivalents)
+ * through CoW Protocol. The SDK builds `ETH_FLOW_ADDRESSES` via `mapSupportedNetworks`,
+ * which iterates every `SupportedChainId` — including non-EVM chains like Solana
+ *
+ * We strip non-EVM keys here so consumers only see chains where ETH-Flow exists.
+ */
+function pickEvmAddresses(addresses: AddressPerChain): AddressPerChain {
+  return Object.fromEntries(
+    Object.entries(addresses).filter(([chainId]) => isEvmChain(Number(chainId))),
+  ) as AddressPerChain
+}
+
 // When in barn backend env, use the staging vault relayer for MAINNET only; prod for all other chains.
-export const COW_PROTOCOL_ETH_FLOW_ADDRESS: AddressPerChain = isBarnBackendEnv
-  ? (BARN_ETH_FLOW_ADDRESSES as AddressPerChain)
-  : (ETH_FLOW_ADDRESSES as AddressPerChain)
+export const COW_PROTOCOL_ETH_FLOW_ADDRESS: AddressPerChain = pickEvmAddresses(
+  isBarnBackendEnv ? (BARN_ETH_FLOW_ADDRESSES as AddressPerChain) : (ETH_FLOW_ADDRESSES as AddressPerChain),
+)

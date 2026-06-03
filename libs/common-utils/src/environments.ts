@@ -80,6 +80,6 @@ export const environmentName: EnvironmentName = getEnvironmentName()
 const isProdLike = isProd || isEns || isStaging
 const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forceStagingApi
 
-registerOnWindow({ environment: environmentName })
+registerOnWindow({ environment: environmentName, prodApi: !isBarnBackendEnv })
 
 export { isLocal, isDev, isPr, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }

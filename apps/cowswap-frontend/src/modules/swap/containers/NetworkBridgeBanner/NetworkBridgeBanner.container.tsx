@@ -6,10 +6,9 @@ import { AutoRow } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import * as styledEl from './NetworkBridgeBanner.styles'
 import { shouldShowAlert } from './NetworkBridgeBanner.utils'

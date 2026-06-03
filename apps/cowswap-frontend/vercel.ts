@@ -11,6 +11,7 @@ const scriptSrc = [
   'https://telegram.org',
   'https://*.appzi.io',
   'https://www.googletagmanager.com',
+  'https://challenges.cloudflare.com',
 
   // Analytics
   'https://s3.amazonaws.com',

@@ -90,7 +90,7 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
-  disableIframeSafeSdkBridge?: boolean
+  enableSafeSdkBridge?: boolean
 }
 
 export interface JsonRpcRequest {
@@ -376,6 +376,24 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableTokenImport?: boolean
+  /**
+   * Disables the EIP-2612 permit signing flow. When `true`, the widget will
+   * never sign an off-chain permit and will always send an on-chain approval
+   * transaction — even for tokens that support permit.
+   *
+   * Defaults to false.
+   */
+  disableEIP2612Permits?: boolean
+
+  /**
+   * Disables infinite (MAX_UINT256) ERC-20 approvals. When `true`, every
+   * approval transaction approves only the exact trade-size amount, and the
+   * "Partial approval" toggle in Settings is shown but locked on.
+   *
+   * Defaults to false.
+   */
+  disableInfiniteApprove?: boolean
+
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.
