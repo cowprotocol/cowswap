@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
-import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -9,16 +9,16 @@ import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowpro
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
-import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { WalletStatusButton } from 'modules/wallet'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -229,12 +229,14 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode !== false && <AccountElement />}
+          {isInjectedWidgetMode && standaloneMode !== false && (
+            <WalletStatusButton variant="widget" onWalletClick={toggleAccountModal} />
+          )}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
               <Trans>
-                My orders <SVG src={ICON_ORDERS} />
+                My orders <SVG src={svgOrdersSrc} />
               </Trans>
             </ButtonOutlined>
           )}

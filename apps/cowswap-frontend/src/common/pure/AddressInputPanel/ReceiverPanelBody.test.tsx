@@ -73,7 +73,7 @@ const VALID_BTC_ADDRESS = 'bc1qvalid_long_enough'
 
 function mockSolanaChainInfo(): void {
   mockUseReceiverChainInfo.mockReturnValue({
-    chainId: AdditionalTargetChainId.SOLANA,
+    chainId: SupportedChainId.SOLANA,
     chainInfo: SOL_CHAIN_INFO,
     isNonEvm: true,
     chainIcon: undefined,
@@ -174,7 +174,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('shows for non-EVM (Solana) bridge with valid address', () => {
     mockSolanaChainInfo()
     mockValidAddress()
-    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
     expect(screen.getByRole('checkbox')).not.toBeNull()
   })
 
@@ -195,7 +195,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('does NOT show for non-EVM bridge with invalid address', () => {
     mockSolanaChainInfo()
     mockInvalidAddress()
-    renderComponent({ value: 'bad', targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ value: 'bad', targetChainId: SupportedChainId.SOLANA })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
@@ -208,7 +208,7 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('does NOT show while address is loading', () => {
     mockSolanaChainInfo()
     mockLoadingAddress()
-    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
@@ -223,7 +223,7 @@ describe('ReceiverPanelBody — confirmation message content', () => {
   it('shows Solana chain name and correct message for non-EVM bridge', () => {
     mockSolanaChainInfo()
     mockValidAddress()
-    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
     expect(screen.getByText(/Solana/)).not.toBeNull()
     expect(screen.getByText(/Confirm this is the correct address/)).not.toBeNull()
   })
@@ -247,7 +247,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     fireEvent.click(screen.getByRole('checkbox'))
@@ -258,7 +258,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     fireEvent.click(screen.getByRole('checkbox'))
@@ -270,7 +270,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     const { rerender } = renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     fireEvent.click(screen.getByRole('checkbox'))
@@ -281,7 +281,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
           className="test-class"
           value="AnotherSolanaAddress111111111111111111111111"
           onChange={jest.fn()}
-          targetChainId={AdditionalTargetChainId.SOLANA}
+          targetChainId={SupportedChainId.SOLANA}
           onNonEvmReceiverConfirmedChange={onConfirmChange}
         />,
       ),
@@ -293,7 +293,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     const { rerender } = renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     fireEvent.click(screen.getByRole('checkbox'))
@@ -317,7 +317,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     const { unmount } = renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     fireEvent.click(screen.getByRole('checkbox'))
@@ -330,7 +330,7 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     const onConfirmChange = jest.fn()
     const { unmount } = renderComponent({
       value: VALID_SOL_ADDRESS,
-      targetChainId: AdditionalTargetChainId.SOLANA,
+      targetChainId: SupportedChainId.SOLANA,
       onNonEvmReceiverConfirmedChange: onConfirmChange,
     })
     unmount()
@@ -342,7 +342,7 @@ describe('ReceiverPanelBody — error state', () => {
   it('shows error text with chain name for invalid non-EVM address', () => {
     mockSolanaChainInfo()
     mockInvalidAddress()
-    renderComponent({ value: 'bad', targetChainId: AdditionalTargetChainId.SOLANA })
+    renderComponent({ value: 'bad', targetChainId: SupportedChainId.SOLANA })
     expect(screen.getByText(/Enter a valid Solana address/)).not.toBeNull()
   })
 

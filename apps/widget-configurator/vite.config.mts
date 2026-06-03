@@ -35,6 +35,31 @@ export default defineConfig(({ mode }) => {
 
     cacheDir: '../../node_modules/.vite/widget-configurator',
 
+    resolve: {
+      // Match cowswap-frontend's narrow dedupe list. Deduping too many packages
+      // (e.g. @wagmi/core, viem, @reown/appkit-controllers individually) caused
+      // version-selection mismatches that interfere with AppKit's wallet routing.
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+    },
+
+    optimizeDeps: {
+      // The patched @reown/appkit-adapter-wagmi imports @wagmi/connectors dynamically
+      // (`await import('@wagmi/connectors')`) to build the Coinbase Wallet SDK connector.
+      // Vite's dep scanner doesn't always catch dynamic imports — include it explicitly
+      // so the connector is bundled and the QR/deeplink path works without an extension.
+      // `@coinbase/wallet-sdk` is also dynamically imported (inside coinbaseWallet's
+      // getProvider); without pre-bundling it, Vite serves it on first request, which
+      // races with AppKit's `await connector.getProvider()` during `addWagmiConnector` —
+      // if the user clicks before that resolves, AppKit hasn't registered the SDK
+      // connector yet, the wallet-id lookup falls through, and the modal lands on the
+      // WalletConnect "Not Detected" screen instead of opening keys.coinbase.com.
+      include: ['@wagmi/connectors', '@walletconnect/ethereum-provider', '@coinbase/wallet-sdk'],
+      esbuildOptions: {
+        // Force ESM usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk).
+        mainFields: ['exports', 'module', 'main'],
+      },
+    },
+
     server: {
       port: 4200,
       host: 'localhost',
@@ -52,6 +77,10 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 4300,
       host: 'localhost',
+    },
+
+    build: {
+      emptyOutDir: true,
     },
 
     plugins,

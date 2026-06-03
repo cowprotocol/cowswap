@@ -208,5 +208,12 @@
       "priority": 3,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
     }
+  ],
+  "1000000001": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/NearSolana.json"
+    }
   ]
 }

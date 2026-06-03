@@ -1,20 +1,19 @@
 'use client'
 
-import { useMemo } from 'react'
 import type { ImgHTMLAttributes, ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CmsImage, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { usePathname } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
 import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
 import { Article, SharedRichTextComponent } from '../services/cms'
 
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { CmsImage } from '@/components/CmsImage'
 import { LazyImage } from '@/components/LazyImage'
 import { Link } from '@/components/Link'
 import { SearchBar } from '@/components/SearchBar'
@@ -38,7 +37,7 @@ import {
   StickyMenu,
 } from '@/styles/styled'
 import { formatDate } from '@/util/formatDate'
-import { replaceImageUrls } from '@/util/lazyLoadImages'
+import { remarkAllowedHtmlImages, sanitizeCmsMarkdown } from '@/util/markdownHtmlImages'
 
 const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || ''
 
@@ -308,6 +307,7 @@ function ArticleSubtitle({
   const date = dateIso ? new Date(dateIso) : null
   const readTime = calculateReadTime(content)
   const showDate = Boolean(dateVisible && date && !Number.isNaN(date.getTime()))
+  const formattedDate = showDate && date ? formatDate(date) : null
 
   return (
     <ArticleSubtitleWrapper>
@@ -315,11 +315,11 @@ function ArticleSubtitle({
         <span>{readTime}</span>
       </div>
 
-      {showDate && (
+      {formattedDate && (
         <>
           <div>·</div>
           <div>
-            <span>Published {formatDate(date!)}</span>
+            <span>Published {formattedDate}</span>
           </div>
         </>
       )}
@@ -351,13 +351,11 @@ function MarkdownImage({ src, alt, ...props }: ImgHTMLAttributes<HTMLImageElemen
 }
 
 function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }): ReactNode {
-  const processedContent = useMemo(() => {
-    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
-  }, [sharedRichText.body])
+  const content = sanitizeCmsMarkdown(sharedRichText.body || '')
 
   return (
-    <ReactMarkdown rehypePlugins={[rehypeRaw]} components={{ img: MarkdownImage }}>
-      {processedContent}
+    <ReactMarkdown skipHtml remarkPlugins={[remarkAllowedHtmlImages]} components={{ img: MarkdownImage }}>
+      {content}
     </ReactMarkdown>
   )
 }

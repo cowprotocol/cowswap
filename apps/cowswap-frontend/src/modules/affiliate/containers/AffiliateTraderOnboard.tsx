@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
+import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
@@ -21,8 +21,8 @@ import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
 export function AffiliateTraderOnboard(): ReactNode {
   const { account } = useWalletInfo()
-  const toggleWalletModal = useToggleWalletModal()
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
+  const toggleWalletModal = useToggleWalletModal()
   const traderRewardAmount = formatUsdcCompact(getDefaultTraderRewardAmount())
   const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
   const affiliateTimeCapDays = PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
@@ -30,7 +30,7 @@ export function AffiliateTraderOnboard(): ReactNode {
   return (
     <HeroCard>
       <HeroContent>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <HeroTitle>
           <Trans>Earn while you trade</Trans>
         </HeroTitle>
@@ -49,7 +49,7 @@ export function AffiliateTraderOnboard(): ReactNode {
               <Trans>Add code</Trans>
             </ButtonPrimary>
           ) : (
-            <ButtonPrimary onClick={toggleWalletModal}>
+            <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}

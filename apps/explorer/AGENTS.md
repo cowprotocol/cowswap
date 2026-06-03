@@ -61,4 +61,3 @@ This file: explorer app-specific commands and UI conventions.
 
 - `SHOULD` run `pnpm nx run explorer:lint` and fix all violations.
 - `SHOULD` delete any exports, hooks, or components with no callers introduced or left behind by the change.
-

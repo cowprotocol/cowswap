@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/iframe-transport",
-  "version": "2.2.3",
+  "version": "2.2.6",
   "description": "CoW Swap iframe-transport",
   "repository": {
     "type": "git",
@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "@cowprotocol/types": "workspace:*",
-    "eventemitter3": "^4.0.0"
+    "eventemitter3": "4.0.7"
   }
 }
