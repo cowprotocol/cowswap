@@ -115,7 +115,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onReady, provider, disableIframeSafeSdkBridge, tryOrHandleError])
+  }, [onReady, provider, tryOrHandleError])
 
   useEffect(() => {
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
