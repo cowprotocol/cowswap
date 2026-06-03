@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 
+import { getSafeSameOriginOrAbsoluteUrl } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
 import { UI } from '@cowprotocol/ui'
 
@@ -58,16 +59,18 @@ export function CowSpeechBubbleNotificationBanner({
   }
 
   const { title, description, url, id } = currentNotification
-  const linkTarget = url && isInternal(url) ? '_parent' : '_blank'
+  const safeLink =
+    typeof window !== 'undefined' && url ? getSafeSameOriginOrAbsoluteUrl(url, window.location.origin) : null
+  const linkTarget = safeLink?.isExternal ? '_blank' : '_parent'
 
   return (
     <CowSpeechBubble variant="notification" onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
       <NotificationText>
         <strong>{title}</strong>
         <NotificationDescription>{description}</NotificationDescription>
-        {url && (
+        {safeLink && (
           <NotificationLink
-            href={url}
+            href={safeLink.href}
             target={linkTarget}
             rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
             data-click-event={toCowSwapGtmEvent({
@@ -84,14 +87,4 @@ export function CowSpeechBubbleNotificationBanner({
       </NotificationText>
     </CowSpeechBubble>
   )
-}
-
-function isInternal(href: string): boolean {
-  if (href.startsWith('/')) return true
-
-  try {
-    return new URL(href).hostname === window.location.hostname
-  } catch {
-    return false
-  }
 }

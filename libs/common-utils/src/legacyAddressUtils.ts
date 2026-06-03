@@ -13,6 +13,7 @@ import { t } from '@lingui/core/macro'
 import { getAddress } from 'viem'
 
 import { getExplorerOrderLink } from './explorer'
+import { getSafeAbsoluteUrl } from './safeLink'
 
 /**
  * Environment variable to override the block explorer URL.
@@ -172,7 +173,10 @@ function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLi
 
 function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
   // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
+  const basePath =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(base) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
 
   if (!basePath) return ''
 

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactNode, useState } from 'react'
 
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { t } from '@lingui/core/macro'
@@ -28,6 +29,8 @@ export function HookItem({
   const simulationData = useSimulationData(details?.uuid)
 
   const dappName = item.dapp?.name || t`Unknown Hook`
+  const safeWebsiteUrl = item.dapp ? getSafeAbsoluteUrl(item.dapp.website) : null
+  const websiteHostname = safeWebsiteUrl ? new URL(safeWebsiteUrl).hostname : null
 
   return (
     <styledEl.HookItemWrapper as="li">
@@ -97,18 +100,22 @@ export function HookItem({
                 <b>
                   <Trans>Website</Trans>:
                 </b>{' '}
-                <a
-                  href={item.dapp.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.HOOKS,
-                    action: 'Click Website',
-                    label: `${dappName} - ${new URL(item.dapp.website).hostname}`,
-                  })}
-                >
-                  {item.dapp.website}
-                </a>
+                {safeWebsiteUrl && websiteHostname ? (
+                  <a
+                    href={safeWebsiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.HOOKS,
+                      action: 'Click Website',
+                      label: `${dappName} - ${websiteHostname}`,
+                    })}
+                  >
+                    {item.dapp.website}
+                  </a>
+                ) : (
+                  item.dapp.website
+                )}
               </p>
             </>
           )}
