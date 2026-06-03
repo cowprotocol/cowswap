@@ -4,6 +4,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
@@ -18,6 +19,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
@@ -42,13 +44,18 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId changes
+   * Reset recipient whenever chainId or disableCustomRecipient changes
    */
   useEffect(() => {
+    if (disableCustomRecipient) {
+      onChangeRecipient(null)
+      return
+    }
+
     if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
+  }, [chainId, disableCustomRecipient, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
 
   /**
    * Remove recipient override when its source hook was deleted
