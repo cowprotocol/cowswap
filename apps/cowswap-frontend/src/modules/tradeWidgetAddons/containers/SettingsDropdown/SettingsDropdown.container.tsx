@@ -29,6 +29,7 @@ interface SettingsTabProps {
   enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
   partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
+  isRecipientToggleHidden?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -40,6 +41,7 @@ export function SettingsDropdown({
   enablePartialApprovalState,
   partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
+  isRecipientToggleHidden = false,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -93,19 +95,21 @@ export function SettingsDropdown({
 
             <SettingsDropdownSection title={t`Swap Interface`}>
               <SettingsBoxGroup>
-                <SettingsBox
-                  id="toggle-recipient-mode-button"
-                  title={t`Custom Recipient`}
-                  tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-                  checked={recipientToggleVisible || isRecipientToggleDisabled}
-                  toggle={toggleRecipientVisibility}
-                  disabled={isRecipientToggleDisabled}
-                  data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
-                    action: 'Toggle Recipient Address',
-                    label: recipientToggleVisible ? 'Enabled' : 'Disabled',
-                  })}
-                />
+                {!isRecipientToggleHidden && (
+                  <SettingsBox
+                    id="toggle-recipient-mode-button"
+                    title={t`Custom Recipient`}
+                    tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                    checked={recipientToggleVisible}
+                    toggle={toggleRecipientVisibility}
+                    disabled={isRecipientToggleDisabled}
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.RECIPIENT_ADDRESS,
+                      action: 'Toggle Recipient Address',
+                      label: recipientToggleVisible ? 'Enabled' : 'Disabled',
+                    })}
+                  />
+                )}
 
                 {enablePartialApproval !== null ? (
                   <SettingsBox
