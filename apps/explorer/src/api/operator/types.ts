@@ -87,6 +87,14 @@ export type ProtocolFee = {
   amount: BigNumber
   tokenAddress: AddressKey
   type: ProtocolFeeType
+  /**
+   * The fee policy's `factor`, when known. Its meaning is policy-specific: for
+   * {@link ProtocolFeeType.Volume} it's a fraction of trade volume, which we surface as basis
+   * points to tell otherwise identically labeled fees apart (e.g. a protocol volume fee vs a
+   * partner volume fee, which the API does not distinguish). For surplus / price-improvement fees
+   * it's a fraction of the surplus / improvement, so it is not shown as bps.
+   */
+  factor?: number
 }
 
 /**

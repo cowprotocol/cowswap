@@ -463,6 +463,20 @@ function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
 }
 
 /**
+ * Returns the fee policy's `factor`, when present. Its meaning is policy-specific: for `volume`
+ * it's a fraction of trade volume (surfaced as basis points to tell otherwise identical labels
+ * apart); for `surplus` / `priceImprovement` it's a fraction of the surplus / improvement.
+ */
+function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
+  if (policy) {
+    if ('surplus' in policy) return policy.surplus.factor
+    if ('volume' in policy) return policy.volume.factor
+    if ('priceImprovement' in policy) return policy.priceImprovement.factor
+  }
+  return undefined
+}
+
+/**
  * Collects every protocol fee charged across the order's trades, as individual entries
  * (in the order they were applied), each tagged with its fee policy type.
  *
@@ -477,10 +491,15 @@ export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'
     if (!executedProtocolFees) continue
     for (const { amount, token, policy } of executedProtocolFees) {
       if (!amount || !token) continue
+      const parsedAmount = new BigNumber(amount)
+      // Skip non-positive fees: a policy can apply yet charge nothing (e.g. no surplus to
+      // capture), and a "0" fee row is just noise in the breakdown.
+      if (!parsedAmount.isGreaterThan(0)) continue
       protocolFees.push({
-        amount: new BigNumber(amount),
+        amount: parsedAmount,
         tokenAddress: getAddressKey(token),
         type: getProtocolFeeType(policy),
+        factor: getProtocolFeeFactor(policy),
       })
     }
   }
