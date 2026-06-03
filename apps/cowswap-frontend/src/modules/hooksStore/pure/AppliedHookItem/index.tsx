@@ -2,6 +2,7 @@ import svgCheckSingularSrc from '@cowprotocol/assets/cow-swap/check-singular.svg
 import svgGridSrc from '@cowprotocol/assets/cow-swap/grid.svg'
 import svgTenderlySrc from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -56,6 +57,7 @@ export function AppliedHookItem({
     : t`The Tenderly simulation failed. Please review your transaction.`
 
   const dAppName = dapp?.name ? i18n._(dapp.name) : ''
+  const safeSimulationUrl = simulationData ? getSafeAbsoluteUrl(simulationData.link) : null
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -93,8 +95,8 @@ export function AppliedHookItem({
           ) : (
             <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
           )}
-          {simulationData.link ? (
-            <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
+          {safeSimulationUrl ? (
+            <a href={safeSimulationUrl} target="_blank" rel="noopener noreferrer">
               {simulationStatus}
               <ExternalLinkIcon size={14} />
             </a>

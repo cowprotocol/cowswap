@@ -31,6 +31,7 @@ export function HookItem({
   const dappName = item.dapp?.name || t`Unknown Hook`
   const safeWebsiteUrl = item.dapp ? getSafeAbsoluteUrl(item.dapp.website) : null
   const websiteHostname = safeWebsiteUrl ? new URL(safeWebsiteUrl).hostname : null
+  const safeSimulationUrl = simulationData ? getSafeAbsoluteUrl(simulationData.link) : null
 
   return (
     <styledEl.HookItemWrapper as="li">
@@ -69,18 +70,24 @@ export function HookItem({
                     <Trans>Simulation:</Trans>
                   </b>
                   <styledEl.SimulationLink status={simulationData.status}>
-                    <a
-                      href={simulationData.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-click-event={toCowSwapGtmEvent({
-                        category: CowSwapAnalyticsCategory.HOOKS,
-                        action: 'Click Simulation',
-                        label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
-                      })}
-                    >
-                      {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
-                    </a>
+                    {safeSimulationUrl ? (
+                      <a
+                        href={safeSimulationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-click-event={toCowSwapGtmEvent({
+                          category: CowSwapAnalyticsCategory.HOOKS,
+                          action: 'Click Simulation',
+                          label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
+                        })}
+                      >
+                        {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
+                      </a>
+                    ) : (
+                      <span>
+                        {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
+                      </span>
+                    )}
                   </styledEl.SimulationLink>
                 </p>
               )}
