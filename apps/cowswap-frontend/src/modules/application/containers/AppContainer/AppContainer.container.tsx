@@ -72,7 +72,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   useInitializeUtm()
   const isInjectedWidgetMode = isInjectedWidget()
-  const { bodyWrapperStyle, appWrapperStyle } = useInjectedWidgetParams()
+  const { bodyWrapperStyle } = useInjectedWidgetParams()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
@@ -105,10 +105,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper
-        id="appWrapper"
-        style={isInjectedWidgetMode ? (appWrapperStyle as CSSProperties) : undefined}
-      >
+      <styledEl.AppWrapper>
         <URLWarning />
         <RecoveryBanner />
         <InvalidLocalTimeWarning />

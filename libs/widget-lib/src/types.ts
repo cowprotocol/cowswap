@@ -276,11 +276,6 @@ export interface CowSwapWidgetParams {
   iframeStyle?: CSS.Properties
 
   /**
-   * Inline styles for the top-level app wrapper (inside the iframe).
-   */
-  appWrapperStyle?: CSS.Properties
-
-  /**
    * Inline styles for the body wrapper (inside the iframe).
    */
   bodyWrapperStyle?: CSS.Properties

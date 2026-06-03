@@ -32,6 +32,10 @@ export const APPEARANCE_STYLE_PRESET_OPTIONS = [
     value: 'modal',
   },
   {
+    label: 'Debug',
+    value: 'debug',
+  },
+  {
     label: 'None',
     value: 'none',
   },
@@ -39,8 +43,9 @@ export const APPEARANCE_STYLE_PRESET_OPTIONS = [
 
 export type AppearanceStylePresetKey = (typeof APPEARANCE_STYLE_PRESET_OPTIONS)[number]['value']
 
-type PresetElement = 'iframe' | 'appWrapper' | 'bodyWrapper' | 'card'
+type PresetElement = 'iframe' | 'bodyWrapper' | 'card'
 
+// eslint-disable-next-line max-lines-per-function
 export function getAppearanceStylePresets(
   paperBackgroundColor: string,
 ): Record<AppearanceStylePresetKey, Partial<Record<PresetElement, CSS.Properties>>> {
@@ -116,6 +121,21 @@ export function getAppearanceStylePresets(
       },
       card: {
         borderRadius: '0',
+      },
+    },
+    debug: {
+      iframe: {
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'red',
+      },
+      bodyWrapper: {
+        backgroundColor: 'cyan',
+      },
+      card: {
+        backgroundColor: 'yellow',
       },
     },
   }

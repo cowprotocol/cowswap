@@ -88,16 +88,7 @@ export function buildConfiguratorState({
   defaultPalette,
   disableToastMessages,
 }: BuildConfiguratorStateParams): ConfiguratorState {
-  const {
-    locale,
-    chainId,
-    iframeStyleJson,
-    appWrapperStyleJson,
-    bodyWrapperStyleJson,
-    cardStyleJson,
-    rawParamsJson,
-    ...rest
-  } = formValues
+  const { locale, chainId, iframeStyleJson, bodyWrapperStyleJson, cardStyleJson, rawParamsJson, ...rest } = formValues
 
   return {
     ...rest,
@@ -106,7 +97,6 @@ export function buildConfiguratorState({
     customColors: colorPalette,
     defaultColors: defaultPalette,
     iframeStyle: parseJsonOrFallback<CSS.Properties>(iframeStyleJson, {}),
-    appWrapperStyle: parseJsonOrFallback<CSS.Properties>(appWrapperStyleJson, {}),
     bodyWrapperStyle: parseJsonOrFallback<CSS.Properties>(bodyWrapperStyleJson, {}),
     cardStyle: parseJsonOrFallback<CSS.Properties>(cardStyleJson, {}),
     disableToastMessages,

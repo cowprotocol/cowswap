@@ -38,13 +38,11 @@ export function AppearanceStyleControls({
     const preset = presets[value as AppearanceStylePresetKey]
 
     applyPresetStyle((styleValue) => onChange('iframeStyleJson', styleValue), preset?.iframe)
-    applyPresetStyle((styleValue) => onChange('appWrapperStyleJson', styleValue), preset?.appWrapper)
     applyPresetStyle((styleValue) => onChange('bodyWrapperStyleJson', styleValue), preset?.bodyWrapper)
     applyPresetStyle((styleValue) => onChange('cardStyleJson', styleValue), preset?.card)
   }
 
   const iframeStyleJsonError = useAsyncJsonError(values.iframeStyleJson)
-  const appWrapperStyleJsonError = useAsyncJsonError(values.appWrapperStyleJson)
   const bodyWrapperStyleJsonError = useAsyncJsonError(values.bodyWrapperStyleJson)
   const cardStyleJsonError = useAsyncJsonError(values.cardStyleJson)
 
@@ -78,20 +76,6 @@ export function AppearanceStyleControls({
           onChange={onChange}
           error={iframeStyleJsonError.error}
           helperText={iframeStyleJsonError.helperText}
-        />
-      </Box>
-
-      <Box>
-        <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          #appWrapper (inside iframe)
-        </Typography>
-        <JsonInput
-          label="App wrapper styles (JSON)"
-          name="appWrapperStyleJson"
-          value={values.appWrapperStyleJson}
-          onChange={onChange}
-          error={appWrapperStyleJsonError.error}
-          helperText={appWrapperStyleJsonError.helperText}
         />
       </Box>
 

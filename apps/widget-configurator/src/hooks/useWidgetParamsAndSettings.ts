@@ -172,7 +172,6 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     disableScrollbars,
     iframeStyle,
-    appWrapperStyle,
     bodyWrapperStyle,
     cardStyle,
 
@@ -250,7 +249,6 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     disableScrollbars,
     iframeStyle,
-    appWrapperStyle,
     bodyWrapperStyle,
     cardStyle,
 

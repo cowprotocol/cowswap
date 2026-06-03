@@ -49,7 +49,6 @@ import type { Theme } from '@mui/material/styles'
 
 const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
   'iframeStyleJson',
-  'appWrapperStyleJson',
   'bodyWrapperStyleJson',
   'cardStyleJson',
   'rawParamsJson',
