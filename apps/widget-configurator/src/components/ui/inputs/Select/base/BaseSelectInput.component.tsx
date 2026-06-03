@@ -7,7 +7,6 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { type SelectChangeEvent, type SelectProps } from '@mui/material/Select'
 
 import {
-  getSelectInputFormControlSx,
   getSelectInputSx,
   NO_MENU_ANIMATION_PROPS,
   selectMenuItemSx,
@@ -16,6 +15,7 @@ import {
 import { hasEmptyLabel, resolveEmptyDisplayLabel } from './BaseSelectInput.utils'
 
 import { configuratorSurfacePaperSx } from '../../../surface/surface.styles'
+import { baseTextInputFormControlSx } from '../../BaseTextInput/BaseTextInput.styles'
 
 import type { PrimitiveValue, SelectInputOption } from './BaseSelectInput.types'
 
@@ -169,7 +169,7 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
   }
 
   return (
-    <FormControl sx={getSelectInputFormControlSx(true)}>
+    <FormControl sx={baseTextInputFormControlSx} margin="dense">
       <InputLabel id={resolvedLabelId} shrink={inputLabelShrink}>
         {label}
       </InputLabel>
@@ -183,6 +183,7 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
         size="small"
         displayEmpty={hasEmptyLabel(emptyLabel)}
         disabled={disabled}
+        notched={inputLabelShrink === true ? true : undefined}
         IconComponent={ExpandMoreIcon}
         MenuProps={mergedMenuProps}
         renderValue={muiRenderValue}

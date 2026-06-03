@@ -1,5 +1,5 @@
 import { configuratorSurfacePaperProps } from '../../../surface/surface.styles'
-import { BASE_INPUT_FONT_SIZE, BASE_TEXT_INPUT_HEIGHT } from '../../BaseTextInput/BaseTextInput.component'
+import { BASE_INPUT_FONT_SIZE, BASE_TEXT_INPUT_HEIGHT } from '../../BaseTextInput/BaseTextInput.styles'
 
 import type { SelectProps } from '@mui/material/Select'
 import type { CSSObject, SxProps, Theme } from '@mui/material/styles'
@@ -106,10 +106,6 @@ export const multiSelectValueItemSx = {
   whiteSpace: 'nowrap',
 } as const satisfies SxProps<Theme>
 
-export function getSelectInputFormControlSx(fullWidth: boolean): SxProps<Theme> {
-  return { width: fullWidth ? '100%' : undefined }
-}
-
 export function getSelectInputSx(multilineSelectedValue: boolean): SxProps<Theme> {
   return {
     '& .MuiInputBase-root, &.MuiInputBase-root': {
@@ -123,11 +119,6 @@ export function getSelectInputSx(multilineSelectedValue: boolean): SxProps<Theme
           height: BASE_TEXT_INPUT_HEIGHT,
           minHeight: BASE_TEXT_INPUT_HEIGHT,
         },
-    '& .MuiOutlinedInput-notchedOutline legend > span': {
-      display: 'inline-block',
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
     ...(multilineSelectedValue
       ? {
           '& .MuiSelect-select': {
