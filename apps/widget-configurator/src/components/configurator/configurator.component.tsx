@@ -1,19 +1,24 @@
 import React, { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Snackbar } from '@mui/material'
-import { useAppKitTheme } from '@reown/appkit/react'
 import { useConnection } from 'wagmi'
 
 import { configuratorCheckeredCanvasSx, configuradorRootSx } from './configurator.styles'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
-import { COW_LISTENERS, IS_IFRAME, WIDGET_PREVIEW_READY_FALLBACK_MS } from '../../configurator.constants'
+import {
+  COW_LISTENERS,
+  CONFIGURATOR_SIDEBAR_OPEN_STORAGE_KEY,
+  IS_IFRAME,
+  WIDGET_PREVIEW_READY_FALLBACK_MS,
+} from '../../configurator.constants'
 import { ConfiguratorState } from '../../configurator.types'
 import { useProvider } from '../../hooks/useProvider'
 import { useResizableDrawerWidth } from '../../hooks/useResizableDrawerWidth'
@@ -33,21 +38,11 @@ declare global {
 // eslint-disable-next-line max-lines-per-function
 export function Configurator({ title }: { title: string }): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
-  const { setThemeMode } = useAppKitTheme()
   const { isConnected } = useConnection()
   const provider = useProvider()
   const cowAnalytics = useCowAnalytics()
 
   // Widget Configurator UI:
-
-  // Note these theme is for the widget configurator UI, not for the widget app / preview.
-
-  const [widgetTheme, _] = useState<'light' | 'dark'>('dark') // TODO: To be implemented...
-
-  // TODO: Pass resolved theme from MUI
-  useEffect(() => {
-    setThemeMode(widgetTheme)
-  }, [setThemeMode, widgetTheme])
 
   const [widgetKey, setWidgetKey] = useState(0)
   const [isWidgetReady, setIsWidgetReadyState] = useState(false)
@@ -60,15 +55,22 @@ export function Configurator({ title }: { title: string }): ReactNode {
     setIsWidgetReadyState(isReady)
   }, [])
 
-  // Sidebar & Snippet Handling:
+  // Sidebar Handling:
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [isSnippetOpen, setIsSnippetOpen] = useState(false)
   const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef, DRAWER_WIDTH_CSS_VAR)
+
+  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorageState(
+    CONFIGURATOR_SIDEBAR_OPEN_STORAGE_KEY,
+    (persistedValue) => (typeof persistedValue === 'boolean' ? persistedValue : true),
+  )
 
   const handleSidebarToggle = useCallback(() => {
     setIsSidebarOpen((prev) => !prev)
-  }, [])
+  }, [setIsSidebarOpen])
+
+  // Snippet Handling:
+
+  const [isSnippetOpen, setIsSnippetOpen] = useState(false)
 
   const handleSnippetToggle = useCallback(() => {
     setIsSnippetOpen((prev) => !prev)
@@ -199,7 +201,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
           <CowSwapWidget
             key={widgetKey}
             params={params}
-            provider={!IS_IFRAME && !configuratorState.standaloneMode ? provider : undefined}
+            provider={!IS_IFRAME && configuratorState.widgetMode !== 'standalone' ? provider : undefined}
             listeners={listeners}
             onReady={handlePreviewReady}
           />

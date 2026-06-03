@@ -13,18 +13,21 @@ export function JsonInput({ name, value, onChange, onBlur, ...props }: JsonInput
       }
     : undefined
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>): void => {
-    let formattedValue = e.target.value
+  const handleBlur =
+    onChange || onBlur
+      ? (e: React.FocusEvent<HTMLInputElement>): void => {
+          let formattedValue = e.target.value
 
-    try {
-      formattedValue = JSON.stringify(JSON.parse(e.target.value), null, 2)
-    } catch {
-      // Do nothing
-    }
+          try {
+            formattedValue = JSON.stringify(JSON.parse(e.target.value), null, 2)
+          } catch {
+            // Do nothing
+          }
 
-    onChange(name, formattedValue || null)
-    if (onBlur) onBlur(e)
-  }
+          if (onChange) onChange(name, formattedValue || null)
+          if (onBlur) onBlur(e)
+        }
+      : undefined
 
   return (
     <BaseTextInput

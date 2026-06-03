@@ -6,14 +6,9 @@ import { COMMENTS_BY_PARAM_NAME } from '../../../snippet/snippet.const'
 import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-interface BasicsSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
-
-export function BasicsSectionForm({ values, onChange }: BasicsSectionFormProps): ReactNode {
+export function BasicsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
     <>
       <TextInput

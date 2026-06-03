@@ -46,7 +46,7 @@ export function ModeControl({ value, onChange }: ModeControlProps): ReactNode {
         </FormLabel>
         <HelpTooltipButton ariaLabel="Explain widget modes" tooltip={tooltipContent} />
       </Box>
-      <RadioGroup row aria-label="mode" name="mode" value={value} onChange={onChange}>
+      <RadioGroup row aria-label="Widget mode" name="widgetMode" value={value} onChange={onChange}>
         <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
         <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
       </RadioGroup>

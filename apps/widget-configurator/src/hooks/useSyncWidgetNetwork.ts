@@ -4,10 +4,12 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useConnection, useSwitchChain } from 'wagmi'
 
+import { WidgetMode } from '../configurator.types'
+
 export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
   setNetworkControlState: (chainId: SupportedChainId) => void,
-  standaloneMode: boolean,
+  widgetMode: WidgetMode,
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
@@ -31,12 +33,12 @@ export function useSyncWidgetNetwork(
     if (
       !switchChain ||
       !isConnected ||
-      standaloneMode ||
+      widgetMode === 'standalone' ||
       walletChainIdRef.current === chainId ||
       currentChainIdRef.current === walletChainIdRef.current
     )
       return
 
     switchChain({ chainId })
-  }, [chainId, isConnected, switchChain, setNetworkControlState, standaloneMode])
+  }, [chainId, isConnected, switchChain, setNetworkControlState, widgetMode])
 }

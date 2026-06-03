@@ -5,11 +5,9 @@ import { PaletteControl } from '../../../controls/PaletteControl'
 import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.component'
 
 import type { useColorPaletteManager } from '../../../../hooks/useColorPaletteManager'
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-export interface ThemeColorsSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
+export interface ThemeColorsSectionFormProps extends SidebarSectionFormProps {
   paletteManager: ReturnType<typeof useColorPaletteManager>
 }
 

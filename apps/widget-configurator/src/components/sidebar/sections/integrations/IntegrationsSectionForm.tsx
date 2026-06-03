@@ -2,12 +2,7 @@ import type { ReactNode } from 'react'
 
 import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
-
-interface IntegrationsSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
+import type { SidebarSectionFormProps } from '../section.types'
 
 function formatBpsAsPercent(bps: number): string {
   const percent = bps / 100
@@ -24,7 +19,7 @@ function formatBpsAsPercent(bps: number): string {
   return `${formatted}%`
 }
 
-export function IntegrationsSectionForm({ values, onChange }: IntegrationsSectionFormProps): ReactNode {
+export function IntegrationsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
     <NumberInput
       id="partnerFeePercent"

@@ -4,16 +4,11 @@ import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
 type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
 
-interface CustomizationSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
-
-export function CustomizationSectionForm({ values, onChange }: CustomizationSectionFormProps): ReactNode {
+export function CustomizationSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const customImages = values.customImages || {}
   const customSounds = values.customSounds || {}
 

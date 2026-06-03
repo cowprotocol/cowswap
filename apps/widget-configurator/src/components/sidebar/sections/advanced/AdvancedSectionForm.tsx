@@ -3,32 +3,16 @@ import type { ReactNode } from 'react'
 import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './AdvancedSectionForm.constants'
 
 import { WIDGET_HOOKS_OPTIONS } from '../../../../configurator.constants'
-import { jsonHelperText } from '../../../../utils/jsonFieldParsing'
+import { useAsyncJsonError } from '../../../../hooks/useAsyncJsonError'
 import { JsonInput } from '../../../ui/inputs/JsonInput/JsonInput.component'
 import { PresetsButtons } from '../../../ui/inputs/PresetsButtons/PresetsButtons.component'
 import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-interface AdvancedSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
-
-function hasRawParamsError(rawValue: string | null): boolean {
-  if (!rawValue?.trim()) return false
-
-  try {
-    JSON.parse(rawValue)
-    return false
-  } catch {
-    return true
-  }
-}
-
-export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormProps): ReactNode {
-  const rawParamsJsonError = hasRawParamsError(values.rawParamsJson)
+export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
+  const rawParamsJsonError = useAsyncJsonError(values.rawParamsJson)
 
   return (
     <>
@@ -62,8 +46,8 @@ export function AdvancedSectionForm({ values, onChange }: AdvancedSectionFormPro
         name="rawParamsJson"
         value={values.rawParamsJson}
         onChange={onChange}
-        error={rawParamsJsonError}
-        helperText={jsonHelperText(rawParamsJsonError)}
+        error={rawParamsJsonError.error}
+        helperText={rawParamsJsonError.helperText}
       />
     </>
   )

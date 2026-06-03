@@ -1,5 +1,9 @@
 import React, { RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
+import { useLocalStorageState } from '@cowprotocol/common-hooks'
+
+import { CONFIGURATOR_SIDEBAR_WIDTH_STORAGE_KEY } from '../configurator.constants'
+
 const MIN_DRAWER_WIDTH = 380
 const DEFAULT_DRAWER_WIDTH = MIN_DRAWER_WIDTH
 const MIN_PREVIEW_WIDTH = 240
@@ -27,13 +31,20 @@ function setDrawerWidthCssVar(container: HTMLElement | null, cssVarName: string,
   container.style.setProperty(cssVarName, `${width}px`)
 }
 
+function resolveDrawerWidth(persistedValue: unknown): number {
+  const nextWidth =
+    typeof persistedValue === 'number' && Number.isFinite(persistedValue) ? persistedValue : DEFAULT_DRAWER_WIDTH
+
+  return clampDrawerWidth(nextWidth)
+}
+
 // eslint-disable-next-line max-lines-per-function
 export function useResizableDrawerWidth(
   containerRef: RefObject<HTMLElement | null>,
   cssVarName: string,
 ): UseResizableDrawerWidthResult {
   const resizeStateRef = useRef<{ startX: number; startWidth: number } | null>(null)
-  const [drawerWidth, setDrawerWidth] = useState(() => clampDrawerWidth(DEFAULT_DRAWER_WIDTH))
+  const [drawerWidth, setDrawerWidth] = useLocalStorageState(CONFIGURATOR_SIDEBAR_WIDTH_STORAGE_KEY, resolveDrawerWidth)
   const [isResizing, setIsResizing] = useState(false)
   const currentWidthRef = useRef(drawerWidth)
   const animationFrameRef = useRef<number | null>(null)
@@ -106,7 +117,7 @@ export function useResizableDrawerWidth(
 
       stopResizing()
     }
-  }, [applyDrawerWidth, stopResizing])
+  }, [applyDrawerWidth, setDrawerWidth, stopResizing])
 
   const handleResizeStart = useCallback(
     (event: React.PointerEvent<HTMLDivElement>): void => {

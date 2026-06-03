@@ -4,11 +4,9 @@ import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.componen
 import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
 import type { UseToastsManagerReturn } from '../../../../hooks/useToastsManager'
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-export interface BehaviorSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
+export interface BehaviorSectionFormProps extends SidebarSectionFormProps {
   toastManager: UseToastsManagerReturn
 }
 

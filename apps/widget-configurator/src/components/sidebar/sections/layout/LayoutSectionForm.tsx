@@ -1,36 +1,15 @@
 import type { ReactNode } from 'react'
 
-import { AppearanceStyleControls } from '../../../controls/AppearanceStyleControls'
+import { AppearanceStyleControls } from '../../../controls/AppearanceStyleControls/AppearanceStyleControls.component'
 import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
-import type { JsonState, OnJsonStateChange } from '../../../../hooks/useJsonState'
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
-import type * as CSS from 'csstype'
+import type { SidebarSectionFormProps } from '../section.types'
 
-interface LayoutJsonStates {
-  iframeStyleJson: JsonState<CSS.Properties>
-  appWrapperStyleJson: JsonState<CSS.Properties>
-  bodyWrapperStyleJson: JsonState<CSS.Properties>
-  cardStyleJson: JsonState<CSS.Properties>
-  onIframeStyleJson: OnJsonStateChange
-  onAppWrapperStyleJson: OnJsonStateChange
-  onBodyWrapperStyleJson: OnJsonStateChange
-  onCardStyleJson: OnJsonStateChange
-}
-
-export interface LayoutSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
+export interface LayoutSectionFormProps extends SidebarSectionFormProps {
   paperBackgroundColor: string
-  jsonStates: LayoutJsonStates
 }
 
-export function LayoutSectionForm({
-  values,
-  onChange,
-  paperBackgroundColor,
-  jsonStates,
-}: LayoutSectionFormProps): ReactNode {
+export function LayoutSectionForm({ values, onChange, paperBackgroundColor }: LayoutSectionFormProps): ReactNode {
   return (
     <>
       <SwitchInput
@@ -45,17 +24,7 @@ export function LayoutSectionForm({
         onChange={(checked) => onChange('showIframeOutline', checked)}
         tooltip="Preview-only visual aid to see the iframe boundaries. This setting is not included in the exported widget code."
       />
-      <AppearanceStyleControls
-        paperBackgroundColor={paperBackgroundColor}
-        iframeStyleJson={jsonStates.iframeStyleJson}
-        onIframeStyleJson={jsonStates.onIframeStyleJson}
-        appWrapperStyleJson={jsonStates.appWrapperStyleJson}
-        onAppWrapperStyleJson={jsonStates.onAppWrapperStyleJson}
-        bodyWrapperStyleJson={jsonStates.bodyWrapperStyleJson}
-        onBodyWrapperStyleJson={jsonStates.onBodyWrapperStyleJson}
-        cardStyleJson={jsonStates.cardStyleJson}
-        onCardStyleJson={jsonStates.onCardStyleJson}
-      />
+      <AppearanceStyleControls values={values} onChange={onChange} paperBackgroundColor={paperBackgroundColor} />
     </>
   )
 }

@@ -142,8 +142,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     // Basics:
 
     appCode,
-    // widgetMode: WidgetMode
-    standaloneMode,
+    widgetMode,
     locale,
 
     // Trade Setup:
@@ -223,7 +222,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     // Basics:
 
     appCode: appCode.trim() || CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
-    standaloneMode,
+    standaloneMode: widgetMode === 'standalone',
     locale,
 
     // Trade Setup:

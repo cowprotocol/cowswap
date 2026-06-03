@@ -1,25 +1,15 @@
-import { createContext } from 'react'
+import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
 
-import { PaletteMode } from '@mui/material'
-import { Theme } from '@mui/material/styles'
+import type { CSSObject, Theme } from '@mui/material/styles'
 
-export interface ColorModeParams {
-  mode: PaletteMode
-  toggleColorMode(): void
-  setAutoMode(): void
-  setMode(mode: PaletteMode): void
-}
-
-export const ColorModeContext = createContext<ColorModeParams>({
-  mode: 'light' as PaletteMode,
-  toggleColorMode: () => {},
-  setAutoMode: () => {},
-  setMode: () => {},
-})
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const globalStyles = (theme: Theme) => ({
+export const globalStyles = (theme: Theme): CSSObject => ({
+  '@font-face': {
+    fontFamily: 'studiofeixen',
+    src: `url(${FONT_STUDIO_FEIXEN_BOLD}) format('woff2')`,
+    fontStyle: 'normal',
+    fontWeight: 700,
+    fontDisplay: 'swap',
+  },
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",
     fontDisplay: 'fallback',
@@ -59,9 +49,3 @@ export const globalStyles = (theme: Theme) => ({
     zIndex: 1200,
   },
 })
-
-export enum ThemeMode {
-  Auto = 1,
-  Light = 2,
-  Dark = 3,
-}

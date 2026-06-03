@@ -1,11 +1,11 @@
-import React, { ReactNode, useContext } from 'react'
+import { ReactNode } from 'react'
 
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
 
 import { UTM_PARAMS } from '../../../configurator.constants'
-import { ColorModeContext } from '../../../theme/ColorModeContext'
+import { useColorMode } from '../../../theme/context/hooks/useColorMode'
 import { Button } from '../../ui/buttons/button/Button.component'
 import { IconButton } from '../../ui/buttons/icon/IconButton.component'
 
@@ -20,6 +20,7 @@ export interface SidebarFooterProps {
   isWidgetReady: boolean
   isWidgetSyncPending: boolean
   onForceWidgetReload: () => void
+  onResetOptions: () => void
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -31,8 +32,9 @@ export function SidebarFooter({
   isWidgetReady,
   isWidgetSyncPending,
   onForceWidgetReload,
+  onResetOptions,
 }: SidebarFooterProps): ReactNode {
-  const { mode, toggleColorMode } = useContext(ColorModeContext)
+  const { mode, toggleColorMode } = useColorMode()
 
   const snippetLabel = isSnippetOpen ? 'See preview' : 'Get code'
   const SnippetIcon = isSnippetOpen ? Eye : Code
@@ -63,6 +65,12 @@ export function SidebarFooter({
     reloadPreviewLabel = 'Loading widget... Click to force load.'
   } else {
     reloadPreviewLabel = 'Reload widget'
+  }
+
+  const handleResetOptions = (): void => {
+    if (!confirm("Reset all configurator options to defaults?\nThis can't be undone.")) return
+
+    onResetOptions()
   }
 
   return (
@@ -159,6 +167,15 @@ export function SidebarFooter({
             variant="inherit"
           >
             Developer docs
+          </Link>
+          <Link
+            component="button"
+            type="button"
+            onClick={handleResetOptions}
+            sx={{ ...externalLinkSx, ml: 'auto' }}
+            variant="inherit"
+          >
+            Reset options
           </Link>
         </Box>
       </Box>

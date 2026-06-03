@@ -1,19 +1,9 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 
 import { PaletteMode } from '@mui/material'
 
 import { DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from '../configurator.constants'
 import { ColorPalette } from '../configurator.types'
-
-const LOCAL_STORAGE_KEY_NAME = 'COW_WIDGET_PALETTE_'
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getCachedPalette = (mode: PaletteMode) => {
-  const cache = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
-
-  return cache ? JSON.parse(cache) : null
-}
 
 export interface ColorPaletteManager {
   defaultPalette: ColorPalette
@@ -22,40 +12,38 @@ export interface ColorPaletteManager {
   resetColorPalette(): void
 }
 
-export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
+export function useColorPaletteManager(
+  mode: PaletteMode,
+  customColorsByTheme: Record<PaletteMode, ColorPalette>,
+  setCustomColorsByTheme: Dispatch<SetStateAction<Record<PaletteMode, ColorPalette>>>,
+): ColorPaletteManager {
   const defaultPalette = useMemo(() => {
     return mode === 'dark' ? DEFAULT_DARK_PALETTE : DEFAULT_LIGHT_PALETTE
   }, [mode])
 
-  const [colorPalette, updateColorPalette] = useState<ColorPalette>(getCachedPalette(mode) || defaultPalette)
-
-  const persistPalette = useCallback(
-    (colorPalette: ColorPalette) => {
-      localStorage.setItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`, JSON.stringify(colorPalette))
-    },
-    [mode],
-  )
+  const colorPalette = customColorsByTheme[mode]
 
   const setColorPalette = useCallback(
     (palette: ColorPalette | ((prevState: ColorPalette) => ColorPalette)) => {
-      const newPalette = typeof palette === 'function' ? palette(colorPalette) : palette
+      setCustomColorsByTheme((prevState) => {
+        const currentPalette = prevState[mode]
+        const newPalette = typeof palette === 'function' ? palette(currentPalette) : palette
 
-      updateColorPalette(newPalette)
-      persistPalette(newPalette)
+        return {
+          ...prevState,
+          [mode]: newPalette,
+        }
+      })
     },
-    [colorPalette, persistPalette],
+    [mode, setCustomColorsByTheme],
   )
 
   const resetColorPalette = useCallback(() => {
-    setColorPalette(defaultPalette)
-  }, [defaultPalette, setColorPalette])
-
-  // Restore palette from localStorage when mode changes
-  useEffect(() => {
-    const newPalette = getCachedPalette(mode)
-
-    updateColorPalette(newPalette || defaultPalette)
-  }, [mode, defaultPalette])
+    setCustomColorsByTheme((prevState) => ({
+      ...prevState,
+      [mode]: defaultPalette,
+    }))
+  }, [defaultPalette, mode, setCustomColorsByTheme])
 
   return useMemo(
     () => ({ defaultPalette, colorPalette, setColorPalette, resetColorPalette }),

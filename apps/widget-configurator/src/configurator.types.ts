@@ -1,3 +1,4 @@
+import type { SupportedLocale } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   CowSwapWidgetPaletteColors,
@@ -25,49 +26,47 @@ export interface TokenListItem {
 
 export type WidgetMode = 'dapp' | 'standalone'
 
-export interface ConfiguratorState {
+/** Sidebar form fields persisted in localStorage. JSON style fields are stored as strings. */
+export interface ConfiguratorFormValues {
   // Basics:
 
   appCode: string
-  // widgetMode: WidgetMode
-  standaloneMode: boolean // TODO: Replace with widgetMode.
-  locale?: string
+  widgetMode: WidgetMode
+  locale: SupportedLocale | ''
 
   // Trade Setup:
 
   enabledTradeTypes: TradeType[]
   currentTradeType: TradeType
-  chainId?: SupportedChainId
+  chainId: SupportedChainId
   disableCrossChainSwap: boolean
-  slippage?: SlippageConfig // TODO: Not used for whatever reason.
+  // slippage?: SlippageConfig // TODO: Not used for whatever reason.
 
   // Tokens:
 
   sellToken: string
-  sellTokenAmount: number | undefined
+  sellTokenAmount: number
   buyToken: string
-  buyTokenAmount: number | undefined
+  buyTokenAmount: number
   tokenListUrls: TokenListItem[]
   customTokens: CowSwapWidgetParams['customTokens']
 
   // Theme Colors:
 
   theme: PaletteMode
-  customColors: ColorPalette
-  defaultColors: ColorPalette
+  // Note that `customColors` and `defaultColors` are stored/handled by `useColorPaletteManager` hook.
 
   // Layout:
 
   autoResizeEnabled: boolean
   showIframeOutline: boolean
-  iframeStyle: CSS.Properties
-  appWrapperStyle: CSS.Properties
-  bodyWrapperStyle: CSS.Properties
-  cardStyle: CSS.Properties
+  iframeStyleJson: string | null
+  appWrapperStyleJson: string | null
+  bodyWrapperStyleJson: string | null
+  cardStyleJson: string | null
 
   // Behavior:
 
-  disableToastMessages: boolean
   disableProgressBar: boolean
   disablePostTradeTips: boolean
   disableTokenImport: boolean
@@ -77,6 +76,7 @@ export interface ConfiguratorState {
   hideOrdersTable: boolean | undefined
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
+  // Note that `disableToastMessages` is stored/handled by `useToastsManager` hook.
 
   // Deadlines:
 
@@ -88,7 +88,7 @@ export interface ConfiguratorState {
   // Integrations:
 
   partnerFeeBps: number
-  partnerFeeRecipient: PartnerFee['recipient'] // TODO: Not used for whatever reason.
+  // partnerFeeRecipient: PartnerFee['recipient'] // TODO: Not used for whatever reason.
 
   // Customization:
 
@@ -99,5 +99,62 @@ export interface ConfiguratorState {
 
   baseUrl: string | null
   enabledWidgetHooks: WidgetHookEvents[]
+  rawParamsJson: string | null
+}
+
+/**
+ * Fully resolved configurator state passed to the widget preview.
+ * Extends {@link ConfiguratorFormValues}, replacing the raw JSON string fields with parsed
+ * values and adding state that is derived rather than persisted.
+ */
+export interface ConfiguratorState
+  extends Omit<
+    ConfiguratorFormValues,
+    | 'locale'
+    | 'chainId'
+    | 'sellTokenAmount'
+    | 'buyTokenAmount'
+    | 'iframeStyleJson'
+    | 'appWrapperStyleJson'
+    | 'bodyWrapperStyleJson'
+    | 'cardStyleJson'
+    | 'rawParamsJson'
+  > {
+  // Basics:
+
+  locale?: string
+
+  // Trade Setup:
+
+  chainId?: SupportedChainId
+  slippage?: SlippageConfig // TODO: Not used for whatever reason.
+
+  // Tokens:
+
+  sellTokenAmount: number | undefined
+  buyTokenAmount: number | undefined
+
+  // Theme Colors:
+
+  customColors: ColorPalette
+  defaultColors: ColorPalette
+
+  // Layout (parsed from the persisted JSON string fields):
+
+  iframeStyle: CSS.Properties
+  appWrapperStyle: CSS.Properties
+  bodyWrapperStyle: CSS.Properties
+  cardStyle: CSS.Properties
+
+  // Behavior:
+
+  disableToastMessages: boolean
+
+  // Integrations:
+
+  partnerFeeRecipient: PartnerFee['recipient'] // TODO: Not used for whatever reason.
+
+  // Advanced (parsed from the persisted JSON string field):
+
   rawParams: Partial<CowSwapWidgetParams>
 }

@@ -6,23 +6,24 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 import { IS_IFRAME } from '../../../configurator.constants'
+import { WidgetMode } from '../../../configurator.types'
 import { SidebarEnvBadge } from '../env-badge/sidebar-env-badge.component'
+
+export type ThemeMode = 'dark' | 'light'
 
 const BRAND_COLOR: Record<ThemeMode, string> = {
   dark: Color.blue300Primary,
   light: Color.blueDark2,
 }
 
-export type ThemeMode = 'dark' | 'light'
-
 export interface SidebarHeaderProps {
   title: string
   themeMode: ThemeMode
-  standaloneMode: boolean
+  widgetMode: WidgetMode
   baseUrl: string
 }
 
-export function SidebarHeader({ title, themeMode, standaloneMode, baseUrl }: SidebarHeaderProps): ReactNode {
+export function SidebarHeader({ title, themeMode, widgetMode, baseUrl }: SidebarHeaderProps): ReactNode {
   const brandColor = BRAND_COLOR[themeMode]
 
   return (
@@ -75,7 +76,7 @@ export function SidebarHeader({ title, themeMode, standaloneMode, baseUrl }: Sid
 
       {!IS_IFRAME && (
         <>
-          {!standaloneMode && (
+          {widgetMode !== 'standalone' && (
             <Box sx={{ mt: '16px' }}>
               {/* @ts-ignore */}
               <appkit-button />

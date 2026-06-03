@@ -17,14 +17,9 @@ import { LinkButton } from '../../../ui/buttons/link/LinkButton.component'
 import { CurrencyInputControl } from '../../../ui/inputs/CurrencyInput/CurrencyInputControl'
 import { MultiSelectInput } from '../../../ui/inputs/Select/multi/MultiSelectInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-interface TokensSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
-
-export function TokensSectionForm({ values, onChange }: TokensSectionFormProps): ReactNode {
+export function TokensSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const setTokenListScope = useCallback(

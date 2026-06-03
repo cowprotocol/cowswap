@@ -11,14 +11,9 @@ import { SelectInput } from '../../../ui/inputs/Select/single/SelectInput.compon
 import { SwitchInput } from '../../../ui/inputs/SwitchInput/SwitchInput'
 
 import type { SelectInputOption } from '../../../ui/inputs/Select/base/BaseSelectInput.types'
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
+import type { SidebarSectionFormProps } from '../section.types'
 
-interface TradeSetupSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
-
-export function TradeSetupSectionForm({ values, onChange }: TradeSetupSectionFormProps): ReactNode {
+export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const availableChains = useAvailableChains()
 
   const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {

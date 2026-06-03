@@ -1,9 +1,9 @@
-import { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
-import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { useLocalStorageState, useThrottleFn } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
+import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
@@ -18,31 +18,34 @@ import { CustomizationSectionForm } from './sections/customization/Customization
 import { DeadlinesSectionForm } from './sections/deadlines/DeadlinesSectionForm'
 import { IntegrationsSectionForm } from './sections/integrations/IntegrationsSectionForm'
 import { LayoutSectionForm } from './sections/layout/LayoutSectionForm'
-import {
-  type ConfiguratorFormChangeHandler,
-  type ConfiguratorFormInputEvent,
-  type ConfiguratorFormValues,
-} from './sections/section.types'
+import { type ConfiguratorFormChangeHandler, type ConfiguratorFormInputEvent } from './sections/section.types'
 import { ThemeColorsSectionForm } from './sections/theme-colors/ThemeColorsSectionForm'
 import { TokensSectionForm } from './sections/tokens/TokensSectionForm'
 import { TradeSetupSectionForm } from './sections/trade-setup/TradeSetupSectionForm'
 import { drawerContentColumnSx, drawerPaperRowSx, getDrawerPatternFillerSx, getDrawerSx } from './sidebar.styles'
 
-import { DEFAULT_STATE, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from '../../configurator.constants'
-import { ConfiguratorState } from '../../configurator.types'
+import {
+  CONFIGURATOR_CUSTOM_COLORS_BY_THEME_STORAGE_KEY,
+  CONFIGURATOR_FORM_VALUES_STORAGE_KEY,
+  DEFAULT_CONFIGURATOR_FORM_VALUES,
+  IS_IFRAME,
+} from '../../configurator.constants'
+import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from '../../configurator.types'
+import {
+  buildConfiguratorState,
+  getDefaultCustomColorsByTheme,
+  resolveConfiguratorCustomColorsByTheme,
+  resolveConfiguratorFormValues,
+} from '../../configurator.utils'
 import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
-import { type JsonState } from '../../hooks/useJsonState'
+import { useExpandedSectionHash } from '../../hooks/useExpandedSectionHash'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
-import { ColorModeContext } from '../../theme/ColorModeContext'
+import { useColorMode } from '../../theme/context/hooks/useColorMode'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
-import { DEFAULT_IFRAME_STYLE_JSON } from '../controls/AppearanceStyleControls'
 import { AccordionFormSection } from '../ui/Accordion/AccordionFormSection'
 
 import type { Theme } from '@mui/material/styles'
-import type * as CSS from 'csstype'
-
-interface ParsedJsonField<T extends object> extends JsonState<T> {}
 
 const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
   'iframeStyleJson',
@@ -51,26 +54,6 @@ const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
   'cardStyleJson',
   'rawParamsJson',
 ])
-
-const MODE_FIELD_NAME = 'mode'
-
-function parseJsonField<T extends object>(rawValue: string | null, fallbackValue: T): ParsedJsonField<T> {
-  const normalizedRaw = rawValue?.trim() ? rawValue : JSON.stringify(fallbackValue)
-
-  try {
-    return {
-      rawJsonValue: normalizedRaw,
-      parsedJsonValue: JSON.parse(normalizedRaw) as T,
-      error: false,
-    }
-  } catch {
-    return {
-      rawJsonValue: normalizedRaw,
-      parsedJsonValue: fallbackValue,
-      error: true,
-    }
-  }
-}
 
 export interface SidebarProps {
   title: string
@@ -86,6 +69,9 @@ export interface SidebarProps {
   onForceWidgetReload: () => void
 }
 
+const CONFIGURATOR_FORM_PERSIST_DELAY_MS = 500
+const CONFIGURATOR_STATE_PROPAGATION_THROTTLE_MS = 250
+
 // eslint-disable-next-line max-lines-per-function
 export function Sidebar({
   title,
@@ -100,117 +86,62 @@ export function Sidebar({
   isWidgetSyncPending,
   onForceWidgetReload,
 }: SidebarProps): ReactNode {
-  const { mode } = useContext(ColorModeContext)
-  const [expandedSection, setExpandedSection] = useState<string | null>('Basics')
+  const { mode } = useColorMode()
+  const { expandedSection, handleToggleExpanded } = useExpandedSectionHash('Basics')
 
-  const [configuratorFormValues, setConfiguratorFormValues] = useState<ConfiguratorFormValues>({
-    appCode: '',
-    widgetMode: 'dapp',
-    locale: '',
-    enabledTradeTypes: TRADE_MODES,
-    currentTradeType: TRADE_MODES[0],
-    chainId: SupportedChainId.MAINNET,
-    disableCrossChainSwap: false,
-    sellToken: DEFAULT_STATE.sellToken,
-    sellTokenAmount: DEFAULT_STATE.sellAmount,
-    buyToken: DEFAULT_STATE.buyToken,
-    buyTokenAmount: DEFAULT_STATE.buyAmount,
-    tokenListUrls: DEFAULT_TOKEN_LISTS,
-    customTokens: [],
-    theme: 'light',
-    autoResizeEnabled: true,
-    showIframeOutline: true,
-    iframeStyleJson: DEFAULT_IFRAME_STYLE_JSON,
-    appWrapperStyleJson: '{}',
-    bodyWrapperStyleJson: '{}',
-    cardStyleJson: '{}',
-    disableProgressBar: false,
-    disablePostTradeTips: false,
-    disableTokenImport: false,
-    hideRecentTokens: false,
-    hideFavoriteTokens: false,
-    hideBridgeInfo: false,
-    hideOrdersTable: false,
-    disableTradeWhenPriceImpactIsUnknown: false,
-    disableTradeWhenPriceImpactIsHigherThan: undefined,
-    deadline: undefined,
-    swapDeadline: undefined,
-    limitDeadline: undefined,
-    advancedDeadline: undefined,
-    partnerFeeBps: 0,
-    customImages: {},
-    customSounds: {},
-    baseUrl: null,
-    enabledWidgetHooks: [],
-    rawParamsJson: '{}',
-  })
+  const [configuratorFormValues, setConfiguratorFormValues] = useLocalStorageState<ConfiguratorFormValues>(
+    CONFIGURATOR_FORM_VALUES_STORAGE_KEY,
+    resolveConfiguratorFormValues,
+    CONFIGURATOR_FORM_PERSIST_DELAY_MS,
+  )
 
-  const standaloneMode = configuratorFormValues.widgetMode === 'standalone'
-
-  const handleToggleExpanded = useCallback(
-    (title: string) => (isExpanded: boolean) => setExpandedSection(isExpanded ? title : null),
-    [],
+  const [customColorsByTheme, setCustomColorsByTheme] = useLocalStorageState<Record<PaletteMode, ColorPalette>>(
+    CONFIGURATOR_CUSTOM_COLORS_BY_THEME_STORAGE_KEY,
+    resolveConfiguratorCustomColorsByTheme,
+    CONFIGURATOR_FORM_PERSIST_DELAY_MS,
   )
 
   const handleConfiguratorFormChange = useCallback(
-    (nameOrEvent: keyof ConfiguratorFormValues | ConfiguratorFormInputEvent, value?: unknown) => {
+    (nameOrEvent: keyof ConfiguratorFormValues | ConfiguratorFormInputEvent, valueOrUndefined?: unknown) => {
+      let name: keyof ConfiguratorFormValues | undefined
+      let value: unknown
+
       if (typeof nameOrEvent !== 'string') {
-        const { name, value: eventValue } = nameOrEvent.target
-        const normalizedName = name === MODE_FIELD_NAME ? 'widgetMode' : name
+        name = nameOrEvent.target.name as keyof ConfiguratorFormValues
+        value = nameOrEvent.target.value
+      } else {
+        name = nameOrEvent
+        value = valueOrUndefined
+      }
 
-        if (!normalizedName) return
-
-        setConfiguratorFormValues((prevState) => {
-          if (!(normalizedName in prevState)) return prevState
-
-          const key = normalizedName as keyof ConfiguratorFormValues
-          const shouldKeepNull = key === 'baseUrl' || JSON_FIELD_NAMES.has(key)
-          const nextValue = eventValue === null && !shouldKeepNull ? '' : eventValue
-
-          return {
-            ...prevState,
-            [key]: nextValue,
-          }
-        })
-
+      if (!name) {
+        console.warn('[COW][CONFIGURATOR] Missing field name in change event:', nameOrEvent, valueOrUndefined)
         return
       }
 
       setConfiguratorFormValues((prevState) => {
-        const shouldKeepNull = nameOrEvent === 'baseUrl' || JSON_FIELD_NAMES.has(nameOrEvent)
+        const shouldKeepNull = name === 'baseUrl' || JSON_FIELD_NAMES.has(name)
         const nextValue = value === null && !shouldKeepNull ? '' : value
 
         return {
           ...prevState,
-          [nameOrEvent]: nextValue,
+          [name]: nextValue,
         }
       })
     },
-    [],
+    [setConfiguratorFormValues],
   ) as ConfiguratorFormChangeHandler
 
-  const iframeStyleJson = useMemo(
-    () => parseJsonField<CSS.Properties>(configuratorFormValues.iframeStyleJson, {}),
-    [configuratorFormValues.iframeStyleJson],
-  )
-  const appWrapperStyleJson = useMemo(
-    () => parseJsonField<CSS.Properties>(configuratorFormValues.appWrapperStyleJson, {}),
-    [configuratorFormValues.appWrapperStyleJson],
-  )
-  const bodyWrapperStyleJson = useMemo(
-    () => parseJsonField<CSS.Properties>(configuratorFormValues.bodyWrapperStyleJson, {}),
-    [configuratorFormValues.bodyWrapperStyleJson],
-  )
-  const cardStyleJson = useMemo(
-    () => parseJsonField<CSS.Properties>(configuratorFormValues.cardStyleJson, {}),
-    [configuratorFormValues.cardStyleJson],
-  )
-  const rawParamsJson = useMemo(
-    () => parseJsonField<Partial<CowSwapWidgetParams>>(configuratorFormValues.rawParamsJson, {}),
-    [configuratorFormValues.rawParamsJson],
-  )
+  const resetFormValues = useCallback(() => {
+    setConfiguratorFormValues({ ...DEFAULT_CONFIGURATOR_FORM_VALUES })
+    setCustomColorsByTheme(getDefaultCustomColorsByTheme())
+  }, [setConfiguratorFormValues, setCustomColorsByTheme])
 
-  const paletteManager = useColorPaletteManager(configuratorFormValues.theme)
+  const paletteManager = useColorPaletteManager(
+    configuratorFormValues.theme,
+    customColorsByTheme,
+    setCustomColorsByTheme,
+  )
   const { colorPalette, defaultPalette } = paletteManager
 
   const { chainId: walletChainId, isConnected } = useConnection()
@@ -221,73 +152,30 @@ export function Sidebar({
       ? configuratorFormValues.chainId
       : walletChainId
 
-  const partnerFeeRecipient = DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[configuratorFormValues.chainId]
-
-  const configuratorState: ConfiguratorState = useMemo(
-    () => ({
-      appCode: configuratorFormValues.appCode,
-      standaloneMode,
-      locale: configuratorFormValues.locale || undefined,
-      enabledTradeTypes: configuratorFormValues.enabledTradeTypes,
-      currentTradeType: configuratorFormValues.currentTradeType,
-      chainId: effectiveChainId,
-      disableCrossChainSwap: configuratorFormValues.disableCrossChainSwap,
-      sellToken: configuratorFormValues.sellToken,
-      sellTokenAmount: configuratorFormValues.sellTokenAmount,
-      buyToken: configuratorFormValues.buyToken,
-      buyTokenAmount: configuratorFormValues.buyTokenAmount,
-      tokenListUrls: configuratorFormValues.tokenListUrls,
-      customTokens: configuratorFormValues.customTokens,
-      theme: configuratorFormValues.theme,
-      customColors: colorPalette,
-      defaultColors: defaultPalette,
-      autoResizeEnabled: configuratorFormValues.autoResizeEnabled,
-      showIframeOutline: configuratorFormValues.showIframeOutline,
-      iframeStyle: iframeStyleJson.parsedJsonValue,
-      appWrapperStyle: appWrapperStyleJson.parsedJsonValue,
-      bodyWrapperStyle: bodyWrapperStyleJson.parsedJsonValue,
-      cardStyle: cardStyleJson.parsedJsonValue,
-      disableToastMessages: toastManager.disableToastMessages,
-      disableProgressBar: configuratorFormValues.disableProgressBar,
-      disablePostTradeTips: configuratorFormValues.disablePostTradeTips,
-      disableTokenImport: configuratorFormValues.disableTokenImport,
-      hideRecentTokens: configuratorFormValues.hideRecentTokens,
-      hideFavoriteTokens: configuratorFormValues.hideFavoriteTokens,
-      hideBridgeInfo: configuratorFormValues.hideBridgeInfo,
-      hideOrdersTable: configuratorFormValues.hideOrdersTable,
-      disableTradeWhenPriceImpactIsUnknown: configuratorFormValues.disableTradeWhenPriceImpactIsUnknown,
-      disableTradeWhenPriceImpactIsHigherThan: configuratorFormValues.disableTradeWhenPriceImpactIsHigherThan,
-      deadline: configuratorFormValues.deadline,
-      swapDeadline: configuratorFormValues.swapDeadline,
-      limitDeadline: configuratorFormValues.limitDeadline,
-      advancedDeadline: configuratorFormValues.advancedDeadline,
-      partnerFeeBps: configuratorFormValues.partnerFeeBps,
-      partnerFeeRecipient,
-      customImages: configuratorFormValues.customImages,
-      customSounds: configuratorFormValues.customSounds,
-      baseUrl: configuratorFormValues.baseUrl,
-      enabledWidgetHooks: configuratorFormValues.enabledWidgetHooks,
-      rawParams: rawParamsJson.parsedJsonValue,
-    }),
-    [
-      configuratorFormValues,
-      standaloneMode,
-      effectiveChainId,
-      colorPalette,
-      defaultPalette,
-      iframeStyleJson.parsedJsonValue,
-      appWrapperStyleJson.parsedJsonValue,
-      bodyWrapperStyleJson.parsedJsonValue,
-      cardStyleJson.parsedJsonValue,
-      toastManager.disableToastMessages,
-      partnerFeeRecipient,
-      rawParamsJson.parsedJsonValue,
-    ],
-  )
+  // Building the resolved state (including parsing JSON fields) is only done when we
+  // actually propagate it, and throttled so rapid edits don't recompute on every keystroke.
+  const propagateConfiguratorState = useThrottleFn(() => {
+    onStateChange(
+      buildConfiguratorState({
+        formValues: configuratorFormValues,
+        effectiveChainId,
+        colorPalette,
+        defaultPalette,
+        disableToastMessages: toastManager.disableToastMessages,
+      }),
+    )
+  }, CONFIGURATOR_STATE_PROPAGATION_THROTTLE_MS)
 
   useEffect(() => {
-    onStateChange(configuratorState)
-  }, [configuratorState, onStateChange])
+    propagateConfiguratorState()
+  }, [
+    propagateConfiguratorState,
+    configuratorFormValues,
+    effectiveChainId,
+    colorPalette,
+    defaultPalette,
+    toastManager.disableToastMessages,
+  ])
 
   // Sync widget network with the selected network in the configurator:
 
@@ -298,7 +186,7 @@ export function Sidebar({
     [handleConfiguratorFormChange],
   )
 
-  useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, standaloneMode)
+  useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, configuratorFormValues.widgetMode)
 
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>
@@ -307,7 +195,7 @@ export function Sidebar({
           <SidebarHeader
             title={title}
             themeMode={mode}
-            standaloneMode={standaloneMode}
+            widgetMode={configuratorFormValues.widgetMode}
             baseUrl={configuratorFormValues.baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
           />
 
@@ -358,18 +246,6 @@ export function Sidebar({
               formComponent={LayoutSectionForm}
               formProps={{
                 paperBackgroundColor: colorPalette.paper || defaultPalette.paper,
-                jsonStates: {
-                  iframeStyleJson,
-                  appWrapperStyleJson,
-                  bodyWrapperStyleJson,
-                  cardStyleJson,
-                  onIframeStyleJson: (value: string | null) => handleConfiguratorFormChange('iframeStyleJson', value),
-                  onAppWrapperStyleJson: (value: string | null) =>
-                    handleConfiguratorFormChange('appWrapperStyleJson', value),
-                  onBodyWrapperStyleJson: (value: string | null) =>
-                    handleConfiguratorFormChange('bodyWrapperStyleJson', value),
-                  onCardStyleJson: (value: string | null) => handleConfiguratorFormChange('cardStyleJson', value),
-                },
               }}
             />
 
@@ -428,6 +304,7 @@ export function Sidebar({
             isWidgetReady={isWidgetReady}
             isWidgetSyncPending={isWidgetSyncPending}
             onForceWidgetReload={onForceWidgetReload}
+            onResetOptions={resetFormValues}
           />
         </Box>
 

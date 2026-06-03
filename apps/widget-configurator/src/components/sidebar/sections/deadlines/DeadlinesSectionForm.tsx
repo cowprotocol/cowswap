@@ -2,12 +2,7 @@ import type { ReactNode } from 'react'
 
 import { NumberInput } from '../../../ui/inputs/NumberInput/NumberInput.component'
 
-import type { ConfiguratorFormChangeHandler, ConfiguratorFormValues } from '../section.types'
-
-interface DeadlinesSectionFormProps {
-  values: ConfiguratorFormValues
-  onChange: ConfiguratorFormChangeHandler
-}
+import type { SidebarSectionFormProps } from '../section.types'
 
 function parseDeadlineValue(rawValue: string): number | undefined {
   const numericValue = Number(rawValue)
@@ -16,7 +11,7 @@ function parseDeadlineValue(rawValue: string): number | undefined {
   return Math.max(1, numericValue)
 }
 
-export function DeadlinesSectionForm({ values, onChange }: DeadlinesSectionFormProps): ReactNode {
+export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
     <>
       <NumberInput
