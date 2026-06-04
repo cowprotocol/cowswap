@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.1
+
+### Patch Changes
+
+- fix: fix brave wallet specific crash (#7603)
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.3.2...wallet-v3.4.0) (2026-05-22)
 
 ### Minor Changes
