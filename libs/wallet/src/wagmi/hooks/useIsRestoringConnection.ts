@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-import { useConnection } from 'wagmi'
+import { useAccountState } from './useAccountState'
 
 import { useWalletInfo } from '../../api/hooks'
 import { getInitialReconnectLifecycle, subscribeInitialReconnect } from '../initialReconnectLifecycle'
@@ -10,7 +10,7 @@ function getServerSnapshot(): 'pending' | 'settled' {
 }
 
 export function useIsRestoringConnection(): boolean {
-  const { status } = useConnection()
+  const { status } = useAccountState()
   const { account } = useWalletInfo()
 
   // Web3Provider mounts WagmiProvider with reconnectOnMount={false} and triggers

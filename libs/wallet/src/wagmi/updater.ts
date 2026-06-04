@@ -8,8 +8,9 @@ import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
-import { useConnection, useEnsName } from 'wagmi'
+import { useEnsName } from 'wagmi'
 
+import { useAccountState } from './hooks/useAccountState'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
@@ -41,7 +42,7 @@ function useBrowserUrlKey(): string {
 
 function useWalletInfo(): WalletInfo {
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected, status } = useConnection()
+  const { address, chainId, isConnected, status } = useAccountState()
   const isConnectionRestoring = status === 'reconnecting'
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
