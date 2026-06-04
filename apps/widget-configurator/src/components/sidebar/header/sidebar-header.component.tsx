@@ -7,7 +7,9 @@ import Typography from '@mui/material/Typography'
 
 import { IS_IFRAME } from '../../../configurator.constants'
 import { WidgetMode } from '../../../configurator.types'
-import { SidebarEnvBadge } from '../env-badge/sidebar-env-badge.component'
+import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
+
+import type { WidgetSdkVersion } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 
 export type ThemeMode = 'dark' | 'light'
 
@@ -21,9 +23,10 @@ export interface SidebarHeaderProps {
   themeMode: ThemeMode
   widgetMode: WidgetMode
   baseUrl: string
+  sdkVersion: WidgetSdkVersion
 }
 
-export function SidebarHeader({ title, themeMode, widgetMode, baseUrl }: SidebarHeaderProps): ReactNode {
+export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersion }: SidebarHeaderProps): ReactNode {
   const brandColor = BRAND_COLOR[themeMode]
 
   return (
@@ -71,7 +74,12 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl }: Sidebar
         >
           {title}
         </Typography>
-        <SidebarEnvBadge brandColor={brandColor} baseUrl={baseUrl} configuratorOrigin={location.origin} />
+        <SidebarEnvBadge
+          brandColor={brandColor}
+          baseUrl={baseUrl}
+          configuratorOrigin={location.origin}
+          sdkVersion={sdkVersion}
+        />
       </Box>
 
       {!IS_IFRAME && (

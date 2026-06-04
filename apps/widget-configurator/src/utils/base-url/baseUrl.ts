@@ -1,4 +1,4 @@
-import { isDev, isLocalHost, isVercel } from '../configurator.constants'
+import { isDev, isLocalHost, isVercel } from '../../configurator.constants'
 
 const VERCEL_PREVIEW_URL_SUFFIX = '-cowswap-dev.vercel.app'
 
@@ -23,14 +23,15 @@ export function getBaseUrl(): string {
   return 'https://swap.cow.fi'
 }
 
+/** URL segment colors: local → brandColor, preview → darkred, dev → orangered, production → green. */
 export function getEnvColor(brandColor: string, url: string): string {
   if (url.startsWith('http://localhost:')) return brandColor
 
-  if (url.includes(VERCEL_PREVIEW_URL_SUFFIX)) return 'green'
+  if (url.includes(VERCEL_PREVIEW_URL_SUFFIX)) return 'darkred'
 
   if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'orangered'
 
-  return 'darkred'
+  return 'green'
 }
 
 export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' {

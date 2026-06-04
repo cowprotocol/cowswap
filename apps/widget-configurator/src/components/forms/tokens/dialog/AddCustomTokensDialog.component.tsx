@@ -7,7 +7,7 @@ import { Dialog, DialogContent } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { DEFAULT_CUSTOM_TOKENS } from '../../../../configurator.constants'
-import { parseCustomTokensInput } from '../../../../utils/parseCustomTokensInput'
+import { parseCustomTokensInput } from '../../../../utils/parse-custom-tokens-input/parseCustomTokensInput'
 import { Button } from '../../../ui/buttons/button/Button.component'
 import { JsonInput } from '../../../ui/inputs/JsonInput/JsonInput.component'
 import { TextInput } from '../../../ui/inputs/TextInput/TextInput.component'

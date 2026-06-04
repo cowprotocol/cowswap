@@ -6,7 +6,8 @@ import { PaletteMode } from '@mui/material'
 
 import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
 import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from './configurator.types'
-import { parseJsonOrFallback } from './utils/jsonFieldParsing'
+import { parseJsonOrFallback } from './utils/json-field-parsing/jsonFieldParsing'
+import { normalizeWidgetSdkVersion } from './utils/widget-sdk-versions/widget-sdk-versions.utils'
 
 import type * as CSS from 'csstype'
 
@@ -22,7 +23,12 @@ export function resolveConfiguratorFormValues(persistedValue: unknown): Configur
     return DEFAULT_CONFIGURATOR_FORM_VALUES
   }
 
-  return { ...DEFAULT_CONFIGURATOR_FORM_VALUES, ...persistedValue }
+  const merged = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, ...persistedValue }
+
+  return {
+    ...merged,
+    sdkVersion: normalizeWidgetSdkVersion(merged.sdkVersion),
+  }
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {

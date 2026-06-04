@@ -1,4 +1,4 @@
-import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../utils/baseUrl'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../utils/base-url/baseUrl'
 import { PresetOption } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
 
 export const ADVANCED_BASE_URL_PRESETS_OPTIONS: PresetOption[] = [

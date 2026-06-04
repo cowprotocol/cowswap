@@ -8,6 +8,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
 
 import { DEFAULT_IFRAME_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
 import { ConfiguratorFormValues, TokenListItem, WidgetMode } from './configurator.types'
+import { NPM_WIDGET_REACT_LATEST_VERSION } from './utils/widget-sdk-versions/widget-sdk-versions.constants'
 
 import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseSelectInput.types'
 
@@ -190,6 +191,8 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   // Advanced:
 
+  // `local` (workspace build) is only selectable in local dev; elsewhere default to the latest npm release.
+  sdkVersion: isLocalHost ? 'local' : NPM_WIDGET_REACT_LATEST_VERSION,
   baseUrl: null,
   enabledWidgetHooks: [],
   rawParamsJson: '{}',

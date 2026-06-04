@@ -4,7 +4,7 @@ import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/w
 
 import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
-import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/baseUrl'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/base-url/baseUrl'
 
 const getTokenListsParam = (
   tokenListUrls: ConfiguratorState['tokenListUrls'],

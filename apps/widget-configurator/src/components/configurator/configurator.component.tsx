@@ -4,13 +4,16 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
-import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Snackbar } from '@mui/material'
 import { useConnection } from 'wagmi'
 
-import { configuratorCheckeredCanvasSx, configuradorRootSx } from './configurator.styles'
+import {
+  COW_CONFIGURATOR_PREVIEW_HOST_ATTR,
+  configuratorCheckeredCanvasSx,
+  configuradorRootSx,
+} from './configurator.styles'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
 import {
@@ -27,6 +30,7 @@ import { SidebarControls } from '../sidebar/controls/sidebar-controls.component'
 import { Sidebar } from '../sidebar/sidebar.component'
 import { DRAWER_WIDTH_CSS_VAR } from '../sidebar/sidebar.styles'
 import { Snippet } from '../snippet/snippet.component'
+import { VersionedCowSwapWidget } from '../VersionedCowSwapWidget/VersionedCowSwapWidget'
 
 declare global {
   interface Window {
@@ -78,6 +82,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
   // Widget Configurator State:
 
   const [configuratorState, setConfiguratorState] = useState<ConfiguratorState | null>(null)
+  const sdkVersion = configuratorState?.sdkVersion
   const [params, isPending] = useWidgetParams(configuratorState)
   const hasParams = params && configuratorState
 
@@ -114,8 +119,13 @@ export function Configurator({ title }: { title: string }): ReactNode {
     }
   }, [params, setIsWidgetReady])
 
-  // Old Widget Apps won't have the ready event, so we need a timeout:
+  useEffect(() => {
+    if (!sdkVersion) return
 
+    setIsWidgetReady(false)
+  }, [sdkVersion, setIsWidgetReady])
+
+  // onReady when supported; legacy SDKs use iframe `load` via VersionedCowSwapWidget; 60s last resort.
   useEffect(() => {
     if (isWidgetReady || !hasParams) return
 
@@ -126,7 +136,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
     return () => {
       window.clearTimeout(isWidgetReadyTimeoutId.current)
     }
-  }, [isWidgetReady, hasParams, setIsWidgetReady])
+  }, [isWidgetReady, hasParams, sdkVersion, widgetKey, setIsWidgetReady])
 
   const [listeners, setListeners] = useState<CowWidgetEventListeners>(COW_LISTENERS)
   const toastManager = useToastsManager(setListeners)
@@ -187,7 +197,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
     configuratorContent = (
       <Box sx={configuratorCheckeredCanvasSx(isWidgetReady, showIframeOutline)}>
         {loaderElement}
-        <div id="cowswap-widget" />
+        <Box component="div" {...{ [COW_CONFIGURATOR_PREVIEW_HOST_ATTR]: '' }} />
       </Box>
     )
   } else {
@@ -197,13 +207,16 @@ export function Configurator({ title }: { title: string }): ReactNode {
         <Box sx={configuratorCheckeredCanvasSx(isWidgetReady, showIframeOutline, isSnippetOpen)}>
           {loaderElement}
 
-          <CowSwapWidget
-            key={widgetKey}
-            params={params}
-            provider={configuratorState.widgetMode === 'standalone' ? undefined : provider}
-            listeners={listeners}
-            onReady={handlePreviewReady}
-          />
+          <Box component="div" {...{ [COW_CONFIGURATOR_PREVIEW_HOST_ATTR]: '' }}>
+            <VersionedCowSwapWidget
+              key={`${widgetKey}-${configuratorState.sdkVersion}`}
+              sdkVersion={configuratorState.sdkVersion}
+              params={params}
+              provider={configuratorState.widgetMode === 'standalone' ? undefined : provider}
+              listeners={listeners}
+              onReady={handlePreviewReady}
+            />
+          </Box>
 
           {isSnippetOpen && isWidgetReady ? (
             <Snippet

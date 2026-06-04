@@ -30,7 +30,7 @@ import { useExpandedSectionHash } from '../../hooks/useExpandedSectionHash'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { useColorMode } from '../../theme/context/hooks/useColorMode'
-import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/baseUrl'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../utils/base-url/baseUrl'
 import { AdvancedSectionForm } from '../forms/advanced/AdvancedSectionForm'
 import { BasicsSectionForm } from '../forms/basics/BasicsSectionForm'
 import { BehaviorSectionForm } from '../forms/behavior/BehaviorSectionForm'
@@ -191,6 +191,7 @@ export function Sidebar({
             themeMode={mode}
             widgetMode={configuratorFormValues.widgetMode}
             baseUrl={configuratorFormValues.baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+            sdkVersion={configuratorFormValues.sdkVersion}
           />
 
           <Stack spacing={0} sx={{ display: 'flex', flexDirection: 'column' }}>

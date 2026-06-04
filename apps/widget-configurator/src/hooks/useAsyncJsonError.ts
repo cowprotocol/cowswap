@@ -2,7 +2,7 @@ import { useEffect, useState, useTransition } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
 
-import { isInvalidJson, jsonHelperText } from '../utils/jsonFieldParsing'
+import { isInvalidJson, jsonHelperText } from '../utils/json-field-parsing/jsonFieldParsing'
 
 export const JSON_ERROR_VALIDATION_DEBOUNCE_MS = 250
 

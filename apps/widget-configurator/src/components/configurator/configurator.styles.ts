@@ -13,6 +13,9 @@ export const configuradorRootSx: SxProps<Theme> = {
 const TRANSPARENCY_CHECKER_PX = 8
 const CONTENT_PADDING_PX = 16
 
+/** Stable preview host for layout/checkered styles (npm widget-react omits `#cowswap-widget`). */
+export const COW_CONFIGURATOR_PREVIEW_HOST_ATTR = 'data-cow-configurator-preview-host'
+
 export const configuratorCheckeredCanvasSx =
   (isWidgetReady: boolean, showIframeOutline: boolean, blockScroll = false): SxProps<Theme> =>
   (theme) => {
@@ -30,9 +33,10 @@ export const configuratorCheckeredCanvasSx =
       padding: `${CONTENT_PADDING_PX}px`,
       backgroundColor: base,
 
-      '& > #cowswap-widget': {
+      [`& > [${COW_CONFIGURATOR_PREVIEW_HOST_ATTR}]`]: {
         minWidth: '100%',
         minHeight: '100%',
+        flex: '1 1 auto',
         backgroundImage: `${pattern}`,
         backgroundSize: `${TRANSPARENCY_CHECKER_PX}px ${TRANSPARENCY_CHECKER_PX}px`,
         backgroundRepeat: 'repeat',
@@ -43,7 +47,7 @@ export const configuratorCheckeredCanvasSx =
         justifyContent: 'center',
         alignItems: 'center',
 
-        '& > #cowswap-iframe': {
+        '& #cowswap-iframe, & iframe': {
           display: 'block',
           border: 0,
           margin: '0 auto',

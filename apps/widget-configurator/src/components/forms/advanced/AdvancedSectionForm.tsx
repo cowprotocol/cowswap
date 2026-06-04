@@ -4,9 +4,11 @@ import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './
 
 import { WIDGET_HOOKS_OPTIONS } from '../../../configurator.constants'
 import { useAsyncJsonError } from '../../../hooks/useAsyncJsonError'
+import { SDK_VERSION_OPTIONS } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 import { JsonInput } from '../../ui/inputs/JsonInput/JsonInput.component'
 import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
 import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
@@ -30,6 +32,14 @@ export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProp
         onChange={onChange}
         placeholder={ADVANCED_DEFAULT_BASE_URL}
         InputLabelProps={{ shrink: true }}
+      />
+
+      <SelectInput
+        name="sdkVersion"
+        label="SDK version"
+        value={values.sdkVersion}
+        options={SDK_VERSION_OPTIONS}
+        onChange={onChange}
       />
 
       <MultiSelectInput

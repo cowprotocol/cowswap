@@ -11,6 +11,7 @@ import {
 
 import { PaletteMode } from '@mui/material'
 
+import type { WidgetSdkVersion } from './utils/widget-sdk-versions/widget-sdk-versions.constants'
 import type * as CSS from 'csstype'
 
 export type ColorPalette = {
@@ -96,6 +97,7 @@ export interface ConfiguratorFormValues {
 
   // Advanced:
 
+  sdkVersion: WidgetSdkVersion
   baseUrl: string | null
   enabledWidgetHooks: WidgetHookEvents[]
   rawParamsJson: string | null
