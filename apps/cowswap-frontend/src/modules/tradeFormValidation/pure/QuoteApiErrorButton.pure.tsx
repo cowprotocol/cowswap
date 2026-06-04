@@ -7,7 +7,11 @@ import { t } from '@lingui/core/macro'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
-import { getBridgeQuoteErrorTexts, getQuoteErrorTexts } from './QuoteErrorsButton/quoteErrors.utils'
+import {
+  getBridgeQuoteErrorTexts,
+  getDefaultQuoteError,
+  getQuoteErrorTexts,
+} from './QuoteErrorsButton/quoteErrors.utils'
 import { TradeFormBlankButton } from './TradeFormBlankButton'
 import { UnsupportedTokenButton } from './UnsupportedTokenButton.pure'
 
@@ -17,8 +21,6 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
   const { quote } = props
 
   if (!quote || !(quote.error instanceof QuoteApiError)) return null
-
-  const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
 
   const quoteErrorTexts = getQuoteErrorTexts()
 
@@ -36,9 +38,14 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const errorType = quote.error.type
+  const errorDescription = quote.error.description
 
   if (errorType === QuoteApiErrorCodes.UnsupportedToken) {
     return <UnsupportedTokenButton {...props} />
+  }
+
+  if (errorType === 'UNHANDLED_ERROR') {
+    return getDefaultQuoteError()
   }
 
   const isBridge = quote.isBridgeQuote
@@ -62,10 +69,14 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
       return bridgeQuoteErrorText
     }
 
-    return quoteErrorText || DEFAULT_QUOTE_ERROR
+    return quoteErrorText ?? errorDescription ?? getDefaultQuoteError()
   })()
 
-  const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
+  const errorTooltipText = isBridge
+    ? errorTooltipContentForBridges[errorType]
+    : errorType === QuoteApiErrorCodes.CustomSolverError
+      ? errorDescription
+      : null
 
   return (
     <TradeFormBlankButton disabled={true}>

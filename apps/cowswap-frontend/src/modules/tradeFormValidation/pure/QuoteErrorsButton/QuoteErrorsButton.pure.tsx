@@ -8,15 +8,13 @@ import { Trans } from '@lingui/react/macro'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
-import { getBridgeQuoteErrorTexts } from './quoteErrors.utils'
+import { getBridgeQuoteErrorTexts, getDefaultQuoteError } from './quoteErrors.utils'
 
 import { TradeFormButtonContext } from '../../types'
 import { QuoteApiErrorButton } from '../QuoteApiErrorButton.pure'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
-  const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
-
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const { quote } = props
@@ -27,7 +25,7 @@ export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
 
   if (quote.error instanceof BridgeProviderQuoteError) {
     const errorMessage = quote.error.message as BridgeQuoteErrors
-    const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
+    const errorText = bridgeQuoteErrorTexts[errorMessage] || getDefaultQuoteError()
 
     return (
       <TradeFormBlankButton disabled={true}>
