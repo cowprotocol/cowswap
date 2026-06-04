@@ -14,18 +14,18 @@ import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
 import type { SidebarSectionFormProps } from '../forms.types'
 
 const WIDGET_MODE_TOOLTIP = (
-  <Stack divider={<Divider flexItem />} spacing={1.2}>
+  <Stack divider={<Divider flexItem sx={{ mx: '-1rem !important' }} />} spacing={1.2}>
     <Typography sx={{ fontSize: '1.2rem', lineHeight: 1.45 }}>
       <Box component="span" sx={{ fontWeight: 600 }}>
         Dapp mode:
       </Box>{' '}
-      the host app provides the wallet connection and network switching.
+      The host app provides the wallet connection and network switching.
     </Typography>
     <Typography sx={{ fontSize: '1.2rem', lineHeight: 1.45 }}>
       <Box component="span" sx={{ fontWeight: 600 }}>
         Standalone mode:
       </Box>{' '}
-      the widget uses its own wallet provider and shows its own connect wallet controls.
+      The widget uses its own wallet provider and shows its own connect wallet controls.
     </Typography>
   </Stack>
 )
