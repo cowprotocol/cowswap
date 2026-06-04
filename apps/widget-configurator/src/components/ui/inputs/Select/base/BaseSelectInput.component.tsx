@@ -2,6 +2,7 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { type SelectChangeEvent, type SelectProps } from '@mui/material/Select'
@@ -24,6 +25,7 @@ interface BaseSelectInputSharedProps<TValue extends PrimitiveValue> {
   label: string
   options: readonly SelectInputOption<TValue>[]
   disabled?: boolean
+  helperText?: ReactNode
   multilineSelectedValue?: boolean
   inputLabelShrink?: boolean
   menuProps?: SelectProps['MenuProps']
@@ -55,6 +57,7 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
   label,
   options,
   disabled = false,
+  helperText,
   emptyLabel,
   multiple = false,
   multilineSelectedValue = false,
@@ -200,6 +203,7 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
           </MenuItem>
         ))}
       </Select>
+      {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
     </FormControl>
   )
 }

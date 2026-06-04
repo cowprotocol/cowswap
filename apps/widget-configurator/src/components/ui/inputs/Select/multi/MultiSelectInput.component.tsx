@@ -25,6 +25,7 @@ export function MultiSelectInput<TValue extends PrimitiveValue = string>({
   onChange,
   emptyLabel,
   disabled = false,
+  helperText,
   menuProps,
   withSeparator = true,
 }: MultiSelectInputProps<TValue>): ReactNode {
@@ -40,6 +41,7 @@ export function MultiSelectInput<TValue extends PrimitiveValue = string>({
       label={label}
       options={options}
       disabled={disabled}
+      helperText={helperText}
       emptyLabel={emptyLabel}
       multiple={true}
       multilineSelectedValue={true}

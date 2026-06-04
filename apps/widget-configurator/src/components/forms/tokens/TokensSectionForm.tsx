@@ -4,7 +4,11 @@ import { Box } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { AddCustomTokensDialog } from './dialog/AddCustomTokensDialog.component'
-import { TOKEN_LIST_MENU_PROPS, TOKEN_LIST_SELECT_CONFIG } from './TokensSectionForm.constants'
+import {
+  TOKEN_LIST_HELPER_TEXT_BY_SCOPE,
+  TOKEN_LIST_MENU_PROPS,
+  TOKEN_LIST_SELECT_CONFIG,
+} from './TokensSectionForm.constants'
 import {
   appendTokenListUrl,
   getSelectedTokenListUrls,
@@ -62,6 +66,7 @@ export function TokensSectionForm({ values, onChange }: SidebarSectionFormProps)
           key={scope}
           name={scope}
           label={label}
+          helperText={TOKEN_LIST_HELPER_TEXT_BY_SCOPE[scope]}
           value={getSelectedTokenListUrls(values.tokenListUrls, scope)}
           options={getTokenListOptions(values.tokenListUrls, scope)}
           withSeparator={false}

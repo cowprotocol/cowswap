@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 
 export type PrimitiveValue = string | number
 
@@ -15,4 +15,5 @@ export interface BaseSelectInputProps<TValue extends PrimitiveValue = string> {
   options: readonly SelectInputOption<TValue>[]
   disabled?: boolean
   emptyLabel?: string | boolean
+  helperText?: ReactNode
 }

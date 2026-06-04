@@ -1,5 +1,6 @@
 import type { SupportedLocale } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { TokenInfo } from '@cowprotocol/types'
 import {
   CowSwapWidgetPaletteColors,
   CowSwapWidgetParams,
@@ -50,7 +51,7 @@ export interface ConfiguratorFormValues {
   buyToken: string
   buyTokenAmount: number
   tokenListUrls: TokenListItem[]
-  customTokens: CowSwapWidgetParams['customTokens']
+  customTokens: TokenInfo[]
 
   // Theme Colors:
 
