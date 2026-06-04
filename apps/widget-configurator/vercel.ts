@@ -62,8 +62,6 @@ export const config: VercelConfig = {
       { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
       // Restricts this document/resource to be used from same-origin contexts.
       { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
-      // Legacy defense-in-depth for browsers that still rely on X-Frame-Options.
-      { key: 'X-Frame-Options', value: 'DENY' },
       // Prevents browsers from MIME-sniffing a response away from the declared Content-Type.
       { key: 'X-Content-Type-Options', value: 'nosniff' },
       // Sends full URL as referrer within the same origin, only the origin to external sites.
