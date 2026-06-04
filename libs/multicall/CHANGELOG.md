@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.2.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+
 ## 3.2.3
 
 ### Patch Changes

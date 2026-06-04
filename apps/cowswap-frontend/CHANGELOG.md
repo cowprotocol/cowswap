@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.12.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+  - @cowprotocol/balances-and-allowances@3.2.6
+  - @cowprotocol/multicall@3.2.4
+
 ## 3.12.0
 
 ### Minor Changes
