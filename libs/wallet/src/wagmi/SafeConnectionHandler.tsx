@@ -10,6 +10,7 @@ import { type Connector, useConnection, useConnectors } from 'wagmi'
 import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
 
 import { ConnectionType } from '../api/types'
+import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 interface SafeConnectionHandlerProps {
   children: ReactNode
@@ -98,11 +99,13 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
   }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector, isInSafeSdkContext])
 
   useEffect(() => {
+    const isConnectedToWidget = currentConnectorRef.current?.id === COW_WIDGET_CONNECTOR_ID
+
     if (!isEmbeddedApp()) return
     if (isConnected && isSafeConnector(currentConnector)) return
     // In widget context without Safe SDK: wallet is provided by the parent dapp via WidgetEthereumProvider.
     // Skip Safe auto-connect entirely to avoid competing with the COW_WIDGET_CONNECTOR_ID connection.
-    if (isInjectedWidget() && !isInSafeSdkContext) return
+    if (isConnectedToWidget) return
     if (isConnectingToSafe.current) return
 
     isConnectingToSafe.current = true
@@ -117,6 +120,9 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     if (!isEmbeddedApp()) return
 
     const reconnectSafeIfNeeded = (): void => {
+      const isConnectedToWidget = currentConnectorRef.current?.id === COW_WIDGET_CONNECTOR_ID
+
+      if (isConnectedToWidget) return
       if (document.visibilityState === 'hidden') return
       if (isConnectedRef.current && isSafeConnector(currentConnectorRef.current)) return
       if (isInjectedWidget() && !isInSafeSdkContextRef.current) return
