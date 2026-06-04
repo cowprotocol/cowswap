@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter, getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
-import { isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
+import OperatorError from 'api/cowProtocol/errors/OperatorError'
 
 export const USER_SWAP_REJECTED_ERROR = 'User rejected signing the order'
 
@@ -16,4 +16,8 @@ export function getSwapErrorMessage(error: Error): string {
 
     return defaultErrorMessage
   }
+}
+
+function isValidOperatorError(error: unknown): error is OperatorError {
+  return error instanceof OperatorError
 }
