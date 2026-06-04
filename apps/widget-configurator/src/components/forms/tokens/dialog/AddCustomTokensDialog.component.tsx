@@ -28,7 +28,7 @@ const ADD_CUSTOM_LIST_TABS = [
 
 const DEFAULT_ADD_CUSTOM_LIST_TAB_ID = ADD_CUSTOM_LIST_TABS[0].value
 
-type AddCustomListDialogProps = {
+interface AddCustomListDialogProps {
   open: boolean
   onClose: Command
   customTokens: TokenInfo[]
@@ -54,9 +54,7 @@ export function AddCustomTokensDialog({
 
   const [tabValue, setTabValue] = useState<AddCustomListTabId>(DEFAULT_ADD_CUSTOM_LIST_TAB_ID)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const resetForm = () => {
+  const resetForm = (): void => {
     // Reset custom URL
     setCustomListUrl('')
     setHasErrors(false)
@@ -67,14 +65,10 @@ export function AddCustomTokensDialog({
     setCustomTokensJson('')
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleTabChange = (_: React.SyntheticEvent, newValue: AddCustomListTabId) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: AddCustomListTabId): void => {
     setTabValue(newValue)
     resetForm()
   }
-
-  // TODO: Add proper return type annotation
 
   const handleUrlInputChange = (_name: string, value: string | null): void => {
     const urlValue = value ?? ''
@@ -82,8 +76,6 @@ export function AddCustomTokensDialog({
     setCustomListUrl(urlValue)
     setHasErrors(urlValue ? !isValidTokenListSource(urlValue) : false)
   }
-
-  // TODO: Add proper return type annotation
 
   const handleJsonInputChange = (_name: string, value: string | null): void => {
     setHasJsonErrors(false)
@@ -107,9 +99,7 @@ export function AddCustomTokensDialog({
     }
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     if (customListUrl) {
       onAddListUrl(customListUrl)
       resetForm()
@@ -120,9 +110,7 @@ export function AddCustomTokensDialog({
     onClose()
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const addJsonExample = () => {
+  const addJsonExample = (): void => {
     setCustomTokensJson(JSON.stringify(DEFAULT_CUSTOM_TOKENS, null, 2))
     setCustomTokens(DEFAULT_CUSTOM_TOKENS)
     setHasJsonErrors(false)
