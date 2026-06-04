@@ -16,7 +16,6 @@ import { AnalyticsCategory } from '../../common/analytics/types'
 import {
   COW_LISTENERS,
   CONFIGURATOR_SIDEBAR_OPEN_STORAGE_KEY,
-  IS_IFRAME,
   WIDGET_PREVIEW_READY_FALLBACK_MS,
 } from '../../configurator.constants'
 import { ConfiguratorState } from '../../configurator.types'
@@ -201,7 +200,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
           <CowSwapWidget
             key={widgetKey}
             params={params}
-            provider={!IS_IFRAME && configuratorState.widgetMode !== 'standalone' ? provider : undefined}
+            provider={configuratorState.widgetMode === 'standalone' ? undefined : provider}
             listeners={listeners}
             onReady={handlePreviewReady}
           />

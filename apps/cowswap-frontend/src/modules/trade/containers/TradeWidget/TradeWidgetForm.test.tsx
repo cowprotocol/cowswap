@@ -136,7 +136,7 @@ jest.mock('./styled', () => ({
 
 jest.mock('./TradeWidgetForm.utils', () => ({ mapCurrencyInfo: (info: unknown) => info }))
 
-jest.mock('legacy/components/Header/AccountElement', () => ({ AccountElement: () => null }))
+jest.mock('modules/wallet', () => ({ WalletStatusButton: () => null }))
 
 // ─── Typed mock references ─────────────────────────────────────────────────
 

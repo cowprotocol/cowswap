@@ -26,6 +26,7 @@ import {
   WindowListener,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 import type * as CSS from 'csstype'
@@ -56,6 +57,7 @@ export interface CowSwapWidgetHandler {
  * @returns A callback function to update the widget with new settings.
  */
 
+// eslint-disable-next-line max-lines-per-function
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
   const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
 
@@ -75,15 +77,24 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   container.innerHTML = ''
   container.appendChild(iframe)
 
+  const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(
+    iframe,
+    props.onLoadingError,
+    props.loadingErrorStyles,
+  )
+
   const { contentWindow: iframeWindow } = iframe
   if (!iframeWindow) {
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
   }
 
-  if (onReady) {
-    windowListeners.push(listenToReady(iframeWindow, iframeOrigin, onReady))
-  }
+  windowListeners.push(
+    listenToReady(iframeWindow, iframeOrigin, () => {
+      onReady?.()
+      onWidgetReady()
+    }),
+  )
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
@@ -173,7 +184,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       iframeSafeSdkBridge?.stopListening()
 
       // Destroy the iframe
-      container.removeChild(iframe)
+      if (iframe && iframe.parentNode === container) container.removeChild(iframe)
+
+      cancelWidgetLoading()
     },
   }
 }

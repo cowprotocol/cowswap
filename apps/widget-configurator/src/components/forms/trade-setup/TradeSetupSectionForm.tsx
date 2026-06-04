@@ -5,7 +5,7 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { IS_IFRAME, TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../configurator.constants'
+import { TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../configurator.constants'
 import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
@@ -56,7 +56,7 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
         name="chainId"
         label="Network"
         value={values.chainId}
-        disabled={values.widgetMode === 'standalone' || IS_IFRAME}
+        disabled={values.widgetMode === 'standalone'}
         options={chainOptions}
         onChange={onChange}
       />

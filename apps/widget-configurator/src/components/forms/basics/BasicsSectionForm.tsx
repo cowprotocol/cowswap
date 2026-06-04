@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { IS_IFRAME, LOCALE_OPTIONS, WIDGET_MODE_OPTIONS } from '../../../configurator.constants'
+import { LOCALE_OPTIONS, WIDGET_MODE_OPTIONS } from '../../../configurator.constants'
 import { COMMENTS_BY_PARAM_NAME } from '../../snippet/code-example-templates/common/codeExample.constants'
 import { RadioGroupInput } from '../../ui/inputs/RadioGroupInput/RadioGroupInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
@@ -48,7 +48,6 @@ export function BasicsSectionForm({ values, onChange }: SidebarSectionFormProps)
         value={values.widgetMode}
         options={WIDGET_MODE_OPTIONS}
         onChange={onChange}
-        disabled={IS_IFRAME}
         tooltip={WIDGET_MODE_TOOLTIP}
         tooltipAriaLabel="Explain widget modes"
       />

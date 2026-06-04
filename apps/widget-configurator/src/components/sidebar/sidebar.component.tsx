@@ -17,7 +17,6 @@ import {
   CONFIGURATOR_CUSTOM_COLORS_BY_THEME_STORAGE_KEY,
   CONFIGURATOR_FORM_VALUES_STORAGE_KEY,
   DEFAULT_CONFIGURATOR_FORM_VALUES,
-  IS_IFRAME,
 } from '../../configurator.constants'
 import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from '../../configurator.types'
 import {
@@ -145,11 +144,7 @@ export function Sidebar({
 
   const { chainId: walletChainId, isConnected } = useConnection()
 
-  const effectiveChainId = IS_IFRAME
-    ? undefined
-    : !isConnected || !walletChainId
-      ? configuratorFormValues.chainId
-      : walletChainId
+  const effectiveChainId = !isConnected || !walletChainId ? configuratorFormValues.chainId : walletChainId
 
   // Building the resolved state (including parsing JSON fields) is only done when we
   // actually propagate it, and throttled so rapid edits don't recompute on every keystroke.
