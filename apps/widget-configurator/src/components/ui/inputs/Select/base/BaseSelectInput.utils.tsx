@@ -9,6 +9,8 @@ import {
   selectOptionLabelContentSx,
 } from './BaseSelectInput.styles'
 
+import { BUTTON_ICON_SIZE, BUTTON_ICON_STROKE_WIDTH } from '../../../buttons/base/BaseButton.styles'
+
 import type { PrimitiveValue, SelectInputOption } from './BaseSelectInput.types'
 
 function SelectOptionLabel({ label }: { label: string }): ReactNode {
@@ -24,7 +26,7 @@ export function getOptionLabel<TValue extends PrimitiveValue>(option: SelectInpu
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, flex: '1 1 auto' }}>
-      <Icon />
+      <Icon size={BUTTON_ICON_SIZE} strokeWidth={BUTTON_ICON_STROKE_WIDTH} aria-hidden />
       <SelectOptionLabel label={option.label} />
     </Box>
   )

@@ -1,11 +1,11 @@
 import { type ReactNode, useCallback } from 'react'
 
 import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
 
 import { BaseSelectInput } from '../base/BaseSelectInput.component'
-import { selectOptionCheckboxSx, selectOptionLabelSx, selectOptionRowSx } from '../base/BaseSelectInput.styles'
+import { selectOptionLabelSx, selectOptionRowSx } from '../base/BaseSelectInput.styles'
 import { getOptionLabel, renderMultiOptionValue } from '../base/BaseSelectInput.utils'
+import { SelectOptionCheckmark } from '../checkmark/SelectOptionCheckmark.component'
 
 import type { BaseSelectInputProps, PrimitiveValue, SelectInputOption } from '../base/BaseSelectInput.types'
 import type { SelectProps } from '@mui/material/Select'
@@ -62,13 +62,7 @@ function renderMultiOptionContent<TValue extends PrimitiveValue>(
   return (
     <Box sx={selectOptionRowSx}>
       <Box sx={selectOptionLabelSx}>{getOptionLabel(option)}</Box>
-      <Checkbox
-        checked={selected}
-        sx={selectOptionCheckboxSx}
-        disableRipple
-        tabIndex={-1}
-        inputProps={{ 'aria-hidden': true }}
-      />
+      <SelectOptionCheckmark selected={selected} variant="checkbox" />
     </Box>
   )
 }

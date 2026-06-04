@@ -65,18 +65,19 @@ export function NumberInput({
       sx={[...unitAdornedSx, ...resolvedSx]}
       InputProps={{
         ...InputProps,
-        endAdornment: (
-          <>
-            {InputProps?.endAdornment}
-            {unit ? (
-              <InputAdornment position="end">
-                <Box component="span" sx={numberInputUnitTypographySx}>
-                  {unit}
-                </Box>
-              </InputAdornment>
-            ) : null}
-          </>
-        ),
+        endAdornment:
+          InputProps?.endAdornment || unit ? (
+            <>
+              {InputProps?.endAdornment}
+              {unit ? (
+                <InputAdornment position="end">
+                  <Box component="span" sx={numberInputUnitTypographySx}>
+                    {unit}
+                  </Box>
+                </InputAdornment>
+              ) : null}
+            </>
+          ) : undefined,
       }}
     />
   )

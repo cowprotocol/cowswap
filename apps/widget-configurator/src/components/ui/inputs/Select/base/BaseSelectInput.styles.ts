@@ -76,19 +76,17 @@ export const selectOptionLabelContentSx = {
   wordBreak: 'break-word',
 } as const satisfies SxProps<Theme>
 
-export const selectOptionCheckboxSx = {
-  marginLeft: 'auto',
-  padding: 0,
-  transform: 'translateX(8px)',
-} as const satisfies SxProps<Theme>
-
 export const selectOptionCheckIconSx = {
   marginLeft: 'auto',
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
 } as const satisfies SxProps<Theme>
 
 export const selectOptionCheckPlaceholderSx = {
   width: SELECT_OPTION_CHECK_PLACEHOLDER_WIDTH,
   marginLeft: 'auto',
+  flexShrink: 0,
 } as const satisfies SxProps<Theme>
 
 export const selectMultipleSelectedValueSx = {

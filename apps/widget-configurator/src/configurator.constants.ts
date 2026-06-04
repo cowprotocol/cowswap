@@ -3,8 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import DarkModeIcon from '@mui/icons-material/DarkMode'
-import LightModeIcon from '@mui/icons-material/LightMode'
+import { Moon, Sun } from 'react-feather'
 
 import { DEFAULT_IFRAME_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
 import { ConfiguratorFormValues, TokenListItem, WidgetMode } from './configurator.types'
@@ -44,8 +43,8 @@ export const LOCALE_OPTIONS: SelectInputOption<SupportedLocale>[] = [
 export type ThemeOptionValue = 'light' | 'dark'
 
 export const THEME_OPTIONS: SelectInputOption<ThemeOptionValue>[] = [
-  { label: 'Light', value: 'light', icon: LightModeIcon },
-  { label: 'Dark', value: 'dark', icon: DarkModeIcon },
+  { label: 'Light', value: 'light', icon: Sun },
+  { label: 'Dark', value: 'dark', icon: Moon },
 ]
 
 export const WIDGET_MODE_OPTIONS: SelectInputOption<WidgetMode>[] = [

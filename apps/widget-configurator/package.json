@@ -35,7 +35,6 @@
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
-    "@mui/icons-material": "5.17.1",
     "@mui/material": "5.17.1",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",

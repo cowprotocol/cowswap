@@ -5,8 +5,8 @@ import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import CloseIcon from '@mui/icons-material/Close'
 import { Box, IconButton, Snackbar } from '@mui/material'
+import { X } from 'react-feather'
 import { useConnection } from 'wagmi'
 
 import {
@@ -266,7 +266,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
         message={firstToast}
         action={
           <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
-            <CloseIcon fontSize="small" />
+            <X size={16} strokeWidth={2} aria-hidden />
           </IconButton>
         }
       />

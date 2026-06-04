@@ -1,11 +1,11 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { type SelectChangeEvent, type SelectProps } from '@mui/material/Select'
+import { ChevronDown } from 'react-feather'
 
 import {
   getSelectInputSx,
@@ -19,6 +19,20 @@ import { configuratorSurfacePaperSx } from '../../../surface/surface.styles'
 import { baseTextInputFormControlSx } from '../../BaseTextInput/BaseTextInput.styles'
 
 import type { PrimitiveValue, SelectInputOption } from './BaseSelectInput.types'
+
+const SELECT_DROPDOWN_ICON_SIZE = 20
+const SELECT_DROPDOWN_ICON_STROKE_WIDTH = 2
+
+function SelectDropdownIcon({ className }: { className?: string }): ReactNode {
+  return (
+    <ChevronDown
+      className={className}
+      size={SELECT_DROPDOWN_ICON_SIZE}
+      strokeWidth={SELECT_DROPDOWN_ICON_STROKE_WIDTH}
+      aria-hidden
+    />
+  )
+}
 
 interface BaseSelectInputSharedProps<TValue extends PrimitiveValue> {
   name: string
@@ -187,7 +201,7 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
         displayEmpty={hasEmptyLabel(emptyLabel)}
         disabled={disabled}
         notched={inputLabelShrink === true ? true : undefined}
-        IconComponent={ExpandMoreIcon}
+        IconComponent={SelectDropdownIcon}
         MenuProps={mergedMenuProps}
         renderValue={muiRenderValue}
         sx={getSelectInputSx(multilineSelectedValue)}

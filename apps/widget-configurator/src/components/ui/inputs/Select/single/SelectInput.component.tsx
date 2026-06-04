@@ -1,16 +1,11 @@
 import type { ReactNode } from 'react'
 
-import CheckIcon from '@mui/icons-material/Check'
 import Box from '@mui/material/Box'
 
 import { BaseSelectInput } from '../base/BaseSelectInput.component'
-import {
-  selectOptionCheckIconSx,
-  selectOptionCheckPlaceholderSx,
-  selectOptionLabelSx,
-  selectOptionRowSx,
-} from '../base/BaseSelectInput.styles'
+import { selectOptionLabelSx, selectOptionRowSx } from '../base/BaseSelectInput.styles'
 import { getOptionLabel, hasEmptyLabel, renderSingleOptionValue } from '../base/BaseSelectInput.utils'
+import { SelectOptionCheckmark } from '../checkmark/SelectOptionCheckmark.component'
 
 import type { BaseSelectInputProps, PrimitiveValue, SelectInputOption } from '../base/BaseSelectInput.types'
 
@@ -71,11 +66,7 @@ function renderSingleOptionContent<TValue extends PrimitiveValue>(
   return (
     <Box sx={selectOptionRowSx}>
       <Box sx={selectOptionLabelSx}>{getOptionLabel(option)}</Box>
-      {selected ? (
-        <CheckIcon sx={selectOptionCheckIconSx} fontSize="small" />
-      ) : (
-        <Box sx={selectOptionCheckPlaceholderSx} />
-      )}
+      <SelectOptionCheckmark selected={selected} />
     </Box>
   )
 }
