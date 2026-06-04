@@ -92,7 +92,7 @@ export enum ApiErrorCodeDetails {
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',
 }
 
-export default class OperatorError extends Error {
+export class OperatorError extends Error {
   name = 'OperatorError'
   type: ApiErrorCodes
   description: ApiErrorObject['description']
