@@ -77,7 +77,7 @@ function parseCustomColorsByTheme(value: unknown): Record<PaletteMode, ColorPale
 
 export interface BuildConfiguratorStateParams {
   formValues: ConfiguratorFormValues
-  effectiveChainId: SupportedChainId | undefined
+  effectiveChainId: SupportedChainId
   colorPalette: ColorPalette
   defaultPalette: ColorPalette
   disableToastMessages: boolean
@@ -94,7 +94,19 @@ export function buildConfiguratorState({
   defaultPalette,
   disableToastMessages,
 }: BuildConfiguratorStateParams): ConfiguratorState {
-  const { locale, chainId, iframeStyleJson, bodyWrapperStyleJson, cardStyleJson, rawParamsJson, ...rest } = formValues
+  if (effectiveChainId === undefined) {
+    throw new Error('buildConfiguratorState requires effectiveChainId')
+  }
+
+  const {
+    locale,
+    chainId: _,
+    iframeStyleJson,
+    bodyWrapperStyleJson,
+    cardStyleJson,
+    rawParamsJson,
+    ...rest
+  } = formValues
 
   return {
     ...rest,
@@ -106,7 +118,7 @@ export function buildConfiguratorState({
     bodyWrapperStyle: parseJsonOrFallback<CSS.Properties>(bodyWrapperStyleJson, {}),
     cardStyle: parseJsonOrFallback<CSS.Properties>(cardStyleJson, {}),
     disableToastMessages,
-    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[chainId],
+    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[effectiveChainId],
     rawParams: parseJsonOrFallback<Partial<CowSwapWidgetParams>>(rawParamsJson, {}),
   }
 }
