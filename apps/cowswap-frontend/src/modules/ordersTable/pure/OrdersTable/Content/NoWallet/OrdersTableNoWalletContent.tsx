@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { Web3Status } from 'modules/wallet'
+import { WalletStatusButton } from 'modules/wallet'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
@@ -24,7 +24,7 @@ export function OrdersTableNoWalletContent(): ReactNode {
       <h4>
         <Trans>Connect a wallet</Trans>
       </h4>
-      {!isInjectedWidget() && pendingActivitiesCount > 0 && <Web3Status />}
+      {!isInjectedWidget() && pendingActivitiesCount > 0 && <WalletStatusButton variant="regularButton" />}
     </styledEl.Content>
   )
 }
