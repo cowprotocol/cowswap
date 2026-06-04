@@ -1,7 +1,6 @@
 import { type FocusEvent, type ReactNode, useCallback, useEffect, useState } from 'react'
 
-import { useThrottleFn } from '@cowprotocol/common-hooks'
-
+import { useThrottledCallback } from '@swyg/corre'
 import { MuiColorInput, type MuiColorInputFormat } from 'mui-color-input'
 
 import { colorInputAdornedInputSx, colorInputPopoverProps } from './ColorInput.styles'
@@ -39,7 +38,7 @@ export function ColorInput({
     },
     [onChange],
   )
-  const throttledEmitChange = useThrottleFn(emitChange, throttleMs)
+  const throttledEmitChange = useThrottledCallback(emitChange, throttleMs)
 
   useEffect(() => {
     setLocalValue((currentValue) => (currentValue === value ? currentValue : value))

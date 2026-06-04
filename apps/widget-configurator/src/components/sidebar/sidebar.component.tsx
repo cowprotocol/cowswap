@@ -1,12 +1,13 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 
-import { useLocalStorageState, useThrottleFn } from '@cowprotocol/common-hooks'
+import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
+import { useThrottledCallback } from '@swyg/corre'
 import { useConnection } from 'wagmi'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
@@ -148,7 +149,7 @@ export function Sidebar({
 
   // Building the resolved state (including parsing JSON fields) is only done when we
   // actually propagate it, and throttled so rapid edits don't recompute on every keystroke.
-  const propagateConfiguratorState = useThrottleFn(() => {
+  const propagateConfiguratorState = useThrottledCallback(() => {
     onStateChange(
       buildConfiguratorState({
         formValues: configuratorFormValues,
