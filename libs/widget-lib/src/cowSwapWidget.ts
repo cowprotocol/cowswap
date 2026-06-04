@@ -59,7 +59,7 @@ export interface CowSwapWidgetHandler {
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady, onWidgetLoadingError, enableSafeSdkBridge = true } = props
+  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
   let provider = providerAux
   let currentParams = params
 
@@ -75,7 +75,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   container.innerHTML = ''
   container.appendChild(iframe)
 
-  const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(container, iframe, onWidgetLoadingError)
+  const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(
+    iframe,
+    props.onWidgetLoadingError,
+    props.loadingErrorStyles,
+  )
 
   const { contentWindow: iframeWindow } = iframe
   if (!iframeWindow) {
