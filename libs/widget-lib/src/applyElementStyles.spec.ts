@@ -31,21 +31,38 @@ describe('assignElementStyles', () => {
     expect(el.style.height).toBe('')
   })
 
-  it('sets an empty string when the value is null', () => {
+  it('skips keys whose value is null', () => {
     const el = document.createElement('div')
-    assignElementStyles(el, { margin: null } as unknown as CSS.Properties)
+    assignElementStyles(el, { width: '10px', margin: null } as unknown as CSS.Properties)
+    expect(el.style.width).toBe('10px')
     expect(el.style.margin).toBe('')
   })
 
-  it('skips non-string values such as numbers', () => {
+  it('stringifies numeric values for the element style', () => {
     const el = document.createElement('div')
     assignElementStyles(el, {
       width: '20px',
-      // csstype allows numeric opacity; runtime number must be ignored by assignElementStyles
       opacity: 0.5,
+      inset: 0,
     })
     expect(el.style.width).toBe('20px')
-    expect(el.style.opacity).toBe('')
+    expect(el.style.opacity).toBe('0.5')
+    expect(el.style.inset).toBe('0')
+  })
+
+  it('applies full-screen preset layout properties including numeric inset', () => {
+    const el = document.createElement('div')
+    assignElementStyles(el, {
+      position: 'absolute',
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'red',
+    })
+    expect(el.style.position).toBe('absolute')
+    expect(el.style.inset).toBe('0')
+    expect(el.style.width).toBe('100%')
+    expect(el.style.height).toBe('100%')
   })
 
   it('applies empty string for an explicit empty string value', () => {

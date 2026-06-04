@@ -2,7 +2,7 @@ import type * as CSS from 'csstype'
 
 /**
  * Assigns camelCase CSS properties to a DOM element's style.
- * Values are stringified; callers should use explicit units in JSON (e.g. `"100px"`).
+ * String values are applied as-is; numbers are stringified (e.g. `inset: 0` → `"0"`).
  */
 export function assignElementStyles(element: HTMLElement, styles: CSS.Properties | undefined): void {
   if (!styles) {
@@ -15,11 +15,17 @@ export function assignElementStyles(element: HTMLElement, styles: CSS.Properties
     const styleKey = key as keyof CSS.Properties
     const value = styles[styleKey]
 
-    if (value === undefined || (value !== null && typeof value !== 'string')) {
+    if (value === undefined || value === null) {
       continue
     }
 
+    if (typeof value !== 'string' && typeof value !== 'number') {
+      continue
+    }
+
+    const styleValue = `${value}`
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    element.style[styleKey as any] = value || ''
+    element.style[styleKey as any] = styleValue
   }
 }
