@@ -77,7 +77,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(
     iframe,
-    props.onWidgetLoadingError,
+    props.onLoadingError,
     props.loadingErrorStyles,
   )
 
