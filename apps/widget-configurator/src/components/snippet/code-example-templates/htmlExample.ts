@@ -5,6 +5,21 @@ import { formatParameters } from './common/formatParameters.utils'
 
 import { ColorPalette } from '../../../configurator.types'
 
+/**
+ * Standalone HTML embed snippet for the configurator "Pure HTML" tab.
+ *
+ * Preview safety: `Snippet` renders this string with `react-syntax-highlighter` (highlight.js
+ * engine), which tokenizes the source and mounts React elements with text-node children
+ * instead of `dangerouslySetInnerHTML`. User-controlled param values therefore appear as
+ * inert highlighted text in the modal and do not execute in the configurator DOM.
+ *
+ * Copied snippet / self-injection: `formatParameters` JSON-stringifies params into a
+ * `<script>` block. That prevents JS string break-out but does not HTML-escape the script
+ * body (e.g. a `</script>` substring in a value can still close the element). Only the
+ * integrator who configured and copied the snippet can poison their own deploy.
+ *
+ * If we have a config save/load feature, we'll need to sanitize or escape loaded data first.
+ */
 export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `<html lang="en">
 <head>
