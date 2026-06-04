@@ -9,8 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "build/widget-configurator",
-        "skipTypeCheck": true
+        "outputPath": "build/widget-configurator"
       },
       "configurations": {
         "development": {
