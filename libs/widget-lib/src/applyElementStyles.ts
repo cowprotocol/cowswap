@@ -5,11 +5,11 @@ import type * as CSS from 'csstype'
  * Values are stringified; callers should use explicit units in JSON (e.g. `"100px"`).
  */
 export function assignElementStyles(element: HTMLElement, styles: CSS.Properties | undefined): void {
-  element.removeAttribute('style')
-
   if (!styles) {
     return
   }
+
+  element.removeAttribute('style')
 
   for (const key of Object.keys(styles)) {
     const styleKey = key as keyof CSS.Properties

@@ -39,6 +39,7 @@ describe('createCowSwapWidget', () => {
         },
       },
     })
+    widgetHandlers.push(handler)
 
     const iframe = getIframe(container)
 
@@ -67,12 +68,14 @@ describe('createCowSwapWidget', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
-    createCowSwapWidget(container, {
-      params: {
-        appCode: 'widget-test',
-        iframeStyle: { backgroundColor: 'blue', margin: '12px', border: '2px solid green' },
-      },
-    })
+    widgetHandlers.push(
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'widget-test',
+          iframeStyle: { backgroundColor: 'blue', margin: '12px', border: '2px solid green' },
+        },
+      }),
+    )
 
     const iframe = getIframe(container)
 
@@ -81,41 +84,34 @@ describe('createCowSwapWidget', () => {
     expect(iframe.style.border).toBe('2px solid green')
   })
 
-  it('uses the latest height config for resize events after params change', () => {
+  it('updates the dynamic height css variable on resize events', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
     const handler = createCowSwapWidget(container, {
       params: {
         appCode: 'widget-test',
-        height: '640px',
+        iframeStyle: { height: '640px' },
       },
     })
+    widgetHandlers.push(handler)
 
     const iframe = getIframe(container)
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
-    expect(iframe.style.height).toBe('400px')
+    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('400px')
 
     handler.updateParams({
       appCode: 'widget-test',
-      height: '432px',
-      maxHeight: 350,
+      iframeStyle: { height: '432px', maxHeight: '350px' },
     })
 
-    emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
-    expect(iframe.style.height).toBe('350px')
-
-    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 500 })
+    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('500px')
     expect(iframe.style.height).toBe('432px')
 
-    Object.defineProperty(document.body, 'offsetHeight', {
-      configurable: true,
-      value: 900,
-    })
-
-    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: false })
-    expect(iframe.style.height).toBe('350px')
+    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
+    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('100dvh')
   })
 
   it('opens https links requested by the widget', () => {

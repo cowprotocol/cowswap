@@ -43,7 +43,7 @@ describe('PaletteControl', () => {
 
     render(<PaletteControl paletteManager={paletteManager} />)
 
-    fireEvent.click(screen.getByRole('button', { name: /reset colors to default/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^reset$/i }))
 
     expect(paletteManager.resetColorPalette).toHaveBeenCalledTimes(1)
   })

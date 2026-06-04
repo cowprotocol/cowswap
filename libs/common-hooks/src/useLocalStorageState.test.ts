@@ -45,11 +45,14 @@ describe('useLocalStorageState', () => {
 
     const { result } = renderHook(() => useLocalStorageState(STORAGE_KEY, true, 500))
 
+    // Init normalization persists immediately, bypassing the debounce delay.
+    expect(localStorage.getItem(STORAGE_KEY)).toBe('true')
+
     act(() => {
       result.current[1](false)
     })
 
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+    expect(localStorage.getItem(STORAGE_KEY)).toBe('true')
 
     act(() => {
       jest.advanceTimersByTime(500)

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
 import { setJsonToLocalStorage } from '@cowprotocol/common-utils'
 
@@ -36,6 +36,16 @@ function writeStoredValue<T>(storageKey: string, value: T): void {
   setJsonToLocalStorage(storageKey, value)
 }
 
+/**
+ * Reads and resolves the initial value for {@link useLocalStorageState}.
+ *
+ * Normalization writes run immediately (they are not debounced).
+ *
+ * @param storageKey - Key used for JSON serialization in `localStorage`.
+ * @param defaultValue - Static fallback when nothing is stored, or a resolver
+ *   `(persistedValue) => T` to validate, migrate, or normalize the stored value.
+ * @returns The resolved state value used for the hook's initial `useState`.
+ */
 function resolveStoredValue<T>(storageKey: string, defaultValue: LocalStorageDefaultValue<T>): T {
   const persistedValue = readStoredValue(storageKey)
 
@@ -90,9 +100,15 @@ export function useLocalStorageState<T>(
 ): [T, Dispatch<SetStateAction<T>>] {
   const [state, setState] = useState<T>(() => resolveStoredValue(storageKey, defaultValue))
   const debouncedState = useDebounce(state, delayMs)
+  const skipInitialDebouncedWrite = useRef(delayMs > 0)
 
   useEffect(() => {
     if (delayMs <= 0) {
+      return
+    }
+
+    if (skipInitialDebouncedWrite.current) {
+      skipInitialDebouncedWrite.current = false
       return
     }
 
