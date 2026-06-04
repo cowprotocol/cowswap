@@ -18,10 +18,6 @@ import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
 
-function isEmbeddedInIframe(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
-}
-
 function reconnectWidgetConnector(): (() => void) | undefined {
   const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
   if (!widgetConnector) return undefined
@@ -81,11 +77,11 @@ function reconnectWidgetConnector(): (() => void) | undefined {
   }
 }
 
-function ReconnectOnMount(): null {
+function ReconnectOnMount({ isOpenInSafeApp }: { isOpenInSafeApp: boolean }): null {
   useEffect((): (() => void) | void => {
     // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
     // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
-    if (isEmbeddedInIframe() && !isInjectedWidget()) {
+    if (isOpenInSafeApp && !isInjectedWidget()) {
       // SafeConnectionHandler drives the connection here; we won't observe a wagmi reconnect lifecycle,
       // so settle immediately to avoid the restoring spinner getting stuck in this context.
       markInitialReconnectSettled()
@@ -143,7 +139,8 @@ function ReconnectOnMount(): null {
       .finally(() => {
         markInitialReconnectSettled()
       })
-  }, [])
+  }, [isOpenInSafeApp])
+
   return null
 }
 
@@ -170,7 +167,7 @@ export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
 
   return (
     <WagmiProvider config={config} reconnectOnMount={false}>
-      <ReconnectOnMount />
+      <ReconnectOnMount isOpenInSafeApp={isOpenInSafeApp} />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>
         <SafeProvider>
