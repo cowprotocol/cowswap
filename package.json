@@ -119,6 +119,11 @@
       ]
     },
     "packageExtensions": {
+      "@reown/appkit-utils": {
+        "dependencies": {
+          "bs58": "6.0.0"
+        }
+      },
       "@walletconnect/modal-ui": {
         "dependencies": {
           "lit-html": "2.8.0"
