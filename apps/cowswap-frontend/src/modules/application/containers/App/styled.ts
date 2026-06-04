@@ -13,7 +13,7 @@ import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/backgro
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import styled, { type DefaultTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
@@ -26,10 +26,6 @@ export function isChristmasTheme(theme?: CowSwapTheme): boolean {
 }
 
 const DEFAULT_WIDGET_BODY_PADDING = '16px 16px 24px'
-
-function getWidgetBodyPadding(theme: DefaultTheme): string {
-  return theme.widgetPadding || DEFAULT_WIDGET_BODY_PADDING
-}
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
@@ -83,7 +79,7 @@ export const BodyWrapper = styled.div<{
   color: inherit;
   padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
     theme.isWidget
-      ? getWidgetBodyPadding(theme)
+      ? DEFAULT_WIDGET_BODY_PADDING
       : $hasActiveSpeechBubbleNotification
         ? '150px 16px 320px'
         : '150px 16px 176px'};
@@ -121,7 +117,7 @@ export const BodyWrapper = styled.div<{
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget
-        ? getWidgetBodyPadding(theme)
+        ? DEFAULT_WIDGET_BODY_PADDING
         : $hasActiveSpeechBubbleNotification
           ? '150px 16px 330px'
           : '150px 16px 150px'};
@@ -150,7 +146,7 @@ export const BodyWrapper = styled.div<{
   ${Media.upToSmall()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget
-        ? getWidgetBodyPadding(theme)
+        ? DEFAULT_WIDGET_BODY_PADDING
         : $hasActiveSpeechBubbleNotification
           ? '90px 16px 400px'
           : '90px 16px 200px'};

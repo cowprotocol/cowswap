@@ -51,21 +51,6 @@ describe('BodyWrapper', () => {
     expect(computedStyle.paddingLeft).toBe('16px')
   })
 
-  it('allows overriding widget shell padding from the theme palette', () => {
-    const { getByTestId } = render(
-      <StyledComponentsThemeProvider theme={{ isWidget: true, widgetPadding: '8px 12px 20px' } as never}>
-        <BodyWrapper data-testid="body-wrapper" />
-      </StyledComponentsThemeProvider>,
-    )
-
-    const computedStyle = window.getComputedStyle(getByTestId('body-wrapper'))
-
-    expect(computedStyle.paddingTop).toBe('8px')
-    expect(computedStyle.paddingRight).toBe('12px')
-    expect(computedStyle.paddingBottom).toBe('20px')
-    expect(computedStyle.paddingLeft).toBe('12px')
-  })
-
   it('keeps the legacy flex behavior outside widget mode', () => {
     const { getByTestId } = render(
       <StyledComponentsThemeProvider theme={{ isWidget: false } as never}>
