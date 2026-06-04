@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.2
+
+### Patch Changes
+
+- fix: fix brave wallet specific crash (#7603)
+
 ## 3.4.1
 
 ### Patch Changes
