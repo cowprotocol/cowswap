@@ -90,6 +90,12 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
+  onLoadingError?(): void
+  /**
+   * Custom CSS appended to the error document displayed inside the iframe when the widget fails to load.
+   * Use it to override the default look (`.errorContent` and `.reloadButton` classes).
+   */
+  loadingErrorStyles?: string
   enableSafeSdkBridge?: boolean
 }
 
