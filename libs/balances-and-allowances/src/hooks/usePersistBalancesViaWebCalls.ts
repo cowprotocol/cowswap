@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
@@ -46,6 +46,9 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
+  // wagmi + viem only support evm chains
+  const isEvm = isEvmChain(chainId)
+
   const {
     data: balances,
     isLoading: isBalancesLoading,
@@ -67,7 +70,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
       refetchInterval: balancesQueryConfig?.refetchInterval ?? queryOptions?.refetchInterval,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      enabled: !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
+      enabled: isEvm && !!account && tokenAddresses.length > 0 && !balancesQueryConfig?.isPaused?.(),
     },
   })
 
