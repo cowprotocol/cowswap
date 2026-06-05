@@ -1,5 +1,5 @@
 import { isTruthy } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeFunctionData, parseAbi } from 'viem'
 
@@ -14,6 +14,20 @@ import type { Hex } from 'viem'
 const MULTISEND_ABI = parseAbi(['function multiSend(bytes transactions)'])
 const MULTISEND_HEADER_HEX_LENGTH = 170
 const MAX_SAFE_HEX_LENGTH = BigInt(Number.MAX_SAFE_INTEGER)
+const SAFE_MULTISEND_ADDRESS = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
+const SUPPORTED_SAFE_MULTISEND_CHAINS = new Set<SupportedChainId>([
+  SupportedChainId.MAINNET,
+  SupportedChainId.BNB,
+  SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.POLYGON,
+  SupportedChainId.BASE,
+  SupportedChainId.PLASMA,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.LINEA,
+  SupportedChainId.INK,
+  SupportedChainId.SEPOLIA,
+])
 
 interface SafeMultisigTransactionCandidate {
   confirmations?: unknown[] | null
@@ -73,7 +87,7 @@ function getConditionalOrderParamsFromSafeTransaction(
     return directCall
   }
 
-  const innerTransactions = decodeMultiSendTransactions(transaction)
+  const innerTransactions = decodeMultiSendTransactions(composableCowContract, transaction)
 
   if (!innerTransactions) {
     return null
@@ -105,9 +119,17 @@ function parseDirectComposableCowCall(
 }
 
 function decodeMultiSendTransactions(
+  composableCowContract: ComposableCowContractData,
   transaction: SafeMultisigTransactionCandidate,
 ): DecodedMultiSendTransaction[] | null {
   if (transaction.operation !== 1) {
+    return null
+  }
+
+  if (
+    !SUPPORTED_SAFE_MULTISEND_CHAINS.has(composableCowContract.chainId) ||
+    !areAddressesEqual(transaction.to, SAFE_MULTISEND_ADDRESS)
+  ) {
     return null
   }
 

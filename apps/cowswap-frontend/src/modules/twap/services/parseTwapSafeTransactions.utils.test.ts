@@ -11,6 +11,7 @@ const COMPOSABLE_COW_ADDRESS = '0x0000000000000000000000000000000000000001'
 const HANDLER_ADDRESS = '0x0000000000000000000000000000000000000002'
 const FACTORY_ADDRESS = '0x0000000000000000000000000000000000000003'
 const OTHER_ADDRESS = '0x0000000000000000000000000000000000000004'
+const SAFE_MULTISEND_ADDRESS = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
 
 const CONDITIONAL_ORDER_PARAMS = {
   handler: HANDLER_ADDRESS,
@@ -109,7 +110,7 @@ describe('parseSafeTransactionsResult', () => {
     const result = parseSafeTransactionsResult(composableCowContract, [
       buildSafeTransaction({
         operation: 1,
-        to: '0x0000000000000000000000000000000000000005',
+        to: SAFE_MULTISEND_ADDRESS,
         data: encodeMultiSendCall([
           { operation: 0, to: OTHER_ADDRESS, data: '0xdeadbeef' },
           { operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA },
@@ -121,11 +122,23 @@ describe('parseSafeTransactionsResult', () => {
     expect(result[0]?.conditionalOrderParams).toEqual(CONDITIONAL_ORDER_PARAMS)
   })
 
+  it('rejects MultiSend delegatecalls sent to a non-Safe target', () => {
+    const result = parseSafeTransactionsResult(composableCowContract, [
+      buildSafeTransaction({
+        operation: 1,
+        to: OTHER_ADDRESS,
+        data: encodeMultiSendCall([{ operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA }]),
+      }),
+    ])
+
+    expect(result).toEqual([])
+  })
+
   it('rejects malformed MultiSend payloads', () => {
     const result = parseSafeTransactionsResult(composableCowContract, [
       buildSafeTransaction({
         operation: 1,
-        to: '0x0000000000000000000000000000000000000005',
+        to: SAFE_MULTISEND_ADDRESS,
         data: encodeFunctionData({
           abi: MULTISEND_ABI,
           functionName: 'multiSend',
@@ -141,7 +154,7 @@ describe('parseSafeTransactionsResult', () => {
     const result = parseSafeTransactionsResult(composableCowContract, [
       buildSafeTransaction({
         operation: 1,
-        to: '0x0000000000000000000000000000000000000005',
+        to: SAFE_MULTISEND_ADDRESS,
         data: encodeMultiSendCall([
           { operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA },
           { operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA },

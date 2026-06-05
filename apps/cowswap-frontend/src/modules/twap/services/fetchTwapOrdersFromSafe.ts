@@ -239,10 +239,24 @@ function getSafeHistoryRequestUrl(
   return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?${params.toString()}`
 }
 
-function getNewestSubmissionDate(dates: (string | undefined)[]): string {
-  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+function getNewestSubmissionDate(dates: (string | undefined)[]): string | undefined {
+  let latest: string | undefined
+
+  for (const date of dates) {
+    if (date && (!latest || date > latest)) {
+      latest = date
+    }
+  }
+
+  return latest
 }
 
 function getTransactionSubmissionDate(transaction: unknown): string | undefined {
-  return isSafeMultisigTransactionListResponse(transaction) ? transaction.submissionDate : undefined
+  return isRecord(transaction) && typeof transaction.submissionDate === 'string'
+    ? transaction.submissionDate
+    : undefined
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
 }
