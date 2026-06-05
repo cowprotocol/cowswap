@@ -28,6 +28,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+  const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
   const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
@@ -37,7 +38,11 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,36 +57,66 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
       return
     }
 
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
-  }, [chainId, disableCustomRecipient, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
+  }, [
+    chainId,
+    disableCustomRecipient,
+    onChangeRecipient,
+    postHooksRecipientOverride,
+    isNonEvmBridging,
+    shouldPreserveRecipientFromUrl,
+  ])
 
   /**
    * Remove recipient override when its source hook was deleted
    */
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
 
     if (recipientOverrideWasRemoved) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, isNativeIn, onChangeRecipient])
+  }, [
+    recipient,
+    postHooksRecipientOverride,
+    prevPostHooksRecipientOverride,
+    isNativeIn,
+    onChangeRecipient,
+    shouldPreserveRecipientFromUrl,
+  ])
 
   /**
    * Remove recipient when going out from hooks-store page
    */
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     if (!isHooksTradeType) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, onChangeRecipient])
+  }, [isHooksTradeType, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     if (isHooksTradeType && isNativeIn) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, isNativeIn, onChangeRecipient])
+  }, [isHooksTradeType, isNativeIn, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   return null
 }
