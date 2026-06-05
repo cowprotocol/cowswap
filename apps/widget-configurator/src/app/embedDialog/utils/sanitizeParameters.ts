@@ -17,12 +17,16 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
     theme: sanitizePalette(params, defaultPalette),
   }
 
-  if (sanitized.tradeType && !isTradeType(sanitized.tradeType)) {
+  if (!isTradeType(sanitized.tradeType)) {
     delete sanitized.tradeType
   }
 
-  if (Array.isArray(sanitized.enabledTradeTypes)) {
-    sanitized.enabledTradeTypes = sanitized.enabledTradeTypes.filter(isTradeType)
+  if (sanitized.enabledTradeTypes !== undefined) {
+    if (Array.isArray(sanitized.enabledTradeTypes)) {
+      sanitized.enabledTradeTypes = sanitized.enabledTradeTypes.filter(isTradeType)
+    } else {
+      delete sanitized.enabledTradeTypes
+    }
   }
 
   return sanitized

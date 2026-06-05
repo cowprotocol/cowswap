@@ -65,4 +65,23 @@ describe('widget snippet serialization', () => {
     expect(invalidSnippet).not.toContain('TradeType.ADVANCED};ALERT(1);//')
     expect(invalidSnippet).toContain('TradeType.SWAP')
   })
+
+  it('handles malformed trade type shapes safely', () => {
+    const malformedParams = {
+      appCode: 'Widget App',
+      tradeType: '',
+      enabledTradeTypes: 'swap',
+    } as unknown as CowSwapWidgetParams
+
+    expect(() => jsExample(malformedParams, defaultPalette)).not.toThrow()
+    expect(() => tsExample(malformedParams, defaultPalette)).not.toThrow()
+
+    const jsSnippet = jsExample(malformedParams, defaultPalette)
+    const tsSnippet = tsExample(malformedParams, defaultPalette)
+
+    expect(jsSnippet).not.toContain('tradeType')
+    expect(jsSnippet).not.toContain('enabledTradeTypes')
+    expect(tsSnippet).not.toContain('tradeType')
+    expect(tsSnippet).not.toContain('enabledTradeTypes')
+  })
 })
