@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import iconReceiptSrc from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem } from 'modules/trade'

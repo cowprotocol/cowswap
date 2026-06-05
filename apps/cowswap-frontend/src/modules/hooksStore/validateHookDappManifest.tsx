@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
-import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { getChainInfo } from '@cowprotocol/common-const'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
