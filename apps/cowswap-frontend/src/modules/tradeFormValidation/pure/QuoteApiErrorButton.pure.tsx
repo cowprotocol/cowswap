@@ -45,7 +45,11 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
   }
 
   if (errorType === 'UNHANDLED_ERROR') {
-    return getDefaultQuoteError()
+    return (
+      <TradeFormBlankButton disabled>
+        <>{getDefaultQuoteError()}</>
+      </TradeFormBlankButton>
+    )
   }
 
   const isBridge = quote.isBridgeQuote
@@ -69,17 +73,13 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
       return bridgeQuoteErrorText
     }
 
-    return quoteErrorText ?? errorDescription ?? getDefaultQuoteError()
+    return quoteErrorText ?? getDefaultQuoteError()
   })()
 
-  const errorTooltipText = isBridge
-    ? errorTooltipContentForBridges[errorType]
-    : errorType === QuoteApiErrorCodes.CustomSolverError
-      ? errorDescription
-      : null
+  const errorTooltipText = (isBridge ? errorTooltipContentForBridges[errorType] : null) ?? errorDescription
 
   return (
-    <TradeFormBlankButton disabled={true}>
+    <TradeFormBlankButton disabled>
       <>
         {errorText}
         {errorTooltipText && <HelpTooltip text={errorTooltipText} />}

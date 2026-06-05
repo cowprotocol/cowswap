@@ -28,6 +28,9 @@ export function getDefaultQuoteError(): string {
 export function getQuoteErrorTexts(): Partial<Record<QuoteApiErrorCodes, string>> {
   return {
     [QuoteApiErrorCodes.CustomSolverError]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.AppDataHashMismatch]: t`Order metadata is invalid`,
+    [QuoteApiErrorCodes.InvalidAppData]: t`Order metadata is invalid`,
+    [QuoteApiErrorCodes.ExcessiveValidTo]: t`Order validity is too long`,
     [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
     [QuoteApiErrorCodes.NoLiquidity]: t`Token pair selected has insufficient liquidity`,
     [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade`,
