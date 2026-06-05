@@ -27,7 +27,6 @@ export function getDefaultQuoteError(): string {
 
 export function getQuoteErrorTexts(): Partial<Record<QuoteApiErrorCodes, string>> {
   return {
-    [QuoteApiErrorCodes.CustomSolverError]: getDefaultQuoteError(),
     [QuoteApiErrorCodes.AppDataHashMismatch]: t`Order metadata is invalid`,
     [QuoteApiErrorCodes.InvalidAppData]: t`Order metadata is invalid`,
     [QuoteApiErrorCodes.ExcessiveValidTo]: t`Order validity is too long`,

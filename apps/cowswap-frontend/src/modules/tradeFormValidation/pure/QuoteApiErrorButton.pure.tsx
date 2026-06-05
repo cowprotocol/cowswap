@@ -35,6 +35,7 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
     [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
   }
 
+  const DEFAULT_ERROR_TEXT = getDefaultQuoteError()
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const errorType = quote.error.type
@@ -47,7 +48,7 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
   if (errorType === 'UNHANDLED_ERROR') {
     return (
       <TradeFormBlankButton disabled>
-        <>{getDefaultQuoteError()}</>
+        <>{DEFAULT_ERROR_TEXT}</>
       </TradeFormBlankButton>
     )
   }
@@ -73,10 +74,12 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
       return bridgeQuoteErrorText
     }
 
-    return quoteErrorText ?? getDefaultQuoteError()
+    return quoteErrorText ?? DEFAULT_ERROR_TEXT
   })()
 
-  const errorTooltipText = (isBridge ? errorTooltipContentForBridges[errorType] : null) ?? errorDescription
+  const errorTooltipText =
+    (isBridge ? errorTooltipContentForBridges[errorType] : null) ??
+    (errorText === DEFAULT_ERROR_TEXT ? errorDescription : null)
 
   return (
     <TradeFormBlankButton disabled>
