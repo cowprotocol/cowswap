@@ -1,0 +1,43 @@
+name: Cloudflare Pages preview mirror
+
+on:
+  pull_request_target:
+    types: [labeled, closed]
+  issue_comment:
+    types: [edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: cf-pages-preview-mirror-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: lts/jod
+  PREVIEW_BRANCH_PREFIX: cf-preview/pr-
+  PREVIEW_TRIGGER_LABEL: trigger-preview
+
+jobs:
+  mirror:
+    name: Mirror fork PR for Cloudflare Pages preview
+    if: github.event_name == 'pull_request_target' || (github.event_name == 'issue_comment' && github.event.issue.pull_request)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Mirror preview branch
+        run: node tools/scripts/cf-pages/gh-actions/preview-mirror.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
