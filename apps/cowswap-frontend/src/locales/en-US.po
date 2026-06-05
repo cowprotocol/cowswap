@@ -1292,8 +1292,8 @@ msgid "Some orders can not be cancelled!"
 msgstr "Some orders can not be cancelled!"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-msgid "The selling amount for the order is lower than the fee"
-msgstr "The selling amount for the order is lower than the fee"
+#~ msgid "The selling amount for the order is lower than the fee"
+#~ msgstr "The selling amount for the order is lower than the fee"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/test/ordersTable.cosmos.tsx
@@ -4400,6 +4400,7 @@ msgid "Issues have been reported with Metamask sending transactions to the wrong
 msgstr "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Sell amount is too small"
 msgstr "Sell amount is too small"
 
