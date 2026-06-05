@@ -16,7 +16,39 @@ on:
           - EXPLORER
           - ALL
 
+permissions:
+  contents: read
+
 jobs:
+  validate-release-tag:
+    name: Validate release tag
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    outputs:
+      release-commit: ${{ steps.validate.outputs.release-commit }}
+    steps:
+      - name: Checkout trusted workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: refs/heads/main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate release commit
+        id: validate
+        run: |
+          set -euo pipefail
+
+          git fetch origin main --tags
+
+          release_commit="$(git rev-list -n 1 "${GITHUB_REF}")"
+
+          if ! git merge-base --is-ancestor "${release_commit}" "origin/main"; then
+            echo "::error::Release tag ${GITHUB_REF_NAME} does not point to a commit reachable from origin/main"
+            exit 1
+          fi
+
+          echo "release-commit=${release_commit}" >> "$GITHUB_OUTPUT"
 
   vercel-dev:
     # Deploys to Vercel dev environment
@@ -35,8 +67,41 @@ jobs:
     # Deploys to Vercel staging environment only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
     if: startsWith(github.ref, 'refs/tags')
+    needs: validate-release-tag
     uses: ./.github/workflows/vercel.yml
-    secrets: inherit
+    secrets:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID_COWSWAP: ${{ secrets.VERCEL_PROJECT_ID_COWSWAP }}
+      VERCEL_PROJECT_ID_EXPLORER: ${{ secrets.VERCEL_PROJECT_ID_EXPLORER }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
+      REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+      REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
+      REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+      REACT_APP_LAUNCH_DARKLY_KEY: ${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
+      REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY }}
+      REACT_APP_NETWORK_URL_1: ${{ secrets.REACT_APP_NETWORK_URL_1 }}
+      REACT_APP_NETWORK_URL_56: ${{ secrets.REACT_APP_NETWORK_URL_56 }}
+      REACT_APP_NETWORK_URL_100: ${{ secrets.REACT_APP_NETWORK_URL_100 }}
+      REACT_APP_NETWORK_URL_137: ${{ secrets.REACT_APP_NETWORK_URL_137 }}
+      REACT_APP_NETWORK_URL_8453: ${{ secrets.REACT_APP_NETWORK_URL_8453 }}
+      REACT_APP_NETWORK_URL_9745: ${{ secrets.REACT_APP_NETWORK_URL_9745 }}
+      REACT_APP_NETWORK_URL_42161: ${{ secrets.REACT_APP_NETWORK_URL_42161 }}
+      REACT_APP_NETWORK_URL_43114: ${{ secrets.REACT_APP_NETWORK_URL_43114 }}
+      REACT_APP_NETWORK_URL_57073: ${{ secrets.REACT_APP_NETWORK_URL_57073 }}
+      REACT_APP_NETWORK_URL_59144: ${{ secrets.REACT_APP_NETWORK_URL_59144 }}
+      REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
+      REACT_APP_WC_PROJECT_ID: ${{ secrets.REACT_APP_WC_PROJECT_ID }}
+      REACT_APP_IPFS_READ_URI: ${{ secrets.REACT_APP_IPFS_READ_URI }}
+      EXPLORER_SENTRY_DSN: ${{ secrets.EXPLORER_SENTRY_DSN }}
+      REACT_APP_SUBGRAPH_URL_MAINNET: ${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
+      REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE: ${{ secrets.REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE }}
+      REACT_APP_SUBGRAPH_URL_BASE: ${{ secrets.REACT_APP_SUBGRAPH_URL_BASE }}
+      REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN: ${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
+      BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
+      CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
+      REACT_APP_NEAR_API_KEY: ${{ secrets.REACT_APP_NEAR_API_KEY }}
     strategy:
       matrix:
         env_name: [ staging ] # deploys both in parallel
@@ -44,6 +109,7 @@ jobs:
       env_name: ${{ matrix.env_name }}
       # Pick app according to published tag
       app: ${{ startsWith(github.ref, 'refs/tags/explorer') && 'EXPLORER' || 'COWSWAP' }}
+      checkout_ref: ${{ needs.validate-release-tag.outputs.release-commit }}
       disable_nx_cache: true
 
   vercel-prod:
