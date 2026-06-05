@@ -1,4 +1,4 @@
-import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
+import svgTokenlistSrc from '@cowprotocol/assets/svg/tokenlist.svg'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -36,7 +36,7 @@ export function TokenSourceTitle(props: TokenSourceTitleProps) {
   return (
     <Wrapper>
       <Title>
-        <img src={TokenListLogo} alt="" />
+        <img src={svgTokenlistSrc} alt="" />
         {children}
       </Title>
       {tooltipText ? (

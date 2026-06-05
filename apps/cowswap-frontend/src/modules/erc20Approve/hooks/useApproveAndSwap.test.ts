@@ -6,6 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook, waitFor } from '@testing-library/react'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
@@ -30,6 +32,9 @@ jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
 jest.mock('../state')
+jest.mock('modules/injectedWidget', () => ({
+  useIsInfiniteApproveDisabledInWidget: jest.fn(),
+}))
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -43,6 +48,9 @@ const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser 
 >
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
+>
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabledInWidget
 >
 type WalletInfo = ReturnType<typeof useWalletInfo>
 
@@ -86,6 +94,7 @@ describe('useApproveAndSwap', () => {
     mockUseTokenSupportsPermit.mockReturnValue(false)
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
+    mockUseIsInfiniteApproveDisabled.mockReturnValue(false)
   })
 
   describe('permit flow', () => {
@@ -505,6 +514,60 @@ describe('useApproveAndSwap', () => {
       expect(mockGeneratePermitToTrade).toHaveBeenCalled()
       expect(mockHandleApprove).not.toHaveBeenCalled()
       expect(mockOnApproveConfirm).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('disableInfiniteApprove widget param', () => {
+    it('approves the exact trade-size amount when disableInfiniteApprove is true and user toggle is off', async () => {
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: mockAmount,
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockHandleApprove).toHaveBeenCalledWith(mockAmount)
+      })
+    })
+
+    it('still uses the permit flow when disableInfiniteApprove is true but permits are supported', async () => {
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+      mockUseTokenSupportsPermit.mockReturnValue(true)
+      mockGeneratePermitToTrade.mockResolvedValue(true)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockGeneratePermitToTrade).toHaveBeenCalled()
+        expect(mockHandleApprove).not.toHaveBeenCalled()
+      })
     })
   })
 })

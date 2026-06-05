@@ -1,9 +1,9 @@
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
+import { WidgetParamsErrors } from 'entities/injectedWidget'
+
 import { validatePartnerFee } from './validatePartnerFee'
 import { validateSlippage } from './validateSlippage'
-
-import { WidgetParamsErrors } from '../state/injectedWidgetParamsAtom'
 
 type Keys = keyof CowSwapWidgetAppParams
 

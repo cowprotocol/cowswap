@@ -6,7 +6,6 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { getReactProcessEnv } from '../../../tools/getReactProcessEnv.ts'
 
 import type { StorybookConfig } from '@storybook/react-vite'
@@ -59,10 +58,14 @@ function getWorkspaceAliases(): Alias[] {
 
 function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Record<string, string> {
   const mode = configType === 'PRODUCTION' ? 'production' : 'development'
-  const env = loadEnv(mode, process.cwd(), ['REACT_APP_'])
+  const env = {
+    REACT_APP_ENVIRONMENT: mode,
+    ...loadEnv(mode, process.cwd(), ['REACT_APP_']),
+  }
 
   return {
     ...getReactProcessEnv(mode),
+    'process.env.REACT_APP_ENVIRONMENT': JSON.stringify(env.REACT_APP_ENVIRONMENT),
     'process.env': JSON.stringify(env),
   }
 }

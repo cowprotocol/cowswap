@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 
 import { useWalletDetails } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useAmountsToSignFromQuote, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 

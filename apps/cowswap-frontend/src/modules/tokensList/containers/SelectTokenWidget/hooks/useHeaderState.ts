@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useManageWidgetVisibility } from './useManageWidgetVisibility'
 import { resolveModalTitle } from './useWidgetMetadata'

@@ -4,9 +4,10 @@ import { Connector, useConnection } from 'wagmi'
 
 import { useConnectionType } from './useConnectionType'
 
-import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
+import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
+import { reownAppKit } from '../config'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -66,50 +67,49 @@ function useWcPeerMetadata(connector?: Connector): WalletMetaData {
 export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
-  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
 
-  if (!connector) {
-    return METADATA_DISCONNECTED
-  }
+  const [walletMetaData, setWalletMetaData] = useState<WalletMetaData | null>(null)
 
-  if (connector.id === COW_WIDGET_CONNECTOR_ID) {
+  useEffect(() => {
+    if (!reownAppKit) return
+
+    return reownAppKit.subscribeWalletInfo((state) => {
+      if (state) {
+        setWalletMetaData({ walletName: state.name, icon: state.icon })
+      } else {
+        setWalletMetaData(null)
+      }
+    })
+  }, [])
+
+  return useMemo(() => {
+    if (!connector) {
+      if (walletMetaData) return walletMetaData
+
+      return METADATA_DISCONNECTED
+    }
+
+    if (connector.id === COW_WIDGET_CONNECTOR_ID) {
+      return {
+        walletName: 'CoW Swap widget',
+        icon: 'Identicon',
+      }
+    }
+
+    if (connector.type === ConnectionType.WALLET_CONNECT_V2) {
+      return wcPeerMetadata
+    }
+
+    if (connector.type === ConnectionType.GNOSIS_SAFE) {
+      // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
+      return METADATA_SAFE
+    }
+
     return {
-      walletName: 'CoW Swap widget',
-      icon: 'Identicon',
+      icon: connector.icon ?? walletMetaData?.icon,
+      walletName: connector.name ?? walletMetaData?.walletName,
     }
-  }
-
-  // AppKit EIP-6963 connectors have type "announced" — treat them like injected
-  if (connector.type === ConnectionType.INJECTED || connector.type === 'announced') {
-    if (selectedEip6963Provider) {
-      return {
-        icon: selectedEip6963Provider.info.icon,
-        walletName: selectedEip6963Provider.info.name,
-      }
-    }
-
-    // Fallback for AppKit EIP-6963 connectors that provide name/icon directly
-    if (connector.name && connector.name !== 'Injected') {
-      return {
-        icon: connector.icon,
-        walletName: connector.name,
-      }
-    }
-  }
-
-  if (connector.type === ConnectionType.WALLET_CONNECT_V2) {
-    return wcPeerMetadata
-  }
-
-  if (connector.type === ConnectionType.GNOSIS_SAFE) {
-    // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
-    return METADATA_SAFE
-  }
-
-  return {
-    icon: connector.icon,
-    walletName: connector.name,
-  }
+  }, [connector, walletMetaData, wcPeerMetadata])
 }
 
 /**
@@ -124,7 +124,9 @@ export function useIsSafeApp(): boolean {
 
 /**
  * Detects whether the currently connected wallet is a Safe wallet
- * regardless of the connection method (WalletConnect or inside Safe as an App)
+ * regardless of the connection method (WalletConnect or inside Safe as an App).
+ * Warning: this can be false when Safe API is down or rate-limited and does not mean the wallet is not a Safe.
+ * TODO: Rename to useHasGnosisSafeInfo.
  */
 export function useIsSafeWallet(): boolean {
   return !!useGnosisSafeInfo()

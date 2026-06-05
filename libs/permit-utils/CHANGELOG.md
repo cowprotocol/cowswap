@@ -1,441 +1,403 @@
 # Changelog
 
-## [3.2.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.1...permit-utils-v3.2.2) (2026-05-12)
+## [3.2.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.4...permit-utils-v3.2.5) (2026-05-22)
 
+### Patch Changes
+
+- fix: patch estimated gas value to hex-encode (#7524)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.6
+
+## 3.2.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.5
+
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.2...permit-utils-v3.2.3) (2026-05-13)
+
+### Dependencies
+
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.2.4
+
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.1...permit-utils-v3.2.2) (2026-05-12)
 
 ### 🐛 Bug Fixes
 
-* permit provider connector ([#7488](https://github.com/cowprotocol/cowswap/issues/7488)) ([c993576](https://github.com/cowprotocol/cowswap/commit/c99357660e42aa8b4e4ec82eb8b7f96ffc9e404a))
-* **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
+- permit provider connector ([#7488](https://github.com/cowprotocol/cowswap/issues/7488)) ([c993576](https://github.com/cowprotocol/cowswap/commit/c99357660e42aa8b4e4ec82eb8b7f96ffc9e404a))
+- **widget:** support cow widget with WidgetEthereumProvider ([#7432](https://github.com/cowprotocol/cowswap/issues/7432)) ([021c3c7](https://github.com/cowprotocol/cowswap/commit/021c3c73695113265999aae0c4a1d4dc55d10a71))
 
 ## [3.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.0...permit-utils-v3.2.1) (2026-04-22)
 
-
 ### 🐛 Bug Fixes
 
-* take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
-
+- take protocol fee into account ([#7385](https://github.com/cowprotocol/cowswap/issues/7385)) ([53057f8](https://github.com/cowprotocol/cowswap/commit/53057f8becaa6cfe9182e2d726471794d03b5775))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.2.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.2.3
 
 ## [3.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.2...permit-utils-v3.2.0) (2026-04-16)
 
-
 ### ✨ Features
 
-* bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
-
+- bring cow.fi back (sdk) ([#7359](https://github.com/cowprotocol/cowswap/issues/7359)) ([7c19aee](https://github.com/cowprotocol/cowswap/commit/7c19aee0e0ec06ce9e2b657d79323975a62f6bd7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.2.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.2.2
 
 ## [3.1.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.1...permit-utils-v3.1.2) (2026-04-15)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.2.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.2.1
 
 ## [3.1.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.1.0...permit-utils-v3.1.1) (2026-04-15)
 
-
 ### 🔧 Miscellaneous
 
-* merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
-
+- merge main and resolve conflicts ([ed8f113](https://github.com/cowprotocol/cowswap/commit/ed8f113fc11c20e7e0fb84f9282abefa0693f8ab))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.2.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.2.0
 
 ## [3.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.5...permit-utils-v3.1.0) (2026-04-14)
 
-
 ### ✨ Features
 
-* migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
-
+- migrate to cow.finance ([#7330](https://github.com/cowprotocol/cowswap/issues/7330)) ([abedba1](https://github.com/cowprotocol/cowswap/commit/abedba1f1d466fae8858d08a62fff4135b7e4956))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.1.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.1.0
 
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.4...permit-utils-v3.0.5) (2026-04-10)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.13
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.13
 
 ## [3.0.4](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.3...permit-utils-v3.0.4) (2026-04-08)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
-
+- merge main into dev 2026 04 07 ([59427c8](https://github.com/cowprotocol/cowswap/commit/59427c8b8153f29370889a48aa64d4300d3261f4))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.12
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.12
 
 ## [3.0.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.2...permit-utils-v3.0.3) (2026-04-07)
 
-
 ### 🐛 Bug Fixes
 
-* fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
-
+- fix bridging for affiliates ([#7263](https://github.com/cowprotocol/cowswap/issues/7263)) ([26f1ea4](https://github.com/cowprotocol/cowswap/commit/26f1ea451aa07f6e2d8bcb9918b95771150fac3b))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.11
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.11
 
 ## [3.0.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.1...permit-utils-v3.0.2) (2026-03-19)
 
-
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.10
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.10
 
 ## [3.0.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.0.0...permit-utils-v3.0.1) (2026-03-18)
 
-
 ### 🐛 Bug Fixes
 
-* update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
-
+- update libs publising and bundling ([#7173](https://github.com/cowprotocol/cowswap/issues/7173)) ([e3bc5f1](https://github.com/cowprotocol/cowswap/commit/e3bc5f179124c11590a992789db43d912f8ee4a6))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.9
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.9
 
 ## [3.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.4.0...permit-utils-v3.0.0) (2026-03-11)
 
-
 ### ⚠ BREAKING CHANGES
 
-* Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
+- Remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128))
 
 ### ✨ Features
 
-* remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
-
+- remove support for Lens network ([#7128](https://github.com/cowprotocol/cowswap/issues/7128)) ([ffdd36d](https://github.com/cowprotocol/cowswap/commit/ffdd36db765eb1feb7fc675347de40b1e6df2bdd))
 
 ### 🔧 Miscellaneous
 
-* **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
-
+- **hotfix:** 2026-03-10 ([8c831f7](https://github.com/cowprotocol/cowswap/commit/8c831f70685c058f460d7a0fabbf2941163b9fba))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.8
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.8
 
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.3.2...permit-utils-v2.4.0) (2026-03-10)
 
-
 ### ✨ Features
 
-* integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
-
+- integrate non-evm sdk changes ([#7085](https://github.com/cowprotocol/cowswap/issues/7085)) ([674602e](https://github.com/cowprotocol/cowswap/commit/674602e19bd97197a98733da51cda186d256384e))
 
 ### 🐛 Bug Fixes
 
-* use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
-
+- use correct amounts to sign instead of afterSlippage ([#7022](https://github.com/cowprotocol/cowswap/issues/7022)) ([b1020c4](https://github.com/cowprotocol/cowswap/commit/b1020c44615b49c5f05f0a6dcf0d21b96b628846))
 
 ### 🔧 Miscellaneous
 
-* **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
-
+- **release:** 2026-03-04 ([5612b59](https://github.com/cowprotocol/cowswap/commit/5612b59d690f9081e62d9efc5ea80774428f0366))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.7
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.7
 
 ## [2.3.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.3.1...permit-utils-v2.3.2) (2026-02-25)
 
-
 ### 🔧 Miscellaneous
 
-* main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
-
+- main -&gt; dev ([9c6611e](https://github.com/cowprotocol/cowswap/commit/9c6611e90a4b23e23f6aaadc513de3c6d7f3b562))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.6
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.6
 
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.3.0...permit-utils-v2.3.1) (2026-02-24)
 
-
 ### 🔧 Miscellaneous
 
-* merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
-
+- merge main into dev 23 02 ([#7062](https://github.com/cowprotocol/cowswap/issues/7062)) ([ac48c9c](https://github.com/cowprotocol/cowswap/commit/ac48c9c83284c6228ba71392edc1c1e0483b53ff))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.5
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.5
 
 ## [2.3.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.2.0...permit-utils-v2.3.0) (2026-02-20)
 
-
 ### ✨ Features
 
-* **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
-
+- **chains:** disable Lens and support deprecating networks ([#7028](https://github.com/cowprotocol/cowswap/issues/7028)) ([c12d6c2](https://github.com/cowprotocol/cowswap/commit/c12d6c21ad69258c587378add9da86d72ff755b2))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.4
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.4
 
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.1.0...permit-utils-v2.2.0) (2026-02-13)
 
-
 ### ✨ Features
 
-* replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
-
+- replace toLowerCase on getAddressKey ([#6866](https://github.com/cowprotocol/cowswap/issues/6866)) ([a41b23c](https://github.com/cowprotocol/cowswap/commit/a41b23c4384cdbcde9534abcdde37441121381e7))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.3
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.3
 
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.0.1...permit-utils-v2.1.0) (2026-02-05)
 
-
 ### ✨ Features
 
-* **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
-
+- **trade:** upload appData to IPFS before signing ([#6922](https://github.com/cowprotocol/cowswap/issues/6922)) ([cb94104](https://github.com/cowprotocol/cowswap/commit/cb9410470c549bd5453a7933a0a224ba706ec2c2))
 
 ### 🔧 Miscellaneous
 
-* update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
-
+- update sdk ([a20814b](https://github.com/cowprotocol/cowswap/commit/a20814b7caf16f495cd0292d5f3469bc552e4d97))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.2
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.2
 
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v2.0.0...permit-utils-v2.0.1) (2026-02-02)
 
-
 ### Bug Fixes
 
-* **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
-
+- **protocol-fee:** support decimals in protocol fee ([#6948](https://github.com/cowprotocol/cowswap/issues/6948)) ([a572bbe](https://github.com/cowprotocol/cowswap/commit/a572bbe2899b0a48b2c0891922442a4420f6c3ef))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.1
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.1
 
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v1.0.1...permit-utils-v2.0.0) (2026-01-28)
 
-
 ### ⚠ BREAKING CHANGES
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847))
 
 ### Features
 
-* migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
-
+- migrate from yarn to pnpm ([#6847](https://github.com/cowprotocol/cowswap/issues/6847)) ([1c5d115](https://github.com/cowprotocol/cowswap/commit/1c5d11516d0ddb997b0ebbb4eee4adcb491204a4))
 
 ### Bug Fixes
 
-* optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
-
+- optimize bundle size ([#6775](https://github.com/cowprotocol/cowswap/issues/6775)) ([287a94e](https://github.com/cowprotocol/cowswap/commit/287a94e807b3672dbbd291768fb2ad80dbd288e5))
 
 ### Dependencies
 
-* The following workspace dependencies were updated
-  * dependencies
-    * @cowprotocol/hook-dapp-lib bumped to 2.0.0
+- The following workspace dependencies were updated
+  - dependencies
+    - @cowprotocol/hook-dapp-lib bumped to 2.0.0
 
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v1.0.0...permit-utils-v1.0.1) (2025-12-16)
 
-
 ### Bug Fixes
 
-* update schema reference for app data ([#6626](https://github.com/cowprotocol/cowswap/issues/6626)) ([93e78e6](https://github.com/cowprotocol/cowswap/commit/93e78e69454039fc89eeeb170f076a7957db604f))
+- update schema reference for app data ([#6626](https://github.com/cowprotocol/cowswap/issues/6626)) ([93e78e6](https://github.com/cowprotocol/cowswap/commit/93e78e69454039fc89eeeb170f076a7957db604f))
 
 ## [1.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.10.0...permit-utils-v1.0.0) (2025-09-12)
 
-
 ### ⚠ BREAKING CHANGES
 
-* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
+- add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
 
 ### Features
 
-* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
+- add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
 
 ## [0.10.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.9.0...permit-utils-v0.10.0) (2025-08-28)
 
-
 ### Features
 
-* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+- **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
 
 ## [0.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.8.0...permit-utils-v0.9.0) (2025-08-21)
 
-
 ### Features
 
-* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+- **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
 
 ## [0.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.7.0...permit-utils-v0.8.0) (2025-08-12)
 
-
 ### Features
 
-* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
-
+- rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
 
 ### Bug Fixes
 
-* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
-* **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
-* **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
-* **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
+- **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+- **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
+- **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
+- **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
 
 ## [0.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.2...permit-utils-v0.7.0) (2025-08-07)
 
-
 ### Bug Fixes
 
-* **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
+- **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
 
 ## [0.6.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.1...permit-utils-v0.6.2) (2025-05-16)
 
-
 ### Bug Fixes
 
-* **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
+- **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
 
 ## [0.6.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.0...permit-utils-v0.6.1) (2025-05-08)
 
-
 ### Bug Fixes
 
-* **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
+- **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
 
 ## [0.6.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.5.0...permit-utils-v0.6.0) (2025-01-09)
 
-
 ### Features
 
-* **swap:** partial approve ([#5256](https://github.com/cowprotocol/cowswap/issues/5256)) ([f080ffd](https://github.com/cowprotocol/cowswap/commit/f080ffdb098612e729f3a3f829410ce78697979f))
+- **swap:** partial approve ([#5256](https://github.com/cowprotocol/cowswap/issues/5256)) ([f080ffd](https://github.com/cowprotocol/cowswap/commit/f080ffdb098612e729f3a3f829410ce78697979f))
 
 ## [0.5.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.4.0...permit-utils-v0.5.0) (2024-12-03)
 
-
 ### Features
 
-* **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
+- **base:** add base chain support ([#5044](https://github.com/cowprotocol/cowswap/issues/5044)) ([4cf0c91](https://github.com/cowprotocol/cowswap/commit/4cf0c91a300d6fcdc026364e74c45e5b2f729f2b))
 
 ## [0.4.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.1...permit-utils-v0.4.0) (2024-10-10)
 
-
 ### Features
 
-* **hooks-store:** use dappId from hook model to match with dapp ([#4938](https://github.com/cowprotocol/cowswap/issues/4938)) ([46699cb](https://github.com/cowprotocol/cowswap/commit/46699cbe6df02b0f7a3c6c380a04842e9f403a88))
+- **hooks-store:** use dappId from hook model to match with dapp ([#4938](https://github.com/cowprotocol/cowswap/issues/4938)) ([46699cb](https://github.com/cowprotocol/cowswap/commit/46699cbe6df02b0f7a3c6c380a04842e9f403a88))
 
 ## [0.3.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.0...permit-utils-v0.3.1) (2024-07-17)
 
-
 ### Bug Fixes
 
-* **permit:** filter out permit signer and rotate it ([#4719](https://github.com/cowprotocol/cowswap/issues/4719)) ([bfb1f29](https://github.com/cowprotocol/cowswap/commit/bfb1f295997ba8cf16744afce45dbd19eb8990c6))
+- **permit:** filter out permit signer and rotate it ([#4719](https://github.com/cowprotocol/cowswap/issues/4719)) ([bfb1f29](https://github.com/cowprotocol/cowswap/commit/bfb1f295997ba8cf16744afce45dbd19eb8990c6))
 
 ## [0.3.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.1...permit-utils-v0.3.0) (2024-05-29)
 
-
 ### Features
 
-* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+- **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
 
 ## [0.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.0...permit-utils-v0.2.1) (2024-05-02)
 
-
 ### Bug Fixes
 
-* **sentry:** fix unhandled permit failure ([#4275](https://github.com/cowprotocol/cowswap/issues/4275)) ([a774983](https://github.com/cowprotocol/cowswap/commit/a7749831a4874536423d6f65b1e17bfae8571d27))
+- **sentry:** fix unhandled permit failure ([#4275](https://github.com/cowprotocol/cowswap/issues/4275)) ([a774983](https://github.com/cowprotocol/cowswap/commit/a7749831a4874536423d6f65b1e17bfae8571d27))
 
 ## [0.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.2...permit-utils-v0.2.0) (2024-04-11)
 
-
 ### Features
 
-* **widget:** customize images ([#4159](https://github.com/cowprotocol/cowswap/issues/4159)) ([0b14b2b](https://github.com/cowprotocol/cowswap/commit/0b14b2b19279a1688f75dc4f2954b8c267e57c40))
-
+- **widget:** customize images ([#4159](https://github.com/cowprotocol/cowswap/issues/4159)) ([0b14b2b](https://github.com/cowprotocol/cowswap/commit/0b14b2b19279a1688f75dc4f2954b8c267e57c40))
 
 ### Bug Fixes
 
-* **permit:** gnosis chain permits ([#4152](https://github.com/cowprotocol/cowswap/issues/4152)) ([26b703f](https://github.com/cowprotocol/cowswap/commit/26b703f2a45715fce0c4418d1f45fdceab2a716e))
+- **permit:** gnosis chain permits ([#4152](https://github.com/cowprotocol/cowswap/issues/4152)) ([26b703f](https://github.com/cowprotocol/cowswap/commit/26b703f2a45715fce0c4418d1f45fdceab2a716e))
 
 ## [0.1.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.1...permit-utils-v0.1.2) (2024-02-01)
 
-
 ### Bug Fixes
 
-* **permit-utils:** aave permit ([#3684](https://github.com/cowprotocol/cowswap/issues/3684)) ([68566d8](https://github.com/cowprotocol/cowswap/commit/68566d882f0c0bebde93b8228645a59d76c2120d))
+- **permit-utils:** aave permit ([#3684](https://github.com/cowprotocol/cowswap/issues/3684)) ([68566d8](https://github.com/cowprotocol/cowswap/commit/68566d882f0c0bebde93b8228645a59d76c2120d))
 
 ## [0.1.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.0...permit-utils-v0.1.1) (2024-01-24)
 
-
 ### Bug Fixes
 
-* **permit:** replace permit signer account ([#3691](https://github.com/cowprotocol/cowswap/issues/3691)) ([3ae286f](https://github.com/cowprotocol/cowswap/commit/3ae286f7e0f239a2843ce2a30138d23eceb1577f))
+- **permit:** replace permit signer account ([#3691](https://github.com/cowprotocol/cowswap/issues/3691)) ([3ae286f](https://github.com/cowprotocol/cowswap/commit/3ae286f7e0f239a2843ce2a30138d23eceb1577f))
 
 ## [0.1.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.0.2...permit-utils-v0.1.0) (2024-01-17)
 
-
 ### Features
 
-* **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
-
+- **networks:** support Sepolia ([#3558](https://github.com/cowprotocol/cowswap/issues/3558)) ([ab8b179](https://github.com/cowprotocol/cowswap/commit/ab8b1794fb60da851f3fccdd861ebef4b18df30e))
 
 ### Bug Fixes
 
-* **permit:** replace permit signer used for quoting ([#3562](https://github.com/cowprotocol/cowswap/issues/3562)) ([907d908](https://github.com/cowprotocol/cowswap/commit/907d90825643a5ad5824ed4ff5d24a9227f96f71))
+- **permit:** replace permit signer used for quoting ([#3562](https://github.com/cowprotocol/cowswap/issues/3562)) ([907d908](https://github.com/cowprotocol/cowswap/commit/907d90825643a5ad5824ed4ff5d24a9227f96f71))

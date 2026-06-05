@@ -31,16 +31,25 @@ function getSafeApiHeaders(): HeadersInit {
   return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
 }
 
-type TwapDataArray = TwapOrdersSafeData[]
+export type TwapDataArray = TwapOrdersSafeData[]
+
+export type FetchTwapOrdersFromSafeResult = {
+  orders: TwapDataArray
+  newestSubmissionDate?: string
+  complete: boolean
+}
+
+type SafeTransactionsChunk = AllTransactionsListResponse & { fetchError?: boolean }
 
 export async function fetchTwapOrdersFromSafe(
   chainId: SupportedChainId,
   safeAddress: string,
   composableCowContract: ComposableCowContractData,
-  setData: (state: TwapDataArray) => void,
+  executedSince?: string,
   nextUrl?: string,
   accumulator: TwapDataArray[] = [],
-): Promise<TwapDataArray> {
+  onProgress?: (state: TwapDataArray) => void,
+): Promise<FetchTwapOrdersFromSafeResult> {
   const response = await fetchSafeTransactionsChunk(chainId, safeAddress, nextUrl)
 
   const results = response?.results || []
@@ -49,6 +58,7 @@ export async function fetchTwapOrdersFromSafe(
   accumulator.push(parsedResults)
 
   const flattenState = accumulator.flat()
+  onProgress?.(mergeTwapOrdersByHash(flattenState))
 
   // Exit from the recursion if we have enough transactions or there is no next page
 
@@ -60,35 +70,98 @@ export async function fetchTwapOrdersFromSafe(
      * isExecuted=true — which lets the status logic correctly transition the order
      * away from WaitSigning.
      */
-    const executedResults = await fetchRecentlyExecutedTransactions(chainId, safeAddress, composableCowContract)
+    const executedResult = await fetchRecentlyExecutedTransactions(
+      chainId,
+      safeAddress,
+      composableCowContract,
+      executedSince,
+    )
 
-    const merged = mergeByHash([...flattenState, ...executedResults])
-
-    setData(merged)
-    return merged
+    return {
+      orders: mergeTwapOrdersByHash([...flattenState, ...executedResult.orders]),
+      newestSubmissionDate: executedResult.newestSubmissionDate,
+      complete: !response.fetchError && executedResult.complete,
+    }
   }
 
-  return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setData, response.next, accumulator)
+  return fetchTwapOrdersFromSafe(
+    chainId,
+    safeAddress,
+    composableCowContract,
+    executedSince,
+    response.next,
+    accumulator,
+    onProgress,
+  )
 }
 
 async function fetchRecentlyExecutedTransactions(
   chainId: SupportedChainId,
   safeAddress: string,
   composableCowContract: ComposableCowContractData,
-): Promise<TwapDataArray> {
+  since?: string,
+  nextUrl?: string,
+  accumulator: TwapDataArray[] = [],
+  newestSubmissionDate?: string,
+): Promise<FetchTwapOrdersFromSafeResult> {
   try {
-    const url = `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=true&limit=${HISTORY_TX_COUNT_LIMIT}&ordering=-submissionDate`
-
+    const url = getExecutedTransactionsUrl(chainId, safeAddress, since, nextUrl)
     const headers = getSafeApiHeaders()
 
-    const response: AllTransactionsListResponse = await fetch(url, { headers }).then((res) => res.json())
+    logExecutedTransactionsFetch(nextUrl, since)
+    const response = await fetchWithFallback<AllTransactionsListResponse>(url, headers)
     const results = response?.results || []
+    const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
+    const nextNewestSubmissionDate = getNewestSubmissionDate([
+      newestSubmissionDate,
+      ...results.map(getTransactionSubmissionDate),
+    ])
 
-    return parseSafeTransactionsResult(composableCowContract, results)
+    accumulator.push(parsedResults)
+
+    const nextExecutedPage = getNextExecutedPage(response, accumulator)
+
+    if (nextExecutedPage) {
+      return fetchRecentlyExecutedTransactions(
+        chainId,
+        safeAddress,
+        composableCowContract,
+        since,
+        nextExecutedPage,
+        accumulator,
+        nextNewestSubmissionDate,
+      )
+    }
+
+    return {
+      orders: accumulator.flat(),
+      newestSubmissionDate: nextNewestSubmissionDate,
+      complete: !response.next,
+    }
   } catch (error) {
     console.error('Error fetching executed Safe transactions', { safeAddress }, error)
-    return []
+    return { orders: [], complete: false }
   }
+}
+
+function getExecutedTransactionsUrl(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  since?: string,
+  nextUrl?: string,
+): string {
+  return nextUrl || getSafeHistoryRequestUrl(chainId, safeAddress, true, since)
+}
+
+function logExecutedTransactionsFetch(nextUrl?: string, since?: string): void {
+  const page = nextUrl ? 'next' : 'first'
+  const sinceText = since && !nextUrl ? ` since ${since}` : ''
+
+  console.log(`[COW][SafeAPI] Fetch TWAP executed orders (${page} page${sinceText})`)
+}
+
+function getNextExecutedPage(response: AllTransactionsListResponse, accumulator: TwapDataArray[]): string | undefined {
+  return accumulator.length < SAFE_TX_HISTORY_DEPTH ? response.next || undefined : undefined
 }
 
 /**
@@ -96,7 +169,7 @@ async function fetchRecentlyExecutedTransactions(
  * This ensures that if the same transaction appears in both the pending and executed
  * fetches (e.g. a tx that just executed), we keep the executed version.
  */
-function mergeByHash(items: TwapDataArray): TwapDataArray {
+export function mergeTwapOrdersByHash(items: TwapDataArray): TwapDataArray {
   const map = new Map<string, TwapOrdersSafeData>()
 
   for (const item of items) {
@@ -115,12 +188,13 @@ async function fetchSafeTransactionsChunk(
   chainId: SupportedChainId,
   safeAddress: string,
   nextUrl?: string,
-): Promise<AllTransactionsListResponse> {
+): Promise<SafeTransactionsChunk> {
   const headers = getSafeApiHeaders()
 
   if (nextUrl) {
     try {
-      const response: AllTransactionsListResponse = await fetch(nextUrl, { headers }).then((res) => res.json())
+      console.log('[COW][SafeAPI] Fetch TWAP pending orders (next page)')
+      const response = await fetchWithFallback<AllTransactionsListResponse>(nextUrl, headers)
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -128,17 +202,56 @@ async function fetchSafeTransactionsChunk(
     } catch (error) {
       console.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
 
-      return { results: [], count: 0 }
+      return { results: [], count: 0, fetchError: true }
     }
   }
 
-  const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
+  const url = getSafeHistoryRequestUrl(chainId, safeAddress, false)
 
-  return fetch(url, { headers }).then((res) => res.json())
+  console.log('[COW][SafeAPI] Fetch TWAP pending orders (first page)')
+  return fetchWithFallback(url, headers)
 }
 
-function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {
-  return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
+function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
+  return fetch(url, { headers })
+    .then((res) => {
+      if (res.status === 429 || res.status === 403) {
+        console.log('[COW][SafeAPI] Fetching without API Key (fallback)')
+        return fetch(url)
+      }
+      return res
+    })
+    .then((res) => res.json())
+}
+
+function getSafeHistoryRequestUrl(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  executed: boolean,
+  since?: string,
+): string {
+  const params = new URLSearchParams({
+    executed: String(executed),
+    limit: String(HISTORY_TX_COUNT_LIMIT),
+    ordering: '-submissionDate',
+    trusted: 'true',
+  })
+
+  if (since) params.set('submission_date__gte', since)
+
+  if (!executed) {
+    params.set('queued', 'true')
+  }
+
+  return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?${params.toString()}`
+}
+
+function getNewestSubmissionDate(dates: (string | undefined)[]): string {
+  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+}
+
+function getTransactionSubmissionDate(transaction: unknown): string | undefined {
+  return isSafeMultisigTransactionListResponse(transaction) ? transaction.submissionDate : undefined
 }
 
 function parseSafeTransactionsResult(

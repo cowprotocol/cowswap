@@ -68,6 +68,8 @@ export function finalizeOnChainCancellation(
         replacementType: transaction.replacementType,
       },
       summary: t`Failed to cancel order selling ${sellTokenSymbol}`,
+      // `receipt.transactionHash` is an on-chain Ethereum tx hash, not a safeTxHash.
+      isSafeTx: false,
     })
   }
 }

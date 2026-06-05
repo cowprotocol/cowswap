@@ -1,14 +1,17 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
+import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
+import { IS_SOLANA_ENABLED } from './consts'
 import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED } from './providerIsolation'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
@@ -111,20 +114,20 @@ function getConnectors(): ConnectorInstance[] {
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {
-    const chainId = chain.id as SupportedChainId
+    const chainId = chain.id as EvmChains
     const url = RPC_URLS[chainId]
     if (url) {
       acc[chainId] = http(url)
     }
     return acc
   },
-  {} as Record<SupportedChainId, Transport>,
+  {} as Record<EvmChains, Transport>,
 )
 
 /** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as SupportedChainId]
+  const url = RPC_URLS[chain.id as EvmChains]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -138,6 +141,28 @@ const WAGMI_STORAGE_KEY = isInjectedWidget()
   : IS_CROSS_ORIGIN_IFRAME
     ? 'cowswap-wallet-safe'
     : 'cowswap-wallet'
+
+function persistedStateHasSession(state: unknown): boolean {
+  if (!state || typeof state !== 'object') return false
+  const s = state as { current?: unknown; connections?: { __type?: string; value?: unknown } }
+  if (typeof s.current === 'string' && s.current) return true
+  const c = s.connections
+  return c?.__type === 'Map' && Array.isArray(c.value) && c.value.length > 0
+}
+
+// Sniff persisted wagmi state synchronously at module init, BEFORE WagmiProvider's
+// `<Hydrate>` mounts and runs `setState({ connections: new Map() })` (which the guard
+// below may rewrite to `current: null`, erasing the signal at runtime). Used by the
+// initialReconnectLifecycle module to know whether a wallet session needs restoring.
+export const HAS_PERSISTED_WAGMI_SESSION = ((): boolean => {
+  if (typeof window === 'undefined') return false
+  try {
+    const raw = window.sessionStorage.getItem(`${WAGMI_STORAGE_KEY}.store`)
+    return raw ? persistedStateHasSession(JSON.parse(raw)?.state) : false
+  } catch {
+    return false
+  }
+})()
 
 const storage =
   typeof window === 'undefined'
@@ -161,22 +186,41 @@ const metadata = {
 }
 
 const connectors = getConnectors()
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 let wagmiAdapter: WagmiAdapter | null = null
 let reownAppKit: ReturnType<typeof createAppKit> | null = null
 let config: Config
 
+// `batch.multicall` collapses concurrent single `useReadContract` calls into one
+// multicall3 aggregate3 — the dominant savings for our `eth_call` budget (otherwise
+// each singular contract read is its own RPC call).
+// `pollingInterval` overrides viem's 4s default so block-driven hooks (BlockNumberProvider,
+// useReadContracts refetches) poll once per ~mainnet block time. Cowswap's UX tolerates
+// the L2 staleness this introduces because trades settle on the protocol's batch cadence.
+const VIEM_CLIENT_TUNING = {
+  batch: {
+    multicall: {
+      wait: 130, //  coalescing window in ms
+      batchSize: 30_000, // calldata size ceiling (30kb)
+    },
+  },
+  // Frequency (in ms) for polling enabled actions & events.
+  pollingInterval: 12_000,
+} as const
+
 if (isSafeIframe) {
   // Safe App iframe: no AppKit — use a plain wagmi config with only the Safe connector.
   config = createConfig({
+    ...VIEM_CLIENT_TUNING,
     connectors,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    chains: SUPPORTED_REOWN_NETWORKS as any,
+    chains: SUPPORTED_REOWN_NETWORKS,
     storage,
     transports: wagmiTransports,
   })
 } else {
   wagmiAdapter = new WagmiAdapter({
+    ...VIEM_CLIENT_TUNING,
     connectors: connectors as ConstructorParameters<typeof WagmiAdapter>[0]['connectors'],
     customRpcUrls,
     networks: SUPPORTED_REOWN_NETWORKS,
@@ -204,11 +248,14 @@ if (isSafeIframe) {
     }
   }
 
+  const urlChainId = getCurrentChainIdFromUrl()
+  const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
+
   reownAppKit = createAppKit({
-    adapters: [wagmiAdapter],
+    adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaWeb3JsAdapter] : [wagmiAdapter],
     allowUnsupportedChain: true,
     customRpcUrls,
-    defaultNetwork: VIEM_CHAINS[getCurrentChainIdFromUrl()],
+    defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
     // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
     // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
     // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
@@ -228,12 +275,39 @@ if (isSafeIframe) {
       connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
     },
     metadata,
-    networks: SUPPORTED_REOWN_NETWORKS,
+    networks: IS_SOLANA_ENABLED ? [...SUPPORTED_REOWN_NETWORKS, solana] : SUPPORTED_REOWN_NETWORKS,
     projectId,
     termsConditionsUrl:
       'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
   })
 }
+
+// Wagmi's `<Hydrate>` (wrapped by WagmiProvider) calls `hydrate.onMount` synchronously
+// on every render. With `reconnectOnMount={false}` (used so SafeConnectionHandler can
+// take over without racing against an auto-reconnect), onMount runs:
+//   config.setState((x) => ({ ...x, connections: new Map() }))
+// which clears `connections` but leaves `status` and `current` alone. Once our manual
+// reconnect has set `status: 'connected'`, the next re-render of WagmiProvider wipes
+// the connections map and the store ends up with status='connected' but empty
+// connections — `getConnection()` then returns `{ status: 'connected', connector: undefined }`,
+// and @reown/appkit-adapter-wagmi's watchAccount crashes reading `accountData.connector.id`.
+//
+// Enforce the invariant ourselves by wrapping `config.setState`: if the next state has
+// empty connections, force status='disconnected' and current=null in the same write so
+// the inconsistent state is never observed by any subscriber.
+const _wagmiSetState = config.setState.bind(config)
+config.setState = ((value: Parameters<typeof config.setState>[0]) => {
+  return _wagmiSetState((current) => {
+    const next = typeof value === 'function' ? value(current) : value
+    if (next && typeof next === 'object' && 'connections' in next) {
+      const { connections, status } = next as { connections?: Map<unknown, unknown>; status?: string }
+      if (connections && connections.size === 0 && status === 'connected') {
+        return { ...next, status: 'disconnected', current: null }
+      }
+    }
+    return next
+  })
+}) as typeof config.setState
 
 // Keep activeProviderRef in sync with the active connector so the per-tab
 // accountsChanged filter in providerIsolation.ts knows which provider is current.
