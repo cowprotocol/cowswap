@@ -4,28 +4,6 @@
   "sourceRoot": "libs/abis/src",
   "projectType": "library",
   "targets": {
-    "abis": {
-      "executor": "nx:noop",
-      "dependsOn": ["abi:ethflow", "abi:custom", "abis-legacy"]
-    },
-    "abi:ethflow": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/ethflow \"./libs/abis/node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\""
-      }
-    },
-    "abi:custom": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/custom './libs/abis/src/abis/**/*.json'"
-      }
-    },
-    "abis-legacy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "typechain --target ethers-v5 --out-dir ./libs/abis/src/generated/legacy './libs/abis/src/abis-legacy/**/*.json'"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

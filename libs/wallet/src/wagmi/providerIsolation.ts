@@ -21,6 +21,16 @@ export const PROVIDER_DISCONNECTED: unique symbol = Symbol('PROVIDER_DISCONNECTE
  */
 export const activeProviderRef: { current: EIP1193Provider | typeof PROVIDER_DISCONNECTED | null } = { current: null }
 
+type Eip6963ProviderInfo = { name?: string; rdns?: string }
+type Eip6963ProviderDetail = {
+  info: Eip6963ProviderInfo
+  provider: EIP1193Provider
+}
+type DeferredBraveWalletAnnouncement = {
+  info: Eip6963ProviderInfo
+  event: CustomEvent<Eip6963ProviderDetail>
+}
+
 // Cache isolated providers by their original so identity is stable across calls.
 const cache = new WeakMap<object, EIP1193Provider>()
 
@@ -36,12 +46,7 @@ const cache = new WeakMap<object, EIP1193Provider>()
  */
 export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provider {
   const cached = cache.get(original as object)
-  if (cached) {
-    console.log('[providerIsolation] reusing cached proxy for provider', original)
-    return cached
-  }
-
-  console.log('[providerIsolation] creating isolated proxy for provider', original)
+  if (cached) return cached
 
   // Maps original listener → wrapped listener so removeListener works correctly.
   type AccountsChangedListener = EIP1193EventMap['accountsChanged']
@@ -106,6 +111,8 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
 type IsolationWindow = Window & {
   __cowEip6963InterceptRegistered?: boolean
   __cowEip6963ReDispatched?: WeakSet<Event>
+  __cowEip6963DeferredBraveWallet?: DeferredBraveWalletAnnouncement[]
+  __cowEip6963AnnounceProviderListener?: EventListener
 }
 
 function getReDispatched(): WeakSet<Event> {
@@ -114,6 +121,64 @@ function getReDispatched(): WeakSet<Event> {
     win.__cowEip6963ReDispatched = new WeakSet<Event>()
   }
   return win.__cowEip6963ReDispatched
+}
+
+function getDeferredBraveWalletAnnouncements(): DeferredBraveWalletAnnouncement[] {
+  const win = window as IsolationWindow
+  if (!win.__cowEip6963DeferredBraveWallet) {
+    win.__cowEip6963DeferredBraveWallet = []
+  }
+  return win.__cowEip6963DeferredBraveWallet
+}
+
+function getProviderIdentifier(info: Eip6963ProviderInfo): string {
+  return info.rdns ?? info.name ?? 'unknown'
+}
+
+function isBraveWalletInfo(info: Eip6963ProviderInfo): boolean {
+  return info.rdns === 'com.brave.wallet' || info.name === 'Brave Wallet'
+}
+
+function createIsolatedProviderAnnouncement(detail: Eip6963ProviderDetail): CustomEvent<Eip6963ProviderDetail> {
+  const newEvent = new CustomEvent<Eip6963ProviderDetail>('eip6963:announceProvider', {
+    detail: { info: detail.info, provider: createIsolatedProvider(detail.provider) },
+  })
+  getReDispatched().add(newEvent)
+
+  return newEvent
+}
+
+function deferBraveWalletAnnouncement(info: Eip6963ProviderInfo, event: CustomEvent<Eip6963ProviderDetail>): void {
+  const deferred = getDeferredBraveWalletAnnouncements()
+  const identifier = getProviderIdentifier(info)
+  const replacementIndex = deferred.findIndex((announcement) => getProviderIdentifier(announcement.info) === identifier)
+  const announcement = { info, event }
+
+  if (replacementIndex >= 0) {
+    deferred[replacementIndex] = announcement
+  } else {
+    deferred.push(announcement)
+  }
+}
+
+/**
+ * Dispatches Brave Wallet EIP-6963 announcements that were hidden during page load.
+ * Call this only from an explicit wallet-selection path; materializing the Brave
+ * provider at startup can crash Brave's renderer process.
+ */
+export function flushDeferredProviders(): void {
+  if (typeof window === 'undefined') return
+
+  const deferred = getDeferredBraveWalletAnnouncements()
+  if (deferred.length === 0) return
+
+  for (const announcement of deferred.splice(0)) {
+    const event = createIsolatedProviderAnnouncement({
+      info: announcement.info,
+      provider: announcement.event.detail.provider,
+    })
+    window.dispatchEvent(event)
+  }
 }
 
 /**
@@ -129,32 +194,22 @@ export function interceptEIP6963Providers(): void {
   const win = window as IsolationWindow
   if (win.__cowEip6963InterceptRegistered) return
   win.__cowEip6963InterceptRegistered = true
+  const announceProviderListener = ((event: Event): void => {
+    const reDispatched = getReDispatched()
+    if (reDispatched.has(event)) return
+    event.stopImmediatePropagation()
 
-  console.log('[providerIsolation] interceptEIP6963Providers: capture listener registered')
+    const customEvent = event as CustomEvent<Eip6963ProviderDetail>
+    const detail = customEvent.detail
 
-  window.addEventListener(
-    'eip6963:announceProvider',
-    (event) => {
-      const reDispatched = getReDispatched()
-      if (reDispatched.has(event)) return
-      event.stopImmediatePropagation()
+    if (isBraveWalletInfo(detail.info)) {
+      deferBraveWalletAnnouncement(detail.info, customEvent)
+      return
+    }
 
-      const detail = (event as CustomEvent).detail as {
-        info: { name?: string; rdns?: string }
-        provider: EIP1193Provider
-      }
-
-      console.log(
-        '[providerIsolation] intercepted eip6963:announceProvider for',
-        detail.info?.name ?? detail.info?.rdns,
-      )
-
-      const newEvent = new CustomEvent('eip6963:announceProvider', {
-        detail: { info: detail.info, provider: createIsolatedProvider(detail.provider) },
-      })
-      reDispatched.add(newEvent)
-      window.dispatchEvent(newEvent)
-    },
-    { capture: true },
-  )
+    const newEvent = createIsolatedProviderAnnouncement(detail)
+    window.dispatchEvent(newEvent)
+  }) satisfies EventListener
+  win.__cowEip6963AnnounceProviderListener = announceProviderListener
+  window.addEventListener('eip6963:announceProvider', announceProviderListener, { capture: true })
 }

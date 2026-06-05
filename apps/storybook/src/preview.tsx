@@ -1,4 +1,3 @@
-/* eslint-disable @nx/enforce-module-boundaries */
 import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
 
 import { i18n } from '@lingui/core'
@@ -78,8 +77,8 @@ const preview: Preview = {
     backgrounds: {
       options: {
         paperAuto: { name: 'Paper auto', value: `var(${UI.COLOR_PAPER})` },
-        checkerboard: { name: 'Checkerboard', value: checkerboardBackground },
         swapAuto: { name: 'Swap auto', value: 'var(--storybook-cowswap-background)' },
+        checkerboard: { name: 'Checkerboard', value: checkerboardBackground },
         light: { name: 'Light', value: '#F8F8F8' },
         paperLight: { name: 'Paper light', value: Color.white },
         swapLight: { name: 'Swap light', value: `var(${UI.COLOR_BLUE_300_PRIMARY})` },

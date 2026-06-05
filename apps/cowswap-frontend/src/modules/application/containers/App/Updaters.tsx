@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import {
-  AdditionalChainTokensListsUpdater,
   RestrictedTokensListUpdater,
   TokensListsTagsUpdater,
   TokensListsUpdater,
@@ -30,14 +29,9 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
+import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { GeoDataUpdater } from 'modules/rwa'
-import { useSwapRawState } from 'modules/swap'
-import {
-  BlockedListSourcesUpdater,
-  RecentTokensStorageUpdater,
-  useSelectTokenWidgetState,
-  useSourceChainId,
-} from 'modules/tokensList'
+import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
@@ -69,8 +63,6 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-  const { targetChainId } = useSwapRawState()
-  const { selectedTargetChainId } = useSelectTokenWidgetState()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
@@ -115,6 +107,7 @@ export function Updaters(): ReactNode {
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
       <ProviderNetworkSupportedUpdater />
+      <TradeOrdersPermitUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}
@@ -123,7 +116,6 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <AdditionalChainTokensListsUpdater targetChainId={selectedTargetChainId ?? targetChainId} />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
       <RecentTokensStorageUpdater />

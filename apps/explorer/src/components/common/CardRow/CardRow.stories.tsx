@@ -4,7 +4,7 @@ import { Card, CardContent } from 'components/common/Card'
 import { CardRow, CardRowProps } from 'components/common/CardRow'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import QuestionIcon from '../../../assets/img/question1.svg'
+import svgQuestion1Src from '../../../assets/img/question1.svg'
 
 export default {
   title: 'Common/CardRow',
@@ -20,7 +20,7 @@ const Template: Story<CardRowProps> = (args) => (
       </Card>
       <Card>
         <CardContent
-          icon1={<img alt="Question icon" src={QuestionIcon} />}
+          icon1={<img alt="Question icon" src={svgQuestion1Src} />}
           variant="3row"
           label1="24h Transactions"
           value1="194"

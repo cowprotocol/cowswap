@@ -5,8 +5,11 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useHasCachedPermit } from 'modules/permit'
 import { useGetConfirmButtonLabel, useIsCurrentTradeBridging } from 'modules/trade'
+
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
@@ -49,21 +52,26 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
 
   const spender = useTradeSpenderAddress()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const isPermitEnabled = useIsPermitEnabled()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
   const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
   const approveLabel = useGetConfirmButtonLabel('approve', isCurrentTradeBridging)
   const swapLabel = useGetConfirmButtonLabel('swap', isCurrentTradeBridging)
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
 
   if (!supportsPartialApprove) {
+    const legacyApproveAmount = isInfiniteApproveDisabledInWidget
+      ? BigInt(amountToApprove.quotient.toString())
+      : MAX_APPROVE_AMOUNT
     return (
       <>
         <LegacyApproveButton
           currency={amountToApprove.currency}
           state={approvalState}
           isDisabled={isDisabled}
-          onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
+          onClick={() => handleApprove(legacyApproveAmount)}
           clickEvent={approveClickEvent}
         />
         {children}
@@ -72,7 +80,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }
 
   const isPending = isExecuting || approvalState === ApprovalState.PENDING
-  const noCachedPermit = !cachedPermitLoading && !cachedPermit
+  const noCachedPermit = !isPermitEnabled || (!cachedPermitLoading && !cachedPermit)
 
   const label = props.label || (noCachedPermit ? approveLabel : swapLabel)
   const clickEvent = noCachedPermit ? approveClickEvent : (swapClickEvent ?? approveClickEvent)

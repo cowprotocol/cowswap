@@ -1,8 +1,6 @@
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Fraction, Price } from '@cowprotocol/currency'
 
-import JSBI from 'jsbi'
-
 import formatLocaleNumber from './formatLocaleNumber'
 
 export function formatCurrencyAmount(
@@ -15,7 +13,7 @@ export function formatCurrencyAmount(
     return '-'
   }
 
-  if (JSBI.equal(amount.quotient, JSBI.BigInt(0))) {
+  if (amount.quotient === 0n) {
     return '0'
   }
 

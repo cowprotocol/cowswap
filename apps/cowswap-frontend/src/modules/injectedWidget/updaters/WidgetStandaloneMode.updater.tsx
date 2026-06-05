@@ -1,11 +1,10 @@
-import { type ReactNode, useEffect, useRef } from 'react'
+import { type ReactNode, useEffect } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { COW_WIDGET_CONNECTOR_ID, useDisconnectWallet } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useConnection } from 'wagmi'
-
-import { useInjectedWidgetParams } from '../hooks/useInjectedWidgetParams'
 
 /**
  * When the widget switches from standalone mode to dapp mode (without iframe recreation),
@@ -19,22 +18,21 @@ export function WidgetStandaloneModeUpdater(): ReactNode {
   const { standaloneMode } = useInjectedWidgetParams()
   const { connector } = useConnection()
   const disconnect = useDisconnectWallet()
-  const prevStandaloneMode = useRef(standaloneMode)
 
+  const isWidgetConnector = connector?.id === COW_WIDGET_CONNECTOR_ID
+  const isDappMode = standaloneMode === false
+
+  /**
+   * In standalone mode we only allow to be connected to the widget connector
+   */
   useEffect(() => {
     if (!isInjectedWidget()) return
+    if (!connector) return
 
-    const wasStandalone = prevStandaloneMode.current !== false
-    const isDappMode = standaloneMode === false
-    prevStandaloneMode.current = standaloneMode
-
-    // When switching from standalone to dapp mode, disconnect the standalone wallet.
-    // The widget connector (for dapp mode) will be reconnected by ReconnectOnMount
-    // when the iframe is recreated after the dapp provides a provider.
-    if (wasStandalone && isDappMode && connector && connector.id !== COW_WIDGET_CONNECTOR_ID) {
+    if (isDappMode && !isWidgetConnector) {
       void disconnect()
     }
-  }, [standaloneMode, connector, disconnect])
+  }, [isWidgetConnector, isDappMode, disconnect, connector])
 
   return null
 }

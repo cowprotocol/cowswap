@@ -38,6 +38,7 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
           orderType: UiOrderType.SWAP,
           inputAmount: state?.inputCurrencyAmount,
           outputAmount: state?.outputCurrencyAmount,
+          chainId: state?.inputCurrencyAmount?.currency.chainId,
         }),
       ).catch(() => false)
 
@@ -95,6 +96,9 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       },
       openTransactionConfirmationModal() {
         setWrapNativeState({ isOpen: true })
+      },
+      openErrorModal(errorMessage: string) {
+        setWrapNativeState({ isOpen: true, errorMessage })
       },
     }
   }, [

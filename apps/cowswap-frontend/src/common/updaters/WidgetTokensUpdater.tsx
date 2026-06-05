@@ -4,7 +4,8 @@ import { ReactNode } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { useOnTokenListAddingError } from 'modules/tokensList'
 
 import { CowSwapAnalyticsCategory } from '../analytics/types'

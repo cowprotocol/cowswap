@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 
 import { isImTokenBrowser, isInjectedWidget } from '@cowprotocol/common-utils'
+import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -8,17 +9,15 @@ import { reconnect } from '@wagmi/core'
 import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
+import { markInitialReconnectSettled } from './initialReconnectLifecycle'
+import { flushDeferredProviders } from './providerIsolation'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
-import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { OPEN_WALLET_MODAL_EVENT, SAFE_APP_ORIGIN } from '../constants'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 const queryClient = new QueryClient()
-
-function isEmbeddedInIframe(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
-}
 
 function reconnectWidgetConnector(): (() => void) | undefined {
   const widgetConnector = config.connectors.find((c) => c.id === COW_WIDGET_CONNECTOR_ID)
@@ -39,9 +38,13 @@ function reconnectWidgetConnector(): (() => void) | undefined {
     // Clear the shimDisconnect flag so reconnect() passes isAuthorized() even if the
     // connector was previously "disconnected" (which can happen on widget recreations).
     void config.storage?.removeItem(`${COW_WIDGET_CONNECTOR_ID}.disconnected`)
-    reconnect(config, { connectors: [widgetConnector] }).catch((error) => {
-      console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
-    })
+    reconnect(config, { connectors: [widgetConnector] })
+      .catch((error) => {
+        console.debug('[ReconnectOnMount] widget connector reconnect failed', error)
+      })
+      .finally(() => {
+        markInitialReconnectSettled()
+      })
   }
 
   doReconnect()
@@ -75,11 +78,16 @@ function reconnectWidgetConnector(): (() => void) | undefined {
   }
 }
 
-function ReconnectOnMount(): null {
+function ReconnectOnMount({ isOpenInSafeApp }: { isOpenInSafeApp: boolean }): null {
   useEffect((): (() => void) | void => {
     // When running as a pure Safe App (not a widget), skip reconnect and let SafeConnectionHandler
     // handle the wallet — reconnecting a previously saved non-Safe connector first causes a race condition.
-    if (isEmbeddedInIframe() && !isInjectedWidget()) return
+    if (isOpenInSafeApp && !isInjectedWidget()) {
+      // SafeConnectionHandler drives the connection here; we won't observe a wagmi reconnect lifecycle,
+      // so settle immediately to avoid the restoring spinner getting stuck in this context.
+      markInitialReconnectSettled()
+      return
+    }
 
     if (isInjectedWidget()) {
       // In widget context, use reconnect() (not connect()) to avoid triggering wallet popups.
@@ -114,6 +122,8 @@ function ReconnectOnMount(): null {
             console.debug('[ReconnectOnMount] mobile reconnect result', res)
           } catch (error) {
             console.debug('[ReconnectOnMount] mobile reconnect failed', error)
+          } finally {
+            markInitialReconnectSettled()
           }
         })()
         return
@@ -127,7 +137,11 @@ function ReconnectOnMount(): null {
       .catch((error: unknown) => {
         console.error('[ReconnectOnMount] error', error)
       })
-  }, [])
+      .finally(() => {
+        markInitialReconnectSettled()
+      })
+  }, [isOpenInSafeApp])
+
   return null
 }
 
@@ -136,6 +150,7 @@ function OpenWalletModalOnCustomEvent(): null {
     if (!reownAppKit) return
     const appKit = reownAppKit
     const handler = (): void => {
+      flushDeferredProviders()
       void appKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
@@ -146,16 +161,19 @@ function OpenWalletModalOnCustomEvent(): null {
 
 interface Web3ProviderProps {
   children: ReactNode
+  standaloneMode?: boolean
 }
 
 export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
+  const isOpenInSafeApp = getParentOrigin() === SAFE_APP_ORIGIN
+
   return (
     <WagmiProvider config={config} reconnectOnMount={false}>
-      <ReconnectOnMount />
+      <ReconnectOnMount isOpenInSafeApp={isOpenInSafeApp} />
       <OpenWalletModalOnCustomEvent />
       <QueryClientProvider client={queryClient}>
         <SafeProvider>
-          <SafeConnectionHandler>{children}</SafeConnectionHandler>
+          {isOpenInSafeApp ? <SafeConnectionHandler>{children}</SafeConnectionHandler> : children}
         </SafeProvider>
       </QueryClientProvider>
     </WagmiProvider>

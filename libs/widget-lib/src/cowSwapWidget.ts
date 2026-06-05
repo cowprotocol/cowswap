@@ -1,6 +1,7 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -18,6 +19,7 @@ import {
   WindowListener,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 const DEFAULT_HEIGHT = '640px'
@@ -32,7 +34,7 @@ const DEFAULT_WIDTH = '450px'
 const HEIGHT_THRESHOLD = 20
 
 const noopHandler: CowSwapWidgetHandler = {
-  iframe: document.createElement('iframe'),
+  iframe: null as never,
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
@@ -57,7 +59,7 @@ export interface CowSwapWidgetHandler {
  * @returns A callback function to update the widget with new settings.
  */
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady } = props
+  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
   let provider = providerAux
   let currentParams = params
 
@@ -73,15 +75,24 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   container.innerHTML = ''
   container.appendChild(iframe)
 
+  const { cancelWidgetLoading, onWidgetReady } = widgetIframeLoading(
+    iframe,
+    props.onLoadingError,
+    props.loadingErrorStyles,
+  )
+
   const { contentWindow: iframeWindow } = iframe
   if (!iframeWindow) {
     console.error('Iframe does not contain a window', iframe)
     throw new Error('Iframe does not contain a window!')
   }
 
-  if (onReady) {
-    windowListeners.push(listenToReady(iframeWindow, iframeOrigin, onReady))
-  }
+  windowListeners.push(
+    listenToReady(iframeWindow, iframeOrigin, () => {
+      onReady?.()
+      onWidgetReady()
+    }),
+  )
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
@@ -132,8 +143,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams(iframeWindow, iframeOrigin, currentParams, provider)
   })
 
-  // 10. Listen for messages from the iframe
-  const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
+  // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
+  const iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
@@ -160,10 +171,12 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       windowListeners.forEach((listener) => window.removeEventListener('message', listener))
 
       // Stop listening for SDK messages
-      iframeSafeSdkBridge.stopListening()
+      iframeSafeSdkBridge?.stopListening()
 
       // Destroy the iframe
-      container.removeChild(iframe)
+      if (iframe && iframe.parentNode === container) container.removeChild(iframe)
+
+      cancelWidgetLoading()
     },
   }
 }
@@ -330,16 +343,6 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
     return new URL(trimmedUrl, iframeOrigin).toString()
   } catch {
     return null
-  }
-}
-
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
-
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
   }
 }
 

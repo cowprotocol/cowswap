@@ -1,8 +1,8 @@
 // this is not used for now. we use "craco test", but eventually we will
 
-import { createRequire } from 'node:module';
+import { createRequire } from 'node:module'
 
-const require = createRequire(import.meta.url);
+const require = createRequire(import.meta.url)
 
 export default {
   displayName: 'cowswap',
@@ -22,6 +22,7 @@ export default {
   moduleNameMapper: {
     '^wagmi$': require.resolve('wagmi'),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
-    '^@reown/appkit-adapter-wagmi$': '<rootDir>/../../testing/reownAdapterMock.ts',
+    '^@reown/appkit-adapter-wagmi$': '<rootDir>/src/mocks/reownAdapterMock.ts',
+    '^@reown/appkit-adapter-solana/react$': '<rootDir>/src/mocks/reownSolanaAdapterMock.ts',
   },
 }

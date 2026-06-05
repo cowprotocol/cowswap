@@ -71,6 +71,7 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.LINEA]: 'eth',
   [Network.PLASMA]: 'xpl',
   [Network.INK]: 'eth',
+  [Network.SOLANA]: 'sol',
 }
 
 interface RetryOptions {

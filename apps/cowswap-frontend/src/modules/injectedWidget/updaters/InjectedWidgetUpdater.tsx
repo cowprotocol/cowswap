@@ -13,6 +13,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
+import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -21,7 +22,6 @@ import { IframeResizer } from './IframeResizer'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
-import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
@@ -47,16 +47,26 @@ import {
   /**
    * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
    *
-   * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
-   * which opens in the parent, so calling both would open two tabs / popups.
+   * IMPORTANT: Do not call the native window.open for deeplinks here: createCowSwapWidget registers
+   * interceptDeepLinks which opens in the parent, so calling both would open two tabs / popups.
+   *
+   * Exception: when the call passes window features (e.g. `width=...,height=...`), it's a real popup
+   * that needs bidirectional postMessage with the opener (e.g. Coinbase Wallet SDK's keys.coinbase.com
+   * popup). Those must open from the iframe itself so the SDK gets a real cross-origin Window back.
    */
+  const nativeWindowOpen = window.open.bind(window)
   window.open = function (...args) {
-    const [href = '', target = '', rel = ''] = args
+    const [href = '', target = '', features = ''] = args
+
+    const isPopupWithFeatures = typeof features === 'string' && /\b(width|height)\s*=/.test(features)
+    if (isPopupWithFeatures) {
+      return nativeWindowOpen(href, target, features)
+    }
 
     widgetIframeTransport.postMessageToWindow(
       parent,
       WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel },
+      { href, target, rel: features },
       parentOrigin,
     )
 

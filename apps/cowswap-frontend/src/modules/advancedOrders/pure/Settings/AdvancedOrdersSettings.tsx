@@ -5,6 +5,7 @@ import { SettingsDropdownSection, SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import {
   limitOrdersSettingsAtom,
@@ -26,18 +27,21 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
   const { LEFT_ALIGNED } = getOrdersTableSettings()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const { i18n } = useLingui()
 
   return (
     <SettingsContainer>
-      <SettingsDropdownSection title={t`TWAP Settings`}>
-        <SettingsBox
-          title={t`Custom Recipient`}
-          tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-          checked={showRecipient}
-          toggle={() => onStateChanged({ showRecipient: !showRecipient })}
-        />
-      </SettingsDropdownSection>
+      {!disableCustomRecipient && (
+        <SettingsDropdownSection title={t`TWAP Settings`}>
+          <SettingsBox
+            title={t`Custom Recipient`}
+            tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+            checked={showRecipient}
+            toggle={() => onStateChanged({ showRecipient: !showRecipient })}
+          />
+        </SettingsDropdownSection>
+      )}
 
       <SettingsDropdownSection title={t`TWAP Interface`}>
         <SettingsBox

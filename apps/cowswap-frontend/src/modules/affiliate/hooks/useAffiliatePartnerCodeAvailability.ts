@@ -41,9 +41,9 @@ export function useAffiliatePartnerCodeAvailability(
 
   const { data: isAvailable, isLoading } = useSWR<boolean>(
     !waitingForDebouncedInput && debouncedCode ? ['affiliate-partner-code-availability', debouncedCode] : null,
-    async ([, code]) => {
+    async ([, code]: [string, string]) => {
       try {
-        return await bffAffiliateApi.verifyCodeAvailability(code as string)
+        return await bffAffiliateApi.verifyCodeAvailability(code)
       } catch {}
 
       setError(AffiliatePartnerCodeCreateError.NetworkError)
