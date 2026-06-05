@@ -33,7 +33,7 @@ export function getQuoteErrorTexts(): Partial<Record<QuoteApiErrorCodes, string>
     [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
     [QuoteApiErrorCodes.NoLiquidity]: t`Token pair selected has insufficient liquidity`,
     [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade`,
-    [QuoteApiErrorCodes.SellAmountDoesNotCoverFee]: t`The selling amount for the order is lower than the fee`,
+    [QuoteApiErrorCodes.SellAmountDoesNotCoverFee]: t`Sell amount is too small`,
     [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
     [QuoteApiErrorCodes.TokenTemporarilySuspended]: t`Token is temporarily suspended from trading`,
     [QuoteApiErrorCodes.TradingOutsideAllowedWindow]: t`Token can only be traded during specific time windows`,
