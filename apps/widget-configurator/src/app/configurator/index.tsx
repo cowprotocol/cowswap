@@ -29,7 +29,7 @@ import Typography from '@mui/material/Typography'
 import { useAppKitTheme } from '@reown/appkit/react'
 import { useConnection } from 'wagmi'
 
-import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
@@ -221,7 +221,7 @@ export function Configurator({ title }: { title: string }) {
     swapDeadline,
     limitDeadline,
     advancedDeadline,
-    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : (walletChainId as SupportedChainId),
+    chainId: !isConnected || !walletChainId ? chainId : (walletChainId as SupportedChainId),
     locale: locale || undefined,
     theme: mode,
     boxShadow: boxShadow || undefined,
@@ -319,7 +319,7 @@ export function Configurator({ title }: { title: string }) {
           {title}
         </Typography>
 
-        {!IS_IFRAME && (
+        {
           <>
             <FormControl component="fieldset">
               <FormLabel component="legend">Select Mode:</FormLabel>
@@ -335,7 +335,7 @@ export function Configurator({ title }: { title: string }) {
               </div>
             )}
           </>
-        )}
+        }
 
         <Divider variant="middle">General</Divider>
 
@@ -362,13 +362,13 @@ export function Configurator({ title }: { title: string }) {
 
         <LocaleControl state={localeState} />
 
-        {!IS_IFRAME && (
+        {
           <NetworkControl
             state={networkControlState}
             standaloneMode={standaloneMode}
             availableChains={availableChains}
           />
-        )}
+        }
 
         <Divider variant="middle">Tokens</Divider>
 
@@ -581,7 +581,7 @@ export function Configurator({ title }: { title: string }) {
             {isWidgetDisplayed && (
               <CowSwapWidget
                 params={params}
-                provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+                provider={!standaloneMode ? provider : undefined}
                 listeners={listeners}
                 onReady={() => console.log('[configurator:onReady] Widget ready')}
               />

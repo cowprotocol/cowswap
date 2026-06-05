@@ -7,6 +7,7 @@ import { useConnectionType } from './useConnectionType'
 import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
+import { reownAppKit } from '../config'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -67,30 +68,48 @@ export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
 
-  if (!connector) {
-    return METADATA_DISCONNECTED
-  }
+  const [walletMetaData, setWalletMetaData] = useState<WalletMetaData | null>(null)
 
-  if (connector.id === COW_WIDGET_CONNECTOR_ID) {
-    return {
-      walletName: 'CoW Swap widget',
-      icon: 'Identicon',
+  useEffect(() => {
+    if (!reownAppKit) return
+
+    return reownAppKit.subscribeWalletInfo((state) => {
+      if (state) {
+        setWalletMetaData({ walletName: state.name, icon: state.icon })
+      } else {
+        setWalletMetaData(null)
+      }
+    })
+  }, [])
+
+  return useMemo(() => {
+    if (!connector) {
+      if (walletMetaData) return walletMetaData
+
+      return METADATA_DISCONNECTED
     }
-  }
 
-  if (connector.type === ConnectionType.WALLET_CONNECT_V2) {
-    return wcPeerMetadata
-  }
+    if (connector.id === COW_WIDGET_CONNECTOR_ID) {
+      return {
+        walletName: 'CoW Swap widget',
+        icon: 'Identicon',
+      }
+    }
 
-  if (connector.type === ConnectionType.GNOSIS_SAFE) {
-    // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
-    return METADATA_SAFE
-  }
+    if (connector.type === ConnectionType.WALLET_CONNECT_V2) {
+      return wcPeerMetadata
+    }
 
-  return {
-    icon: connector.icon,
-    walletName: connector.name,
-  }
+    if (connector.type === ConnectionType.GNOSIS_SAFE) {
+      // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
+      return METADATA_SAFE
+    }
+
+    return {
+      icon: connector.icon ?? walletMetaData?.icon,
+      walletName: connector.name ?? walletMetaData?.walletName,
+    }
+  }, [connector, walletMetaData, wcPeerMetadata])
 }
 
 /**
