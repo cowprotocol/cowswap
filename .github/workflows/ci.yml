@@ -27,6 +27,7 @@ env:
 jobs:
   setup:
     name: Setup
+    if: !startsWith(github.head_ref, 'cf-preview/pr-')
     runs-on: ubuntu-latest
 
     steps:
@@ -190,6 +191,7 @@ jobs:
 
   integration-tests:
     name: Cypress
+    if: !startsWith(github.head_ref, 'cf-preview/pr-')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
