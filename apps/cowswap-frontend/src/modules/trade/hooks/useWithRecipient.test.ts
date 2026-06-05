@@ -87,7 +87,9 @@ describe('useIsWithRecipient', () => {
   })
 
   it('does not show when only recipientAddress exists without recipient', () => {
-    mockTradeStateFromUrl.mockReturnValue({ recipientAddress: '0xrecipient' } as ReturnType<typeof useTradeStateFromUrl>)
+    mockTradeStateFromUrl.mockReturnValue({
+      recipientAddress: '0xrecipient',
+    } as ReturnType<typeof useTradeStateFromUrl>)
 
     expect(render(false)).toBe(false)
   })
