@@ -11,6 +11,8 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { CowSpeechBubble } from './CowSpeechBubble'
 import { Arrow } from './CowSpeechBubble.styled'
 
+import { getTrustedNotificationLink } from '../../../../notifications/utils/getTrustedNotificationLink'
+
 const NotificationText = styled.span`
   display: flex;
   flex-direction: column;
@@ -58,18 +60,18 @@ export function CowSpeechBubbleNotificationBanner({
   }
 
   const { title, description, url, id } = currentNotification
-  const linkTarget = url && isInternal(url) ? '_parent' : '_blank'
+  const trustedLink = getTrustedNotificationLink(url)
 
   return (
     <CowSpeechBubble variant="notification" onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
       <NotificationText>
         <strong>{title}</strong>
         <NotificationDescription>{description}</NotificationDescription>
-        {url && (
+        {trustedLink && (
           <NotificationLink
-            href={url}
-            target={linkTarget}
-            rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
+            href={trustedLink.href}
+            target={trustedLink.target}
+            rel={trustedLink.rel}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.NOTIFICATIONS,
               action: 'Click speech bubble notification link',
@@ -84,14 +86,4 @@ export function CowSpeechBubbleNotificationBanner({
       </NotificationText>
     </CowSpeechBubble>
   )
-}
-
-function isInternal(href: string): boolean {
-  if (href.startsWith('/')) return true
-
-  try {
-    return new URL(href).hostname === window.location.hostname
-  } catch {
-    return false
-  }
 }

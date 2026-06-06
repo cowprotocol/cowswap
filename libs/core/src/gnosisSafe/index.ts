@@ -39,8 +39,6 @@ export function getSafeApiUrl(chainId: SupportedChainId): string {
   return `https://api.safe.global/tx-service/${SAFE_API_NETWORK_ID[chainId]}/api/`
 }
 
-const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
-
 const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
@@ -49,16 +47,10 @@ export async function createSafeApiKitInstance(chainId: number): Promise<SafeApi
   if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
   }
-  if (!SAFE_API_AUTH_TOKEN) {
-    console.warn(
-      '[COW][SAFE] No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.',
-    )
-  }
   const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
   return new SafeApiKit({
     txServiceUrl: getSafeApiUrl(chainId as SupportedChainId),
     chainId: BigInt(chainId),
-    apiKey: SAFE_API_AUTH_TOKEN || undefined,
   })
 }
 

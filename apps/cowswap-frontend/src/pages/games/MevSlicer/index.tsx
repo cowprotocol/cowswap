@@ -88,5 +88,5 @@ export default function MevSlicer(): ReactNode {
 }
 
 function openGame(): void {
-  window?.open(GAME_URL, '_blank')?.focus()
+  window?.open(GAME_URL, '_blank', 'noopener,noreferrer')?.focus()
 }
