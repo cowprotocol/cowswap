@@ -10,9 +10,9 @@ export interface CreateSessionRequest {
 }
 
 /**
- * Map from token address (or the zero address for native) to balance as a
- * decimal string. Snapshot = full map; diff = only addresses whose balance
- * changed since the previous SSE event.
+ * Map from token address (or the `0xeeee…eeee` native sentinel for the chain's
+ * native currency) to balance as a decimal string. Snapshot = full map; diff =
+ * only addresses whose balance changed since the previous SSE event.
  */
 export type BalancesMap = Record<string, string>
 

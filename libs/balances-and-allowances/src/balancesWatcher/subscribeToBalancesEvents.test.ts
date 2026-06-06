@@ -99,28 +99,37 @@ describe('subscribeToBalancesEvents', () => {
     expect(cbs.onError).not.toHaveBeenCalled()
   })
 
-  it('treats a missing balances field as an empty map', () => {
+  it('treats a balance_update without a `balances` field as terminal corruption and closes the source', () => {
     const { source, cbs } = start()
 
     source.emit('balance_update', JSON.stringify({}))
 
-    expect(cbs.onBalances).toHaveBeenCalledWith({})
+    expect(cbs.onBalances).not.toHaveBeenCalled()
+    expect(cbs.onError).toHaveBeenCalledTimes(1)
+    const [error, terminal] = cbs.onError.mock.calls[0]
+    expect(terminal).toBe(true)
+    expect((error as Error).message).toMatch(/missing `balances` field/)
+    expect(source.closeCallCount).toBe(1)
+
+    // Follow-up valid event must NOT reach onBalances (subscription is closed).
+    source.emit('balance_update', JSON.stringify({ balances: { '0xtoken1': '7' } }))
+    expect(cbs.onBalances).not.toHaveBeenCalled()
   })
 
-  it('reports a non-terminal error and keeps the subscription open when payload JSON is invalid', () => {
+  it('treats invalid JSON in a balance_update as terminal corruption and closes the source', () => {
     const { source, cbs } = start()
 
     source.emit('balance_update', '{not json}')
 
     expect(cbs.onError).toHaveBeenCalledTimes(1)
     const [error, terminal] = cbs.onError.mock.calls[0]
-    expect(terminal).toBe(false)
+    expect(terminal).toBe(true)
     expect((error as Error).message).toMatch(/Failed to parse balance_update payload/)
-    expect(source.closeCallCount).toBe(0)
+    expect(source.closeCallCount).toBe(1)
 
-    // Follow-up valid event still reaches onBalances.
+    // Follow-up valid event must NOT reach onBalances (subscription is closed).
     source.emit('balance_update', JSON.stringify({ balances: { '0xtoken1': '7' } }))
-    expect(cbs.onBalances).toHaveBeenCalledWith({ '0xtoken1': '7' })
+    expect(cbs.onBalances).not.toHaveBeenCalled()
   })
 
   it('treats a server-sent error event (with data) as terminal and closes the source', () => {

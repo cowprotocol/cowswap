@@ -63,16 +63,30 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
   let closed = false
   const eventSource = new EventSourceConstructor(url)
 
+  const terminate = (error: Error): void => {
+    closed = true
+    eventSource.close()
+    params.onError(error, true)
+  }
+
+  // Any malformed or schema-invalid `balance_update` corrupts the local map
+  // (missed snapshot ⇒ no baseline; missed diff ⇒ permanent drift, because the
+  // server only emits changed addresses going forward). Close the stream so
+  // the caller can re-create the session from a fresh snapshot.
   const handleBalanceUpdate = (event: MessageEvent): void => {
     if (closed) return
 
     const payload = tryParseJson<BalanceUpdateEvent>(event.data)
     if (!payload) {
-      params.onError(new Error(`Failed to parse balance_update payload: ${event.data}`), false)
+      terminate(new Error(`Failed to parse balance_update payload: ${event.data}`))
+      return
+    }
+    if (!payload.balances) {
+      terminate(new Error('balance_update payload missing `balances` field'))
       return
     }
 
-    params.onBalances(payload.balances ?? {})
+    params.onBalances(payload.balances)
   }
 
   const handleErrorEvent = (event: Event): void => {
@@ -86,9 +100,7 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
 
     if (isServerError) {
       const payload = tryParseJson<BalancesWatcherErrorPayload>(data) ?? UNPARSEABLE_ERROR_FALLBACK
-      closed = true
-      eventSource.close()
-      params.onError(new BalancesWatcherStreamError(payload), true)
+      terminate(new BalancesWatcherStreamError(payload))
       return
     }
 
