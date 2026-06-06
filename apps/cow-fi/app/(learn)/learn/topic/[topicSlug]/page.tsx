@@ -38,7 +38,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const category = await getCategoryBySlug(topicSlug)
-  const { name, description = '' } = category?.attributes || {}
+
+  if (!category || !category.attributes) {
+    return getPageMetadata({
+      absoluteTitle: 'Topic Not Found - Knowledge base',
+      description: 'The requested topic could not be found.',
+    })
+  }
+
+  const { name, description = '' } = category.attributes
 
   return getPageMetadata({
     absoluteTitle: `${name} - Knowledge base`,
