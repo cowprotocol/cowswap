@@ -48,6 +48,15 @@ describe('cmsValidation', () => {
       })
     })
 
+    it('rejects invalid pagination even for blank searches', () => {
+      expect(() => normalizeSearchArticlesInput({ searchTerm: '   ', page: -1 })).toThrow(
+        'Pagination parameters must be non-negative integers',
+      )
+      expect(() => normalizeSearchArticlesInput({ searchTerm: '   ', page: 'oops' })).toThrow(
+        'Pagination parameters must be non-negative integers',
+      )
+    })
+
     it('rejects invalid search payloads', () => {
       expect(() => normalizeSearchArticlesInput('cowswap')).toThrow('Search input must be an object')
       expect(() => normalizeSearchArticlesInput({ searchTerm: 1 })).toThrow('Search term must be a string')
@@ -90,6 +99,8 @@ describe('cmsValidation', () => {
 
     it('rejects invalid revalidation payloads', () => {
       expect(() => normalizeRevalidateRequest(null)).toThrow('Revalidation body must be an object')
+      expect(() => normalizeRevalidateRequest([])).toThrow('Revalidation body must be an object')
+      expect(() => normalizeRevalidateRequest(new Date())).toThrow('Revalidation body must be an object')
       expect(() => normalizeRevalidateRequest({ tag: 'preview' })).toThrow('Unsupported revalidation tag "preview"')
       expect(() => normalizeRevalidateRequest({ tag: CMS_REVALIDATE_TAG, path: '/admin' })).toThrow(
         'Unsupported revalidation path "/admin"',

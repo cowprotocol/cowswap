@@ -10,7 +10,7 @@ export const MAX_SEARCH_PAGE_SIZE = 100
 export const MAX_SEARCH_TERM_LENGTH = 100
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
+  return Object.prototype.toString.call(value) === '[object Object]'
 }
 
 function readOptionalNumber(value: unknown, fallback: number, max: number): number {
@@ -50,12 +50,14 @@ export function normalizeSearchArticlesInput(input: unknown): {
   }
 
   const searchTerm = input.searchTerm.trim()
+  const page = readOptionalNumber(input.page, DEFAULT_SEARCH_PAGE, MAX_SEARCH_PAGE)
+  const pageSize = readOptionalNumber(input.pageSize, DEFAULT_SEARCH_PAGE_SIZE, MAX_SEARCH_PAGE_SIZE)
 
   if (searchTerm.length === 0) {
     return {
       searchTerm,
-      page: DEFAULT_SEARCH_PAGE,
-      pageSize: DEFAULT_SEARCH_PAGE_SIZE,
+      page,
+      pageSize,
     }
   }
 
@@ -65,8 +67,8 @@ export function normalizeSearchArticlesInput(input: unknown): {
 
   return {
     searchTerm,
-    page: readOptionalNumber(input.page, DEFAULT_SEARCH_PAGE, MAX_SEARCH_PAGE),
-    pageSize: readOptionalNumber(input.pageSize, DEFAULT_SEARCH_PAGE_SIZE, MAX_SEARCH_PAGE_SIZE),
+    page,
+    pageSize,
   }
 }
 
