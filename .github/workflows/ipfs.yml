@@ -28,15 +28,7 @@ jobs:
           persist-credentials: false
 
       - name: Verify tag points to main
-        run: |
-          set -euo pipefail
-
-          git fetch origin main --depth=1
-
-          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/main"; then
-            echo "Refusing to deploy ${GITHUB_REF} because ${GITHUB_SHA} is not reachable from origin/main." >&2
-            exit 1
-          fi
+        run: node tools/scripts/verify-tag-reachable-from-main.mjs
 
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
