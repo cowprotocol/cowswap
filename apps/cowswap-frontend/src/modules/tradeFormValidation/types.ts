@@ -51,6 +51,7 @@ export interface TradeFormValidationCommonContext {
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
   isRestrictedForCountry: boolean
+  isRwaStatusPending: boolean
   isBalancesLoading: boolean
   balancesError: string | null
   isInputCurrencyXstock: boolean
@@ -112,6 +113,7 @@ export enum TradeFormValidation {
   CustomTokenError,
 
   // RWA/Geo restrictions
+  RwaChecksPending,
   RestrictedForCountry,
   XstockMinimumTradeSize,
 

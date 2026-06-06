@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { TokenWithLogo, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -10,8 +10,9 @@ import { Field } from 'legacy/state/types'
 
 import { MAX_APPROVE_AMOUNT, TradeApproveCallback } from 'modules/erc20Approve'
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { RwaTokenStatus, useRwaConsentModalState, useRwaTokenStatus } from 'modules/rwa'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
-import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
+import { useDerivedTradeState, useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 
@@ -32,14 +33,21 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApprove?: bigint): EthFlowActions {
   const { chainId } = useWalletInfo()
+  const { outputCurrency } = useDerivedTradeState() || {}
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
+  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
+    inputCurrency: WRAPPED_NATIVE_CURRENCIES[chainId],
+    outputCurrency,
+  })
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -61,6 +69,19 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     }
 
     const swap = async (): Promise<void> => {
+      if (rwaStatus === RwaTokenStatus.ChecksPending || rwaStatus === RwaTokenStatus.Restricted) {
+        return
+      }
+
+      if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
+        callbacks.dismiss()
+        openRwaConsentModal({
+          consentHash: rwaTokenInfo.consentHash,
+          token: TokenWithLogo.fromToken(rwaTokenInfo.token),
+        })
+        return
+      }
+
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId], () => {
         openSwapConfirmModal(true)
@@ -114,8 +135,11 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     onCurrencySelection,
     chainId,
     openSwapConfirmModal,
+    openRwaConsentModal,
     isPartialApproveEnabledBySettings,
     isInfiniteApproveDisabledInWidget,
     amountToApprove,
+    rwaStatus,
+    rwaTokenInfo,
   ])
 }

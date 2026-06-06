@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { ReactNode, useEffect } from 'react'
 
-import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
@@ -41,7 +41,7 @@ const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPO
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
-  isGeoBlockEnabled: boolean
+  isGeoBlockEnabled: boolean | undefined
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
   bridgeNetworkInfo: ChainInfo[] | undefined
@@ -104,24 +104,32 @@ export function TokensListsUpdater({
 
   // Check if a user is from US and use Uniswap list, because of the SEC regulations
   useEffect(() => {
-    if (!isGeoBlockEnabled || isInjectedWidget()) return
-
     if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
       setEnvironment({ useCuratedListOnly: false })
       return
     }
+
+    if (isGeoBlockEnabled === false) {
+      setEnvironment({ useCuratedListOnly: false })
+      return
+    }
+
+    setEnvironment({ useCuratedListOnly: true })
 
     fetch('https://api.country.is')
       .then((res) => res.json())
       .then(({ country }) => {
         const isUsUser = country === 'US'
 
+        setEnvironment({ useCuratedListOnly: isUsUser })
+
         if (isUsUser) {
-          setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
       })
       .catch((error) => {
+        setEnvironment({ useCuratedListOnly: true })
+
         if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
 
         const sentryError = Object.assign(error, {
