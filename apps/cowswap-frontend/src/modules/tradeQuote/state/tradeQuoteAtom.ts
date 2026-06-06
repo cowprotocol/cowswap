@@ -40,6 +40,21 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
 
 export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
 
+function getNextLocalQuoteTimestamp(
+  prevQuote: TradeQuoteState,
+  nextState: Partial<TradeQuoteState>,
+): TradeQuoteState['localQuoteTimestamp'] {
+  if (typeof nextState.localQuoteTimestamp !== 'undefined') {
+    return nextState.localQuoteTimestamp
+  }
+
+  if (typeof nextState.quote === 'undefined') {
+    return prevQuote.localQuoteTimestamp
+  }
+
+  return nextState.quote ? Math.ceil(Date.now() / 1000) : null
+}
+
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
@@ -57,11 +72,14 @@ export const updateTradeQuoteAtom = atom(
         return { ...prevState }
       }
 
+      const quote = typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote
+      const localQuoteTimestamp = getNextLocalQuoteTimestamp(prevQuote, nextState)
+
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
-        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
-        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
+        quote,
+        localQuoteTimestamp,
       }
 
       return {

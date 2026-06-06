@@ -22,6 +22,7 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
+import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
@@ -100,6 +101,7 @@ export async function safeBundleEthFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
+    assertValidBridgeRecipient(tradeContext.tradeQuoteState)
 
     const {
       orderId,
