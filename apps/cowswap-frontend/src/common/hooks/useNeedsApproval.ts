@@ -19,16 +19,16 @@ import { useTokenAllowance } from './useTokenAllowance'
  * @param amount
  * @returns {boolean}
  */
-export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boolean {
-  const spender = useTradeSpenderAddress()
+export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>, spender?: string): boolean {
+  const tradeSpender = useTradeSpenderAddress()
   const token = amount ? getWrappedToken(amount.currency) : undefined
-  const allowance = useTokenAllowance(token)
+  const allowance = useTokenAllowance(token, undefined, spender ?? tradeSpender)
 
   if (typeof allowance === 'undefined') {
     return true
   }
 
-  if (!token || !amount || !spender) {
+  if (!token || !amount || !(spender ?? tradeSpender)) {
     return false
   }
 

@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { MAX_APPROVE_AMOUNT, TradeApproveCallback } from 'modules/erc20Approve'
+import { ApproveCurrencyCallback, MAX_APPROVE_AMOUNT } from 'modules/erc20Approve'
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
@@ -16,7 +16,7 @@ import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {
-  approve: TradeApproveCallback
+  approve: ApproveCurrencyCallback
   wrap: WrapUnwrapCallback | null
   directSwap: Command
   dismiss: Command

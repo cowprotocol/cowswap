@@ -1,3 +1,4 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
 import { Address, Hex } from 'viem'
@@ -17,11 +18,35 @@ const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined>
 const USER_REJECTION_CODES = [4001, -32000]
 const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected transaction', 'transaction was rejected']
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUserRejectionError(error: any): boolean {
+function hasUserRejectionCode(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    USER_REJECTION_CODES.includes(error.code as number)
+  )
+}
+
+function getErrorMessage(error: unknown): string {
+  if (typeof error === 'string') {
+    return error.toLowerCase()
+  }
+
+  if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+    return error.message.toLowerCase()
+  }
+
+  return ''
+}
+
+function isUserRejectionError(error: unknown): boolean {
   if (!error) return false
-  if (USER_REJECTION_CODES.includes(error.code)) return true
-  const message = (typeof error === 'string' ? error : error.message)?.toLowerCase() || ''
+  if (hasUserRejectionCode(error)) {
+    return true
+  }
+
+  const message = getErrorMessage(error)
+
   return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
 }
 
@@ -160,6 +185,9 @@ async function calculateGasLimit({
 }
 
 function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account, amount } = params
-  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
+  const { inputToken, chainId, account, amount, spender } = params
+
+  return `${getAddressKey(inputToken.address)}-${chainId}-${getAddressKey(spender)}${
+    account ? `-${getAddressKey(account)}` : ''
+  }${amount ? `-${amount.toString()}` : ''}`
 }
