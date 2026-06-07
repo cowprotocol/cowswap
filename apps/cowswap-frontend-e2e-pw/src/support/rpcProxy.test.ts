@@ -16,7 +16,8 @@ async function postRpc(url: string, body: unknown): Promise<unknown> {
 let proxy: RpcProxy
 
 test.before(async () => {
-  proxy = await createRpcProxy({ sepoliaRpcUrl: 'http://127.0.0.1:1' /* never reached */ })
+  // port 0 = ephemeral; unit tests don't depend on the fixed cache-build port.
+  proxy = await createRpcProxy({ sepoliaRpcUrl: 'http://127.0.0.1:1' /* never reached */, port: 0 })
 })
 
 test.after(async () => {

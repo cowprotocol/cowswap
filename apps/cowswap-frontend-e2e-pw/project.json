@@ -11,6 +11,13 @@
         "command": "playwright test"
       }
     },
+    "e2e:build-cache": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "tsx src/support/buildWalletCache.ts"
+      }
+    },
     "e2e:smoke": {
       "executor": "nx:run-commands",
       "options": {

@@ -22,6 +22,7 @@
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
     "e2e": "nx run cowswap-frontend-e2e-pw:e2e",
+    "e2e:build-cache": "nx run cowswap-frontend-e2e-pw:e2e:build-cache",
     "e2e:smoke": "nx run cowswap-frontend-e2e-pw:e2e:smoke",
     "e2e:ui": "nx run cowswap-frontend-e2e-pw:e2e:ui",
     "e2e:report": "nx run cowswap-frontend-e2e-pw:e2e:report",
@@ -127,6 +128,9 @@
           "lit-html": "2.8.0"
         }
       }
+    },
+    "patchedDependencies": {
+      "@synthetixio/synpress-metamask@0.0.11": "patches/@synthetixio__synpress-metamask@0.0.11.patch"
     }
   },
   "dependencies": {

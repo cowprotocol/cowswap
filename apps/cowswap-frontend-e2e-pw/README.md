@@ -29,11 +29,29 @@ for the implementation plan.
 | `INTEGRATION_TEST_PRIVATE_KEY` | yes | Sepolia test account private key |
 | `REACT_APP_NETWORK_URL_11155111` | yes | Sepolia JSON-RPC URL |
 | `E2E_PW_MM_SEED` | CI | Twelve-word seed used by the Synpress MetaMask cache |
+| `E2E_RPC_PROXY_PORT` | no | RPC proxy port (default `18545`) — must match between cache build and test runs |
+
+## Building the MetaMask cache (required once)
+
+Synpress replays `src/support/wallet.setup.ts` in a real browser and snapshots the
+resulting MetaMask profile into `.cache-synpress/<hash>`. Tests fail with
+`Cache for <hash> does not exist` until the cache is built:
+
+```bash
+pnpm e2e:build-cache
+```
+
+Rebuild it (the CLI prompts unless you pass `--force`) whenever `wallet.setup.ts`
+changes — the hash is derived from the setup function body, so any edit
+invalidates the old cache. The build starts the RPC proxy on the fixed port
+(`18545` by default) because MetaMask validates each network's RPC URL when it
+is added, and the URLs are baked into the cached profile.
 
 ## Commands
 
 | Command | Description |
 |---|---|
+| `pnpm e2e:build-cache` | Build the Synpress MetaMask profile cache (prerequisite for all test runs) |
 | `pnpm e2e` | Full suite — all 362 tests |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |

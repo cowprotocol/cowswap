@@ -19,6 +19,11 @@ overrides:
 
 packageExtensionsChecksum: sha256-pRepWyCfyr/CPwq7w85jzIOlvbhWnZfcj1y272Xarmg=
 
+patchedDependencies:
+  '@synthetixio/synpress-metamask@0.0.11':
+    hash: 100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f
+    path: patches/@synthetixio__synpress-metamask@0.0.11.patch
+
 importers:
 
   .:
@@ -25305,7 +25310,7 @@ snapshots:
     dependencies:
       '@playwright/test': 1.49.1
 
-  '@synthetixio/synpress-metamask@0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@6.0.6)':
+  '@synthetixio/synpress-metamask@0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@6.0.6)':
     dependencies:
       '@playwright/test': 1.49.1
       '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
@@ -25351,7 +25356,7 @@ snapshots:
       '@synthetixio/ethereum-wallet-mock': 0.0.11(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@playwright/test@1.49.1)(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.6))(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
       '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
       '@synthetixio/synpress-core': 0.0.11(@playwright/test@1.49.1)
-      '@synthetixio/synpress-metamask': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@6.0.6)
+      '@synthetixio/synpress-metamask': 0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@6.0.6)
     transitivePeerDependencies:
       - '@depay/solana-web3.js'
       - '@depay/web3-blockchains'
