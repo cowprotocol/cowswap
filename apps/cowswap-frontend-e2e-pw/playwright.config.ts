@@ -4,6 +4,9 @@ import path from 'node:path'
 
 export default defineConfig({
   testDir: './src/tests',
+  // The Synpress MetaMask connect flow (extension boot + network switch + dapp approval)
+  // takes ~20-25s on its own, so the 30s Playwright default leaves no room for the test body.
+  timeout: 90_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
