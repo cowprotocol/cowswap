@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
+import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 
 import { TgAuthorization } from './useTgAuthorization'
@@ -47,19 +48,22 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   const [subscriptionByAccount, setSubscriptionByAccount] = useAtom(tgSubscriptionAtom)
   const addSnackbar = useAddSnackbar()
   const skipNextCheckRef = useRef(false)
-  const isTgSubscribed = account ? Boolean(subscriptionByAccount[account]) : false
+  const accountKey = account ? getAddressKey(account) : undefined
+  const isTgSubscribed = accountKey ? Boolean(subscriptionByAccount[accountKey]) : false
 
   const setTgSubscribed = useCallback(
     (targetAccount: string, value: boolean) => {
+      const targetAccountKey = getAddressKey(targetAccount)
+
       setSubscriptionByAccount((state) => {
         if (!value) {
-          const { [targetAccount]: _, ...nextState } = state
+          const { [targetAccountKey]: _, ...nextState } = state
           return nextState
         }
 
         return {
           ...state,
-          [targetAccount]: true,
+          [targetAccountKey]: true,
         }
       })
     },
@@ -82,8 +86,8 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
         return false
       }
 
-      const { data: result } =
-        (await callSubscriptionApi('/add-tg-subscription', account, data)) ?? EMPTY_SUBSCRIPTION_RESPONSE
+      const { data: result } = await (callSubscriptionApi('/add-tg-subscription', account, data) ??
+        EMPTY_SUBSCRIPTION_RESPONSE)
       setTgSubscribed(account, result)
       if (result) {
         addSnackbar({
@@ -104,8 +108,8 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
         return false
       }
 
-      const { data: result } =
-        (await callSubscriptionApi('/remove-tg-subscription', account, data)) ?? EMPTY_SUBSCRIPTION_RESPONSE
+      const { data: result } = await (callSubscriptionApi('/remove-tg-subscription', account, data) ??
+        EMPTY_SUBSCRIPTION_RESPONSE)
       if (!result) {
         return false
       }
@@ -170,7 +174,7 @@ function useSubscriptionApiCaller(
 ): SubscriptionApiCaller {
   return useCallback(
     (method: string, targetAccount: string, data: TelegramData) => {
-      if (!account || account !== targetAccount) return
+      if (!account || !areAddressesEqual(account, targetAccount)) return
       setIsCmsCallInProgress(true)
       return getCmsClient()
         .POST(method, { body: { account: targetAccount, data } })
