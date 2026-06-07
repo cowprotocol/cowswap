@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
@@ -10,6 +10,7 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
 
+import { shouldInvalidateLastUpdateTime } from './curatedMode'
 import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
 import { fetchTokenList } from '../../services/fetchTokenList'
@@ -68,6 +69,7 @@ export function TokensListsUpdater({
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const lastUpdateTimeState = useAtomValue(lastUpdateTimeAtom)
   const updateLastUpdateTime = useSetAtom(updateLastUpdateTimeAtom)
+  const previousCuratedModeRef = useRef<boolean | undefined>(undefined)
 
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
   const upsertLists = useSetAtom(upsertListsAtom)
@@ -79,6 +81,17 @@ export function TokensListsUpdater({
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })
   }, [chainId, updateLastUpdateTime])
+
+  function setCuratedListOnly(nextValue: boolean): void {
+    setEnvironment({ useCuratedListOnly: nextValue })
+
+    // When we widen the source set again, force a refetch for the newly visible lists.
+    if (shouldInvalidateLastUpdateTime(previousCuratedModeRef.current, nextValue)) {
+      updateLastUpdateTime({ [chainId]: 0 })
+    }
+
+    previousCuratedModeRef.current = nextValue
+  }
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
@@ -105,30 +118,30 @@ export function TokensListsUpdater({
   // Check if a user is from US and use Uniswap list, because of the SEC regulations
   useEffect(() => {
     if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
-      setEnvironment({ useCuratedListOnly: false })
+      setCuratedListOnly(false)
       return
     }
 
     if (isGeoBlockEnabled === false) {
-      setEnvironment({ useCuratedListOnly: false })
+      setCuratedListOnly(false)
       return
     }
 
-    setEnvironment({ useCuratedListOnly: true })
+    setCuratedListOnly(true)
 
     fetch('https://api.country.is')
       .then((res) => res.json())
       .then(({ country }) => {
         const isUsUser = country === 'US'
 
-        setEnvironment({ useCuratedListOnly: isUsUser })
+        setCuratedListOnly(isUsUser)
 
         if (isUsUser) {
           updateLastUpdateTime({ [chainId]: 0 })
         }
       })
       .catch((error) => {
-        setEnvironment({ useCuratedListOnly: true })
+        setCuratedListOnly(true)
 
         if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
 
