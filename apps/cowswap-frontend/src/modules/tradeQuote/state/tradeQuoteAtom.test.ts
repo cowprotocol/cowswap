@@ -93,4 +93,37 @@ describe('updateTradeQuoteAtom', () => {
     expect(state?.fetchParams?.priceQuality).toBe(PriceQuality.OPTIMAL)
     expect(hasFreshOptimalQuote(state!)).toBe(false)
   })
+
+  it('keeps a fresh optimal quote active when the same-cycle fast request fails later', () => {
+    const store = createStore()
+
+    store.set(updateTradeQuoteAtom, SELL_TOKEN, {
+      quote: MOCK_QUOTE,
+      fetchParams: {
+        hasParamsChanged: false,
+        priceQuality: PriceQuality.OPTIMAL,
+        fetchStartTimestamp: 1,
+      },
+      isLoading: false,
+      error: null,
+    })
+
+    store.set(updateTradeQuoteAtom, SELL_TOKEN, {
+      error: new Error('Fast quote failed'),
+      fetchParams: {
+        hasParamsChanged: false,
+        priceQuality: PriceQuality.FAST,
+        fetchStartTimestamp: 1,
+      },
+      isLoading: false,
+      hasParamsChanged: false,
+    })
+
+    const state = store.get(tradeQuotesAtom)[SELL_TOKEN]
+
+    expect(state?.quote).toBe(MOCK_QUOTE)
+    expect(state?.error).toBeNull()
+    expect(state?.fetchParams?.priceQuality).toBe(PriceQuality.OPTIMAL)
+    expect(hasFreshOptimalQuote(state!)).toBe(true)
+  })
 })
