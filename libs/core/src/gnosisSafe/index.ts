@@ -17,7 +17,11 @@ import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 //   [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global/api',
 // }
 
-const SAFE_API_NETWORK_ID: Record<SupportedChainId, string> = {
+// Gnosis Safe Transaction Service is EVM-only — non-EVM chains (e.g. Solana) are
+// intentionally omitted. `Partial` keeps the type honest so the `chainId in SAFE_API_NETWORK_ID`
+// gate in `createSafeApiKitInstance` correctly rejects them instead of building a
+// malformed `tx-service//api/` URL from an empty network id.
+const SAFE_API_NETWORK_ID: Partial<Record<SupportedChainId, string>> = {
   [SupportedChainId.MAINNET]: 'eth',
   [SupportedChainId.GNOSIS_CHAIN]: 'gno',
   [SupportedChainId.ARBITRUM_ONE]: 'arb1',
@@ -90,7 +94,7 @@ export async function getSafeTransaction(
 export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
   const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
+  return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {

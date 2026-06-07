@@ -77,6 +77,7 @@ describe('useNotifyWidgetTrade', () => {
     expect(mockedEmit).toHaveBeenCalledWith(CowWidgetEvents.ON_CHANGE_TRADE_PARAMS, {
       orderType: UiOrderType.SWAP,
       orderKind: OrderKind.SELL,
+      chainId: SELL_TOKEN.chainId,
       sellToken: {
         address: SELL_TOKEN.address,
         chainId: SELL_TOKEN.chainId,
@@ -100,6 +101,7 @@ describe('useNotifyWidgetTrade', () => {
       maximumSendSellAmount: { atoms: BigInt(0), units: '0' },
       minimumReceiveBuyAmount: { atoms: BigInt(0), units: '0' },
       recipient: undefined,
+      slippageBps: undefined,
     })
   })
 

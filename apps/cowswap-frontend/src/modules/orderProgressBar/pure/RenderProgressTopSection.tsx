@@ -3,8 +3,7 @@ import { ReactNode, useMemo, lazy, Suspense } from 'react'
 import { getRandomInt } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { FinishedStepContentSection } from './FinishedStepContentSection'
 import { ProgressSkeleton } from './ProgressSkeleton'

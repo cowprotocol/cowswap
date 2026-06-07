@@ -4,11 +4,12 @@ import { ReactNode, Suspense, useMemo } from 'react'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { Loading } from 'legacy/components/FlashingLoading'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'

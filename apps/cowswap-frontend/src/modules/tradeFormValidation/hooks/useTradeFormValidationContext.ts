@@ -9,11 +9,11 @@ import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowpr
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import {
   TradeType,
