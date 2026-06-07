@@ -8,9 +8,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { ApproveCurrencyCallback, MAX_APPROVE_AMOUNT } from 'modules/erc20Approve'
+import { ApproveCurrencyCallback, getIsTradeApproveResult, MAX_APPROVE_AMOUNT } from 'modules/erc20Approve'
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
+import { useSwapPartialApprovalToggleState } from 'modules/swap'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
@@ -77,10 +77,15 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
 
       return sendTransaction('approve', () => {
         return callbacks.approve(unitsToApprove).then((res): string | undefined => {
-          const tx = res?.txResponse
-          return (tx && 'transactionHash' in tx ? tx.transactionHash : (tx as { hash?: string })?.hash) as
-            | string
-            | undefined
+          if (!res) return undefined
+
+          if (getIsTradeApproveResult(res)) {
+            const tx = res.txResponse
+
+            return 'transactionHash' in tx ? tx.transactionHash : tx.hash
+          }
+
+          return res.transactionHash || undefined
         })
       })
     }

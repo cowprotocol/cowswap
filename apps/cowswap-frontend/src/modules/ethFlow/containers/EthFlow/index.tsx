@@ -63,7 +63,7 @@ export function EthFlowModal({
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const currencyToApprove = isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
 
-  const approveCallback = useApproveCurrency(wrappedAmount, true)
+  const approveCallback = useApproveCurrency(wrappedAmount ?? undefined, true)
 
   const ethFlowActions = useEthFlowActions(
     {
