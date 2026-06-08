@@ -36,6 +36,7 @@ export const SENTRY_IGNORED_QUOTE_ERRORS = [
   QuoteApiErrorCodes.TokenTemporarilySuspended,
   QuoteApiErrorCodes.TradingOutsideAllowedWindow,
   QuoteApiErrorCodes.UnsupportedToken,
+  QuoteApiErrorCodes.NoLiquidity,
 ]
 
 const UNHANDLED_ERROR_CODE = 'UNHANDLED_ERROR' as const
