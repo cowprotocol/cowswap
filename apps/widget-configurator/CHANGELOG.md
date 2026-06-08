@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.5.1...widget-configurator-v3.6.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(wallet): enable coinbase wallet connection in standalone mode (#7475)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- fix: fix patch file and enforce pinning deps (#7569)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.0
+  - @cowprotocol/assets@2.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/events@4.5.0
+  - @cowprotocol/widget-lib@4.1.0
+  - @cowprotocol/widget-react@3.1.0
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.5.0...widget-configurator-v3.5.1) (2026-05-22)
 
 ### Patch Changes
