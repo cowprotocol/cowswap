@@ -2238,7 +2238,7 @@ msgstr "This is an"
 msgid "Something went wrong creating your order"
 msgstr "Something went wrong creating your order"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+#: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "Enable order alerts"
 msgstr "Enable order alerts"
 
@@ -2820,7 +2820,7 @@ msgstr "BFF did not return a price for '{currencyAddress}' on chain '{currencyCh
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
 
-#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+#: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "Enable trade alerts"
 msgstr "Enable trade alerts"
 
@@ -2870,7 +2870,7 @@ msgstr "Failed to fetch manifest from {manifestUrl}. Please verify the URL and t
 msgid "Order executes at"
 msgstr "Order executes at"
 
-#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Trade alert settings"
 msgstr "Trade alert settings"
 
@@ -3193,7 +3193,7 @@ msgstr "Rewards end"
 #~ msgid "The input token cannot be transferred. There may be an issue with the input token."
 #~ msgstr "The input token cannot be transferred. There may be an issue with the input token."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "{pendingCount} Pending"
 msgstr "{pendingCount} Pending"
 
@@ -3484,7 +3484,7 @@ msgstr "{prefix}-hooks allow you to automatically execute any action {position} 
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 
-#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+#: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "Not now"
 msgstr "Not now"
 
@@ -3710,7 +3710,7 @@ msgstr "Connect your wallet first"
 msgid "Animated cow reacts to empty order list"
 msgstr "Animated cow reacts to empty order list"
 
-#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Trade alerts"
 msgstr "Trade alerts"
 
@@ -4243,7 +4243,7 @@ msgstr "Only the {limit} most recent orders were searched."
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
 
@@ -4645,7 +4645,7 @@ msgstr "Order Receipt"
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+#: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "When orders fill or expire"
 msgstr "When orders fill or expire"
 
@@ -5950,7 +5950,7 @@ msgstr "Since prices can change significantly over time, we suggest increasing y
 msgid "No surplus for the given time period"
 msgstr "No surplus for the given time period"
 
-#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -6520,7 +6520,7 @@ msgstr "Executes at"
 #~ msgid "From (incl. costs)"
 #~ msgstr "From (incl. costs)"
 
-#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+#: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "Get trade alerts"
 msgstr "Get trade alerts"
 
@@ -7067,7 +7067,7 @@ msgstr "Default approve"
 msgid "Order cannot be filled due to insufficient balance on the current account."
 msgstr "Order cannot be filled due to insufficient balance on the current account."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Restoring wallet..."
 msgstr "Restoring wallet..."
 
@@ -7084,7 +7084,7 @@ msgstr "Fetching balances"
 msgid "This code is taken. Generate another one."
 msgstr "This code is taken. Generate another one."
 
-#: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
+#: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Wallet"
 msgstr "Wallet"
 

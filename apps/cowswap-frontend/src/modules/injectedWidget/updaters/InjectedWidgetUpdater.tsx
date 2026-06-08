@@ -13,6 +13,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
+import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -21,7 +22,6 @@ import { IframeResizer } from './IframeResizer'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
-import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
