@@ -2,8 +2,29 @@ import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+jest.mock('@cowprotocol/common-const', () => ({
+  COW_CDN: 'https://cdn.cow.fi',
+}))
+
+jest.mock('../environmentAtom', () => {
+  const { atom } = require('jotai')
+  const { SupportedChainId } = require('@cowprotocol/cow-sdk')
+
+  const environmentAtom = atom({
+    chainId: SupportedChainId.MAINNET,
+  })
+  const updateEnvironmentAtom = atom(null, (get, set, update: Record<string, unknown>) => {
+    set(environmentAtom, { ...get(environmentAtom), ...update })
+  })
+
+  return {
+    environmentAtom,
+    updateEnvironmentAtom,
+  }
+})
+
 import { removeListAtom, upsertListsAtom } from './tokenListsActionsAtom'
-import { listsStatesByChainAtom, listsStatesMapAtom } from './tokenListsStateAtom'
+import { listsStatesByChainAtom, listsStatesMapAtom, virtualListsStateAtom } from './tokenListsStateAtom'
 
 import { ListState, TokenListsByChainState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
@@ -55,6 +76,26 @@ const MOCK_LIST_STATE_2: ListState = {
         address: '0x2234567890123456789012345678901234567890',
         name: 'Test Token 2',
         symbol: 'TEST2',
+        decimals: 18,
+      },
+    ],
+  },
+  isEnabled: true,
+}
+
+const MOCK_VIRTUAL_LIST_STATE: ListState = {
+  source: 'widgetCustomTokens',
+  widgetAppCode: 'widget-test',
+  list: {
+    name: 'Widget custom tokens',
+    timestamp: '2024-01-01T00:00:00Z',
+    version: { major: 1, minor: 0, patch: 0 },
+    tokens: [
+      {
+        chainId: 1,
+        address: '0x3234567890123456789012345678901234567890',
+        name: 'Widget Token',
+        symbol: 'WIDGET',
         decimals: 18,
       },
     ],
@@ -134,6 +175,34 @@ describe('listsStatesByChainAtom - token lists state', () => {
       const listsStatesMap = await store.get(listsStatesMapAtom)
 
       expect(Object.keys(listsStatesMap)).toHaveLength(0)
+    })
+
+    it('keeps virtual widget lists when curated-only mode is enabled', async () => {
+      const store = createStore()
+
+      const stateWithoutWidgetLists: TokenListsByChainState = {
+        ...DEFAULT_LISTS_STATE,
+        [MOCK_CHAIN_ID]: {
+          [MOCK_LIST_STATE.source]: MOCK_LIST_STATE,
+        },
+      }
+
+      store.set(environmentAtom, {
+        chainId: MOCK_CHAIN_ID,
+        widgetAppCode: 'widget-test',
+        selectedLists: ['widgetcustomtokens'],
+        useCuratedListOnly: true,
+        isYieldEnabled: false,
+      })
+      store.set(listsStatesByChainAtom, stateWithoutWidgetLists)
+      store.set(virtualListsStateAtom, {
+        [MOCK_VIRTUAL_LIST_STATE.source]: MOCK_VIRTUAL_LIST_STATE,
+      })
+
+      const listsStatesMap = await store.get(listsStatesMapAtom)
+
+      expect(listsStatesMap[MOCK_VIRTUAL_LIST_STATE.source]).toEqual(MOCK_VIRTUAL_LIST_STATE)
+      expect(listsStatesMap[MOCK_LIST_STATE.source]).toBeUndefined()
     })
   })
 
