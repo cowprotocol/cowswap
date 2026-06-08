@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.4...ens-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/wallet-provider@2.2.0
+  - @cowprotocol/cowswap-abis@4.1.0
+
 ## [3.2.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.2.3...ens-v3.2.4) (2026-05-22)
 
 ### Patch Changes

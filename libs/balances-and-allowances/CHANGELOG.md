@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.6...balances-and-allowances-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat: remove unused bff balances endpoint (#7551)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/multicall@3.3.0
+  - @cowprotocol/tokens@3.7.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/wallet-provider@2.2.0
+  - @cowprotocol/wallet@3.5.0
+  - @cowprotocol/cowswap-abis@4.1.0
+
+## 3.2.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+  - @cowprotocol/multicall@3.2.4
+
 ## [3.2.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.4...balances-and-allowances-v3.2.5) (2026-05-22)
 
 ### Patch Changes
