@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.6.0...ui-v3.7.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- fix: update dependencies (#7575)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.0
+  - @cowprotocol/assets@2.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui-utils@2.1.0
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.5.0...ui-v3.6.0) (2026-05-22)
 
 ### Minor Changes

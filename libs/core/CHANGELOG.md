@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/core-v3.3.0...core-v3.4.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+### Patch Changes
+
+- fix: use query-param format for Safe transaction URLs
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/core-v3.2.3...core-v3.3.0) (2026-05-22)
 
 ### Minor Changes
