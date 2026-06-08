@@ -10,6 +10,7 @@ import { WagmiProvider } from 'wagmi'
 
 import { config, reownAppKit } from './config'
 import { markInitialReconnectSettled } from './initialReconnectLifecycle'
+import { flushDeferredProviders } from './providerIsolation'
 import { SafeConnectionHandler } from './SafeConnectionHandler'
 
 import { getIsInjectedMobileBrowser } from '../api/utils/connection'
@@ -149,6 +150,7 @@ function OpenWalletModalOnCustomEvent(): null {
     if (!reownAppKit) return
     const appKit = reownAppKit
     const handler = (): void => {
+      flushDeferredProviders()
       void appKit.open()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
