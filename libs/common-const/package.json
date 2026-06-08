@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.1.3-pr-882-829c8046.0",
+    "@cowprotocol/cow-sdk": "9.1.3-pr-882-a2013a13.0",
     "viem": "2.48.8",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",
