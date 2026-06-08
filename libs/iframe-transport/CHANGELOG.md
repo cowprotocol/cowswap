@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.6...iframe-transport-v2.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.4.0
+
 ## [2.2.6](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.2.5...iframe-transport-v2.2.6) (2026-05-22)
 
 ### Patch Changes
