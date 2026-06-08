@@ -5,13 +5,13 @@ import svgCarretDownSrc from '@cowprotocol/assets/images/carret-down.svg'
 import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
-  CONTRACTS_PKG_VERSION,
+  getEtherscanLink,
+  isBarnBackendEnv,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
-  SupportedChainId as ChainId,
-} from '@cowprotocol/cow-sdk'
+} from '@cowprotocol/common-utils'
+import { CONTRACTS_PKG_VERSION, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

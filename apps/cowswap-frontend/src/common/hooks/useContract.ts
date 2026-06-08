@@ -9,6 +9,7 @@ import {
 } from '@cowprotocol/common-const'
 import { isEns, isProd, isStaging, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import {
+  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   CowEnv,
   SupportedChainId,

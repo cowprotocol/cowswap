@@ -9,7 +9,7 @@
   - @cowprotocol/balances-and-allowances@3.2.6
   - @cowprotocol/multicall@3.2.4
 
-## 3.12.0
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.11.0...cowswap-v3.12.0) (2026-05-22)
 
 ### Minor Changes
 

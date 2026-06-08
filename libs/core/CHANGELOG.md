@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.3.0
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/core-v3.2.3...core-v3.3.0) (2026-05-22)
 
 ### Minor Changes
 

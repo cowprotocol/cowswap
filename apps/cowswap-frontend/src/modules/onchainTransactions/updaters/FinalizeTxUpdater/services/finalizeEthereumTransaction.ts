@@ -63,5 +63,8 @@ export function finalizeEthereumTransaction(
       replacementType: transaction.replacementType,
     },
     summary: transaction.summary || '',
+    // `safeTransactionHash` is only set when the tx was finalized through the Safe
+    // Transaction Service, meaning `transactionHash` above is a real safeTxHash.
+    isSafeTx: !!safeTransactionHash,
   })
 }

@@ -6,12 +6,12 @@ import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
+  EvmChains,
+  isEvmChain,
   MetadataApi,
   OrderBookApi,
   Signer,
   setGlobalAdapter,
-  ApiBaseUrls,
-  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
@@ -19,37 +19,25 @@ import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
-const PROD_BASE_URL = 'https://api.cow.fi'
-
-/**
- * An object containing *production* environment base URLs for each supported `chainId`.
- * @see {@link https://api.cow.fi/docs/#/}
- */
-export const ORDER_BOOK_PROD_CONFIG: ApiBaseUrls = {
-  [SupportedChainId.MAINNET]: `${PROD_BASE_URL}/mainnet`,
-  [SupportedChainId.GNOSIS_CHAIN]: `${PROD_BASE_URL}/xdai`,
-  [SupportedChainId.ARBITRUM_ONE]: `${PROD_BASE_URL}/arbitrum_one`,
-  [SupportedChainId.BASE]: `${PROD_BASE_URL}/base`,
-  [SupportedChainId.SEPOLIA]: `${PROD_BASE_URL}/sepolia`,
-  [SupportedChainId.POLYGON]: `${PROD_BASE_URL}/polygon`,
-  [SupportedChainId.AVALANCHE]: `${PROD_BASE_URL}/avalanche`,
-  [SupportedChainId.BNB]: `${PROD_BASE_URL}/bnb`,
-  [SupportedChainId.LINEA]: `${PROD_BASE_URL}/linea`,
-  [SupportedChainId.PLASMA]: `${PROD_BASE_URL}/plasma`,
-  [SupportedChainId.INK]: `${PROD_BASE_URL}/ink`,
-}
-
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : undefined
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
 
+function getInitialEvmChainId(): EvmChains {
+  const urlChainId = getCurrentChainIdFromUrl()
+  // viem doesn't support non-evm chains, so set default mainnet for global adapter
+  return isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
+}
+
+const initialEvmChainId = getInitialEvmChainId()
+
 setGlobalAdapter(
   new ViemAdapter({
     provider: createPublicClient({
-      chain: VIEM_CHAINS[getCurrentChainIdFromUrl()],
-      transport: http(RPC_URLS[getCurrentChainIdFromUrl()]),
+      chain: VIEM_CHAINS[initialEvmChainId],
+      transport: http(RPC_URLS[initialEvmChainId]),
     }),
   }) as AbstractProviderAdapter,
 )
@@ -61,6 +49,14 @@ export const orderBookApi = new OrderBookApi({
 })
 
 export const metadataApiSDK = new MetadataApi()
+
+export function setBearerToken(token: string | null): void {
+  if (token) {
+    orderBookApi.context.bearerToken = token
+  } else {
+    delete orderBookApi.context.bearerToken
+  }
+}
 
 export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
