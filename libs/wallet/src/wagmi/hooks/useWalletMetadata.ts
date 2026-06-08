@@ -144,11 +144,14 @@ export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
+  const isWalletConnect = connector?.type !== ConnectionType.WALLET_CONNECT_V2
 
-  if (isSafeApp) return false
-  if (connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
+  return useMemo(() => {
+    if (isSafeApp) return false
+    if (isWalletConnect) return false
 
-  const peerName = wcPeerMetadata.walletName?.toLowerCase() || ''
+    const peerName = wcPeerMetadata.walletName?.toLowerCase() || ''
 
-  return peerName.includes('safe')
+    return peerName.includes('safe')
+  }, [isSafeApp, isWalletConnect, wcPeerMetadata.walletName])
 }
