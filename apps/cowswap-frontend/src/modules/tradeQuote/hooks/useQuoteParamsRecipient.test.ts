@@ -115,7 +115,10 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({
+        receiver: ACCOUNT_ADDRESS,
+        bridgeRecipient: ACCOUNT_ADDRESS,
+      })
     })
 
     it('should use recipientAddress when recipient is ENS name with resolved address', () => {
@@ -123,7 +126,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: ANOTHER_VALID_ADDRESS })
     })
 
     it('should fall back to account when recipient is invalid', () => {
@@ -131,7 +134,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should fall back to account when recipient is not set', () => {
@@ -139,7 +142,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
@@ -153,7 +156,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when recipientAddress is undefined', () => {
@@ -161,7 +164,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return account when recipientAddress is invalid', () => {
@@ -169,7 +172,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should ignore recipient and use recipientAddress when both are valid EVM', () => {
@@ -177,7 +180,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: ANOTHER_VALID_ADDRESS })
     })
 
     it('should use recipient when recipientAddress is not set', () => {
@@ -185,7 +188,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
   })
 
@@ -199,7 +202,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when nothing is set', () => {
@@ -207,7 +210,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return recipient when it is a valid EVM address', () => {
@@ -215,7 +218,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when recipient is invalid non-EVM/non-Solana/non-BTC string', () => {
@@ -223,7 +226,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
@@ -269,7 +272,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should reject BTC address when output chain is EVM (chainId=1)', () => {
@@ -277,7 +280,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should accept SOL address when outputCurrency is null (backward compat)', () => {
@@ -323,7 +326,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return undefined bridgeRecipient when outputCurrency is null and no recipient is set', () => {
@@ -331,7 +334,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
