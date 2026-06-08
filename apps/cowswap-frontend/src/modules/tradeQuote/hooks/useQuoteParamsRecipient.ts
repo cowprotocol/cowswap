@@ -44,7 +44,7 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
 
     const resolvedReceiver = resolveEvmReceiver(recipientAddress, recipient, account)
 
-    // Default: EVM-only receiver, no separate bridge recipient
+    // Default: EVM receiver, used for both receiver and bridge recipient
     return { receiver: resolvedReceiver, bridgeRecipient: resolvedReceiver }
   }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
 }
