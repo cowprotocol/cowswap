@@ -129,9 +129,14 @@ export function TokensListsUpdater({
 
     setCuratedListOnly(true)
 
-    fetch('https://api.country.is')
+    let isStale = false
+    const controller = new AbortController()
+
+    fetch('https://api.country.is', { signal: controller.signal })
       .then((res) => res.json())
       .then(({ country }) => {
+        if (isStale) return
+
         const isUsUser = country === 'US'
 
         setCuratedListOnly(isUsUser)
@@ -141,6 +146,8 @@ export function TokensListsUpdater({
         }
       })
       .catch((error) => {
+        if (isStale) return
+
         setCuratedListOnly(true)
 
         if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
@@ -155,6 +162,11 @@ export function TokensListsUpdater({
           },
         })
       })
+
+    return () => {
+      isStale = true
+      controller.abort()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isGeoBlockEnabled])
 
