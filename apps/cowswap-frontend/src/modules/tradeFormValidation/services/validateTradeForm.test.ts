@@ -250,6 +250,18 @@ describe('validateTradeForm - price impact loading', () => {
     expect(result || []).not.toContain(TradeFormValidation.ImpactLoading)
   })
 
+  test('disables widget trade when price impact is unknown and widget requires known price impact', () => {
+    const context = {
+      ...baseContext,
+      injectedWidgetParams: { disableTrade: { whenPriceImpactIsUnknown: true } },
+      tradePriceImpact: { loading: false, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.DisableTradeWithUnknownPriceImpact)
+    expect(result || []).not.toContain(TradeFormValidation.ImpactLoading)
+  })
+
   test('does not add ImpactLoading for wrap/unwrap flow even if tradePriceImpact is loading', () => {
     const context = {
       ...baseContext,
