@@ -9,8 +9,8 @@ import {
   resolveAffectedPackages,
   changesetFilename,
   changesetContent,
-  isReleaseCommitSubject,
   resolveBaselineRef,
+  findRecentReleasePrCommit,
 } from './commits-to-changesets-lib.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
