@@ -24,17 +24,17 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
     // Non-EVM recipient (Solana/BTC): pass as bridgeRecipient for the bridge provider,
     // and use account as the EVM receiver for the CoW API.
     // Non-EVM always takes priority over the bridge provider type — do not reorder.
-    const bridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
-    if (bridgeRecipient) {
-      return { receiver: account, bridgeRecipient }
+    const nonEvmBridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
+    if (nonEvmBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: nonEvmBridgeRecipient }
     }
 
     // For non-EVM output chains, always fall back to the default placeholder when no valid
     // recipient was resolved (empty, invalid, or wrong-chain input).
     // Prevents the quote API from receiving an invalid address and returning errors instead of prices.
-    const defaultBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
-    if (defaultBridgeRecipient) {
-      return { receiver: account, bridgeRecipient: defaultBridgeRecipient }
+    const defaultNonEvmBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
+    if (defaultNonEvmBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: defaultNonEvmBridgeRecipient }
     }
 
     // EVM ReceiverAccountBridgeProvider: use the custom recipient for both
@@ -42,8 +42,10 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
       return { receiver: recipient, bridgeRecipient: recipient }
     }
 
-    // Default: EVM-only receiver, no separate bridge recipient
-    return { receiver: resolveEvmReceiver(recipientAddress, recipient, account), bridgeRecipient: undefined }
+    const resolvedReceiver = resolveEvmReceiver(recipientAddress, recipient, account)
+
+    // Default: EVM receiver, used for both receiver and bridge recipient
+    return { receiver: resolvedReceiver, bridgeRecipient: resolvedReceiver }
   }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
 }
 
