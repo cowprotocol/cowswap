@@ -1,5 +1,42 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.4.1...wallet-v3.5.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- fix: fix approve+swap flow in Safe wallet (#7590)
+
+- fix: update dependencies (#7575)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/ens@3.3.0
+  - @cowprotocol/iframe-transport@2.3.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/wallet-provider@2.2.0
+
+## 3.4.1
+
+### Patch Changes
+
+- fix: fix brave wallet specific crash (#7603)
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.3.2...wallet-v3.4.0) (2026-05-22)
 
 ### Minor Changes
