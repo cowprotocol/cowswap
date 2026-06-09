@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.4.0](https://github.com/cowprotocol/cowswap/compare/types-v4.3.2...types-v4.4.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.1.0
+
 ## [4.3.2](https://github.com/cowprotocol/cowswap/compare/types-v4.3.1...types-v4.3.2) (2026-05-22)
 
 ### Patch Changes

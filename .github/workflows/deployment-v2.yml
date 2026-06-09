@@ -6,8 +6,8 @@ on:
     tags: [ cowswap-*, explorer-* ]
 
 concurrency:
-  group: release-branch-sync
-  cancel-in-progress: false
+  group: ${{ startsWith(github.ref, 'refs/tags/') && format('release-tag-{0}', github.sha) || 'release-branch-sync' }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/tags/') }}
 
 permissions:
   contents: write
