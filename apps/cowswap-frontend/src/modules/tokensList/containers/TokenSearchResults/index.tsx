@@ -4,9 +4,9 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
-import { Field } from 'legacy/state/types'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { Field } from 'legacy/state/types'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'

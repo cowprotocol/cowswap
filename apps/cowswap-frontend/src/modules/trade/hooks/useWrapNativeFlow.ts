@@ -38,6 +38,7 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
           orderType: UiOrderType.SWAP,
           inputAmount: state?.inputCurrencyAmount,
           outputAmount: state?.outputCurrencyAmount,
+          chainId: state?.inputCurrencyAmount?.currency.chainId,
         }),
       ).catch(() => false)
 

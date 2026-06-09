@@ -23,13 +23,13 @@ export function Toggle({
 }): ReactNode {
   const { t } = useLingui()
 
+  const handleSelect = (value: boolean): void => {
+    selectPartialApprove(value)
+  }
+
   return (
     <styledEl.ToggleWrapper>
-      <Option
-        isActive={isPartialApproveSelected}
-        onClick={() => selectPartialApprove(true)}
-        title={t`Partial approval`}
-      >
+      <Option isActive={isPartialApproveSelected} onClick={() => handleSelect(true)} title={t`Partial approval`}>
         <styledEl.PartialAmountWrapper
           onClick={() => {
             if (isPartialApproveSelected && changeApproveAmount) {
@@ -43,7 +43,7 @@ export function Toggle({
           </styledEl.EditIcon>
         </styledEl.PartialAmountWrapper>
       </Option>
-      <Option isActive={!isPartialApproveSelected} onClick={() => selectPartialApprove(false)} title={t`Full approval`}>
+      <Option isActive={!isPartialApproveSelected} onClick={() => handleSelect(false)} title={t`Full approval`}>
         <Trans>Unlimited one-time</Trans>
       </Option>
     </styledEl.ToggleWrapper>
