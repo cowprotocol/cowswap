@@ -1,5 +1,7 @@
 import { useMemo, type ReactNode } from 'react'
 
+import { WIDGET_IFRAME_ID } from '@cowprotocol/widget-lib'
+
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -67,7 +69,7 @@ export function AppearanceStyleControls({
       </Box>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          #cowswap-iframe (host)
+          #{WIDGET_IFRAME_ID} (host)
         </Typography>
         <JsonInput
           label="Iframe styles (JSON)"

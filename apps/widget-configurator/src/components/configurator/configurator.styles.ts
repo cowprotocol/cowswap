@@ -1,3 +1,5 @@
+import { WIDGET_IFRAME_ID } from '@cowprotocol/widget-lib'
+
 import { darken, lighten } from '@mui/material/styles'
 
 import type { SxProps, Theme } from '@mui/material/styles'
@@ -47,7 +49,7 @@ export const configuratorCheckeredCanvasSx =
         justifyContent: 'center',
         alignItems: 'center',
 
-        '& #cowswap-iframe, & iframe': {
+        [`& #${WIDGET_IFRAME_ID}, & iframe`]: {
           display: 'block',
           border: 0,
           margin: '0 auto',

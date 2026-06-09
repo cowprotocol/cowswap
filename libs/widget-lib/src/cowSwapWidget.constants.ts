@@ -1,5 +1,11 @@
 import { CowSwapWidgetParams } from './types'
 
+/** `id` of the iframe element created by {@link createCowSwapWidget}. */
+export const WIDGET_IFRAME_ID = 'cowswap-widget-iframe'
+
+/** Default `id` of the host container rendered by `@cowprotocol/widget-react`. */
+export const WIDGET_CONTAINER_ID = 'cowswap-widget'
+
 export const DEFAULT_WIDGET_PARAMS = {
   appCode: 'Unknown',
   /*

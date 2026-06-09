@@ -8,6 +8,7 @@ import {
   CowSwapWidgetProps,
   EthereumProvider,
   createCowSwapWidget,
+  WIDGET_CONTAINER_ID,
 } from '@cowprotocol/widget-lib'
 
 type WidgetErrorState = { error: Error; message: string } | null
@@ -137,7 +138,7 @@ export function CowSwapWidget({
   return (
     <div
       ref={containerRef}
-      id="cowswap-widget"
+      id={WIDGET_CONTAINER_ID}
       style={{
         width: '100%',
         flex: '1 0 auto',

@@ -6,6 +6,7 @@ import { assignElementStyles } from './applyElementStyles'
 import {
   DEFAULT_WIDGET_PARAMS,
   WIDGET_IFRAME_ALLOW,
+  WIDGET_IFRAME_ID,
   WIDGET_IFRAME_REFERRER_POLICY,
   WIDGET_IFRAME_SANDBOX,
 } from './cowSwapWidget.constants'
@@ -231,8 +232,7 @@ function updateProvider(
 function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
-  // TODO: Create constant for this and the other ID and export them.
-  iframe.id = 'cowswap-iframe'
+  iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetUrl(params)
   //iframe.width = width
   //iframe.height = height
