@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.1.0...widget-lib-v4.2.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(widget): handle widget loading error (#7574)
+
+- feat(widget): control custom recipient (#7573)
+
+- feat(widget): add options to control approval flow (#7571)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.6.0
+
 ## [4.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.5...widget-lib-v4.1.0) (2026-06-08)
 
 ### Minor Changes
