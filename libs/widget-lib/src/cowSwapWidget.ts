@@ -10,7 +10,6 @@ import {
   WIDGET_IFRAME_REFERRER_POLICY,
   WIDGET_IFRAME_SANDBOX,
 } from './cowSwapWidget.constants'
-import { deepMerge } from './deepMerge'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
@@ -63,7 +62,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
 
   let provider = providerAux
-  let currentParams = deepMerge(params, DEFAULT_WIDGET_PARAMS)
+  let currentParams: CowSwapWidgetParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
   let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
@@ -155,7 +154,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   return {
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
-      currentParams = deepMerge(newParams, DEFAULT_WIDGET_PARAMS)
+      currentParams = { ...DEFAULT_WIDGET_PARAMS, ...newParams }
 
       updateIframeElement(iframe, currentParams.iframeStyle, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
