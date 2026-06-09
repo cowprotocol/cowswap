@@ -10,6 +10,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { logUsdPrices } from '../logger'
 import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
@@ -44,6 +45,10 @@ export function UsdPricesUpdater() {
   const swrResponse = useSWR<UsdRawPrices | null>(
     ['UsdPricesUpdater', queue],
     () => {
+      if (queue.length) {
+        logUsdPrices.debug(`Fetching USD prices for ${queue.map(({ symbol }) => symbol).join(', ')}`)
+      }
+
       setUsdPricesLoading(queue)
 
       return processQueue(queue)
@@ -60,7 +65,7 @@ export function UsdPricesUpdater() {
     }
 
     if (error) {
-      console.error('Error loading USD prices', error)
+      logUsdPrices.error('Error loading USD prices', error)
       return
     }
 
@@ -93,7 +98,7 @@ async function processQueue(queue: Token[]): Promise<UsdRawPrices> {
           state.updatedAt = Date.now()
         }
       } catch {
-        console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
+        logUsdPrices.warn(`Failed to fetch USD price for ${currency.symbol}`)
       }
 
       return { [getUsdPriceStateKey(currency)]: state }
