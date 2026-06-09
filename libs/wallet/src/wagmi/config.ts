@@ -3,12 +3,15 @@ import { getCurrentChainIdFromUrl, isImTokenBrowser, isInjectedWidget } from '@c
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
+import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider, http } from 'viem'
 import { createConfig, createStorage, type Config, type Transport } from 'wagmi'
 
+import { IS_SOLANA_ENABLED } from './consts'
 import { activeProviderRef, interceptEIP6963Providers, PROVIDER_DISCONNECTED } from './providerIsolation'
 
 import { COW_WIDGET_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
@@ -183,6 +186,7 @@ const metadata = {
 }
 
 const connectors = getConnectors()
+const solanaWeb3JsAdapter = new SolanaAdapter()
 
 let wagmiAdapter: WagmiAdapter | null = null
 let reownAppKit: ReturnType<typeof createAppKit> | null = null
@@ -248,7 +252,7 @@ if (isSafeIframe) {
   const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
 
   reownAppKit = createAppKit({
-    adapters: [wagmiAdapter],
+    adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaWeb3JsAdapter] : [wagmiAdapter],
     allowUnsupportedChain: true,
     customRpcUrls,
     defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
@@ -271,7 +275,7 @@ if (isSafeIframe) {
       connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
     },
     metadata,
-    networks: SUPPORTED_REOWN_NETWORKS,
+    networks: IS_SOLANA_ENABLED ? [...SUPPORTED_REOWN_NETWORKS, solana] : SUPPORTED_REOWN_NETWORKS,
     projectId,
     termsConditionsUrl:
       'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',

@@ -41,7 +41,7 @@ export function useSetupTradeState(): void {
 
   // When wallet is connected, and user navigates to the URL with a new chainId
   // We must change chainId in provider, and only then change the trade state
-  // Since the network chaning process takes some time, we have to remember the state from URL
+  // Since the network changing process takes some time, we have to remember the state from URL
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 

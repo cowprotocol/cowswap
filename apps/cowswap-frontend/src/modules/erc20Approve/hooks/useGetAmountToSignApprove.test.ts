@@ -4,6 +4,8 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
@@ -29,7 +31,14 @@ jest.mock('../state', () => ({
   useIsPartialApproveSelectedByUser: jest.fn(),
 }))
 
+jest.mock('modules/injectedWidget', () => ({
+  useIsInfiniteApproveDisabledInWidget: jest.fn(),
+}))
+
 const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabledInWidget
+>
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
 const mockUseGetPartialAmountToSignApprove = useGetPartialAmountToSignApprove as jest.MockedFunction<
   typeof useGetPartialAmountToSignApprove
@@ -51,6 +60,7 @@ describe('useGetAmountToSignApprove', () => {
     mockUseNeedsApproval.mockReturnValue(true)
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseAtomValue.mockReturnValue(true)
+    mockUseIsInfiniteApproveDisabled.mockReturnValue(false)
   })
 
   describe('when partialAmountToSign is null', () => {
@@ -308,6 +318,28 @@ describe('useGetAmountToSignApprove', () => {
       mockUseAtomValue.mockReturnValue(false)
       rerender()
       expect(result.current).toEqual(mockMaxAmount)
+    })
+  })
+
+  describe('disableInfiniteApprove widget param', () => {
+    it('returns the partial amount even when user has not opted in and settings are disabled', () => {
+      mockUseNeedsApproval.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
+      mockUseAtomValue.mockReturnValue(false)
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+
+      const { result } = renderHook(() => useGetAmountToSignApprove())
+
+      expect(result.current).toEqual(mockPartialAmount)
+    })
+
+    it('still returns zero when approval is not needed, even if disableInfiniteApprove is true', () => {
+      mockUseNeedsApproval.mockReturnValue(false)
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+
+      const { result } = renderHook(() => useGetAmountToSignApprove())
+
+      expect(result.current).toEqual(mockZeroAmount)
     })
   })
 })

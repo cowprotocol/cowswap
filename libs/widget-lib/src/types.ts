@@ -90,6 +90,12 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
+  onLoadingError?(): void
+  /**
+   * Custom CSS appended to the error document displayed inside the iframe when the widget fails to load.
+   * Use it to override the default look (`.errorContent` and `.reloadButton` classes).
+   */
+  loadingErrorStyles?: string
   enableSafeSdkBridge?: boolean
 }
 
@@ -372,10 +378,35 @@ export interface CowSwapWidgetParams {
   disableCrossChainSwap?: boolean
 
   /**
+   * Disable setting custom recipient for all trading widgets (swap,limit,twap)
+   * Important! Cross-chain swaps are based on custom recipient functionality!
+   * If you want always having recipient === order owner, then set disableCrossChainSwap=true as well
+   */
+  disableCustomRecipient?: boolean
+
+  /**
    * Disables adding custom tokens and custom token lists.
    * Defaults to false.
    */
   disableTokenImport?: boolean
+  /**
+   * Disables the EIP-2612 permit signing flow. When `true`, the widget will
+   * never sign an off-chain permit and will always send an on-chain approval
+   * transaction — even for tokens that support permit.
+   *
+   * Defaults to false.
+   */
+  disableEIP2612Permits?: boolean
+
+  /**
+   * Disables infinite (MAX_UINT256) ERC-20 approvals. When `true`, every
+   * approval transaction approves only the exact trade-size amount, and the
+   * "Partial approval" toggle in Settings is shown but locked on.
+   *
+   * Defaults to false.
+   */
+  disableInfiniteApprove?: boolean
+
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.

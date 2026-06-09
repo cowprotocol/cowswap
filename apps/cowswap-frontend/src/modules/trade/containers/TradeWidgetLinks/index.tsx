@@ -6,10 +6,9 @@ import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import iconCaretSrc from 'assets/icon/caret.svg'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
