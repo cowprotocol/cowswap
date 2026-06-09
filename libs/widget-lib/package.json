@@ -24,7 +24,6 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.1.3",
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*",
