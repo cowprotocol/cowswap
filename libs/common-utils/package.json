@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.1.3",
+    "@cowprotocol/cow-sdk": "9.1.5",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",
