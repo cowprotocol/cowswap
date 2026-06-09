@@ -6,6 +6,7 @@ const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 const TEMP_PNPMFILE_PATH = path.join(ROOT_DIR, '.pnpmfile.preview.cjs')
+const LOCKFILE_PATH = path.join(ROOT_DIR, 'pnpm-lock.yaml')
 
 const packageJson = require('../../apps/cowswap-frontend/package.json')
 const sdkPrVersionRegex = /pr-\d+/
@@ -43,18 +44,18 @@ if (!PACKAGE_READ_AUTH_TOKEN) {
 
 // The scope-wide @cowprotocol:registry redirects ALL @cowprotocol/* packages to GitHub Packages.
 // Non-SDK packages (e.g. @cowprotocol/cms) are only on npmjs and would fail to install.
-// Fix: pin them to explicit npmjs tarball URLs so pnpm fetches them directly, bypassing the scope registry.
 let rewriteMap
+let forceResolveKeys
 
 try {
-  rewriteMap = pinNonSdkPackagesToNpmjs()
+  ;({ rewriteMap, forceResolveKeys } = pinNonSdkPackagesToNpmjs())
 } catch (err) {
   console.error('[install.js] Failed to pin non-SDK packages to npmjs:', err)
   process.exit(1)
 }
 
 try {
-  runPnpmInstall(PACKAGE_READ_AUTH_TOKEN, rewriteMap)
+  runPnpmInstall(PACKAGE_READ_AUTH_TOKEN, rewriteMap, forceResolveKeys)
 } catch (err) {
   console.error('[install.js] Failed to install dependencies:', err)
   process.exit(1)
@@ -78,13 +79,35 @@ function getNpmjsTarballUrl(name, version) {
 }
 
 /**
- * Rewrites non-SDK @cowprotocol dependencies to npmjs tarball URLs.
- *
- * This avoids failures caused by routing the whole scope to GitHub Packages.
+ * Extracts the exact version from a npmjs tarball URL like
+ * `https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz` -> `0.11.0`.
+ * Returns null when the URL doesn't match the expected `<unscoped>-<version>.tgz` shape.
+ */
+function getVersionFromTarballUrl(name, url) {
+  const unscoped = name.replace(/^@cowprotocol\//, '')
+  const file = url.substring(url.lastIndexOf('/') + 1)
+  const prefix = `${unscoped}-`
+  if (!file.startsWith(prefix) || !file.endsWith('.tgz')) return null
+  return file.slice(prefix.length, -'.tgz'.length)
+}
+
+/**
+ * Plans how to keep non-SDK @cowprotocol dependencies on npmjs while the whole scope
+ * is routed to GitHub Packages. Returns:
+ *  - rewriteMap: per-manifest deps whose version *range* must be rewritten to a npmjs
+ *    tarball URL (applied via a pnpmfile readPackage hook). Changing the spec string
+ *    forces pnpm to re-resolve them as direct tarballs, bypassing the scope registry.
+ *  - forceResolveKeys: `name@version` lockfile keys for deps that are *already* pinned to
+ *    a npmjs tarball URL in package.json. pnpm collapses those URLs into plain
+ *    `@cowprotocol/<pkg>@<version>` registry entries in the committed lockfile, so on a
+ *    `--no-frozen-lockfile` install ("lockfile up to date, resolution skipped") it
+ *    reconstructs the tarball URL from the scope registry (GitHub) and 404s. Stripping
+ *    these keys from the lockfile forces a fresh resolution that honors the npmjs URL.
  */
 function pinNonSdkPackagesToNpmjs() {
   const packageJsonPaths = []
   const rewriteMap = {}
+  const forceResolveKeys = new Set()
 
   for (const baseDir of [APPS_DIR, LIBS_DIR]) {
     if (!fs.existsSync(baseDir)) continue
@@ -110,7 +133,20 @@ function pinNonSdkPackagesToNpmjs() {
         if (!depName.startsWith('@cowprotocol/')) continue
         if (isSdkPackage(depName)) continue
         if (deps[depName].startsWith('workspace:')) continue
-        if (deps[depName].startsWith('https://')) continue
+
+        // Already pinned to a npmjs tarball URL: force a fresh lockfile resolution instead
+        // of rewriting (rewriting to the same URL is a no-op and leaves the stale by-name
+        // entry that gets routed to GitHub Packages).
+        if (deps[depName].startsWith('https://')) {
+          const version = getVersionFromTarballUrl(depName, deps[depName])
+          if (version) {
+            forceResolveKeys.add(`${depName}@${version}`)
+            console.log(`[install.js] forcing lockfile re-resolution of ${depName}@${version}`)
+          } else {
+            console.warn(`[install.js] could not parse version from ${depName} -> ${deps[depName]}`)
+          }
+          continue
+        }
 
         const tarballUrl = getNpmjsTarballUrl(depName, deps[depName])
 
@@ -122,7 +158,31 @@ function pinNonSdkPackagesToNpmjs() {
     }
   }
 
-  return rewriteMap
+  return { rewriteMap, forceResolveKeys: Array.from(forceResolveKeys) }
+}
+
+/**
+ * Removes the `packages:`/`snapshots:` entries for the given `name@version` keys from the
+ * lockfile so pnpm re-resolves them on the next install. Returns the original lockfile
+ * contents (or null if absent) so the caller can restore it afterwards.
+ */
+function stripLockfileEntries(keys) {
+  if (!keys.length || !fs.existsSync(LOCKFILE_PATH)) return null
+
+  const original = fs.readFileSync(LOCKFILE_PATH, 'utf-8')
+  let updated = original
+
+  for (const key of keys) {
+    const esc = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    // A top-level (2-space indented) lockfile block: the quoted key (optionally
+    // peer-suffixed `(...)`) plus every deeper-indented (4+ space) continuation line.
+    const re = new RegExp("\\n  '" + esc + "'(?:\\([^\\n]*\\))?:\\n(?:    .*\\n)*", 'g')
+    updated = updated.replace(re, '\n')
+  }
+
+  if (updated !== original) fs.writeFileSync(LOCKFILE_PATH, updated)
+
+  return original
 }
 
 /**
@@ -134,20 +194,19 @@ function pinNonSdkPackagesToNpmjs() {
  * `--no-frozen-lockfile`. The auth token never touches the filesystem, so a crash,
  * SIGKILL, or Ctrl-C cannot leave a secret in the tracked `.npmrc`.
  */
-function runPnpmInstall(authToken, rewriteMap = {}) {
+function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
   if (!authToken) {
     console.log('[install.js] Installing normally (pnpm install --frozen-lockfile)...')
     execSync('pnpm install --frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit' })
     return
   }
 
-  // An empty rewrite map is valid: non-SDK @cowprotocol packages may already be pinned
-  // to npmjs tarball URLs directly in package.json (see the `startsWith('https://')`
-  // skip in pinNonSdkPackagesToNpmjs), leaving nothing to rewrite. Warn so a silent
-  // regression in `pinNonSdkPackagesToNpmjs` would still be visible in logs.
   const hasRewrites = Object.keys(rewriteMap).length > 0
-  if (!hasRewrites) {
-    console.warn('[install.js] Auth token provided but rewrite map is empty — no @cowprotocol/* pinning needed.')
+  const hasForceResolve = forceResolveKeys.length > 0
+  if (!hasRewrites && !hasForceResolve) {
+    // Warn so a silent regression in `pinNonSdkPackagesToNpmjs` (which would let non-SDK
+    // @cowprotocol packages get routed to GitHub Packages) stays visible in logs.
+    console.warn('[install.js] Auth token provided but no @cowprotocol/* pinning was planned.')
   }
 
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
@@ -165,8 +224,11 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
     childEnv.npm_config_pnpmfile = TEMP_PNPMFILE_PATH
   }
 
+  let originalLockfile = null
+
   try {
     if (hasRewrites) createTempPnpmfile(rewriteMap)
+    if (hasForceResolve) originalLockfile = stripLockfileEntries(forceResolveKeys)
 
     // `--no-frozen-lockfile` on the CLI overrides `frozen-lockfile=true` from .npmrc.
     execSync('pnpm install --no-frozen-lockfile', { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv })
@@ -179,6 +241,16 @@ function runPnpmInstall(authToken, rewriteMap = {}) {
         removeTempPnpmfile()
       } catch (err) {
         console.warn('[install.js] Failed to remove temp pnpmfile:', err)
+      }
+    }
+    // Restore the committed lockfile so the working tree stays clean. The install already
+    // populated node_modules; the on-disk lockfile is only needed by later steps that read
+    // the unmodified, committed graph.
+    if (originalLockfile !== null) {
+      try {
+        fs.writeFileSync(LOCKFILE_PATH, originalLockfile)
+      } catch (err) {
+        console.warn('[install.js] Failed to restore pnpm-lock.yaml:', err)
       }
     }
   }
