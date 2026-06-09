@@ -176,7 +176,7 @@ export function isOrderUnfillable(
   return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
 }
 
-export function isTwapOrderCancelled(order: EnrichedOrder): boolean {
+export function isTwapOrderCancelled(order: Omit<EnrichedOrder, 'settlementContract'>): boolean {
   return order.status === OrderStatus.CANCELLED
 }
 

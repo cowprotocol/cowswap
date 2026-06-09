@@ -157,18 +157,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     const quoteErrorTexts = getQuoteErrorTexts()
 
-    {
-      /*TODO: sell=buy feature. Remove all SameBuyAndSellToken usages once feature is ready */
-    }
-    const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
-    }
-
     const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
-
-    const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
-    }
 
     const { quote } = props
 
@@ -179,31 +168,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         return <UnsupportedTokenButton {...props} />
       }
 
-      const isBridge = quote.isBridgeQuote
-      const errorText = (() => {
-        const quoteErrorText = quoteErrorTexts[errorType]
-        const bridgeQuoteErrorText = quoteErrorTextsForBridges[errorType]
+      const errorText = quoteErrorTexts[errorType] || DEFAULT_QUOTE_ERROR
 
-        if (isBridge && bridgeQuoteErrorText) {
-          // Do not display "Not yet supported" when sell and intermediate tokens are the same
-          // Because user doesn't see intermediate token
-          if (errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
-            const areSwapAssetsDifferent =
-              props.derivedState.inputCurrency?.symbol?.toLowerCase() !==
-              props.derivedState.outputCurrency?.symbol?.toLowerCase()
-
-            if (areSwapAssetsDifferent) {
-              return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
-            }
-          }
-
-          return bridgeQuoteErrorText
-        }
-
-        return quoteErrorText || DEFAULT_QUOTE_ERROR
-      })()
-
-      const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
+      // It will be in use in the future
+      const errorTooltipText = null
 
       return (
         <TradeFormBlankButton disabled={true}>
