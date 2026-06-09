@@ -8,7 +8,6 @@ import { widgetIframeTransport } from './widgetIframeTransport'
 
 const widgetHandlers: CowSwapWidgetHandler[] = []
 
-// eslint-disable-next-line max-lines-per-function
 describe('createCowSwapWidget', () => {
   const originalOpen = window.open
 
