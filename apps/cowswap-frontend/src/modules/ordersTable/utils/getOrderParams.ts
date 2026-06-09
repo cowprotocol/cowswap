@@ -1,7 +1,9 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
+
+import { getRemainderAmountsWithoutSurplus } from 'legacy/state/orders/utils'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
@@ -51,11 +53,16 @@ export function getOrderParams(
   // Before the first fill, we use the bigger of the on-chain approve allowance, or permit amount (once validated on-chain).
   const effectiveAllowance = isOrderAtLeastOnceFilled ? allowance : getBiggerAmount(allowance, permitAmount)
 
+  const sellAmountRemaining = isOrderAtLeastOnceFilled
+    ? CurrencyAmount.fromRawAmount(order.inputToken, getRemainderAmountsWithoutSurplus(order).sellAmount)
+    : sellAmount
+
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
-    partiallyFillable: order.partiallyFillable,
-    sellAmount,
     balance,
     allowance: effectiveAllowance,
+    partiallyFillable: order.partiallyFillable,
+    sellAmount,
+    sellAmountRemaining,
   })
 
   return {
@@ -68,25 +75,34 @@ export function getOrderParams(
   }
 }
 
-function _hasEnoughBalanceAndAllowance(params: {
+interface HasEnoughBalanceAndAllowanceParams {
   balance: bigint | undefined
   allowance: bigint | undefined
   partiallyFillable: boolean
   sellAmount: CurrencyAmount<Token>
-}): {
+  sellAmountRemaining: CurrencyAmount<Token>
+}
+
+function _hasEnoughBalanceAndAllowance({
+  balance,
+  allowance,
+  partiallyFillable,
+  sellAmount,
+  sellAmountRemaining,
+}: HasEnoughBalanceAndAllowanceParams): {
   hasEnoughBalance: boolean | undefined
   hasEnoughAllowance: boolean | undefined
 } {
-  const { allowance, balance, partiallyFillable, sellAmount } = params
-
-  // For partially fillable orders, we want to check there's sat least `PERCENTAGE_FOR_PARTIAL_FILLS` of balance instead
-  // of the full amount. However, for allowance, we probably want to check if the allowance covers the full sell amount.
-  //
-  // Otherwise, a fillable order with full balance available but just some dust allowance would be considered fillable,
-  // and the user would falsely expect it to be fully fillable, which would not be the case.
+  // For partially fillable orders, we want to check there's at least `PERCENTAGE_FOR_PARTIAL_FILLS` of balance instead
+  // of the full amount:
   const balanceAmount = partiallyFillable ? sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS) : sellAmount
   const hasEnoughBalance = isEnoughAmount(balanceAmount, balance)
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+
+  // However, for allowance, we probably want to check if the allowance covers the full sell amount remaining:
+  const hasEnoughAllowance = isEnoughAmount(sellAmountRemaining, allowance)
+
+  // Otherwise, a fillable order with full balance available but just some dust allowance would be considered fillable,
+  // and the user would falsely expect it to be fully fillable, which would not be the case.
 
   return { hasEnoughBalance, hasEnoughAllowance }
 }
