@@ -1,90 +1,68 @@
-import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
-
-interface QuoteApiErrorObject {
+export interface QuoteApiErrorObject {
   errorType: QuoteApiErrorCodes
   description: string
   data?: unknown
 }
 
-// Conforms to backend API
-// https://github.com/cowprotocol/services/blob/main/crates/orderbook/openapi.yml
+// TODO: import from SDK `PriceEstimationError.errorType`
 export enum QuoteApiErrorCodes {
-  UnsupportedToken = 'UnsupportedToken',
+  AppDataHashMismatch = 'AppDataHashMismatch',
+  CustomSolverError = 'CustomSolverError',
+  ExcessiveValidTo = 'ExcessiveValidTo',
+  Forbidden = 'Forbidden',
   InsufficientLiquidity = 'InsufficientLiquidity',
-  FeeExceedsFrom = 'FeeExceedsFrom',
-  ZeroPrice = 'ZeroPrice',
-  TransferEthToContract = 'TransferEthToContract',
+  InsufficientValidTo = 'InsufficientValidTo',
+  InternalServerError = 'InternalServerError',
+  InvalidAppData = 'InvalidAppData',
+  InvalidNativeSellToken = 'InvalidNativeSellToken',
+  NoLiquidity = 'NoLiquidity',
+  QuoteNotVerified = 'QuoteNotVerified',
   SameBuyAndSellToken = 'SameBuyAndSellToken',
-  UNHANDLED_ERROR = 'UNHANDLED_ERROR',
+  SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
+  TokenTemporarilySuspended = 'TokenTemporarilySuspended',
+  TradingOutsideAllowedWindow = 'TradingOutsideAllowedWindow',
+  UnsupportedBuyTokenDestination = 'UnsupportedBuyTokenDestination',
+  UnsupportedOrderType = 'UnsupportedOrderType',
+  UnsupportedSellTokenSource = 'UnsupportedSellTokenSource',
+  UnsupportedToken = 'UnsupportedToken',
 }
 
-export const SENTRY_IGNORED_QUOTE_ERRORS = [QuoteApiErrorCodes.FeeExceedsFrom]
+/**
+ * Errors that are expected to happen on regular basis
+ */
+export const SENTRY_IGNORED_QUOTE_ERRORS = [
+  QuoteApiErrorCodes.InsufficientLiquidity,
+  QuoteApiErrorCodes.SellAmountDoesNotCoverFee,
+  QuoteApiErrorCodes.TokenTemporarilySuspended,
+  QuoteApiErrorCodes.TradingOutsideAllowedWindow,
+  QuoteApiErrorCodes.UnsupportedToken,
+  QuoteApiErrorCodes.NoLiquidity,
+]
 
-export enum QuoteApiErrorDetails {
-  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  InsufficientLiquidity = 'Token pair selected has insufficient liquidity.',
-  FeeExceedsFrom = 'Current fee exceeds entered "from" amount.',
-  ZeroPrice = 'Quoted price is zero. This is likely due to a significant price difference between the two tokens. Please try increasing amounts.',
-  TransferEthToContract = 'Buying native currencies using smart contract wallets is not currently supported.',
-  SameBuyAndSellToken = 'You are trying to buy and sell the same token.',
-  SellAmountDoesNotCoverFee = 'The selling amount for the order is lower than the fee.',
-  UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
-}
+const UNHANDLED_ERROR_CODE = 'UNHANDLED_ERROR' as const
 
-export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiErrorObject {
-  switch (error?.errorType) {
-    case ApiErrorCodes.NotFound:
-    case ApiErrorCodes.NoLiquidity:
-      return {
-        errorType: QuoteApiErrorCodes.InsufficientLiquidity,
-        description: QuoteApiErrorDetails.InsufficientLiquidity,
-      }
-
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
-      return {
-        errorType: QuoteApiErrorCodes.FeeExceedsFrom,
-        description: QuoteApiErrorDetails.FeeExceedsFrom,
-        data: error?.data,
-      }
-
-    case ApiErrorCodes.UnsupportedToken:
-      return {
-        errorType: QuoteApiErrorCodes.UnsupportedToken,
-        description: error.description,
-      }
-    case ApiErrorCodes.TransferEthToContract:
-      return {
-        errorType: QuoteApiErrorCodes.TransferEthToContract,
-        description: error.description,
-      }
-
-    case ApiErrorCodes.SameBuyAndSellToken:
-      return {
-        errorType: QuoteApiErrorCodes.SameBuyAndSellToken,
-        description: QuoteApiErrorDetails.SameBuyAndSellToken,
-      }
-
-    default:
-      return { errorType: QuoteApiErrorCodes.UNHANDLED_ERROR, description: QuoteApiErrorDetails.UNHANDLED_ERROR }
-  }
-}
+const UNHANDLED_ERROR_DESC =
+  'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.'
 
 export class QuoteApiError<Data = unknown> extends Error {
-  name = 'QuoteErrorObject'
-  type: QuoteApiErrorCodes
+  name = 'QuoteApiError'
+  type: QuoteApiErrorCodes | typeof UNHANDLED_ERROR_CODE
   description: string
   data?: Data
 
-  constructor(quoteError: QuoteApiErrorObject) {
-    super(quoteError.description)
+  constructor(quoteError: QuoteApiErrorObject | string) {
+    super(typeof quoteError === 'string' ? quoteError : quoteError.description)
+
+    if (typeof quoteError === 'string') {
+      this.type = UNHANDLED_ERROR_CODE
+      this.description = UNHANDLED_ERROR_DESC
+      this.message = quoteError
+      return
+    }
 
     this.type = quoteError.errorType
     this.description = quoteError.description
-    this.message = QuoteApiErrorDetails[quoteError.errorType]
+    this.message = quoteError.description
     this.data = quoteError?.data as Data
   }
-}
-
-export function isValidQuoteError(error: unknown): error is QuoteApiError {
-  return error instanceof QuoteApiError
 }

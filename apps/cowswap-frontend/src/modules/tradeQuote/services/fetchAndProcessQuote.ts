@@ -13,8 +13,8 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
+import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
+import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
@@ -149,17 +149,12 @@ function parseError(errorLocation: string, error: unknown): QuoteApiError | Brid
   }
 
   if (error instanceof Error) {
-    if (getIsOrderBookTypedError(error)) {
-      const errorObject = mapOperatorErrorToQuoteError(error.body)
-
-      if (errorObject) return new QuoteApiError(errorObject)
+    if (getIsQuoteApiTypedError(error)) {
+      return new QuoteApiError(error.body)
     }
   }
 
   return errorLocation === 'fetchSwapQuote'
-    ? new QuoteApiError({
-        errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
-        description: String(error),
-      })
+    ? new QuoteApiError(String(error))
     : new BridgeProviderQuoteError(BridgeQuoteErrors.API_ERROR, { context: error })
 }

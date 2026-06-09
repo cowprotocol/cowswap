@@ -42,8 +42,8 @@ import {
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
-import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { fetchAndProcessQuote } from './fetchAndProcessQuote'
 
@@ -57,12 +57,7 @@ jest.mock('../utils/getBridgeQuoteSigner', () => ({
 }))
 
 jest.mock('api/cowProtocol/getIsOrderBookTypedError', () => ({
-  getIsOrderBookTypedError: jest.fn(),
-}))
-
-jest.mock('api/cowProtocol/errors/QuoteError', () => ({
-  ...jest.requireActual('api/cowProtocol/errors/QuoteError'),
-  mapOperatorErrorToQuoteError: jest.fn(),
+  getIsQuoteApiTypedError: jest.fn(),
 }))
 
 // Mock console.error to avoid noise in tests
@@ -72,6 +67,7 @@ const tradeQuotePollingParameters: TradeQuotePollingParameters = {
   isConfirmOpen: false,
   isQuoteUpdatePossible: true,
   useSuggestedSlippageApi: false,
+  hasPendingTrade: false,
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -79,8 +75,7 @@ describe('fetchAndProcessQuote', () => {
   let mockTradeQuoteManager: jest.Mocked<TradeQuoteManager>
   let mockBridgingSdk: jest.Mocked<typeof bridgingSdk>
   let mockGetBridgeQuoteSigner: jest.MockedFunction<typeof getBridgeQuoteSigner>
-  let mockGetIsOrderBookTypedError: jest.MockedFunction<typeof getIsOrderBookTypedError>
-  let mockMapOperatorErrorToQuoteError: jest.MockedFunction<typeof mapOperatorErrorToQuoteError>
+  let mockGetQuoteApiTypedError: jest.MockedFunction<typeof getIsQuoteApiTypedError>
   let mockOnlyResolvesLast: jest.MockedFunction<typeof onlyResolvesLast>
 
   const mockFetchParams: TradeQuoteFetchParams = {
@@ -127,18 +122,11 @@ describe('fetchAndProcessQuote', () => {
 
     mockBridgingSdk = bridgingSdk as jest.Mocked<typeof bridgingSdk>
     mockGetBridgeQuoteSigner = getBridgeQuoteSigner as jest.MockedFunction<typeof getBridgeQuoteSigner>
-    mockGetIsOrderBookTypedError = getIsOrderBookTypedError as jest.MockedFunction<typeof getIsOrderBookTypedError>
-    mockMapOperatorErrorToQuoteError = mapOperatorErrorToQuoteError as jest.MockedFunction<
-      typeof mapOperatorErrorToQuoteError
-    >
+    mockGetQuoteApiTypedError = getIsQuoteApiTypedError as jest.MockedFunction<typeof getIsQuoteApiTypedError>
     mockOnlyResolvesLast = onlyResolvesLast as jest.MockedFunction<typeof onlyResolvesLast>
 
     mockGetBridgeQuoteSigner.mockReturnValue({} as jest.Mocked<any>)
-    mockGetIsOrderBookTypedError.mockReturnValue(false)
-    mockMapOperatorErrorToQuoteError.mockReturnValue({
-      errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
-      description: 'Test error',
-    })
+    mockGetQuoteApiTypedError.mockReturnValue(false)
   })
 
   describe('Main fetchAndProcessQuote function', () => {
@@ -355,11 +343,7 @@ describe('fetchAndProcessQuote', () => {
       const mockError = new Error('API Error')
 
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
-      mockGetIsOrderBookTypedError.mockReturnValue(true)
-      mockMapOperatorErrorToQuoteError.mockReturnValue({
-        errorType: QuoteApiErrorCodes.UnsupportedToken,
-        description: 'Unsupported token',
-      })
+      mockGetQuoteApiTypedError.mockReturnValue(false)
 
       await fetchAndProcessQuote(
         mockFetchParams,
@@ -381,7 +365,7 @@ describe('fetchAndProcessQuote', () => {
       const mockError = new Error('Generic error')
 
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
-      mockGetIsOrderBookTypedError.mockReturnValue(false)
+      mockGetQuoteApiTypedError.mockReturnValue(false)
 
       await fetchAndProcessQuote(
         mockFetchParams,
@@ -617,8 +601,7 @@ describe('fetchAndProcessQuote', () => {
       ;(mockError as any).body = mockErrorBody
 
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
-      mockGetIsOrderBookTypedError.mockReturnValue(true)
-      mockMapOperatorErrorToQuoteError.mockReturnValue(mockErrorBody)
+      mockGetQuoteApiTypedError.mockReturnValue(true)
 
       await fetchAndProcessQuote(
         mockFetchParams,
@@ -628,7 +611,6 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockMapOperatorErrorToQuoteError).toHaveBeenCalledWith(mockErrorBody)
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
         expect.any(QuoteApiError),
         SupportedChainId.MAINNET,
@@ -641,7 +623,7 @@ describe('fetchAndProcessQuote', () => {
       const mockError = new Error('Generic error')
 
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
-      mockGetIsOrderBookTypedError.mockReturnValue(false)
+      mockGetQuoteApiTypedError.mockReturnValue(false)
 
       await fetchAndProcessQuote(
         mockFetchParams,
@@ -651,7 +633,6 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockMapOperatorErrorToQuoteError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(
         '[fetchAndProcessQuote]:: fetchSwapQuote error',
