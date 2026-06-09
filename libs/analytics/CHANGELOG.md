@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.4.0...analytics-v3.4.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.6.0
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.3.1...analytics-v3.4.0) (2026-06-08)
 
 ### Minor Changes

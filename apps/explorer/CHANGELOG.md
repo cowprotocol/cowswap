@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.5.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.0...explorer-v4.5.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/ui@3.7.1
+
 ## [4.5.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.1...explorer-v4.5.0) (2026-06-08)
 
 ### Minor Changes
