@@ -1,10 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
+import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -18,14 +20,24 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
+  const location = useLocation()
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+  /**
+   * Derived synchronously from the URL rather than from the tradeStateFromUrl atom,
+   * which is only populated a render later. By the time the atom updates, the reset
+   * effects below have already wiped a recipient that was explicitly set in the URL.
+   */
+  const hasRecipientInUrl = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search)
+    return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+  }, [location.search])
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
   const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
@@ -42,13 +54,26 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId changes
+   * Reset recipient whenever chainId or disableCustomRecipient changes,
+   * but preserve any recipient set via URL.
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride && !isNonEvmBridging) {
+    if (disableCustomRecipient) {
+      onChangeRecipient(null)
+      return
+    }
+
+    if (!postHooksRecipientOverride && !isNonEvmBridging && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride, isNonEvmBridging])
+  }, [
+    chainId,
+    disableCustomRecipient,
+    onChangeRecipient,
+    postHooksRecipientOverride,
+    isNonEvmBridging,
+    hasRecipientInUrl,
+  ])
 
   /**
    * Remove recipient override when its source hook was deleted
@@ -56,25 +81,25 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   useEffect(() => {
     const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
 
-    if (recipientOverrideWasRemoved) {
+    if (recipientOverrideWasRemoved && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, isNativeIn, onChangeRecipient])
+  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, hasRecipientInUrl, onChangeRecipient])
 
   /**
-   * Remove recipient when going out from hooks-store page
+   * Remove recipient when going out from hooks-store page, but preserve any recipient set via URL
    */
   useEffect(() => {
-    if (!isHooksTradeType) {
+    if (!isHooksTradeType && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, onChangeRecipient])
+  }, [isHooksTradeType, hasRecipientInUrl, onChangeRecipient])
 
   useEffect(() => {
-    if (isHooksTradeType && isNativeIn) {
+    if (isHooksTradeType && isNativeIn && !hasRecipientInUrl) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, isNativeIn, onChangeRecipient])
+  }, [isHooksTradeType, isNativeIn, hasRecipientInUrl, onChangeRecipient])
 
   return null
 }

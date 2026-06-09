@@ -20,6 +20,7 @@ import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
@@ -108,6 +109,10 @@ export function useHandleOrderPlacement(
         outputAmount: tradeContext.postOrderParams.outputAmount,
         recipient: tradeContext.postOrderParams.recipient,
         orderKind: tradeContext.postOrderParams.kind,
+        chainId: tradeContext.chainId,
+        validTo: tradeContext.quoteState
+          ? calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
+          : undefined,
       }),
     )
 

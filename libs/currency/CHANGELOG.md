@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.0.1...currency-v1.1.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.0.0...currency-v1.0.1) (2026-05-22)
 
 ### Patch Changes

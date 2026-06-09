@@ -6,8 +6,7 @@ import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { VirtualList } from 'common/pure/VirtualList'
 
