@@ -71,7 +71,7 @@ export function getPinnedWidgetReactPackageName(version: Exclude<WidgetSdkVersio
 }
 
 function formatWidgetSdkVersionLabel(title: string, meta: WidgetSdkVersionMeta): string {
-  return `${title} (${meta.widgetReactVersion}, ${meta.widgetLibVersion})`
+  return `${title} (react = ${meta.widgetReactVersion}, lib = ${meta.widgetLibVersion})`
 }
 
 function getSdkVersionDisplayTitle(version: WidgetSdkVersion): string {
