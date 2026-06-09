@@ -5,6 +5,7 @@ import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/w
 import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/base-url/baseUrl'
+import { getLegacyIframeDimensionParams } from '../utils/legacyIframeDimensions/legacyIframeDimensions.utils'
 
 const getTokenListsParam = (
   tokenListUrls: ConfiguratorState['tokenListUrls'],
@@ -213,11 +214,14 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   } = configuratorState
 
   const baseUrl = rawBaseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
+  const legacyIframeDimensionParams = getLegacyIframeDimensionParams(iframeStyle)
 
   // TODO: Can we automatically trim all values and avoid adding those that are not needed? Would that be better or worse (as then those props that are not provided)
   // rely on the widget app logic to use the default values, which potentially means more bugs / breaking changes?
 
   return {
+    ...legacyIframeDimensionParams,
+
     // Basics:
 
     appCode: appCode.trim() || CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
