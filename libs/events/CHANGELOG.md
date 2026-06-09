@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/events-v4.5.0...events-v4.6.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/events-v4.4.1...events-v4.5.0) (2026-06-08)
+
+### Minor Changes
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- fix: use query-param format for Safe transaction URLs
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.4.0
+
 ## [4.4.1](https://github.com/cowprotocol/cowswap/compare/events-v4.4.0...events-v4.4.1) (2026-05-22)
 
 ### Patch Changes
