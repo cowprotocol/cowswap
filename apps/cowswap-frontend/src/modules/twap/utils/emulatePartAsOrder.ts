@@ -3,10 +3,7 @@ import { EnrichedOrder, getAddressKey, OrderClass, OrderStatus, SigningScheme } 
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
-export function emulatePartAsOrder(
-  item: TwapPartOrderItem,
-  parent: TwapOrderItem,
-): Omit<EnrichedOrder, 'settlementContract'> {
+export function emulatePartAsOrder(item: TwapPartOrderItem, parent: TwapOrderItem): EnrichedOrder {
   const creationDate = new Date((item.order.validTo - parent.order.t) * 1000)
   const isCancelling = parent.status === TwapOrderStatus.Cancelling
 

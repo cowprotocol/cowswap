@@ -74,7 +74,7 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
   }, [allOrdersInfo, partSets, allDiscreteOrders])
 }
 
-function sumChildrenAmount(children: Order[], key: keyof Omit<EnrichedOrder, 'settlementContract'>): bigint {
+function sumChildrenAmount(children: Order[], key: keyof EnrichedOrder): bigint {
   return children.reduce((acc, order) => {
     return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
   }, BigInt(0))

@@ -6,7 +6,7 @@ import { isOrderExpired, isOrderFulfilled, isTwapOrderCancelled } from 'legacy/s
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 export function getPartOrderStatus(
-  enrichedOrder: Omit<EnrichedOrder, 'settlementContract'>,
+  enrichedOrder: EnrichedOrder,
   parent: TwapOrderItem,
   isVirtualPart: boolean,
 ): OrderStatus {

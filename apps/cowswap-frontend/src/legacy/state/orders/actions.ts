@@ -63,7 +63,7 @@ export interface BaseOrder extends OrderCreation {
   cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
 
   // Additional information from the order available in the API
-  apiAdditionalInfo?: Omit<EnrichedOrder, 'settlementContract'>
+  apiAdditionalInfo?: EnrichedOrder
   // De-normalizing it as this is known at order placement time as `appData`,
   // but when returned from the api is replaced with the `appDataHash`
   fullAppData?: EnrichedOrder['fullAppData']

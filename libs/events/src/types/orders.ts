@@ -4,12 +4,12 @@ import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/
 
 export type BaseOrderPayload = {
   chainId: SupportedChainId
-  order: Omit<EnrichedOrder, 'settlementContract'>
+  order: EnrichedOrder
 }
 
 export type BaseOrdersPayload = {
   chainId: SupportedChainId
-  orders: Omit<EnrichedOrder, 'settlementContract'>[]
+  orders: EnrichedOrder[]
 }
 
 export type OnPostedOrderPayload = {

@@ -11,7 +11,7 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 export function mapPartOrderToStoreOrder(
   item: TwapPartOrderItem,
-  enrichedOrder: Omit<EnrichedOrder, 'settlementContract'>,
+  enrichedOrder: EnrichedOrder,
   isVirtualPart: boolean,
   parent: TwapOrderItem,
   tokensByAddress: TokensByAddress,

@@ -11,7 +11,7 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
-export function emulateTwapAsOrder(item: TwapOrderItem): Omit<EnrichedOrder, 'settlementContract'> {
+export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
   const { safeAddress, id, status, executionInfo } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData, receiver } = item.order
   const numOfParts = BigInt(n)
