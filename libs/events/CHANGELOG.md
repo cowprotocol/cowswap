@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/events-v4.5.0...events-v4.6.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(trade): enrich widget hook event payload (#7570)
+
 ## [4.5.0](https://github.com/cowprotocol/cowswap/compare/events-v4.4.1...events-v4.5.0) (2026-06-08)
 
 ### Minor Changes
