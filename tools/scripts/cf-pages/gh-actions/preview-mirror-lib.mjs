@@ -269,6 +269,13 @@ async function handleEditedIssueComment({ actor, client, event, now, options }) 
     }
   }
 
+  if (event.issue.number !== syncRequest.originalPrNumber) {
+    return {
+      reason: 'managed comment issue does not match original pull request',
+      status: 'ignored',
+    }
+  }
+
   await assertTrustedActor(client, actor)
 
   const pullRequest = await client.getPullRequest(syncRequest.originalPrNumber)

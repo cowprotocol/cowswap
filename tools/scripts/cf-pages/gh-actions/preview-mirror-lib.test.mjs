@@ -38,7 +38,7 @@ function labeledEvent(labelName = 'trigger-preview') {
   }
 }
 
-function checkboxEvent(body) {
+function checkboxEvent(body, issueNumber = 123) {
   return {
     action: 'edited',
     comment: {
@@ -46,7 +46,7 @@ function checkboxEvent(body) {
       id: 777,
     },
     issue: {
-      number: 123,
+      number: issueNumber,
       pull_request: {},
     },
   }
@@ -294,6 +294,38 @@ describe('preview-mirror-lib', () => {
     )
     const updateCall = client.calls.find((call) => call[0] === 'updateIssueComment')
     assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to latest fork commit/)
+  })
+
+  it('ignores checked managed comments edited on a different pull request issue', async () => {
+    const checkedComment = buildPreviewCommentBody({
+      actor: 'maintainer',
+      branchName: 'cf-preview/pr-123',
+      mirrorPullRequestNumber: 456,
+      mirrorPullRequestUrl: 'https://github.com/cowprotocol/cowswap/pull/456',
+      now: new Date('2026-06-05T10:30:00.000Z'),
+      originalPrNumber: 123,
+      repoFullName: 'cowprotocol/cowswap',
+      sourceBranch: 'feature/new-swap',
+      sourceRepoFullName: 'external/cowswap',
+      sourceSha: 'abc1234567890abcdef1234567890abcdef1234',
+    }).replace('- [ ] Sync Cloudflare preview', '- [x] Sync Cloudflare preview')
+    const client = createFakeClient({ refExists: true })
+
+    const result = await handlePreviewMirrorEvent({
+      actor: 'maintainer',
+      client,
+      event: checkboxEvent(checkedComment, 124),
+      now: new Date('2026-06-05T10:45:00.000Z'),
+      options: {
+        repoFullName: 'cowprotocol/cowswap',
+      },
+    })
+
+    assert.deepEqual(result, {
+      reason: 'managed comment issue does not match original pull request',
+      status: 'ignored',
+    })
+    assert.deepEqual(client.calls, [])
   })
 
   it('deletes the preview branch when the source fork PR closes', async () => {
