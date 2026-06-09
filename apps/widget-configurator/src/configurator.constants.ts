@@ -155,7 +155,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   // Layout:
 
   disableScrollbars: false,
-  showIframeOutline: true,
+  showIframeOutline: false,
   iframeStyleJson: DEFAULT_IFRAME_STYLE_JSON,
   bodyWrapperStyleJson: '{}',
   cardStyleJson: '{}',

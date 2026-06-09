@@ -154,7 +154,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
     }
   }, [isConnected, cowAnalytics])
 
-  const showIframeOutline = configuratorState?.showIframeOutline ?? true
+  const showIframeOutline = configuratorState?.showIframeOutline ?? false
 
   const shouldShowLoader = !params || !configuratorState || !isWidgetReady
 
@@ -201,7 +201,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
       </Box>
     )
   } else {
-    const showIframeOutline = configuratorState?.showIframeOutline ?? true
+    const showIframeOutline = configuratorState?.showIframeOutline ?? false
     configuratorContent = (
       <>
         <Box sx={configuratorCheckeredCanvasSx(isWidgetReady, showIframeOutline, isSnippetOpen)}>
