@@ -1,3 +1,5 @@
+import { Color } from '@cowprotocol/ui'
+
 import { PaletteMode } from '@mui/material'
 import { PaletteOptions } from '@mui/material/styles'
 
@@ -11,13 +13,13 @@ export const darkPalette: PaletteOptions = {
     main: 'rgb(39, 120, 242)',
   },
   text: {
-    primary: '#CAE9FF',
-    secondary: '#809ab1',
-    disabled: 'rgba(202,233,255,0.6)',
+    primary: Color.explorer_textSecondary1,
+    secondary: Color.explorer_textSecondary2,
+    disabled: 'rgba(151, 151, 184, 0.6)',
   },
   background: {
     paper: 'rgb(22, 23, 31)',
-    default: 'rgb(12, 38, 75)',
+    default: '#FF0000',
   },
   cow: {
     background: '#07162d',
