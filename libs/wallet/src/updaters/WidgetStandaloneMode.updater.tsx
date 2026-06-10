@@ -80,8 +80,8 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   }, [isStandaloneMode])
 
   /**
-   * In standalone mode we only allow to be connected to the widget connector
-   * I dapp mode never connect to widget connector
+   * In dapp mode we only allow to be connected to the widget connector
+   * In standalone mode never connect to widget connector
    */
   useEffect(() => {
     if (!isInjectedWidget()) return
