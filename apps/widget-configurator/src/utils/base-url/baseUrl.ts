@@ -1,4 +1,4 @@
-import { isDev, isLocalHost, isVercel } from '../../configurator.constants'
+import { isDev, isLocalHost, isVercel } from '../env/env.constants'
 
 const VERCEL_PREVIEW_URL_SUFFIX = '-cowswap-dev.vercel.app'
 

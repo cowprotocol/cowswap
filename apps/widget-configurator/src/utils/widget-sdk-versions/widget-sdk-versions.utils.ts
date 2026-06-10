@@ -7,7 +7,8 @@ import {
   type WidgetSdkVersion,
 } from './widget-sdk-versions.constants'
 
-import { DEFAULT_CONFIGURATOR_FORM_VALUES, isLocalHost } from '../../configurator.constants'
+import { DEFAULT_CONFIGURATOR_FORM_VALUES } from '../../configurator.constants'
+import { isWorkspaceWidgetSdkSelectable } from '../env/env.constants'
 
 function isSemverAtLeast(version: string, minimum: string): boolean {
   const versionParts = version.split('.').map(Number)
@@ -66,8 +67,8 @@ export function normalizeWidgetSdkVersion(value: unknown): WidgetSdkVersion {
   if (typeof value === 'string' && VALID_WIDGET_SDK_VERSIONS.has(value as WidgetSdkVersion)) {
     const version = value as WidgetSdkVersion
 
-    // `local` isn't selectable outside local dev, so drop persisted values back to the default.
-    if (version === 'local' && !isLocalHost) {
+    // `local` isn't selectable outside local dev / PR preview, so drop persisted values back to the default.
+    if (version === 'local' && !isWorkspaceWidgetSdkSelectable) {
       return fallback
     }
 

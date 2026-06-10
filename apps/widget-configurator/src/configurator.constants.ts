@@ -7,17 +7,10 @@ import { Moon, Sun } from 'react-feather'
 
 import { DEFAULT_IFRAME_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
 import { ConfiguratorFormValues, TokenListItem, WidgetMode } from './configurator.types'
+import { isWorkspaceWidgetSdkSelectable } from './utils/env/env.constants'
 import { NPM_WIDGET_REACT_LATEST_VERSION } from './utils/widget-sdk-versions/widget-sdk-versions.constants'
 
 import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseSelectInput.types'
-
-// Environment:
-
-export const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-
-export const isVercel = window.location.hostname.includes('vercel.app')
-
-export const isDev = ['dev.widget.cow.fi', 'dev.swap.cow.fi'].includes(window.location.hostname)
 
 export const IS_IFRAME = window.self !== window.top
 
@@ -190,8 +183,8 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   // Advanced:
 
-  // `local` (workspace build) is only selectable in local dev; elsewhere default to the latest npm release.
-  sdkVersion: isLocalHost ? 'local' : NPM_WIDGET_REACT_LATEST_VERSION,
+  // `local` (workspace build) is only selectable in local dev and PR preview. Elsewhere, default to the latest npm release.
+  sdkVersion: isWorkspaceWidgetSdkSelectable ? 'local' : NPM_WIDGET_REACT_LATEST_VERSION,
   baseUrl: null,
   enabledWidgetHooks: [],
   rawParamsJson: '{}',
