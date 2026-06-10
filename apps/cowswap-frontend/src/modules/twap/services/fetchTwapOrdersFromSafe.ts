@@ -1,22 +1,15 @@
-import { delay, isTruthy } from '@cowprotocol/common-utils'
+import { delay } from '@cowprotocol/common-utils'
 import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
-import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import ms from 'ms.macro'
-import { decodeFunctionData } from 'viem'
 
-import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { ComposableCowContractData } from 'modules/advancedOrders'
 
-import { SafeTransactionParams } from 'common/types'
+import { parseSafeTransactionsResult } from './parseTwapSafeTransactions.utils'
 
-import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
-
-import type { Hex } from 'viem'
-
-// ComposableCoW.createWithContext method
-const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
+import { TwapOrdersSafeData } from '../types'
 // Each page contains 100 transactions by default, so we need to fetch 40 pages to get 4000 transactions
 const SAFE_TX_HISTORY_DEPTH = 40
 // Just in case, make a short delay between requests
@@ -246,77 +239,24 @@ function getSafeHistoryRequestUrl(
   return `${getSafeApiUrl(chainId)}/v2/safes/${safeAddress}/multisig-transactions/?${params.toString()}`
 }
 
-function getNewestSubmissionDate(dates: (string | undefined)[]): string {
-  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+function getNewestSubmissionDate(dates: (string | undefined)[]): string | undefined {
+  let latest: string | undefined
+
+  for (const date of dates) {
+    if (date && (!latest || date > latest)) {
+      latest = date
+    }
+  }
+
+  return latest
 }
 
 function getTransactionSubmissionDate(transaction: unknown): string | undefined {
-  return isSafeMultisigTransactionListResponse(transaction) ? transaction.submissionDate : undefined
+  return isRecord(transaction) && typeof transaction.submissionDate === 'string'
+    ? transaction.submissionDate
+    : undefined
 }
 
-function parseSafeTransactionsResult(
-  composableCowContract: ComposableCowContractData,
-  results: AllTransactionsListResponse['results'],
-): TwapOrdersSafeData[] {
-  return results
-    .map<TwapOrdersSafeData | null>((result) => {
-      if (!result.data || !isSafeMultisigTransactionListResponse(result)) return null
-
-      const selectorIndex = result.data.indexOf(CREATE_COMPOSABLE_ORDER_SELECTOR)
-
-      if (selectorIndex < 0) return null
-
-      const conditionalOrderParams = parseConditionalOrderParams(
-        composableCowContract,
-        `0x${result.data.substring(selectorIndex)}`,
-      )
-
-      if (!conditionalOrderParams) return null
-
-      const safeTxParams = getSafeTransactionParams(result)
-
-      return {
-        conditionalOrderParams,
-        safeTxParams,
-      }
-    })
-    .filter(isTruthy)
-}
-
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
-  return !!response.data && !!response.submissionDate
-}
-
-function parseConditionalOrderParams(
-  composableCowContract: ComposableCowContractData,
-  callData: Hex,
-): ConditionalOrderParams | null {
-  try {
-    const { args } = decodeFunctionData({
-      abi: composableCowContract.abi,
-      data: callData,
-    })
-
-    const [params] = args as unknown as [ConditionalOrderParams]
-
-    return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
-  } catch {
-    return null
-  }
-}
-
-function getSafeTransactionParams(result: SafeMultisigTransactionResponse): SafeTransactionParams {
-  const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } = result
-
-  return {
-    isExecuted,
-    submissionDate,
-    executionDate,
-    confirmationsRequired,
-    confirmations: confirmations?.length || 0,
-    safeTxHash,
-    nonce,
-  }
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
 }
