@@ -21,6 +21,7 @@ import { isQuoteExpired } from 'modules/tradeQuote'
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
+import { assertValidBridgeRecipient } from '../../../tradeFlow/services/assertValidBridgeRecipient'
 import { EthFlowContext } from '../../types'
 
 export interface EthFlowParams {
@@ -91,6 +92,7 @@ export async function ethFlow({
     }
 
     logTradeFlow('ETH FLOW', 'STEP 3: sign order')
+    assertValidBridgeRecipient(tradeQuoteState)
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {

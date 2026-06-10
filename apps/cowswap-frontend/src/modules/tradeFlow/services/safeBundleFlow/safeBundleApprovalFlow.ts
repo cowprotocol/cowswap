@@ -23,6 +23,7 @@ import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
+import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
@@ -83,6 +84,8 @@ export async function safeBundleApprovalFlow({
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
+    assertValidBridgeRecipient(tradeContext.tradeQuoteState)
+
     const {
       orderId,
       signingScheme,

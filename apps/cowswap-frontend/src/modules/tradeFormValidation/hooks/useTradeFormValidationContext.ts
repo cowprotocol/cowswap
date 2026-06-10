@@ -62,7 +62,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
   const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
-  const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
+  const isProxySetupValid = hasHookBridgeProvidersEnabled ? proxyAccount?.isProxySetupValid : true
 
   const isNonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
 

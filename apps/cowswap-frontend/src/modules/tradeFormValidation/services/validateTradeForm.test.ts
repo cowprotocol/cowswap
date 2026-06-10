@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { TradeType } from 'modules/trade'
@@ -283,5 +283,48 @@ describe('validateTradeForm - price impact loading', () => {
     const result = validateTradeForm(context)
     expect(result).toContain(TradeFormValidation.QuoteLoading)
     expect(result).toContain(TradeFormValidation.ImpactLoading)
+  })
+
+  test('keeps QuoteLoading when parameters changed but a stale optimal quote is still present', () => {
+    const context = {
+      ...baseContext,
+      tradeQuote: {
+        isLoading: true,
+        hasParamsChanged: true,
+        quote: {} as TradeQuoteState['quote'],
+        fetchParams: {
+          hasParamsChanged: false,
+          priceQuality: PriceQuality.OPTIMAL,
+          fetchStartTimestamp: Date.now(),
+        },
+      } as unknown as TradeQuoteState,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.QuoteLoading)
+  })
+
+  test('treats unknown proxy setup state as blocking for bridge trades', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        outputCurrency: { address: '0x2', chainId: 100 } as unknown as Currency,
+      },
+      tradeQuote: {
+        isLoading: false,
+        hasParamsChanged: false,
+        quote: {} as TradeQuoteState['quote'],
+        fetchParams: {
+          hasParamsChanged: false,
+          priceQuality: PriceQuality.OPTIMAL,
+          fetchStartTimestamp: Date.now(),
+        },
+      } as unknown as TradeQuoteState,
+      isProxySetupValid: null,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.ProxyAccountUnknown)
   })
 })

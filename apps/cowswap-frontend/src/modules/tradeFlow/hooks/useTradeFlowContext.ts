@@ -1,4 +1,4 @@
-import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -22,7 +22,7 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getOrderValidTo, hasFreshOptimalQuote, isNonEvmPlaceholderRecipient, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
@@ -85,6 +85,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     recipientAddress,
     orderKind,
   } = derivedTradeState || {}
+  const hasPlaceholderBridgeRecipient = isNonEvmPlaceholderRecipient(
+    tradeQuote.bridgeQuote?.tradeParameters.bridgeRecipient,
+  )
 
   const validTo = getOrderValidTo(deadline, tradeQuote)
 
@@ -101,11 +104,12 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         appData &&
         tradeQuote.quote &&
-        tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
+        hasFreshOptimalQuote(tradeQuote) &&
         orderKind &&
         settlementContract &&
         uiOrderType &&
         validTo > 0 &&
+        !hasPlaceholderBridgeRecipient &&
         walletClient
         ? [
             account,

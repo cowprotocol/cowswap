@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { getAddressKey, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 
 import { isProviderNetworkDeprecatedAtom } from 'entities/common/isProviderNetworkDeprecated.atom'
@@ -40,6 +40,21 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
 
 export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
 
+function getNextLocalQuoteTimestamp(
+  prevQuote: TradeQuoteState,
+  nextState: Partial<TradeQuoteState>,
+): TradeQuoteState['localQuoteTimestamp'] {
+  if (typeof nextState.localQuoteTimestamp !== 'undefined') {
+    return nextState.localQuoteTimestamp
+  }
+
+  if (typeof nextState.quote === 'undefined') {
+    return prevQuote.localQuoteTimestamp
+  }
+
+  return nextState.quote ? Math.ceil(Date.now() / 1000) : null
+}
+
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
@@ -48,20 +63,24 @@ export const updateTradeQuoteAtom = atom(
       const prevState = get(tradeQuotesAtom)
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
-      // Don't update state if Fast quote finished after Optimal quote
+      // Ignore late Fast results once the same-cycle Optimal state is already stored.
       if (
         prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
-        nextState.quote &&
-        getIsFastQuote(nextState.fetchParams)
+        getIsFastQuote(nextState.fetchParams) &&
+        prevQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
+        ((nextState.quote && prevQuote.quote) || (nextState.error && prevQuote.quote))
       ) {
         return { ...prevState }
       }
 
+      const quote = typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote
+      const localQuoteTimestamp = getNextLocalQuoteTimestamp(prevQuote, nextState)
+
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
-        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
-        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
+        quote,
+        localQuoteTimestamp,
       }
 
       return {
