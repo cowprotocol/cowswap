@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 import { getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -36,16 +36,16 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
   const { account, chainId, tokensListsUrls, customTokens } = params
 
   const setBalances = useSetAtom(balancesAtom)
-  const epochRef = useRef(0)
 
-  // The `tokensListsUrls` and `customTokens` arrays are expected to be
-  // referentially stable across renders (callers memoize them). The session is
   useEffect(() => {
     if (!account) return
     if (!isEvmChain(chainId)) return
     if (tokensListsUrls.length === 0 && customTokens.length === 0) return
 
-    const epoch = ++epochRef.current
+    // Each effect run owns its own `cancelled` flag; the cleanup flips this
+    // run's flag to true so any later `.then` / SSE callback short-circuits.
+    // A newer effect run gets a fresh `cancelled = false` and proceeds.
+    let cancelled = false
     let subscription: BalancesSubscription | undefined
     let isFirstEvent = true
 
@@ -57,18 +57,18 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
       body: { tokensListsUrls, customTokens },
     })
       .then(() => {
-        if (epoch !== epochRef.current) return
+        if (cancelled) return
 
         subscription = subscribeToBalancesEvents({
           chainId,
           owner: account,
           onBalances: (balances) => {
-            if (epoch !== epochRef.current) return
+            if (cancelled) return
             setBalances((state) => writeBalancesUpdate(state, balances, chainId, isFirstEvent))
             isFirstEvent = false
           },
           onError: (error, terminal) => {
-            if (epoch !== epochRef.current) return
+            if (cancelled) return
             // Non-terminal errors mean EventSource is reconnecting — the
             // transport recovers on its own. Only surface terminal errors.
             if (!terminal) return
@@ -77,17 +77,13 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
         })
       })
       .catch((error: unknown) => {
-        if (epoch !== epochRef.current) return
+        if (cancelled) return
         const message = error instanceof Error ? error.message : String(error)
         setBalances((state) => ({ ...state, error: message, isLoading: false }))
       })
 
     return () => {
-      // Bumping the epoch invalidates any pending `.then` / SSE callback that
-      // resolves after teardown — `epoch` (captured) will no longer match
-      // `epochRef.current`. Mutation in the cleanup is intentional here.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      epochRef.current++
+      cancelled = true
       subscription?.close()
     }
   }, [account, chainId, tokensListsUrls, customTokens, setBalances])
