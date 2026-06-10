@@ -22,7 +22,9 @@ export function IframeResizer(): null {
 
     if (disableScrollbars) {
       document.documentElement.style.overflow = 'hidden'
-    } else {
+    }
+
+    return () => {
       document.documentElement.style.removeProperty('overflow')
     }
   }, [disableScrollbars])

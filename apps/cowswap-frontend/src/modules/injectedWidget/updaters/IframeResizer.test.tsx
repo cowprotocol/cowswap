@@ -5,6 +5,7 @@ import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
 import { act, render } from '@testing-library/react'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -38,6 +39,7 @@ const MOCK_PARENT_ORIGIN = 'https://parent.example'
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const isIframeMock = isIframe as jest.MockedFunction<typeof isIframe>
 const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
+const useInjectedWidgetParamsMock = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 
 const postMessageToWindowSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow')
 
@@ -85,8 +87,10 @@ describe('IframeResizer', () => {
     rootElement = document.createElement('div')
     rootElement.id = 'root'
     document.body.appendChild(rootElement)
+    document.documentElement.style.removeProperty('overflow')
 
     useAtomValueMock.mockReturnValue(false as never)
+    useInjectedWidgetParamsMock.mockReturnValue({} as never)
     isIframeMock.mockReturnValue(true)
     isInjectedWidgetMock.mockReturnValue(true)
 
@@ -98,6 +102,7 @@ describe('IframeResizer', () => {
   afterEach(() => {
     rootElement?.remove()
     rootElement = null
+    document.documentElement.style.removeProperty('overflow')
   })
 
   afterAll(() => {
@@ -247,6 +252,31 @@ describe('IframeResizer', () => {
       },
       MOCK_PARENT_ORIGIN,
     )
+  })
+
+  it('hides document overflow when disableScrollbars is enabled and restores it on unmount', () => {
+    useInjectedWidgetParamsMock.mockReturnValue({ disableScrollbars: true } as never)
+
+    const { unmount } = render(<IframeResizer />)
+
+    expect(document.documentElement.style.overflow).toBe('hidden')
+
+    unmount()
+
+    expect(document.documentElement.style.overflow).toBe('')
+  })
+
+  it('restores document overflow when disableScrollbars is disabled', () => {
+    useInjectedWidgetParamsMock.mockReturnValue({ disableScrollbars: true } as never)
+
+    const { rerender } = render(<IframeResizer />)
+
+    expect(document.documentElement.style.overflow).toBe('hidden')
+
+    useInjectedWidgetParamsMock.mockReturnValue({ disableScrollbars: false } as never)
+    rerender(<IframeResizer />)
+
+    expect(document.documentElement.style.overflow).toBe('')
   })
 })
 
