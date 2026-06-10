@@ -8,71 +8,83 @@ import {
 import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../../../configurator.constants'
 import { ColorPalette } from '../../../configurator.types'
 
+/** Widget API defaults; snippet output omits top-level params whose value matches. */
+const DEFAULT_PARAM_VALUES = {
+  standaloneMode: true,
+} as const satisfies Partial<Record<keyof CowSwapWidgetParams, unknown>>
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function isEmptyPlainObject(value: unknown): boolean {
-  return isPlainObject(value) && Object.keys(value).length === 0
-}
-
-function isPrunableLeaf(value: unknown): boolean {
+function isNoiseValue(value: unknown): boolean {
   return (
     value === undefined ||
     value === null ||
     value === false ||
     value === '' ||
     (typeof value === 'number' && Number.isNaN(value)) ||
-    typeof value === 'function'
+    typeof value === 'function' ||
+    (isPlainObject(value) && Object.keys(value).length === 0)
   )
 }
 
-function shouldKeepPrunedChild(item: unknown): boolean {
-  return item !== undefined && item !== null && item !== false && item !== '' && !isEmptyPlainObject(item)
-}
-
-function pruneArray(value: unknown[]): unknown {
-  const items = value.map((item) => pruneNilEmptyAndNested(item)).filter(shouldKeepPrunedChild)
-
-  return items.length === 0 ? undefined : items
-}
-
-function pruneRecord(value: Record<string, unknown>): unknown {
-  const next: Record<string, unknown> = {}
-
-  for (const [key, val] of Object.entries(value)) {
-    const pruned = pruneNilEmptyAndNested(val)
-
-    if (!shouldKeepPrunedChild(pruned)) {
-      continue
-    }
-
-    next[key] = pruned
-  }
-
-  return Object.keys(next).length === 0 ? undefined : next
-}
-
-/** Drops unset/empty values so snippet JSON omits noise. Omits `false`; keeps numeric zero and `true`. */
-function pruneNilEmptyAndNested(value: unknown): unknown {
-  if (isPrunableLeaf(value)) {
+/** Prunes empty/false leaves inside nested param values (sell, iframeStyle, disableTrade, …). */
+function pruneNestedValue(value: unknown): unknown {
+  if (isNoiseValue(value)) {
     return undefined
   }
 
   if (Array.isArray(value)) {
-    return pruneArray(value)
+    const items = value.map(pruneNestedValue).filter((item) => item !== undefined)
+
+    return items.length === 0 ? undefined : items
   }
 
   if (isPlainObject(value)) {
-    return pruneRecord(value)
+    const next: Record<string, unknown> = {}
+
+    for (const [key, val] of Object.entries(value)) {
+      const pruned = pruneNestedValue(val)
+
+      if (pruned !== undefined) {
+        next[key] = pruned
+      }
+    }
+
+    return Object.keys(next).length === 0 ? undefined : next
   }
 
   return value
 }
 
+function pruneTopLevelParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+  return Object.entries(params).reduce(
+    (acc, [key, val]) => {
+      if (key in DEFAULT_PARAM_VALUES) {
+        const defaultValue = DEFAULT_PARAM_VALUES[key as keyof typeof DEFAULT_PARAM_VALUES]
+
+        if (val !== defaultValue) {
+          acc[key] = val
+        }
+      } else {
+        const pruned = pruneNestedValue(val)
+
+        if (pruned !== undefined) {
+          acc[key] = pruned
+        }
+      }
+
+      return acc
+    },
+    {} as Record<string, unknown>,
+  ) as unknown as CowSwapWidgetParams
+}
+
 /**
  * Params shaped for embed snippet output: theme diff, placeholder appCode when unset/preview-default,
- * default baseUrl omitted, and nil/empty/false nested values stripped.
+ * default baseUrl omitted, empty top-level values stripped, and params matching
+ * {@link DEFAULT_PARAM_VALUES} omitted unless explicitly overridden (e.g. `standaloneMode: false`).
  */
 export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: ColorPalette): CowSwapWidgetParams {
   const sanitized: CowSwapWidgetParams = {
@@ -90,7 +102,13 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
     delete sanitized.baseUrl
   }
 
-  return pruneNilEmptyAndNested(sanitized) as CowSwapWidgetParams
+  // Preview maps iframeStyle into deprecated top-level width/height/maxHeight for older widget-lib
+  // consumers. Copied snippets should only include iframeStyle (widget-lib applies layout there).
+  delete sanitized.width
+  delete sanitized.height
+  delete sanitized.maxHeight
+
+  return pruneTopLevelParams(sanitized)
 }
 
 // Keep only changed values

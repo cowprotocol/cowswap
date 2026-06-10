@@ -34,8 +34,7 @@ export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, s
 
   // Layout:
 
-  iframeStyle:
-    'Host iframe CSS (e.g. backgroundColor, borderRadius, boxShadow, border). Width/height use top-level width & height.',
+  iframeStyle: 'Optional inline styles on the outer iframe element (host page).',
   bodyWrapperStyle: 'Optional inline styles on the body wrapper (inside the iframe)',
   cardStyle: 'Optional inline styles on the main trade widget card (inside the iframe)',
   disableScrollbars:
