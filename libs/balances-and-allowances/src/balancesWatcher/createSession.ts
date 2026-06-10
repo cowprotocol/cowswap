@@ -1,5 +1,5 @@
 import { BALANCES_WATCHER_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout, JSON_HEADERS, parseJsonResponse } from '@cowprotocol/common-utils'
+import { fetchWithTimeout, JSON_HEADERS, parseJsonResponse, stripTrailingSlash } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { BalancesWatcherApiError, type BalancesWatcherErrorPayload, type CreateSessionRequest } from './types'
@@ -21,8 +21,7 @@ export interface CreateSessionParams {
  * `subscribeToBalancesEvents` after this call resolves.
  */
 export async function createBalancesWatcherSession(params: CreateSessionParams): Promise<void> {
-  // Strip a trailing slash so the joined URL doesn't end up with `//`.
-  const baseUrl = (params.baseUrl ?? BALANCES_WATCHER_BASE_URL).replace(/\/$/, '')
+  const baseUrl = stripTrailingSlash(params.baseUrl ?? BALANCES_WATCHER_BASE_URL)
   const url = `${baseUrl}/${params.chainId}/sessions/${params.owner}`
 
   const response = await fetchWithTimeout(url, {

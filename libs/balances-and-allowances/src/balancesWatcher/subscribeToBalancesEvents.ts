@@ -1,4 +1,5 @@
 import { BALANCES_WATCHER_BASE_URL } from '@cowprotocol/common-const'
+import { isRecord, stripTrailingSlash, tryParseJson } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
@@ -40,21 +41,13 @@ export interface SubscribeToBalancesEventsParams {
   /**
    * Override EventSource constructor — for tests.
    */
-  EventSourceCtor?: typeof EventSource
-}
-
-function tryParseJson<T>(input: string): T | undefined {
-  try {
-    return JSON.parse(input) as T
-  } catch {
-    return undefined
-  }
+  EventSourceConstructor?: typeof EventSource
 }
 
 export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParams): BalancesSubscription {
-  const baseUrl = (params.baseUrl ?? BALANCES_WATCHER_BASE_URL).replace(/\/$/, '')
+  const baseUrl = stripTrailingSlash(params.baseUrl ?? BALANCES_WATCHER_BASE_URL)
   const url = `${baseUrl}/sse/${params.chainId}/balances/${params.owner}`
-  const EventSourceConstructor = params.EventSourceCtor ?? globalThis.EventSource
+  const EventSourceConstructor = params.EventSourceConstructor ?? globalThis.EventSource
 
   if (!EventSourceConstructor) {
     throw new Error('EventSource is not available in this environment')
@@ -81,8 +74,11 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
       terminate(new Error(`Failed to parse balance_update payload: ${event.data}`))
       return
     }
-    if (!payload.balances) {
-      terminate(new Error('balance_update payload missing `balances` field'))
+    // Arrays/primitives in `balances` would silently corrupt the local map —
+    // reject anything that isn't a plain record. `isRecord` accepts arrays,
+    // hence the extra `Array.isArray` guard.
+    if (!isRecord(payload.balances) || Array.isArray(payload.balances)) {
+      terminate(new Error('balance_update payload missing or invalid `balances` field'))
       return
     }
 

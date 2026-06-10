@@ -66,7 +66,7 @@ function start(extra: Partial<Parameters<typeof subscribeToBalancesEvents>[0]> =
     chainId: SupportedChainId.MAINNET,
     owner: OWNER,
     baseUrl: BASE_URL,
-    EventSourceCtor: MockEventSource as unknown as typeof EventSource,
+    EventSourceConstructor: MockEventSource as unknown as typeof EventSource,
     ...cbs,
     ...extra,
   })
@@ -108,12 +108,29 @@ describe('subscribeToBalancesEvents', () => {
     expect(cbs.onError).toHaveBeenCalledTimes(1)
     const [error, terminal] = cbs.onError.mock.calls[0]
     expect(terminal).toBe(true)
-    expect((error as Error).message).toMatch(/missing `balances` field/)
+    expect((error as Error).message).toMatch(/missing or invalid `balances` field/)
     expect(source.closeCallCount).toBe(1)
 
     // Follow-up valid event must NOT reach onBalances (subscription is closed).
     source.emit('balance_update', JSON.stringify({ balances: { '0xtoken1': '7' } }))
     expect(cbs.onBalances).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['array', JSON.stringify({ balances: ['0xtoken1', '100'] })],
+    ['string primitive', JSON.stringify({ balances: 'something' })],
+    ['number primitive', JSON.stringify({ balances: 42 })],
+  ])('treats a balance_update with a non-object `balances` value (%s) as terminal corruption', (_label, raw) => {
+    const { source, cbs } = start()
+
+    source.emit('balance_update', raw)
+
+    expect(cbs.onBalances).not.toHaveBeenCalled()
+    expect(cbs.onError).toHaveBeenCalledTimes(1)
+    const [error, terminal] = cbs.onError.mock.calls[0]
+    expect(terminal).toBe(true)
+    expect((error as Error).message).toMatch(/missing or invalid `balances` field/)
+    expect(source.closeCallCount).toBe(1)
   })
 
   it('treats invalid JSON in a balance_update as terminal corruption and closes the source', () => {
