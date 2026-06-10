@@ -19,7 +19,7 @@ export const darkPalette: PaletteOptions = {
   },
   background: {
     paper: 'rgb(22, 23, 31)',
-    default: '#FF0000',
+    default: 'rgb(22, 23, 31)',
   },
   cow: {
     background: '#07162d',
@@ -41,7 +41,7 @@ export const lightPalette: PaletteOptions = {
     primary: 'rgb(12, 38, 75)',
   },
   background: {
-    default: '#CAE9FF',
+    default: '#ffffff',
     paper: '#ffffff',
   },
   cow: {
