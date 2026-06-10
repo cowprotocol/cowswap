@@ -108,9 +108,84 @@ describe('createCowSwapWidget', () => {
     emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 500 })
     expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('500px')
     expect(iframe.style.height).toBe('432px')
+    expect(iframe.style.maxHeight).toBe('350px')
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
     expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('100dvh')
+  })
+
+  it('applies deprecated width and height on create and updateParams', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const handler = createCowSwapWidget(container, {
+      params: {
+        appCode: 'widget-test',
+        width: '100%',
+        height: '640px',
+      },
+    })
+    widgetHandlers.push(handler)
+
+    const iframe = getIframe(container)
+
+    expect(iframe.width).toBe('100%')
+    expect(iframe.height).toBe('640px')
+
+    handler.updateParams({
+      appCode: 'widget-test',
+      width: '320px',
+      height: '432px',
+    })
+
+    expect(iframe.width).toBe('320px')
+    expect(iframe.height).toBe('432px')
+    warnSpy.mockRestore()
+  })
+
+  it('applies deprecated maxHeight on the iframe without clamping dynamic height', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const handler = createCowSwapWidget(container, {
+      params: {
+        appCode: 'widget-test',
+        iframeStyle: { height: 'var(--dynamicHeight)' },
+        maxHeight: 400,
+      },
+    })
+    widgetHandlers.push(handler)
+
+    const iframe = getIframe(container)
+
+    emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 500 })
+
+    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('500px')
+    expect(iframe.style.maxHeight).toBe('400px')
+  })
+
+  it('warns when deprecated width conflicts with iframeStyle.width', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    widgetHandlers.push(
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'widget-test',
+          width: '100%',
+          iframeStyle: { width: '320px' },
+        },
+      }),
+    )
+
+    const iframe = getIframe(container)
+
+    expect(warnSpy).toHaveBeenCalledWith('Both iframeStyle.width and width params have been set. width will be ignored')
+    expect(iframe.style.width).toBe('320px')
+
+    warnSpy.mockRestore()
   })
 
   it('opens https links requested by the widget', () => {

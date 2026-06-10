@@ -29,8 +29,6 @@ import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils
 import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
-import type * as CSS from 'csstype'
-
 const noopHandler: CowSwapWidgetHandler = {
   iframe: null as never,
   updateParams: () => void 0,
@@ -156,7 +154,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = { ...DEFAULT_WIDGET_PARAMS, ...newParams }
 
-      updateIframeElement(iframe, currentParams.iframeStyle, lastDynamicHeight)
+      updateIframeElement(iframe, currentParams, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
       updateInterceptDeepLinks()
       updateWidgetHooks()
@@ -233,24 +231,40 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 
   iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetUrl(params)
-  //iframe.width = width
-  //iframe.height = height
-  //iframe.style.border = '0'
   iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
 
-  updateIframeElement(iframe, params.iframeStyle)
+  updateIframeElement(iframe, params)
 
   return iframe
 }
 
-function updateIframeElement(
-  iframe: HTMLIFrameElement,
-  iframeStyle?: CSS.Properties,
-  lastDynamicHeight?: string,
-): void {
-  assignElementStyles(iframe, iframeStyle)
+// eslint-disable-next-line complexity
+function updateIframeElement(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
+  assignElementStyles(iframe, params.iframeStyle)
+
+  // Deprecated but left here for backwards compatibility:
+  if (params.width || params.height || params.maxHeight) {
+    console.warn(
+      '`width`, `height` and `maxHeight` params are deprecated. Use `iframeStyle.width`, `iframeStyle.height` and `iframeStyle.maxHeight` instead.',
+    )
+
+    const ignoredParams = []
+
+    if (params.iframeStyle?.width) ignoredParams.push('width')
+    if (params.iframeStyle?.height) ignoredParams.push('height')
+    if (params.iframeStyle?.maxHeight) ignoredParams.push('maxHeight')
+
+    ignoredParams.forEach((param) => {
+      console.warn(`Both iframeStyle.${param} and ${param} params have been set. ${param} will be ignored`)
+    })
+
+    if (params.width && params.iframeStyle?.width === undefined) iframe.width = params.width
+    if (params.height && params.iframeStyle?.height === undefined) iframe.height = params.height
+    if (params.maxHeight && params.iframeStyle?.maxHeight === undefined)
+      iframe.style.maxHeight = `${params.maxHeight}px`
+  }
 
   if (lastDynamicHeight) iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }
