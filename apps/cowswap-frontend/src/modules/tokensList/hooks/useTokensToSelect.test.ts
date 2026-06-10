@@ -14,25 +14,20 @@ import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useTokensToSelect } from './useTokensToSelect'
 
-import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../state/selectTokenWidgetAtom'
-
 jest.mock('jotai', () => ({
   ...jest.requireActual('jotai'),
   useAtomValue: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
-  ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/tokens', () => ({
-  ...jest.requireActual('@cowprotocol/tokens'),
   useFavoriteTokens: jest.fn(),
 }))
 
 jest.mock('entities/bridgeProvider', () => ({
-  ...jest.requireActual('entities/bridgeProvider'),
   useBridgeSupportedTokens: jest.fn(),
 }))
 
@@ -42,6 +37,10 @@ jest.mock('./useSelectTokenWidgetState', () => ({
 
 jest.mock('./useChainsToSelect', () => ({
   useChainsToSelect: jest.fn(),
+}))
+
+jest.mock('../state/tokensToSelectAtom', () => ({
+  tokensToSelectAtom: Symbol('tokensToSelectAtom'),
 }))
 
 const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
@@ -66,6 +65,38 @@ const lineaToken = {
   symbol: 'USDC',
   name: 'USD Coin',
 } as TokenWithLogo
+
+const scopedFavoriteToken = {
+  address: '0x1111111111111111111111111111111111111111',
+  chainId: SupportedChainId.MAINNET,
+  decimals: 18,
+  symbol: 'AAPLx',
+  name: 'Scoped Favorite',
+} as TokenWithLogo
+
+const leakedFavoriteToken = {
+  address: '0x2222222222222222222222222222222222222222',
+  chainId: SupportedChainId.MAINNET,
+  decimals: 18,
+  symbol: 'COW',
+  name: 'Leaked Favorite',
+} as TokenWithLogo
+
+const DEFAULT_SELECT_TOKEN_WIDGET_STATE = {
+  open: false,
+  field: undefined,
+  selectedToken: undefined,
+  onSelectToken: undefined,
+  tokenToImport: undefined,
+  listToImport: undefined,
+  listToToggle: undefined,
+  selectedPoolAddress: undefined,
+  selectedTargetChainId: undefined,
+  tradeType: undefined,
+  forceOpen: false,
+  standalone: false,
+  displayLpTokenLists: false,
+} as const
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
@@ -153,5 +184,21 @@ describe('useTokensToSelect', () => {
       buyChainId: SupportedChainId.MAINNET,
       sellChainId: SupportedChainId.ARBITRUM_ONE,
     })
+  })
+
+  it('filters favorite tokens to the currently selectable token set', () => {
+    mockUseAtomValue.mockReturnValue([scopedFavoriteToken])
+    mockUseFavoriteTokens.mockReturnValue([scopedFavoriteToken, leakedFavoriteToken])
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.INPUT,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useTokensToSelect())
+
+    expect(result.current.tokens).toEqual([scopedFavoriteToken])
+    expect(result.current.favoriteTokens).toEqual([scopedFavoriteToken])
   })
 })

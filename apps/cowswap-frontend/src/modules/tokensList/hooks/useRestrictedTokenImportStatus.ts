@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getCountryAsKey, RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
+import { getCountryAsKey, restrictedTokensAtom, RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
 
 import { t } from '@lingui/core/macro'
 
@@ -27,23 +28,38 @@ const NOT_RESTRICTED_RESULT: RestrictedTokenImportResult = {
   blockReason: null,
 }
 
+function getPendingRestrictionResult(): RestrictedTokenImportResult {
+  return {
+    status: RestrictedTokenImportStatus.Blocked,
+    restrictedInfo: null,
+    isImportDisabled: true,
+    blockReason: t`Checking token availability.`,
+  }
+}
+
 export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined): RestrictedTokenImportResult {
   const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedInfo = useRestrictedToken(token)
+  const restrictedTokensState = useAtomValue(restrictedTokensAtom)
 
   return useMemo(() => {
-    // skip restriction check if ff is disabled
+    if (isRwaGeoblockEnabled === undefined) {
+      return getPendingRestrictionResult()
+    }
+
     if (!isRwaGeoblockEnabled) {
       return NOT_RESTRICTED_RESULT
     }
 
-    // if geo is loading or token is not restricted, allow import
-    if (geoStatus.isLoading || !restrictedInfo) {
+    if (!restrictedTokensState.isLoaded) {
+      return getPendingRestrictionResult()
+    }
+
+    if (!restrictedInfo) {
       return NOT_RESTRICTED_RESULT
     }
 
-    // only block import if country is known and blocked
     if (geoStatus.country) {
       const countryKey = getCountryAsKey(geoStatus.country)
       const blockedCountries = new Set(restrictedInfo.restrictedCountries)
@@ -58,6 +74,6 @@ export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined)
       }
     }
 
-    return NOT_RESTRICTED_RESULT
-  }, [isRwaGeoblockEnabled, geoStatus, restrictedInfo])
+    return getPendingRestrictionResult()
+  }, [geoStatus.country, isRwaGeoblockEnabled, restrictedInfo, restrictedTokensState.isLoaded])
 }

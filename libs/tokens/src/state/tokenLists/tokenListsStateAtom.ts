@@ -117,13 +117,20 @@ export const listsStatesMapAtom = atom(async (get) => {
     return acc
   }, {})
 
+  const virtualListSources = Object.keys(virtualListsState).reduce<{ [key: string]: boolean }>((acc, source) => {
+    acc[source] = true
+    return acc
+  }, {})
+
   const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
     acc[list.source] = true
     return acc
   }, {})
 
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
+    return useCuratedListOnly
+      ? userAddedListSources[source] || virtualListSources[source] || lpTokenListSources[source]
+      : true
   })
 
   const lists = useCuratedListOnly

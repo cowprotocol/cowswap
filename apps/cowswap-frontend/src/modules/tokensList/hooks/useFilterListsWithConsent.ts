@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getSourceAsKey, ListState, restrictedListsAtom, useFilterBlockedLists } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -13,6 +14,7 @@ import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus }
  */
 export function useFilterListsWithConsent(lists: ListState[]): ListState[] {
   const { account } = useWalletInfo()
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
@@ -21,18 +23,16 @@ export function useFilterListsWithConsent(lists: ListState[]): ListState[] {
   const countryFilteredLists = useFilterBlockedLists(lists, geoStatus.country)
 
   return useMemo(() => {
+    if (isRwaGeoblockEnabled === false) {
+      return lists
+    }
+
+    if (isRwaGeoblockEnabled !== true || !restrictedLists.isLoaded) {
+      return []
+    }
+
     // If country is known, just return country-filtered lists
     if (geoStatus.country) {
-      return countryFilteredLists
-    }
-
-    // If geo is still loading, return all lists for now
-    if (geoStatus.isLoading) {
-      return countryFilteredLists
-    }
-
-    // if restricted lists not loaded, return all
-    if (!restrictedLists.isLoaded) {
       return countryFilteredLists
     }
 
@@ -55,5 +55,5 @@ export function useFilterListsWithConsent(lists: ListState[]): ListState[] {
       // Only show if consent is given
       return !!existingConsent?.acceptedAt
     })
-  }, [countryFilteredLists, geoStatus, restrictedLists, account, consentCache])
+  }, [account, consentCache, countryFilteredLists, geoStatus.country, isRwaGeoblockEnabled, lists, restrictedLists])
 }
