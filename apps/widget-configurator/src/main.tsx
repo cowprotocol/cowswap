@@ -76,8 +76,4 @@ function Root(): ReactNode {
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
 
-root.render(
-  <StrictMode>
-    <Root />
-  </StrictMode>,
-)
+root.render(<Root />)

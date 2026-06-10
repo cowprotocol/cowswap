@@ -26,7 +26,7 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette
 <head>
   <meta charset="UTF-8">
   <title>CoWSwap Widget demo</title>
-  <script src="https://cdn.jsdelivr.net/npm/@cowprotocol/widget-lib@latest/index.iife.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@cowprotocol/widget-lib@<VERSION>/index.iife.js"></script>
 </head>
 <body
   style="
