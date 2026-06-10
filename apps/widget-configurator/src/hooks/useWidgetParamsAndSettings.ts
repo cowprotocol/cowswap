@@ -7,14 +7,14 @@ import { ConfiguratorState } from '../configurator.types'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/base-url/baseUrl'
 import { getLegacyIframeDimensionParams } from '../utils/legacyIframeDimensions/legacyIframeDimensions.utils'
 
-const getTokenListsParam = (
+function getTokenListsParam(
   tokenListUrls: ConfiguratorState['tokenListUrls'],
   key: 'enabled' | 'enabledForSell' | 'enabledForBuy',
-): string[] => {
+): string[] {
   return tokenListUrls.filter((list) => list[key]).map((list) => list.url)
 }
 
-const getForcedOrderDeadline = ({
+function getForcedOrderDeadline({
   deadline,
   swapDeadline,
   limitDeadline,
@@ -22,16 +22,16 @@ const getForcedOrderDeadline = ({
 }: Pick<
   ConfiguratorState,
   'deadline' | 'swapDeadline' | 'limitDeadline' | 'advancedDeadline'
->): CowSwapWidgetParams['forcedOrderDeadline'] => {
-  if (!swapDeadline && !limitDeadline && !advancedDeadline) {
-    return deadline
-  }
+>): CowSwapWidgetParams['forcedOrderDeadline'] {
+  const hasPerTradeDeadline = !!(swapDeadline || limitDeadline || advancedDeadline)
 
-  return {
-    [TradeType.SWAP]: swapDeadline,
-    [TradeType.LIMIT]: limitDeadline,
-    [TradeType.ADVANCED]: advancedDeadline,
-  }
+  return hasPerTradeDeadline
+    ? {
+        [TradeType.SWAP]: swapDeadline ?? deadline,
+        [TradeType.LIMIT]: limitDeadline ?? deadline,
+        [TradeType.ADVANCED]: advancedDeadline ?? deadline,
+      }
+    : deadline
 }
 
 function confirmWidgetHookAction(message: string): boolean {
