@@ -42,12 +42,18 @@ function resolveDrawerWidth(persistedValue: unknown): number {
 export function useResizableDrawerWidth(
   containerRef: RefObject<HTMLElement | null>,
   cssVarName: string,
+  isSidebarOpen: boolean,
 ): UseResizableDrawerWidthResult {
   const resizeStateRef = useRef<{ startX: number; startWidth: number } | null>(null)
   const [drawerWidth, setDrawerWidth] = useLocalStorageState(CONFIGURATOR_SIDEBAR_WIDTH_STORAGE_KEY, resolveDrawerWidth)
   const [isResizing, setIsResizing] = useState(false)
   const currentWidthRef = useRef(drawerWidth)
+  const isSidebarOpenRef = useRef(isSidebarOpen)
   const animationFrameRef = useRef<number | null>(null)
+
+  useLayoutEffect(() => {
+    isSidebarOpenRef.current = isSidebarOpen
+  }, [isSidebarOpen])
 
   const stopResizing = useCallback((): void => {
     resizeStateRef.current = null
@@ -68,8 +74,7 @@ export function useResizableDrawerWidth(
 
   useLayoutEffect(() => {
     currentWidthRef.current = drawerWidth
-    setDrawerWidthCssVar(containerRef.current, cssVarName, drawerWidth)
-  }, [containerRef, cssVarName, drawerWidth])
+  }, [drawerWidth])
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent): void => {
@@ -98,7 +103,10 @@ export function useResizableDrawerWidth(
     const handleWindowResize = (): void => {
       const nextWidth = clampDrawerWidth(currentWidthRef.current)
 
-      applyDrawerWidth(nextWidth)
+      if (isSidebarOpenRef.current) {
+        applyDrawerWidth(nextWidth)
+      }
+
       setDrawerWidth(nextWidth)
     }
 

@@ -60,11 +60,15 @@ export function Configurator({ title }: { title: string }): ReactNode {
 
   // Sidebar Handling:
 
-  const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(configuratorRef, DRAWER_WIDTH_CSS_VAR)
-
   const [isSidebarOpen, setIsSidebarOpen] = useLocalStorageState(
     CONFIGURATOR_SIDEBAR_OPEN_STORAGE_KEY,
     (persistedValue) => (typeof persistedValue === 'boolean' ? persistedValue : true),
+  )
+
+  const { drawerWidth, isResizing, handleResizeStart } = useResizableDrawerWidth(
+    configuratorRef,
+    DRAWER_WIDTH_CSS_VAR,
+    isSidebarOpen,
   )
 
   const handleSidebarToggle = useCallback(() => {
