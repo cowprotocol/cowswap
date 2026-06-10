@@ -1,6 +1,7 @@
 import { type FocusEvent, type ReactNode, useCallback, useEffect, useState } from 'react'
 
-import { useThrottledCallback } from '@swyg/corre'
+import { useThrottledCallback } from '@cowprotocol/common-hooks'
+
 import { MuiColorInput, type MuiColorInputFormat } from 'mui-color-input'
 
 import { colorInputAdornedInputSx, colorInputPopoverProps } from './ColorInput.styles'
