@@ -16,9 +16,7 @@ export function IframeResizer(): null {
   const { disableScrollbars } = useInjectedWidgetParams()
 
   useLayoutEffect(() => {
-    const parentOrigin = getParentOrigin()
-
-    if (!shouldPropagateHeightUpdates(parentOrigin)) return
+    if (!shouldPropagateHeightUpdates()) return
 
     if (disableScrollbars) {
       document.documentElement.style.overflow = 'hidden'
@@ -30,9 +28,7 @@ export function IframeResizer(): null {
   }, [disableScrollbars])
 
   useLayoutEffect(() => {
-    const parentOrigin = getParentOrigin()
-
-    if (!shouldPropagateHeightUpdates(parentOrigin)) return
+    if (!shouldPropagateHeightUpdates()) return
 
     const contentElement = getContentElement(document)
 
@@ -106,8 +102,8 @@ export function IframeResizer(): null {
   return null
 }
 
-function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): parentOrigin is string {
-  return isIframe() && isInjectedWidget() && Boolean(parentOrigin)
+function shouldPropagateHeightUpdates(): boolean {
+  return isIframe() && isInjectedWidget() && Boolean(getParentOrigin())
 }
 
 function getContentElement(doc: Document): HTMLElement {
