@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.7.0...tokens-v3.7.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.1
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.6.1...tokens-v3.7.0) (2026-06-08)
 
 ### Minor Changes

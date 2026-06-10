@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.6.0...widget-configurator-v3.7.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.2.0
+  - @cowprotocol/events@4.6.0
+  - @cowprotocol/widget-react@3.1.1
+  - @cowprotocol/analytics@3.4.1
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.5.1...widget-configurator-v3.6.0) (2026-06-08)
 
 ### Minor Changes

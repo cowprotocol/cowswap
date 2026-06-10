@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.7.0...ui-v3.7.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.1
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.6.0...ui-v3.7.0) (2026-06-08)
 
 ### Minor Changes

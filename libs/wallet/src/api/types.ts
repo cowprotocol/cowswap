@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { Address } from 'viem'
 import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 export const ConnectionType = {
@@ -14,7 +13,7 @@ export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType
 
 export interface WalletInfo {
   chainId: SupportedChainId
-  account?: Address
+  account?: string
   active?: boolean
   isConnectionRestoring?: boolean
 }

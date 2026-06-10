@@ -1,5 +1,5 @@
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -23,7 +23,9 @@ import type { Transport } from 'wagmi'
  * `getBalance` to throw, which makes AppKit display `0.000 ETH` (the adapter's error
  * fallback) instead of the real balance.
  */
-function getRpcUrl(chainId: SupportedChainId): string | undefined {
+const EVM_SUPPORTED_CHAIN_IDS = (ALL_SUPPORTED_CHAIN_IDS as readonly number[]).filter(isEvmChain)
+
+function getRpcUrl(chainId: EvmChains): string | undefined {
   const envOverride = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
   return envOverride || VIEM_CHAINS[chainId]?.rpcUrls?.default?.http?.[0]
 }
@@ -47,21 +49,21 @@ const metadata = {
 // AppKit ships its own AppKit-shaped networks (re-exporting viem/chains under the hood,
 // plus the metadata its UI layer needs). Cast to AppKitNetwork to bridge the nominal
 // type difference between this project's pinned viem and AppKit's peer.
-const networks = ALL_SUPPORTED_CHAIN_IDS.map((chainId) => VIEM_CHAINS[chainId] as unknown as AppKitNetwork) as [
+const networks = EVM_SUPPORTED_CHAIN_IDS.map((chainId) => VIEM_CHAINS[chainId] as unknown as AppKitNetwork) as [
   AppKitNetwork,
   ...AppKitNetwork[],
 ]
 
-const transports = ALL_SUPPORTED_CHAIN_IDS.reduce(
+const transports = EVM_SUPPORTED_CHAIN_IDS.reduce(
   (acc, chainId) => {
     const url = getRpcUrl(chainId)
     if (url) acc[chainId] = http(url)
     return acc
   },
-  {} as Record<SupportedChainId, Transport>,
+  {} as Record<EvmChains, Transport>,
 )
 
-const customRpcUrls = ALL_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url: string }>>>((acc, chainId) => {
+const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url: string }>>>((acc, chainId) => {
   const url = getRpcUrl(chainId)
   if (url) acc[`eip155:${chainId}`] = [{ url }]
   return acc
