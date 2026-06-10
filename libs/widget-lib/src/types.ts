@@ -559,7 +559,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.READY]: void
   [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
-  [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
+  [WidgetMethodsEmit.SET_FULL_HEIGHT]: void
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
   [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
   [WidgetMethodsEmit.PROCESS_HOOK]: WidgetHookPayload<WidgetHookEvents>
@@ -598,10 +598,6 @@ export interface UpdateAppDataPayload {
 
 export interface UpdateWidgetHeightPayload {
   height?: number
-}
-
-export interface SetWidgetFullHeightPayload {
-  isUpToSmall?: boolean
 }
 
 export type WidgetHookId = string

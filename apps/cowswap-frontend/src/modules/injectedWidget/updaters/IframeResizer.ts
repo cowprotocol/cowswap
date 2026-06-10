@@ -3,7 +3,6 @@ import { useLayoutEffect, useRef } from 'react'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
-import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -40,12 +39,10 @@ export function IframeResizer(): null {
       const contentHeight = getContentHeight(contentElement)
 
       if (isModalOpen) {
-        const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
-
         widgetIframeTransport.postMessageToWindow(
           window.parent,
           WidgetMethodsEmit.SET_FULL_HEIGHT,
-          { isUpToSmall },
+          void 0,
           parentOrigin,
         )
 

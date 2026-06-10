@@ -110,7 +110,7 @@ describe('createCowSwapWidget', () => {
     expect(iframe.style.height).toBe('432px')
     expect(iframe.style.maxHeight).toBe('350px')
 
-    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall: true })
+    emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, {})
     expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('100dvh')
   })
 

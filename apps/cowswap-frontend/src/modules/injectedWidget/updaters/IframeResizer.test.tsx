@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 
 import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
-import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
 import { act, render } from '@testing-library/react'
@@ -17,12 +16,6 @@ jest.mock('jotai', () => ({
 jest.mock('@cowprotocol/common-utils', () => ({
   isIframe: jest.fn(),
   isInjectedWidget: jest.fn(),
-}))
-
-jest.mock('@cowprotocol/ui', () => ({
-  MEDIA_WIDTHS: {
-    upToSmall: 767,
-  },
 }))
 
 jest.mock('entities/injectedWidget', () => ({
@@ -218,7 +211,6 @@ describe('IframeResizer', () => {
   it('emits full-height updates while a modal is open', () => {
     useAtomValueMock.mockReturnValue(true as never)
     setContentSize({
-      bodyOffsetWidth: MEDIA_WIDTHS.upToSmall - 1,
       rootScrollHeight: 520,
       rootOffsetHeight: 500,
     })
@@ -228,16 +220,13 @@ describe('IframeResizer', () => {
     expect(postMessageToWindowSpy).toHaveBeenCalledWith(
       window.parent,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
-      {
-        isUpToSmall: true,
-      },
+      void 0,
       MOCK_PARENT_ORIGIN,
     )
 
     setContentSize({
-      bodyOffsetWidth: MEDIA_WIDTHS.upToSmall + 1,
-      rootScrollHeight: 520,
-      rootOffsetHeight: 500,
+      rootScrollHeight: 560,
+      rootOffsetHeight: 540,
     })
 
     act(() => {
@@ -247,9 +236,7 @@ describe('IframeResizer', () => {
     expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
       window.parent,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
-      {
-        isUpToSmall: false,
-      },
+      void 0,
       MOCK_PARENT_ORIGIN,
     )
   })
