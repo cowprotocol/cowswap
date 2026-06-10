@@ -29,7 +29,11 @@ export function formatParameters(
   }, formattedParams)
 
   // Add values
-  const tradeTypeValue = isTypescript ? 'TradeType.' + params.tradeType?.toUpperCase() : `"${params.tradeType}"`
+  const tradeTypeValue = params.tradeType
+    ? isTypescript
+      ? `TradeType.${params.tradeType.toUpperCase()}`
+      : `"${params.tradeType}"`
+    : null
   const valuesByParamName: Record<string, string> = tradeTypeValue ? { tradeType: tradeTypeValue } : {}
 
   let resultWithValues = Object.keys(valuesByParamName).reduce((acc, propName) => {

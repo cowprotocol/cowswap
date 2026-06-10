@@ -66,7 +66,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(params)
+  const iframe = createIframe(currentParams)
   const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
@@ -95,7 +95,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   )
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
-  windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
+  windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, currentParams.appCode))
 
   // 4. Handle widget height changes (re-registered when params change so defaults/maxHeight stay in sync)
   const heightChangeListeners: WindowListener[] = listenToHeightChanges(iframe, iframeOrigin, (nextHeight) => {
