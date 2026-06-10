@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useConnection, useSwitchChain } from 'wagmi'
@@ -13,6 +14,7 @@ export function useSyncWidgetNetwork(
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
+  const availableChains = useAvailableChains()
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
   // eslint-disable-next-line react-hooks/refs
@@ -24,9 +26,13 @@ export function useSyncWidgetNetwork(
   useEffect(() => {
     if (!isConnected || !walletChainId) return
 
-    currentChainIdRef.current = walletChainId as SupportedChainId
-    setNetworkControlState(walletChainId as SupportedChainId)
-  }, [isConnected, walletChainId, setNetworkControlState])
+    const walletSupportedChainId = walletChainId as SupportedChainId
+
+    if (!availableChains.includes(walletSupportedChainId)) return
+
+    currentChainIdRef.current = walletSupportedChainId
+    setNetworkControlState(walletSupportedChainId)
+  }, [availableChains, isConnected, walletChainId, setNetworkControlState])
 
   // Send a request to switch network when user changes network in the configurator
   useEffect(() => {
