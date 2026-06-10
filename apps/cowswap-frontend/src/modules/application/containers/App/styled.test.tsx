@@ -36,7 +36,7 @@ describe('BodyWrapper', () => {
     expect(window.getComputedStyle(getByTestId('body-wrapper')).flex).toBe('0 0 auto')
   })
 
-  it('uses the widget shell padding by default', () => {
+  it('uses the legacy widget shell padding by default', () => {
     const { getByTestId } = render(
       <StyledComponentsThemeProvider theme={{ isWidget: true } as never}>
         <BodyWrapper data-testid="body-wrapper" />
@@ -47,7 +47,7 @@ describe('BodyWrapper', () => {
 
     expect(computedStyle.paddingTop).toBe('16px')
     expect(computedStyle.paddingRight).toBe('16px')
-    expect(computedStyle.paddingBottom).toBe('24px')
+    expect(computedStyle.paddingBottom).toBe('0px')
     expect(computedStyle.paddingLeft).toBe('16px')
   })
 
