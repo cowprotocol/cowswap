@@ -26,10 +26,6 @@ export interface UseBalancesWatcherSessionParams {
 }
 
 /**
- * Owns the (POST session → open SSE) lifecycle for the balances watcher and
- * writes incoming balance updates into `balancesAtom`. Replaces the multicall
- * pipeline when the `useBalancesWatcher` LD flag is on.
- *
  * Lifecycle: a new session is created whenever account, chainId, or the set of
  * lists/custom tokens changes. The previous EventSource is closed and any
  * in-flight POST is invalidated via an epoch ref (the transport's
@@ -44,12 +40,9 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
 
   // The `tokensListsUrls` and `customTokens` arrays are expected to be
   // referentially stable across renders (callers memoize them). The session is
-  // re-created whenever any of the deps below change identity.
   useEffect(() => {
     if (!account) return
     if (!isEvmChain(chainId)) return
-    // Server rejects (400) when both arrays are empty — skip session creation
-    // until the user enables a list or imports a token.
     if (tokensListsUrls.length === 0 && customTokens.length === 0) return
 
     const epoch = ++epochRef.current
