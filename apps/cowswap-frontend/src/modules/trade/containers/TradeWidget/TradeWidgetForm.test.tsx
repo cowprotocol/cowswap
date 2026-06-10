@@ -32,7 +32,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   useFeatureFlags: () => ({}),
   useTheme: () => ({ darkMode: false }),
   useMediaQuery: () => false,
-  useThrottleFn: (fn: unknown) => fn,
+  useThrottledCallback: (fn: unknown) => fn,
 }))
 
 jest.mock('@cowprotocol/common-utils', () => ({

@@ -1,7 +1,7 @@
 import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
 import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useMediaQuery, useTheme, useThrottleFn } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery, useTheme, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
@@ -165,7 +165,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   // Disable too frequent tokens switching
-  const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+  const throttledOnSwitchTokens = useThrottledCallback(onSwitchTokens, 500)
 
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
