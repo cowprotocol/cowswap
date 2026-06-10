@@ -5,21 +5,23 @@ import { mapWidgetTheme } from './mapWidgetTheme'
 import type { DefaultTheme } from 'styled-components/macro'
 
 describe('mapWidgetTheme', () => {
-  it('maps custom widget shadow to the main widget container shadow', () => {
+  it('merges palette colors and maps paper to button text', () => {
     const defaultTheme = {
       boxShadow1: '0 12px 12px rgba(5, 43, 101, 0.06)',
       paper: '#ffffff',
     } as DefaultTheme
 
     const widgetTheme: Partial<CowSwapWidgetPalette> = {
+      baseTheme: 'dark',
       paper: '#101010',
-      boxShadow: 'none',
+      primary: '#ffffff',
     }
 
     const result = mapWidgetTheme(widgetTheme, defaultTheme)
 
     expect(result.paper).toBe('#101010')
     expect(result.buttonTextCustom).toBe('#101010')
-    expect(result.boxShadow1).toBe('none')
+    expect(result.primary).toBe('#ffffff')
+    expect(result.boxShadow1).toBe('0 12px 12px rgba(5, 43, 101, 0.06)')
   })
 })
