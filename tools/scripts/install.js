@@ -238,7 +238,7 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
   } finally {
     if (hasRewrites) {
       try {
-        removeTempPnpmfile()
+        fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
       } catch (err) {
         console.warn('[install.js] Failed to remove temp pnpmfile:', err)
       }
@@ -255,7 +255,7 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
     }
     if (tempNpmrcDir !== null) {
       try {
-        removeTempNpmrc(tempNpmrcDir)
+        fs.rmSync(tempNpmrcDir, { force: true, recursive: true })
       } catch (err) {
         console.warn('[install.js] Failed to remove temp npmrc:', err)
       }
@@ -289,13 +289,6 @@ function createTempNpmrc(authToken) {
 }
 
 /**
- * Deletes the temporary npmrc directory if it exists.
- */
-function removeTempNpmrc(dir) {
-  fs.rmSync(dir, { force: true, recursive: true })
-}
-
-/**
  * Creates a temporary pnpm hook file that rewrites workspace manifests in memory.
  *
  * @see https://pnpm.io/pnpmfile
@@ -323,11 +316,4 @@ function createTempPnpmfile(rewriteMap) {
 `
 
   fs.writeFileSync(TEMP_PNPMFILE_PATH, pnpmfile)
-}
-
-/**
- * Deletes the temporary pnpm hook file if it exists.
- */
-function removeTempPnpmfile() {
-  fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
 }
