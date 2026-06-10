@@ -1,5 +1,41 @@
 # Changelog
 
+## [4.5.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.0...explorer-v4.5.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/ui@3.7.1
+
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.1...explorer-v4.5.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(wallet): enable coinbase wallet connection in standalone mode (#7475)
+
+- feat: enhance CowSwapWidget with Safe SDK bridge option and improve e… (#7460)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- fix: make operatorApi treat BARN requests as optional (#7583)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/hook-dapp-lib@2.2.7
+
 ## [4.4.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.0...explorer-v4.4.1) (2026-05-22)
 
 ### Patch Changes

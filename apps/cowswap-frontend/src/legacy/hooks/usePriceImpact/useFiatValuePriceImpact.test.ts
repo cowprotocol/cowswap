@@ -21,6 +21,15 @@ jest.mock('modules/usdAmount', () => ({
   useTradeUsdAmounts: jest.fn(),
 }))
 
+jest.mock('./logger', () => ({
+  logPriceImpact: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}))
+
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeUsdAmounts = useTradeUsdAmounts as jest.MockedFunction<typeof useTradeUsdAmounts>
 
@@ -61,6 +70,57 @@ describe('useFiatValuePriceImpact', () => {
     act(() => {
       jest.advanceTimersByTime(120_000)
     })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+  })
+
+  it('does not restart the loading timeout when price loading flickers', () => {
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+
+    const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(60_000)
+    })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+    rerender()
+
+    act(() => {
+      jest.advanceTimersByTime(60_000)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+    rerender()
 
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
