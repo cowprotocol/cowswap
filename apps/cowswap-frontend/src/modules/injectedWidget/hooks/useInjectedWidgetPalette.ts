@@ -7,8 +7,9 @@ import { useLocation } from 'react-router'
 /**
  * Palette from the widget URL query string.
  *
- * - `undefined`: no `palette` param — keep the last applied custom palette.
- * - `null`: `palette=null` — reset to the default theme for the active base theme.
+ * - No param (`palette === null`): Keep the last applied custom palette.
+ * - Explicitly set to null (`palette === "null"`): Reset to the default theme.
+ * - Unparseable `palette` value: Reset to the default theme.
  * - object: custom palette JSON from the host.
  */
 export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | null | undefined {
@@ -32,8 +33,7 @@ export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | null
       return JSON.parse(decodeURIComponent(palette)) as Partial<CowSwapWidgetPalette>
     } catch (e) {
       console.error('Failed to parse palette from URL', e)
+      return null
     }
-
-    return undefined
   }, [search])
 }

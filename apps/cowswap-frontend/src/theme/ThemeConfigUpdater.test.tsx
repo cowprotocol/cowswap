@@ -170,5 +170,19 @@ describe('ThemeConfigUpdater', () => {
       expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(newPalette, lightTheme)
       expect(mockSetThemeConfig).toHaveBeenLastCalledWith(newWidgetTheme)
     })
+
+    it('resets widgetTheme when an invalid palette arrives after a valid one', () => {
+      mockedUseInjectedWidgetPalette.mockReturnValue(palette)
+      mockedMapWidgetTheme.mockReturnValue(widgetTheme)
+
+      const { rerender } = renderHook(() => ThemeConfigUpdater())
+
+      mockedUseInjectedWidgetPalette.mockReturnValue(null)
+      mockedMapWidgetTheme.mockReturnValue(lightTheme)
+      rerender()
+
+      expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(undefined, lightTheme)
+      expect(mockSetThemeConfig).toHaveBeenLastCalledWith(lightTheme)
+    })
   })
 })
