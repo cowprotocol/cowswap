@@ -1,15 +1,21 @@
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { IsTokenPermittableResult, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
+
+jest.mock('@cowprotocol/balances-and-allowances', () => ({
+  useTradeSpenderAddress: jest.fn(),
+}))
 
 jest.mock('@cowprotocol/common-utils', () => ({
   ...jest.requireActual('@cowprotocol/common-utils'),
@@ -25,6 +31,10 @@ jest.mock('modules/permit', () => ({
   usePermitInfo: jest.fn(),
 }))
 
+jest.mock('modules/injectedWidget', () => ({
+  callOnBeforeApprovalWidgetHook: jest.fn(),
+}))
+
 jest.mock('modules/trade', () => ({
   TradeType: {
     SWAP: 'SWAP',
@@ -36,8 +46,12 @@ jest.mock('../', () => ({
   useResetApproveProgressModalState: jest.fn(),
 }))
 
+const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockGetWrappedToken = getWrappedToken as jest.MockedFunction<typeof getWrappedToken>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockCallOnBeforeApprovalWidgetHook = callOnBeforeApprovalWidgetHook as jest.MockedFunction<
+  typeof callOnBeforeApprovalWidgetHook
+>
 const mockUseGeneratePermitHook = useGeneratePermitHook as jest.MockedFunction<typeof useGeneratePermitHook>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 const mockUseUpdateApproveProgressModalState = useUpdateApproveProgressModalState as jest.MockedFunction<
@@ -47,6 +61,7 @@ const mockUseResetApproveProgressModalState = useResetApproveProgressModalState 
   typeof useResetApproveProgressModalState
 >
 
+// eslint-disable-next-line max-lines-per-function
 describe('useGeneratePermitInAdvanceToTrade', () => {
   const mockToken = new Token(1, '0x1234567890123456789012345678901234567890', 18, 'TEST', 'Test Token')
   const mockWrappedToken = new Token(1, '0x0987654321098765432109876543210987654321', 18, 'WETH', 'Wrapped Ether')
@@ -55,14 +70,17 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
   const mockPermitInfo = { type: 'eip-2612' as const }
   const mockUpdateApproveProgressModalState = jest.fn()
   const mockResetApproveProgressModalState = jest.fn()
+  const mockSpenderAddress = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
 
   const mockGeneratePermit = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
 
+    mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
     mockGetWrappedToken.mockReturnValue(mockWrappedToken as unknown as ReturnType<typeof getWrappedToken>)
     mockUseWalletInfo.mockReturnValue({ account: mockAccount, chainId: 1 } as WalletInfo)
+    mockCallOnBeforeApprovalWidgetHook.mockResolvedValue(true)
     mockUseGeneratePermitHook.mockReturnValue(mockGeneratePermit)
     mockUsePermitInfo.mockReturnValue(mockPermitInfo)
     mockUseUpdateApproveProgressModalState.mockReturnValue(mockUpdateApproveProgressModalState)
@@ -85,7 +103,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
     it('should call usePermitInfo with wrapped token and SWAP trade type', () => {
       renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
 
-      expect(mockUsePermitInfo).toHaveBeenCalledWith(mockWrappedToken, TradeType.SWAP)
+      expect(mockUsePermitInfo).toHaveBeenCalledWith(mockWrappedToken, TradeType.SWAP, mockSpenderAddress)
     })
   })
 
@@ -98,6 +116,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const result_value = await generatePermit()
 
       expect(result_value).toBe(false)
+      expect(mockCallOnBeforeApprovalWidgetHook).not.toHaveBeenCalled()
       expect(mockGeneratePermit).not.toHaveBeenCalled()
     })
 
@@ -109,6 +128,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const result_value = await generatePermit()
 
       expect(result_value).toBe(false)
+      expect(mockCallOnBeforeApprovalWidgetHook).not.toHaveBeenCalled()
       expect(mockGeneratePermit).not.toHaveBeenCalled()
     })
 
@@ -120,6 +140,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const result_value = await generatePermit()
 
       expect(result_value).toBe(false)
+      expect(mockCallOnBeforeApprovalWidgetHook).not.toHaveBeenCalled()
       expect(mockGeneratePermit).not.toHaveBeenCalled()
     })
 
@@ -133,6 +154,11 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const result_value = await generatePermit()
 
       expect(result_value).toBe(true)
+      expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalledWith({
+        account: mockAccount,
+        amountToApprove: mockAmountToApprove,
+        spenderAddress: mockSpenderAddress,
+      })
       expect(mockGeneratePermit).toHaveBeenCalledWith({
         inputToken: {
           name: mockWrappedToken.name || '',
@@ -141,9 +167,23 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
         account: mockAccount,
         permitInfo: mockPermitInfo,
         amount: BigInt(mockAmountToApprove.quotient.toString()),
+        customSpender: mockSpenderAddress,
         preSignCallback: expect.any(Function),
         postSignCallback: expect.any(Function),
       })
+    })
+
+    it('should stop before generating a permit when widget approval hook blocks it', async () => {
+      mockCallOnBeforeApprovalWidgetHook.mockResolvedValue(false)
+
+      const { result } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
+
+      const generatePermit = result.current
+      const result_value = await generatePermit()
+
+      expect(result_value).toBe(false)
+      expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalled()
+      expect(mockGeneratePermit).not.toHaveBeenCalled()
     })
 
     it('should return false when generatePermit returns null', async () => {

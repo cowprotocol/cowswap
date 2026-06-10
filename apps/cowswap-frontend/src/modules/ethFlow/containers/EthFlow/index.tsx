@@ -11,10 +11,10 @@ import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 
 import {
+  useApproveCurrency,
   useApproveState,
   useIsPartialApproveSelectedByUser,
   usePartialApproveAmountModalState,
-  useTradeApproveCallback,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
 import { useWrappedToken } from 'modules/trade'
@@ -63,7 +63,7 @@ export function EthFlowModal({
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const currencyToApprove = isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
 
-  const approveCallback = useTradeApproveCallback(wrapped)
+  const approveCallback = useApproveCurrency(wrappedAmount ?? undefined, true)
 
   const ethFlowActions = useEthFlowActions(
     {

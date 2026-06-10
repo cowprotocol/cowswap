@@ -10,13 +10,17 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Nullish } from 'types'
 import { useConfig, usePublicClient } from 'wagmi'
 
-import { TradeType } from 'modules/trade/types/TradeType'
+import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
-import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
+import {
+  addPermitInfoForTokenAtom,
+  getPermittableTokenKey,
+  permittableTokensAtom,
+} from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
 
 const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
@@ -63,29 +67,30 @@ export function usePermitInfo(
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
 
   const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
+  const defaultSpender = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
+  const spender = customSpender || defaultSpender
+  const shouldUsePreGeneratedInfo = spender === defaultSpender
 
   const addPermitInfo = useAddPermitInfo()
-  const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
+  const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined, spender)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled && !isNative ? token : undefined,
+    isPermitEnabled && !isNative && shouldUsePreGeneratedInfo ? token : undefined,
   )
-
-  const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+  const hasResolvedPermitInfo =
+    permitInfo !== undefined || (shouldUsePreGeneratedInfo && preGeneratedInfo !== undefined)
+  const shouldSkipPermitInfoLoad =
+    !chainId ||
+    !isPermitEnabled ||
+    !lowerCaseAddress ||
+    !spender ||
+    !config ||
+    !publicClient ||
+    hasResolvedPermitInfo ||
+    isNative ||
+    preGeneratedIsLoading
 
   useEffect(() => {
-    if (
-      !chainId ||
-      !isPermitEnabled ||
-      !lowerCaseAddress ||
-      !config ||
-      !publicClient ||
-      permitInfo !== undefined ||
-      isNative ||
-      // Do not try to load when pre-generated info is loading
-      preGeneratedIsLoading ||
-      // Do not try to load when pre-generated exists
-      preGeneratedInfo !== undefined
-    ) {
+    if (shouldSkipPermitInfoLoad) {
       return
     }
 
@@ -108,7 +113,7 @@ export function usePermitInfo(
         // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
         // TODO: better to create a separate updater for caching.
         // Otherwise, we know it is permittable or not. Cache it.
-        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, permitInfo: result })
+        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, spender, permitInfo: result })
       }
     })
   }, [
@@ -122,6 +127,8 @@ export function usePermitInfo(
     permitInfo,
     preGeneratedInfo,
     preGeneratedIsLoading,
+    shouldUsePreGeneratedInfo,
+    shouldSkipPermitInfoLoad,
     spender,
   ])
 
@@ -129,7 +136,7 @@ export function usePermitInfo(
     return UNSUPPORTED
   }
 
-  return preGeneratedInfo ?? permitInfo
+  return shouldUsePreGeneratedInfo ? (preGeneratedInfo ?? permitInfo) : permitInfo
 }
 
 /**
@@ -141,12 +148,16 @@ function useAddPermitInfo() {
   return useSetAtom(addPermitInfoForTokenAtom)
 }
 
-function usePermitInfoState(chainId: SupportedChainId, tokenAddress: string | undefined): IsTokenPermittableResult {
+function usePermitInfoState(
+  chainId: SupportedChainId,
+  tokenAddress: string | undefined,
+  spender: string | undefined,
+): IsTokenPermittableResult {
   const permitableTokens = useAtomValue(permittableTokensAtom)
 
   return useMemo(() => {
-    if (!tokenAddress) return undefined
+    if (!tokenAddress || !spender) return undefined
 
-    return permitableTokens[chainId]?.[getAddressKey(tokenAddress)]
-  }, [chainId, permitableTokens, tokenAddress])
+    return permitableTokens[chainId]?.[getPermittableTokenKey(tokenAddress, spender)]
+  }, [chainId, permitableTokens, spender, tokenAddress])
 }

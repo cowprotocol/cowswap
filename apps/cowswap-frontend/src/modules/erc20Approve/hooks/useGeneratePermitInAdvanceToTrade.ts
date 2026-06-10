@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -14,12 +16,23 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
+  const tradeSpenderAddress = useTradeSpenderAddress()
 
   const token = getWrappedToken(amountToApprove.currency)
-  const permitInfo = usePermitInfo(token, TradeType.SWAP)
+  const permitInfo = usePermitInfo(token, TradeType.SWAP, tradeSpenderAddress)
 
   return useCallback(async () => {
-    if (!account || !permitInfo) return false
+    if (!account || !permitInfo || !tradeSpenderAddress) return false
+
+    const isWidgetHookPassed = await callOnBeforeApprovalWidgetHook({
+      account,
+      amountToApprove,
+      spenderAddress: tradeSpenderAddress,
+    })
+
+    if (!isWidgetHookPassed) {
+      return false
+    }
 
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
@@ -34,6 +47,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
         account,
         permitInfo,
         amount: BigInt(amountToApprove.quotient.toString()),
+        customSpender: tradeSpenderAddress,
         preSignCallback,
         postSignCallback: resetApproveProgressModalState,
       })
@@ -52,6 +66,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     generatePermit,
     permitInfo,
     resetApproveProgressModalState,
+    tradeSpenderAddress,
     token.address,
     token.name,
     updateApproveProgressModalState,
