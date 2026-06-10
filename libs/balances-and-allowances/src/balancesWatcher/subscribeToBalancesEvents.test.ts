@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { subscribeToBalancesEvents } from './subscribeToBalancesEvents'
+import { subscribeToBalancesEvents, SubscribeToBalancesEventsParams } from './subscribeToBalancesEvents'
 import { BalancesWatcherStreamError } from './types'
 
 const OWNER = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
@@ -56,20 +56,21 @@ function getSseCallbacks(): {
   return { onBalances: jest.fn(), onError: jest.fn() }
 }
 
-function start(extra: Partial<Parameters<typeof subscribeToBalancesEvents>[0]> = {}): {
+function start(extra: Partial<SubscribeToBalancesEventsParams> = {}): {
   cbs: ReturnType<typeof getSseCallbacks>
   source: MockEventSource
   subscription: ReturnType<typeof subscribeToBalancesEvents>
 } {
   const cbs = getSseCallbacks()
-  const subscription = subscribeToBalancesEvents({
-    chainId: SupportedChainId.MAINNET,
-    owner: OWNER,
-    baseUrl: BASE_URL,
-    EventSourceCtor: MockEventSource as unknown as typeof EventSource,
-    ...cbs,
-    ...extra,
-  })
+  const params: SubscribeToBalancesEventsParams = {
+    chainId: extra.chainId ?? SupportedChainId.MAINNET,
+    owner: extra.owner ?? OWNER,
+    baseUrl: extra.baseUrl ?? BASE_URL,
+    EventSourceCtor: extra.EventSourceCtor ?? (MockEventSource as unknown as typeof EventSource),
+    onBalances: extra.onBalances ?? cbs.onBalances,
+    onError: extra.onError ?? cbs.onError,
+  }
+  const subscription = subscribeToBalancesEvents(params)
   const source = MockEventSource.lastInstance
   if (!source) throw new Error('MockEventSource was not constructed')
   return { cbs, source, subscription }
