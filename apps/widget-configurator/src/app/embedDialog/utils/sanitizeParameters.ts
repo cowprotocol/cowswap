@@ -1,4 +1,9 @@
-import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import {
+  CowSwapWidgetPalette,
+  CowSwapWidgetPaletteColors,
+  CowSwapWidgetParams,
+  TradeType,
+} from '@cowprotocol/widget-lib'
 
 import { ColorPalette } from '../../configurator/types'
 import { SANITIZE_PARAMS } from '../const'
@@ -6,11 +11,25 @@ import { SANITIZE_PARAMS } from '../const'
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: ColorPalette) {
-  return {
+  const sanitized: CowSwapWidgetParams = {
     ...params,
     ...SANITIZE_PARAMS,
     theme: sanitizePalette(params, defaultPalette),
   }
+
+  if (!isTradeType(sanitized.tradeType)) {
+    delete sanitized.tradeType
+  }
+
+  if (sanitized.enabledTradeTypes !== undefined) {
+    if (Array.isArray(sanitized.enabledTradeTypes)) {
+      sanitized.enabledTradeTypes = sanitized.enabledTradeTypes.filter(isTradeType)
+    } else {
+      delete sanitized.enabledTradeTypes
+    }
+  }
+
+  return sanitized
 }
 
 // Keep only changed values
@@ -32,4 +51,8 @@ function sanitizePalette(params: CowSwapWidgetParams, defaultPalette: ColorPalet
   if (Object.keys(paletteDiff).length === 1 && paletteDiff.baseTheme) return paletteDiff.baseTheme
 
   return paletteDiff
+}
+
+function isTradeType(value: unknown): value is TradeType {
+  return Object.values(TradeType).includes(value as TradeType)
 }

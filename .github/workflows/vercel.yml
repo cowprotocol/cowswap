@@ -11,6 +11,11 @@ on:
         description: 'Application to deploy. Options are: COWSWAP, EXPLORER'
         required: true
         type: string
+      checkout_ref:
+        description: 'Exact git ref or commit to check out before building'
+        required: false
+        type: string
+        default: ''
       disable_nx_cache:
         description: 'Disable NX cache'
         required: false
@@ -34,6 +39,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+          ref: ${{ inputs.checkout_ref != '' && inputs.checkout_ref || github.sha }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
