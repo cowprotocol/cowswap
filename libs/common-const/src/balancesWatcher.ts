@@ -1,4 +1,4 @@
-const BALANCES_WATCHER_BASE_URL_DEFAULT = 'https://balance-watcher.info'
+const BALANCES_WATCHER_BASE_URL_DEFAULT = 'https://balances-watcher.barn.cow.fi'
 
 export const BALANCES_WATCHER_BASE_URL =
   process.env['REACT_APP_BALANCES_WATCHER_BASE_URL'] || BALANCES_WATCHER_BASE_URL_DEFAULT
