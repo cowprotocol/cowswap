@@ -2,6 +2,7 @@ const DEFAULT_BRANCH_PREFIX = 'cf-preview/pr-'
 const DEFAULT_TRIGGER_LABEL = 'trigger-preview'
 const GITHUB_API_BASE = 'https://api.github.com'
 const MANAGED_COMMENT_MARKER = 'cf-pages-preview-mirror'
+const MIRROR_PULL_REQUEST_LABELS = ['DONT_MERGE']
 const SYNC_CHECKBOX_TEXT = 'Sync Cloudflare preview to latest fork commit'
 const TRUSTED_PERMISSIONS = new Set(['admin', 'maintain', 'write'])
 
@@ -71,7 +72,11 @@ export function parseSyncRequest(commentBody) {
   }
 }
 
-export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GITHUB_API_BASE, repoFullName, token }) {
+export function createGitHubClient({
+  apiBase = process.env.GITHUB_API_URL ?? GITHUB_API_BASE,
+  repoFullName,
+  token,
+}) {
   const [owner, repo] = repoFullName.split('/')
 
   if (!owner || !repo) {
@@ -101,6 +106,9 @@ export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GIT
   }
 
   return {
+    async addIssueLabels(issueNumber, labels) {
+      return request('POST', `/repos/${owner}/${repo}/issues/${issueNumber}/labels`, { labels })
+    },
     async createIssueComment(issueNumber, body) {
       return request('POST', `/repos/${owner}/${repo}/issues/${issueNumber}/comments`, { body })
     },
@@ -362,21 +370,25 @@ async function deletePreviewBranch(client, branchName) {
 async function upsertMirrorPullRequest(client, sourcePullRequest, branchName) {
   const body = buildMirrorPullRequestBody(sourcePullRequest)
   const existingPullRequest = await client.getPullRequestByHead(branchName)
+  let mirrorPullRequest
 
   if (existingPullRequest?.state === 'open') {
-    return client.updatePullRequest(existingPullRequest.number, {
+    mirrorPullRequest = await client.updatePullRequest(existingPullRequest.number, {
       body,
       title: buildMirrorPullRequestTitle(sourcePullRequest.number),
     })
+  } else {
+    mirrorPullRequest = await client.createPullRequest({
+      base: sourcePullRequest.base.ref,
+      body,
+      draft: true,
+      head: branchName,
+      title: buildMirrorPullRequestTitle(sourcePullRequest.number),
+    })
+    await client.addIssueLabels(mirrorPullRequest.number, MIRROR_PULL_REQUEST_LABELS)
   }
 
-  return client.createPullRequest({
-    base: sourcePullRequest.base.ref,
-    body,
-    draft: false,
-    head: branchName,
-    title: buildMirrorPullRequestTitle(sourcePullRequest.number),
-  })
+  return mirrorPullRequest
 }
 
 async function closeMirrorPullRequest(client, branchName) {

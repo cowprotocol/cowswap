@@ -60,6 +60,9 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
 
   return {
     calls,
+    async addIssueLabels(issueNumber, labels) {
+      calls.push(['addIssueLabels', issueNumber, labels])
+    },
     async closePullRequest(prNumber) {
       calls.push(['closePullRequest', prNumber])
       if (mirrorPullRequest?.number === prNumber) {
@@ -76,6 +79,7 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
       calls.push(['createPullRequest', payload])
       mirrorPullRequest = {
         body: payload.body,
+        draft: payload.draft,
         head: { ref: payload.head },
         html_url: 'https://github.com/cowprotocol/cowswap/pull/456',
         number: 456,
@@ -224,15 +228,18 @@ describe('preview-mirror-lib', () => {
             '',
             'Do not merge this PR. Close the source PR to clean up this mirror.',
           ].join('\n'),
-          draft: false,
+          draft: true,
           head: 'cf-preview/pr-123',
           title: 'preview: mirror fork PR #123',
         }],
+        ['addIssueLabels', 456],
         ['listIssueComments', 123],
         ['createIssueComment', 123],
         ['removeIssueLabel', 123],
       ],
     )
+    const labelCall = client.calls.find((call) => call[0] === 'addIssueLabels')
+    assert.deepEqual(labelCall, ['addIssueLabels', 456, ['DONT_MERGE']])
   })
 
   it('force-updates an existing preview branch when a checked managed comment is edited', async () => {
@@ -285,15 +292,57 @@ describe('preview-mirror-lib', () => {
             '',
             'Do not merge this PR. Close the source PR to clean up this mirror.',
           ].join('\n'),
-          draft: false,
+          draft: true,
           head: 'cf-preview/pr-123',
           title: 'preview: mirror fork PR #123',
         }],
+        ['addIssueLabels', 456],
         ['updateIssueComment', 777],
       ],
     )
     const updateCall = client.calls.find((call) => call[0] === 'updateIssueComment')
     assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to latest fork commit/)
+  })
+
+  it('updates an existing mirror pull request without adding labels', async () => {
+    const client = createFakeClient({ refExists: true })
+    await client.createPullRequest({
+      base: 'develop',
+      body: 'old body',
+      draft: false,
+      head: 'cf-preview/pr-123',
+      title: 'preview: mirror fork PR #123',
+    })
+    client.calls.length = 0
+
+    const result = await handlePreviewMirrorEvent({
+      actor: 'maintainer',
+      client,
+      event: labeledEvent(),
+      now: new Date('2026-06-05T10:45:00.000Z'),
+      options: {
+        repoFullName: 'cowprotocol/cowswap',
+      },
+    })
+
+    assert.deepEqual(result, {
+      branchName: 'cf-preview/pr-123',
+      mirrorPullRequestNumber: 456,
+      status: 'synced',
+    })
+    assert.deepEqual(
+      client.calls.map((call) => call.slice(0, 2)),
+      [
+        ['getCollaboratorPermission', 'maintainer'],
+        ['getRef', 'cf-preview/pr-123'],
+        ['updateRef', 'cf-preview/pr-123'],
+        ['getPullRequestByHead', 'cf-preview/pr-123'],
+        ['updatePullRequest', 456],
+        ['listIssueComments', 123],
+        ['createIssueComment', 123],
+        ['removeIssueLabel', 123],
+      ],
+    )
   })
 
   it('ignores checked managed comments edited on a different pull request issue', async () => {
@@ -333,7 +382,7 @@ describe('preview-mirror-lib', () => {
     await client.createPullRequest({
       base: 'develop',
       body: 'old body',
-      draft: false,
+      draft: true,
       head: 'cf-preview/pr-123',
       title: 'preview: mirror fork PR #123',
     })
