@@ -21,7 +21,7 @@ jobs:
   i18n-extract:
     name: Extract i18n strings
     runs-on: ubuntu-latest
-    # Only run for normal same-repo PRs. cf-preview mirrors contain fork code.
+    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks) and NOT cf-preview branches, as that mirrors forked PRs.
     if: github.event.pull_request.head.repo.full_name == github.repository && !startsWith(github.head_ref, 'cf-preview/pr-')
 
     steps:
