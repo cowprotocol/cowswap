@@ -2,9 +2,11 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
+  BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -19,6 +21,8 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { account } = useWalletInfo()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
+
+  const { useBalancesWatcher: isBalancesWatcherEnabled } = useFeatureFlags()
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -51,6 +55,10 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   }, [account, priorityTokenCount])
 
   const refreshTrigger = useOrdersFilledEventsTrigger()
+
+  if (isBalancesWatcherEnabled) {
+    return <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} />
+  }
 
   return (
     <>
