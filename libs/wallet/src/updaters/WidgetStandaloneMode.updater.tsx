@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -6,6 +7,7 @@ import { ConnectorController } from '@reown/appkit-controllers'
 import { useConnection } from 'wagmi'
 
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
+import { appWalletContextAtom } from '../state/appWalletContext.atom'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
@@ -35,6 +37,7 @@ interface WidgetStandaloneModeUpdaterProps {
  * Renders nothing.
  */
 export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandaloneModeUpdaterProps): null {
+  const setAppWalletContext = useSetAtom(appWalletContextAtom)
   const { connector } = useConnection()
   const disconnect = useDisconnectWallet()
 
@@ -44,6 +47,10 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   const isDappMode = standaloneMode === false
   const isStandaloneMode = standaloneMode === true
   const isDisconnectInProgress = useRef(false)
+
+  useEffect(() => {
+    setAppWalletContext((state) => ({ ...state, standaloneMode }))
+  }, [setAppWalletContext, standaloneMode])
 
   /**
    * Once in Dapp mode, disconnect any current wallet and connect to the widget connector
