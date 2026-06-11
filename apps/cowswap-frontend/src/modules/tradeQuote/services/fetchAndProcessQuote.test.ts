@@ -171,6 +171,7 @@ describe('fetchAndProcessQuote', () => {
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
+        allowIntermediateEqSellToken: true,
         appData: mockAppData,
         quoteSigner: undefined,
         getSlippageSuggestion: undefined,
@@ -214,6 +215,7 @@ describe('fetchAndProcessQuote', () => {
           quoteRequest: {
             priceQuality: PriceQuality.FAST,
           },
+          allowIntermediateEqSellToken: true,
           appData: mockAppData,
           quoteSigner: {},
         }),
@@ -251,6 +253,7 @@ describe('fetchAndProcessQuote', () => {
         quoteRequest: {
           priceQuality: PriceQuality.OPTIMAL,
         },
+        allowIntermediateEqSellToken: true,
         appData: mockAppData,
         quoteSigner: undefined,
         getSlippageSuggestion: undefined,
@@ -285,6 +288,7 @@ describe('fetchAndProcessQuote', () => {
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
+        allowIntermediateEqSellToken: true,
         appData: mockAppData,
         quoteSigner: undefined,
         getSlippageSuggestion: undefined,
@@ -684,6 +688,7 @@ describe('fetchAndProcessQuote', () => {
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
+        allowIntermediateEqSellToken: true,
         appData: undefined,
         quoteSigner: undefined,
         getSlippageSuggestion: undefined,
