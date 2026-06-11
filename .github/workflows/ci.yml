@@ -8,7 +8,7 @@ on:
       - develop
   # build on PR creation/updates
   pull_request:
-    types: [opened, synchronize]
+    types: [ opened, synchronize ]
 
 env:
   NODE_VERSION: lts/jod
@@ -26,7 +26,7 @@ env:
 jobs:
   setup:
     name: Setup
-    if: !startsWith(github.head_ref, 'cf-preview/pr-')
+    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -190,7 +190,7 @@ jobs:
 
   integration-tests:
     name: Cypress
-    if: !startsWith(github.head_ref, 'cf-preview/pr-')
+    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -244,13 +244,13 @@ jobs:
 
       # Open tmate ssh connection on failure for debugging
       # Uncomment when needed and push upstream
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
-#        if: ${{ failure() }}
+  #      - name: Setup tmate session
+  #        uses: mxschmitt/action-tmate@v3
+  #        if: ${{ failure() }}
 
   notify-failure:
     name: Notify Slack on Failure
-    needs: [setup, test, lint, typecheck, agent-harness, integration-tests]
+    needs: [ setup, test, lint, typecheck, agent-harness, integration-tests ]
     runs-on: ubuntu-latest
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
