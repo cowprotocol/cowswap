@@ -1,5 +1,6 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 
 const ROOT_DIR = path.resolve(__dirname, '../..')
@@ -189,10 +190,10 @@ function stripLockfileEntries(keys) {
  * Runs pnpm install in the repository root.
  *
  * Uses a frozen lockfile by default. When `authToken` is provided (SDK preview install)
- * it injects the GitHub Packages registry/auth (and an optional rewrite pnpmfile) into
- * the child pnpm process via `npm_config_*` env vars, then runs with
- * `--no-frozen-lockfile`. The auth token never touches the filesystem, so a crash,
- * SIGKILL, or Ctrl-C cannot leave a secret in the tracked `.npmrc`.
+ * it injects the GitHub Packages registry/auth through a temporary npmrc userconfig
+ * (and an optional rewrite pnpmfile) into the child pnpm process, then runs with
+ * `--no-frozen-lockfile`. The auth token is written only to an OS temp directory
+ * npmrc with restrictive permissions and is removed after the install attempt.
  */
 function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
   if (!authToken) {
@@ -211,13 +212,7 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
 
   console.log('[install.js] Installing with SDK PR version (pnpm install --no-frozen-lockfile)...')
 
-  // pnpm follows the npm convention of reading config from `npm_config_<key>` env vars.
-  // Passing the registry/auth this way keeps the token off disk entirely.
-  const childEnv = {
-    ...process.env,
-    'npm_config_@cowprotocol:registry': 'https://npm.pkg.github.com',
-    'npm_config_//npm.pkg.github.com/:_authToken': authToken,
-  }
+  const childEnv = { ...process.env }
 
   if (hasRewrites) {
     // `pnpmfile` is a pnpm-specific config key (no secret); pnpm resolves it relative to cwd.
@@ -225,8 +220,13 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
   }
 
   let originalLockfile = null
+  let tempNpmrcDir = null
 
   try {
+    const tempNpmrc = createTempNpmrc(authToken)
+    tempNpmrcDir = tempNpmrc.dir
+    childEnv.npm_config_userconfig = tempNpmrc.path
+
     if (hasRewrites) createTempPnpmfile(rewriteMap)
     if (hasForceResolve) originalLockfile = stripLockfileEntries(forceResolveKeys)
 
@@ -238,7 +238,7 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
   } finally {
     if (hasRewrites) {
       try {
-        removeTempPnpmfile()
+        fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
       } catch (err) {
         console.warn('[install.js] Failed to remove temp pnpmfile:', err)
       }
@@ -253,7 +253,39 @@ function runPnpmInstall(authToken, rewriteMap = {}, forceResolveKeys = []) {
         console.warn('[install.js] Failed to restore pnpm-lock.yaml:', err)
       }
     }
+    if (tempNpmrcDir !== null) {
+      try {
+        fs.rmSync(tempNpmrcDir, { force: true, recursive: true })
+      } catch (err) {
+        console.warn('[install.js] Failed to remove temp npmrc:', err)
+      }
+    }
   }
+}
+
+/**
+ * Creates a temporary npmrc containing the GitHub Packages registry/auth settings.
+ *
+ * pnpm 10 reliably consumes these scoped auth settings from an npmrc passed through
+ * `npm_config_userconfig`; passing the same keys directly as environment variables is
+ * not portable across build providers.
+ */
+function createTempNpmrc(authToken) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cowswap-pnpm-'))
+  const npmrcPath = path.join(dir, '.npmrc')
+
+  try {
+    fs.writeFileSync(
+      npmrcPath,
+      `@cowprotocol:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${authToken}\n`,
+      { mode: 0o600 },
+    )
+  } catch (err) {
+    fs.rmSync(dir, { force: true, recursive: true })
+    throw err
+  }
+
+  return { dir, path: npmrcPath }
 }
 
 /**
@@ -284,11 +316,4 @@ function createTempPnpmfile(rewriteMap) {
 `
 
   fs.writeFileSync(TEMP_PNPMFILE_PATH, pnpmfile)
-}
-
-/**
- * Deletes the temporary pnpm hook file if it exists.
- */
-function removeTempPnpmfile() {
-  fs.rmSync(TEMP_PNPMFILE_PATH, { force: true })
 }
