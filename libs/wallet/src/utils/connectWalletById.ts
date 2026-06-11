@@ -4,7 +4,7 @@ import { wagmiAdapter } from '../wagmi/config'
 
 import type { AdapterBlueprint } from '@reown/appkit-controllers'
 
-export function connectWalletById(id: string): Promise<AdapterBlueprint.ConnectResult> {
+export function connectWalletById(id: string, type: string): Promise<AdapterBlueprint.ConnectResult> {
   StorageUtil.removeDisconnectedConnectorId(id, 'eip155')
-  return wagmiAdapter.connect({ id, type: '' })
+  return wagmiAdapter.connect({ id, type })
 }

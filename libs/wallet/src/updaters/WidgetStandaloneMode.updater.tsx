@@ -52,7 +52,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (isDappMode) {
       ;(async function () {
         await reownAppKit.disconnect()
-        connectWalletById(COW_WIDGET_CONNECTOR_ID)
+        connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
       })()
     }
   }, [isDappMode])

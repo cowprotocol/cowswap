@@ -111,7 +111,7 @@ const reownAppKit = createAppKit({
  * Instantly connect to Safe if in Safe
  */
 if (getIsSafeAppIframe()) {
-  connectWalletById(SAFE_CONNECTOR_ID)
+  connectWalletById(SAFE_CONNECTOR_ID, 'safe')
 }
 
 export { wagmiAdapter, reownAppKit, wagmiStorage }
