@@ -2,14 +2,9 @@ name: Cloudflare Pages preview mirror
 
 on:
   pull_request_target:
-    types: [labeled, closed]
+    types: [ labeled, closed ]
   issue_comment:
-    types: [edited]
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+    types: [ edited ]
 
 concurrency:
   group: cf-pages-preview-mirror-${{ github.event.pull_request.number || github.event.issue.number }}
@@ -25,6 +20,10 @@ jobs:
     name: Mirror fork PR for Cloudflare Pages preview
     if: github.event_name == 'pull_request_target' || (github.event_name == 'issue_comment' && github.event.issue.pull_request)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
 
     steps:
       - name: Checkout workflow repository
