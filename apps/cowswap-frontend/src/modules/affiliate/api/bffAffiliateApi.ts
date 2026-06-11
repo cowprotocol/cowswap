@@ -6,6 +6,7 @@ import {
   parseJsonResponse,
   RetryableResponseError,
   STATUS_CODES_TO_RETRY,
+  stripTrailingSlash,
   unwrapOk,
 } from '@cowprotocol/common-utils'
 import type { ApiErrorPayload, FetchJsonResponse } from '@cowprotocol/common-utils'
@@ -42,7 +43,7 @@ class BffAffiliateApi {
    */
 
   constructor(baseUrl: string, timeoutMs: number = AFFILIATE_API_TIMEOUT_MS) {
-    this.baseUrl = baseUrl.replace(/\/$/, '')
+    this.baseUrl = stripTrailingSlash(baseUrl)
     this.timeoutMs = timeoutMs
     this.fetchRateLimited = fetchWithRateLimit({
       rateLimit: {
