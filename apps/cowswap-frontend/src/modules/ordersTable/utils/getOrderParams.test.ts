@@ -51,6 +51,7 @@ describe('getOrderParams', () => {
       ...BASE_ORDER,
       partiallyFillable: false,
     }
+
     it('should have hasEnoughBalance true when order is fill or kill and balance is sufficient', () => {
       const order = { ...FILL_OR_KILL_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = { ...BASE_BALANCES_AND_ALLOWANCES }
@@ -74,6 +75,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughAllowance).toEqual(true)
     })
+
     it('should have hasEnoughAllowance false when order is fill or kill and allowance is insufficient', () => {
       const order = {
         ...FILL_OR_KILL_ORDER,
@@ -90,6 +92,7 @@ describe('getOrderParams', () => {
       ...BASE_ORDER,
       partiallyFillable: true,
     }
+
     it('should have hasEnoughBalance true when order is partially fillable and balance is > 0.05%', () => {
       const order = { ...PARTIALLY_FILLABLE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
@@ -101,6 +104,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughBalance).toEqual(true)
     })
+
     it('should have hasEnoughBalance false when order is partially fillable and balance is < 0.05%', () => {
       const order = { ...PARTIALLY_FILLABLE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
@@ -124,6 +128,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughAllowance).toEqual(true)
     })
+
     it('should have hasEnoughAllowance false when order is partially fillable and allowance is below full sell amount', () => {
       const order = { ...PARTIALLY_FILLABLE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
@@ -135,6 +140,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughAllowance).toEqual(false)
     })
+
     it('should have hasEnoughAllowance false when order is partially fillable and allowance is dust only', () => {
       const order = { ...PARTIALLY_FILLABLE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
@@ -147,7 +153,7 @@ describe('getOrderParams', () => {
       expect(result.hasEnoughAllowance).toEqual(false)
     })
 
-    it('should have hasEnoughAllowance true when partially filled and allowance covers the remainder only', () => {
+    it('should have hasEnoughAllowance true when partially filled and allowance is greater than the remainder', () => {
       const order = createPartiallyExecutedOrder(PARTIALLY_FILLABLE_ORDER, {
         sellAmount: '1000',
         executedSellAmount: '600',
@@ -161,6 +167,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughAllowance).toEqual(true)
     })
+
     it('should have hasEnoughAllowance false when partially filled and allowance is below the remainder', () => {
       const order = createPartiallyExecutedOrder(PARTIALLY_FILLABLE_ORDER, {
         sellAmount: '1000',
@@ -175,6 +182,7 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, balancesAndAllowances, order)
       expect(result.hasEnoughAllowance).toEqual(false)
     })
+
     it('should have hasEnoughAllowance true when partially filled and allowance equals the remainder exactly', () => {
       const order = createPartiallyExecutedOrder(PARTIALLY_FILLABLE_ORDER, {
         sellAmount: '1000',
