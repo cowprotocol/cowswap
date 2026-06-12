@@ -91,7 +91,7 @@ describe('WidgetStandaloneModeUpdater', () => {
       renderUpdater(DAPP_MODE)
 
       await waitFor(() => {
-        expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID)
+        expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
       })
 
       expect(reownAppKitDisconnectMock).toHaveBeenCalledTimes(1)
