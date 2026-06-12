@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { getSafeAccountUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
@@ -6,15 +8,26 @@ import { Trans } from '@lingui/react/macro'
 
 import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
+import { toCowSwapGtmEvent } from 'common/analytics/types'
+
+import {
+  createUnsupportedWalletAnalyticsEvent,
+  UnsupportedWalletAnalyticsData,
+} from '../unsupportedWalletAnalytics.utils'
+
 export interface UnsupportedWalletWarningProps {
+  analyticsData: UnsupportedWalletAnalyticsData
   chainId: SupportedChainId
   account?: string
   isSafeViaWc: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: UnsupportedWalletWarningProps) {
+export function UnsupportedWalletWarning({
+  analyticsData,
+  isSafeViaWc,
+  chainId,
+  account,
+}: UnsupportedWalletWarningProps): ReactNode {
   if (isSafeViaWc && account) {
     return (
       <InlineBanner bannerType={StatusColorVariant.Info}>
@@ -23,8 +36,16 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
         </strong>
         <p>
           <Trans>
-            Use the <ExternalLink href={getSafeAccountUrl(chainId, account)}>Safe app</ExternalLink> for advanced
-            trading.
+            Use the{' '}
+            <ExternalLink
+              href={getSafeAccountUrl(chainId, account)}
+              data-click-event={toCowSwapGtmEvent(
+                createUnsupportedWalletAnalyticsEvent('twap_unsupported_wallet_safe_app_clicked', analyticsData),
+              )}
+            >
+              Safe app
+            </ExternalLink>{' '}
+            for advanced trading.
           </Trans>
         </p>
       </InlineBanner>
@@ -39,8 +60,15 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
       <p>
         <Trans>
           TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?{' '}
-          <ExternalLink href={UNSUPPORTED_WALLET_LINK}>Click here</ExternalLink>. Future updates may extend wallet
-          support!
+          <ExternalLink
+            href={UNSUPPORTED_WALLET_LINK}
+            data-click-event={toCowSwapGtmEvent(
+              createUnsupportedWalletAnalyticsEvent('twap_unsupported_wallet_docs_clicked', analyticsData),
+            )}
+          >
+            Click here
+          </ExternalLink>
+          . Future updates may extend wallet support!
         </Trans>
       </p>
       <p>

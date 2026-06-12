@@ -9,6 +9,7 @@ import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
+import { useUnsupportedWalletAnalytics } from './useUnsupportedWalletAnalytics'
 import {
   FallbackHandlerWarning,
   SmallPartTimeWarning,
@@ -47,6 +48,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
   const isSafeViaWc = useIsSafeViaWc()
+  const unsupportedWalletAnalyticsData = useUnsupportedWalletAnalytics({ isSafeViaWc, localFormValidation })
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -73,7 +75,14 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     <>
       {(() => {
         if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
+          return (
+            <UnsupportedWalletWarning
+              analyticsData={unsupportedWalletAnalyticsData}
+              isSafeViaWc={isSafeViaWc}
+              chainId={chainId}
+              account={account}
+            />
+          )
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
