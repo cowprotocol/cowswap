@@ -1,13 +1,14 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useTwapOrderById } from 'entities/twap'
 
-import { useTwapPartOrdersList } from './useTwapPartOrdersList'
+import { twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 
 import { TwapOrderItem } from '../types'
 
 export function useTwapOrderByChildId(orderId: string | undefined): TwapOrderItem | null {
-  const twapPartOrdersList = useTwapPartOrdersList()
+  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
 
   const parentId = useMemo(() => {
     return twapPartOrdersList.find(({ uid }) => uid === orderId)?.twapOrderId

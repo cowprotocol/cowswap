@@ -4,17 +4,21 @@ import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UseAppKitAccountReturn } from '@reown/appkit'
-import { useConnection } from 'wagmi'
+import { Config, useConnection, UseConnectionReturnType } from 'wagmi'
 
 import { CAIP_TO_SUPPORTED_CHAIN_ID } from '../../constants'
 import { reownAppKit } from '../config'
 
-export interface AccountState {
-  chainId: SupportedChainId
-  address: string | undefined
-  isConnected: boolean
-  status: 'reconnecting' | 'connected' | 'disconnected' | 'connecting' | undefined
+type EvmOrBitcoinAccountState = Omit<UseConnectionReturnType<Config>, 'chainId'> & {
+  chainId: SupportedChainId;
 }
+
+type SolanaAccountState = UseAppKitAccountReturn & {
+  chainId: SupportedChainId.SOLANA;
+  connector: never;
+}
+
+export type AccountState = EvmOrBitcoinAccountState | SolanaAccountState
 
 export function useAccountState(): AccountState {
   const [chainId, setChainId] = useState<SupportedChainId>(getCurrentChainIdFromUrl())

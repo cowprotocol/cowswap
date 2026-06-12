@@ -64,7 +64,7 @@ export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from '
 export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
 export { environmentAtom } from './state/environmentAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
-export { allActiveTokensAtom } from './state/tokens/allTokensAtom'
+export { allActiveTokensAtom, tokensByAddressAtom } from './state/tokens/allTokensAtom'
 export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
 export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
 

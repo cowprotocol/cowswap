@@ -7,6 +7,7 @@ import { Web3Provider } from '@cowprotocol/wallet'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router'
@@ -34,17 +35,27 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }): ReactNo
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
+
 const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
   return (
-    <LanguageProvider messages={enMessages}>
-      <MockedI18nProvider>
-        <Provider store={cowSwapStore}>
-          <Web3Provider>
-            <MockThemeProvider>{children}</MockThemeProvider>
-          </Web3Provider>
-        </Provider>
-      </MockedI18nProvider>
-    </LanguageProvider>
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider messages={enMessages}>
+        <MockedI18nProvider>
+          <Provider store={cowSwapStore}>
+            <Web3Provider>
+              <MockThemeProvider>{children}</MockThemeProvider>
+            </Web3Provider>
+          </Provider>
+        </MockedI18nProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -66,11 +77,13 @@ export function WithMockedWeb3({
   location?: MockRouterLocation
 }): ReactNode {
   return (
-    <MemoryRouter initialEntries={location !== undefined ? [location] : undefined}>
-      <Provider store={cowSwapStore}>
-        <Web3Provider>{children}</Web3Provider>
-      </Provider>
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={location !== undefined ? [location] : undefined}>
+        <Provider store={cowSwapStore}>
+          <Web3Provider>{children}</Web3Provider>
+        </Provider>
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 

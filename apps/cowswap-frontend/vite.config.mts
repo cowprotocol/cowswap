@@ -221,7 +221,7 @@ export default defineConfig(({ mode, isPreview }) => {
       // Dedupe packages that rely on shared React context across workspace libs.
       // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
       // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
     },
 
     build: {

@@ -13,6 +13,7 @@ export interface BalancesState extends Erc20MulticallState {
   hasFirstLoad: boolean
   error: string | null
 }
+
 type Account = string
 
 type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress, string>>>

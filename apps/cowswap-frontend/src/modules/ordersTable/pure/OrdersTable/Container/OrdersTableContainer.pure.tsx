@@ -1,40 +1,32 @@
-import { PropsWithChildren, ReactNode, useMemo } from 'react'
+import { useAtomValue } from 'jotai'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
+import { ordersTableFiltersAtom } from 'modules/ordersTable'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
-import { HistoryStatusFilter } from '../../../hooks/useFilteredOrders'
-import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
 import { useShouldDisplayProtocolFeeBanner } from '../../../hooks/useShouldDisplayProtocolFeeBanner'
-import { OrderTabId } from '../../../state/tabs/ordersTableTabs.constants'
+import { ordersTableTabIdAtom } from '../../../state/params/ordersTableParams.atom'
 import { OrdersTabs } from '../../OrdersTabs/OrdersTabs.pure'
 import { OrdersTableContent } from '../Content/OrdersTableContent.pure'
 
-interface OrdersTableContainerProps extends PropsWithChildren {
-  searchTerm: string
-  historyStatusFilter: HistoryStatusFilter
+export interface OrdersTableContainerProps extends PropsWithChildren {
+  orderType: TabOrderTypes
 }
 
-export function OrdersTableContainer({
-  searchTerm,
-  historyStatusFilter,
-  children,
-}: OrdersTableContainerProps): ReactNode {
+export function OrdersTableContainer({ orderType, children }: OrdersTableContainerProps): ReactNode {
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-
-  const { tabs } = useOrdersTableState() || {}
   const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
 
-  const currentTab = useMemo(() => {
-    const activeTab = tabs?.find((tab) => tab.isActive)
-    return activeTab?.id || OrderTabId.open
-  }, [tabs])
+  const { searchTerm, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
+  const currentTabId = useAtomValue(ordersTableTabIdAtom)
 
   return (
     <styledEl.Wrapper>
@@ -42,9 +34,9 @@ export function OrdersTableContainer({
         <>
           <styledEl.TopContainer>
             <styledEl.TabsContainer>
-              {tabs && <OrdersTabs tabs={tabs} />}
+              <OrdersTabs />
               {children && (
-                <styledEl.RightContainer $isHistoryTab={currentTab === OrderTabId.history}>
+                <styledEl.RightContainer $isHistoryTab={currentTabId === OrderTabId.HISTORY}>
                   {children}
                 </styledEl.RightContainer>
               )}
@@ -59,7 +51,7 @@ export function OrdersTableContainer({
         </>
       )}
 
-      <OrdersTableContent searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} currentTab={currentTab} />
+      <OrdersTableContent orderType={orderType} searchTerm={searchTerm} historyStatusFilter={historyStatusFilter} />
     </styledEl.Wrapper>
   )
 }

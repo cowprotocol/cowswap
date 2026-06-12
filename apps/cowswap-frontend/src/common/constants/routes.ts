@@ -4,6 +4,16 @@ import { BadgeTypes } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import { createHashHistory } from 'history'
+
+import type { HistoryRouterProps } from 'react-router'
+
+type History = HistoryRouterProps['history']
+
+// Use standalone history package: UNSAFE_createHashHistory from react-router triggers
+// BUILDING_BLOCK_flushCallbacks in dev. Vite resolve.dedupe keeps a single react-router
+// in the production bundle so Router context remains valid.
+export const hashHistory = createHashHistory() as unknown as History
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 

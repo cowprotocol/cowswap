@@ -71,7 +71,7 @@ export const Select = styled.select`
 `
 
 export const TabButton = styled(Link)<{
-  active: string
+  $isActive?: boolean
   $isUnfillable?: boolean
   $isSigning?: boolean
   $isDisabled?: boolean
@@ -79,27 +79,27 @@ export const TabButton = styled(Link)<{
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  background: ${({ active, $isUnfillable, $isSigning, $isDisabled }) =>
+  background: ${({ $isActive, $isUnfillable, $isSigning, $isDisabled }) =>
     $isDisabled
       ? 'transparent'
-      : active === 'true'
+      : $isActive
         ? $isUnfillable
           ? `var(${UI.COLOR_DANGER_BG})`
           : $isSigning
             ? `var(${UI.COLOR_ALERT_BG})`
             : `var(${UI.COLOR_TEXT_OPACITY_10})`
         : 'transparent'};
-  color: ${({ active, $isUnfillable, $isSigning, $isDisabled }) =>
+  color: ${({ $isActive, $isUnfillable, $isSigning, $isDisabled }) =>
     $isDisabled
       ? `var(${UI.COLOR_TEXT_OPACITY_50})`
       : $isUnfillable
         ? `var(${UI.COLOR_DANGER})`
         : $isSigning
           ? `var(${UI.COLOR_ALERT_TEXT})`
-          : active === 'true'
+          : $isActive
             ? `var(${UI.COLOR_TEXT_PAPER})`
             : 'inherit'};
-  font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
+  font-weight: ${({ $isActive }) => ($isActive ? '600' : '400')};
   border-radius: 14px;
   text-decoration: none;
   font-size: 13px;

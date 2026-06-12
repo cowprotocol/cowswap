@@ -10,13 +10,16 @@ import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { LanguageProvider } from 'i18n'
+import { useHydrateAtoms } from 'jotai/react/utils'
+import { queryClientAtom } from 'jotai-tanstack-query'
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router'
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import { ThemeProvider } from 'theme'
 
@@ -34,11 +37,25 @@ import {
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
+import { hashHistory } from '../common/constants/routes'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 const cowAnalytics = isInjectedWidget() ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
+
+function HydrateQueryClient({ children }: { children: ReactNode }): ReactNode {
+  useHydrateAtoms([[queryClientAtom, queryClient]])
+  return children
+}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -63,32 +80,36 @@ export function Main({ localeMessages }: MainProps): ReactNode {
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
-            <AtomProvider store={jotaiStore}>
-              <ThemeProvider>
-                <WalletProvider>
-                  <HashRouter>
-                    <LanguageProvider messages={localeMessages}>
-                      <ErrorBoundary>
-                        <React310RecoveryErrorBoundary>
-                          <WithLDProvider>
-                            <Web3Provider>
-                              <BlockNumberProvider>
-                                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                                  <WalletUnsupportedNetworkBanner />
-                                  <Updaters />
-                                  <Toasts />
-                                  <App />
-                                </CowAnalyticsProvider>
-                              </BlockNumberProvider>
-                            </Web3Provider>
-                          </WithLDProvider>
-                        </React310RecoveryErrorBoundary>
-                      </ErrorBoundary>
-                    </LanguageProvider>
-                  </HashRouter>
-                </WalletProvider>
-              </ThemeProvider>
-            </AtomProvider>
+            <QueryClientProvider client={queryClient}>
+              <AtomProvider store={jotaiStore}>
+                <HydrateQueryClient>
+                  <ThemeProvider>
+                    <HistoryRouter history={hashHistory}>
+                      <WalletProvider>
+                        <LanguageProvider messages={localeMessages}>
+                          <ErrorBoundary>
+                            <React310RecoveryErrorBoundary>
+                              <WithLDProvider>
+                                <Web3Provider>
+                                  <BlockNumberProvider>
+                                    <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                      <WalletUnsupportedNetworkBanner />
+                                      <Updaters />
+                                      <Toasts />
+                                      <App />
+                                    </CowAnalyticsProvider>
+                                  </BlockNumberProvider>
+                                </Web3Provider>
+                              </WithLDProvider>
+                            </React310RecoveryErrorBoundary>
+                          </ErrorBoundary>
+                        </LanguageProvider>
+                      </WalletProvider>
+                    </HistoryRouter>
+                  </ThemeProvider>
+                </HydrateQueryClient>
+              </AtomProvider>
+            </QueryClientProvider>
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>

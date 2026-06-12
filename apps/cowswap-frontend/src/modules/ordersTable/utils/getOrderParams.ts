@@ -47,7 +47,7 @@ export function getOrderParams(
 
   const { balances, allowances } = balancesAndAllowances
   const balance = balances[getAddressKey(order.inputToken.address)]
-  const allowance = allowances?.[getAddressKey(order.inputToken.address)]
+  const allowance = allowances[getAddressKey(order.inputToken.address)]
 
   // After the first fill, the permit is spent, so we only use the on-chain allowance from then on.
   // Before the first fill, we use the bigger of the on-chain approve allowance, or permit amount (once validated on-chain).
