@@ -3,11 +3,15 @@ import { ALL_SUPPORTED_CHAINS_MAP, MAX_UINT256, SupportedChainId } from '@cowpro
 import JSBI from 'jsbi'
 
 import { CurrencyAmount } from './currencyAmount'
+import { Fraction } from './fraction'
 import { Percent } from './percent'
 
 import { Currency } from '../currency'
 import { NativeCurrency } from '../nativeCurrency'
 import { Token } from '../token'
+
+// Keep MaxUint256 as JSBI to test backward-compat input (JSBI is still accepted as input)
+const MaxUint256Jsbi = JSBI.BigInt(MAX_UINT256.toString())
 
 class TestNativeCurrency extends NativeCurrency {
   constructor(chainId: number) {
@@ -24,8 +28,6 @@ class TestNativeCurrency extends NativeCurrency {
 
 const mockNativeToken = new TestNativeCurrency(SupportedChainId.MAINNET)
 
-const MaxUint256 = JSBI.BigInt(MAX_UINT256.toString())
-
 describe('CurrencyAmount', () => {
   const ADDRESS_ONE = '0x0000000000000000000000000000000000000001'
 
@@ -33,7 +35,7 @@ describe('CurrencyAmount', () => {
     it('works', () => {
       const token = new Token(1, ADDRESS_ONE, 18)
       const amount = CurrencyAmount.fromRawAmount(token, 100)
-      expect(amount.quotient).toEqual(JSBI.BigInt(100))
+      expect(amount.quotient).toEqual(100n)
     })
   })
 
@@ -41,43 +43,36 @@ describe('CurrencyAmount', () => {
     it('returns the amount after multiplication', () => {
       const token = new Token(1, ADDRESS_ONE, 18)
       const amount = CurrencyAmount.fromRawAmount(token, 100).multiply(new Percent(15, 100))
-      expect(amount.quotient).toEqual(JSBI.BigInt(15))
+      expect(amount.quotient).toEqual(15n)
     })
   })
 
   describe('#native', () => {
     it('produces native currency amount', () => {
       const amount = CurrencyAmount.fromRawAmount(mockNativeToken, 100)
-      expect(amount.quotient).toEqual(JSBI.BigInt(100))
+      expect(amount.quotient).toEqual(100n)
       expect(amount.currency).toEqual(mockNativeToken)
     })
   })
 
   it('token amount can be max uint256', () => {
-    const amount = CurrencyAmount.fromRawAmount(new Token(1, ADDRESS_ONE, 18), MaxUint256)
-    expect(amount.quotient).toEqual(MaxUint256)
+    // accepts JSBI input (backward compat) and native bigint
+    const amountFromJsbi = CurrencyAmount.fromRawAmount(new Token(1, ADDRESS_ONE, 18), MaxUint256Jsbi)
+    expect(amountFromJsbi.quotient).toEqual(MAX_UINT256)
+    const amountFromBigint = CurrencyAmount.fromRawAmount(new Token(1, ADDRESS_ONE, 18), MAX_UINT256)
+    expect(amountFromBigint.quotient).toEqual(MAX_UINT256)
   })
   it('token amount cannot exceed max uint256', () => {
-    expect(() =>
-      CurrencyAmount.fromRawAmount(new Token(1, ADDRESS_ONE, 18), JSBI.add(MaxUint256, JSBI.BigInt(1))),
-    ).toThrow('AMOUNT')
+    expect(() => CurrencyAmount.fromRawAmount(new Token(1, ADDRESS_ONE, 18), MAX_UINT256 + 1n)).toThrow('AMOUNT')
   })
   it('token amount quotient cannot exceed max uint256', () => {
-    expect(() =>
-      CurrencyAmount.fromFractionalAmount(
-        new Token(1, ADDRESS_ONE, 18),
-        JSBI.add(JSBI.multiply(MaxUint256, JSBI.BigInt(2)), JSBI.BigInt(2)),
-        JSBI.BigInt(2),
-      ),
-    ).toThrow('AMOUNT')
+    expect(() => CurrencyAmount.fromFractionalAmount(new Token(1, ADDRESS_ONE, 18), MAX_UINT256 * 2n + 2n, 2n)).toThrow(
+      'AMOUNT',
+    )
   })
   it('token amount numerator can be gt. uint256 if denominator is gt. 1', () => {
-    const amount = CurrencyAmount.fromFractionalAmount(
-      new Token(1, ADDRESS_ONE, 18),
-      JSBI.add(MaxUint256, JSBI.BigInt(2)),
-      2,
-    )
-    expect(amount.numerator).toEqual(JSBI.add(JSBI.BigInt(2), MaxUint256))
+    const amount = CurrencyAmount.fromFractionalAmount(new Token(1, ADDRESS_ONE, 18), MAX_UINT256 + 2n, 2)
+    expect(amount.numerator).toEqual(MAX_UINT256 + 2n)
   })
 
   describe('#toFixed', () => {
@@ -113,6 +108,101 @@ describe('CurrencyAmount', () => {
       const token = new Token(1, ADDRESS_ONE, 18)
       const amount = CurrencyAmount.fromRawAmount(token, 1e15)
       expect(amount.toSignificant(9)).toEqual('0.001')
+    })
+  })
+
+  describe('input type compatibility', () => {
+    it('accepts native bigint input', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100n).quotient.toString()).toBe('100')
+    })
+    it('accepts JSBI input', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, JSBI.BigInt(100)).quotient.toString()).toBe('100')
+    })
+    it('accepts string input', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, '100').quotient.toString()).toBe('100')
+    })
+    it('accepts number input', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).quotient.toString()).toBe('100')
+    })
+    it('all input types produce the same quotient', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      const fromBigint = CurrencyAmount.fromRawAmount(token, 100n)
+      const fromJsbi = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(100))
+      const fromString = CurrencyAmount.fromRawAmount(token, '100')
+      const fromNumber = CurrencyAmount.fromRawAmount(token, 100)
+      expect(fromBigint.quotient.toString()).toBe(fromJsbi.quotient.toString())
+      expect(fromBigint.quotient.toString()).toBe(fromString.quotient.toString())
+      expect(fromBigint.quotient.toString()).toBe(fromNumber.quotient.toString())
+    })
+  })
+
+  describe('#add', () => {
+    it('adds two currency amounts', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      const a = CurrencyAmount.fromRawAmount(token, 100)
+      const b = CurrencyAmount.fromRawAmount(token, 200)
+      expect(a.add(b).quotient.toString()).toBe('300')
+    })
+    it('preserves currency', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      const a = CurrencyAmount.fromRawAmount(token, 100)
+      const b = CurrencyAmount.fromRawAmount(token, 200)
+      expect(a.add(b).currency.equals(token)).toBe(true)
+    })
+    it('throws for different currencies', () => {
+      const t1 = new Token(1, ADDRESS_ONE, 18)
+      const t2 = new Token(1, '0x0000000000000000000000000000000000000002', 18)
+      expect(() => CurrencyAmount.fromRawAmount(t1, 100).add(CurrencyAmount.fromRawAmount(t2, 100))).toThrow('CURRENCY')
+    })
+  })
+
+  describe('#subtract', () => {
+    it('subtracts two currency amounts', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      const a = CurrencyAmount.fromRawAmount(token, 200)
+      const b = CurrencyAmount.fromRawAmount(token, 100)
+      expect(a.subtract(b).quotient.toString()).toBe('100')
+    })
+    it('throws for different currencies', () => {
+      const t1 = new Token(1, ADDRESS_ONE, 18)
+      const t2 = new Token(1, '0x0000000000000000000000000000000000000002', 18)
+      expect(() => CurrencyAmount.fromRawAmount(t1, 200).subtract(CurrencyAmount.fromRawAmount(t2, 100))).toThrow(
+        'CURRENCY',
+      )
+    })
+  })
+
+  describe('#multiply', () => {
+    it('multiplies by a Percent', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).multiply(new Percent(15, 100)).quotient.toString()).toBe('15')
+    })
+    it('multiplies by a Fraction', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).multiply(new Fraction(1, 4)).quotient.toString()).toBe('25')
+    })
+    it('multiplies by a scalar', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 50).multiply(3).quotient.toString()).toBe('150')
+    })
+    it('preserves currency', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).multiply(new Percent(50, 100)).currency.equals(token)).toBe(true)
+    })
+  })
+
+  describe('#divide', () => {
+    it('divides by a Fraction', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).divide(new Fraction(1, 2)).quotient.toString()).toBe('200')
+    })
+    it('divides by a scalar', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      expect(CurrencyAmount.fromRawAmount(token, 100).divide(4).quotient.toString()).toBe('25')
     })
   })
 

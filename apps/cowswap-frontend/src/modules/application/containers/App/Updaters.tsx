@@ -21,7 +21,7 @@ import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'mo
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
-import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater, WidgetStandaloneModeUpdater } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import {
   OrderProgressEventsUpdater,
@@ -29,6 +29,7 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
+import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { GeoDataUpdater } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
@@ -62,8 +63,6 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-
-  const { standaloneMode } = useInjectedWidgetParams()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
@@ -81,8 +80,7 @@ export function Updaters(): ReactNode {
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
-      {/*Set custom chainId only when it differs from the wallet chainId*/}
-      <WalletUpdater standaloneMode={standaloneMode} />
+      <WalletUpdater />
       <WalletChainUrlSyncUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
@@ -96,6 +94,7 @@ export function Updaters(): ReactNode {
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
+      <WidgetStandaloneModeUpdater />
       <CowEventsUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
@@ -108,6 +107,7 @@ export function Updaters(): ReactNode {
       <BridgingEnabledUpdater />
       <FaviconAnimationUpdater />
       <ProviderNetworkSupportedUpdater />
+      <TradeOrdersPermitUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}

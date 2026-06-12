@@ -1,4 +1,5 @@
 export * from './containers/AffectedPermitOrdersTable/AffectedPermitOrdersTable.container'
+export * from './pure/OrdersTable/Pagination/OrdersTablePagination.pure'
 export * from './containers/AffectedPermitOrderWithActions/AffectedPermitOrderWithActions.container'
 export * from './containers/OrdersTableWidget/OrdersTableWidget.container'
 export * from './hooks/tabs/useNavigateToOrdersTableTab'

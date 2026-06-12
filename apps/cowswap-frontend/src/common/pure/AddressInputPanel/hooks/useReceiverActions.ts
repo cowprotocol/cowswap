@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export interface ReceiverActions {
   handlePaste(): void
@@ -6,10 +6,25 @@ export interface ReceiverActions {
   handleScan(result: string): void
   showQrModal: boolean
   setShowQrModal(v: boolean): void
+  canPaste: boolean
 }
 
 export function useReceiverActions(onChange: (value: string) => void): ReceiverActions {
   const [showQrModal, setShowQrModal] = useState(false)
+  const [canPaste, setCanPaste] = useState(() => Boolean(navigator.clipboard))
+
+  useEffect(() => {
+    if (!navigator.clipboard) return
+
+    navigator.permissions
+      .query({ name: 'clipboard-read' as PermissionName })
+      .then((result) => {
+        setCanPaste(result.state !== 'denied')
+      })
+      .catch(() => {
+        // Permissions API unavailable — keep optimistic default
+      })
+  }, [])
 
   const handlePaste = useCallback(() => {
     navigator.clipboard
@@ -28,5 +43,5 @@ export function useReceiverActions(onChange: (value: string) => void): ReceiverA
     [onChange],
   )
 
-  return { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal }
+  return { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal, canPaste }
 }

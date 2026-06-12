@@ -186,11 +186,25 @@ describe('walletCapabilitiesAtom', () => {
       expect(mockConfigGetClient).toHaveBeenCalledWith({ chainId: MOCK_CHAIN_ID })
     })
 
-    it('returns fallback capability when getCapabilities returns a single entry (Object.values fallback)', async () => {
+    it('returns undefined when chain key is missing and not Safe via WC', async () => {
       const capabilities: WalletCapabilities = { atomic: { status: 'ready' } }
       mockGetCapabilities.mockResolvedValue({ '0x64': capabilities })
 
       const store = createStore()
+      store.set(writableIsSafeViaWcAtom, false)
+      setWalletInfo(store, {})
+
+      const result = await store.get(walletCapabilitiesAtom)
+
+      expect(result).toBeUndefined()
+    })
+
+    it('returns fallback capability when Safe via WC and chain key is missing', async () => {
+      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
+      mockGetCapabilities.mockResolvedValue({ '0x64': capabilities })
+
+      const store = createStore()
+      store.set(writableIsSafeViaWcAtom, true)
       setWalletInfo(store, {})
 
       const result = await store.get(walletCapabilitiesAtom)
@@ -312,7 +326,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     expect(result).toBe(true)
   })
 
-  it('returns true when isSafeViaWcAtom and capabilities atomic status is ready', async () => {
+  it('returns false when isSafeViaWcAtom and capabilities atomic status is ready', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'ready' } } })
@@ -320,7 +334,28 @@ describe('isBundlingSupportedAsyncAtom', () => {
 
     const result = await store.get(isBundlingSupportedAsyncAtom)
 
+    expect(result).toBe(false)
+  })
+
+  it('returns true when atomicBatch.supported is true', async () => {
+    const store = createStore()
+    mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomicBatch: { supported: true } } })
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
     expect(result).toBe(true)
+  })
+
+  it('returns false when isSafeViaWcAtom is true but capabilities fetch returns undefined', async () => {
+    const store = createStore()
+    store.set(writableIsSafeViaWcAtom, true)
+    mockGetCapabilities.mockResolvedValue({})
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
+    expect(result).toBe(false)
   })
 
   it('returns true when isSafeViaWcAtom is false and capabilities report supported', async () => {

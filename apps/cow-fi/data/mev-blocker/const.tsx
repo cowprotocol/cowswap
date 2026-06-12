@@ -1,20 +1,20 @@
-import IMAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
-import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
-import IMAGE_MEVBLOCKER_REVIEW_1 from '@cowprotocol/assets/images/image-mevblocker-review-1.svg'
-import IMAGE_MEVBLOCKER_REVIEW_2 from '@cowprotocol/assets/images/image-mevblocker-review-2.svg'
-import IMAGE_MEVBLOCKER_REVIEW_3 from '@cowprotocol/assets/images/image-mevblocker-review-3.svg'
-import IMAGE_MEVBLOCKER_REVIEW_4 from '@cowprotocol/assets/images/image-mevblocker-review-4.svg'
-import IMAGE_MEVBLOCKER_REVIEW_5 from '@cowprotocol/assets/images/image-mevblocker-review-5.svg'
-import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblocker-review-6.svg'
-import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
-import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
-import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
-import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
-import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
-import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
-import IMG_LOGO_RABBY from '@cowprotocol/assets/images/logo-rabby.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
+import svgFastfreeSrc from '@cowprotocol/assets/images/image-fastfree.svg'
+import svgFullprotectionSrc from '@cowprotocol/assets/images/image-fullprotection.svg'
+import svgMevblockerReview1Src from '@cowprotocol/assets/images/image-mevblocker-review-1.svg'
+import svgMevblockerReview2Src from '@cowprotocol/assets/images/image-mevblocker-review-2.svg'
+import svgMevblockerReview3Src from '@cowprotocol/assets/images/image-mevblocker-review-3.svg'
+import svgMevblockerReview4Src from '@cowprotocol/assets/images/image-mevblocker-review-4.svg'
+import svgMevblockerReview5Src from '@cowprotocol/assets/images/image-mevblocker-review-5.svg'
+import svgMevblockerReview6Src from '@cowprotocol/assets/images/image-mevblocker-review-6.svg'
+import svgProfitSrc from '@cowprotocol/assets/images/image-profit.svg'
+import svgAmbireSrc from '@cowprotocol/assets/images/logo-ambire.svg'
+import svgBlocknativeSrc from '@cowprotocol/assets/images/logo-blocknative.svg'
+import svgCryptoComSrc from '@cowprotocol/assets/images/logo-crypto-com.svg'
+import svgKarpatkeySrc from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import svgKeepkeySrc from '@cowprotocol/assets/images/logo-keepkey.svg'
+import svgRabbySrc from '@cowprotocol/assets/images/logo-rabby.svg'
+import svgSafeSrc from '@cowprotocol/assets/images/logo-safe.svg'
+import svgUniswapSrc from '@cowprotocol/assets/images/logo-uniswap.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
@@ -25,21 +25,21 @@ export const MEV_BLOCKER_LIST = [
   {
     id: 'fullprotection',
     description: 'Protection from frontrunning and sandwich attacks on all types of transactions',
-    iconImage: IMAGE_FULLPROTECTION,
+    iconImage: svgFullprotectionSrc,
     bgColor: Color.cowfi_orange_bright,
     textColor: Color.cowfi_orange_pale,
   },
   {
     id: 'profit',
     description: 'Profit from any backrunning opportunities your transactions create',
-    iconImage: IMAGE_PROFIT,
+    iconImage: svgProfitSrc,
     bgColor: Color.cowfi_peach,
     textColor: Color.cowfi_orange_bright,
   },
   {
     id: 'fastfree',
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
-    iconImage: IMAGE_FASTFREE,
+    iconImage: svgFastfreeSrc,
     bgColor: Color.cowfi_lightBlue4,
     textColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
   },
@@ -48,15 +48,15 @@ export const MEV_BLOCKER_LIST = [
 export const TRUSTED_BY_CONTENT = [
   {
     href: 'https://uniswap.org/',
-    src: IMG_LOGO_UNISWAP,
+    src: svgUniswapSrc,
   },
   {
     href: 'https://rabby.io/',
-    src: IMG_LOGO_RABBY,
+    src: svgRabbySrc,
   },
   {
     href: 'https://crypto.com/',
-    src: IMG_LOGO_CRYPTO_COM,
+    src: svgCryptoComSrc,
   },
   {
     href: 'https://swap.cow.fi/',
@@ -64,23 +64,23 @@ export const TRUSTED_BY_CONTENT = [
   },
   {
     href: 'https://safe.global/',
-    src: IMG_LOGO_SAFE,
+    src: svgSafeSrc,
   },
   {
     href: 'https://www.karpatkey.com/',
-    src: IMG_LOGO_KARPATKEY,
+    src: svgKarpatkeySrc,
   },
   {
     href: 'https://www.keepkey.com/',
-    src: IMG_LOGO_KEEPKEY,
+    src: svgKeepkeySrc,
   },
   {
     href: 'https://www.ambire.com/',
-    src: IMG_LOGO_AMBIRE,
+    src: svgAmbireSrc,
   },
   {
     href: 'https://www.blocknative.com/',
-    src: IMG_LOGO_BLOCKNATIVE,
+    src: svgBlocknativeSrc,
   },
 ]
 
@@ -90,42 +90,42 @@ export const TESTIMONIAL_LIST = [
     description: '– Anon',
     bgColor: `var(${UI.COLOR_BLUE_400_PRIMARY})`,
     textColor: `var(${UI.COLOR_NEUTRAL_0})`,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_1,
+    iconImage: svgMevblockerReview1Src,
   },
   {
     title: "If I'd known about MEV Blocker sooner, I could've had a lambo by now",
     description: '– Anon',
     bgColor: Color.cowfi_orange_bright,
     textColor: Color.cowfi_orange_pale,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_2,
+    iconImage: svgMevblockerReview2Src,
   },
   {
     title: 'I was tired of getting rekt, so I started using MEV Blocker',
     description: '– Anon',
     bgColor: `var(${UI.COLOR_NEUTRAL_100})`,
     textColor: Color.cowfi_orange_bright,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_3,
+    iconImage: svgMevblockerReview3Src,
   },
   {
     title: 'Robots should work for me, not against me',
     description: '– Anon',
     bgColor: `var(${UI.COLOR_NEUTRAL_100})`,
     textColor: Color.cowfi_orange_bright,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_4,
+    iconImage: svgMevblockerReview4Src,
   },
   {
     title: "Nobody's stolen my lunch money since I started using MEV Blocker",
     description: '– Anon',
     bgColor: Color.cowfi_yellow,
     textColor: Color.cowfi_orange_bright,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_5,
+    iconImage: svgMevblockerReview5Src,
   },
   {
     title: 'I used MEV Blocker and I instantly went up a tax bracket',
     description: '– Anon',
     bgColor: Color.cowfi_orange_bright,
     textColor: Color.cowfi_yellow,
-    iconImage: IMAGE_MEVBLOCKER_REVIEW_6,
+    iconImage: svgMevblockerReview6Src,
   },
 ]
 

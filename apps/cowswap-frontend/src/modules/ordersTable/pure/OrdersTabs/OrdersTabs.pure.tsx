@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, ChangeEvent } from 'react'
 
-import iconInformation from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
-import iconOrderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import svgFilledInfoCircleSrc from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
+import svgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -64,8 +64,8 @@ export function OrdersTabs(): ReactNode {
               $isDisabled={!account}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
-              {isUnfillable && <SVG src={iconInformation} description={t`warning`} />}
-              {isSigning && <SVG src={iconOrderPresignaturePending} description={t`signing`} />}
+              {isUnfillable && <SVG src={svgFilledInfoCircleSrc} description={t`warning`} />}
+              {isSigning && <SVG src={svgOrderPresignaturePendingSrc} description={t`signing`} />}
               {i18n._(tab.title)} {account && <span>({tab.count})</span>}
             </styledEl.TabButton>
           )

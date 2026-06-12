@@ -4,7 +4,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { ForcedOrderDeadline, resolveFlexibleConfig, SupportedChainId, TradeType } from '@cowprotocol/widget-lib'
 
-import { useInjectedWidgetParams } from './useInjectedWidgetParams'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 /**
  * Returns the deadline set in the widget for the specific order type in minutes, if any

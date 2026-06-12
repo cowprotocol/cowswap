@@ -25,6 +25,7 @@ import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersRecei
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 import OperatorError from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -109,6 +110,10 @@ export function useHandleOrderPlacement(
         outputAmount: tradeContext.postOrderParams.outputAmount,
         recipient: tradeContext.postOrderParams.recipient,
         orderKind: tradeContext.postOrderParams.kind,
+        chainId: tradeContext.chainId,
+        validTo: tradeContext.quoteState
+          ? calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
+          : undefined,
       }),
     )
 

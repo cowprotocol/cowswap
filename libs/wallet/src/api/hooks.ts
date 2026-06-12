@@ -1,6 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
-
+import { useAtomValue } from 'jotai'
 import { useConnection } from 'wagmi'
 
 import {
@@ -8,19 +6,11 @@ import {
   walletDetailsAtom,
   walletDisplayedAddress,
   walletInfoAtom,
-  eagerConnectPendingOpsAtom,
   isEagerConnectInProgressAtom,
 } from './state'
-import {
-  multiInjectedProvidersAtom,
-  selectedEip6963ProviderAtom,
-  selectedEip6963ProviderRdnsAtom,
-} from './state/multiInjectedProvidersAtom'
 import { isBundlingSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
-
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useConnectionType } from '../wagmi/hooks/useConnectionType'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -42,88 +32,39 @@ export function useIsEagerConnectInProgress(): boolean {
   return useAtomValue(isEagerConnectInProgressAtom)
 }
 
-export function useBeginEagerConnect(): () => void {
-  const set = useSetAtom(eagerConnectPendingOpsAtom)
-  return useCallback(() => set((prev) => prev + 1), [set])
-}
-
-export function useEndEagerConnect(): () => void {
-  const set = useSetAtom(eagerConnectPendingOpsAtom)
-  return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
-}
-
 export function useIsTxBundlingSupported(): boolean | null {
   return useAtomValue(isBundlingSupportedAtom)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useMultiInjectedProviders() {
-  return useAtomValue(multiInjectedProvidersAtom)
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSetEip6963Provider() {
-  return useSetAtom(selectedEip6963ProviderRdnsAtom)
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSelectedEip6963ProviderRdns() {
-  return useAtomValue(selectedEip6963ProviderRdnsAtom)
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSelectedEip6963ProviderInfo() {
-  return useAtomValue(selectedEip6963ProviderAtom)
-}
-
 export function useIsAssetWatchingSupported(): boolean {
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
+  const { connector } = useConnection()
 
-  const isInjectedConnection = connectionType === ConnectionType.INJECTED
+  const rdns = connector?.id
 
-  if (!info || !isInjectedConnection) return false
-
-  // TODO: check other wallets and extend the array
-  return WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
+  return !!rdns && WATCH_ASSET_SUPPORED_WALLETS.includes(rdns)
 }
 
 export function useIsRabbyWallet(): boolean {
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
+  const { connector } = useConnection()
 
-  const isInjectedConnection = connectionType === ConnectionType.INJECTED
-
-  if (!info || !isInjectedConnection) return false
-
-  return RABBY_RDNS === info.info.rdns
+  return connector?.id === RABBY_RDNS
 }
 
 export function useIsBraveWallet(): boolean {
-  const connectionType = useConnectionType()
-  const info = useSelectedEip6963ProviderInfo()
+  const { connector } = useConnection()
 
-  const isInjectedConnection = connectionType === ConnectionType.INJECTED
-
-  if (!info || !isInjectedConnection) return false
-
-  return BRAVE_WALLET_RDNS === info.info.rdns
+  return connector?.id === BRAVE_WALLET_RDNS
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const { connector } = useConnection()
-  const info = useSelectedEip6963ProviderInfo()
 
   const isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
   const isInjectedConnection = connector?.type === ConnectionType.INJECTED
 
   if (isMetamaskConnection) return true
 
-  if (!info || !isInjectedConnection) return false
+  if (!connector || !isInjectedConnection) return false
 
-  return METAMASK_RDNS === info.info.rdns
+  return METAMASK_RDNS === connector.id
 }

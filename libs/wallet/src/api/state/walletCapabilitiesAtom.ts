@@ -3,6 +3,7 @@ import { loadable } from 'jotai/utils'
 
 import { isMobile, PromiseWithTimeout } from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
+import { AccountType } from '@cowprotocol/types'
 
 import { EIP1193Provider, PublicClient } from 'viem'
 import { getCapabilities } from 'viem/actions'
@@ -18,6 +19,7 @@ const REQUEST_TIMEOUT_MS = 10_000
 
 export interface WalletCapabilities {
   atomic?: { status: 'supported' | 'ready' | 'unsupported' }
+  atomicBatch?: { supported: boolean }
 }
 
 /**
@@ -65,6 +67,7 @@ async function fetchWidgetProviderMetaInfo(
 // eslint-disable-next-line complexity
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | undefined> => {
   const { account, chainId, connector, provider } = get(walletInfoAtom)
+  const isSafeViaWc = get(isSafeViaWcAtom)
 
   if (!account || !chainId || !connector || !provider) return undefined
 
@@ -105,14 +108,19 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     }
   }
 
-  return (capabilities[chainId] || Object.values(capabilities)[0]) as WalletCapabilities | undefined
+  // Only apply the Safe wallet fallback (first-entry) when connected via Safe WalletConnect,
+  // since Safe's wallet_getCapabilities response may omit the chain ID key.
+  // For other wallets (e.g. MetaMask), a missing chain entry means the chain is not supported —
+  // using a different chain's capabilities would incorrectly enable features like atomic bundling.
+  return (capabilities[chainId] || (isSafeViaWc ? Object.values(capabilities)[0] : undefined)) as WalletCapabilities | undefined
 })
 
 /** Sync atom that exposes { state, data, error } for walletCapabilitiesAtom. Use in hooks for loading/data. */
 export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
 
+// eslint-disable-next-line complexity
 export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
-  if (get(isSafeAppAtom) || get(isSafeViaWcAtom)) return true
+  if (get(isSafeAppAtom)) return true
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
@@ -121,12 +129,27 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
   // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
   if (!walletCapabilities) return false
 
+  // TODO: Migrate this to atom:
+  // const accountType = useAccountType()
+  // const isSmartContractWallet = useIsSmartContractWallet()
+  // const isSafeWallet = useIsSafeWallet()
+  const accountType: AccountType = AccountType.EOA;
+  const isSmartContractWallet = false;
+  const isSafeWallet = false;
+
+  // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
+  // fallback handler mechanism TWAP requires — treat them as unsupported.
+  // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
+  // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
+  if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
+
   const status = walletCapabilities.atomic?.status || ''
+  const supported = walletCapabilities?.atomicBatch?.supported
 
   // See https://www.eip5792.xyz/getting-started:
   // - supported: The wallet will execute all calls atomically and contiguously
   // - ready: The wallet is able to upgrade to supported pending user approval (e.g. via EIP-7702)
-  return status === 'supported'
+  return status === 'supported' || !!supported
   // return status === 'supported' || status === 'ready'
 })
 

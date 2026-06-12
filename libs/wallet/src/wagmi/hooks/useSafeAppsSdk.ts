@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
-import { useConnectionType } from './useConnectionType'
-
-import { ConnectionType } from '../../api/types'
+import { useIsSafeApp } from './useWalletMetadata'
 
 const sdk = new SafeAppsSDK()
 
 export function useSafeAppsSdk(): SafeAppsSDK | null {
-  const connectionType = useConnectionType()
+  const isSafeApp = useIsSafeApp()
 
-  return useMemo(() => (connectionType === ConnectionType.GNOSIS_SAFE ? sdk : null), [connectionType])
+  return useMemo(() => {
+    return isSafeApp ? sdk : null
+  }, [isSafeApp])
 }

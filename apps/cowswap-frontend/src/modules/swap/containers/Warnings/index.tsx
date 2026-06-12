@@ -5,9 +5,11 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import {
   useIsCurrentTradeBridging,
+  useIsNonEvmBridging,
   useNonEvmReceiverConfirmed,
   useSetNonEvmReceiverConfirmed,
   useTradePriceImpact,
@@ -32,6 +34,7 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const isNonEvmBridging = useIsNonEvmBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const nonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
   const setNonEvmReceiverConfirmed = useSetNonEvmReceiverConfirmed()
@@ -55,8 +58,15 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
 
   // Show SC wallet warning only when recipient was NOT explicitly set by the user
   // (i.e. the connected wallet address will be used as the recipient on another chain)
+  // For non-EVM chains the EVM wallet address is not a valid fallback,
+  // so there is nothing to warn about — the "Recipient is required" validation handles that case.
   const showScWalletWarning =
-    shouldCheckBridgingRecipient && !recipient && !!account && !!outputChainId && !isFractionFalsy(outputCurrencyAmount)
+    shouldCheckBridgingRecipient &&
+    !recipient &&
+    !isNonEvmBridging &&
+    !!account &&
+    !!outputChainId &&
+    !isFractionFalsy(outputCurrencyAmount)
 
   return (
     <>

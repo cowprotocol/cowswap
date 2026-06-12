@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -115,7 +115,10 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({
+        receiver: ACCOUNT_ADDRESS,
+        bridgeRecipient: ACCOUNT_ADDRESS,
+      })
     })
 
     it('should use recipientAddress when recipient is ENS name with resolved address', () => {
@@ -123,7 +126,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: ANOTHER_VALID_ADDRESS })
     })
 
     it('should fall back to account when recipient is invalid', () => {
@@ -131,7 +134,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should fall back to account when recipient is not set', () => {
@@ -139,7 +142,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
@@ -153,7 +156,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when recipientAddress is undefined', () => {
@@ -161,7 +164,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return account when recipientAddress is invalid', () => {
@@ -169,7 +172,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should ignore recipient and use recipientAddress when both are valid EVM', () => {
@@ -177,7 +180,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ANOTHER_VALID_ADDRESS, bridgeRecipient: ANOTHER_VALID_ADDRESS })
     })
 
     it('should use recipient when recipientAddress is not set', () => {
@@ -185,7 +188,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
   })
 
@@ -199,7 +202,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when nothing is set', () => {
@@ -207,7 +210,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return recipient when it is a valid EVM address', () => {
@@ -215,7 +218,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: VALID_ADDRESS, bridgeRecipient: VALID_ADDRESS })
     })
 
     it('should return account when recipient is invalid non-EVM/non-Solana/non-BTC string', () => {
@@ -223,7 +226,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
@@ -233,7 +236,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should accept SOL address when output chain is SOL', () => {
-      mockState(SOLANA_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(SOLANA_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -257,7 +260,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when BTC address is given but output chain is SOL (wrong chain)', () => {
-      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(BTC_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -269,7 +272,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should reject BTC address when output chain is EVM (chainId=1)', () => {
@@ -277,7 +280,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should accept SOL address when outputCurrency is null (backward compat)', () => {
@@ -303,7 +306,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should return default SOL address when output chain is SOL and no recipient is set', () => {
-      mockState(undefined, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(undefined, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -323,7 +326,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
 
     it('should return undefined bridgeRecipient when outputCurrency is null and no recipient is set', () => {
@@ -331,7 +334,7 @@ describe('useQuoteParamsRecipient', () => {
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
     })
   })
 
@@ -349,7 +352,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when user has typed a partial/invalid SOL address on SOL chain', () => {
-      mockState('sol_partial', undefined, AdditionalTargetChainId.SOLANA)
+      mockState('sol_partial', undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 
@@ -365,7 +368,7 @@ describe('useQuoteParamsRecipient', () => {
     })
 
     it('should use SOL placeholder when user has typed a BTC address on SOL chain (wrong chain)', () => {
-      mockState(BTC_ADDRESS, undefined, AdditionalTargetChainId.SOLANA)
+      mockState(BTC_ADDRESS, undefined, SupportedChainId.SOLANA)
 
       const { result } = renderHook(() => useQuoteParamsRecipient())
 

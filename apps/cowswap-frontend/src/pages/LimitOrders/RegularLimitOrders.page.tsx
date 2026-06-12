@@ -1,9 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense } from 'react'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { Loading } from 'legacy/components/FlashingLoading'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'

@@ -5,6 +5,7 @@ build
 dist
 tmp
 /out-tsc
+*tsbuildinfo
 
 # dependencies
 node_modules
@@ -30,6 +31,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -68,14 +70,8 @@ CLAUDE.md
 .claude/
 .superpowers/**/*
 
-# Codex context files (local only)
-.codex
-
 # Agents context files (local only)
 .agents/
 
 # Serena project files
 .serena/
-
-# Github
-/.npmrc

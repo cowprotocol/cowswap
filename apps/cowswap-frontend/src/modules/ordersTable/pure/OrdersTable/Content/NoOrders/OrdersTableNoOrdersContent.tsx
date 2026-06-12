@@ -5,8 +5,8 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { useIsSafeViaWc } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLoadMoreOrders } from 'modules/orders'
 
 import { TabOrderTypes, OrderTabId } from 'common/state/routesState'

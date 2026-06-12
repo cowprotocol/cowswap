@@ -51,23 +51,12 @@ export const PAGE_TITLES = {
   MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
-/**
- * Should be fully replaced with BARN_ETH_FLOW_ADDRESSES once backend migrated all the networks
- */
-export const OLD_BARN_ETH_FLOW_ADDRESS = '0x04501b9b1d52e67f6862d157e00d13419d2d6e95'
-
-export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
-
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
   if (env === 'prod') {
     return ETH_FLOW_ADDRESSES[chainId]
   }
 
-  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
-    return BARN_ETH_FLOW_ADDRESSES[chainId]
-  }
-
-  return OLD_BARN_ETH_FLOW_ADDRESS
+  return BARN_ETH_FLOW_ADDRESSES[chainId]
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -90,6 +79,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: null,
+  [SupportedChainId.SOLANA]: null,
 }
 
 // Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized)
@@ -148,6 +138,7 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
   [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
   [SupportedChainId.INK]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.INK}`,
+  [SupportedChainId.SOLANA]: '', // Solana fee model is different (no gas price oracle).
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
@@ -161,6 +152,7 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.SOLANA]: null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'

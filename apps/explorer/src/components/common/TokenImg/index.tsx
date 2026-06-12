@@ -2,7 +2,7 @@ import React from 'react'
 
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import unknownTokenImg from 'assets/img/unknown-token.png'
+import imgUnknownTokenSrc from 'assets/img/unknown-token.png'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
 import { Wrapper } from './styled'
@@ -11,7 +11,7 @@ import { useTokenList } from '../../../hooks/useTokenList'
 
 function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
   const image = event.currentTarget
-  image.src = unknownTokenImg
+  image.src = imgUnknownTokenSrc
 }
 
 export interface Props {

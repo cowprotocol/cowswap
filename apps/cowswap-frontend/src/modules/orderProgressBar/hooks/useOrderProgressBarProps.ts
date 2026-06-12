@@ -7,6 +7,7 @@ import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
@@ -15,7 +16,6 @@ import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -85,7 +85,7 @@ export function useOrderProgressBarProps(
   )
 
   const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver).name || undefined
+  const receiverEnsName = useENS(order?.receiver as `0x${string}` | undefined)?.name || undefined
 
   const props = useMemo(() => {
     // Add supplementary stuff

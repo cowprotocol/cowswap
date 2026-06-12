@@ -18,11 +18,8 @@ export { useUpdateTokenBalance } from './hooks/useUpdateTokenBalance'
 export { useTokenAllowances } from './hooks/useTokenAllowances'
 export { useBalancesAndAllowances } from './hooks/useBalancesAndAllowances'
 export { useTradeSpenderAddress } from './hooks/useTradeSpenderAddress'
-export { useIsBffFailed } from './state/isBffFailedAtom'
-export { BalancesBffUpdater } from './updaters/BalancesBffUpdater'
 export { BalancesRpcCallUpdater } from './updaters/BalancesRpcCallUpdater'
 export type { BalancesAndAllowances } from './types/balances-and-allowances'
-export * from './utils/isBffSupportedNetwork'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'
@@ -30,3 +27,19 @@ export type { AllowancesState } from './hooks/useTokenAllowances'
 
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
+
+export {
+  createBalancesWatcherSession,
+  subscribeToBalancesEvents,
+  BalancesWatcherApiError,
+  BalancesWatcherStreamError,
+} from './balancesWatcher'
+export type {
+  BalanceUpdateEvent,
+  BalancesMap,
+  BalancesSubscription,
+  BalancesWatcherErrorPayload,
+  CreateSessionParams,
+  CreateSessionRequest,
+  SubscribeToBalancesEventsParams,
+} from './balancesWatcher'

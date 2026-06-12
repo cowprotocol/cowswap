@@ -51,7 +51,8 @@ export function TradeWidgetModals({
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
   const { field } = useSelectTokenWidgetState()
-  const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
+  const [{ isOpen: isWrapNativeOpen, errorMessage: wrapNativeError }, setWrapNativeScreenState] =
+    useWrapNativeScreenState()
   const {
     approveInProgress,
     isPendingInProgress,
@@ -163,6 +164,14 @@ export function TradeWidgetModals({
   }
 
   if (isWrapNativeOpen) {
+    if (wrapNativeError) {
+      return (
+        <TransactionErrorContent
+          message={wrapNativeError}
+          onDismiss={() => setWrapNativeScreenState({ isOpen: false })}
+        />
+      )
+    }
     return <WrapNativeModal />
   }
 

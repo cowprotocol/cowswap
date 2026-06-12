@@ -1,37 +1,55 @@
+import { getConfiguredEnvironmentNameFromEnvVars } from '@cowprotocol/common-utils'
+
 type EnvsFlags = {
+  isLocal: boolean
   isDev: boolean
+  isPr: boolean
   isStaging: boolean
   isProd: boolean
 }
 
-const getRegex = (regex: string | undefined): RegExp | undefined => (regex ? new RegExp(regex) : undefined)
+export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
+const ALL_ENVIRONMENTS: Envs[] = ['local', 'development', 'pr', 'staging', 'production']
+const ENVIRONMENT_VAR_NAMES = ['REACT_APP_ENVIRONMENT'] as const
 
-function checkEnvironment(host: string): EnvsFlags {
-  const domainDevRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_DEV)
-  const domainStagingRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_STAGING)
-  const domainProdRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_PROD)
+function getConfiguredEnvironmentName(): Envs {
+  return getConfiguredEnvironmentNameFromEnvVars(ENVIRONMENT_VAR_NAMES, ALL_ENVIRONMENTS)
+}
 
+function getEnvironmentChecks(environmentName: Envs): EnvsFlags {
   return {
-    isDev: domainDevRegex?.test(host) || false,
-    isStaging: domainStagingRegex?.test(host) || false,
-    isProd: domainProdRegex?.test(host) || false,
+    isLocal: environmentName === 'local',
+    isDev: environmentName === 'development',
+    isPr: environmentName === 'pr',
+    isStaging: environmentName === 'staging',
+    isProd: environmentName === 'production',
   }
 }
 
-const { isDev, isStaging, isProd } = checkEnvironment(window.location.host)
+const configuredEnvironmentName = getConfiguredEnvironmentName()
 
-export type Envs = 'production' | 'barn' | 'staging' | 'development'
+export function checkEnvironment(): EnvsFlags {
+  return getEnvironmentChecks(configuredEnvironmentName)
+}
 
-export const environmentName = (function (): Envs | undefined {
+const { isLocal, isDev, isPr, isStaging, isProd } = checkEnvironment()
+
+function getEnvironmentName(): Envs {
   if (isProd) {
     return 'production'
   } else if (isStaging) {
     return 'staging'
+  } else if (isPr) {
+    return 'pr'
   } else if (isDev) {
     return 'development'
+  } else if (isLocal) {
+    return 'local'
   } else {
-    return undefined
+    return configuredEnvironmentName
   }
-})()
+}
 
-export { isDev, isStaging, isProd }
+export const environmentName: Envs = getEnvironmentName()
+
+export { isLocal, isDev, isPr, isStaging, isProd }

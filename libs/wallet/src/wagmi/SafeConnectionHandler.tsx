@@ -1,22 +1,23 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSDK } from '@safe-global/safe-apps-react-sdk'
 
 import { connect, getConnection, reconnect } from '@wagmi/core'
-import { type Connector, useConnection, useConnectors, useDisconnect } from 'wagmi'
+import { type Connector, useConnection, useConnectors } from 'wagmi'
 
-import { config } from './config'
+import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
 
 import { ConnectionType } from '../api/types'
+import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 interface SafeConnectionHandlerProps {
   children: ReactNode
 }
 
 function isEmbeddedApp(): boolean {
-  return typeof window !== 'undefined' && window.self !== window.top
+  return IS_CROSS_ORIGIN_IFRAME
 }
 
 function isSupportedChainId(chainId: number): chainId is SupportedChainId {
@@ -77,17 +78,16 @@ async function connectSafeInIframe(
 export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps): ReactNode {
   const { connector: currentConnector, isConnected } = useConnection()
   const connectors = useConnectors()
-  const { mutateAsync: disconnect } = useDisconnect()
   const { connected: isConnectedThroughSafeApp, safe } = useSafeAppsSDK()
-  const isConnectingToSafe = useRef(false)
-
   const isInSafeSdkContext = isConnectedThroughSafeApp && !!safe?.safeAddress
+  const isConnectingToSafe = useRef(false)
 
   const safeRef = useRef(safe)
   const sdkConnectedRef = useRef(isConnectedThroughSafeApp)
   const connectorsRef = useRef(connectors)
   const isConnectedRef = useRef(isConnected)
   const currentConnectorRef = useRef(currentConnector)
+  const isInSafeSdkContextRef = useRef(isInSafeSdkContext)
 
   useEffect(() => {
     safeRef.current = safe
@@ -95,19 +95,17 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
     connectorsRef.current = connectors
     isConnectedRef.current = isConnected
     currentConnectorRef.current = currentConnector
-  }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector])
+    isInSafeSdkContextRef.current = isInSafeSdkContext
+  }, [safe, isConnectedThroughSafeApp, connectors, isConnected, currentConnector, isInSafeSdkContext])
 
   useEffect(() => {
-    if (!isInSafeSdkContext) return
-    if (!currentConnector || isSafeConnector(currentConnector)) return
+    const isConnectedToWidget = currentConnectorRef.current?.id === COW_WIDGET_CONNECTOR_ID
 
-    isConnectingToSafe.current = false
-    void disconnect().catch(() => {})
-  }, [currentConnector, isInSafeSdkContext, disconnect])
-
-  useEffect(() => {
     if (!isEmbeddedApp()) return
     if (isConnected && isSafeConnector(currentConnector)) return
+    // In widget context without Safe SDK: wallet is provided by the parent dapp via WidgetEthereumProvider.
+    // Skip Safe auto-connect entirely to avoid competing with the COW_WIDGET_CONNECTOR_ID connection.
+    if (isConnectedToWidget) return
     if (isConnectingToSafe.current) return
 
     isConnectingToSafe.current = true
@@ -116,14 +114,18 @@ export function SafeConnectionHandler({ children }: SafeConnectionHandlerProps):
       .finally(() => {
         isConnectingToSafe.current = false
       })
-  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connectors, safe])
+  }, [currentConnector, isConnected, isConnectedThroughSafeApp, connectors, safe, isInSafeSdkContext])
 
   useEffect(() => {
     if (!isEmbeddedApp()) return
 
     const reconnectSafeIfNeeded = (): void => {
+      const isConnectedToWidget = currentConnectorRef.current?.id === COW_WIDGET_CONNECTOR_ID
+
+      if (isConnectedToWidget) return
       if (document.visibilityState === 'hidden') return
       if (isConnectedRef.current && isSafeConnector(currentConnectorRef.current)) return
+      if (isInjectedWidget() && !isInSafeSdkContextRef.current) return
       if (isConnectingToSafe.current) return
 
       isConnectingToSafe.current = true

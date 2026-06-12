@@ -4,6 +4,8 @@ import { ReactNode, Suspense } from 'react'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
@@ -15,10 +17,10 @@ import {
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
+import { TradeRouteRedirect } from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -31,12 +33,14 @@ import {
   TwapFormState,
 } from 'modules/twap'
 
+import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 import { TabOrderTypes } from 'common/state/routesState'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export function AdvancedOrdersPage(): ReactNode {
+  const params = useParams()
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
@@ -52,6 +56,10 @@ export function AdvancedOrdersPage(): ReactNode {
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+
+  if (!params.chainId) {
+    return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
+  }
 
   return (
     <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>

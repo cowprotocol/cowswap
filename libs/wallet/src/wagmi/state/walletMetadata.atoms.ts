@@ -12,6 +12,7 @@ export const isSafeViaWcAtom = atom((get) => {
   const isSafeApp = get(isSafeAppAtom)
   const { connector } = get(walletInfoAtom)
 
+  // TODO: connector will be undefined on page load until the WalletUpdater kicks in. Consider replacing the updater with atom's onMount/observer.
   if (isSafeApp || connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
 
   const { walletName } = get(walletDetailsAtom)

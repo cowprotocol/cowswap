@@ -2,6 +2,11 @@ jest.mock('react-markdown', () => () => null)
 
 jest.mock('lottie-react', () => () => null)
 
+jest.mock('@marsidev/react-turnstile', () => ({
+  __esModule: true,
+  Turnstile: () => null,
+}))
+
 jest.mock('quick-lru', () => {
   return {
     __esModule: true,
@@ -69,9 +74,11 @@ beforeEach(() => {
   __resetGtmInstance()
 })
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import '../../jest.setup'
 import { i18n } from '@lingui/core'
+
+process.env.REACT_APP_ENVIRONMENT = 'production'
+
+require('../../jest.setup')
 
 i18n.load('en-US', {})
 i18n.activate('en-US')

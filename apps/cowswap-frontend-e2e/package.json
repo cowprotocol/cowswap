@@ -1,15 +1,16 @@
 {
   "name": "@cowprotocol/cowswap-e2e",
   "version": "0.0.1",
+  "private": true,
   "description": "CoW Swap e2e tests",
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "viem": "^2.45.1",
-    "eventemitter3": "^4.0.0"
+    "viem": "2.48.8",
+    "eventemitter3": "4.0.7"
   },
   "devDependencies": {
-    "cypress": "^15.4.0"
+    "cypress": "15.4.0"
   }
 }

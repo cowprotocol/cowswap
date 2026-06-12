@@ -11,6 +11,7 @@ import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { LanguageProvider } from 'i18n'
 import { useHydrateAtoms } from 'jotai/react/utils'
 import { queryClientAtom } from 'jotai-tanstack-query'
@@ -32,7 +33,6 @@ import {
   Updaters,
   WithLDProvider,
 } from 'modules/application'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
