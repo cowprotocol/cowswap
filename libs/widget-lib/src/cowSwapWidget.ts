@@ -4,7 +4,7 @@ import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
+import { getTrustedParentOrigin, IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
 import {
   CowSwapWidgetParams,
@@ -144,7 +144,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   })
 
   // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
-  const iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
+  const iframeSafeSdkBridge = enableSafeSdkBridge
+    ? new IframeSafeSdkBridge(window, iframeWindow, iframeOrigin, getTrustedParentOrigin(window))
+    : null
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {

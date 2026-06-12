@@ -3,21 +3,36 @@ export class IframeSafeSdkBridge {
 
   constructor(
     private appWindow: Window,
-    private iframeWidow: Window,
+    private iframeWindow: Window,
+    private iframeOrigin: string,
+    private parentOrigin: string | null,
   ) {
     this.forwardSdkMessage = (event: MessageEvent<unknown>) => {
       if (!isSafeMessage(event.data)) {
         return
       }
 
-      if (typeof window !== 'undefined' && event.origin === window.location.origin) {
-        return
-      }
-
       if (isSafeMessageRequest(event.data)) {
-        this.appWindow.parent.postMessage(event.data, '*')
+        if (
+          event.source !== this.iframeWindow ||
+          event.origin !== this.iframeOrigin ||
+          !this.parentOrigin ||
+          this.appWindow.parent === this.appWindow
+        ) {
+          return
+        }
+
+        this.appWindow.parent.postMessage(event.data, this.parentOrigin)
       } else if (isSafeMessageResponse(event.data)) {
-        this.iframeWidow.postMessage(event.data, '*')
+        if (
+          event.source !== this.appWindow.parent ||
+          event.origin !== this.parentOrigin ||
+          this.appWindow.parent === this.appWindow
+        ) {
+          return
+        }
+
+        this.iframeWindow.postMessage(event.data, this.iframeOrigin)
       }
     }
 
@@ -30,6 +45,18 @@ export class IframeSafeSdkBridge {
 
   public stopListening(): void {
     this.appWindow.removeEventListener('message', this.forwardSdkMessage)
+  }
+}
+
+export function getTrustedParentOrigin(appWindow: Window): string | null {
+  if (appWindow.parent === appWindow || !appWindow.document.referrer) {
+    return null
+  }
+
+  try {
+    return new URL(appWindow.document.referrer).origin
+  } catch {
+    return null
   }
 }
 
