@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
 /**
- * Shared atom for Telegram subscription state across all hook instances
+ * Shared atom for Telegram subscription state across all hook instances, keyed by normalized wallet account.
  */
-export const tgSubscriptionAtom = atom<boolean>(false)
+export const tgSubscriptionAtom = atom<Record<string, boolean>>({})
