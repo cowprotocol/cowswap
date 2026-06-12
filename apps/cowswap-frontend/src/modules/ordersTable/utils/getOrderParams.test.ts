@@ -1,4 +1,5 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -37,10 +38,10 @@ describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]
   const BASE_BALANCES_AND_ALLOWANCES: BalancesAndAllowances = {
     balances: {
-      [BASE_ORDER.inputToken.address.toLowerCase()]: BigInt(BASE_ORDER.sellAmount),
+      [getAddressKey(BASE_ORDER.inputToken.address)]: BigInt(BASE_ORDER.sellAmount),
     },
     allowances: {
-      [BASE_ORDER.inputToken.address.toLowerCase()]: BigInt(BASE_ORDER.sellAmount),
+      [getAddressKey(BASE_ORDER.inputToken.address)]: BigInt(BASE_ORDER.sellAmount),
     },
     isLoading: false,
   }
@@ -94,7 +95,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(String(+order.sellAmount * 0.00051)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00051)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -105,7 +106,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         balances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(String(+order.sellAmount * 0.00049)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -117,7 +118,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(order.sellAmount),
+          [getAddressKey(order.inputToken.address)]: BigInt(order.sellAmount),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -128,7 +129,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(String(+order.sellAmount * 0.5)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.5)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -139,7 +140,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(String(+order.sellAmount * 0.00049)),
+          [getAddressKey(order.inputToken.address)]: BigInt(String(+order.sellAmount * 0.00049)),
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -154,7 +155,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: 500n,
+          [getAddressKey(order.inputToken.address)]: 500n,
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -168,7 +169,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: 300n,
+          [getAddressKey(order.inputToken.address)]: 300n,
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -182,7 +183,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         ...BASE_BALANCES_AND_ALLOWANCES,
         allowances: {
-          [order.inputToken.address.toLowerCase()]: 400n,
+          [getAddressKey(order.inputToken.address)]: 400n,
         },
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
@@ -196,7 +197,7 @@ describe('getOrderParams', () => {
       const balancesAndAllowances: BalancesAndAllowances = {
         balances: {},
         allowances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(order.sellAmount),
+          [getAddressKey(order.inputToken.address)]: BigInt(order.sellAmount),
         },
         isLoading: true,
       }
@@ -208,7 +209,7 @@ describe('getOrderParams', () => {
       const order = { ...BASE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
         balances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(order.sellAmount),
+          [getAddressKey(order.inputToken.address)]: BigInt(order.sellAmount),
         },
         allowances: {},
         isLoading: true,
@@ -221,7 +222,7 @@ describe('getOrderParams', () => {
       const order = { ...BASE_ORDER }
       const balancesAndAllowances: BalancesAndAllowances = {
         balances: {
-          [order.inputToken.address.toLowerCase()]: BigInt(order.sellAmount),
+          [getAddressKey(order.inputToken.address)]: BigInt(order.sellAmount),
         },
         allowances: undefined,
         isLoading: true,
