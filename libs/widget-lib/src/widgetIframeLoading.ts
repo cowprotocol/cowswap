@@ -1,66 +1,151 @@
-const IFRAME_LOADING_TIMEOUT = 30_000 // 30 sec
+import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
+import { WidgetMethodsEmit } from './types'
+import { widgetIframeTransport } from './widgetIframeTransport'
 
-const RELOAD_BUTTON_CLASS = 'coWWidgetContentReloadButton'
+const IFRAME_LOADING_TIMEOUT = 30_000 // 30 sec
+/** After the probe iframe document loads, wait this long for READY before treating the probe as failed. */
+const PROBE_READY_WAIT_TIMEOUT = 10_000 // 10 sec
+const WIDGET_TRANSPORT_KEY = 'cowSwapWidget'
+const WIDGET_LOAD_RETRY = 'WIDGET_LOAD_RETRY'
+
+const RELOAD_BUTTON_CLASS = 'reloadButton'
+const RETRY_BUTTON_LABEL = 'Retry'
+const RETRY_BUTTON_LOADING_LABEL = 'Loading...'
 
 type IframeLoadingState = { cancelWidgetLoading: () => void; onWidgetReady: () => void }
+type WindowListener = (event: MessageEvent) => void
 
+function isWidgetLoadRetryMessage(data: unknown): boolean {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'key' in data &&
+    data.key === WIDGET_TRANSPORT_KEY &&
+    'method' in data &&
+    data.method === WIDGET_LOAD_RETRY
+  )
+}
+
+// eslint-disable-next-line max-lines-per-function
 export function widgetIframeLoading(
   iframe: HTMLIFrameElement,
   onWidgetLoadingError?: () => void,
   customErrorStyles?: string,
 ): IframeLoadingState {
   const originalSrc = iframe.src
+  const widgetOrigin = new URL(originalSrc).origin
 
   let cancelled = false
   let isLoaded = false
-  let loadingTimeout: ReturnType<typeof setTimeout> | undefined
+  let loadingTimeoutID = 0
+  let tempIframe: HTMLIFrameElement | null = null
+  let checkIfCowSwapLoadsTimeoutID = 0
+  let activeProbeReadyListener: WindowListener | null = null
+  let isCheckingIfCowSwapLoads = false
 
-  function onIframeLoadingError(): void {
-    iframe.srcdoc = ERROR_DOCUMENT
-    onWidgetLoadingError?.()
+  function cleanUpLoadCheck(isChecking = false): void {
+    clearTimeout(checkIfCowSwapLoadsTimeoutID)
+    isCheckingIfCowSwapLoads = isChecking
+
+    if (activeProbeReadyListener) {
+      window.removeEventListener('message', activeProbeReadyListener)
+      activeProbeReadyListener = null
+    }
+
+    if (tempIframe) {
+      tempIframe.remove()
+      tempIframe = null
+    }
+  }
+
+  function showErrorDocument(emitEvent = false): void {
+    if (cancelled || isLoaded) return
+
+    clearTimeout(loadingTimeoutID)
+
+    iframe.srcdoc = buildErrorDocument(customErrorStyles)
+
+    if (emitEvent && onWidgetLoadingError) onWidgetLoadingError()
   }
 
   function startLoadingTimeout(): void {
-    clearTimeout(loadingTimeout)
+    clearTimeout(loadingTimeoutID)
 
-    loadingTimeout = setTimeout(() => {
-      if (cancelled || isLoaded) return
+    loadingTimeoutID = window.setTimeout(() => showErrorDocument(true), IFRAME_LOADING_TIMEOUT)
+  }
 
-      onIframeLoadingError()
+  function completeCleanUpLoadCheck(succeeded: boolean): void {
+    if (!isCheckingIfCowSwapLoads) return
+
+    cleanUpLoadCheck()
+
+    if (cancelled || isLoaded) return
+
+    if (succeeded) {
+      // `srcdoc` takes precedence over `src`, so it must be removed to load the widget again
+      iframe.removeAttribute('srcdoc')
+      iframe.src = originalSrc
+      startLoadingTimeout()
+      return
+    }
+
+    // Reset the error document
+    showErrorDocument(!iframe.hasAttribute('srcdoc'))
+  }
+
+  function checkIfCowSwapLoads(): void {
+    if (cancelled || isLoaded || isCheckingIfCowSwapLoads) return
+
+    cleanUpLoadCheck(true)
+
+    tempIframe = document.createElement('iframe')
+    tempIframe.setAttribute('sandbox', iframe.getAttribute('sandbox') ?? WIDGET_IFRAME_SANDBOX)
+    tempIframe.referrerPolicy = iframe.referrerPolicy || WIDGET_IFRAME_REFERRER_POLICY
+    tempIframe.allow = iframe.allow || WIDGET_IFRAME_ALLOW
+    tempIframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden'
+    document.body.appendChild(tempIframe)
+
+    const iframeContentWindow = tempIframe.contentWindow
+
+    if (!iframeContentWindow) {
+      completeCleanUpLoadCheck(false)
+      return
+    }
+
+    tempIframe.addEventListener('error', () => {
+      completeCleanUpLoadCheck(false)
+    })
+
+    tempIframe.addEventListener('load', () => {
+      // Browsers might just fire `load` event instead of `error`, so we wait briefly for READY:
+      clearTimeout(checkIfCowSwapLoadsTimeoutID)
+      checkIfCowSwapLoadsTimeoutID = window.setTimeout(() => {
+        completeCleanUpLoadCheck(false)
+      }, PROBE_READY_WAIT_TIMEOUT)
+    })
+
+    tempIframe.src = originalSrc
+
+    activeProbeReadyListener = widgetIframeTransport.listenToMessageFromWindow(
+      window,
+      iframeContentWindow,
+      WidgetMethodsEmit.READY,
+      () => completeCleanUpLoadCheck(true),
+      widgetOrigin,
+    )
+
+    // Fallback when the probe navigation never fires `load` (rare).
+    checkIfCowSwapLoadsTimeoutID = window.setTimeout(() => {
+      completeCleanUpLoadCheck(false)
     }, IFRAME_LOADING_TIMEOUT)
   }
 
-  function retryWidgetLoading(): void {
-    if (cancelled || isLoaded) return
+  function onRetryMessage(event: MessageEvent): void {
+    if (cancelled || isLoaded || isCheckingIfCowSwapLoads) return
+    if (event.source !== iframe.contentWindow) return
+    if (!isWidgetLoadRetryMessage(event.data)) return
 
-    // `srcdoc` takes precedence over `src`, so it must be removed to load the widget again
-    iframe.removeAttribute('srcdoc')
-    iframe.src = originalSrc
-
-    startLoadingTimeout()
-  }
-
-  /**
-   * Once the error document is loaded, attaches the retry handler and integrator styles.
-   * The widget itself is cross-origin, so `contentDocument` is null and this is a no-op for it.
-   */
-  function onIframeLoad(): void {
-    if (cancelled) return
-
-    const errorDocument = iframe.contentDocument
-    const reloadButton = errorDocument?.querySelector(`.${RELOAD_BUTTON_CLASS}`)
-
-    if (!errorDocument || !reloadButton) return
-
-    reloadButton.addEventListener('click', retryWidgetLoading)
-
-    if (customErrorStyles) {
-      const customStylesEl = errorDocument.createElement('style')
-
-      // textContent is not parsed as HTML, so the styles cannot break out of the <style> element
-      customStylesEl.textContent = customErrorStyles
-      errorDocument.head.appendChild(customStylesEl)
-    }
+    checkIfCowSwapLoads()
   }
 
   iframe.addEventListener('error', (iframeLoadingError) => {
@@ -68,40 +153,71 @@ export function widgetIframeLoading(
 
     console.error('Could not load iframe', iframeLoadingError)
 
-    onIframeLoadingError()
+    showErrorDocument(true)
   })
 
-  iframe.addEventListener('load', onIframeLoad)
+  window.addEventListener('message', onRetryMessage)
 
   startLoadingTimeout()
 
   return {
     cancelWidgetLoading() {
       cancelled = true
-      clearTimeout(loadingTimeout)
-      iframe.removeEventListener('load', onIframeLoad)
+      clearTimeout(loadingTimeoutID)
+      cleanUpLoadCheck()
+      window.removeEventListener('message', onRetryMessage)
     },
     onWidgetReady() {
       isLoaded = true
-      clearTimeout(loadingTimeout)
+      clearTimeout(loadingTimeoutID)
     },
   }
 }
 
 /**
- * A static HTML document displayed inside the iframe (via `srcdoc`) when the widget fails to load.
+ * Escapes `<` so integrator CSS cannot break out of the inline `<style>` element.
+ */
+function sanitizeInlineStyle(css: string): string {
+  return css.replace(/</g, '\\3C ')
+}
+
+/**
+ * HTML document displayed inside the iframe (via `srcdoc`) when the widget fails to load.
  * Rendering the error inside the iframe keeps the DOM structure and iframe attributes/styles
  * set by the integrator intact.
  *
- * The document is intentionally static (no interpolation) to rule out HTML injection.
- * Since the iframe sandbox includes `allow-same-origin` and `srcdoc` documents inherit the parent
- * origin, the parent script wires the retry button and custom styles directly via DOM access.
+ * Retry and loading UI are handled by an inline script inside the error document, because the
+ * parent cannot reliably access the iframe DOM at load time in every browser.
  */
-const ERROR_DOCUMENT = `<!DOCTYPE html>
+// eslint-disable-next-line max-lines-per-function
+function buildErrorDocument(customErrorStyles?: string): string {
+  const integratorStyles = customErrorStyles ? `<style>${sanitizeInlineStyle(customErrorStyles)}</style>` : ''
+
+  return `<!DOCTYPE html>
 <html lang="en">
   <head>
     <style>
       html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+
+      p { margin: 0 }
+
+      :root {
+        --c-background: #fff5f5;
+        --c-text: #d32f2f;
+
+        --button-border: 1px solid var(--c-text);
+        --button-background: transparent;
+        --button-color: var(--c-text);
+
+        --button-disabled-border: 1px solid var(--c-text);
+        --button-disabled-background: transparent;
+        --button-disabled-color: var(--c-text);
+
+        --button-hover-border: 1px solid var(--c-text);
+        --button-hover-background: var(--c-text);
+        --button-hover-color: var(--c-background);
+      }
+
       .errorContent {
         display: flex;
         flex-direction: column;
@@ -109,44 +225,63 @@ const ERROR_DOCUMENT = `<!DOCTYPE html>
         align-items: center;
         justify-content: center;
         text-align: center;
-
         width: 100%;
         height: 100%;
-
         padding: 24px;
         box-sizing: border-box;
-
-        background: #fff5f5;
-        color: #d32f2f;
-
-        border: 1px solid #f5c2c7;
-        border-radius: 12px;
-
+        background: var(--c-background);
+        color: var(--c-text);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-size: 14px;
         line-height: 1.5;
         font-weight: 500;
       }
+
       .${RELOAD_BUTTON_CLASS} {
         padding: 8px 24px;
-        border: 1px solid #d32f2f;
         border-radius: 8px;
-        background: transparent;
-        color: #d32f2f;
         font: inherit;
         cursor: pointer;
+        border: var(--button-border);
+        background: var(--button-background);
+        color: var(--button-color);
       }
-      .${RELOAD_BUTTON_CLASS}:hover {
-        background: #d32f2f;
-        color: #fff5f5;
+
+      .${RELOAD_BUTTON_CLASS}:disabled {
+        border: var(--button-disabled-border);
+        background: var(--button-disabled-background);
+        color: var(--button-disabled-color);
+        cursor: progress;
+        opacity: 0.75;
+      }
+
+      .${RELOAD_BUTTON_CLASS}:not(:disabled):hover {
+        border: var(--button-hover-border);
+        background: var(--button-hover-background);
+        color: var(--button-hover-color);
       }
     </style>
+    ${integratorStyles}
   </head>
   <body>
     <div class="errorContent">
-      <span>Couldn't load the widget. Please try again later.</span>
+      <p>Couldn't load the page. Please, try again later.</p>
 
-      <button class="${RELOAD_BUTTON_CLASS}">Retry</button>
+      <button type="button" class="${RELOAD_BUTTON_CLASS}">${RETRY_BUTTON_LABEL}</button>
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const button = document.querySelector('.${RELOAD_BUTTON_CLASS}');
+
+        if (!button) return;
+
+        button.addEventListener('click', () => {
+          button.disabled = true;
+          button.textContent = '${RETRY_BUTTON_LOADING_LABEL}';
+          window.parent.postMessage({ key: '${WIDGET_TRANSPORT_KEY}', method: '${WIDGET_LOAD_RETRY}' }, '*');
+        });
+      });
+    </script>
   </body>
 </html>`
+}
