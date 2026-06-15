@@ -1,11 +1,9 @@
 import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
 
-export interface QuoteApiErrorObject {
+interface QuoteApiErrorObject {
   errorType: QuoteApiErrorCodes
   description: string
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
+  data?: unknown
 }
 
 // Conforms to backend API
@@ -71,64 +69,19 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiEr
   }
 }
 
-export class QuoteApiError extends Error {
+export class QuoteApiError<Data = unknown> extends Error {
   name = 'QuoteErrorObject'
   type: QuoteApiErrorCodes
   description: string
-  // any data attached
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
-
-  // Status 400 errors
-  // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static quoteErrorDetails = QuoteApiErrorDetails
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public static async getErrorMessage(response: Response) {
-    try {
-      const orderPostError: QuoteApiErrorObject = await response.json()
-
-      if (orderPostError.errorType) {
-        const errorMessage = QuoteApiError.quoteErrorDetails[orderPostError.errorType]
-        // shouldn't fall through as this error constructor expects the error code to exist but just in case
-        return errorMessage || orderPostError.errorType
-      } else {
-        console.error('Unknown reason for bad quote fetch', orderPostError)
-        return orderPostError.description
-      }
-    } catch {
-      console.error('Error handling 400/404 error. Likely a problem deserialising the JSON response')
-      return QuoteApiError.quoteErrorDetails.UNHANDLED_ERROR
-    }
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  static async getErrorFromStatusCode(response: Response) {
-    switch (response.status) {
-      case 400:
-      case 404:
-        return this.getErrorMessage(response)
-
-      case 500:
-      default:
-        console.error(
-          '[QuoteError::getErrorFromStatusCode] Error fetching quote, status code:',
-          response.status || 'unknown',
-        )
-        return 'Error fetching quote'
-    }
-  }
+  data?: Data
 
   constructor(quoteError: QuoteApiErrorObject) {
     super(quoteError.description)
 
     this.type = quoteError.errorType
     this.description = quoteError.description
-    this.message = QuoteApiError.quoteErrorDetails[quoteError.errorType]
-    this.data = quoteError?.data
+    this.message = QuoteApiErrorDetails[quoteError.errorType]
+    this.data = quoteError?.data as Data
   }
 }
 
