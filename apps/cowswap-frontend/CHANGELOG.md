@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.13.0...cowswap-v3.14.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(widget): control custom recipient (#7573)
+
+- feat(widget): add options to control approval flow (#7571)
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.2.0
+  - @cowprotocol/events@4.6.0
+  - @cowprotocol/wallet@3.5.1
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/balances-and-allowances@3.3.1
+  - @cowprotocol/multicall@3.3.1
+  - @cowprotocol/ui@3.7.1
+  - @cowprotocol/snackbars@2.2.1
+  - @cowprotocol/tokens@3.7.1
+
 ## [3.13.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.12.1...cowswap-v3.13.0) (2026-06-08)
 
 ### Minor Changes

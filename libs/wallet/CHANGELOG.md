@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.0...wallet-v3.5.1) (2026-06-09)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.1
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.4.1...wallet-v3.5.0) (2026-06-08)
 
 ### Minor Changes
