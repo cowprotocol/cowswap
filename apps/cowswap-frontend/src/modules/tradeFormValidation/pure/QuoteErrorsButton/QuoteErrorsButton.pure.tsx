@@ -15,6 +15,8 @@ import { QuoteApiErrorButton } from '../QuoteApiErrorButton.pure'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
+  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
+
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const { quote } = props
@@ -25,7 +27,7 @@ export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
 
   if (quote.error instanceof BridgeProviderQuoteError) {
     const errorMessage = quote.error.message as BridgeQuoteErrors
-    const errorText = bridgeQuoteErrorTexts[errorMessage] || getDefaultQuoteError()
+    const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
 
     return (
       <TradeFormBlankButton disabled={true}>

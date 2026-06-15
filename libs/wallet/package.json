@@ -30,7 +30,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.1.3",
+    "@cowprotocol/cow-sdk": "9.1.5",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/ens": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*",

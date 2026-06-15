@@ -22,6 +22,8 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
 
   if (!quote || !(quote.error instanceof QuoteApiError)) return null
 
+  const DEFAULT_ERROR_TEXT = getDefaultQuoteError()
+
   const quoteErrorTexts = getQuoteErrorTexts()
 
   {
@@ -35,7 +37,6 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
     [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
   }
 
-  const DEFAULT_ERROR_TEXT = getDefaultQuoteError()
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const errorType = quote.error.type
