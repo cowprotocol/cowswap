@@ -6,14 +6,9 @@ import { Order, OrderStatus, SerializedOrder } from '../actions'
 import { OrderObject, V2OrderObject } from '../reducer'
 import { isOrderExpired } from '../utils'
 
-// `bridgeOutputAmount` is set transiently on Order at creation time and leaks into the persisted
-// state despite SerializedOrder not declaring it. We widen the type locally to read it as unknown
-// (instead of `any`) so the consumer must validate the shape before use.
 type PersistedOrder = SerializedOrder & { bridgeOutputAmount?: unknown }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined) {
+export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined): Order | undefined {
   let order: Order | undefined
   // we need to make sure the incoming order is a valid
   // V3 typed order as users can have stale data from V2
