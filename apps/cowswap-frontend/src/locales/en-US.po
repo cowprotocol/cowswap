@@ -2548,9 +2548,7 @@ msgstr "(via WalletConnect)"
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteApiErrorButton.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
 msgid "Error loading price. Try again later."
 msgstr "Error loading price. Try again later."
 
