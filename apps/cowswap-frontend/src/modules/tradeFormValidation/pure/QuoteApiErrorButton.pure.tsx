@@ -5,7 +5,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
-import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes, UNHANDLED_ERROR_CODE } from 'api/cowProtocol/errors/QuoteError'
 
 import {
   getBridgeQuoteErrorTexts,
@@ -46,7 +46,7 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
     return <UnsupportedTokenButton {...props} />
   }
 
-  if (errorType === 'UNHANDLED_ERROR') {
+  if (errorType === UNHANDLED_ERROR_CODE) {
     return (
       <TradeFormBlankButton disabled>
         <>{DEFAULT_ERROR_TEXT}</>

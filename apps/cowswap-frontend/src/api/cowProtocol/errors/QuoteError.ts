@@ -39,7 +39,7 @@ export const SENTRY_IGNORED_QUOTE_ERRORS = [
   QuoteApiErrorCodes.NoLiquidity,
 ]
 
-const UNHANDLED_ERROR_CODE = 'UNHANDLED_ERROR' as const
+export const UNHANDLED_ERROR_CODE = 'UNHANDLED_ERROR' as const
 
 const UNHANDLED_ERROR_DESC =
   'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.'
