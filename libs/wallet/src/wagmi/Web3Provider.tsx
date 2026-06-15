@@ -30,7 +30,7 @@ export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
     const handler = (): void => {
-      reownAppKit?.open()
+      reownAppKit?.open({ view: 'Connect' })
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
