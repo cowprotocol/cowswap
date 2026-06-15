@@ -18,7 +18,8 @@
 
 import fs from 'node:fs'
 
-import { createGitHubClient, handlePreviewMirrorEvent } from './preview-mirror-lib.mjs'
+import { createGitHubClient } from './github-client.mjs'
+import { handlePreviewMirrorEvent } from './preview-mirror-lib.mjs'
 
 async function main() {
   const eventPath = getRequiredEnv('GITHUB_EVENT_PATH')

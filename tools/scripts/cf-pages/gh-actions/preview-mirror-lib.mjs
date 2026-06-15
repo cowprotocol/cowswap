@@ -1,192 +1,18 @@
+import { isNotFoundError } from './github-client.mjs'
+import {
+  buildPreviewCommentBody,
+  formatShortSha,
+  MANAGED_COMMENT_MARKER,
+  parseManagedPreviewComment,
+} from './preview-mirror-comment.mjs'
+
 const DEFAULT_BRANCH_PREFIX = 'cf-preview/pr-'
 const DEFAULT_TRIGGER_LABEL = 'trigger-preview'
-const GITHUB_API_BASE = 'https://api.github.com'
-const MANAGED_COMMENT_MARKER = 'cf-pages-preview-mirror'
 const MIRROR_PULL_REQUEST_LABELS = ['DONT_MERGE']
-const SYNC_CHECKBOX_TEXT = 'Sync Cloudflare preview to approval target commit'
 const TRUSTED_PERMISSIONS = new Set(['admin', 'maintain', 'write'])
-const GIT_SHA_PATTERN = /^[0-9a-f]{40}$/i
-
-export class GitHubApiError extends Error {
-  constructor(status, message) {
-    super(message)
-    this.name = 'GitHubApiError'
-    this.status = status
-  }
-}
 
 export function buildPreviewBranch(originalPrNumber, branchPrefix = DEFAULT_BRANCH_PREFIX) {
   return `${branchPrefix}${originalPrNumber}`
-}
-
-export function buildPreviewCommentBody({
-  actor,
-  branchName,
-  mirrorPullRequestNumber,
-  mirrorPullRequestUrl,
-  now,
-  originalPrNumber,
-  repoFullName,
-  sourceBranch,
-  sourceRepoFullName,
-  sourceSha,
-  approvalTargetSha = sourceSha,
-  mirroredSha = sourceSha,
-}) {
-  const markerAttributes = [`original-pr=${originalPrNumber}`, `target-sha=${approvalTargetSha}`]
-  if (mirroredSha) {
-    markerAttributes.push(`mirrored-sha=${mirroredSha}`)
-  }
-  const approvalTargetShortSha = formatShortSha(approvalTargetSha)
-  const mirroredShaLine = mirroredSha
-    ? `Last mirrored SHA: \`${formatShortSha(mirroredSha)}\``
-    : 'Last mirrored SHA: not available'
-
-  return `<!-- ${MANAGED_COMMENT_MARKER} ${markerAttributes.join(' ')} -->
-Cloudflare Pages preview mirror
-
-Preview branch: \`${branchName}\`
-Preview branch URL: https://github.com/${repoFullName}/tree/${branchName}
-Mirror PR: #${mirrorPullRequestNumber}
-Mirror PR URL: ${mirrorPullRequestUrl}
-Cloudflare Pages preview links will be posted on the mirror PR by the Cloudflare Pages GitHub integration once builds complete.
-
-Source fork branch: \`${sourceRepoFullName}:${sourceBranch}\`
-Approval target SHA: \`${approvalTargetShortSha}\`
-${mirroredShaLine}
-Last comment update: @${actor} at ${now.toISOString()}
-
-- [ ] ${SYNC_CHECKBOX_TEXT}
-`
-}
-
-export function parseSyncRequest(commentBody) {
-  const metadata = parseManagedCommentMetadata(commentBody)
-
-  if (!metadata) {
-    return null
-  }
-
-  const checkbox = parseSyncCheckbox(commentBody)
-
-  if (!checkbox) {
-    return {
-      ...metadata,
-      shouldSync: false,
-    }
-  }
-
-  return {
-    ...metadata,
-    shouldSync: checkbox.checked,
-  }
-}
-
-export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GITHUB_API_BASE, repoFullName, token }) {
-  const [owner, repo] = repoFullName.split('/')
-
-  if (!owner || !repo) {
-    throw new Error(`Expected GITHUB_REPOSITORY to be in owner/repo format, received: ${repoFullName}`)
-  }
-
-  async function request(method, path, body) {
-    const response = await fetch(`${apiBase}${path}`, {
-      body: body ? JSON.stringify(body) : undefined,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-      method,
-    })
-    const responseBody = await response.text()
-    const data = parseGitHubResponse(responseBody)
-
-    if (!response.ok) {
-      const message = getGitHubErrorMessage(data, response.status)
-      throw new GitHubApiError(response.status, message)
-    }
-
-    return data
-  }
-
-  return {
-    async addIssueLabels(issueNumber, labels) {
-      return request('POST', `/repos/${owner}/${repo}/issues/${issueNumber}/labels`, { labels })
-    },
-    async createIssueComment(issueNumber, body) {
-      return request('POST', `/repos/${owner}/${repo}/issues/${issueNumber}/comments`, { body })
-    },
-    async createPullRequest(payload) {
-      return request('POST', `/repos/${owner}/${repo}/pulls`, payload)
-    },
-    async createRef(branchName, sha) {
-      return request('POST', `/repos/${owner}/${repo}/git/refs`, {
-        ref: `refs/heads/${branchName}`,
-        sha,
-      })
-    },
-    async closePullRequest(prNumber) {
-      return request('PATCH', `/repos/${owner}/${repo}/pulls/${prNumber}`, { state: 'closed' })
-    },
-    async deleteRef(branchName) {
-      return request('DELETE', `/repos/${owner}/${repo}/git/refs/${encodeGitRefPath(`heads/${branchName}`)}`)
-    },
-    async getCollaboratorPermission(username) {
-      const data = await request(
-        'GET',
-        `/repos/${owner}/${repo}/collaborators/${encodeURIComponent(username)}/permission`,
-      )
-      return typeof data.permission === 'string' ? data.permission : 'none'
-    },
-    async getPullRequest(prNumber) {
-      return request('GET', `/repos/${owner}/${repo}/pulls/${prNumber}`)
-    },
-    async getPullRequestByHead(branchName) {
-      const pulls = await request(
-        'GET',
-        `/repos/${owner}/${repo}/pulls?state=all&head=${encodeURIComponent(`${owner}:${branchName}`)}&per_page=10`,
-      )
-
-      if (!Array.isArray(pulls)) {
-        return null
-      }
-
-      return pulls.find((pullRequest) => pullRequest.state === 'open') ?? pulls[0] ?? null
-    },
-    async getRef(branchName) {
-      return request('GET', `/repos/${owner}/${repo}/git/ref/${encodeGitRefPath(`heads/${branchName}`)}`)
-    },
-    async listIssueComments(issueNumber) {
-      return request('GET', `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100`)
-    },
-    async removeIssueLabel(issueNumber, labelName) {
-      try {
-        return await request(
-          'DELETE',
-          `/repos/${owner}/${repo}/issues/${issueNumber}/labels/${encodeURIComponent(labelName)}`,
-        )
-      } catch (error) {
-        if (isNotFoundError(error)) {
-          return null
-        }
-        throw error
-      }
-    },
-    async updateIssueComment(commentId, body) {
-      return request('PATCH', `/repos/${owner}/${repo}/issues/comments/${commentId}`, { body })
-    },
-    async updatePullRequest(prNumber, payload) {
-      return request('PATCH', `/repos/${owner}/${repo}/pulls/${prNumber}`, payload)
-    },
-    async updateRef(branchName, sha) {
-      return request('PATCH', `/repos/${owner}/${repo}/git/refs/${encodeGitRefPath(`heads/${branchName}`)}`, {
-        force: true,
-        sha,
-      })
-    },
-  }
 }
 
 export async function handlePreviewMirrorEvent({ actor, client, event, now = new Date(), options }) {
@@ -248,25 +74,24 @@ async function handleLabeledPullRequest({ actor, client, event, now, options }) 
 
   await assertTrustedActor(client, actor)
 
-  if (!isForkPullRequest(pullRequest)) {
-    await client.removeIssueLabel(pullRequest.number, options.triggerLabel)
+  let result
 
-    return {
+  if (isForkPullRequest(pullRequest)) {
+    result = await syncPreviewBranch({
+      approvedSha: pullRequest.head.sha,
+      actor,
+      client,
+      commentId: null,
+      now,
+      options,
+      pullRequest,
+    })
+  } else {
+    result = {
       reason: 'pull request is not from a fork',
       status: 'ignored',
     }
   }
-
-  const result = await syncPreviewBranch({
-    approvedSha: pullRequest.head.sha,
-    actor,
-    client,
-    commentId: null,
-    now,
-    options,
-    pullRequest,
-  })
-
   await client.removeIssueLabel(pullRequest.number, options.triggerLabel)
 
   return result
@@ -292,7 +117,7 @@ async function handleSynchronizedPullRequest({ actor, client, event, now, option
     }
   }
 
-  const existingSyncRequest = parseSyncRequest(existingComment.body)
+  const existingPreviewComment = parseManagedPreviewComment(existingComment.body)
   const mirrorPullRequest = await client.getPullRequestByHead(branchName)
 
   if (!mirrorPullRequest) {
@@ -306,7 +131,7 @@ async function handleSynchronizedPullRequest({ actor, client, event, now, option
     actor,
     approvalTargetSha: pullRequest.head.sha,
     branchName,
-    mirroredSha: existingSyncRequest?.mirroredSha ?? existingSyncRequest?.targetSha ?? null,
+    mirroredSha: existingPreviewComment?.mirroredSha ?? existingPreviewComment?.targetSha ?? null,
     mirrorPullRequestNumber: mirrorPullRequest.number,
     mirrorPullRequestUrl: mirrorPullRequest.html_url,
     now,
@@ -338,7 +163,7 @@ async function handleClosedPullRequest({ client, event, options }) {
 }
 
 async function handleEditedIssueComment({ actor, client, event, now, options }) {
-  const syncRequest = parseSyncRequest(event.comment.body)
+  const syncRequest = parseManagedPreviewComment(event.comment.body)
 
   if (!syncRequest?.shouldSync) {
     return {
@@ -410,11 +235,11 @@ async function syncPreviewBranch({ actor, approvedSha, client, commentId, now, o
     sourceSha: approvedSha,
   })
 
-  if (commentId) {
-    await client.updateIssueComment(commentId, body)
-  } else {
-    await upsertPreviewComment(client, pullRequest.number, body)
-  }
+  await savePreviewComment(client, {
+    body,
+    commentId,
+    issueNumber: pullRequest.number,
+  })
 
   return {
     branchName,
@@ -425,6 +250,7 @@ async function syncPreviewBranch({ actor, approvedSha, client, commentId, now, o
 
 async function upsertPreviewBranch(client, branchName, sha) {
   try {
+    // Checks whether the branch exists, and throws if it doesnt. Ignore result as we only care about the existence, not contents
     await client.getRef(branchName)
     await client.updateRef(branchName, sha)
   } catch (error) {
@@ -461,7 +287,7 @@ async function upsertMirrorPullRequest(client, sourcePullRequest, branchName, so
     mirrorPullRequest = await client.createPullRequest({
       base: sourcePullRequest.base.ref,
       body,
-      draft: true,
+      draft: true, // We don't intend them to be merged, create as draft
       head: branchName,
       title: buildMirrorPullRequestTitle(sourcePullRequest.number),
     })
@@ -496,21 +322,22 @@ function buildMirrorPullRequestBody(sourcePullRequest, sourceSha = sourcePullReq
   ].join('\n')
 }
 
-async function upsertPreviewComment(client, issueNumber, body) {
-  const existingComment = await findPreviewComment(client, issueNumber)
+async function savePreviewComment(client, { body, commentId, issueNumber }) {
+  const _commentId = commentId || (await findPreviewComment(client, issueNumber))?.id
 
-  if (existingComment) {
-    await client.updateIssueComment(existingComment.id, body)
-    return
+  if (_commentId) {
+    await client.updateIssueComment(_commentId, body)
+  } else {
+    await client.createIssueComment(issueNumber, body)
   }
-
-  await client.createIssueComment(issueNumber, body)
 }
 
 async function findPreviewComment(client, issueNumber) {
   const comments = await client.listIssueComments(issueNumber)
   return comments.find((comment) => {
-    return typeof comment.body === 'string' && parseSyncRequest(comment.body)?.originalPrNumber === issueNumber
+    return (
+      typeof comment.body === 'string' && parseManagedPreviewComment(comment.body)?.originalPrNumber === issueNumber
+    )
   })
 }
 
@@ -535,86 +362,4 @@ function isForkPullRequest(pullRequest) {
   const baseRepoName = pullRequest.base?.repo?.full_name
 
   return Boolean(headRepoName && baseRepoName && headRepoName !== baseRepoName)
-}
-
-function encodeGitRefPath(refPath) {
-  return refPath.split('/').map(encodeURIComponent).join('/')
-}
-
-function parseManagedCommentMetadata(commentBody) {
-  const markerMatch = commentBody.match(new RegExp(`<!--\\s*${MANAGED_COMMENT_MARKER}([^>]*)-->`))
-
-  if (!markerMatch) {
-    return null
-  }
-
-  const attributes = new Map()
-  for (const attributeMatch of markerMatch[1].matchAll(/([a-z-]+)=([^\s>]+)/g)) {
-    attributes.set(attributeMatch[1], attributeMatch[2])
-  }
-
-  const originalPrNumber = Number(attributes.get('original-pr'))
-  if (!Number.isInteger(originalPrNumber) || originalPrNumber <= 0) {
-    return null
-  }
-
-  return {
-    mirroredSha: normalizeGitSha(attributes.get('mirrored-sha')),
-    originalPrNumber,
-    targetSha: normalizeGitSha(attributes.get('target-sha')),
-  }
-}
-
-function parseSyncCheckbox(commentBody) {
-  const checkboxMatch = commentBody.match(new RegExp(`- \\[([xX ])\\] ${escapeRegExp(SYNC_CHECKBOX_TEXT)}`))
-
-  if (!checkboxMatch) {
-    return null
-  }
-
-  return {
-    checked: checkboxMatch[1].toLowerCase() === 'x',
-  }
-}
-
-function normalizeGitSha(value) {
-  if (typeof value !== 'string' || !GIT_SHA_PATTERN.test(value)) {
-    return null
-  }
-
-  return value.toLowerCase()
-}
-
-function formatShortSha(sha) {
-  return sha.slice(0, 12)
-}
-
-function parseGitHubResponse(responseBody) {
-  if (!responseBody) {
-    return {}
-  }
-
-  try {
-    return JSON.parse(responseBody)
-  } catch {
-    return {
-      message: responseBody,
-    }
-  }
-}
-
-function getGitHubErrorMessage(data, status) {
-  if (typeof data.message === 'string') {
-    return data.message
-  }
-
-  return `GitHub API request failed with status ${status}`
-}
-
-function isNotFoundError(error) {
-  return error?.status === 404
-}
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
