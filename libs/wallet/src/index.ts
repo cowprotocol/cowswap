@@ -33,6 +33,7 @@ export * from './api/utils/connection'
 export * from './wagmi/utils/isEip1193Provider.utils'
 export * from './wagmi/utils/isEip7702EOA.utils'
 export * from './wagmi/utils/isSafeConnector.utils'
+export * from './wagmi/utils/getPublicClient.utils'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'

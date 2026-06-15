@@ -1,14 +1,12 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
-import { createPublicClient, http } from 'viem'
-
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
+import { getPublicClient } from '../utils/getPublicClient.utils'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
 
@@ -47,13 +45,7 @@ export const accountTypeAsyncAtom = atom(async (get) => {
   if (!chainId || !account || !connector) return null
   if (!isEvmChain(chainId)) return null
 
-  // TODO: Replace with apps/explorer/src/hooks/euler/client.ts
-  const publicClient = createPublicClient({
-    chain: VIEM_CHAINS[chainId],
-    transport: http(RPC_URLS[chainId]),
-  })
-
-  if (!publicClient) return null
+  const publicClient = getPublicClient(chainId)
 
   try {
     const code = await publicClient.getCode({ address: account })
