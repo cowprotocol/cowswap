@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.5...permit-utils-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.7
+
 ## [3.2.5](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.2.4...permit-utils-v3.2.5) (2026-05-22)
 
 ### Patch Changes

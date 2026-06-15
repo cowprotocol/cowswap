@@ -14,7 +14,7 @@ export function AffiliateTraderModalUnsupported(): ReactNode {
       <Body>
         <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
-          <Trans>Earn while you trade</Trans>
+          <Trans>You&apos;ve been referred - here&apos;s your reward</Trans>
         </Title>
         <CodeLinkingSubtitle />
       </Body>

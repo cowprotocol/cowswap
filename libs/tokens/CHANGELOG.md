@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.7.0...tokens-v3.7.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.1
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.6.1...tokens-v3.7.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/wallet-provider@2.2.0
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.6.0...tokens-v3.6.1) (2026-05-22)
 
 ### Patch Changes
