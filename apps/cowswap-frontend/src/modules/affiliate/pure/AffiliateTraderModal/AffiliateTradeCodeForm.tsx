@@ -80,9 +80,9 @@ export function AffiliateTradeCodeForm({
       <Body>
         <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
-          <Trans>Earn while you trade</Trans>
+          <Trans>You&apos;ve been referred - here&apos;s your reward</Trans>
         </Title>
-        <CodeLinkingSubtitle codeInfo={codeInfo} />
+        <CodeLinkingSubtitle codeInfo={codeInfo} isWalletConnected={!!account} />
         <LabelRow>
           <Label htmlFor={referralCodeInputId}>
             <LabelContent>
