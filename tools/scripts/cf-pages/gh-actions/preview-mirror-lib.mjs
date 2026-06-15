@@ -3,8 +3,9 @@ const DEFAULT_TRIGGER_LABEL = 'trigger-preview'
 const GITHUB_API_BASE = 'https://api.github.com'
 const MANAGED_COMMENT_MARKER = 'cf-pages-preview-mirror'
 const MIRROR_PULL_REQUEST_LABELS = ['DONT_MERGE']
-const SYNC_CHECKBOX_TEXT = 'Sync Cloudflare preview to latest fork commit'
+const SYNC_CHECKBOX_TEXT = 'Sync Cloudflare preview to approval target commit'
 const TRUSTED_PERMISSIONS = new Set(['admin', 'maintain', 'write'])
+const GIT_SHA_PATTERN = /^[0-9a-f]{40}$/i
 
 export class GitHubApiError extends Error {
   constructor(status, message) {
@@ -29,10 +30,19 @@ export function buildPreviewCommentBody({
   sourceBranch,
   sourceRepoFullName,
   sourceSha,
+  approvalTargetSha = sourceSha,
+  mirroredSha = sourceSha,
 }) {
-  const shortSha = sourceSha.slice(0, 12)
+  const markerAttributes = [`original-pr=${originalPrNumber}`, `target-sha=${approvalTargetSha}`]
+  if (mirroredSha) {
+    markerAttributes.push(`mirrored-sha=${mirroredSha}`)
+  }
+  const approvalTargetShortSha = formatShortSha(approvalTargetSha)
+  const mirroredShaLine = mirroredSha
+    ? `Last mirrored SHA: \`${formatShortSha(mirroredSha)}\``
+    : 'Last mirrored SHA: not available'
 
-  return `<!-- ${MANAGED_COMMENT_MARKER} original-pr=${originalPrNumber} -->
+  return `<!-- ${MANAGED_COMMENT_MARKER} ${markerAttributes.join(' ')} -->
 Cloudflare Pages preview mirror
 
 Preview branch: \`${branchName}\`
@@ -42,41 +52,37 @@ Mirror PR URL: ${mirrorPullRequestUrl}
 Cloudflare Pages preview links will be posted on the mirror PR by the Cloudflare Pages GitHub integration once builds complete.
 
 Source fork branch: \`${sourceRepoFullName}:${sourceBranch}\`
-Mirrored SHA: \`${shortSha}\`
-Last synced by: @${actor} at ${now.toISOString()}
+Approval target SHA: \`${approvalTargetShortSha}\`
+${mirroredShaLine}
+Last comment update: @${actor} at ${now.toISOString()}
 
 - [ ] ${SYNC_CHECKBOX_TEXT}
 `
 }
 
 export function parseSyncRequest(commentBody) {
-  const markerMatch = commentBody.match(new RegExp(`<!--\\s*${MANAGED_COMMENT_MARKER}\\s+original-pr=(\\d+)\\s*-->`))
+  const metadata = parseManagedCommentMetadata(commentBody)
 
-  if (!markerMatch) {
+  if (!metadata) {
     return null
   }
 
-  const checkboxPattern = new RegExp(`- \\[[xX ]\\] ${escapeRegExp(SYNC_CHECKBOX_TEXT)}`)
-  const checkboxMatch = commentBody.match(checkboxPattern)
+  const checkbox = parseSyncCheckbox(commentBody)
 
-  if (!checkboxMatch) {
+  if (!checkbox) {
     return {
-      originalPrNumber: Number(markerMatch[1]),
+      ...metadata,
       shouldSync: false,
     }
   }
 
   return {
-    originalPrNumber: Number(markerMatch[1]),
-    shouldSync: checkboxMatch[0].startsWith('- [x]') || checkboxMatch[0].startsWith('- [X]'),
+    ...metadata,
+    shouldSync: checkbox.checked,
   }
 }
 
-export function createGitHubClient({
-  apiBase = process.env.GITHUB_API_URL ?? GITHUB_API_BASE,
-  repoFullName,
-  token,
-}) {
+export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GITHUB_API_BASE, repoFullName, token }) {
   const [owner, repo] = repoFullName.split('/')
 
   if (!owner || !repo) {
@@ -204,6 +210,16 @@ export async function handlePreviewMirrorEvent({ actor, client, event, now = new
     })
   }
 
+  if (event.action === 'synchronize' && event.pull_request) {
+    return handleSynchronizedPullRequest({
+      actor,
+      client,
+      event,
+      now,
+      options: normalizedOptions,
+    })
+  }
+
   if (event.action === 'edited' && event.comment && event.issue?.pull_request) {
     return handleEditedIssueComment({
       actor,
@@ -242,6 +258,7 @@ async function handleLabeledPullRequest({ actor, client, event, now, options }) 
   }
 
   const result = await syncPreviewBranch({
+    approvedSha: pullRequest.head.sha,
     actor,
     client,
     commentId: null,
@@ -253,6 +270,59 @@ async function handleLabeledPullRequest({ actor, client, event, now, options }) 
   await client.removeIssueLabel(pullRequest.number, options.triggerLabel)
 
   return result
+}
+
+async function handleSynchronizedPullRequest({ actor, client, event, now, options }) {
+  const pullRequest = event.pull_request
+
+  if (!isForkPullRequest(pullRequest)) {
+    return {
+      reason: 'pull request is not from a fork',
+      status: 'ignored',
+    }
+  }
+
+  const branchName = buildPreviewBranch(pullRequest.number, options.branchPrefix)
+  const existingComment = await findPreviewComment(client, pullRequest.number)
+
+  if (!existingComment) {
+    return {
+      reason: 'managed preview comment not found',
+      status: 'ignored',
+    }
+  }
+
+  const existingSyncRequest = parseSyncRequest(existingComment.body)
+  const mirrorPullRequest = await client.getPullRequestByHead(branchName)
+
+  if (!mirrorPullRequest) {
+    return {
+      reason: 'mirror pull request not found',
+      status: 'ignored',
+    }
+  }
+
+  const body = buildPreviewCommentBody({
+    actor,
+    approvalTargetSha: pullRequest.head.sha,
+    branchName,
+    mirroredSha: existingSyncRequest?.mirroredSha ?? existingSyncRequest?.targetSha ?? null,
+    mirrorPullRequestNumber: mirrorPullRequest.number,
+    mirrorPullRequestUrl: mirrorPullRequest.html_url,
+    now,
+    originalPrNumber: pullRequest.number,
+    repoFullName: options.repoFullName,
+    sourceBranch: pullRequest.head.ref,
+    sourceRepoFullName: pullRequest.head.repo.full_name,
+    sourceSha: pullRequest.head.sha,
+  })
+
+  await client.updateIssueComment(existingComment.id, body)
+
+  return {
+    branchName,
+    status: 'approval-target-updated',
+  }
 }
 
 async function handleClosedPullRequest({ client, event, options }) {
@@ -286,6 +356,13 @@ async function handleEditedIssueComment({ actor, client, event, now, options }) 
 
   await assertTrustedActor(client, actor)
 
+  if (!syncRequest.targetSha) {
+    return {
+      reason: 'managed sync comment is missing approval target sha',
+      status: 'ignored',
+    }
+  }
+
   const pullRequest = await client.getPullRequest(syncRequest.originalPrNumber)
 
   if (pullRequest.state !== 'open') {
@@ -303,6 +380,7 @@ async function handleEditedIssueComment({ actor, client, event, now, options }) 
   }
 
   return syncPreviewBranch({
+    approvedSha: syncRequest.targetSha,
     actor,
     client,
     commentId: event.comment.id,
@@ -312,14 +390,16 @@ async function handleEditedIssueComment({ actor, client, event, now, options }) 
   })
 }
 
-async function syncPreviewBranch({ actor, client, commentId, now, options, pullRequest }) {
+async function syncPreviewBranch({ actor, approvedSha, client, commentId, now, options, pullRequest }) {
   const branchName = buildPreviewBranch(pullRequest.number, options.branchPrefix)
-  await upsertPreviewBranch(client, branchName, pullRequest.head.sha)
-  const mirrorPullRequest = await upsertMirrorPullRequest(client, pullRequest, branchName)
+  await upsertPreviewBranch(client, branchName, approvedSha)
+  const mirrorPullRequest = await upsertMirrorPullRequest(client, pullRequest, branchName, approvedSha)
 
   const body = buildPreviewCommentBody({
     actor,
+    approvalTargetSha: pullRequest.head.sha,
     branchName,
+    mirroredSha: approvedSha,
     mirrorPullRequestNumber: mirrorPullRequest.number,
     mirrorPullRequestUrl: mirrorPullRequest.html_url,
     now,
@@ -327,7 +407,7 @@ async function syncPreviewBranch({ actor, client, commentId, now, options, pullR
     repoFullName: options.repoFullName,
     sourceBranch: pullRequest.head.ref,
     sourceRepoFullName: pullRequest.head.repo.full_name,
-    sourceSha: pullRequest.head.sha,
+    sourceSha: approvedSha,
   })
 
   if (commentId) {
@@ -367,8 +447,8 @@ async function deletePreviewBranch(client, branchName) {
   }
 }
 
-async function upsertMirrorPullRequest(client, sourcePullRequest, branchName) {
-  const body = buildMirrorPullRequestBody(sourcePullRequest)
+async function upsertMirrorPullRequest(client, sourcePullRequest, branchName, sourceSha) {
+  const body = buildMirrorPullRequestBody(sourcePullRequest, sourceSha)
   const existingPullRequest = await client.getPullRequestByHead(branchName)
   let mirrorPullRequest
 
@@ -403,24 +483,21 @@ function buildMirrorPullRequestTitle(originalPrNumber) {
   return `preview: mirror fork PR #${originalPrNumber}`
 }
 
-function buildMirrorPullRequestBody(sourcePullRequest) {
+function buildMirrorPullRequestBody(sourcePullRequest, sourceSha = sourcePullRequest.head.sha) {
   return [
     `<!-- ${MANAGED_COMMENT_MARKER} original-pr=${sourcePullRequest.number} -->`,
     `This PR mirrors fork PR #${sourcePullRequest.number} for Cloudflare Pages preview builds.`,
     '',
     `Source PR: ${sourcePullRequest.html_url}`,
     `Source fork branch: \`${sourcePullRequest.head.repo.full_name}:${sourcePullRequest.head.ref}\``,
-    `Mirrored SHA: \`${sourcePullRequest.head.sha.slice(0, 12)}\``,
+    `Mirrored SHA: \`${formatShortSha(sourceSha)}\``,
     '',
     'Do not merge this PR. Close the source PR to clean up this mirror.',
   ].join('\n')
 }
 
 async function upsertPreviewComment(client, issueNumber, body) {
-  const comments = await client.listIssueComments(issueNumber)
-  const existingComment = comments.find((comment) => {
-    return typeof comment.body === 'string' && parseSyncRequest(comment.body)?.originalPrNumber === issueNumber
-  })
+  const existingComment = await findPreviewComment(client, issueNumber)
 
   if (existingComment) {
     await client.updateIssueComment(existingComment.id, body)
@@ -428,6 +505,13 @@ async function upsertPreviewComment(client, issueNumber, body) {
   }
 
   await client.createIssueComment(issueNumber, body)
+}
+
+async function findPreviewComment(client, issueNumber) {
+  const comments = await client.listIssueComments(issueNumber)
+  return comments.find((comment) => {
+    return typeof comment.body === 'string' && parseSyncRequest(comment.body)?.originalPrNumber === issueNumber
+  })
 }
 
 async function assertTrustedActor(client, actor) {
@@ -455,6 +539,54 @@ function isForkPullRequest(pullRequest) {
 
 function encodeGitRefPath(refPath) {
   return refPath.split('/').map(encodeURIComponent).join('/')
+}
+
+function parseManagedCommentMetadata(commentBody) {
+  const markerMatch = commentBody.match(new RegExp(`<!--\\s*${MANAGED_COMMENT_MARKER}([^>]*)-->`))
+
+  if (!markerMatch) {
+    return null
+  }
+
+  const attributes = new Map()
+  for (const attributeMatch of markerMatch[1].matchAll(/([a-z-]+)=([^\s>]+)/g)) {
+    attributes.set(attributeMatch[1], attributeMatch[2])
+  }
+
+  const originalPrNumber = Number(attributes.get('original-pr'))
+  if (!Number.isInteger(originalPrNumber) || originalPrNumber <= 0) {
+    return null
+  }
+
+  return {
+    mirroredSha: normalizeGitSha(attributes.get('mirrored-sha')),
+    originalPrNumber,
+    targetSha: normalizeGitSha(attributes.get('target-sha')),
+  }
+}
+
+function parseSyncCheckbox(commentBody) {
+  const checkboxMatch = commentBody.match(new RegExp(`- \\[([xX ])\\] ${escapeRegExp(SYNC_CHECKBOX_TEXT)}`))
+
+  if (!checkboxMatch) {
+    return null
+  }
+
+  return {
+    checked: checkboxMatch[1].toLowerCase() === 'x',
+  }
+}
+
+function normalizeGitSha(value) {
+  if (typeof value !== 'string' || !GIT_SHA_PATTERN.test(value)) {
+    return null
+  }
+
+  return value.toLowerCase()
+}
+
+function formatShortSha(sha) {
+  return sha.slice(0, 12)
 }
 
 function parseGitHubResponse(responseBody) {

@@ -8,6 +8,10 @@ import {
   parseSyncRequest,
 } from './preview-mirror-lib.mjs'
 
+const SOURCE_SHA = 'abc1234567890abcdef1234567890abcdef12345'
+const NEXT_SOURCE_SHA = 'def4567890abcdef1234567890abcdef12345678'
+const APPROVED_SOURCE_SHA = '1111111111111111111111111111111111111111'
+
 function forkPullRequest(overrides = {}) {
   return {
     base: {
@@ -21,7 +25,7 @@ function forkPullRequest(overrides = {}) {
       repo: {
         full_name: 'external/cowswap',
       },
-      sha: 'abc1234567890abcdef1234567890abcdef1234',
+      sha: SOURCE_SHA,
     },
     html_url: 'https://github.com/cowprotocol/cowswap/pull/123',
     number: 123,
@@ -49,6 +53,13 @@ function checkboxEvent(body, issueNumber = 123) {
       number: issueNumber,
       pull_request: {},
     },
+  }
+}
+
+function synchronizeEvent(pullRequest = forkPullRequest()) {
+  return {
+    action: 'synchronize',
+    pull_request: pullRequest,
   }
 }
 
@@ -126,6 +137,10 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
     },
     async updateIssueComment(commentId, body) {
       calls.push(['updateIssueComment', commentId, body])
+      const storedComment = storedComments.find((comment) => comment.id === commentId)
+      if (storedComment) {
+        storedComment.body = body
+      }
       return { id: commentId }
     },
     async updatePullRequest(prNumber, payload) {
@@ -161,34 +176,63 @@ describe('preview-mirror-lib', () => {
       repoFullName: 'cowprotocol/cowswap',
       sourceBranch: 'feature/new-swap',
       sourceRepoFullName: 'external/cowswap',
-      sourceSha: 'abc1234567890abcdef1234567890abcdef1234',
+      sourceSha: SOURCE_SHA,
     })
 
-    assert.match(body, /<!-- cf-pages-preview-mirror original-pr=123 -->/)
+    assert.match(
+      body,
+      /<!-- cf-pages-preview-mirror original-pr=123 target-sha=abc1234567890abcdef1234567890abcdef12345 mirrored-sha=abc1234567890abcdef1234567890abcdef12345 -->/,
+    )
     assert.match(body, /`cf-preview\/pr-123`/)
     assert.match(body, /Mirror PR: #456/)
     assert.match(body, /Cloudflare Pages preview links will be posted on the mirror PR/)
     assert.doesNotMatch(body, /pages\.dev/)
-    assert.match(body, /Mirrored SHA: `abc123456789`/)
-    assert.match(body, /- \[ \] Sync Cloudflare preview to latest fork commit/)
+    assert.match(body, /Approval target SHA: `abc123456789`/)
+    assert.match(body, /Last mirrored SHA: `abc123456789`/)
+    assert.match(body, /- \[ \] Sync Cloudflare preview to approval target commit/)
+    assert.doesNotMatch(body, /latest fork commit/)
   })
 
   it('parses checked sync requests from managed comments', () => {
     const parsed = parseSyncRequest(`
-<!-- cf-pages-preview-mirror original-pr=123 -->
-- [x] Sync Cloudflare preview to latest fork commit
+<!-- cf-pages-preview-mirror original-pr=123 target-sha=${APPROVED_SOURCE_SHA} mirrored-sha=${SOURCE_SHA} -->
+- [x] Sync Cloudflare preview to approval target commit
 `)
 
-    assert.deepEqual(parsed, { originalPrNumber: 123, shouldSync: true })
+    assert.deepEqual(parsed, {
+      mirroredSha: SOURCE_SHA,
+      originalPrNumber: 123,
+      shouldSync: true,
+      targetSha: APPROVED_SOURCE_SHA,
+    })
   })
 
   it('ignores unchecked managed comments', () => {
     const parsed = parseSyncRequest(`
-<!-- cf-pages-preview-mirror original-pr=123 -->
-- [ ] Sync Cloudflare preview to latest fork commit
+<!-- cf-pages-preview-mirror original-pr=123 target-sha=${SOURCE_SHA} mirrored-sha=${SOURCE_SHA} -->
+- [ ] Sync Cloudflare preview to approval target commit
 `)
 
-    assert.deepEqual(parsed, { originalPrNumber: 123, shouldSync: false })
+    assert.deepEqual(parsed, {
+      mirroredSha: SOURCE_SHA,
+      originalPrNumber: 123,
+      shouldSync: false,
+      targetSha: SOURCE_SHA,
+    })
+  })
+
+  it('ignores legacy sync checkbox text', () => {
+    const parsed = parseSyncRequest(`
+<!-- cf-pages-preview-mirror original-pr=123 target-sha=${APPROVED_SOURCE_SHA} mirrored-sha=${SOURCE_SHA} -->
+- [x] Sync Cloudflare preview to latest fork commit
+`)
+
+    assert.deepEqual(parsed, {
+      mirroredSha: SOURCE_SHA,
+      originalPrNumber: 123,
+      shouldSync: false,
+      targetSha: APPROVED_SOURCE_SHA,
+    })
   })
 
   it('creates a preview branch, comments on the original PR, and removes the trigger label', async () => {
@@ -253,9 +297,20 @@ describe('preview-mirror-lib', () => {
       repoFullName: 'cowprotocol/cowswap',
       sourceBranch: 'feature/new-swap',
       sourceRepoFullName: 'external/cowswap',
-      sourceSha: 'abc1234567890abcdef1234567890abcdef1234',
+      sourceSha: APPROVED_SOURCE_SHA,
     }).replace('- [ ] Sync Cloudflare preview', '- [x] Sync Cloudflare preview')
-    const client = createFakeClient({ refExists: true })
+    const client = createFakeClient({
+      pullRequest: forkPullRequest({
+        head: {
+          ref: 'feature/new-swap',
+          repo: {
+            full_name: 'external/cowswap',
+          },
+          sha: NEXT_SOURCE_SHA,
+        },
+      }),
+      refExists: true,
+    })
 
     const result = await handlePreviewMirrorEvent({
       actor: 'maintainer',
@@ -288,7 +343,7 @@ describe('preview-mirror-lib', () => {
             '',
             'Source PR: https://github.com/cowprotocol/cowswap/pull/123',
             'Source fork branch: `external/cowswap:feature/new-swap`',
-            'Mirrored SHA: `abc123456789`',
+            'Mirrored SHA: `111111111111`',
             '',
             'Do not merge this PR. Close the source PR to clean up this mirror.',
           ].join('\n'),
@@ -300,8 +355,12 @@ describe('preview-mirror-lib', () => {
         ['updateIssueComment', 777],
       ],
     )
+    const updateRefCall = client.calls.find((call) => call[0] === 'updateRef')
+    assert.deepEqual(updateRefCall, ['updateRef', 'cf-preview/pr-123', APPROVED_SOURCE_SHA])
     const updateCall = client.calls.find((call) => call[0] === 'updateIssueComment')
-    assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to latest fork commit/)
+    assert.match(updateCall[2], /Approval target SHA: `def4567890ab`/)
+    assert.match(updateCall[2], /Last mirrored SHA: `111111111111`/)
+    assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to approval target commit/)
   })
 
   it('updates an existing mirror pull request without adding labels', async () => {
@@ -345,6 +404,70 @@ describe('preview-mirror-lib', () => {
     )
   })
 
+  it('refreshes the approval target comment on fork PR synchronize without mirroring code', async () => {
+    const existingComment = buildPreviewCommentBody({
+      actor: 'maintainer',
+      branchName: 'cf-preview/pr-123',
+      mirrorPullRequestNumber: 456,
+      mirrorPullRequestUrl: 'https://github.com/cowprotocol/cowswap/pull/456',
+      now: new Date('2026-06-05T10:30:00.000Z'),
+      originalPrNumber: 123,
+      repoFullName: 'cowprotocol/cowswap',
+      sourceBranch: 'feature/new-swap',
+      sourceRepoFullName: 'external/cowswap',
+      sourceSha: SOURCE_SHA,
+    })
+    const client = createFakeClient({
+      comments: [{ body: existingComment, id: 999, user: { type: 'Bot' } }],
+      refExists: true,
+    })
+    await client.createPullRequest({
+      base: 'develop',
+      body: 'old body',
+      draft: true,
+      head: 'cf-preview/pr-123',
+      title: 'preview: mirror fork PR #123',
+    })
+    client.calls.length = 0
+
+    const result = await handlePreviewMirrorEvent({
+      actor: 'external-contributor',
+      client,
+      event: synchronizeEvent(
+        forkPullRequest({
+          head: {
+            ref: 'feature/new-swap',
+            repo: {
+              full_name: 'external/cowswap',
+            },
+            sha: NEXT_SOURCE_SHA,
+          },
+        }),
+      ),
+      now: new Date('2026-06-05T10:45:00.000Z'),
+      options: {
+        repoFullName: 'cowprotocol/cowswap',
+      },
+    })
+
+    assert.deepEqual(result, {
+      branchName: 'cf-preview/pr-123',
+      status: 'approval-target-updated',
+    })
+    assert.deepEqual(
+      client.calls.map((call) => call.slice(0, 2)),
+      [
+        ['listIssueComments', 123],
+        ['getPullRequestByHead', 'cf-preview/pr-123'],
+        ['updateIssueComment', 999],
+      ],
+    )
+    const updateCall = client.calls.find((call) => call[0] === 'updateIssueComment')
+    assert.match(updateCall[2], /Approval target SHA: `def4567890ab`/)
+    assert.match(updateCall[2], /Last mirrored SHA: `abc123456789`/)
+    assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to approval target commit/)
+  })
+
   it('ignores checked managed comments edited on a different pull request issue', async () => {
     const checkedComment = buildPreviewCommentBody({
       actor: 'maintainer',
@@ -356,7 +479,7 @@ describe('preview-mirror-lib', () => {
       repoFullName: 'cowprotocol/cowswap',
       sourceBranch: 'feature/new-swap',
       sourceRepoFullName: 'external/cowswap',
-      sourceSha: 'abc1234567890abcdef1234567890abcdef1234',
+      sourceSha: SOURCE_SHA,
     }).replace('- [ ] Sync Cloudflare preview', '- [x] Sync Cloudflare preview')
     const client = createFakeClient({ refExists: true })
 

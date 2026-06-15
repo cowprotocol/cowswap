@@ -2,7 +2,7 @@ name: Cloudflare Pages preview mirror
 
 on:
   pull_request_target:
-    types: [ labeled, closed ]
+    types: [ labeled, synchronize, closed ]
   issue_comment:
     types: [ edited ]
 

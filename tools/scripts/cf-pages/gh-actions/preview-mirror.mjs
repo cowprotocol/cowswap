@@ -11,7 +11,9 @@
  *
  * It does not use Cloudflare credentials. Its only job is to create, update,
  * or delete an upstream GitHub preview branch and mirror PR so the native
- * Cloudflare Pages Git integration can build and comment on that PR.
+ * Cloudflare Pages Git integration can build and comment on that PR. On fork
+ * pushes, it only refreshes the managed approval comment with the new target
+ * SHA; it does not mirror code until a trusted maintainer checks the box.
  */
 
 import fs from 'node:fs'
