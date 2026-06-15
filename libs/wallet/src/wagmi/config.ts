@@ -10,9 +10,12 @@ import { type Transport } from 'wagmi'
 import { getConnectors } from './getConnectors'
 
 import { SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+import { patchSafeLocalStorage } from '../reown/patchSafeLocalStorage'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
+
+patchSafeLocalStorage()
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {

@@ -28,6 +28,7 @@
     "@reown/appkit": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",
+    "@reown/appkit-common": "1.8.19",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
