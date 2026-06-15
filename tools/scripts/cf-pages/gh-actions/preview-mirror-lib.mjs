@@ -8,6 +8,7 @@ import {
 
 const DEFAULT_BRANCH_PREFIX = 'cf-preview/pr-'
 const DEFAULT_TRIGGER_LABEL = 'trigger-preview'
+const GITHUB_ACTIONS_BOT_LOGIN = 'github-actions[bot]'
 const MIRROR_PULL_REQUEST_LABELS = ['DONT_MERGE']
 const TRUSTED_PERMISSIONS = new Set(['admin', 'maintain', 'write'])
 
@@ -335,7 +336,9 @@ async function savePreviewComment(client, { body, commentId, issueNumber }) {
 async function findPreviewComment(client, issueNumber) {
   return client.findIssueComment(issueNumber, (comment) => {
     return (
-      typeof comment.body === 'string' && parseManagedPreviewComment(comment.body)?.originalPrNumber === issueNumber
+      comment.user?.login === GITHUB_ACTIONS_BOT_LOGIN &&
+      typeof comment.body === 'string' &&
+      parseManagedPreviewComment(comment.body)?.originalPrNumber === issueNumber
     )
   })
 }

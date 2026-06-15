@@ -79,7 +79,7 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
     },
     async createIssueComment(issueNumber, body) {
       calls.push(['createIssueComment', issueNumber, body])
-      storedComments.push({ body, id: 999, user: { type: 'Bot' } })
+      storedComments.push({ body, id: 999, user: { login: 'github-actions[bot]', type: 'Bot' } })
       return { id: 999 }
     },
     async createPullRequest(payload) {
@@ -344,7 +344,7 @@ describe('preview-mirror-lib', () => {
       sourceSha: SOURCE_SHA,
     })
     const client = createFakeClient({
-      comments: [{ body: existingComment, id: 999, user: { type: 'Bot' } }],
+      comments: [{ body: existingComment, id: 999, user: { login: 'github-actions[bot]', type: 'Bot' } }],
       refExists: true,
     })
     await client.createPullRequest({
@@ -392,6 +392,69 @@ describe('preview-mirror-lib', () => {
     assert.match(updateCall[2], /Approval target SHA: `def4567890ab`/)
     assert.match(updateCall[2], /Last mirrored SHA: `abc123456789`/)
     assert.match(updateCall[2], /- \[ \] Sync Cloudflare preview to approval target commit/)
+  })
+
+  it('ignores spoofed managed comments not authored by GitHub Actions', async () => {
+    const existingComment = buildPreviewCommentBody({
+      actor: 'maintainer',
+      branchName: 'cf-preview/pr-123',
+      mirrorPullRequestNumber: 456,
+      mirrorPullRequestUrl: 'https://github.com/cowprotocol/cowswap/pull/456',
+      now: new Date('2026-06-05T10:30:00.000Z'),
+      originalPrNumber: 123,
+      repoFullName: 'cowprotocol/cowswap',
+      sourceBranch: 'feature/new-swap',
+      sourceRepoFullName: 'external/cowswap',
+      sourceSha: SOURCE_SHA,
+    })
+    const client = createFakeClient({
+      comments: [
+        { body: existingComment, id: 998, user: { login: 'external-contributor', type: 'User' } },
+        { body: existingComment, id: 999, user: { login: 'github-actions[bot]', type: 'Bot' } },
+      ],
+      refExists: true,
+    })
+    await client.createPullRequest({
+      base: 'develop',
+      body: 'old body',
+      draft: true,
+      head: 'cf-preview/pr-123',
+      title: 'preview: mirror fork PR #123',
+    })
+    client.calls.length = 0
+
+    const result = await handlePreviewMirrorEvent({
+      actor: 'external-contributor',
+      client,
+      event: synchronizeEvent(
+        forkPullRequest({
+          head: {
+            ref: 'feature/new-swap',
+            repo: {
+              full_name: 'external/cowswap',
+            },
+            sha: NEXT_SOURCE_SHA,
+          },
+        }),
+      ),
+      now: new Date('2026-06-05T10:45:00.000Z'),
+      options: {
+        repoFullName: 'cowprotocol/cowswap',
+      },
+    })
+
+    assert.deepEqual(result, {
+      branchName: 'cf-preview/pr-123',
+      status: 'approval-target-updated',
+    })
+    assert.deepEqual(
+      client.calls.map((call) => call.slice(0, 2)),
+      [
+        ['findIssueComment', 123],
+        ['getPullRequestByHead', 'cf-preview/pr-123'],
+        ['updateIssueComment', 999],
+      ],
+    )
   })
 
   it('ignores checked managed comments edited on a different pull request issue', async () => {
