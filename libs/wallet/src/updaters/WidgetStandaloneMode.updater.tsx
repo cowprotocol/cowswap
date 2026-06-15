@@ -56,19 +56,27 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
    * Once in Dapp mode, disconnect any current wallet and connect to the widget connector
    */
   useEffect(() => {
+    if (isSafeApp) return
+
     if (isDappMode) {
       ;(async function () {
+        console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
+
         await reownAppKit.disconnect()
         connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
       })()
     }
-  }, [isDappMode])
+  }, [isDappMode, isSafeApp])
 
   /**
    * Once in standalone mode, disconnect widget configurator
    */
   useEffect(() => {
+    if (isSafeApp) return
+
     if (isStandaloneMode) {
+      console.debug('[WidgetStandaloneModeUpdater] disconnect widget connector')
+
       wagmiAdapter.disconnect({ id: COW_WIDGET_CONNECTOR_ID })
 
       // Remove widget connector from the list in Reown wallet connection modal
@@ -84,7 +92,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     }
 
     return undefined
-  }, [isStandaloneMode])
+  }, [isSafeApp, isStandaloneMode])
 
   /**
    * In dapp mode we only allow to be connected to the widget connector
@@ -96,8 +104,12 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     // Do not disconnect Safe App
     if (isSafeApp && isSafeConnector) return
     if (isDisconnectInProgress.current) return
+    const inDappMode = isDappMode && !isWidgetConnector
+    const inStandaloneMode = isStandaloneMode && isWidgetConnector
 
-    if ((isDappMode && !isWidgetConnector) || (isStandaloneMode && isWidgetConnector)) {
+    if (inDappMode || inStandaloneMode) {
+      console.debug('[WidgetStandaloneModeUpdater] disconnect connector', { inDappMode, inStandaloneMode })
+
       isDisconnectInProgress.current = true
 
       disconnect().finally(() => {
