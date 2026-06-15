@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useLayoutEffect, useMemo } from 'react'
 
 import { useStateWithDeferredValue } from '@cowprotocol/common-hooks'
 
@@ -56,7 +56,13 @@ export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactN
     partiallyUpdateOrdersTableFilters({ searchTerm })
   })
 
+  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching pages.
+  useLayoutEffect(() => {
+    setSearchTerm('')
+  }, [orderType, setSearchTerm])
+
   const resetSearchTerm = (): void => {
+    setSearchTerm('')
     partiallyUpdateOrdersTableFilters({ searchTerm: '' })
   }
 
