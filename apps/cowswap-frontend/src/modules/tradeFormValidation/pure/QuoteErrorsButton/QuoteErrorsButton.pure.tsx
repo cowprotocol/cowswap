@@ -8,14 +8,14 @@ import { Trans } from '@lingui/react/macro'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
-import { getBridgeQuoteErrorTexts } from './quoteErrors.utils'
+import { getBridgeQuoteErrorTexts, getDefaultQuoteError } from './quoteErrors.utils'
 
 import { TradeFormButtonContext } from '../../types'
 import { QuoteApiErrorButton } from '../QuoteApiErrorButton.pure'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
-  const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
+  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
 
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
