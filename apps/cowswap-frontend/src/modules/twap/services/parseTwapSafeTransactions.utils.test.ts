@@ -11,7 +11,14 @@ const COMPOSABLE_COW_ADDRESS = '0x0000000000000000000000000000000000000001'
 const HANDLER_ADDRESS = '0x0000000000000000000000000000000000000002'
 const FACTORY_ADDRESS = '0x0000000000000000000000000000000000000003'
 const OTHER_ADDRESS = '0x0000000000000000000000000000000000000004'
+const SAFE_MULTISEND_130_CANONICAL = '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'
+const SAFE_MULTISEND_130_EIP155 = '0x998739BFdAAdde7C933B942a68053933098f9EDa'
 const SAFE_MULTISEND_ADDRESS = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
+const SAFE_MULTISEND_150 = '0x218543288004CD07832472D464648173c77D7eB7'
+const SAFE_MULTISEND_CALL_ONLY_130_CANONICAL = '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'
+const SAFE_MULTISEND_CALL_ONLY_130_EIP155 = '0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B'
+const SAFE_MULTISEND_CALL_ONLY_141 = '0x9641d764fc13c8B624c04430C7356C1C7C8102e2'
+const SAFE_MULTISEND_CALL_ONLY_150 = '0xA83c336B20401Af773B6219BA5027174338D1836'
 
 const CONDITIONAL_ORDER_PARAMS = {
   handler: HANDLER_ADDRESS,
@@ -107,19 +114,50 @@ describe('parseSafeTransactionsResult', () => {
   })
 
   it('decodes a valid MultiSend bundle containing one TWAP inner call', () => {
-    const result = parseSafeTransactionsResult(composableCowContract, [
-      buildSafeTransaction({
-        operation: 1,
-        to: SAFE_MULTISEND_ADDRESS,
-        data: encodeMultiSendCall([
-          { operation: 0, to: OTHER_ADDRESS, data: '0xdeadbeef' },
-          { operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA },
-        ]),
-      }),
-    ])
+    const batchExecutors = [
+      SAFE_MULTISEND_130_CANONICAL,
+      SAFE_MULTISEND_130_EIP155,
+      SAFE_MULTISEND_ADDRESS,
+      SAFE_MULTISEND_150,
+      SAFE_MULTISEND_CALL_ONLY_130_CANONICAL,
+      SAFE_MULTISEND_CALL_ONLY_130_EIP155,
+      SAFE_MULTISEND_CALL_ONLY_141,
+      SAFE_MULTISEND_CALL_ONLY_150,
+    ] as const
 
-    expect(result).toHaveLength(1)
-    expect(result[0]?.conditionalOrderParams).toEqual(CONDITIONAL_ORDER_PARAMS)
+    for (const executorAddress of batchExecutors) {
+      const result = parseSafeTransactionsResult(composableCowContract, [
+        buildSafeTransaction({
+          operation: 1,
+          to: executorAddress,
+          data: encodeMultiSendCall([
+            { operation: 0, to: OTHER_ADDRESS, data: '0xdeadbeef' },
+            { operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA },
+          ]),
+        }),
+      ])
+
+      expect(result).toHaveLength(1)
+      expect(result[0]?.conditionalOrderParams).toEqual(CONDITIONAL_ORDER_PARAMS)
+    }
+  })
+
+  it('does not accept v1.5 Safe batch executors on chains where Safe did not deploy them', () => {
+    const result = parseSafeTransactionsResult(
+      {
+        ...composableCowContract,
+        chainId: 56,
+      },
+      [
+        buildSafeTransaction({
+          operation: 1,
+          to: SAFE_MULTISEND_CALL_ONLY_150,
+          data: encodeMultiSendCall([{ operation: 0, to: COMPOSABLE_COW_ADDRESS, data: VALID_CREATE_CALL_DATA }]),
+        }),
+      ],
+    )
+
+    expect(result).toEqual([])
   })
 
   it('rejects MultiSend delegatecalls sent to a non-Safe target', () => {

@@ -14,7 +14,45 @@ import type { Hex } from 'viem'
 const MULTISEND_ABI = parseAbi(['function multiSend(bytes transactions)'])
 const MULTISEND_HEADER_HEX_LENGTH = 170
 const MAX_SAFE_HEX_LENGTH = BigInt(Number.MAX_SAFE_INTEGER)
-const SAFE_MULTISEND_ADDRESS = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
+const LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES = [
+  '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761',
+  '0x998739BFdAAdde7C933B942a68053933098f9EDa',
+  '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+  '0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B',
+] as const
+const SAFE_BATCH_EXECUTOR_ADDRESSES_V141 = [
+  '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526',
+  '0x9641d764fc13c8B624c04430C7356C1C7C8102e2',
+] as const
+const SAFE_BATCH_EXECUTOR_ADDRESSES_V150 = [
+  '0x218543288004CD07832472D464648173c77D7eB7',
+  '0xA83c336B20401Af773B6219BA5027174338D1836',
+] as const
+const SAFE_BATCH_EXECUTOR_ADDRESSES_BY_CHAIN: Partial<Record<SupportedChainId, readonly string[]>> = {
+  [SupportedChainId.MAINNET]: [
+    ...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V150,
+  ],
+  [SupportedChainId.BNB]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.GNOSIS_CHAIN]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.POLYGON]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.BASE]: [
+    ...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V150,
+  ],
+  [SupportedChainId.PLASMA]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.ARBITRUM_ONE]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.AVALANCHE]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.LINEA]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.INK]: [...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES, ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141],
+  [SupportedChainId.SEPOLIA]: [
+    ...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V141,
+    ...SAFE_BATCH_EXECUTOR_ADDRESSES_V150,
+  ],
+}
 const SUPPORTED_SAFE_MULTISEND_CHAINS = new Set<SupportedChainId>([
   SupportedChainId.MAINNET,
   SupportedChainId.BNB,
@@ -122,14 +160,17 @@ function decodeMultiSendTransactions(
   composableCowContract: ComposableCowContractData,
   transaction: SafeMultisigTransactionCandidate,
 ): DecodedMultiSendTransaction[] | null {
+  const safeBatchExecutors = SAFE_BATCH_EXECUTOR_ADDRESSES_BY_CHAIN[composableCowContract.chainId]
+
   if (transaction.operation !== 1) {
     return null
   }
 
-  if (
-    !SUPPORTED_SAFE_MULTISEND_CHAINS.has(composableCowContract.chainId) ||
-    !areAddressesEqual(transaction.to, SAFE_MULTISEND_ADDRESS)
-  ) {
+  if (!SUPPORTED_SAFE_MULTISEND_CHAINS.has(composableCowContract.chainId) || !safeBatchExecutors?.length) {
+    return null
+  }
+
+  if (!safeBatchExecutors.some((executorAddress) => areAddressesEqual(transaction.to, executorAddress))) {
     return null
   }
 
