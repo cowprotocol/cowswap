@@ -11,7 +11,13 @@ import { Connector } from 'wagmi'
 
 import { config } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
-import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
+import {
+  isSafeAppAtom,
+  isSafeViaWcAtom,
+  accountTypeAtom,
+  isSmartContractWalletAtom,
+  isSafeWalletAtom,
+} from '../../wagmi/state/walletMetadata.atoms'
 import { isEip1193Provider } from '../../wagmi/utils/isEip1193Provider.utils'
 import { walletInfoAtom } from '../state'
 
@@ -112,7 +118,9 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
   // since Safe's wallet_getCapabilities response may omit the chain ID key.
   // For other wallets (e.g. MetaMask), a missing chain entry means the chain is not supported —
   // using a different chain's capabilities would incorrectly enable features like atomic bundling.
-  return (capabilities[chainId] || (isSafeViaWc ? Object.values(capabilities)[0] : undefined)) as WalletCapabilities | undefined
+  return (capabilities[chainId] || (isSafeViaWc ? Object.values(capabilities)[0] : undefined)) as
+    | WalletCapabilities
+    | undefined
 })
 
 /** Sync atom that exposes { state, data, error } for walletCapabilitiesAtom. Use in hooks for loading/data. */
@@ -129,13 +137,9 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
   // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
   if (!walletCapabilities) return false
 
-  // TODO: Migrate this to atom:
-  // const accountType = useAccountType()
-  // const isSmartContractWallet = useIsSmartContractWallet()
-  // const isSafeWallet = useIsSafeWallet()
-  const accountType: AccountType = AccountType.EOA;
-  const isSmartContractWallet = false;
-  const isSafeWallet = false;
+  const accountType = get(accountTypeAtom)
+  const isSmartContractWallet = get(isSmartContractWalletAtom)
+  const isSafeWallet = get(isSafeWalletAtom)
 
   // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
   // fallback handler mechanism TWAP requires — treat them as unsupported.

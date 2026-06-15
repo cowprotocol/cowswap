@@ -129,6 +129,7 @@ export function useIsSafeApp(): boolean {
  * Warning: this can be false when Safe API is down or rate-limited and does not mean the wallet is not a Safe.
  * TODO: Rename to useHasGnosisSafeInfo.
  */
+// TODO: Replace with isSafeWalletAtom
 export function useIsSafeWallet(): boolean {
   return !!useGnosisSafeInfo()
 }
