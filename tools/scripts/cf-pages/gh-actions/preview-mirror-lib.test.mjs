@@ -124,9 +124,9 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
       }
       return { object: { sha: 'oldsha' } }
     },
-    async listIssueComments(issueNumber) {
-      calls.push(['listIssueComments', issueNumber])
-      return storedComments
+    async findIssueComment(issueNumber, predicate) {
+      calls.push(['findIssueComment', issueNumber])
+      return storedComments.find(predicate) ?? null
     },
     async removeIssueLabel(issueNumber, labelName) {
       calls.push(['removeIssueLabel', issueNumber, labelName])
@@ -203,7 +203,7 @@ describe('preview-mirror-lib', () => {
           title: 'preview: mirror fork PR #123',
         }],
         ['addIssueLabels', 456],
-        ['listIssueComments', 123],
+        ['findIssueComment', 123],
         ['createIssueComment', 123],
         ['removeIssueLabel', 123],
       ],
@@ -323,7 +323,7 @@ describe('preview-mirror-lib', () => {
         ['updateRef', 'cf-preview/pr-123'],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
         ['updatePullRequest', 456],
-        ['listIssueComments', 123],
+        ['findIssueComment', 123],
         ['createIssueComment', 123],
         ['removeIssueLabel', 123],
       ],
@@ -383,7 +383,7 @@ describe('preview-mirror-lib', () => {
     assert.deepEqual(
       client.calls.map((call) => call.slice(0, 2)),
       [
-        ['listIssueComments', 123],
+        ['findIssueComment', 123],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
         ['updateIssueComment', 999],
       ],

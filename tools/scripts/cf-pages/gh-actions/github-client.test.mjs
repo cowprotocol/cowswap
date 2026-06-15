@@ -72,6 +72,87 @@ describe('github-client', () => {
     }
   })
 
+  it('finds issue comments beyond the first page', async () => {
+    const originalFetch = globalThis.fetch
+    const requestedUrls = []
+    const firstPage = Array.from({ length: 100 }, (_, index) => ({ body: 'other comment', id: index + 1 }))
+    const secondPage = [{ body: 'target comment', id: 101 }]
+
+    globalThis.fetch = async (url) => {
+      requestedUrls.push(url)
+      const body = url.includes('page=2') ? secondPage : firstPage
+
+      return {
+        ok: true,
+        status: 200,
+        async text() {
+          return JSON.stringify(body)
+        },
+      }
+    }
+
+    try {
+      const client = createGitHubClient({
+        apiBase: 'https://api.github.test',
+        repoFullName: 'cowprotocol/cowswap',
+        token: 'github-token',
+      })
+
+      const comment = await client.findIssueComment(123, (issueComment) => issueComment.body === 'target comment')
+
+      assert.deepEqual(comment, secondPage[0])
+      assert.deepEqual(
+        requestedUrls.map((url) => new URL(url).searchParams.get('page')),
+        ['1', '2'],
+      )
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
+
+  it('stops paging issue comments after finding a match', async () => {
+    const originalFetch = globalThis.fetch
+    const requestedUrls = []
+    const firstPage = [
+      { body: 'target comment', id: 1 },
+      ...Array.from({ length: 99 }, (_, index) => ({ body: 'other comment', id: index + 2 })),
+    ]
+
+    globalThis.fetch = async (url) => {
+      requestedUrls.push(url)
+
+      if (url.includes('page=2')) {
+        throw new Error('Unexpected second page request')
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        async text() {
+          return JSON.stringify(firstPage)
+        },
+      }
+    }
+
+    try {
+      const client = createGitHubClient({
+        apiBase: 'https://api.github.test',
+        repoFullName: 'cowprotocol/cowswap',
+        token: 'github-token',
+      })
+
+      const comment = await client.findIssueComment(123, (issueComment) => issueComment.body === 'target comment')
+
+      assert.deepEqual(comment, firstPage[0])
+      assert.deepEqual(
+        requestedUrls.map((url) => new URL(url).searchParams.get('page')),
+        ['1'],
+      )
+    } finally {
+      globalThis.fetch = originalFetch
+    }
+  })
+
   it('identifies GitHub 404 errors', () => {
     assert.equal(isNotFoundError(new GitHubApiError(404, 'Not Found')), true)
     assert.equal(isNotFoundError(new GitHubApiError(500, 'Server Error')), false)

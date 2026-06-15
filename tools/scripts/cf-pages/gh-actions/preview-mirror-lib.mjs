@@ -333,8 +333,7 @@ async function savePreviewComment(client, { body, commentId, issueNumber }) {
 }
 
 async function findPreviewComment(client, issueNumber) {
-  const comments = await client.listIssueComments(issueNumber)
-  return comments.find((comment) => {
+  return client.findIssueComment(issueNumber, (comment) => {
     return (
       typeof comment.body === 'string' && parseManagedPreviewComment(comment.body)?.originalPrNumber === issueNumber
     )

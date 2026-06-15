@@ -84,8 +84,32 @@ export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GIT
     async getRef(branchName) {
       return request('GET', `/repos/${owner}/${repo}/git/ref/${encodeGitRefPath(`heads/${branchName}`)}`)
     },
-    async listIssueComments(issueNumber) {
-      return request('GET', `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100`)
+    async findIssueComment(issueNumber, predicate) {
+      const perPage = 100
+      let page = 1
+
+      while (true) {
+        const comments = await request(
+          'GET',
+          `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=${perPage}&page=${page}`,
+        )
+
+        if (!Array.isArray(comments)) {
+          return null
+        }
+
+        const match = comments.find(predicate)
+
+        if (match) {
+          return match
+        }
+
+        if (comments.length < perPage) {
+          return null
+        }
+
+        page += 1
+      }
     },
     async removeIssueLabel(issueNumber, labelName) {
       try {
