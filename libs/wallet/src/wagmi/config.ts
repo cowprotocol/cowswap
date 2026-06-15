@@ -1,5 +1,5 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isImTokenBrowser } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -81,11 +81,7 @@ const reownAppKit = createAppKit({
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
-  // Disable EIP-6963 inside imToken's browser: AppKit's EIP-6963 path calls eth_requestAccounts
-  // through too many async layers, losing the iOS WebKit gesture context — the call hangs forever.
-  // imToken is instead featured as a WalletConnect option (featuredWalletIds) so it appears on
-  // the first modal screen, and the WalletConnect path works correctly inside imToken's browser.
-  enableEIP6963: !isImTokenBrowser,
+  enableEIP6963: true,
   enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: [
