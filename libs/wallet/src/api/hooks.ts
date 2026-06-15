@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 
 import { AccountType } from '@cowprotocol/types'
 
@@ -16,7 +17,7 @@ import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './typ
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
-import { useIsSafeApp, useIsSafeViaWc, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
+import { useIsSafeApp, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -39,17 +40,15 @@ export function useIsEagerConnectInProgress(): boolean {
 }
 
 export function useIsTxBundlingSupported(): boolean | null {
-  // TODO this will be fixed in M-3 COW-569
   const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
   const isSafeApp = useIsSafeApp()
-  const isSafeViaWc = useIsSafeViaWc()
   const accountType = useAccountType()
   const isSmartContractWallet = useIsSmartContractWallet()
   const isSafeWallet = useIsSafeWallet()
 
   // eslint-disable-next-line complexity
-  const result = (() => {
-    if (isSafeApp || isSafeViaWc) return true
+  return useMemo(() => {
+    if (isSafeApp) return true
     // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
     // fallback handler mechanism TWAP requires — treat them as unsupported.
     // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
@@ -57,9 +56,7 @@ export function useIsTxBundlingSupported(): boolean | null {
     if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
     if (isCapabilitiesLoading) return null
     return Boolean(capabilities?.atomic?.status === 'supported' || capabilities?.atomicBatch?.supported)
-  })()
-
-  return result
+  }, [isSafeApp, isSmartContractWallet, accountType, isCapabilitiesLoading, capabilities, isSafeWallet])
 }
 
 export function useIsAssetWatchingSupported(): boolean {
