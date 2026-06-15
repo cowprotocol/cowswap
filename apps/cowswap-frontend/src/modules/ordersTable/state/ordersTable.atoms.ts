@@ -18,6 +18,7 @@ import { observe } from 'jotai-effect'
 import { OrderStatus, Order } from 'legacy/state/orders/actions'
 import { ContractDeploymentBlocks } from 'legacy/state/orders/consts'
 
+import { ordersTableOrderTypeAtom } from 'modules/ordersTable/state/ordersTableOrderType.atom'
 import { ordersTablePageAtom, ordersTableTabIdAtom } from 'modules/ordersTable/state/params/ordersTableParams.atom'
 import { HistoryStatusFilter, getFilteredOrders } from 'modules/ordersTable/utils/getFilteredOrders'
 import { getOrdersTableList } from 'modules/ordersTable/utils/getOrdersTableList'
@@ -69,11 +70,20 @@ ordersTableStateAtom.onMount = () => {
       return
     }
 
-    const orderType = get(locationOrderTypeAtom)
+    const orderType = get(ordersTableOrderTypeAtom)
+
+    if (!orderType) {
+      logOrdersTableDebug('No orders table order type set, setting empty orders table state...')
+
+      set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
+
+      return
+    }
+
     const uiOrderType: UiOrderType = UI_ORDER_TYPE_BY_TAB_ORDER_TYPE[orderType]
 
-    if (!orderType || !uiOrderType) {
-      logOrdersTableDebug('Invalid order type', { orderType, uiOrderType })
+    if (!uiOrderType) {
+      logOrdersTableDebug('Invalid orderType/uiOrderType', { orderType, uiOrderType })
 
       return
     }
@@ -209,9 +219,11 @@ ordersTableStateAtom.onMount = () => {
 
   const unobserveURL = observe((get) => {
     const orderTypeParam = get(locationOrderTypeAtom)
+    const orderType = get(ordersTableOrderTypeAtom)
 
-    // Only in /limit and /advanced routes, we want to make sure we sync the tab and page params.
-    if (orderTypeParam !== TabOrderTypes.LIMIT && orderTypeParam !== TabOrderTypes.ADVANCED) return
+    // Only in /limit and /advanced routes, once the URL and `ordersTableOrderTypeAtom` values match, we want to make sure we sync the tab and page params.
+    if (orderTypeParam !== orderType || (orderType !== TabOrderTypes.LIMIT && orderType !== TabOrderTypes.ADVANCED))
+      return
 
     // These are the values in the URL params, and the user controls them, so they might be incorrect.
     // They state an intention, but are not a source of truth.

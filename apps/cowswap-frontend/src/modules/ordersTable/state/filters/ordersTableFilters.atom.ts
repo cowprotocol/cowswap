@@ -1,11 +1,6 @@
 import { atom } from 'jotai'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
-import { jotaiStore } from '@cowprotocol/core'
-
-import { observe } from 'jotai-effect'
-
-import { locationPathnameAtom, tabParamAtom } from 'common/state/routesState'
 
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { OrdersTableFilters } from '../ordersTable.types'
@@ -19,12 +14,6 @@ export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TA
 
 export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
 
-ordersTableFiltersAtom.onMount = () => {
-  return observe((get, set) => {
-    get(locationPathnameAtom)
-    get(tabParamAtom)
-
-    // Reset filters when route (pathname) or orders-table tab query (?tab=) changes
-    set(ordersTableFiltersAtom, DEFAULT_ORDERS_TABLE_FILTERS)
-  }, jotaiStore)
-}
+// Note that ordersTableFiltersAtom could be reset by observing ordersTableOrderTypeAtom, tabParamAtom and/or locationPathnameAtom. However,
+// that will result in the filters updating before the page is rendered. To prevent that and keep the old behavior where the page loads first and
+// then resets the filters, we'll be manually resetting them from useOrdersTable() hook.

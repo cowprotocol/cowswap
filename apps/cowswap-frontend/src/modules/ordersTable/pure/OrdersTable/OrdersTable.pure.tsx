@@ -34,8 +34,6 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
-
-  // const orderType = useAtomValue(locationOrderTypeAtom)
   const currentPageNumber = useAtomValue(ordersTablePageAtom) || 1
 
   const { filteredOrders, balancesAndAllowances } = useAtomValue(ordersTableStateAtom)

@@ -22,7 +22,6 @@ interface OrdersTableContentProps {
 }
 
 export function OrdersTableContent({ orderType, searchTerm, historyStatusFilter }: OrdersTableContentProps): ReactNode {
-  // const orderType = useAtomValue(locationOrderTypeAtom)
   const currentTabId = useAtomValue(ordersTableTabIdAtom)
   const { orders, filteredOrders, hasHydratedOrders } = useAtomValue(ordersTableStateAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()

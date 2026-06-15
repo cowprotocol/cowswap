@@ -12,6 +12,29 @@ import { OrderTab, ORDERS_TABLE_PAGE_SIZE } from './ordersTableParams.constants'
 
 import { ordersTableStateAtom } from '../ordersTable.atoms'
 
+/*
+const isOrdersTableParamsSyncedAtom = atom((get) => {
+  const orderType = get(ordersTableOrderTypeAtom)
+  const locationOrderType = get(locationOrderTypeAtom)
+
+  return orderType !== null && orderType === locationOrderType
+})
+
+// Tab query param scoped to the active orders-table order type (ignores stale URL during route transitions).
+export const ordersTableTabParamAtom = atom((get) => {
+  if (!get(isOrdersTableParamsSyncedAtom)) return null
+
+  return get(tabParamAtom)
+})
+
+// Page query param scoped to the active orders-table order type (ignores stale URL during route transitions).
+export const ordersTablePageParamAtom = atom((get) => {
+  if (!get(isOrdersTableParamsSyncedAtom)) return null
+
+  return get(pageParamAtom)
+})
+*/
+
 export interface GetTabIdParams {
   hasHydratedOrders: boolean
   ordersList: OrdersTableList
@@ -22,26 +45,6 @@ export function getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam }
   tabs: OrderTab[]
   tabId: OrderTabId | null
 } {
-  /*
-  TODO: Check if there are more than 100 orders.
-
-  If not:
-    If there are open orders --> Open Orders tab
-    If there are no open orders --> old empty state (“You don’t have any open orders. Make your first one” kind of thing)
-
-  If there are more than 100 orders:
-    If there are open orders in the first 100 --> Open Orders tab
-    If there are no open orders in the first 100 --> Order History tab
-
-  This could be implemented with:
-
-    const defaultTabId = !hasMoreOrders || ordersList[OrderTabId.OPEN].length > 0 || ordersList[OrderTabId.HISTORY].length === 0
-      ? OrderTabId.OPEN
-      : OrderTabId.HISTORY
-
-  But getting hasMoreOrders might be a bit convoluted. It might be better to leave this as it is.
-  */
-
   if (!hasHydratedOrders) return { tabs: [], tabId: null }
 
   const tabs: OrderTab[] = [

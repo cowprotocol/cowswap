@@ -10,7 +10,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 
-import { OrderTabId, locationOrderTypeAtom, TabOrderTypes } from 'common/state/routesState'
+import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -91,9 +91,6 @@ export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactN
   }, [currentTabId, filteredOrders, currentPageNumber])
 
   const hasPendingOrdersInCurrentPage = !!pendingOrdersInCurrentPage?.length
-  const locationOrderType = useAtomValue(locationOrderTypeAtom)
-
-  if (orderType !== locationOrderType) return null
 
   return (
     <>

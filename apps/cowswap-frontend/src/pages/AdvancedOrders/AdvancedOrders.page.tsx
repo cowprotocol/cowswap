@@ -18,7 +18,7 @@ import {
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { OrdersTableWidget, ordersTableStateAtom } from 'modules/ordersTable'
+import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect } from 'modules/trade'
 import {
@@ -40,6 +40,8 @@ import { TabOrderTypes } from 'common/state/routesState'
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export function AdvancedOrdersPage(): ReactNode {
+  useOrdersTable(TabOrderTypes.ADVANCED)
+
   const params = useParams()
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
