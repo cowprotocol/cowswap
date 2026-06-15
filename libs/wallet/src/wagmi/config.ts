@@ -9,10 +9,14 @@ import { type Transport } from 'wagmi'
 
 import { getConnectors } from './getConnectors'
 
+import { bindActiveProvider } from '../bindActiveProvider'
+import { interceptEIP6963Providers } from '../providerIsolation'
 import { SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
+
+interceptEIP6963Providers()
 
 const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   (acc, chain) => {
@@ -113,5 +117,7 @@ const reownAppKit = createAppKit({
 if (getIsSafeAppIframe()) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
 }
+
+bindActiveProvider(wagmiAdapter)
 
 export { wagmiAdapter, reownAppKit, wagmiStorage }

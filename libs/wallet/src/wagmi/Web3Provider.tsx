@@ -8,6 +8,7 @@ import { WagmiProvider } from 'wagmi'
 import { reownAppKit, wagmiAdapter } from './config'
 
 import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { flushDeferredProviders } from '../providerIsolation'
 
 const queryClient = new QueryClient()
 
@@ -31,6 +32,7 @@ function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
     const handler = (): void => {
       reownAppKit?.open({ view: 'Connect' })
+      flushDeferredProviders()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
     return () => document.removeEventListener(OPEN_WALLET_MODAL_EVENT, handler)
