@@ -124,24 +124,24 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
 
   const onAddHookRequest = useCallback(
     (payload: unknown) => {
-      const mutation = getValidatedIframeAddHookRequest(payload, hookToEditDetails?.uuid)
+      const mutation = getValidatedIframeAddHookRequest(payload, hookToEdit)
 
       if (mutation) {
         setPendingIframeMutation(mutation)
       }
     },
-    [hookToEditDetails?.uuid],
+    [hookToEdit],
   )
 
   const onEditHookRequest = useCallback(
     (payload: unknown) => {
-      const mutation = getValidatedIframeEditHookRequest(payload, hookToEditDetails?.uuid)
+      const mutation = getValidatedIframeEditHookRequest(payload, hookToEdit)
 
       if (mutation) {
         setPendingIframeMutation(mutation)
       }
     },
-    [hookToEditDetails?.uuid],
+    [hookToEdit],
   )
 
   const onSetSellTokenRequest = useCallback(

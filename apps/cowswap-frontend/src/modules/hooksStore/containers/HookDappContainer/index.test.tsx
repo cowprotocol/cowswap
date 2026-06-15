@@ -227,6 +227,15 @@ describe('HookDappContainer', () => {
     expect(screen.queryByText('Review hook request')).toBeNull()
   })
 
+  it('rejects add-hook requests while edit mode is active even before the hook lookup resolves', () => {
+    renderContainer({ hookToEdit: 'hook-1' })
+
+    fireEvent.click(screen.getByText('request-valid-add'))
+
+    expect(addHook).not.toHaveBeenCalled()
+    expect(screen.queryByText('Review hook request')).toBeNull()
+  })
+
   it('rejects edit-hook requests for a different hook id', () => {
     useHookByIdMock.mockReturnValue({
       uuid: 'hook-1',
