@@ -5,7 +5,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
-import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes, UNHANDLED_ERROR_CODE } from 'api/cowProtocol/errors/QuoteError'
 
 import {
   getBridgeQuoteErrorTexts,
@@ -22,7 +22,7 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
 
   if (!quote || !(quote.error instanceof QuoteApiError)) return null
 
-  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
+  const DEFAULT_ERROR_TEXT = getDefaultQuoteError()
 
   const quoteErrorTexts = getQuoteErrorTexts()
 
@@ -40,9 +40,18 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
   const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
   const errorType = quote.error.type
+  const errorDescription = quote.error.description
 
   if (errorType === QuoteApiErrorCodes.UnsupportedToken) {
     return <UnsupportedTokenButton {...props} />
+  }
+
+  if (errorType === UNHANDLED_ERROR_CODE) {
+    return (
+      <TradeFormBlankButton disabled>
+        <>{DEFAULT_ERROR_TEXT}</>
+      </TradeFormBlankButton>
+    )
   }
 
   const isBridge = quote.isBridgeQuote
@@ -66,13 +75,15 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
       return bridgeQuoteErrorText
     }
 
-    return quoteErrorText || DEFAULT_QUOTE_ERROR
+    return quoteErrorText ?? DEFAULT_ERROR_TEXT
   })()
 
-  const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
+  const errorTooltipText =
+    (isBridge ? errorTooltipContentForBridges[errorType] : null) ??
+    (errorText === DEFAULT_ERROR_TEXT ? errorDescription : null)
 
   return (
-    <TradeFormBlankButton disabled={true}>
+    <TradeFormBlankButton disabled>
       <>
         {errorText}
         {errorTooltipText && <HelpTooltip text={errorTooltipText} />}

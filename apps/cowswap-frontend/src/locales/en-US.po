@@ -1291,6 +1291,10 @@ msgstr "Swaps not supported"
 msgid "Some orders can not be cancelled!"
 msgstr "Some orders can not be cancelled!"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+#~ msgid "The selling amount for the order is lower than the fee"
+#~ msgstr "The selling amount for the order is lower than the fee"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/state/tabs/ordersTableTabs.constants.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/test/ordersTable.cosmos.tsx
 msgid "Orders history"
@@ -2532,9 +2536,18 @@ msgstr "Waiting for confirmation."
 #~ msgid "Aave Debt Swap"
 #~ msgstr "Aave Debt Swap"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Order metadata is invalid"
+msgstr "Order metadata is invalid"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW token"
 msgstr "COW token"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Order validity is too long"
+msgstr "Order validity is too long"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "so we can investigate the problem."
@@ -3245,6 +3258,10 @@ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they d
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP"
 msgstr "TWAP"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Insufficient liquidity for this trade"
+msgstr "Insufficient liquidity for this trade"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -4139,6 +4156,10 @@ msgstr "CoW Swap's robust solver competition protects your slippage from being e
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Details"
 msgstr "Details"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Token is temporarily suspended from trading"
+msgstr "Token is temporarily suspended from trading"
 
 #: apps/cowswap-frontend/src/legacy/state/orders/helpers.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -6031,7 +6052,6 @@ msgid "on {chainLabel}"
 msgstr "on {chainLabel}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Invalid price. Try increasing input/output amount."
 msgstr "Invalid price. Try increasing input/output amount."
 
@@ -6148,6 +6168,10 @@ msgstr "View"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Execution price"
 msgstr "Execution price"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Token can only be traded during specific time windows"
+msgstr "Token can only be traded during specific time windows"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked"
@@ -6559,6 +6583,10 @@ msgstr "Valid"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "For this order, network costs would be"
 msgstr "For this order, network costs would be"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
+msgid "Token pair selected has insufficient liquidity"
+msgstr "Token pair selected has insufficient liquidity"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
@@ -7143,12 +7171,12 @@ msgid "turn on expert mode"
 msgstr "turn on expert mode"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-msgid "Insufficient liquidity for this trade."
-msgstr "Insufficient liquidity for this trade."
+#~ msgid "Insufficient liquidity for this trade."
+#~ msgstr "Insufficient liquidity for this trade."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-msgid "Buying native currency with smart contract wallets is not currently supported"
-msgstr "Buying native currency with smart contract wallets is not currently supported"
+#~ msgid "Buying native currency with smart contract wallets is not currently supported"
+#~ msgstr "Buying native currency with smart contract wallets is not currently supported"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "Expected to sell"

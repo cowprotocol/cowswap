@@ -25,14 +25,17 @@ export function getDefaultQuoteError(): string {
   return t`Error loading price. Try again later.`
 }
 
-export function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+export function getQuoteErrorTexts(): Partial<Record<QuoteApiErrorCodes, string>> {
   return {
-    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
-    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.AppDataHashMismatch]: t`Order metadata is invalid`,
+    [QuoteApiErrorCodes.InvalidAppData]: t`Order metadata is invalid`,
+    [QuoteApiErrorCodes.ExcessiveValidTo]: t`Order validity is too long`,
     [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.NoLiquidity]: t`Token pair selected has insufficient liquidity`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade`,
+    [QuoteApiErrorCodes.SellAmountDoesNotCoverFee]: t`Sell amount is too small`,
     [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
+    [QuoteApiErrorCodes.TokenTemporarilySuspended]: t`Token is temporarily suspended from trading`,
+    [QuoteApiErrorCodes.TradingOutsideAllowedWindow]: t`Token can only be traded during specific time windows`,
   }
 }
