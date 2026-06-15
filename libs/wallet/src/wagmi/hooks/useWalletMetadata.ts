@@ -7,6 +7,7 @@ import { useConnectionType } from './useConnectionType'
 import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
+import { reownAppKit } from '../config'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -67,8 +68,24 @@ export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
 
+  const [walletMetaData, setWalletMetaData] = useState<WalletMetaData | null>(null)
+
+  useEffect(() => {
+    if (!reownAppKit) return
+
+    return reownAppKit.subscribeWalletInfo((state) => {
+      if (state) {
+        setWalletMetaData({ walletName: state.name, icon: state.icon })
+      } else {
+        setWalletMetaData(null)
+      }
+    })
+  }, [])
+
   return useMemo(() => {
     if (!connector) {
+      if (walletMetaData) return walletMetaData
+
       return METADATA_DISCONNECTED
     }
 
@@ -89,10 +106,10 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     return {
-      icon: connector.icon,
-      walletName: connector.name,
+      icon: connector.icon ?? walletMetaData?.icon,
+      walletName: connector.name ?? walletMetaData?.walletName,
     }
-  }, [connector, wcPeerMetadata])
+  }, [connector, walletMetaData, wcPeerMetadata])
 }
 
 /**
