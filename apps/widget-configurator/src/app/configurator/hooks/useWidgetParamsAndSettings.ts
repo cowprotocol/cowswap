@@ -17,6 +17,9 @@ const getBaseUrl = (): string => {
   if (isVercel) {
     const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
 
+    // TODO: remove after tests
+    if (2 > 1) return 'https://fix-wallets.swap-dev-5u6.pages.dev'
+
     return `https://swap-dev-git-${prKey}${vercelSuffix}`
   }
 
