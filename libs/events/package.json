@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/events",
-  "version": "4.4.1",
+  "version": "4.6.0",
   "description": "CoW Swap events",
   "repository": {
     "type": "git",
