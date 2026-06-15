@@ -31,6 +31,8 @@ export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/Account
 // Utils
 export * from './api/utils/connection'
 export * from './wagmi/utils/isEip1193Provider.utils'
+export * from './wagmi/utils/isEip7702EOA.utils'
+export * from './wagmi/utils/isSafeConnector.utils'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'
@@ -42,7 +44,6 @@ export { config } from './wagmi/config'
 export * from './api/state'
 export {
   walletCapabilitiesAtom,
-  walletCapabilitiesLoadableAtom,
   isBundlingSupportedAtom,
   isBundlingSupportedLoadableAtom,
   type WalletCapabilities,

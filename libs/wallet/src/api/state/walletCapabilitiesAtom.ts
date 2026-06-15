@@ -123,19 +123,9 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     | undefined
 })
 
-/** Sync atom that exposes { state, data, error } for walletCapabilitiesAtom. Use in hooks for loading/data. */
-export const walletCapabilitiesLoadableAtom = loadable(walletCapabilitiesAtom)
-
 // eslint-disable-next-line complexity
 export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
   if (get(isSafeAppAtom)) return true
-
-  const walletCapabilities = await get(walletCapabilitiesAtom)
-
-  // If `walletCapabilitiesAtom` returns `undefined` it's because `shouldCheckCapabilities === false`,
-  // or because some kind of API empty response or error. So, if we cannot check, then we must be false,
-  // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
-  if (!walletCapabilities) return false
 
   const accountType = get(accountTypeAtom)
   const isSmartContractWallet = get(isSmartContractWalletAtom)
@@ -146,6 +136,13 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> =
   // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
   // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
   if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
+
+  const walletCapabilities = await get(walletCapabilitiesAtom)
+
+  // If `walletCapabilitiesAtom` returns `undefined` it's because `shouldCheckCapabilities === false`,
+  // or because some kind of API empty response or error. So, if we cannot check, then we must be false,
+  // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
+  if (!walletCapabilities) return false
 
   const status = walletCapabilities.atomic?.status || ''
   const supported = walletCapabilities?.atomicBatch?.supported

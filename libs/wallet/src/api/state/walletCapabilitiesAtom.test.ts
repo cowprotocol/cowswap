@@ -2,6 +2,7 @@ import { createStore, type WritableAtom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
+import { AccountType } from '@cowprotocol/types'
 
 import { Connector } from 'wagmi'
 
@@ -11,16 +12,28 @@ import {
   isBundlingSupportedAsyncAtom,
   isBundlingSupportedLoadableAtom,
   walletCapabilitiesAtom,
-  walletCapabilitiesLoadableAtom,
 } from './walletCapabilitiesAtom'
 
-import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
+import {
+  accountTypeAtom,
+  isSafeAppAtom,
+  isSafeViaWcAtom,
+  isSafeWalletAtom,
+  isSmartContractWalletAtom,
+} from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
 import { ConnectionType } from '../types'
 
-/** Mocked module exports `atom(false)`; Jest widens to `Atom<boolean>`, which is not assignable to `store.set` without a cast. */
+/** Mocked module exports writable primitives; Jest widens atom types, so casts are required for store.set. */
 const writableIsSafeAppAtom = isSafeAppAtom as WritableAtom<boolean, [boolean], unknown>
 const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean, [boolean], unknown>
+const writableAccountTypeAtom = accountTypeAtom as WritableAtom<AccountType | null, [AccountType | null], unknown>
+const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as WritableAtom<
+  boolean | undefined,
+  [boolean | undefined],
+  unknown
+>
+const writableIsSafeWalletAtom = isSafeWalletAtom as WritableAtom<boolean | undefined, [boolean | undefined], unknown>
 
 import type { WalletCapabilities } from './walletCapabilitiesAtom'
 import type { WalletInfo } from '../types'
@@ -28,9 +41,13 @@ import type { EIP1193Provider } from 'viem'
 
 jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
   const jotai = require('jotai') as typeof import('jotai')
+
   return {
-    isSafeAppAtom: jotai.atom<boolean>(false),
-    isSafeViaWcAtom: jotai.atom<boolean>(false),
+    isSafeAppAtom: jotai.atom(false),
+    isSafeViaWcAtom: jotai.atom(false),
+    accountTypeAtom: jotai.atom(null),
+    isSmartContractWalletAtom: jotai.atom(false),
+    isSafeWalletAtom: jotai.atom(false),
   }
 })
 
@@ -234,45 +251,6 @@ describe('walletCapabilitiesAtom', () => {
 
       expect(result).toBeUndefined()
     })
-
-    it('returns undefined on getCapabilities error; loadable has data undefined not hasError', async () => {
-      mockGetCapabilities.mockRejectedValue(new Error('RPC error'))
-
-      const store = createStore()
-      setWalletInfo(store, {})
-
-      store.get(walletCapabilitiesLoadableAtom)
-      const result = await store.get(walletCapabilitiesAtom)
-      expect(result).toBeUndefined()
-
-      const loadable = store.get(walletCapabilitiesLoadableAtom)
-      expect(loadable.state).toBe('hasData')
-      if (loadable.state === 'hasData') {
-        expect(loadable.data).toBeUndefined()
-      }
-      expect('error' in loadable ? loadable.error : null).toBeFalsy()
-    })
-  })
-
-  describe('loadable atom', () => {
-    it('exposes loading then data when getCapabilities resolves', async () => {
-      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-      mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: capabilities })
-
-      const store = createStore()
-      setWalletInfo(store, {})
-
-      const loadable = store.get(walletCapabilitiesLoadableAtom)
-
-      expect(loadable.state).toBe('loading')
-      const data = await store.get(walletCapabilitiesAtom)
-      expect(data).toEqual(capabilities)
-      const loadableAfter = store.get(walletCapabilitiesLoadableAtom)
-      expect(loadableAfter.state).toBe('hasData')
-      if (loadableAfter.state === 'hasData') {
-        expect(loadableAfter.data).toEqual(capabilities)
-      }
-    })
   })
 })
 
@@ -367,6 +345,32 @@ describe('isBundlingSupportedAsyncAtom', () => {
     const result = await store.get(isBundlingSupportedAsyncAtom)
 
     expect(result).toBe(true)
+  })
+
+  it('returns false for non-Safe smart contract wallet before checking capabilities', async () => {
+    const store = createStore()
+    store.set(writableIsSmartContractWalletAtom, true)
+    store.set(writableIsSafeWalletAtom, false)
+    mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
+    expect(result).toBe(false)
+    expect(mockGetCapabilities).not.toHaveBeenCalled()
+  })
+
+  it('returns false for EIP-7702 account before checking capabilities', async () => {
+    const store = createStore()
+    store.set(writableAccountTypeAtom, AccountType.EIP7702EOA)
+    store.set(writableIsSafeWalletAtom, false)
+    mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
+    expect(result).toBe(false)
+    expect(mockGetCapabilities).not.toHaveBeenCalled()
   })
 })
 

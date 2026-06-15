@@ -7,6 +7,7 @@ import { useConnection, usePublicClient } from 'wagmi'
 import { useIsSafeWallet } from './useWalletMetadata'
 
 import { useWalletInfo } from '../../api/hooks'
+import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 
 // TODO: Replace with accountTypeAtom
 export function useAccountType(): AccountType | undefined {
@@ -49,9 +50,4 @@ export function useIsSmartContractWallet(): boolean | undefined {
   const isSafeWallet = useIsSafeWallet()
 
   return isSafeWallet || accountType === AccountType.SMART_CONTRACT
-}
-
-// https://eips.ethereum.org/EIPS/eip-7702#abstract
-export function isEip7702EOA(code: string, account: string): boolean {
-  return code.startsWith('0xef0100') || code.toLowerCase() === account.toLowerCase()
 }

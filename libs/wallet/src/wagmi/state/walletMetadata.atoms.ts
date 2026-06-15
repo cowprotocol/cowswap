@@ -9,15 +9,23 @@ import { createPublicClient, http } from 'viem'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
-import { isEip7702EOA } from '../hooks/useIsSmartContractWallet'
+import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
+import { isSafeConnector } from '../utils/isSafeConnector.utils'
 
 export const isSafeWalletAtom = atom((get): boolean | undefined => {
-  return !!get(gnosisSafeInfoAtom)
+  const gnosisSafeInfo = get(gnosisSafeInfoAtom)
+
+  if (gnosisSafeInfo === undefined) return undefined
+
+  return !!gnosisSafeInfo
 })
 
-export const isSafeAppAtom = atom((get) => {
+export const isSafeAppAtom = atom((get): boolean | null => {
   const { connector } = get(walletInfoAtom)
-  return connector?.type === ConnectionType.GNOSIS_SAFE
+
+  if (!connector) return null
+
+  return isSafeConnector(connector)
 })
 
 export const isSafeViaWcAtom = atom((get) => {

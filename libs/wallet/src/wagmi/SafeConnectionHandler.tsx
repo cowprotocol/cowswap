@@ -8,8 +8,8 @@ import { connect, getConnection, reconnect } from '@wagmi/core'
 import { type Connector, useConnection, useConnectors } from 'wagmi'
 
 import { config, IS_CROSS_ORIGIN_IFRAME } from './config'
+import { isSafeConnector } from './utils/isSafeConnector.utils'
 
-import { ConnectionType } from '../api/types'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 
 interface SafeConnectionHandlerProps {
@@ -24,12 +24,8 @@ function isSupportedChainId(chainId: number): chainId is SupportedChainId {
   return Object.values(SupportedChainId).includes(chainId as SupportedChainId)
 }
 
-function isSafeConnector(c: Connector | undefined): boolean {
-  return c?.id === 'safe' || c?.type === ConnectionType.GNOSIS_SAFE
-}
-
 function findSafeConnector(connectors: readonly Connector[]): Connector | undefined {
-  const byStandard = connectors.find((c) => c.id === 'safe' || c.type === ConnectionType.GNOSIS_SAFE)
+  const byStandard = connectors.find((c) => isSafeConnector(c))
   if (byStandard) return byStandard
   return connectors.find((c) => {
     const id = typeof c.id === 'string' ? c.id.toLowerCase() : ''

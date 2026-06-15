@@ -39,18 +39,29 @@ describe('walletMetadata atoms', () => {
     expect(store.get(isSafeAppAtom)).toBe(true)
   })
 
-  it('keeps backward compatibility with connector.connectionType', () => {
+  it('detects Safe app by connector.id', () => {
     const store = createStore()
 
     setWalletInfoConnector(
       store,
       createMockConnector({
+        id: 'safe',
         type: ConnectionType.INJECTED,
-        connectionType: ConnectionType.GNOSIS_SAFE,
       }),
     )
 
     expect(store.get(isSafeAppAtom)).toBe(true)
+  })
+
+  it('returns null when connector is not set yet', () => {
+    const store = createStore()
+
+    store.set(walletInfoAtom, {
+      chainId: SupportedChainId.MAINNET,
+      account: '0x1234567890123456789012345678901234567890',
+    })
+
+    expect(store.get(isSafeAppAtom)).toBe(null)
   })
 
   it('does not detect Safe app for non-safe connector', () => {

@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+
 import { useConnection } from 'wagmi'
 
 import {
@@ -10,6 +11,7 @@ import {
 } from './state'
 import { isBundlingSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 
 export function useWalletInfo(): WalletInfo {

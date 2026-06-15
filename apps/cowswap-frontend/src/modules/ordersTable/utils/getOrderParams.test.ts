@@ -232,7 +232,7 @@ describe('getOrderParams', () => {
         balances: {
           [getAddressKey(order.inputToken.address)]: BigInt(order.sellAmount),
         },
-        allowances: undefined,
+        allowances: {},
         isLoading: true,
       }
       const result = getOrderParams(1, balancesAndAllowances, order)
