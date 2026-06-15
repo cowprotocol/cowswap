@@ -22,3 +22,19 @@ export type { AllowancesState } from './hooks/useTokenAllowances'
 
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
+
+export {
+  createBalancesWatcherSession,
+  subscribeToBalancesEvents,
+  BalancesWatcherApiError,
+  BalancesWatcherStreamError,
+} from './balancesWatcher'
+export type {
+  BalanceUpdateEvent,
+  BalancesMap,
+  BalancesSubscription,
+  BalancesWatcherErrorPayload,
+  CreateSessionParams,
+  CreateSessionRequest,
+  SubscribeToBalancesEventsParams,
+} from './balancesWatcher'
