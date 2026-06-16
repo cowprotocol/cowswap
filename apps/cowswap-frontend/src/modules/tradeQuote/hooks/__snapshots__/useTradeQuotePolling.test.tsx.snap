@@ -38,6 +38,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "account": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
     "amount": 10000000n,
     "appCode": "CoW Swap",
+    "bridgeRecipient": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
     "buyTokenAddress": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
     "buyTokenChainId": 11155111,
     "buyTokenDecimals": 18,
@@ -77,6 +78,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "validFor": 1800,
   },
   {
+    "allowIntermediateEqSellToken": true,
     "appData": undefined,
     "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,
