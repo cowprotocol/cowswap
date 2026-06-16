@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
+import { NativeTokenBalanceUpdater } from './NativeTokenBalanceUpdater'
 
 import { useBalancesWatcherSession } from '../hooks/useBalancesWatcherSession'
 import { useCustomTokensForChain } from '../hooks/useCustomTokensForChain'
@@ -32,6 +33,7 @@ export function BalancesWatcherUpdater({ account, chainId }: BalancesWatcherUpda
     <>
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={EMPTY_EXCLUDED_TOKENS} />
+      <NativeTokenBalanceUpdater account={account} chainId={chainId} />
     </>
   )
 }

@@ -22,7 +22,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
 
-  const { useBalancesWatcher: isBalancesWatcherEnabled } = useFeatureFlags()
+  const { useBalancesWatcher: isBwEnabled } = useFeatureFlags()
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -56,7 +56,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const refreshTrigger = useOrdersFilledEventsTrigger()
 
-  if (isBalancesWatcherEnabled) {
+  if (isBwEnabled) {
     return <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} />
   }
 
