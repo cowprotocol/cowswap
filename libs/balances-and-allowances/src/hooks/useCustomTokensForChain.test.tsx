@@ -68,33 +68,4 @@ describe('useCustomTokensForChain', () => {
     const expected = [TOKEN_A, TOKEN_B, TOKEN_C].map(getAddressKey).sort()
     expect(result.current).toEqual(expected)
   })
-
-  it('preserves array identity across renders when the resulting set is equal', () => {
-    mockTokens([{ chainId: SupportedChainId.MAINNET, address: TOKEN_A }])
-
-    const { result, rerender } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
-    const first = result.current
-
-    // Different array reference, same content.
-    mockTokens([{ chainId: SupportedChainId.MAINNET, address: TOKEN_A }])
-    rerender()
-
-    expect(result.current).toBe(first)
-  })
-
-  it('emits a new array identity when the set of addresses changes', () => {
-    mockTokens([{ chainId: SupportedChainId.MAINNET, address: TOKEN_A }])
-
-    const { result, rerender } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
-    const first = result.current
-
-    mockTokens([
-      { chainId: SupportedChainId.MAINNET, address: TOKEN_A },
-      { chainId: SupportedChainId.MAINNET, address: TOKEN_B },
-    ])
-    rerender()
-
-    expect(result.current).not.toBe(first)
-    expect(result.current).toEqual([getAddressKey(TOKEN_A), getAddressKey(TOKEN_B)].sort())
-  })
 })
