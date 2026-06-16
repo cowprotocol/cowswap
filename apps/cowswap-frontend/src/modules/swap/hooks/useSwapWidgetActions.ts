@@ -12,10 +12,10 @@ import { useSwapDerivedState } from './useSwapDerivedState'
 import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
-export function useSwapWidgetActions(): TradeWidgetActions {
+export function useSwapWidgetActions(isHooksStoreEnabled: boolean): TradeWidgetActions {
   const { inputCurrency, outputCurrency } = useSwapDerivedState()
   const updateSwapState = useUpdateSwapRawState()
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useOnCurrencySelection(isHooksStoreEnabled)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   const onUserInput = useCallback(

@@ -31,18 +31,23 @@ export const IconButton = styled.button<{ hasNotification?: boolean }>`
     }
   }
 
-  &::after {
+  & > span {
+    position: relative;
+    display: flex;
+  }
+
+  & > span::after {
     content: '';
     --size: 8px;
     box-sizing: content-box;
     position: absolute;
-    top: -3px;
-    right: -4px;
+    top: 0;
+    right: 0;
     width: var(--size);
     height: var(--size);
     border-radius: var(--size);
+    transform: translate(50%, -50%);
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-    border: ${({ hasNotification }) => (hasNotification ? `2px solid var(${UI.COLOR_PAPER})` : '')};
     background: ${({ hasNotification }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'transparent')};
   }
 `
