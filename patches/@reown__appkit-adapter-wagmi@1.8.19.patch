@@ -1,7 +1,8 @@
-diff --git a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
---- a/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
-+++ b/node_modules/@reown/appkit-adapter-wagmi/dist/esm/src/client.js
-@@ -520,13 +520,14 @@
+diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
+index 79697e342068039131b11f6f47d97702e28c9ff2..0fe9085611f5d0d446fe7803462226f6a13c64fe 100644
+--- a/dist/esm/src/client.js
++++ b/dist/esm/src/client.js
+@@ -520,13 +524,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
