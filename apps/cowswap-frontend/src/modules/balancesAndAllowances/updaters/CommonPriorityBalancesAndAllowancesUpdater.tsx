@@ -22,7 +22,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
 
-  const { useBalancesWatcher: isBwEnabled } = useFeatureFlags()
+  const { isBwEnabled } = useFeatureFlags()
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
