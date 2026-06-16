@@ -50,7 +50,7 @@ describe('deserializeBridgeOutputAmount', () => {
       expect(result?.quotient).toBe(100n)
     })
 
-    it('decodes legacy JSBI shape — numerator/denominator as plain arrays of 32-bit limbs', () => {
+    it('decodes legacy JSBI shape — numerator/denominator as plain arrays of 30-bit limbs', () => {
       // JSBI.BigInt(100) is internally stored as Array<number> with one limb [100].
       // After JSON.stringify/parse the Array survives and the methods are lost.
       const result = deserializeBridgeOutputAmount({
@@ -71,13 +71,27 @@ describe('deserializeBridgeOutputAmount', () => {
     })
 
     it('decodes multi-limb JSBI values (low limb at index 0, little-endian)', () => {
-      // 2^40 = 256 << 32. In JSBI two limbs: low=0, high=256.
+      // 2^40 in JSBI's 30-bit-per-limb layout: low=0, high=2^10=1024
+      // (because 2^40 = 2^30 * 2^10). Verified against JSBI@3.2.5.
       const result = deserializeBridgeOutputAmount({
-        numerator: [0, 256],
+        numerator: [0, 1024],
         denominator: [1],
         currency: USDC_PLAIN,
       })
       expect(result?.quotient).toBe(2n ** 40n)
+    })
+
+    it('decodes a real JSBI snapshot of 1 ETH in wei (1e18)', () => {
+      // Captured from JSBI.BigInt('1000000000000000000') at runtime:
+      //   limbs = [660865024, 931322574]
+      // The whole point of this PR — bridge orders persisted with the old JSBI
+      // representation must round-trip back to the correct on-chain amount.
+      const result = deserializeBridgeOutputAmount({
+        numerator: [660865024, 931322574],
+        denominator: [1],
+        currency: USDC_PLAIN,
+      })
+      expect(result?.quotient).toBe(10n ** 18n)
     })
 
     it('accepts numeric (not just string) numerator/denominator', () => {
@@ -173,6 +187,26 @@ describe('deserializeBridgeOutputAmount', () => {
       expect(
         deserializeBridgeOutputAmount({
           numerator: Infinity,
+          denominator: '1',
+          currency: USDC_PLAIN,
+        }),
+      ).toBeUndefined()
+    })
+
+    it('returns undefined for number numerator above MAX_SAFE_INTEGER (would lose precision)', () => {
+      expect(
+        deserializeBridgeOutputAmount({
+          numerator: Number.MAX_SAFE_INTEGER + 1,
+          denominator: '1',
+          currency: USDC_PLAIN,
+        }),
+      ).toBeUndefined()
+    })
+
+    it('returns undefined for non-integer number numerator', () => {
+      expect(
+        deserializeBridgeOutputAmount({
+          numerator: 1.5,
           denominator: '1',
           currency: USDC_PLAIN,
         }),

@@ -48,8 +48,9 @@ function isV3Order(orderObject: any): orderObject is OrderObject {
 
 // Rebuild a CurrencyAmount instance from anything that *looks like* one.
 // After Redux Persist's JSON round-trip the class methods are gone, and depending on when the
-// order was created the underlying numerator/denominator can be native bigint, a JSBI limb-array,
-// a string, or already a fresh instance from this session.
+// order was created the underlying numerator/denominator can be a native bigint, a string,
+// an array of 30-bit chunks left over from the legacy JSBI representation, or already a fresh
+// instance from this session.
 export function deserializeBridgeOutputAmount(value: unknown): CurrencyAmount<TokenWithLogo> | undefined {
   if (!value) return undefined
   if (value instanceof CurrencyAmount) return value
@@ -99,10 +100,13 @@ function extractTokenInfo(
 
 function toBigIntFromAnyFormat(value: unknown): bigint | null {
   if (typeof value === 'bigint') return value
-  if (typeof value === 'number') return Number.isFinite(value) ? BigInt(Math.trunc(value)) : null
+  // Reject floats and values above MAX_SAFE_INTEGER (2^53 - 1) - they would
+  // lose precision before reaching BigInt, silently corrupting amounts.
+  if (typeof value === 'number') return Number.isSafeInteger(value) ? BigInt(value) : null
   if (typeof value === 'string') return parseBigIntString(value)
-  // Legacy JSBI: instances extend Array<number> with little-endian 32-bit limbs.
-  // After JSON round-trip this becomes either a plain array or an object keyed by numeric strings.
+  // Legacy JSBI: instances extend Array<number> and store the magnitude as
+  // little-endian 30-bit limbs (V8 SMI-friendly width). After JSON round-trip
+  // this becomes either a plain array or an object keyed by numeric strings.
   if (Array.isArray(value)) return limbsToBigInt(value)
   if (value && typeof value === 'object') return jsbiObjectToBigInt(value as Record<string, unknown>)
   return null
@@ -127,13 +131,16 @@ function jsbiObjectToBigInt(obj: Record<string, unknown>): bigint | null {
   return limbsToBigInt(limbs)
 }
 
+// JSBI internals: each limb holds the low 30 bits of the magnitude (mask 2^30 - 1).
+const JSBI_LIMB_BITS = 30n
+const JSBI_LIMB_MASK = (1 << 30) - 1
+
 function limbsToBigInt(limbs: unknown[]): bigint | null {
   let result = 0n
   for (let i = limbs.length - 1; i >= 0; i--) {
     const limb = limbs[i]
     if (typeof limb !== 'number') return null
-    // Treat each limb as unsigned 32-bit; JSBI stores positive magnitudes this way.
-    result = (result << 32n) | BigInt(limb >>> 0)
+    result = (result << JSBI_LIMB_BITS) | BigInt(limb & JSBI_LIMB_MASK)
   }
   return result
 }
