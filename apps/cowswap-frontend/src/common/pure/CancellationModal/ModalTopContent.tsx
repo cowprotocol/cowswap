@@ -47,7 +47,6 @@ const StyledNotificationBanner = styled(NotificationBanner)`
   margin-bottom: 0;
   box-sizing: border-box;
 `
-console.log(StyledNotificationBanner)
 
 const CancellationSummary = styled.span`
   padding: 12px;
@@ -141,10 +140,12 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
               successful.
             </Trans>
             {isOnChainType && (
-              <div>
-                <Trans>Tx cost:</Trans>{' '}
-                {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}
-              </div>
+              <StyledNotificationBanner isVisible={true} canClose={false} level="INFO">
+                <div>
+                  <Trans>Tx cost:</Trans>{' '}
+                  {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}
+                </div>
+              </StyledNotificationBanner>
             )}
           </p>
         </OrderTypeDetails>
