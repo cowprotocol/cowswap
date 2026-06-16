@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.3.7",
-    "@cowprotocol/cow-sdk": "9.1.2",
+    "@cowprotocol/cow-sdk": "9.2.0",
     "@reown/appkit": "1.8.19",
     "@reown/appkit-adapter-solana": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
