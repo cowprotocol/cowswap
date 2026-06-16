@@ -8,8 +8,6 @@ import { Trans } from '@lingui/react/macro'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import NotificationBanner from 'legacy/components/NotificationBanner'
-
 import { RequestCancellationModalProps } from './types'
 
 import { CancellationType } from '../../hooks/useCancelOrder/state'
@@ -42,10 +40,15 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
   }
 `
 
-const StyledNotificationBanner = styled(NotificationBanner)`
+const StyledNotificationBanner = styled.div`
   margin-top: 15px;
   margin-bottom: 0;
-  box-sizing: border-box;
+  padding: 8px;
+  background-color: var(${UI.COLOR_INFO_BG});
+  color: var(${UI.COLOR_INFO_TEXT});
+  font-size: 16px;
+  text-align: center;
+  border-radius: 8px;
 `
 
 const CancellationSummary = styled.span`
@@ -99,12 +102,6 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
 
   const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
-  console.log('CCCCC', {
-    isOnChainType,
-    showMore,
-    txCostAmount,
-    nativeCurrency,
-  })
   return (
     <Wrapper>
       <p>
@@ -140,11 +137,9 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
               successful.
             </Trans>
             {isOnChainType && (
-              <StyledNotificationBanner isVisible={true} canClose={false} level="INFO">
-                <div>
-                  <Trans>Tx cost:</Trans>{' '}
-                  {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}
-                </div>
+              <StyledNotificationBanner>
+                <Trans>Tx cost:</Trans>{' '}
+                {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}
               </StyledNotificationBanner>
             )}
           </p>
