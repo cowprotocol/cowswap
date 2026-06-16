@@ -5,7 +5,7 @@ import { isMobile, PromiseWithTimeout } from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
-import { EIP1193Provider, PublicClient } from 'viem'
+import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { getCapabilities } from 'viem/actions'
 import { Connector } from 'wagmi'
 
@@ -29,7 +29,35 @@ export interface WalletCapabilities {
 }
 
 /**
- * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
+ * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
+ * while walletInfoAtom.chainId is numeric (e.g. 11155111). Numeric lookup alone misses them.
+ */
+export function resolveCapabilitiesForChain(
+  capabilities: Record<string, WalletCapabilities>,
+  chainId: number,
+  isSafeViaWc: boolean,
+): WalletCapabilities | null {
+  const direct = capabilities[chainId]
+  if (direct) return direct
+
+  const hexChainId = numberToHex(chainId)
+  const hexMatch = capabilities[hexChainId]
+  if (hexMatch) return hexMatch
+
+  const decimalKey = String(chainId)
+  const decimalMatch = capabilities[decimalKey]
+  if (decimalMatch) return decimalMatch
+
+  // Safe WC may omit the exact chain key — use first entry only for confirmed Safe-via-WC.
+  if (isSafeViaWc && Object.keys(capabilities).length > 0) {
+    return Object.values(capabilities)[0]
+  }
+
+  return null
+}
+
+/**
+ * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
  * to get the capabilities. It breaks the flow with perpetual requests.
  */
 export async function getShouldSkipCapabilitiesCheck(
@@ -68,14 +96,14 @@ async function fetchWidgetProviderMetaInfo(
 
 /**
  * Async atom that fetches wallet capabilities (EIP-5792) via wagmi/viem.
- * Returns capabilities for the current account and chain, or undefined when disconnected or on error.
+ * Returns capabilities for the current account and chain, or null when disconnected or on error.
  */
 // eslint-disable-next-line complexity
-export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | undefined> => {
+export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | null> => {
   const { account, chainId, connector, provider } = get(walletInfoAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
 
-  if (!account || !chainId || !connector || !provider) return undefined
+  if (!account || !chainId || !connector || !provider || isSafeViaWc === null) return null
 
   let capabilities: Record<string, WalletCapabilities> = {}
 
@@ -83,7 +111,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     const shouldSkipCapabilitiesCheck = await getShouldSkipCapabilitiesCheck(connector, provider)
 
     if (shouldSkipCapabilitiesCheck) {
-      return undefined
+      return null
     }
 
     capabilities = await getCapabilities(config.getClient({ chainId }), {
@@ -114,32 +142,33 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     }
   }
 
-  // Only apply the Safe wallet fallback (first-entry) when connected via Safe WalletConnect,
-  // since Safe's wallet_getCapabilities response may omit the chain ID key.
-  // For other wallets (e.g. MetaMask), a missing chain entry means the chain is not supported —
-  // using a different chain's capabilities would incorrectly enable features like atomic bundling.
-  return (capabilities[chainId] || (isSafeViaWc ? Object.values(capabilities)[0] : undefined)) as
-    | WalletCapabilities
-    | undefined
+  return resolveCapabilitiesForChain(capabilities, chainId, isSafeViaWc)
 })
 
 // eslint-disable-next-line complexity
-export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean> => {
-  if (get(isSafeAppAtom)) return true
+export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
+  const isSafeApp = get(isSafeAppAtom)
+
+  if (isSafeApp === null) return null
+
+  if (isSafeApp) return true
 
   const accountType = get(accountTypeAtom)
   const isSmartContractWallet = get(isSmartContractWalletAtom)
   const isSafeWallet = get(isSafeWalletAtom)
+  const isSafeViaWc = get(isSafeViaWcAtom)
+
+  if (accountType === null || isSmartContractWallet === null || isSafeViaWc === null) return null
 
   // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
-  // fallback handler mechanism TWAP requires — treat them as unsupported.
+  // fallback handler mechanism TWAP requires, so we treat them as unsupported.
   // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
   // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
-  if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
+  if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet && !isSafeViaWc) return false
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
-  // If `walletCapabilitiesAtom` returns `undefined` it's because `shouldCheckCapabilities === false`,
+  // If `walletCapabilitiesAtom` returns `null` it's because `shouldSkipCapabilitiesCheck === false`,
   // or because some kind of API empty response or error. So, if we cannot check, then we must be false,
   // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
   if (!walletCapabilities) return false
@@ -161,6 +190,7 @@ export const isBundlingSupportedAtom = atom((get): boolean | null => {
 
   if (loadable.state === 'loading') return null
   if (loadable.state === 'hasError') return false
+  if (loadable.state === 'hasData' && loadable.data === null) return null
 
   return loadable.data ?? false
 })

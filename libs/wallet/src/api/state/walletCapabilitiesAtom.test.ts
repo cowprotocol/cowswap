@@ -11,6 +11,7 @@ import {
   isBundlingSupportedAtom,
   isBundlingSupportedAsyncAtom,
   isBundlingSupportedLoadableAtom,
+  resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
 
@@ -26,14 +27,14 @@ import { ConnectionType } from '../types'
 
 /** Mocked module exports writable primitives; Jest widens atom types, so casts are required for store.set. */
 const writableIsSafeAppAtom = isSafeAppAtom as WritableAtom<boolean, [boolean], unknown>
-const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean, [boolean], unknown>
+const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean | null, [boolean | null], unknown>
 const writableAccountTypeAtom = accountTypeAtom as WritableAtom<AccountType | null, [AccountType | null], unknown>
 const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as WritableAtom<
-  boolean | undefined,
-  [boolean | undefined],
+  boolean | null,
+  [boolean | null],
   unknown
 >
-const writableIsSafeWalletAtom = isSafeWalletAtom as WritableAtom<boolean | undefined, [boolean | undefined], unknown>
+const writableIsSafeWalletAtom = isSafeWalletAtom as WritableAtom<boolean, [boolean], unknown>
 
 import type { WalletCapabilities } from './walletCapabilitiesAtom'
 import type { WalletInfo } from '../types'
@@ -45,7 +46,7 @@ jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
   return {
     isSafeAppAtom: jotai.atom(false),
     isSafeViaWcAtom: jotai.atom(false),
-    accountTypeAtom: jotai.atom(null),
+    accountTypeAtom: jotai.atom('EOA'),
     isSmartContractWalletAtom: jotai.atom(false),
     isSafeWalletAtom: jotai.atom(false),
   }
@@ -110,6 +111,47 @@ function setWalletInfo(
   })
 }
 
+function seedResolvedWalletMetadata(
+  store: ReturnType<typeof createStore>,
+  overrides: Partial<{
+    accountType: AccountType | null
+    isSafeWallet: boolean
+    isSmartContractWallet: boolean | null
+    isSafeViaWc: boolean
+    isSafeApp: boolean
+  }> = {},
+): void {
+  store.set(writableAccountTypeAtom, overrides.accountType ?? AccountType.EOA)
+  store.set(writableIsSafeWalletAtom, overrides.isSafeWallet ?? false)
+  store.set(
+    writableIsSmartContractWalletAtom,
+    'isSmartContractWallet' in overrides ? (overrides.isSmartContractWallet ?? null) : false,
+  )
+  store.set(writableIsSafeViaWcAtom, overrides.isSafeViaWc ?? false)
+  store.set(writableIsSafeAppAtom, overrides.isSafeApp ?? false)
+}
+
+describe('resolveCapabilitiesForChain', () => {
+  const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
+
+  it('matches numeric chain id key', () => {
+    expect(resolveCapabilitiesForChain({ [MOCK_CHAIN_ID]: capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
+  })
+
+  it('matches hex chain id key (Safe WC format)', () => {
+    expect(resolveCapabilitiesForChain({ '0x1': capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
+  })
+
+  it('matches decimal string chain id key', () => {
+    expect(resolveCapabilitiesForChain({ '1': capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
+  })
+
+  it('uses first entry fallback only for Safe via WC', () => {
+    expect(resolveCapabilitiesForChain({ '0xaa36a7': capabilities }, MOCK_CHAIN_ID, true)).toEqual(capabilities)
+    expect(resolveCapabilitiesForChain({ '0xaa36a7': capabilities }, MOCK_CHAIN_ID, false)).toBeNull()
+  })
+})
+
 describe('walletCapabilitiesAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -137,8 +179,19 @@ describe('walletCapabilitiesAtom', () => {
     })
   })
 
+  it('returns null when isSafeViaWc is still loading', async () => {
+    const store = createStore()
+    store.set(writableIsSafeViaWcAtom, null)
+    setWalletInfo(store, {})
+
+    const result = await store.get(walletCapabilitiesAtom)
+
+    expect(result).toBeNull()
+    expect(mockGetCapabilities).not.toHaveBeenCalled()
+  })
+
   describe('walletInfoAtom state: missing account, chainId, or connector', () => {
-    it('returns undefined when account is missing', async () => {
+    it('returns null when account is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
@@ -147,10 +200,10 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
 
-    it('returns undefined when chainId is missing', async () => {
+    it('returns null when chainId is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         account: MOCK_ACCOUNT,
@@ -159,10 +212,10 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
 
-    it('returns undefined when connector is missing', async () => {
+    it('returns null when connector is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
@@ -171,10 +224,10 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
 
-    it('returns undefined when provider is missing', async () => {
+    it('returns null when provider is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
@@ -184,7 +237,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
   })
 
@@ -203,7 +256,19 @@ describe('walletCapabilitiesAtom', () => {
       expect(mockConfigGetClient).toHaveBeenCalledWith({ chainId: MOCK_CHAIN_ID })
     })
 
-    it('returns undefined when chain key is missing and not Safe via WC', async () => {
+    it('returns capabilities when getCapabilities resolves with hex chain id key', async () => {
+      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
+      mockGetCapabilities.mockResolvedValue({ '0x1': capabilities })
+
+      const store = createStore()
+      setWalletInfo(store, {})
+
+      const result = await store.get(walletCapabilitiesAtom)
+
+      expect(result).toEqual(capabilities)
+    })
+
+    it('returns null when chain key is missing and not Safe via WC', async () => {
       const capabilities: WalletCapabilities = { atomic: { status: 'ready' } }
       mockGetCapabilities.mockResolvedValue({ '0x64': capabilities })
 
@@ -213,7 +278,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
 
     it('returns fallback capability when Safe via WC and chain key is missing', async () => {
@@ -229,7 +294,7 @@ describe('walletCapabilitiesAtom', () => {
       expect(result).toEqual(capabilities)
     })
 
-    it('returns undefined when getCapabilities resolves with empty capabilities', async () => {
+    it('returns null when getCapabilities resolves with empty capabilities', async () => {
       mockGetCapabilities.mockResolvedValue({})
 
       const store = createStore()
@@ -237,10 +302,10 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
 
-    it('returns undefined when getCapabilities throws', async () => {
+    it('returns null when getCapabilities throws', async () => {
       mockGetCapabilities.mockRejectedValue(new Error('viem error'))
       mockConfigGetClient.mockReturnValue({})
 
@@ -249,7 +314,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeUndefined()
+      expect(result).toBeNull()
     })
   })
 })
@@ -265,6 +330,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
 
   it('returns false when walletInfoAtom yields no capabilities (disconnected)', async () => {
     const store = createStore()
+    seedResolvedWalletMetadata(store)
     store.set(walletInfoAtom, { chainId: MOCK_CHAIN_ID } as WalletInfo)
 
     const result = await store.get(isBundlingSupportedAsyncAtom)
@@ -345,6 +411,30 @@ describe('isBundlingSupportedAsyncAtom', () => {
     const result = await store.get(isBundlingSupportedAsyncAtom)
 
     expect(result).toBe(true)
+  })
+
+  it('does not wait on Safe info for EOA when gnosisSafeInfo is still undefined', async () => {
+    const store = createStore()
+    seedResolvedWalletMetadata(store, { accountType: AccountType.EOA, isSafeWallet: false })
+    mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
+    expect(result).toBe(true)
+    expect(mockGetCapabilities).toHaveBeenCalled()
+  })
+
+  it('returns false for smart contract wallet before Safe info confirms a Safe', async () => {
+    const store = createStore()
+    seedResolvedWalletMetadata(store, { isSmartContractWallet: true, isSafeWallet: false })
+    mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
+    setWalletInfo(store, {})
+
+    const result = await store.get(isBundlingSupportedAsyncAtom)
+
+    expect(result).toBe(false)
+    expect(mockGetCapabilities).not.toHaveBeenCalled()
   })
 
   it('returns false for non-Safe smart contract wallet before checking capabilities', async () => {

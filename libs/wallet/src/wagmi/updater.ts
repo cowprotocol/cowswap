@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { AccountType } from '@cowprotocol/types'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
@@ -82,7 +82,17 @@ function useWalletInfo(): WalletInfo {
       connector,
       isConnectionRestoring,
     }
-  }, [address, chainId, isConnected, connector, isChainIdUnsupported, isConnectionRestoring, lastStableChainId, lastResolvedChainId, urlKey])
+  }, [
+    address,
+    chainId,
+    isConnected,
+    connector,
+    isChainIdUnsupported,
+    isConnectionRestoring,
+    lastStableChainId,
+    lastResolvedChainId,
+    urlKey,
+  ])
 
   useEffect(() => {
     setLastResolvedChainId(walletInfo.chainId)
@@ -138,18 +148,16 @@ export function WalletUpdater(): null {
   const provider = useWalletProvider()
 
   useEffect(() => {
-    setWalletInfo((prevWalletInfo) => ({ ...prevWalletInfo, provider }))
-  }, [setWalletInfo, provider])
-
-  useEffect(() => {
-    setWalletInfo(walletInfo)
-  }, [walletInfo, setWalletInfo])
+    setWalletInfo({ ...walletInfo, provider })
+  }, [walletInfo, provider, setWalletInfo])
 
   useEffect(() => {
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    const walletName = walletDetails.walletName ?? getWalletTypeLabel(walletType)
+
     setWalletDetails({
-      walletName: getWalletTypeLabel(walletType),
       ...walletDetails,
+      walletName,
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 

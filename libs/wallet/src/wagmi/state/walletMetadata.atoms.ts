@@ -10,12 +10,8 @@ import { getPublicClient } from '../utils/getPublicClient.utils'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
 
-export const isSafeWalletAtom = atom((get): boolean | undefined => {
-  const gnosisSafeInfo = get(gnosisSafeInfoAtom)
-
-  if (gnosisSafeInfo === undefined) return undefined
-
-  return !!gnosisSafeInfo
+export const isSafeWalletAtom = atom((get): boolean => {
+  return !!get(gnosisSafeInfoAtom)
 })
 
 export const isSafeAppAtom = atom((get): boolean | null => {
@@ -28,10 +24,21 @@ export const isSafeAppAtom = atom((get): boolean | null => {
 
 export const isSafeViaWcAtom = atom((get) => {
   const isSafeApp = get(isSafeAppAtom)
+
+  // Still loading:
+  if (isSafeApp === null) return null
+
+  // isSafeAppAtom is boolean | null — null means connector not ready yet, not a Safe App.
+  if (isSafeApp) return false
+
   const { connector } = get(walletInfoAtom)
 
   // TODO: connector will be undefined on page load until the WalletUpdater kicks in. Consider replacing the updater with atom's onMount/observer.
-  if (isSafeApp || connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
+  if (!connector) return null
+
+  if (isSafeApp || connector.type !== ConnectionType.WALLET_CONNECT_V2) return false
+
+  if (get(isSafeWalletAtom)) return true
 
   const { walletName } = get(walletDetailsAtom)
   const peerName = walletName?.toLowerCase() || ''
@@ -77,9 +84,10 @@ export const accountTypeAtom = atom((get): AccountType | null => {
   return loadable.data ?? null
 })
 
-export const isSmartContractWalletAtom = atom((get): boolean | undefined => {
+export const isSmartContractWalletAtom = atom((get): boolean | null => {
   const accountType = get(accountTypeAtom)
-  const isSafeWallet = get(isSafeWalletAtom)
 
-  return isSafeWallet || accountType === AccountType.SMART_CONTRACT
+  if (accountType === null) return null
+
+  return get(isSafeWalletAtom) || accountType === AccountType.SMART_CONTRACT
 })

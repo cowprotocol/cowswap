@@ -44,6 +44,7 @@ export { config } from './wagmi/config'
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
 export {
+  resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
   isBundlingSupportedAtom,
   isBundlingSupportedLoadableAtom,
