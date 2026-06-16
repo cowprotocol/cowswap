@@ -40,7 +40,7 @@ export function useAffiliateTraderCodeInput(): UseAffiliateTraderCodeInputResult
   useAffiliateTraderCodeFromUrl(onRecoveredFromUrl)
 
   useEffect(() => {
-    if (shouldAutoVerify.current && !!account) {
+    if (shouldAutoVerify.current && !!account && !!codeInput) {
       shouldAutoVerify.current = false
       verifyCode(codeInput, account)
     }

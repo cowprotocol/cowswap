@@ -47,7 +47,7 @@ export function AffiliateTraderModalCodeLinking(): ReactNode {
   const submitButtonLabel = useMemo(() => {
     if (isVerifying) return t`Checking code...`
     if (savedCode) return t`Start trading`
-    if (!account) return t`Connect to verify code`
+    if (!account) return t`Connect wallet to activate`
     return t`Verify code`
   }, [account, isVerifying, savedCode])
 

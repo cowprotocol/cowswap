@@ -12,9 +12,11 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
 import { useTradeState } from './useTradeState'
 
-export function useOnCurrencySelection(): (field: Field, currency: Currency | null, callback?: Command) => void {
+export function useOnCurrencySelection(
+  enableSellEqBuy = false,
+): (field: Field, currency: Currency | null, callback?: Command) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection(enableSellEqBuy)
   const { updateState } = useTradeState()
 
   return useCallback(

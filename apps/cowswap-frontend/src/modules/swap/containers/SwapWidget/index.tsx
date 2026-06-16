@@ -78,7 +78,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.SellAmountDoesNotCoverFee
   const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
-  const widgetActions = useSwapWidgetActions()
+  const widgetActions = useSwapWidgetActions(hooksEnabledState[0])
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { disableCustomRecipient } = useInjectedWidgetParams()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
@@ -262,6 +262,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const params = {
     compactView: true,
     enableSmartSlippage: true,
+    enableSellEqBuy: hooksEnabledState[0],
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
     allowSwapSameToken,
