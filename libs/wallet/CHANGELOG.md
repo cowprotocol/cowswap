@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.1...wallet-v3.6.0) (2026-06-16)
+
+### Minor Changes
+
+- feat(wallet): use reown for wallets management (#7639)
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.0...wallet-v3.5.1) (2026-06-09)
 
 ### Patch Changes
