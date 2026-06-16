@@ -75,6 +75,13 @@ export default function NotificationBanner(props: BannerProps) {
     }
   }, [isClosed])
 
+  console.log('RRRRRR', {
+    isHidden,
+    isVisible,
+    isClosed,
+    isActive,
+    props,
+  })
   return (
     <Banner {...props} isVisible={!isHidden}>
       <BannerContainer>{props.children}</BannerContainer>
