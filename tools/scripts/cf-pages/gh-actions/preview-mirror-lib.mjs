@@ -250,13 +250,17 @@ async function upsertPreviewBranch(client, branchName, sha) {
   try {
     await client.updateRef(branchName, sha)
   } catch (error) {
-    if (isNotFoundError(error)) {
+    if (isMissingRefError(error)) {
       await client.createRef(branchName, sha)
       return
     }
 
     throw error
   }
+}
+
+function isMissingRefError(error) {
+  return isNotFoundError(error) || error?.message === 'Reference does not exist'
 }
 
 async function deletePreviewBranch(client, branchName) {
