@@ -80,7 +80,8 @@ export enum ProtocolFeeType {
 }
 
 /**
- * A single protocol fee charged on a trade, derived from the trade's executedProtocolFees.
+ * A protocol fee category for an order: the total charged across all fills for a given token and
+ * fee type (and, for volume fees, factor), aggregated from the trades' executedProtocolFees.
  * `tokenAddress` is a normalized AddressKey (the surplus-side token the fee is taken in).
  */
 export type ProtocolFee = {
@@ -132,7 +133,7 @@ export type Order = Pick<
   executedFee: BigNumber | null
   totalFee: BigNumber
   // Derived client-side from the trades' executedProtocolFees (not returned directly on the order).
-  // Each entry is kept separate rather than aggregated; network costs are intentionally not surfaced.
+  // Aggregated per category (token + fee type); network costs are intentionally not surfaced.
   protocolFees?: ProtocolFee[]
   cancelled: boolean
   status: OrderStatus

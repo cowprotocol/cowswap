@@ -53,8 +53,9 @@ describe('useOrderProtocolFees', () => {
   })
 
   it('aggregates protocol fees across every fill, even with more fills than a single page', async () => {
-    // 25 fills, each charging a distinct protocol fee. More than RESULTS_PER_PAGE (10).
-    const allTrades = Array.from({ length: 25 }, (_, i) => createRawTradeWithFee(String(i)))
+    // 25 fills, each charging a protocol fee in the same token (amounts start at 1, since
+    // getProtocolFees filters out non-positive amounts). More than RESULTS_PER_PAGE (10).
+    const allTrades = Array.from({ length: 25 }, (_, i) => createRawTradeWithFee(String(i + 1)))
 
     // Emulate an API that serves at most 10 trades per page regardless of the requested limit.
     // This exercises the hook's paging loop and proves it advances by the records actually returned.
@@ -65,9 +66,10 @@ describe('useOrderProtocolFees', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-    // All 25 fills are included, not just the first page.
-    expect(result.current.protocolFees).toHaveLength(25)
-    expect(result.current.protocolFees.map((fee) => fee.amount.toString())).toEqual(allTrades.map((_, i) => String(i)))
+    // Same-token fees from every fill are aggregated into a single total (sum of 1..25 = 325),
+    // which only holds if all pages were fetched, not just the first.
+    expect(result.current.protocolFees).toHaveLength(1)
+    expect(result.current.protocolFees[0].amount.toString()).toBe('325')
     expect(result.current.error).toBeUndefined()
 
     // It paged through the whole order rather than fetching a single table page:

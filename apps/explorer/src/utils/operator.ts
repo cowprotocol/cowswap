@@ -477,15 +477,17 @@ function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined
 }
 
 /**
- * Collects every protocol fee charged across the order's trades, as individual entries
- * (in the order they were applied), each tagged with its fee policy type.
+ * Collects the protocol fees charged across the order's trades, aggregated per category so an
+ * order with many fills shows one total per category instead of a row per fill. Fees are grouped
+ * by token and fee type; volume fees are additionally split by their bps factor, matching how the
+ * UI labels them (e.g. a protocol volume fee vs a partner volume fee).
  *
- * We intentionally do not aggregate them or try to reconstruct network costs: `order.totalFee`
- * (the executed fee) mixes network costs and protocol fees and cannot be split back apart
- * reliably, so we only surface the protocol fees the API reports per trade.
+ * We intentionally do not try to reconstruct network costs: `order.totalFee` (the executed fee)
+ * mixes network costs and protocol fees and cannot be split back apart reliably, so we only
+ * surface the protocol fees the API reports per trade.
  */
 export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
-  const protocolFees: ProtocolFee[] = []
+  const feesByCategory = new Map<string, ProtocolFee>()
 
   for (const { executedProtocolFees } of trades) {
     if (!executedProtocolFees) continue
@@ -495,14 +497,22 @@ export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'
       // Skip non-positive fees: a policy can apply yet charge nothing (e.g. no surplus to
       // capture), and a "0" fee row is just noise in the breakdown.
       if (!parsedAmount.isGreaterThan(0)) continue
-      protocolFees.push({
-        amount: parsedAmount,
-        tokenAddress: getAddressKey(token),
-        type: getProtocolFeeType(policy),
-        factor: getProtocolFeeFactor(policy),
-      })
+
+      const tokenAddress = getAddressKey(token)
+      const type = getProtocolFeeType(policy)
+      const factor = getProtocolFeeFactor(policy)
+      // Group fees that would render identically: same token and type, and — for volume fees,
+      // which are labeled with their bps — the same factor.
+      const key = `${tokenAddress}-${type}-${type === ProtocolFeeType.Volume ? factor : ''}`
+
+      const existing = feesByCategory.get(key)
+      if (existing) {
+        existing.amount = existing.amount.plus(parsedAmount)
+      } else {
+        feesByCategory.set(key, { amount: parsedAmount, tokenAddress, type, factor })
+      }
     }
   }
 
-  return protocolFees
+  return Array.from(feesByCategory.values())
 }
