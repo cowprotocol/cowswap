@@ -12,11 +12,11 @@ import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
 import { SELL_ETH_RESET_STATE } from '../consts'
 
-export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
+export function useOnCurrencySelection(enableSellEqBuy = false): (field: Field, currency: Currency | null) => void {
   const { orderKind } = useSwapDerivedState()
-  const tradeOnCurrencySelection = useTradeOnCurrencySelection()
+  const tradeOnCurrencySelection = useTradeOnCurrencySelection(enableSellEqBuy)
   const updateSwapState = useUpdateSwapRawState()
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection(enableSellEqBuy)
 
   return useCallback(
     (field: Field, currency: Currency | null) => {
