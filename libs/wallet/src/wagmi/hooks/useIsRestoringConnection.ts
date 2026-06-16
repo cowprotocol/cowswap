@@ -1,31 +1,51 @@
-import { useSyncExternalStore } from 'react'
+import { useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
 
+import { useAppKitState } from '@reown/appkit/react'
+import ms from 'ms.macro'
 import { useConnection } from 'wagmi'
 
 import { useWalletInfo } from '../../api/hooks'
-import { getInitialReconnectLifecycle, subscribeInitialReconnect } from '../initialReconnectLifecycle'
+import { appWalletContextAtom } from '../../state/appWalletContext.atom'
 
-function getServerSnapshot(): 'pending' | 'settled' {
-  return 'settled'
-}
+const RESTORING_CONNECTION_TIMEOUT = ms`1s`
 
 export function useIsRestoringConnection(): boolean {
+  const isRestoring = useIsRestoringConnectionRaw()
+
+  // Don't allow the restoring state to last longer than the timeout,
+  // because wallets can not answer on connection request
+  // and the UI can can get stuck waiting for a connection that never resolves.
+  const [timedOut, setTimedOut] = useState(false)
+
+  useEffect(() => {
+    if (!isRestoring) {
+      setTimedOut(false)
+      return
+    }
+
+    const timer = setTimeout(() => setTimedOut(true), RESTORING_CONNECTION_TIMEOUT)
+
+    return () => clearTimeout(timer)
+  }, [isRestoring])
+
+  return isRestoring && !timedOut
+}
+
+function useIsRestoringConnectionRaw(): boolean {
+  const appWalletContext = useAtomValue(appWalletContextAtom)
   const { status } = useConnection()
   const { account } = useWalletInfo()
+  const state = useAppKitState()
+  const { loading, initialized } = state
 
-  // Web3Provider mounts WagmiProvider with reconnectOnMount={false} and triggers
-  // reconnect() from a useEffect, so wagmi's own `status` only flips to 'reconnecting'
-  // one render after mount. The `config.setState` guard in config.ts then erases
-  // `current` on any subsequent Hydrate.onMount, so we can't rely on the live wagmi
-  // state for the initial-load window either.
-  //
-  // Track the lifecycle explicitly: 'pending' from module init (if sessionStorage held a
-  // session) until ReconnectOnMount calls markInitialReconnectSettled() in every code path.
-  const lifecycle = useSyncExternalStore(subscribeInitialReconnect, getInitialReconnectLifecycle, getServerSnapshot)
+  const isWidgetDappMode = appWalletContext?.standaloneMode === false
 
-  if (lifecycle === 'pending' && !account) return true
+  // In widget with Dapp Mode we use the widget connected which doesn't answer on accounts request
+  // So we don't consider it's as reconnecting at all, because otherwise it will be stuck in that state
+  if (isWidgetDappMode) return false
+  if (loading || !initialized) return true
   if (status === 'reconnecting') return true
-  if (status === 'connected' && !account) return true
 
-  return false
+  return status === 'connected' && !account
 }

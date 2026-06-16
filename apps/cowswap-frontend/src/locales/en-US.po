@@ -1588,6 +1588,10 @@ msgstr "Cookie Policy"
 msgid "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 msgstr "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Restoring wallet"
+msgstr "Restoring wallet"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensContent/index.tsx
 #~ msgid "Manage Token Lists"
 #~ msgstr "Manage Token Lists"
