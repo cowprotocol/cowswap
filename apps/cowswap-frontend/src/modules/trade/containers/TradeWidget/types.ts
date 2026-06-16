@@ -31,6 +31,7 @@ export interface TradeWidgetParams {
   displayChainName?: boolean
   isPriceStatic?: boolean
   allowSwapSameToken?: boolean
+  enableSellEqBuy?: boolean
   customSelectTokenButton?: ReactNode
 }
 

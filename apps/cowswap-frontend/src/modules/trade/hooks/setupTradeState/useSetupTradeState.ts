@@ -23,7 +23,7 @@ const EMPTY_TOKEN_ID = '_'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export function useSetupTradeState(): void {
+export function useSetupTradeState(enableSellEqBuy = false): void {
   useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
@@ -43,6 +43,7 @@ export function useSetupTradeState(): void {
   // We must change chainId in provider, and only then change the trade state
   // Since the network changing process takes some time, we have to remember the state from URL
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
+  const enableSellEqBuyRef = useRef<boolean>(enableSellEqBuy)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const isWalletConnected = !!account
@@ -114,6 +115,10 @@ export function useSetupTradeState(): void {
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [providerChainId, prevProviderChainId])
+
+  useEffect(() => {
+    enableSellEqBuyRef.current = enableSellEqBuy
+  }, [enableSellEqBuy])
 
   /**
    * On URL parameter changes
@@ -189,7 +194,7 @@ export function useSetupTradeState(): void {
       return
     }
 
-    if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
+    if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty || onlyChainIdIsChanged) {
       navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId)
 
       if (sameTokens) {
