@@ -99,6 +99,12 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
 
   const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
+  console.log('CCCCC', {
+    isOnChainType,
+    showMore,
+    txCostAmount,
+    nativeCurrency,
+  })
   return (
     <Wrapper>
       <p>
