@@ -72,17 +72,14 @@ export function createGitHubClient({ apiBase = process.env.GITHUB_API_URL ?? GIT
     async getPullRequestByHead(branchName) {
       const pulls = await request(
         'GET',
-        `/repos/${owner}/${repo}/pulls?state=all&head=${encodeURIComponent(`${owner}:${branchName}`)}&per_page=10`,
+        `/repos/${owner}/${repo}/pulls?state=open&head=${encodeURIComponent(`${owner}:${branchName}`)}&per_page=1`,
       )
 
       if (!Array.isArray(pulls)) {
         return null
       }
 
-      return pulls.find((pullRequest) => pullRequest.state === 'open') ?? pulls[0] ?? null
-    },
-    async getRef(branchName) {
-      return request('GET', `/repos/${owner}/${repo}/git/ref/${encodeGitRefPath(`heads/${branchName}`)}`)
+      return pulls[0] ?? null
     },
     async findIssueComment(issueNumber, predicate) {
       const perPage = 100

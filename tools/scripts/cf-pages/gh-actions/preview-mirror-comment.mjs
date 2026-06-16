@@ -95,7 +95,7 @@ function parseManagedCommentMetadata(commentBody) {
 }
 
 function parseSyncCheckbox(commentBody) {
-  const checkboxMatch = commentBody.match(new RegExp(`- \\[([xX ])\\] ${escapeRegExp(SYNC_CHECKBOX_TEXT)}`))
+  const checkboxMatch = commentBody.match(/- \[([xX ])\] Sync Cloudflare preview to approval target commit/)
 
   if (!checkboxMatch) {
     return null
@@ -112,8 +112,4 @@ function normalizeGitSha(value) {
   }
 
   return value.toLowerCase()
-}
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

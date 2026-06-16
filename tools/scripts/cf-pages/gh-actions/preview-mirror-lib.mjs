@@ -12,20 +12,18 @@ const GITHUB_ACTIONS_BOT_LOGIN = 'github-actions[bot]'
 const MIRROR_PULL_REQUEST_LABELS = ['DONT_MERGE']
 const TRUSTED_PERMISSIONS = new Set(['admin', 'maintain', 'write'])
 
-export function buildPreviewBranch(originalPrNumber, branchPrefix = DEFAULT_BRANCH_PREFIX) {
-  return `${branchPrefix}${originalPrNumber}`
+export function buildPreviewBranch(originalPrNumber) {
+  return `${DEFAULT_BRANCH_PREFIX}${originalPrNumber}`
 }
 
 export async function handlePreviewMirrorEvent({ actor, client, event, now = new Date(), options }) {
-  const normalizedOptions = normalizeOptions(options)
-
   if (event.action === 'labeled' && event.pull_request) {
     return handleLabeledPullRequest({
       actor,
       client,
       event,
       now,
-      options: normalizedOptions,
+      options,
     })
   }
 
@@ -33,7 +31,6 @@ export async function handlePreviewMirrorEvent({ actor, client, event, now = new
     return handleClosedPullRequest({
       client,
       event,
-      options: normalizedOptions,
     })
   }
 
@@ -43,7 +40,7 @@ export async function handlePreviewMirrorEvent({ actor, client, event, now = new
       client,
       event,
       now,
-      options: normalizedOptions,
+      options,
     })
   }
 
@@ -53,7 +50,7 @@ export async function handlePreviewMirrorEvent({ actor, client, event, now = new
       client,
       event,
       now,
-      options: normalizedOptions,
+      options,
     })
   }
 
@@ -64,7 +61,7 @@ export async function handlePreviewMirrorEvent({ actor, client, event, now = new
 }
 
 async function handleLabeledPullRequest({ actor, client, event, now, options }) {
-  if (event.label?.name !== options.triggerLabel) {
+  if (event.label?.name !== DEFAULT_TRIGGER_LABEL) {
     return {
       reason: 'label does not match trigger label',
       status: 'ignored',
@@ -93,7 +90,7 @@ async function handleLabeledPullRequest({ actor, client, event, now, options }) 
       status: 'ignored',
     }
   }
-  await client.removeIssueLabel(pullRequest.number, options.triggerLabel)
+  await client.removeIssueLabel(pullRequest.number, DEFAULT_TRIGGER_LABEL)
 
   return result
 }
@@ -108,7 +105,7 @@ async function handleSynchronizedPullRequest({ actor, client, event, now, option
     }
   }
 
-  const branchName = buildPreviewBranch(pullRequest.number, options.branchPrefix)
+  const branchName = buildPreviewBranch(pullRequest.number)
   const existingComment = await findPreviewComment(client, pullRequest.number)
 
   if (!existingComment) {
@@ -151,9 +148,9 @@ async function handleSynchronizedPullRequest({ actor, client, event, now, option
   }
 }
 
-async function handleClosedPullRequest({ client, event, options }) {
+async function handleClosedPullRequest({ client, event }) {
   const pullRequest = event.pull_request
-  const branchName = buildPreviewBranch(pullRequest.number, options.branchPrefix)
+  const branchName = buildPreviewBranch(pullRequest.number)
   await closeMirrorPullRequest(client, branchName)
   await deletePreviewBranch(client, branchName)
 
@@ -217,7 +214,7 @@ async function handleEditedIssueComment({ actor, client, event, now, options }) 
 }
 
 async function syncPreviewBranch({ actor, approvedSha, client, commentId, now, options, pullRequest }) {
-  const branchName = buildPreviewBranch(pullRequest.number, options.branchPrefix)
+  const branchName = buildPreviewBranch(pullRequest.number)
   await upsertPreviewBranch(client, branchName, approvedSha)
   const mirrorPullRequest = await upsertMirrorPullRequest(client, pullRequest, branchName, approvedSha)
 
@@ -251,8 +248,6 @@ async function syncPreviewBranch({ actor, approvedSha, client, commentId, now, o
 
 async function upsertPreviewBranch(client, branchName, sha) {
   try {
-    // Checks whether the branch exists, and throws if it doesnt. Ignore result as we only care about the existence, not contents
-    await client.getRef(branchName)
     await client.updateRef(branchName, sha)
   } catch (error) {
     if (isNotFoundError(error)) {
@@ -279,7 +274,7 @@ async function upsertMirrorPullRequest(client, sourcePullRequest, branchName, so
   const existingPullRequest = await client.getPullRequestByHead(branchName)
   let mirrorPullRequest
 
-  if (existingPullRequest?.state === 'open') {
+  if (existingPullRequest) {
     mirrorPullRequest = await client.updatePullRequest(existingPullRequest.number, {
       body,
       title: buildMirrorPullRequestTitle(sourcePullRequest.number),
@@ -301,7 +296,7 @@ async function upsertMirrorPullRequest(client, sourcePullRequest, branchName, so
 async function closeMirrorPullRequest(client, branchName) {
   const mirrorPullRequest = await client.getPullRequestByHead(branchName)
 
-  if (mirrorPullRequest?.state === 'open') {
+  if (mirrorPullRequest) {
     await client.closePullRequest(mirrorPullRequest.number)
   }
 }
@@ -348,14 +343,6 @@ async function assertTrustedActor(client, actor) {
 
   if (!TRUSTED_PERMISSIONS.has(permission)) {
     throw new Error(`@${actor} must have write, maintain, or admin permission to trigger preview mirroring.`)
-  }
-}
-
-function normalizeOptions(options) {
-  return {
-    branchPrefix: options.branchPrefix ?? DEFAULT_BRANCH_PREFIX,
-    repoFullName: options.repoFullName,
-    triggerLabel: options.triggerLabel ?? DEFAULT_TRIGGER_LABEL,
   }
 }
 

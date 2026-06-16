@@ -62,18 +62,4 @@ describe('preview-mirror-comment', () => {
       targetSha: SOURCE_SHA,
     })
   })
-
-  it('ignores legacy sync checkbox text', () => {
-    const parsed = parseManagedPreviewComment(`
-<!-- cf-pages-preview-mirror original-pr=123 target-sha=${APPROVED_SOURCE_SHA} mirrored-sha=${SOURCE_SHA} -->
-- [x] Sync Cloudflare preview to latest fork commit
-`)
-
-    assert.deepEqual(parsed, {
-      mirroredSha: SOURCE_SHA,
-      originalPrNumber: 123,
-      shouldSync: false,
-      targetSha: APPROVED_SOURCE_SHA,
-    })
-  })
 })

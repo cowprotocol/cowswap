@@ -37,9 +37,7 @@ async function main() {
     client,
     event,
     options: {
-      branchPrefix: process.env.PREVIEW_BRANCH_PREFIX,
       repoFullName,
-      triggerLabel: process.env.PREVIEW_TRIGGER_LABEL,
     },
   })
 

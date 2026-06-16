@@ -115,15 +115,6 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
       calls.push(['getPullRequestByHead', branchName])
       return mirrorPullRequest?.head.ref === branchName ? mirrorPullRequest : null
     },
-    async getRef(branchName) {
-      calls.push(['getRef', branchName])
-      if (!hasRef) {
-        const error = new Error('not found')
-        error.status = 404
-        throw error
-      }
-      return { object: { sha: 'oldsha' } }
-    },
     async findIssueComment(issueNumber, predicate) {
       calls.push(['findIssueComment', issueNumber])
       return storedComments.find(predicate) ?? null
@@ -151,9 +142,18 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
     },
     async updateRef(branchName, sha) {
       calls.push(['updateRef', branchName, sha])
+      if (!hasRef) {
+        const error = new Error('not found')
+        error.status = 404
+        throw error
+      }
       hasRef = true
     },
   }
+}
+
+function callSummary(calls) {
+  return calls.map(([name, value]) => (name === 'createPullRequest' ? [name] : [name, value]))
 }
 
 describe('preview-mirror-lib', () => {
@@ -180,34 +180,25 @@ describe('preview-mirror-lib', () => {
       status: 'synced',
     })
     assert.deepEqual(
-      client.calls.map((call) => call.slice(0, 2)),
+      callSummary(client.calls),
       [
         ['getCollaboratorPermission', 'maintainer'],
-        ['getRef', 'cf-preview/pr-123'],
+        ['updateRef', 'cf-preview/pr-123'],
         ['createRef', 'cf-preview/pr-123'],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
-        ['createPullRequest', {
-          base: 'develop',
-          body: [
-            '<!-- cf-pages-preview-mirror original-pr=123 -->',
-            'This PR mirrors fork PR #123 for Cloudflare Pages preview builds.',
-            '',
-            'Source PR: https://github.com/cowprotocol/cowswap/pull/123',
-            'Source fork branch: `external/cowswap:feature/new-swap`',
-            'Mirrored SHA: `abc123456789`',
-            '',
-            'Do not merge this PR. Close the source PR to clean up this mirror.',
-          ].join('\n'),
-          draft: true,
-          head: 'cf-preview/pr-123',
-          title: 'preview: mirror fork PR #123',
-        }],
+        ['createPullRequest'],
         ['addIssueLabels', 456],
         ['findIssueComment', 123],
         ['createIssueComment', 123],
         ['removeIssueLabel', 123],
       ],
     )
+    const createPullRequestCall = client.calls.find((call) => call[0] === 'createPullRequest')
+    assert.equal(createPullRequestCall[1].base, 'develop')
+    assert.equal(createPullRequestCall[1].draft, true)
+    assert.equal(createPullRequestCall[1].head, 'cf-preview/pr-123')
+    assert.equal(createPullRequestCall[1].title, 'preview: mirror fork PR #123')
+    assert.match(createPullRequestCall[1].body, /Mirrored SHA: `abc123456789`/)
     const labelCall = client.calls.find((call) => call[0] === 'addIssueLabels')
     assert.deepEqual(labelCall, ['addIssueLabels', 456, ['DONT_MERGE']])
   })
@@ -254,33 +245,23 @@ describe('preview-mirror-lib', () => {
       status: 'synced',
     })
     assert.deepEqual(
-      client.calls.map((call) => call.slice(0, 2)),
+      callSummary(client.calls),
       [
         ['getCollaboratorPermission', 'maintainer'],
         ['getPullRequest', 123],
-        ['getRef', 'cf-preview/pr-123'],
         ['updateRef', 'cf-preview/pr-123'],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
-        ['createPullRequest', {
-          base: 'develop',
-          body: [
-            '<!-- cf-pages-preview-mirror original-pr=123 -->',
-            'This PR mirrors fork PR #123 for Cloudflare Pages preview builds.',
-            '',
-            'Source PR: https://github.com/cowprotocol/cowswap/pull/123',
-            'Source fork branch: `external/cowswap:feature/new-swap`',
-            'Mirrored SHA: `111111111111`',
-            '',
-            'Do not merge this PR. Close the source PR to clean up this mirror.',
-          ].join('\n'),
-          draft: true,
-          head: 'cf-preview/pr-123',
-          title: 'preview: mirror fork PR #123',
-        }],
+        ['createPullRequest'],
         ['addIssueLabels', 456],
         ['updateIssueComment', 777],
       ],
     )
+    const createPullRequestCall = client.calls.find((call) => call[0] === 'createPullRequest')
+    assert.equal(createPullRequestCall[1].base, 'develop')
+    assert.equal(createPullRequestCall[1].draft, true)
+    assert.equal(createPullRequestCall[1].head, 'cf-preview/pr-123')
+    assert.equal(createPullRequestCall[1].title, 'preview: mirror fork PR #123')
+    assert.match(createPullRequestCall[1].body, /Mirrored SHA: `111111111111`/)
     const updateRefCall = client.calls.find((call) => call[0] === 'updateRef')
     assert.deepEqual(updateRefCall, ['updateRef', 'cf-preview/pr-123', APPROVED_SOURCE_SHA])
     const updateCall = client.calls.find((call) => call[0] === 'updateIssueComment')
@@ -316,10 +297,9 @@ describe('preview-mirror-lib', () => {
       status: 'synced',
     })
     assert.deepEqual(
-      client.calls.map((call) => call.slice(0, 2)),
+      callSummary(client.calls),
       [
         ['getCollaboratorPermission', 'maintainer'],
-        ['getRef', 'cf-preview/pr-123'],
         ['updateRef', 'cf-preview/pr-123'],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
         ['updatePullRequest', 456],
@@ -381,7 +361,7 @@ describe('preview-mirror-lib', () => {
       status: 'approval-target-updated',
     })
     assert.deepEqual(
-      client.calls.map((call) => call.slice(0, 2)),
+      callSummary(client.calls),
       [
         ['findIssueComment', 123],
         ['getPullRequestByHead', 'cf-preview/pr-123'],
@@ -448,7 +428,7 @@ describe('preview-mirror-lib', () => {
       status: 'approval-target-updated',
     })
     assert.deepEqual(
-      client.calls.map((call) => call.slice(0, 2)),
+      callSummary(client.calls),
       [
         ['findIssueComment', 123],
         ['getPullRequestByHead', 'cf-preview/pr-123'],

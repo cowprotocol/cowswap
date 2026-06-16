@@ -12,8 +12,6 @@ concurrency:
 
 env:
   NODE_VERSION: lts/jod
-  PREVIEW_BRANCH_PREFIX: cf-preview/pr-
-  PREVIEW_TRIGGER_LABEL: trigger-preview
 
 jobs:
   mirror:
