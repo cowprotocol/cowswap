@@ -12,29 +12,6 @@ import { OrderTab, ORDERS_TABLE_PAGE_SIZE } from './ordersTableParams.constants'
 
 import { ordersTableStateAtom } from '../ordersTable.atoms'
 
-/*
-const isOrdersTableParamsSyncedAtom = atom((get) => {
-  const orderType = get(ordersTableOrderTypeAtom)
-  const locationOrderType = get(locationOrderTypeAtom)
-
-  return orderType !== null && orderType === locationOrderType
-})
-
-// Tab query param scoped to the active orders-table order type (ignores stale URL during route transitions).
-export const ordersTableTabParamAtom = atom((get) => {
-  if (!get(isOrdersTableParamsSyncedAtom)) return null
-
-  return get(tabParamAtom)
-})
-
-// Page query param scoped to the active orders-table order type (ignores stale URL during route transitions).
-export const ordersTablePageParamAtom = atom((get) => {
-  if (!get(isOrdersTableParamsSyncedAtom)) return null
-
-  return get(pageParamAtom)
-})
-*/
-
 export interface GetTabIdParams {
   hasHydratedOrders: boolean
   ordersList: OrdersTableList

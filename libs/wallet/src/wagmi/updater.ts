@@ -42,6 +42,7 @@ function useBrowserUrlKey(): string {
 }
 
 function useWalletInfo(): WalletInfo {
+  // TODO: Replace urlKey with locationNetworkAtom, which will also trigger the useMemo below less often.
   const urlKey = useBrowserUrlKey()
   const { address, chainId, isConnected, status, connector } = useAccountState()
   const isConnectionRestoring = status === 'reconnecting'
@@ -137,8 +138,9 @@ let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
 export function WalletUpdater(): null {
-  const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account)
+  const { chainId, active, account, connector, isConnectionRestoring } = useWalletInfo()
+
+  const walletDetails = useWalletDetails(account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
@@ -148,8 +150,8 @@ export function WalletUpdater(): null {
   const provider = useWalletProvider()
 
   useEffect(() => {
-    setWalletInfo({ ...walletInfo, provider })
-  }, [walletInfo, provider, setWalletInfo])
+    setWalletInfo({ chainId, active, account, connector, isConnectionRestoring, provider })
+  }, [chainId, active, account, connector, isConnectionRestoring, provider, setWalletInfo])
 
   useEffect(() => {
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })

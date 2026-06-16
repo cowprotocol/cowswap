@@ -19,10 +19,5 @@ export function useOrdersTable(orderType: TabOrderTypes): void {
   useLayoutEffect(() => {
     setOrdersTableOrderType(orderType)
     setOrdersTableFilters(DEFAULT_ORDERS_TABLE_FILTERS)
-
-    return () => {
-      setOrdersTableOrderType(null)
-      setOrdersTableFilters(DEFAULT_ORDERS_TABLE_FILTERS)
-    }
   }, [orderType, setOrdersTableOrderType, setOrdersTableFilters])
 }

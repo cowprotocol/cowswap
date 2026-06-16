@@ -216,8 +216,11 @@ export function useCreateTwapOrder() {
 
         // TODO: Clear filters if the new order is not visible before navigating.
 
-        // Navigate to open orders after successful placement
-        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
+        // still be no signing orders.
+        setTimeout(() => {
+          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+        })
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
