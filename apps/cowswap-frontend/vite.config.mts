@@ -13,6 +13,7 @@ import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
+import { readFile } from 'node:fs/promises'
 import * as path from 'path'
 
 import pkg from './package.json'
@@ -192,6 +193,25 @@ export default defineConfig(({ mode, isPreview }) => {
                   return { path: shim }
                 }
                 return null
+              })
+            },
+          },
+          {
+            // @reown/appkit ships .js.map files whose `sources` point at the original
+            // TypeScript (exports/react.ts, src/**/*.ts) without inlining `sourcesContent`,
+            // and the published tarball doesn't include those .ts files. esbuild follows the
+            // sourceMappingURL pragma during prebundling and propagates the null sources into
+            // the optimized dep map, so devtools 404s on every reown source ("DevTools failed
+            // to load source map"). Drop the pragma for @reown files so esbuild treats the
+            // shipped compiled .js as the source and embeds real `sourcesContent` instead.
+            name: 'cow-reown-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@reown[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
               })
             },
           },

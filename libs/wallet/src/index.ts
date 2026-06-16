@@ -19,6 +19,8 @@ export * from './wagmi/hooks/useDisconnectWallet'
 export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
 export * from './wagmi/hooks/useIsRestoringConnection'
+export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
+export { config, reownAppKit, wagmiAdapter, wagmiStorage } from './wagmi/config'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
@@ -35,10 +37,12 @@ export * from './wagmi/utils/isEip7702EOA.utils'
 export * from './wagmi/utils/isSafeConnector.utils'
 export * from './wagmi/utils/getPublicClient.utils'
 
+export * from './utils/getIsSafeAppIframe'
+export * from './utils/connectWalletById'
+
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'
 export { Web3Provider } from './wagmi/Web3Provider'
-export { config } from './wagmi/config'
 
 // State
 // TODO: this export is discussable, however it's already used outside
