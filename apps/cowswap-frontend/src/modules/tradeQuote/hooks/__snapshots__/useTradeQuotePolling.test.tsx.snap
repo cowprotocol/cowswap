@@ -78,6 +78,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "validFor": 1800,
   },
   {
+    "allowIntermediateEqSellToken": true,
     "appData": undefined,
     "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,
