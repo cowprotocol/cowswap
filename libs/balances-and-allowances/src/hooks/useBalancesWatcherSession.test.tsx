@@ -123,7 +123,7 @@ describe('useBalancesWatcherSession', () => {
     const session = deferred<void>()
     mockCreateSession.mockReturnValueOnce(session.promise)
 
-    renderSession(makeParams({ customTokens: [TOKEN_A.toLowerCase()] }))
+    renderSession(makeParams({ customTokens: [getAddressKey(TOKEN_A)] }))
 
     expect(mockCreateSession).toHaveBeenCalledTimes(1)
     expect(mockCreateSession).toHaveBeenCalledWith({
@@ -131,7 +131,7 @@ describe('useBalancesWatcherSession', () => {
       owner: ACCOUNT,
       body: {
         tokensListsUrls: ['https://example.com/tokens.json'],
-        customTokens: [TOKEN_A.toLowerCase()],
+        customTokens: [getAddressKey(TOKEN_A)],
       },
     })
     expect(mockSubscribe).not.toHaveBeenCalled()
