@@ -3,7 +3,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
 import { asyncAtomFamily } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { isEip1193Provider } from '@cowprotocol/wallet'
 
@@ -21,7 +21,7 @@ function buildAllowancesState(tokenAddresses: string[], decodedResults: (bigint 
 
 async function fetchAllowances(
   connector: Connector,
-  chainId: SupportedChainId,
+  chainId: EvmChains,
   account: string,
   spender: string,
   tokenAddresses: string[],
@@ -83,7 +83,7 @@ export const tokenAllowancesFamily = asyncAtomFamily(
   async (params: TokenAllowancesFamilyParams): Promise<AllowancesState | null> => {
     const { connector, chainId, account, spender, tokenAddresses } = params
 
-    if (!connector || !chainId || !account || !spender || !tokenAddresses.length) {
+    if (!connector || !chainId || !account || !spender || !tokenAddresses.length || !isEvmChain(chainId)) {
       return null
     }
 

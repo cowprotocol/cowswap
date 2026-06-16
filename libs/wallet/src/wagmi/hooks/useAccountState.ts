@@ -10,12 +10,12 @@ import { CAIP_TO_SUPPORTED_CHAIN_ID } from '../../constants'
 import { reownAppKit } from '../config'
 
 type EvmOrBitcoinAccountState = Omit<UseConnectionReturnType<Config>, 'chainId'> & {
-  chainId: SupportedChainId;
+  chainId: SupportedChainId
 }
 
 type SolanaAccountState = UseAppKitAccountReturn & {
-  chainId: SupportedChainId.SOLANA;
-  connector: never;
+  chainId: SupportedChainId.SOLANA
+  connector?: never
 }
 
 export type AccountState = EvmOrBitcoinAccountState | SolanaAccountState
