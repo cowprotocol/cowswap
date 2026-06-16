@@ -143,8 +143,8 @@ function createFakeClient({ comments = [], permission = 'write', pullRequest = f
     async updateRef(branchName, sha) {
       calls.push(['updateRef', branchName, sha])
       if (!hasRef) {
-        const error = new Error('not found')
-        error.status = 404
+        const error = new Error('Reference does not exist')
+        error.status = 422
         throw error
       }
       hasRef = true
