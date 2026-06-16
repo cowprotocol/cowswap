@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/permit-utils",
-  "version": "3.2.5",
+  "version": "3.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/cowprotocol/cowswap.git",
@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.1.3",
+    "@cowprotocol/cow-sdk": "9.2.0",
     "@1inch/permit-signed-approvals-utils": "1.5.2",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "ms.macro": "2.0.0",

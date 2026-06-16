@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.1...common-const-v3.4.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/types@4.4.0
+
 ## [3.3.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.0...common-const-v3.3.1) (2026-05-22)
 
 ### Patch Changes
