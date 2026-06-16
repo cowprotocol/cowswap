@@ -1,3 +1,4 @@
+import { tryParseJson } from './json-utils'
 import { getTimeoutAbortController } from './request'
 
 export const TIMEOUT_ERROR_MESSAGE = 'Request timed out. Please try again.'
@@ -71,15 +72,7 @@ export async function fetchWithTimeout(input: RequestInfo | URL, options: FetchT
 
 export async function parseJsonResponse<T>(response: Response): Promise<FetchJsonResponse<T>> {
   const text = await response.text().catch(() => '')
-  let data: T | undefined
-
-  if (text) {
-    try {
-      data = JSON.parse(text) as T
-    } catch {
-      data = undefined
-    }
-  }
+  const data = text ? tryParseJson<T>(text) : undefined
 
   return { response, data, text }
 }

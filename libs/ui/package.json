@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/ui",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -31,7 +31,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.1.3",
+    "@cowprotocol/cow-sdk": "9.2.0",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui-utils": "workspace:*",
