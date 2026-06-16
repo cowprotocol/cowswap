@@ -1,4 +1,3 @@
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderClass, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
@@ -12,8 +11,8 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
-export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
-  const { safeAddress, id, status, executionInfo, chainId } = item
+export function emulateTwapAsOrder(item: TwapOrderItem): Omit<EnrichedOrder, 'settlementContract'> {
+  const { safeAddress, id, status, executionInfo } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t, appData, receiver } = item.order
   const numOfParts = BigInt(n)
   const sellAmountValue = BigInt(partSellAmount) * numOfParts
@@ -49,6 +48,5 @@ export function emulateTwapAsOrder(item: TwapOrderItem): EnrichedOrder {
     executedFeeAmount,
     invalidated: status === TwapOrderStatus.Cancelling,
     receiver,
-    settlementContract: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
   }
 }

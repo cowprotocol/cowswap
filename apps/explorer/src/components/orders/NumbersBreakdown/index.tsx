@@ -36,12 +36,8 @@ const DetailsWrapper = styled.div`
   }
 `
 
-type BreakdownProps = {
-  showExpanded?: boolean
-} & PropsWithChildren
-
-export const NumbersBreakdown = ({ children, showExpanded = false }: BreakdownProps): ReactNode => {
-  const [showDetails, setShowDetails] = useSafeState<boolean>(showExpanded)
+export const NumbersBreakdown = ({ children }: PropsWithChildren): ReactNode => {
+  const [showDetails, setShowDetails] = useSafeState<boolean>(false)
 
   const handleToggle = (): void => {
     setShowDetails(!showDetails)

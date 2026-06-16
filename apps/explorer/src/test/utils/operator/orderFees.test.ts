@@ -108,11 +108,25 @@ describe('getProtocolFees', () => {
     expect(result.map((fee) => fee.amount.toString())).toEqual(['100'])
   })
 
-  test('keeps fees in the same token separate instead of aggregating them', () => {
+  test('aggregates fees of the same token and type across fills into a single total', () => {
     const trades = [makeTrade([{ amount: '300', token: FEE_TOKEN }]), makeTrade([{ amount: '200', token: FEE_TOKEN }])]
     const result = getProtocolFees(trades)
-    expect(result.map((fee) => fee.amount.toString())).toEqual(['300', '200'])
-    expect(result.every((fee) => fee.tokenAddress === FEE_TOKEN.toLowerCase())).toBe(true)
+    expect(result).toHaveLength(1)
+    expect(result[0].amount.toString()).toBe('500')
+    expect(result[0].tokenAddress).toBe(FEE_TOKEN.toLowerCase())
+  })
+
+  test('keeps volume fees with different bps factors separate when aggregating', () => {
+    const trades = [
+      makeTrade([{ amount: '300', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } }]),
+      makeTrade([{ amount: '200', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } }]),
+      makeTrade([{ amount: '100', token: FEE_TOKEN, policy: { volume: { factor: 0.0025 } } }]),
+    ]
+    const result = getProtocolFees(trades)
+    expect(result.map((fee) => [fee.amount.toString(), fee.factor])).toEqual([
+      ['500', 0.0002],
+      ['100', 0.0025],
+    ])
   })
 
   test('collects fees across multiple trades, preserving order', () => {

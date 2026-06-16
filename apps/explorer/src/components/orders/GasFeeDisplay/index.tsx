@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { AddressKey, areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
 import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { WRAPPED_NATIVE_ADDRESS } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
@@ -38,23 +39,40 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
     return map
   }, [feeTokens])
 
+  // Headline total per token (categories within a token are summed), shown above the breakdown.
+  const totalsByToken = useMemo(() => {
+    const map = new Map<AddressKey, BigNumber>()
+    for (const fee of protocolFees ?? []) {
+      const current = map.get(fee.tokenAddress)
+      map.set(fee.tokenAddress, current ? current.plus(fee.amount) : fee.amount)
+    }
+    return map
+  }, [protocolFees])
+
   if (!protocolFees || protocolFees.length === 0) {
     return <span>-</span>
   }
 
+  const total = Array.from(totalsByToken, ([tokenAddress, amount]) =>
+    formatAmount(order, amount, tokenAddress, feeTokensByKey, networkId),
+  ).join(', ')
+
   return (
-    <NumbersBreakdown>
-      <table>
-        <tbody>
-          {protocolFees.map((fee, index) => (
-            <tr key={`${fee.tokenAddress}-${index}`}>
-              <td>{getFeeLabel(fee)}:</td>
-              <td>{formatFee(order, fee, feeTokensByKey, networkId)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </NumbersBreakdown>
+    <>
+      <span>{total}</span>
+      <NumbersBreakdown>
+        <table>
+          <tbody>
+            {protocolFees.map((fee) => (
+              <tr key={`${fee.tokenAddress}-${fee.type}-${fee.factor ?? ''}`}>
+                <td>{getFeeLabel(fee)}:</td>
+                <td>{formatAmount(order, fee.amount, fee.tokenAddress, feeTokensByKey, networkId)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </NumbersBreakdown>
+    </>
   )
 }
 
@@ -79,13 +97,13 @@ function formatBps(factor: number): string {
   return `${bps} bps`
 }
 
-function formatFee(
+function formatAmount(
   order: Order,
-  fee: ProtocolFee,
+  amount: BigNumber,
+  tokenAddress: AddressKey,
   feeTokensByKey: Map<AddressKey, TokenErc20>,
   networkId: Network | undefined,
 ): string {
-  const { amount, tokenAddress } = fee
   const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
   // Token metadata not loaded: we can't know decimals, so show the raw atom amount
   // alongside a shortened address rather than an unreadable 42-char string.

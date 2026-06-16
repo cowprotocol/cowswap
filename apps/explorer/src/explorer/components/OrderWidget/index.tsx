@@ -37,7 +37,7 @@ export const OrderWidget: React.FC = () => {
 
   // Protocol fee breakdown is order-level, so it's derived from all trades rather than the
   // currently selected fills page (which `useOrderTrades` is scoped to).
-  const { protocolFees } = useOrderProtocolFees(order)
+  const { protocolFees, error: protocolFeesError } = useOrderProtocolFees(order)
 
   // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = hasNextPage
@@ -45,6 +45,13 @@ export const OrderWidget: React.FC = () => {
   if (error) {
     // eslint-disable-next-line react-hooks/immutability
     errors['trades'] = error
+  }
+
+  // Surface a failed protocol-fee fetch so the breakdown isn't silently shown as "no fees".
+  // Skip when the trades fetch already failed: same root cause, avoids a duplicate banner.
+  if (protocolFeesError && !error) {
+    // eslint-disable-next-line react-hooks/immutability
+    errors['protocolFees'] = protocolFeesError
   }
 
   if (errorOrderPresentInNetworkId && networkId !== errorOrderPresentInNetworkId) {

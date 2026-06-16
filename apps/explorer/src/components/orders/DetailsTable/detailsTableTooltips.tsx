@@ -63,5 +63,5 @@ export const DetailsTableTooltips = {
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
   filled:
     'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
-  fees: 'The protocol fees charged for this order, listed per token. Network costs are not included. Might take a few minutes to show the final value.',
+  fees: 'The protocol fees charged for this order, totaled per token with a breakdown per category. Network costs are not included. Might take a few minutes to show the final value.',
 }
