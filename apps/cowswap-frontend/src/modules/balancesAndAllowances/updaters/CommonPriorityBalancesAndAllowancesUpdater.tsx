@@ -7,6 +7,7 @@ import {
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isNonEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -56,7 +57,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const refreshTrigger = useOrdersFilledEventsTrigger()
 
-  if (isBwEnabled) {
+  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
     return <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} />
   }
 
