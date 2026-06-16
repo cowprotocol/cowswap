@@ -7,6 +7,7 @@ import { ComposableCowContractData } from 'modules/advancedOrders'
 
 import { SafeTransactionParams } from 'common/types'
 
+import { TWAP_HANDLER_ADDRESS } from '../const'
 import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 import type { Hex } from 'viem'
@@ -28,6 +29,9 @@ const SAFE_BATCH_EXECUTOR_ADDRESSES_V150 = [
   '0x218543288004CD07832472D464648173c77D7eB7',
   '0xA83c336B20401Af773B6219BA5027174338D1836',
 ] as const
+
+// Safe batches are represented as delegatecalls to Safe's MultiSend executors.
+// The outer target check prevents arbitrary delegatecall payloads from being parsed as Safe batches.
 const SAFE_BATCH_EXECUTOR_ADDRESSES_BY_CHAIN: Partial<Record<SupportedChainId, readonly string[]>> = {
   [SupportedChainId.MAINNET]: [
     ...LEGACY_SAFE_BATCH_EXECUTOR_ADDRESSES,
@@ -307,6 +311,10 @@ function parseConditionalOrderParams(
     }
 
     const [params] = args as unknown as [ConditionalOrderParams]
+
+    if (!areAddressesEqual(params.handler, TWAP_HANDLER_ADDRESS[composableCowContract.chainId])) {
+      return null
+    }
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
   } catch {

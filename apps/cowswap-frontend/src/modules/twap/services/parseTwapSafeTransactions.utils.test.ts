@@ -1,14 +1,17 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi } from '@cowprotocol/cowswap-abis'
 
 import { encodeFunctionData, parseAbi } from 'viem'
 
 import { parseSafeTransactionsResult } from './parseTwapSafeTransactions.utils'
 
+import { TWAP_HANDLER_ADDRESS } from '../const'
+
 import type { Hex } from 'viem'
 
 const MULTISEND_ABI = parseAbi(['function multiSend(bytes transactions)'])
 const COMPOSABLE_COW_ADDRESS = '0x0000000000000000000000000000000000000001'
-const HANDLER_ADDRESS = '0x0000000000000000000000000000000000000002'
+const HANDLER_ADDRESS = TWAP_HANDLER_ADDRESS[SupportedChainId.MAINNET]
 const FACTORY_ADDRESS = '0x0000000000000000000000000000000000000003'
 const OTHER_ADDRESS = '0x0000000000000000000000000000000000000004'
 const SAFE_MULTISEND_130_CANONICAL = '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'
@@ -29,7 +32,7 @@ const CONDITIONAL_ORDER_PARAMS = {
 const composableCowContract = {
   abi: ComposableCoWAbi,
   address: COMPOSABLE_COW_ADDRESS,
-  chainId: 1,
+  chainId: SupportedChainId.MAINNET,
 }
 
 const VALID_CREATE_CALL_DATA = encodeFunctionData({
@@ -98,6 +101,20 @@ describe('parseSafeTransactionsResult', () => {
 
   it('does not match malformed direct calldata', () => {
     const result = parseSafeTransactionsResult(composableCowContract, [buildSafeTransaction({ data: '0x0d0d9800' })])
+
+    expect(result).toEqual([])
+  })
+
+  it('does not match createWithContext calls for another conditional order handler', () => {
+    const wrongHandlerCallData = encodeFunctionData({
+      abi: ComposableCoWAbi,
+      functionName: 'createWithContext',
+      args: [{ ...CONDITIONAL_ORDER_PARAMS, handler: OTHER_ADDRESS }, FACTORY_ADDRESS, '0x', false],
+    })
+
+    const result = parseSafeTransactionsResult(composableCowContract, [
+      buildSafeTransaction({ data: wrongHandlerCallData }),
+    ])
 
     expect(result).toEqual([])
   })
