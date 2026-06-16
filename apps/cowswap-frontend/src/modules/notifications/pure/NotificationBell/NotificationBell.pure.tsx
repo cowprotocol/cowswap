@@ -26,7 +26,9 @@ export function NotificationBell({ ref, onClick, unreadCount }: NotificationBell
         label: `Unread count: ${unreadCount}`,
       })}
     >
-      <Bell size={20} />
+      <span>
+        <Bell size={20} />
+      </span>
     </styledEl.IconButton>
   )
 }
