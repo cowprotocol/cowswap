@@ -21,8 +21,8 @@ jobs:
   i18n-extract:
     name: Extract i18n strings
     runs-on: ubuntu-latest
-    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks)
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks) and NOT cf-preview branches, as that mirrors forked PRs.
+    if: github.event.pull_request.head.repo.full_name == github.repository && !startsWith(github.head_ref, 'cf-preview/pr-')
 
     steps:
       - name: Checkout PR branch

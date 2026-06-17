@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.1...cow-fi-v2.7.2) (2026-06-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+
 ## [2.7.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.0...cow-fi-v2.7.1) (2026-06-09)
 
 ### Patch Changes

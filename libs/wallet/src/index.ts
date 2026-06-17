@@ -20,6 +20,8 @@ export * from './wagmi/hooks/useDisconnectWallet'
 export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
 export * from './wagmi/hooks/useIsRestoringConnection'
+export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
+export { reownAppKit, wagmiAdapter, wagmiStorage } from './wagmi/config'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
@@ -41,3 +43,6 @@ export { reownWagmiConfig } from './reown/init'
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
 export * from './api/state'
+
+export * from './utils/getIsSafeAppIframe'
+export * from './utils/connectWalletById'
