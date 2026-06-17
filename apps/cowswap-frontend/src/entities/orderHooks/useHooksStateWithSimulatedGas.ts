@@ -28,7 +28,7 @@ export function useHooksStateWithSimulatedGas(): HooksStoreState {
       // the simulation can't see (e.g. first-time COWShed proxy deploy) still
       // get through.
       const paddedSimulatedBudget = (BigInt(hookTenderlyData.gasUsed) * GAS_LIMIT_SAFETY_FACTOR_PCT) / 100n
-      const dappBudget = BigInt(hook.hook.gasLimit)
+      const dappBudget = hook.hook.gasLimit ? BigInt(hook.hook.gasLimit) : 0n
       const gasLimit = (paddedSimulatedBudget > dappBudget ? paddedSimulatedBudget : dappBudget).toString()
 
       return { ...hook, hook: { ...hook.hook, gasLimit } }
