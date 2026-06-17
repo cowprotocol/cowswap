@@ -39,7 +39,7 @@ export async function resolveSolver(
   const winnerSolverName =
     winnerFromOrder ||
     (txHash
-      ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash }), orderUid)
+      ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash }), solvers, orderUid)
       : undefined)
 
   if (!winnerSolverName) return undefined
@@ -57,7 +57,8 @@ export async function resolveSolverByTxHash(
     fetchSolversInfo().catch(() => []),
   ])
 
-  const winnerSolverName = getWinnerSolverFromCompetition(competition, orderId)
+  const winnerSolverName = getWinnerSolverFromCompetition(competition, solvers, orderId)
+
   if (!winnerSolverName) return undefined
 
   return buildSolverInfo(winnerSolverName, solvers)
@@ -81,20 +82,33 @@ function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | unde
   return winner?.solver
 }
 
-function getWinnerSolverFromCompetition(competition?: SolverCompetitionResponse, orderId?: string): string | undefined {
-  if (!competition?.solutions?.length || !orderId) return undefined
+function getWinnerSolverFromCompetition(
+  competition?: SolverCompetitionResponse,
+  solvers?: SolverInfo[],
+  orderId?: string,
+): string | undefined {
+  if (!competition?.solutions?.length || !solvers?.length || !orderId) return undefined
 
   const winner = competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))
   if (!winner) return undefined
 
-  return getWinnerSolverName(winner)
+  return getWinnerSolverName(winner, solvers)
 }
 
-function getWinnerSolverName(winner: unknown): string | undefined {
-  if (!winner || typeof winner !== 'object' || !('solver' in winner)) return undefined
+function getWinnerSolverName(winner: unknown, solvers: SolverInfo[]): string | undefined {
+  if (!winner || typeof winner !== 'object' || !('solverAddress' in winner)) return undefined
 
-  const solver = winner.solver
-  return typeof solver === 'string' ? solver : undefined
+  const solverAddress = winner.solverAddress
+
+  if (typeof solverAddress === 'string') {
+    const solverAddressLowerCase = solverAddress.toLowerCase()
+
+    return (
+      solvers.find((s) => s.deployments.some((d) => d.address?.toLowerCase() === solverAddressLowerCase))
+        ?.displayName ?? undefined
+    )
+  }
+  return undefined
 }
 
 function hasNonZeroExecutedAmounts(executedAmounts: CompetitionStatusEntry['executedAmounts']): boolean {
