@@ -55,6 +55,21 @@ function getNextLocalQuoteTimestamp(
   return nextState.quote ? Math.ceil(Date.now() / 1000) : null
 }
 
+function shouldIgnoreLateFastResult(prevQuote: TradeQuoteState, nextState: Partial<TradeQuoteState>): boolean {
+  const hasSameFetchStart =
+    prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp
+  const hasStoredQuote = Boolean(prevQuote.quote)
+  const hasNextQuoteResult = Boolean(nextState.quote || nextState.error)
+
+  return (
+    hasSameFetchStart &&
+    getIsFastQuote(nextState.fetchParams) &&
+    prevQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
+    hasStoredQuote &&
+    hasNextQuoteResult
+  )
+}
+
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
@@ -64,12 +79,7 @@ export const updateTradeQuoteAtom = atom(
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
       // Ignore late Fast results once the same-cycle Optimal state is already stored.
-      if (
-        prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
-        getIsFastQuote(nextState.fetchParams) &&
-        prevQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
-        ((nextState.quote && prevQuote.quote) || (nextState.error && prevQuote.quote))
-      ) {
+      if (shouldIgnoreLateFastResult(prevQuote, nextState)) {
         return { ...prevState }
       }
 

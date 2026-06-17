@@ -2,9 +2,9 @@ import { createStore } from 'jotai'
 
 import { PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { hasFreshOptimalQuote } from '../utils/hasFreshOptimalQuote'
-
 import { tradeQuotesAtom, updateTradeQuoteAtom } from './tradeQuoteAtom'
+
+import { hasFreshOptimalQuote } from '../utils/hasFreshOptimalQuote'
 
 const SELL_TOKEN = '0x1111111111111111111111111111111111111111'
 const MOCK_QUOTE = {} as QuoteAndPost
