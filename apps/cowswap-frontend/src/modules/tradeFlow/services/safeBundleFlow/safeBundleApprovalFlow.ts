@@ -23,7 +23,7 @@ import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
-import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient'
+import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient.service'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 

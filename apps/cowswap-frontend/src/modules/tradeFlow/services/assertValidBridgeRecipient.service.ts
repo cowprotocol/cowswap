@@ -1,4 +1,5 @@
-import { isNonEvmPlaceholderRecipient, TradeQuoteState } from 'modules/tradeQuote'
+import { isNonEvmPlaceholderRecipient } from 'modules/tradeQuote'
+import type { TradeQuoteState } from 'modules/tradeQuote'
 
 export function assertValidBridgeRecipient(tradeQuoteState: TradeQuoteState): void {
   const bridgeRecipient = tradeQuoteState.bridgeQuote?.tradeParameters.bridgeRecipient

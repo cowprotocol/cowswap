@@ -22,7 +22,7 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
-import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient'
+import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient.service'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 

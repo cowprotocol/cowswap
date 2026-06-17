@@ -8,7 +8,7 @@ import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 
-import { DEFAULT_TRADE_QUOTE_STATE, TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 
@@ -46,22 +46,12 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       update(sellTokenAddress, {
         isLoading: true,
         hasParamsChanged,
-        ...(hasParamsChanged
-          ? {
-              quote: null,
-              bridgeQuote: null,
-              isBridgeQuote: null,
-              fetchParams: null,
-              error: null,
-              localQuoteTimestamp: null,
-            }
-          : {}),
       })
     }
 
     const reset = (): void => {
       lastQuoteParamsRef.current = null
-      update(sellTokenAddress, DEFAULT_TRADE_QUOTE_STATE)
+      update(sellTokenAddress, { quote: null, isLoading: false })
     }
 
     const onError = (

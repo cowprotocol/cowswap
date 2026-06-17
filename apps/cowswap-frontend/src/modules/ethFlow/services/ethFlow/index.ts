@@ -15,13 +15,12 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
-import { TradeFlowContext } from 'modules/tradeFlow'
+import { assertValidBridgeRecipient, TradeFlowContext } from 'modules/tradeFlow'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
-import { assertValidBridgeRecipient } from '../../../tradeFlow/services/assertValidBridgeRecipient'
 import { EthFlowContext } from '../../types'
 
 export interface EthFlowParams {

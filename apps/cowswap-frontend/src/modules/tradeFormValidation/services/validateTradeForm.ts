@@ -2,7 +2,7 @@ import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } fr
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
-import { getIsFastQuote, hasFreshOptimalQuote, isQuoteExpired } from 'modules/tradeQuote'
+import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
@@ -63,7 +63,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
-  const isQuoteRefreshPending = tradeQuote.hasParamsChanged || !hasFreshOptimalQuote(tradeQuote)
 
   const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
 
@@ -193,7 +192,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || isQuoteRefreshPending || (isBridging && tradeQuote.isLoading)) {
+    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 

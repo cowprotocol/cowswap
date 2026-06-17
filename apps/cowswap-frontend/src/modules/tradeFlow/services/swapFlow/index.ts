@@ -30,7 +30,7 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
-import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient'
+import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient.service'
 
 import type { Hex } from 'viem'
 

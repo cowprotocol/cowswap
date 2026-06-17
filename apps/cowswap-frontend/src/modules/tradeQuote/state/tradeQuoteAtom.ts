@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { getAddressKey, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 
 import { isProviderNetworkDeprecatedAtom } from 'entities/common/isProviderNetworkDeprecated.atom'
@@ -40,36 +40,6 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
 
 export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
 
-function getNextLocalQuoteTimestamp(
-  prevQuote: TradeQuoteState,
-  nextState: Partial<TradeQuoteState>,
-): TradeQuoteState['localQuoteTimestamp'] {
-  if (typeof nextState.localQuoteTimestamp !== 'undefined') {
-    return nextState.localQuoteTimestamp
-  }
-
-  if (typeof nextState.quote === 'undefined') {
-    return prevQuote.localQuoteTimestamp
-  }
-
-  return nextState.quote ? Math.ceil(Date.now() / 1000) : null
-}
-
-function shouldIgnoreLateFastResult(prevQuote: TradeQuoteState, nextState: Partial<TradeQuoteState>): boolean {
-  const hasSameFetchStart =
-    prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp
-  const hasStoredQuote = Boolean(prevQuote.quote)
-  const hasNextQuoteResult = Boolean(nextState.quote || nextState.error)
-
-  return (
-    hasSameFetchStart &&
-    getIsFastQuote(nextState.fetchParams) &&
-    prevQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
-    hasStoredQuote &&
-    hasNextQuoteResult
-  )
-}
-
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
@@ -78,19 +48,20 @@ export const updateTradeQuoteAtom = atom(
       const prevState = get(tradeQuotesAtom)
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
-      // Ignore late Fast results once the same-cycle Optimal state is already stored.
-      if (shouldIgnoreLateFastResult(prevQuote, nextState)) {
+      // Don't update state if Fast quote finished after Optimal quote
+      if (
+        prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
+        nextState.quote &&
+        getIsFastQuote(nextState.fetchParams)
+      ) {
         return { ...prevState }
       }
-
-      const quote = typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote
-      const localQuoteTimestamp = getNextLocalQuoteTimestamp(prevQuote, nextState)
 
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
-        quote,
-        localQuoteTimestamp,
+        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
+        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
       }
 
       return {
