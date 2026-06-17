@@ -79,4 +79,8 @@ export class Price<TBase extends Currency, TQuote extends Currency> extends Frac
   override toFixed(decimalPlaces: number = 4, format?: object, rounding?: Rounding): string {
     return this.adjustedForDecimals.toFixed(decimalPlaces, format, rounding)
   }
+
+  override toJSON(): { numerator: string; denominator: string; baseCurrency: TBase; quoteCurrency: TQuote } {
+    return { ...super.toJSON(), baseCurrency: this.baseCurrency, quoteCurrency: this.quoteCurrency }
+  }
 }
