@@ -144,9 +144,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   })
 
   // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
-  const iframeSafeSdkBridge = enableSafeSdkBridge
-    ? new IframeSafeSdkBridge(window, iframeWindow, iframeOrigin, getTrustedParentOrigin(window))
-    : null
+  const iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
@@ -181,6 +179,19 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       cancelWidgetLoading()
     },
   }
+}
+
+function createIframeSafeSdkBridge(
+  enabled: boolean,
+  appWindow: Window,
+  iframeWindow: Window,
+  iframeOrigin: string,
+): IframeSafeSdkBridge | null {
+  if (!enabled) {
+    return null
+  }
+
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getTrustedParentOrigin(appWindow))
 }
 
 /**

@@ -13,26 +13,9 @@ export class IframeSafeSdkBridge {
       }
 
       if (isSafeMessageRequest(event.data)) {
-        if (
-          event.source !== this.iframeWindow ||
-          event.origin !== this.iframeOrigin ||
-          !this.parentOrigin ||
-          this.appWindow.parent === this.appWindow
-        ) {
-          return
-        }
-
-        this.appWindow.parent.postMessage(event.data, this.parentOrigin)
+        this.forwardRequest(event, event.data)
       } else if (isSafeMessageResponse(event.data)) {
-        if (
-          event.source !== this.appWindow.parent ||
-          event.origin !== this.parentOrigin ||
-          this.appWindow.parent === this.appWindow
-        ) {
-          return
-        }
-
-        this.iframeWindow.postMessage(event.data, this.iframeOrigin)
+        this.forwardResponse(event, event.data)
       }
     }
 
@@ -45,6 +28,30 @@ export class IframeSafeSdkBridge {
 
   public stopListening(): void {
     this.appWindow.removeEventListener('message', this.forwardSdkMessage)
+  }
+
+  private forwardRequest(event: MessageEvent<unknown>, message: SafeMessageRequest): void {
+    if (!this.parentOrigin || this.appWindow.parent === this.appWindow) {
+      return
+    }
+
+    if (event.source !== this.iframeWindow || event.origin !== this.iframeOrigin) {
+      return
+    }
+
+    this.appWindow.parent.postMessage(message, this.parentOrigin)
+  }
+
+  private forwardResponse(event: MessageEvent<unknown>, message: SafeMessageResponse): void {
+    if (this.appWindow.parent === this.appWindow) {
+      return
+    }
+
+    if (event.source !== this.appWindow.parent || event.origin !== this.parentOrigin) {
+      return
+    }
+
+    this.iframeWindow.postMessage(message, this.iframeOrigin)
   }
 }
 
