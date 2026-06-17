@@ -72,6 +72,19 @@ import {
 
     return window
   }
+
+  document.body.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      const { href, target, rel } = event.target
+
+      widgetIframeTransport.postMessageToWindow(
+        parent,
+        WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+        { href, target, rel },
+        parentOrigin,
+      )
+    }
+  })
 })()
 
 export function InjectedWidgetUpdater(): ReactNode {
