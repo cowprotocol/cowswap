@@ -7,6 +7,14 @@ import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyB
 import { HooksStoreState } from './hookDetailsAtom'
 import { useHooks } from './useHooks'
 
+// Tenderly's `gasUsed` is the gas CONSUMED on the happy path. As an on-chain
+// `gasLimit` (= the budget the trampoline forwards), it under-allocates for
+// nested-call hooks because EIP-150's 63/64 rule and the per-frame reentrancy
+// sentry both reserve gas that `gasUsed` does not surface. The CoW-Shed flow
+// has ~14 nested CALLs and needs ~1.5x the consumed gas as budget. Expressed
+// as percent (bigint can't multiply by a fractional factor directly).
+const GAS_LIMIT_SAFETY_FACTOR_PCT = 150n
+
 export function useHooksStateWithSimulatedGas(): HooksStoreState {
   const hooksRaw = useHooks()
   const { data: tenderlyData } = useTenderlyBundleSimulation()
@@ -16,15 +24,10 @@ export function useHooksStateWithSimulatedGas(): HooksStoreState {
       const hookTenderlyData = tenderlyData?.[hook.uuid]
       if (!hookTenderlyData?.gasUsed || hookTenderlyData.gasUsed === '0' || !hookTenderlyData.status) return hook
 
-      // Tenderly's `gasUsed` is the gas CONSUMED on the happy path. As an
-      // on-chain `gasLimit` (= the budget the trampoline forwards), it
-      // under-allocates for nested-call hooks because EIP-150's 63/64 rule and
-      // the per-frame reentrancy sentry both reserve gas that `gasUsed` does
-      // not surface. The CoW-Shed flow has ~14 nested CALLs and needs ~1.5x
-      // the consumed gas as budget. We also take max() with whatever the dapp
-      // itself declared, so dapps with state the simulation can't see (e.g.
-      // first-time COWShed proxy deploy) still get through.
-      const paddedSimulatedBudget = (BigInt(hookTenderlyData.gasUsed) * 150n) / 100n
+      // Take max() with whatever the dapp itself declared, so dapps with state
+      // the simulation can't see (e.g. first-time COWShed proxy deploy) still
+      // get through.
+      const paddedSimulatedBudget = (BigInt(hookTenderlyData.gasUsed) * GAS_LIMIT_SAFETY_FACTOR_PCT) / 100n
       const dappBudget = BigInt(hook.hook.gasLimit)
       const gasLimit = (paddedSimulatedBudget > dappBudget ? paddedSimulatedBudget : dappBudget).toString()
 
