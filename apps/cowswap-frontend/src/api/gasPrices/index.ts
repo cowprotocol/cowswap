@@ -1,6 +1,6 @@
 import { GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
 import { isEvmChain, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { reownWagmiConfig } from '@cowprotocol/wallet'
+import { wagmiAdapter } from '@cowprotocol/wallet'
 
 import { getGasPrice } from '@wagmi/core'
 
@@ -72,7 +72,7 @@ class GasFeeApi {
   // Fallback used when there is no gas price oracle endpoint for the network,
   // or when the request to it failed. Returns the same value for all confidence levels.
   async getGasPriceFromRpc(chainId: ChainId): Promise<GasFeeEndpointResponse> {
-    const gasPrice = (await getGasPrice(reownWagmiConfig, { chainId })).toString()
+    const gasPrice = (await getGasPrice(wagmiAdapter.wagmiConfig, { chainId })).toString()
 
     return {
       lastUpdate: new Date().toISOString(),
