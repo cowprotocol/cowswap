@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/ens",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.1.3",
+    "@cowprotocol/cow-sdk": "9.2.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cowswap-abis": "workspace:*",

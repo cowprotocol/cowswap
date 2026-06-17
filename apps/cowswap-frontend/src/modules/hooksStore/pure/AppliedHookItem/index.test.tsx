@@ -21,9 +21,14 @@ jest.mock('modules/tenderly/hooks/useTenderlyBundleSimulation', () => ({
   useTenderlyBundleSimulation: jest.fn(),
 }))
 
-jest.mock('@cowprotocol/ui', () => ({
-  InfoTooltip: () => null,
-}))
+jest.mock('@cowprotocol/ui', () => {
+  const actualUi = jest.requireActual<typeof import('@cowprotocol/ui')>('@cowprotocol/ui')
+
+  return {
+    ...actualUi,
+    InfoTooltip: () => null,
+  }
+})
 
 jest.mock('react-inlinesvg', () => ({
   __esModule: true,

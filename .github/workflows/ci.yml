@@ -18,6 +18,7 @@ env:
   REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
   REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
   REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
+  REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.BALANCES_WATCHER_BASE_URL }}
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
@@ -26,6 +27,7 @@ env:
 jobs:
   setup:
     name: Setup
+    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -189,6 +191,7 @@ jobs:
 
   integration-tests:
     name: Cypress
+    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

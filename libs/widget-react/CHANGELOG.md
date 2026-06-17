@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.0...widget-react-v3.1.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.2.0
+  - @cowprotocol/events@4.6.0
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.0.5...widget-react-v3.1.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: enhance CowSwapWidget with Safe SDK bridge option and improve e… (#7460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/events@4.5.0
+  - @cowprotocol/widget-lib@4.1.0
+
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.0.4...widget-react-v3.0.5) (2026-05-22)
 
 ### Patch Changes

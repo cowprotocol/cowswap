@@ -3,6 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { renderHook } from '@testing-library/react'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
+import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -30,6 +31,10 @@ jest.mock('entities/injectedWidget', () => ({
 
 jest.mock('entities/orderHooks/usePostHooksRecipientOverride', () => ({
   usePostHooksRecipientOverride: jest.fn(),
+}))
+
+jest.mock('react-router', () => ({
+  useLocation: jest.fn(),
 }))
 
 jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({
@@ -61,6 +66,7 @@ const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFuncti
 const mockUsePostHooksRecipientOverride = usePostHooksRecipientOverride as jest.MockedFunction<
   typeof usePostHooksRecipientOverride
 >
+const mockUseLocation = useLocation as jest.MockedFunction<typeof useLocation>
 const mockUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockUseIsHooksTradeType = useIsHooksTradeType as jest.MockedFunction<typeof useIsHooksTradeType>
@@ -71,6 +77,9 @@ const mockUseIsAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible 
 
 function setup({ chainId = 1 as number | undefined, recipientInUrl = null as string | null } = {}): void {
   mockUseWalletInfo.mockImplementation(() => ({ chainId }) as ReturnType<typeof useWalletInfo>)
+  mockUseLocation.mockReturnValue({
+    search: recipientInUrl ? `?recipient=${recipientInUrl}` : '',
+  } as ReturnType<typeof useLocation>)
   mockUseInjectedWidgetParams.mockReturnValue({ disableCustomRecipient: false } as ReturnType<
     typeof useInjectedWidgetParams
   >)

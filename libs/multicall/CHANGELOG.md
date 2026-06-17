@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.1...multicall-v3.3.2) (2026-06-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.0...multicall-v3.3.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.5.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.4...multicall-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/wallet-provider@2.2.0
+  - @cowprotocol/wallet@3.5.0
+  - @cowprotocol/cowswap-abis@4.1.0
+
+## 3.2.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+
 ## [3.2.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.2...multicall-v3.2.3) (2026-05-22)
 
 ### Patch Changes

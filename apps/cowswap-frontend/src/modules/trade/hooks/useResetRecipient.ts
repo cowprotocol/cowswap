@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
+import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -24,10 +25,19 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
+  const location = useLocation()
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+  /**
+   * Derived synchronously from the URL rather than from the tradeStateFromUrl atom,
+   * which is only populated a render later. By the time the atom updates, the reset
+   * effects below have already wiped a recipient that was explicitly set in the URL.
+   */
+  const hasRecipientInUrl = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search)
+    return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+  }, [location.search])
   const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
@@ -49,7 +59,8 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId or disableCustomRecipient changes
+   * Reset recipient whenever chainId or disableCustomRecipient changes,
+   * but preserve any recipient set via URL.
    */
   useEffect(() => {
     if (disableCustomRecipient) {
