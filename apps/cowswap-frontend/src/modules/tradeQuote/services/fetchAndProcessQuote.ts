@@ -47,8 +47,7 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
     getCorrelatedTokens,
-    // TODO: sell=buy feature. Set allowIntermediateEqSellToken: true once the feature is ready
-    // allowIntermediateEqSellToken: true
+    allowIntermediateEqSellToken: true,
   }
 
   const processQuoteError = (errorLocation: string, error: unknown): void => {
