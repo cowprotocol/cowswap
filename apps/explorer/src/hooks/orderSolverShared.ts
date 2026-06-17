@@ -1,3 +1,5 @@
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import {
   getOrderCompetitionStatus,
   getSolverCompetitionByTxHash,
@@ -101,11 +103,9 @@ function getWinnerSolverName(winner: unknown, solvers: SolverInfo[]): string | u
   const solverAddress = winner.solverAddress
 
   if (typeof solverAddress === 'string') {
-    const solverAddressLowerCase = solverAddress.toLowerCase()
-
     return (
-      solvers.find((s) => s.deployments.some((d) => d.address?.toLowerCase() === solverAddressLowerCase))
-        ?.displayName ?? undefined
+      solvers.find((s) => s.deployments.some((d) => areAddressesEqual(d.address, solverAddress)))?.displayName ??
+      undefined
     )
   }
   return undefined
