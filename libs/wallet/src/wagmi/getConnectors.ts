@@ -1,8 +1,8 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
+import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider } from 'viem'
-import { injected, safe } from 'wagmi/connectors'
 
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
