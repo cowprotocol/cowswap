@@ -1,5 +1,4 @@
 export { useHandleSwap } from './hooks/useHandleSwap'
 export { useTradeFlowContext } from './hooks/useTradeFlowContext'
 export { useTradeFlowType } from './hooks/useTradeFlowType'
-export { assertValidBridgeRecipient } from './services/assertValidBridgeRecipient.service'
 export * from './types/TradeFlowContext'

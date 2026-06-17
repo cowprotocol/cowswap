@@ -26,11 +26,11 @@ import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
-import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient.service'
 
 import type { Hex } from 'viem'
 

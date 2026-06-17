@@ -18,11 +18,11 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
-import { assertValidBridgeRecipient } from '../assertValidBridgeRecipient.service'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
