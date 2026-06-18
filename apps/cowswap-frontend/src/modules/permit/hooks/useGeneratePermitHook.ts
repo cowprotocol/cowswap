@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
@@ -16,7 +16,7 @@ import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
-import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
+import { storePermitCacheAtom } from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 type PermitDeps = {
@@ -91,9 +91,6 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
-
-  useAtomValue(staticPermitCacheAtom)
-  useAtomValue(userPermitCacheAtom)
 
   return useCallback(
     (params: GeneratePermitHookParams) =>
