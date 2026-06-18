@@ -10,6 +10,12 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./json-utils": {
+      "types": "./json-utils.ts",
+      "import": "./json-utils.ts",
+      "require": "./json-utils.ts",
+      "default": "./json-utils.ts"
     }
   },
   "publishConfig": {

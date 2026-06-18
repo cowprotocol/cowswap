@@ -1,3 +1,5 @@
+import { isRecord } from '@cowprotocol/common-utils/json-utils'
+
 const CMS_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const LEARN_REVALIDATE_PATH_PATTERN =
   /^\/learn(?:\/(?:articles(?:\/\d+)?|topics|topic\/[a-z0-9]+(?:-[a-z0-9]+)*|[a-z0-9]+(?:-[a-z0-9]+)*))?$/
@@ -8,10 +10,6 @@ export const DEFAULT_SEARCH_PAGE_SIZE = 10
 export const MAX_SEARCH_PAGE = 100
 export const MAX_SEARCH_PAGE_SIZE = 100
 export const MAX_SEARCH_TERM_LENGTH = 100
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Object.prototype.toString.call(value) === '[object Object]'
-}
 
 function readOptionalNumber(value: unknown, fallback: number, max: number): number {
   if (typeof value === 'undefined') return fallback
