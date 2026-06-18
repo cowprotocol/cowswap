@@ -215,6 +215,24 @@ export default defineConfig(({ mode, isPreview }) => {
               })
             },
           },
+          {
+            // @1inch/permit-signed-approvals-utils ships .js.map files whose `sources` point at
+            // the original TypeScript (../src/**/*.ts) with no inlined `sourcesContent`, and the
+            // published tarball doesn't include those .ts files. Same failure mode as @reown above:
+            // esbuild follows the sourceMappingURL pragma during prebundling and devtools then 404s
+            // on every @1inch source ("DevTools failed to load source map"). Drop the pragma so
+            // esbuild treats the shipped compiled .js as the source and embeds real `sourcesContent`.
+            name: 'cow-1inch-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@1inch[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
         ],
       },
       // Only include packages that are direct or resolvable from the app; transitive
