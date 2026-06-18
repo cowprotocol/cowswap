@@ -37,8 +37,8 @@ jest.mock('wagmi', () => ({
   createConfig: jest.fn(),
   http: jest.fn(),
   useConfig: jest.fn().mockReturnValue({}),
-  usePublicClient: jest.fn().mockReturnValue({}),
-  useWalletClient: jest.fn().mockReturnValue({ data: undefined }),
+  usePublicClient: jest.fn().mockReturnValue({ publicClient: true }),
+  useWalletClient: jest.fn().mockReturnValue({ data: { walletClient: true } }),
 }))
 
 jest.mock('modules/permit', () => ({
@@ -191,11 +191,18 @@ describe('useDoesOrderHaveValidPermit', () => {
 
   describe('when all conditions are met', () => {
     it('should call SWR with correct parameters', () => {
-      console.log('TEST QUE ME INTERESSA ----------')
-      const { result: _result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
+      renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
 
       expect(mockUseSWR).toHaveBeenCalledWith(
-        [mockAccount, mockChainId, mockOrder.id, TradeType.SWAP, mockPermit],
+        [
+          mockAccount,
+          mockChainId,
+          { publicClient: true },
+          { walletClient: true },
+          mockOrder.id,
+          TradeType.SWAP,
+          mockPermit,
+        ],
         expect.any(Function),
         expect.objectContaining({
           refreshInterval: expect.any(Number),
@@ -235,29 +242,20 @@ describe('useDoesOrderHaveValidPermit', () => {
     })
   })
 
-  describe('SWR configuration', () => {
-    it('should use correct SWR configuration', () => {
-      renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.SWAP))
-
-      expect(mockUseSWR).toHaveBeenCalledWith(
-        [mockAccount, mockChainId, mockOrder.id, TradeType.SWAP, mockPermit],
-        expect.any(Function),
-        expect.objectContaining({
-          refreshInterval: expect.any(Number),
-          revalidateOnFocus: false,
-          revalidateOnReconnect: false,
-          errorRetryInterval: 0,
-        }),
-      )
-    })
-  })
-
   describe('different trade types', () => {
     it('should work with LIMIT_ORDER trade type', () => {
       const { result: _result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.LIMIT_ORDER))
 
       expect(mockUseSWR).toHaveBeenCalledWith(
-        [mockAccount, mockChainId, mockOrder.id, TradeType.LIMIT_ORDER, mockPermit],
+        [
+          mockAccount,
+          mockChainId,
+          { publicClient: true },
+          { walletClient: true },
+          mockOrder.id,
+          TradeType.LIMIT_ORDER,
+          mockPermit,
+        ],
         expect.any(Function),
         expect.any(Object),
       )
@@ -267,7 +265,15 @@ describe('useDoesOrderHaveValidPermit', () => {
       const { result: _result } = renderHook(() => useDoesOrderHaveValidPermit(mockOrder, TradeType.ADVANCED_ORDERS))
 
       expect(mockUseSWR).toHaveBeenCalledWith(
-        [mockAccount, mockChainId, mockOrder.id, TradeType.ADVANCED_ORDERS, mockPermit],
+        [
+          mockAccount,
+          mockChainId,
+          { publicClient: true },
+          { walletClient: true },
+          mockOrder.id,
+          TradeType.ADVANCED_ORDERS,
+          mockPermit,
+        ],
         expect.any(Function),
         expect.any(Object),
       )
