@@ -8,13 +8,17 @@ import { ConfiguratorState } from '../types'
 const vercelWidgetConfiguratorPrefix = 'widget-configurator-git-'
 const cfPagesPreviewSuffix = `.swap-dev-5u6.pages.dev`
 const cfPagesPreviewSubdomainMaxLength = 28
+const cfPagesPreviewSubdomainFallback = 'preview'
 const vercelPreviewHashSuffix = /-[a-f0-9]{6}$/
 
 export const branchNameToCfPagesSubdomain = (branchName: string): string => {
-  return branchName
+  const subdomain = branchName
     .toLowerCase()
     .replace(/[^a-z0-9]/g, '-')
     .slice(0, cfPagesPreviewSubdomainMaxLength)
+    .replace(/^-+|-+$/g, '')
+
+  return subdomain || cfPagesPreviewSubdomainFallback
 }
 
 export const vercelPreviewSlugToCfPagesSubdomain = (
