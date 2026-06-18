@@ -15,6 +15,11 @@ import { useIsNativeIn } from './useIsNativeInOrOut'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
+function hasRecipientSearchParam(search: string): boolean {
+  const searchParams = new URLSearchParams(search)
+  return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+}
+
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const tradeState = useDerivedTradeState()
@@ -29,15 +34,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
-  /**
-   * Derived synchronously from the URL rather than from the tradeStateFromUrl atom,
-   * which is only populated a render later. By the time the atom updates, the reset
-   * effects below have already wiped a recipient that was explicitly set in the URL.
-   */
-  const hasRecipientInUrl = useMemo(() => {
-    const searchParams = new URLSearchParams(location.search)
-    return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
-  }, [location.search])
+  const hasRecipientInUrl = useMemo(() => hasRecipientSearchParam(location.search), [location.search])
   const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
