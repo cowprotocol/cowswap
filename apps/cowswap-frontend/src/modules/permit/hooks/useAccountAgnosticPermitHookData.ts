@@ -31,11 +31,15 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
     }
 
     let isCancelled = false
-    generatePermitHook(params).then((result) => {
-      if (isCancelled) return
-
-      setData(result)
-    })
+    generatePermitHook(params)
+      .then((result) => {
+        if (isCancelled) return
+        setData(result)
+      })
+      .catch(() => {
+        if (isCancelled) return
+        setData(undefined)
+      })
 
     return () => {
       isCancelled = true

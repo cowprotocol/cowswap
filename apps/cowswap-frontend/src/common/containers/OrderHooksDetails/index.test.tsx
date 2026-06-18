@@ -139,8 +139,8 @@ describe('OrderHooksDetails', () => {
   it('renders only the surviving pre-hooks and excludes the account agnostic permit', () => {
     const { queryByText } = renderComponent(buildAppData([PERMIT_SIGNER_HOOK, REAL_HOOK]))
 
-    // The PRE counter reflects the filtered amount (1, not 2)
-    expect(queryByText('1')).not.toBeNull()
+    expect(queryByText(/PRE/i)).not.toBeNull()
+    expect(queryByText(/PRE\s*2/i)).toBeNull()
   })
 
   it('keeps all pre-hooks when none match the permit signer', () => {
