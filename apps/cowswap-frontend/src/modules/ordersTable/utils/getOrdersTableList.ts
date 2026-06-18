@@ -13,6 +13,13 @@ import { getParsedOrderFromTableItem, isParsedOrder } from './orderTableGroupUti
 import { OrdersTableList, OrderTableItem } from '../state/ordersTable.types'
 import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
 
+/*
+TODO: Arbitrary limit to mitigate performance issues for users that have many orders. We could consider:
+
+- Whether we want to log how many users have this many orders.
+- Check if cleaning up localStorage orders helps with performance.
+- Consider making this function async and breaking the loop into different chunks of work.
+*/
 const ORDER_LIMIT = 1000
 
 const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
