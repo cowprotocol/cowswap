@@ -18,8 +18,6 @@ export function useSetOptimisticAllowance(): (params: SetOptimisticAllowancePara
 
   return useCallback(
     (params: SetOptimisticAllowanceParams) => {
-      console.log('setting optimistic allowance', params)
-
       const key = getOptimisticAllowanceKey(params)
 
       // Set optimistic allowance immediately
