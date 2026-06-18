@@ -1,14 +1,17 @@
 import { ReactNode } from 'react'
 
-import { ButtonPrimary, ButtonSecondary, UI } from '@cowprotocol/ui'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
+
+import * as styledEl from './HookDappIframeReview.styled'
 
 import { PendingIframeHookMutation } from '../../containers/HookDappContainer/hookDappIframeRequests.utils'
 
 interface HookDappIframeReviewProps {
+  chainId: number
   dappName: string
   dappUrl: string
   isPreHook: boolean
@@ -18,6 +21,7 @@ interface HookDappIframeReviewProps {
 }
 
 export function HookDappIframeReview({
+  chainId,
   dappName,
   dappUrl,
   isPreHook,
@@ -34,156 +38,139 @@ export function HookDappIframeReview({
       : isPreHook
         ? t`Add pre-hook`
         : t`Add post-hook`
+  const targetLink = getExplorerLink(chainId, hook.target, ExplorerDataType.ADDRESS)
 
   return (
-    <Wrapper>
-      <CopyBlock>
-        <Title>
+    <styledEl.Wrapper>
+      <styledEl.CopyBlock>
+        <styledEl.Title>
           <Trans>Review hook request</Trans>
-        </Title>
-        <Description>
+        </styledEl.Title>
+        <styledEl.Description>
           <Trans>
             The embedded hook dapp requested a hook-state change. Review the request before it can be applied.
           </Trans>
-        </Description>
-      </CopyBlock>
+        </styledEl.Description>
+      </styledEl.CopyBlock>
 
-      <WarningBox>
+      <HookRequestDetails
+        actionLabel={actionLabel}
+        calldata={hook.callData}
+        dappName={dappName}
+        dappUrl={dappUrl}
+        gasLimit={hook.gasLimit}
+        recipientOverride={recipientOverride}
+        target={hook.target}
+        targetLink={targetLink}
+      />
+
+      <styledEl.WarningBox>
         <strong>
           <Trans>Caution</Trans>
         </strong>
         <span>
-          <Trans>Only confirm if you trust this dapp and recognize the target contract and calldata below.</Trans>
+          <Trans>Only confirm if you trust this dapp and recognize the target contract and calldata above.</Trans>
         </span>
-      </WarningBox>
+      </styledEl.WarningBox>
 
-      <DetailsGrid>
-        <Label>
-          <Trans>Action</Trans>
-        </Label>
-        <Value>{actionLabel}</Value>
-
-        <Label>
-          <Trans>Dapp</Trans>
-        </Label>
-        <Value>{dappName}</Value>
-
-        <Label>
-          <Trans>Source</Trans>
-        </Label>
-        <MonoValue>{dappUrl}</MonoValue>
-
-        <Label>
-          <Trans>Target</Trans>
-        </Label>
-        <MonoValue>{hook.target}</MonoValue>
-
-        <Label>
-          <Trans>Gas limit</Trans>
-        </Label>
-        <MonoValue>{hook.gasLimit}</MonoValue>
-
-        {recipientOverride && (
-          <>
-            <Label>
-              <Trans>Recipient override</Trans>
-            </Label>
-            <MonoValue>{recipientOverride}</MonoValue>
-          </>
-        )}
-      </DetailsGrid>
-
-      <CallDataBlock>
-        <Label>
-          <Trans>Calldata</Trans>
-        </Label>
-        <CallDataValue>{hook.callData}</CallDataValue>
-      </CallDataBlock>
-
-      <Actions>
-        <ButtonSecondary onClick={onCancel}>
-          <Trans>Cancel</Trans>
-        </ButtonSecondary>
+      <styledEl.Actions>
         <ButtonPrimary onClick={onConfirm}>
           <Trans>Confirm hook</Trans>
         </ButtonPrimary>
-      </Actions>
-    </Wrapper>
+        <styledEl.CancelButton onClick={onCancel}>
+          <Trans>Cancel</Trans>
+        </styledEl.CancelButton>
+      </styledEl.Actions>
+    </styledEl.Wrapper>
   )
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 0 10px 16px;
-`
+interface HookRequestDetailsProps {
+  actionLabel: string
+  calldata: string
+  dappName: string
+  dappUrl: string
+  gasLimit: string
+  recipientOverride?: string
+  target: string
+  targetLink: string
+}
 
-const CopyBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
+function HookRequestDetails(props: HookRequestDetailsProps): ReactNode {
+  const { actionLabel, calldata, dappName, dappUrl, gasLimit, recipientOverride, target, targetLink } = props
 
-const Title = styled.h3`
-  margin: 0;
-`
-
-const Description = styled.p`
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const WarningBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(${UI.COLOR_ALERT_BG});
-  color: var(${UI.COLOR_ALERT_TEXT});
-`
-
-const DetailsGrid = styled.div`
-  display: grid;
-  grid-template-columns: minmax(120px, 150px) 1fr;
-  gap: 8px 12px;
-`
-
-const Label = styled.span`
-  font-size: var(${UI.FONT_SIZE_SMALL});
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-const Value = styled.span`
-  color: var(${UI.COLOR_TEXT});
-`
-
-const MonoValue = styled.code`
-  font-family: var(${UI.FONT_FAMILY_MONO});
-  font-size: var(${UI.FONT_SIZE_SMALL});
-  white-space: normal;
-  overflow-wrap: anywhere;
-`
-
-const CallDataBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const CallDataValue = styled.pre`
-  margin: 0;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  font-family: var(${UI.FONT_FAMILY_MONO});
-  font-size: var(${UI.FONT_SIZE_SMALL});
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-`
-
-const Actions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-`
+  return (
+    <styledEl.DetailsTable>
+      <tbody>
+        <tr>
+          <td>
+            <Trans>Action</Trans>
+          </td>
+          <td>
+            <styledEl.Value>{actionLabel}</styledEl.Value>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Trans>Dapp</Trans>
+          </td>
+          <td>
+            <styledEl.Value>{dappName}</styledEl.Value>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Trans>Source</Trans>
+          </td>
+          <td>
+            <styledEl.ExternalValueLink href={dappUrl}>{dappUrl} ↗</styledEl.ExternalValueLink>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Trans>Target</Trans>
+          </td>
+          <td>
+            <styledEl.ExternalValueLink href={targetLink}>{target} ↗</styledEl.ExternalValueLink>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Trans>Gas limit</Trans>
+          </td>
+          <td>
+            <styledEl.Value>{gasLimit}</styledEl.Value>
+          </td>
+        </tr>
+        {recipientOverride && (
+          <tr>
+            <td>
+              <Trans>Recipient override</Trans>
+            </td>
+            <td>
+              <styledEl.Value>{recipientOverride}</styledEl.Value>
+            </td>
+          </tr>
+        )}
+        <tr>
+          <td>
+            <styledEl.LabelWithAction>
+              <Trans>Calldata</Trans>
+              <styledEl.CopyCalldataButton
+                value={calldata}
+                timeoutMs={1500}
+                iconOnly
+                iconSize={16}
+                copiedLabel={<Trans>Copied!</Trans>}
+                aria-label={t`Copy calldata`}
+              />
+            </styledEl.LabelWithAction>
+          </td>
+          <td>
+            <styledEl.CallDataValue>{calldata}</styledEl.CallDataValue>
+          </td>
+        </tr>
+      </tbody>
+    </styledEl.DetailsTable>
+  )
+}

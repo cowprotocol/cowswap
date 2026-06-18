@@ -174,6 +174,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     if (pendingIframeMutation) {
       return (
         <HookDappIframeReview
+          chainId={chainId}
           dappName={dapp.name}
           dappUrl={dapp.url}
           isPreHook={isPreHook}

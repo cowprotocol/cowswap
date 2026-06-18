@@ -11,6 +11,7 @@ import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
+import { InfoTable } from '../HookInfoTable'
 
 interface HookDappDetailsProps {
   dapp: HookDapp
@@ -78,7 +79,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
           <h3>
             <Trans>Information</Trans>
           </h3>
-          <table>
+          <InfoTable>
             <tbody>
               {tags
                 .filter(({ value, link }) => value || link)
@@ -100,7 +101,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
                   </tr>
                 ))}
             </tbody>
-          </table>
+          </InfoTable>
         </styled.Tags>
       )}
     </styled.Wrapper>
