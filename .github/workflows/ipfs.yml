@@ -6,69 +6,12 @@ on:
 
 permissions:
   contents: read
-  deployments: write
-
-env:
-  REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-  REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
-  REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
-  # Duplicated keys as these are required by `ipfs-deploy`
-  IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
-  IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
-  REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.BALANCES_WATCHER_BASE_URL }}
-  REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-  NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-  NODE_VERSION: lts/jod
-  REACT_APP_ENVIRONMENT: ens
 
 jobs:
-  ipfs:
-    name: IPFS
+  queue-ipfs-deploy:
+    name: Queue trusted IPFS deploy
     runs-on: ubuntu-latest
-    environment:
-      name: cowswap-ipfs
-      url: ${{ steps.deploy-ipfs.outputs.url }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
-
-      - name: Set up node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Web Apps
-        id: deploy-ipfs
-        run: |
-          set -euo pipefail
-
-          output="$(pnpm run ipfs)"
-          printf '%s\n' "$output"
-
-          cid="$(printf '%s\n' "$output" | node tools/scripts/extract-ipfs-deployment.mjs)"
-          url="https://dweb.link/ipfs/${cid}/"
-          fallback_url="https://inbrowser.link/ipfs/${cid}/"
-
-          echo "cid=${cid}" >> "$GITHUB_OUTPUT"
-          echo "url=${url}" >> "$GITHUB_OUTPUT"
-          echo "fallback_url=${fallback_url}" >> "$GITHUB_OUTPUT"
-          {
-            echo "### IPFS deployment"
-            echo
-            echo "- CID: \`${cid}\`"
-            echo "- Primary URL: ${url}"
-            echo "- Fallback URL: ${fallback_url}"
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Queue deploy on trusted workflow code
+        run: echo "Queued trusted IPFS deploy for ${GITHUB_REF} (${GITHUB_SHA})."
