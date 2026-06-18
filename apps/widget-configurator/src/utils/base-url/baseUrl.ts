@@ -44,23 +44,14 @@ export function getBaseUrl(): string {
   return 'https://swap.cow.fi'
 }
 
-/** URL segment colors: local → brandColor, preview → darkred, dev → orangered, production → green. */
-export function getEnvColor(brandColor: string, url: string): string {
-  if (url.startsWith('http://localhost:')) return brandColor
-
-  if (url.includes(cfPagesPreviewSuffix)) return 'darkred'
-
-  if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'orangered'
-
-  return 'green'
-}
-
-export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' {
-  if (url.startsWith('http://localhost:')) return 'Local'
+export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' | 'Unknown' {
+  if (/^https?:\/\/(localhost|127\.0\.0\.1|::1|\.localhost):\d+/.test(url)) return 'Local'
 
   if (url.includes(cfPagesPreviewSuffix)) return 'Preview'
 
   if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'Dev'
 
-  return 'Production'
+  if (url.startsWith('https://swap.cow.fi') || url.startsWith('https://widget.cow.fi')) return 'Production'
+
+  return 'Unknown'
 }
