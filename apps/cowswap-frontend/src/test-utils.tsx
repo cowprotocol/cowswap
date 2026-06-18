@@ -1,7 +1,7 @@
 import { Provider as JotaiProvider } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
-import { ReactElement, ReactNode, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo, useState } from 'react'
 
 import { Web3Provider } from '@cowprotocol/wallet'
 
@@ -35,15 +35,18 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }): ReactNo
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
+function createQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000,
+      },
     },
-  },
-})
+  })
+}
 
 const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
+  const [queryClient] = useState(createQueryClient)
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider messages={enMessages}>
@@ -76,6 +79,7 @@ export function WithMockedWeb3({
   children?: ReactNode
   location?: MockRouterLocation
 }): ReactNode {
+  const [queryClient] = useState(createQueryClient)
   return (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={location !== undefined ? [location] : undefined}>

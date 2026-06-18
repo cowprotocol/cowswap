@@ -19,7 +19,7 @@ function getInitialLocation(): Location {
 
   // We are using HashRouter, so we need to extract pathname and search from the hash:
   const { hash } = window.location
-  const [pathname, search] = hash.substring(1).split('?')
+  const [pathname = '', search = ''] = hash.substring(1).split('?')
 
   return {
     key: `INITIAL_LOCATION_KEY_${Date.now()}`,

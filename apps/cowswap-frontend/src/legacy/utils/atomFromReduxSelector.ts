@@ -11,7 +11,11 @@ export function atomFromReduxSelector<T>(
   const baseAtom = atom<T>(selector(cowSwapStore.getState()))
 
   baseAtom.onMount = (set) => {
-    let prev = selector(cowSwapStore.getState())
+    const initialValue = selector(cowSwapStore.getState())
+
+    set(initialValue)
+
+    let prev = initialValue
 
     const unsubscribe = cowSwapStore.subscribe(() => {
       const next = selector(cowSwapStore.getState())

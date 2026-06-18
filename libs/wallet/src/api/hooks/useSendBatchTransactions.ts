@@ -23,6 +23,10 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
+      if (isBundlingSupported === null) {
+        throw new Error('Batch transactions status not know yet')
+      }
+
       if (isBundlingSupported && account && chainId) {
         const calls = txs.map(({ to, value, data }) => ({
           to: to as Hex,

@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { usePendingOrdersPrices } from 'modules/orders/hooks/usePendingOrdersPrices'
+import { usePendingOrdersPrices } from 'modules/orders'
 
 import * as styledEl from './AffectedPermitOrdersTable.styled'
 

@@ -9,8 +9,7 @@ const ENABLE_ORDERS_TABLE_DEBUG = false
 /**
  * Debug logging for orders table.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function logOrdersTableDebug(message: string, ...optionalParams: any[]): void {
+export function logOrdersTableDebug(message: string, ...optionalParams: unknown[]): void {
   if (process.env.NODE_ENV === 'development' && ENABLE_ORDERS_TABLE_DEBUG) {
     console.debug(`[OrdersTable] ${message}`, ...optionalParams)
   }

@@ -86,9 +86,7 @@ ordersTableStateAtom.onMount = () => {
     const uiOrderType: UiOrderType = UI_ORDER_TYPE_BY_TAB_ORDER_TYPE[orderType]
 
     if (!uiOrderType) {
-      logOrdersTableDebug('Invalid orderType/uiOrderType', { orderType, uiOrderType })
-
-      return
+      throw new Error(`Invalid orderType = ${orderType} or uiOrderType = ${uiOrderType}`)
     }
 
     const reduxOrdersStateInCurrentChain = getReduxOrdersStateByChain(get(reduxOrdersStateAtom), chainId)
@@ -108,9 +106,7 @@ ordersTableStateAtom.onMount = () => {
     logOrdersTableDebug(`1. reduxOrdersStateInCurrentChain (${chainId}) =`, reduxOrdersStateInCurrentChain)
 
     if (!reduxOrdersStateInCurrentChain || !reduxOrders || !ordersTokensSet) {
-      logOrdersTableDebug('Redux orders missing', { reduxOrdersStateInCurrentChain, reduxOrders, ordersTokensSet })
-
-      return
+      throw new Error('Redux orders missing')
     }
 
     if (orderType === TabOrderTypes.ADVANCED) {

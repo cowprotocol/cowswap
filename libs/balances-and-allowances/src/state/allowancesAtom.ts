@@ -64,6 +64,7 @@ function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
   return [
     params.chainId,
     getAddressKey(params.account ?? ''),
+    getAddressKey(params.spender ?? ''),
     ...params.tokenAddresses.map((a) => getAddressKey(a)).sort(),
   ].join(',')
 }

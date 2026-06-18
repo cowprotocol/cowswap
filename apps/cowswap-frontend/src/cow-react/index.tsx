@@ -34,10 +34,10 @@ import {
   WithLDProvider,
 } from 'modules/application'
 
+import { hashHistory } from 'common/constants/routes'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
-import { hashHistory } from '../common/constants/routes'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 

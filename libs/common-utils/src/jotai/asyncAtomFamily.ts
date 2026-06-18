@@ -59,8 +59,11 @@ export function asyncAtomFamily<P, T>(
       }
 
       let cancelled = false
+      let timeoutId = 0
 
       const fetchData = async (): Promise<void> => {
+        if (cancelled) return
+
         fetcher(params)
           .then((result) => {
             if (cancelled) return
@@ -77,7 +80,7 @@ export function asyncAtomFamily<P, T>(
           })
           .finally(() => {
             if (!cancelled && refetchInterval) {
-              setTimeout(fetchData, refetchInterval)
+              timeoutId = window.setTimeout(fetchData, refetchInterval)
             }
           })
       }
@@ -86,6 +89,7 @@ export function asyncAtomFamily<P, T>(
 
       return () => {
         cancelled = true
+        clearTimeout(timeoutId)
         family.remove(params)
       }
     }
