@@ -1,6 +1,6 @@
-import type { TradeQuoteState } from '../state/tradeQuoteAtom'
-
 import { isNonEvmPlaceholderRecipient } from '../utils/getBridgeQuoteSigner'
+
+import type { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 export function assertValidBridgeRecipient(tradeQuoteState: TradeQuoteState): void {
   /**
