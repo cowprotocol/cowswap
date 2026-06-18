@@ -74,12 +74,7 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
         >
           {title}
         </Typography>
-        <SidebarEnvBadge
-          brandColor={brandColor}
-          baseUrl={baseUrl}
-          configuratorOrigin={location.origin}
-          sdkVersion={sdkVersion}
-        />
+        <SidebarEnvBadge baseUrl={baseUrl} configuratorOrigin={location.origin} sdkVersion={sdkVersion} />
       </Box>
 
       {!IS_IFRAME && (

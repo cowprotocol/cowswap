@@ -2,7 +2,6 @@ import {
   LOCAL_WIDGET_REACT_VERSION,
   NPM_WIDGET_REACT_FIRST_VERSION_WITH_ON_READY,
   NPM_WIDGET_REACT_LATEST_VERSION,
-  PINNED_LEGACY_WIDGET_SDK_VERSIONS,
   VALID_WIDGET_SDK_VERSIONS,
   type WidgetSdkVersion,
 } from './widget-sdk-versions.constants'
@@ -20,20 +19,6 @@ function isSemverAtLeast(version: string, minimum: string): boolean {
   }
 
   return true
-}
-
-/**
- * SDK segment colors — keep in sync with {@link getEnvColor} in base-url/baseUrl.ts:
- * local → brandColor, latest npm → green, first legacy → orangered, older pinned → darkred.
- */
-export function getSdkEnvColor(brandColor: string, sdkVersion: WidgetSdkVersion): string {
-  if (sdkVersion === 'local') return brandColor
-
-  if (sdkVersion === NPM_WIDGET_REACT_LATEST_VERSION) return 'green'
-
-  if (sdkVersion === PINNED_LEGACY_WIDGET_SDK_VERSIONS[0]) return 'orangered'
-
-  return 'darkred'
 }
 
 /**

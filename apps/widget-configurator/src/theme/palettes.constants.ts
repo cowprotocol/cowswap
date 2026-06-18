@@ -26,6 +26,9 @@ export const darkPalette: PaletteOptions = {
     gradient:
       'radial-gradient(50% 500px at 50% -6%, rgba(0, 41, 102, 0.7) 0%, rgb(7, 24, 50) 50%, rgb(6, 22, 45) 100%), radial-gradient(circle at -70% 50%, rgba(0, 43, 102, 0.7) 0px, transparent 50%)',
   },
+  warning: {
+    main: Color.alertDark,
+  },
 }
 
 export const lightPalette: PaletteOptions = {
@@ -47,5 +50,8 @@ export const lightPalette: PaletteOptions = {
   cow: {
     background: '#ffffff',
     gradient: 'linear-gradient(45deg, rgb(234, 233, 255) 14.64%, rgb(202, 233, 255) 85.36%) fixed',
+  },
+  warning: {
+    main: Color.alertLight,
   },
 }
