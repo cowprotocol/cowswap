@@ -22,13 +22,16 @@ const mockedUseNetworkId = jest.mocked(useNetworkId)
 const mockedGetSolverCompetitionByTxHash = jest.mocked(getSolverCompetitionByTxHash)
 const mockedFetchSolversInfo = jest.mocked(fetchSolversInfo)
 
+const BLANC_ADDRESS = '0xBlanc0000000000000000000000000000000001'
+const EXT_QUASIMODO_ADDRESS = '0xExt00000000000000000000000000000000000002'
+
 const MOCK_SOLVERS: SolverInfo[] = [
   {
     solverId: 'projectblanc',
     displayName: 'Project Blanc',
     image: 'https://example.com/blanc.png',
     networks: [],
-    deployments: [],
+    deployments: [{ chainId: 1, chainName: 'mainnet', address: BLANC_ADDRESS, active: true }],
   },
 ]
 
@@ -37,17 +40,16 @@ const CROSS_NETWORK_SOLVER: SolverInfo = {
   displayName: 'ExtQuasimodo',
   image: 'https://example.com/extquasimodo.svg',
   networks: [],
-  deployments: [],
+  deployments: [{ chainId: 1, chainName: 'mainnet', address: EXT_QUASIMODO_ADDRESS, active: true }],
 }
 
-function mockSolverCompetitionResponse(solverName: string, orderId: string): SolverCompetitionResponse {
+function mockSolverCompetitionResponse(solverAddress: string, orderId: string): SolverCompetitionResponse {
   return {
     auctionId: 1,
     solutions: [
       {
-        solver: solverName,
         isWinner: true,
-        solverAddress: '0xsolver',
+        solverAddress,
         ranking: 1,
         orders: [{ id: orderId }],
       } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
@@ -71,9 +73,9 @@ describe('useTradeSolver', () => {
     expect(result.current.isLoading).toBe(false)
   })
 
-  it('resolves solver from txHash competition data', async () => {
+  it('resolves solver from txHash competition data by matching the winner solverAddress', async () => {
     const orderId = '0xorder123'
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc', orderId))
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS, orderId))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const { result } = renderHook(() => useTradeSolver('0xtx123', orderId))
@@ -88,11 +90,25 @@ describe('useTradeSolver', () => {
     expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
+  it('returns undefined solver when the winner solverAddress matches no known deployment', async () => {
+    const orderId = '0xorderNoMatch'
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
+      mockSolverCompetitionResponse('0xUnknownAddress00000000000000000000000000', orderId),
+    )
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+
+    const { result } = renderHook(() => useTradeSolver('0xtxNoMatch', orderId))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toBeUndefined()
+  })
+
   it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
     const orderId = '0xorder456'
     mockedUseNetworkId.mockReturnValue(42161)
     mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
-      mockSolverCompetitionResponse('extquasimodo-solve', orderId),
+      mockSolverCompetitionResponse(EXT_QUASIMODO_ADDRESS, orderId),
     )
     mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
 
@@ -141,9 +157,8 @@ describe('useTradeSolver', () => {
       auctionId: 1,
       solutions: [
         {
-          solver: 'projectblanc',
           isWinner: true,
-          solverAddress: '0xsolver',
+          solverAddress: BLANC_ADDRESS,
           ranking: 1,
           orders: [{ id: winnerOrderId }],
         } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],

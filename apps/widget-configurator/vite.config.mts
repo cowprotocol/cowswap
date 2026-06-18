@@ -31,6 +31,8 @@ export default defineConfig(({ mode }) => {
     root: path.resolve(__dirname, './'),
     define: {
       ...getReactProcessEnv(mode),
+      // Maps Vercel env var into the build so the branch name can be reused inside the app
+      'process.env.VERCEL_GIT_COMMIT_REF': JSON.stringify(process.env.VERCEL_GIT_COMMIT_REF || ''),
     },
 
     cacheDir: '../../node_modules/.vite/widget-configurator',
