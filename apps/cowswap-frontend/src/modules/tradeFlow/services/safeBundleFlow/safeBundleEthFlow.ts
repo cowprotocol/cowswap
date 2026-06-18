@@ -18,6 +18,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -100,6 +101,7 @@ export async function safeBundleEthFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
+    assertValidBridgeRecipient(tradeContext.tradeQuoteState)
 
     const {
       orderId,
