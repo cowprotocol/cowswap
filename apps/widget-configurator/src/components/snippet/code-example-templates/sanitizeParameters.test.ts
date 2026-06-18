@@ -25,6 +25,38 @@ describe('snippet export', () => {
     expect(vanillaNoDepsExample(dappModeParams, DEFAULT_DARK_PALETTE)).toContain('"standaloneMode": false')
   })
 
+  it('drops hostile trade asset values from generated snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: 'test-app',
+      sell: {
+        asset: '</script><script>alert(1)</script>',
+      },
+      buy: {
+        asset: '"><img src=x onerror=alert(1)>',
+      },
+    }
+
+    const snippet = vanillaNoDepsExample(params, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).not.toContain('"sell":')
+    expect(snippet).not.toContain('"buy":')
+    expect(snippet).not.toContain('alert(1)')
+    expect(snippet).not.toContain('\\u003c/script')
+  })
+
+  it('preserves valid trade asset values in copied TS snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: 'test-app',
+      sell: { asset: 'USDC', amount: '100000' },
+      buy: { asset: 'COW', amount: '0' },
+    }
+
+    const snippet = tsExample(params, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).toContain('"asset": "USDC"')
+    expect(snippet).toContain('"asset": "COW"')
+  })
+
   it('omits standaloneMode when it matches the widget default', () => {
     const snippet = formatParameters({ appCode: 'test-app', standaloneMode: true }, 0, false, DEFAULT_DARK_PALETTE)
 
