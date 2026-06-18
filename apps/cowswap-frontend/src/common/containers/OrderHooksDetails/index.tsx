@@ -10,7 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
-import { AppDataInfo, decodeAppData, filterPermitSignerPermit } from 'modules/appData'
+import { AppDataInfo, decodeAppData } from 'modules/appData'
 import { useCustomHookDapps } from 'modules/hooksStore/hooks/useCustomHookDapps'
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
@@ -53,13 +53,7 @@ export function OrderHooksDetails({
 
   const hasSomeFailedSimulation = isTradeConfirmation && Object.values(data || {}).some((hook) => !hook.status)
 
-  /**
-   * AppData might include a hook with an account agnostic permit (owner === PERMIT_ACCOUNT) which is only
-   * used to fetch a quote. It's a fake permit and must not be displayed.
-   * The same hook is stripped from appData before order signing (see filterPermitSignerPermit usage in handlePermit).
-   */
-  const preHooks = (metadata.hooks?.pre || []).filter(filterPermitSignerPermit)
-  const preHooksToDapp = matchHooksToDappsRegistry(preHooks, preCustomHookDapps)
+  const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
 
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null
