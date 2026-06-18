@@ -22,7 +22,6 @@ export const vercelPreviewSlugToCfPagesSubdomain = (
   branchName = process.env.VERCEL_GIT_COMMIT_REF,
 ): string => {
   const branch = branchName || branchSlug.replace(vercelPreviewHashSuffix, '')
-
   return branchNameToCfPagesSubdomain(branch)
 }
 
@@ -38,7 +37,6 @@ const getBaseUrl = (): string => {
 
     return `https://${vercelPreviewSlugToCfPagesSubdomain(prKey)}${cfPagesPreviewSuffix}`
   }
-
   return 'https://swap.cow.fi'
 }
 
