@@ -59,6 +59,7 @@ export interface TradeFormValidationCommonContext {
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tradePriceImpact: PriceImpact
   isNonEvmReceiverConfirmed: boolean
+  isRestoringConnection: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -76,6 +77,7 @@ export enum TradeFormValidation {
   WalletNotSupported,
   SafeReadonlyUser,
   WalletCapabilitiesLoading,
+  RestoringWallet,
 
   // Quote request params
   CurrencyNotSet,

@@ -38,6 +38,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     injectedWidgetParams,
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
+    isRestoringConnection,
   } = context
 
   const {
@@ -122,7 +123,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isSwapUnsupported && !account) {
-    validations.push(TradeFormValidation.WalletNotConnected)
+    validations.push(
+      isRestoringConnection ? TradeFormValidation.RestoringWallet : TradeFormValidation.WalletNotConnected,
+    )
   }
 
   if (!isSupportedWallet) {

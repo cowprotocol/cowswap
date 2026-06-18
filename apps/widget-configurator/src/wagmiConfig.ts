@@ -4,7 +4,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConnectorController } from '@reown/appkit-controllers'
-import { coinbaseWallet } from '@wagmi/connectors'
+import { coinbaseWallet, safe } from '@wagmi/connectors'
 import { http } from 'viem'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
@@ -84,7 +84,7 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'
 
 export const wagmiAdapter = new WagmiAdapter({
-  connectors: [coinbaseWallet({ preference: { options: 'all' } })],
+  connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
   customRpcUrls,
   networks,
   projectId,

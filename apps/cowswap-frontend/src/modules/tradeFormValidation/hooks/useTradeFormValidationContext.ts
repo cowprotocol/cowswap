@@ -6,7 +6,13 @@ import { Nullish } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
-import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import {
+  useGnosisSafeInfo,
+  useIsRestoringConnection,
+  useIsTxBundlingSupported,
+  useWalletDetails,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -44,6 +50,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
+  const isRestoringConnection = useIsRestoringConnection()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -117,6 +124,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isInputCurrencyXstock,
       isOutputCurrencyXstock,
       isNonEvmReceiverConfirmed,
+      isRestoringConnection,
     }
   }, [
     hasFirstLoad,
@@ -149,6 +157,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     injectedWidgetParams,
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
+    isRestoringConnection,
   ])
 }
 
