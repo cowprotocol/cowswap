@@ -83,6 +83,7 @@
     "@tanstack/react-virtual": "3.13.12",
     "@uniswap/token-lists": "1.0.0-beta.33",
     "@use-gesture/react": "10.3.1",
+    "@wagmi/core": "3.4.8",
     "bignumber.js": "9.1.2",
     "buffer": "6.0.3",
     "color2k": "2.0.2",

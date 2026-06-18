@@ -1,5 +1,8 @@
-import { GAS_API_KEYS, GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
+import { isEvmChain, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { wagmiAdapter } from '@cowprotocol/wallet'
+
+import { getGasPrice } from '@wagmi/core'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
@@ -20,22 +23,10 @@ export type GasFeeEndpointResponse = {
   slow: string | null
 }
 
-export interface EstimatedPrice {
-  confidence: number
-  price: number
-  maxFeePerGas: number
-  maxPriorityFeePerGas: number
-}
-
 type GasPrices = Omit<GasFeeEndpointResponse, 'lastUpdate'>
 
-// Here the key is what we use in gas state and the value is confidence level
-// coming from the Blockscout api, so we map state values with confidence lvls
-const priceMap: GasPrices = {
-  fast: '99',
-  average: '90',
-  slow: '70',
-}
+// The Blockscout gas price oracle returns prices (floats in gwei) for these confidence levels
+const PRICE_KEYS: Array<keyof GasPrices> = ['fast', 'average', 'slow']
 
 class GasFeeApi {
   getUrl(chainId: ChainId): string {
@@ -43,22 +34,9 @@ class GasFeeApi {
   }
 
   supportedChain(chainId: ChainId): boolean {
-    return !!GAS_FEE_ENDPOINTS[chainId]
-  }
-
-  getHeaders(chainId: ChainId): { headers?: Headers } {
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const headers: { [key: string]: any } = {}
-    const apiKey = GAS_API_KEYS[chainId]
-
-    if (apiKey) {
-      headers.headers = new Headers({
-        Authorization: apiKey,
-      })
-    }
-
-    return headers
+    // Gas prices come either from the Blockscout oracle or, as a fallback, from the
+    // eth_gasPrice RPC method - both of which only apply to EVM chains.
+    return isEvmChain(chainId)
   }
 
   toWei(input: number | null): string | null {
@@ -69,19 +47,8 @@ class GasFeeApi {
     return Math.floor(input * ONE_GWEI).toString()
   }
 
-  getBlocknativePrice(data: EstimatedPrice[], lvl: string | null): number | null {
-    if (!data || !lvl) {
-      return null
-    }
-
-    const price = data.find(({ confidence }: EstimatedPrice) => lvl === String(confidence))?.price
-
-    return price || null
-  }
-
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parseData(json: any, chainId: ChainId): GasFeeEndpointResponse {
+  // Parse data from the Blockscout gas price oracle, e.g. { "slow": 0.16, "average": 0.44, "fast": 2.06 }
+  parseData(json: Record<keyof GasPrices, number>): GasFeeEndpointResponse {
     const output: GasFeeEndpointResponse = {
       lastUpdate: new Date().toISOString(),
       fast: null,
@@ -89,41 +56,46 @@ class GasFeeApi {
       slow: null,
     }
 
-    if (this.getUrl(chainId).match(/blocknative/)) {
-      // Parse data from Blocknative
-      const prices = json?.blockPrices[0]?.estimatedPrices
-
-      if (prices) {
-        for (const [key, value] of Object.entries(priceMap)) {
-          const price = this.getBlocknativePrice(prices, value)
-          output[key as keyof GasPrices] = this.toWei(price)
-        }
-      }
-    } else {
-      // Parse data from Blockscout
-      for (const key of Object.keys(priceMap)) {
-        output[key as keyof GasPrices] = this.toWei(json[key])
-      }
+    for (const key of PRICE_KEYS) {
+      output[key] = this.toWei(json[key])
     }
 
     return output
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  async fetchData(chainId: ChainId) {
-    const url = this.getUrl(chainId)
-    const headers = this.getHeaders(chainId)
-    const response = await fetchRateLimited(url, headers)
+  async fetchData(url: string): Promise<Record<keyof GasPrices, number>> {
+    const response = await fetchRateLimited(url)
 
     return response.json()
   }
 
-  async getGasPrices(chainId: ChainId = ChainId.MAINNET): Promise<GasFeeEndpointResponse> {
-    const data = await this.fetchData(chainId)
-    const parsed = this.parseData(data, chainId)
+  // Fallback used when there is no gas price oracle endpoint for the network,
+  // or when the request to it failed. Returns the same value for all confidence levels.
+  async getGasPriceFromRpc(chainId: ChainId): Promise<GasFeeEndpointResponse> {
+    const gasPrice = (await getGasPrice(wagmiAdapter.wagmiConfig, { chainId })).toString()
 
-    return parsed
+    return {
+      lastUpdate: new Date().toISOString(),
+      fast: gasPrice,
+      average: gasPrice,
+      slow: gasPrice,
+    }
+  }
+
+  async getGasPrices(chainId: ChainId = ChainId.MAINNET): Promise<GasFeeEndpointResponse> {
+    const url = this.getUrl(chainId)
+
+    if (url) {
+      try {
+        const data = await this.fetchData(url)
+
+        return this.parseData(data)
+      } catch (error) {
+        console.error('[gasFeeApi] Failed to fetch gas prices from the oracle, falling back to RPC', error)
+      }
+    }
+
+    return this.getGasPriceFromRpc(chainId)
   }
 }
 
