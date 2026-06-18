@@ -28,6 +28,7 @@ type PermitDeps = {
   walletClient: WalletClient | undefined
 }
 
+// eslint-disable-next-line complexity
 async function runPermitRequest(
   params: GeneratePermitHookParams,
   amount: bigint,
@@ -39,6 +40,14 @@ async function runPermitRequest(
   walletClient: PermitDeps['walletClient'],
 ): Promise<PermitHookData | undefined> {
   if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
+
+  const chainIdMissMatch = publicClient.chain.id !== chainId
+
+  /**
+   * Never try using eip2612Utils which instantiated with a client on one chain agains another one
+   * Because getTokenNonce() will fail at the first iteration and will never get recovered
+   */
+  if (chainIdMissMatch) return
 
   const eip2612Utils = await getPermitUtilsInstance({
     chainId,
