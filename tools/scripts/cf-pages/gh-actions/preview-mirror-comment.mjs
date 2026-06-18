@@ -29,10 +29,8 @@ export function buildPreviewCommentBody({
   return `<!-- ${MANAGED_COMMENT_MARKER} ${markerAttributes.join(' ')} -->
 Cloudflare Pages preview mirror
 
-Preview branch: \`${branchName}\`
 Preview branch URL: https://github.com/${repoFullName}/tree/${branchName}
 Mirror PR: #${mirrorPullRequestNumber}
-Mirror PR URL: ${mirrorPullRequestUrl}
 Cloudflare Pages preview links will be posted on the mirror PR by the Cloudflare Pages GitHub integration once builds complete.
 
 Source fork branch: \`${sourceRepoFullName}:${sourceBranch}\`
