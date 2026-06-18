@@ -11,6 +11,8 @@ export interface AsyncAtomFamilyOptions<P, T> {
   familyLabel?: string
   /** Written when `fetcher` rejects. If omitted, errors are logged and the atom stays `null` (loading). */
   valueOnError?: T
+  /** Refetch interval in milliseconds. */
+  refetchInterval?: number
 }
 
 const DEFAULT_OPTIONS = {
@@ -18,6 +20,7 @@ const DEFAULT_OPTIONS = {
   maxFamilyMembersWarning: 4,
   familyLabel: 'asyncAtomFamily',
   valueOnError: undefined,
+  refetchInterval: undefined,
 } as const satisfies AsyncAtomFamilyOptions<unknown, unknown>
 
 /**
@@ -38,7 +41,10 @@ export function asyncAtomFamily<P, T>(
   fetcher: (params: P) => Promise<T | null>,
   options?: AsyncAtomFamilyOptions<P, T>,
 ): AtomFamily<P, Atom<T | null>> {
-  const { areEqual, maxFamilyMembersWarning, familyLabel, valueOnError } = { ...DEFAULT_OPTIONS, ...options }
+  const { areEqual, maxFamilyMembersWarning, familyLabel, valueOnError, refetchInterval } = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+  }
 
   const family = atomFamily((params: P) => {
     const dataAtom = atom<T | null>(null)
@@ -54,20 +60,29 @@ export function asyncAtomFamily<P, T>(
 
       let cancelled = false
 
-      fetcher(params)
-        .then((result) => {
-          if (cancelled) return
-          if (result === null) return
-          set(result)
-        })
-        .catch((error: unknown) => {
-          console.error(`[${familyLabel}] error`, error)
+      const fetchData = async (): Promise<void> => {
+        fetcher(params)
+          .then((result) => {
+            if (cancelled) return
+            if (result === null) return
+            set(result)
+          })
+          .catch((error: unknown) => {
+            console.error(`[${familyLabel}] error`, error)
 
-          if (cancelled) return
-          if (valueOnError !== undefined) {
-            set(valueOnError)
-          }
-        })
+            if (cancelled) return
+            if (valueOnError !== undefined) {
+              set(valueOnError)
+            }
+          })
+          .finally(() => {
+            if (!cancelled && refetchInterval) {
+              setTimeout(fetchData, refetchInterval)
+            }
+          })
+      }
+
+      fetchData()
 
       return () => {
         cancelled = true

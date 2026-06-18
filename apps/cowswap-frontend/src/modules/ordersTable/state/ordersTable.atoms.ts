@@ -7,12 +7,15 @@ import {
   balancesAtom,
   tokenAllowancesFamily,
   tradeSpenderAtom,
+  AllowancesState,
 } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
 
+import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
+import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
 import { observe } from 'jotai-effect'
 
 import { OrderStatus, Order } from 'legacy/state/orders/actions'
@@ -139,7 +142,8 @@ ordersTableStateAtom.onMount = () => {
     const spender = spenderOverride ?? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
     const balancesState = get(balancesAtom)
-    const allowancesState = get(
+
+    let allowancesState = get(
       tokenAllowancesFamily({
         connector,
         chainId,
@@ -148,6 +152,24 @@ ordersTableStateAtom.onMount = () => {
         tokenAddresses: Array.from(ordersTokensSet),
       }),
     )
+
+    // TODO: Merge optimistic allowances here manually until allowancesAtom / allowances module consolidates
+    // all allowance-related logic:
+
+    if (allowancesState) {
+      const optimisticAllowances = get(optimisticAllowancesAtom)
+
+      allowancesState = Object.entries(allowancesState).reduce((acc, [tokenAddress, allowanceAmount]) => {
+        const optimisticAllowanceKey =
+          !tokenAddress || !account || !spender
+            ? ''
+            : getOptimisticAllowanceKey({ chainId, tokenAddress, owner: account, spender })
+
+        acc[tokenAddress] = optimisticAllowances[optimisticAllowanceKey]?.amount ?? allowanceAmount
+
+        return acc
+      }, {} as AllowancesState)
+    }
 
     // TODO: This can probably be optimized, as we are loading allowances for all orders tokens regardless of order
     // type or status.

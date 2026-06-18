@@ -7,6 +7,7 @@ import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvm
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { isEip1193Provider } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
 import { createPublicClient, custom, erc20Abi, http, type Address, type PublicClient } from 'viem'
 import { Connector } from 'wagmi'
 
@@ -79,6 +80,9 @@ export interface TokenAllowancesFamilyParams {
   tokenAddresses: string[]
 }
 
+// TODO: Combine apps/cowswap-frontend/src/common/hooks/useTokenAllowance.ts and optimisticAllowancesAtom
+// in here. We should use a module to cache a Map of allowances per chain/token/owner/spender.
+
 export const tokenAllowancesFamily = asyncAtomFamily(
   async (params: TokenAllowancesFamilyParams): Promise<AllowancesState | null> => {
     const { connector, chainId, account, spender, tokenAddresses } = params
@@ -93,6 +97,7 @@ export const tokenAllowancesFamily = asyncAtomFamily(
     areEqual: areTokenAllowancesParamsEqual,
     familyLabel: 'tokenAllowancesFamily',
     valueOnError: {} as AllowancesState,
+    refetchInterval: ms`32s`,
   },
 )
 
