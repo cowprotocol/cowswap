@@ -212,6 +212,9 @@ describe('useBalancesWatcherSession', () => {
 
     expect(result.current.error).toBe('stream closed by server')
     expect(result.current.isLoading).toBe(false)
+    // First-load gate must close even on error, otherwise form validation
+    // keeps the UI in BalancesLoading forever (see useTradeFormValidationContext).
+    expect(result.current.hasFirstLoad).toBe(true)
   })
 
   it('ignores non-terminal SSE errors (transport is reconnecting)', async () => {
@@ -244,6 +247,7 @@ describe('useBalancesWatcherSession', () => {
 
     expect(result.current.error).toBe('service unavailable')
     expect(result.current.isLoading).toBe(false)
+    expect(result.current.hasFirstLoad).toBe(true)
     expect(mockSubscribe).not.toHaveBeenCalled()
   })
 

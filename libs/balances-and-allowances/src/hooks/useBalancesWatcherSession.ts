@@ -72,14 +72,14 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
             // Non-terminal errors mean EventSource is reconnecting — the
             // transport recovers on its own. Only surface terminal errors.
             if (!terminal) return
-            setBalances((state) => ({ ...state, error: error.message, isLoading: false }))
+            setBalances((state) => applyTerminalError(state, error.message))
           },
         })
       })
       .catch((error: unknown) => {
         if (cancelled) return
         const message = error instanceof Error ? error.message : String(error)
-        setBalances((state) => ({ ...state, error: message, isLoading: false }))
+        setBalances((state) => applyTerminalError(state, message))
       })
 
     return () => {
@@ -87,6 +87,22 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
       subscription?.close()
     }
   }, [account, chainId, tokensListsUrls, customTokens, setBalances])
+}
+
+/**
+ * Mark the first-load gate as concluded (with error). Form-validation reads
+ * `!hasFirstLoad` to decide whether to keep the UI in `BalancesLoading` —
+ * without setting it on the error path, a watcher failure before the first
+ * SSE event would leave the UI stuck on a permanent loading spinner instead
+ * of surfacing the error state.
+ */
+function applyTerminalError(state: BalancesState, message: string): BalancesState {
+  return {
+    ...state,
+    error: message,
+    isLoading: false,
+    hasFirstLoad: true,
+  }
 }
 
 function writeBalancesUpdate(
