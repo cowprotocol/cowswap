@@ -5,6 +5,12 @@ describe('branchNameToCfPagesSubdomain', () => {
     expect(branchNameToCfPagesSubdomain('cf-preview/pr-7657')).toBe('cf-preview-pr-7657')
     expect(branchNameToCfPagesSubdomain('Feature/API_fix')).toBe('feature-api-fix')
     expect(branchNameToCfPagesSubdomain('fix/deepsec-high-frontend-hardening')).toBe('fix-deepsec-high-frontend-ha')
+    expect(branchNameToCfPagesSubdomain('test-----a-badna9878979/-long-andweird7896branchname')).toBe(
+      'test-----a-badna9878979--lon',
+    )
+    expect(branchNameToCfPagesSubdomain('test--branch--wierd/--')).toBe('test--branch--wierd')
+    expect(branchNameToCfPagesSubdomain('/feature/')).toBe('feature')
+    expect(branchNameToCfPagesSubdomain('---')).toBe('preview')
   })
 })
 
