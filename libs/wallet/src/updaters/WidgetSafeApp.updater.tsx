@@ -17,7 +17,7 @@ export function WidgetSafeApp(): null {
   const disconnect = useDisconnectWallet()
 
   const isSafeApp = getIsSafeAppIframe()
-  const isSafeConnector = connector?.id === 'safe'
+  const isSafeConnector = connector?.id === SAFE_CONNECTOR_ID
   const isDisconnectInProgress = useRef(false)
 
   useEffect(() => {

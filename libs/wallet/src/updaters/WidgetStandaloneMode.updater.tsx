@@ -6,7 +6,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { useConnection } from 'wagmi'
 
-import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
+import { COW_WIDGET_CONNECTOR_ID, SAFE_CONNECTOR_ID } from '../reown/consts'
 import { appWalletContextAtom } from '../state/appWalletContext.atom'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
@@ -42,7 +42,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   const disconnect = useDisconnectWallet()
 
   const isSafeApp = getIsSafeAppIframe()
-  const isSafeConnector = connector?.id === 'safe'
+  const isSafeConnector = connector?.id === SAFE_CONNECTOR_ID
   const isWidgetConnector = connector?.id === COW_WIDGET_CONNECTOR_ID
   const isDappMode = standaloneMode === false
   const isStandaloneMode = standaloneMode === true
