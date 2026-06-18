@@ -22,7 +22,6 @@ export const vercelPreviewSlugToCfPagesSubdomain = (
   branchName = process.env.VERCEL_GIT_COMMIT_REF,
 ): string => {
   const branch = branchName || branchSlug.replace(vercelPreviewHashSuffix, '')
-
   return branchNameToCfPagesSubdomain(branch)
 }
 
