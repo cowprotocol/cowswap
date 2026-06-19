@@ -252,6 +252,9 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    // Take urlChainId directly from window.location to avoid race conditions
+    const urlChainId = getRawCurrentChainIdFromUrl()
+
     // When we came back to the tab and there is a new chainId in provider
     const providerChangedNetworkWhenWindowInactive =
       isWindowVisible && prevIsWindowVisible !== isWindowVisible && providerChainId !== urlChainId

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "3.14.0",
+  "version": "3.15.0",
   "private": true,
   "description": "CoW Swap",
   "main": "index.js",
@@ -72,6 +72,7 @@
     "@react-spring/web": "9.7.3",
     "@reown/appkit": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
+    "@reown/appkit-controllers": "1.8.19",
     "@reduxjs/toolkit": "1.9.5",
     "@safe-global/api-kit": "4.0.1",
     "@safe-global/types-kit": "3.0.0",
