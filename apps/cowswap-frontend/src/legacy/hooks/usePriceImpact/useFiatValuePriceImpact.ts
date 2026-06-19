@@ -35,10 +35,9 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
   useEffect(() => {
-    if (!isTradeSetUp) {
-      setHasLoadingTimedOut(false)
-      return
-    }
+    logPriceImpact.debug(`Price impact timeout reset`)
+    setHasLoadingTimedOut(false)
+    if (!isTradeSetUp) return
 
     const timeoutId = setTimeout(() => {
       setHasLoadingTimedOut(true)
@@ -46,7 +45,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp])
+  }, [isTradeSetUp, inputToken, outputToken])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
