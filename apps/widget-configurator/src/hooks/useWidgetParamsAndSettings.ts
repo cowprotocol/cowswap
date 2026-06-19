@@ -15,23 +15,26 @@ function getTokenListsParam(
 }
 
 function getForcedOrderDeadline({
-  deadline,
   swapDeadline,
   limitDeadline,
   advancedDeadline,
 }: Pick<
   ConfiguratorState,
-  'deadline' | 'swapDeadline' | 'limitDeadline' | 'advancedDeadline'
+  'swapDeadline' | 'limitDeadline' | 'advancedDeadline'
 >): CowSwapWidgetParams['forcedOrderDeadline'] {
   const hasPerTradeDeadline = !!(swapDeadline || limitDeadline || advancedDeadline)
 
-  return hasPerTradeDeadline
-    ? {
-        [TradeType.SWAP]: swapDeadline ?? deadline,
-        [TradeType.LIMIT]: limitDeadline ?? deadline,
-        [TradeType.ADVANCED]: advancedDeadline ?? deadline,
-      }
-    : deadline
+  if (!hasPerTradeDeadline) return undefined
+
+  if (swapDeadline && swapDeadline === limitDeadline && swapDeadline === advancedDeadline) {
+    return swapDeadline
+  }
+
+  return {
+    [TradeType.SWAP]: swapDeadline,
+    [TradeType.LIMIT]: limitDeadline,
+    [TradeType.ADVANCED]: advancedDeadline,
+  }
 }
 
 function confirmWidgetHookAction(message: string): boolean {
@@ -191,7 +194,6 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Deadlines:
 
-    deadline,
     swapDeadline,
     limitDeadline,
     advancedDeadline,
@@ -215,6 +217,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
   const baseUrl = rawBaseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
   const legacyIframeDimensionParams = getLegacyIframeDimensionParams(iframeStyle)
+  const forcedOrderDeadline = getForcedOrderDeadline({ swapDeadline, limitDeadline, advancedDeadline })
 
   return {
     ...legacyIframeDimensionParams,
@@ -270,7 +273,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Deadlines:
 
-    forcedOrderDeadline: getForcedOrderDeadline({ deadline, swapDeadline, limitDeadline, advancedDeadline }),
+    forcedOrderDeadline,
 
     // Integrations:
 

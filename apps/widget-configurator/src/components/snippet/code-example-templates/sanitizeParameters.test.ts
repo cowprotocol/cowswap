@@ -1,4 +1,4 @@
-import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 
 import { WIDGET_SNIPPET_APP_CODE_PLACEHOLDER } from './common/codeExample.constants'
 import { formatParameters } from './common/formatParameters.utils'
@@ -62,6 +62,37 @@ describe('snippet export', () => {
     const snippet = formatParameters({ appCode: 'test-app', standaloneMode: true }, 0, false, DEFAULT_DARK_PALETTE)
 
     expect(snippet).not.toContain('standaloneMode')
+  })
+
+  it('omits configurator reset deadline values from copied snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: 'test-app',
+      forcedOrderDeadline: {
+        [TradeType.SWAP]: 30,
+        [TradeType.LIMIT]: 10080,
+        [TradeType.ADVANCED]: 60,
+      },
+    }
+
+    const snippet = formatParameters(params, 0, false, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).not.toContain('forcedOrderDeadline')
+  })
+
+  it('preserves non-default forced deadline values in copied snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: 'test-app',
+      forcedOrderDeadline: {
+        [TradeType.SWAP]: 45,
+        [TradeType.LIMIT]: 10080,
+      },
+    }
+
+    const snippet = formatParameters(params, 0, false, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).toContain('"forcedOrderDeadline"')
+    expect(snippet).toContain('"swap": 45')
+    expect(snippet).not.toContain('"limit"')
   })
 
   it('omits deprecated top-level width when iframeStyle carries sizing', () => {

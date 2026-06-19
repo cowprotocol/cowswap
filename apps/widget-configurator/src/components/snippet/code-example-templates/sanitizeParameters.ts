@@ -13,6 +13,9 @@ import {
 
 import {
   CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
+  DEFAULT_ADVANCED_DEADLINE_MINUTES,
+  DEFAULT_LIMIT_DEADLINE_MINUTES,
+  DEFAULT_SWAP_DEADLINE_MINUTES,
   sanitizeConfiguratorAppCode,
 } from '../../../configurator.constants'
 import { ColorPalette } from '../../../configurator.types'
@@ -121,6 +124,7 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
 
   sanitized.sell = sanitizeTradeAsset(sanitized.sell)
   sanitized.buy = sanitizeTradeAsset(sanitized.buy)
+  sanitized.forcedOrderDeadline = sanitizeForcedOrderDeadline(sanitized.forcedOrderDeadline)
 
   if (!isTradeType(sanitized.tradeType)) {
     delete sanitized.tradeType
@@ -170,6 +174,32 @@ function sanitizeTradeAsset(
   }
 
   return isTradeAssetIdentifier(value.asset) ? value : undefined
+}
+
+function sanitizeForcedOrderDeadline(
+  value: CowSwapWidgetParams['forcedOrderDeadline'],
+): CowSwapWidgetParams['forcedOrderDeadline'] | undefined {
+  if (value === DEFAULT_SWAP_DEADLINE_MINUTES) return undefined
+
+  if (!isPlainObject(value)) return value
+
+  const deadlineByTradeType = value as Partial<Record<TradeType, unknown>>
+
+  return pruneNestedValue({
+    ...value,
+    [TradeType.SWAP]:
+      deadlineByTradeType[TradeType.SWAP] === DEFAULT_SWAP_DEADLINE_MINUTES
+        ? undefined
+        : deadlineByTradeType[TradeType.SWAP],
+    [TradeType.LIMIT]:
+      deadlineByTradeType[TradeType.LIMIT] === DEFAULT_LIMIT_DEADLINE_MINUTES
+        ? undefined
+        : deadlineByTradeType[TradeType.LIMIT],
+    [TradeType.ADVANCED]:
+      deadlineByTradeType[TradeType.ADVANCED] === DEFAULT_ADVANCED_DEADLINE_MINUTES
+        ? undefined
+        : deadlineByTradeType[TradeType.ADVANCED],
+  }) as CowSwapWidgetParams['forcedOrderDeadline'] | undefined
 }
 
 function isTradeAssetIdentifier(value: string): boolean {

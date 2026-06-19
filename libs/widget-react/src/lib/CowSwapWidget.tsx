@@ -55,9 +55,9 @@ export function CowSwapWidget({
 
     if (
       !containerRef.current ||
-      (JSON.stringify(paramsRef.current) === JSON.stringify(params) &&
-        !paramsHooksDifferent &&
-        !enableSafeSdkBridgeDifferent)
+      (!paramsHooksDifferent &&
+        !enableSafeSdkBridgeDifferent &&
+        JSON.stringify(paramsRef.current) === JSON.stringify(params))
     ) {
       return
     }

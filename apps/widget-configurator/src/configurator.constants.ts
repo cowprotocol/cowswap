@@ -1,4 +1,10 @@
-import { COW_CDN, SupportedLocale, LOCALE_DISPLAY_NAMES, SUPPORTED_LOCALES } from '@cowprotocol/common-const'
+import {
+  COW_CDN,
+  SupportedLocale,
+  LOCALE_DISPLAY_NAMES,
+  SUPPORTED_LOCALES,
+  DEFAULT_DEADLINE_FROM_NOW,
+} from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -135,6 +141,15 @@ export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
   },
 ]
 
+// Mirrors swap/yield default transaction deadline in the embedded widget.
+export const DEFAULT_SWAP_DEADLINE_MINUTES = DEFAULT_DEADLINE_FROM_NOW / 60
+
+// Mirrors the default limit order deadline: 7 days.
+export const DEFAULT_LIMIT_DEADLINE_MINUTES = 7 * 24 * 60
+
+// Mirrors the default advanced/TWAP order deadline: 1 hour.
+export const DEFAULT_ADVANCED_DEADLINE_MINUTES = 60
+
 export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   // Basics:
 
@@ -184,7 +199,6 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   // Deadlines:
 
-  deadline: undefined,
   swapDeadline: undefined,
   limitDeadline: undefined,
   advancedDeadline: undefined,

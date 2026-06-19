@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react'
 
+import {
+  DEFAULT_ADVANCED_DEADLINE_MINUTES,
+  DEFAULT_LIMIT_DEADLINE_MINUTES,
+  DEFAULT_SWAP_DEADLINE_MINUTES,
+} from '../../../configurator.constants'
 import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
@@ -15,22 +20,12 @@ export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormPro
   return (
     <>
       <NumberInput
-        name="deadline"
-        label="Global Deadline"
-        value={values.deadline}
-        onChange={onChange}
-        unit="min"
-        emptyValue={undefined}
-        parseValue={parseDeadlineValue}
-        inputProps={{ min: 1, step: 1 }}
-      />
-      <NumberInput
         name="swapDeadline"
         label="Swap Deadline"
         value={values.swapDeadline}
         onChange={onChange}
         unit="min"
-        emptyValue={undefined}
+        emptyValue={DEFAULT_SWAP_DEADLINE_MINUTES}
         parseValue={parseDeadlineValue}
         inputProps={{ min: 1, step: 1 }}
       />
@@ -40,7 +35,7 @@ export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormPro
         value={values.limitDeadline}
         onChange={onChange}
         unit="min"
-        emptyValue={undefined}
+        emptyValue={DEFAULT_LIMIT_DEADLINE_MINUTES}
         parseValue={parseDeadlineValue}
         inputProps={{ min: 1, step: 1 }}
       />
@@ -50,7 +45,7 @@ export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormPro
         value={values.advancedDeadline}
         onChange={onChange}
         unit="min"
-        emptyValue={undefined}
+        emptyValue={DEFAULT_ADVANCED_DEADLINE_MINUTES}
         parseValue={parseDeadlineValue}
         inputProps={{ min: 1, step: 1 }}
       />

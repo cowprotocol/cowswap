@@ -81,7 +81,6 @@ export interface ConfiguratorFormValues {
 
   // Deadlines:
 
-  deadline: number | undefined
   swapDeadline: number | undefined
   limitDeadline: number | undefined
   advancedDeadline: number | undefined

@@ -31,7 +31,7 @@ export function NumberInput({
 }: NumberInputProps): ReactNode {
   const parseNumberValue = (rawValue: string): number | null | undefined => {
     if (rawValue === '') {
-      return emptyValue
+      return null
     }
 
     if (parseValue) {
@@ -47,7 +47,7 @@ export function NumberInput({
   }
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
-    onChange(name, parseNumberValue(event.target.value))
+    onChange(name, event.target.value ? parseNumberValue(event.target.value) : emptyValue)
     if (onBlur) onBlur(event)
   }
 
@@ -60,6 +60,7 @@ export function NumberInput({
       type="number"
       name={name}
       value={value ?? ''}
+      placeholder={emptyValue === null || emptyValue === undefined ? undefined : String(emptyValue)}
       onChange={handleChange}
       onBlur={handleBlur}
       sx={[...unitAdornedSx, ...resolvedSx]}
