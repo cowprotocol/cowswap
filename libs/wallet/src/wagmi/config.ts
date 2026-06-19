@@ -1,10 +1,10 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, logBaseWallet } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { ConnectorController } from '@reown/appkit-controllers'
+import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
@@ -122,19 +122,121 @@ if (getIsSafeAppIframe()) {
 bindActiveProvider(wagmiAdapter)
 
 if (typeof window !== 'undefined') {
+  logBaseWallet('init', 'wallet config boot', {
+    href: window.location.href,
+    inIframe: window.parent !== window.self,
+    wagmiConnectorIds: wagmiAdapter.wagmiConfig.connectors.map((connector) => connector.id),
+  })
+
   const coinbaseConnector = wagmiAdapter.wagmiConfig.connectors.find((c) => c.id === 'coinbaseWalletSDK')
-  void coinbaseConnector?.getProvider?.().catch(() => undefined)
-  void import('@wagmi/connectors').catch(() => undefined)
+
+  if (!coinbaseConnector) {
+    logBaseWallet('init', 'coinbaseWalletSDK connector NOT found in wagmi config')
+  } else {
+    void coinbaseConnector
+      .getProvider?.()
+      .then(() => {
+        logBaseWallet('init', 'coinbaseWalletSDK provider warmup finished')
+      })
+      .catch((error: unknown) => {
+        logBaseWallet('init', 'coinbaseWalletSDK provider warmup failed', { error: String(error) })
+      })
+  }
+
+  void import('@wagmi/connectors')
+    .then(() => {
+      logBaseWallet('init', '@wagmi/connectors pre-import finished')
+    })
+    .catch((error: unknown) => {
+      logBaseWallet('init', '@wagmi/connectors pre-import failed', { error: String(error) })
+    })
 
   const originalGetConnector = ConnectorController.getConnector.bind(ConnectorController)
   ConnectorController.getConnector = (params) => {
     const match = originalGetConnector(params)
-    if (match) return match
-    if (params.id === COINBASE_LEGACY_WALLET_ID) {
-      return originalGetConnector({ id: 'coinbaseWalletSDK', namespace: params.namespace })
+    if (match) {
+      logBaseWallet('getConnector', 'resolved connector', {
+        requestedId: params.id,
+        namespace: params.namespace,
+        connectorId: match.id,
+        connectorName: match.name,
+        explorerId: match.explorerId,
+      })
+      return match
     }
+
+    if (params.id === COINBASE_LEGACY_WALLET_ID) {
+      const legacyMatch = originalGetConnector({ id: 'coinbaseWalletSDK', namespace: params.namespace })
+      logBaseWallet('getConnector', 'legacy Coinbase wallet id remapped to coinbaseWalletSDK', {
+        requestedId: params.id,
+        namespace: params.namespace,
+        resolved: legacyMatch ? { id: legacyMatch.id, name: legacyMatch.name } : null,
+      })
+      return legacyMatch
+    }
+
+    logBaseWallet('getConnector', 'NO connector found', {
+      requestedId: params.id,
+      namespace: params.namespace,
+      registeredConnectors: ConnectorController.state.allConnectors.map((connector) => ({
+        id: connector.id,
+        name: connector.name,
+        explorerId: connector.explorerId,
+        chain: connector.chain,
+      })),
+    })
     return undefined
   }
+
+  const originalSelectWalletConnector = ConnectorController.selectWalletConnector.bind(ConnectorController)
+  ConnectorController.selectWalletConnector = (wallet) => {
+    const namespace = ChainController.state.activeChain
+    const connector = namespace ? ConnectorController.getConnector({ id: wallet.id, namespace }) : undefined
+
+    logBaseWallet('selectWallet', 'wallet clicked in AppKit modal', {
+      walletId: wallet.id,
+      walletName: wallet.name,
+      namespace,
+      resolvedConnector: connector
+        ? { id: connector.id, name: connector.name, explorerId: connector.explorerId }
+        : null,
+      route: connector ? 'ConnectingExternal' : 'ConnectingWalletConnect',
+    })
+
+    return originalSelectWalletConnector(wallet)
+  }
+
+  let loggedConnectorSnapshot = false
+  ConnectorController.subscribe((state) => {
+    if (loggedConnectorSnapshot) {
+      return
+    }
+
+    const hasCoinbaseConnectors = state.allConnectors.some(
+      (connector) => connector.id === 'coinbaseWalletSDK' || connector.id === 'baseAccount',
+    )
+
+    if (!hasCoinbaseConnectors) {
+      return
+    }
+
+    loggedConnectorSnapshot = true
+    logBaseWallet('connectors', 'AppKit registered coinbase-related connectors', {
+      connectors: state.allConnectors
+        .filter(
+          (connector) =>
+            connector.id === 'coinbaseWalletSDK' ||
+            connector.id === 'baseAccount' ||
+            connector.explorerId === 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+        )
+        .map((connector) => ({
+          id: connector.id,
+          name: connector.name,
+          explorerId: connector.explorerId,
+          chain: connector.chain,
+        })),
+    })
+  })
 }
 
 export { wagmiAdapter, reownAppKit, wagmiStorage }

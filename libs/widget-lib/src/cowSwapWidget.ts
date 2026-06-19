@@ -323,6 +323,15 @@ function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowL
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
     ({ href, rel, target }) => {
       const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
+      const allowed = Boolean(resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl))
+
+      logWidgetParentBaseWallet('parent', 'INTERCEPT_WINDOW_OPEN from iframe', {
+        href: href.toString(),
+        resolvedUrl,
+        target,
+        rel,
+        allowed,
+      })
 
       if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
         // Deeplinks intercepted from the iframe often use `_self`, which would navigate
@@ -330,7 +339,13 @@ function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowL
         const parentTarget = target === '_self' || !target ? '_blank' : target
         const parentFeatures = rel || 'noopener noreferrer'
 
-        window.open(resolvedUrl, parentTarget, parentFeatures)
+        const popup = window.open(resolvedUrl, parentTarget, parentFeatures)
+        logWidgetParentBaseWallet('parent', 'window.open on parent page', {
+          resolvedUrl,
+          parentTarget,
+          parentFeatures,
+          popupIsNull: popup === null,
+        })
       }
     },
     iframeOrigin,
@@ -438,4 +453,31 @@ function processWidgetHooks(
     },
     iframeOrigin,
   )
+}
+
+function logWidgetParentBaseWallet(scope: string, message: string, detail?: unknown): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    const enabled =
+      sessionStorage.getItem('cowDebugBaseWallet') === '1' ||
+      window.location.search.includes('debugBaseWallet=1') ||
+      /^widget\.cow\.fi$|^dev\.widget\.cow\.fi$/.test(window.location.hostname) ||
+      /widget-configurator.*\.vercel\.app$/i.test(window.location.hostname)
+
+    if (!enabled) {
+      return
+    }
+
+    const label = `[cow-base-wallet:${scope}]`
+    if (detail !== undefined) {
+      console.log(label, message, detail)
+    } else {
+      console.log(label, message)
+    }
+  } catch {
+    // ignore
+  }
 }

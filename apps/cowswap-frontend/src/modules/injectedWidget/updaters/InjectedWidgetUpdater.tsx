@@ -2,7 +2,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { deepEqual } from '@cowprotocol/common-utils'
+import { deepEqual, logBaseWallet } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   UpdateAppDataPayload,
@@ -38,6 +38,11 @@ import {
 
   if (!parent || !isInIframe || !parentOrigin) return
 
+  logBaseWallet('iframe', 'InjectedWidget window.open intercept installed', {
+    parentOrigin,
+    href: window.location.href,
+  })
+
   /**
    * To avoid delays, immediately send an activation message and start listening messages
    */
@@ -58,11 +63,26 @@ import {
   window.open = function (...args) {
     const [href = '', target = '', features = ''] = args
     const hrefString = resolveInterceptedWindowOpenHref(href)
+    const openInIframe = isWalletPopupWindowOpen(hrefString, features)
+
+    logBaseWallet('iframe', 'window.open intercepted', {
+      href: hrefString,
+      target,
+      features,
+      openInIframe,
+      action: openInIframe ? 'native-popup-in-iframe' : 'forward-to-parent',
+    })
 
     // Coinbase/Base Account popups must open from the iframe so the SDK gets a real Window
     // back for postMessage. Deeplinks without popup features are forwarded to the parent.
-    if (isWalletPopupWindowOpen(hrefString, features)) {
-      return nativeWindowOpen(href, target, features)
+    if (openInIframe) {
+      const popup = nativeWindowOpen(href, target, features)
+      logBaseWallet('iframe', 'native window.open result', {
+        href: hrefString,
+        popupIsNull: popup === null,
+        popupClosed: popup?.closed,
+      })
+      return popup
     }
 
     widgetIframeTransport.postMessageToWindow(
