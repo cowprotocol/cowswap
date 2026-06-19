@@ -107,10 +107,16 @@ describe('useBalancesWatcherSession', () => {
     expect(mockSubscribe).not.toHaveBeenCalled()
   })
 
-  it('does not create a session when both lists and customTokens are empty', () => {
-    renderSession(makeParams({ tokensListsUrls: [], customTokens: [] }))
+  it('does not create a session when both lists and customTokens are empty, but still closes the first-load gate', () => {
+    const { result } = renderSession(makeParams({ tokensListsUrls: [], customTokens: [] }))
 
     expect(mockCreateSession).not.toHaveBeenCalled()
+    // Without this, useTradeFormValidationContext keeps the swap UI in
+    // BalancesLoading forever for an EVM account with no tokens to track.
+    expect(result.current.hasFirstLoad).toBe(true)
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toBeNull()
+    expect(result.current.chainId).toBe(SupportedChainId.MAINNET)
   })
 
   it('does not create a session for a non-EVM chain (Solana)', () => {

@@ -40,7 +40,13 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
   useEffect(() => {
     if (!account) return
     if (!isEvmChain(chainId)) return
-    if (tokensListsUrls.length === 0 && customTokens.length === 0) return
+    if (tokensListsUrls.length === 0 && customTokens.length === 0) {
+      // Nothing to subscribe to, but we still must close the first-load gate
+      // so form validation does not park the UI in `BalancesLoading` forever
+      // (see comment on `applyTerminalError`).
+      setBalances((state) => applyEmptyLoad(state, chainId))
+      return
+    }
 
     // Each effect run owns its own `cancelled` flag; the cleanup flips this
     // run's flag to true so any later `.then` / SSE callback short-circuits.
@@ -100,6 +106,16 @@ function applyTerminalError(state: BalancesState, message: string): BalancesStat
   return {
     ...state,
     error: message,
+    isLoading: false,
+    hasFirstLoad: true,
+  }
+}
+
+function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
+  return {
+    ...state,
+    chainId,
+    error: null,
     isLoading: false,
     hasFirstLoad: true,
   }
