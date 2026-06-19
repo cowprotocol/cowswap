@@ -24,6 +24,13 @@ const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
 const HISTORY_TX_COUNT_LIMIT = 100
 
+const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
+
+function getSafeApiHeaders(): HeadersInit {
+  if (!SAFE_API_AUTH_TOKEN) return {}
+  return { Authorization: `Bearer ${SAFE_API_AUTH_TOKEN}` }
+}
+
 export type TwapDataArray = TwapOrdersSafeData[]
 
 export type FetchTwapOrdersFromSafeResult = {
@@ -99,9 +106,10 @@ async function fetchRecentlyExecutedTransactions(
 ): Promise<FetchTwapOrdersFromSafeResult> {
   try {
     const url = getExecutedTransactionsUrl(chainId, safeAddress, since, nextUrl)
+    const headers = getSafeApiHeaders()
 
     logExecutedTransactionsFetch(nextUrl, since)
-    const response = await fetchJson<AllTransactionsListResponse>(url)
+    const response = await fetchWithFallback<AllTransactionsListResponse>(url, headers)
     const results = response?.results || []
     const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
     const nextNewestSubmissionDate = getNewestSubmissionDate([
@@ -181,10 +189,12 @@ async function fetchSafeTransactionsChunk(
   safeAddress: string,
   nextUrl?: string,
 ): Promise<SafeTransactionsChunk> {
+  const headers = getSafeApiHeaders()
+
   if (nextUrl) {
     try {
       console.log('[COW][SafeAPI] Fetch TWAP pending orders (next page)')
-      const response = await fetchJson<AllTransactionsListResponse>(nextUrl)
+      const response = await fetchWithFallback<AllTransactionsListResponse>(nextUrl, headers)
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
@@ -199,11 +209,19 @@ async function fetchSafeTransactionsChunk(
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, false)
 
   console.log('[COW][SafeAPI] Fetch TWAP pending orders (first page)')
-  return fetchJson(url)
+  return fetchWithFallback(url, headers)
 }
 
-function fetchJson<T>(url: string): Promise<T> {
-  return fetch(url).then((res) => res.json())
+function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
+  return fetch(url, { headers })
+    .then((res) => {
+      if (res.status === 429 || res.status === 403) {
+        console.log('[COW][SafeAPI] Fetching without API Key (fallback)')
+        return fetch(url)
+      }
+      return res
+    })
+    .then((res) => res.json())
 }
 
 function getSafeHistoryRequestUrl(
