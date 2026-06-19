@@ -24,4 +24,21 @@ describe('mapWidgetTheme', () => {
     expect(result.primary).toBe('#ffffff')
     expect(result.boxShadow1).toBe('0 12px 12px rgba(5, 43, 101, 0.06)')
   })
+
+  it('maps legacy palette boxShadow to the main widget container shadow', () => {
+    const defaultTheme = {
+      boxShadow1: '0 12px 12px rgba(5, 43, 101, 0.06)',
+      paper: '#ffffff',
+    } as DefaultTheme
+
+    const widgetTheme: Partial<CowSwapWidgetPalette> = {
+      paper: '#101010',
+      boxShadow: 'none',
+    }
+
+    const result = mapWidgetTheme(widgetTheme, defaultTheme)
+
+    expect(result.paper).toBe('#101010')
+    expect(result.boxShadow1).toBe('none')
+  })
 })

@@ -175,6 +175,27 @@ describe('buildWidgetUrlQuery', () => {
     expect(palette.widgetBorderRadius).toBeUndefined()
   })
 
+  it('serializes legacy palette boxShadow when provided', () => {
+    const query = buildWidgetUrlQuery({
+      theme: {
+        baseTheme: 'light',
+        primary: '#052b65',
+        background: '#FFFFFF',
+        paper: '#FFFFFF',
+        text: '#052B65',
+        danger: '#D41300',
+        warning: '#F8D06B',
+        alert: '#DB971E',
+        info: '#0d5ed9',
+        success: '#007B28',
+        boxShadow: 'none',
+      },
+    })
+
+    const palette = JSON.parse(decodeURIComponent(query.get('palette') || ''))
+    expect(palette.boxShadow).toBe('none')
+  })
+
   it('includes locale in the iframe URL', () => {
     expect(buildWidgetUrl({ chainId, tradeType, locale: 'fr' })).toBe(
       'https://swap.cow.fi/#/1/widget/swap/_/_?palette=null&lng=fr',

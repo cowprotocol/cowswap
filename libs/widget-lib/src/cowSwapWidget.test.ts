@@ -182,8 +182,76 @@ describe('createCowSwapWidget', () => {
 
     const iframe = getIframe(container)
 
-    expect(warnSpy).toHaveBeenCalledWith('Both iframeStyle.width and width params have been set. width will be ignored')
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Both params.width and iframeStyle.width have been set. params.width will be ignored.',
+    )
     expect(iframe.style.width).toBe('320px')
+
+    warnSpy.mockRestore()
+  })
+
+  it('warns when deprecated theme.boxShadow is used', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    widgetHandlers.push(
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'widget-test',
+          theme: {
+            baseTheme: 'light',
+            primary: '#052b65',
+            background: '#FFFFFF',
+            paper: '#FFFFFF',
+            text: '#052B65',
+            danger: '#D41300',
+            warning: '#F8D06B',
+            alert: '#DB971E',
+            info: '#0d5ed9',
+            success: '#007B28',
+            boxShadow: 'none',
+          },
+        },
+      }),
+    )
+
+    expect(warnSpy).toHaveBeenCalledWith('params.theme.boxShadow is deprecated. Use cardStyle.boxShadow instead.')
+
+    warnSpy.mockRestore()
+  })
+
+  it('warns when deprecated theme.boxShadow conflicts with cardStyle.boxShadow', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    widgetHandlers.push(
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'widget-test',
+          theme: {
+            baseTheme: 'light',
+            primary: '#052b65',
+            background: '#FFFFFF',
+            paper: '#FFFFFF',
+            text: '#052B65',
+            danger: '#D41300',
+            warning: '#F8D06B',
+            alert: '#DB971E',
+            info: '#0d5ed9',
+            success: '#007B28',
+            boxShadow: 'none',
+          },
+          cardStyle: { boxShadow: '0 0 32px 0 black' },
+        },
+      }),
+    )
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Both params.theme.boxShadow and cardStyle.boxShadow have been set. params.theme.boxShadow will be ignored.',
+    )
+    expect(warnSpy).not.toHaveBeenCalledWith('params.theme.boxShadow is deprecated. Use cardStyle.boxShadow instead.')
 
     warnSpy.mockRestore()
   })

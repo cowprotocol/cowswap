@@ -13,6 +13,7 @@ import {
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
+import { isCowSwapWidgetPalette } from './themeUtils'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -240,31 +241,48 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   return iframe
 }
 
-// eslint-disable-next-line complexity
 function updateIframeElement(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
   assignElementStyles(iframe, params.iframeStyle)
 
-  // Deprecated but left here for backwards compatibility:
-  if (params.width || params.height || params.maxHeight) {
-    console.warn(
-      '`width`, `height` and `maxHeight` params are deprecated. Use `iframeStyle.width`, `iframeStyle.height` and `iframeStyle.maxHeight` instead.',
-    )
+  const deprecatedParams = [
+    {
+      name: 'params.width',
+      value: params.width,
+      replacementName: 'iframeStyle.width',
+      replacementValue: params.iframeStyle?.width,
+      applyDeprecated: () => (params.width ? (iframe.width = params.width) : void 0),
+    },
+    {
+      name: 'params.height',
+      value: params.height,
+      replacementName: 'iframeStyle.height',
+      replacementValue: params.iframeStyle?.height,
+      applyDeprecated: () => (params.height ? (iframe.height = params.height) : void 0),
+    },
+    {
+      name: 'params.maxHeight',
+      value: params.maxHeight,
+      replacementName: 'iframeStyle.maxHeight',
+      replacementValue: params.iframeStyle?.maxHeight,
+      applyDeprecated: () => (params.maxHeight ? (iframe.style.maxHeight = `${params.maxHeight}px`) : void 0),
+    },
+    {
+      name: 'params.theme.boxShadow',
+      value: isCowSwapWidgetPalette(params.theme) ? params.theme.boxShadow : undefined,
+      replacementName: 'cardStyle.boxShadow',
+      replacementValue: params.cardStyle?.boxShadow,
+      applyDeprecated: () => void 0,
+    },
+  ].filter((paramConfig) => !!paramConfig.value)
 
-    const ignoredParams = []
-
-    if (params.iframeStyle?.width) ignoredParams.push('width')
-    if (params.iframeStyle?.height) ignoredParams.push('height')
-    if (params.iframeStyle?.maxHeight) ignoredParams.push('maxHeight')
-
-    ignoredParams.forEach((param) => {
-      console.warn(`Both iframeStyle.${param} and ${param} params have been set. ${param} will be ignored`)
-    })
-
-    if (params.width && params.iframeStyle?.width === undefined) iframe.width = params.width
-    if (params.height && params.iframeStyle?.height === undefined) iframe.height = params.height
-    if (params.maxHeight && params.iframeStyle?.maxHeight === undefined)
-      iframe.style.maxHeight = `${params.maxHeight}px`
-  }
+  deprecatedParams.forEach((param) => {
+    if (param.replacementValue) {
+      console.warn(`Both ${param.name} and ${param.replacementName} have been set. ${param.name} will be ignored.`)
+    } else {
+      console.warn(`${param.name} is deprecated. Use ${param.replacementName} instead.`)
+      param.applyDeprecated()
+    }
+  })
 
   if (lastDynamicHeight) iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }

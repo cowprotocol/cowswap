@@ -16,7 +16,7 @@ export function mapWidgetTheme(
 ): DefaultTheme {
   if (!widgetTheme) return defaultTheme
 
-  const { boxShadow, ...widgetPalette } = widgetTheme as Partial<CowSwapWidgetPalette> & { boxShadow?: string }
+  const { boxShadow, ...widgetPalette } = widgetTheme as Partial<CowSwapWidgetPalette>
 
   return {
     ...defaultTheme,

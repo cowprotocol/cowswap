@@ -76,4 +76,19 @@ describe('snippet export', () => {
     expect(snippet).toContain('"width": "100%"')
     expect((snippet.match(/"width": "100%"/g) ?? []).length).toBe(1)
   })
+
+  it('preserves legacy palette boxShadow in copied snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: 'test-app',
+      theme: {
+        baseTheme: 'light',
+        ...DEFAULT_DARK_PALETTE,
+        boxShadow: 'none',
+      },
+    }
+
+    const snippet = tsExample(params, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).toContain('"boxShadow": "none"')
+  })
 })
