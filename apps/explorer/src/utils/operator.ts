@@ -375,6 +375,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount,
     executedFee,
     totalFee,
+    gasCost,
     invalidated,
     ...rest
   } = rawOrder
@@ -402,6 +403,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount: new BigNumber(executedFeeAmount),
     executedFee: executedFee ? new BigNumber(executedFee) : null,
     totalFee: new BigNumber(totalFee),
+    gasCost: gasCost ? new BigNumber(gasCost) : undefined,
     cancelled: invalidated,
     status,
     partiallyFilled,
@@ -464,8 +466,8 @@ function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
 
 /**
  * Returns the fee policy's `factor`, when present. Its meaning is policy-specific: for `volume`
- * it's a fraction of trade volume (surfaced as basis points to tell otherwise identical labels
- * apart); for `surplus` / `priceImprovement` it's a fraction of the surplus / improvement.
+ * it's a fraction of trade volume; for `surplus` / `priceImprovement` it's a fraction of the
+ * surplus / improvement.
  */
 function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
   if (policy) {
@@ -477,42 +479,46 @@ function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined
 }
 
 /**
- * Collects the protocol fees charged across the order's trades, aggregated per category so an
- * order with many fills shows one total per category instead of a row per fill. Fees are grouped
- * by token and fee type; volume fees are additionally split by their bps factor, matching how the
- * UI labels them (e.g. a protocol volume fee vs a partner volume fee).
+ * Collects the protocol fees charged across the order's trades, aggregated so an order with many
+ * fills shows one total per policy instead of a row per fill.
  *
- * We intentionally do not try to reconstruct network costs: `order.totalFee` (the executed fee)
- * mixes network costs and protocol fees and cannot be split back apart reliably, so we only
- * surface the protocol fees the API reports per trade.
+ * Fees are aggregated by their position in `executedProtocolFees` ("listed in the order they got
+ * applied"). Fee policies are fixed for an order, so the fee at a given position refers to the same
+ * policy in every fill — summing per position both collapses the fills and preserves the applied
+ * order, which is what lets the UI tell the protocol's own fee (applied first) from the partner
+ * fees that follow it (the API doesn't otherwise distinguish them).
+ *
+ * We intentionally do not try to reconstruct network costs from this: `order.totalFee` mixes
+ * network costs and protocol fees and can't be split back apart. Network costs come from the
+ * order's `gasCost` instead.
  */
 export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
-  const feesByCategory = new Map<string, ProtocolFee>()
+  const feesByPosition = new Map<number, ProtocolFee>()
 
   for (const { executedProtocolFees } of trades) {
     if (!executedProtocolFees) continue
-    for (const { amount, token, policy } of executedProtocolFees) {
-      if (!amount || !token) continue
+    executedProtocolFees.forEach(({ amount, token, policy }, position) => {
+      if (!amount || !token) return
       const parsedAmount = new BigNumber(amount)
-      // Skip non-positive fees: a policy can apply yet charge nothing (e.g. no surplus to
-      // capture), and a "0" fee row is just noise in the breakdown.
-      if (!parsedAmount.isGreaterThan(0)) continue
 
-      const tokenAddress = getAddressKey(token)
-      const type = getProtocolFeeType(policy)
-      const factor = getProtocolFeeFactor(policy)
-      // Group fees that would render identically: same token and type, and — for volume fees,
-      // which are labeled with their bps — the same factor.
-      const key = `${tokenAddress}-${type}-${type === ProtocolFeeType.Volume ? factor : ''}`
-
-      const existing = feesByCategory.get(key)
+      const existing = feesByPosition.get(position)
       if (existing) {
         existing.amount = existing.amount.plus(parsedAmount)
       } else {
-        feesByCategory.set(key, { amount: parsedAmount, tokenAddress, type, factor })
+        feesByPosition.set(position, {
+          amount: parsedAmount,
+          tokenAddress: getAddressKey(token),
+          type: getProtocolFeeType(policy),
+          factor: getProtocolFeeFactor(policy),
+          position,
+        })
       }
-    }
+    })
   }
 
-  return Array.from(feesByCategory.values())
+  // Order by position (protocol fee first, partner fees after) and drop policies that ended up
+  // charging nothing — a "0" row is just noise in the breakdown.
+  return Array.from(feesByPosition.values())
+    .sort((a, b) => a.position - b.position)
+    .filter((fee) => fee.amount.isGreaterThan(0))
 }

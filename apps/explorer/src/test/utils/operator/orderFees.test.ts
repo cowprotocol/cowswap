@@ -49,8 +49,18 @@ describe('getProtocolFees', () => {
     ]
     const result = getProtocolFees(trades)
     expect(result).toEqual([
-      { amount: new BigNumber('100'), tokenAddress: FEE_TOKEN.toLowerCase(), type: ProtocolFeeType.Unknown },
-      { amount: new BigNumber('50'), tokenAddress: OTHER_TOKEN.toLowerCase(), type: ProtocolFeeType.Unknown },
+      {
+        amount: new BigNumber('100'),
+        tokenAddress: FEE_TOKEN.toLowerCase(),
+        type: ProtocolFeeType.Unknown,
+        position: 0,
+      },
+      {
+        amount: new BigNumber('50'),
+        tokenAddress: OTHER_TOKEN.toLowerCase(),
+        type: ProtocolFeeType.Unknown,
+        position: 1,
+      },
     ])
   })
 
@@ -116,23 +126,37 @@ describe('getProtocolFees', () => {
     expect(result[0].tokenAddress).toBe(FEE_TOKEN.toLowerCase())
   })
 
-  test('keeps volume fees with different bps factors separate when aggregating', () => {
+  test('aggregates each fee policy across fills by its applied position', () => {
+    // A multi-fill order: every fill applies the same two policies in the same order — the protocol
+    // volume fee first (position 0), then a partner volume fee (position 1). Each position is summed
+    // across the fills and kept separate from the other.
     const trades = [
-      makeTrade([{ amount: '300', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } }]),
-      makeTrade([{ amount: '200', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } }]),
-      makeTrade([{ amount: '100', token: FEE_TOKEN, policy: { volume: { factor: 0.0025 } } }]),
+      makeTrade([
+        { amount: '300', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } },
+        { amount: '100', token: FEE_TOKEN, policy: { volume: { factor: 0.0025 } } },
+      ]),
+      makeTrade([
+        { amount: '200', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } },
+        { amount: '50', token: FEE_TOKEN, policy: { volume: { factor: 0.0025 } } },
+      ]),
     ]
     const result = getProtocolFees(trades)
-    expect(result.map((fee) => [fee.amount.toString(), fee.factor])).toEqual([
-      ['500', 0.0002],
-      ['100', 0.0025],
+    expect(result.map((fee) => [fee.amount.toString(), fee.factor, fee.position])).toEqual([
+      ['500', 0.0002, 0],
+      ['150', 0.0025, 1],
     ])
   })
 
-  test('collects fees across multiple trades, preserving order', () => {
-    const trades = [makeTrade([{ amount: '100', token: FEE_TOKEN }]), makeTrade([{ amount: '50', token: OTHER_TOKEN }])]
+  test('tags each fee with its applied position so the protocol fee can be told from partner fees', () => {
+    const trades = [
+      makeTrade([
+        { amount: '100', token: FEE_TOKEN, policy: { volume: { factor: 0.0002 } } },
+        { amount: '50', token: FEE_TOKEN, policy: { volume: { factor: 0.005 } } },
+        { amount: '25', token: OTHER_TOKEN, policy: { volume: { factor: 0.003 } } },
+      ]),
+    ]
     const result = getProtocolFees(trades)
-    expect(result.map((fee) => fee.amount.toString())).toEqual(['100', '50'])
+    expect(result.map((fee) => fee.position)).toEqual([0, 1, 2])
   })
 
   test('ignores fee entries with missing amount or token', () => {

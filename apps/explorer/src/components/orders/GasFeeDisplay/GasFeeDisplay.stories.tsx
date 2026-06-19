@@ -25,34 +25,58 @@ const Template: Story<Props> = (args) => (
   </div>
 )
 
-const defaultProps: Props = { order: RICH_ORDER }
+// On-chain gas cost (native token wei) — its presence switches on the costs & fees breakdown.
+const GAS_COST = new BigNumber('2500000000000000')
 
-// No protocol fees -> renders a dash
-export const NoProtocolFees = Template.bind({})
-NoProtocolFees.args = { ...defaultProps }
+// No recorded gas cost -> legacy display of the combined executed fee in the sell token.
+export const LegacyNoGasCost = Template.bind({})
+LegacyNoGasCost.args = { order: { ...RICH_ORDER, gasCost: undefined } }
 
-// Single protocol fee, denominated in the buy token (surplus side)
-export const SingleProtocolFee = Template.bind({})
-SingleProtocolFee.args = {
+// Gas cost present but no protocol fees -> breakdown with just the Network costs line.
+export const NetworkCostsOnly = Template.bind({})
+NetworkCostsOnly.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] } }
+
+// Network costs + the protocol's own fee (the first applied fee, position 0).
+export const ProtocolFee = Template.bind({})
+ProtocolFee.args = {
   order: {
     ...RICH_ORDER,
+    gasCost: GAS_COST,
     protocolFees: [
-      { amount: new BigNumber('1166200'), tokenAddress: getAddressKey(USDT.address), type: ProtocolFeeType.Surplus },
+      {
+        amount: new BigNumber('1166200'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 0,
+      },
     ],
   },
 }
 
-// Multiple protocol fees of different types/tokens, each shown on its own labelled row
-export const MultipleProtocolFees = Template.bind({})
-MultipleProtocolFees.args = {
+// Network costs + protocol fee + two partner fees (numbered by applied order).
+export const ProtocolAndPartnerFees = Template.bind({})
+ProtocolAndPartnerFees.args = {
   order: {
     ...RICH_ORDER,
+    gasCost: GAS_COST,
     protocolFees: [
-      { amount: new BigNumber('1166200'), tokenAddress: getAddressKey(USDT.address), type: ProtocolFeeType.Surplus },
+      {
+        amount: new BigNumber('1166200'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 0,
+      },
+      {
+        amount: new BigNumber('800000'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 1,
+      },
       {
         amount: new BigNumber('50000000000000000'),
         tokenAddress: getAddressKey(WETH.address),
         type: ProtocolFeeType.PriceImprovement,
+        position: 2,
       },
     ],
   },

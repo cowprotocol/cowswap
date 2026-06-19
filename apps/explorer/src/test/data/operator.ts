@@ -50,6 +50,8 @@ export const RICH_ORDER: Order = {
   executedFeeAmount: new BigNumber(RAW_ORDER.executedFeeAmount),
   executedFee: ZERO_BIG_NUMBER,
   totalFee: ZERO_BIG_NUMBER,
+  // RAW_ORDER carries gasCost as a raw string|null; the enriched Order parses it to a BigNumber.
+  gasCost: undefined,
   cancelled: RAW_ORDER.invalidated,
   status: OrderStatusInner.Open,
   partiallyFilled: false,
