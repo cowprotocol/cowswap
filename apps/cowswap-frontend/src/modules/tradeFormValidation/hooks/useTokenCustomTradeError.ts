@@ -5,7 +5,7 @@ import { useIsAnyOfTokensRWA } from '@cowprotocol/tokens'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { isValidQuoteError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 export function useTokenCustomTradeError(
   inputCurrency: Currency | undefined | null,
@@ -33,4 +33,8 @@ function isWeekend(): boolean {
 
   // 0 - Sunday, 6 - Saturday
   return utcDay === 0 || utcDay === 6
+}
+
+function isValidQuoteError(error: unknown): error is QuoteApiError {
+  return error instanceof QuoteApiError
 }

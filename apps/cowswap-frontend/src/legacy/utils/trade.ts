@@ -28,7 +28,7 @@ import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders
 import { AppDataInfo } from 'modules/appData'
 
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
-import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
+import { ApiErrorObject, OperatorError } from 'api/cowProtocol/errors/OperatorError'
 
 import type { WalletClient } from 'viem'
 
