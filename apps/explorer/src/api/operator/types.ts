@@ -80,9 +80,9 @@ export enum ProtocolFeeType {
 }
 
 /**
- * A protocol fee category for an order: the total charged across all fills for a given token and
- * fee type (and, for volume fees, factor), aggregated from the trades' executedProtocolFees.
- * `tokenAddress` is a normalized AddressKey (the surplus-side token the fee is taken in).
+ * A protocol fee for an order: the total charged across all fills for a given fee policy,
+ * aggregated from the trades' executedProtocolFees. `tokenAddress` is a normalized AddressKey
+ * (the surplus-side token the fee is taken in).
  */
 export type ProtocolFee = {
   amount: BigNumber
@@ -90,12 +90,17 @@ export type ProtocolFee = {
   type: ProtocolFeeType
   /**
    * The fee policy's `factor`, when known. Its meaning is policy-specific: for
-   * {@link ProtocolFeeType.Volume} it's a fraction of trade volume, which we surface as basis
-   * points to tell otherwise identically labeled fees apart (e.g. a protocol volume fee vs a
-   * partner volume fee, which the API does not distinguish). For surplus / price-improvement fees
-   * it's a fraction of the surplus / improvement, so it is not shown as bps.
+   * {@link ProtocolFeeType.Volume} / {@link ProtocolFeeType.PriceImprovement} it's a fraction of
+   * trade volume / price improvement; for surplus fees a fraction of the surplus.
    */
   factor?: number
+  /**
+   * The fee policy's position in the trade's applied-fee order (`executedProtocolFees` is "listed
+   * in the order they got applied"). Fee policies are fixed per order, so the same position refers
+   * to the same policy in every fill. Position 0 is the protocol's own fee; the fees that follow
+   * it are partner fees (the API doesn't otherwise distinguish protocol from partner).
+   */
+  position: number
 }
 
 /**
@@ -133,8 +138,11 @@ export type Order = Pick<
   executedFee: BigNumber | null
   totalFee: BigNumber
   // Derived client-side from the trades' executedProtocolFees (not returned directly on the order).
-  // Aggregated per category (token + fee type); network costs are intentionally not surfaced.
+  // Aggregated per category (token + fee type).
   protocolFees?: ProtocolFee[]
+  // On-chain gas cost attributed to the order (native-token wei), as reported by the orderbook.
+  // Undefined for orders settled before this was recorded, or not yet settled.
+  gasCost?: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -148,8 +156,10 @@ export type Order = Pick<
 
 export type OrderCompetitionStatus = CompetitionOrderStatus
 
-// Raw API response
-export type RawOrder = EnrichedOrder
+// Raw API response.
+// `gasCost` is served by the orderbook (decimal string of native-token wei, summed across the
+// order's fills) but isn't yet in the SDK's EnrichedOrder type — added here until the SDK ships it.
+export type RawOrder = EnrichedOrder & { gasCost?: string | null }
 
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 
