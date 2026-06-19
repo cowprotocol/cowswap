@@ -14,5 +14,3 @@ export const ADVANCED_BASE_URL_PRESETS_OPTIONS: PresetOption[] = [
         : presetOption.label,
   }
 })
-
-export const ADVANCED_DEFAULT_BASE_URL = CONFIGURATOR_DEFAULT_WIDGET_BASE_URL

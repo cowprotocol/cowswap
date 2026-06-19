@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { ADVANCED_BASE_URL_PRESETS_OPTIONS, ADVANCED_DEFAULT_BASE_URL } from './AdvancedSectionForm.constants'
+import { ADVANCED_BASE_URL_PRESETS_OPTIONS } from './AdvancedSectionForm.constants'
 
 import { WIDGET_HOOKS_OPTIONS } from '../../../configurator.constants'
 import { useAsyncJsonError } from '../../../hooks/useAsyncJsonError'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../utils/base-url/baseUrl'
 import { SDK_VERSION_OPTIONS } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 import { JsonInput } from '../../ui/inputs/JsonInput/JsonInput.component'
 import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
@@ -21,7 +22,7 @@ export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProp
       <PresetsButtons
         presets={ADVANCED_BASE_URL_PRESETS_OPTIONS}
         onPresetClick={(value) => {
-          onChange('baseUrl', value === ADVANCED_DEFAULT_BASE_URL ? null : value)
+          onChange('baseUrl', value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL ? null : value)
         }}
       />
 
@@ -30,7 +31,7 @@ export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProp
         label="Widget App URL"
         value={values.baseUrl}
         onChange={onChange}
-        placeholder={ADVANCED_DEFAULT_BASE_URL}
+        placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
         InputLabelProps={{ shrink: true }}
       />
 

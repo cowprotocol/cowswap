@@ -65,7 +65,7 @@ export function SidebarEnvBadge({ baseUrl, configuratorOrigin, sdkVersion }: Sid
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: (theme) => theme.palette.warning.main,
+          color: showAlertIcon ? (theme) => theme.palette.warning.main : undefined,
         }}
       >
         {showAlertIcon ? <AlertTriangle size={24} /> : <Cloud size={24} />}
