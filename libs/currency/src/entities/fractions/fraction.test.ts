@@ -491,4 +491,35 @@ describe('Fraction', () => {
       })
     })
   })
+
+  describe('#toJSON', () => {
+    it('emits numerator and denominator as decimal strings', () => {
+      expect(new Fraction(8n, 3n).toJSON()).toEqual({ numerator: '8', denominator: '3' })
+    })
+
+    it('is invoked automatically by JSON.stringify (does not throw on bigint)', () => {
+      const f = new Fraction(8n, 3n)
+      // Without toJSON, JSON.stringify on a bigint field throws "Do not know how to serialize a BigInt".
+      const json = JSON.stringify(f)
+      expect(JSON.parse(json)).toEqual({ numerator: '8', denominator: '3' })
+    })
+
+    it('round-trips through JSON.stringify / JSON.parse / new Fraction', () => {
+      const original = new Fraction(8n, 3n)
+      const parsed = JSON.parse(JSON.stringify(original)) as { numerator: string; denominator: string }
+      const restored = new Fraction(parsed.numerator, parsed.denominator)
+      expect(restored.equalTo(original)).toBe(true)
+    })
+
+    it('preserves precision for values beyond Number.MAX_SAFE_INTEGER', () => {
+      const big = 12345678901234567890123456789n
+      const f = new Fraction(big, 1n)
+      expect(f.toJSON().numerator).toBe(big.toString())
+      const roundTripped = new Fraction(
+        JSON.parse(JSON.stringify(f)).numerator,
+        JSON.parse(JSON.stringify(f)).denominator,
+      )
+      expect(roundTripped.numerator).toBe(big)
+    })
+  })
 })
