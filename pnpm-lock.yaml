@@ -562,8 +562,8 @@ importers:
         specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
         version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../../libs/abis
@@ -589,23 +589,23 @@ importers:
         specifier: workspace:*
         version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
-        specifier: 4.1.3
-        version: 4.1.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.2.1
+        version: 4.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 3.1.2
-        version: 3.1.2
+        specifier: 3.2.0
+        version: 3.2.0
       '@cowprotocol/sdk-cow-shed':
-        specifier: 0.3.13
-        version: 0.3.13
+        specifier: 0.4.0
+        version: 0.4.0
       '@cowprotocol/sdk-order-book':
-        specifier: 3.2.2
-        version: 3.2.2(encoding@0.1.13)
+        specifier: 4.0.1
+        version: 4.0.1(encoding@0.1.13)
       '@cowprotocol/sdk-trading':
-        specifier: 2.1.2
-        version: 2.1.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 2.2.1
+        version: 2.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.23
-        version: 0.3.23(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))
+        specifier: 0.3.24
+        version: 0.3.24(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -690,6 +690,9 @@ importers:
       '@use-gesture/react':
         specifier: 10.3.1
         version: 10.3.1(react@19.1.2)
+      '@wagmi/core':
+        specifier: 3.4.8
+        version: 3.4.8(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.0.2)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))
       bignumber.js:
         specifier: 9.1.2
         version: 9.1.2
@@ -927,23 +930,23 @@ importers:
         specifier: workspace:*
         version: link:../../libs/core
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
       '@cowprotocol/sdk-bridging':
-        specifier: 4.1.3
-        version: 4.1.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.2.1
+        version: 4.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 3.1.2
-        version: 3.1.2
+        specifier: 3.2.0
+        version: 3.2.0
       '@cowprotocol/sdk-subgraph':
-        specifier: 1.1.2
-        version: 1.1.2(encoding@0.1.13)
+        specifier: 1.2.0
+        version: 1.2.0(encoding@0.1.13)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.23
-        version: 0.3.23(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: 0.3.24
+        version: 0.3.24(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../../libs/types
@@ -1129,14 +1132,14 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.0.6
-        version: 1.0.6(encoding@0.1.13)
+        specifier: 1.1.1
+        version: 1.1.1(encoding@0.1.13)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.23
-        version: 0.3.23(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))
+        specifier: 0.3.24
+        version: 0.3.24(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))
       '@cowprotocol/wallet':
         specifier: workspace:*
         version: link:../../libs/wallet
@@ -1241,8 +1244,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
@@ -1331,8 +1334,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1377,8 +1380,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1435,8 +1438,8 @@ importers:
   libs/common-const:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1469,8 +1472,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1533,8 +1536,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1618,8 +1621,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@safe-global/api-kit':
         specifier: 4.0.1
         version: 4.0.1(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
@@ -1652,8 +1655,8 @@ importers:
   libs/currency:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       jsbi:
         specifier: 3.2.5
         version: 3.2.5
@@ -1667,8 +1670,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1695,11 +1698,11 @@ importers:
   libs/events:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-bridging':
-        specifier: 4.1.3
-        version: 4.1.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.2.1
+        version: 4.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1725,8 +1728,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1759,8 +1762,8 @@ importers:
         specifier: 1.5.2
         version: 1.5.2(bufferutil@4.0.8)(utf-8-validate@6.0.6)
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../hook-dapp-lib
@@ -1830,8 +1833,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1900,14 +1903,14 @@ importers:
   libs/types:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-bridging':
-        specifier: 4.1.3
-        version: 4.1.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.2.1
+        version: 4.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       eventemitter3:
         specifier: 4.0.7
         version: 4.0.7
@@ -1936,8 +1939,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2048,8 +2051,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2173,8 +2176,8 @@ importers:
   libs/widget-lib:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.1.5
-        version: 9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.1
+        version: 9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -3153,8 +3156,8 @@ packages:
       react: ^16.X
       react-dom: ^16.X
 
-  '@cowprotocol/cow-sdk@9.1.5':
-    resolution: {integrity: sha512-l0UE8HRZ5xtkuqFxjGJrzqH6KfyXl7ErKdD2IuKBFeKcEWP3vtEWvzGTjEj0KjmE8v1oixKmq3HIyMou7PKB7A==}
+  '@cowprotocol/cow-sdk@9.2.1':
+    resolution: {integrity: sha512-rZ1hmfX5tkXjkGsHI+7PwDxSWl7K0XJI4bQ6GBjvph2BTfHTCU6z55LtLiDvinwodO0Dx7OLOQTgfdFpzaQvHg==}
     peerDependencies:
       '@openzeppelin/merkle-tree': ^1.x
       cross-fetch: ^3.x
@@ -3165,50 +3168,50 @@ packages:
       multiformats:
         optional: true
 
-  '@cowprotocol/sdk-app-data@5.2.0':
-    resolution: {integrity: sha512-yaXkuQUvNuG5NIvtJpS/t5BWn8DuWoe8VnCM3lFjU4m7Q9GVwpKhGRVJCgN33aiuy+SEDE7Ehnqc+C/KpfcxYg==}
+  '@cowprotocol/sdk-app-data@5.3.0':
+    resolution: {integrity: sha512-98+0KyKgk6SqSeFlQBiX5pqrhzOfC3T628xUXdvYFNs75WeqNbxKTmXMNZeHMmwzBa0kP0v53SSdKutWyzudOg==}
     peerDependencies:
       ajv: ^8.x
       cross-fetch: ^3.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-bridging@4.1.3':
-    resolution: {integrity: sha512-ToSx9ur+ymdKP7o71ULE04TAzCV47J23vr7F+xrLUefnWd+T+Nzv1ZJB8cHTfK/xVfcWZJDKRASrS8LUlEjfxw==}
+  '@cowprotocol/sdk-bridging@4.2.1':
+    resolution: {integrity: sha512-DzcBKz6DS9AnCpjGClaly/vyI2ZUSwmtdRbNd7E3+vH4lx8NYaz+d0mWnWvLDuRMHfPvrXGDdiFfzN3aSsFdwg==}
 
-  '@cowprotocol/sdk-common@0.11.2':
-    resolution: {integrity: sha512-PUMJdtCq7F5GJphC/OUsllb9NTQbgYhe2h7rRVSHGA3veJ/bE7gLsOPQMg37Mttum9rB1+/4/2DOzwKgvm5Rcw==}
+  '@cowprotocol/sdk-common@0.12.0':
+    resolution: {integrity: sha512-1QzVg2qflqeZqOilRwu8YAzmJGzLCtO5BIFWPiAjW03+Em6ndoduYgAHKRWTlsw1z2M5xFHo7ufAzd++/z6vIg==}
 
-  '@cowprotocol/sdk-composable@1.0.6':
-    resolution: {integrity: sha512-8KX78GacL4Got6WdVxe8Ok9X1qga7+n4lODKZ2rclkry3lCcOHJ22KTdrZpcs45FMCAqwt4EMVWXWYIS6em6lQ==}
+  '@cowprotocol/sdk-composable@1.1.1':
+    resolution: {integrity: sha512-EaFlyxbPzbN1J191NDqPltCWb53Zx1cww2Lrcw+0HPknQKByOyWRyWLWFY7pnCOlzwYWj/cBcMCnmG5Hi4Eumg==}
 
-  '@cowprotocol/sdk-config@2.3.0':
-    resolution: {integrity: sha512-2+44MPKOJ/Z8nKWyUROahecH3SGEmCrN7craQOeHq+aL2GQsBLD+LK0Q3CqBgUg1gclLba4y0DCPV72owT7Pbg==}
+  '@cowprotocol/sdk-config@2.3.1':
+    resolution: {integrity: sha512-MSdUbGLJGWjM+7s7j8VoHdpUIIe3FL1xNoyPK2oNnDD2DbzzXpqJkbGsYHAjmIgOrCqP2HNM6yTieLoI0eEMDQ==}
 
-  '@cowprotocol/sdk-contracts-ts@3.1.2':
-    resolution: {integrity: sha512-tv6LH4TdRA3CnVS4dBnGdeb0FcW6n/geVoYi6wmSD4SbGy1NPYmcQpmSr8jUzp9nMPMKfS/H3O4nMajvs/GcjA==}
+  '@cowprotocol/sdk-contracts-ts@3.2.0':
+    resolution: {integrity: sha512-6o+WpP92YS3/GN3Xu1l4LctRqSP7Rw+o/CjbZSeyhtc7RK2kSUoEiRSImmgVjaYsHyW4xCJy6VeprfdWkOciDA==}
 
-  '@cowprotocol/sdk-cow-shed@0.3.13':
-    resolution: {integrity: sha512-wjMJEmrDn+mvJodsKzGdbhGTEMfZ0YlL0aq41OQ0zSN8NzkOrJFlIeI0fVqYsyI6zwREgspOJD6aSDYEPOxeIg==}
+  '@cowprotocol/sdk-cow-shed@0.4.0':
+    resolution: {integrity: sha512-nYu75noqlLyTK+o7aEuckepPaSfV7hQ60j5kECTbT8f3S54fhCIOujBjRRsyRJ5YHKYEsVUl08BhBXqHFu6i+A==}
 
-  '@cowprotocol/sdk-order-book@3.2.2':
-    resolution: {integrity: sha512-S5tniFuOjz4LIeJ4+TLDqoZGgrfMs4r5Xr5sm+Ib0BUgYsmRcaJdx0DzzfArbFbaTIVSW+A0NThdK/YpFgGaFw==}
+  '@cowprotocol/sdk-order-book@4.0.1':
+    resolution: {integrity: sha512-sitySiCsPCPGiunMJYplqZ9nvsj7RjpknT0nmg7uKaBwP5Crk208TOHRMCgQlDPmWjieyVcfCvkerVady3QmBQ==}
 
-  '@cowprotocol/sdk-order-signing@1.0.6':
-    resolution: {integrity: sha512-mnQAGtnnh+v3Kr0dQYGwMVJ5AbcrL2AjV0s7qD3Ebt/u/OKpvh/1zOdiophJu8Bgw6cqzYwq/oxK4CQzmJ05uQ==}
+  '@cowprotocol/sdk-order-signing@1.1.1':
+    resolution: {integrity: sha512-vzEI6pHT3Hzed05QeqqnRvgMM/7yw+JLped7lUN0OqjNG1vVa4Rdh7w4nzO7Bqj3YNmlZ+01gGcLyow5eOf7QQ==}
 
-  '@cowprotocol/sdk-subgraph@1.1.2':
-    resolution: {integrity: sha512-IrldsSgicD7mgjgHpzHgujjK0q2UvDCv6iIVxa5+c0FgT5douuWXb0Ud3ujx0TouiSMV8isamdKRjfOwfSkPDQ==}
+  '@cowprotocol/sdk-subgraph@1.2.0':
+    resolution: {integrity: sha512-kGotBPkAOxQPqpmuq9+rJKymeXY9aiIqdYuIC2trBd5iMj60g53bD1VFufEHDNzw4oWKRUBmhNyTwfzNYG0SPQ==}
 
-  '@cowprotocol/sdk-trading@2.1.2':
-    resolution: {integrity: sha512-4AztQC1S90skSGeHKN34CxUiXoIOF9g9r26ZMnKxOJCleuRLCYGE4LWCGWAd64TOnP4DiGjkIxABOiLb0qPsNw==}
+  '@cowprotocol/sdk-trading@2.2.1':
+    resolution: {integrity: sha512-7rUNLT7ve6x9ZSvil34ylTldDrrJbH3GLefwR51T6lKFpl4H/2qy5zR1Ee19BdGKTJd9Byq9Jefxb6NTNMo33g==}
 
-  '@cowprotocol/sdk-viem-adapter@0.3.23':
-    resolution: {integrity: sha512-PEA6BeuoR5cXjJ7jrKMU2uR74YpPKG0NOfrVOq/pZ6GnVxlWonbEf+b8pC5JwaArX0jVzGejuoefg1No+y7vEw==}
+  '@cowprotocol/sdk-viem-adapter@0.3.24':
+    resolution: {integrity: sha512-H2alAG4spm+oKedxzVt6K0xp6F5FxZJpA5BU01HiwVQjj2unD92anpuJTH0zzEYTaf8x6d2hmI4o3JFbNvUgXw==}
     peerDependencies:
       viem: 2.48.8
 
-  '@cowprotocol/sdk-weiroll@0.1.35':
-    resolution: {integrity: sha512-q2pIOmb+wj+3D81wUjPPrG4UWHyJr5jGWXpiCoZ9/O0faIIIhJ8efSWjn85hHt3BLVMm5vZ42adCMwWvXPib+A==}
+  '@cowprotocol/sdk-weiroll@0.2.0':
+    resolution: {integrity: sha512-TI7U8vVa7RxLtMBkvyj6q5gskB4BTUww2uvn1/ucf7VTK+AJAomgWVXfT/JGNBJeAtaII2PSY4u4Ep4iIc1KhA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -18679,15 +18682,15 @@ snapshots:
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
 
-  '@cowprotocol/cow-sdk@9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/cow-sdk@9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 5.2.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.0.6(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.1.2(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': 5.3.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.1(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.2.1(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       cross-fetch: 4.0.0(encoding@0.1.13)
     optionalDependencies:
       '@openzeppelin/merkle-tree': 1.0.8
@@ -18697,15 +18700,15 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/cow-sdk@9.1.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/cow-sdk@9.2.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 5.2.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.0.6(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.1.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': 5.3.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.1(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       cross-fetch: 4.0.0(encoding@0.1.13)
     optionalDependencies:
       '@openzeppelin/merkle-tree': 1.0.8
@@ -18715,9 +18718,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-app-data@5.2.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-app-data@5.3.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
+      '@cowprotocol/sdk-common': 0.12.0
       ajv: 6.12.6
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-unixfs-importer: 16.1.5(encoding@0.1.13)
@@ -18727,9 +18730,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-app-data@5.2.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-app-data@5.3.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
+      '@cowprotocol/sdk-common': 0.12.0
       ajv: 8.17.1
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-unixfs-importer: 16.1.5(encoding@0.1.13)
@@ -18739,16 +18742,16 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-bridging@4.1.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-bridging@4.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 5.2.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-cow-shed': 0.3.13
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.1.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-weiroll': 0.1.35
+      '@cowprotocol/sdk-app-data': 5.3.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-cow-shed': 0.4.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-weiroll': 0.2.0
       '@defuse-protocol/one-click-sdk-typescript': 0.1.1-0.2
       json-stable-stringify: 1.3.0
     transitivePeerDependencies:
@@ -18759,74 +18762,74 @@ snapshots:
       - multiformats
       - supports-color
 
-  '@cowprotocol/sdk-common@0.11.2':
+  '@cowprotocol/sdk-common@0.12.0':
     dependencies:
-      '@cowprotocol/sdk-config': 2.3.0
+      '@cowprotocol/sdk-config': 2.3.1
 
-  '@cowprotocol/sdk-composable@1.0.6(encoding@0.1.13)':
+  '@cowprotocol/sdk-composable@1.1.1(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.0.6(encoding@0.1.13)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.1(encoding@0.1.13)
       '@openzeppelin/merkle-tree': 1.0.8
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-config@2.3.0':
+  '@cowprotocol/sdk-config@2.3.1':
     dependencies:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
 
-  '@cowprotocol/sdk-contracts-ts@3.1.2':
+  '@cowprotocol/sdk-contracts-ts@3.2.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
 
-  '@cowprotocol/sdk-cow-shed@0.3.13':
+  '@cowprotocol/sdk-cow-shed@0.4.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
 
-  '@cowprotocol/sdk-order-book@3.2.2(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-book@4.0.1(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
       cross-fetch: 3.2.0(encoding@0.1.13)
       exponential-backoff: 3.1.3
       limiter: 3.0.0
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-signing@1.0.6(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-signing@1.1.1(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-subgraph@1.1.2(encoding@0.1.13)':
+  '@cowprotocol/sdk-subgraph@1.2.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
       graphql: 16.12.0
       graphql-request: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading@2.1.2(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-trading@2.2.1(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 5.2.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.0.6(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': 5.3.0(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.1(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -18835,14 +18838,14 @@ snapshots:
       - multiformats
       - supports-color
 
-  '@cowprotocol/sdk-trading@2.1.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-trading@2.2.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 5.2.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
-      '@cowprotocol/sdk-contracts-ts': 3.1.2
-      '@cowprotocol/sdk-order-book': 3.2.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.0.6(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': 5.3.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
+      '@cowprotocol/sdk-contracts-ts': 3.2.0
+      '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.1(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -18851,20 +18854,20 @@ snapshots:
       - multiformats
       - supports-color
 
-  '@cowprotocol/sdk-viem-adapter@0.3.23(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+  '@cowprotocol/sdk-viem-adapter@0.3.24(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
+      '@cowprotocol/sdk-common': 0.12.0
       viem: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
 
-  '@cowprotocol/sdk-viem-adapter@0.3.23(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))':
+  '@cowprotocol/sdk-viem-adapter@0.3.24(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
+      '@cowprotocol/sdk-common': 0.12.0
       viem: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
 
-  '@cowprotocol/sdk-weiroll@0.1.35':
+  '@cowprotocol/sdk-weiroll@0.2.0':
     dependencies:
-      '@cowprotocol/sdk-common': 0.11.2
-      '@cowprotocol/sdk-config': 2.3.0
+      '@cowprotocol/sdk-common': 0.12.0
+      '@cowprotocol/sdk-config': 2.3.1
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:

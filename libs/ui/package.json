@@ -31,7 +31,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.1.5",
+    "@cowprotocol/cow-sdk": "9.2.1",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui-utils": "workspace:*",

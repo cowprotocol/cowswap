@@ -15,8 +15,8 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
-import { TradeFlowContext } from 'modules/tradeFlow'
-import { isQuoteExpired } from 'modules/tradeQuote'
+import type { TradeFlowContext } from 'modules/tradeFlow'
+import { assertValidBridgeRecipient, isQuoteExpired } from 'modules/tradeQuote'
 
 import { ethFlowEnv } from 'common/hooks/useContract'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -91,6 +91,7 @@ export async function ethFlow({
     }
 
     logTradeFlow('ETH FLOW', 'STEP 3: sign order')
+    assertValidBridgeRecipient(tradeQuoteState)
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
