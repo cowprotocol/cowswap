@@ -2,7 +2,7 @@ import { useEffect, useState, useTransition } from 'react'
 
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
-import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../configurator.constants'
+import { scopeConfiguratorAppCode } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/base-url/baseUrl'
 import { getLegacyIframeDimensionParams } from '../utils/legacyIframeDimensions/legacyIframeDimensions.utils'
@@ -221,7 +221,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     // Basics:
 
-    appCode: appCode.trim() || CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
+    appCode: scopeConfiguratorAppCode(appCode),
     standaloneMode: widgetMode === 'standalone',
     locale,
 

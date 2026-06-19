@@ -17,7 +17,21 @@ export const IS_IFRAME = window.self !== window.top
 // Preview:
 
 /** Live preview `appCode` when Basics is blank; embed snippet treats this like unset and substitutes the snippet placeholder app code. */
-export const CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK = 'CoW Widget: Configurator' as const
+export const CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK = 'CoW Widget Configurator' as const
+
+/** Scope preview appCode so configurator traffic can be excluded from analytics. */
+export function scopeConfiguratorAppCode(appCode: string): string {
+  const trimmed = appCode.trim()
+
+  return trimmed
+    ? `${trimmed} (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`
+    : CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK
+}
+
+/** Strip the preview analytics suffix before exporting embed snippets. */
+export function sanitizeConfiguratorAppCode(appCode: string): string {
+  return appCode.replace(` (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`, '').trim()
+}
 
 /** Older widget apps (custom baseUrl) may not post READY; hide the preview loader after this timeout. */
 export const WIDGET_PREVIEW_READY_FALLBACK_MS = 60_000

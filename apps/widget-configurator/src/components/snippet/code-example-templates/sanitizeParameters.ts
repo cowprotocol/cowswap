@@ -11,7 +11,10 @@ import {
   WIDGET_SNIPPET_APP_CODE_PLACEHOLDER,
 } from './common/codeExample.constants'
 
-import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK } from '../../../configurator.constants'
+import {
+  CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
+  sanitizeConfiguratorAppCode,
+} from '../../../configurator.constants'
 import { ColorPalette } from '../../../configurator.types'
 
 /** Widget API defaults; snippet output omits top-level params whose value matches. */
@@ -98,10 +101,12 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
     theme: sanitizePalette(params, defaultPalette),
   }
 
-  const appCodeTrimmed = params.appCode?.trim()
+  const appCodeTrimmed = sanitizeConfiguratorAppCode(params.appCode || '')
 
   if (!appCodeTrimmed || appCodeTrimmed === CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK) {
     sanitized.appCode = WIDGET_SNIPPET_APP_CODE_PLACEHOLDER
+  } else {
+    sanitized.appCode = appCodeTrimmed
   }
 
   if (!params.baseUrl || params.baseUrl === WIDGET_CONFIGURATOR_DEFAULT_BASE_URL) {

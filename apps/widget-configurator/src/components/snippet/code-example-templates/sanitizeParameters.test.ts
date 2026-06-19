@@ -1,11 +1,12 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
+import { WIDGET_SNIPPET_APP_CODE_PLACEHOLDER } from './common/codeExample.constants'
 import { formatParameters } from './common/formatParameters.utils'
 import { vanillaNoDepsExample } from './htmlExample'
 import { jsExample } from './jsExample'
 import { tsExample } from './tsExample'
 
-import { DEFAULT_DARK_PALETTE } from '../../../configurator.constants'
+import { CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK, DEFAULT_DARK_PALETTE } from '../../../configurator.constants'
 
 describe('snippet export', () => {
   const dappModeParams: CowSwapWidgetParams = {
@@ -75,6 +76,27 @@ describe('snippet export', () => {
     expect(snippet).toContain('"iframeStyle"')
     expect(snippet).toContain('"width": "100%"')
     expect((snippet.match(/"width": "100%"/g) ?? []).length).toBe(1)
+  })
+
+  it('strips preview appCode suffix in copied snippets', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: `my-app (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`,
+    }
+
+    const snippet = tsExample(params, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).toContain('"appCode": "my-app"')
+    expect(snippet).not.toContain(CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK)
+  })
+
+  it('uses snippet placeholder when preview appCode is the configurator fallback', () => {
+    const params: CowSwapWidgetParams = {
+      appCode: CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK,
+    }
+
+    const snippet = tsExample(params, DEFAULT_DARK_PALETTE)
+
+    expect(snippet).toContain(`"appCode": "${WIDGET_SNIPPET_APP_CODE_PLACEHOLDER}"`)
   })
 
   it('preserves legacy palette boxShadow in copied snippets', () => {
