@@ -1,3 +1,5 @@
+import { isRecord } from '@cowprotocol/common-utils'
+
 import { PlatformData, Platforms } from 'types'
 import { isAddress } from 'viem'
 
@@ -37,17 +39,13 @@ type RawTokenData = {
   }
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
-}
-
 function normalizeNullableNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null
 }
 
 export function isRawTokenData(value: unknown): value is RawTokenData {
   return (
-    isObject(value) &&
+    isRecord(value) &&
     typeof value.id === 'string' &&
     typeof value.name === 'string' &&
     typeof value.symbol === 'string' &&
@@ -56,7 +54,7 @@ export function isRawTokenData(value: unknown): value is RawTokenData {
 }
 
 export function normalizePlatformData(value: unknown): PlatformData | null {
-  if (!isObject(value)) return null
+  if (!isRecord(value)) return null
 
   const { contract_address: contractAddress, decimal_place: decimalPlace } = value as RawPlatformData
 
@@ -72,7 +70,7 @@ export function normalizePlatformData(value: unknown): PlatformData | null {
 }
 
 export function normalizePlatforms(detailPlatforms: unknown, networks: readonly Network[]): Platforms {
-  if (!isObject(detailPlatforms)) {
+  if (!isRecord(detailPlatforms)) {
     return {}
   }
 
@@ -88,7 +86,7 @@ export function normalizePlatforms(detailPlatforms: unknown, networks: readonly 
 }
 
 export function normalizeOptionalUsdMetric(value: unknown): number | null {
-  if (!isObject(value)) return null
+  if (!isRecord(value)) return null
 
   return normalizeNullableNumber(value.usd)
 }
