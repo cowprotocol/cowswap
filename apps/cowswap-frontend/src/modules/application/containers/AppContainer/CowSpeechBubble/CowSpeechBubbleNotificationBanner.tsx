@@ -6,12 +6,12 @@ import { UI } from '@cowprotocol/ui'
 import { useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { getTrustedNotificationLink } from 'modules/notifications'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { CowSpeechBubble } from './CowSpeechBubble'
 import { Arrow } from './CowSpeechBubble.styled'
-
-import { getTrustedNotificationLink } from '../../../../notifications/utils/getTrustedNotificationLink'
 
 const NotificationText = styled.span`
   display: flex;
