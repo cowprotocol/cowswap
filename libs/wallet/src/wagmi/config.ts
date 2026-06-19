@@ -42,11 +42,19 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
+function getWalletMetadataUrl(): string {
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+
+  return 'https://swap.cow.fi'
+}
+
 const metadata = {
   name: 'CoW Swap | The smartest way to trade cryptocurrencies',
   description:
     'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
-  url: 'https://swap.cow.fi',
+  url: getWalletMetadataUrl(),
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 

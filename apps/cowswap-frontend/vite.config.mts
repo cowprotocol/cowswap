@@ -21,6 +21,7 @@ import pkg from './package.json'
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 import { NODE_STD_LIBS } from '../../tools/nodeStdLibs'
+import { baseAccountGetInjectedProviderShimPlugin } from '../../tools/vite-plugins/baseAccountGetInjectedProviderShimPlugin'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -79,6 +80,7 @@ export default defineConfig(({ mode, isPreview }) => {
       robotsDir: 'robots',
       publicPath: path.resolve(__dirname, './public'),
     }),
+    baseAccountGetInjectedProviderShimPlugin(__dirname),
   ]
 
   if (analyzeBundle) {
@@ -237,7 +239,7 @@ export default defineConfig(({ mode, isPreview }) => {
       },
       // Only include packages that are direct or resolvable from the app; transitive
       // WalletConnect deps (universal-provider, utils, sign-client) are not resolvable here.
-      include: ['@walletconnect/ethereum-provider', '@wagmi/connectors', '@coinbase/wallet-sdk'],
+      include: ['@walletconnect/ethereum-provider', '@wagmi/connectors', '@coinbase/wallet-sdk', '@base-org/account'],
     },
 
     resolve: {

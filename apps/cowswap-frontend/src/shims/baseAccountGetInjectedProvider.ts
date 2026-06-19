@@ -14,6 +14,8 @@
  * shim at build/dev time — no node_modules patching required.
  */
 
+import { logBaseWallet } from '@cowprotocol/common-utils'
+
 const TBA_PROVIDER_IDENTIFIER = 'isCoinbaseBrowser'
 
 interface InjectedProvider {
@@ -21,17 +23,23 @@ interface InjectedProvider {
 }
 
 export function getInjectedProvider(): InjectedProvider | null {
+  logBaseWallet('baseAccount', 'getInjectedProvider shim invoked')
+
   try {
     const topWindow = (window as Window).top
     const injectedProvider: InjectedProvider | undefined =
       (topWindow as unknown as { ethereum?: InjectedProvider })?.ethereum ??
       (window as unknown as { ethereum?: InjectedProvider }).ethereum
     if (injectedProvider?.[TBA_PROVIDER_IDENTIFIER]) {
+      logBaseWallet('baseAccount', 'Coinbase browser injected provider detected')
       return injectedProvider
     }
+    logBaseWallet('baseAccount', 'no Coinbase browser provider — using BaseAccountProvider popup path')
     return null
-  } catch {
-    // Cross-origin parent window (widget iframe served from another origin).
+  } catch (error) {
+    logBaseWallet('baseAccount', 'cross-origin top window access blocked — using BaseAccountProvider popup path', {
+      error: String(error),
+    })
     return null
   }
 }

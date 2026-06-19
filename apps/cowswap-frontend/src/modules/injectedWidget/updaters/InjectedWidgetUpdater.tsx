@@ -30,35 +30,46 @@ import {
   registerCachedMessageHandler,
   replayCachedWidgetMessage,
 } from '../utils/widgetMessagesCache.utils'
+
+let isWindowOpenInterceptInstalled = false
+
 ;(function initInjectedWidget() {
   const isInIframe = window.parent !== window.self
+
+  if (!isInIframe) {
+    return
+  }
+
+  window.addEventListener('message', cacheWidgetMessage)
 
   const parent = window.parent
   const parentOrigin = getParentOrigin()
 
-  if (!parent || !isInIframe || !parentOrigin) return
+  if (!parentOrigin) {
+    logBaseWallet('iframe', 'parentOrigin unavailable at module init — deferring window.open intercept', {
+      referrer: typeof document !== 'undefined' ? document.referrer : '',
+      ancestorOrigins:
+        typeof window.location.ancestorOrigins !== 'undefined' ? Array.from(window.location.ancestorOrigins) : [],
+    })
+    return
+  }
+
+  installInjectedWidgetWindowOpenIntercept(parent, parentOrigin)
+  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
+})()
+
+function installInjectedWidgetWindowOpenIntercept(parent: Window, parentOrigin: string): void {
+  if (isWindowOpenInterceptInstalled) {
+    return
+  }
+
+  isWindowOpenInterceptInstalled = true
 
   logBaseWallet('iframe', 'InjectedWidget window.open intercept installed', {
     parentOrigin,
     href: window.location.href,
   })
 
-  /**
-   * To avoid delays, immediately send an activation message and start listening messages
-   */
-  window.addEventListener('message', cacheWidgetMessage)
-  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0, parentOrigin)
-
-  /**
-   * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
-   *
-   * IMPORTANT: Do not call the native window.open for deeplinks here: createCowSwapWidget registers
-   * interceptDeepLinks which opens in the parent, so calling both would open two tabs / popups.
-   *
-   * Exception: when the call passes window features (e.g. `width=...,height=...`), it's a real popup
-   * that needs bidirectional postMessage with the opener (e.g. Coinbase Wallet SDK's keys.coinbase.com
-   * popup). Those must open from the iframe itself so the SDK gets a real cross-origin Window back.
-   */
   const nativeWindowOpen = window.open.bind(window)
   window.open = function (...args) {
     const [href = '', target = '', features = ''] = args
@@ -73,8 +84,6 @@ import {
       action: openInIframe ? 'native-popup-in-iframe' : 'forward-to-parent',
     })
 
-    // Coinbase/Base Account popups must open from the iframe so the SDK gets a real Window
-    // back for postMessage. Deeplinks without popup features are forwarded to the parent.
     if (openInIframe) {
       const popup = nativeWindowOpen(href, target, features)
       logBaseWallet('iframe', 'native window.open result', {
@@ -94,7 +103,7 @@ import {
 
     return window
   }
-})()
+}
 
 function resolveInterceptedWindowOpenHref(href: string | URL): string {
   if (typeof href === 'string') {
@@ -125,32 +134,57 @@ export function InjectedWidgetUpdater(): ReactNode {
 
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
+
+  useInjectedWidgetMessaging({ navigate, setHooksEnabled, updateMetaData, updateParams })
+  useLogDiscardedPartnerFee(appCode, partnerFee, prevPartnerFee)
+
+  return (
+    <>
+      <WidgetParamsErrorsScreen errors={validationErrors} />
+      <IframeResizer />
+    </>
+  )
+}
+
+function useInjectedWidgetMessaging({
+  navigate,
+  setHooksEnabled,
+  updateMetaData,
+  updateParams,
+}: {
+  navigate: ReturnType<typeof useNavigate>
+  setHooksEnabled: ReturnType<typeof useSetAtom<typeof injectedWidgetHooksEnabledAtom>>
+  updateMetaData: ReturnType<typeof useSetAtom<typeof injectedWidgetMetaDataAtom>>
+  updateParams: ReturnType<typeof useAtom<typeof injectedWidgetParamsAtom>>[1]
+}): void {
   const prevData = useRef<UpdateParamsPayload | null>(null)
   const isReadySentRef = useRef(false)
 
   useEffect(() => {
-    // Stop listening of message outside of React
     window.removeEventListener('message', cacheWidgetMessage)
 
     const parentOrigin = getParentOrigin()
 
     if (!parentOrigin) {
+      logBaseWallet('iframe', 'parentOrigin unavailable in React mount — window.open intercept not installed')
       return
+    }
+
+    const parent = window.parent !== window.self ? window.parent : null
+
+    if (parent) {
+      installInjectedWidgetWindowOpenIntercept(parent, parentOrigin)
     }
 
     const updateParamsHandler = (data: UpdateParamsPayload): void => {
       if (
-        // If the data is the same as the previous data
         prevData.current &&
         deepEqual(prevData.current, data) &&
-        // And the pathname is the same as the current widget pathname, do nothing
-        // This is needed since the app updates the pathname independently of the widget params
         window.location.pathname === data.urlParams.pathname
       ) {
         return
       }
 
-      // Update params
       prevData.current = data
 
       const appParams = data.appParams
@@ -164,11 +198,9 @@ export function InjectedWidgetUpdater(): ReactNode {
         errors,
       })
 
-      // Navigate to the new path
       navigate(data.urlParams, { replace: true })
     }
 
-    // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
       window.parent,
@@ -193,13 +225,11 @@ export function InjectedWidgetUpdater(): ReactNode {
     )
     registerCachedMessageHandler(WidgetMethodsListen.UPDATE_APP_DATA, updateAppDataHandler)
 
-    // Process all cached messages
     getCachedWidgetMessageMethods().forEach((method) => {
       replayCachedWidgetMessage(method)
       clearCachedWidgetMessage(method)
     })
 
-    const parent = window.parent !== window.self ? window.parent : null
     const frameId = window.requestAnimationFrame(() => {
       if (!parent || isReadySentRef.current) return
 
@@ -213,8 +243,13 @@ export function InjectedWidgetUpdater(): ReactNode {
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
   }, [setHooksEnabled, updateMetaData, navigate, updateParams])
+}
 
-  // Log an error when partnerFee was set and then discarded
+function useLogDiscardedPartnerFee(
+  appCode: string | undefined,
+  partnerFee: { bps: number; recipient: string } | undefined,
+  prevPartnerFee: { bps: number; recipient: string } | undefined,
+): void {
   useEffect(() => {
     if (!appCode) return
 
@@ -233,11 +268,4 @@ export function InjectedWidgetUpdater(): ReactNode {
       })
     }
   }, [appCode, partnerFee, prevPartnerFee])
-
-  return (
-    <>
-      <WidgetParamsErrorsScreen errors={validationErrors} />
-      <IframeResizer />
-    </>
-  )
 }
