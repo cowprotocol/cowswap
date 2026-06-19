@@ -3618,6 +3618,7 @@ msgstr "Add post-hook"
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copied!"
 msgstr "Copied!"
@@ -4753,8 +4754,8 @@ msgid "Convert your <0/> LP tokens into CoW AMM pools and earn up to <1>+{apyDif
 msgstr "Convert your <0/> LP tokens into CoW AMM pools and earn up to <1>+{apyDiffFormatted}%</1> more yield compared to <2/>. Or, swap"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
-msgid "Only confirm if you trust this dapp and recognize the target contract and calldata below."
-msgstr "Only confirm if you trust this dapp and recognize the target contract and calldata below."
+#~ msgid "Only confirm if you trust this dapp and recognize the target contract and calldata below."
+#~ msgstr "Only confirm if you trust this dapp and recognize the target contract and calldata below."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Lock Limit Price"
@@ -5369,6 +5370,10 @@ msgstr "The \"Total duration\" is the duration it takes to execute all parts of 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "to"
 msgstr "to"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
+msgid "Copy calldata"
+msgstr "Copy calldata"
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "24 Hours"
@@ -6199,6 +6204,10 @@ msgstr "Hooks"
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 #~ msgid "for trading"
 #~ msgstr "for trading"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
+msgid "Only confirm if you trust this dapp and recognize the target contract and calldata above."
+msgstr "Only confirm if you trust this dapp and recognize the target contract and calldata above."
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
