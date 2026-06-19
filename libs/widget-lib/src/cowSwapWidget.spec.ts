@@ -25,6 +25,15 @@ describe('createCowSwapWidget', () => {
     expect(window.open).toHaveBeenCalledWith('https://example.com/', '_blank', 'noopener')
   })
 
+  it('opens cbwallet deeplinks requested by the widget', () => {
+    const { iframe } = createWidget()
+    const deeplink = 'cbwallet://miniapp?url=https%3A%2F%2Fswap.cow.fi%2F'
+
+    dispatchInterceptWindowOpen(deeplink, undefined, iframe)
+
+    expect(window.open).toHaveBeenCalledWith(deeplink, '_blank', 'noopener')
+  })
+
   it('blocks javascript urls requested by the widget', () => {
     const { iframe } = createWidget()
 

@@ -1,0 +1,54 @@
+diff --git a/dist/esm/src/utils/MobileWallet.js b/dist/esm/src/utils/MobileWallet.js
+index fd6397e88c9d07fc2fa4baec7c825efb8a933ee7..9c6fef7dfcadc0b4a64d2858128002cc17d70b9e 100644
+--- a/dist/esm/src/utils/MobileWallet.js
++++ b/dist/esm/src/utils/MobileWallet.js
+@@ -97,23 +97,23 @@ export const MobileWalletUtil = {
+                  * See: https://developer.chrome.com/docs/android/intents
+                  */
+                 const intentUrl = `intent://browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=phantom;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`;
+-                window.location.href = intentUrl;
++                window.open(intentUrl, '_self');
+             }
+             else {
+                 // Use Universal Link on iOS - well supported by Safari
+-                window.location.href = browseUrl;
++                window.open(browseUrl, '_self');
+             }
+         }
+         // Solflare only supports Solana
+         if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id &&
+             namespace === ConstantsUtil.CHAIN.SOLANA &&
+             !('solflare' in window)) {
+-            window.location.href = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`;
++            window.open(`${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`, '_self');
+         }
+         if (namespace === ConstantsUtil.CHAIN.SOLANA) {
+             if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+                 (isCoinbaseDisabled || !('coinbaseSolana' in window))) {
+-                window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`;
++                window.open(`${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`, '_self');
+             }
+         }
+         /*
+@@ -122,8 +122,10 @@ export const MobileWalletUtil = {
+          */
+         if (namespace === ConstantsUtil.CHAIN.EVM) {
+             if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+-                (isCoinbaseDisabled || !('coinbaseWalletExtension' in window))) {
+-                window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`;
++                isCoinbaseDisabled &&
++                CoreHelperUtil.isMobile() &&
++                !('coinbaseWalletExtension' in window)) {
++                window.open(`${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`, '_self');
+             }
+         }
+         /*
+@@ -141,7 +143,7 @@ export const MobileWalletUtil = {
+                 deeplink.searchParams.set('startPageQuery', startPageQuery);
+                 const universalLink = new URL(CUSTOM_DEEPLINK_WALLETS.BINANCE.url);
+                 universalLink.searchParams.set('_dp', window.btoa(deeplink.toString()));
+-                window.location.href = universalLink.toString();
++                window.open(universalLink.toString(), '_self');
+             }
+         }
+     }

@@ -24,6 +24,7 @@ const KNOWN_MOBILE_WALLET_PROTOCOLS = new Set([
   'tpoutside:',
   'bncus:',
   'bnc:',
+  'cbwallet:',
 ])
 
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:'])
