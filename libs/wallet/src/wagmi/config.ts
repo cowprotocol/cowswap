@@ -4,6 +4,7 @@ import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { ConnectorController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
@@ -11,7 +12,7 @@ import { getConnectors } from './getConnectors'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
-import { SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+import { COINBASE_LEGACY_WALLET_ID, SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
@@ -119,5 +120,21 @@ if (getIsSafeAppIframe()) {
 }
 
 bindActiveProvider(wagmiAdapter)
+
+if (typeof window !== 'undefined') {
+  const coinbaseConnector = wagmiAdapter.wagmiConfig.connectors.find((c) => c.id === 'coinbaseWalletSDK')
+  void coinbaseConnector?.getProvider?.().catch(() => undefined)
+  void import('@wagmi/connectors').catch(() => undefined)
+
+  const originalGetConnector = ConnectorController.getConnector.bind(ConnectorController)
+  ConnectorController.getConnector = (params) => {
+    const match = originalGetConnector(params)
+    if (match) return match
+    if (params.id === COINBASE_LEGACY_WALLET_ID) {
+      return originalGetConnector({ id: 'coinbaseWalletSDK', namespace: params.namespace })
+    }
+    return undefined
+  }
+}
 
 export { wagmiAdapter, reownAppKit, wagmiStorage }

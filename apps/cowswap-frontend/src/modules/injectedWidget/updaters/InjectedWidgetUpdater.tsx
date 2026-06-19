@@ -57,22 +57,40 @@ import {
   const nativeWindowOpen = window.open.bind(window)
   window.open = function (...args) {
     const [href = '', target = '', features = ''] = args
+    const hrefString = resolveInterceptedWindowOpenHref(href)
 
-    const isPopupWithFeatures = typeof features === 'string' && /\b(width|height)\s*=/.test(features)
-    if (isPopupWithFeatures) {
+    // Coinbase/Base Account popups must open from the iframe so the SDK gets a real Window
+    // back for postMessage. Deeplinks without popup features are forwarded to the parent.
+    if (isWalletPopupWindowOpen(hrefString, features)) {
       return nativeWindowOpen(href, target, features)
     }
 
     widgetIframeTransport.postMessageToWindow(
       parent,
       WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel: features },
+      { href: hrefString, target, rel: features },
       parentOrigin,
     )
 
     return window
   }
 })()
+
+function resolveInterceptedWindowOpenHref(href: string | URL): string {
+  if (typeof href === 'string') {
+    return href
+  }
+
+  return href.toString()
+}
+
+function isWalletPopupWindowOpen(href: string, features: unknown): boolean {
+  if (typeof features === 'string' && /\b(width|height)\s*=/.test(features)) {
+    return true
+  }
+
+  return /keys\.coinbase\.com/i.test(href)
+}
 
 export function InjectedWidgetUpdater(): ReactNode {
   const [

@@ -15,3 +15,6 @@ export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId
 
 export const COW_WIDGET_CONNECTOR_ID = 'cow-widget'
 export const SAFE_CONNECTOR_ID = 'safe'
+
+/** Secondary Reown registry entry for Coinbase Wallet — same wallet as the canonical Base id. */
+export const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'

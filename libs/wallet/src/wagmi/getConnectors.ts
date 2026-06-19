@@ -1,7 +1,7 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
-import { injected, safe } from '@wagmi/connectors'
+import { coinbaseWallet, injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider } from 'viem'
 
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
@@ -11,6 +11,10 @@ import type { CreateConnectorFn } from 'wagmi'
 
 export function getConnectors(): CreateConnectorFn[] | undefined {
   const connectors: CreateConnectorFn[] = []
+
+  // Register the Coinbase Wallet SDK connector up front so AppKit can route Base/Coinbase
+  // clicks to keys.coinbase.com instead of falling through to WalletConnect "Not Detected".
+  connectors.push(coinbaseWallet({ preference: { options: 'all' } }))
 
   if (getIsSafeAppIframe()) {
     connectors.push(safe({ unstable_getInfoTimeout: 1000 }))

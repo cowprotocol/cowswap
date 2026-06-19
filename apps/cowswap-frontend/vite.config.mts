@@ -237,7 +237,7 @@ export default defineConfig(({ mode, isPreview }) => {
       },
       // Only include packages that are direct or resolvable from the app; transitive
       // WalletConnect deps (universal-provider, utils, sign-client) are not resolvable here.
-      include: ['@walletconnect/ethereum-provider'],
+      include: ['@walletconnect/ethereum-provider', '@wagmi/connectors', '@coinbase/wallet-sdk'],
     },
 
     resolve: {
