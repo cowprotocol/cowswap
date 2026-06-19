@@ -1,7 +1,25 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, CowLoadingIconPalette } from '@cowprotocol/ui'
 
 import { PaletteMode } from '@mui/material'
 import { PaletteOptions } from '@mui/material/styles'
+
+export const BRAND_COLOR: Record<PaletteMode, string> = {
+  dark: Color.blue300Primary,
+  light: Color.blueDark2,
+}
+
+export const LOGO_LOADER_PALETTE: Record<PaletteMode, CowLoadingIconPalette> = {
+  dark: {
+    background: 'transparent',
+    head: BRAND_COLOR.dark,
+    eyes: 'rgb(22, 23, 31)',
+  },
+  light: {
+    background: 'transparent',
+    head: BRAND_COLOR.light,
+    eyes: 'white',
+  },
+}
 
 export const darkPalette: PaletteOptions = {
   mode: 'dark' as PaletteMode,

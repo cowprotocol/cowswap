@@ -1,26 +1,21 @@
 import { ReactNode } from 'react'
 
-import { Color, Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
+import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 import { IS_IFRAME } from '../../../configurator.constants'
 import { WidgetMode } from '../../../configurator.types'
+import { BRAND_COLOR } from '../../../theme/palettes.constants'
 import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
 
 import type { WidgetSdkVersion } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 
-export type ThemeMode = 'dark' | 'light'
-
-const BRAND_COLOR: Record<ThemeMode, string> = {
-  dark: Color.blue300Primary,
-  light: Color.blueDark2,
-}
-
 export interface SidebarHeaderProps {
   title: string
-  themeMode: ThemeMode
+  themeMode: PaletteMode
   widgetMode: WidgetMode
   baseUrl: string
   sdkVersion: WidgetSdkVersion
@@ -60,6 +55,7 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
           logoIconOnly
           height={28}
           overrideColor={brandColor}
+          overrideHoverColor={brandColor}
         />
         <Typography
           component="h1"

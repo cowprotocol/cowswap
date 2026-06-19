@@ -16,6 +16,7 @@ import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { CowLoadingIcon } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { MessageDescriptor } from '@lingui/core'
@@ -32,7 +33,6 @@ import { PageTitle } from 'modules/application'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 import {
   AccountHeading,

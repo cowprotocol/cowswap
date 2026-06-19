@@ -30,6 +30,7 @@ import { SidebarControls } from '../sidebar/controls/sidebar-controls.component'
 import { Sidebar } from '../sidebar/sidebar.component'
 import { DRAWER_WIDTH_CSS_VAR } from '../sidebar/sidebar.styles'
 import { Snippet } from '../snippet/snippet.component'
+import { LogoLoader } from '../ui/LogoLoader/LogoLoader.component'
 import { VersionedCowSwapWidget } from '../VersionedCowSwapWidget/VersionedCowSwapWidget'
 
 declare global {
@@ -164,38 +165,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
 
   const shouldShowLoader = !params || !configuratorState || !isWidgetReady
 
-  const loaderElement = (
-    <Box
-      aria-hidden
-      sx={{
-        position: 'absolute',
-        top: 'calc(50% - 28px)',
-        left: 'calc(50% - 28px)',
-        width: 56,
-        height: 56,
-        background: (theme) => theme.palette.background.paper,
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 40,
-        opacity: shouldShowLoader ? 1 : 0,
-        visibility: shouldShowLoader ? 'visible' : 'hidden',
-        pointerEvents: 'none',
-        transition: 'opacity 300ms ease, visibility 300ms ease',
-        '@keyframes cowConfiguratorLoaderSpin': {
-          from: { transform: 'rotate(0deg)' },
-          to: { transform: 'rotate(360deg)' },
-        },
-        animation: shouldShowLoader ? 'cowConfiguratorLoaderSpin 0.25s linear infinite' : 'none',
-        '&::before': {
-          content: (theme) => (theme.palette.mode === 'light' ? '"📀"' : '"💿"'),
-          display: 'block',
-          lineHeight: 1,
-        },
-      }}
-    />
-  )
+  const loaderElement = shouldShowLoader ? <LogoLoader /> : null
 
   let configuratorContent: React.ReactNode = null
 
