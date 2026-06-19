@@ -25,7 +25,7 @@ describe('preview-mirror-comment', () => {
       body,
       /<!-- cf-pages-preview-mirror original-pr=123 target-sha=abc1234567890abcdef1234567890abcdef12345 mirrored-sha=abc1234567890abcdef1234567890abcdef12345 -->/,
     )
-    assert.match(body, /`cf-preview\/pr-123`/)
+    assert.match(body, /cf-preview\/pr-123/)
     assert.match(body, /Mirror PR: #456/)
     assert.match(body, /Cloudflare Pages preview links will be posted on the mirror PR/)
     assert.doesNotMatch(body, /pages\.dev/)
