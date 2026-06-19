@@ -41,6 +41,10 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
       }
     }
 
+    if (parsedUrl.protocol !== 'https:') {
+      return null
+    }
+
     return {
       href: parsedUrl.toString(),
       target: '_blank',

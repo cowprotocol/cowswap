@@ -29,6 +29,10 @@ describe('getTrustedNotificationLink', () => {
     })
   })
 
+  it('rejects external http URLs', () => {
+    expect(getTrustedNotificationLink('http://example.com/path')).toBeNull()
+  })
+
   it('rejects protocol-relative URLs', () => {
     expect(getTrustedNotificationLink('//example.com/path')).toBeNull()
   })
