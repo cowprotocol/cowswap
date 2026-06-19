@@ -20,6 +20,7 @@ export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
 export * from './wagmi/hooks/useIsRestoringConnection'
 export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
+export { WidgetSafeApp } from './updaters/WidgetSafeApp.updater'
 export { config, reownAppKit, wagmiAdapter, wagmiStorage } from './wagmi/config'
 
 // Updater

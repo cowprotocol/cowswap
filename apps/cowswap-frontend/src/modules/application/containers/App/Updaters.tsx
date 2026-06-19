@@ -7,7 +7,7 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -97,6 +97,7 @@ export function Updaters(): ReactNode {
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
       <WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />
+      <WidgetSafeApp />
       <CowEventsUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
