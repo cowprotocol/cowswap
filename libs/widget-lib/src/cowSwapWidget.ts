@@ -325,7 +325,12 @@ function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowL
       const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
 
       if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
-        window.open(resolvedUrl, target, rel)
+        // Deeplinks intercepted from the iframe often use `_self`, which would navigate
+        // the parent page away. Always open in a new browsing context on the parent.
+        const parentTarget = target === '_self' || !target ? '_blank' : target
+        const parentFeatures = rel || 'noopener noreferrer'
+
+        window.open(resolvedUrl, parentTarget, parentFeatures)
       }
     },
     iframeOrigin,

@@ -34,6 +34,14 @@ describe('createCowSwapWidget', () => {
     expect(window.open).toHaveBeenCalledWith(deeplink, '_blank', 'noopener')
   })
 
+  it('opens _self deeplink requests in a new parent tab', () => {
+    const { iframe } = createWidget()
+
+    dispatchInterceptWindowOpen('https://go.cb-w.com/dapp?cb_url=test', undefined, iframe, '_self')
+
+    expect(window.open).toHaveBeenCalledWith('https://go.cb-w.com/dapp?cb_url=test', '_blank', 'noopener')
+  })
+
   it('blocks javascript urls requested by the widget', () => {
     const { iframe } = createWidget()
 
@@ -112,7 +120,12 @@ function createWidget(
   return widgetHandler
 }
 
-function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi', iframe: HTMLIFrameElement): void {
+function dispatchInterceptWindowOpen(
+  href: string,
+  origin = 'https://swap.cow.fi',
+  iframe: HTMLIFrameElement,
+  target = '_blank',
+): void {
   const event = new MessageEvent('message', {
     origin,
     source: iframe.contentWindow,
@@ -120,7 +133,7 @@ function dispatchInterceptWindowOpen(href: string, origin = 'https://swap.cow.fi
       key: 'cowSwapWidget',
       method: 'INTERCEPT_WINDOW_OPEN',
       href,
-      target: '_blank',
+      target,
       rel: 'noopener',
     },
   })
