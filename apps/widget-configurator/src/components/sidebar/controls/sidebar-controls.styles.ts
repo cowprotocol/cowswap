@@ -40,13 +40,17 @@ export const sidebarToggleOpenButton: SxProps<Theme> = (theme: Theme) => ({
   },
 })
 
-export const sidebarResizeHandle: SxProps<Theme> = {
+export const sidebarResizeHandle: SxProps<Theme> = (theme: Theme) => ({
   position: 'absolute',
   inset: 0,
   width: '0.8rem',
   marginLeft: '-0.4rem',
   cursor: 'col-resize',
   zIndex: 2,
+
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 
   '&::before': {
     content: '""',
@@ -63,4 +67,4 @@ export const sidebarResizeHandle: SxProps<Theme> = {
   '&:hover::before': {
     backgroundColor: 'text.secondary',
   },
-}
+})

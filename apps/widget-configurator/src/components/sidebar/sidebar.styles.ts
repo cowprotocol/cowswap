@@ -56,6 +56,14 @@ export function getDrawerSx(theme: Theme, isResizing: boolean): CSSObject {
     flexShrink: 0,
     transition: isResizing ? 'none' : DRAWER_TRANSITION,
 
+    [theme.breakpoints.down('md')]: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      zIndex: theme.zIndex.modal,
+    },
+
     '& .MuiDrawer-paper': {
       width: `var(${DRAWER_WIDTH_CSS_VAR})`,
       boxSizing: 'border-box',
@@ -65,6 +73,11 @@ export function getDrawerSx(theme: Theme, isResizing: boolean): CSSObject {
       boxShadow: 'none',
       position: 'relative',
       overflowY: 'scroll',
+
+      [theme.breakpoints.down('md')]: {
+        width: '100vw',
+        maxWidth: '380px',
+      },
     },
   }
 }
