@@ -129,7 +129,9 @@ export function Configurator({ title }: { title: string }): ReactNode {
     setIsWidgetReady(false)
   }, [sdkVersion, setIsWidgetReady])
 
-  // onReady when supported; legacy SDKs use iframe `load` via VersionedCowSwapWidget; 60s last resort.
+  // - onReady when supported
+  // - legacy SDKs use iframe `load` via VersionedCowSwapWidget
+  // - 30s fallback timeout
   useEffect(() => {
     if (isWidgetReady || !hasParams) return
 

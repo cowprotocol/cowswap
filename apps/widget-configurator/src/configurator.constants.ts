@@ -33,8 +33,11 @@ export function sanitizeConfiguratorAppCode(appCode: string): string {
   return appCode.replace(` (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`, '').trim()
 }
 
-/** Older widget apps (custom baseUrl) may not post READY; hide the preview loader after this timeout. */
-export const WIDGET_PREVIEW_READY_FALLBACK_MS = 60_000
+/**
+ * Older widget apps (custom baseUrl) may not post READY, so we hide the preview loader after this timeout.
+ * Note it matches widget-lib iframe loading timeout (30s).
+ **/
+export const WIDGET_PREVIEW_READY_FALLBACK_MS = 30_000
 
 // UTM:
 
