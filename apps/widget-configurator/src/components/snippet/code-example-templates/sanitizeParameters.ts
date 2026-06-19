@@ -1,4 +1,10 @@
-import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { isAddress } from '@cowprotocol/common-utils'
+import {
+  CowSwapWidgetPalette,
+  CowSwapWidgetPaletteColors,
+  CowSwapWidgetParams,
+  TradeType,
+} from '@cowprotocol/widget-lib'
 
 import {
   WIDGET_CONFIGURATOR_DEFAULT_BASE_URL,
@@ -108,6 +114,21 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
   delete sanitized.height
   delete sanitized.maxHeight
 
+  sanitized.sell = sanitizeTradeAsset(sanitized.sell)
+  sanitized.buy = sanitizeTradeAsset(sanitized.buy)
+
+  if (!isTradeType(sanitized.tradeType)) {
+    delete sanitized.tradeType
+  }
+
+  if (sanitized.enabledTradeTypes !== undefined) {
+    if (Array.isArray(sanitized.enabledTradeTypes)) {
+      sanitized.enabledTradeTypes = sanitized.enabledTradeTypes.filter(isTradeType)
+    } else {
+      delete sanitized.enabledTradeTypes
+    }
+  }
+
   return pruneTopLevelParams(sanitized)
 }
 
@@ -130,4 +151,22 @@ function sanitizePalette(params: CowSwapWidgetParams, defaultPalette: ColorPalet
   if (Object.keys(paletteDiff).length === 1 && paletteDiff.baseTheme) return paletteDiff.baseTheme
 
   return paletteDiff
+}
+
+function isTradeType(value: unknown): value is TradeType {
+  return Object.values(TradeType).includes(value as TradeType)
+}
+
+function sanitizeTradeAsset(
+  value: CowSwapWidgetParams['sell'] | CowSwapWidgetParams['buy'],
+): CowSwapWidgetParams['sell'] | CowSwapWidgetParams['buy'] | undefined {
+  if (!value || typeof value !== 'object' || !('asset' in value) || typeof value.asset !== 'string') {
+    return undefined
+  }
+
+  return isTradeAssetIdentifier(value.asset) ? value : undefined
+}
+
+function isTradeAssetIdentifier(value: string): boolean {
+  return Boolean(isAddress(value)) || /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(value)
 }
