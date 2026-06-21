@@ -15,6 +15,7 @@ import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
+import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
@@ -57,8 +58,12 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const refreshTrigger = useOrdersFilledEventsTrigger()
 
+  const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
+
   if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
-    return <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} />
+    return (
+      <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} bridgeTokenList={bridgeTokenList} />
+    )
   }
 
   return (

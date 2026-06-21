@@ -28,12 +28,12 @@ describe('useCustomTokensForChain', () => {
     useUserAddedTokensMock.mockReset()
   })
 
-  it('returns an empty array when no user-added tokens exist', () => {
+  it('returns an empty set when no user-added tokens exist', () => {
     mockTokens([])
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual([])
+    expect(result.current).toEqual(new Set())
   })
 
   it('filters tokens by chainId', () => {
@@ -45,7 +45,7 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual([getAddressKey(TOKEN_A), getAddressKey(TOKEN_C)].sort())
+    expect(result.current).toEqual(new Set([getAddressKey(TOKEN_A), getAddressKey(TOKEN_C)]))
   })
 
   it('normalizes addresses via getAddressKey', () => {
@@ -53,19 +53,6 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual([getAddressKey(TOKEN_A)])
-  })
-
-  it('returns the addresses sorted', () => {
-    mockTokens([
-      { chainId: SupportedChainId.MAINNET, address: TOKEN_C },
-      { chainId: SupportedChainId.MAINNET, address: TOKEN_A },
-      { chainId: SupportedChainId.MAINNET, address: TOKEN_B },
-    ])
-
-    const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
-
-    const expected = [TOKEN_A, TOKEN_B, TOKEN_C].map(getAddressKey).sort()
-    expect(result.current).toEqual(expected)
+    expect(result.current).toEqual(new Set([getAddressKey(TOKEN_A)]))
   })
 })

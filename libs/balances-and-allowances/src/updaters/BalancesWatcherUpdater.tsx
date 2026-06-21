@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
@@ -13,9 +13,12 @@ import { useEnabledTokensListsUrls } from '../hooks/useEnabledTokensListsUrls'
 export interface BalancesWatcherUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
+  /** Bridge buy-tokens fetched from the bridge API, tracked as customTokens in the bw session in addition to the user-imported list. */
+  bridgeTokenList?: Set<AddressKey>
 }
 
 const EMPTY_EXCLUDED_TOKENS: Set<string> = new Set()
+const EMPTY_BRIDGE_TOKEN_LIST: Set<AddressKey> = new Set()
 
 /**
  * Watcher-mode peer of `BalancesAndAllowancesUpdater`. Drives `balancesAtom`
@@ -23,11 +26,25 @@ const EMPTY_EXCLUDED_TOKENS: Set<string> = new Set()
  * subtrees so the atom lifecycle (chain/account reset, localStorage
  * hydration/persistence) stays intact when the LD flag is on.
  */
-export function BalancesWatcherUpdater({ account, chainId }: BalancesWatcherUpdaterProps): ReactNode {
+export function BalancesWatcherUpdater({
+  account,
+  chainId,
+  bridgeTokenList = EMPTY_BRIDGE_TOKEN_LIST,
+}: BalancesWatcherUpdaterProps): ReactNode {
   const tokensListsUrls = useEnabledTokensListsUrls()
   const customTokens = useCustomTokensForChain(chainId)
 
-  useBalancesWatcherSession({ account, chainId, tokensListsUrls, customTokens })
+  const mergedCustomTokens = useMemo(() => {
+    if (bridgeTokenList.size === 0) return Array.from(customTokens)
+
+    const merged = new Set(customTokens)
+    for (const address of bridgeTokenList) {
+      merged.add(address)
+    }
+    return Array.from(merged)
+  }, [customTokens, bridgeTokenList])
+
+  useBalancesWatcherSession({ account, chainId, tokensListsUrls, customTokens: mergedCustomTokens })
 
   return (
     <>
