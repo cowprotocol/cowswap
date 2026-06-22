@@ -1,5 +1,7 @@
 import { isAddress } from '@cowprotocol/common-utils'
-import { CowHookCreation, CowHookToEdit } from '@cowprotocol/hook-dapp-lib'
+import type { CowHookCreation, CowHookToEdit } from '@cowprotocol/hook-dapp-lib'
+
+import { z } from 'zod'
 
 import type { Hex } from 'viem'
 
@@ -19,6 +21,40 @@ interface BaseHookShape {
   gasLimit: string
 }
 
+const addressSchema = z.string().transform((value, ctx) => {
+  const address = isAddress(value)
+
+  if (!address) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Invalid address',
+    })
+
+    return z.NEVER
+  }
+
+  return address
+})
+
+const hookSchema = z.object({
+  target: addressSchema,
+  callData: z.custom<Hex>(isHexData),
+  gasLimit: z.string().refine(isPositiveIntegerString),
+}) satisfies z.ZodType<BaseHookShape>
+
+const addHookPayloadSchema = z.object({
+  hook: hookSchema,
+  recipientOverride: addressSchema.optional(),
+}) satisfies z.ZodType<CowHookCreation>
+
+const editHookPayloadSchema = addHookPayloadSchema.extend({
+  uuid: z.string().refine((value) => !!value.trim()),
+}) satisfies z.ZodType<CowHookToEdit>
+
+const tokenAddressPayloadSchema = z.object({
+  address: addressSchema,
+})
+
 export function getValidatedIframeAddHookRequest(
   payload: unknown,
   hookToEditId?: string,
@@ -27,7 +63,7 @@ export function getValidatedIframeAddHookRequest(
     return null
   }
 
-  const hookPayload = getValidatedAddHookPayload(payload)
+  const hookPayload = parseSchema(addHookPayloadSchema, payload)
 
   if (!hookPayload) {
     return null
@@ -47,7 +83,7 @@ export function getValidatedIframeEditHookRequest(
     return null
   }
 
-  const hookPayload = getValidatedEditHookPayload(payload)
+  const hookPayload = parseSchema(editHookPayloadSchema, payload)
 
   if (!hookPayload || hookPayload.uuid !== hookToEditId) {
     return null
@@ -60,94 +96,15 @@ export function getValidatedIframeEditHookRequest(
 }
 
 export function getValidatedIframeTokenAddress(payload: unknown): string | null {
-  if (!isRecord(payload) || typeof payload.address !== 'string') {
-    return null
-  }
+  const parsedPayload = parseSchema(tokenAddressPayloadSchema, payload)
 
-  return isAddress(payload.address) || null
+  return parsedPayload?.address || null
 }
 
-function getValidatedAddHookPayload(payload: unknown): CowHookCreation | null {
-  if (!isRecord(payload)) {
-    return null
-  }
+function parseSchema<T>(schema: z.ZodType<T>, payload: unknown): T | null {
+  const parsed = schema.safeParse(payload)
 
-  const hook = getValidatedHookShape(payload.hook)
-
-  if (!hook) {
-    return null
-  }
-
-  const recipientOverride = getValidatedRecipientOverride(payload.recipientOverride)
-
-  if (payload.recipientOverride !== undefined && !recipientOverride) {
-    return null
-  }
-
-  return {
-    hook,
-    ...(recipientOverride ? { recipientOverride } : {}),
-  }
-}
-
-function getValidatedEditHookPayload(payload: unknown): CowHookToEdit | null {
-  if (!isRecord(payload)) {
-    return null
-  }
-
-  const hook = getValidatedHookShape(payload.hook)
-
-  if (!hook) {
-    return null
-  }
-
-  const recipientOverride = getValidatedRecipientOverride(payload.recipientOverride)
-
-  if (payload.recipientOverride !== undefined && !recipientOverride) {
-    return null
-  }
-
-  if (typeof payload.uuid !== 'string' || !payload.uuid.trim()) {
-    return null
-  }
-
-  return {
-    uuid: payload.uuid,
-    hook,
-    ...(recipientOverride ? { recipientOverride } : {}),
-  }
-}
-
-function getValidatedHookShape(value: unknown): BaseHookShape | null {
-  if (!isRecord(value)) {
-    return null
-  }
-
-  const target = typeof value.target === 'string' ? isAddress(value.target) : false
-  const callData = typeof value.callData === 'string' && isHexData(value.callData) ? value.callData : null
-  const gasLimit = typeof value.gasLimit === 'string' && isPositiveIntegerString(value.gasLimit) ? value.gasLimit : null
-
-  if (!target || !callData || !gasLimit) {
-    return null
-  }
-
-  return {
-    target,
-    callData,
-    gasLimit,
-  }
-}
-
-function getValidatedRecipientOverride(value: unknown): string | null | undefined {
-  if (value === undefined) {
-    return undefined
-  }
-
-  if (typeof value !== 'string') {
-    return null
-  }
-
-  return isAddress(value) || null
+  return parsed.success ? parsed.data : null
 }
 
 function isPositiveIntegerString(value: string): boolean {
@@ -164,8 +121,4 @@ function isPositiveIntegerString(value: string): boolean {
 
 function isHexData(value: string): value is Hex {
   return /^0x([0-9a-fA-F]{2})*$/.test(value)
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
