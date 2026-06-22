@@ -19,6 +19,10 @@ describe('document', () => {
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '' } }, true],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '/#/swap' } }, true],
       [{ request: { mode: 'navigate' }, url: { hostname: 'localhost', pathname: '/asset.gif' } }, false],
+      [
+        { request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '/dev-hook-review-fixture/' } },
+        false,
+      ],
     ] as [RouteMatchCallbackOptions, boolean][]
 
     it.each(TEST_DOCUMENTS)('%j', (document: RouteMatchCallbackOptions, expected: boolean) => {
