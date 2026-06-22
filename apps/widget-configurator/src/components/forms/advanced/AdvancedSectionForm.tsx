@@ -1,0 +1,65 @@
+import type { ReactNode } from 'react'
+
+import { ADVANCED_BASE_URL_PRESETS_OPTIONS } from './AdvancedSectionForm.constants'
+
+import { WIDGET_HOOKS_OPTIONS } from '../../../configurator.constants'
+import { useAsyncJsonError } from '../../../hooks/useAsyncJsonError'
+import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../../../utils/base-url/baseUrl'
+import { SDK_VERSION_OPTIONS } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
+import { JsonInput } from '../../ui/inputs/JsonInput/JsonInput.component'
+import { PresetsButtons } from '../../ui/inputs/PresetsButtons/PresetsButtons.component'
+import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
+import { TextInput } from '../../ui/inputs/TextInput/TextInput.component'
+
+import type { SidebarSectionFormProps } from '../forms.types'
+
+export function AdvancedSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
+  const rawParamsJsonError = useAsyncJsonError(values.rawParamsJson)
+
+  return (
+    <>
+      <PresetsButtons
+        presets={ADVANCED_BASE_URL_PRESETS_OPTIONS}
+        onPresetClick={(value) => {
+          onChange('baseUrl', value === CONFIGURATOR_DEFAULT_WIDGET_BASE_URL ? null : value)
+        }}
+      />
+
+      <TextInput
+        name="baseUrl"
+        label="Widget App URL"
+        value={values.baseUrl}
+        onChange={onChange}
+        placeholder={CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
+        InputLabelProps={{ shrink: true }}
+      />
+
+      <SelectInput
+        name="sdkVersion"
+        label="SDK version"
+        value={values.sdkVersion}
+        options={SDK_VERSION_OPTIONS}
+        onChange={onChange}
+      />
+
+      <MultiSelectInput
+        name="enabledWidgetHooks"
+        label="Widget hooks"
+        emptyLabel="No hooks selected"
+        value={values.enabledWidgetHooks}
+        options={WIDGET_HOOKS_OPTIONS}
+        onChange={onChange}
+      />
+
+      <JsonInput
+        label="Raw JSON params"
+        name="rawParamsJson"
+        value={values.rawParamsJson}
+        onChange={onChange}
+        error={rawParamsJsonError.error}
+        helperText={rawParamsJsonError.helperText}
+      />
+    </>
+  )
+}
