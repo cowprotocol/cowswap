@@ -1,10 +1,12 @@
 import { useAtom, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, type SetStateAction, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual, logBaseWallet } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
+  CowSwapWidgetAppParams,
+  PartnerFee,
   UpdateAppDataPayload,
   UpdateParamsPayload,
   widgetIframeTransport,
@@ -13,7 +15,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
-import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
+import { injectedWidgetParamsAtom, type WidgetParamsErrors } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -121,6 +123,15 @@ function isWalletPopupWindowOpen(href: string, features: unknown): boolean {
   return /keys\.coinbase\.com/i.test(href)
 }
 
+type InjectedWidgetParamsState = {
+  params: Partial<CowSwapWidgetAppParams>
+  errors: WidgetParamsErrors
+}
+
+type SetInjectedWidgetParams = (value: SetStateAction<InjectedWidgetParamsState>) => void
+type SetInjectedWidgetHooksEnabled = (value: SetStateAction<boolean>) => void
+type SetInjectedWidgetMetaData = (value: SetStateAction<UpdateAppDataPayload['metaData']>) => void
+
 export function InjectedWidgetUpdater(): ReactNode {
   const [
     {
@@ -153,9 +164,9 @@ function useInjectedWidgetMessaging({
   updateParams,
 }: {
   navigate: ReturnType<typeof useNavigate>
-  setHooksEnabled: ReturnType<typeof useSetAtom<typeof injectedWidgetHooksEnabledAtom>>
-  updateMetaData: ReturnType<typeof useSetAtom<typeof injectedWidgetMetaDataAtom>>
-  updateParams: ReturnType<typeof useAtom<typeof injectedWidgetParamsAtom>>[1]
+  setHooksEnabled: SetInjectedWidgetHooksEnabled
+  updateMetaData: SetInjectedWidgetMetaData
+  updateParams: SetInjectedWidgetParams
 }): void {
   const prevData = useRef<UpdateParamsPayload | null>(null)
   const isReadySentRef = useRef(false)
@@ -247,8 +258,8 @@ function useInjectedWidgetMessaging({
 
 function useLogDiscardedPartnerFee(
   appCode: string | undefined,
-  partnerFee: { bps: number; recipient: string } | undefined,
-  prevPartnerFee: { bps: number; recipient: string } | undefined,
+  partnerFee: PartnerFee | null | undefined,
+  prevPartnerFee: PartnerFee | null | undefined,
 ): void {
   useEffect(() => {
     if (!appCode) return

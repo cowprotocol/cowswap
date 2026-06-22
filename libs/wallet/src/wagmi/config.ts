@@ -214,6 +214,30 @@ if (typeof window !== 'undefined') {
     return originalSelectWalletConnector(wallet)
   }
 
+  const wrappedConnectors = new WeakSet<object>()
+  function wrapBaseAccountConnectLogging(connector: {
+    id: string
+    connect?: (...args: unknown[]) => Promise<unknown>
+  }): void {
+    if (connector.id !== 'baseAccount' || !connector.connect || wrappedConnectors.has(connector)) {
+      return
+    }
+
+    wrappedConnectors.add(connector)
+    const originalConnect = connector.connect.bind(connector)
+    connector.connect = async (...args: unknown[]) => {
+      logBaseWallet('connect', 'baseAccount connect() started')
+      try {
+        const connectResult = await originalConnect(...args)
+        logBaseWallet('connect', 'baseAccount connect() succeeded', { connectResult })
+        return connectResult
+      } catch (error) {
+        logBaseWallet('connect', 'baseAccount connect() failed', { error: String(error) })
+        throw error
+      }
+    }
+  }
+
   let loggedConnectorSnapshot = false
   ConnectorController.subscribe((state) => {
     if (loggedConnectorSnapshot) {
@@ -229,6 +253,9 @@ if (typeof window !== 'undefined') {
     }
 
     loggedConnectorSnapshot = true
+    state.allConnectors.forEach((connector) => {
+      wrapBaseAccountConnectLogging(connector)
+    })
     logBaseWallet('connectors', 'AppKit registered coinbase-related connectors', {
       connectors: state.allConnectors
         .filter(
