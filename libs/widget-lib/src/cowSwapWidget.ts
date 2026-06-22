@@ -1,10 +1,10 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { getTrustedParentOrigin, IframeSafeSdkBridge } from './IframeSafeSdkBridge'
+import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
 import {
   CowSwapWidgetParams,
@@ -191,7 +191,7 @@ function createIframeSafeSdkBridge(
     return null
   }
 
-  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getTrustedParentOrigin(appWindow))
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
 }
 
 /**

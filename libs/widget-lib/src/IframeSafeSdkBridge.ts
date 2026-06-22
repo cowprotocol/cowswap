@@ -55,18 +55,6 @@ export class IframeSafeSdkBridge {
   }
 }
 
-export function getTrustedParentOrigin(appWindow: Window): string | null {
-  if (appWindow.parent === appWindow || !appWindow.document.referrer) {
-    return null
-  }
-
-  try {
-    return new URL(appWindow.document.referrer).origin
-  } catch {
-    return null
-  }
-}
-
 function isSafeMessage(obj: unknown): obj is SafeMessage {
   return typeof obj === 'object' && obj !== null && 'id' in obj && typeof obj.id === 'string'
 }
