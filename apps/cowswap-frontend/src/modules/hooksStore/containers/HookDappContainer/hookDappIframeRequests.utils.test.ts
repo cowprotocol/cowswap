@@ -51,6 +51,15 @@ describe('hookDappIframeRequests.utils', () => {
           },
         }),
       ).toBeNull()
+
+      expect(
+        getValidatedIframeAddHookRequest({
+          hook: {
+            ...VALID_HOOK,
+            callData: new String(VALID_HOOK.callData),
+          },
+        }),
+      ).toBeNull()
     })
 
     it('rejects add-hook requests while editing an existing hook', () => {

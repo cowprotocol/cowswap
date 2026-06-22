@@ -36,20 +36,25 @@ const addressSchema = z.string().transform((value, ctx) => {
   return address
 })
 
+const callDataSchema = z
+  .string()
+  .refine(isHexData)
+  .transform((value) => value as Hex)
+
 const hookSchema = z.object({
   target: addressSchema,
-  callData: z.custom<Hex>(isHexData),
+  callData: callDataSchema,
   gasLimit: z.string().refine(isPositiveIntegerString),
-}) satisfies z.ZodType<BaseHookShape>
+}) satisfies z.ZodType<BaseHookShape, z.ZodTypeDef, unknown>
 
 const addHookPayloadSchema = z.object({
   hook: hookSchema,
   recipientOverride: addressSchema.optional(),
-}) satisfies z.ZodType<CowHookCreation>
+}) satisfies z.ZodType<CowHookCreation, z.ZodTypeDef, unknown>
 
 const editHookPayloadSchema = addHookPayloadSchema.extend({
   uuid: z.string().refine((value) => !!value.trim()),
-}) satisfies z.ZodType<CowHookToEdit>
+}) satisfies z.ZodType<CowHookToEdit, z.ZodTypeDef, unknown>
 
 const tokenAddressPayloadSchema = z.object({
   address: addressSchema,
@@ -101,7 +106,7 @@ export function getValidatedIframeTokenAddress(payload: unknown): string | null 
   return parsedPayload?.address || null
 }
 
-function parseSchema<T>(schema: z.ZodType<T>, payload: unknown): T | null {
+function parseSchema<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, payload: unknown): T | null {
   const parsed = schema.safeParse(payload)
 
   return parsed.success ? parsed.data : null
