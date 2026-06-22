@@ -11,9 +11,8 @@ interface TokenSelectorContentProps {
   context: CoWAmmBannerContext
   children: ReactNode
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TokenSelectorContent({ isDarkMode, context, children }: TokenSelectorContentProps) {
+
+export function TokenSelectorContent({ isDarkMode, context, children }: TokenSelectorContentProps): ReactNode {
   const { title, ctaText, onClose, onCtaClick, handleCTAMouseEnter, handleCTAMouseLeave } = context
 
   const mainColor = isDarkMode ? UI.COLOR_COWAMM_LIGHT_GREEN : UI.COLOR_COWAMM_DARK_GREEN
