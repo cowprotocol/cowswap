@@ -23,6 +23,10 @@ describe('document', () => {
         { request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '/dev-hook-review-fixture/' } },
         false,
       ],
+      [
+        { request: { mode: 'navigate' }, url: { hostname: 'swap.cow.fi', pathname: '/dev-hook-review-fixture' } },
+        false,
+      ],
     ] as [RouteMatchCallbackOptions, boolean][]
 
     it.each(TEST_DOCUMENTS)('%j', (document: RouteMatchCallbackOptions, expected: boolean) => {

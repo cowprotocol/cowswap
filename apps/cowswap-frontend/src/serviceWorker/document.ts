@@ -3,7 +3,7 @@ import { getCacheKeyForURL, matchPrecache } from 'workbox-precaching'
 import { Route } from 'workbox-routing'
 
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
-const STATIC_DOCUMENT_PATH_PREFIXES = ['/dev-hook-review-fixture/']
+const STATIC_DOCUMENT_PATHS = ['/dev-hook-review-fixture']
 
 export const DOCUMENT = self.location.origin + '/index.html'
 
@@ -19,7 +19,7 @@ export function matchDocument({ request, url }: RouteMatchCallbackOptions) {
     return false
   }
 
-  if (STATIC_DOCUMENT_PATH_PREFIXES.some((pathPrefix) => url.pathname.startsWith(pathPrefix))) {
+  if (STATIC_DOCUMENT_PATHS.some((path) => url.pathname === path || url.pathname.startsWith(`${path}/`))) {
     return false
   }
 
