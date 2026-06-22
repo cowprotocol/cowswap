@@ -81,6 +81,8 @@ const wagmiAdapter = new WagmiAdapter({
 const urlChainId = getCurrentChainIdFromUrl()
 const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
 
+// AppKit 1.8.19 does not copy createAppKit({ enableInjected }) into OptionsController.state.
+// WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
 const reownAppKit = createAppKit({
