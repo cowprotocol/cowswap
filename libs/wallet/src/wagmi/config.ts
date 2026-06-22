@@ -4,6 +4,7 @@ import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { OptionsController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
@@ -80,12 +81,15 @@ const wagmiAdapter = new WagmiAdapter({
 const urlChainId = getCurrentChainIdFromUrl()
 const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
 
+OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
+
 const reownAppKit = createAppKit({
   adapters: [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
   enableEIP6963: true,
+  enableInjected: false,
   enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: [
