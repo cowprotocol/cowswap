@@ -3,10 +3,18 @@
 import { COW_CDN } from '@cowprotocol/common-const'
 
 import { backOff } from 'exponential-backoff'
-import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
+import { TokenDetails, TokenInfo } from 'types'
 
 import fs from 'fs'
 import path from 'path'
+
+import {
+  isRawTokenData,
+  normalizeOptionalUsdMetric,
+  normalizePlatforms,
+  normalizeTokenMarketCapRank,
+  normalizeTokenSymbol,
+} from './validation'
 
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { Network } from '@/const/networkMap'
@@ -39,14 +47,12 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
   const tokens = tokensRaw.map(_toTokenInfo)
 
   const sortedTokens = tokens.sort(_sortTokensInfoByMarketCap)
+  const cowTokenIndex = sortedTokens.findIndex((item) => item.id === COW_TOKEN_ID)
 
-  // Move COW at the top
-  sortedTokens.unshift(
-    tokens.splice(
-      tokens.findIndex((item) => item.id === COW_TOKEN_ID),
-      1,
-    )[0],
-  )
+  if (cowTokenIndex > 0) {
+    const [cowToken] = sortedTokens.splice(cowTokenIndex, 1)
+    sortedTokens.unshift(cowToken)
+  }
 
   return sortedTokens
 }
@@ -67,7 +73,7 @@ function _getDescriptionFilePaths(): string[] {
   return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
 }
 
-async function fetchWithBackoff(url: string) {
+async function fetchWithBackoff(url: string): Promise<unknown> {
   return backOff(
     () => {
       return fetch(url, {
@@ -90,12 +96,17 @@ async function fetchWithBackoff(url: string) {
 }
 
 async function _getAllTokensData(): Promise<TokenDetails[]> {
-  let tokenRawData: TokenDetails[]
+  let tokenRawData: unknown
 
   try {
     tokenRawData = await fetchWithBackoff(TOKEN_LISTS_URL)
   } catch (error) {
     console.error('[cow-fi] Failed to fetch token list, skipping token data generation.', error)
+    return []
+  }
+
+  if (!Array.isArray(tokenRawData)) {
+    console.error('[cow-fi] Token list payload was not an array')
     return []
   }
 
@@ -105,7 +116,11 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
 
   // Enhance description and transform to token details
   const tokens = tokenRawData
-    .map((tokenRaw: TokenDetails) => {
+    .map((tokenRaw) => {
+      if (!isRawTokenData(tokenRaw)) {
+        return undefined
+      }
+
       // if the token does not have a description file, skip it
       if (!descriptionFiles.includes(tokenRaw.id)) {
         return undefined
@@ -126,42 +141,58 @@ function _getTokenDescription(id: string): string {
   return fs.readFileSync(filePath, 'utf-8')
 }
 
-function _toTokenDetails(tokenRaw: any, description: string): TokenDetails {
-  // Add platform information
-  const detailPlatforms = tokenRaw.detail_platforms
-
-  const platforms = NETWORKS.reduce<Platforms>((acc, network) => {
-    const platformRaw = detailPlatforms[network]
-    if (platformRaw) {
-      acc[network] = _toPlatform(platformRaw)
+function _toTokenDetails(
+  tokenRaw: {
+    detail_platforms?: unknown
+    id: string
+    image?: {
+      large?: unknown
     }
-
-    return acc
-  }, {})
-
-  // Return the details
+    market_cap_rank?: unknown
+    market_data?: {
+      ath?: {
+        usd?: unknown
+      }
+      atl?: {
+        usd?: unknown
+      }
+      current_price?: {
+        usd?: unknown
+      }
+      market_cap?: {
+        usd?: unknown
+      }
+      price_change_percentage_24h?: unknown
+      total_volume?: {
+        usd?: unknown
+      }
+    }
+    name: string
+    symbol: string
+  },
+  description: string,
+): TokenDetails {
+  const platforms = normalizePlatforms(tokenRaw.detail_platforms, NETWORKS)
   const marketData = tokenRaw.market_data
-  const token = {
+  const change24h = marketData?.price_change_percentage_24h
+
+  return {
     id: tokenRaw.id,
     name: tokenRaw.name,
-    symbol: tokenRaw.symbol?.toUpperCase(),
+    symbol: normalizeTokenSymbol(tokenRaw.symbol),
     description,
-    metaDescription: '',
-    // description: description || token?.description?.en || token?.ico_data?.desc || '-', // Replicate old behavior (but not needed, since manual description is always required, leaving for now to double check with Nenad)
-    marketCapRank: tokenRaw.market_cap_rank,
-    marketCap: marketData?.market_cap?.usd ?? null,
-    allTimeHigh: marketData?.ath.usd ?? null,
-    allTimeLow: marketData?.atl.usd ?? null,
-    volume: marketData?.total_volume?.usd ?? null,
-    priceUsd: marketData?.current_price?.usd ?? null,
-    change24h: marketData?.price_change_percentage_24h ?? null,
+    marketCapRank: normalizeTokenMarketCapRank(tokenRaw.market_cap_rank),
+    marketCap: normalizeOptionalUsdMetric(marketData?.market_cap),
+    allTimeHigh: normalizeOptionalUsdMetric(marketData?.ath),
+    allTimeLow: normalizeOptionalUsdMetric(marketData?.atl),
+    volume: normalizeOptionalUsdMetric(marketData?.total_volume),
+    priceUsd: normalizeOptionalUsdMetric(marketData?.current_price),
+    change24h: typeof change24h === 'number' && Number.isFinite(change24h) ? change24h : null,
     image: {
-      large: tokenRaw?.image?.large ?? null,
+      large: typeof tokenRaw.image?.large === 'string' ? tokenRaw.image.large : null,
     },
     platforms,
   }
-
-  return { ...token }
 }
 
 function _toTokenInfo(token: TokenDetails): TokenInfo {
@@ -170,12 +201,6 @@ function _toTokenInfo(token: TokenDetails): TokenInfo {
   return { id, name, symbol, image, marketCapRank, priceUsd, change24h, volume, marketCap }
 }
 
-function _toPlatform(platform: any): PlatformData {
-  return {
-    contractAddress: platform.contract_address || '',
-    decimalPlace: platform.decimal_place || 18,
-  }
-}
 function _sortTokensInfoByMarketCap(a: TokenInfo, b: TokenInfo): number {
   // Sort by market cap
   if (a.marketCapRank === null) {
