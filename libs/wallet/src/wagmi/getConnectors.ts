@@ -22,13 +22,19 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
 }
 
 export function getConnectors(): CreateConnectorFn[] | undefined {
-  const connectors: CreateConnectorFn[] = [getBrowserInjectedConnector()]
+  const isSafeApp = getIsSafeAppIframe()
+  const isWidget = isInjectedWidget()
+  const connectors: CreateConnectorFn[] = []
 
-  if (getIsSafeAppIframe()) {
+  if (!isSafeApp && !isWidget) {
+    connectors.push(getBrowserInjectedConnector())
+  }
+
+  if (isSafeApp) {
     connectors.push(safe({ unstable_getInfoTimeout: 1000 }))
   }
 
-  if (isInjectedWidget()) {
+  if (isWidget) {
     connectors.push(
       injected({
         target: {
@@ -41,5 +47,5 @@ export function getConnectors(): CreateConnectorFn[] | undefined {
     )
   }
 
-  return connectors
+  return connectors.length === 0 ? undefined : connectors
 }
