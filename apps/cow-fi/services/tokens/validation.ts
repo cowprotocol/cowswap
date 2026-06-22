@@ -1,4 +1,4 @@
-import { isRecord } from '@cowprotocol/common-utils'
+import { isRecord } from '@cowprotocol/common-utils/json-utils'
 
 import { PlatformData, Platforms } from 'types'
 import { isAddress } from 'viem'
