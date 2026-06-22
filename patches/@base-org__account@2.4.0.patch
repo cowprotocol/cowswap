@@ -1,0 +1,22 @@
+diff --git a/dist/interface/builder/core/getInjectedProvider.js b/dist/interface/builder/core/getInjectedProvider.js
+index 7910fece266edc1ed2b80fe2d104adfed5097a80..dd81e9febfae65a3b576309fcbe2a0d5709b1bcf 100644
+--- a/dist/interface/builder/core/getInjectedProvider.js
++++ b/dist/interface/builder/core/getInjectedProvider.js
+@@ -1,8 +1,14 @@
+ const TBA_PROVIDER_IDENTIFIER = 'isCoinbaseBrowser';
+ export function getInjectedProvider() {
+-    const injectedProvider = window.top?.ethereum ?? window.ethereum;
+-    if (injectedProvider?.[TBA_PROVIDER_IDENTIFIER]) {
+-        return injectedProvider;
++    try {
++        const injectedProvider = window.top?.ethereum ?? window.ethereum;
++        if (injectedProvider?.[TBA_PROVIDER_IDENTIFIER]) {
++            return injectedProvider;
++        }
++    }
++    catch {
++        // Cross-origin widget iframe: reading window.top.ethereum throws SecurityError.
++        console.log('[cow-base-wallet:baseAccount] getInjectedProvider: cross-origin top window blocked (patched)');
+     }
+     return null;
+ }
