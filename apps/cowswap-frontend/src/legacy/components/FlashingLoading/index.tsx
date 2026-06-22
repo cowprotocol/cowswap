@@ -1,10 +1,9 @@
 import { useTheme } from '@cowprotocol/common-hooks'
+import { CowLoadingIcon } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 export const LoadingWrapper = styled.div`
   display: flex;
