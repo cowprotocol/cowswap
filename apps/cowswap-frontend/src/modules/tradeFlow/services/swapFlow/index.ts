@@ -1,16 +1,19 @@
 import {
   captureError,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  currencyAmountToTokenAmount,
   delay,
   ERROR_TYPES,
   getCurrencyAddress,
   normalizeError,
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
-import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { SigningScheme, SigningStepManager, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
@@ -21,6 +24,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
+import { callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -86,12 +90,27 @@ export async function swapFlow(
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
+    const { appData, account, isSafeWallet, recipientAddressOrName, kind } = orderParams
+
     if (shouldSignPermit) {
+      const sellTokenAmount = currencyAmountToTokenAmount(inputAmount)
+      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+        chainId: sellTokenAmount.currency.chainId,
+        sellToken: {
+          ...sellTokenAmount.currency,
+          name: sellTokenAmount.currency.name || '',
+          symbol: sellTokenAmount.currency.symbol || '',
+        },
+        sellAmount: (permitAmountToSign ?? 0n).toString(),
+        walletAddress: account,
+        spenderAddress: COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId],
+      })
+
+      if (!isWidgetHookPassed) return false
+
       setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
-
-    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
 
     orderParams.appData = await handlePermit({
       appData,
