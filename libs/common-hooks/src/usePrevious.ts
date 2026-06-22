@@ -1,15 +1,19 @@
-import { useEffect, useRef } from 'react'
+import { type RefObject, useEffect, useRef } from 'react'
+
+/** Ref synced to the latest value on each commit (shared by {@link usePrevious}). */
+export function usePreviousRef<T>(value: T): RefObject<T> {
+  const ref = useRef(value)
+
+  useEffect(() => {
+    ref.current = value
+  }, [value])
+
+  return ref
+}
 
 // modified from https://usehooks.com/usePrevious/
 export function usePrevious<T>(value: T): T | null {
-  // The ref object is a generic container whose current property is mutable ...
-  // ... and can hold any value, similar to an instance property on a class
-  const ref = useRef<T>(value)
-
-  // Store current value in ref
-  useEffect(() => {
-    ref.current = value
-  }, [value]) // Only re-run if value changes
+  const ref = usePreviousRef(value)
 
   // Return previous value (happens before update in useEffect above)
   // eslint-disable-next-line react-hooks/refs

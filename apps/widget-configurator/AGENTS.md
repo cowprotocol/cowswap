@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-06-04
 ---
 
 # widget-configurator AGENTS.md
