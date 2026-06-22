@@ -99,6 +99,8 @@ export const CallDataValue = styled.pre`
   background: var(${UI.COLOR_PAPER_DARKER});
   font-family: var(${UI.FONT_FAMILY_PRIMARY});
   font-size: var(${UI.FONT_SIZE_NORMAL});
+  max-height: 8lh;
+  overflow-y: auto;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 `
