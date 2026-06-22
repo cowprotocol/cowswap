@@ -12,10 +12,10 @@
       "default": "./src/index.ts"
     },
     "./json-utils": {
-      "types": "./json-utils.ts",
-      "import": "./json-utils.ts",
-      "require": "./json-utils.ts",
-      "default": "./json-utils.ts"
+      "types": "./src/json-utils.ts",
+      "import": "./src/json-utils.ts",
+      "require": "./src/json-utils.ts",
+      "default": "./src/json-utils.ts"
     }
   },
   "publishConfig": {
@@ -26,6 +26,11 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
+      },
+      "./json-utils": {
+        "types": "./json-utils.d.ts",
+        "import": "./json-utils.mjs",
+        "require": "./json-utils.js"
       }
     }
   },

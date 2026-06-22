@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { useMemo } from 'react'
 
 import { useQuery } from '@apollo/client'
@@ -10,8 +11,7 @@ import { fixChart } from 'util/fixChart'
 import { usePriceHistory } from 'lib/hooks/usePriceHistory'
 
 import { Chart, TimePeriod } from '../Chart'
-import { ChartContainer } from '../Chart/LoadingChart'
-import { LoadingChart } from '../Chart/LoadingChart'
+import { ChartContainer, LoadingChart } from '../Chart/LoadingChart'
 
 type ChartSectionProps = {
   platforms: Platforms
@@ -23,18 +23,20 @@ type QueryVars = {
   address: string
 }
 
-export function ChartSection({ platforms }: ChartSectionProps) {
+export function ChartSection({ platforms }: ChartSectionProps): JSX.Element {
+  const ethereumAddress = platforms.ethereum?.contractAddress
+
   const queryVariables = useMemo<QueryVars | undefined>(() => {
-    if (!platforms.ethereum.contractAddress) {
+    if (!ethereumAddress) {
       return undefined
     }
 
     return {
       duration: HistoryDuration.Day,
       chain: Chain.Ethereum,
-      address: platforms.ethereum.contractAddress,
+      address: ethereumAddress,
     }
-  }, [platforms.ethereum.contractAddress])
+  }, [ethereumAddress])
 
   const { data, loading } = useQuery(tokenPriceQuery, {
     variables: queryVariables,
