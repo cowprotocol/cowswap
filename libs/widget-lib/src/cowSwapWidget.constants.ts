@@ -7,7 +7,7 @@ export const WIDGET_IFRAME_ID = 'cowswap-widget-iframe'
 export const WIDGET_CONTAINER_ID = 'cowswap-widget'
 
 export const DEFAULT_WIDGET_PARAMS = {
-  appCode: 'Unknown',
+  appCode: '',
 } as const satisfies CowSwapWidgetParams
 
 /**

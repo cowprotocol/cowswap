@@ -61,7 +61,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
 
   let provider = providerAux
-  let currentParams: CowSwapWidgetParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
+  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
   let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
@@ -153,7 +153,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   return {
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
-      currentParams = { ...DEFAULT_WIDGET_PARAMS, ...newParams }
+      currentParams = resolveWidgetParams(newParams)
 
       updateIframeElement(iframe, currentParams, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
@@ -188,6 +188,16 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       cancelWidgetLoading()
     },
   }
+}
+
+function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+  const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
+
+  if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
+    throw new Error('Required param `appCode` is missing')
+  }
+
+  return currentParams
 }
 
 /**

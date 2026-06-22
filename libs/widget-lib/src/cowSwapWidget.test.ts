@@ -3,7 +3,7 @@
  */
 
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
-import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit, WidgetMethodsListen } from './types'
+import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 const widgetHandlers: CowSwapWidgetHandler[] = []
@@ -317,32 +317,26 @@ describe('createCowSwapWidget', () => {
     postMessageSpy.mockRestore()
   })
 
-  it('uses merged DEFAULT_WIDGET_PARAMS for initial iframe setup when appCode is omitted', () => {
-    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow')
+  it('throws when appCode is omitted', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
-    widgetHandlers.push(
+    expect(() =>
       createCowSwapWidget(container, {
         params: {
           chainId: 1,
           tradeType: TradeType.SWAP,
         } as CowSwapWidgetParams,
       }),
-    )
+    ).toThrow('Required param `appCode` is missing')
 
-    const iframe = getIframe(container)
+    expect(container.querySelector('iframe')).toBeNull()
+  })
 
-    emitWidgetEvent(iframe, WidgetMethodsEmit.ACTIVATE, {})
+  it('throws when appCode is blank on updateParams', () => {
+    const { updateParams } = createWidget()
 
-    expect(postMessageSpy).toHaveBeenCalledWith(
-      iframe.contentWindow,
-      WidgetMethodsListen.UPDATE_APP_DATA,
-      { metaData: { appCode: 'Unknown' } },
-      new URL(iframe.src).origin,
-    )
-
-    postMessageSpy.mockRestore()
+    expect(() => updateParams({ appCode: '   ' } as CowSwapWidgetParams)).toThrow('Required param `appCode` is missing')
   })
 })
 
