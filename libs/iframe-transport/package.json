@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/iframe-transport",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "CoW Swap iframe-transport",
   "repository": {
     "type": "git",

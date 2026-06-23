@@ -1,5 +1,34 @@
 # Changelog
 
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.2...balances-and-allowances-v3.4.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add basic solana integration (#7587)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/tokens@3.8.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/multicall@3.4.0
+  - @cowprotocol/types@4.5.0
+
 ## [3.3.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.1...balances-and-allowances-v3.3.2) (2026-06-16)
 
 ### Patch Changes
