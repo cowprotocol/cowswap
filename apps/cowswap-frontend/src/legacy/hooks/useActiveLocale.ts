@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
@@ -52,7 +53,7 @@ function useUrlLocale() {
 export function useActiveLocale(): SupportedLocale {
   const urlLocale = useUrlLocale()
   const userLocale = useUserLocale()
-  return useMemo(() => urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE, [urlLocale, userLocale])
+  return useMemo(() => resolveActiveLocale(urlLocale, userLocale), [urlLocale, userLocale])
 }
 
 /**
@@ -61,5 +62,17 @@ export function useActiveLocale(): SupportedLocale {
  * @see useActiveLocale - should implement **the same** locale detection logic
  */
 export function getActiveLocale(): SupportedLocale {
-  return parseLocale(parsedQueryString().lng) ?? storeLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
+  return resolveActiveLocale(parseLocale(parsedQueryString().lng), storeLocale())
+}
+
+function resolveActiveLocale(
+  urlLocale: SupportedLocale | undefined,
+  userLocale: SupportedLocale | undefined | null,
+): SupportedLocale {
+  if (isInjectedWidget()) {
+    // Ignore persisted locale for widget mode so that the locale is determined by the widget URL alone:
+    return urlLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
+  }
+
+  return urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
 }
