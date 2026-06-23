@@ -226,6 +226,11 @@ export async function tradeFlow(
   } catch (err: unknown) {
     const error = normalizeError(err)
 
+    // Expected abort path: skip generic swap-error analytics so widget-hook declines don't pollute telemetry.
+    if (error instanceof WidgetHookDeclineError) {
+      throw error
+    }
+
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
