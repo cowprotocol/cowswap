@@ -1,7 +1,8 @@
-import { isRecord, isTruthy } from '@cowprotocol/common-utils'
+import { isTruthy } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeFunctionData, parseAbi } from 'viem'
+import { z } from 'zod'
 
 import { ComposableCowContractData } from 'modules/advancedOrders'
 
@@ -89,6 +90,23 @@ interface DecodedMultiSendTransaction {
   operation: number
   to: string
 }
+
+const safeMultisigTransactionCandidateSchema = z.object({
+  confirmations: z.array(z.unknown()).nullable().optional(),
+  confirmationsRequired: z.number(),
+  data: z.string().transform((value) => value as Hex),
+  executionDate: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((value) => value ?? null),
+  isExecuted: z.boolean(),
+  nonce: z.string(),
+  operation: z.number(),
+  safeTxHash: z.string(),
+  submissionDate: z.string(),
+  to: z.string(),
+}) satisfies z.ZodType<SafeMultisigTransactionCandidate, z.ZodTypeDef, unknown>
 
 export function parseSafeTransactionsResult(
   composableCowContract: ComposableCowContractData,
@@ -253,47 +271,9 @@ function hexLengthToNumber(value: string): number | null {
 }
 
 function getSafeMultisigTransactionCandidate(value: unknown): SafeMultisigTransactionCandidate | null {
-  if (!isRecord(value)) {
-    return null
-  }
+  const parsed = safeMultisigTransactionCandidateSchema.safeParse(value)
 
-  if (!hasRequiredSafeTransactionFields(value) || !hasOptionalSafeTransactionFields(value)) {
-    return null
-  }
-
-  return {
-    confirmations: value.confirmations as unknown[] | null | undefined,
-    confirmationsRequired: value.confirmationsRequired as number,
-    data: value.data as Hex,
-    executionDate: (value.executionDate ?? null) as string | null,
-    isExecuted: value.isExecuted as boolean,
-    nonce: value.nonce as string,
-    operation: value.operation as number,
-    safeTxHash: value.safeTxHash as string,
-    submissionDate: value.submissionDate as string,
-    to: value.to as string,
-  }
-}
-
-function hasRequiredSafeTransactionFields(value: Record<string, unknown>): boolean {
-  return (
-    typeof value.data === 'string' &&
-    typeof value.to === 'string' &&
-    typeof value.operation === 'number' &&
-    typeof value.submissionDate === 'string' &&
-    typeof value.isExecuted === 'boolean' &&
-    typeof value.nonce === 'string' &&
-    typeof value.confirmationsRequired === 'number' &&
-    typeof value.safeTxHash === 'string'
-  )
-}
-
-function hasOptionalSafeTransactionFields(value: Record<string, unknown>): boolean {
-  const executionDateIsValid = value.executionDate === null || typeof value.executionDate === 'string'
-  const confirmationsAreValid =
-    value.confirmations === undefined || value.confirmations === null || Array.isArray(value.confirmations)
-
-  return executionDateIsValid && confirmationsAreValid
+  return parsed.success ? parsed.data : null
 }
 
 function parseConditionalOrderParams(
