@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.0...currency-v1.2.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.1.0...currency-v1.2.0) (2026-06-23)
 
 ### Minor Changes

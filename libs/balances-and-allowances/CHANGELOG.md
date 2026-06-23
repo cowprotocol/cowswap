@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.0...balances-and-allowances-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/multicall@3.4.1
+  - @cowprotocol/tokens@3.8.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/wallet@3.7.1
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.2...balances-and-allowances-v3.4.0) (2026-06-23)
 
 ### Minor Changes

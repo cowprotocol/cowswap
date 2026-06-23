@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.16.0...cowswap-v3.16.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.1
+  - @cowprotocol/balances-and-allowances@3.4.1
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/ens@3.4.1
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/multicall@3.4.1
+  - @cowprotocol/permit-utils@3.4.1
+  - @cowprotocol/tokens@3.8.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/ui@3.8.1
+  - @cowprotocol/wallet@3.7.1
+  - @cowprotocol/widget-lib@4.3.1
+  - @cowprotocol/snackbars@2.2.3
+  - @cowprotocol/iframe-transport@2.3.2
+  - @cowprotocol/hook-dapp-lib@2.2.9
+
 ## [3.16.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.15.0...cowswap-v3.16.0) (2026-06-23)
 
 ### Minor Changes
