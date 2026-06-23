@@ -88,4 +88,8 @@ export class CurrencyAmount<T extends Currency> extends Fraction {
       format,
     )
   }
+
+  override toJSON(): { numerator: string; denominator: string; currency: T } {
+    return { ...super.toJSON(), currency: this.currency }
+  }
 }

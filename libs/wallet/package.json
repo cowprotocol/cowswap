@@ -24,8 +24,10 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.1.2",
+    "@coinbase/wallet-sdk": "4.3.7",
+    "@cowprotocol/cow-sdk": "9.2.1",
     "@reown/appkit": "1.8.19",
+    "@reown/appkit-adapter-solana": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",
     "@reown/appkit-common": "1.8.19",
@@ -47,7 +49,6 @@
     "@safe-global/types-kit": "3.0.0",
     "@safe-global/safe-apps-react-sdk": "4.7.2",
     "@cowprotocol/currency": "workspace:*",
-    "@coinbase/wallet-sdk": "4.3.7",
     "@tanstack/react-query": "5.90.20",
     "eventemitter3": "4.0.7",
     "hdkey": "2.1.0",

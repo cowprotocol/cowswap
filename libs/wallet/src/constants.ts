@@ -35,7 +35,7 @@ export const SUPPORTED_CHAIN_ID_TO_CAIP: Record<SupportedChainId, CaipNetworkId>
   [SupportedChainId.INK]: 'eip155:57073',
   [SupportedChainId.LINEA]: 'eip155:59144',
   [SupportedChainId.SEPOLIA]: 'eip155:11155111',
-  // [SupportedChainId.SOLANA]: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  [SupportedChainId.SOLANA]: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
 }
 
 export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId> = {
@@ -50,7 +50,7 @@ export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId>
   'eip155:57073': SupportedChainId.INK,
   'eip155:59144': SupportedChainId.LINEA,
   'eip155:11155111': SupportedChainId.SEPOLIA,
-  // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': SupportedChainId.SOLANA,
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': SupportedChainId.SOLANA,
 }
 
 export const SAFE_APP_ORIGIN = 'https://app.safe.global'

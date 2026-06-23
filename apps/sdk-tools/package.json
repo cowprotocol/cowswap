@@ -24,9 +24,9 @@
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.1.2",
-    "@cowprotocol/sdk-composable": "1.0.3",
-    "@cowprotocol/sdk-viem-adapter": "0.3.20",
+    "@cowprotocol/cow-sdk": "9.2.1",
+    "@cowprotocol/sdk-composable": "1.1.1",
+    "@cowprotocol/sdk-viem-adapter": "0.3.24",
     "@cowprotocol/wallet": "workspace:*",
     "viem": "2.48.8",
     "wagmi": "3.6.9",

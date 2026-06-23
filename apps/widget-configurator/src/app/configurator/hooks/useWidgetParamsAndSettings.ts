@@ -5,7 +5,30 @@ import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/w
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
-const vercelSuffix = '-cowswap-dev.vercel.app'
+const vercelWidgetConfiguratorPrefix = 'widget-configurator-git-'
+const cfPagesPreviewSuffix = `.swap-dev-5u6.pages.dev`
+const cfPagesPreviewSubdomainMaxLength = 28
+const cfPagesPreviewSubdomainFallback = 'preview'
+const vercelPreviewHashSuffix = /-[a-f0-9]{6}$/
+
+export const branchNameToCfPagesSubdomain = (branchName: string): string => {
+  const subdomain = branchName
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .slice(0, cfPagesPreviewSubdomainMaxLength)
+    .replace(/^-+|-+$/g, '')
+
+  return subdomain || cfPagesPreviewSubdomainFallback
+}
+
+export const vercelPreviewSlugToCfPagesSubdomain = (
+  branchSlug: string,
+  branchName = process.env.VERCEL_GIT_COMMIT_REF,
+): string => {
+  const branch = branchName || branchSlug.replace(vercelPreviewHashSuffix, '')
+
+  return branchNameToCfPagesSubdomain(branch)
+}
 
 const getBaseUrl = (): string => {
   if (typeof window === 'undefined' || !window) return ''
@@ -15,9 +38,9 @@ const getBaseUrl = (): string => {
   if (isDev) return 'https://dev.swap.cow.fi'
 
   if (isVercel) {
-    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
+    const prKey = window.location.hostname.replace(vercelWidgetConfiguratorPrefix, '')
 
-    return `https://swap-dev-git-${prKey}${vercelSuffix}`
+    return `https://${vercelPreviewSlugToCfPagesSubdomain(prKey)}${cfPagesPreviewSuffix}`
   }
 
   return 'https://swap.cow.fi'

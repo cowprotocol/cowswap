@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 
 import { useAppKitState } from '@reown/appkit/react'
 import ms from 'ms.macro'
-import { useConnection } from 'wagmi'
+
+import { useAccountState } from './useAccountState'
 
 import { useWalletInfo } from '../../api/hooks'
 import { appWalletContextAtom } from '../../state/appWalletContext.atom'
@@ -34,7 +35,7 @@ export function useIsRestoringConnection(): boolean {
 
 function useIsRestoringConnectionRaw(): boolean {
   const appWalletContext = useAtomValue(appWalletContextAtom)
-  const { status } = useConnection()
+  const { status } = useAccountState()
   const { account } = useWalletInfo()
   const state = useAppKitState()
   const { loading, initialized } = state

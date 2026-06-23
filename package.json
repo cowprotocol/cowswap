@@ -39,7 +39,7 @@
     "preview": "NODE_OPTIONS=--max-old-space-size=8192 nx run cowswap-frontend:preview",
     "test": "pnpm run test:all && pnpm run test:tools",
     "test:all": "nx run-many -t test",
-    "test:tools": "node --test tools/scripts/*.test.mjs",
+    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs tools/scripts/cf-pages/gh-actions/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck",
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",

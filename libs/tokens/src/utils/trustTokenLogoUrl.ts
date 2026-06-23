@@ -12,7 +12,7 @@ const chainIdToName: Record<TargetChainId, string | null> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: null, // As of now (2026/01/23), Ink is not on Trust Wallet assets repo
-  [AdditionalTargetChainId.SOLANA]: 'solana',
+  [SupportedChainId.SOLANA]: 'solana',
   [AdditionalTargetChainId.BITCOIN]: 'bitcoin',
   [AdditionalTargetChainId.OPTIMISM]: 'optimism',
 }
