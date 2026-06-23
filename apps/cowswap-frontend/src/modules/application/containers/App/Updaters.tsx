@@ -11,6 +11,7 @@ import { useWalletInfo, WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdate
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BlockNumberUpdater } from 'entities/blockchain'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
@@ -76,6 +77,7 @@ export function Updaters(): ReactNode {
   return (
     <>
       <CowSdkUpdater />
+      <BlockNumberUpdater />
       <FeatureFlagsUpdater />
       <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
