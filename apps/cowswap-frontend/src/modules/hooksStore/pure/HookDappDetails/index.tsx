@@ -11,7 +11,7 @@ import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
-import { InfoTable } from '../HookInfoTable'
+import { InfoTable } from '../HookInfoTable/HookInfoTable.styled'
 
 interface HookDappDetailsProps {
   dapp: HookDapp

@@ -2,7 +2,7 @@ import { ButtonEmpty, CopyButton, ExternalLink, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
-import { InfoTable } from '../HookInfoTable'
+import { InfoTable } from '../HookInfoTable/HookInfoTable.styled'
 
 export const Wrapper = styled.div`
   display: flex;

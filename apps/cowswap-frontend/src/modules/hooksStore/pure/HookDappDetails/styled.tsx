@@ -2,7 +2,7 @@ import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { InfoTable, InfoTableWrapper } from '../HookInfoTable'
+import { InfoTable, InfoTableWrapper } from '../HookInfoTable/HookInfoTable.styled'
 
 export const Wrapper = styled.div`
   flex: 1;
