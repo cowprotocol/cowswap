@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.7.1](https://github.com/cowprotocol/cowswap/compare/events-v4.7.0...events-v4.7.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.5.1
+
 ## [4.7.0](https://github.com/cowprotocol/cowswap/compare/events-v4.6.0...events-v4.7.0) (2026-06-23)
 
 ### Minor Changes
