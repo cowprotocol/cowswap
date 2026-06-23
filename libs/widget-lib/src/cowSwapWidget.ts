@@ -2,10 +2,18 @@ import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
-import { WIDGET_IFRAME_ALLOW, WIDGET_IFRAME_REFERRER_POLICY, WIDGET_IFRAME_SANDBOX } from './cowSwapWidget.constants'
+import { assignElementStyles } from './applyElementStyles'
+import {
+  DEFAULT_WIDGET_PARAMS,
+  WIDGET_IFRAME_ALLOW,
+  WIDGET_IFRAME_ID,
+  WIDGET_IFRAME_REFERRER_POLICY,
+  WIDGET_IFRAME_SANDBOX,
+} from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
+import { isCowSwapWidgetPalette } from './themeUtils'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -21,17 +29,6 @@ import {
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
-
-const DEFAULT_HEIGHT = '640px'
-const DEFAULT_WIDTH = '450px'
-
-/**
- * Reference: IframeResizer (apps/cowswap-frontend/src/modules/injectedWidget/updaters/IframeResizer.ts)
- * Sometimes MutationObserver doesn't trigger when the height of the widget changes and the widget displays with a scrollbar.
- * To avoid this we add a threshold to the height.
- * 20px
- */
-const HEIGHT_THRESHOLD = 20
 
 const noopHandler: CowSwapWidgetHandler = {
   iframe: null as never,
@@ -58,15 +55,19 @@ export interface CowSwapWidgetHandler {
  * @param props - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
+
+// eslint-disable-next-line max-lines-per-function
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
   const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
+
   let provider = providerAux
-  let currentParams = params
+  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
+  let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(params)
+  const iframe = createIframe(currentParams)
   const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
@@ -95,10 +96,12 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   )
 
   // 3. Send appCode (once the widget posts the ACTIVATE message)
-  windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
+  windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, currentParams.appCode))
 
-  // 4. Handle widget height changes
-  windowListeners.push(...listenToHeightChanges(iframe, iframeOrigin, params.height, params.maxHeight))
+  // 4. Handle widget height changes (re-registered when params change so defaults/maxHeight stay in sync)
+  const heightChangeListeners: WindowListener[] = listenToHeightChanges(iframe, iframeOrigin, (nextHeight) => {
+    lastDynamicHeight = nextHeight
+  })
 
   // 5. Intercept deeplinks navigation in the iframe
   let interceptDeepLinksListener: WindowListener | null = null
@@ -121,12 +124,12 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   function updateWidgetHooks(): void {
     if (!iframeWindow) return
+
     if (widgetHooksListener) {
       window.removeEventListener('message', widgetHooksListener)
     }
 
     widgetHooksListener = processWidgetHooks(iframeWindow, iframeOrigin, currentParams.hooks)
-    windowListeners.push(widgetHooksListener)
   }
 
   updateInterceptDeepLinks()
@@ -150,7 +153,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   return {
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
-      currentParams = newParams
+      currentParams = resolveWidgetParams(newParams)
+
+      updateIframeElement(iframe, currentParams, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
       updateInterceptDeepLinks()
       updateWidgetHooks()
@@ -168,7 +173,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       iFrameCowEventEmitter.stopListeningIframe()
 
       // Disconnect all listeners
+      heightChangeListeners.forEach((listener) => window.removeEventListener('message', listener))
       windowListeners.forEach((listener) => window.removeEventListener('message', listener))
+      if (widgetHooksListener) {
+        window.removeEventListener('message', widgetHooksListener)
+      }
 
       // Stop listening for SDK messages
       iframeSafeSdkBridge?.stopListening()
@@ -192,6 +201,16 @@ function createIframeSafeSdkBridge(
   }
 
   return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
+}
+
+function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+  const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
+
+  if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
+    throw new Error('Required param `appCode` is missing')
+  }
+
+  return currentParams
 }
 
 /**
@@ -232,19 +251,63 @@ function updateProvider(
  * @returns The generated HTMLIFrameElement.
  */
 function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
-  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
-
   const iframe = document.createElement('iframe')
 
+  iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetUrl(params)
-  iframe.width = width
-  iframe.height = height
-  iframe.style.border = '0'
   iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
 
+  updateIframeElement(iframe, params)
+
   return iframe
+}
+
+function updateIframeElement(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
+  assignElementStyles(iframe, params.iframeStyle)
+
+  const deprecatedParams = [
+    {
+      name: 'params.width',
+      value: params.width,
+      replacementName: 'iframeStyle.width',
+      replacementValue: params.iframeStyle?.width,
+      applyDeprecated: () => (params.width ? (iframe.width = params.width) : void 0),
+    },
+    {
+      name: 'params.height',
+      value: params.height,
+      replacementName: 'iframeStyle.height',
+      replacementValue: params.iframeStyle?.height,
+      applyDeprecated: () => (params.height ? (iframe.height = params.height) : void 0),
+    },
+    {
+      name: 'params.maxHeight',
+      value: params.maxHeight,
+      replacementName: 'iframeStyle.maxHeight',
+      replacementValue: params.iframeStyle?.maxHeight,
+      applyDeprecated: () => (params.maxHeight ? (iframe.style.maxHeight = `${params.maxHeight}px`) : void 0),
+    },
+    {
+      name: 'params.theme.boxShadow',
+      value: isCowSwapWidgetPalette(params.theme) ? params.theme.boxShadow : undefined,
+      replacementName: 'cardStyle.boxShadow',
+      replacementValue: params.cardStyle?.boxShadow,
+      applyDeprecated: () => void 0,
+    },
+  ].filter((paramConfig) => !!paramConfig.value)
+
+  deprecatedParams.forEach((param) => {
+    if (param.replacementValue) {
+      console.warn(`Both ${param.name} and ${param.replacementName} have been set. ${param.name} will be ignored.`)
+    } else {
+      console.warn(`${param.name} is deprecated. Use ${param.replacementName} instead.`)
+      param.applyDeprecated()
+    }
+  })
+
+  if (lastDynamicHeight) iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }
 
 function getIframeOrigin(iframe: HTMLIFrameElement): string {
@@ -269,8 +332,8 @@ function updateParams(
   const pathname = buildWidgetPath(params)
   const search = buildWidgetUrlQuery(params).toString()
 
-  // Omit theme from appParams
-  const { theme: _theme, hooks: _hooks, ...appParams } = params
+  // Omit theme, hooks, and host-only iframe styles from appParams
+  const { theme: _theme, hooks: _hooks, iframeStyle: _iframeStyle, ...appParams } = params
 
   widgetIframeTransport.postMessageToWindow(
     contentWindow,
@@ -359,6 +422,10 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
   }
 }
 
+const DYNAMIC_HEIGHT_CSS_VAR = '--dynamicHeight'
+
+const HEIGHT_THRESHOLD = 0
+
 /**
  * Listens for iframeHeight emitted by the widget, and applies dynamic height adjustments to the widget's iframe.
  *
@@ -369,8 +436,7 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null 
 function listenToHeightChanges(
   iframe: HTMLIFrameElement,
   iframeOrigin: string,
-  defaultHeight = DEFAULT_HEIGHT,
-  maxHeight?: number,
+  setLastDynamicHeight: (nextHeight: string) => void,
 ): WindowListener[] {
   if (!iframe.contentWindow) return []
 
@@ -380,9 +446,9 @@ function listenToHeightChanges(
       iframe.contentWindow,
       WidgetMethodsEmit.UPDATE_HEIGHT,
       (data) => {
-        const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
-
-        iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
+        const nextHeight = `${(data?.height ?? 0) + HEIGHT_THRESHOLD}px`
+        iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, nextHeight)
+        setLastDynamicHeight(nextHeight)
       },
       iframeOrigin,
     ),
@@ -390,8 +456,9 @@ function listenToHeightChanges(
       window,
       iframe.contentWindow,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
-      ({ isUpToSmall }) => {
-        iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
+      () => {
+        iframe.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, '100dvh')
+        setLastDynamicHeight('100dvh')
       },
       iframeOrigin,
     ),

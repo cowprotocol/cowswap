@@ -8,8 +8,7 @@ export interface SafeLinkResult {
 }
 
 function isLocalDevHostname(hostname: string): boolean {
-  const normalizedHostname =
-    hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname
+  const normalizedHostname = hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname
 
   return LOCALHOST_HOSTNAMES.has(normalizedHostname) || normalizedHostname.endsWith('.localhost')
 }
