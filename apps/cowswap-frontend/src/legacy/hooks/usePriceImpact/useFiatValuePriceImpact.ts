@@ -8,6 +8,7 @@ import { Fraction, Percent } from '@cowprotocol/currency'
 import ms from 'ms.macro'
 
 import { useDerivedTradeState } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -31,7 +32,12 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
-  const isLoading = inputIsLoading || outputIsLoading
+  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged } = useTradeQuote()
+
+  // Trade-quote signals indicate the current output amount is stale (token just changed
+  // or a fresh quote is in flight). Compute price impact only once the quote catches up,
+  // otherwise we'd display a huge nonsense % derived from mismatched in/out amounts.
+  const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
   useEffect(() => {
@@ -51,12 +57,20 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
     if (!isTradeSetUp) return null
 
+    const stillLoading = isLoading && !hasLoadingTimedOut
+
+    // While a fresh quote is loading, don't expose the stale value at all — consumers
+    // hide the percentage when `priceImpact` is undefined, leaving just the spinner.
+    if (stillLoading) {
+      return { priceImpact: undefined, isLoading: true }
+    }
+
     const priceImpact = computeFiatValuePriceImpact(
       fiatValueInput ? FractionUtils.fractionLikeToFraction(fiatValueInput) : null,
       fiatValueOutput ? FractionUtils.fractionLikeToFraction(fiatValueOutput) : null,
     )
 
-    return { priceImpact, isLoading: isLoading && !hasLoadingTimedOut }
+    return { priceImpact, isLoading: false }
   }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
 }
 
