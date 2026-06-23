@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/types-v4.4.0...types-v4.5.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.0
+
 ## [4.4.0](https://github.com/cowprotocol/cowswap/compare/types-v4.3.2...types-v4.4.0) (2026-06-08)
 
 ### Minor Changes
