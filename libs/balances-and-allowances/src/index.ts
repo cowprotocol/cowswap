@@ -1,5 +1,6 @@
 // Updater
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
+export { BalancesWatcherUpdater } from './updaters/BalancesWatcherUpdater'
 export { TradeSpenderOverrideUpdater } from './updaters/TradeSpenderOverrideUpdater'
 export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 
@@ -22,3 +23,19 @@ export type { AllowancesState } from './hooks/useTokenAllowances'
 
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
+
+export {
+  createBalancesWatcherSession,
+  subscribeToBalancesEvents,
+  BalancesWatcherApiError,
+  BalancesWatcherStreamError,
+} from './balancesWatcher'
+export type {
+  BalanceUpdateEvent,
+  BalancesMap,
+  BalancesSubscription,
+  BalancesWatcherErrorPayload,
+  CreateSessionParams,
+  CreateSessionRequest,
+  SubscribeToBalancesEventsParams,
+} from './balancesWatcher'

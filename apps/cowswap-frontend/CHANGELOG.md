@@ -1,5 +1,124 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.15.0...cowswap-v3.16.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add basic solana integration (#7587)
+
+- feat: support new quote api errors (#7609)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat(widget): add options to control approval flow (#7571)
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+- feat: improve affiliate onboarding copy (#7637)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+- feat(widget): control custom recipient (#7573)
+
+- feat: replace blocknative gas price with rpc node (#7646)
+
+### Patch Changes
+
+- fix(wallet): do not allow other wallets in Safe App (#7678)
+
+- fix(permit): display relevant permit in hook details (#7672)
+
+- fix(hooks): treat simulated gasUsed as floor, not literal gasLimit (#7671)
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- fix: csp headers in cf (#7585)
+
+- fix(limit-orders): handle disableInfiniteApprove option (#7662)
+
+- fix: price impact timeout should reset on token change (#7668)
+
+- fix: BTC bridging (#7532)
+
+- fix: add toJSON for CurrencyAmount to deserialize orders (#7645)
+
+- fix(trade): hide zero approval warning when balance is insufficient (#7578)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: fix default slippage const (DEFAULT_TWAP_SLIPPAGE) (#7586)
+
+- fix: fix notification icon indicator positioning (#7643)
+
+- fix: Compute fillability comparing allowance against remaining sell amount (#7614)
+
+- fix(trade): preserve URL recipient when chainId initializes (#7465)
+
+- fix: reject placeholder bridge recipients before posting (#7670)
+
+- fix: minor UI fixes for account selector (#7229)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.4.0
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/tokens@3.8.0
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/ens@3.4.0
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/multicall@3.4.0
+  - @cowprotocol/permit-utils@3.4.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/widget-lib@4.3.0
+  - @cowprotocol/snackbars@2.2.2
+  - @cowprotocol/iframe-transport@2.3.1
+  - @cowprotocol/hook-dapp-lib@2.2.8
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.14.0...cowswap-v3.15.0) (2026-06-16)
+
+### Minor Changes
+
+- feat(wallet): use reown for wallets management (#7639)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+  - @cowprotocol/balances-and-allowances@3.3.2
+  - @cowprotocol/multicall@3.3.2
+
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.13.0...cowswap-v3.14.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(widget): control custom recipient (#7573)
+
+- feat(widget): add options to control approval flow (#7571)
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.2.0
+  - @cowprotocol/events@4.6.0
+  - @cowprotocol/wallet@3.5.1
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/balances-and-allowances@3.3.1
+  - @cowprotocol/multicall@3.3.1
+  - @cowprotocol/ui@3.7.1
+  - @cowprotocol/snackbars@2.2.1
+  - @cowprotocol/tokens@3.7.1
+
 ## [3.13.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.12.1...cowswap-v3.13.0) (2026-06-08)
 
 ### Minor Changes

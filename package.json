@@ -39,7 +39,7 @@
     "preview": "NODE_OPTIONS=--max-old-space-size=8192 nx run cowswap-frontend:preview",
     "test": "pnpm run test:all && pnpm run test:tools",
     "test:all": "nx run-many -t test",
-    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs",
+    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs tools/scripts/cf-pages/gh-actions/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck",
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
@@ -51,6 +51,7 @@
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
+    "update-widget-sdk-versions": "node apps/widget-configurator/scripts/widget-sdk-versions.script.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
@@ -118,11 +119,19 @@
       ]
     },
     "packageExtensions": {
+      "@reown/appkit-utils": {
+        "dependencies": {
+          "bs58": "6.0.0"
+        }
+      },
       "@walletconnect/modal-ui": {
         "dependencies": {
           "lit-html": "2.8.0"
         }
       }
+    },
+    "patchedDependencies": {
+      "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
     }
   },
   "dependencies": {

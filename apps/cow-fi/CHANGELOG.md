@@ -1,5 +1,39 @@
 # Changelog
 
+## [2.7.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.2...cow-fi-v2.7.3) (2026-06-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/widget-react@3.1.2
+
+## [2.7.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.1...cow-fi-v2.7.2) (2026-06-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+
+## [2.7.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.0...cow-fi-v2.7.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.6.0
+  - @cowprotocol/wallet@3.5.1
+  - @cowprotocol/widget-react@3.1.1
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/ui@3.7.1
+
 ## [2.7.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.6.2...cow-fi-v2.7.0) (2026-06-08)
 
 ### Minor Changes

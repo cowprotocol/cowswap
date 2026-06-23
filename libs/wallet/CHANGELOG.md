@@ -1,5 +1,55 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.6.0...wallet-v3.7.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add basic solana integration (#7587)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix(wallet): do not allow other wallets in Safe App (#7678)
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- fix: detect atomic batch support (#7584)
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: add safe connector to widget-cfg explicitly (#7660)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/ens@3.4.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/iframe-transport@2.3.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.1...wallet-v3.6.0) (2026-06-16)
+
+### Minor Changes
+
+- feat(wallet): use reown for wallets management (#7639)
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.0...wallet-v3.5.1) (2026-06-09)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.1
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.4.1...wallet-v3.5.0) (2026-06-08)
 
 ### Minor Changes

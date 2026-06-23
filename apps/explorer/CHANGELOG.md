@@ -1,5 +1,39 @@
 # Changelog
 
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.1...explorer-v4.6.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: make operatorApi treat BARN requests as optional (#7583)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/hook-dapp-lib@2.2.8
+
+## [4.5.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.0...explorer-v4.5.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/ui@3.7.1
+
 ## [4.5.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.1...explorer-v4.5.0) (2026-06-08)
 
 ### Minor Changes

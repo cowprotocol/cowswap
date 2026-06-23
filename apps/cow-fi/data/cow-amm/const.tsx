@@ -215,7 +215,7 @@ export const FAQ_DATA = [
       <>
         CoW AMM pools live on Balancer can be found at{' '}
         <Link
-          href="http://balancer.fi/pools/cow"
+          href="https://balancer.fi/pools/cow"
           external
           utmContent="cow-amm-balancer-pools"
           onClick={() =>
