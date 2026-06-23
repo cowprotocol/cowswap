@@ -1,5 +1,6 @@
 // Updater
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
+export { BalancesWatcherUpdater } from './updaters/BalancesWatcherUpdater'
 export { TradeSpenderOverrideUpdater } from './updaters/TradeSpenderOverrideUpdater'
 export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 

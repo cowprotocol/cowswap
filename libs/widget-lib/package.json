@@ -27,5 +27,8 @@
     "@cowprotocol/cow-sdk": "9.2.1",
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*"
+  },
+  "devDependencies": {
+    "csstype": "3.1.3"
   }
 }
