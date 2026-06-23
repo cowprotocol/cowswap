@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.4.0...common-const-v3.5.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+- feat: replace blocknative gas price with rpc node (#7646)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/types@4.5.0
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.1...common-const-v3.4.0) (2026-06-08)
 
 ### Minor Changes
