@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.8.0...ui-v3.8.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.1
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/types@4.5.1
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.7.1...ui-v3.8.0) (2026-06-23)
 
 ### Minor Changes
