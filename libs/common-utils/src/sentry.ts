@@ -1,7 +1,5 @@
 import * as Sentry from '@sentry/browser'
 
-import { log } from './logger'
-
 export enum ERROR_TYPES {
   ON_SWAP = 'onSwap',
   ON_APPROVE = 'onApprove',
@@ -33,7 +31,6 @@ export function captureError(
   params?: Record<string, unknown>,
   extraTags?: Record<string, string>,
 ): void {
-  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
   const tags = {
     captureType: 'manual',
     ...(errorType ? { errorType } : undefined),
