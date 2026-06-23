@@ -9,7 +9,6 @@ select
   lower(cast(dune.cowprotocol.result_fac_trades.trader as varchar)) as trader_address,
   dune.cowprotocol.result_fac_trades.usd_value,
   dune.cowprotocol.result_fac_trades.referrer_code,
-  dune.cowprotocol.result_fac_trades.protocol_fee_bps,
   dune.cowprotocol.result_fac_trades.protocol_fee_volume_bps
 from dune.cowprotocol.result_fac_trades
 cross join params

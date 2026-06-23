@@ -27,7 +27,7 @@ export interface TradeFormButtonContext {
 
   connectWallet: Command
 
-  wrapNativeFlow(): void
+  wrapNativeFlow(): Promise<unknown>
 }
 
 export interface TradeFormValidationCommonContext {
@@ -57,6 +57,8 @@ export interface TradeFormValidationCommonContext {
   isOutputCurrencyXstock: boolean
   injectedWidgetParams: Partial<CowSwapWidgetAppParams>
   tradePriceImpact: PriceImpact
+  isNonEvmReceiverConfirmed: boolean
+  isRestoringConnection: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -74,11 +76,14 @@ export enum TradeFormValidation {
   WalletNotSupported,
   SafeReadonlyUser,
   WalletCapabilitiesLoading,
+  RestoringWallet,
 
   // Quote request params
   CurrencyNotSet,
   InputAmountNotSet,
   RecipientInvalid,
+  RecipientNotSet,
+  RecipientNotConfirmed,
   NetworkNotSupported,
   NetworkDeprecated,
   BrowserOffline,
@@ -115,4 +120,5 @@ export enum TradeFormValidation {
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,
   DisableTradeWithHighPriceImpact,
+  WidgetConstrainedTokenPair,
 }

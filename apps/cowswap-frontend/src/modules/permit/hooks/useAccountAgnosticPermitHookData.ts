@@ -30,7 +30,20 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
       return
     }
 
-    generatePermitHook(params).then(setData)
+    let isCancelled = false
+    generatePermitHook(params)
+      .then((result) => {
+        if (isCancelled) return
+        setData(result)
+      })
+      .catch(() => {
+        if (isCancelled) return
+        setData(undefined)
+      })
+
+    return () => {
+      isCancelled = true
+    }
   }, [generatePermitHook, params])
 
   return data
@@ -49,7 +62,7 @@ function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
     if (!address || !isSupportedPermitInfo(permitInfo)) return undefined
 
     return {
-      inputToken: { address, name },
+      inputToken: { address: address as `0x${string}`, name },
       permitInfo,
     }
   }, [address, name, permitInfo])

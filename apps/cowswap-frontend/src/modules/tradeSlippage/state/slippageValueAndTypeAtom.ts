@@ -5,7 +5,8 @@ import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
+import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
+
 import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
 import { resolveSlippageConfig } from '../utils/slippage'

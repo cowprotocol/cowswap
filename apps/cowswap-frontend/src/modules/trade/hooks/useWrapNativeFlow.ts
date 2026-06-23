@@ -7,6 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Nullish } from 'types'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 import {
   wrapUnwrapCallback,
@@ -18,7 +19,7 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 
-import { useWethContract } from 'common/hooks/useContract'
+import { useWethContractData } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -37,6 +38,7 @@ export function useWrapNativeFlow(): WrapUnwrapCallback {
           orderType: UiOrderType.SWAP,
           inputAmount: state?.inputCurrencyAmount,
           outputAmount: state?.outputCurrencyAmount,
+          chainId: state?.inputCurrencyAmount?.currency.chainId,
         }),
       ).catch(() => false)
 
@@ -66,10 +68,14 @@ function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): 
 
 function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapContext | null {
   const { account } = useWalletInfo()
-  const { contract: wethContract, chainId: wethChainId } = useWethContract()
+  const wethContract = useWethContractData()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
   const analytics = useCowAnalytics()
+
+  const wethChainId = wethContract.chainId
 
   return useMemo(() => {
     if (!wethContract || !amount || !account) {
@@ -80,6 +86,8 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       chainId: wethChainId,
       account,
       wethContract,
+      walletClient: walletClient ?? undefined,
+      publicClient: publicClient ?? undefined,
       amount,
       addTransaction,
       analytics,
@@ -89,6 +97,19 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
       openTransactionConfirmationModal() {
         setWrapNativeState({ isOpen: true })
       },
+      openErrorModal(errorMessage: string) {
+        setWrapNativeState({ isOpen: true, errorMessage })
+      },
     }
-  }, [wethChainId, wethContract, amount, addTransaction, setWrapNativeState, account, analytics])
+  }, [
+    wethChainId,
+    wethContract,
+    walletClient,
+    publicClient,
+    amount,
+    addTransaction,
+    setWrapNativeState,
+    account,
+    analytics,
+  ])
 }

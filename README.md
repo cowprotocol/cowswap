@@ -7,14 +7,14 @@ peer-to-peer among its users or into any on-chain liquidity source while
 providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+|-----------------------|---------------------------------------------------------------------------------------------------------------|
 | 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
 | CoW Protocol          | [cow.fi](https://cow.fi)                                                                                      |
 | Docs                  | [docs.cow.fi](https://docs.cow.fi)                                                                            |
 | Governance (Snapshot) | [snapshot.org/#/cow.eth](https://snapshot.org/#/cow.eth)                                                      |
-| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cowswap)                                          |
+| Stats                 | [dune.com/cowprotocol/cowswap](https://dune.com/cowprotocol/cow-swap-home)                                    |
 | X/Twitter             | [@CoWSwap](https://twitter.com/CoWSwap)                                                                       |
 | Discord               | [discord.com/invite/cowprotocol](https://discord.com/invite/cowprotocol)                                      |
 | Forum                 | [forum.cow.fi](https://forum.cow.fi)                                                                          |
@@ -37,7 +37,7 @@ pnpm install
 Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
 
 - run `pnpm upgrade-sdk-preview https://github.com/cowprotocol/cow-sdk/pull/787` with a link to SDK PR with deployed previews
-- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:sdk-preview` instead of just `pnpm install`
+- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:ci` instead of just `pnpm install`
 - the token must be generated in GitHub with `read:packages` permissions
 
 ## Run
@@ -48,6 +48,17 @@ Start CoW Swap on `http://localhost:3000`
 pnpm start
 ```
 
+Environment selection for `cowswap-frontend` is configured explicitly via `REACT_APP_ENVIRONMENT`
+in the app-level `.env.*` files:
+
+- Supported values:
+  `local`, `development`, `pr`, `staging`, `production`, `ens`
+
+- `apps/cowswap-frontend/.env.development` -> `local`
+- `apps/cowswap-frontend/.env.dev` -> `development`
+- `apps/cowswap-frontend/.env.staging` -> `staging`
+- `apps/cowswap-frontend/.env.production` -> `production`
+
 ## Build
 
 Build the project. The static files will be generated in the `build` folder.
@@ -55,6 +66,18 @@ Build the project. The static files will be generated in the `build` folder.
 ```bash
 pnpm run build
 ```
+
+### Sentry Sourcemaps
+
+`cowswap-frontend` generates production sourcemaps for Sentry.
+
+- Runtime error reporting still uses `REACT_APP_SENTRY_DSN`.
+- Build-time sourcemap upload uses `SENTRY_AUTH_TOKEN`.
+- `SENTRY_ORG` and `SENTRY_PROJECT` are optional overrides.
+  Defaults:
+  `cowprotocol` and `cowswap`
+
+If `SENTRY_AUTH_TOKEN` is not set, the build still succeeds, but sourcemaps are not uploaded to Sentry.
 
 ## Unit testing
 
@@ -74,6 +97,9 @@ Start the Explorer on <http://localhost:4200>
 pnpm run start:explorer
 ```
 
+Explorer environment selection is configured explicitly via `REACT_APP_ENVIRONMENT`.
+See [apps/explorer/.env.example](apps/explorer/.env.example).
+
 ### Build
 
 ```bash
@@ -89,6 +115,9 @@ Start cow.fi on <http://localhost:3001>
 ```bash
 pnpm run start:cowfi
 ```
+
+`cow-fi` no longer infers its environment from the hostname. Set `NEXT_PUBLIC_ENVIRONMENT`
+explicitly. See [apps/cow-fi/.env.example](apps/cow-fi/.env.example).
 
 ### Build
 
@@ -202,6 +231,24 @@ The API endpoint is configured using the environment variable
 REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
 ```
 
+## Sentry Configuration
+
+For `apps/cowswap-frontend`:
+
+```ini
+REACT_APP_SENTRY_DSN=https://<public-dsn>
+SENTRY_AUTH_TOKEN=<sentry-auth-token>
+```
+
+Optional overrides for the build-time upload target:
+
+```ini
+SENTRY_ORG=cowprotocol
+SENTRY_PROJECT=cowswap
+```
+
+`SENTRY_AUTH_TOKEN` is the only required secret for source map upload. The org and project values are public identifiers and already default to the values above.
+
 ## BFF API Endpoints (Backend for Frontend)
 
 The BFF API is a helper API that provides some additional data to the frontend.
@@ -246,7 +293,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
-| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+|-----------|--------------------------------------|------------------------------|--------------------------------------------------------------------------------------|
 | **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
@@ -287,9 +334,21 @@ In case of problems with the service worker cache you force a reset using
 
 ## Vercel preview build
 
+Each app’s `vercel.json` uses `cd ../..` then **`npx pnpm@10.30.3`** so installs match root **`packageManager`** and avoid Vercel’s default **pnpm 9** (which can trigger `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH` with this lockfile).
+
+**Project settings that must line up (if deploys fail for unclear reasons):**
+
+1. **Root Directory** for that Vercel project should be the app folder (e.g. `apps/cow-fi`). If it is the monorepo root instead, `cd ../..` is wrong and install reads the wrong tree.
+2. **Build & Development →** no **Install Command** / **Build Command** override in the dashboard that replaces `vercel.json` (or align them with the repo).
+3. **Node.js version** on Vercel should be current LTS (Corepack / `npx` expect a recent Node).
+4. **`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`:** run `pnpm install` locally with **pnpm 10.30.3**, commit any `pnpm-lock.yaml` change, and ensure root `package.json` `pnpm.*` config was not edited without reinstalling.
+5. **Ignored Build Step:** use `node tools/scripts/ignore-build-step.js --app=…` — do not use a broken one-line `[ … || … ]` `sh` test (see below).
+
 Since this repo includes multiple apps, we do not want to build all of them on each PR because it causes long build queues in Vercel.  
 Some apps (see the list below) are not required to be built on each PR so we run them only a PR is labeled with a specific label.
 This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.
+Use the Node script below (do **not** use a one-line `sh`/`bash` test with `[ ... || ... ]` inside a single `[` — POSIX `[` does not support `||` there, which breaks branch names like `feature/foo` and logs `[: missing \`]'`).
+
 For example, the label for the widget-configurator is `preview-widget-cfg`:
 
 ```

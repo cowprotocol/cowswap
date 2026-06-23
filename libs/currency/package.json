@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/currency",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CoW Swap re-exports of @uniswap/sdk-core entities",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.0.2",
-    "jsbi": "^3.1.4"
+    "@cowprotocol/cow-sdk": "9.2.1",
+    "jsbi": "3.2.5"
   }
 }

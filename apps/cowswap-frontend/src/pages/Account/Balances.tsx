@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
-import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import svgArrowSrc from '@cowprotocol/assets/cow-swap/arrow.svg'
+import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import svgVCowSrc from '@cowprotocol/assets/images/vCOW.svg'
+import { useCurrencyAmountBalance, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import {
   COW_TOKEN_TO_CHAIN,
   COW_CONTRACT_ADDRESS,
@@ -15,12 +15,12 @@ import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/commo
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
+import { useWalletClient } from 'wagmi'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -60,9 +60,7 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -101,16 +99,13 @@ export default function Profile() {
     !hasVestedBalance || !isSwapInitial || isSwapPending || isSwapConfirmed || shouldUpdate,
   )
 
+  const { hasFirstLoad: hasBalancesLoaded } = useTokensBalances()
+
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !provider
+    if (!account) return false
 
-    // remove loader after 5 sec in any case
-    setTimeout(() => {
-      output = false
-    }, 5000)
-
-    return output
-  }, [isLockedGnoLoading, isVCowLoading, provider])
+    return isVCowLoading || isLockedGnoLoading || !walletClient || !hasBalancesLoaded
+  }, [account, isLockedGnoLoading, isVCowLoading, walletClient, hasBalancesLoaded])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -198,7 +193,7 @@ export default function Profile() {
     } else {
       content = (
         <Trans>
-          Convert to COW <SVG src={ArrowIcon} />
+          Convert to COW <SVG src={svgArrowSrc} />
         </Trans>
       )
     }
@@ -257,7 +252,7 @@ export default function Profile() {
           {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <SVG src={vCOWImage} title={t`vCOW token`} width="56" height="56" />
+                <SVG src={svgVCowSrc} title={t`vCOW token`} width="56" height="56" />
                 <span>
                   <i>
                     <Trans>Total vCOW balance</Trans>
@@ -303,7 +298,7 @@ export default function Profile() {
           {cowContractAddress && (
             <Card>
               <BalanceDisplay titleSize={26}>
-                <img src={CowImage} alt={t`Cow Balance`} height="80" width="80" />
+                <img src={svgCowTokenSrc} alt={t`Cow Balance`} height="80" width="80" />
                 <span>
                   <i>
                     <Trans>Available COW balance</Trans>

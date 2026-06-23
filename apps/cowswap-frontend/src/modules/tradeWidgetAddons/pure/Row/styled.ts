@@ -1,6 +1,4 @@
-import { UI } from '@cowprotocol/ui'
-import { RowBetween } from '@cowprotocol/ui'
-import { HoverTooltip } from '@cowprotocol/ui'
+import { UI, RowBetween, HoverTooltip } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 import { Text } from 'rebass'

@@ -8,6 +8,15 @@ Allows you to explore the protocol orders and trades.
 pnpm run start:explorer
 ```
 
+Environment selection is configured explicitly via `REACT_APP_ENVIRONMENT`.
+Use [`.env.example`](./.env.example) as the reference values:
+
+- `local`
+- `development`
+- `pr`
+- `staging`
+- `production`
+
 
 ## 👷‍♀️ Build app
 

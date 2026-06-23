@@ -2,15 +2,18 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
+import { StatefulValue } from '@cowprotocol/types'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -18,6 +21,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useIsEoaEthFlow,
+  useIsNonEvmBridging,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -26,6 +30,7 @@ import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'm
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -58,6 +63,8 @@ export interface SwapWidgetProps {
   allowSwapSameToken?: boolean
 }
 
+const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
@@ -65,11 +72,15 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
-  const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const isNonEvmBridging = useIsNonEvmBridging()
+  const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
+  const isFeeExceedsError =
+    quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.SellAmountDoesNotCoverFee
   const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
-  const widgetActions = useSwapWidgetActions()
+  const widgetActions = useSwapWidgetActions(hooksEnabledState[0])
   const receiveAmountInfo = useGetReceiveAmountInfo()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
@@ -99,6 +110,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
+
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -166,6 +178,8 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
+  const hasInputAmount = !!inputCurrencyAmount && !inputCurrencyAmount.equalTo(0)
+
   const handleImport = useCallback(() => {
     setShowAddIntermediateTokenModal(false)
   }, [])
@@ -174,6 +188,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const isConnected = Boolean(account)
@@ -194,10 +209,13 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
-        recipientToggleState={recipientToggleState}
+        recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
+        partialApprovalLocked={isInfiniteApproveDisabledInWidget}
+        isRecipientToggleDisabled={isNonEvmBridging}
+        isRecipientToggleHidden={disableCustomRecipient}
       />
     ),
     bottomContent: useCallback(
@@ -205,7 +223,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {!hideQuoteAmount && <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />}
+            {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
+              <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            )}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
@@ -232,6 +252,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         intermediateBuyToken,
         isPrimaryValidationPassed,
         hideQuoteAmount,
+        isFeeExceedsError,
+        hasInputAmount,
+        isRateLoading,
       ],
     ),
   }
@@ -239,6 +262,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const params = {
     compactView: true,
     enableSmartSlippage: true,
+    enableSellEqBuy: hooksEnabledState[0],
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
     allowSwapSameToken,
@@ -266,6 +290,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
           confirmModal={
             <SwapConfirmModal
               doTrade={doTrade.callback}
+              isTradeContextReady={doTrade.contextIsReady}
               recipient={recipient}
               recipientAddress={recipientAddress}
               priceImpact={priceImpact}

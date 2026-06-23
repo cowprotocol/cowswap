@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
-import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
-import Plus from '@cowprotocol/assets/cow-swap/plus.svg'
-import X from '@cowprotocol/assets/cow-swap/x.svg'
+import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import svgExclamationSrc from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import svgPlusSrc from '@cowprotocol/assets/cow-swap/plus.svg'
+import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 
 import { t } from '@lingui/core/macro'
 
@@ -39,7 +39,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
         label: t`Order Creation Failed`,
         error: rejectedReason,
         state: 'error',
-        icon: X,
+        icon: svgXSrc,
       }
     }
 
@@ -48,7 +48,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
         label: t`Order Creation Failed`,
         error: t`Expired before creation`,
         state: 'error',
-        icon: X,
+        icon: svgXSrc,
       }
     }
 
@@ -56,7 +56,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       return {
         label: t`Create Order`,
         state: 'not-started',
-        icon: Plus,
+        icon: svgPlusSrc,
       }
     }
 
@@ -64,7 +64,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       return {
         label: t`Creating Order`,
         state: 'pending',
-        icon: Plus,
+        icon: svgPlusSrc,
       }
     }
 
@@ -72,14 +72,14 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       return {
         label: t`Order Cancelled`,
         state: 'cancelled',
-        icon: Exclamation,
+        icon: svgExclamationSrc,
       }
     }
 
     return {
       label: t`Order Created`,
       state: 'success',
-      icon: Checkmark,
+      icon: svgCheckmarkSrc,
     }
   }, [hasCreationError, expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
 

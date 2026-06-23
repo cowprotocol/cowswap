@@ -1,43 +1,51 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
-import stdLibBrowser from 'node-stdlib-browser'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
 import { meta } from 'vite-plugin-meta-tags'
-import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
+import { readFile } from 'node:fs/promises'
 import * as path from 'path'
+
+import pkg from './package.json'
 
 import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { NODE_STD_LIBS } from '../../tools/nodeStdLibs'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
 import type { PluginOption } from 'vite'
 
-const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
-
 // Trezor getAccountsAsync() requires crypto and stream (the module is lazy-loaded)
 const nodeDepsToInclude = ['crypto', 'stream']
 
 const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
+const defaultSentryOrg = 'cowprotocol'
+const defaultSentryProject = 'cowswap'
+const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN
+const sentryOrg = process.env.SENTRY_ORG || defaultSentryOrg
+const sentryProject = process.env.SENTRY_PROJECT || defaultSentryProject
+const sentryReleaseName = `CowSwap@v${pkg.version}`
 
 // eslint-disable-next-line max-lines-per-function
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isPreview }) => {
   const isProduction = mode === 'production'
 
   const plugins: PluginOption[] = [
     nodePolyfills({
-      exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
+      exclude: NODE_STD_LIBS.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
         Buffer: true,
         global: true,
@@ -45,9 +53,7 @@ export default defineConfig(({ mode }) => {
       },
       protocolImports: true,
     }),
-    react({
-      plugins: [['@lingui/swc-plugin', {}]],
-    }),
+    react(),
     viteTsConfigPaths({
       root: '../../',
     }),
@@ -63,7 +69,9 @@ export default defineConfig(({ mode }) => {
       filename: 'service-worker.ts',
       minify: true,
       injectManifest: {
-        maximumFileSizeToCacheInBytes: 7000000, // 7mb
+        // Preview build currently emits a large main chunk.
+        // If this value is smaller, pnpm preview will fail to start and Cypress will hang in CI and eventually timeout.
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MiB
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
     }),
@@ -85,6 +93,31 @@ export default defineConfig(({ mode }) => {
       }) as PluginOption,
     )
     plugins.push(bundleStats() as PluginOption)
+  }
+
+  if (isProduction && sentryAuthToken) {
+    plugins.push(
+      ...sentryVitePlugin({
+        org: sentryOrg,
+        project: sentryProject,
+        authToken: sentryAuthToken,
+        telemetry: false,
+        release: {
+          name: sentryReleaseName,
+          inject: false,
+          create: true,
+          finalize: true,
+        },
+        sourcemaps: {
+          // Use absolute globs so cleanup works both in Nx builds from the repo root
+          // and direct Vite builds from the app directory.
+          filesToDeleteAfterUpload: [
+            path.resolve(__dirname, '../../build/cowswap/**/*.map'),
+            path.resolve(__dirname, './dist/**/*.map'),
+          ],
+        },
+      }),
+    )
   }
 
   // Disable page indexing for non-prod envs
@@ -146,27 +179,93 @@ export default defineConfig(({ mode }) => {
       esbuildOptions: {
         // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
         mainFields: ['exports', 'module', 'main'],
+        plugins: [
+          {
+            // During pre-bundling, esbuild walks @base-org/account internals using relative
+            // paths, so the top-level resolve.alias entry isn't enough. This plugin rewrites
+            // any resolution that lands on getInjectedProvider.js to our local shim.
+            // See: src/shims/baseAccountGetInjectedProvider.ts
+            name: 'cow-base-account-getInjectedProvider-shim',
+            setup(build) {
+              const shim = path.resolve(__dirname, 'src/shims/baseAccountGetInjectedProvider.ts')
+              build.onResolve({ filter: /(^|[\\/])getInjectedProvider(\.js)?$/ }, (args) => {
+                if (args.importer.includes('@base-org/account')) {
+                  return { path: shim }
+                }
+                return null
+              })
+            },
+          },
+          {
+            // @reown/appkit ships .js.map files whose `sources` point at the original
+            // TypeScript (exports/react.ts, src/**/*.ts) without inlining `sourcesContent`,
+            // and the published tarball doesn't include those .ts files. esbuild follows the
+            // sourceMappingURL pragma during prebundling and propagates the null sources into
+            // the optimized dep map, so devtools 404s on every reown source ("DevTools failed
+            // to load source map"). Drop the pragma for @reown files so esbuild treats the
+            // shipped compiled .js as the source and embeds real `sourcesContent` instead.
+            name: 'cow-reown-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@reown[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
+          {
+            // @1inch/permit-signed-approvals-utils ships .js.map files whose `sources` point at
+            // the original TypeScript (../src/**/*.ts) with no inlined `sourcesContent`, and the
+            // published tarball doesn't include those .ts files. Same failure mode as @reown above:
+            // esbuild follows the sourceMappingURL pragma during prebundling and devtools then 404s
+            // on every @1inch source ("DevTools failed to load source map"). Drop the pragma so
+            // esbuild treats the shipped compiled .js as the source and embeds real `sourcesContent`.
+            name: 'cow-1inch-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@1inch[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
+        ],
       },
-      include: [
-        '@walletconnect/ethereum-provider',
-        '@walletconnect/universal-provider',
-        '@walletconnect/utils',
-        '@walletconnect/sign-client',
-      ],
+      // Only include packages that are direct or resolvable from the app; transitive
+      // WalletConnect deps (universal-provider, utils, sign-client) are not resolvable here.
+      include: ['@walletconnect/ethereum-provider'],
     },
 
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
+        // @base-org/account@2.4.0 (pinned exactly by @reown/appkit-utils@1.8.19) reads
+        // `window.top?.ethereum` without try/catch, which throws SecurityError when the
+        // widget is loaded in a cross-origin iframe (e.g. widget-configurator) and aborts
+        // the Base Account connector's connect() before its popup can open.
+        // The fix landed in @base-org/account@2.5.x; until AppKit relaxes the pin, redirect
+        // that single file to a local shim with the try/catch.
+        '@base-org/account/dist/interface/builder/core/getInjectedProvider.js': path.resolve(
+          __dirname,
+          'src/shims/baseAccountGetInjectedProvider.ts',
+        ),
       },
       // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
       conditions: ['module', 'import', 'browser', 'default'],
+      // Dedupe packages that rely on shared React context across workspace libs.
+      // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
+      // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
     },
 
     build: {
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      sourcemap: true,
+      sourcemap: !isPreview,
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading
@@ -189,6 +288,7 @@ export default defineConfig(({ mode }) => {
             if (chunkFileName) return chunkFileName
             return 'static/[name]-[hash].js'
           },
+
           manualChunks(id) {
             if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
             if (id.includes('@sentry')) return '@sentry'

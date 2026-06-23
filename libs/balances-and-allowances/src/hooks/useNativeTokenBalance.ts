@@ -1,34 +1,20 @@
-import { getMulticallContract, useMultiCallRpcProvider } from '@cowprotocol/multicall'
-import { BigNumber } from '@ethersproject/bignumber'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
+import { useBalance, UseBalanceReturnType } from 'wagmi'
 
-const SWR_CONFIG: SWRConfiguration = {
-  refreshInterval: ms`11s`,
-  refreshWhenHidden: false,
-  refreshWhenOffline: false,
-  revalidateOnFocus: false,
-}
+import type { Address } from 'viem'
 
-export function useNativeTokenBalance(
-  account: string | undefined,
-  chainId: number,
-  swrConfig: SWRConfiguration = SWR_CONFIG,
-): SWRResponse<BigNumber | undefined> {
-  const provider = useMultiCallRpcProvider()
+export function useNativeTokenBalance(account?: string, chainId?: number): UseBalanceReturnType {
+  const isSolana = !!chainId && isSolanaChain(chainId)
 
-  return useSWR(
-    account && provider ? [account, provider, chainId, 'useNativeTokenBalance'] : null,
-    async ([account, provider, chainId]) => {
-      const providerChainId = (await provider.getNetwork()).chainId
-
-      if (providerChainId !== chainId) return undefined
-
-      const contract = getMulticallContract(provider)
-
-      return contract.callStatic.getEthBalance(account)
+  return useBalance({
+    address: account as Address | undefined,
+    chainId,
+    query: {
+      // TODO solana add support
+      enabled: !!account && !isSolana,
+      refetchInterval: ms`11s`,
     },
-    swrConfig,
-  )
+  })
 }

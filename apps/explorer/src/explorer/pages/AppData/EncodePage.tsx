@@ -16,7 +16,7 @@ import {
   uiSchema,
 } from './config'
 
-import AppDataWrapper from '../../../components/common/AppDataWrapper'
+import { AppDataWrapper } from '../../../components/common/AppDataWrapper'
 import { RowWithCopyButton } from '../../../components/common/RowWithCopyButton'
 import { metadataApiSDK } from '../../../cowSdk'
 

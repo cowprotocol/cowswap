@@ -1,7 +1,7 @@
-import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
-import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
-import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
+import svgCheckSingularSrc from '@cowprotocol/assets/cow-swap/check-singular.svg'
+import svgGridSrc from '@cowprotocol/assets/cow-swap/grid.svg'
+import svgTenderlySrc from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
+import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -35,7 +35,7 @@ const isBundleSimulationReady = true
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AppliedHookItem({
   account,
   hookDetails,
@@ -62,7 +62,7 @@ export function AppliedHookItem({
       <styledEl.HookItemHeader title={hookDetails.uuid}>
         <styledEl.HookItemInfo className="DragArea">
           <styledEl.DragIcon>
-            <SVG src={ICON_GRID} />
+            <SVG src={svgGridSrc} />
           </styledEl.DragIcon>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           <img src={dapp?.image || ''} alt={dAppName} />
@@ -89,9 +89,9 @@ export function AppliedHookItem({
       {account && isBundleSimulationReady && simulationData && (
         <styledEl.SimulateContainer isSuccessful={simulationData.status}>
           {simulationData.status ? (
-            <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
+            <SVG src={svgCheckSingularSrc} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
           ) : (
-            <SVG src={ICON_X} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
+            <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
           )}
           {simulationData.link ? (
             <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
@@ -120,7 +120,7 @@ export function AppliedHookItem({
               <span>
                 <Trans>Powered by</Trans>
               </span>
-              <SVG src={TenderlyLogo} description="Tenderly" />
+              <SVG src={svgTenderlySrc} description="Tenderly" />
             </styledEl.SimulateFooter>
           </div>
           <div>

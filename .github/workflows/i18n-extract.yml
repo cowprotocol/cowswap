@@ -1,0 +1,88 @@
+name: i18n Extract
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: lts/jod
+  # needed by tools/scripts/install-sdk-preview.js when package.json pins a `pr-NNN`
+  # SDK preview build — install:ci writes an .npmrc that auths to GitHub Packages.
+  PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
+
+jobs:
+  i18n-extract:
+    name: Extract i18n strings
+    runs-on: ubuntu-latest
+    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks) and NOT cf-preview branches, as that mirrors forked PRs.
+    if: github.event.pull_request.head.repo.full_name == github.repository && !startsWith(github.head_ref, 'cf-preview/pr-')
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+
+      - name: Set up node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm run install:ci
+
+      - name: Extract i18n strings
+        run: pnpm run i18n:extract
+
+      - name: Check for extracted changes
+        id: changes
+        run: |
+          if git diff --quiet -- 'apps/cowswap-frontend/src/locales/*.po'; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub App token
+        if: steps.changes.outputs.has_changes == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        with:
+          app-id: ${{ vars.COWSWAP_RELEASE_SYNC_APP_ID }}
+          private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+
+      - name: Resolve GitHub App bot identity
+        if: steps.changes.outputs.has_changes == 'true'
+        id: app-user
+        run: echo "user-id=$(gh api \"/users/${APP_SLUG}[bot]\" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Commit and push if changed
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+          git add 'apps/cowswap-frontend/src/locales/*.po'
+          git commit -m "chore(i18n): extract i18n strings [automatic]"
+          git push "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_USER_ID: ${{ steps.app-user.outputs.user-id }}

@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 
-import COW_LOGO_ACCENT from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
-import COW_LOGO_BLACK from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
-import COW_LOGO_WHITE from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
+import iconCowCircleAccentSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
+import iconCowCircleBlackSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
+import iconCowCircleWhiteSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
 import { ButtonOutlined, ModalHeader, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -27,9 +27,9 @@ const QR_COLORS: Record<QrColor, { fg: string; bg: string }> = {
 }
 
 const QR_LOGOS: Record<QrColor, string> = {
-  black: COW_LOGO_BLACK,
-  white: COW_LOGO_WHITE,
-  accent: COW_LOGO_ACCENT,
+  black: iconCowCircleBlackSrc,
+  white: iconCowCircleWhiteSrc,
+  accent: iconCowCircleAccentSrc,
 }
 
 interface AffiliatePartnerQrModalProps {

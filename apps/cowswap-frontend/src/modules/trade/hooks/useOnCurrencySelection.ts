@@ -12,9 +12,11 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
 import { useTradeState } from './useTradeState'
 
-export function useOnCurrencySelection(): (field: Field, currency: Currency | null, callback?: Command) => void {
+export function useOnCurrencySelection(
+  enableSellEqBuy = false,
+): (field: Field, currency: Currency | null, callback?: Command) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
-  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection(enableSellEqBuy)
   const { updateState } = useTradeState()
 
   return useCallback(
@@ -33,17 +35,18 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
       const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
       if (amount) {
-        const converted = convertAmountToCurrency(amount, currency)
+        const converted = FractionUtils.serializeFractionToJSON(convertAmountToCurrency(amount, currency))
 
-        return navigateOnCurrencySelection(field, currency, () => {
-          updateState?.({
-            [amountField]: FractionUtils.serializeFractionToJSON(converted),
-          })
+        return navigateOnCurrencySelection(field, currency, (nextState) => {
+          updateState?.({ ...nextState, [amountField]: converted })
           callback?.()
         })
       }
 
-      return navigateOnCurrencySelection(field, currency, callback)
+      return navigateOnCurrencySelection(field, currency, (nextState) => {
+        updateState?.(nextState)
+        callback?.()
+      })
     },
     [navigateOnCurrencySelection, updateState, inputCurrencyAmount, outputCurrencyAmount],
   )

@@ -5,9 +5,11 @@ build
 dist
 tmp
 /out-tsc
+*tsbuildinfo
 
 # dependencies
 node_modules
+.pnpm-store
 
 # IDEs and editors
 /.idea
@@ -29,6 +31,7 @@ node_modules
 
 # misc
 /.sass-cache
+/.cache
 /connect.lock
 /coverage
 /libpeerconnection.log
@@ -72,6 +75,3 @@ CLAUDE.md
 
 # Serena project files
 .serena/
-
-# Github
-/.npmrc

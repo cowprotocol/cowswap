@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react'
 
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
 import { formatPercentage } from 'utils'
 
@@ -9,7 +11,7 @@ import { ORDER_FINAL_FAILED_STATUSES, OrderStatus } from 'api/operator'
 import { canBePartiallyFilled } from 'utils/statusHelpers'
 
 import { StatusIcon } from './StatusIcon'
-import { GenericStatus as StyledGenericStatus, Label, Wrapper } from './styled'
+import { CornerWarningIcon, GenericStatus as StyledGenericStatus, Label, Wrapper } from './styled'
 
 export type PartiallyTagPosition = 'right' | 'bottom'
 
@@ -19,6 +21,7 @@ export type StatusLabelProps = {
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
   customText?: string
+  warningLabel?: string
 }
 
 const SHIMMING_STATUSES = [
@@ -43,6 +46,7 @@ export function StatusLabel({
   filledPercentage,
   partialTagPosition = 'bottom',
   customText,
+  warningLabel,
 }: StatusLabelProps): ReactNode {
   const status = _status.toLowerCase()
   const shimming = SHIMMING_STATUSES.includes(status)
@@ -70,6 +74,11 @@ export function StatusLabel({
       >
         <StatusIcon status={displayStatus} />
         {customText || displayStatus.toUpperCase()}
+        {warningLabel ? (
+          <CornerWarningIcon title={warningLabel}>
+            <FontAwesomeIcon icon={faTriangleExclamation} />
+          </CornerWarningIcon>
+        ) : null}
       </Label>
     </Wrapper>
   )

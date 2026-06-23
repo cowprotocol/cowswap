@@ -15,6 +15,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -25,10 +26,13 @@ import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+
+import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -66,6 +70,7 @@ export async function swapFlow(
   const {
     orderParams,
     context,
+    config,
     permitInfo,
     generatePermitHook,
     permitAmountToSign,
@@ -91,7 +96,7 @@ export async function swapFlow(
     orderParams.appData = await handlePermit({
       appData,
       typedHooks,
-      account,
+      account: account as `0x${string}`,
       inputToken: inputCurrency,
       permitInfo,
       amount: permitAmountToSign,
@@ -146,6 +151,8 @@ export async function swapFlow(
       },
     }
 
+    assertValidBridgeRecipient(tradeQuoteState)
+
     const {
       orderId,
       signature,
@@ -177,19 +184,21 @@ export async function swapFlow(
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
-      presignTxHash = (
-        await orderParams.signer.sendTransaction(presignTx).catch((error) => {
-          /**
-           * When using Rabby and Safe, the presign transaction is not a real transaction
-           * It's a safe signature
-           */
-          if (error.transactionHash) {
-            return { hash: error.transactionHash }
-          } else {
-            throw error
-          }
-        })
-      ).hash
+      presignTxHash = await sendTransaction(config, {
+        to: presignTx.to as `0x${string}`,
+        value: BigInt(presignTx.value),
+        data: presignTx.data as Hex,
+      }).catch((error) => {
+        /**
+         * When using Rabby and Safe, the presign transaction is not a real transaction
+         * It's a safe signature
+         */
+        if (error.transactionHash) {
+          return error.transactionHash
+        } else {
+          throw error
+        }
+      })
     }
 
     const order = mapUnsignedOrderToOrder({
@@ -228,6 +237,9 @@ export async function swapFlow(
       chainId,
       id: orderId,
       kind,
+      quoteId: orderParams.quoteId,
+      isCrossChain: isBridgingOrder,
+      destinationChainId: outputAmount.currency.chainId,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,

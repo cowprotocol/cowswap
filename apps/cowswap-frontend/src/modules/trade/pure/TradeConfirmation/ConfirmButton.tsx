@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText, Media } from '@cowprotocol/ui'
@@ -18,6 +18,7 @@ interface ConfirmButtonProps {
 }
 export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+  const confirmInFlightRef = useRef(false)
   const { buttonText, onConfirm, hasPendingTrade, signingStep, clickEvent } = props
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
@@ -25,6 +26,9 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const handleConfirmClick = async (): Promise<void> => {
+    if (confirmInFlightRef.current) return
+    confirmInFlightRef.current = true
+
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
@@ -39,6 +43,8 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     } catch (error) {
       setIsConfirmClicked(false)
       throw error
+    } finally {
+      confirmInFlightRef.current = false
     }
   }
 

@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
-import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import svgHookSrc from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -70,7 +70,7 @@ export function HooksStoreWidget(): ReactNode {
     <>
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
-        customIcon={ICON_HOOK}
+        customIcon={svgHookSrc}
         iconSize={36}
         bannerId="hooks-store-banner-tradeContainer"
       >
@@ -104,8 +104,7 @@ export function HooksStoreWidget(): ReactNode {
   return (
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
-        {/*TODO: sell=buy feature. Add allowSwapSameToken attribute again when feature is ready */}
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+        <SwapWidget topContent={TopContent} bottomContent={BottomContent} allowSwapSameToken />
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (

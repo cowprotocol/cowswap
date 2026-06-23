@@ -1,7 +1,6 @@
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
-import { formatLocaleNumber } from '@cowprotocol/common-utils'
-import { Address, areAddressesEqual, EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
-import type { TypedDataField } from '@ethersproject/abstract-signer'
+import { formatLocaleNumber, isRecord, JsonRecord, readStringField } from '@cowprotocol/common-utils'
+import { Address, areAddressesEqual, EnrichedOrder, OrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
 
@@ -22,11 +21,14 @@ import {
 } from '../config/affiliateProgram.const'
 
 const EMPTY_VALUE_LABEL = '-'
+const APP_DATA_HASH_PATTERN = /^0x[a-fA-F0-9]{64}$/
 
 const AFFILIATE_TYPED_DATA_DOMAIN = {
   name: 'CoW Swap Affiliate',
   version: '1',
 } as const
+
+type TypedDataField = { name: string; type: string }
 
 const AFFILIATE_TYPED_DATA_TYPES: Record<string, TypedDataField[]> = {
   AffiliateCode: [
@@ -52,8 +54,6 @@ type AffiliatePartnerTypedDataMsg = {
   message: TypedDataMsg
 }
 
-type JsonRecord = Record<string, object | string | number | boolean | null>
-
 type TypedDataMsg = { walletAddress: string; code: string; chainId: number }
 
 export function buildPartnerTypedData(message: TypedDataMsg): AffiliatePartnerTypedDataMsg {
@@ -72,13 +72,13 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   if (!response) return undefined
 
   if (typeof response === 'string') {
-    return response
+    return getFullAppDataString(response)
   }
 
   const fullAppData =
-    readStringField(response, 'fullAppData') ||
-    readStringField(response, 'full_app_data') ||
-    readStringField(response, 'appData')
+    getFullAppDataString(readStringField(response, 'fullAppData')) ||
+    getFullAppDataString(readStringField(response, 'full_app_data')) ||
+    getFullAppDataString(readStringField(response, 'appData'))
 
   if (fullAppData) {
     return fullAppData
@@ -90,6 +90,14 @@ export function extractFullAppDataFromResponse(response: AppDataResponse | strin
   }
 
   return undefined
+}
+
+function getFullAppDataString(value: string | undefined): string | undefined {
+  if (!value || APP_DATA_HASH_PATTERN.test(value.trim())) {
+    return undefined
+  }
+
+  return value
 }
 
 export function formatCompactNumber(value?: number): string {
@@ -165,7 +173,13 @@ export function getLocalTrades(account: Address | undefined, ordersState: Orders
   const result: SerializedOrder[] = []
 
   for (const [networkId, networkState] of Object.entries(ordersState)) {
-    const fullState = { ...getDefaultNetworkState(Number(networkId)), ...(networkState || {}) }
+    const chainId = Number(networkId)
+
+    if (!isSupportedTradingNetwork(chainId)) {
+      continue
+    }
+
+    const fullState = { ...getDefaultNetworkState(chainId as SupportedChainId), ...(networkState || {}) }
     const ordersMap = flatOrdersStateNetwork(fullState)
 
     for (const orderState of Object.values(ordersMap)) {
@@ -207,7 +221,7 @@ export function getRefCodeFromAppData(fullAppData: string | undefined): string |
     return undefined
   }
 
-  return formatRefCode(readStringFromRecord(referrer, 'code'))
+  return formatRefCode(readStringField(referrer, 'code'))
 }
 
 export function getReferralLink(refCode: string): string {
@@ -227,6 +241,11 @@ export function isExecutedNonIntegratorOrder(order: EnrichedOrder | SerializedOr
   const { status } = order
 
   if (status !== OrderStatus.FULFILLED && !order.partiallyFillable) return false
+
+  const executedBuy = (order as EnrichedOrder).executedBuyAmount !== '0'
+  const executedSell = (order as EnrichedOrder).executedSellAmount !== '0'
+
+  if (!executedBuy && !executedSell) return false
 
   const fullAppData = extractFullAppDataFromOrder(order)
   const appCode = decodeAppData(fullAppData)?.appCode
@@ -262,26 +281,6 @@ export function toValidDate(value: string | undefined): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-function isRecord(value: unknown): value is JsonRecord {
-  return typeof value === 'object' && value !== null
-}
-
 function randomDigits(length: number): string {
   return `${Math.floor(Math.random() * Math.pow(10, length))}`.padStart(length, '0')
-}
-
-function readStringField(value: AppDataResponse | undefined, key: keyof AppDataResponse): string | undefined {
-  if (!value) return undefined
-
-  const raw = value[key]
-
-  return typeof raw === 'string' ? raw : undefined
-}
-
-function readStringFromRecord(value: JsonRecord | undefined, key: string): string | undefined {
-  if (!value) return undefined
-
-  const raw = value[key]
-
-  return typeof raw === 'string' ? raw : undefined
 }

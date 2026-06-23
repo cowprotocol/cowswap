@@ -7,6 +7,9 @@ import { TextDecoder, TextEncoder } from 'util'
 
 // For simplicity, we will use CowSwap default .env for all projects and libs
 config({ path: __dirname + '/apps/cowswap-frontend/.env' })
+config({ path: __dirname + '/apps/cowswap-frontend/.env.development' })
+config({ path: __dirname + '/apps/explorer/.env' })
+config({ path: __dirname + '/apps/cow-fi/.env' })
 
 if (typeof global.TextEncoder === 'undefined') {
   global.ReadableStream = Readable as unknown as typeof globalThis.ReadableStream

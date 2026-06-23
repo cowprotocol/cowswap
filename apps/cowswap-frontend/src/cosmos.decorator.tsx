@@ -4,10 +4,9 @@ import './polyfills'
 import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { injectedWalletConnection, LegacyWalletUpdater, WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
-import { Web3ReactProvider } from '@web3-react/core'
+import svgMoonSrc from '@cowprotocol/assets/cow-swap/moon.svg'
+import svgSunSrc from '@cowprotocol/assets/cow-swap/sun.svg'
+import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
@@ -51,7 +50,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   return (
     <ThemeContext.Provider value={theme}>
       <DarkModeToggleButton onClick={toggleDarkMode}>
-        <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={description} /> {label}
+        <SVG src={darkMode ? svgSunSrc : svgMoonSrc} description={description} /> {label}
       </DarkModeToggleButton>
 
       {children}
@@ -91,11 +90,6 @@ export const DemoContainer = styled.div`
   padding: 10px;
 `
 
-const chainId = 5
-
-const { connector, hooks } = injectedWalletConnection
-connector.activate(chainId)
-
 // Initialize analytics for cosmos
 const cowAnalytics = initGtm()
 
@@ -109,22 +103,19 @@ const Fixture = ({ children }: { children: ReactNode }) => {
           <ThemeProvider>
             <ThemedGlobalStyle />
             <LanguageProvider messages={COSMOS_MESSAGES}>
-              <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
-                <Web3Provider>
-                  <BlockNumberProvider>
-                    <WalletUpdater />
-                    <LegacyWalletUpdater />
-                    <ThemeConfigUpdater />
-                    <Wrapper>
-                      <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                        <DarkModeToggle>
-                          <WrapperInner>{children}</WrapperInner>
-                        </DarkModeToggle>
-                      </CowAnalyticsProvider>
-                    </Wrapper>
-                  </BlockNumberProvider>
-                </Web3Provider>
-              </Web3ReactProvider>
+              <Web3Provider>
+                <BlockNumberProvider>
+                  <WalletUpdater />
+                  <ThemeConfigUpdater />
+                  <Wrapper>
+                    <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                      <DarkModeToggle>
+                        <WrapperInner>{children}</WrapperInner>
+                      </DarkModeToggle>
+                    </CowAnalyticsProvider>
+                  </Wrapper>
+                </BlockNumberProvider>
+              </Web3Provider>
             </LanguageProvider>
           </ThemeProvider>
         </HashRouter>

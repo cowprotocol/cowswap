@@ -1,6 +1,13 @@
+---
+author: agents
+status: normative
+last_reviewed: 2026-03-05
+source_of_truth_scope: cowswap-frontend-specific architecture and module overrides
+---
+
 # cowswap-frontend AGENTS.md
 
-This file is additive. Follow the repo root `AGENTS.md` for full rules.
+Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
 
 ## App commands
 - Start dev server: `pnpm start` or `pnpm start:cowswap`
@@ -8,6 +15,7 @@ This file is additive. Follow the repo root `AGENTS.md` for full rules.
 - Preview: `pnpm preview`
 - Lint: `pnpx nx run cowswap-frontend:lint`
 - Test: `pnpx nx run cowswap-frontend:test`
+- Single test file: `pnpm exec jest --config apps/cowswap-frontend/jest.config.ts --runTestsByPath apps/cowswap-frontend/src/path/to/file.test.ts --runInBand`
 - i18n (app-only): `pnpx nx run cowswap-frontend:i18n`
 - Cosmos: `pnpm start:cosmos`
 
@@ -70,4 +78,4 @@ This file is additive. Follow the repo root `AGENTS.md` for full rules.
 ## State management notes
 - Prefer managing side effects with `jotai-effect` rather than updaters.
 - Use `atom.onMount` to subscribe to external sources when needed.
-- Prefer `jotai/query` (`atomWithQuery`) over `useSWR`.
+- Both SWR and `jotai/query` (`atomWithQuery`) are acceptable for data fetching; the team is evaluating migration.

@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId, EvmChains, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -485,6 +485,15 @@ export const USDC_LINEA = new TokenWithLogo(
   'USD Coin',
 )
 
+export const USDC_SOLANA = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.SOLANA,
+  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  6,
+  'USDC',
+  'USDC (USDC)',
+)
+
 export const USDT_LINEA = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.LINEA,
@@ -554,7 +563,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
   'USD Coin',
 )
 
-export const USDC: Record<EvmChains, TokenWithLogo> = {
+export const USDC: Record<TargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
@@ -571,6 +580,10 @@ export const USDC: Record<EvmChains, TokenWithLogo> = {
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
+  [SupportedChainId.SOLANA]: USDC_SOLANA,
+  // we need some stablecoin ref currency to calculate price impact in usd,
+  // due to btc chain specific - there is no other currency than btc
+  [AdditionalTargetChainId.BITCOIN]: USDC_MAINNET,
 }
 
 /**
@@ -658,6 +671,8 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
   [SupportedChainId.INK]: COW_TOKEN_INK,
+  // COW token is not deployed on Solana.
+  [SupportedChainId.SOLANA]: null,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
@@ -748,6 +763,7 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
   [SupportedChainId.INK]: new Set(INK_STABLECOINS),
+  [SupportedChainId.SOLANA]: new Set([USDC_SOLANA.address]),
 }
 
 /**

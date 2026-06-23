@@ -1,4 +1,7 @@
+import { useMemo } from 'react'
+
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation } from 'react-router'
@@ -14,8 +17,8 @@ import {
   useUserContext,
 } from './useAnalyticsReporter.effects'
 
-import { CowAnalytics } from '../CowAnalytics'
-import { PixelAnalytics } from '../pixels/PixelAnalytics'
+import { useCowAnalytics } from '../context/CowAnalyticsContext'
+import { initPixelAnalytics } from '../pixels/initPixelAnalytics'
 import { WebVitalsAnalytics } from '../webVitals/WebVitalsAnalytics'
 
 export {
@@ -28,9 +31,6 @@ interface UseAnalyticsReporterProps {
   account: string | undefined
   walletName: string | undefined
   chainId: SupportedChainId | undefined
-  cowAnalytics: CowAnalytics
-  pixelAnalytics?: PixelAnalytics
-  webVitalsAnalytics?: WebVitalsAnalytics
   marketDimension?: string
   injectedWidgetAppId?: string
 }
@@ -39,17 +39,19 @@ interface UseAnalyticsReporterProps {
  * Common hook used by all apps to report some basic data to analytics
  * @param props
  */
-export function useAnalyticsReporter(props: UseAnalyticsReporterProps): void {
-  const {
-    account,
-    walletName,
-    chainId,
-    cowAnalytics,
-    pixelAnalytics,
-    webVitalsAnalytics,
-    marketDimension,
-    injectedWidgetAppId,
-  } = props
+export function useAnalyticsReporter({
+  account,
+  walletName,
+  chainId,
+  marketDimension,
+  injectedWidgetAppId,
+}: UseAnalyticsReporterProps): void {
+  const cowAnalytics = useCowAnalytics()
+  const webVitalsAnalytics = useMemo(
+    () => (isInjectedWidget() ? undefined : new WebVitalsAnalytics(cowAnalytics)),
+    [cowAnalytics],
+  )
+  const pixelAnalytics = useMemo(() => (isInjectedWidget() ? undefined : initPixelAnalytics()), [])
   const { pathname, search } = useLocation()
 
   const prevAccount = usePrevious(account)

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import iconReceiptSrc from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -19,7 +19,7 @@ export function TransactionLinkDisplay({ link, label, linkText }: TransactionLin
       label={
         <>
           <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-            <StyledTimelineReceiptIcon src={ReceiptIcon} />
+            <StyledTimelineReceiptIcon src={iconReceiptSrc} />
           </TimelineIconCircleWrapper>{' '}
           {label}
         </>

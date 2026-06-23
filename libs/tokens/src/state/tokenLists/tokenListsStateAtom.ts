@@ -17,7 +17,10 @@ import { environmentAtom } from '../environmentAtom'
 
 const TOKEN_LIST_SRC = `${COW_CDN}/token-lists`
 
-const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
+// No Uniswap token list exists for non-EVM chains (e.g. Solana) — those keys are
+// intentionally omitted. `Partial` keeps the type honest: `UNISWAP_TOKEN_LIST_URL[chainId]`
+// is `string | undefined`, which forces the empty-source guard in `curatedListSourceAtom`.
+const UNISWAP_TOKEN_LIST_URL: Partial<Record<SupportedChainId, string>> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
   [SupportedChainId.GNOSIS_CHAIN]: `${TOKEN_LIST_SRC}/Uniswap.100.json`,
   [SupportedChainId.ARBITRUM_ONE]: `${TOKEN_LIST_SRC}/Uniswap.42161.json`,
@@ -29,17 +32,18 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`,
   [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`,
   [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`,
-}
+} as const satisfies Partial<Record<SupportedChainId, string>>
 
-const curatedListSourceAtom = atom((get) => {
+const curatedListSourceAtom = atom((get): ListSourceConfig[] => {
   const chainId = get(environmentAtom).chainId
-  const UNISWAP_LIST_SOURCE: ListSourceConfig = {
-    priority: 1,
-    enabledByDefault: true,
-    source: UNISWAP_TOKEN_LIST_URL[chainId],
-  }
+  const source = UNISWAP_TOKEN_LIST_URL[chainId]
 
-  return [UNISWAP_LIST_SOURCE]
+  // Chains without a Uniswap list (e.g. Solana) must not produce a config with an
+  // empty `source` — that would propagate `{ source: '' }` downstream, causing a
+  // `fetch('')` and a bogus enabled-list key under `useCuratedListOnly` (widget mode).
+  if (!source) return []
+
+  return [{ priority: 1, enabledByDefault: true, source }]
 })
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(

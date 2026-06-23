@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
+import svgSavingsSrc from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { Currency, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
@@ -40,7 +40,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps): ReactNod
   return (
     <styledEl.BannerWrapper onClick={showBannerCallback} id="classic-eth-flow-banner">
       <styledEl.ClosedBannerWrapper>
-        <SVG title={t`Switch to WETH`} src={savingsIcon} />
+        <SVG title={t`Switch to WETH`} src={svgSavingsSrc} />
         <b>
           {hasEnoughWrappedBalance
             ? t`Switch to the classic ${wrappedSymbol} experience and benefit!`

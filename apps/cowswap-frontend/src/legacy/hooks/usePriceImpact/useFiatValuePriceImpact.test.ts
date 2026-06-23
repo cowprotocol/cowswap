@@ -21,6 +21,15 @@ jest.mock('modules/usdAmount', () => ({
   useTradeUsdAmounts: jest.fn(),
 }))
 
+jest.mock('./logger', () => ({
+  logPriceImpact: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}))
+
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeUsdAmounts = useTradeUsdAmounts as jest.MockedFunction<typeof useTradeUsdAmounts>
 
@@ -31,6 +40,7 @@ function createToken(symbol: string, address: string): Token {
 describe('useFiatValuePriceImpact', () => {
   const inputToken = createToken('ETH', '0x0000000000000000000000000000000000000001')
   const outputToken = createToken('COW', '0x0000000000000000000000000000000000000002')
+  const updatedOutputToken = createToken('USDC', '0x0000000000000000000000000000000000000003')
 
   beforeEach(() => {
     jest.useFakeTimers()
@@ -48,7 +58,7 @@ describe('useFiatValuePriceImpact', () => {
     jest.useRealTimers()
   })
 
-  it('stops loading after 2 minutes when USD amounts never resolve', () => {
+  it('stops loading after 15 seconds when USD amounts never resolve', () => {
     mockedUseTradeUsdAmounts.mockReturnValue({
       inputAmount: { value: null, isLoading: true },
       outputAmount: { value: null, isLoading: true },
@@ -59,7 +69,91 @@ describe('useFiatValuePriceImpact', () => {
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
 
     act(() => {
-      jest.advanceTimersByTime(120_000)
+      jest.advanceTimersByTime(15_000)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+  })
+
+  it('does not restart the loading timeout when price loading flickers', () => {
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+
+    const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(7_500)
+    })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+    rerender()
+
+    act(() => {
+      jest.advanceTimersByTime(7_500)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+  })
+
+  it('restarts the loading timeout when the output token changes after timing out', () => {
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+
+    const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    mockedUseDerivedTradeState.mockReturnValue({
+      inputCurrency: inputToken,
+      outputCurrency: updatedOutputToken,
+      inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
+      outputCurrencyAmount: CurrencyAmount.fromRawAmount(updatedOutputToken, 1),
+    } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
     })
 
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })

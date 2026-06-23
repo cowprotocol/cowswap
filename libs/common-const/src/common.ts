@@ -31,7 +31,7 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
-export const AVG_APPROVE_COST_GWEI = '50000'
+export const AVG_APPROVE_COST_GWEI = 50000n
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
@@ -51,23 +51,12 @@ export const PAGE_TITLES = {
   MY_REWARDS: msg`Rewards hub - My Rewards`,
 }
 
-/**
- * Should be fully replaced with BARN_ETH_FLOW_ADDRESSES once backend migrated all the networks
- */
-export const OLD_BARN_ETH_FLOW_ADDRESS = '0x04501b9b1d52e67f6862d157e00d13419d2d6e95'
-
-export const STAGING_MIGRATED_CONTRACT_NETWORKS = [SupportedChainId.MAINNET]
-
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
   if (env === 'prod') {
     return ETH_FLOW_ADDRESSES[chainId]
   }
 
-  if (STAGING_MIGRATED_CONTRACT_NETWORKS.includes(chainId)) {
-    return BARN_ETH_FLOW_ADDRESSES[chainId]
-  }
-
-  return OLD_BARN_ETH_FLOW_ADDRESS
+  return BARN_ETH_FLOW_ADDRESSES[chainId]
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -90,6 +79,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: null,
+  [SupportedChainId.SOLANA]: null,
 }
 
 // Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized)
@@ -129,38 +119,27 @@ export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
 export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
-export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
+export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cow-swap-home'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 
 // TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 
-// See https://docs.blocknative.com/gas-prediction/gas-platform
+// Blockscout gas price oracle: https://docs.blockscout.com/devs/apis/rpc/stats-and-info#gas-price-oracle
+// Networks without a Blockscout instance fall back to the eth_gasPrice RPC method (see GasFeeApi).
 export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
+  [SupportedChainId.MAINNET]: 'https://eth.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
-  [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
-  [SupportedChainId.AVALANCHE]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.AVALANCHE}`,
-  [SupportedChainId.BNB]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.BNB}`,
-  [SupportedChainId.LINEA]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.LINEA}`,
-  [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
-  [SupportedChainId.INK]: `https://api.blocknative.com/gasprices/blockprices?chainid=${SupportedChainId.INK}`,
-}
-export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.GNOSIS_CHAIN]: null,
-  [SupportedChainId.ARBITRUM_ONE]: null,
-  [SupportedChainId.BASE]: null,
-  [SupportedChainId.SEPOLIA]: null,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.BNB]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.LINEA]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
-  [SupportedChainId.PLASMA]: null,
-  [SupportedChainId.INK]: process.env['REACT_APP_BLOCKNATIVE_API_KEY'] || null,
+  [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.AVALANCHE]: '',
+  [SupportedChainId.BNB]: '',
+  [SupportedChainId.LINEA]: '',
+  [SupportedChainId.PLASMA]: '',
+  [SupportedChainId.INK]: '',
+  [SupportedChainId.SOLANA]: '',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'

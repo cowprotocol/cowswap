@@ -14,6 +14,7 @@ import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -22,7 +23,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -127,7 +127,7 @@ export function ActivityDetails(props: {
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
-  const { name: receiverEnsName } = useENS(order?.receiver)
+  const { name: receiverEnsName } = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined)
 
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this

@@ -5,6 +5,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
+  UpdateAppDataPayload,
   UpdateParamsPayload,
   widgetIframeTransport,
   WidgetMethodsEmit,
@@ -12,6 +13,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
+import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -20,12 +22,12 @@ import { IframeResizer } from './IframeResizer'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
-import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
   clearCachedWidgetMessage,
   getCachedWidgetMessageMethods,
+  registerCachedMessageHandler,
   replayCachedWidgetMessage,
 } from '../utils/widgetMessagesCache.utils'
 ;(function initInjectedWidget() {
@@ -45,16 +47,26 @@ import {
   /**
    * Intercept window.open to send a message to the parent window to handle the opening of deeplinks in the parent window.
    *
-   * IMPORTANT: Do not call the native window.open here: createCowSwapWidget registers interceptDeepLinks
-   * which opens in the parent, so calling both would open two tabs / popups.
+   * IMPORTANT: Do not call the native window.open for deeplinks here: createCowSwapWidget registers
+   * interceptDeepLinks which opens in the parent, so calling both would open two tabs / popups.
+   *
+   * Exception: when the call passes window features (e.g. `width=...,height=...`), it's a real popup
+   * that needs bidirectional postMessage with the opener (e.g. Coinbase Wallet SDK's keys.coinbase.com
+   * popup). Those must open from the iframe itself so the SDK gets a real cross-origin Window back.
    */
+  const nativeWindowOpen = window.open.bind(window)
   window.open = function (...args) {
-    const [href = '', target = '', rel = ''] = args
+    const [href = '', target = '', features = ''] = args
+
+    const isPopupWithFeatures = typeof features === 'string' && /\b(width|height)\s*=/.test(features)
+    if (isPopupWithFeatures) {
+      return nativeWindowOpen(href, target, features)
+    }
 
     widgetIframeTransport.postMessageToWindow(
       parent,
       WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-      { href, target, rel },
+      { href, target, rel: features },
       parentOrigin,
     )
 
@@ -88,54 +100,60 @@ export function InjectedWidgetUpdater(): ReactNode {
       return
     }
 
+    const updateParamsHandler = (data: UpdateParamsPayload): void => {
+      if (
+        // If the data is the same as the previous data
+        prevData.current &&
+        deepEqual(prevData.current, data) &&
+        // And the pathname is the same as the current widget pathname, do nothing
+        // This is needed since the app updates the pathname independently of the widget params
+        window.location.pathname === data.urlParams.pathname
+      ) {
+        return
+      }
+
+      // Update params
+      prevData.current = data
+
+      const appParams = data.appParams
+      const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
+
+      const errors = validateWidgetParams(appParams)
+      setHooksEnabled(hooksEnabled)
+
+      updateParams({
+        params: appParams,
+        errors,
+      })
+
+      // Navigate to the new path
+      navigate(data.urlParams, { replace: true })
+    }
+
     // Start listening for messages inside of React
     const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
       window.parent,
       WidgetMethodsListen.UPDATE_PARAMS,
-      (data) => {
-        if (
-          // If the data is the same as the previous data
-          prevData.current &&
-          deepEqual(prevData.current, data) &&
-          // And the pathname is the same as the current widget pathname, do nothing
-          // This is needed since the app updates the pathname independently of the widget params
-          window.location.pathname === data.urlParams.pathname
-        ) {
-          return
-        }
-
-        // Update params
-        prevData.current = data
-
-        const appParams = data.appParams
-        const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
-
-        const errors = validateWidgetParams(appParams)
-        setHooksEnabled(hooksEnabled)
-
-        updateParams({
-          params: appParams,
-          errors,
-        })
-
-        // Navigate to the new path
-        navigate(data.urlParams, { replace: true })
-      },
+      updateParamsHandler,
       parentOrigin,
     )
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_PARAMS, updateParamsHandler)
+
+    const updateAppDataHandler = (data: UpdateAppDataPayload): void => {
+      if (data.metaData) {
+        updateMetaData(data.metaData)
+      }
+    }
 
     const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
       window,
       window.parent,
       WidgetMethodsListen.UPDATE_APP_DATA,
-      (data) => {
-        if (data.metaData) {
-          updateMetaData(data.metaData)
-        }
-      },
+      updateAppDataHandler,
       parentOrigin,
     )
+    registerCachedMessageHandler(WidgetMethodsListen.UPDATE_APP_DATA, updateAppDataHandler)
 
     // Process all cached messages
     getCachedWidgetMessageMethods().forEach((method) => {

@@ -16,6 +16,7 @@ interface TradeWidgetUpdatersProps {
   disableQuotePolling: boolean
   disableNativeSelling: boolean
   enableSmartSlippage?: boolean
+  enableSellEqBuy?: boolean
   disableSuggestedSlippageApi?: boolean
   allowSwapSameToken: boolean
   children: ReactNode
@@ -25,12 +26,13 @@ interface TradeWidgetUpdatersProps {
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
+  enableSellEqBuy = false,
   disableSuggestedSlippageApi,
   onChangeRecipient,
   allowSwapSameToken,
   children,
 }: TradeWidgetUpdatersProps): JSX.Element {
-  const { isOpen: isConfirmOpen } = useTradeConfirmState()
+  const { isOpen: isConfirmOpen, pendingTrade } = useTradeConfirmState()
 
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
@@ -44,10 +46,11 @@ export function TradeWidgetUpdaters({
         useSuggestedSlippageApi={!disableSuggestedSlippageApi}
         isConfirmOpen={isConfirmOpen}
         isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+        hasPendingTrade={!!pendingTrade}
       />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
-      <CommonTradeUpdater />
+      <CommonTradeUpdater enableSellEqBuy={enableSellEqBuy} />
       {!allowSwapSameToken && <ForbidSwapSameTokenUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import svgArrowSrc from '@cowprotocol/assets/cow-swap/arrow.svg'
+import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -106,10 +106,10 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
       .then((tx) => {
         claimAnalytics('Sign')
         setStatus(ClaimStatus.SUBMITTED)
-        return tx.wait()
+        return tx
       })
       .then((tx) => {
-        const success = tx.status === 1
+        const success = !!tx?.hash
         setStatus(success ? ClaimStatus.CONFIRMED : ClaimStatus.INITIAL)
 
         setTimeout(() => {
@@ -148,7 +148,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
     <>
       <Card showLoader={loading || isClaimPending}>
         <BalanceDisplay hAlign="left">
-          <img src={cowImage} alt={t`COW token`} width="56" height="56" />
+          <img src={svgCowTokenSrc} alt={t`COW token`} width="56" height="56" />
           <span>
             <i>
               <Trans>COW vesting from locked GNO</Trans>
@@ -220,7 +220,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 <Trans>Claiming COW...</Trans>
               ) : (
                 <Trans>
-                  Claim COW <SVG src={ArrowIcon} />
+                  Claim COW <SVG src={svgArrowSrc} />
                 </Trans>
               )}
             </ButtonPrimary>

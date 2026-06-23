@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+import imgNinjaCowSrc from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -67,7 +67,7 @@ export default function MevSlicer(): ReactNode {
         </strong>
       </p>
       <p>
-        <img src={ninjaCowImg} alt={t`Ninja Cow`} />
+        <img src={imgNinjaCowSrc} alt={t`Ninja Cow`} />
       </p>
 
       <ButtonPrimary
@@ -88,5 +88,5 @@ export default function MevSlicer(): ReactNode {
 }
 
 function openGame(): void {
-  window?.open(GAME_URL, '_blank')?.focus()
+  window?.open(GAME_URL, '_blank', 'noopener,noreferrer')?.focus()
 }

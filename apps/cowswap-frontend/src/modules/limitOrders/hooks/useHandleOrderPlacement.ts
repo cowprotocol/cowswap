@@ -8,6 +8,7 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
+import { useConfig } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -19,13 +20,14 @@ import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
-import OperatorError from 'api/cowProtocol/errors/OperatorError'
+import { OperatorError } from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -56,6 +58,7 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
+  const config = useConfig()
   const isBridge = getAreBridgeCurrencies(
     tradeContext.postOrderParams.inputAmount.currency,
     tradeContext.postOrderParams.outputAmount.currency,
@@ -106,6 +109,10 @@ export function useHandleOrderPlacement(
         outputAmount: tradeContext.postOrderParams.outputAmount,
         recipient: tradeContext.postOrderParams.recipient,
         orderKind: tradeContext.postOrderParams.kind,
+        chainId: tradeContext.chainId,
+        validTo: tradeContext.quoteState
+          ? calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
+          : undefined,
       }),
     )
 
@@ -119,8 +126,8 @@ export function useHandleOrderPlacement(
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
-      return safeBundleFlow(
-        {
+      return safeBundleFlow({
+        params: {
           ...safeBundleFlowContext,
           postOrderParams: {
             ...safeBundleFlowContext.postOrderParams,
@@ -132,7 +139,8 @@ export function useHandleOrderPlacement(
         confirmPriceImpactWithoutFee,
         analytics,
         beforeTrade,
-      )
+        config,
+      })
     }
 
     return tradeFlow(
@@ -151,6 +159,7 @@ export function useHandleOrderPlacement(
       beforeTrade,
     )
   }, [
+    config,
     isSafeBundle,
     tradeContext,
     partiallyFillableOverride,

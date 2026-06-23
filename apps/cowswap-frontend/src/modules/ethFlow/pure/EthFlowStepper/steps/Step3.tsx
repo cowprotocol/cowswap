@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
-import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
-import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
-import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
+import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import svgExclamationSrc from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import svgFinishSrc from '@cowprotocol/assets/cow-swap/finish.svg'
+import svgRefundSrc from '@cowprotocol/assets/cow-swap/refund.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -59,49 +59,49 @@ export function Step3({
       return {
         label: t`Receive ${tokenLabel}`,
         state: 'not-started',
-        icon: Exclamation,
+        icon: svgExclamationSrc,
       }
     }
     if (expiredBeforeCreate) {
       return {
         label: t`Receive ${tokenLabel}`,
         state: 'pending',
-        icon: Finish,
+        icon: svgFinishSrc,
       }
     }
     if (isIndexing) {
       return {
         label: t`Receive ${tokenLabel}`,
         state: 'not-started',
-        icon: Finish,
+        icon: svgFinishSrc,
       }
     }
     if (isFilled) {
       return {
         label: t`Received ${tokenLabel}`,
         state: 'success',
-        icon: Checkmark,
+        icon: svgCheckmarkSrc,
       }
     }
     if (isRefunded) {
       return {
         label: t`${nativeTokenSymbol} Refunded`,
         state: 'success',
-        icon: Refund,
+        icon: svgRefundSrc,
       }
     }
     if (isIndexed) {
       return {
         label: t`Receive ${tokenLabel}`,
         state: 'pending',
-        icon: Finish,
+        icon: svgFinishSrc,
       }
     }
 
     return {
       label: t`Receive ${tokenLabel}`,
       state: 'not-started',
-      icon: Finish,
+      icon: svgFinishSrc,
     }
   }, [
     expiredBeforeCreate,

@@ -1,7 +1,10 @@
-import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
+
+import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
 import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
 
@@ -33,6 +36,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isBundlingSupported,
     injectedWidgetParams,
     tradePriceImpact,
+    isNonEvmReceiverConfirmed,
+    isRestoringConnection,
   } = context
 
   const {
@@ -87,6 +92,21 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
+  if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
+    const isTradeConstrained = injectedWidgetParams.tokenPairConstraints.some((rule) => {
+      return (
+        rule.sell.chainId === inputCurrency.chainId &&
+        areAddressesEqual(rule.sell.address, getCurrencyAddress(inputCurrency)) &&
+        rule.buy.chainId === outputCurrency.chainId &&
+        areAddressesEqual(rule.buy.address, getCurrencyAddress(outputCurrency))
+      )
+    })
+
+    if (isTradeConstrained) {
+      validations.push(TradeFormValidation.WidgetConstrainedTokenPair)
+    }
+  }
+
   if (!isWrapUnwrap && tradeQuote.error) {
     if (inputAmountIsNotSet) {
       validations.push(TradeFormValidation.InputAmountNotSet)
@@ -98,7 +118,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isSwapUnsupported && !account) {
-    validations.push(TradeFormValidation.WalletNotConnected)
+    validations.push(
+      isRestoringConnection ? TradeFormValidation.RestoringWallet : TradeFormValidation.WalletNotConnected,
+    )
   }
 
   if (!isSupportedWallet) {
@@ -143,8 +165,15 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
+  const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
+
   if (!isWrapUnwrap) {
-    const isRecipientAddress = Boolean(recipient && isAddress(recipient))
+    if (isNonEvmBridging && !recipient) {
+      validations.push(TradeFormValidation.RecipientNotSet)
+    }
+
+    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : undefined)
+    const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
     /**
      * For bridging, recipient can be only an address (ENS is not supported)
@@ -153,6 +182,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
+    }
+
+    if (isNonEvmBridging && recipient && isRecipientValid && !isNonEvmReceiverConfirmed) {
+      validations.push(TradeFormValidation.RecipientNotConfirmed)
     }
 
     if (isSwapUnsupported) {
@@ -180,6 +213,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       if (isProxySetupValid === null) {
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
+    }
+    if (tradePriceImpact.loading) {
+      validations.push(TradeFormValidation.ImpactLoading)
     }
   }
 

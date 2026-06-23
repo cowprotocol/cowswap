@@ -1,11 +1,13 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
-import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
 import { Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
@@ -33,9 +35,6 @@ import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
-// Initialize static analytics instance
-const pixel = initPixelAnalytics()
-
 interface AppContainerProps {
   children: ReactNode | ReactNode[]
 }
@@ -61,23 +60,19 @@ interface FooterSectionProps {
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const cowAnalytics = useCowAnalytics()
-  const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
-  const { isYieldEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
     chainId,
     walletName,
-    cowAnalytics,
-    pixelAnalytics: pixel,
-    webVitalsAnalytics: webVitals,
     marketDimension: useGetMarketDimension() || undefined,
     injectedWidgetAppId: useInjectedWidgetMetaData()?.appCode,
   })
 
   useInitializeUtm()
   const isInjectedWidgetMode = isInjectedWidget()
+  const { bodyWrapperStyle } = useInjectedWidgetParams()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
@@ -122,6 +117,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         {isYieldEnabled && <CoWAmmBanner />}
 
         <styledEl.BodyWrapper
+          id="bodyWrapper"
+          style={isInjectedWidgetMode ? (bodyWrapperStyle as CSSProperties) : undefined}
           customTheme={customTheme}
           backgroundVariant={pageBackgroundVariant}
           $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}
@@ -141,7 +138,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-        {isAffiliateProgramEnabled && <AffiliateTraderModal />}
+        <AffiliateTraderModal />
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
   )

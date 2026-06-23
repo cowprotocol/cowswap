@@ -1,5 +1,3 @@
-import { useSetAtom } from 'jotai'
-
 import Close from '@cowprotocol/assets/images/x.svg?react'
 import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
@@ -8,8 +6,6 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
@@ -92,11 +88,6 @@ const Header = styled.div`
     background: var(${UI.COLOR_PAPER});
   }
 
-  &:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
   > strong {
     font-size: 24px;
     color: inherit;
@@ -107,18 +98,41 @@ const Header = styled.div`
   }
 `
 
+const CloseButton = styled.button`
+  position: relative;
+  opacity: 0.6;
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -24px -30px -20px -20px;
+
+    ${Media.upToMedium()} {
+      inset: -16px;
+    }
+  }
+`
+
 const CloseIcon = styled((props) => <Close {...props} />)`
   --size: 20px;
-  opacity: 0.6;
+
+  position: relative;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
   width: var(--size);
   height: var(--size);
   object-fit: contain;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 const Wrapper = styled.div`
@@ -138,7 +152,6 @@ const Wrapper = styled.div`
 export function OrdersPanel() {
   const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
   const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
@@ -163,14 +176,15 @@ export function OrdersPanel() {
             <strong>
               <Trans>Account</Trans>
             </strong>
-            <CloseIcon onClick={handleCloseOrdersPanel} />
+            <CloseButton onClick={handleCloseOrdersPanel}>
+              <CloseIcon />
+            </CloseButton>
           </Header>
 
           <AccountDetails
             ENSName={ensName}
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
-            toggleAccountSelectorModal={toggleAccountSelectorModal}
             handleCloseOrdersPanel={handleCloseOrdersPanel}
           />
         </Wrapper>

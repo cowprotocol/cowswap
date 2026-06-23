@@ -151,6 +151,7 @@ export function useCreateTwapOrder() {
             outputAmount: outputCurrencyAmount,
             recipient: twapOrder.receiver,
             orderKind: OrderKind.SELL,
+            chainId,
           }),
         )
 

@@ -11,25 +11,13 @@ import { useTable } from './useTable'
 import { CardRow } from '../../../components/common/CardRow'
 import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
-import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import { TabList } from '../../../components/common/Tabs/Tabs'
+import { TabItemInterface, TabList } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { useFlexSearch } from '../../../hooks/useFlexSearch'
 import { Token, useGetTokens } from '../../../hooks/useGetTokens'
 import { useNetworkId } from '../../../state/network'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
-
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
 
 const TableWrapper = styled(CardRow)`
   width: 100%;
@@ -63,18 +51,7 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
       flex-direction: column;
     }
   }
-
-  .tab-extra-content {
-    justify-content: center;
-    padding: 1.4rem 0;
-  }
 `
-
-const ExtraComponentNode: React.ReactNode = (
-  <WrapperExtraComponents>
-    <TablePagination context={TokensTableContext} fixedResultsPerPage />
-  </WrapperExtraComponents>
-)
 
 interface Props {
   networkId: BlockchainNetwork
@@ -145,6 +122,8 @@ export const TokensTableWidget: React.FC<Props> = () => {
   if (!tokens?.length) {
     return <LoadingWrapper message="Loading tokens" />
   }
+
+  const ExtraComponentNode: React.ReactNode = <TablePagination context={TokensTableContext} fixedResultsPerPage />
 
   return (
     <TableWrapper>
