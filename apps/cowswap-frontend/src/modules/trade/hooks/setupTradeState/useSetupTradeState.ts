@@ -104,9 +104,12 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       if (isFirstLoad && isWalletConnected) {
         setIsFirstLoad(false)
 
-        // If the app was open without specifying the chainId in the URL, then we should NOT switch to the chainId from the provider
+        // URL has explicit chainId at load time: ask the wallet to switch to it and keep the URL.
+        // Skipping the navigate below avoids overwriting the user-picked chain with the wallet's
+        // chain on refresh (e.g. EOA + WalletConnect where the persisted session reports its own chain).
         if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
           switchNetworkInWallet(urlChainId, providerChainId)
+          return
         }
       }
 
