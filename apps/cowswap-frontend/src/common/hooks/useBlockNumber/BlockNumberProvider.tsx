@@ -14,6 +14,10 @@ export function BlockNumberProvider({ children }: { children: ReactNode }): Reac
   const onBlockNumber = useCallback(
     (blockNumber: bigint) => {
       const num = Number(blockNumber)
+
+      // FIXME: delete after testing
+      console.debug('BLOCK NUMBER', { activeChainId, num })
+
       setChainBlock((chainBlock) => {
         if (chainBlock.chainId === activeChainId) {
           if (!chainBlock.block || chainBlock.block < num) {
@@ -41,5 +45,6 @@ export function BlockNumberProvider({ children }: { children: ReactNode }): Reac
     }),
     [activeChainId, block, chainId],
   )
+
   return <BlockNumberContext.Provider value={value}>{children}</BlockNumberContext.Provider>
 }
