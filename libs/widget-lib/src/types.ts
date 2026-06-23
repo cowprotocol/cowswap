@@ -452,6 +452,11 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
+   * Disabled switching tokens places by clicking to the arrow between them
+   */
+  disableSwitchingTokens?: boolean
+
+  /**
    * Hides scrollbars inside the widget iframe (`overflow: hidden` on the document).
    * Only use when the host iframe height is driven by `var(--dynamicHeight)` and not constrained (e.g. no max-height).
    *
