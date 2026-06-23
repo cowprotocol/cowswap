@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/events-v4.6.0...events-v4.7.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.5.0
+
 ## [4.6.0](https://github.com/cowprotocol/cowswap/compare/events-v4.5.0...events-v4.6.0) (2026-06-09)
 
 ### Minor Changes
