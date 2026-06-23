@@ -142,6 +142,31 @@ describe('useWatchSolanaSlot', () => {
     expect(second.onSlotChange).toHaveBeenCalledTimes(1)
   })
 
+  it('does not emit a pending throttled slot after the watcher is disabled', async () => {
+    const onSlot = jest.fn()
+    const { rerender } = renderHook(({ enabled }) => useWatchSolanaSlot({ enabled, onSlot }), {
+      initialProps: { enabled: true },
+    })
+    await flushMicrotasks() // seed (leading edge) at t0
+    onSlot.mockClear()
+
+    // A new slot arrives but is throttled — a trailing emit is scheduled for t0 + 5s.
+    act(() => {
+      mockConnection?.emitSlot(101)
+    })
+    expect(onSlot).not.toHaveBeenCalled()
+
+    // The user switches away from Solana before the trailing timeout fires.
+    rerender({ enabled: false })
+
+    // The throttle window elapses; the stale slot must not reach onSlot.
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
+    expect(onSlot).not.toHaveBeenCalled()
+  })
+
   it('does not resubscribe when only the callback identity changes', () => {
     const { rerender } = renderHook(
       (initialProps) =>

@@ -4,6 +4,7 @@ import { EvmChains } from '@cowprotocol/cow-sdk'
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { OptionsController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
@@ -12,7 +13,8 @@ import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
-import { SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
@@ -69,12 +71,17 @@ const wagmiAdapter = new WagmiAdapter({
   transports: wagmiTransports,
 })
 
+// AppKit 1.8.19 does not copy createAppKit({ enableInjected }) into OptionsController.state.
+// WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
+OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
+
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
+  enableInjected: false,
   enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: [

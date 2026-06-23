@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { useThrottledCallback } from '@cowprotocol/common-hooks'
 
@@ -25,27 +25,41 @@ interface UseWatchSolanaSlotParams {
 export function useWatchSolanaSlot({ enabled, onSlot }: UseWatchSolanaSlotParams): void {
   const { connection } = useAppKitConnection()
 
-  // `useThrottledCallback` keeps a stable identity and tracks the latest `onSlot` internally,
-  // so a changing callback does not tear down and re-create the subscription.
-  const emitSlot = useThrottledCallback(onSlot, SLOT_UPDATE_THROTTLE_MS)
+  // Gates emissions to the active subscription. `useThrottledCallback` can fire a trailing
+  // update up to SLOT_UPDATE_THROTTLE_MS after the last slot — without exposing a way to
+  // cancel it — so a slot seen while watching can otherwise land after cleanup (chain switch,
+  // hidden window, disable) and feed a stale Solana slot to the now-different active chain.
+  const activeRef = useRef(false)
+
+  // `useThrottledCallback` keeps a stable identity and tracks the latest callback internally,
+  // so a changing `onSlot` does not tear down and re-create the subscription.
+  const emitSlot = useThrottledCallback(
+    useCallback(
+      (slot: bigint) => {
+        if (activeRef.current) onSlot(slot)
+      },
+      [onSlot],
+    ),
+    SLOT_UPDATE_THROTTLE_MS,
+  )
 
   useEffect(() => {
     if (!enabled || !connection) return
 
-    let active = true
+    activeRef.current = true
 
     // Seed the current slot — onSlotChange only emits on subsequent slots.
     connection
       .getSlot()
       .then((slot) => {
-        if (active) emitSlot(BigInt(slot))
+        if (activeRef.current) emitSlot(BigInt(slot))
       })
       .catch(() => void 0)
 
     const subscriptionId = connection.onSlotChange(({ slot }) => emitSlot(BigInt(slot)))
 
     return () => {
-      active = false
+      activeRef.current = false
       connection.removeSlotChangeListener(subscriptionId)
     }
   }, [enabled, connection, emitSlot])
