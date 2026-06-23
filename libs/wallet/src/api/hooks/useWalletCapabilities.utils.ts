@@ -1,5 +1,5 @@
 export interface WidgetProviderMetaInfoState {
-  data?: { providerWcMetadata?: unknown }
+  data?: { providerWcMetadata?: unknown } | null
   isLoading: boolean
 }
 
