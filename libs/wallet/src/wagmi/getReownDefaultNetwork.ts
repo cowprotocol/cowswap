@@ -6,9 +6,8 @@ import { solana } from '@reown/appkit/networks'
 
 import type { AppKitNetwork } from '@reown/appkit-common'
 
-const urlChainId = getCurrentChainIdFromUrl()
-
 export function getReownDefaultNetwork(): AppKitNetwork {
+  const urlChainId = getCurrentChainIdFromUrl()
   const isSolanaNetwork = urlChainId === SupportedChainId.SOLANA
 
   if (IS_SOLANA_ENABLED && isSolanaNetwork) {
