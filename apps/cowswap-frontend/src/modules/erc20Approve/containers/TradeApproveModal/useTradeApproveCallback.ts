@@ -3,9 +3,12 @@ import { useCallback } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { usePublicClient } from 'wagmi'
+
+import { callWidgetHook } from 'modules/injectedWidget'
 
 import { processApprovalTransaction } from './approveUtils'
 import { useApprovalAnalytics } from './useApprovalAnalytics'
@@ -64,6 +67,7 @@ interface ProcessTransactionConfirmationParams {
   }) => void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
   const symbol = currency?.symbol
 
@@ -82,6 +86,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const handleApprovalError = useHandleApprovalError(symbol)
 
   return useCallback(
+    // eslint-disable-next-line complexity
     async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
       if (useModals) {
         const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
@@ -91,6 +96,27 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       approvalAnalytics('Send', symbol)
 
       try {
+        if (currency && account && spender) {
+          const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+            chainId: currency.chainId,
+            sellToken: {
+              chainId: currency.chainId,
+              address: currency.isToken ? currency.address : '',
+              decimals: currency.decimals,
+              name: currency.name || '',
+              symbol: currency.symbol || '',
+            },
+            sellAmount: amount.toString(),
+            walletAddress: account,
+            spenderAddress: spender,
+          })
+
+          if (!isWidgetHookPassed) {
+            resetApproveProgressModalState()
+            return undefined
+          }
+        }
+
         const response = await approveCallback(amount)
 
         if (!response) {
