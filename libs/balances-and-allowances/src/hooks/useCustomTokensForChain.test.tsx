@@ -28,12 +28,12 @@ describe('useCustomTokensForChain', () => {
     useUserAddedTokensMock.mockReset()
   })
 
-  it('returns an empty set when no user-added tokens exist', () => {
+  it('returns an empty array when no user-added tokens exist', () => {
     mockTokens([])
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual(new Set())
+    expect(result.current).toEqual([])
   })
 
   it('filters tokens by chainId', () => {
@@ -45,7 +45,7 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual(new Set([getAddressKey(TOKEN_A), getAddressKey(TOKEN_C)]))
+    expect(result.current).toEqual([getAddressKey(TOKEN_A), getAddressKey(TOKEN_C)])
   })
 
   it('normalizes addresses via getAddressKey', () => {
@@ -53,6 +53,6 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual(new Set([getAddressKey(TOKEN_A)]))
+    expect(result.current).toEqual([getAddressKey(TOKEN_A)])
   })
 })

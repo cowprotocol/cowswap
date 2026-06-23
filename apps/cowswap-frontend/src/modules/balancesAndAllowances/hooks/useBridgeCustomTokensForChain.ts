@@ -8,10 +8,10 @@ import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 
 import { useSelectTokenWidgetState } from 'modules/tokensList'
 
-const EMPTY_ADDRESSES: Set<AddressKey> = new Set()
+const EMPTY_ADDRESSES: AddressKey[] = []
 
 /** Bridge buy-tokens for `chainId`, only while the token selector is open with `chainId` as the bridge target. */
-export function useBridgeCustomTokensForChain(chainId: SupportedChainId): Set<AddressKey> {
+export function useBridgeCustomTokensForChain(chainId: SupportedChainId): AddressKey[] {
   const { chainId: walletChainId } = useWalletInfo()
   const { open, oppositeToken } = useSelectTokenWidgetState()
 
@@ -30,11 +30,11 @@ export function useBridgeCustomTokensForChain(chainId: SupportedChainId): Set<Ad
     const tokens = data?.tokens
     if (!tokens?.length) return EMPTY_ADDRESSES
 
-    const addresses = new Set<AddressKey>()
+    const addresses: AddressKey[] = []
     for (const token of tokens) {
       if (token.chainId !== chainId) continue
-      addresses.add(getAddressKey(token.address))
+      addresses.push(getAddressKey(token.address))
     }
-    return addresses.size === 0 ? EMPTY_ADDRESSES : addresses
+    return addresses.length === 0 ? EMPTY_ADDRESSES : addresses
   }, [data, chainId])
 }
