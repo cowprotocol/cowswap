@@ -12,9 +12,9 @@ import type { AppKitNetwork } from '@reown/appkit-common'
  * Non-EVM supported chains (Solana, once it lands in `SupportedChainId`) are dropped
  * here — wagmi only models EVM.
  */
-export const SUPPORTED_REOWN_NETWORKS: AppKitNetwork[] = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
+export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
   isEvmChain(chainId) ? [VIEM_CHAINS[chainId]] : [],
-) as [Chain, ...Chain[]]
+) as [AppKitNetwork, ...AppKitNetwork[]]
 
 if (IS_SOLANA_ENABLED) {
   SUPPORTED_REOWN_NETWORKS.push(solana)
