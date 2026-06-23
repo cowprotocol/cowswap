@@ -23,26 +23,24 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const permitInfo = usePermitInfo(token, TradeType.SWAP)
 
   return useCallback(async () => {
-    if (!account || !permitInfo) return false
+    if (!account || !permitInfo || !tradeSpenderAddress) return false
 
     const amountRaw = BigInt(amountToApprove.quotient.toString())
 
-    if (tradeSpenderAddress) {
-      const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
-      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
-        chainId: tokenAmount.currency.chainId,
-        sellToken: {
-          ...tokenAmount.currency,
-          name: tokenAmount.currency.name || '',
-          symbol: tokenAmount.currency.symbol || '',
-        },
-        sellAmount: amountRaw.toString(),
-        walletAddress: account,
-        spenderAddress: tradeSpenderAddress,
-      })
+    const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
+    const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+      chainId: tokenAmount.currency.chainId,
+      sellToken: {
+        ...tokenAmount.currency,
+        name: tokenAmount.currency.name || '',
+        symbol: tokenAmount.currency.symbol || '',
+      },
+      sellAmount: amountRaw.toString(),
+      walletAddress: account,
+      spenderAddress: tradeSpenderAddress,
+    })
 
-      if (!isWidgetHookPassed) return false
-    }
+    if (!isWidgetHookPassed) return false
 
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
