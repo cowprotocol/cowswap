@@ -1,4 +1,4 @@
-import { delay } from '@cowprotocol/common-utils'
+import { delay, isRecord } from '@cowprotocol/common-utils'
 import { getSafeApiUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
@@ -255,8 +255,4 @@ function getTransactionSubmissionDate(transaction: unknown): string | undefined 
   return isRecord(transaction) && typeof transaction.submissionDate === 'string'
     ? transaction.submissionDate
     : undefined
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }

@@ -1,4 +1,4 @@
-import { isTruthy } from '@cowprotocol/common-utils'
+import { isRecord, isTruthy } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { decodeFunctionData, parseAbi } from 'viem'
@@ -334,8 +334,4 @@ function getSafeTransactionParams(result: SafeMultisigTransactionCandidate): Saf
     safeTxHash,
     nonce,
   }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
