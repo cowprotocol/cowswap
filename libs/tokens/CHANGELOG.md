@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.7.1...tokens-v3.8.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add solana default token list (#7602)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.7.0...tokens-v3.7.1) (2026-06-09)
 
 ### Patch Changes
