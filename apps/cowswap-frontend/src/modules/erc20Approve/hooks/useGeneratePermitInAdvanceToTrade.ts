@@ -1,9 +1,12 @@
 import { useCallback } from 'react'
 
-import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { currencyAmountToTokenAmount, getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { callWidgetHook } from 'modules/injectedWidget'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -14,12 +17,32 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
+  const tradeSpenderAddress = useTradeSpenderAddress()
 
   const token = getWrappedToken(amountToApprove.currency)
   const permitInfo = usePermitInfo(token, TradeType.SWAP)
 
   return useCallback(async () => {
     if (!account || !permitInfo) return false
+
+    const amountRaw = BigInt(amountToApprove.quotient.toString())
+
+    if (tradeSpenderAddress) {
+      const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
+      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+        chainId: tokenAmount.currency.chainId,
+        sellToken: {
+          ...tokenAmount.currency,
+          name: tokenAmount.currency.name || '',
+          symbol: tokenAmount.currency.symbol || '',
+        },
+        sellAmount: amountRaw.toString(),
+        walletAddress: account,
+        spenderAddress: tradeSpenderAddress,
+      })
+
+      if (!isWidgetHookPassed) return false
+    }
 
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
@@ -33,7 +56,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
         inputToken: { name: token.name || '', address: token.address as `0x${string}` },
         account,
         permitInfo,
-        amount: BigInt(amountToApprove.quotient.toString()),
+        amount: amountRaw,
         preSignCallback,
         postSignCallback: resetApproveProgressModalState,
       })
@@ -54,6 +77,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     resetApproveProgressModalState,
     token.address,
     token.name,
+    tradeSpenderAddress,
     updateApproveProgressModalState,
   ])
 }
