@@ -13,12 +13,19 @@ import { useEnabledTokensListsUrls } from '../hooks/useEnabledTokensListsUrls'
 export interface BalancesWatcherUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
-  /** Bridge buy-tokens fetched from the bridge API, tracked as customTokens in the bw session in addition to the user-imported list. */
+  /**
+   * True when `chainId` is a bridge target chain (user is browsing tokens of a chain different from their wallet's).
+   * In this mode the session is driven exclusively by `bridgeTokenList` — user-imported tokens and enabled token
+   * lists are skipped, and an empty `bridgeTokenList` produces no session at all.
+   */
+  isBridgeMode?: boolean
+  /** Bridge buy-tokens fetched from the bridge API. */
   bridgeTokenList?: Set<AddressKey>
 }
 
 const EMPTY_EXCLUDED_TOKENS: Set<string> = new Set()
 const EMPTY_BRIDGE_TOKEN_LIST: Set<AddressKey> = new Set()
+const EMPTY_TOKENS_LISTS_URLS: string[] = []
 
 /**
  * Watcher-mode peer of `BalancesAndAllowancesUpdater`. Drives `balancesAtom`
@@ -29,22 +36,34 @@ const EMPTY_BRIDGE_TOKEN_LIST: Set<AddressKey> = new Set()
 export function BalancesWatcherUpdater({
   account,
   chainId,
+  isBridgeMode = false,
   bridgeTokenList = EMPTY_BRIDGE_TOKEN_LIST,
 }: BalancesWatcherUpdaterProps): ReactNode {
-  const tokensListsUrls = useEnabledTokensListsUrls()
-  const customTokens = useCustomTokensForChain(chainId)
+  const enabledTokensListsUrls = useEnabledTokensListsUrls()
+  const userCustomTokens = useCustomTokensForChain(chainId)
 
-  const mergedCustomTokens = useMemo(() => {
-    if (bridgeTokenList.size === 0) return Array.from(customTokens)
-
-    const merged = new Set(customTokens)
-    for (const address of bridgeTokenList) {
-      merged.add(address)
+  // Bridge mode drops both token lists and user-imported tokens — the watcher tracks ONLY bridge buy-tokens for the
+  // target chain. An empty `bridgeTokenList` produces `(urls=[], customTokens=[])`, which `useBalancesWatcherSession`
+  // already treats as "no session" and skips the POST.
+  const sessionBody = useMemo(() => {
+    if (isBridgeMode) {
+      return {
+        tokensListsUrls: EMPTY_TOKENS_LISTS_URLS,
+        customTokens: Array.from(bridgeTokenList),
+      }
     }
-    return Array.from(merged)
-  }, [customTokens, bridgeTokenList])
+    return {
+      tokensListsUrls: enabledTokensListsUrls,
+      customTokens: Array.from(userCustomTokens),
+    }
+  }, [isBridgeMode, bridgeTokenList, enabledTokensListsUrls, userCustomTokens])
 
-  useBalancesWatcherSession({ account, chainId, tokensListsUrls, customTokens: mergedCustomTokens })
+  useBalancesWatcherSession({
+    account,
+    chainId,
+    tokensListsUrls: sessionBody.tokensListsUrls,
+    customTokens: sessionBody.customTokens,
+  })
 
   return (
     <>
