@@ -1,8 +1,9 @@
-import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { RPC_URLS, VIEM_CHAINS, IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
@@ -49,6 +50,8 @@ const metadata = {
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
+const solanaAdapter = new SolanaAdapter()
+
 const wagmiAdapter = new WagmiAdapter({
   batch: {
     multicall: {
@@ -81,7 +84,7 @@ const urlChainId = getCurrentChainIdFromUrl()
 const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
 
 const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
