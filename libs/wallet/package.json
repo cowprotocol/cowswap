@@ -44,7 +44,7 @@
     "@ethereumjs/util": "10.1.0",
     "@metamask/jazzicon": "2.0.0",
     "@metamask/sdk": "0.31.4",
-    "@safe-global/api-kit": "4.0.1",
+    "@safe-global/api-kit": "4.2.0",
     "@safe-global/safe-apps-sdk": "9.1.0",
     "@safe-global/types-kit": "3.0.0",
     "@safe-global/safe-apps-react-sdk": "4.7.2",
