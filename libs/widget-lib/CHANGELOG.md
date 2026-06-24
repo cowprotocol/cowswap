@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.3.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.3.0...widget-lib-v4.3.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/iframe-transport@2.3.2
+
 ## [4.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.2.0...widget-lib-v4.3.0) (2026-06-23)
 
 ### Minor Changes

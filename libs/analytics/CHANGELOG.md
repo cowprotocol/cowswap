@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.0...analytics-v3.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/events@4.7.1
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.4.1...analytics-v3.5.0) (2026-06-23)
 
 ### Minor Changes
