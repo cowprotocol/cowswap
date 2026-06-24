@@ -4,12 +4,15 @@ import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 
 import { useCapabilities } from 'wagmi'
 
+import { shouldCheckCapabilities } from './useWalletCapabilities.utils'
 import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
 
 import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import { useIsSafeViaWc } from '../../wagmi/hooks/useWalletMetadata'
 import { useWalletInfo } from '../hooks'
+import { getIsInjectedMobileBrowser } from '../utils/connection'
 
+import type { WalletCapabilitiesEnvironment } from './useWalletCapabilities.utils'
 import type { GetCapabilitiesData } from '@wagmi/core/query'
 
 export type WalletCapabilities = {
@@ -17,19 +20,12 @@ export type WalletCapabilities = {
   atomicBatch?: { supported: boolean }
 }
 
-function shouldCheckCapabilities(
-  isWalletConnect: boolean,
-  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
-): boolean {
-  // When widget in the mobile device, wait till providerWcMetadata is loaded
-  // In order to detect if is connected to WalletConnect
-  if (isInjectedWidget() && isMobile && isLoading) {
-    return false
+function getWalletCapabilitiesEnvironment(): WalletCapabilitiesEnvironment {
+  return {
+    isInjectedMobileBrowser: getIsInjectedMobileBrowser(),
+    isInjectedWidget: isInjectedWidget(),
+    isMobile,
   }
-
-  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
-
-  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
 }
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
@@ -39,7 +35,12 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
   const isSafeViaWc = useIsSafeViaWc()
 
   const shouldFetchCapabilities = useMemo(
-    () => Boolean(shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && account && chainId),
+    () =>
+      Boolean(
+        shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo, getWalletCapabilitiesEnvironment()) &&
+          account &&
+          chainId,
+      ),
     [isWalletConnect, widgetProviderMetaInfo, account, chainId],
   )
 
