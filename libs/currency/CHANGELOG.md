@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.0...currency-v1.2.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.1.0...currency-v1.2.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix: add toJSON for CurrencyAmount to deserialize orders (#7645)
+
+- fix(explorer): solver info displaying (#7667)
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.0.1...currency-v1.1.0) (2026-06-08)
 
 ### Minor Changes
