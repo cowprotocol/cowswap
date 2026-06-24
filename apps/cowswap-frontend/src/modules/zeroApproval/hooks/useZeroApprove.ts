@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { logSafeApi } from '@cowprotocol/common-utils'
+import { normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
@@ -76,7 +77,11 @@ async function waitForSafeTransactionExecution({
       try {
         logSafeApi.info('Wait for Safe transaction execution')
         return await safeApiKit.getTransaction(txHash)
-      } catch {
+      } catch (err: unknown) {
+        const error = normalizeSafeError(err)
+        if (error.statusCode === 429) {
+          logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+        }
         return null
       }
     },

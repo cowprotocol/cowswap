@@ -46,11 +46,12 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
+export const SAFE_RATE_LIMIT_MSG = 'Rate limit'
+
 export type SafeApiError = NormalizedError & { statusCode?: number }
 
 export function normalizeSafeError(err: unknown): SafeApiError {
-  const error = normalizeError(err)
-  return error
+  return normalizeError(err)
 }
 
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
@@ -77,10 +78,10 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  logSafeApi.debug(`Fetch Safe info: chainId=${chainId}, address=${safeAddress}`)
+  logSafeApi.debug(`Fetch Safe info`, { chainId, safeAddress })
   const client = await _getClientOrThrow(chainId)
   const safeInfo = await client.getSafeInfo(safeAddress)
-  logSafeApi.debug(`Fetched Safe info`, safeInfo)
+  logSafeApi.info(`Fetched Safe info`, safeInfo)
   return safeInfo
 }
 
