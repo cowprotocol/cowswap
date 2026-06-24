@@ -15,9 +15,6 @@ export function BlockNumberProvider({ children }: { children: ReactNode }): Reac
     (blockNumber: bigint) => {
       const num = Number(blockNumber)
 
-      // FIXME: delete after testing
-      console.debug('BLOCK NUMBER', { activeChainId, num })
-
       setChainBlock((chainBlock) => {
         if (chainBlock.chainId === activeChainId) {
           if (!chainBlock.block || chainBlock.block < num) {
