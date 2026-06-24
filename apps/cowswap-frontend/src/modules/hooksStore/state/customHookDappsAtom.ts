@@ -44,13 +44,25 @@ export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
   const stateForChain = state[chainId] || EMPTY_STATE
+  const hookType = isPreHook ? 'pre' : 'post'
+  const currentDapp = stateForChain[hookType][dapp.url]
+
+  if (currentDapp && currentDapp.id !== dapp.id) {
+    console.error('Refusing to update custom hook dapp with a different id for the same origin.', {
+      chainId,
+      url: dapp.url,
+      previousId: currentDapp.id,
+      nextId: dapp.id,
+    })
+    return
+  }
 
   set(customHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
-      [isPreHook ? 'pre' : 'post']: {
-        ...stateForChain[isPreHook ? 'pre' : 'post'],
+      [hookType]: {
+        ...stateForChain[hookType],
         [dapp.url]: dapp,
       },
     },
