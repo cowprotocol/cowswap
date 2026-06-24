@@ -39,12 +39,12 @@ export function AppearanceStyleControls({
   const handlePresetClick = (value: string): void => {
     const preset = presets[value as AppearanceStylePresetKey]
 
-    applyPresetStyle((styleValue) => onChange('iframeStyleJson', styleValue), preset?.iframe)
+    applyPresetStyle((styleValue) => onChange('rootStyleJson', styleValue), preset?.root)
     applyPresetStyle((styleValue) => onChange('bodyWrapperStyleJson', styleValue), preset?.bodyWrapper)
     applyPresetStyle((styleValue) => onChange('cardStyleJson', styleValue), preset?.card)
   }
 
-  const iframeStyleJsonError = useAsyncJsonError(values.iframeStyleJson)
+  const rootStyleJsonError = useAsyncJsonError(values.rootStyleJson)
   const bodyWrapperStyleJsonError = useAsyncJsonError(values.bodyWrapperStyleJson)
   const cardStyleJsonError = useAsyncJsonError(values.cardStyleJson)
 
@@ -73,11 +73,11 @@ export function AppearanceStyleControls({
         </Typography>
         <JsonInput
           label="Iframe styles (JSON)"
-          name="iframeStyleJson"
-          value={values.iframeStyleJson}
+          name="rootStyleJson"
+          value={values.rootStyleJson}
           onChange={onChange}
-          error={iframeStyleJsonError.error}
-          helperText={iframeStyleJsonError.helperText}
+          error={rootStyleJsonError.error}
+          helperText={rootStyleJsonError.helperText}
         />
       </Box>
 
