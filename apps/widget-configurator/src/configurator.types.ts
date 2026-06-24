@@ -62,7 +62,7 @@ export interface ConfiguratorFormValues {
 
   disableScrollbars: boolean
   showIframeOutline: boolean
-  iframeStyleJson: string | null
+  rootStyleJson: string | null
   bodyWrapperStyleJson: string | null
   cardStyleJson: string | null
 
@@ -116,7 +116,7 @@ export interface ConfiguratorState
     | 'chainId'
     | 'sellTokenAmount'
     | 'buyTokenAmount'
-    | 'iframeStyleJson'
+    | 'rootStyleJson'
     | 'bodyWrapperStyleJson'
     | 'cardStyleJson'
     | 'rawParamsJson'
@@ -142,7 +142,7 @@ export interface ConfiguratorState
 
   // Layout (parsed from the persisted JSON string fields):
 
-  iframeStyle: CSS.Properties
+  rootStyle: CSS.Properties
   bodyWrapperStyle: CSS.Properties
   cardStyle: CSS.Properties
 
