@@ -46,6 +46,9 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       update(sellTokenAddress, {
         isLoading: true,
         hasParamsChanged,
+        // Drop stale error from previous params so the form doesn't keep showing
+        // e.g. an "insufficient liquidity" error after the user switched tokens.
+        ...(hasParamsChanged ? { error: null } : null),
       })
     }
 
