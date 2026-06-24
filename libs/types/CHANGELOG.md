@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.5.1](https://github.com/cowprotocol/cowswap/compare/types-v4.5.0...types-v4.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.1
+
 ## [4.5.0](https://github.com/cowprotocol/cowswap/compare/types-v4.4.0...types-v4.5.0) (2026-06-23)
 
 ### Minor Changes
