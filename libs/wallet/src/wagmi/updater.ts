@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
-import { getSafeInfo, normalizeSafeError } from '@cowprotocol/core'
+import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
@@ -206,9 +206,9 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
           } catch (err: unknown) {
             const error = normalizeSafeError(err)
             if (error.statusCode === 429) {
-              logSafeApi.warn('Fetching safe info: rate limited', account)
+              logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
             } else if (error.statusCode === 404) {
-              logSafeApi.info('Fetching safe info: NOT a safe', account)
+              logSafeApi.warn('Fetching safe info: NOT a safe', account)
               setIsKnownNotSafe(true)
             } else {
               logSafeApi.error(`Unhandled safe error ${error.statusCode}`, account)
