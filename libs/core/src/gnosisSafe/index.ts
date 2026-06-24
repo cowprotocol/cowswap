@@ -1,5 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { logSafeApi } from '@cowprotocol/common-utils'
+import { logSafeApi, NormalizedError, normalizeError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse, default as SafeApiKitType } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -45,6 +45,13 @@ const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
 const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
+
+export type SafeApiError = NormalizedError & { statusCode?: number }
+
+export function normalizeSafeError(err: unknown): SafeApiError {
+  const error = normalizeError(err)
+  return error
+}
 
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   if (!(chainId in SAFE_API_NETWORK_ID)) {
