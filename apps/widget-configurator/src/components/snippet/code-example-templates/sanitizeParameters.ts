@@ -41,7 +41,7 @@ function isNoiseValue(value: unknown): boolean {
   )
 }
 
-/** Prunes empty/false leaves inside nested param values (sell, iframeStyle, disableTrade, …). */
+/** Prunes empty/false leaves inside nested param values (sell, rootStyle, disableTrade, …). */
 function pruneNestedValue(value: unknown): unknown {
   if (isNoiseValue(value)) {
     return undefined
@@ -116,8 +116,8 @@ export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: 
     delete sanitized.baseUrl
   }
 
-  // Preview maps iframeStyle into deprecated top-level width/height/maxHeight for older widget-lib
-  // consumers. Copied snippets should only include iframeStyle (widget-lib applies layout there).
+  // Preview maps rootStyle into deprecated top-level width/height/maxHeight for older widget-lib
+  // consumers. Copied snippets should only include rootStyle (widget-lib applies layout there).
   delete sanitized.width
   delete sanitized.height
   delete sanitized.maxHeight

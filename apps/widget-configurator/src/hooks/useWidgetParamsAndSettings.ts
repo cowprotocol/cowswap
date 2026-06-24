@@ -175,7 +175,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     // Layout:
 
     disableScrollbars,
-    iframeStyle,
+    rootStyle,
     bodyWrapperStyle,
     cardStyle,
 
@@ -216,7 +216,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
   } = configuratorState
 
   const baseUrl = rawBaseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL
-  const legacyIframeDimensionParams = getLegacyIframeDimensionParams(iframeStyle)
+  const legacyIframeDimensionParams = getLegacyIframeDimensionParams(rootStyle)
   const forcedOrderDeadline = getForcedOrderDeadline({ swapDeadline, limitDeadline, advancedDeadline })
 
   return {
@@ -252,7 +252,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     // Layout:
 
     disableScrollbars,
-    iframeStyle,
+    rootStyle,
     bodyWrapperStyle,
     cardStyle,
 
