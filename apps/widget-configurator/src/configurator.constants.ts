@@ -11,7 +11,7 @@ import { CowSwapWidgetPaletteParams, TokenInfo, TradeType, WidgetHookEvents } fr
 
 import { Moon, Sun } from 'react-feather'
 
-import { DEFAULT_IFRAME_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
+import { DEFAULT_ROOT_STYLE_JSON } from './components/controls/AppearanceStyleControls/AppearanceStyleControls.utils'
 import { ConfiguratorFormValues, TokenListItem, WidgetMode } from './configurator.types'
 import { isWorkspaceWidgetSdkSelectable } from './utils/env/env.constants'
 import { NPM_WIDGET_REACT_LATEST_VERSION } from './utils/widget-sdk-versions/widget-sdk-versions.constants'
@@ -181,7 +181,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   disableScrollbars: false,
   showIframeOutline: false,
-  iframeStyleJson: DEFAULT_IFRAME_STYLE_JSON,
+  rootStyleJson: DEFAULT_ROOT_STYLE_JSON,
   bodyWrapperStyleJson: '{}',
   cardStyleJson: '{}',
 
@@ -190,6 +190,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   disableProgressBar: false,
   disablePostTradeTips: false,
   disableTokenImport: false,
+  disableSwitchingTokens: false,
   hideRecentTokens: false,
   hideFavoriteTokens: false,
   hideBridgeInfo: false,
