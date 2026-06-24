@@ -1,5 +1,39 @@
 # Changelog
 
+## [4.3.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.3.0...widget-lib-v4.3.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/iframe-transport@2.3.2
+
+## [4.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.2.0...widget-lib-v4.3.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat(widget): handle widget loading error (#7574)
+
+- feat(widget): add options to control approval flow (#7571)
+
+- feat(widget): control custom recipient (#7573)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/iframe-transport@2.3.1
+
 ## [4.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.1.0...widget-lib-v4.2.0) (2026-06-09)
 
 ### Minor Changes
