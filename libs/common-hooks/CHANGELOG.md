@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.4.0...common-hooks-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/types@4.5.1
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.3.0...common-hooks-v3.4.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/types@4.5.0
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.2.4...common-hooks-v3.3.0) (2026-06-08)
 
 ### Minor Changes

@@ -185,6 +185,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     disableProgressBar,
     disablePostTradeTips,
     disableTokenImport,
+    disableSwitchingTokens,
     hideRecentTokens,
     hideFavoriteTokens,
     hideBridgeInfo,
@@ -260,6 +261,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
 
     disableToastMessages,
     disableProgressBar,
+    disableSwitchingTokens,
     disablePostTradeTips,
     disableTokenImport,
     hideRecentTokens,

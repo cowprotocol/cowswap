@@ -71,6 +71,7 @@ export interface ConfiguratorFormValues {
   disableProgressBar: boolean
   disablePostTradeTips: boolean
   disableTokenImport: boolean
+  disableSwitchingTokens: boolean
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
