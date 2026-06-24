@@ -181,7 +181,7 @@ async function main() {
     console.log('No packages were updated.')
   } else {
     console.log(`\nUpdated ${updatedCount} package.json file(s).`)
-    console.log('Run `pnpm install` to apply the changes.')
+    console.log('⚠️ Run `pnpm install --no-frozen-lockfile` to apply the changes!')
   }
 }
 
