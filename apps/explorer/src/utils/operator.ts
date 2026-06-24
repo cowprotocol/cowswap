@@ -1,12 +1,12 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { FeePolicy, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import { Order, OrderStatus, ProtocolFee, ProtocolFeeType, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
@@ -375,6 +375,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount,
     executedFee,
     totalFee,
+    gasCost,
     invalidated,
     ...rest
   } = rawOrder
@@ -402,6 +403,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount: new BigNumber(executedFeeAmount),
     executedFee: executedFee ? new BigNumber(executedFee) : null,
     totalFee: new BigNumber(totalFee),
+    gasCost: gasCost ? new BigNumber(gasCost) : undefined,
     cancelled: invalidated,
     status,
     partiallyFilled,
@@ -447,4 +449,76 @@ export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus 
   const surplus = isSellOrder(order.kind) ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
 
   return surplus || ZERO_SURPLUS
+}
+
+/**
+ * Classifies a fee policy into a {@link ProtocolFeeType} based on its wrapper key
+ * (`{ surplus: {...} }` / `{ volume: {...} }` / `{ priceImprovement: {...} }`).
+ */
+function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
+  if (policy) {
+    if ('surplus' in policy) return ProtocolFeeType.Surplus
+    if ('volume' in policy) return ProtocolFeeType.Volume
+    if ('priceImprovement' in policy) return ProtocolFeeType.PriceImprovement
+  }
+  return ProtocolFeeType.Unknown
+}
+
+/**
+ * Returns the fee policy's `factor`, when present. Its meaning is policy-specific: for `volume`
+ * it's a fraction of trade volume; for `surplus` / `priceImprovement` it's a fraction of the
+ * surplus / improvement.
+ */
+function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
+  if (policy) {
+    if ('surplus' in policy) return policy.surplus.factor
+    if ('volume' in policy) return policy.volume.factor
+    if ('priceImprovement' in policy) return policy.priceImprovement.factor
+  }
+  return undefined
+}
+
+/**
+ * Collects the protocol fees charged across the order's trades, aggregated so an order with many
+ * fills shows one total per policy instead of a row per fill.
+ *
+ * Fees are aggregated by their position in `executedProtocolFees` ("listed in the order they got
+ * applied"). Fee policies are fixed for an order, so the fee at a given position refers to the same
+ * policy in every fill — summing per position both collapses the fills and preserves the applied
+ * order, which is what lets the UI tell the protocol's own fee (applied first) from the partner
+ * fees that follow it (the API doesn't otherwise distinguish them).
+ *
+ * We intentionally do not try to reconstruct network costs from this: `order.totalFee` mixes
+ * network costs and protocol fees and can't be split back apart. Network costs come from the
+ * order's `gasCost` instead.
+ */
+export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
+  const feesByPosition = new Map<number, ProtocolFee>()
+
+  for (const { executedProtocolFees } of trades) {
+    if (!executedProtocolFees) continue
+    executedProtocolFees.forEach(({ amount, token, policy }, position) => {
+      if (!amount || !token) return
+      const parsedAmount = new BigNumber(amount)
+
+      const existing = feesByPosition.get(position)
+      if (existing) {
+        existing.amount = existing.amount.plus(parsedAmount)
+      } else {
+        feesByPosition.set(position, {
+          amount: parsedAmount,
+          tokenAddress: getAddressKey(token),
+          type: getProtocolFeeType(policy),
+          factor: getProtocolFeeFactor(policy),
+          position,
+        })
+      }
+    })
+  }
+
+  // Order by position (protocol fee first, partner fees after) and drop policies that ended up
+  // charging nothing — a "0" row is just noise in the breakdown.
+  return Array.from(feesByPosition.values())
+    .sort((a, b) => a.position - b.position)
+    .filter((fee) => fee.amount.isGreaterThan(0))
 }

@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
-import { transformTrade } from 'utils'
+import { getProtocolFees, transformTrade } from 'utils'
 
-import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
 
@@ -142,4 +142,90 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   const isLoading = rawTrades === null
 
   return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
+}
+
+type ProtocolFeesResult = {
+  protocolFees: ProtocolFee[]
+  error?: UiError
+  isLoading: boolean
+}
+
+// Request a large page so most orders are covered in a single call. We still page
+// defensively (advancing by the number of records actually returned) in case the
+// API serves a smaller page than requested, so we never silently truncate.
+const ALL_TRADES_PAGE_SIZE = 1000
+// Safety bound to avoid an unbounded loop if the API ever stops honouring `offset`.
+const MAX_TRADES_PAGES = 100
+
+/**
+ * Fetches every trade of an order, paging until the API runs out of results.
+ */
+async function getAllOrderTrades(networkId: Network, orderId: string, signal: AbortSignal): Promise<RawTrade[]> {
+  const allTrades: RawTrade[] = []
+
+  for (let page = 0; page < MAX_TRADES_PAGES; page++) {
+    if (signal.aborted) return allTrades
+
+    const trades = await getTrades({ networkId, orderId, offset: allTrades.length, limit: ALL_TRADES_PAGE_SIZE })
+
+    // A short/empty page means we've reached the end. Advancing the offset by the
+    // amount actually returned keeps this correct even if the API caps the page size.
+    if (trades.length === 0) return allTrades
+
+    allTrades.push(...trades)
+  }
+
+  console.warn(
+    `[getAllOrderTrades] Reached ${MAX_TRADES_PAGES} pages for order ${orderId}; protocol fees may be incomplete`,
+  )
+
+  return allTrades
+}
+
+/**
+ * Derives the order-level protocol fee breakdown from *all* of an order's trades.
+ *
+ * Unlike {@link useOrderTrades} (which only holds the currently selected Fills table
+ * page), this fetches every fill, so the breakdown covers the whole order and does not
+ * change as the user pages through the fills.
+ */
+export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
+  const [rawTrades, setRawTrades] = useState<RawTrade[] | null>(null)
+  const [error, setError] = useState<UiError>()
+  const networkId = useNetworkId()
+
+  const executedSellAmount = order?.executedSellAmount.toString()
+  const executedBuyAmount = order?.executedBuyAmount.toString()
+
+  useEffect(() => {
+    if (!networkId || !order?.uid) return
+
+    const controller = new AbortController()
+
+    getAllOrderTrades(networkId, order.uid, controller.signal)
+      .then((trades) => {
+        if (controller.signal.aborted) return
+
+        setRawTrades(trades)
+        setError(undefined)
+      })
+      .catch((e) => {
+        if (controller.signal.aborted) return
+
+        const msg = `Failed to fetch trades`
+        console.error(`[useOrderProtocolFees] ${msg}`, e)
+
+        setRawTrades([])
+        setError({ message: msg, type: 'error' })
+      })
+
+    return (): void => controller.abort()
+    // Depending on order UID to avoid re-fetching when obj changes but ID remains the same.
+    // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new fills.
+  }, [networkId, order?.uid, executedSellAmount, executedBuyAmount])
+
+  const protocolFees = useMemo(() => getProtocolFees(rawTrades ?? []), [rawTrades])
+  const isLoading = rawTrades === null
+
+  return useMemo(() => ({ protocolFees, error, isLoading }), [protocolFees, error, isLoading])
 }

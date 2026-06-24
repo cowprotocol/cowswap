@@ -12,7 +12,7 @@ interface CostAndFeesItemProps {
 
 export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
   return (
-    <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
+    <DetailRow label="Costs and fees" tooltipText={DetailsTableTooltips.fees} stack>
       <GasFeeDisplay order={order} />
     </DetailRow>
   )

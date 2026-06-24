@@ -2,12 +2,15 @@ import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
+import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
+import { IS_SOLANA_ENABLED } from './consts'
 import { getConnectors } from './getConnectors'
 
 import { bindActiveProvider } from '../bindActiveProvider'
@@ -67,6 +70,8 @@ const wagmiAdapter = new WagmiAdapter({
   transports: wagmiTransports,
 })
 
+const solanaWeb3JsAdapter = new SolanaAdapter()
+
 // Prevent the CoW Widget connector from appearing in the wallet modal.
 // It must remain registered with wagmi (for reconnect/connect to work) but should not be
 // shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
@@ -86,7 +91,7 @@ const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmCh
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
 const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaWeb3JsAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
@@ -111,7 +116,7 @@ const reownAppKit = createAppKit({
     connectorTypeOrder: ['recent', 'injected', 'walletConnect'],
   },
   metadata,
-  networks: SUPPORTED_REOWN_NETWORKS,
+  networks: IS_SOLANA_ENABLED ? [...SUPPORTED_REOWN_NETWORKS, solana] : SUPPORTED_REOWN_NETWORKS,
   projectId,
   termsConditionsUrl:
     'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
