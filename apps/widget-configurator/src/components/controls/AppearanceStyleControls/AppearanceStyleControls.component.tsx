@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 
-import { WIDGET_IFRAME_ID } from '@cowprotocol/widget-lib'
+import { WIDGET_CONTAINER_ID } from '@cowprotocol/widget-lib'
 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -69,10 +69,10 @@ export function AppearanceStyleControls({
       </Box>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          #{WIDGET_IFRAME_ID} (host)
+          #{WIDGET_CONTAINER_ID} (host)
         </Typography>
         <JsonInput
-          label="Iframe styles (JSON)"
+          label="Root styles (JSON)"
           name="rootStyleJson"
           value={values.rootStyleJson}
           onChange={onChange}
