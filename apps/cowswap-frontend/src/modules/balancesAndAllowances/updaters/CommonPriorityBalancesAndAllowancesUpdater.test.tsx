@@ -13,7 +13,6 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 
 import { CommonPriorityBalancesAndAllowancesUpdater } from './CommonPriorityBalancesAndAllowancesUpdater'
 
-import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../../tokensList/state/selectTokenWidgetAtom'
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
@@ -73,8 +72,8 @@ const mockUseOrdersFilledEventsTrigger = useOrdersFilledEventsTrigger as jest.Mo
 >
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
-function createWidgetState(override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState {
-  return { ...DEFAULT_SELECT_TOKEN_WIDGET_STATE, ...override } as WidgetState
+function createWidgetState(override: Partial<WidgetState>): WidgetState {
+  return { open: false, ...override } as WidgetState
 }
 
 describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
