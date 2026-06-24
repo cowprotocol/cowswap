@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.0...common-const-v3.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/types@4.5.1
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.4.0...common-const-v3.5.0) (2026-06-23)
 
 ### Minor Changes
