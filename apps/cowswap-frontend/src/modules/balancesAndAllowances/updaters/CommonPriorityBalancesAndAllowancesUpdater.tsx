@@ -12,7 +12,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
-import { useSourceChainId } from 'modules/tokensList'
+import { Field } from 'legacy/state/types'
+
+import { useSelectTokenWidgetState, useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
@@ -20,7 +22,10 @@ import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrig
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
-  const isBridgeMode = sourceChainSource === 'selector'
+  // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
+  // also yields source='selector' but must keep the normal token-list + user-custom-tokens session.
+  const { field } = useSelectTokenWidgetState()
+  const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
