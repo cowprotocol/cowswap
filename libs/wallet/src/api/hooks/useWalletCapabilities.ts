@@ -1,18 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-
+import ms from 'ms.macro'
 import { useCapabilities } from 'wagmi'
 
-import { shouldCheckCapabilities } from './useWalletCapabilities.utils'
-import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
-
-import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import { useIsSafeViaWc } from '../../wagmi/hooks/useWalletMetadata'
 import { useWalletInfo } from '../hooks'
-import { getIsInjectedMobileBrowser } from '../utils/connection'
 
-import type { WalletCapabilitiesEnvironment } from './useWalletCapabilities.utils'
 import type { GetCapabilitiesData } from '@wagmi/core/query'
 
 export type WalletCapabilities = {
@@ -20,33 +13,17 @@ export type WalletCapabilities = {
   atomicBatch?: { supported: boolean }
 }
 
-function getWalletCapabilitiesEnvironment(): WalletCapabilitiesEnvironment {
-  return {
-    isInjectedMobileBrowser: getIsInjectedMobileBrowser(),
-    isInjectedWidget: isInjectedWidget(),
-    isMobile,
-  }
-}
+const WALLET_CAPABILITIES_LOADING_TIMEOUT = ms`5s`
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
-  const isWalletConnect = useIsWalletConnect()
-  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
   const isSafeViaWc = useIsSafeViaWc()
 
-  const shouldFetchCapabilities = useMemo(
-    () =>
-      Boolean(
-        shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo, getWalletCapabilitiesEnvironment()) &&
-          account &&
-          chainId,
-      ),
-    [isWalletConnect, widgetProviderMetaInfo, account, chainId],
-  )
+  const shouldFetchCapabilities = useMemo(() => Boolean(account && chainId), [account, chainId])
 
   const select = useCallback(
     (capabilities: GetCapabilitiesData) => {
-      if (!capabilities || !chainId) return undefined as WalletCapabilities | undefined
+      if (!capabilities || !chainId) return undefined
 
       // Only apply the Safe wallet fallback (first-entry) when connected via Safe WalletConnect,
       // since Safe's wallet_getCapabilities response may omit the chain ID key.
@@ -62,7 +39,7 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
   // Fetch capabilities for all chains (no chainId filter) so we can apply
   // the Safe wallet fallback: if the exact chain is missing, use the first entry.
   // See https://github.com/safe-global/safe-wallet-monorepo/issues/6906
-  return useCapabilities({
+  const capabilitiesState = useCapabilities({
     account,
     query: {
       enabled: shouldFetchCapabilities,
@@ -74,4 +51,30 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
       select,
     },
   })
+
+  const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
+
+  useEffect(() => {
+    if (!shouldFetchCapabilities || !capabilitiesState.isLoading) {
+      console.debug('[COW][WalletCapabilities]', 'Wallet capabilities timeout reset')
+      setHasLoadingTimedOut(false)
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      setHasLoadingTimedOut(true)
+      console.warn(
+        '[COW][WalletCapabilities]',
+        `Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`,
+      )
+    }, WALLET_CAPABILITIES_LOADING_TIMEOUT)
+
+    return () => clearTimeout(timeoutId)
+  }, [shouldFetchCapabilities, capabilitiesState.isLoading])
+
+  if (hasLoadingTimedOut && capabilitiesState.isLoading) {
+    return { data: capabilitiesState.data, isLoading: false }
+  }
+
+  return capabilitiesState
 }

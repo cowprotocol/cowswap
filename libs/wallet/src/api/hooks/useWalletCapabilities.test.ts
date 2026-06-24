@@ -1,49 +1,48 @@
-import { shouldCheckCapabilities } from './useWalletCapabilities.utils'
+import { act, renderHook } from '@testing-library/react'
+import { useCapabilities } from 'wagmi'
 
-const desktopEnvironment = {
-  isInjectedMobileBrowser: false,
-  isInjectedWidget: false,
-  isMobile: false,
-}
+import { useWalletCapabilities } from './useWalletCapabilities'
 
-const mobileEnvironment = {
-  ...desktopEnvironment,
-  isMobile: true,
-}
+jest.mock('wagmi', () => ({
+  useCapabilities: jest.fn(),
+}))
 
-describe('shouldCheckCapabilities', () => {
-  it('checks capabilities for desktop injected wallets', () => {
-    expect(shouldCheckCapabilities(false, { isLoading: false }, desktopEnvironment)).toBe(true)
+jest.mock('../../wagmi/hooks/useWalletMetadata', () => ({
+  useIsSafeViaWc: jest.fn(() => false),
+}))
+
+jest.mock('../hooks', () => ({
+  useWalletInfo: jest.fn(() => ({ account: '0x0000000000000000000000000000000000000001', chainId: 1 })),
+}))
+
+describe('useWalletCapabilities', () => {
+  const mockUseCapabilities = useCapabilities as jest.MockedFunction<typeof useCapabilities>
+
+  beforeEach(() => {
+    jest.useFakeTimers()
+    mockUseCapabilities.mockReturnValue({ data: undefined, isLoading: true } as ReturnType<typeof useCapabilities>)
   })
 
-  it('skips capabilities for injected mobile browsers', () => {
-    expect(
-      shouldCheckCapabilities(false, { isLoading: false }, { ...mobileEnvironment, isInjectedMobileBrowser: true }),
-    ).toBe(false)
+  afterEach(() => {
+    jest.useRealTimers()
+    jest.clearAllMocks()
   })
 
-  it('skips capabilities for WalletConnect sessions', () => {
-    expect(shouldCheckCapabilities(true, { isLoading: false }, desktopEnvironment)).toBe(false)
-    expect(shouldCheckCapabilities(true, { isLoading: false }, mobileEnvironment)).toBe(false)
-  })
+  it('stops reporting loading when capabilities do not settle before timeout', () => {
+    const { result } = renderHook(() => useWalletCapabilities())
 
-  it('treats null widget metadata as regular injected wallet metadata', () => {
-    expect(shouldCheckCapabilities(false, { data: null, isLoading: false }, desktopEnvironment)).toBe(true)
-  })
+    expect(result.current.isLoading).toBe(true)
 
-  it('skips capabilities for widget-derived WalletConnect sessions', () => {
-    expect(
-      shouldCheckCapabilities(
-        false,
-        { data: { providerWcMetadata: {} }, isLoading: false },
-        { ...desktopEnvironment, isInjectedWidget: true },
-      ),
-    ).toBe(false)
-  })
+    act(() => {
+      jest.advanceTimersByTime(4_999)
+    })
 
-  it('waits for widget provider metadata before deciding on mobile', () => {
-    expect(shouldCheckCapabilities(false, { isLoading: true }, { ...mobileEnvironment, isInjectedWidget: true })).toBe(
-      false,
-    )
+    expect(result.current.isLoading).toBe(true)
+
+    act(() => {
+      jest.advanceTimersByTime(1)
+    })
+
+    expect(result.current.isLoading).toBe(false)
   })
 })
