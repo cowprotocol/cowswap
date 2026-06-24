@@ -22,7 +22,7 @@ export function shouldCheckCapabilities(
 
   const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
 
-  if ((isWalletConnect || isWalletConnectViaWidget) && environment.isMobile) {
+  if (isWalletConnect || isWalletConnectViaWidget) {
     return false
   }
 
