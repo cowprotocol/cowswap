@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
-import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
@@ -197,7 +197,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
             }
           })
         } catch {
-          console.debug(`[COW][WalletUpdater] Error fetching safe info over iframe ${account}`)
+          logSafeApi.debug(`Error fetching safe info over iframe ${account}`)
           setSafeInfo(undefined)
         }
       } else {
@@ -216,7 +216,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               isReadOnly: false,
             }))
           } catch {
-            console.debug(`[COW][WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+            logSafeApi.debug(`Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
           }
         } else {
