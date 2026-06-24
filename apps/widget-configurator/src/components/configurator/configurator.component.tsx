@@ -39,6 +39,10 @@ declare global {
   }
 }
 
+const onLoadingError: () => void = () => {
+  console.log('WIDGET LOADING ERROR')
+}
+
 // eslint-disable-next-line max-lines-per-function
 export function Configurator({ title }: { title: string }): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
@@ -191,6 +195,7 @@ export function Configurator({ title }: { title: string }): ReactNode {
               provider={configuratorState.widgetMode === 'standalone' ? undefined : provider}
               listeners={listeners}
               onReady={handlePreviewReady}
+              onLoadingError={onLoadingError}
             />
           </Box>
 
