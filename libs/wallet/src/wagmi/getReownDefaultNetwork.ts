@@ -1,6 +1,6 @@
 import { IS_SOLANA_ENABLED, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-import { EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains, isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { solana } from '@reown/appkit/networks'
 
@@ -8,9 +8,8 @@ import type { AppKitNetwork } from '@reown/appkit-common'
 
 export function getReownDefaultNetwork(): AppKitNetwork {
   const urlChainId = getCurrentChainIdFromUrl()
-  const isSolanaNetwork = urlChainId === SupportedChainId.SOLANA
 
-  if (IS_SOLANA_ENABLED && isSolanaNetwork) {
+  if (IS_SOLANA_ENABLED && isSolanaChain(urlChainId)) {
     return solana
   }
 
