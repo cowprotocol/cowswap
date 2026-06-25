@@ -40,11 +40,10 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const config = useConfig()
-  const { account, chainId } = useWalletInfo()
-  const walletConnection = useConnection()
+  const connection = useConnection()
+  const { account } = useWalletInfo()
   const { data: walletClient } = useWalletClient({
-    chainId,
-    query: { enabled: walletConnection.status === 'connected' },
+    connector: connection.connector,
   })
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
