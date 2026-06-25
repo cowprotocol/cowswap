@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Connector, useConnection } from 'wagmi'
 
+import { useAppKitWalletInfo, type WalletMetaData } from './useAppKitWalletInfo'
 import { useConnectionType } from './useConnectionType'
 
 import { useGnosisSafeInfo } from '../../api/hooks'
@@ -9,7 +10,6 @@ import { ConnectionType } from '../../api/types'
 import { getInjectedProvider } from '../../api/utils/connection'
 import { getWalletDisplayName, isGenericInjectedConnector } from '../../api/utils/walletIdentity'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
-import { reownAppKit } from '../config'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -25,10 +25,7 @@ const METADATA_SAFE: WalletMetaData = {
   icon: SAFE_ICON_URL,
 }
 
-export interface WalletMetaData {
-  walletName?: string
-  icon?: string
-}
+export type { WalletMetaData } from './useAppKitWalletInfo'
 
 // fix for this https://github.com/gnosis/cowswap/issues/1929
 const defaultWcPeerOutput = { walletName: undefined, icon: undefined }
@@ -69,20 +66,7 @@ function useWcPeerMetadata(connector?: Connector): WalletMetaData {
 export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()
   const wcPeerMetadata = useWcPeerMetadata(connector)
-
-  const [walletMetaData, setWalletMetaData] = useState<WalletMetaData | null>(null)
-
-  useEffect(() => {
-    if (!reownAppKit) return
-
-    return reownAppKit.subscribeWalletInfo((state) => {
-      if (state) {
-        setWalletMetaData({ walletName: state.name, icon: state.icon })
-      } else {
-        setWalletMetaData(null)
-      }
-    })
-  }, [])
+  const walletMetaData = useAppKitWalletInfo()
 
   return useMemo(() => {
     if (!connector) {

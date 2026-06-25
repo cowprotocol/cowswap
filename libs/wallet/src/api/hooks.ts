@@ -18,6 +18,7 @@ import { getInjectedProvider } from './utils/connection'
 import { getWalletRdns, isGenericInjectedConnector } from './utils/walletIdentity'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
+import { useAppKitWalletInfo } from '../wagmi/hooks/useAppKitWalletInfo'
 import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
 import { useIsSafeApp, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
 
@@ -62,27 +63,22 @@ export function useIsTxBundlingSupported(): boolean | null {
 }
 
 export function useIsAssetWatchingSupported(): boolean {
-  const { connector } = useConnection()
-
-  const rdns = getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) })
+  const rdns = useCurrentWalletRdns()
 
   return !!rdns && WATCH_ASSET_SUPPORED_WALLETS.includes(rdns)
 }
 
 export function useIsRabbyWallet(): boolean {
-  const { connector } = useConnection()
-
-  return getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) }) === RABBY_RDNS
+  return useCurrentWalletRdns() === RABBY_RDNS
 }
 
 export function useIsBraveWallet(): boolean {
-  const { connector } = useConnection()
-
-  return getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) }) === BRAVE_WALLET_RDNS
+  return useCurrentWalletRdns() === BRAVE_WALLET_RDNS
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
   const { connector } = useConnection()
+  const walletMetaData = useAppKitWalletInfo()
 
   const isMetamaskConnection = connector?.name.toLowerCase().trim() === 'MetaMask'.toLowerCase().trim()
   const isInjectedConnection = connector?.type === ConnectionType.INJECTED
@@ -91,7 +87,25 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
 
   if (!connector || !isInjectedConnection) return false
 
-  return METAMASK_RDNS === getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) })
+  return (
+    METAMASK_RDNS ===
+    getWalletRdns({
+      connector,
+      provider: getInjectedProviderForIdentity(connector),
+      walletName: walletMetaData?.walletName,
+    })
+  )
+}
+
+function useCurrentWalletRdns(): string | undefined {
+  const { connector } = useConnection()
+  const walletMetaData = useAppKitWalletInfo()
+
+  return getWalletRdns({
+    connector,
+    provider: getInjectedProviderForIdentity(connector),
+    walletName: walletMetaData?.walletName,
+  })
 }
 
 function getInjectedProviderForIdentity(connector?: { id?: string; type?: string }): unknown {
