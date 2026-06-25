@@ -15,9 +15,12 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createPublicClient, http } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
+import { usePublicClient } from 'wagmi'
+
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
@@ -59,8 +62,9 @@ export function setBearerToken(token: string | null): void {
 }
 
 export function CowSdkUpdater(): null {
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
+  const { account, chainId } = useWalletInfo()
+  const publicClient = usePublicClient({ chainId })
+  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const setAppSigner = useSetAtom(appSignerAtom)
 
   useEffect(() => {

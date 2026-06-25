@@ -8,6 +8,7 @@ interface Window {
     isMetaMask?: true
     isRabby?: true
     isBraveWallet?: true
+    autoRefreshOnNetworkChange?: boolean
     autoConnect?: true
     providers?: unknown[]
   }
