@@ -1,66 +1,54 @@
-const IFRAME_LOADING_TIMEOUT = 30_000 // 30 sec
+const LOADING_TIMEOUT = 30_000
+const WIDGET_LOADING_ERROR_CLASS = 'cow-widget-loading-error'
+const STYLE_MARKER_ATTRIBUTE = `data-${WIDGET_LOADING_ERROR_CLASS}`
 
-const RELOAD_BUTTON_CLASS = 'coWWidgetContentReloadButton'
-
-type IframeLoadingState = { cancelWidgetLoading: () => void; onWidgetReady: () => void }
+interface WidgetIframeLoadingContext {
+  cancelWidgetLoading(): void
+  onWidgetReady(): void
+}
 
 export function widgetIframeLoading(
+  container: HTMLElement,
   iframe: HTMLIFrameElement,
+  setup: () => void,
+  destroy: (skipIframeDestroy?: boolean) => void,
   onWidgetLoadingError?: () => void,
-  customErrorStyles?: string,
-): IframeLoadingState {
+): WidgetIframeLoadingContext {
   const originalSrc = iframe.src
 
   let cancelled = false
-  let isLoaded = false
-  let loadingTimeout: ReturnType<typeof setTimeout> | undefined
+  let timeout: number | null = null
 
-  function onIframeLoadingError(): void {
-    iframe.srcdoc = ERROR_DOCUMENT
+  function onLoadingError(): void {
     onWidgetLoadingError?.()
-  }
 
-  function startLoadingTimeout(): void {
-    clearTimeout(loadingTimeout)
+    iframe.style.display = 'none'
+    ensureLoadingErrorStyles()
 
-    loadingTimeout = setTimeout(() => {
-      if (cancelled || isLoaded) return
+    const loadingContainer = document.createElement('div')
+    const reloadBtn = document.createElement('button')
+    const errorText = document.createElement('p')
 
-      onIframeLoadingError()
-    }, IFRAME_LOADING_TIMEOUT)
-  }
+    reloadBtn.innerText = 'Reload'
+    reloadBtn.addEventListener('click', () => {
+      container.removeChild(loadingContainer)
+      destroy(true)
+      iframe.src = 'about:blank'
+      iframe.style.display = ''
 
-  function retryWidgetLoading(): void {
-    if (cancelled || isLoaded) return
+      setTimeout(() => {
+        iframe.src = originalSrc
+        setup()
+      }, 100)
+    })
 
-    // `srcdoc` takes precedence over `src`, so it must be removed to load the widget again
-    iframe.removeAttribute('srcdoc')
-    iframe.src = originalSrc
+    errorText.innerText = "Couldn't load the page. Please, try again later"
 
-    startLoadingTimeout()
-  }
+    loadingContainer.classList.add(WIDGET_LOADING_ERROR_CLASS)
+    loadingContainer.appendChild(errorText)
+    loadingContainer.appendChild(reloadBtn)
 
-  /**
-   * Once the error document is loaded, attaches the retry handler and integrator styles.
-   * The widget itself is cross-origin, so `contentDocument` is null and this is a no-op for it.
-   */
-  function onIframeLoad(): void {
-    if (cancelled) return
-
-    const errorDocument = iframe.contentDocument
-    const reloadButton = errorDocument?.querySelector(`.${RELOAD_BUTTON_CLASS}`)
-
-    if (!errorDocument || !reloadButton) return
-
-    reloadButton.addEventListener('click', retryWidgetLoading)
-
-    if (customErrorStyles) {
-      const customStylesEl = errorDocument.createElement('style')
-
-      // textContent is not parsed as HTML, so the styles cannot break out of the <style> element
-      customStylesEl.textContent = customErrorStyles
-      errorDocument.head.appendChild(customStylesEl)
-    }
+    container.appendChild(loadingContainer)
   }
 
   iframe.addEventListener('error', (iframeLoadingError) => {
@@ -68,85 +56,108 @@ export function widgetIframeLoading(
 
     console.error('Could not load iframe', iframeLoadingError)
 
-    onIframeLoadingError()
+    onLoadingError()
   })
 
-  iframe.addEventListener('load', onIframeLoad)
+  timeout = window.setTimeout(() => {
+    if (cancelled) return
 
-  startLoadingTimeout()
+    onLoadingError()
+  }, LOADING_TIMEOUT)
 
   return {
+    onWidgetReady() {
+      if (timeout) clearTimeout(timeout)
+
+      const loadingContainer = document.getElementsByClassName(WIDGET_LOADING_ERROR_CLASS)[0]
+      if (loadingContainer) container.removeChild(loadingContainer)
+    },
     cancelWidgetLoading() {
       cancelled = true
-      clearTimeout(loadingTimeout)
-      iframe.removeEventListener('load', onIframeLoad)
-    },
-    onWidgetReady() {
-      isLoaded = true
-      clearTimeout(loadingTimeout)
     },
   }
 }
 
+let sharedLoadingErrorStyleSheet: CSSStyleSheet | null = null
+
 /**
- * A static HTML document displayed inside the iframe (via `srcdoc`) when the widget fails to load.
- * Rendering the error inside the iframe keeps the DOM structure and iframe attributes/styles
- * set by the integrator intact.
- *
- * The document is intentionally static (no interpolation) to rule out HTML injection.
- * Since the iframe sandbox includes `allow-same-origin` and `srcdoc` documents inherit the parent
- * origin, the parent script wires the retry button and custom styles directly via DOM access.
+ * Injects the default error styles once. Prefers a constructable stylesheet (not subject to
+ * `style-src 'unsafe-inline'`); falls back to a `<style>` element on browsers that lack support.
  */
-const ERROR_DOCUMENT = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <style>
-      html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
-      .errorContent {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+function ensureLoadingErrorStyles(): void {
+  if (typeof document === 'undefined') return
 
-        width: 100%;
-        height: 100%;
+  if (supportsConstructableStyleSheets()) {
+    if (!sharedLoadingErrorStyleSheet) {
+      sharedLoadingErrorStyleSheet = new CSSStyleSheet()
+      sharedLoadingErrorStyleSheet.replaceSync(LOADING_ERROR_STYLES)
+    }
 
-        padding: 24px;
-        box-sizing: border-box;
+    if (!document.adoptedStyleSheets.includes(sharedLoadingErrorStyleSheet)) {
+      document.adoptedStyleSheets = [...document.adoptedStyleSheets, sharedLoadingErrorStyleSheet]
+    }
 
-        background: #fff5f5;
-        color: #d32f2f;
+    return
+  }
 
-        border: 1px solid #f5c2c7;
-        border-radius: 12px;
+  if (!document.head.querySelector(`style[${STYLE_MARKER_ATTRIBUTE}]`)) {
+    const style = document.createElement('style')
+    style.setAttribute(STYLE_MARKER_ATTRIBUTE, '')
+    style.textContent = LOADING_ERROR_STYLES
+    document.head.appendChild(style)
+  }
+}
 
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-      }
-      .${RELOAD_BUTTON_CLASS} {
-        padding: 8px 24px;
-        border: 1px solid #d32f2f;
-        border-radius: 8px;
-        background: transparent;
-        color: #d32f2f;
-        font: inherit;
-        cursor: pointer;
-      }
-      .${RELOAD_BUTTON_CLASS}:hover {
-        background: #d32f2f;
-        color: #fff5f5;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="errorContent">
-      <span>Couldn't load the widget. Please try again later.</span>
+function supportsConstructableStyleSheets(): boolean {
+  return (
+    typeof document !== 'undefined' &&
+    'adoptedStyleSheets' in Document.prototype &&
+    typeof CSSStyleSheet === 'function' &&
+    typeof CSSStyleSheet.prototype.replaceSync === 'function'
+  )
+}
 
-      <button class="${RELOAD_BUTTON_CLASS}">Retry</button>
-    </div>
-  </body>
-</html>`
+const LOADING_ERROR_STYLES = `
+.${WIDGET_LOADING_ERROR_CLASS} {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  padding: 24px;
+  background: #fff5f5;
+  color: #d32f2f;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.${WIDGET_LOADING_ERROR_CLASS} p {
+  margin: 0;
+}
+
+.${WIDGET_LOADING_ERROR_CLASS} button {
+  padding: 8px 24px;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #d32f2f;
+  background: transparent;
+  color: #d32f2f;
+}
+
+.${WIDGET_LOADING_ERROR_CLASS} button:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.${WIDGET_LOADING_ERROR_CLASS} button:not(:disabled):hover {
+  background: #d32f2f;
+  color: #fff5f5;
+}`
