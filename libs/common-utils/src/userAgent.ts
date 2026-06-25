@@ -12,14 +12,6 @@ let isCoinbaseWalletBrowser: boolean = false
 let majorBrowserVersion: number | undefined
 let isChrome: boolean = false
 
-function getInjectedWalletInfo(): { isCoinbaseWallet?: boolean } | undefined {
-  try {
-    return (window as Window & { ethereum?: { isCoinbaseWallet?: boolean } }).ethereum
-  } catch {
-    return undefined
-  }
-}
-
 if (typeof window !== 'undefined') {
   userAgentRaw = window.navigator.userAgent
   parser = new UAParser(userAgentRaw)
@@ -28,7 +20,9 @@ if (typeof window !== 'undefined') {
   userAgent = parser.getResult()
   isMobile = type === 'mobile' || type === 'tablet'
   isImTokenBrowser = /imToken/.test(userAgentRaw)
-  isCoinbaseWalletBrowser = !!getInjectedWalletInfo()?.isCoinbaseWallet
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isCoinbaseWalletBrowser = !!(window as any).ethereum?.isCoinbaseWallet
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
