@@ -20,7 +20,6 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
-import { useWalletClient } from 'wagmi'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -31,6 +30,7 @@ import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { CowModal } from 'common/pure/Modal'
@@ -60,8 +60,8 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
-  const { data: walletClient } = useWalletClient()
   const { account, chainId } = useWalletInfo()
+  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const previousAccount = usePrevious(account)
 
   const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]

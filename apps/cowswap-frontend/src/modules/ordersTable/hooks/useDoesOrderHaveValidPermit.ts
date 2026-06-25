@@ -2,12 +2,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-import { usePublicClient, useWalletClient } from 'wagmi'
+import { usePublicClient } from 'wagmi'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 import { GenericOrder } from 'common/types'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'
@@ -25,8 +26,8 @@ const SWR_CONFIG: SWRConfiguration = {
 
 export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
   const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
   const { chainId, account } = useWalletInfo()
+  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
 

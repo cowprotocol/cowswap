@@ -11,7 +11,8 @@ import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { type WalletClient } from 'viem'
-import { useWalletClient } from 'wagmi'
+
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;
@@ -120,7 +121,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 
-  const { data: walletClient } = useWalletClient()
+  const { walletClient } = useWalletClientWithFallback()
 
   useEffect(() => {
     // The bug only affects the browser extension. On mobile devices (including

@@ -25,7 +25,7 @@ import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
-import { useWalletClient } from 'wagmi'
+import { type WalletClient } from 'viem'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
@@ -33,6 +33,7 @@ import { PageTitle } from 'modules/application'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import {
   AccountHeading,
@@ -57,7 +58,6 @@ const TokensLoader = styled(CardsLoader)`
 `
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
-type WalletClient = ReturnType<typeof useWalletClient>['data']
 
 enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -87,7 +87,7 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
-  const { data: walletClient } = useWalletClient()
+  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
 
@@ -234,7 +234,7 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
 
 interface TokensTableContentProps {
   account: string | undefined
-  walletClient: WalletClient
+  walletClient: WalletClient | undefined
   darkMode: boolean
   selectedView: PageViewKeys
   formattedTokens: TokenWithLogo[]

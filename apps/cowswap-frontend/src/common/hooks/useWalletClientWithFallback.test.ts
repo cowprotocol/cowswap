@@ -55,6 +55,17 @@ describe('canUseInjectedWalletClientFallback', () => {
       }),
     ).toBe(false)
   })
+
+  it('does not fallback without a requested chain', () => {
+    expect(
+      canUseInjectedWalletClientFallback({
+        hasWalletClient: false,
+        walletStatus: 'connected',
+        walletChainId: EvmChains.GNOSIS_CHAIN,
+        connectorType: ConnectionType.INJECTED,
+      }),
+    ).toBe(false)
+  })
 })
 
 describe('createInjectedWalletClient', () => {

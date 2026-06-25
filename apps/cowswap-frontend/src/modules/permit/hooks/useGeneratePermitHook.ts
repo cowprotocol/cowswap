@@ -12,7 +12,9 @@ import {
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { maxUint256, type WalletClient } from 'viem'
-import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
+import { usePublicClient, useConfig } from 'wagmi'
+
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -96,8 +98,8 @@ async function runPermitRequest(
 export function useGeneratePermitHook(): GeneratePermitHook {
   const config = useConfig()
   const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
   const { chainId } = useWalletInfo()
+  const { walletClient } = useWalletClientWithFallback({ chainId })
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
 

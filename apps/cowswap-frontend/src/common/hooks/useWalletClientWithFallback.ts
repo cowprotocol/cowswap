@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
 import { EvmChains } from '@cowprotocol/cow-sdk'
-import { ConnectionType, getInjectedProvider } from '@cowprotocol/wallet'
+import { ConnectionType, getInjectedProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import {
   type Address,
@@ -14,16 +14,18 @@ import {
   getAddress,
   isAddress,
 } from 'viem'
-import { useConnection, useWalletClient } from 'wagmi'
+import * as wagmi from 'wagmi'
 
 export type WalletClientSource = 'wagmi' | 'injected-fallback' | null
 
 interface UseWalletClientWithFallbackParams {
-  chainId: number
+  chainId?: number
   account?: string
 }
 
-interface CreateInjectedWalletClientParams extends UseWalletClientWithFallbackParams {
+interface CreateInjectedWalletClientParams {
+  chainId: number
+  account?: string
   provider?: EIP1193Provider
 }
 
@@ -31,24 +33,27 @@ interface InjectedWalletClientFallbackParams {
   hasWalletClient: boolean
   walletStatus: string
   walletChainId?: number
-  requestedChainId: number
+  requestedChainId?: number
   connectorType?: string
 }
 
 interface WalletClientWithFallback {
   walletClient: WalletClient | undefined
   walletClientSource: WalletClientSource
-  walletClientQuery: ReturnType<typeof useWalletClient>
+  walletClientQuery: ReturnType<typeof wagmi.useWalletClient>
 }
 
 export function useWalletClientWithFallback({
   chainId,
   account,
-}: UseWalletClientWithFallbackParams): WalletClientWithFallback {
-  const walletConnection = useConnection()
+}: UseWalletClientWithFallbackParams = {}): WalletClientWithFallback {
+  const { chainId: walletChainId, account: walletAccount } = useWalletInfo()
+  const effectiveChainId = chainId ?? walletChainId
+  const effectiveAccount = account ?? walletAccount
+  const walletConnection = wagmi.useConnection()
   const connectorType = walletConnection.connector?.type
-  const walletClientQuery = useWalletClient({
-    chainId,
+  const walletClientQuery = wagmi.useWalletClient({
+    chainId: effectiveChainId,
     query: { enabled: walletConnection.status === 'connected' },
   })
 
@@ -57,14 +62,25 @@ export function useWalletClientWithFallback({
       hasWalletClient: Boolean(walletClientQuery.data),
       walletStatus: walletConnection.status,
       walletChainId: walletConnection.chainId,
-      requestedChainId: chainId,
+      requestedChainId: effectiveChainId,
       connectorType,
     })
 
-    if (!canUseFallback) return undefined
+    if (!canUseFallback || !effectiveChainId) return undefined
 
-    return createInjectedWalletClient({ chainId, account, provider: getInjectedProvider() })
-  }, [account, chainId, connectorType, walletClientQuery.data, walletConnection.chainId, walletConnection.status])
+    return createInjectedWalletClient({
+      chainId: effectiveChainId,
+      account: effectiveAccount,
+      provider: getInjectedProvider(),
+    })
+  }, [
+    effectiveAccount,
+    effectiveChainId,
+    connectorType,
+    walletClientQuery.data,
+    walletConnection.chainId,
+    walletConnection.status,
+  ])
 
   const walletClient = walletClientQuery.data || fallbackWalletClient
   const walletClientSource = walletClientQuery.data ? 'wagmi' : fallbackWalletClient ? 'injected-fallback' : null
@@ -81,6 +97,7 @@ export function canUseInjectedWalletClientFallback({
 }: InjectedWalletClientFallbackParams): boolean {
   if (hasWalletClient) return false
   if (walletStatus !== 'connected') return false
+  if (!requestedChainId) return false
   if (walletChainId !== requestedChainId) return false
 
   return connectorType === ConnectionType.INJECTED

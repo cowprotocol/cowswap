@@ -8,7 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import { stringToHex } from 'viem'
-import { useWalletClient } from 'wagmi'
+
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
@@ -38,8 +39,8 @@ export function useRecoverFundsFromProxy(
 ): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
-  const { data: walletClient } = useWalletClient()
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const cowShedHooks = useCowShedHooks(proxyVersion)
 
   const factoryAddress = cowShedHooks?.getFactoryAddress()
@@ -48,6 +49,7 @@ export function useRecoverFundsFromProxy(
     if (
       !cowShedHooks ||
       !walletClient ||
+      !walletClient.account ||
       !proxyAddress ||
       !factoryAddress ||
       !selectedTokenAddress ||
@@ -97,7 +99,7 @@ export function useRecoverFundsFromProxy(
       const hash = await walletClient.sendTransaction({
         to: factoryAddress as `0x${string}`,
         data: callData as `0x${string}`,
-        account: walletClient.account!,
+        account: walletClient.account,
         chain: walletClient.chain,
         gas: DEFAULT_GAS_LIMIT,
       })
