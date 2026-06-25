@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Nullish } from 'types'
-import { usePublicClient } from 'wagmi'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 import {
   wrapUnwrapCallback,
@@ -20,7 +20,6 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 
 import { useWethContractData } from 'common/hooks/useContract'
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
@@ -71,7 +70,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { account } = useWalletInfo()
   const wethContract = useWethContractData()
   const publicClient = usePublicClient()
-  const { walletClient } = useWalletClientWithFallback({ chainId: wethContract.chainId, account })
+  const { data: walletClient } = useWalletClient()
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
   const analytics = useCowAnalytics()

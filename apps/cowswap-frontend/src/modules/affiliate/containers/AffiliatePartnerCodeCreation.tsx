@@ -2,7 +2,7 @@ import { FormEvent, ReactNode, useCallback, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
+import { useWalletClient } from 'wagmi'
 
 import {
   PartnerCodeAvailability,
@@ -15,7 +15,7 @@ import { AffiliatePartnerCodeForm } from '../pure/AffiliatePartner/AffiliatePart
 
 export function AffiliatePartnerCodeCreation(): ReactNode {
   const { account, chainId } = useWalletInfo()
-  const { walletClient } = useWalletClientWithFallback({ chainId, account })
+  const { data: walletClient } = useWalletClient()
 
   const isCreateEnabled = !!account && !!walletClient && isSupportedPayoutsNetwork(chainId)
 

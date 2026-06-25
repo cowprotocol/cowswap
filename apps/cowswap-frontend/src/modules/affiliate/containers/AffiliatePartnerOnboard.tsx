@@ -7,12 +7,12 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useWalletClient } from 'wagmi'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { AFFILIATE_PAYOUTS_CHAIN_ID, AFFILIATE_TERMS_URL, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
 import {
@@ -33,9 +33,9 @@ import {
 } from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
-  const { walletClient } = useWalletClientWithFallback({ chainId, account })
   const { walletName } = useWalletDetails()
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()

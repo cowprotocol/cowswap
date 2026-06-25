@@ -314,12 +314,6 @@ module.exports = [
               message: 'Please use dynamic import.',
               allowTypeImports: true,
             },
-            {
-              name: 'wagmi',
-              importNames: ['useWalletClient'],
-              message:
-                "Please use 'common/hooks/useWalletClientWithFallback' so injected wallets can recover when wagmi's wallet client is unavailable.",
-            },
           ],
 
           patterns: [

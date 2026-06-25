@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { usePublicClient } from 'wagmi'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -12,7 +12,6 @@ import { useComposableCowContractData } from 'modules/advancedOrders'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractProd } from 'common/hooks/useContract'
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
@@ -24,12 +23,12 @@ import type { Hex } from 'viem'
 
 export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promise<OnChainCancellation> {
   const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
   const composableCowContract = useComposableCowContractData()
   const settlementContract = useGP2SettlementContractProd()
-  const { walletClient } = useWalletClientWithFallback({ chainId: composableCowContract.chainId })
   const { t } = useLingui()
 
   const composableCowChainId = composableCowContract.chainId

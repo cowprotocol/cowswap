@@ -5,7 +5,7 @@ import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowp
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
+import { useWalletClient } from 'wagmi'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -32,7 +32,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const prevIsWindowVisible = usePrevious(isWindowVisible)
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
-  const { walletClient } = useWalletClientWithFallback({ chainId: providerChainId, account })
+  const { data: walletClient } = useWalletClient()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()

@@ -8,10 +8,11 @@ import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
+import { useWalletClient } from 'wagmi'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
 
@@ -29,7 +30,7 @@ export type WatchAssetInWalletProps = {
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { currency, shortLabel, className, fallback } = props
   const { icon, walletName } = useWalletDetails()
-  const { walletClient } = useWalletClientWithFallback()
+  const { data: walletClient } = useWalletClient()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isAssetWatchingSupported = useIsAssetWatchingSupported()
