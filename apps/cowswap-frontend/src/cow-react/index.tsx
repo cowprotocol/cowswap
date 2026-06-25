@@ -4,7 +4,7 @@ import { Component, type ErrorInfo, type PropsWithChildren, type ReactNode, Stri
 import './sentry'
 
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
-import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { isInjectedWidget, nodeRemoveChildFix, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
@@ -113,7 +113,7 @@ class RootCrashBoundary extends Component<PropsWithChildren, RootCrashBoundarySt
   }
 
   private captureGlobalError(errorLike: unknown, fallbackMessage: string): void {
-    const error = toError(errorLike, fallbackMessage)
+    const error = normalizeError(errorLike ?? fallbackMessage)
     const eventId = Sentry.captureException(error, { tags: { errorBoundary: 'root-global' } })
 
     this.setState({ error, eventId })
@@ -158,18 +158,6 @@ function RootCrashFallback({ error, eventId }: RootCrashFallbackProps): ReactNod
       </section>
     </main>
   )
-}
-
-function toError(errorLike: unknown, fallbackMessage: string): Error {
-  if (errorLike instanceof Error) {
-    return errorLike
-  }
-
-  if (typeof errorLike === 'string') {
-    return new Error(errorLike)
-  }
-
-  return new Error(fallbackMessage)
 }
 
 export function Main({ localeMessages }: MainProps): ReactNode {
@@ -227,9 +215,9 @@ async function initApp(): Promise<void> {
         <Main localeMessages={localeMessages} />
       </RootCrashBoundary>,
     )
-  } catch (err) {
-    console.error('Failed to init app', err)
-    const error = toError(err, 'Failed to init app')
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.error('Failed to init app', error)
     const eventId = Sentry.captureException(error, { tags: { errorBoundary: 'root-init' } })
     root.render(<RootCrashFallback error={error} eventId={eventId} />)
   }
