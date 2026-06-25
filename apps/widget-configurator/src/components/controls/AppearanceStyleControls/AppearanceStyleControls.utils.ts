@@ -3,12 +3,12 @@ import type * as CSS from 'csstype'
 
 export type OnStyleJsonChange = (value: string | null) => void
 
-export const RESPONSIVE_BLOCK_IFRAME_STYLE: CSS.Properties = {
+export const RESPONSIVE_BLOCK_ROOT_STYLE: CSS.Properties = {
   width: '100%',
   height: 'var(--dynamicHeight)',
 }
 
-export const DEFAULT_IFRAME_STYLE_JSON = JSON.stringify(RESPONSIVE_BLOCK_IFRAME_STYLE, null, 2)
+export const DEFAULT_ROOT_STYLE_JSON = JSON.stringify(RESPONSIVE_BLOCK_ROOT_STYLE, null, 2)
 
 export const APPEARANCE_STYLE_PRESET_OPTIONS = [
   {
@@ -43,7 +43,7 @@ export const APPEARANCE_STYLE_PRESET_OPTIONS = [
 
 export type AppearanceStylePresetKey = (typeof APPEARANCE_STYLE_PRESET_OPTIONS)[number]['value']
 
-type PresetElement = 'iframe' | 'bodyWrapper' | 'card'
+type PresetElement = 'root' | 'bodyWrapper' | 'card'
 
 // eslint-disable-next-line max-lines-per-function
 export function getAppearanceStylePresets(
@@ -52,10 +52,10 @@ export function getAppearanceStylePresets(
   return {
     none: {},
     'responsive-block': {
-      iframe: RESPONSIVE_BLOCK_IFRAME_STYLE,
+      root: RESPONSIVE_BLOCK_ROOT_STYLE,
     },
     'full-screen': {
-      iframe: {
+      root: {
         position: 'absolute',
         inset: 0,
         width: '100%',
@@ -64,7 +64,7 @@ export function getAppearanceStylePresets(
       },
     },
     'bottom-right-popup': {
-      iframe: {
+      root: {
         position: 'absolute',
         bottom: '24px',
         right: '24px',
@@ -83,7 +83,7 @@ export function getAppearanceStylePresets(
       },
     },
     'right-sidebar': {
-      iframe: {
+      root: {
         position: 'absolute',
         top: '0',
         bottom: '0',
@@ -102,7 +102,7 @@ export function getAppearanceStylePresets(
       },
     },
     modal: {
-      iframe: {
+      root: {
         position: 'absolute',
         top: '50%',
         left: '50%',
@@ -124,7 +124,7 @@ export function getAppearanceStylePresets(
       },
     },
     debug: {
-      iframe: {
+      root: {
         position: 'absolute',
         inset: 0,
         width: '100%',
