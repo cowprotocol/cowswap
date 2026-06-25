@@ -5,7 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useConfig, useConnection, useWalletClient } from 'wagmi'
+import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -40,11 +40,8 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const config = useConfig()
-  const connection = useConnection()
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
-  const { data: walletClient } = useWalletClient({
-    connector: connection.connector,
-  })
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()

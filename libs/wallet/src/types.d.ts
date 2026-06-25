@@ -4,6 +4,7 @@ declare module '@metamask/jazzicon' {
 
 interface Window {
   ethereum?: {
+    request<T>(payload: { method: string; params?: unknown[] }): Promise<T>
     isCoinbaseWallet?: true
     isMetaMask?: true
     isRabby?: true

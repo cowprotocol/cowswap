@@ -123,7 +123,14 @@ const reownAppKit = createAppKit({
 if (getIsSafeAppIframe()) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
 } else if (isMobile && window.ethereum) {
-  connectWalletById('injected', 'injected')
+  // MetaMask iOS: auto-approves eth_requestAccounts inside its own browser.
+  // Calling it first seeds eth_accounts so the subsequent reconnect() succeeds
+  // without triggering an AppKit state-sync disconnect (which connect() would cause).
+  try {
+    window.ethereum.request({ method: 'eth_requestAccounts' }).finally(() => {
+      connectWalletById('injected', 'injected')
+    })
+  } catch {}
 }
 
 bindActiveProvider(wagmiAdapter)
