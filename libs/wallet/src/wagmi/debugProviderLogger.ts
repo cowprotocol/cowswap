@@ -9,11 +9,15 @@ type RpcLog = { id: number; method: string; status: RpcStatus; ms?: number; erro
 const PATCH_FLAG = '__rpcLoggingPatched__'
 const logs: RpcLog[] = []
 let seq = 0
+let collapsed = false
 
 function render(): void {
   if (typeof document === 'undefined') return
   const ID = '__rpc_debug__'
   let div = document.getElementById(ID)
+  let header = document.getElementById(`${ID}__header`)
+  let body = document.getElementById(`${ID}__body`)
+
   if (!div) {
     div = document.createElement('div')
     div.id = ID
@@ -21,27 +25,43 @@ function render(): void {
       position: relative;
       box-sizing: border-box;
       width: 100%;
-      padding: 12px;
       background: #111;
       color: #0f0;
       font: 11px/1.4 monospace;
-      white-space: pre-wrap;
       border-bottom: 1px solid #444;
       z-index: 2147483647;
-      max-height: 300px;
-      overflow-y: scroll;
     `
+
+    header = document.createElement('div')
+    header.id = `${ID}__header`
+    header.style.cssText = `padding: 6px 12px; cursor: pointer; user-select: none; background: #000; border-bottom: 1px solid #333;`
+    header.onclick = (): void => {
+      collapsed = !collapsed
+      render()
+    }
+
+    body = document.createElement('div')
+    body.id = `${ID}__body`
+    body.style.cssText = `padding: 12px; white-space: pre-wrap; max-height: 300px; overflow-y: scroll;`
+
+    div.appendChild(header)
+    div.appendChild(body)
     document.getElementById('cowswap-app-header')?.parentNode?.prepend(div)
   }
 
-  div.textContent = logs
-    .map((l) => {
-      const icon = l.status === 'pending' ? '⏳' : l.status === 'ok' ? '✅' : '❌'
-      const ms = l.ms != null ? ` (${l.ms}ms)` : ''
-      const err = l.error ? ` — ${l.error}` : ''
-      return `${icon} #${l.id} ${l.method}${ms}${err}`
-    })
-    .join('\n')
+  const pending = logs.filter((l) => l.status === 'pending').length
+  if (header) header.textContent = `${collapsed ? '▶' : '▼'} RPC log — ${logs.length} calls, ${pending} pending`
+  if (body) {
+    body.style.display = collapsed ? 'none' : 'block'
+    body.textContent = logs
+      .map((l) => {
+        const icon = l.status === 'pending' ? '⏳' : l.status === 'ok' ? '✅' : '❌'
+        const ms = l.ms != null ? ` (${l.ms}ms)` : ''
+        const err = l.error ? ` — ${l.error}` : ''
+        return `${icon} #${l.id} ${l.method}${ms}${err}`
+      })
+      .join('\n')
+  }
 }
 
 export function patchProviderLogging(provider: EIP1193Provider | undefined): EIP1193Provider | undefined {
