@@ -8,11 +8,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 import { type Address, createPublicClient, erc20Abi, http } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
+import { usePublicClient } from 'wagmi'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 export async function estimateApprove(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
@@ -71,9 +72,9 @@ export function useApproveCallback(
   spender?: string,
 ): (amountToApprove: CurrencyAmount<Currency> | bigint, summary?: string) => Promise<ApproveTxResult | undefined> {
   const token: Token | undefined = currency && !getIsNativeToken(currency) ? (currency as Token) : undefined
-  const { chainId: tokenChainId } = useWalletInfo()
+  const { chainId: tokenChainId, account } = useWalletInfo()
   const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
+  const { walletClient } = useWalletClientWithFallback({ chainId: tokenChainId, account })
   const addTransaction = useTransactionAdder()
   const { t } = useLingui()
 
@@ -109,8 +110,9 @@ export function useApproveCallback(
         abi: erc20Abi,
         functionName: 'approve',
         args: [spender as Address, amountToApprove],
-        gas: calculateGasMargin(estimation.gasLimit),
         account: walletClient.account.address,
+        chain: null,
+        gas: calculateGasMargin(estimation.gasLimit),
       })
       addTransaction({
         hash,
