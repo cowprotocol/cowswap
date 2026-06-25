@@ -5,7 +5,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
-import { useConfig, useWalletClient } from 'wagmi'
+import { useConfig, useConnection, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -28,13 +28,17 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFlowContext(): TradeFlowContext | null {
   const config = useConfig()
-  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
   const isSafeWallet = useIsSafeWallet()
   const settlementContract = useGP2SettlementContractData()
   const settlementChainId = settlementContract.chainId
+  const { status: walletStatus } = useConnection()
+  const { data: walletClient } = useWalletClient({
+    chainId: settlementChainId,
+    query: { enabled: walletStatus === 'connected' },
+  })
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()

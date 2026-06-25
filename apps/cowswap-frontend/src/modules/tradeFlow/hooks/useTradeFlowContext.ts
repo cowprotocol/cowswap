@@ -5,7 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useConfig, useWalletClient } from 'wagmi'
+import { useConfig, useConnection, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -40,7 +40,13 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const config = useConfig()
-  const { data: walletClient } = useWalletClient()
+  const settlementContract = useGP2SettlementContractData()
+  const settlementChainId = settlementContract.chainId
+  const { status: walletStatus } = useConnection()
+  const { data: walletClient } = useWalletClient({
+    chainId: settlementChainId,
+    query: { enabled: walletStatus === 'connected' },
+  })
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
@@ -68,7 +74,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
-  const settlementContract = useGP2SettlementContractData()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
@@ -87,8 +92,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   } = derivedTradeState || {}
 
   const validTo = getOrderValidTo(deadline, tradeQuote)
-
-  const settlementChainId = settlementContract.chainId
 
   return (
     useSWR(
