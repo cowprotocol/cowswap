@@ -5,7 +5,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useConfig, useConnection, useWalletClient } from 'wagmi'
+import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -26,6 +26,7 @@ import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useSetSigningStep } from './useSetSigningStep'
 
@@ -42,12 +43,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const config = useConfig()
   const settlementContract = useGP2SettlementContractData()
   const settlementChainId = settlementContract.chainId
-  const { status: walletStatus } = useConnection()
-  const { data: walletClient } = useWalletClient({
-    chainId: settlementChainId,
-    query: { enabled: walletStatus === 'connected' },
-  })
   const { account } = useWalletInfo()
+  const { walletClient } = useWalletClientWithFallback({ chainId: settlementChainId, account })
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()

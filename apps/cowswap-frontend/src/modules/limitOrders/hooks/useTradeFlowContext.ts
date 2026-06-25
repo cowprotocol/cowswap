@@ -5,7 +5,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
-import { useConfig, useConnection, useWalletClient } from 'wagmi'
+import { useConfig } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -21,6 +21,7 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
@@ -34,11 +35,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const isSafeWallet = useIsSafeWallet()
   const settlementContract = useGP2SettlementContractData()
   const settlementChainId = settlementContract.chainId
-  const { status: walletStatus } = useConnection()
-  const { data: walletClient } = useWalletClient({
-    chainId: settlementChainId,
-    query: { enabled: walletStatus === 'connected' },
-  })
+  const { walletClient } = useWalletClientWithFallback({ chainId: settlementChainId, account })
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
   const quoteState = useTradeQuote()

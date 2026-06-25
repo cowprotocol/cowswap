@@ -10,7 +10,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
-import { useChainId, useConnection, useWalletClient } from 'wagmi'
+import { useChainId, useConnection } from 'wagmi'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import {
@@ -29,6 +29,7 @@ import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
+import { useWalletClientWithFallback } from 'common/hooks/useWalletClientWithFallback'
 
 import { useShouldCheckBridgingRecipient } from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
@@ -93,9 +94,9 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
   const isSmartContractWallet = useIsSmartContractWallet()
   const settlementContract = useGP2SettlementContractData()
-  const walletClientQuery = useWalletClient({
+  const { walletClient, walletClientSource, walletClientQuery } = useWalletClientWithFallback({
     chainId: settlementContract.chainId,
-    query: { enabled: walletConnection.status === 'connected' },
+    account: walletInfo.account,
   })
 
   const derivedTradeState = useDerivedTradeState()
@@ -142,7 +143,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       settlementContract: Boolean(settlementContract),
       uiOrderType: Boolean(uiOrderType),
       validTo: validTo > 0,
-      walletClient: Boolean(walletClientQuery.data),
+      walletClient: Boolean(walletClient),
     }),
     [
       appData,
@@ -158,7 +159,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       tradeQuote.quote,
       uiOrderType,
       validTo,
-      walletClientQuery.data,
+      walletClient,
       walletInfo.account,
     ],
   )
@@ -204,14 +205,15 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
             : null,
         },
         walletClientQuery: {
+          effectiveSource: walletClientSource,
           status: walletClientQuery.status,
           fetchStatus: walletClientQuery.fetchStatus,
           isPending: walletClientQuery.isPending,
           isFetching: walletClientQuery.isFetching,
           isError: walletClientQuery.isError,
           error: getErrorInfo(walletClientQuery.error),
-          chainId: walletClientQuery.data?.chain?.id,
-          account: walletClientQuery.data?.account?.address,
+          chainId: walletClient?.chain?.id,
+          account: walletClient?.account?.address,
         },
       },
       tradeFlow: {
@@ -307,13 +309,14 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       uiOrderType,
       validTo,
       wagmiChainId,
-      walletClientQuery.data,
       walletClientQuery.error,
       walletClientQuery.fetchStatus,
       walletClientQuery.isError,
       walletClientQuery.isFetching,
       walletClientQuery.isPending,
       walletClientQuery.status,
+      walletClient,
+      walletClientSource,
       walletConnection.address,
       walletConnection.chain?.id,
       walletConnection.chainId,
