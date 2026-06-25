@@ -2,7 +2,14 @@ import { Fragment, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
+import {
+  captureError,
+  getEtherscanLink,
+  getExplorerAddressLink,
+  getExplorerLabel,
+  normalizeError,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
@@ -104,7 +111,20 @@ export function AccountDetails({
   const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ` + t`(via WalletConnect)` : ''
 
   const handleDisconnectClick = async (): Promise<void> => {
-    await disconnectWallet()
+    try {
+      await disconnectWallet()
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+
+      captureError(
+        error,
+        undefined,
+        { source: 'AccountDetails.handleDisconnectClick' },
+        { errorType: 'walletDisconnect' },
+      )
+      console.debug('[AccountDetails] wallet disconnect failed', error)
+    }
+
     handleCloseOrdersPanel()
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }

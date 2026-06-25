@@ -2,7 +2,28 @@ diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
 index 79697e342068039131b11f6f47d97702e28c9ff2..0fe9085611f5d0d446fe7803462226f6a13c64fe 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
-@@ -520,13 +524,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -150,15 +150,18 @@ export class WagmiAdapter extends AdapterBlueprint {
+                     });
+                 }
+                 if (accountData.status === 'connected') {
++                    const connector = accountData.connector;
++                    if (!connector)
++                        return;
+                     const hasAccountChanged = accountData.address !== prevAccountData?.address;
+-                    const hasConnectorChanged = accountData.connector.id !== prevAccountData.connector?.id;
++                    const hasConnectorChanged = connector.id !== prevAccountData.connector?.id;
+                     const hasConnectionStatusChanged = prevAccountData.status !== 'connected';
+                     if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
+                         this.setupWatchPendingTransactions();
+                         this.handleAccountChanged({
+                             address: accountData.address,
+                             chainId: accountData.chainId,
+-                            connector: accountData.connector
++                            connector
+                         });
+                     }
+                 }
+@@ -520,13 +523,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
