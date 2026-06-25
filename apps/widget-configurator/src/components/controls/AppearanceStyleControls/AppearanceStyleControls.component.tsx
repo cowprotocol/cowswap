@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 
-import { WIDGET_IFRAME_ID } from '@cowprotocol/widget-lib'
+import { WIDGET_CONTAINER_ID } from '@cowprotocol/widget-lib'
 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -39,12 +39,12 @@ export function AppearanceStyleControls({
   const handlePresetClick = (value: string): void => {
     const preset = presets[value as AppearanceStylePresetKey]
 
-    applyPresetStyle((styleValue) => onChange('iframeStyleJson', styleValue), preset?.iframe)
+    applyPresetStyle((styleValue) => onChange('rootStyleJson', styleValue), preset?.root)
     applyPresetStyle((styleValue) => onChange('bodyWrapperStyleJson', styleValue), preset?.bodyWrapper)
     applyPresetStyle((styleValue) => onChange('cardStyleJson', styleValue), preset?.card)
   }
 
-  const iframeStyleJsonError = useAsyncJsonError(values.iframeStyleJson)
+  const rootStyleJsonError = useAsyncJsonError(values.rootStyleJson)
   const bodyWrapperStyleJsonError = useAsyncJsonError(values.bodyWrapperStyleJson)
   const cardStyleJsonError = useAsyncJsonError(values.cardStyleJson)
 
@@ -69,15 +69,15 @@ export function AppearanceStyleControls({
       </Box>
       <Box>
         <Typography sx={{ marginBottom: '0.8rem' }} variant="subtitle2">
-          #{WIDGET_IFRAME_ID} (host)
+          #{WIDGET_CONTAINER_ID} (host)
         </Typography>
         <JsonInput
-          label="Iframe styles (JSON)"
-          name="iframeStyleJson"
-          value={values.iframeStyleJson}
+          label="Root styles (JSON)"
+          name="rootStyleJson"
+          value={values.rootStyleJson}
           onChange={onChange}
-          error={iframeStyleJsonError.error}
-          helperText={iframeStyleJsonError.helperText}
+          error={rootStyleJsonError.error}
+          helperText={rootStyleJsonError.helperText}
         />
       </Box>
 
