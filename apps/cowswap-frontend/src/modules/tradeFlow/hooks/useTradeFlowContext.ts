@@ -43,7 +43,7 @@ export interface TradeFlowParams {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const config = useConfig()
-  const { data: walletClient } = useWalletClient()
+  const walletClientData = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
@@ -93,46 +93,27 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const settlementChainId = settlementContract.chainId
 
+  const walletClient = walletClientData.data
+
   const logg = useThrottledCallback(
     () => {
       alert(
         'AAA' +
           JSON.stringify({
-            inputAmount: !!inputAmount,
-            outputAmount: !!outputAmount,
-            sellAmountBeforeFee: !!sellAmountBeforeFee,
-            networkFee: !!networkFee,
-            sellToken: !!sellToken,
-            buyToken: !!buyToken,
-            account: !!account,
-            appData: !!appData,
-            tradeQuote: !!tradeQuote.quote,
-            priceQuality: tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL,
-            orderKind: !!orderKind,
-            settlementContract: !!settlementContract,
-            uiOrderType: !!uiOrderType,
-            validTo: !!validTo,
-            walletClient: !!walletClient,
+            data: !!walletClientData.data,
+            error: !!walletClientData.error,
+            errorMessage: !!walletClientData.error?.message,
+            isLoading: walletClientData.isLoading,
+            isError: walletClientData.isError,
+            isLoadingError: walletClientData.isLoadingError,
+            isRefetchError: walletClientData.isRefetchError,
+            isFetching: walletClientData.isFetching,
+            isPending: walletClientData.isPending,
           }),
       )
     },
     1000,
-    [
-      inputAmount,
-      outputAmount,
-      sellAmountBeforeFee,
-      networkFee,
-      sellToken,
-      buyToken,
-      account,
-      appData,
-      tradeQuote,
-      orderKind,
-      settlementContract,
-      uiOrderType,
-      validTo,
-      walletClient,
-    ],
+    [walletClientData],
   )
 
   useEffect(() => {
