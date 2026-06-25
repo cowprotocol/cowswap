@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { type ReactNode, StrictMode } from 'react'
+import { Component, type ErrorInfo, type PropsWithChildren, type ReactNode, StrictMode } from 'react'
 import './sentry'
 
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
@@ -10,6 +10,7 @@ import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
 import { Messages } from '@lingui/core'
+import * as Sentry from '@sentry/react'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -55,6 +56,120 @@ try {
 
 interface MainProps {
   localeMessages: Messages | undefined
+}
+
+interface RootCrashBoundaryState {
+  error: Error | null
+  eventId: string | null
+}
+
+interface RootCrashFallbackProps {
+  error: Error
+  eventId: string | null
+}
+
+class RootCrashBoundary extends Component<PropsWithChildren, RootCrashBoundaryState> {
+  override state: RootCrashBoundaryState = { error: null, eventId: null }
+
+  static getDerivedStateFromError(error: Error): RootCrashBoundaryState {
+    return { error, eventId: null }
+  }
+
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    const eventId = Sentry.captureException(error, {
+      tags: { errorBoundary: 'root' },
+      contexts: { react: { componentStack: errorInfo.componentStack ?? undefined } },
+    })
+
+    this.setState({ error, eventId })
+  }
+
+  override componentDidMount(): void {
+    window.addEventListener('error', this.handleWindowError)
+    window.addEventListener('unhandledrejection', this.handleUnhandledRejection)
+  }
+
+  override componentWillUnmount(): void {
+    window.removeEventListener('error', this.handleWindowError)
+    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection)
+  }
+
+  override render(): ReactNode {
+    const { error, eventId } = this.state
+
+    if (error) {
+      return <RootCrashFallback error={error} eventId={eventId} />
+    }
+
+    return this.props.children
+  }
+
+  private handleWindowError = (event: ErrorEvent): void => {
+    this.captureGlobalError(event.error, event.message || 'Unhandled window error')
+  }
+
+  private handleUnhandledRejection = (event: PromiseRejectionEvent): void => {
+    this.captureGlobalError(event.reason, 'Unhandled promise rejection')
+  }
+
+  private captureGlobalError(errorLike: unknown, fallbackMessage: string): void {
+    const error = toError(errorLike, fallbackMessage)
+    const eventId = Sentry.captureException(error, { tags: { errorBoundary: 'root-global' } })
+
+    this.setState({ error, eventId })
+  }
+}
+
+function RootCrashFallback({ error, eventId }: RootCrashFallbackProps): ReactNode {
+  return (
+    <main
+      style={{
+        minHeight: '100vh',
+        boxSizing: 'border-box',
+        padding: 24,
+        display: 'grid',
+        placeItems: 'center',
+        fontFamily: 'sans-serif',
+        color: '#1f2933',
+        background: '#f7f8fa',
+      }}
+    >
+      <section style={{ width: '100%', maxWidth: 480 }}>
+        <h1 style={{ margin: '0 0 12px', fontSize: 28, lineHeight: 1.2 }}>Something went wrong</h1>
+        <p style={{ margin: '0 0 20px', lineHeight: 1.5 }}>Reload the page. If it keeps failing, contact support.</p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          style={{
+            padding: '10px 14px',
+            border: 0,
+            borderRadius: 6,
+            color: '#fff',
+            background: '#052b65',
+            cursor: 'pointer',
+            fontWeight: 600,
+          }}
+        >
+          Reload
+        </button>
+        <p style={{ margin: '20px 0 0', lineHeight: 1.5, color: '#52616f', wordBreak: 'break-word' }}>
+          {eventId ? `Event ID: ${eventId}` : error.message}
+        </p>
+      </section>
+    </main>
+  )
+}
+
+function toError(errorLike: unknown, fallbackMessage: string): Error {
+  if (errorLike instanceof Error) {
+    return errorLike
+  }
+
+  if (typeof errorLike === 'string') {
+    return new Error(errorLike)
+  }
+
+  return new Error(fallbackMessage)
 }
 
 export function Main({ localeMessages }: MainProps): ReactNode {
@@ -107,16 +222,16 @@ async function initApp(): Promise<void> {
   const root = createRoot(container)
   try {
     const localeMessages = await loadActiveLocaleMessages()
-    root.render(<Main localeMessages={localeMessages} />)
+    root.render(
+      <RootCrashBoundary>
+        <Main localeMessages={localeMessages} />
+      </RootCrashBoundary>,
+    )
   } catch (err) {
     console.error('Failed to init app', err)
-    const message = err instanceof Error ? err.message : String(err)
-    root.render(
-      <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-        <h1>Failed to load</h1>
-        <p>{message}</p>
-      </div>,
-    )
+    const error = toError(err, 'Failed to init app')
+    const eventId = Sentry.captureException(error, { tags: { errorBoundary: 'root-init' } })
+    root.render(<RootCrashFallback error={error} eventId={eventId} />)
   }
 }
 
