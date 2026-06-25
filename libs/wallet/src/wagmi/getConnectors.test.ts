@@ -9,11 +9,15 @@ import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
 import type { CreateConnectorFn } from 'wagmi'
 
+let mockIsMobile = false
 const mockBrowserInjectedConnector = (() => undefined) as unknown as CreateConnectorFn
 const mockWidgetConnector = (() => undefined) as unknown as CreateConnectorFn
 const mockSafeConnector = (() => undefined) as unknown as CreateConnectorFn
 
 jest.mock('@cowprotocol/common-utils', () => ({
+  get isMobile() {
+    return mockIsMobile
+  },
   isInjectedWidget: jest.fn(),
 }))
 
@@ -40,6 +44,7 @@ const safeMock = safe as jest.MockedFunction<typeof safe>
 describe('getConnectors', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockIsMobile = false
     isInjectedWidgetMock.mockReturnValue(false)
     getIsSafeAppIframeMock.mockReturnValue(false)
   })
@@ -50,6 +55,18 @@ describe('getConnectors', () => {
       expect.objectContaining({
         target: expect.objectContaining({ id: 'injected' }),
         shimDisconnect: true,
+      }),
+    )
+  })
+
+  it('disables browser injected shim disconnect on mobile', () => {
+    mockIsMobile = true
+
+    expect(getConnectors()).toEqual([mockBrowserInjectedConnector])
+    expect(injectedMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        target: expect.objectContaining({ id: 'injected' }),
+        shimDisconnect: false,
       }),
     )
   })

@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { injected, safe } from '@wagmi/connectors'
@@ -17,7 +17,7 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
       name: 'Injected',
       provider: getInjectedProvider,
     },
-    shimDisconnect: true,
+    shimDisconnect: !isMobile,
   })
 }
 

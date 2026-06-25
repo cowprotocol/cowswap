@@ -1,5 +1,7 @@
 import { isMobile } from '@cowprotocol/common-utils'
 
+import { guardMobileInjectedProvider } from '../../wagmi/mobileInjectedProviderGuard'
+
 import type { EIP1193Provider } from 'viem'
 
 type WindowWithInjectedProvider = {
@@ -10,7 +12,7 @@ export function getInjectedProvider(targetWindow?: WindowWithInjectedProvider): 
   try {
     const ethereumWindow = targetWindow ?? (typeof window === 'undefined' ? undefined : window)
 
-    return ethereumWindow?.ethereum as EIP1193Provider | undefined
+    return guardMobileInjectedProvider(ethereumWindow?.ethereum as EIP1193Provider | undefined)
   } catch {
     return undefined
   }
