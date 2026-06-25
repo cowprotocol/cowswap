@@ -92,7 +92,7 @@ const reownAppKit = createAppKit({
   defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: !(isMobile && window.ethereum),
+  enableReconnect: true,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
