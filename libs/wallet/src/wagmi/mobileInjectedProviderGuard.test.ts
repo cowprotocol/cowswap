@@ -81,6 +81,45 @@ describe('guardMobileInjectedProvider', () => {
     expect(request).toHaveBeenNthCalledWith(3, { method: 'eth_requestAccounts' })
   })
 
+  it('falls back from a connected eth_accounts hang to request accounts', async () => {
+    jest.useFakeTimers()
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
+      if (method === 'eth_requestAccounts') return Promise.resolve(['0x1'])
+      if (method === 'eth_accounts') return new Promise(() => void 0)
+
+      return Promise.resolve(null)
+    })
+    const provider = guardMobileInjectedProvider(createProvider(request))
+
+    await expect(provider?.request({ method: 'eth_requestAccounts' })).resolves.toEqual(['0x1'])
+    const accounts = provider?.request({ method: 'eth_accounts' })
+    jest.advanceTimersByTime(1000)
+
+    await expect(accounts).resolves.toEqual(['0x1'])
+    expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
+    expect(request).toHaveBeenNthCalledWith(2, { method: 'eth_accounts' })
+    expect(request).toHaveBeenNthCalledWith(3, { method: 'eth_requestAccounts' })
+  })
+
+  it('does not request accounts after fast connected eth_accounts calls', async () => {
+    jest.useFakeTimers()
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
+      if (method === 'eth_requestAccounts') return Promise.resolve(['0x1'])
+      if (method === 'eth_accounts') return Promise.resolve(['0x1'])
+
+      return Promise.resolve(null)
+    })
+    const provider = guardMobileInjectedProvider(createProvider(request))
+
+    await expect(provider?.request({ method: 'eth_requestAccounts' })).resolves.toEqual(['0x1'])
+    await expect(provider?.request({ method: 'eth_accounts' })).resolves.toEqual(['0x1'])
+    jest.advanceTimersByTime(1000)
+
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
+    expect(request).toHaveBeenNthCalledWith(2, { method: 'eth_accounts' })
+  })
+
   it('times out optional discovery calls with safe defaults', async () => {
     jest.useFakeTimers()
     const request = jest.fn<EIP1193Provider['request']>().mockReturnValue(new Promise(() => void 0))

@@ -57,12 +57,33 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
       // `eth_accounts`; seed it via the user-facing request path instead.
       if (!isConnected) return requestAccounts()
 
-      return originalRequest(args).then((result) => {
-        // A disconnect can leave the patched provider object alive. Empty
-        // accounts means the next reconnect must seed through requestAccounts.
-        isConnected = Array.isArray(result) && result.length > 0
-        return result
-      })
+      let timeout: ReturnType<typeof setTimeout> | undefined
+      let usedRequestAccountsFallback = false
+      const accountsRequest = originalRequest(args)
+        .then((result) => {
+          // A disconnect can leave the patched provider object alive. Empty
+          // accounts means the next reconnect must seed through requestAccounts.
+          if (!usedRequestAccountsFallback) {
+            isConnected = Array.isArray(result) && result.length > 0
+          }
+          return result
+        })
+        .finally(() => {
+          if (timeout) clearTimeout(timeout)
+        })
+
+      return Promise.race([
+        accountsRequest,
+        new Promise((resolve) => {
+          timeout = setTimeout(() => {
+            // Tab restores can leave connected-state eth_accounts pending too.
+            // Fall back to the serialized wallet prompt instead of blocking
+            // wagmi useWalletClient forever.
+            usedRequestAccountsFallback = true
+            resolve(requestAccounts())
+          }, GUARD_TIMEOUT_MS)
+        }),
+      ])
     }
 
     const fallback = GUARDED_METHODS[args.method]
