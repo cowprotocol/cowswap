@@ -1,5 +1,5 @@
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -122,6 +122,8 @@ const reownAppKit = createAppKit({
  */
 if (getIsSafeAppIframe()) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
+} else if (isMobile && window.ethereum) {
+  connectWalletById('injected', 'injected')
 }
 
 bindActiveProvider(wagmiAdapter)
