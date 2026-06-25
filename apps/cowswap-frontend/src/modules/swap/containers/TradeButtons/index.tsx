@@ -1,6 +1,7 @@
-import React, { ReactNode, useMemo } from 'react'
+import React, { ReactNode, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useThrottledCallback } from '@cowprotocol/common-hooks'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
@@ -43,6 +44,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -117,6 +119,35 @@ export function TradeButtons({
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
     (isNonEvmBridging || shouldCheckBridgingRecipient ? !nonEvmReceiverConfirmed : false)
+
+  const logg = useThrottledCallback(
+    () => {
+      alert(
+        'AAA' +
+          JSON.stringify({
+            isTradeContextReady,
+            feeWarningAccepted,
+            isNoImpactWarningAccepted,
+            isNonEvmBridging,
+            shouldCheckBridgingRecipient,
+            nonEvmReceiverConfirmed,
+          }),
+      )
+    },
+    1000,
+    [
+      isTradeContextReady,
+      feeWarningAccepted,
+      isNoImpactWarningAccepted,
+      isNonEvmBridging,
+      shouldCheckBridgingRecipient,
+      nonEvmReceiverConfirmed,
+    ],
+  )
+
+  useEffect(() => {
+    logg()
+  }, [logg])
 
   if (!tradeFormButtonContext) return null
 
