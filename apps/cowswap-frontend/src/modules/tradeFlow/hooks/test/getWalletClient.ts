@@ -43,15 +43,28 @@ export function getWalletClientQueryOptions<
       })
       if (!options.connector?.getProvider) throw new Error('connector is required')
       const [, { connectorUid: _, scopeKey: __, ...parameters }] = context.queryKey
-      const client = getWalletClient(config, {
+      const connector = options.connector
+
+      // Instrument each underlying connector RPC call so the LAST log printed
+      // reveals which await hangs on MetaMask iOS injected.
+      printJson({ key: 'step:getAccounts pre', data: {} })
+      const accounts = await connector.getAccounts()
+      printJson({ key: 'step:getAccounts', data: { count: accounts.length } })
+
+      printJson({ key: 'step:getChainId pre', data: {} })
+      const connectorChainId = await connector.getChainId()
+      printJson({ key: 'step:getChainId', data: { connectorChainId } })
+
+      printJson({ key: 'step:getProvider pre', data: {} })
+      const provider = await connector.getProvider({ chainId: connectorChainId })
+      printJson({ key: 'step:getProvider', data: { hasProvider: !!provider } })
+
+      printJson({ key: 'step:getWalletClient pre', data: {} })
+      const client = (await getWalletClient(config, {
         ...parameters,
-        connector: options.connector,
-      }) as never
-      printJson({
-        key: 'getWalletClient',
-        data: { connector: !!options.connector, getProvider: !!options.connector?.getProvider, client: !!client },
-      })
-      console.log('AAAAAAA getWalletClient', { getProvider: !!options.connector?.getProvider, client: !!client })
+        connector,
+      })) as never
+      printJson({ key: 'step:getWalletClient', data: { client: !!client } })
 
       return client
     },
