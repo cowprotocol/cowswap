@@ -41,17 +41,32 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
   guardedProvider.request = (args: ProviderRequestArgs): Promise<unknown> => {
     if (args.method === 'eth_requestAccounts') return requestAccounts()
 
-    if (args.method === 'eth_accounts' && !isConnected) return requestAccounts()
+    if (args.method === 'eth_accounts') {
+      if (!isConnected) return requestAccounts()
+
+      return originalRequest(args).then((result) => {
+        isConnected = Array.isArray(result) && result.length > 0
+        return result
+      })
+    }
 
     const fallback = GUARDED_METHODS[args.method]
     if (!fallback) return originalRequest(args)
 
-    return Promise.race([
+    const request = Promise.race([
       originalRequest(args),
       new Promise((resolve) => {
         setTimeout(() => resolve(fallback()), GUARD_TIMEOUT_MS)
       }),
     ])
+
+    if (args.method === 'wallet_revokePermissions') {
+      return request.finally(() => {
+        isConnected = false
+      })
+    }
+
+    return request
   }
 
   return guardedProvider as EIP1193Provider

@@ -62,6 +62,25 @@ describe('guardMobileInjectedProvider', () => {
     await expect(provider?.request({ method: 'eth_accounts' })).resolves.toEqual(['0x2'])
   })
 
+  it('resets connection state after disconnect so reconnect seeds accounts again', async () => {
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
+      if (method === 'eth_requestAccounts') return Promise.resolve(['0x1'])
+      if (method === 'eth_accounts') return Promise.resolve([])
+      if (method === 'wallet_revokePermissions') return Promise.resolve(null)
+
+      return Promise.resolve(null)
+    })
+    const provider = guardMobileInjectedProvider(createProvider(request))
+
+    await expect(provider?.request({ method: 'eth_requestAccounts' })).resolves.toEqual(['0x1'])
+    await expect(provider?.request({ method: 'wallet_revokePermissions' })).resolves.toBeNull()
+    await expect(provider?.request({ method: 'eth_accounts' })).resolves.toEqual(['0x1'])
+
+    expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
+    expect(request).toHaveBeenNthCalledWith(2, { method: 'wallet_revokePermissions' })
+    expect(request).toHaveBeenNthCalledWith(3, { method: 'eth_requestAccounts' })
+  })
+
   it('times out optional discovery calls with safe defaults', async () => {
     jest.useFakeTimers()
     const request = jest.fn<EIP1193Provider['request']>().mockReturnValue(new Promise(() => void 0))
