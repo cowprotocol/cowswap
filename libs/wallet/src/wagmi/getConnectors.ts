@@ -19,7 +19,6 @@ import type { CreateConnectorFn } from 'wagmi'
  * `connector.getAccounts()` calls `eth_accounts` first thing, which means
  * `getConnectorClient` → `getWalletClient` → `useWalletClient` get stuck in a
  * permanent pending state on those wallets.
- *
  * `eth_requestAccounts` auto-approves inside the wallet's own browser and, when
  * already connected, resolves without a prompt — so we swap it in on mobile.
  * Desktop keeps the original `eth_accounts` behaviour to avoid reconnect prompts.
