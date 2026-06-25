@@ -6,6 +6,8 @@ import { useConnectionType } from './useConnectionType'
 
 import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
+import { getInjectedProvider } from '../../api/utils/connection'
+import { getWalletDisplayName, isGenericInjectedConnector } from '../../api/utils/walletIdentity'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
 import { reownAppKit } from '../config'
 
@@ -107,7 +109,11 @@ export function useWalletMetaData(): WalletMetaData {
 
     return {
       icon: connector.icon ?? walletMetaData?.icon,
-      walletName: connector.name ?? walletMetaData?.walletName,
+      walletName: getWalletDisplayName({
+        connector,
+        provider: isGenericInjectedConnector(connector) ? getInjectedProvider() : undefined,
+        walletName: walletMetaData?.walletName,
+      }),
     }
   }, [connector, walletMetaData, wcPeerMetadata])
 }

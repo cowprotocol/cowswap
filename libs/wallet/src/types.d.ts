@@ -7,7 +7,8 @@ interface Window {
     isCoinbaseWallet?: true
     isMetaMask?: true
     isRabby?: true
+    isBraveWallet?: true
     autoConnect?: true
-    providers: unknown[]
+    providers?: unknown[]
   }
 }

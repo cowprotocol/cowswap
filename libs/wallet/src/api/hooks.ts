@@ -14,6 +14,8 @@ import {
   isEagerConnectInProgressAtom,
 } from './state'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
+import { getInjectedProvider } from './utils/connection'
+import { getWalletRdns, isGenericInjectedConnector } from './utils/walletIdentity'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
@@ -62,7 +64,7 @@ export function useIsTxBundlingSupported(): boolean | null {
 export function useIsAssetWatchingSupported(): boolean {
   const { connector } = useConnection()
 
-  const rdns = connector?.id
+  const rdns = getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) })
 
   return !!rdns && WATCH_ASSET_SUPPORED_WALLETS.includes(rdns)
 }
@@ -70,13 +72,13 @@ export function useIsAssetWatchingSupported(): boolean {
 export function useIsRabbyWallet(): boolean {
   const { connector } = useConnection()
 
-  return connector?.id === RABBY_RDNS
+  return getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) }) === RABBY_RDNS
 }
 
 export function useIsBraveWallet(): boolean {
   const { connector } = useConnection()
 
-  return connector?.id === BRAVE_WALLET_RDNS
+  return getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) }) === BRAVE_WALLET_RDNS
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
@@ -89,5 +91,11 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
 
   if (!connector || !isInjectedConnection) return false
 
-  return METAMASK_RDNS === connector.id
+  return METAMASK_RDNS === getWalletRdns({ connector, provider: getInjectedProviderForIdentity(connector) })
+}
+
+function getInjectedProviderForIdentity(connector?: { id?: string; type?: string }): unknown {
+  if (!isGenericInjectedConnector(connector)) return undefined
+
+  return getInjectedProvider()
 }
