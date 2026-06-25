@@ -48,7 +48,7 @@ isProd = envChecks.isProd
 isEns = envChecks.isEns
 
 // A hack to test against prod API
-const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
+const forceProdApi = true
 const forceStagingApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceStagingApi')
 
 if (forceProdApi || forceStagingApi) {
