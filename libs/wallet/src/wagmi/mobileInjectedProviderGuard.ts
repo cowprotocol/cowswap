@@ -13,6 +13,16 @@ type ProviderRequestArgs = { method: string; params?: unknown }
 type ProviderRequest = (args: ProviderRequestArgs) => Promise<unknown>
 type GuardedProvider = Omit<EIP1193Provider, 'request'> & { [GUARD_FLAG]?: true; request: ProviderRequest }
 
+/**
+ * MetaMask iOS can leave provider RPCs pending forever. The dangerous cases for
+ * us are wallet/account discovery calls used by wagmi/Reown before a signer is
+ * available: `eth_accounts`, overlapping `eth_requestAccounts`, and optional
+ * capability/permission RPCs. Patch only those calls at the provider boundary so
+ * every consumer sees a stable EIP-1193 provider.
+ *
+ * Do not time out transaction/signing/network-switching methods here. Those
+ * legitimately wait while the user reviews a wallet prompt.
+ */
 export function guardMobileInjectedProvider(provider: EIP1193Provider | undefined): EIP1193Provider | undefined {
   const guardedProvider = provider as GuardedProvider | undefined
 
@@ -24,6 +34,7 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
   let isConnected = false
 
   function requestAccounts(): Promise<unknown> {
+    // MetaMask rejects or stalls concurrent account prompts. Share one prompt.
     if (!inflightRequestAccounts) {
       inflightRequestAccounts = originalRequest({ method: 'eth_requestAccounts' })
         .then((result) => {
@@ -42,9 +53,13 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
     if (args.method === 'eth_requestAccounts') return requestAccounts()
 
     if (args.method === 'eth_accounts') {
+      // Before the first account grant, MetaMask iOS may never answer
+      // `eth_accounts`; seed it via the user-facing request path instead.
       if (!isConnected) return requestAccounts()
 
       return originalRequest(args).then((result) => {
+        // A disconnect can leave the patched provider object alive. Empty
+        // accounts means the next reconnect must seed through requestAccounts.
         isConnected = Array.isArray(result) && result.length > 0
         return result
       })
@@ -62,6 +77,8 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
 
     if (args.method === 'wallet_revokePermissions') {
       return request.finally(() => {
+        // Reset local guard state after disconnect so Account/Tokens pages do
+        // not wait forever on raw eth_accounts during the next reconnect.
         isConnected = false
       })
     }

@@ -12,6 +12,8 @@ export function getInjectedProvider(targetWindow?: WindowWithInjectedProvider): 
   try {
     const ethereumWindow = targetWindow ?? (typeof window === 'undefined' ? undefined : window)
 
+    // Keep all browser-injected access behind this guard. MetaMask iOS can hang
+    // account/discovery RPCs, and wagmi/Reown/viem all consume this provider.
     return guardMobileInjectedProvider(ethereumWindow?.ethereum as EIP1193Provider | undefined)
   } catch {
     return undefined
