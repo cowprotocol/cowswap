@@ -95,15 +95,7 @@ export function buildConfiguratorState({
     throw new Error('buildConfiguratorState requires effectiveChainId')
   }
 
-  const {
-    locale,
-    chainId: _,
-    iframeStyleJson,
-    bodyWrapperStyleJson,
-    cardStyleJson,
-    rawParamsJson,
-    ...rest
-  } = formValues
+  const { locale, chainId: _, rootStyleJson, bodyWrapperStyleJson, cardStyleJson, rawParamsJson, ...rest } = formValues
 
   return {
     ...rest,
@@ -111,7 +103,7 @@ export function buildConfiguratorState({
     chainId: effectiveChainId,
     customColors: colorPalette,
     defaultColors: defaultPalette,
-    iframeStyle: parseJsonOrFallback<CSS.Properties>(iframeStyleJson, {}),
+    rootStyle: parseJsonOrFallback<CSS.Properties>(rootStyleJson, {}),
     bodyWrapperStyle: parseJsonOrFallback<CSS.Properties>(bodyWrapperStyleJson, {}),
     cardStyle: parseJsonOrFallback<CSS.Properties>(cardStyleJson, {}),
     disableToastMessages,
