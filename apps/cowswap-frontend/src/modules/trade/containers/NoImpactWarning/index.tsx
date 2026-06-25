@@ -1,18 +1,12 @@
 import { useAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { Trans } from '@lingui/react/macro'
 
 import { TradeWarning } from 'modules/trade/pure/TradeWarning'
 import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
-import { ACTIVE_VALIDATION_CASES, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
 
-import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
-
-import { useTradePriceImpact } from '../../hooks/useTradePriceImpact'
+import { noImpactWarningAcceptedAtom, useShouldShowNoImpactWarning } from './useIsNoImpactWarningAccepted'
 
 const NoImpactWarningMessage = (
   <div>
@@ -37,17 +31,7 @@ export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
   const { withoutAccepting, className } = props
 
   const [isAccepted, setIsAccepted] = useAtom(noImpactWarningAcceptedAtom)
-
-  const { account } = useWalletInfo()
-  const priceImpactParams = useTradePriceImpact()
-  const primaryFormValidation = useGetTradeFormValidation()
-  const tradeQuote = useTradeQuote()
-
-  const showPriceImpactWarning =
-    !!account &&
-    !tradeQuote.error &&
-    (primaryFormValidation === null || ACTIVE_VALIDATION_CASES.includes(primaryFormValidation)) &&
-    (priceImpactParams.loading || !priceImpactParams.priceImpact)
+  const showPriceImpactWarning = useShouldShowNoImpactWarning()
 
   const acceptCallback = (accepted: boolean): void => setIsAccepted(accepted)
 
