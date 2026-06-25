@@ -127,9 +127,11 @@ if (getIsSafeAppIframe()) {
   // Calling it first seeds eth_accounts so the subsequent reconnect() succeeds
   // without triggering an AppKit state-sync disconnect (which connect would cause).
   try {
-    window.ethereum.request({ method: 'eth_requestAccounts' }).finally(() => {
-      connectWalletById('injected', 'injected')
-    })
+    ;(window.ethereum as { request<T>(payload: { method: string; params?: unknown[] }): Promise<T> })
+      .request({ method: 'eth_requestAccounts' })
+      .finally(() => {
+        connectWalletById('injected', 'injected')
+      })
   } catch {}
 }
 
