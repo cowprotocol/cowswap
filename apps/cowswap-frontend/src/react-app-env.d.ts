@@ -22,6 +22,7 @@ interface Window {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   walletLinkExtension?: any
   ethereum?: {
+    request<T>(payload: { method: string; params?: unknown[] }): Promise<T>
     // value that is populated and returns true by the Coinbase Wallet mobile dapp browser
     isCoinbaseWallet?: true
     isMetaMask?: true
