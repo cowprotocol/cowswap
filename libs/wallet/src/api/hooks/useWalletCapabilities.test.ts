@@ -26,10 +26,6 @@ describe('shouldCheckCapabilities', () => {
     expect(shouldCheckCapabilities(true, { isLoading: false }, mobileEnvironment)).toBe(false)
   })
 
-  it('treats null widget metadata as regular injected wallet metadata', () => {
-    expect(shouldCheckCapabilities(false, { data: null, isLoading: false }, desktopEnvironment)).toBe(true)
-  })
-
   it('waits for widget provider metadata before deciding on mobile', () => {
     expect(shouldCheckCapabilities(false, { isLoading: true }, { ...mobileEnvironment, isInjectedWidget: true })).toBe(
       false,
