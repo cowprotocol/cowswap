@@ -84,16 +84,6 @@ class RootCrashBoundary extends Component<PropsWithChildren, RootCrashBoundarySt
     this.setState({ error, eventId })
   }
 
-  override componentDidMount(): void {
-    window.addEventListener('error', this.handleWindowError)
-    window.addEventListener('unhandledrejection', this.handleUnhandledRejection)
-  }
-
-  override componentWillUnmount(): void {
-    window.removeEventListener('error', this.handleWindowError)
-    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection)
-  }
-
   override render(): ReactNode {
     const { error, eventId } = this.state
 
@@ -102,21 +92,6 @@ class RootCrashBoundary extends Component<PropsWithChildren, RootCrashBoundarySt
     }
 
     return this.props.children
-  }
-
-  private handleWindowError = (event: ErrorEvent): void => {
-    this.captureGlobalError(event.error, event.message || 'Unhandled window error')
-  }
-
-  private handleUnhandledRejection = (event: PromiseRejectionEvent): void => {
-    this.captureGlobalError(event.reason, 'Unhandled promise rejection')
-  }
-
-  private captureGlobalError(errorLike: unknown, fallbackMessage: string): void {
-    const error = normalizeError(errorLike ?? fallbackMessage)
-    const eventId = Sentry.captureException(error, { tags: { errorBoundary: 'root-global' } })
-
-    this.setState({ error, eventId })
   }
 }
 
