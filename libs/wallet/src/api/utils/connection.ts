@@ -1,5 +1,7 @@
 import { isMobile } from '@cowprotocol/common-utils'
 
+import { patchProviderLogging } from '../../wagmi/debugProviderLogger'
+
 import type { EIP1193Provider } from 'viem'
 
 type WindowWithInjectedProvider = {
@@ -10,7 +12,8 @@ export function getInjectedProvider(targetWindow?: WindowWithInjectedProvider): 
   try {
     const ethereumWindow = targetWindow ?? (typeof window === 'undefined' ? undefined : window)
 
-    return ethereumWindow?.ethereum as EIP1193Provider | undefined
+    // DEBUG-ONLY: log every RPC request to find the hanging call on MetaMask iOS.
+    return patchProviderLogging(ethereumWindow?.ethereum as EIP1193Provider | undefined)
   } catch {
     return undefined
   }

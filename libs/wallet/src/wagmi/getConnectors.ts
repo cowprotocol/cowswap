@@ -1,4 +1,4 @@
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { injected, safe } from '@wagmi/connectors'
@@ -27,7 +27,6 @@ import type { CreateConnectorFn } from 'wagmi'
 function withMobileGetAccountsFix(connectorFn: CreateConnectorFn): CreateConnectorFn {
   return (config) => {
     const connector = connectorFn(config)
-    if (!isMobile) return connector
 
     return {
       ...connector,
@@ -49,7 +48,11 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
         name: 'Injected',
         provider: getInjectedProvider,
       },
-      shimDisconnect: true,
+      // On mobile, `shimDisconnect: true` makes wagmi's `connect()` call
+      // `wallet_requestPermissions`, which MetaMask iOS does not support and
+      // hangs on (its `catch` only fires on reject, not on a stalled request).
+      // Disabling the shim routes connect straight to `eth_requestAccounts`.
+      shimDisconnect: false,
     }),
   )
 }
