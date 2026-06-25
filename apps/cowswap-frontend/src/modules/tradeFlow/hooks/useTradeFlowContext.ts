@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+
+import { useThrottledCallback } from '@cowprotocol/common-hooks'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -89,6 +92,52 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const validTo = getOrderValidTo(deadline, tradeQuote)
 
   const settlementChainId = settlementContract.chainId
+
+  const logg = useThrottledCallback(
+    () => {
+      alert(
+        'AAA' +
+          JSON.stringify({
+            inputAmount: !!inputAmount,
+            outputAmount: !!outputAmount,
+            sellAmountBeforeFee: !!sellAmountBeforeFee,
+            networkFee: !!networkFee,
+            sellToken: !!sellToken,
+            buyToken: !!buyToken,
+            account: !!account,
+            appData: !!appData,
+            tradeQuote: !!tradeQuote.quote,
+            priceQuality: tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL,
+            orderKind: !!orderKind,
+            settlementContract: !!settlementContract,
+            uiOrderType: !!uiOrderType,
+            validTo: !!validTo,
+            walletClient: !!walletClient,
+          }),
+      )
+    },
+    1000,
+    [
+      inputAmount,
+      outputAmount,
+      sellAmountBeforeFee,
+      networkFee,
+      sellToken,
+      buyToken,
+      account,
+      appData,
+      tradeQuote,
+      orderKind,
+      settlementContract,
+      uiOrderType,
+      validTo,
+      walletClient,
+    ],
+  )
+
+  useEffect(() => {
+    logg()
+  }, [logg])
 
   return (
     useSWR(
