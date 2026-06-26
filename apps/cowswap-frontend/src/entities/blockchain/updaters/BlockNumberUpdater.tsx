@@ -17,6 +17,7 @@ export function BlockNumberUpdater(): null {
 
   const onBlockNumber = useCallback(
     (blockNumber: bigint) => {
+      console.log('BLOCK NUMBER', blockNumber)
       updateBlockNumber({ chainId, blockNumber: Number(blockNumber) })
     },
     [chainId, updateBlockNumber],
