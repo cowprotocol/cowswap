@@ -98,7 +98,6 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     recipient,
     postHooksRecipientOverride,
     prevPostHooksRecipientOverride,
-    isNativeIn,
     onChangeRecipient,
     shouldPreserveRecipientFromUrl,
   ])

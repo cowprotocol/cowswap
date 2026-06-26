@@ -5,7 +5,7 @@ import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
-import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
+import { useBridgeProvidersReady, useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
 import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
@@ -76,6 +76,7 @@ export function InvalidBridgeOutputUpdater(): null {
   const targetChainId = isValidTargetChain ? rawTargetChainId : undefined
 
   const { data: bridgeSupportedNetworks, isLoading: isBridgeSupportedNetworksLoading } = useBridgeSupportedNetworks()
+  const areBridgeProvidersReady = useBridgeProvidersReady()
 
   const unsupportedBridgePairPatch = useMemo(
     () =>
@@ -83,12 +84,16 @@ export function InvalidBridgeOutputUpdater(): null {
         sourceChainId,
         targetChainId,
         bridgeSupportedNetworks,
-        isBridgeSupportedNetworksLoading,
+        isBridgeSupportedNetworksLoading: isBridgeSupportedNetworksLoading || !areBridgeProvidersReady,
       }),
-    [sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading],
+    [sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading, areBridgeProvidersReady],
   )
 
   const bridgeRouteParams: BuyTokensParams | undefined = useMemo(() => {
+    if (!areBridgeProvidersReady) {
+      return undefined
+    }
+
     if (unsupportedBridgePairPatch) {
       return undefined
     }
@@ -101,7 +106,7 @@ export function InvalidBridgeOutputUpdater(): null {
       sellChainId: sourceChainId,
       buyChainId: targetChainId,
     }
-  }, [sourceChainId, targetChainId, unsupportedBridgePairPatch])
+  }, [sourceChainId, targetChainId, unsupportedBridgePairPatch, areBridgeProvidersReady])
 
   const { data: bridgeRouteData, isLoading: isBridgeRouteLoading } = useBridgeSupportedTokens(bridgeRouteParams)
 
@@ -113,7 +118,7 @@ export function InvalidBridgeOutputUpdater(): null {
         targetChainId,
         selectedOutputCurrencyId: rawState.outputCurrencyId,
         bridgeRouteData,
-        isBridgeRouteLoading,
+        isBridgeRouteLoading: isBridgeRouteLoading || !areBridgeProvidersReady,
       })
     )
   }, [
@@ -123,6 +128,7 @@ export function InvalidBridgeOutputUpdater(): null {
     bridgeRouteData,
     isBridgeRouteLoading,
     unsupportedBridgePairPatch,
+    areBridgeProvidersReady,
   ])
 
   useEffect(() => {

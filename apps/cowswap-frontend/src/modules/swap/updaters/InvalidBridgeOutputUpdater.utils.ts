@@ -28,7 +28,7 @@ export function getUnsupportedBridgePairPatch(params: UnsupportedBridgePairPatch
   }
 
   // Keep existing state while supported networks are still loading or unresolved.
-  if (isBridgeSupportedNetworksLoading) {
+  if (isBridgeSupportedNetworksLoading || !bridgeSupportedNetworks) {
     return null
   }
 

@@ -89,6 +89,17 @@ describe('getUnsupportedBridgePairPatch', () => {
     expect(result).toBeNull()
   })
 
+  it('returns null while supported networks are unresolved', () => {
+    const result = getUnsupportedBridgePairPatch({
+      sourceChainId: SupportedChainId.LINEA,
+      targetChainId: SupportedChainId.BASE,
+      bridgeSupportedNetworks: undefined,
+      isBridgeSupportedNetworksLoading: false,
+    })
+
+    expect(result).toBeNull()
+  })
+
   it('clears cross-chain state when the source chain is not bridge-supported', () => {
     const result = getUnsupportedBridgePairPatch({
       sourceChainId: SupportedChainId.LINEA,

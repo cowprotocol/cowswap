@@ -6,4 +6,6 @@ import { bungeeBridgeProvider } from 'tradingSdk/bridgingSdk'
 
 export const bridgeProvidersAtom = atom(new Set<DefaultBridgeProvider>([bungeeBridgeProvider]))
 
+export const bridgeProvidersReadyAtom = atom(false)
+
 export const hasBridgeProvidersAtom = atom((get) => get(bridgeProvidersAtom).size > 0)
