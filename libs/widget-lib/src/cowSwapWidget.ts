@@ -1,5 +1,5 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { assignElementStyles } from './applyElementStyles'
@@ -157,7 +157,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     })
 
     // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
-    iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
+    iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
 
     const loadingContext = widgetIframeLoading(container, iframe, setup, destroy, props.onLoadingError)
 
@@ -211,6 +211,19 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
     destroy,
   }
+}
+
+function createIframeSafeSdkBridge(
+  enabled: boolean,
+  appWindow: Window,
+  iframeWindow: Window,
+  iframeOrigin: string,
+): IframeSafeSdkBridge | null {
+  if (!enabled) {
+    return null
+  }
+
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
 }
 
 function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
