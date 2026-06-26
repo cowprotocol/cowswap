@@ -6,7 +6,6 @@ import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import { IS_IFRAME } from '../../../configurator.constants'
 import { WidgetMode } from '../../../configurator.types'
 import { BRAND_COLOR } from '../../../theme/palettes.constants'
 import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
@@ -73,15 +72,11 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
         <SidebarEnvBadge baseUrl={baseUrl} configuratorOrigin={location.origin} sdkVersion={sdkVersion} />
       </Box>
 
-      {!IS_IFRAME && (
-        <>
-          {widgetMode !== 'standalone' && (
-            <Box sx={{ mt: '16px' }}>
-              {/* @ts-ignore */}
-              <appkit-button />
-            </Box>
-          )}
-        </>
+      {widgetMode !== 'standalone' && (
+        <Box sx={{ mt: '16px' }}>
+          {/* @ts-ignore */}
+          <appkit-button />
+        </Box>
       )}
     </Box>
   )
