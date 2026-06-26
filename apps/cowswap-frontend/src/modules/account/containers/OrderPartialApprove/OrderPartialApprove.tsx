@@ -19,12 +19,14 @@ import { OrderActionsWrapper } from './styled'
 
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
+  amountToBuy?: CurrencyAmount<Currency>
   isPartialApproveEnabledBySettings?: boolean
   orderId?: string
 }
 
 export function OrderPartialApprove({
   amountToApprove,
+  amountToBuy,
   isPartialApproveEnabledBySettings,
   orderId,
 }: OrderPartialApproveProps): ReactNode {
@@ -58,7 +60,11 @@ export function OrderPartialApprove({
 
   if (isModalOpen) {
     return (
-      <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} amountToSwap={amountToApprove} />
+      <PartialApproveAmountModal
+        initialAmountToApprove={partialAmountToApproveFinal}
+        amountToSwap={amountToApprove}
+        amountToBuy={amountToBuy}
+      />
     )
   }
 

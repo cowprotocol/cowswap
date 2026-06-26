@@ -82,6 +82,7 @@ interface OrderSummaryType {
   fulfillmentTime?: string | undefined
   kind?: string
   inputAmount?: CurrencyAmount<Token>
+  outputAmount?: CurrencyAmount<Token>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -235,6 +236,7 @@ export function ActivityDetails(props: {
         : undefined,
       kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
+      outputAmount,
     }
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
@@ -438,6 +440,7 @@ export function ActivityDetails(props: {
                       <OrderFillabilityWarning
                         fillability={fillability}
                         inputAmount={orderSummary.inputAmount}
+                        outputAmount={orderSummary.outputAmount}
                         enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
                         orderId={order?.id}
                       />
