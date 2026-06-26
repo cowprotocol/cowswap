@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
@@ -41,6 +41,9 @@ import { useSwapFormState } from '../../hooks/useSwapFormState'
 
 const DEBUG_PARAM = 'debugTradeFlow'
 const SUMMARY_PREFIX = 'Trade debug:'
+const COPY_IDLE_TEXT = 'Copy'
+const COPY_DONE_TEXT = 'Copied'
+const COPY_FAIL_TEXT = 'Copy failed'
 
 const Wrapper = styled.div`
   position: relative;
@@ -59,10 +62,34 @@ const Wrapper = styled.div`
 const Summary = styled.summary`
   position: sticky;
   top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 10px 12px;
   background: #0a2115;
   cursor: pointer;
   font-weight: 700;
+`
+
+const SummaryText = styled.span`
+  min-width: 0;
+  overflow-wrap: anywhere;
+`
+
+const CopyButton = styled.button`
+  flex: 0 0 auto;
+  border: 1px solid #35d07f;
+  border-radius: 4px;
+  padding: 4px 8px;
+  background: #123621;
+  color: #d8ffe7;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: #1b4a2e;
+  }
 `
 
 const Content = styled.pre`
@@ -92,6 +119,7 @@ export function SwapDebugPanel(props: SwapDebugPanelProps): ReactNode {
 // TODO: Remove this temporary panel after the MetaMask iOS trade-flow issue is diagnosed.
 // eslint-disable-next-line max-lines-per-function, complexity
 function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps): ReactNode {
+  const [copyButtonText, setCopyButtonText] = useState(COPY_IDLE_TEXT)
   const walletInfo = useWalletInfo()
   const walletDetails = useWalletDetails()
   const walletConnection = useConnection()
@@ -353,12 +381,35 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const summaryText = `${SUMMARY_PREFIX} ${contextIsReady ? 'ready' : 'blocked'}${
     failedChecks.length > 0 ? ` | failed: ${failedChecks.join(', ')}` : ''
   }`
+  const debugText = useMemo(() => stringifyDebug(debugInfo), [debugInfo])
+
+  function handleCopy(event: MouseEvent<HTMLButtonElement>): void {
+    event.preventDefault()
+    event.stopPropagation()
+
+    copyTextToClipboard(debugText)
+      .then(() => {
+        setCopyButtonText(COPY_DONE_TEXT)
+      })
+      .catch(() => {
+        setCopyButtonText(COPY_FAIL_TEXT)
+      })
+      .finally(() => {
+        window.setTimeout(() => setCopyButtonText(COPY_IDLE_TEXT), 1600)
+      })
+  }
 
   return (
     <Wrapper>
       <details open>
-        <Summary>{summaryText}</Summary>
-        <Content>{stringifyDebug(debugInfo)}</Content>
+        <Summary>
+          <SummaryText>{summaryText}</SummaryText>
+          {/* eslint-disable-next-line react/jsx-no-bind */}
+          <CopyButton type="button" onClick={handleCopy}>
+            {copyButtonText}
+          </CopyButton>
+        </Summary>
+        <Content>{debugText}</Content>
       </details>
     </Wrapper>
   )
@@ -402,6 +453,32 @@ function stringifyDebug(value: unknown): string {
     },
     2,
   )
+}
+
+async function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text)
+
+    return
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', 'true')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '0'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+
+  try {
+    if (!document.execCommand('copy')) {
+      throw new Error('Copy command failed')
+    }
+  } finally {
+    document.body.removeChild(textarea)
+  }
 }
 
 function getExpectedWagmiStorageKey({
