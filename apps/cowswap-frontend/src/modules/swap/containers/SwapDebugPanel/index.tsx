@@ -40,6 +40,7 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
 const DEBUG_PARAM = 'debugTradeFlow'
+const SUMMARY_PREFIX = 'Trade debug:'
 
 const Wrapper = styled.div`
   position: relative;
@@ -349,14 +350,14 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const failedChecks = Object.entries(readyChecks)
     .filter(([, value]) => !value)
     .map(([key]) => key)
+  const summaryText = `${SUMMARY_PREFIX} ${contextIsReady ? 'ready' : 'blocked'}${
+    failedChecks.length > 0 ? ` | failed: ${failedChecks.join(', ')}` : ''
+  }`
 
   return (
     <Wrapper>
       <details open>
-        <Summary>
-          Trade debug: {contextIsReady ? 'ready' : 'blocked'}
-          {failedChecks.length > 0 ? ` | failed: ${failedChecks.join(', ')}` : ''}
-        </Summary>
+        <Summary>{summaryText}</Summary>
         <Content>{stringifyDebug(debugInfo)}</Content>
       </details>
     </Wrapper>
