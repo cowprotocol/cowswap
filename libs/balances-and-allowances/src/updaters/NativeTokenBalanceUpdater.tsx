@@ -18,13 +18,17 @@ export interface NativeTokenBalanceUpdaterProps {
  */
 export function NativeTokenBalanceUpdater({ account, chainId }: NativeTokenBalanceUpdaterProps): null {
   const updateTokenBalance = useUpdateTokenBalance()
-  const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
+  const nativeTokenBalanceData = useNativeTokenBalance(account, chainId)
+  const nativeTokenBalance = nativeTokenBalanceData.data?.value
 
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
-    if (nativeToken && nativeTokenBalance) {
-      updateTokenBalance(nativeToken.address, nativeTokenBalance.value)
+    // FIXME: remove after testing
+    console.log('NATIVE TOKEN BALANCE', { nativeToken, nativeTokenBalance })
+
+    if (nativeToken && typeof nativeTokenBalance !== 'undefined') {
+      updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
   }, [nativeTokenBalance, chainId, updateTokenBalance])
 
