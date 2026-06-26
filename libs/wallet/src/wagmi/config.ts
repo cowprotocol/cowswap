@@ -1,4 +1,5 @@
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
+import { isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -112,6 +113,8 @@ const reownAppKit = createAppKit({
  */
 if (getIsSafeAppIframe()) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
+} else if (isMobile && window.ethereum) {
+  connectWalletById('injected', 'injected')
 }
 
 bindActiveProvider(wagmiAdapter)
