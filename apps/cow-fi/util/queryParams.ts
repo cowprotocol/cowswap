@@ -55,10 +55,10 @@ into this:
  * @returns the object in key value format
  */
 export function toQueryParams(query: unknown): { [key: string]: string } {
-  const queryString = qs.stringify(query, { encode: false })
+  const queryString = qs.stringify(query, { encodeValuesOnly: true })
+  const searchParams = new URLSearchParams(queryString)
 
-  return queryString.split('&').reduce<{ [key: string]: string }>((acc, pair) => {
-    const [key, value] = pair.split('=')
+  return Array.from(searchParams.entries()).reduce<{ [key: string]: string }>((acc, [key, value]) => {
     acc[key] = value
     return acc
   }, {})
