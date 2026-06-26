@@ -18,8 +18,6 @@ import { NPM_WIDGET_REACT_LATEST_VERSION } from './utils/widget-sdk-versions/wid
 
 import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseSelectInput.types'
 
-export const IS_IFRAME = window.self !== window.top
-
 // Preview:
 
 /** Live preview `appCode` when Basics is blank; embed snippet treats this like unset and substitutes the snippet placeholder app code. */

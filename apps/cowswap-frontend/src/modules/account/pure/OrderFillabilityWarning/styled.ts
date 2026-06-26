@@ -19,6 +19,11 @@ export const Subtitle = styled.div`
   margin: 10px 30px 10px;
   color: var(${UI.COLOR_RED});
   font-size: 13px;
+  overflow-wrap: anywhere;
+`
+
+export const NoWrap = styled.span`
+  white-space: nowrap;
 `
 
 export const OrderActionsWrapper = styled.div`

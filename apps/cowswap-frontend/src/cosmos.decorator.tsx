@@ -8,6 +8,7 @@ import svgMoonSrc from '@cowprotocol/assets/cow-swap/moon.svg'
 import svgSunSrc from '@cowprotocol/assets/cow-swap/sun.svg'
 import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
+import { BlockNumberUpdater } from 'entities/blockchain'
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'
@@ -19,7 +20,6 @@ import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
-import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
 
 /** No locale import in Cosmos: .po needs Lingui transform, .js is CJS and breaks in the iframe. Fixtures still render; some text may show as message IDs. */
@@ -104,17 +104,16 @@ const Fixture = ({ children }: { children: ReactNode }) => {
             <ThemedGlobalStyle />
             <LanguageProvider messages={COSMOS_MESSAGES}>
               <Web3Provider>
-                <BlockNumberProvider>
-                  <WalletUpdater />
-                  <ThemeConfigUpdater />
-                  <Wrapper>
-                    <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                      <DarkModeToggle>
-                        <WrapperInner>{children}</WrapperInner>
-                      </DarkModeToggle>
-                    </CowAnalyticsProvider>
-                  </Wrapper>
-                </BlockNumberProvider>
+                <BlockNumberUpdater />
+                <WalletUpdater />
+                <ThemeConfigUpdater />
+                <Wrapper>
+                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                    <DarkModeToggle>
+                      <WrapperInner>{children}</WrapperInner>
+                    </DarkModeToggle>
+                  </CowAnalyticsProvider>
+                </Wrapper>
               </Web3Provider>
             </LanguageProvider>
           </ThemeProvider>
