@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.6.1...common-utils-v3.7.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix: tighten cow-fi content links and remote token parsing (#7619)
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.6.0...common-utils-v3.6.1) (2026-06-23)
 
 ### Patch Changes

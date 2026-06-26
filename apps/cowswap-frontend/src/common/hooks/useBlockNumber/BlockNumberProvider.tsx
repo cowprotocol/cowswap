@@ -1,23 +1,20 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useWatchBlockNumber } from 'wagmi'
+import { useWalletInfo, useWatchChainBlockNumber } from '@cowprotocol/wallet'
 
 import { BlockNumberContext } from './context'
 
 export function BlockNumberProvider({ children }: { children: ReactNode }): ReactNode {
   const windowVisible = useIsWindowVisible()
   const { chainId: activeChainId } = useWalletInfo()
-  const isSolana = isSolanaChain(activeChainId)
 
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 
   const onBlockNumber = useCallback(
     (blockNumber: bigint) => {
       const num = Number(blockNumber)
+
       setChainBlock((chainBlock) => {
         if (chainBlock.chainId === activeChainId) {
           if (!chainBlock.block || chainBlock.block < num) {
@@ -30,10 +27,8 @@ export function BlockNumberProvider({ children }: { children: ReactNode }): Reac
     [activeChainId],
   )
 
-  useWatchBlockNumber({
-    chainId: activeChainId,
-    // TODO solana add support
-    enabled: Boolean(activeChainId) && windowVisible && !isSolana,
+  useWatchChainBlockNumber({
+    enabled: windowVisible,
     onBlockNumber,
   })
 
@@ -47,5 +42,6 @@ export function BlockNumberProvider({ children }: { children: ReactNode }): Reac
     }),
     [activeChainId, block, chainId],
   )
+
   return <BlockNumberContext.Provider value={value}>{children}</BlockNumberContext.Provider>
 }
