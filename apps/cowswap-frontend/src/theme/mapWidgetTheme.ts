@@ -6,7 +6,7 @@ import { DefaultTheme } from 'styled-components/macro'
  * Map the provided data from consumer to styled-components theme.
  *
  * Layout and shell styling (padding, border radius, iframe shadow) now live in
- * `iframeStyle`, `bodyWrapperStyle`, and `cardStyle` instead of the palette.
+ * `rootStyle`, `bodyWrapperStyle`, and `cardStyle` instead of the palette.
  *
  * Keep the legacy `boxShadow` to `boxShadow1` mapping to avoid breaking live integrations.
  */
