@@ -24,9 +24,6 @@ export function NativeTokenBalanceUpdater({ account, chainId }: NativeTokenBalan
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
-    // FIXME: remove after testing
-    console.log('NATIVE TOKEN BALANCE', { nativeToken, nativeTokenBalance })
-
     if (nativeToken && typeof nativeTokenBalance !== 'undefined') {
       updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
