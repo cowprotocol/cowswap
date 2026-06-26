@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.0...permit-utils-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.9
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.3.0...permit-utils-v3.4.0) (2026-06-23)
 
 ### Minor Changes

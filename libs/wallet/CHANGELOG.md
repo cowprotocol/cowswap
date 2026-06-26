@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.7.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.1...wallet-v3.7.2) (2026-06-25)
+
+### Patch Changes
+
+- fix(wallet): auto connect mobile injected wallet (#7746)
+
+- fix: prevent MetaMask mobile quote button hang
+
+- fix: revert pr 7726 (#7752)
+
+- fix: unblock cowswap production build
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/ens@3.4.2
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.0...wallet-v3.7.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/ens@3.4.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/ui@3.8.1
+  - @cowprotocol/iframe-transport@2.3.2
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.6.0...wallet-v3.7.0) (2026-06-23)
 
 ### Minor Changes

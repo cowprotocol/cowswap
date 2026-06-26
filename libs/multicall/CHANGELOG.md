@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.4.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.1...multicall-v3.4.2) (2026-06-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.0...multicall-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/wallet@3.7.1
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.2...multicall-v3.4.0) (2026-06-23)
 
 ### Minor Changes
