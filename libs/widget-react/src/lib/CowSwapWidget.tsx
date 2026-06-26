@@ -21,6 +21,7 @@ export function CowSwapWidget({
   provider,
   listeners,
   onReady,
+  onLoadingError,
   enableSafeSdkBridge = true,
 }: CowSwapWidgetProps): JSX.Element {
   const [error, setError] = useState<WidgetErrorState>(null)
@@ -75,6 +76,7 @@ export function CowSwapWidget({
           provider: providerRef.current,
           listeners,
           onReady,
+          onLoadingError,
           enableSafeSdkBridge,
         })
         listenersRef.current = listeners
@@ -88,6 +90,7 @@ export function CowSwapWidget({
           provider: providerRef.current,
           listeners,
           onReady,
+          onLoadingError,
           enableSafeSdkBridge,
         })
         listenersRef.current = listeners
@@ -213,6 +216,7 @@ interface CreateWidgetParams {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?: () => void
+  onLoadingError?: () => void
   enableSafeSdkBridge: boolean
 }
 
@@ -222,6 +226,7 @@ function createWidget({
   provider,
   listeners,
   onReady,
+  onLoadingError,
   enableSafeSdkBridge,
 }: CreateWidgetParams): CowSwapWidgetHandler {
   return createCowSwapWidget(container, {
@@ -230,5 +235,6 @@ function createWidget({
     listeners,
     onReady,
     enableSafeSdkBridge,
+    onLoadingError,
   })
 }

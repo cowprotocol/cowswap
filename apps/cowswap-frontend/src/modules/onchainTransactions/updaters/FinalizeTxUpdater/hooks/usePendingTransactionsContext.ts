@@ -1,5 +1,6 @@
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useBlockNumber } from 'entities/blockchain'
 import { useAsyncMemo } from 'use-async-memo'
 import { useConfig } from 'wagmi'
 import { getTransactionCount } from 'wagmi/actions'
@@ -10,7 +11,6 @@ import { useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
-import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
