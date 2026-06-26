@@ -7,6 +7,7 @@ import { getConnectors } from './getConnectors'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
+import type { EIP1193Provider } from 'viem'
 import type { CreateConnectorFn } from 'wagmi'
 
 let mockIsMobile = false
@@ -36,6 +37,10 @@ jest.mock('../utils/getIsSafeAppIframe', () => ({
   getIsSafeAppIframe: jest.fn(),
 }))
 
+jest.mock('../providerIsolation', () => ({
+  createIsolatedProvider: jest.fn((provider: EIP1193Provider) => ({ ...provider, isolated: true })),
+}))
+
 const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
 const getIsSafeAppIframeMock = getIsSafeAppIframe as jest.MockedFunction<typeof getIsSafeAppIframe>
 const injectedMock = injected as jest.MockedFunction<typeof injected>
@@ -49,17 +54,12 @@ describe('getConnectors', () => {
     getIsSafeAppIframeMock.mockReturnValue(false)
   })
 
-  it('adds the guarded browser injected connector in regular app mode', () => {
-    expect(getConnectors()).toEqual([mockBrowserInjectedConnector])
-    expect(injectedMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ id: 'injected' }),
-        shimDisconnect: true,
-      }),
-    )
+  it('does not add the browser injected connector in desktop regular app mode', () => {
+    expect(getConnectors()).toBeUndefined()
+    expect(injectedMock).not.toHaveBeenCalled()
   })
 
-  it('disables browser injected shim disconnect on mobile', () => {
+  it('adds the isolated browser injected connector on mobile regular app mode', () => {
     mockIsMobile = true
 
     expect(getConnectors()).toEqual([mockBrowserInjectedConnector])
@@ -69,6 +69,24 @@ describe('getConnectors', () => {
         shimDisconnect: false,
       }),
     )
+  })
+
+  it('wraps the browser injected provider with tab isolation', async () => {
+    mockIsMobile = true
+
+    getConnectors()
+
+    const injectedCall = injectedMock.mock.calls.find(([params]) => params?.target?.id === 'injected')
+    const providerFactory = injectedCall?.[0]?.target?.provider as (targetWindow?: {
+      ethereum?: unknown
+    }) => EIP1193Provider | undefined
+
+    expect(typeof providerFactory).toBe('function')
+
+    const rawProvider = { request: jest.fn(), on: jest.fn(), removeListener: jest.fn() } as unknown as EIP1193Provider
+    const isolated = providerFactory({ ethereum: rawProvider })
+
+    expect(isolated).toEqual(expect.objectContaining({ isolated: true }))
   })
 
   it('does not add the browser injected connector in Safe App mode', () => {
