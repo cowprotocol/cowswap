@@ -1,7 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
+  BalancesWatcherHealth,
+  balancesWatcherHealthAtom,
   BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
@@ -66,18 +69,13 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
-  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
-    return (
-      <BalancesWatcherUpdater
-        account={balancesAccount}
-        chainId={sourceChainId}
-        isBridgeMode={isBridgeMode}
-        bridgeTokenList={bridgeTokenList}
-      />
-    )
-  }
+  const watcherHealth = useAtomValue(balancesWatcherHealthAtom)
+  const isWatcherFallback = watcherHealth === BalancesWatcherHealth.Fallback
 
-  return (
+  // Both branches use the same priority + multicall pair: the legacy path
+  // (bw flag off) renders it alone, the watcher path renders it alongside
+  // the watcher while the session is in fallback so balances keep flowing.
+  const multicallStack = (
     <>
       <PriorityTokensUpdater
         // We can and should save one RPC call at the very beginning
@@ -95,4 +93,20 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       />
     </>
   )
+
+  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
+    return (
+      <>
+        <BalancesWatcherUpdater
+          account={balancesAccount}
+          chainId={sourceChainId}
+          isBridgeMode={isBridgeMode}
+          bridgeTokenList={bridgeTokenList}
+        />
+        {isWatcherFallback && multicallStack}
+      </>
+    )
+  }
+
+  return multicallStack
 }

@@ -24,6 +24,9 @@ export type { AllowancesState } from './hooks/useTokenAllowances'
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
 
+// Atoms + enums
+export { balancesWatcherHealthAtom, BalancesWatcherHealth } from './state/balancesWatcherHealthAtom'
+
 export {
   createBalancesWatcherSession,
   subscribeToBalancesEvents,

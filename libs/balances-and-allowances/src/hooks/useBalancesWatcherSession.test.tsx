@@ -7,10 +7,16 @@ import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { act, renderHook } from '@testing-library/react'
 
-import { useBalancesWatcherSession, UseBalancesWatcherSessionParams } from './useBalancesWatcherSession'
+import {
+  FALLBACK_RETRY_INTERVAL_MS,
+  FIRST_SNAPSHOT_TIMEOUT_MS,
+  useBalancesWatcherSession,
+  UseBalancesWatcherSessionParams,
+} from './useBalancesWatcherSession'
 
 import { BalancesSubscription, BalancesWatcherApiError, SubscribeToBalancesEventsParams } from '../balancesWatcher'
 import { balancesAtom, BalancesState, DEFAULT_BALANCES_STATE } from '../state/balancesAtom'
+import { BalancesWatcherHealth, balancesWatcherHealthAtom } from '../state/balancesWatcherHealthAtom'
 
 jest.mock('../balancesWatcher', () => {
   const actual = jest.requireActual('../balancesWatcher')
@@ -58,10 +64,18 @@ function makeParams(overrides: Partial<UseBalancesWatcherSessionParams> = {}): U
   }
 }
 
+interface SessionView {
+  balances: BalancesState
+  health: BalancesWatcherHealth
+}
+
 let currentInitialBalances: BalancesState = DEFAULT_BALANCES_STATE
 
 function HydrateAtoms({ children }: { children: ReactNode }): ReactNode {
-  useHydrateAtoms([[balancesAtom, currentInitialBalances]])
+  useHydrateAtoms([
+    [balancesAtom, currentInitialBalances],
+    [balancesWatcherHealthAtom, BalancesWatcherHealth.Idle],
+  ])
   return <>{children}</>
 }
 
@@ -76,12 +90,15 @@ function Wrapper({ children }: { children: ReactNode }): ReactNode {
 function renderSession(
   initialParams: UseBalancesWatcherSessionParams = makeParams(),
   initialBalances: BalancesState = DEFAULT_BALANCES_STATE,
-): ReturnType<typeof renderHook<BalancesState, { params: UseBalancesWatcherSessionParams }>> {
+): ReturnType<typeof renderHook<SessionView, { params: UseBalancesWatcherSessionParams }>> {
   currentInitialBalances = initialBalances
   return renderHook(
     ({ params }: { params: UseBalancesWatcherSessionParams }) => {
       useBalancesWatcherSession(params)
-      return useAtomValue(balancesAtom)
+      return {
+        balances: useAtomValue(balancesAtom),
+        health: useAtomValue(balancesWatcherHealthAtom),
+      }
     },
     { wrapper: Wrapper, initialProps: { params: initialParams } },
   )
@@ -93,18 +110,30 @@ function capturedSubscribeParams(): SubscribeToBalancesEventsParams {
   return calls[calls.length - 1][0] as SubscribeToBalancesEventsParams
 }
 
+async function advanceTimers(ms: number): Promise<void> {
+  await act(async () => {
+    jest.advanceTimersByTime(ms)
+  })
+}
+
 describe('useBalancesWatcherSession', () => {
   beforeEach(() => {
+    jest.useFakeTimers()
     jest.clearAllMocks()
     mockCreateSession.mockReturnValue(Promise.resolve())
     mockSubscribe.mockReturnValue({ close: jest.fn() } satisfies BalancesSubscription)
   })
 
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   it('does not create a session when account is undefined', () => {
-    renderSession(makeParams({ account: undefined }))
+    const { result } = renderSession(makeParams({ account: undefined }))
 
     expect(mockCreateSession).not.toHaveBeenCalled()
     expect(mockSubscribe).not.toHaveBeenCalled()
+    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
   })
 
   it('does not create a session when both lists and customTokens are empty, but still closes the first-load gate', () => {
@@ -113,24 +142,27 @@ describe('useBalancesWatcherSession', () => {
     expect(mockCreateSession).not.toHaveBeenCalled()
     // Without this, useTradeFormValidationContext keeps the swap UI in
     // BalancesLoading forever for an EVM account with no tokens to track.
-    expect(result.current.hasFirstLoad).toBe(true)
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.error).toBeNull()
-    expect(result.current.chainId).toBe(SupportedChainId.MAINNET)
+    expect(result.current.balances.hasFirstLoad).toBe(true)
+    expect(result.current.balances.isLoading).toBe(false)
+    expect(result.current.balances.error).toBeNull()
+    expect(result.current.balances.chainId).toBe(SupportedChainId.MAINNET)
+    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
   })
 
   it('does not create a session for a non-EVM chain (Solana)', () => {
-    renderSession(makeParams({ chainId: SupportedChainId.SOLANA }))
+    const { result } = renderSession(makeParams({ chainId: SupportedChainId.SOLANA }))
 
     expect(mockCreateSession).not.toHaveBeenCalled()
+    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
   })
 
-  it('creates a session with the expected body and subscribes after it resolves', async () => {
+  it('walks idle → connecting → connected → healthy through the happy path', async () => {
     const session = deferred<void>()
     mockCreateSession.mockReturnValueOnce(session.promise)
 
-    renderSession(makeParams({ customTokens: [getAddressKey(TOKEN_A)] }))
+    const { result } = renderSession(makeParams({ customTokens: [getAddressKey(TOKEN_A)] }))
 
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connecting)
     expect(mockCreateSession).toHaveBeenCalledTimes(1)
     expect(mockCreateSession).toHaveBeenCalledWith({
       chainId: SupportedChainId.MAINNET,
@@ -140,17 +172,19 @@ describe('useBalancesWatcherSession', () => {
         customTokens: [getAddressKey(TOKEN_A)],
       },
     })
-    expect(mockSubscribe).not.toHaveBeenCalled()
 
     await act(async () => {
       session.resolve()
     })
 
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
     expect(mockSubscribe).toHaveBeenCalledTimes(1)
-    expect(capturedSubscribeParams()).toMatchObject({
-      chainId: SupportedChainId.MAINNET,
-      owner: ACCOUNT,
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '42' })
     })
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
   })
 
   it('writes the snapshot into balancesAtom (bigint values, normalized address keys, first-load flags)', async () => {
@@ -170,13 +204,13 @@ describe('useBalancesWatcherSession', () => {
       })
     })
 
-    expect(result.current.values[getAddressKey(NATIVE_CURRENCY_ADDRESS)]).toBe(1000000000000000000n)
-    expect(result.current.values[getAddressKey(TOKEN_A)]).toBe(500n)
-    expect(result.current.hasFirstLoad).toBe(true)
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.fromCache).toBe(false)
-    expect(result.current.error).toBeNull()
-    expect(result.current.chainId).toBe(SupportedChainId.MAINNET)
+    expect(result.current.balances.values[getAddressKey(NATIVE_CURRENCY_ADDRESS)]).toBe(1000000000000000000n)
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(500n)
+    expect(result.current.balances.hasFirstLoad).toBe(true)
+    expect(result.current.balances.isLoading).toBe(false)
+    expect(result.current.balances.fromCache).toBe(false)
+    expect(result.current.balances.error).toBeNull()
+    expect(result.current.balances.chainId).toBe(SupportedChainId.MAINNET)
   })
 
   it('merges a diff into balancesAtom without clearing prior keys', async () => {
@@ -197,13 +231,15 @@ describe('useBalancesWatcherSession', () => {
       sub.onBalances({ [TOKEN_B]: '999' })
     })
 
-    expect(result.current.values[getAddressKey(TOKEN_A)]).toBe(100n)
-    expect(result.current.values[getAddressKey(TOKEN_B)]).toBe(999n)
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(100n)
+    expect(result.current.balances.values[getAddressKey(TOKEN_B)]).toBe(999n)
   })
 
-  it('writes the atom error and clears isLoading on a terminal SSE error', async () => {
+  it('enters fallback (no atom error) on a terminal SSE error', async () => {
     const session = deferred<void>()
     mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
 
     const { result } = renderSession()
 
@@ -216,11 +252,15 @@ describe('useBalancesWatcherSession', () => {
       sub.onError(new Error('stream closed by server'), true)
     })
 
-    expect(result.current.error).toBe('stream closed by server')
-    expect(result.current.isLoading).toBe(false)
-    // First-load gate must close even on error, otherwise form validation
-    // keeps the UI in BalancesLoading forever (see useTradeFormValidationContext).
-    expect(result.current.hasFirstLoad).toBe(true)
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    // First-load gate must close so form validation does not park the UI in
+    // BalancesLoading forever; the parent will mount the multicall stack.
+    expect(result.current.balances.hasFirstLoad).toBe(true)
+    expect(result.current.balances.isLoading).toBe(false)
+    // We no longer surface the watcher error into the atom — the multicall
+    // fallback owns the user-facing balance state from this point.
+    expect(result.current.balances.error).toBeNull()
+    expect(close).toHaveBeenCalledTimes(1)
   })
 
   it('ignores non-terminal SSE errors (transport is reconnecting)', async () => {
@@ -238,10 +278,11 @@ describe('useBalancesWatcherSession', () => {
       sub.onError(new Error('transient'), false)
     })
 
-    expect(result.current.error).toBeNull()
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.balances.error).toBeNull()
   })
 
-  it('writes the atom error and clears isLoading when createSession rejects', async () => {
+  it('enters fallback (no atom error) when createSession rejects', async () => {
     const session = deferred<void>()
     mockCreateSession.mockReturnValueOnce(session.promise)
 
@@ -251,10 +292,148 @@ describe('useBalancesWatcherSession', () => {
       session.reject(new BalancesWatcherApiError(503, { code: 1, message: 'service unavailable' }))
     })
 
-    expect(result.current.error).toBe('service unavailable')
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.hasFirstLoad).toBe(true)
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.balances.hasFirstLoad).toBe(true)
+    expect(result.current.balances.isLoading).toBe(false)
+    expect(result.current.balances.error).toBeNull()
     expect(mockSubscribe).not.toHaveBeenCalled()
+  })
+
+  it('enters fallback if the first snapshot does not arrive within FIRST_SNAPSHOT_TIMEOUT_MS', async () => {
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      session.resolve()
+    })
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(close).not.toHaveBeenCalled()
+
+    // Just under the threshold — still waiting.
+    await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS - 1)
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(close).not.toHaveBeenCalled()
+
+    await advanceTimers(1)
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(result.current.balances.hasFirstLoad).toBe(true)
+  })
+
+  it('clears the first-snapshot timeout when the first event arrives in time', async () => {
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      session.resolve()
+    })
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
+    })
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+
+    // Past the threshold — no fallback, subscription not closed.
+    await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS + 5_000)
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(close).not.toHaveBeenCalled()
+  })
+
+  it('retries the session every FALLBACK_RETRY_INTERVAL_MS while in fallback', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
+
+    const secondSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(secondSession.promise)
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+
+    expect(mockCreateSession).toHaveBeenCalledTimes(2)
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connecting)
+
+    // Second attempt also fails — interval keeps firing every 30s.
+    await act(async () => {
+      secondSession.reject(new Error('still down'))
+    })
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+
+    const thirdSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(thirdSession.promise)
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+    expect(mockCreateSession).toHaveBeenCalledTimes(3)
+  })
+
+  it('recovers to healthy and stops retrying once a retry attempt receives its first snapshot', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+
+    const retrySession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(retrySession.promise)
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+    expect(mockCreateSession).toHaveBeenCalledTimes(2)
+
+    await act(async () => {
+      retrySession.resolve()
+    })
+    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '77' })
+    })
+    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(77n)
+
+    // Retry interval should no longer fire.
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS * 3)
+    expect(mockCreateSession).toHaveBeenCalledTimes(2)
+  })
+
+  it('clears the retry interval on unmount during fallback', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result, unmount } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
+
+    unmount()
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS * 5)
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
   })
 
   it('closes the subscription on unmount and ignores late events', async () => {
@@ -276,7 +455,7 @@ describe('useBalancesWatcherSession', () => {
     await act(async () => {
       sub.onBalances({ [TOKEN_A]: '777' })
     })
-    expect(result.current.values[getAddressKey(TOKEN_A)]).toBeUndefined()
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBeUndefined()
   })
 
   it('discards a session whose POST resolves after a chainId change (race-guard)', async () => {
@@ -304,7 +483,7 @@ describe('useBalancesWatcherSession', () => {
     await act(async () => {
       capturedSubscribeParams().onBalances({ [TOKEN_A]: '42' })
     })
-    expect(result.current.chainId).toBe(SupportedChainId.ARBITRUM_ONE)
-    expect(result.current.values[getAddressKey(TOKEN_A)]).toBe(42n)
+    expect(result.current.balances.chainId).toBe(SupportedChainId.ARBITRUM_ONE)
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(42n)
   })
 })
