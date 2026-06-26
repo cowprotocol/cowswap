@@ -5,6 +5,7 @@ import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider } from 'viem'
 
 import { getInjectedProvider } from '../api/utils/connection'
+import { createIsolatedProvider } from '../providerIsolation'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
@@ -15,7 +16,13 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
     target: {
       id: 'injected',
       name: 'Injected',
-      provider: getInjectedProvider,
+      // Wrap the raw window.ethereum with createIsolatedProvider so this connector honors
+      // tab isolation (blocks origin-wide wallet_revokePermissions, filters accountsChanged).
+      // getInjectedProvider keeps the guard against a throwing window.ethereum bridge.
+      provider: (targetWindow) => {
+        const provider = getInjectedProvider(targetWindow)
+        return provider ? createIsolatedProvider(provider) : undefined
+      },
     },
     shimDisconnect: true,
   })
