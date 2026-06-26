@@ -38,10 +38,15 @@ export default defineConfig(({ mode }) => {
     cacheDir: '../../node_modules/.vite/widget-configurator',
 
     resolve: {
-      // Match cowswap-frontend's narrow dedupe list. Deduping too many packages
-      // (e.g. @wagmi/core, viem, @reown/appkit-controllers individually) caused
-      // version-selection mismatches that interfere with AppKit's wallet routing.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // Match cowswap-frontend's dedupe list. Keep it narrow: deduping multi-version
+      // packages (e.g. @wagmi/core, viem) forces a version selection that interferes
+      // with AppKit's wallet routing, so leave those out.
+      // @reown/appkit-controllers IS deduped because it holds AppKit's valtio state
+      // singletons (ConnectorController, OptionsController, ...). Since libs/wallet pulled
+      // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
+      // peer-instances; without deduping the controllers package, code in libs/wallet reads
+      // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     optimizeDeps: {
