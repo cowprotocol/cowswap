@@ -8,14 +8,22 @@ import {
   CowSwapWidgetProps,
   EthereumProvider,
   createCowSwapWidget,
+  WIDGET_CONTAINER_ID,
 } from '@cowprotocol/widget-lib'
 
 type WidgetErrorState = { error: Error; message: string } | null
 type TryOrHandleError = (action: string, actionThatMightFail: Command) => void
 type MutableRef<T> = { current: T }
 
-export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
-  const { params, provider, listeners, onReady, enableSafeSdkBridge = true } = props
+// eslint-disable-next-line max-lines-per-function
+export function CowSwapWidget({
+  params,
+  provider,
+  listeners,
+  onReady,
+  onLoadingError,
+  enableSafeSdkBridge = true,
+}: CowSwapWidgetProps): JSX.Element {
   const [error, setError] = useState<WidgetErrorState>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
@@ -48,9 +56,9 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
 
     if (
       !containerRef.current ||
-      (JSON.stringify(paramsRef.current) === JSON.stringify(params) &&
-        !paramsHooksDifferent &&
-        !enableSafeSdkBridgeDifferent)
+      (!paramsHooksDifferent &&
+        !enableSafeSdkBridgeDifferent &&
+        JSON.stringify(paramsRef.current) === JSON.stringify(params))
     ) {
       return
     }
@@ -68,6 +76,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
           provider: providerRef.current,
           listeners,
           onReady,
+          onLoadingError,
           enableSafeSdkBridge,
         })
         listenersRef.current = listeners
@@ -81,6 +90,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
           provider: providerRef.current,
           listeners,
           onReady,
+          onLoadingError,
           enableSafeSdkBridge,
         })
         listenersRef.current = listeners
@@ -128,7 +138,16 @@ export function CowSwapWidget(props: CowSwapWidgetProps): JSX.Element {
     return <WidgetError error={error} />
   }
 
-  return <div ref={containerRef} style={{ width: '100%' }}></div>
+  return (
+    <div
+      ref={containerRef}
+      id={WIDGET_CONTAINER_ID}
+      style={{
+        width: '100%',
+        flex: '1 0 auto',
+      }}
+    />
+  )
 }
 
 interface WidgetRefs {
@@ -197,6 +216,7 @@ interface CreateWidgetParams {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?: () => void
+  onLoadingError?: () => void
   enableSafeSdkBridge: boolean
 }
 
@@ -206,6 +226,7 @@ function createWidget({
   provider,
   listeners,
   onReady,
+  onLoadingError,
   enableSafeSdkBridge,
 }: CreateWidgetParams): CowSwapWidgetHandler {
   return createCowSwapWidget(container, {
@@ -214,5 +235,6 @@ function createWidget({
     listeners,
     onReady,
     enableSafeSdkBridge,
+    onLoadingError,
   })
 }

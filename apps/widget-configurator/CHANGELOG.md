@@ -1,5 +1,74 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.8.1...widget-configurator-v3.9.0) (2026-06-25)
+
+### Minor Changes
+
+- feat(widget): control tokens switching (#7717)
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix(widget): fix connect wallet btn missing in dapp mode (#7747)
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.4.0
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/widget-react@3.2.0
+  - @cowprotocol/analytics@3.5.2
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.8.0...widget-configurator-v3.8.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.1
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/widget-lib@4.3.1
+  - @cowprotocol/widget-react@3.1.3
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.7.0...widget-configurator-v3.8.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat(trade): enrich widget hook event payload (#7570)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: add safe connector to widget-cfg explicitly (#7660)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/widget-lib@4.3.0
+  - @cowprotocol/widget-react@3.1.2
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.6.0...widget-configurator-v3.7.0) (2026-06-09)
 
 ### Minor Changes

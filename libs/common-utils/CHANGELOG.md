@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.6.1...common-utils-v3.7.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix: tighten cow-fi content links and remote token parsing (#7619)
+
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.6.0...common-utils-v3.6.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/types@4.5.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.5.0...common-utils-v3.6.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/types@4.5.0
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.4.1...common-utils-v3.5.0) (2026-06-08)
 
 ### Minor Changes

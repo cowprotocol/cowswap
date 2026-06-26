@@ -1,7 +1,7 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
 import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery, useTheme, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
@@ -22,7 +22,6 @@ import { WalletStatusButton } from 'modules/wallet'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
@@ -52,6 +51,8 @@ import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
+const noop: () => void = () => void 0
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const scrollToMyOrders = () => {
@@ -67,7 +68,7 @@ const scrollToMyOrders = () => {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable, cardStyle, disableSwitchingTokens } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
@@ -166,7 +167,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   // Disable too frequent tokens switching
-  const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+  const throttledOnSwitchTokens = useThrottledCallback(onSwitchTokens, 500)
 
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
@@ -224,9 +225,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const { t } = useLingui()
 
+  const disableTokensSwitching =
+    shouldLockForAlternativeOrder ||
+    isOutputTokenUnsupported ||
+    isProviderNetworkUnsupported ||
+    isProviderNetworkDeprecated ||
+    disableSwitchingTokens === true
+
   return (
     <>
-      <styledEl.ContainerBox>
+      <styledEl.ContainerBox id="card" style={isInjectedWidgetMode ? (cardStyle as CSSProperties) : undefined}>
         <styledEl.Header>
           {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
           {isInjectedWidgetMode && standaloneMode !== false && (
@@ -277,18 +285,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}
-                    onSwitchTokens={
-                      isProviderNetworkUnsupported || isProviderNetworkDeprecated
-                        ? () => void 0
-                        : throttledOnSwitchTokens
-                    }
+                    onSwitchTokens={disableTokensSwitching ? noop : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={
-                      shouldLockForAlternativeOrder ||
-                      isOutputTokenUnsupported ||
-                      isProviderNetworkUnsupported ||
-                      isProviderNetworkDeprecated
-                    }
+                    disabled={disableTokensSwitching}
                     isDarkMode={darkMode}
                   />
                 </styledEl.CurrencySeparatorBox>
