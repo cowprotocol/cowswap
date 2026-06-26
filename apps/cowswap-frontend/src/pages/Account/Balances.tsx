@@ -21,7 +21,6 @@ import { Trans } from '@lingui/react/macro'
 import { useBlockNumber } from 'entities/blockchain'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
-import { useWalletClient } from 'wagmi'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -60,7 +59,6 @@ const BLOCKS_TO_WAIT = 2
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export default function Profile() {
-  const { data: walletClient } = useWalletClient()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -104,8 +102,10 @@ export default function Profile() {
   const isCardsLoading = useMemo(() => {
     if (!account) return false
 
-    return isVCowLoading || isLockedGnoLoading || !walletClient || !hasBalancesLoaded
-  }, [account, isLockedGnoLoading, isVCowLoading, walletClient, hasBalancesLoaded])
+    // Read-only balance cards must not wait for WalletClient. MetaMask iOS can leave wagmi wallet-client
+    // requests pending after reconnect even while the connected account and balance state are usable.
+    return isVCowLoading || isLockedGnoLoading || !hasBalancesLoaded
+  }, [account, isLockedGnoLoading, isVCowLoading, hasBalancesLoaded])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
