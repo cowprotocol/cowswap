@@ -10,8 +10,8 @@ jest.mock('@cowprotocol/common-utils', () => ({
   },
 }))
 
-function createProvider(request: EIP1193Provider['request']): EIP1193Provider {
-  return { request } as EIP1193Provider
+function createProvider(request: EIP1193Provider['request'], chainId?: string): EIP1193Provider {
+  return { request, chainId } as EIP1193Provider
 }
 
 describe('guardMobileInjectedProvider', () => {
@@ -118,6 +118,32 @@ describe('guardMobileInjectedProvider', () => {
     expect(request).toHaveBeenCalledTimes(2)
     expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
     expect(request).toHaveBeenNthCalledWith(2, { method: 'eth_accounts' })
+  })
+
+  it('falls back from an eth_chainId hang to the provider chain id', async () => {
+    jest.useFakeTimers()
+    const request = jest.fn<EIP1193Provider['request']>().mockReturnValue(new Promise(() => void 0))
+    const provider = guardMobileInjectedProvider(createProvider(request, '0x64'))
+    const chainId = provider?.request({ method: 'eth_chainId' })
+
+    jest.advanceTimersByTime(1000)
+
+    await expect(chainId).resolves.toBe('0x64')
+  })
+
+  it('does not use the provider chain id when eth_chainId returns normally', async () => {
+    jest.useFakeTimers()
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
+      if (method === 'eth_chainId') return Promise.resolve('0x1')
+
+      return Promise.resolve(null)
+    })
+    const provider = guardMobileInjectedProvider(createProvider(request, '0x64'))
+
+    await expect(provider?.request({ method: 'eth_chainId' })).resolves.toBe('0x1')
+    jest.advanceTimersByTime(1000)
+
+    expect(request).toHaveBeenCalledTimes(1)
   })
 
   it('times out optional discovery calls with safe defaults', async () => {

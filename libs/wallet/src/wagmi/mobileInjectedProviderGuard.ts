@@ -13,14 +13,18 @@ const GUARDED_METHODS: Partial<Record<string, () => unknown>> = {
 
 type ProviderRequestArgs = { method: string; params?: unknown }
 type ProviderRequest = (args: ProviderRequestArgs) => Promise<unknown>
-type GuardedProvider = Omit<EIP1193Provider, 'request'> & { [GUARD_FLAG]?: true; request: ProviderRequest }
+type GuardedProvider = Omit<EIP1193Provider, 'request'> & {
+  [GUARD_FLAG]?: true
+  chainId?: unknown
+  request: ProviderRequest
+}
 
 /**
  * MetaMask iOS can leave provider RPCs pending forever. The dangerous cases for
  * us are wallet/account discovery calls used by wagmi/Reown before a signer is
- * available: `eth_accounts`, overlapping `eth_requestAccounts`, and optional
- * capability/permission RPCs. Patch only those calls at the provider boundary so
- * every consumer sees a stable EIP-1193 provider.
+ * available: `eth_accounts`, `eth_chainId`, overlapping `eth_requestAccounts`,
+ * and optional capability/permission RPCs. Patch only those calls at the
+ * provider boundary so every consumer sees a stable EIP-1193 provider.
  *
  * Do not time out transaction/signing/network-switching methods here. Those
  * legitimately wait while the user reviews a wallet prompt.
@@ -53,6 +57,22 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
 
   guardedProvider.request = (args: ProviderRequestArgs): Promise<unknown> => {
     if (args.method === 'eth_requestAccounts') return requestAccounts()
+
+    if (args.method === 'eth_chainId') {
+      return Promise.race([
+        originalRequest(args),
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const fallbackChainId = getProviderChainId(guardedProvider)
+            if (fallbackChainId) {
+              resolve(fallbackChainId)
+            } else {
+              reject(new Error('eth_chainId timed out'))
+            }
+          }, GUARD_TIMEOUT_MS)
+        }),
+      ])
+    }
 
     if (args.method === 'eth_accounts') {
       // Before the first account grant, MetaMask iOS may never answer
@@ -110,4 +130,8 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
   }
 
   return guardedProvider as EIP1193Provider
+}
+
+function getProviderChainId(provider: GuardedProvider): string | undefined {
+  return typeof provider.chainId === 'string' && provider.chainId.startsWith('0x') ? provider.chainId : undefined
 }

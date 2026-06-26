@@ -1,3 +1,5 @@
+import { guardMobileInjectedProvider } from './wagmi/mobileInjectedProviderGuard'
+
 import type { EIP1193EventMap, EIP1193Provider } from 'viem'
 
 /**
@@ -140,8 +142,9 @@ function isBraveWalletInfo(info: Eip6963ProviderInfo): boolean {
 }
 
 function createIsolatedProviderAnnouncement(detail: Eip6963ProviderDetail): CustomEvent<Eip6963ProviderDetail> {
+  const guardedProvider = guardMobileInjectedProvider(detail.provider) ?? detail.provider
   const newEvent = new CustomEvent<Eip6963ProviderDetail>('eip6963:announceProvider', {
-    detail: { info: detail.info, provider: createIsolatedProvider(detail.provider) },
+    detail: { info: detail.info, provider: createIsolatedProvider(guardedProvider) },
   })
   getReDispatched().add(newEvent)
 
