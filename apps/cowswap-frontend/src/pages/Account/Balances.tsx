@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import svgArrowSrc from '@cowprotocol/assets/cow-swap/arrow.svg'
 import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
@@ -41,8 +41,6 @@ import {
   BannerCardTitle,
   Card,
   CardActions,
-  CardsLoader,
-  CardsSpinner,
   ConvertWrapper,
   ExtLink,
   StyledWatchAssetInWallet,
@@ -98,14 +96,8 @@ export default function Profile() {
   )
 
   const { hasFirstLoad: hasBalancesLoaded } = useTokensBalances()
-
-  const isCardsLoading = useMemo(() => {
-    if (!account) return false
-
-    // Read-only balance cards must not wait for WalletClient. MetaMask iOS can leave wagmi wallet-client
-    // requests pending after reconnect even while the connected account and balance state are usable.
-    return isVCowLoading || isLockedGnoLoading || !hasBalancesLoaded
-  }, [account, isLockedGnoLoading, isVCowLoading, hasBalancesLoaded])
+  const isCowBalanceLoading =
+    !!account && !hasBalancesLoaded && !isProviderNetworkUnsupported && !isProviderNetworkDeprecated
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -241,117 +233,107 @@ export default function Profile() {
 
       <ErrorModal />
 
-      {isCardsLoading && !isProviderNetworkUnsupported && !isProviderNetworkDeprecated ? (
-        <Card>
-          <CardsLoader>
-            <CardsSpinner size="42px" />
-          </CardsLoader>
-        </Card>
-      ) : (
-        <>
-          {hasVCowBalance && vCowToken && (
-            <Card showLoader={isVCowLoading || isSwapPending}>
-              <BalanceDisplay hAlign="left">
-                <SVG src={svgVCowSrc} title={t`vCOW token`} width="56" height="56" />
-                <span>
-                  <i>
-                    <Trans>Total vCOW balance</Trans>
-                  </i>
-                  <b>
-                    <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
-                    <HoverTooltip content={tooltipText.balanceBreakdown} wrapInContainer>
-                      <HelpCircle size={14} />
-                    </HoverTooltip>
-                  </b>
-                </span>
-              </BalanceDisplay>
-              <ConvertWrapper>
-                <BalanceDisplay titleSize={18} altColor={true}>
-                  <i>
-                    <Trans>Vested</Trans>{' '}
-                    <HoverTooltip content={tooltipText.vested} wrapInContainer>
-                      <HelpCircle size={14} />
-                    </HoverTooltip>
-                  </i>
-                  <b>
-                    <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />
-                  </b>
-                </BalanceDisplay>
-                <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
-                  {renderConvertToCowContent()}
-                </ButtonPrimary>
-              </ConvertWrapper>
+      {hasVCowBalance && vCowToken && (
+        <Card showLoader={isVCowLoading || isSwapPending}>
+          <BalanceDisplay hAlign="left">
+            <SVG src={svgVCowSrc} title={t`vCOW token`} width="56" height="56" />
+            <span>
+              <i>
+                <Trans>Total vCOW balance</Trans>
+              </i>
+              <b>
+                <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
+                <HoverTooltip content={tooltipText.balanceBreakdown} wrapInContainer>
+                  <HelpCircle size={14} />
+                </HoverTooltip>
+              </b>
+            </span>
+          </BalanceDisplay>
+          <ConvertWrapper>
+            <BalanceDisplay titleSize={18} altColor={true}>
+              <i>
+                <Trans>Vested</Trans>{' '}
+                <HoverTooltip content={tooltipText.vested} wrapInContainer>
+                  <HelpCircle size={14} />
+                </HoverTooltip>
+              </i>
+              <b>
+                <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />
+              </b>
+            </BalanceDisplay>
+            <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
+              {renderConvertToCowContent()}
+            </ButtonPrimary>
+          </ConvertWrapper>
 
-              <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>
-                  <Trans>View contract</Trans> ↗
-                </ExtLink>
-                <CopyHelper toCopy={vCowToken.address}>
+          <CardActions>
+            <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>
+              <Trans>View contract</Trans> ↗
+            </ExtLink>
+            <CopyHelper toCopy={vCowToken.address}>
+              <div title={t`Click to copy token contract address`}>
+                <Trans>Copy contract</Trans>
+              </div>
+            </CopyHelper>
+          </CardActions>
+        </Card>
+      )}
+
+      {cowContractAddress && (
+        <Card showLoader={isCowBalanceLoading}>
+          <BalanceDisplay titleSize={26}>
+            <img src={svgCowTokenSrc} alt={t`Cow Balance`} height="80" width="80" />
+            <span>
+              <i>
+                <Trans>Available COW balance</Trans>
+              </i>
+              <b>
+                {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
+                  <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
+                )}
+              </b>
+            </span>
+          </BalanceDisplay>
+          <CardActions>
+            <ExtLink title={t`View contract`} href={getBlockExplorerUrl(chainId, 'token', cowContractAddress)}>
+              <Trans>View contract</Trans> ↗
+            </ExtLink>
+
+            <StyledWatchAssetInWallet
+              shortLabel
+              currency={cowToken}
+              fallback={
+                <CopyHelper toCopy={cowContractAddress}>
                   <div title={t`Click to copy token contract address`}>
                     <Trans>Copy contract</Trans>
                   </div>
                 </CopyHelper>
-              </CardActions>
-            </Card>
-          )}
+              }
+            />
 
-          {cowContractAddress && (
-            <Card>
-              <BalanceDisplay titleSize={26}>
-                <img src={svgCowTokenSrc} alt={t`Cow Balance`} height="80" width="80" />
-                <span>
-                  <i>
-                    <Trans>Available COW balance</Trans>
-                  </i>
-                  <b>
-                    {!isProviderNetworkUnsupported && !isProviderNetworkDeprecated && (
-                      <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
-                    )}
-                  </b>
-                </span>
-              </BalanceDisplay>
-              <CardActions>
-                <ExtLink title={t`View contract`} href={getBlockExplorerUrl(chainId, 'token', cowContractAddress)}>
-                  <Trans>View contract</Trans> ↗
-                </ExtLink>
-
-                <StyledWatchAssetInWallet
-                  shortLabel
-                  currency={cowToken}
-                  fallback={
-                    <CopyHelper toCopy={cowContractAddress}>
-                      <div title={t`Click to copy token contract address`}>
-                        <Trans>Copy contract</Trans>
-                      </div>
-                    </CopyHelper>
-                  }
-                />
-
-                <Link to={`/${chainId}/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>
-                  <Trans>Buy COW</Trans>
-                </Link>
-              </CardActions>
-            </Card>
-          )}
-
-          {!cowContractAddress && (
-            <BannerCard>
-              <BannerCardContent justifyContent="center">
-                <BannerCardTitle fontSize={24}>
-                  <Trans>COW token is not available on this network</Trans>
-                </BannerCardTitle>
-              </BannerCardContent>
-            </BannerCard>
-          )}
-
-          <LockedGnoVesting
-            {...lockedGnoBalances}
-            loading={isLockedGnoLoading}
-            openModal={openModal}
-            closeModal={closeModal}
-          />
-        </>
+            <Link to={`/${chainId}/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>
+              <Trans>Buy COW</Trans>
+            </Link>
+          </CardActions>
+        </Card>
       )}
+
+      {!cowContractAddress && (
+        <BannerCard>
+          <BannerCardContent justifyContent="center">
+            <BannerCardTitle fontSize={24}>
+              <Trans>COW token is not available on this network</Trans>
+            </BannerCardTitle>
+          </BannerCardContent>
+        </BannerCard>
+      )}
+
+      <LockedGnoVesting
+        {...lockedGnoBalances}
+        loading={isLockedGnoLoading}
+        openModal={openModal}
+        closeModal={closeModal}
+      />
     </>
   )
 }
