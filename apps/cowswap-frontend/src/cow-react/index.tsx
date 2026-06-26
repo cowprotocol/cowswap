@@ -35,7 +35,6 @@ import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
-import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 const cowAnalytics = isInjectedWidget() ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
@@ -72,14 +71,12 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                         <React310RecoveryErrorBoundary>
                           <WithLDProvider>
                             <Web3Provider>
-                              <BlockNumberProvider>
-                                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                                  <WalletUnsupportedNetworkBanner />
-                                  <Updaters />
-                                  <Toasts />
-                                  <App />
-                                </CowAnalyticsProvider>
-                              </BlockNumberProvider>
+                              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                                <WalletUnsupportedNetworkBanner />
+                                <Updaters />
+                                <Toasts />
+                                <App />
+                              </CowAnalyticsProvider>
                             </Web3Provider>
                           </WithLDProvider>
                         </React310RecoveryErrorBoundary>
