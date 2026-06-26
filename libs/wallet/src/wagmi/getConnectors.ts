@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { injected, safe } from '@wagmi/connectors'
@@ -33,7 +33,7 @@ export function getConnectors(): CreateConnectorFn[] | undefined {
   const isWidget = isInjectedWidget()
   const connectors: CreateConnectorFn[] = []
 
-  if (!isSafeApp && !isWidget) {
+  if (!isSafeApp && !isWidget && isMobile) {
     connectors.push(getBrowserInjectedConnector())
   }
 
