@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
       // Match cowswap-frontend's dedupe list. Keep it narrow: deduping multi-version
       // packages (e.g. @wagmi/core, viem) forces a version selection that interferes
       // with AppKit's wallet routing, so leave those out.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     optimizeDeps: {
