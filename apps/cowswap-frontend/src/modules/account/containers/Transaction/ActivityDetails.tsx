@@ -287,6 +287,20 @@ export function ActivityDetails(props: {
     ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
     : false
 
+  const fillabilityWarning =
+    fillability && showWarning && orderSummary?.inputAmount ? (
+      <SummaryInnerRow>
+        <DangerText>Unfillable</DangerText>
+        <OrderFillabilityWarning
+          fillability={fillability}
+          inputAmount={orderSummary.inputAmount}
+          outputAmount={orderSummary.outputAmount}
+          enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+          orderId={order?.id}
+        />
+      </SummaryInnerRow>
+    ) : null
+
   return (
     <>
       {/* Warning banner if custom recipient */}
@@ -353,16 +367,19 @@ export function ActivityDetails(props: {
             // Order
             <>
               {order && !skipBridgingDisplay && isBridgeOrder ? (
-                <BridgeActivitySummary
-                  isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
-                  order={order}
-                  swapAndBridgeContext={swapAndBridgeContext}
-                  swapResultContext={swapResultContext}
-                  swapAndBridgeOverview={swapAndBridgeOverview}
-                  orderBasicDetails={orderBasicDetails}
-                >
-                  {hooksDetails}
-                </BridgeActivitySummary>
+                <>
+                  <BridgeActivitySummary
+                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                    order={order}
+                    swapAndBridgeContext={swapAndBridgeContext}
+                    swapResultContext={swapResultContext}
+                    swapAndBridgeOverview={swapAndBridgeOverview}
+                    orderBasicDetails={orderBasicDetails}
+                  >
+                    {hooksDetails}
+                  </BridgeActivitySummary>
+                  {fillabilityWarning}
+                </>
               ) : (
                 // Regular order layout
                 <>
@@ -434,18 +451,7 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
-                  {fillability && showWarning && orderSummary?.inputAmount ? (
-                    <SummaryInnerRow>
-                      <DangerText>Unfillable</DangerText>
-                      <OrderFillabilityWarning
-                        fillability={fillability}
-                        inputAmount={orderSummary.inputAmount}
-                        outputAmount={orderSummary.outputAmount}
-                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
-                        orderId={order?.id}
-                      />
-                    </SummaryInnerRow>
-                  ) : null}
+                  {fillabilityWarning}
                 </>
               )}
             </>
