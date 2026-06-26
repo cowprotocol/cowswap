@@ -11,6 +11,7 @@ export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectio
 export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
 export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo'
 export { useWatchChainBlockNumber } from './api/hooks/useWatchChainBlockNumber'
+export { useSolanaNativeBalance } from './api/hooks/useSolanaNativeBalance'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
 export * from './wagmi/hooks/useWalletMetadata'

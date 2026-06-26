@@ -31,6 +31,7 @@
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",
     "@reown/appkit-common": "1.8.19",
+    "@solana/web3.js": "1.98.4",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
