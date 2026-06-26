@@ -12,6 +12,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, type PostOrderParams, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -27,7 +28,7 @@ import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowCo
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line complexity, max-lines-per-function
 export async function safeBundleEthFlow(
   tradeContext: TradeFlowContext,
   safeBundleContext: SafeBundleFlowContext,
@@ -63,11 +64,8 @@ export async function safeBundleEthFlow(
   const { account, recipientAddressOrName, kind } = orderParams
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }
-
-  tradeConfirmActions.onSign(tradeAmounts)
   try {
     const txs: MetaTransactionData[] = []
 
@@ -84,6 +82,19 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 3: [optional] build approval tx')
 
     if (needsApproval) {
+      const isWidgetHookPassed = await callOnBeforeApprovalWidgetHook({
+        account,
+        amountToApprove,
+        spenderAddress: spender,
+      })
+
+      if (!isWidgetHookPassed) {
+        return false
+      }
+
+      analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+      tradeConfirmActions.onSign(tradeAmounts)
+
       const approveTx = await buildApproveTx({
         tokenAddress: wrappedNativeContract.address,
         spender,
@@ -96,6 +107,11 @@ export async function safeBundleEthFlow(
         value: '0',
         operation: 0,
       })
+    }
+
+    if (!needsApproval) {
+      analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+      tradeConfirmActions.onSign(tradeAmounts)
     }
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)

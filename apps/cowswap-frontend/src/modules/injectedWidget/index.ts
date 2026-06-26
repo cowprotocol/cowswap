@@ -7,6 +7,7 @@ export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
 export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
 
 export { callWidgetHook } from './services/callWidgetHook'
+export { callOnBeforeApprovalWidgetHook } from './services/callOnBeforeApprovalWidgetHook'
 export {
   buildOrderWidgetHookPayload,
   buildOrdersWidgetHookPayload,
