@@ -28,7 +28,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   }, [maximumSendSellAmount])
 
   return useMemo(() => {
-    if (!spender || !wrappedNativeContract || !tokenAddress || !amountToApprove) {
+    if (!spender || !wrappedNativeContract || !tokenAddress || !amountToApprove || !maximumSendSellAmount) {
       return null
     }
 
@@ -39,6 +39,15 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
       needsApproval,
       tokenAddress,
       amountToApprove,
+      maximumSendSellAmount,
     }
-  }, [spender, sendBatchTransactions, wrappedNativeContract, needsApproval, tokenAddress, amountToApprove])
+  }, [
+    spender,
+    sendBatchTransactions,
+    wrappedNativeContract,
+    needsApproval,
+    tokenAddress,
+    amountToApprove,
+    maximumSendSellAmount,
+  ])
 }

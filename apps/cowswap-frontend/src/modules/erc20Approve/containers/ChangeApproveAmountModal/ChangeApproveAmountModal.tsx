@@ -13,12 +13,14 @@ interface ChangeApproveAmountModalProps {
   setUserApproveAmountState: (state: Partial<UserApproveModalState>) => void
   initialAmountToApprove: CurrencyAmount<Currency> | null
   amountToSwap: Nullish<CurrencyAmount<Currency>>
+  amountToBuy?: Nullish<CurrencyAmount<Currency>>
 }
 
 export function ChangeApproveAmountModal({
   setUserApproveAmountState,
   initialAmountToApprove,
   amountToSwap,
+  amountToBuy,
 }: ChangeApproveAmountModalProps): ReactNode {
   const { amount: approveAmountInput, isInvalid } = useCustomApproveAmountInputState() || {}
   const [, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
@@ -48,6 +50,7 @@ export function ChangeApproveAmountModal({
       inputToken={inputToken}
       initialAmount={initialAmountToApprove}
       amountToSwap={amountToSwap}
+      amountToBuy={amountToBuy}
       isInvalid={isInvalid}
       onBack={onBack}
       onReset={onReset}
