@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { getSafeAbsoluteUrl, isFractionFalsy } from '@cowprotocol/common-utils'
 import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { FailedBridgingContent } from './FailedBridgingContent'
@@ -32,6 +32,7 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
     statusResult,
     explorerUrl,
   } = props
+  const safeExplorerUrl = getSafeAbsoluteUrl(explorerUrl) || undefined
 
   return (
     <QuoteBridgeContent {...props} isFinished={!isFractionFalsy(receivedAmount)}>
@@ -42,14 +43,18 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
           destinationChainId={destinationChainId}
           receivedAmount={receivedAmount}
           receivedAmountUsd={receivedAmountUsd}
-          explorerUrl={explorerUrl}
+          explorerUrl={safeExplorerUrl}
         />
       ) : isRefunded ? (
         <RefundedBridgingContent account={account} bridgeSendCurrencyAmount={quoteContext.sellAmount} />
       ) : isFailed ? (
         <FailedBridgingContent />
       ) : (
-        <PendingBridgingContent sourceChainId={sourceChainId} statusResult={statusResult} explorerUrl={explorerUrl} />
+        <PendingBridgingContent
+          sourceChainId={sourceChainId}
+          statusResult={statusResult}
+          explorerUrl={safeExplorerUrl}
+        />
       )}
     </QuoteBridgeContent>
   )

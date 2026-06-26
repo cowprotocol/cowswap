@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { OnBridgingSuccessPayload, ToastMessageType } from '@cowprotocol/events'
 import { ExternalLink } from '@cowprotocol/ui'
 
@@ -16,6 +17,7 @@ interface BridgingSuccessNotificationProps {
 
 export function BridgingSuccessNotification({ payload }: BridgingSuccessNotificationProps): ReactNode {
   const { chainId, order } = payload
+  const safeExplorerUrl = getSafeAbsoluteUrl(payload.explorerUrl)
 
   return (
     <OrderNotification
@@ -27,10 +29,10 @@ export function BridgingSuccessNotification({ payload }: BridgingSuccessNotifica
       orderUid={order.uid}
       messageType={ToastMessageType.ORDER_FULFILLED}
       bottomContent={
-        payload.explorerUrl ? (
+        safeExplorerUrl ? (
           <div>
             <br />
-            <ExternalLink href={payload.explorerUrl}>
+            <ExternalLink href={safeExplorerUrl}>
               <Trans>View on Bridge Explorer ↗</Trans>
             </ExternalLink>
           </div>

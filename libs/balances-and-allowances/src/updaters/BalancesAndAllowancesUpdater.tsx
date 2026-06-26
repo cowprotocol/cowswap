@@ -39,7 +39,8 @@ export function BalancesAndAllowancesUpdater({
   const allTokens = useAllActiveTokens()
 
   const targetChainTokensMap = useTokensByAddressMapForChain(chainId)
-  const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
+  const nativeTokenBalanceData = useNativeTokenBalance(account, chainId)
+  const nativeTokenBalance = nativeTokenBalanceData.data?.value
 
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) {
@@ -65,8 +66,8 @@ export function BalancesAndAllowancesUpdater({
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
-    if (nativeToken && nativeTokenBalance) {
-      updateTokenBalance(nativeToken.address, nativeTokenBalance.value)
+    if (nativeToken && typeof nativeTokenBalance !== 'undefined') {
+      updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
   }, [nativeTokenBalance, chainId, updateTokenBalance])
 

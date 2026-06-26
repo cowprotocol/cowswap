@@ -82,6 +82,7 @@ interface OrderSummaryType {
   fulfillmentTime?: string | undefined
   kind?: string
   inputAmount?: CurrencyAmount<Token>
+  outputAmount?: CurrencyAmount<Token>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -235,6 +236,7 @@ export function ActivityDetails(props: {
         : undefined,
       kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
+      outputAmount,
     }
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
@@ -284,6 +286,20 @@ export function ActivityDetails(props: {
   const showWarning = fillability
     ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
     : false
+
+  const fillabilityWarning =
+    fillability && showWarning && orderSummary?.inputAmount ? (
+      <SummaryInnerRow>
+        <DangerText>Unfillable</DangerText>
+        <OrderFillabilityWarning
+          fillability={fillability}
+          inputAmount={orderSummary.inputAmount}
+          outputAmount={orderSummary.outputAmount}
+          enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+          orderId={order?.id}
+        />
+      </SummaryInnerRow>
+    ) : null
 
   return (
     <>
@@ -351,16 +367,19 @@ export function ActivityDetails(props: {
             // Order
             <>
               {order && !skipBridgingDisplay && isBridgeOrder ? (
-                <BridgeActivitySummary
-                  isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
-                  order={order}
-                  swapAndBridgeContext={swapAndBridgeContext}
-                  swapResultContext={swapResultContext}
-                  swapAndBridgeOverview={swapAndBridgeOverview}
-                  orderBasicDetails={orderBasicDetails}
-                >
-                  {hooksDetails}
-                </BridgeActivitySummary>
+                <>
+                  <BridgeActivitySummary
+                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                    order={order}
+                    swapAndBridgeContext={swapAndBridgeContext}
+                    swapResultContext={swapResultContext}
+                    swapAndBridgeOverview={swapAndBridgeOverview}
+                    orderBasicDetails={orderBasicDetails}
+                  >
+                    {hooksDetails}
+                  </BridgeActivitySummary>
+                  {fillabilityWarning}
+                </>
               ) : (
                 // Regular order layout
                 <>
@@ -432,17 +451,7 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
-                  {fillability && showWarning && orderSummary?.inputAmount ? (
-                    <SummaryInnerRow>
-                      <DangerText>Unfillable</DangerText>
-                      <OrderFillabilityWarning
-                        fillability={fillability}
-                        inputAmount={orderSummary.inputAmount}
-                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
-                        orderId={order?.id}
-                      />
-                    </SummaryInnerRow>
-                  ) : null}
+                  {fillabilityWarning}
                 </>
               )}
             </>
