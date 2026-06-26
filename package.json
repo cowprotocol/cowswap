@@ -51,6 +51,7 @@
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
+    "update-widget-sdk-versions": "node apps/widget-configurator/scripts/widget-sdk-versions.script.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
@@ -118,6 +119,12 @@
       ]
     },
     "packageExtensions": {
+      "@reown/appkit-utils": {
+        "dependencies": {
+          "bs58": "6.0.0",
+          "@solana/web3.js": "1.98.4"
+        }
+      },
       "@walletconnect/modal-ui": {
         "dependencies": {
           "lit-html": "2.8.0"
