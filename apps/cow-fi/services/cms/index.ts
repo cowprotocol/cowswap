@@ -1,9 +1,9 @@
 import { components } from '@cowprotocol/cms'
 import { getCmsClient } from '@cowprotocol/core'
 
-import qs from 'qs'
 import { PaginationParam } from 'types'
 
+import { isValidCmsSlug, normalizeSearchArticlesInput } from 'util/cmsValidation'
 import { toQueryParams } from 'util/queryParams'
 
 import { DEFAULT_PAGE_SIZE, clientAddons } from './config'
@@ -183,37 +183,43 @@ export async function searchArticles({
   page?: number
   pageSize?: number
 }): Promise<ArticleListResponse> {
-  const trimmedSearchTerm = searchTerm.trim()
+  const {
+    searchTerm: trimmedSearchTerm,
+    page: normalizedPage,
+    pageSize: normalizedPageSize,
+  } = normalizeSearchArticlesInput({ searchTerm, page, pageSize })
 
   if (!trimmedSearchTerm) {
-    return { data: [], meta: { pagination: { page, pageSize, pageCount: 0, total: 0 } } }
+    return {
+      data: [],
+      meta: { pagination: { page: normalizedPage, pageSize: normalizedPageSize, pageCount: 0, total: 0 } },
+    }
   }
 
   try {
-    // Build query parameters with explicit array indices
     const queryParams = {
-      'filters[$or][0][title][$startsWithi]': trimmedSearchTerm,
-      'filters[$or][1][title][$containsi]': trimmedSearchTerm,
-      'filters[$or][2][description][$containsi]': trimmedSearchTerm,
-      'pagination[page]': page,
-      'pagination[pageSize]': pageSize,
-      'sort[0]': 'title:asc',
-      'populate[0]': 'cover',
-      'populate[1]': 'blocks',
-      'populate[2]': 'seo',
-      'populate[3]': 'authorsBio',
+      filters: {
+        $or: [
+          { title: { $startsWithi: trimmedSearchTerm } },
+          { title: { $containsi: trimmedSearchTerm } },
+          { description: { $containsi: trimmedSearchTerm } },
+        ],
+      },
+      pagination: {
+        page: normalizedPage,
+        pageSize: normalizedPageSize,
+      },
+      sort: ['title:asc'],
+      populate: ['cover', 'blocks', 'seo', 'authorsBio'],
       publicationState: 'live', // Ensure published content
     }
 
-    // Manual query string construction for absolute clarity
-    const queryString = qs.stringify(queryParams, {
-      encodeValuesOnly: true,
-      arrayFormat: 'brackets',
-      encode: false,
+    const { data, error, response } = await client.GET('/articles', {
+      params: {
+        query: toQueryParams(queryParams),
+      },
+      ...clientAddons,
     })
-
-    const url = `/articles?${queryString}`
-    const { data, error, response } = await client.GET(url, clientAddons)
 
     if (error) {
       console.error(`Search failed (${response.status}):`, error)
@@ -285,6 +291,7 @@ async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | nu
 
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
+  if (!isValidCmsSlug(slug)) return null
 
   try {
     const entity = endpoint.slice(1, -1)
@@ -296,15 +303,10 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' 
       populate,
     }
 
-    const queryString = endpoint === '/pages' ? qs.stringify(queryParams, { encodeValuesOnly: true }) : null
-
-    const { data, error } =
-      endpoint === '/pages'
-        ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
-        : await client.GET(endpoint, {
-            params: { query: toQueryParams(queryParams) },
-            ...clientAddons,
-          })
+    const { data, error } = await client.GET(endpoint, {
+      params: { query: toQueryParams(queryParams) },
+      ...clientAddons,
+    })
 
     if (error) {
       console.error(`Error getting slug ${slug} for ${entity}`, error)
