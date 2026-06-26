@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.3...widget-react-v3.2.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.4.0
+
 ## [3.1.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.2...widget-react-v3.1.3) (2026-06-23)
 
 ### Patch Changes

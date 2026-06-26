@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -22,7 +23,7 @@ export function usePreGeneratedPermitInfo(): {
   const url = `${PRE_GENERATED_PERMIT_URL}.${chainId}.json`
 
   const { data, isLoading } = useSWR(
-    url,
+    isEvmChain(chainId) ? url : null,
     (url: string): Promise<Record<string, PermitInfo>> => fetch(url).then((r) => r.json()),
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} },
   )
