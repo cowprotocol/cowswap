@@ -4,6 +4,8 @@ import type { EIP1193Provider } from 'viem'
 
 const GUARD_FLAG = '__mobileInjectedProviderGuarded__'
 const GUARD_TIMEOUT_MS = 1000
+// MetaMask iOS injected provider can leave optional wallet discovery RPCs
+// pending forever. Use safe defaults so capability/disconnect hooks settle.
 const GUARDED_METHODS: Partial<Record<string, () => unknown>> = {
   wallet_getCapabilities: () => ({}),
   wallet_revokePermissions: () => null,

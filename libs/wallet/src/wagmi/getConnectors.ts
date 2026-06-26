@@ -17,9 +17,9 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
       name: 'Injected',
       provider: getInjectedProvider,
     },
-    // On mobile injected browsers, wagmi's shim disconnect path may call
-    // unsupported permission RPCs that never settle. The provider guard handles
-    // disconnect/reconnect state instead, so mobile must use the wallet flow.
+    // wagmi's injected shimDisconnect path calls wallet_requestPermissions.
+    // MetaMask iOS can leave that request pending forever, so mobile injected
+    // must use the wallet's eth_requestAccounts flow instead.
     shimDisconnect: !isMobile,
   })
 }
