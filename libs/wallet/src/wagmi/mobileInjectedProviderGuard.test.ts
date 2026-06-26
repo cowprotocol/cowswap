@@ -1,4 +1,4 @@
-import { guardMobileInjectedProvider } from './mobileInjectedProviderGuard'
+import { guardMobileInjectedProvider, resetMobileInjectedProviderGuard } from './mobileInjectedProviderGuard'
 
 import type { EIP1193Provider } from 'viem'
 
@@ -79,6 +79,23 @@ describe('guardMobileInjectedProvider', () => {
     expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
     expect(request).toHaveBeenNthCalledWith(2, { method: 'wallet_revokePermissions' })
     expect(request).toHaveBeenNthCalledWith(3, { method: 'eth_requestAccounts' })
+  })
+
+  it('resets connection state when requested by provider isolation', async () => {
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
+      if (method === 'eth_requestAccounts') return Promise.resolve(['0x1'])
+      if (method === 'eth_accounts') return Promise.resolve(['0x2'])
+
+      return Promise.resolve(null)
+    })
+    const provider = guardMobileInjectedProvider(createProvider(request))
+
+    await expect(provider?.request({ method: 'eth_requestAccounts' })).resolves.toEqual(['0x1'])
+    resetMobileInjectedProviderGuard(provider as EIP1193Provider)
+    await expect(provider?.request({ method: 'eth_accounts' })).resolves.toEqual(['0x1'])
+
+    expect(request).toHaveBeenNthCalledWith(1, { method: 'eth_requestAccounts' })
+    expect(request).toHaveBeenNthCalledWith(2, { method: 'eth_requestAccounts' })
   })
 
   it('falls back from a connected eth_accounts hang to request accounts', async () => {

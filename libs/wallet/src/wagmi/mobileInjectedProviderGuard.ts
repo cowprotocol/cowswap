@@ -3,6 +3,7 @@ import { isMobile } from '@cowprotocol/common-utils'
 import type { EIP1193Provider } from 'viem'
 
 const GUARD_FLAG = '__mobileInjectedProviderGuarded__'
+const GUARD_RESET = '__mobileInjectedProviderGuardReset__'
 const GUARD_TIMEOUT_MS = 1000
 // MetaMask iOS injected provider can leave optional wallet discovery RPCs
 // pending forever. Use safe defaults so capability/disconnect hooks settle.
@@ -15,6 +16,7 @@ type ProviderRequestArgs = { method: string; params?: unknown }
 type ProviderRequest = (args: ProviderRequestArgs) => Promise<unknown>
 type GuardedProvider = Omit<EIP1193Provider, 'request'> & {
   [GUARD_FLAG]?: true
+  [GUARD_RESET]?: () => void
   chainId?: unknown
   request: ProviderRequest
 }
@@ -39,6 +41,12 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
   let inflightRequestAccounts: Promise<unknown> | undefined
   let isConnected = false
 
+  const resetConnection = (): void => {
+    isConnected = false
+    inflightRequestAccounts = undefined
+  }
+  guardedProvider[GUARD_RESET] = resetConnection
+
   function requestAccounts(): Promise<unknown> {
     // MetaMask rejects or stalls concurrent account prompts. Share one prompt.
     if (!inflightRequestAccounts) {
@@ -59,19 +67,7 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
     if (args.method === 'eth_requestAccounts') return requestAccounts()
 
     if (args.method === 'eth_chainId') {
-      return Promise.race([
-        originalRequest(args),
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            const fallbackChainId = getProviderChainId(guardedProvider)
-            if (fallbackChainId) {
-              resolve(fallbackChainId)
-            } else {
-              reject(new Error('eth_chainId timed out'))
-            }
-          }, GUARD_TIMEOUT_MS)
-        }),
-      ])
+      return requestChainIdWithFallback(originalRequest(args), guardedProvider)
     }
 
     if (args.method === 'eth_accounts') {
@@ -130,6 +126,27 @@ export function guardMobileInjectedProvider(provider: EIP1193Provider | undefine
   }
 
   return guardedProvider as EIP1193Provider
+}
+
+export function resetMobileInjectedProviderGuard(provider: EIP1193Provider): void {
+  const guardedProvider = provider as GuardedProvider
+  guardedProvider[GUARD_RESET]?.()
+}
+
+function requestChainIdWithFallback(chainIdRequest: Promise<unknown>, provider: GuardedProvider): Promise<unknown> {
+  return Promise.race([
+    chainIdRequest,
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const fallbackChainId = getProviderChainId(provider)
+        if (fallbackChainId) {
+          resolve(fallbackChainId)
+        } else {
+          reject(new Error('eth_chainId timed out'))
+        }
+      }, GUARD_TIMEOUT_MS)
+    }),
+  ])
 }
 
 function getProviderChainId(provider: GuardedProvider): string | undefined {
