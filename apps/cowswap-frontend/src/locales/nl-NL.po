@@ -8,7 +8,7 @@ msgstr ""
 "Language: nl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-06-26 10:34\n"
+"PO-Revision-Date: 2026-06-26 16:35\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -144,6 +144,7 @@ msgstr ""
 msgid "The hash for this Safe transaction."
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
@@ -5652,6 +5653,10 @@ msgstr ""
 msgid "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid website URL in manifest. Only http(s) URLs are allowed, with http limited to local development."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Sell amount too small to bridge"
 msgstr ""
@@ -6746,6 +6751,7 @@ msgstr ""
 msgid "NEW"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Simulation successful"
