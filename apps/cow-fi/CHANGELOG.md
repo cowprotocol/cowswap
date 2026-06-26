@@ -1,5 +1,58 @@
 # Changelog
 
+## [2.8.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.4...cow-fi-v2.8.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix: tighten cow-fi content links and remote token parsing (#7619)
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/widget-react@3.2.0
+  - @cowprotocol/analytics@3.5.2
+
+## [2.7.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.3...cow-fi-v2.7.4) (2026-06-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.1
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/ui@3.8.1
+  - @cowprotocol/wallet@3.7.1
+  - @cowprotocol/widget-react@3.1.3
+
+## [2.7.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.2...cow-fi-v2.7.3) (2026-06-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/widget-react@3.1.2
+
 ## [2.7.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.1...cow-fi-v2.7.2) (2026-06-16)
 
 ### Patch Changes

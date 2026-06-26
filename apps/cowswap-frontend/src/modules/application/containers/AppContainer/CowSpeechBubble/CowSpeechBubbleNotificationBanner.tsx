@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 
-import { getSafeSameOriginOrAbsoluteUrl } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
 import { UI } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+
+import { getTrustedNotificationLink } from 'modules/notifications'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -59,20 +60,18 @@ export function CowSpeechBubbleNotificationBanner({
   }
 
   const { title, description, url, id } = currentNotification
-  const safeLink =
-    typeof window !== 'undefined' && url ? getSafeSameOriginOrAbsoluteUrl(url, window.location.origin) : null
-  const linkTarget = safeLink?.isExternal ? '_blank' : '_parent'
+  const trustedLink = getTrustedNotificationLink(url)
 
   return (
     <CowSpeechBubble variant="notification" onClose={onClose} closeButtonAriaLabel={t`Dismiss notification`}>
       <NotificationText>
         <strong>{title}</strong>
         <NotificationDescription>{description}</NotificationDescription>
-        {safeLink && (
+        {trustedLink && (
           <NotificationLink
-            href={safeLink.href}
-            target={linkTarget}
-            rel={linkTarget === '_blank' ? 'noopener noreferrer' : undefined}
+            href={trustedLink.href}
+            target={trustedLink.target}
+            rel={trustedLink.rel}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.NOTIFICATIONS,
               action: 'Click speech bubble notification link',

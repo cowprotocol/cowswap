@@ -7,10 +7,11 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BlockNumberUpdater } from 'entities/blockchain'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
@@ -76,6 +77,7 @@ export function Updaters(): ReactNode {
   return (
     <>
       <CowSdkUpdater />
+      <BlockNumberUpdater />
       <FeatureFlagsUpdater />
       <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
@@ -97,6 +99,7 @@ export function Updaters(): ReactNode {
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
       <WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />
+      <WidgetSafeApp />
       <CowEventsUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />

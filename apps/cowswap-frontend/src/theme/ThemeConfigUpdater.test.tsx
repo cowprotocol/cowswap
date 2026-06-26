@@ -130,17 +130,29 @@ describe('ThemeConfigUpdater', () => {
       expect(mockSetThemeConfig).toHaveBeenCalledWith(lightTheme)
     })
 
-    it('preserves last non-undefined widgetTheme when palette disappears from URL', () => {
+    it('preserves last widgetTheme when the palette query param is removed', () => {
       mockedUseInjectedWidgetPalette.mockReturnValue(palette)
 
       const { rerender } = renderHook(() => ThemeConfigUpdater())
 
-      // Palette disappears (e.g. URL changes to null)
       mockedUseInjectedWidgetPalette.mockReturnValue(undefined)
       rerender()
 
-      // widgetTheme state should still hold the last non-undefined palette
       expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(palette, lightTheme)
+    })
+
+    it('resets widgetTheme when palette=null is sent in the URL', () => {
+      mockedUseInjectedWidgetPalette.mockReturnValue(palette)
+      mockedMapWidgetTheme.mockReturnValue(widgetTheme)
+
+      const { rerender } = renderHook(() => ThemeConfigUpdater())
+
+      mockedUseInjectedWidgetPalette.mockReturnValue(null)
+      mockedMapWidgetTheme.mockReturnValue(lightTheme)
+      rerender()
+
+      expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(undefined, lightTheme)
+      expect(mockSetThemeConfig).toHaveBeenLastCalledWith(lightTheme)
     })
 
     it('updates widgetTheme state when a new palette arrives', () => {
@@ -157,6 +169,20 @@ describe('ThemeConfigUpdater', () => {
 
       expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(newPalette, lightTheme)
       expect(mockSetThemeConfig).toHaveBeenLastCalledWith(newWidgetTheme)
+    })
+
+    it('resets widgetTheme when an invalid palette arrives after a valid one', () => {
+      mockedUseInjectedWidgetPalette.mockReturnValue(palette)
+      mockedMapWidgetTheme.mockReturnValue(widgetTheme)
+
+      const { rerender } = renderHook(() => ThemeConfigUpdater())
+
+      mockedUseInjectedWidgetPalette.mockReturnValue(null)
+      mockedMapWidgetTheme.mockReturnValue(lightTheme)
+      rerender()
+
+      expect(mockedMapWidgetTheme).toHaveBeenLastCalledWith(undefined, lightTheme)
+      expect(mockSetThemeConfig).toHaveBeenLastCalledWith(lightTheme)
     })
   })
 })
