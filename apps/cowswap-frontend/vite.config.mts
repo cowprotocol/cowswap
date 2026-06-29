@@ -259,7 +259,12 @@ export default defineConfig(({ mode, isPreview }) => {
       // Dedupe packages that rely on shared React context across workspace libs.
       // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
       // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
-      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // @reown/appkit-controllers IS deduped because it holds AppKit's valtio state
+      // singletons (ConnectorController, OptionsController, ...). Since libs/wallet pulled
+      // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
+      // peer-instances; without deduping the controllers package, code in libs/wallet reads
+      // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
+      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     build: {

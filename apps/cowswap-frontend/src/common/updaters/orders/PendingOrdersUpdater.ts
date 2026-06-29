@@ -8,6 +8,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+import { useBlockNumber } from 'entities/blockchain'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 import { useDispatch } from 'react-redux'
@@ -55,7 +56,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
-import { useBlockNumber } from '../../hooks/useBlockNumber'
 import { removeOrdersToCancelAtom } from '../../state/ordersToCancel.atom'
 
 interface HandlePresignedParams {
