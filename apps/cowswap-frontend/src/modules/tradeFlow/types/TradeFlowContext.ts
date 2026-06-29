@@ -26,6 +26,7 @@ export interface SafeBundleFlowContext {
   needsApproval: boolean
   tokenAddress: string
   amountToApprove: CurrencyAmount<Currency>
+  maximumSendSellAmount: CurrencyAmount<Currency>
 }
 
 export interface TradeFlowContext {
