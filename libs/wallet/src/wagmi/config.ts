@@ -119,6 +119,6 @@ if (getIsSafeAppIframe()) {
 
 bindActiveProvider(wagmiAdapter)
 
-const config = wagmiAdapter.wagmiConfig
+const { wagmiConfig } = wagmiAdapter
 
-export { config, wagmiAdapter, reownAppKit, wagmiStorage }
+export { wagmiConfig, wagmiAdapter, reownAppKit, wagmiStorage }

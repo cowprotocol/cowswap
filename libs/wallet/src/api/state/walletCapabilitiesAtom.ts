@@ -9,7 +9,7 @@ import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { getCapabilities } from 'viem/actions'
 import { Connector } from 'wagmi'
 
-import { config } from '../../wagmi/config'
+import { wagmiConfig } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import {
   isSafeAppAtom,
@@ -114,7 +114,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
       return null
     }
 
-    capabilities = await getCapabilities(config.getClient({ chainId }), {
+    capabilities = await getCapabilities(wagmiConfig.getClient({ chainId }), {
       account: account as `0x${string}`,
       chainId,
     })

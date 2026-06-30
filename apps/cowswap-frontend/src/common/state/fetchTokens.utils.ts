@@ -3,7 +3,7 @@ import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 import { fetchTokenFromBlockchain } from '@cowprotocol/tokens'
 import type { TokensByAddress } from '@cowprotocol/tokens'
-import { config as defaultWagmiConfig } from '@cowprotocol/wallet'
+import { wagmiConfig } from '@cowprotocol/wallet'
 
 function getTokenKey(chainId: number, address: string): string {
   return `${chainId}::${getAddressKey(address)}`
@@ -39,7 +39,7 @@ export async function fetchTokens(
     } else if (inFlightPromises[tokenKey]) {
       tokenPromises[addressKey] = inFlightPromises[tokenKey]
     } else if (!tokenPromises[addressKey]) {
-      const promise = fetchTokenFromBlockchain(address, chainId, defaultWagmiConfig)
+      const promise = fetchTokenFromBlockchain(address, chainId, wagmiConfig)
         .then((tokenData) => {
           const token = TokenWithLogo.fromToken(tokenData)
           cachedTokens[tokenKey] = token

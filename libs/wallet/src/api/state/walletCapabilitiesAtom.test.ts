@@ -58,7 +58,7 @@ const MOCK_CHAIN_ID = SupportedChainId.MAINNET
 const mockIsMobile = jest.fn()
 const mockGetIsWalletConnect = jest.fn()
 const mockGetCapabilities = jest.fn()
-const mockConfigGetClient = jest.fn()
+const mockWagmiConfigGetClient = jest.fn()
 
 jest.mock('@cowprotocol/common-utils', () => ({
   ...jest.requireActual('@cowprotocol/common-utils'),
@@ -74,8 +74,8 @@ jest.mock('viem/actions', () => ({
 }))
 
 jest.mock('../../wagmi/config', () => ({
-  config: {
-    getClient: (...args: unknown[]) => mockConfigGetClient(...args),
+  wagmiConfig: {
+    getClient: (...args: unknown[]) => mockWagmiConfigGetClient(...args),
   },
 }))
 
@@ -158,7 +158,7 @@ describe('walletCapabilitiesAtom', () => {
     mockIsMobile.mockReturnValue(false)
     mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
-    mockConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
+    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   describe('getShouldSkipCapabilitiesCheck (widget meta info)', () => {
@@ -253,7 +253,7 @@ describe('walletCapabilitiesAtom', () => {
 
       expect(result).toEqual(capabilities)
       expect(mockGetCapabilities).toHaveBeenCalled()
-      expect(mockConfigGetClient).toHaveBeenCalledWith({ chainId: MOCK_CHAIN_ID })
+      expect(mockWagmiConfigGetClient).toHaveBeenCalledWith({ chainId: MOCK_CHAIN_ID })
     })
 
     it('returns capabilities when getCapabilities resolves with hex chain id key', async () => {
@@ -307,7 +307,7 @@ describe('walletCapabilitiesAtom', () => {
 
     it('returns null when getCapabilities throws', async () => {
       mockGetCapabilities.mockRejectedValue(new Error('viem error'))
-      mockConfigGetClient.mockReturnValue({})
+      mockWagmiConfigGetClient.mockReturnValue({})
 
       const store = createStore()
       setWalletInfo(store, {})
@@ -325,7 +325,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockIsMobile.mockReturnValue(false)
     mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
-    mockConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
+    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   it('returns false when walletInfoAtom yields no capabilities (disconnected)', async () => {
@@ -470,7 +470,7 @@ describe('isBundlingSupportedLoadableAtom and isBundlingSupportedAtom', () => {
     mockIsMobile.mockReturnValue(false)
     mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
-    mockConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
+    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   it('isBundlingSupportedAtom returns null while loading', async () => {
