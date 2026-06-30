@@ -16,15 +16,18 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
     target: {
       id: 'injected',
       name: 'Injected',
-      // Wrap the raw window.ethereum with createIsolatedProvider so this connector honors
-      // tab isolation (blocks origin-wide wallet_revokePermissions, filters accountsChanged).
-      // getInjectedProvider keeps the guard against a throwing window.ethereum bridge.
+      // Keep the mobile-only generic injected connector behind the same
+      // tab-isolation wrapper as EIP-6963 providers. Without this, its
+      // accountsChanged / wallet_revokePermissions calls bypass isolation.
       provider: (targetWindow) => {
         const provider = getInjectedProvider(targetWindow)
         return provider ? createIsolatedProvider(provider) : undefined
       },
     },
-    shimDisconnect: true,
+    // wagmi's injected shimDisconnect path calls wallet_requestPermissions.
+    // MetaMask iOS can leave that request pending forever, so mobile injected
+    // must use the wallet's eth_requestAccounts flow instead.
+    shimDisconnect: false,
   })
 }
 

@@ -9,6 +9,7 @@ import { OrderFillability } from 'modules/ordersTable'
 
 import {
   ApproveWrapper,
+  NoWrap,
   OrderActionsWrapper,
   Subtitle,
   Title,
@@ -21,6 +22,7 @@ import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 interface OrderFillabilityWarningProps {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
+  outputAmount?: CurrencyAmount<Token>
   enablePartialApproveBySettings?: boolean
   orderId?: string
 }
@@ -28,6 +30,7 @@ interface OrderFillabilityWarningProps {
 export function OrderFillabilityWarning({
   fillability,
   inputAmount,
+  outputAmount,
   enablePartialApproveBySettings,
   orderId,
 }: OrderFillabilityWarningProps): ReactNode {
@@ -45,7 +48,9 @@ export function OrderFillabilityWarning({
 
   const NotEnoughBalanceDescription = (
     <Subtitle>
-      <Trans>Please, top up {symbol} balance or cancel the order.</Trans>
+      <Trans>
+        Please, top up <NoWrap>{symbol}</NoWrap> balance or cancel the order.
+      </Trans>
     </Subtitle>
   )
 
@@ -78,6 +83,7 @@ export function OrderFillabilityWarning({
                 orderId={orderId}
                 isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
                 amountToApprove={inputAmount}
+                amountToBuy={outputAmount}
               />
             </ApproveWrapper>
           </OrderActionsWrapper>

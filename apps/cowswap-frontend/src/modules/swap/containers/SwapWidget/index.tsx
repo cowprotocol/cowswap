@@ -53,6 +53,7 @@ import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
+import { SwapDebugPanel } from '../SwapDebugPanel'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
@@ -274,6 +275,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   return (
     <Container>
+      <SwapDebugPanel contextIsReady={doTrade.contextIsReady} deadline={deadlineState[0]} />
       {showAddIntermediateTokenModal ? (
         <AddIntermediateTokenModal
           onDismiss={handleCloseImportModal}

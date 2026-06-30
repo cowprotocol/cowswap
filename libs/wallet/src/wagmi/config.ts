@@ -77,8 +77,8 @@ const wagmiAdapter = new WagmiAdapter({
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
 const isSafeApp = getIsSafeAppIframe()
-const hasRecentConnector = !!localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`)
-const shouldAutoReconnect = isSafeApp || isMobile || hasRecentConnector
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
@@ -87,7 +87,7 @@ const reownAppKit = createAppKit({
   defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: shouldAutoReconnect,
+  enableReconnect: hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -117,7 +117,7 @@ const reownAppKit = createAppKit({
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (isMobile && window.ethereum) {
+} else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
 
