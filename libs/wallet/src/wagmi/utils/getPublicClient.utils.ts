@@ -2,8 +2,9 @@ import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { FiniteMap } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
-import { isEip1193Provider } from 'src/wagmi/utils/isEip1193Provider.utils'
 import { custom, createPublicClient, http, type EIP1193Provider, type PublicClient } from 'viem'
+
+import { isEip1193Provider } from './isEip1193Provider.utils'
 
 const publicClientsCache = new FiniteMap<EvmChains, PublicClient>(16)
 

@@ -8,8 +8,6 @@ import { waitFor } from '@testing-library/react'
 // eslint-disable-next-line import/no-internal-modules -- fixtures need TwapOrderItem; avoid entities/twap barrel
 import { TwapOrderStatus, type TwapOrderItem } from 'modules/twap/types'
 
-import { fetchTokens } from 'common/state/fetchTokens.utils'
-
 jest.mock('modules/orders', () => ({
   getTokensListFromOrders: jest.requireActual('modules/orders/utils/getTokensListFromOrders').getTokensListFromOrders,
 }))
@@ -20,6 +18,8 @@ import {
   twapOrdersTokensAtom,
   twapOrdersTokensLoadableAtom,
 } from './twapOrdersTokensAtom'
+
+import { fetchTokens } from '../utils/fetchTokens/fetchTokens.utils'
 
 // eslint-disable-next-line no-var -- Jest mock factory runs before `let`/`const` init (TDZ); see reduxOrders.atom.test.ts
 var mockTwapOrdersListAtom: WritableAtom<TwapOrderItem[], [TwapOrderItem[]], void> | undefined
@@ -45,7 +45,7 @@ jest.mock('@cowprotocol/tokens', () => {
   return { tokensByAddressAtom }
 })
 
-jest.mock('common/state/fetchTokens.utils', () => ({
+jest.mock('../utils/fetchTokens/fetchTokens.utils', () => ({
   fetchTokens: jest.fn(),
 }))
 

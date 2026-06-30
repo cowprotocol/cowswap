@@ -1,8 +1,9 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 
+import { TabOrderTypes } from 'entities/routes/routes.atom'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { TabOrderTypes } from 'common/state/routesState'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { getOrdersTableList } from './getOrdersTableList'
