@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.17.0...cowswap-v3.17.1) (2026-06-30)
+
+### Patch Changes
+
+- fix(zero-approval): stop logging expected USDT approve revert as an error (#7775)
+
 ## [3.17.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.16.1...cowswap-v3.17.0) (2026-06-25)
 
 ### Minor Changes
