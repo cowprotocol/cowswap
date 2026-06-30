@@ -1,14 +1,13 @@
 import { atomWithStorage } from 'jotai/utils'
 
-import { VIEM_CHAINS } from '@cowprotocol/common-const'
 import { asyncAtomFamily } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { isEip1193Provider } from '@cowprotocol/wallet'
+import { getPublicClientFromProvider } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { createPublicClient, custom, erc20Abi, http, type Address, type PublicClient } from 'viem'
+import { erc20Abi, type Address } from 'viem'
 import { Connector } from 'wagmi'
 
 export type AllowancesState = Record<string, bigint | undefined>
@@ -27,16 +26,11 @@ async function fetchAllowances(
   spender: string,
   tokenAddresses: string[],
 ): Promise<AllowancesState> {
-  const chain = VIEM_CHAINS[chainId]
-
   const provider = await connector.getProvider({ chainId }).catch(() => undefined)
 
   // If the connector does not expose an EIP-1193, or provider retrieval fails (which can happen during page load),
-  // fallback to default RPC:
-  const client: PublicClient = createPublicClient({
-    chain,
-    transport: provider && isEip1193Provider(provider) ? custom(provider) : http(),
-  })
+  // fallback to default RPC (getClient takes care of that internally):
+  const client = getPublicClientFromProvider(chainId, provider)
 
   const results = await client.multicall({
     allowFailure: true,
