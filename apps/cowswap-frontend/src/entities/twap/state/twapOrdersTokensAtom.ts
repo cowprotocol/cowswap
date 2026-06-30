@@ -6,9 +6,9 @@ import type { TokensByAddress } from '@cowprotocol/tokens'
 
 import { getTokensListFromOrders } from 'modules/orders'
 
-import { fetchTokens } from 'common/state/fetchTokens.utils'
-
 import { twapOrdersListAtom } from './twapOrdersListAtom'
+
+import { fetchTokens } from '../utils/fetchTokens/fetchTokens.utils'
 
 export const twapOrdersTokensAddressesAtom = atom((get) => getTokensListFromOrders(get(twapOrdersListAtom)))
 
