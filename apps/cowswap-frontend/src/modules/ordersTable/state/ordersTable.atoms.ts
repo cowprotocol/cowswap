@@ -12,7 +12,7 @@ import {
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom, isBundlingSupportedLoadableAtom } from '@cowprotocol/wallet'
+import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol/wallet'
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
@@ -110,11 +110,11 @@ ordersTableStateAtom.onMount = () => {
     }
 
     if (orderType === TabOrderTypes.ADVANCED) {
-      const isBundlingSupportedLoadable = get(isBundlingSupportedLoadableAtom)
-      const isBundlingSupported =
-        isBundlingSupportedLoadable.state === 'hasData' ? !!isBundlingSupportedLoadable.data : false
+      const isAtomicBatchSupportedLoadable = get(isAtomicBatchSupportedLoadableAtom)
+      const isAtomicBatchSupported =
+        isAtomicBatchSupportedLoadable.state === 'hasData' ? !!isAtomicBatchSupportedLoadable.data : false
 
-      if (!isBundlingSupported) {
+      if (!isAtomicBatchSupported) {
         reduxOrders = []
       } else {
         const emulatedTwapOrders = get(emulatedTwapOrdersAtom)

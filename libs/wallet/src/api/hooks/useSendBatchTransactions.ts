@@ -8,7 +8,7 @@ import { sendCalls } from 'wagmi/actions'
 
 import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
-import { isBundlingSupportedAtom } from '../state/walletCapabilitiesAtom'
+import { isAtomicBatchSupportedAtom } from '../state/walletCapabilitiesAtom'
 
 import type { Hex } from 'viem'
 
@@ -18,16 +18,15 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
   const config = useConfig()
   const safeAppsSdk = useSafeAppsSdk()
   const { chainId, account } = useWalletInfo()
-  const isBundlingSupported = useAtomValue(isBundlingSupportedAtom)
-  // TODO: Consider renaming to isAtomicBatchSupported (also atom)
+  const isAtomicBatchSupported = useAtomValue(isAtomicBatchSupportedAtom)
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
-      if (isBundlingSupported === null) {
+      if (isAtomicBatchSupported === null) {
         throw new Error('Batch transactions status not know yet')
       }
 
-      if (isBundlingSupported && account && chainId) {
+      if (isAtomicBatchSupported && account && chainId) {
         const calls = txs.map(({ to, value, data }) => ({
           to: to as Hex,
           value: BigInt(value),
@@ -49,6 +48,6 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
         throw new Error('Batch transactions sending is not supported')
       }
     },
-    [isBundlingSupported, config, account, chainId, safeAppsSdk],
+    [isAtomicBatchSupported, config, account, chainId, safeAppsSdk],
   )
 }

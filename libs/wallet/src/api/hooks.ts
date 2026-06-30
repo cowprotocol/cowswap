@@ -9,7 +9,7 @@ import {
   walletInfoAtom,
   isEagerConnectInProgressAtom,
 } from './state'
-import { isBundlingSupportedAtom } from './state/walletCapabilitiesAtom'
+import { isAtomicBatchSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
@@ -35,7 +35,7 @@ export function useIsEagerConnectInProgress(): boolean {
 }
 
 export function useIsTxBundlingSupported(): boolean | null {
-  return useAtomValue(isBundlingSupportedAtom)
+  return useAtomValue(isAtomicBatchSupportedAtom)
 }
 
 export function useIsAssetWatchingSupported(): boolean {

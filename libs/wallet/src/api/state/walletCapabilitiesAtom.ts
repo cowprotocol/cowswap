@@ -146,7 +146,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 })
 
 // eslint-disable-next-line complexity
-export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
+export const isAtomicBatchSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
   const isSafeApp = get(isSafeAppAtom)
 
   if (isSafeApp === null) return null
@@ -183,10 +183,10 @@ export const isBundlingSupportedAsyncAtom = atom(async (get): Promise<boolean | 
   // return status === 'supported' || status === 'ready'
 })
 
-export const isBundlingSupportedLoadableAtom = loadable(isBundlingSupportedAsyncAtom)
+export const isAtomicBatchSupportedLoadableAtom = loadable(isAtomicBatchSupportedAsyncAtom)
 
-export const isBundlingSupportedAtom = atom((get): boolean | null => {
-  const loadable = get(isBundlingSupportedLoadableAtom)
+export const isAtomicBatchSupportedAtom = atom((get): boolean | null => {
+  const loadable = get(isAtomicBatchSupportedLoadableAtom)
 
   if (loadable.state === 'loading') return null
   if (loadable.state === 'hasError') return false

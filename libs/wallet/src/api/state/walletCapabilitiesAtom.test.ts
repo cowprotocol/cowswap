@@ -8,9 +8,9 @@ import { Connector } from 'wagmi'
 
 import {
   getShouldSkipCapabilitiesCheck,
-  isBundlingSupportedAtom,
-  isBundlingSupportedAsyncAtom,
-  isBundlingSupportedLoadableAtom,
+  isAtomicBatchSupportedAtom,
+  isAtomicBatchSupportedAsyncAtom,
+  isAtomicBatchSupportedLoadableAtom,
   resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
@@ -319,7 +319,7 @@ describe('walletCapabilitiesAtom', () => {
   })
 })
 
-describe('isBundlingSupportedAsyncAtom', () => {
+describe('isAtomicBatchSupportedAsyncAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockIsMobile.mockReturnValue(false)
@@ -333,7 +333,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     seedResolvedWalletMetadata(store)
     store.set(walletInfoAtom, { chainId: MOCK_CHAIN_ID } as WalletInfo)
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
   })
@@ -344,7 +344,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     const store = createStore()
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
   })
@@ -354,7 +354,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     store.set(writableIsSafeAppAtom, true)
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(true)
   })
@@ -365,7 +365,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(true)
   })
@@ -376,7 +376,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'ready' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
   })
@@ -386,7 +386,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomicBatch: { supported: true } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(true)
   })
@@ -397,7 +397,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({})
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
   })
@@ -408,7 +408,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(true)
   })
@@ -419,7 +419,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(true)
     expect(mockGetCapabilities).toHaveBeenCalled()
@@ -431,7 +431,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
     expect(mockGetCapabilities).not.toHaveBeenCalled()
@@ -444,7 +444,7 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
     expect(mockGetCapabilities).not.toHaveBeenCalled()
@@ -457,14 +457,14 @@ describe('isBundlingSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    const result = await store.get(isBundlingSupportedAsyncAtom)
+    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
     expect(result).toBe(false)
     expect(mockGetCapabilities).not.toHaveBeenCalled()
   })
 })
 
-describe('isBundlingSupportedLoadableAtom and isBundlingSupportedAtom', () => {
+describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockIsMobile.mockReturnValue(false)
@@ -473,7 +473,7 @@ describe('isBundlingSupportedLoadableAtom and isBundlingSupportedAtom', () => {
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
-  it('isBundlingSupportedAtom returns null while loading', async () => {
+  it('isAtomicBatchSupportedAtom returns null while loading', async () => {
     mockGetCapabilities.mockImplementation(
       () =>
         new Promise<Record<number, WalletCapabilities>>((resolve) =>
@@ -484,25 +484,25 @@ describe('isBundlingSupportedLoadableAtom and isBundlingSupportedAtom', () => {
     const store = createStore()
     setWalletInfo(store, {})
 
-    const syncValue = store.get(isBundlingSupportedAtom)
+    const syncValue = store.get(isAtomicBatchSupportedAtom)
 
     expect(syncValue).toBe(null)
-    await store.get(isBundlingSupportedAsyncAtom)
-    const afterResolve = store.get(isBundlingSupportedAtom)
+    await store.get(isAtomicBatchSupportedAsyncAtom)
+    const afterResolve = store.get(isAtomicBatchSupportedAtom)
     expect(afterResolve).toBe(true)
   })
 
-  it('isBundlingSupportedAtom returns false when capabilities fail and Safe shortcuts do not apply', async () => {
+  it('isAtomicBatchSupportedAtom returns false when capabilities fail and Safe shortcuts do not apply', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, false)
     store.set(writableIsSafeAppAtom, false)
     mockGetCapabilities.mockRejectedValue(new Error('network error'))
     setWalletInfo(store, {})
 
-    store.get(isBundlingSupportedLoadableAtom)
-    const asyncResult = await store.get(isBundlingSupportedAsyncAtom)
-    const loadable = store.get(isBundlingSupportedLoadableAtom)
-    const syncValue = store.get(isBundlingSupportedAtom)
+    store.get(isAtomicBatchSupportedLoadableAtom)
+    const asyncResult = await store.get(isAtomicBatchSupportedAsyncAtom)
+    const loadable = store.get(isAtomicBatchSupportedLoadableAtom)
+    const syncValue = store.get(isAtomicBatchSupportedAtom)
 
     expect(asyncResult).toBe(false)
     expect(loadable.state).toBe('hasData')
@@ -512,15 +512,15 @@ describe('isBundlingSupportedLoadableAtom and isBundlingSupportedAtom', () => {
     expect(syncValue).toBe(false)
   })
 
-  it('isBundlingSupportedAtom returns correct boolean when data is present', async () => {
+  it('isAtomicBatchSupportedAtom returns correct boolean when data is present', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
     setWalletInfo(store, {})
 
-    store.get(isBundlingSupportedLoadableAtom)
-    const asyncResult = await store.get(isBundlingSupportedAsyncAtom)
-    const syncValue = store.get(isBundlingSupportedAtom)
+    store.get(isAtomicBatchSupportedLoadableAtom)
+    const asyncResult = await store.get(isAtomicBatchSupportedAsyncAtom)
+    const syncValue = store.get(isAtomicBatchSupportedAtom)
 
     expect(asyncResult).toBe(true)
     expect(syncValue).toBe(true)

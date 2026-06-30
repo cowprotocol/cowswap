@@ -53,8 +53,8 @@ export * from './api/state'
 export {
   resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
-  isBundlingSupportedAtom,
-  isBundlingSupportedLoadableAtom,
+  isAtomicBatchSupportedAtom,
+  isAtomicBatchSupportedLoadableAtom,
   type WalletCapabilities,
 } from './api/state/walletCapabilitiesAtom'
 export * from './wagmi/state/walletMetadata.atoms'
