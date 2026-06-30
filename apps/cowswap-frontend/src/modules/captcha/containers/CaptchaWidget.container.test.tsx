@@ -1,6 +1,6 @@
 import { Provider as JotaiProvider } from 'jotai'
 import { createStore } from 'jotai/vanilla'
-import { act, ReactNode } from 'react'
+import { act, CSSProperties, ReactNode } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 
@@ -23,9 +23,14 @@ jest.mock('@cowprotocol/common-hooks', () => {
   }
 })
 
+let mockTurnstileProps: { style?: CSSProperties; onSuccess?: (token: string) => void } = {}
+
 jest.mock('@marsidev/react-turnstile', () => ({
   __esModule: true,
-  Turnstile: () => <div data-testid="turnstile" />,
+  Turnstile: (props: { style?: CSSProperties; onSuccess?: (token: string) => void }) => {
+    mockTurnstileProps = props
+    return <div data-testid="turnstile" style={props.style} />
+  },
 }))
 
 jest.mock('cowSdk', () => ({
@@ -67,6 +72,7 @@ describe('CaptchaWidget', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
+    mockTurnstileProps = {}
     useThemeMock.mockReturnValue({ darkMode: false } as ReturnType<typeof useTheme>)
   })
 
@@ -100,6 +106,46 @@ describe('CaptchaWidget', () => {
     renderWithStore(store)
 
     expect(screen.getByTestId('turnstile')).not.toBeNull()
+  })
+
+  it('hides the solved widget while the JWT exchange is pending, then unmounts it once the JWT arrives', async () => {
+    const store = createStore()
+    store.set(featureFlagsAtom, { isCaptchaEnabled: true })
+
+    let resolveExchange!: (jwt: string) => void
+    exchangeTurnstileTokenMock.mockReturnValue(new Promise<string>((resolve) => (resolveExchange = resolve)))
+
+    renderWithStore(store)
+
+    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block')
+
+    await act(async () => {
+      mockTurnstileProps.onSuccess?.('challenge-token')
+    })
+
+    // Solved widget (and its "Success!" box) is hidden immediately, before the exchange resolves.
+    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('none')
+
+    await act(async () => {
+      resolveExchange(createJwt())
+    })
+
+    await waitFor(() => expect(screen.queryByTestId('turnstile')).toBeNull())
+  })
+
+  it('re-shows the widget when the JWT exchange fails', async () => {
+    const store = createStore()
+    store.set(featureFlagsAtom, { isCaptchaEnabled: true })
+    exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+
+    renderWithStore(store)
+
+    await act(async () => {
+      await mockTurnstileProps.onSuccess?.('challenge-token')
+    })
+
+    await waitFor(() => expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block'))
+    expect(store.get(captchaJwtAtom)).toBeNull()
   })
 
   it('clears a stored captcha JWT and bearer token when the flag is disabled', async () => {
