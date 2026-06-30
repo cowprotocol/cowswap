@@ -76,6 +76,9 @@ const wagmiAdapter = new WagmiAdapter({
 // WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
@@ -83,7 +86,7 @@ const reownAppKit = createAppKit({
   defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: true,
+  enableReconnect: hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -113,7 +116,7 @@ const reownAppKit = createAppKit({
  */
 if (getIsSafeAppIframe()) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (isMobile && window.ethereum) {
+} else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
 
