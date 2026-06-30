@@ -1,5 +1,10 @@
 import type { EIP1193Provider } from 'viem'
 
+jest.mock('./wagmi/mobileInjectedProviderGuard', () => ({
+  guardMobileInjectedProvider: jest.fn((provider: EIP1193Provider | undefined) => provider),
+  resetMobileInjectedProviderGuard: jest.fn(),
+}))
+
 type ProviderIsolationModule = typeof import('./providerIsolation')
 
 type IsolationTestWindow = Window &
@@ -72,6 +77,7 @@ describe('interceptEIP6963Providers', () => {
 
   it('continues to wrap non-Brave providers immediately', async () => {
     const { interceptEIP6963Providers } = await loadProviderIsolation()
+    const { guardMobileInjectedProvider } = await import('./wagmi/mobileInjectedProviderGuard')
     const downstreamListener = jest.fn()
     let providerReadCount = 0
     const detail: { info: { name: string; rdns: string }; provider: EIP1193Provider } = {
@@ -93,7 +99,31 @@ describe('interceptEIP6963Providers', () => {
     )
 
     expect(providerReadCount).toBe(1)
+    expect(guardMobileInjectedProvider).toHaveBeenCalledWith(provider)
     expect(downstreamListener).toHaveBeenCalledTimes(1)
     expect((downstreamListener.mock.calls[0]?.[0] as CustomEvent).detail.provider).not.toBe(provider)
+  })
+})
+
+describe('createIsolatedProvider', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('resets the mobile provider guard when blocking wallet_revokePermissions', async () => {
+    const { createIsolatedProvider } = await loadProviderIsolation()
+    const { resetMobileInjectedProviderGuard } = await import('./wagmi/mobileInjectedProviderGuard')
+    const request = jest.fn<EIP1193Provider['request']>().mockResolvedValue(null)
+    const original = {
+      request,
+      on: jest.fn(),
+      removeListener: jest.fn(),
+    } as EIP1193Provider
+    const isolatedProvider = createIsolatedProvider(original)
+
+    await expect(isolatedProvider.request({ method: 'wallet_revokePermissions' })).resolves.toBeNull()
+
+    expect(resetMobileInjectedProviderGuard).toHaveBeenCalledWith(original)
+    expect(request).not.toHaveBeenCalled()
   })
 })
