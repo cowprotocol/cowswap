@@ -5,8 +5,7 @@ import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-
-import { TabOrderTypes, OrderTabId } from 'common/state/routesState'
+import { TabOrderTypes, OrderTabId } from 'entities/routes/routes.atom'
 
 import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'

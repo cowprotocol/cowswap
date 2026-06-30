@@ -7,12 +7,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { OrderTabId } from 'entities/routes/routes.atom'
 import SVG from 'react-inlinesvg'
 
 import { ordersTableTabsAtom } from 'modules/ordersTable/state/params/ordersTableParams.atom'
 
 import { useNavigate } from 'common/hooks/useNavigate'
-import { OrderTabId } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTabs.styled'
 

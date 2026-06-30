@@ -5,12 +5,12 @@ import { useStateWithDeferredValue } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { OrderTabId, TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { usePendingOrdersPrices } from 'modules/orders'
 
-import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

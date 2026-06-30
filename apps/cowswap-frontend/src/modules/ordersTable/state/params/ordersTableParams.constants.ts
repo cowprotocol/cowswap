@@ -1,6 +1,5 @@
 import { MessageDescriptor } from '@lingui/core'
-
-import { OrderTabId } from 'common/state/routesState'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 export interface OrderTab {
   id: OrderTabId

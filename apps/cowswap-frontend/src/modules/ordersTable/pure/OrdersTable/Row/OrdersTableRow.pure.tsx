@@ -4,12 +4,11 @@ import React, { ReactNode } from 'react'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { ordersToCancelMapAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
-
-import { OrderTabId } from 'common/state/routesState'
 
 import { OrdersTableRowGroup } from './Group/OrdersTableRowGroup.pure'
 

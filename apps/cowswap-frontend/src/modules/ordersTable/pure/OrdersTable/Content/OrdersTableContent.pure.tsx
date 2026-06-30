@@ -3,8 +3,9 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { TabOrderTypes } from 'entities/routes/routes.atom'
+
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { TabOrderTypes } from 'common/state/routesState'
 
 import { OrdersTableNoOrdersContent } from './NoOrders/OrdersTableNoOrdersContent'
 import { OrdersTableNoWalletContent } from './NoWallet/OrdersTableNoWalletContent'

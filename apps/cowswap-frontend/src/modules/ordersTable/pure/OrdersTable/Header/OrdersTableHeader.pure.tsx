@@ -2,8 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { ReactNode, useEffect, useRef } from 'react'
 
 import { ordersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
-
-import { OrderTabId } from 'common/state/routesState'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { TableHeaderConfig } from './ordersTableHeader.constants'
 import { HeaderElement, TableHeaderWrapper } from './OrdersTableHeader.styled'

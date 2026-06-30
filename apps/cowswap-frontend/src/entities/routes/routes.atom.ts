@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Location } from 'history'
 
-import { hashHistory } from '../constants/routes'
+import { hashHistory } from '../../common/constants/routes'
 
 function getInitialLocation(): Location {
   if (typeof window === 'undefined') {

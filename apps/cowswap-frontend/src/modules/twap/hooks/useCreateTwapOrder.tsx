@@ -8,6 +8,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
@@ -21,7 +22,6 @@ import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
-import { OrderTabId } from 'common/state/routesState'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'

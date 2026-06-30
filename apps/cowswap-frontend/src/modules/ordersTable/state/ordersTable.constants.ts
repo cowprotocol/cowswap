@@ -1,6 +1,6 @@
 import { UiOrderType } from '@cowprotocol/types'
 
-import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
+import { OrderTabId, TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { OrdersTableList, OrdersTableState } from './ordersTable.types'
 

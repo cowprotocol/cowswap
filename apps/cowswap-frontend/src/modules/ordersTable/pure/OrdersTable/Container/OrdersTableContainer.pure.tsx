@@ -3,11 +3,12 @@ import { PropsWithChildren, ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { OrderTabId, TabOrderTypes } from 'entities/routes/routes.atom'
+
 import { ProtocolFeeInfoBanner } from 'modules/limitOrders'
 import { ordersTableFiltersAtom } from 'modules/ordersTable'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { OrderTabId, TabOrderTypes } from 'common/state/routesState'
 
 import * as styledEl from './OrdersTableContainer.styled'
 

@@ -5,6 +5,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 import { useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
@@ -35,7 +36,6 @@ import {
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
-import { TabOrderTypes } from 'common/state/routesState'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 

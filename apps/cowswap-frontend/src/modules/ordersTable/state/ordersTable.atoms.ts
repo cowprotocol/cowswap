@@ -16,6 +16,14 @@ import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
+import {
+  TabOrderTypes,
+  locationOrderTypeAtom,
+  tabParamAtom,
+  OrderTabId,
+  locationAtom,
+  pageParamAtom,
+} from 'entities/routes/routes.atom'
 import { observe } from 'jotai-effect'
 
 import { OrderStatus, Order } from 'legacy/state/orders/actions'
@@ -30,14 +38,6 @@ import { emulatedPartOrdersAtom } from 'modules/twap/state/emulatedPartOrdersAto
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/emulatedTwapOrdersAtom'
 
 import { hashHistory } from 'common/constants/routes'
-import {
-  TabOrderTypes,
-  locationOrderTypeAtom,
-  tabParamAtom,
-  OrderTabId,
-  locationAtom,
-  pageParamAtom,
-} from 'common/state/routesState'
 
 import { ordersTableFiltersAtom } from './filters/ordersTableFilters.atom'
 import { UI_ORDER_TYPE_BY_TAB_ORDER_TYPE, EMPTY_ORDERS_TABLE_STATE } from './ordersTable.constants'

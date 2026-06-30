@@ -9,8 +9,9 @@ import type { Order } from 'legacy/state/orders/actions'
 import type { HistoryStatusFilter } from 'modules/ordersTable/utils/getFilteredOrders'
 
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
-import type { OrderTabId } from 'common/state/routesState'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
+import type { OrderTabId } from 'entities/routes/routes.atom'
 
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
 

@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { TabOrderTypes } from 'common/state/routesState'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 /**
  * Writable order type for the orders table. Set by `useOrdersTable` hook instead of reading it directly from the URL

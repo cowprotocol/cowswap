@@ -1,8 +1,9 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 
+import { TabOrderTypes } from 'entities/routes/routes.atom'
+
 import { Order, OrderStatus, PENDING_STATES, SetIsOrderUnfillableParams } from 'legacy/state/orders/actions'
 
-import { TabOrderTypes } from 'common/state/routesState'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
