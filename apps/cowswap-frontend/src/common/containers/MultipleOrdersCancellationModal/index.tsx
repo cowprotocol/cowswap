@@ -8,6 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
@@ -16,7 +17,6 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import { useCancelMultipleOrders } from 'common/hooks/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/state/ordersToCancel.atom'
 
 import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
 interface Props {

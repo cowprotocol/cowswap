@@ -1,10 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
 import { useCallback, useMemo } from 'react'
 
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
+
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/state/ordersToCancel.atom'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

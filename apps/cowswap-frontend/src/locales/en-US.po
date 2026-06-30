@@ -394,8 +394,8 @@ msgstr "token"
 #~ msgstr "Unable to reach the affiliate service."
 
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
-msgid "Please, top up {symbol} balance or cancel the order."
-msgstr "Please, top up {symbol} balance or cancel the order."
+#~ msgid "Please, top up {symbol} balance or cancel the order."
+#~ msgstr "Please, top up {symbol} balance or cancel the order."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Easily set and manage your orders in USD"
@@ -1514,6 +1514,10 @@ msgstr "Expanded results from inactive Token Lists"
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "No hooks match your search."
 msgstr "No hooks match your search."
+
+#: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
+msgid "Please, top up <0>{symbol}</0> balance or cancel the order."
+msgstr "Please, top up <0>{symbol}</0> balance or cancel the order."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Try adjusting your search term or filters"
@@ -4317,8 +4321,8 @@ msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing t
 msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 
 #: apps/cowswap-frontend/src/common/hooks/useBlockNumber/useBlockNumber.ts
-msgid "BlockNumber hooks must be wrapped in a"
-msgstr "BlockNumber hooks must be wrapped in a"
+#~ msgid "BlockNumber hooks must be wrapped in a"
+#~ msgstr "BlockNumber hooks must be wrapped in a"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx

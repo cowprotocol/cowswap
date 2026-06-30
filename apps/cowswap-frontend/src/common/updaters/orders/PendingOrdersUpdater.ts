@@ -56,7 +56,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
-import { removeOrdersToCancelAtom } from '../../state/ordersToCancel.atom'
+import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
 
 interface HandlePresignedParams {
   presigned: EnrichedOrder[]

@@ -4,10 +4,10 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 import { Trash2 } from 'react-feather'
 
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/state/ordersToCancel.atom'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

@@ -9,7 +9,7 @@ import { observe } from 'jotai-effect'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
-import { tabParamAtom } from './routesState'
+import { tabParamAtom } from '../../common/state/routesState'
 
 export const ordersToCancelAtom = atom<CancellableOrder[]>([])
 

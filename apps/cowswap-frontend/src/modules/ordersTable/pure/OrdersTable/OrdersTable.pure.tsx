@@ -3,11 +3,12 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
+import { ordersToCancelMapAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
+
 import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
-import { ordersToCancelMapAtom } from 'common/state/ordersToCancel.atom'
 import { TabOrderTypes, OrderTabId } from 'common/state/routesState'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
