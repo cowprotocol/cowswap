@@ -29,6 +29,26 @@ export interface WalletCapabilities {
 }
 
 /**
+ * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
+ * to get the capabilities. It breaks the flow with perpetual requests.
+ */
+export async function getShouldSkipCapabilitiesCheck(
+  connector: Connector,
+  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
+): Promise<boolean> {
+  if (!isMobile) return false
+
+  const isWalletConnect = getIsWalletConnect(connector)
+
+  if (isWalletConnect) return true
+
+  const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(provider)
+  const isWalletConnectViaWidget = !!widgetProviderMetaInfo?.providerWcMetadata
+
+  return isWalletConnectViaWidget
+}
+
+/**
  * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
  * while walletInfoAtom.chainId is numeric (e.g. 11155111). Numeric lookup alone misses them.
  */
@@ -54,26 +74,6 @@ export function resolveCapabilitiesForChain(
   }
 
   return null
-}
-
-/**
- * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
- * to get the capabilities. It breaks the flow with perpetual requests.
- */
-export async function getShouldSkipCapabilitiesCheck(
-  connector: Connector,
-  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
-): Promise<boolean> {
-  if (!isMobile) return false
-
-  const isWalletConnect = getIsWalletConnect(connector)
-
-  if (isWalletConnect) return true
-
-  const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(provider)
-  const isWalletConnectViaWidget = !!widgetProviderMetaInfo?.providerWcMetadata
-
-  return isWalletConnectViaWidget
 }
 
 async function fetchWidgetProviderMetaInfo(
