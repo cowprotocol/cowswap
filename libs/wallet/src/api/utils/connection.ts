@@ -1,5 +1,7 @@
 import { isMobile } from '@cowprotocol/common-utils'
 
+import { guardMobileInjectedProvider } from '../../wagmi/mobileInjectedProviderGuard'
+
 import type { EIP1193Provider } from 'viem'
 
 type WindowWithInjectedProvider = {
@@ -10,7 +12,9 @@ export function getInjectedProvider(targetWindow?: WindowWithInjectedProvider): 
   try {
     const ethereumWindow = targetWindow ?? (typeof window === 'undefined' ? undefined : window)
 
-    return ethereumWindow?.ethereum as EIP1193Provider | undefined
+    // Keep all browser-injected access behind this guard. MetaMask iOS can hang
+    // account/discovery RPCs, and wagmi/Reown/viem all consume this provider.
+    return guardMobileInjectedProvider(ethereumWindow?.ethereum as EIP1193Provider | undefined)
   } catch {
     return undefined
   }
