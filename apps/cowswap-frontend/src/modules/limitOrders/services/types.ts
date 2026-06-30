@@ -36,3 +36,5 @@ export interface SafeBundleFlowContext extends TradeFlowContext {
 }
 
 export class PriceImpactDeclineError extends Error {}
+
+export class WidgetHookDeclineError extends Error {}
