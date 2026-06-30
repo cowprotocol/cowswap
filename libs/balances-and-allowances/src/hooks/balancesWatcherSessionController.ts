@@ -9,7 +9,11 @@ import {
   subscribeToBalancesEvents,
 } from '../balancesWatcher'
 import { BalancesState } from '../state/balancesAtom'
-import { BalancesWatcherHealth } from '../state/balancesWatcherHealthAtom'
+import {
+  BalancesWatcherHealth,
+  DEFAULT_WATCHER_HEALTH_STATE,
+  WatcherHealthState,
+} from '../state/balancesWatcherHealthAtom'
 
 /**
  * Time the SSE channel gets to deliver the first snapshot after the POST
@@ -31,7 +35,7 @@ export interface SessionControllerDeps {
   tokensListsUrls: string[]
   customTokens: string[]
   setBalances: (update: (state: BalancesState) => BalancesState) => void
-  setHealth: (next: BalancesWatcherHealth) => void
+  setHealth: (update: (state: WatcherHealthState) => WatcherHealthState) => void
 }
 
 export interface SessionController {
@@ -42,8 +46,9 @@ export interface SessionController {
 /**
  * Stateful orchestration of one watcher session lifecycle. Owns the POST →
  * SSE flow, the first-snapshot timeout, and the recovery retry interval.
- * Failure transitions write `BalancesWatcherHealth.Fallback`, which the
- * parent observes to mount the multicall fallback stack.
+ * Once a failure has occurred, `isRecovering` is set sticky to `true` so the
+ * parent keeps the multicall fallback mounted across retry transitions; it
+ * only clears on the first successful snapshot.
  */
 export function createSessionController(deps: SessionControllerDeps): SessionController {
   const { account, chainId, tokensListsUrls, customTokens, setBalances, setHealth } = deps
@@ -53,6 +58,8 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
   let isFirstEvent = true
   let firstSnapshotTimer: ReturnType<typeof setTimeout> | undefined
   let retryTimer: ReturnType<typeof setInterval> | undefined
+
+  const setStatus = (status: BalancesWatcherHealth): void => setHealth((prev) => ({ ...prev, status }))
 
   const clearFirstSnapshotTimer = (): void => {
     if (firstSnapshotTimer) {
@@ -76,7 +83,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
 
   const enterFallback = (): void => {
     closeSubscription()
-    setHealth(BalancesWatcherHealth.Fallback)
+    setHealth(() => ({ status: BalancesWatcherHealth.Fallback, isRecovering: true }))
     // Close the first-load gate; existing `values` are preserved so the
     // multicall stack the parent mounts can take over without a flicker.
     setBalances((state) => applyEmptyLoad(state, chainId))
@@ -96,7 +103,9 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       onBalances: (balances) => {
         if (cancelled) return
         clearFirstSnapshotTimer()
-        setHealth(BalancesWatcherHealth.Healthy)
+        // First successful snapshot clears the sticky recovery flag and
+        // tells the parent to unmount the multicall fallback stack.
+        setHealth(() => ({ status: BalancesWatcherHealth.Healthy, isRecovering: false }))
         setBalances((state) => writeBalancesUpdate(state, balances, chainId, isFirstEvent))
         isFirstEvent = false
       },
@@ -113,13 +122,13 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
     // re-arm it from `enterFallback` if this attempt also fails.
     clearRetryTimer()
     isFirstEvent = true
-    setHealth(BalancesWatcherHealth.Connecting)
+    setStatus(BalancesWatcherHealth.Connecting)
     setBalances((state) => ({ ...state, isLoading: true, chainId, error: null }))
 
     createBalancesWatcherSession({ chainId, owner: account, body: { tokensListsUrls, customTokens } })
       .then(() => {
         if (cancelled) return
-        setHealth(BalancesWatcherHealth.Connected)
+        setStatus(BalancesWatcherHealth.Connected)
         openStream()
       })
       .catch(() => {
@@ -133,7 +142,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       cancelled = true
       closeSubscription()
       clearRetryTimer()
-      setHealth(BalancesWatcherHealth.Idle)
+      setHealth(() => DEFAULT_WATCHER_HEALTH_STATE)
     },
   }
 }

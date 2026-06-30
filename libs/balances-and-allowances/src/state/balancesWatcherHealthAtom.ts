@@ -1,8 +1,7 @@
 import { atom } from 'jotai'
 
 /**
- * Lifecycle of the balances-watcher session, used by consumers to decide
- * whether to mount the multicall fallback stack.
+ * Lifecycle of the balances-watcher session.
  *
  * - `Idle`: no session is being driven (e.g. unmounted, non-EVM chain, or
  *   empty token set with nothing to track)
@@ -11,8 +10,7 @@ import { atom } from 'jotai'
  *   first snapshot
  * - `Healthy`: at least one snapshot has been received and applied
  * - `Fallback`: the watcher failed (POST rejection, terminal SSE error, or
- *   the first-snapshot timeout). The parent should mount the multicall
- *   stack alongside while a periodic retry attempts to recover the session.
+ *   the first-snapshot timeout). A periodic retry is attempting to recover.
  */
 export enum BalancesWatcherHealth {
   Idle = 'idle',
@@ -22,4 +20,14 @@ export enum BalancesWatcherHealth {
   Fallback = 'fallback',
 }
 
-export const balancesWatcherHealthAtom = atom<BalancesWatcherHealth>(BalancesWatcherHealth.Idle)
+export interface WatcherHealthState {
+  status: BalancesWatcherHealth
+  isRecovering: boolean
+}
+
+export const DEFAULT_WATCHER_HEALTH_STATE: WatcherHealthState = {
+  status: BalancesWatcherHealth.Idle,
+  isRecovering: false,
+}
+
+export const balancesWatcherHealthAtom = atom<WatcherHealthState>(DEFAULT_WATCHER_HEALTH_STATE)

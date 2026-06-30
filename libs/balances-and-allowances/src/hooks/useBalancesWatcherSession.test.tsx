@@ -16,7 +16,12 @@ import {
 
 import { BalancesSubscription, BalancesWatcherApiError, SubscribeToBalancesEventsParams } from '../balancesWatcher'
 import { balancesAtom, BalancesState, DEFAULT_BALANCES_STATE } from '../state/balancesAtom'
-import { BalancesWatcherHealth, balancesWatcherHealthAtom } from '../state/balancesWatcherHealthAtom'
+import {
+  BalancesWatcherHealth,
+  balancesWatcherHealthAtom,
+  DEFAULT_WATCHER_HEALTH_STATE,
+  WatcherHealthState,
+} from '../state/balancesWatcherHealthAtom'
 
 jest.mock('../balancesWatcher', () => {
   const actual = jest.requireActual('../balancesWatcher')
@@ -66,7 +71,7 @@ function makeParams(overrides: Partial<UseBalancesWatcherSessionParams> = {}): U
 
 interface SessionView {
   balances: BalancesState
-  health: BalancesWatcherHealth
+  health: WatcherHealthState
 }
 
 let currentInitialBalances: BalancesState = DEFAULT_BALANCES_STATE
@@ -74,7 +79,7 @@ let currentInitialBalances: BalancesState = DEFAULT_BALANCES_STATE
 function HydrateAtoms({ children }: { children: ReactNode }): ReactNode {
   useHydrateAtoms([
     [balancesAtom, currentInitialBalances],
-    [balancesWatcherHealthAtom, BalancesWatcherHealth.Idle],
+    [balancesWatcherHealthAtom, DEFAULT_WATCHER_HEALTH_STATE],
   ])
   return <>{children}</>
 }
@@ -133,7 +138,7 @@ describe('useBalancesWatcherSession', () => {
 
     expect(mockCreateSession).not.toHaveBeenCalled()
     expect(mockSubscribe).not.toHaveBeenCalled()
-    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
   })
 
   it('does not create a session when both lists and customTokens are empty, but still closes the first-load gate', () => {
@@ -146,14 +151,14 @@ describe('useBalancesWatcherSession', () => {
     expect(result.current.balances.isLoading).toBe(false)
     expect(result.current.balances.error).toBeNull()
     expect(result.current.balances.chainId).toBe(SupportedChainId.MAINNET)
-    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
   })
 
   it('does not create a session for a non-EVM chain (Solana)', () => {
     const { result } = renderSession(makeParams({ chainId: SupportedChainId.SOLANA }))
 
     expect(mockCreateSession).not.toHaveBeenCalled()
-    expect(result.current.health).toBe(BalancesWatcherHealth.Idle)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
   })
 
   it('walks idle → connecting → connected → healthy through the happy path', async () => {
@@ -162,7 +167,7 @@ describe('useBalancesWatcherSession', () => {
 
     const { result } = renderSession(makeParams({ customTokens: [getAddressKey(TOKEN_A)] }))
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connecting)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connecting)
     expect(mockCreateSession).toHaveBeenCalledTimes(1)
     expect(mockCreateSession).toHaveBeenCalledWith({
       chainId: SupportedChainId.MAINNET,
@@ -177,14 +182,14 @@ describe('useBalancesWatcherSession', () => {
       session.resolve()
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
     expect(mockSubscribe).toHaveBeenCalledTimes(1)
 
     await act(async () => {
       capturedSubscribeParams().onBalances({ [TOKEN_A]: '42' })
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
   })
 
   it('writes the snapshot into balancesAtom (bigint values, normalized address keys, first-load flags)', async () => {
@@ -252,7 +257,7 @@ describe('useBalancesWatcherSession', () => {
       sub.onError(new Error('stream closed by server'), true)
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     // First-load gate must close so form validation does not park the UI in
     // BalancesLoading forever; the parent will mount the multicall stack.
     expect(result.current.balances.hasFirstLoad).toBe(true)
@@ -278,7 +283,7 @@ describe('useBalancesWatcherSession', () => {
       sub.onError(new Error('transient'), false)
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
     expect(result.current.balances.error).toBeNull()
   })
 
@@ -292,7 +297,7 @@ describe('useBalancesWatcherSession', () => {
       session.reject(new BalancesWatcherApiError(503, { code: 1, message: 'service unavailable' }))
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     expect(result.current.balances.hasFirstLoad).toBe(true)
     expect(result.current.balances.isLoading).toBe(false)
     expect(result.current.balances.error).toBeNull()
@@ -311,17 +316,17 @@ describe('useBalancesWatcherSession', () => {
       session.resolve()
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
     expect(close).not.toHaveBeenCalled()
 
     // Just under the threshold — still waiting.
     await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS - 1)
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
     expect(close).not.toHaveBeenCalled()
 
     await advanceTimers(1)
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     expect(close).toHaveBeenCalledTimes(1)
     expect(result.current.balances.hasFirstLoad).toBe(true)
   })
@@ -342,12 +347,12 @@ describe('useBalancesWatcherSession', () => {
       capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
 
     // Past the threshold — no fallback, subscription not closed.
     await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS + 5_000)
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
     expect(close).not.toHaveBeenCalled()
   })
 
@@ -361,7 +366,7 @@ describe('useBalancesWatcherSession', () => {
       firstSession.reject(new Error('boom'))
     })
 
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     expect(mockCreateSession).toHaveBeenCalledTimes(1)
 
     const secondSession = deferred<void>()
@@ -370,13 +375,13 @@ describe('useBalancesWatcherSession', () => {
     await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
 
     expect(mockCreateSession).toHaveBeenCalledTimes(2)
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connecting)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connecting)
 
     // Second attempt also fails — interval keeps firing every 30s.
     await act(async () => {
       secondSession.reject(new Error('still down'))
     })
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
 
     const thirdSession = deferred<void>()
     mockCreateSession.mockReturnValueOnce(thirdSession.promise)
@@ -394,7 +399,7 @@ describe('useBalancesWatcherSession', () => {
     await act(async () => {
       firstSession.reject(new Error('boom'))
     })
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
 
     const retrySession = deferred<void>()
     mockCreateSession.mockReturnValueOnce(retrySession.promise)
@@ -405,12 +410,12 @@ describe('useBalancesWatcherSession', () => {
     await act(async () => {
       retrySession.resolve()
     })
-    expect(result.current.health).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
 
     await act(async () => {
       capturedSubscribeParams().onBalances({ [TOKEN_A]: '77' })
     })
-    expect(result.current.health).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
     expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(77n)
 
     // Retry interval should no longer fire.
@@ -427,7 +432,7 @@ describe('useBalancesWatcherSession', () => {
     await act(async () => {
       firstSession.reject(new Error('boom'))
     })
-    expect(result.current.health).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     expect(mockCreateSession).toHaveBeenCalledTimes(1)
 
     unmount()
@@ -485,5 +490,118 @@ describe('useBalancesWatcherSession', () => {
     })
     expect(result.current.balances.chainId).toBe(SupportedChainId.ARBITRUM_ONE)
     expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(42n)
+  })
+})
+
+describe('useBalancesWatcherSession — isRecovering sticky flag', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+    jest.clearAllMocks()
+    mockCreateSession.mockReturnValue(Promise.resolve())
+    mockSubscribe.mockReturnValue({ close: jest.fn() } satisfies BalancesSubscription)
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  it('starts false in Idle and stays false through the happy path to Healthy', async () => {
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+
+    const { result } = renderSession()
+
+    expect(result.current.health.isRecovering).toBe(false)
+
+    await act(async () => {
+      session.resolve()
+    })
+    expect(result.current.health.isRecovering).toBe(false)
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.isRecovering).toBe(false)
+  })
+
+  it('flips to true on first fallback and stays true through Connecting/Connected retry transitions', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.isRecovering).toBe(true)
+
+    const retrySession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(retrySession.promise)
+
+    // Retry tick — attempt() flips status back to Connecting, but isRecovering must stay sticky.
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connecting)
+    expect(result.current.health.isRecovering).toBe(true)
+
+    // POST resolves — Connected, still recovering.
+    await act(async () => {
+      retrySession.resolve()
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
+    expect(result.current.health.isRecovering).toBe(true)
+  })
+
+  it('stays true if the retry attempt also times out without a snapshot', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+    expect(result.current.health.isRecovering).toBe(true)
+
+    const retrySession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(retrySession.promise)
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+    await act(async () => {
+      retrySession.resolve()
+    })
+
+    // No snapshot before timeout — flips back to Fallback, still recovering.
+    await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
+    expect(result.current.health.isRecovering).toBe(true)
+  })
+
+  it('clears to false on the first successful snapshot from a retry', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.reject(new Error('boom'))
+    })
+    expect(result.current.health.isRecovering).toBe(true)
+
+    const retrySession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(retrySession.promise)
+
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS)
+    await act(async () => {
+      retrySession.resolve()
+    })
+    expect(result.current.health.isRecovering).toBe(true)
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '77' })
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.health.isRecovering).toBe(false)
   })
 })

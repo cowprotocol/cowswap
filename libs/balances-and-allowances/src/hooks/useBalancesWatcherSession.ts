@@ -6,7 +6,7 @@ import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { applyEmptyLoad, createSessionController } from './balancesWatcherSessionController'
 
 import { balancesAtom } from '../state/balancesAtom'
-import { balancesWatcherHealthAtom, BalancesWatcherHealth } from '../state/balancesWatcherHealthAtom'
+import { balancesWatcherHealthAtom, DEFAULT_WATCHER_HEALTH_STATE } from '../state/balancesWatcherHealthAtom'
 
 export interface UseBalancesWatcherSessionParams {
   account: string | undefined
@@ -43,14 +43,14 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
 
   useEffect(() => {
     if (!account || !isEvmChain(chainId)) {
-      setHealth(BalancesWatcherHealth.Idle)
+      setHealth(DEFAULT_WATCHER_HEALTH_STATE)
       return
     }
     if (tokensListsUrls.length === 0 && customTokens.length === 0) {
       // Nothing to subscribe to, but we still must close the first-load gate
       // so form validation does not park the UI in `BalancesLoading` forever.
       setBalances((state) => applyEmptyLoad(state, chainId))
-      setHealth(BalancesWatcherHealth.Idle)
+      setHealth(DEFAULT_WATCHER_HEALTH_STATE)
       return
     }
 

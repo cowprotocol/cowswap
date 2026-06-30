@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
-  BalancesWatcherHealth,
   balancesWatcherHealthAtom,
   BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
@@ -69,13 +68,15 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
-  const watcherHealth = useAtomValue(balancesWatcherHealthAtom)
-  const isWatcherFallback = watcherHealth === BalancesWatcherHealth.Fallback
-
-  // Both branches use the same priority + multicall pair: the legacy path
-  // (bw flag off) renders it alone, the watcher path renders it alongside
-  // the watcher while the session is in fallback so balances keep flowing.
-  const multicallStack = (
+  const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
+  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  // Mount the multicall stack when:
+  // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
+  // - the watcher is in recovery — sticky from the first failure until the next
+  //   successful snapshot, so retry transitions (Connecting/Connected/Fallback)
+  //   don't briefly unmount it and leave a balance gap.
+  const needsMulticallStack = !isWatcherActive || isWatcherRecovering
+  const multicallStack = needsMulticallStack ? (
     <>
       <PriorityTokensUpdater
         // We can and should save one RPC call at the very beginning
@@ -92,9 +93,9 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         refreshTrigger={refreshTrigger}
       />
     </>
-  )
+  ) : null
 
-  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
+  if (isWatcherActive) {
     return (
       <>
         <BalancesWatcherUpdater
@@ -103,7 +104,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
           isBridgeMode={isBridgeMode}
           bridgeTokenList={bridgeTokenList}
         />
-        {isWatcherFallback && multicallStack}
+        {multicallStack}
       </>
     )
   }
