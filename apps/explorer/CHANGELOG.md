@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.6.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.1...explorer-v4.6.2) (2026-06-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/analytics@3.5.2
+
 ## [4.6.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.0...explorer-v4.6.1) (2026-06-23)
 
 ### Patch Changes

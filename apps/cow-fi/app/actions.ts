@@ -1,21 +1,23 @@
 'use server'
 
 import { searchArticles as searchArticlesService } from '../services/cms'
+import { normalizeSearchArticlesInput } from '../util/cmsValidation'
 
 /**
  * Server action to search for articles
  */
-export async function searchArticlesAction({
-  searchTerm,
-  page = 0,
-  pageSize = 10,
-}: {
+type SearchArticlesActionResult =
+  | { success: true; data: Awaited<ReturnType<typeof searchArticlesService>> }
+  | { success: false; error: string }
+
+export async function searchArticlesAction(input: {
   searchTerm: string
   page?: number
   pageSize?: number
-}) {
+}): Promise<SearchArticlesActionResult> {
   try {
-    const results = await searchArticlesService({ searchTerm, page, pageSize })
+    const normalizedInput = normalizeSearchArticlesInput(input)
+    const results = await searchArticlesService(normalizedInput)
 
     return { success: true, data: results }
   } catch (error) {

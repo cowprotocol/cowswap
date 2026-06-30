@@ -15,6 +15,7 @@ import type { Metadata } from 'next'
 
 import { ArticlePageComponent } from '@/components/ArticlePageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { isValidCmsSlug } from '@/util/cmsValidation'
 import { fetchArticleWithRetry } from '@/util/fetchHelpers'
 import { getPageMetadata } from '@/util/getPageMetadata'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
@@ -44,7 +45,12 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const articleSlug = (await params).article
 
-  if (!articleSlug) return {}
+  if (!articleSlug || !isValidCmsSlug(articleSlug)) {
+    return getPageMetadata({
+      title: 'Article Not Found',
+      description: 'The requested article could not be found.',
+    })
+  }
 
   try {
     const article = await getArticleBySlug(articleSlug)
@@ -93,6 +99,10 @@ export async function generateStaticParams(): Promise<{ article: string }[]> {
 
 export default async function ArticlePage({ params }: Props): Promise<ReactNode> {
   const articleSlug = (await params).article
+
+  if (!isValidCmsSlug(articleSlug)) {
+    return notFound()
+  }
 
   try {
     const article = await fetchArticleWithRetry(articleSlug)
