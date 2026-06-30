@@ -76,6 +76,7 @@ const wagmiAdapter = new WagmiAdapter({
 // WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
+const isSafeApp = getIsSafeAppIframe()
 const hasRecentConnector =
   typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
 
@@ -114,7 +115,7 @@ const reownAppKit = createAppKit({
 /**
  * Instantly connect to Safe if in Safe
  */
-if (getIsSafeAppIframe()) {
+if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
 } else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
