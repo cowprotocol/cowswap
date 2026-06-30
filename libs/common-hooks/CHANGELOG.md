@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.4.1...common-hooks-v3.5.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.7.0
+
 ## [3.4.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.4.0...common-hooks-v3.4.1) (2026-06-23)
 
 ### Patch Changes
