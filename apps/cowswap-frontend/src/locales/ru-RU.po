@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-06-26 17:17\n"
+"PO-Revision-Date: 2026-07-01 14:57\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -70,7 +70,7 @@ msgstr "Отключиться"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Your rewards activity will show here."
-msgstr ""
+msgstr "Ваша история вознаграждений будет отображаться здесь."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/PendingBridgingContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/ReceivedBridgingContent/index.tsx
@@ -375,7 +375,7 @@ msgstr "Чтобы обмен прошел максимально успешно
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalUnsupported.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "You've been referred - here's your reward"
-msgstr ""
+msgstr "Вы перешли по приглашению — забирайте свой бонус"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "From network"
@@ -699,7 +699,7 @@ msgstr "Мост завершен!"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Trades coming from integrator flow are excluded from affiliate rewards."
-msgstr ""
+msgstr "Сделки, совершенные через интеграторов, не участвуют в партнерских вознаграждениях."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 #~ msgid "Nothing new yet"
@@ -1025,7 +1025,7 @@ msgstr "Операция загрузки"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Connect your wallet to activate it and start earning rewards when you trade."
-msgstr ""
+msgstr "Подключите кошелек, активируйте код и зарабатывайте на бонусах при торговле."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
@@ -1205,7 +1205,7 @@ msgstr "Количество дополнительных токенов вы п
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeLinking.tsx
 msgid "Connect wallet to activate"
-msgstr ""
+msgstr "Подключите кошелек, чтобы активировать"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "sandwich-icon"
@@ -1531,7 +1531,7 @@ msgstr "Без газа"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Eligible volume"
-msgstr ""
+msgstr "Квалифицируемый объем торговли"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
@@ -1605,7 +1605,7 @@ msgstr "Партнерская комиссия не может быть бол�
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Restoring wallet"
-msgstr ""
+msgstr "Восстановление подключения"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensContent/index.tsx
 #~ msgid "Manage Token Lists"
@@ -1656,7 +1656,7 @@ msgstr "Обратитесь в службу поддержки CoW Swap!"
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW AMM"
-msgstr ""
+msgstr "CoW AMM"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "Too much time between parts"
@@ -1785,7 +1785,7 @@ msgstr "Обновлено в"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
-msgstr ""
+msgstr "Квалифицированная сделка"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Recent"
@@ -1915,7 +1915,7 @@ msgstr "CoW Swap 404 не найден"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The trader already reached the rewardable volume cap for this referral code."
-msgstr ""
+msgstr "Исчерпан лимит вознаграждаемого объема по этому реферальному коду."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Apply"
@@ -1984,7 +1984,7 @@ msgstr "CoW Swap стал первым детектором, предлагаю�
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
-msgstr ""
+msgstr "Пользователь отклонил запрос."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
@@ -2074,7 +2074,7 @@ msgstr "Размер комиссии"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Eligible"
-msgstr ""
+msgstr "Квалифицирован"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/FallbackHandlerWarning.tsx
 msgid "Make the modification when placing order"
@@ -2554,7 +2554,7 @@ msgstr "Ожидает подтверждения."
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Order metadata is invalid"
-msgstr ""
+msgstr "Некорректные метаданные ордера"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW token"
@@ -2562,7 +2562,7 @@ msgstr "COW токен"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Order validity is too long"
-msgstr ""
+msgstr "Превышен максимальный срок действия ордера"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "so we can investigate the problem."
@@ -2658,7 +2658,7 @@ msgstr "Чтобы продолжить, смените сеть в своем �
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This referral code was not found in the affiliate program configuration."
-msgstr ""
+msgstr "Данный реферальный код не зарегистрирован в партнерской программе."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
@@ -2752,7 +2752,7 @@ msgstr "(v)Держатели COW токенов имеют право на ск
 
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/OnchainTransactionEventsUpdater.tsx
 msgid "Transaction cancelled: it was not submitted to the blockchain."
-msgstr ""
+msgstr "Транзакция отменена, отправка в блокчейн не состоялась."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Error connecting"
@@ -3272,11 +3272,11 @@ msgstr "Ликвидность пулов на CoW AMM растет быстре
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP"
-msgstr ""
+msgstr "TWAP"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Insufficient liquidity for this trade"
-msgstr ""
+msgstr "Недостаточно ликвидности"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -3285,7 +3285,7 @@ msgstr "Будет обновлено {approxNextUpdateTimeAgo}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Rewards activity"
-msgstr ""
+msgstr "История вознаграждений"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 #~ msgid "Protocol fee ({protocolFeeAsPercent}%)"
@@ -3305,7 +3305,7 @@ msgstr "Увеличить доходность на существующих п
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code expired before this trade was executed."
-msgstr ""
+msgstr "Срок действия реферального кода истек до выполнения данного ордера."
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "6 Hours"
@@ -3521,7 +3521,7 @@ msgstr "Позже"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Start earning rewards when you trade."
-msgstr ""
+msgstr "Начните зарабатывать при торговле."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/UnsupportedNetwork/OrdersTableUnsupportedNetworkContent.tsx
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
@@ -3530,7 +3530,7 @@ msgstr "Неподдерживаемая сеть"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "Code <0>{code}</0> is linked for the next {timeCapDays} days"
-msgstr ""
+msgstr "Код <0>{code}</0> привязан на следующие {timeCapDays} дней"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
@@ -3876,7 +3876,7 @@ msgstr "Получить поддержку в Discord"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This trade used a different referral code than the trader's bound code."
-msgstr ""
+msgstr "Реферальный код сделки не совпадает с кодом, привязанным к пользовательскому аккаунту."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.cosmos.tsx
 #~ msgid "Input currency not found for chain {supportedChainId}"
@@ -4176,7 +4176,7 @@ msgstr "Детали"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Token is temporarily suspended from trading"
-msgstr ""
+msgstr "Токен временно недоступен для торговли"
 
 #: apps/cowswap-frontend/src/legacy/state/orders/helpers.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -4525,7 +4525,7 @@ msgstr "Токен не доступен в вашем регионе."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "Rewards activated"
-msgstr ""
+msgstr "Начисление вознаграждений активировано"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Scan QR code"
@@ -5044,7 +5044,7 @@ msgstr "Минут"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code was applied after the trader's first qualifying trade."
-msgstr ""
+msgstr "Реферальный код был применен после первой квалифицируемой сделки пользователя."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
@@ -5659,7 +5659,7 @@ msgstr "Эта транзакция может быть смоделирован
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid website URL in manifest. Only http(s) URLs are allowed, with http limited to local development."
-msgstr ""
+msgstr "Неверный URL сайта в манифесте. Допускаются только протоколы http(s), причем http — только для локальной разработки."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Sell amount too small to bridge"
@@ -5823,7 +5823,7 @@ msgstr "по крайней мере"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Earn <0>{rewardAmount}</0> per <1>{triggerVolume}</1> of eligible volume over {timeCapDays} days. Rewards are paid out weekly to your Ethereum wallet."
-msgstr ""
+msgstr "Получайте <0>{rewardAmount}</0> за каждые <1>{triggerVolume}</1> учитываемого объема торгов в течение {timeCapDays} дней. Выплаты производятся раз в неделю на ваш Ethereum-кошелек."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "m"
@@ -6194,7 +6194,7 @@ msgstr "Цена исполнения"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Token can only be traded during specific time windows"
-msgstr ""
+msgstr "Торговля токеном разрешена только в определенные часы"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked"
@@ -6465,7 +6465,7 @@ msgstr "Подтвердите с помощью кошелька"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Date"
-msgstr ""
+msgstr "Дата"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Rewards hub - My Rewards"
@@ -6485,7 +6485,7 @@ msgstr "Лимитные ордера предусматривают бонус�
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Your friend shared a referral code with you."
-msgstr ""
+msgstr "Друг поделился с вами реферальным кодом."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Avg. execution price"
@@ -6514,7 +6514,7 @@ msgstr "Начиная с  {PROTOCOL_FEE_START_DATETIME_UTC},  в соответ
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateFeedbackButton.container.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateFeedbackButton.container.tsx
 msgid "Give feedback"
-msgstr ""
+msgstr "Оставить отзыв"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
@@ -6613,7 +6613,7 @@ msgstr "Для этого заказа, сетевые расходы будут
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Token pair selected has insufficient liquidity"
-msgstr ""
+msgstr "Недостаточно ликвидности для данный пары токенов"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
@@ -7073,7 +7073,7 @@ msgstr "Конкурс начался"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This trade fee was too low to qualify for affiliate rewards."
-msgstr ""
+msgstr "Комиссия за данную сделку ниже минимального порога для квалификации в партнерской программе."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "You will receive this price or better for your tokens."
@@ -7127,7 +7127,7 @@ msgstr "Заказ не может быть заполнен из-за недо�
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Restoring wallet..."
-msgstr ""
+msgstr "Восстановление подключения..."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -7539,7 +7539,7 @@ msgstr "Неверные параметры"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "{label}"
-msgstr ""
+msgstr "{label}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "Small orders are unlikely to be executed"
