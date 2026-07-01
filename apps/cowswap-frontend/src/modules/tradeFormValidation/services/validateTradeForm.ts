@@ -31,6 +31,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRwaStatusPending,
     isRestrictedForCountry,
     isBalancesLoading,
     isBundlingSupported,
@@ -75,6 +76,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (customTokenError) {
     validations.push(TradeFormValidation.CustomTokenError)
+  }
+
+  if (isRwaStatusPending) {
+    validations.push(TradeFormValidation.RwaChecksPending)
   }
 
   if (isRestrictedForCountry) {

@@ -89,6 +89,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     inputCurrency,
     outputCurrency,
   })
+  const isRwaStatusPending = rwaStatus === RwaTokenStatus.ChecksPending
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
   return useMemo(() => {
@@ -115,6 +116,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
+      isRwaStatusPending,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
       injectedWidgetParams,
@@ -138,6 +140,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isOnline,
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
+    isRwaStatusPending,
     isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,

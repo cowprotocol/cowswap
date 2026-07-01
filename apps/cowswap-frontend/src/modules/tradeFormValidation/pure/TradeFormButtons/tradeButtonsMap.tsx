@@ -244,6 +244,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ProxyAccountUnknown]: {
     text: <ProxyAccountUnknown />,
   },
+  [TradeFormValidation.RwaChecksPending]: {
+    text: <Trans>Checking token availability</Trans>,
+  },
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
   },

@@ -7,7 +7,11 @@ import { TokenInfo } from '@cowprotocol/types'
 
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
-import { restrictedListsAtom, RestrictedTokenListState } from '../../state/restrictedTokens/restrictedTokensAtom'
+import {
+  restrictedListsAtom,
+  restrictedTokensAtom,
+  RestrictedTokenListState,
+} from '../../state/restrictedTokens/restrictedTokensAtom'
 
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1
@@ -22,6 +26,13 @@ export interface RestrictedTokensListUpdaterProps {
 
 interface TokenListResponse {
   tokens: TokenInfo[]
+}
+
+const PENDING_RESTRICTED_TOKENS_STATE: RestrictedTokenListState = {
+  tokensMap: {},
+  countriesPerToken: {},
+  consentHashPerToken: {},
+  isLoaded: false,
 }
 
 async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
@@ -79,13 +90,14 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
   const { shouldFetch: shouldFetchTokens, saveToCache } = useRestrictedTokensCache()
   const setRestrictedLists = useSetAtom(restrictedListsAtom)
+  const setRestrictedTokens = useSetAtom(restrictedTokensAtom)
   const restrictedLists = useAtomValue(restrictedListsAtom)
 
   // Also fetch if lists atom isn't loaded (it's not cached, only tokens are)
   const shouldFetch = shouldFetchTokens || !restrictedLists.isLoaded
 
   useEffect(() => {
-    if (!isRwaGeoblockEnabled) {
+    if (isRwaGeoblockEnabled !== true) {
       return
     }
 
@@ -102,13 +114,22 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
         const consentHashPerToken: Record<TokenId, string> = {}
         const blockedCountriesPerList: Record<string, string[]> = {}
         const consentHashPerList: Record<string, string> = {}
+        let hasListFetchFailure = false
+
+        for (const list of restrictedLists) {
+          const urlKey = getSourceAsKey(list.tokenListUrl)
+          blockedCountriesPerList[urlKey] = list.restrictedCountries
+          consentHashPerList[urlKey] = RWA_CONSENT_HASH
+        }
+
+        setRestrictedLists({
+          blockedCountriesPerList,
+          consentHashPerList,
+          isLoaded: true,
+        })
 
         await Promise.all(
           restrictedLists.map(async (list) => {
-            const urlKey = getSourceAsKey(list.tokenListUrl)
-            blockedCountriesPerList[urlKey] = list.restrictedCountries
-            consentHashPerList[urlKey] = RWA_CONSENT_HASH
-
             try {
               const tokens = await fetchTokenList(list.tokenListUrl)
 
@@ -119,10 +140,16 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
                 consentHashPerToken[tokenId] = RWA_CONSENT_HASH
               }
             } catch (error) {
+              hasListFetchFailure = true
               console.error(`Failed to fetch token list for ${list.name}:`, error)
             }
           }),
         )
+
+        if (hasListFetchFailure) {
+          setRestrictedTokens(PENDING_RESTRICTED_TOKENS_STATE)
+          return
+        }
 
         const listState: RestrictedTokenListState = {
           tokensMap,
@@ -131,20 +158,15 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
           isLoaded: true,
         }
 
-        setRestrictedLists({
-          blockedCountriesPerList,
-          consentHashPerList,
-          isLoaded: true,
-        })
-
         saveToCache(listState)
       } catch (error) {
+        setRestrictedTokens(PENDING_RESTRICTED_TOKENS_STATE)
         console.error('Error loading restricted tokens:', error)
       }
     }
 
     loadRestrictedTokens()
-  }, [isRwaGeoblockEnabled, shouldFetch, saveToCache, setRestrictedLists])
+  }, [isRwaGeoblockEnabled, saveToCache, setRestrictedLists, setRestrictedTokens, shouldFetch])
 
   return null
 }

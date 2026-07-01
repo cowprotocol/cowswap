@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
-import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
@@ -10,6 +10,7 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
 
+import { shouldInvalidateLastUpdateTime } from './curatedMode'
 import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
 import { fetchTokenList } from '../../services/fetchTokenList'
@@ -41,7 +42,7 @@ const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPO
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
-  isGeoBlockEnabled: boolean
+  isGeoBlockEnabled: boolean | undefined
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
   bridgeNetworkInfo: ChainInfo[] | undefined
@@ -68,6 +69,7 @@ export function TokensListsUpdater({
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const lastUpdateTimeState = useAtomValue(lastUpdateTimeAtom)
   const updateLastUpdateTime = useSetAtom(updateLastUpdateTimeAtom)
+  const previousCuratedModeRef = useRef<boolean | undefined>(undefined)
 
   const setTokenListsUpdating = useSetAtom(tokenListsUpdatingAtom)
   const upsertLists = useSetAtom(upsertListsAtom)
@@ -79,6 +81,17 @@ export function TokensListsUpdater({
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })
   }, [chainId, updateLastUpdateTime])
+
+  function setCuratedListOnly(nextValue: boolean): void {
+    setEnvironment({ useCuratedListOnly: nextValue })
+
+    // When we widen the source set again, force a refetch for the newly visible lists.
+    if (shouldInvalidateLastUpdateTime(previousCuratedModeRef.current, nextValue)) {
+      updateLastUpdateTime({ [chainId]: 0 })
+    }
+
+    previousCuratedModeRef.current = nextValue
+  }
 
   // Fetch tokens lists once in 6 hours
   const { data: listsStates, isLoading } = useSWR<ListState[] | null>(
@@ -104,24 +117,39 @@ export function TokensListsUpdater({
 
   // Check if a user is from US and use Uniswap list, because of the SEC regulations
   useEffect(() => {
-    if (!isGeoBlockEnabled || isInjectedWidget()) return
-
     if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
-      setEnvironment({ useCuratedListOnly: false })
+      setCuratedListOnly(false)
       return
     }
 
-    fetch('https://api.country.is')
+    if (isGeoBlockEnabled === false) {
+      setCuratedListOnly(false)
+      return
+    }
+
+    setCuratedListOnly(true)
+
+    let isStale = false
+    const controller = new AbortController()
+
+    fetch('https://api.country.is', { signal: controller.signal })
       .then((res) => res.json())
       .then(({ country }) => {
+        if (isStale) return
+
         const isUsUser = country === 'US'
 
+        setCuratedListOnly(isUsUser)
+
         if (isUsUser) {
-          setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
       })
       .catch((error) => {
+        if (isStale) return
+
+        setCuratedListOnly(true)
+
         if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
 
         const sentryError = Object.assign(error, {
@@ -134,6 +162,11 @@ export function TokensListsUpdater({
           },
         })
       })
+
+    return () => {
+      isStale = true
+      controller.abort()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isGeoBlockEnabled])
 

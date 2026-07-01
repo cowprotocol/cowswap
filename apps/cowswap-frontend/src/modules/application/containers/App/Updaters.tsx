@@ -121,7 +121,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
+      <RestrictedTokensListUpdater isRwaGeoblockEnabled={isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
       <RecentTokensStorageUpdater />
       <GeoDataUpdater />

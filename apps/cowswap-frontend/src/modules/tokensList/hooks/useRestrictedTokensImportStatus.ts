@@ -61,6 +61,15 @@ export function useRestrictedTokensImportStatus(tokens: TokenWithLogo[]): Restri
           tokenNeedingConsent: rwaTokenInfo?.token ? TokenWithLogo.fromToken(rwaTokenInfo.token) : null,
         }
 
+      case RwaTokenStatus.ChecksPending:
+        return {
+          isImportDisabled: true,
+          blockReason: t`Checking token availability.`,
+          restrictedTokenInfo: rwaTokenInfo,
+          requiresConsent: false,
+          tokenNeedingConsent: null,
+        }
+
       case RwaTokenStatus.Allowed:
       case RwaTokenStatus.ConsentIsSigned:
       default:
