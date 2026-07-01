@@ -1,5 +1,5 @@
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -14,7 +14,7 @@ import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
-import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { COW_WIDGET_CONNECTOR_ID, SAFE_CONNECTOR_ID } from '../reown/consts'
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
@@ -77,6 +77,7 @@ const wagmiAdapter = new WagmiAdapter({
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
 const isSafeApp = getIsSafeAppIframe()
+const isWidget = isInjectedWidget()
 const hasRecentConnector =
   typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
 
@@ -87,7 +88,13 @@ const reownAppKit = createAppKit({
   defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: hasRecentConnector,
+  // Safe iframe and widget mode rely on implicit auto-connect from the external runtime
+  // (Safe App SDK / WidgetEthereumProvider iframe transport). Reown needs a wired
+  // reconnect path at init for either connector to be picked up; without it the widget
+  // stays on "Connect wallet" even though the parent has an active wallet — see #7777.
+  // For regular desktop we keep the cross-app isolation guard: only reconnect if the user
+  // has previously connected in this storage namespace.
+  enableReconnect: isSafeApp || isWidget || hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -113,10 +120,16 @@ const reownAppKit = createAppKit({
 })
 
 /**
- * Instantly connect to Safe if in Safe
+ * Instantly connect based on the runtime context:
+ * - Safe iframe → Safe App SDK connector
+ * - Widget iframe → parent-forwarding provider (COW_WIDGET_CONNECTOR_ID)
+ * - Mobile injected browser (MetaMask/Coinbase Wallet/etc.) → injected connector
+ *   (only if the user has a stored recent connector — avoids first-visit auto-connect)
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
+} else if (isWidget) {
+  connectWalletById(COW_WIDGET_CONNECTOR_ID, 'cow-widget')
 } else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
