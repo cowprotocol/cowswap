@@ -3,7 +3,7 @@ import {
   BARN_ETH_FLOW_ADDRESSES,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS as COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS as _COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
   ETH_FLOW_ADDRESSES,
   isEvmChain,
@@ -19,7 +19,14 @@ export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = isBarnB
 // When in barn backend env, use the staging vault relayer for MAINNET only; prod for all other chains.
 export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS: AddressPerChain = isBarnBackendEnv
   ? (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as AddressPerChain)
-  : (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD as AddressPerChain)
+  : (_COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD as AddressPerChain)
+
+// Production-only vault relayer, ignoring the barn backend env override.
+// Use this when allowances must always target the production relayer
+// regardless of the current environment (e.g. TWAP, which is always
+// settled against the production settlement contract).
+export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD: AddressPerChain =
+  _COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD as AddressPerChain
 
 /**
  * ETH-Flow is the EVM-only wrapper that lets users sell native ETH (and equivalents)
