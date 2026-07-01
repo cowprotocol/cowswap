@@ -1,5 +1,5 @@
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -79,6 +79,10 @@ OptionsController.setOptions({ ...OptionsController.state, enableInjected: false
 const isSafeApp = getIsSafeAppIframe()
 const hasRecentConnector =
   typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+// Embedded contexts (Safe App iframe, injected widget / dapp mode) (re)establish the connection
+// through the host on every load and don't persist a `recentConnectorId`, so they must reconnect
+// regardless. Without this they'd render a "Connect Wallet" prompt while actually connected.
+const shouldReconnect = hasRecentConnector || isSafeApp || isInjectedWidget()
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
@@ -87,7 +91,7 @@ const reownAppKit = createAppKit({
   defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: hasRecentConnector,
+  enableReconnect: shouldReconnect,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
