@@ -14,6 +14,7 @@ export const ERROR_MESSAGES = {
   INVALID_MANIFEST: msg`Invalid manifest format: Missing "cow_hook_dapp" property in manifest.json`,
   SMART_CONTRACT_INCOMPATIBLE: msg`This hook is not compatible with smart contract wallets. It only supports EOA wallets.`,
   INVALID_HOOK_ID: msg`Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string.`,
+  INVALID_WEBSITE_URL: msg`Invalid website URL in manifest. Only http(s) URLs are allowed, with http limited to local development.`,
   INVALID_MANIFEST_HTML: (
     <Trans>
       The URL provided does not return a valid manifest file

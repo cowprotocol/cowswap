@@ -18,6 +18,8 @@ export interface ChangeApproveAmountModalPureProps {
   initialAmount: CurrencyAmount<Currency> | null | undefined
   // amount that needed to be swapped
   amountToSwap: CurrencyAmount<Currency> | null | undefined
+  // amount the order is expected to buy; passed through so the preview shows the order being edited
+  amountToBuy?: CurrencyAmount<Currency> | null | undefined
   isInvalid?: boolean
   onBack: () => void
   onConfirm: () => void
@@ -28,6 +30,7 @@ export function ChangeApproveAmountModalPure({
   inputToken,
   initialAmount,
   amountToSwap,
+  amountToBuy,
   isInvalid,
   onBack,
   onConfirm,
@@ -49,7 +52,7 @@ export function ChangeApproveAmountModalPure({
         <styledEl.SetTitle>
           <Trans>Set approval amount</Trans>
         </styledEl.SetTitle>
-        <SwapAmountPreview />
+        <SwapAmountPreview inputCurrencyAmount={amountToSwap} outputCurrencyAmount={amountToBuy} />
       </styledEl.SwapInfo>
       <ApprovalAmountInput
         onReset={onReset}

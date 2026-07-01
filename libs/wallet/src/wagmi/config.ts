@@ -1,18 +1,21 @@
-import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isMobile } from '@cowprotocol/common-utils'
-import { EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
+import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
+import { isMobile } from '@cowprotocol/common-utils'
+import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
 import { getConnectors } from './getConnectors'
+import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
-import { SAFE_CONNECTOR_ID, SUPPORTED_REOWN_NETWORKS } from '../reown/consts'
+import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
@@ -50,6 +53,8 @@ const metadata = {
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
+const solanaAdapter = new SolanaAdapter()
+
 const wagmiAdapter = new WagmiAdapter({
   batch: {
     multicall: {
@@ -67,32 +72,22 @@ const wagmiAdapter = new WagmiAdapter({
   transports: wagmiTransports,
 })
 
-// Prevent the CoW Widget connector from appearing in the wallet modal.
-// It must remain registered with wagmi (for reconnect/connect to work) but should not be
-// shown as an option — users connect via the parent dapp's wallet, not by picking a wallet manually.
-
-// const _addWagmiConnector = (wagmiAdapter as any).addWagmiConnector.bind(wagmiAdapter)
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// ;(wagmiAdapter as any).addWagmiConnector = async (connector: { id: string }) => {
-//   if (connector.id === COW_WIDGET_CONNECTOR_ID) return
-//   return _addWagmiConnector(connector)
-// }
-
-const urlChainId = getCurrentChainIdFromUrl()
-const defaultEvmChainId: EvmChains = isEvmChain(urlChainId) ? urlChainId : EvmChains.MAINNET
-
 // AppKit 1.8.19 does not copy createAppKit({ enableInjected }) into OptionsController.state.
 // WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
+const isSafeApp = getIsSafeAppIframe()
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+
 const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
-  defaultNetwork: VIEM_CHAINS[defaultEvmChainId],
+  defaultNetwork: getReownDefaultNetwork(),
   enableEIP6963: true,
   enableInjected: false,
-  enableReconnect: true,
+  enableReconnect: hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -120,9 +115,9 @@ const reownAppKit = createAppKit({
 /**
  * Instantly connect to Safe if in Safe
  */
-if (getIsSafeAppIframe()) {
+if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (isMobile && window.ethereum) {
+} else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
 
