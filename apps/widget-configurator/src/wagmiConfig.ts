@@ -7,6 +7,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
 import { http } from 'viem'
+import { createStorage } from 'wagmi'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import type { Transport } from 'wagmi'
@@ -93,11 +94,20 @@ const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7
  */
 const isInSafeApp = getIsSafeAppIframe()
 
+// Storage isolation: configurator standalone and configurator inside a Safe App live at the same
+// origin and would otherwise share the same wagmi/AppKit localStorage keys. That leaks a
+// standalone Rabby session into the Safe context — the Safe iframe reads `recentConnectorId=rabby`
+// and reconnects to the browser wallet instead of the Safe SDK connector.
+const WAGMI_STORAGE_KEY = isInSafeApp ? 'cowswap-widget-configurator_safe-app' : 'cowswap-widget-configurator'
+const wagmiStorage =
+  typeof window === 'undefined' ? undefined : createStorage({ key: WAGMI_STORAGE_KEY, storage: localStorage })
+
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
   customRpcUrls,
   networks,
   projectId,
+  storage: wagmiStorage,
   transports,
 })
 
