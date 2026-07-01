@@ -41,11 +41,20 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
     if (!sellTokenAddress) return null
 
     const setLoading = (hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void => {
+      const prevQuoteParams = lastQuoteParamsRef.current
       lastQuoteParamsRef.current = quoteParams
+
+      // Drop a stale error only when the trade subject itself (token pair / amount / kind)
+      // changes, e.g. after the user switches the buy token. We deliberately ignore
+      // slippage-only param changes: clearing the error there would let smart slippage
+      // recompute (it returns null while an error is shown), flip the quote params back,
+      // and re-trigger this branch — flickering the form between error and loading.
+      const tradeSubjectChanged = didTradeSubjectChange(prevQuoteParams, quoteParams)
 
       update(sellTokenAddress, {
         isLoading: true,
         hasParamsChanged,
+        ...(tradeSubjectChanged ? { error: null } : null),
       })
     }
 
@@ -106,6 +115,22 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       onResponse,
     }
   }, [update, processUnsupportedTokenError, sellTokenAddress])
+}
+
+// Whether the actual trade subject changed: the token pair, amount or order kind.
+// Slippage and other tangential params are intentionally excluded so that a slippage
+// recompute (which happens when an error is cleared) does not look like a new trade.
+function didTradeSubjectChange(prevQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
+  if (!prevQuoteParams) return false
+
+  return (
+    prevQuoteParams.kind !== quoteParams.kind ||
+    prevQuoteParams.amount !== quoteParams.amount ||
+    prevQuoteParams.sellTokenAddress !== quoteParams.sellTokenAddress ||
+    prevQuoteParams.sellTokenChainId !== quoteParams.sellTokenChainId ||
+    prevQuoteParams.buyTokenAddress !== quoteParams.buyTokenAddress ||
+    prevQuoteParams.buyTokenChainId !== quoteParams.buyTokenChainId
+  )
 }
 
 function isStaleQuote(lastQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
