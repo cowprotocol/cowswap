@@ -136,7 +136,7 @@ describe('useGetAmountToSignApprove', () => {
 
       expect(result.current).toEqual(mockMaxAmount)
     })
-    it('should return max amount when partial approval is selected on swap but trade type is limit order', () => {
+    it('should return max amount when partial approval is selected but trade type is limit order', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseAtomValue.mockReturnValue(true)
@@ -223,14 +223,15 @@ describe('useGetAmountToSignApprove', () => {
     })
 
     it('should update when isPartialApprovalEnabledInSettings changes', () => {
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
+
       const { result, rerender } = renderHook(() => useGetAmountToSignApprove())
 
-      const firstResult = result.current
+      expect(result.current).toEqual(mockPartialAmount)
 
       mockUseAtomValue.mockReturnValue(false)
       rerender()
 
-      expect(result.current).not.toBe(firstResult)
       expect(result.current).toEqual(mockMaxAmount)
     })
   })
