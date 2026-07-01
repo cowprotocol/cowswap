@@ -2,7 +2,7 @@ import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 
 import { isSellOrder } from './isSellOrder'
-import { log } from './logger'
+import { createCowLogger } from './logger'
 
 interface Market<T = string> {
   baseToken: T
@@ -74,7 +74,7 @@ export const registerOnWindow = (registerMapping: Record<string, unknown>): void
 
   Object.entries(registerMapping).forEach(([key, value]) => {
     ;(window as WindowWithMapping)[key] = value
-    log(undefined, undefined, key, value)
+    createCowLogger('AppMeta').info(key, value)
   })
 }
 

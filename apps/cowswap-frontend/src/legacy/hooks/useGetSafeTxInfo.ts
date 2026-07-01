@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { retry, RetryOptions } from '@cowprotocol/common-utils'
-import { getSafeTransaction } from '@cowprotocol/core'
+import { logSafeApi, retry, RetryOptions } from '@cowprotocol/common-utils'
+import { getSafeTransaction, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
@@ -14,14 +14,22 @@ export type GetSafeTxInfo = (hash: string) => RetryResult<SafeMultisigTransactio
 export function useGetSafeTxInfo(): GetSafeTxInfo {
   const { chainId } = useWalletInfo()
 
-  const getSafeInfo = useCallback<GetSafeTxInfo>(
+  const getSafeTxInfo = useCallback<GetSafeTxInfo>(
     (hash) => {
-      return retry(() => {
-        return getSafeTransaction(chainId, hash)
+      return retry(async () => {
+        try {
+          return await getSafeTransaction(chainId, hash)
+        } catch (err: unknown) {
+          const error = normalizeSafeError(err)
+          if (error.statusCode === 429) {
+            logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+          }
+          throw error
+        }
       }, DEFAULT_RETRY_OPTIONS)
     },
     [chainId],
   )
 
-  return getSafeInfo
+  return getSafeTxInfo
 }

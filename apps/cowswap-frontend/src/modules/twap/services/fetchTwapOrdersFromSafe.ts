@@ -1,5 +1,5 @@
-import { delay, isTruthy } from '@cowprotocol/common-utils'
-import { getSafeApiUrl } from '@cowprotocol/core'
+import { delay, isTruthy, logSafeApi } from '@cowprotocol/common-utils'
+import { getSafeApiUrl, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -138,8 +138,13 @@ async function fetchRecentlyExecutedTransactions(
       newestSubmissionDate: nextNewestSubmissionDate,
       complete: !response.next,
     }
-  } catch (error) {
-    console.error('Error fetching executed Safe transactions', { safeAddress }, error)
+  } catch (err: unknown) {
+    const error = normalizeSafeError(err)
+    if (error.statusCode === 429) {
+      logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+    } else {
+      logSafeApi.error('Error fetching executed Safe transactions', { safeAddress }, error)
+    }
     return { orders: [], complete: false }
   }
 }
@@ -157,7 +162,7 @@ function logExecutedTransactionsFetch(nextUrl?: string, since?: string): void {
   const page = nextUrl ? 'next' : 'first'
   const sinceText = since && !nextUrl ? ` since ${since}` : ''
 
-  console.log(`[COW][SafeAPI] Fetch TWAP executed orders (${page} page${sinceText})`)
+  logSafeApi.debug(`Fetch TWAP executed orders (${page} page${sinceText})`)
 }
 
 function getNextExecutedPage(response: AllTransactionsListResponse, accumulator: TwapDataArray[]): string | undefined {
@@ -193,14 +198,19 @@ async function fetchSafeTransactionsChunk(
 
   if (nextUrl) {
     try {
-      console.log('[COW][SafeAPI] Fetch TWAP pending orders (next page)')
+      logSafeApi.debug('Fetch TWAP pending orders (next page)')
       const response = await fetchWithFallback<AllTransactionsListResponse>(nextUrl, headers)
 
       await delay(SAFE_TX_REQUEST_DELAY)
 
       return response
-    } catch (error) {
-      console.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
+    } catch (err: unknown) {
+      const error = normalizeSafeError(err)
+      if (error.statusCode === 429) {
+        logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+      } else {
+        logSafeApi.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
+      }
 
       return { results: [], count: 0, fetchError: true }
     }
@@ -208,17 +218,37 @@ async function fetchSafeTransactionsChunk(
 
   const url = getSafeHistoryRequestUrl(chainId, safeAddress, false)
 
-  console.log('[COW][SafeAPI] Fetch TWAP pending orders (first page)')
-  return fetchWithFallback(url, headers)
+  try {
+    logSafeApi.debug('Fetch TWAP pending orders (first page)')
+    return await fetchWithFallback(url, headers)
+  } catch (err: unknown) {
+    const error = normalizeSafeError(err)
+    if (error.statusCode === 429) {
+      logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+    } else {
+      logSafeApi.error('Error fetching Safe transactions', { safeAddress }, error)
+    }
+
+    return { results: [], count: 0, fetchError: true }
+  }
 }
 
 function fetchWithFallback<T>(url: string, headers: HeadersInit): Promise<T> {
   return fetch(url, { headers })
     .then((res) => {
       if (res.status === 429 || res.status === 403) {
-        console.log('[COW][SafeAPI] Fetching without API Key (fallback)')
+        logSafeApi.debug('Fetching without API Key (fallback)')
         return fetch(url)
       }
+      return res
+    })
+    .then((res) => {
+      if (res.status === 429) {
+        const error = new Error('Safe API rate limited') as Error & { statusCode: number }
+        error.statusCode = 429
+        throw error
+      }
+
       return res
     })
     .then((res) => res.json())
