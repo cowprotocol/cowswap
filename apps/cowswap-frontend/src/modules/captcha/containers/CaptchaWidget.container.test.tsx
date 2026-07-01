@@ -24,14 +24,22 @@ jest.mock('@cowprotocol/common-hooks', () => {
 })
 
 let mockTurnstileProps: { style?: CSSProperties; onSuccess?: (token: string) => void } = {}
+const mockReset = jest.fn()
 
-jest.mock('@marsidev/react-turnstile', () => ({
-  __esModule: true,
-  Turnstile: (props: { style?: CSSProperties; onSuccess?: (token: string) => void }) => {
-    mockTurnstileProps = props
-    return <div data-testid="turnstile" style={props.style} />
-  },
-}))
+jest.mock('@marsidev/react-turnstile', () => {
+  const react = jest.requireActual('react')
+
+  return {
+    __esModule: true,
+    Turnstile: react.forwardRef(
+      (props: { style?: CSSProperties; onSuccess?: (token: string) => void }, ref: unknown) => {
+        mockTurnstileProps = props
+        react.useImperativeHandle(ref, () => ({ reset: mockReset, execute: jest.fn() }))
+        return <div data-testid="turnstile" style={props.style} />
+      },
+    ),
+  }
+})
 
 jest.mock('cowSdk', () => ({
   setBearerToken: jest.fn(),
@@ -108,7 +116,7 @@ describe('CaptchaWidget', () => {
     expect(screen.getByTestId('turnstile')).not.toBeNull()
   })
 
-  it('hides the solved widget while the JWT exchange is pending, then unmounts it once the JWT arrives', async () => {
+  it('keeps the solved widget visible during the JWT exchange, then unmounts it once the JWT arrives', async () => {
     const store = createStore()
     store.set(featureFlagsAtom, { isCaptchaEnabled: true })
 
@@ -123,17 +131,19 @@ describe('CaptchaWidget', () => {
       mockTurnstileProps.onSuccess?.('challenge-token')
     })
 
-    // Solved widget (and its "Success!" box) is hidden immediately, before the exchange resolves.
-    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('none')
+    // The solved "Success!" box stays visible while the exchange is pending; it is not reset yet.
+    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block')
+    expect(mockReset).not.toHaveBeenCalled()
 
     await act(async () => {
       resolveExchange(createJwt())
     })
 
+    // Storing the JWT unmounts the widget, so the "Success!" box leaves the form.
     await waitFor(() => expect(screen.queryByTestId('turnstile')).toBeNull())
   })
 
-  it('re-shows the widget when the JWT exchange fails', async () => {
+  it('resets the widget so the user can re-confirm when the JWT exchange fails', async () => {
     const store = createStore()
     store.set(featureFlagsAtom, { isCaptchaEnabled: true })
     exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
@@ -144,7 +154,9 @@ describe('CaptchaWidget', () => {
       await mockTurnstileProps.onSuccess?.('challenge-token')
     })
 
-    await waitFor(() => expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block'))
+    // Widget stays mounted and is reset (dropping the stale "Success!" box) rather than showing success again.
+    await waitFor(() => expect(mockReset).toHaveBeenCalled())
+    expect(screen.getByTestId('turnstile')).not.toBeNull()
     expect(store.get(captchaJwtAtom)).toBeNull()
   })
 
