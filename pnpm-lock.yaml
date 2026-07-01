@@ -843,6 +843,9 @@ importers:
       workbox-strategies:
         specifier: 6.6.1
         version: 6.6.1
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@storybook/react-vite':
         specifier: 10.3.6

@@ -2,6 +2,8 @@ import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { InfoTable, InfoTableWrapper } from '../HookInfoTable/HookInfoTable.styled'
+
 export const Wrapper = styled.div`
   flex: 1;
   width: 100%;
@@ -66,57 +68,9 @@ export const Body = styled.div`
   }
 `
 
-export const Tags = styled.div`
-  margin: 32px auto 16px;
-  font-size: 14px;
-  padding: 0 10px;
-
-  ${Media.upToSmall()} {
-    padding: 0 20px;
-    overflow-x: auto;
-  }
-
-  h3 {
-    margin: 0;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  tbody {
-  }
-
-  tr {
-    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  }
-
-  tr:last-child {
-    border-bottom: none;
-  }
-
-  td {
-    padding: 10px 0;
-  }
-
-  td:first-child {
-    color: var(${UI.COLOR_TEXT_OPACITY_50});
-    white-space: nowrap;
-    padding: 0 10px 0 0;
-
-    > span {
-      display: inline-block;
-      vertical-align: sub;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+export const Tags = styled(InfoTableWrapper)`
+  ${InfoTable} td:first-child > span {
+    display: inline-block;
+    vertical-align: sub;
   }
 `

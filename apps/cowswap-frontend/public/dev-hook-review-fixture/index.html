@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review modal fixture</title>
+    <style>
+      :root {
+        color: #052b5f;
+        background: transparent;
+        font-family:
+          Studio Feixen Sans,
+          Inter,
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      main {
+        display: grid;
+        gap: 16px;
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      p {
+        color: #476081;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      dl {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+      }
+
+      dt {
+        color: #7a8ba5;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+
+      button {
+        border: 0;
+        border-radius: 18px;
+        background: #064b9e;
+        color: #7ee3ff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 18px;
+        font-weight: 700;
+        padding: 18px 20px;
+      }
+
+      button:hover {
+        background: #043b7f;
+      }
+
+      .card {
+        border: 1px solid #dbe2ec;
+        border-radius: 20px;
+        padding: 18px;
+      }
+
+      .status {
+        color: #8b6500;
+        background: #fff6dc;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1>Review modal fixture</h1>
+        <p>Click the button below to send a sample iframe hook request to the parent app.</p>
+      </section>
+
+      <section class="card">
+        <dl>
+          <div>
+            <dt>Connected account</dt>
+            <dd id="account">Waiting for hook context...</dd>
+          </div>
+          <div>
+            <dt>Mode</dt>
+            <dd id="mode">Add hook</dd>
+          </div>
+        </dl>
+      </section>
+
+      <button id="open-review" type="button">Open review modal</button>
+
+      <p class="card status" id="status">Waiting for the parent app to send hook context.</p>
+    </main>
+
+    <script>
+      const TRANSPORT_KEY = 'cowSwapHookDapp'
+      const COW_TOKEN_ADDRESS = '0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab'
+      const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
+      let context = null
+      let activateInterval = null
+
+      function getParentOrigin() {
+        try {
+          return document.referrer ? new URL(document.referrer).origin : window.location.origin
+        } catch {
+          return window.location.origin
+        }
+      }
+
+      const parentOrigin = getParentOrigin()
+
+      function postToParent(method, payload) {
+        window.parent.postMessage(
+          {
+            key: TRANSPORT_KEY,
+            method,
+            ...(payload || {}),
+          },
+          parentOrigin,
+        )
+      }
+
+      function getBalanceOfCalldata(account) {
+        const address = /^0x[a-fA-F0-9]{40}$/.test(account) ? account : ZERO_ADDRESS
+        return `0x70a08231${address.slice(2).padStart(64, '0')}`
+      }
+
+      function getHookPayload() {
+        const account = context && typeof context.account === 'string' ? context.account : ZERO_ADDRESS
+
+        return {
+          hook: {
+            target: COW_TOKEN_ADDRESS,
+            callData: getBalanceOfCalldata(account),
+            gasLimit: '32000',
+          },
+        }
+      }
+
+      function updateContextView() {
+        const accountEl = document.getElementById('account')
+        const modeEl = document.getElementById('mode')
+        const statusEl = document.getElementById('status')
+        const isEditing = Boolean(context && context.hookToEdit && context.hookToEdit.uuid)
+
+        accountEl.textContent = context && context.account ? context.account : 'No account in context'
+        modeEl.textContent = isEditing ? 'Edit hook' : 'Add hook'
+        statusEl.textContent = 'Ready. Click the button to ask the parent app to open the review modal.'
+      }
+
+      function activate() {
+        postToParent('ACTIVATE')
+      }
+
+      window.addEventListener('message', (event) => {
+        if (event.origin !== parentOrigin) return
+
+        const data = event.data
+        if (!data || data.key !== TRANSPORT_KEY || data.method !== 'CONTEXT_UPDATE') return
+
+        context = data
+        if (activateInterval) {
+          clearInterval(activateInterval)
+          activateInterval = null
+        }
+        updateContextView()
+      })
+
+      document.getElementById('open-review').addEventListener('click', () => {
+        const payload = getHookPayload()
+        const hookToEdit = context && context.hookToEdit
+
+        if (hookToEdit && hookToEdit.uuid) {
+          postToParent('EDIT_HOOK', {
+            ...payload,
+            uuid: hookToEdit.uuid,
+          })
+        } else {
+          postToParent('ADD_HOOK', payload)
+        }
+      })
+
+      activate()
+      activateInterval = window.setInterval(activate, 500)
+    </script>
+  </body>
+</html>
