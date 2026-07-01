@@ -4,7 +4,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { ConnectorController } from '@reown/appkit-controllers'
+import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
 import { http } from 'viem'
 import { createStorage } from 'wagmi'
@@ -126,6 +126,15 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
+// AppKit 1.8.19 does not copy `createAppKit({ enableInjected })` into `OptionsController.state`.
+// `WagmiAdapter.addWagmiConnectors()` reads that controller state before adding its default
+// injected connector. Without this, a browser wallet (e.g. Rabby) already connected in a
+// sibling tab auto-injects via `window.ethereum` in the Safe iframe context and leaks into
+// wagmi as an active connector, overriding the Safe SDK connection.
+if (isInSafeApp) {
+  OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
+}
+
 // Warm up the Coinbase Wallet SDK provider before AppKit's `addWagmiConnector` awaits it.
 // `coinbaseWallet.getProvider()` dynamically imports `@coinbase/wallet-sdk` and instantiates
 // the provider; AppKit blocks on this await before registering the connector in its
@@ -153,6 +162,7 @@ export const reownAppKit = createAppKit({
   customRpcUrls,
   defaultNetwork: networks.find((n) => n.id === SupportedChainId.MAINNET),
   enableEIP6963: !isInSafeApp,
+  enableInjected: !isInSafeApp,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   metadata,
