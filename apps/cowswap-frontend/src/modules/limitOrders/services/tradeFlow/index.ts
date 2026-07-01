@@ -1,8 +1,16 @@
-import { captureError, ERROR_TYPES, normalizeError, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { SigningScheme } from '@cowprotocol/cow-sdk'
+import {
+  captureError,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  currencyAmountToTokenAmount,
+  ERROR_TYPES,
+  normalizeError,
+  reportPermitWithDefaultSigner,
+} from '@cowprotocol/common-utils'
+import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
+import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { sendTransaction } from 'wagmi/actions'
@@ -11,8 +19,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
+import { callWidgetHook } from 'modules/injectedWidget'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -27,7 +36,7 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
@@ -73,7 +82,28 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(permitInfo)) await beforePermit()
+    if (isSupportedPermitInfo(permitInfo)) {
+      const cachedPermit = await params.getCachedPermit(sellToken.address)
+
+      if (!cachedPermit) {
+        const sellTokenAmount = currencyAmountToTokenAmount(inputAmount)
+        const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+          chainId: sellTokenAmount.currency.chainId,
+          sellToken: {
+            ...sellTokenAmount.currency,
+            name: sellTokenAmount.currency.name || '',
+            symbol: sellTokenAmount.currency.symbol || '',
+          },
+          sellAmount: (permitAmountToSign ?? 0n).toString(),
+          walletAddress: account,
+          spenderAddress: COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId],
+        })
+
+        if (!isWidgetHookPassed) throw new WidgetHookDeclineError()
+      }
+
+      await beforePermit()
+    }
 
     postOrderParams.appData = await handlePermit({
       permitInfo,
@@ -195,6 +225,11 @@ export async function tradeFlow(
     return orderId
   } catch (err: unknown) {
     const error = normalizeError(err)
+
+    // Expected abort path: skip generic swap-error analytics so widget-hook declines don't pollute telemetry.
+    if (error instanceof WidgetHookDeclineError) {
+      throw error
+    }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
