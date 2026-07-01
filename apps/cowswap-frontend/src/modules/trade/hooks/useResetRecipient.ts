@@ -15,6 +15,11 @@ import { useIsNativeIn } from './useIsNativeInOrOut'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
+function hasRecipientSearchParam(search: string): boolean {
+  const searchParams = new URLSearchParams(search)
+  return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+}
+
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const tradeState = useDerivedTradeState()
@@ -29,15 +34,8 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
-  /**
-   * Derived synchronously from the URL rather than from the tradeStateFromUrl atom,
-   * which is only populated a render later. By the time the atom updates, the reset
-   * effects below have already wiped a recipient that was explicitly set in the URL.
-   */
-  const hasRecipientInUrl = useMemo(() => {
-    const searchParams = new URLSearchParams(location.search)
-    return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
-  }, [location.search])
+  const hasRecipientInUrl = useMemo(() => hasRecipientSearchParam(location.search), [location.search])
+  const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
   const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
@@ -47,7 +45,11 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +65,11 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
       return
     }
 
-    if (!postHooksRecipientOverride && !isNonEvmBridging && !hasRecipientInUrl) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
   }, [
@@ -72,34 +78,52 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     onChangeRecipient,
     postHooksRecipientOverride,
     isNonEvmBridging,
-    hasRecipientInUrl,
+    shouldPreserveRecipientFromUrl,
   ])
 
   /**
    * Remove recipient override when its source hook was deleted
    */
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
 
-    if (recipientOverrideWasRemoved && !hasRecipientInUrl) {
+    if (recipientOverrideWasRemoved) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, hasRecipientInUrl, onChangeRecipient])
+  }, [
+    recipient,
+    postHooksRecipientOverride,
+    prevPostHooksRecipientOverride,
+    onChangeRecipient,
+    shouldPreserveRecipientFromUrl,
+  ])
 
   /**
-   * Remove recipient when going out from hooks-store page, but preserve any recipient set via URL
+   * Remove recipient when going out from hooks-store page
    */
   useEffect(() => {
-    if (!isHooksTradeType && !hasRecipientInUrl) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!isHooksTradeType) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, hasRecipientInUrl, onChangeRecipient])
+  }, [isHooksTradeType, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   useEffect(() => {
-    if (isHooksTradeType && isNativeIn && !hasRecipientInUrl) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (isHooksTradeType && isNativeIn) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, isNativeIn, hasRecipientInUrl, onChangeRecipient])
+  }, [isHooksTradeType, isNativeIn, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   return null
 }
