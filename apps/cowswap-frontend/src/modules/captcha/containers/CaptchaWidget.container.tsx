@@ -17,19 +17,15 @@ import { logCaptcha } from '../logger'
 
 interface ChallengeSuccessHandlers {
   exchangeRequestIdRef: MutableRefObject<number>
-  setIsChallengeSolved: (solved: boolean) => void
+  captchaRef: MutableRefObject<TurnstileInstance | undefined>
   setCaptchaJwt: (jwt: string | null) => void
 }
 
 async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessHandlers): Promise<void> {
-  const { exchangeRequestIdRef, setIsChallengeSolved, setCaptchaJwt } = handlers
+  const { exchangeRequestIdRef, captchaRef, setCaptchaJwt } = handlers
   const requestId = exchangeRequestIdRef.current + 1
 
   exchangeRequestIdRef.current = requestId
-
-  // Hide the solved widget (and its lingering "Success!" box) right away; the JWT exchange
-  // below runs in the background and unmounts the widget entirely once it resolves.
-  setIsChallengeSolved(true)
 
   logCaptcha.info('Challenge succeeded', { requestId, tokenLength: token.length })
   logCaptcha.debug('Exchanging challenge token for captcha JWT', { requestId })
@@ -43,6 +39,7 @@ async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessH
     }
 
     logCaptcha.info('JWT received', { requestId })
+    // Storing the JWT unmounts the widget, so the solved "Success!" box leaves the form.
     setCaptchaJwt(jwt)
   } catch (error) {
     if (exchangeRequestIdRef.current !== requestId) {
@@ -50,8 +47,10 @@ async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessH
     }
 
     logCaptcha.error('JWT exchange failed', { requestId, error })
-    setIsChallengeSolved(false)
     setCaptchaJwt(null)
+    // The exchange failed after Cloudflare solved the challenge; reset the widget so it drops
+    // the stale "Success!" box and re-runs the challenge for the user to re-confirm.
+    captchaRef.current?.reset()
   }
 }
 
@@ -61,7 +60,6 @@ export function CaptchaWidget(): ReactNode {
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
-  const [isChallengeSolved, setIsChallengeSolved] = useState(false)
   const theme = useTheme()
 
   useEffect(() => {
@@ -98,7 +96,6 @@ export function CaptchaWidget(): ReactNode {
 
     const timeout = window.setTimeout(() => {
       logCaptcha.warn('JWT expired')
-      setIsChallengeSolved(false)
       setCaptchaJwt(null)
     }, getJwtTtl(captchaJwt.expiresAt))
 
@@ -114,7 +111,7 @@ export function CaptchaWidget(): ReactNode {
       key={siteKey}
       ref={captchaRef}
       siteKey={siteKey}
-      style={{ width: '100%', display: isChallengeSolved ? 'none' : 'block' }}
+      style={{ width: '100%', display: 'block' }}
       options={{
         theme: theme.darkMode ? 'dark' : 'light',
         size: 'flexible',
@@ -132,13 +129,10 @@ export function CaptchaWidget(): ReactNode {
       onAfterInteractive={() => {
         logCaptcha.debug('Challenge interaction completed')
       }}
-      onSuccess={(token: string) =>
-        handleChallengeSuccess(token, { exchangeRequestIdRef, setIsChallengeSolved, setCaptchaJwt })
-      }
+      onSuccess={(token: string) => handleChallengeSuccess(token, { exchangeRequestIdRef, captchaRef, setCaptchaJwt })}
       onExpire={() => {
         exchangeRequestIdRef.current += 1
         logCaptcha.warn('Challenge expired')
-        setIsChallengeSolved(false)
         setCaptchaJwt(null)
         logCaptcha.debug('Challenge re-starting')
         captchaRef.current?.reset()
@@ -146,8 +140,9 @@ export function CaptchaWidget(): ReactNode {
       onError={(errorCode) => {
         exchangeRequestIdRef.current += 1
         logCaptcha.error('Challenge errored', { errorCode, hostname: window.location.hostname })
-        setIsChallengeSolved(false)
         setCaptchaJwt(null)
+        // Clear any stale solved state so the errored widget re-runs the challenge for re-confirmation.
+        captchaRef.current?.reset()
       }}
       onUnsupported={() => {
         logCaptcha.warn('Challenge unsupported by browser')
