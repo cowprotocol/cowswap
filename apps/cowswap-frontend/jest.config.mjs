@@ -23,6 +23,7 @@ export default {
     '^wagmi$': require.resolve('wagmi'),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
     '^@reown/appkit-adapter-wagmi$': '<rootDir>/src/mocks/reownAdapterMock.ts',
+    '^@reown/appkit-adapter-solana$': '<rootDir>/src/mocks/reownSolanaAdapterMock.ts',
     '^@reown/appkit-adapter-solana/react$': '<rootDir>/src/mocks/reownSolanaAdapterMock.ts',
   },
 }
