@@ -99,8 +99,21 @@ const isInSafeApp = getIsSafeAppIframe()
 // standalone Rabby session into the Safe context — the Safe iframe reads `recentConnectorId=rabby`
 // and reconnects to the browser wallet instead of the Safe SDK connector.
 const WAGMI_STORAGE_KEY = isInSafeApp ? 'cowswap-widget-configurator_safe-app' : 'cowswap-widget-configurator'
-const wagmiStorage =
-  typeof window === 'undefined' ? undefined : createStorage({ key: WAGMI_STORAGE_KEY, storage: localStorage })
+
+// Cross-origin iframe embedding (Safe App is exactly this) can make `localStorage` throw a
+// `SecurityError` when third-party storage is blocked (Chrome "Block third-party cookies",
+// Safari ITP, sandboxed iframes). This runs at module top-level, so an uncaught throw would
+// break the bootstrap in the same Safe context this fix targets — fall back to in-memory storage.
+function createWagmiStorage(): ReturnType<typeof createStorage> | undefined {
+  if (typeof window === 'undefined') return undefined
+  try {
+    return createStorage({ key: WAGMI_STORAGE_KEY, storage: localStorage })
+  } catch (e) {
+    console.error('[wagmiConfig] localStorage unavailable, falling back to in-memory storage', e)
+    return undefined
+  }
+}
+const wagmiStorage = createWagmiStorage()
 
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
