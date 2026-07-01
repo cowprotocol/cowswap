@@ -4,13 +4,18 @@ import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
+import { ConnectorController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
 import { http } from 'viem'
-import { createStorage } from 'wagmi'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import type { Transport } from 'wagmi'
+
+declare global {
+  interface Window {
+    __COWSWAP_APPKIT_NS__?: string
+  }
+}
 
 /**
  * RPC URL for a given chain, used by AppKit's UI (balance display, ENS) and by wagmi
@@ -85,55 +90,28 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 // Wallet" tile in the modal via AppKit's connector-list rendering).
 const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'
 
-/**
- * When the configurator is loaded as a Safe App, the wallet must be delegated to the Safe SDK
- * and no other injected/EIP-6963 wallet should be discovered. Otherwise a browser wallet
- * connected during a standalone visit (e.g. Rabby) auto-reconnects here from localStorage and
- * bleeds through the embedded widget's `WidgetEthereumProvider`, so the widget ends up showing
- * a browser-wallet account instead of the Safe account.
- */
-const isInSafeApp = getIsSafeAppIframe()
-
-// Storage isolation: configurator standalone and configurator inside a Safe App live at the same
-// origin and would otherwise share the same wagmi/AppKit localStorage keys. That leaks a
-// standalone Rabby session into the Safe context — the Safe iframe reads `recentConnectorId=rabby`
-// and reconnects to the browser wallet instead of the Safe SDK connector.
-const WAGMI_STORAGE_KEY = isInSafeApp ? 'cowswap-widget-configurator_safe-app' : 'cowswap-widget-configurator'
-
-// Cross-origin iframe embedding (Safe App is exactly this) can make `localStorage` throw a
-// `SecurityError` when third-party storage is blocked (Chrome "Block third-party cookies",
-// Safari ITP, sandboxed iframes). This runs at module top-level, so an uncaught throw would
-// break the bootstrap in the same Safe context this fix targets — fall back to in-memory storage.
-function createWagmiStorage(): ReturnType<typeof createStorage> | undefined {
-  if (typeof window === 'undefined') return undefined
-  try {
-    return createStorage({ key: WAGMI_STORAGE_KEY, storage: localStorage })
-  } catch (e) {
-    console.error('[wagmiConfig] localStorage unavailable, falling back to in-memory storage', e)
-    return undefined
-  }
+// Configurator standalone and configurator-inside-Safe live on the same origin, so AppKit's
+// `@appkit/*` localStorage keys (wallet_id, connections, recent_wallet, connection_status, etc.)
+// are shared between the two contexts. That leaks a standalone browser-wallet session (e.g. Rabby)
+// into the Safe iframe and Reown reconnects to it instead of the Safe SDK connector.
+//
+// Fix: `patches/@reown__appkit-common@1.8.19.patch` teaches `SafeLocalStorage` to append
+// `window.__COWSWAP_APPKIT_NS__` to every key it reads/writes. Setting the flag before Reown
+// initializes routes the Safe context to `@appkit/wallet_id_safe-app` (etc.), fully isolated
+// from the standalone context.
+if (getIsSafeAppIframe() && typeof window !== 'undefined') {
+  window.__COWSWAP_APPKIT_NS__ = '_safe-app'
 }
-const wagmiStorage = createWagmiStorage()
 
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
   customRpcUrls,
   networks,
   projectId,
-  storage: wagmiStorage,
   transports,
 })
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
-
-// AppKit 1.8.19 does not copy `createAppKit({ enableInjected })` into `OptionsController.state`.
-// `WagmiAdapter.addWagmiConnectors()` reads that controller state before adding its default
-// injected connector. Without this, a browser wallet (e.g. Rabby) already connected in a
-// sibling tab auto-injects via `window.ethereum` in the Safe iframe context and leaks into
-// wagmi as an active connector, overriding the Safe SDK connection.
-if (isInSafeApp) {
-  OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
-}
 
 // Warm up the Coinbase Wallet SDK provider before AppKit's `addWagmiConnector` awaits it.
 // `coinbaseWallet.getProvider()` dynamically imports `@coinbase/wallet-sdk` and instantiates
@@ -161,8 +139,7 @@ export const reownAppKit = createAppKit({
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: networks.find((n) => n.id === SupportedChainId.MAINNET),
-  enableEIP6963: !isInSafeApp,
-  enableInjected: !isInSafeApp,
+  enableEIP6963: true,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   metadata,
