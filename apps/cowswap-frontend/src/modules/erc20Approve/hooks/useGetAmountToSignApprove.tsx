@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { TradeType, useDerivedTradeState } from 'modules/trade'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
@@ -15,7 +16,7 @@ import { useIsPartialApproveSelectedByUser } from '../state'
 /**
  * Returns the amount to sign for the approval transaction/permit
  * If no approval is needed, it returns 0
- * Otherwise it checks if partial approval is enabled and selected by the user.
+ * Otherwise it checks if partial approval is enabled and selected by the user (swap only).
  * If so, it returns the partial amount to sign.
  * Otherwise, it returns the maximum approve amount (unlimited).
  */
@@ -25,6 +26,9 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget()
+  const { tradeType } = useDerivedTradeState() || {}
+  const isSwapPartialApprovalSelected =
+    tradeType === TradeType.SWAP && isPartialApprovalSelectedByUser && isPartialApprovalEnabledInSettings
 
   return useMemo(() => {
     if (!partialAmountToSign) return null
@@ -35,16 +39,10 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
       return partialAmountToSign
     }
 
-    if (isPartialApprovalSelectedByUser && isPartialApprovalEnabledInSettings) {
+    if (isSwapPartialApprovalSelected) {
       return partialAmountToSign
     }
 
     return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, MAX_APPROVE_AMOUNT.toString())
-  }, [
-    partialAmountToSign,
-    isApprovalNeeded,
-    isPartialApprovalSelectedByUser,
-    isPartialApprovalEnabledInSettings,
-    isInfiniteApproveDisabled,
-  ])
+  }, [partialAmountToSign, isApprovalNeeded, isSwapPartialApprovalSelected, isInfiniteApproveDisabled])
 }
