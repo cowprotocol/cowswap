@@ -54,6 +54,41 @@ describe('widgetIframeLoading error UI styling', () => {
 
     expect(document.head.querySelectorAll(`style[data-${ERROR_CLASS}]`).length).toBeLessThanOrEqual(1)
   })
+
+  it('shows a loading state on the reload button while the retry is in progress', () => {
+    const { container, iframe } = setup()
+    failIframe(iframe)
+
+    const reloadBtn = container.querySelector<HTMLButtonElement>(`.${ERROR_CLASS} button`)
+    expect(reloadBtn?.disabled).toBe(false)
+
+    reloadBtn?.click()
+
+    // The panel stays mounted and the button is disabled (cursor:progress) while the retry runs.
+    expect(container.querySelector(`.${ERROR_CLASS}`)).not.toBeNull()
+    expect(reloadBtn?.disabled).toBe(true)
+  })
+
+  it('removes the error panel and reveals the iframe once the widget is ready', () => {
+    const { container, iframe, state } = setup()
+    failIframe(iframe)
+    expect(container.querySelector(`.${ERROR_CLASS}`)).not.toBeNull()
+    expect(iframe.style.display).toBe('none')
+
+    state.onWidgetReady()
+
+    expect(container.querySelector(`.${ERROR_CLASS}`)).toBeNull()
+    expect(iframe.style.display).toBe('')
+  })
+
+  it('keeps a single error panel across repeated failures on the same widget', () => {
+    const { container, iframe } = setup()
+
+    failIframe(iframe)
+    failIframe(iframe)
+
+    expect(container.querySelectorAll(`.${ERROR_CLASS}`).length).toBe(1)
+  })
 })
 
 function setup(): { container: HTMLElement; iframe: HTMLIFrameElement; state: LoadingState } {
