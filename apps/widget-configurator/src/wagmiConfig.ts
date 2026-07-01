@@ -1,4 +1,5 @@
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -9,6 +10,12 @@ import { http } from 'viem'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import type { Transport } from 'wagmi'
+
+declare global {
+  interface Window {
+    __COWSWAP_APPKIT_NS__?: string
+  }
+}
 
 /**
  * RPC URL for a given chain, used by AppKit's UI (balance display, ENS) and by wagmi
@@ -82,6 +89,19 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 // avoids creating a second wagmi connector (which would surface a duplicate "Coinbase
 // Wallet" tile in the modal via AppKit's connector-list rendering).
 const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'
+
+// Configurator standalone and configurator-inside-Safe live on the same origin, so AppKit's
+// `@appkit/*` localStorage keys (wallet_id, connections, recent_wallet, connection_status, etc.)
+// are shared between the two contexts. That leaks a standalone browser-wallet session (e.g. Rabby)
+// into the Safe iframe and Reown reconnects to it instead of the Safe SDK connector.
+//
+// Fix: `patches/@reown__appkit-common@1.8.19.patch` teaches `SafeLocalStorage` to append
+// `window.__COWSWAP_APPKIT_NS__` to every key it reads/writes. Setting the flag before Reown
+// initializes routes the Safe context to `@appkit/wallet_id_safe-app` (etc.), fully isolated
+// from the standalone context.
+if (getIsSafeAppIframe() && typeof window !== 'undefined') {
+  window.__COWSWAP_APPKIT_NS__ = '_safe-app'
+}
 
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],

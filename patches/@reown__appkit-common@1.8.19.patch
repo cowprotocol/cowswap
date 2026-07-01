@@ -1,0 +1,37 @@
+diff --git a/dist/esm/src/utils/SafeLocalStorage.js b/dist/esm/src/utils/SafeLocalStorage.js
+index c0818c9907e697bff3b70ee777aa8104e204c751..c823180a02967383e0bc55d7f1ab4c12d6aac425 100644
+--- a/dist/esm/src/utils/SafeLocalStorage.js
++++ b/dist/esm/src/utils/SafeLocalStorage.js
+@@ -34,21 +34,29 @@ export function getSafeConnectorIdKey(namespace) {
+     }
+     return `@appkit/${namespace}:connected_connector_id`;
+ }
++// Cowswap patch: read a per-context namespace from `window.__COWSWAP_APPKIT_NS__` (set by the
++// widget-configurator wagmiConfig before Reown boots) and suffix every AppKit storage key with
++// it. Without this, configurator standalone and configurator-inside-Safe (same origin) share
++// the same `@appkit/wallet_id`, `@appkit/connections`, ... keys — a Rabby session in the
++// standalone tab leaks into the Safe context and Reown reconnects to it instead of Safe SDK.
++function getAppKitNamespaceSuffix() {
++    return (typeof window !== 'undefined' && window.__COWSWAP_APPKIT_NS__) || '';
++}
+ export const SafeLocalStorage = {
+     setItem(key, value) {
+         if (isSafe() && value !== undefined) {
+-            localStorage.setItem(key, value);
++            localStorage.setItem(key + getAppKitNamespaceSuffix(), value);
+         }
+     },
+     getItem(key) {
+         if (isSafe()) {
+-            return localStorage.getItem(key) || undefined;
++            return localStorage.getItem(key + getAppKitNamespaceSuffix()) || undefined;
+         }
+         return undefined;
+     },
+     removeItem(key) {
+         if (isSafe()) {
+-            localStorage.removeItem(key);
++            localStorage.removeItem(key + getAppKitNamespaceSuffix());
+         }
+     },
+     clear() {

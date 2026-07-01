@@ -132,7 +132,8 @@
       }
     },
     "patchedDependencies": {
-      "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
+      "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch",
+      "@reown/appkit-common@1.8.19": "patches/@reown__appkit-common@1.8.19.patch"
     }
   },
   "dependencies": {
