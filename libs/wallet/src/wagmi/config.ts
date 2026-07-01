@@ -123,4 +123,6 @@ if (isSafeApp) {
 
 bindActiveProvider(wagmiAdapter)
 
-export { wagmiAdapter, reownAppKit, wagmiStorage }
+const { wagmiConfig } = wagmiAdapter
+
+export { wagmiConfig, wagmiAdapter, reownAppKit, wagmiStorage }

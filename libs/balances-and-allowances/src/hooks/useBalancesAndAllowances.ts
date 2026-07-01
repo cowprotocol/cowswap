@@ -11,7 +11,7 @@ export function useBalancesAndAllowances(tokens: string[]): BalancesAndAllowance
 
   return useMemo(() => {
     const { isLoading: balancesLoading, values: balances } = balancesState
-    const { isLoading: allowancesLoading, state: allowances } = allowancesState
+    const { isLoading: allowancesLoading, state: allowances = {} } = allowancesState
     return {
       isLoading: balancesLoading || allowancesLoading,
       balances,

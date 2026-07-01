@@ -97,12 +97,14 @@
       "@swc/core": true
     },
     "overrides": {
+      "@wagmi/core": "3.4.8",
+      "react-router-dom": "7.13.0",
+      "react-router": "7.13.0",
       "semver": "7.8.0",
       "undici-types": "6.19.2",
-      "wagmi": "3.6.9",
-      "@wagmi/core": "3.4.8",
-      "viem": "2.48.8",
       "use-sync-external-store": "1.5.0",
+      "viem": "2.48.8",
+      "wagmi": "3.6.9",
       "zod": "3.25.76"
     },
     "peerDependencyRules": {

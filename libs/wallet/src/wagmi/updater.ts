@@ -5,6 +5,7 @@ import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl } from '@cowproto
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import { Address } from 'viem'
@@ -41,8 +42,9 @@ function useBrowserUrlKey(): string {
 }
 
 function useWalletInfo(): WalletInfo {
+  // TODO: Replace urlKey with locationNetworkAtom, which will also trigger the useMemo below less often.
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected, status } = useAccountState()
+  const { address, chainId, isConnected, status, connector } = useAccountState()
   const isConnectionRestoring = status === 'reconnecting'
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
@@ -78,12 +80,14 @@ function useWalletInfo(): WalletInfo {
       chainId: resolvedChainId,
       active: isConnected,
       account: address,
+      connector,
       isConnectionRestoring,
     }
   }, [
     address,
     chainId,
     isConnected,
+    connector,
     isChainIdUnsupported,
     isConnectionRestoring,
     lastStableChainId,
@@ -134,23 +138,28 @@ let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
 export function WalletUpdater(): null {
-  const walletInfo = useWalletInfo()
-  const walletDetails = useWalletDetails(walletInfo.account)
+  const { chainId, active, account, connector, isConnectionRestoring } = useWalletInfo()
+
+  const walletDetails = useWalletDetails(account)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
 
+  const provider = useWalletProvider()
+
   useEffect(() => {
-    setWalletInfo(walletInfo)
-  }, [walletInfo, setWalletInfo])
+    setWalletInfo({ chainId, active, account, connector, isConnectionRestoring, provider })
+  }, [chainId, active, account, connector, isConnectionRestoring, provider, setWalletInfo])
 
   useEffect(() => {
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    const walletName = walletDetails.walletName ?? getWalletTypeLabel(walletType)
+
     setWalletDetails({
-      walletName: getWalletTypeLabel(walletType),
       ...walletDetails,
+      walletName,
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 

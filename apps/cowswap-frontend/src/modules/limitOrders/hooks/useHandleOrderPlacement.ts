@@ -8,6 +8,7 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
+import { OrderTabId } from 'entities/routes/routes.atom'
 import { useConfig } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -21,7 +22,7 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
@@ -192,8 +193,11 @@ export function useHandleOrderPlacement(
 
         // TODO: Clear filters if the new order is not visible before navigating.
 
-        // Navigate to open orders
-        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.signing : OrderTabId.open)
+        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
+        // still be no signing orders.
+        setTimeout(() => {
+          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+        })
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {

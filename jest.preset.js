@@ -11,7 +11,7 @@ module.exports = {
     '\\.png': '<rootDir>../../testing/imgMock.js',
   },
   transformIgnorePatterns: [
-    '/node_modules/.pnpm/(?!.*(wagmi|@wagmi|viem))',
-    '/node_modules/(?!(\\.pnpm|wagmi|@wagmi|viem))',
+    '/node_modules/.pnpm/(?!.*(wagmi|@wagmi|viem|jotai-tanstack-query))',
+    '/node_modules/(?!(\\.pnpm|wagmi|@wagmi|viem|jotai-tanstack-query))',
   ],
 }

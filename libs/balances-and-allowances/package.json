@@ -30,7 +30,6 @@
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
     "@cowprotocol/cowswap-abis": "workspace:*",
-    "@cowprotocol/multicall": "workspace:*",
     "@cowprotocol/tokens": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/wallet": "workspace:*",
