@@ -207,6 +207,7 @@ export const useCombinedPendingOrders = ({
  * The difference is that this hook returns only orders that have the status PENDING
  * while usePendingOrders aggregates all pending states
  */
+// TODO: Can be replaced by onlyPendingOrdersAtom
 export const useOnlyPendingOrders = (chainId: SupportedChainId, account: string | undefined): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>((state) => state.orders?.[chainId]?.pending)
 

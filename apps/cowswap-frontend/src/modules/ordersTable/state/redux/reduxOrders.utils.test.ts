@@ -6,7 +6,11 @@ import { getDefaultNetworkState } from 'legacy/state/orders/reducer'
 import type { OrderObject, OrdersState } from 'legacy/state/orders/reducer'
 import type { SerializedToken } from 'legacy/state/user/types'
 
-import { getReduxOrdersByOrderTypeFromNetworkState, getReduxOrdersStateByChain } from './reduxOrders.utils'
+import {
+  getReduxOrdersByOrderTypeFromNetworkState,
+  getReduxOrdersByStatusFromNetworkState,
+  getReduxOrdersStateByChain,
+} from './reduxOrders.utils'
 
 const MOCK_ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const OTHER_OWNER = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
@@ -110,6 +114,52 @@ describe('getReduxOrdersByOrderTypeFromNetworkState', () => {
       uiOrderType: UiOrderType.SWAP,
     })
     expect(swapResult.reduxOrders.map((o) => o.id)).toEqual([marketOrder.id])
+  })
+})
+
+describe('getReduxOrdersByStatusFromNetworkState', () => {
+  it('includes limit and swap orders from the pending bucket for the connected account', () => {
+    const limitOrder = makeOrderObject({
+      id: '0xl',
+      owner: MOCK_ACCOUNT,
+      orderClass: OrderClass.LIMIT,
+    })
+    const marketOrder = makeOrderObject({
+      id: '0xs',
+      owner: MOCK_ACCOUNT,
+      orderClass: OrderClass.MARKET,
+    })
+
+    const pending = {
+      '0xl': limitOrder,
+      '0xs': marketOrder,
+    }
+
+    const reduxOrders = getReduxOrdersByStatusFromNetworkState(MOCK_ACCOUNT, pending)
+
+    expect(reduxOrders.map((order) => order.id)).toEqual([limitOrder.id, marketOrder.id])
+  })
+
+  it('keeps only orders whose owner matches the connected account', () => {
+    const mine = makeOrderObject({
+      id: '0xm',
+      owner: MOCK_ACCOUNT,
+      orderClass: OrderClass.LIMIT,
+    })
+    const theirs = makeOrderObject({
+      id: '0xt',
+      owner: OTHER_OWNER,
+      orderClass: OrderClass.MARKET,
+    })
+
+    const pending = {
+      '0xm': mine,
+      '0xt': theirs,
+    }
+
+    const reduxOrders = getReduxOrdersByStatusFromNetworkState(MOCK_ACCOUNT, pending)
+
+    expect(reduxOrders.map((order) => order.id)).toEqual([mine.id])
   })
 })
 

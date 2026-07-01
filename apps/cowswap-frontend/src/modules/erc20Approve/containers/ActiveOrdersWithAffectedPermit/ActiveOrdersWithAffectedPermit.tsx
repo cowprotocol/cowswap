@@ -6,7 +6,7 @@ import { TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { AffectedPermitOrdersTable, limitPendingOrdersForPermitAtom } from 'modules/ordersTable'
+import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable'
 
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
@@ -22,7 +22,7 @@ interface ActiveOrdersWithAffectedPermitProps {
 
 export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
   const { t } = useLingui()
-  const pendingOrders = useAtomValue(limitPendingOrdersForPermitAtom)
+  const pendingOrders = useAtomValue(onlyPendingOrdersAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
   const ordersWithPermit = useMemo(() => {

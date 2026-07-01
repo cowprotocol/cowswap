@@ -57,7 +57,7 @@ The initial `ordersStateAtom` value should keep the existing `OrdersState` / `Or
 
    - `ordersTableStateAtom`
    - `swapOrdersAtom`
-   - `limitPendingOrdersForPermitAtom`
+   - `onlyPendingOrdersAtom`
 
    The existing helpers `getReduxOrdersStateByChain` and `getReduxOrdersByOrderTypeFromNetworkState` can be renamed after the source is no longer Redux-specific.
 

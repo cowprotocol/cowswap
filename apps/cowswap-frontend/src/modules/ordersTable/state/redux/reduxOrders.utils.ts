@@ -5,7 +5,13 @@ import { Address } from 'viem'
 
 import { Order } from 'legacy/state/orders/actions'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'
-import { ORDER_LIST_KEYS, OrdersState, OrdersStateNetwork, getDefaultNetworkState } from 'legacy/state/orders/reducer'
+import {
+  ORDER_LIST_KEYS,
+  OrdersState,
+  OrdersStateNetwork,
+  getDefaultNetworkState,
+  PartialOrdersMap,
+} from 'legacy/state/orders/reducer'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -50,6 +56,32 @@ export function getReduxOrdersByOrderTypeFromNetworkState({
   })
 
   return { reduxOrders, ordersTokensSet }
+}
+
+/**
+ * Maps Redux per-chain order state into deserialized `Order[]`.
+ */
+export function getReduxOrdersByStatusFromNetworkState(
+  account: Address,
+  reduxOrdersInCurrentChainAndStatus: PartialOrdersMap,
+): Order[] {
+  const reduxOrders: Order[] = []
+
+  Object.values(reduxOrdersInCurrentChainAndStatus).forEach((order) => {
+    if (!order) return
+
+    const doesBelongToAccount = areAddressesEqual(order.order.owner, account)
+
+    if (!doesBelongToAccount) return
+
+    const mappedOrder = deserializeOrder(order)
+
+    if (!mappedOrder || mappedOrder.isHidden) return
+
+    reduxOrders.push(mappedOrder)
+  })
+
+  return reduxOrders
 }
 
 export function getReduxOrdersStateByChain(
