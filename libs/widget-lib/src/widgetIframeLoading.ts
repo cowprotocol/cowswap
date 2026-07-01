@@ -19,11 +19,19 @@ export function widgetIframeLoading(
   let cancelled = false
   let timeout: number | null = null
 
+  function removeLoadingErrorContainer(): void {
+    const existing = container.getElementsByClassName(WIDGET_LOADING_ERROR_CLASS)[0]
+    if (existing) container.removeChild(existing)
+  }
+
   function onLoadingError(): void {
     onWidgetLoadingError?.()
 
     iframe.style.display = 'none'
     ensureLoadingErrorStyles()
+
+    // Replace any previous error/loading panel so a repeated failure doesn't stack panels.
+    removeLoadingErrorContainer()
 
     const loadingContainer = document.createElement('div')
     const reloadBtn = document.createElement('button')
@@ -31,10 +39,14 @@ export function widgetIframeLoading(
 
     reloadBtn.innerText = 'Reload'
     reloadBtn.addEventListener('click', () => {
-      container.removeChild(loadingContainer)
+      // Keep the panel mounted and switch it to a loading state so the retry is visibly in
+      // progress; it's cleared by onWidgetReady on success or replaced by onLoadingError on
+      // another failure.
+      reloadBtn.disabled = true
+      errorText.innerText = 'Loading…'
+
       destroy(true)
       iframe.src = 'about:blank'
-      iframe.style.display = ''
 
       setTimeout(() => {
         iframe.src = originalSrc
@@ -69,8 +81,9 @@ export function widgetIframeLoading(
     onWidgetReady() {
       if (timeout) clearTimeout(timeout)
 
-      const loadingContainer = document.getElementsByClassName(WIDGET_LOADING_ERROR_CLASS)[0]
-      if (loadingContainer) container.removeChild(loadingContainer)
+      // Reveal the iframe again — it is hidden while an error/retry panel is shown.
+      iframe.style.display = ''
+      removeLoadingErrorContainer()
     },
     cancelWidgetLoading() {
       cancelled = true
