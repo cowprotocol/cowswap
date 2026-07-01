@@ -189,4 +189,31 @@ describe('operatorApi competition fallbacks', () => {
 
     await expect(resultPromise).resolves.toEqual([])
   })
+
+  it('returns empty tx orders when prod times out and staging is empty', async () => {
+    // The reported hang: PROD never responds. It must time out instead of leaving Promise.any pending.
+    jest.useFakeTimers()
+    mockedOrderBookSDK.getTxOrders.mockImplementationOnce(() => unresolvedPromise()).mockResolvedValueOnce([])
+
+    const resultPromise = getTxOrders({ networkId: 1, txHash: '0xtx-prod-hang' })
+
+    await jest.advanceTimersByTimeAsync(12_001)
+
+    await expect(resultPromise).resolves.toEqual([])
+  })
+
+  it('rejects instead of hanging when both envs time out', async () => {
+    jest.useFakeTimers()
+    mockedOrderBookSDK.getTxOrders
+      .mockImplementationOnce(() => unresolvedPromise())
+      .mockImplementationOnce(() => unresolvedPromise())
+
+    const resultPromise = getTxOrders({ networkId: 1, txHash: '0xtx-both-hang' })
+    // Attach the rejection handler up-front so the timed-out promise never looks unhandled.
+    const expectation = expect(resultPromise).rejects.toThrow()
+
+    await jest.advanceTimersByTimeAsync(12_001)
+
+    await expectation
+  })
 })
