@@ -18,19 +18,6 @@ on:
 
 jobs:
 
-  vercel-dev:
-    # Deploys to Vercel dev environment
-    name: Vercel dev
-    if: github.ref == 'refs/heads/develop'
-    uses: ./.github/workflows/vercel.yml
-    secrets: inherit
-    strategy:
-      matrix:
-        app: [ EXPLORER ]
-    with:
-      env_name: dev
-      app: ${{ matrix.app }}
-
   vercel-pre-prod:
     # Deploys to Vercel staging environment only when there is a tag for CowSwap or Explorer
     name: Vercel pre-prod
@@ -62,7 +49,7 @@ jobs:
 
   notify-failure:
     name: Notify Slack on Failure
-    needs: [ vercel-dev, vercel-pre-prod, vercel-prod ]
+    needs: [ vercel-pre-prod, vercel-prod ]
     runs-on: ubuntu-latest
     if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
