@@ -1,4 +1,5 @@
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -83,6 +84,15 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 // Wallet" tile in the modal via AppKit's connector-list rendering).
 const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'
 
+/**
+ * When the configurator is loaded as a Safe App, the wallet must be delegated to the Safe SDK
+ * and no other injected/EIP-6963 wallet should be discovered. Otherwise a browser wallet
+ * connected during a standalone visit (e.g. Rabby) auto-reconnects here from localStorage and
+ * bleeds through the embedded widget's `WidgetEthereumProvider`, so the widget ends up showing
+ * a browser-wallet account instead of the Safe account.
+ */
+const isInSafeApp = getIsSafeAppIframe()
+
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
   customRpcUrls,
@@ -119,7 +129,7 @@ export const reownAppKit = createAppKit({
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: networks.find((n) => n.id === SupportedChainId.MAINNET),
-  enableEIP6963: true,
+  enableEIP6963: !isInSafeApp,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   metadata,
