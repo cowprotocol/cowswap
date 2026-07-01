@@ -23,7 +23,7 @@ jobs:
       release-tags: ${{ steps.collect.outputs.release-tags }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: refs/heads/main
           fetch-depth: 0
@@ -68,7 +68,7 @@ jobs:
         This PR contains an automated merge commit from `main` into `develop`.
     steps:
       - name: Checkout workflow repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: refs/heads/main
           fetch-depth: 0
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout workflow repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: refs/heads/main
           fetch-depth: 0
@@ -192,7 +192,7 @@ jobs:
     environment: production # Env configured in GitHub UI. Requires manual approval before this job can run
     steps:
       - name: Checkout workflow repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: refs/heads/main
           fetch-depth: 0
