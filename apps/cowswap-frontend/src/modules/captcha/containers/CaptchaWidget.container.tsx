@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl } from '@cowprotocol/common-utils'
@@ -14,6 +14,45 @@ import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
 import { logCaptcha } from '../logger'
+
+interface ChallengeSuccessHandlers {
+  exchangeRequestIdRef: MutableRefObject<number>
+  captchaRef: MutableRefObject<TurnstileInstance | undefined>
+  setCaptchaJwt: (jwt: string | null) => void
+}
+
+async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessHandlers): Promise<void> {
+  const { exchangeRequestIdRef, captchaRef, setCaptchaJwt } = handlers
+  const requestId = exchangeRequestIdRef.current + 1
+
+  exchangeRequestIdRef.current = requestId
+
+  logCaptcha.info('Challenge succeeded', { requestId, tokenLength: token.length })
+  logCaptcha.debug('Exchanging challenge token for captcha JWT', { requestId })
+
+  try {
+    const jwt = await exchangeTurnstileToken(token)
+
+    if (exchangeRequestIdRef.current !== requestId) {
+      logCaptcha.warn('Skipping stale captcha JWT exchange result')
+      return
+    }
+
+    logCaptcha.info('JWT received', { requestId })
+    // Storing the JWT unmounts the widget, so the solved "Success!" box leaves the form.
+    setCaptchaJwt(jwt)
+  } catch (error) {
+    if (exchangeRequestIdRef.current !== requestId) {
+      return
+    }
+
+    logCaptcha.error('JWT exchange failed', { requestId, error })
+    setCaptchaJwt(null)
+    // The exchange failed after Cloudflare solved the challenge; reset the widget so it drops
+    // the stale "Success!" box and re-runs the challenge for the user to re-confirm.
+    captchaRef.current?.reset()
+  }
+}
 
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
@@ -90,33 +129,7 @@ export function CaptchaWidget(): ReactNode {
       onAfterInteractive={() => {
         logCaptcha.debug('Challenge interaction completed')
       }}
-      onSuccess={async (token: string) => {
-        const requestId = exchangeRequestIdRef.current + 1
-
-        exchangeRequestIdRef.current = requestId
-
-        logCaptcha.info('Challenge succeeded', { requestId, tokenLength: token.length })
-        logCaptcha.debug('Exchanging challenge token for captcha JWT', { requestId })
-
-        try {
-          const jwt = await exchangeTurnstileToken(token)
-
-          if (exchangeRequestIdRef.current !== requestId) {
-            logCaptcha.warn('Skipping stale captcha JWT exchange result')
-            return
-          }
-
-          logCaptcha.info('JWT received', { requestId })
-          setCaptchaJwt(jwt)
-        } catch (error) {
-          if (exchangeRequestIdRef.current !== requestId) {
-            return
-          }
-
-          logCaptcha.error('JWT exchange failed', { requestId, error })
-          setCaptchaJwt(null)
-        }
-      }}
+      onSuccess={(token: string) => handleChallengeSuccess(token, { exchangeRequestIdRef, captchaRef, setCaptchaJwt })}
       onExpire={() => {
         exchangeRequestIdRef.current += 1
         logCaptcha.warn('Challenge expired')
@@ -128,6 +141,8 @@ export function CaptchaWidget(): ReactNode {
         exchangeRequestIdRef.current += 1
         logCaptcha.error('Challenge errored', { errorCode, hostname: window.location.hostname })
         setCaptchaJwt(null)
+        // Clear any stale solved state so the errored widget re-runs the challenge for re-confirmation.
+        captchaRef.current?.reset()
       }}
       onUnsupported={() => {
         logCaptcha.warn('Challenge unsupported by browser')
