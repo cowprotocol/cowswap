@@ -1,17 +1,21 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..213aece23a77f41249257e39df05671baff7cc78 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f790d5a646 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
-@@ -152,7 +152,7 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
                  }
                  if (accountData.status === 'connected') {
                      const hasAccountChanged = accountData.address !== prevAccountData?.address;
 -                    const hasConnectorChanged = accountData.connector.id !== prevAccountData.connector?.id;
 +                    const hasConnectorChanged = accountData.connector?.id !== prevAccountData.connector?.id;
                      const hasConnectionStatusChanged = prevAccountData.status !== 'connected';
-                     if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
+-                    if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
++                    if (accountData.connector &&
++                        (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged)) {
                          this.setupWatchPendingTransactions();
-@@ -520,13 +520,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+                         this.handleAccountChanged({
+                             address: accountData.address,
+@@ -520,13 +521,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
