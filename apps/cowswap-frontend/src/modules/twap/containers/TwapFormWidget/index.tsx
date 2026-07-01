@@ -129,17 +129,12 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-        cowAnalytics.sendEvent({
-          category: CowSwapAnalyticsCategory.TWAP,
-          action: 'non-compatible',
-        })
-      } else if (isFallbackHandlerRequired) {
+      if (localFormValidation !== TwapFormState.TX_BUNDLING_NOT_SUPPORTED && isFallbackHandlerRequired) {
         cowAnalytics.sendEvent({
           category: CowSwapAnalyticsCategory.TWAP,
           action: 'safe-that-could-be-converted',
         })
-      } else if (isFallbackHandlerCompatible) {
+      } else if (localFormValidation !== TwapFormState.TX_BUNDLING_NOT_SUPPORTED && isFallbackHandlerCompatible) {
         cowAnalytics.sendEvent({
           category: CowSwapAnalyticsCategory.TWAP,
           action: 'compatible',
