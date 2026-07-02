@@ -9,6 +9,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -70,10 +71,16 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
 
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
-  const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
+  // Re-check the balance against the (frozen) sell amount in case it changed while the modal was open
+  const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputAmount)
+  const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance
+
+  const inputSymbol = inputAmount?.currency?.symbol || t`token`
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
-  const buttonText = isSafeApprovalBundle ? (
+  const buttonText = isInsufficientBalance ? (
+    t`Insufficient ${inputSymbol} balance`
+  ) : isSafeApprovalBundle ? (
     <>
       <Trans>Confirm</Trans> (<Trans>Approve</Trans>&nbsp;
       <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
