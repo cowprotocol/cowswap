@@ -1,7 +1,7 @@
 import { EnrichedOrder, getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
-import { Order } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { getIsLastPartOrder } from './getIsLastPartOrder'
 import { getPartOrderStatus } from './getPartOrderStatus'
@@ -18,6 +18,9 @@ export function mapPartOrderToStoreOrder(
 ): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)
+
+  // A broken fallback handler blocks the whole order, so mark still-open parts as unfillable too
+  const isUnfillable = !!parent.isUnfillable && (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
 
   const inputToken = tokensByAddress[getAddressKey(enrichedOrder.sellToken)]
   const outputToken = tokensByAddress[getAddressKey(enrichedOrder.buyToken)]
@@ -39,5 +42,6 @@ export function mapPartOrderToStoreOrder(
     status,
     apiAdditionalInfo: enrichedOrder,
     isCancelling,
+    isUnfillable,
   }
 }

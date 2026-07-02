@@ -12,6 +12,7 @@ import type { ComposableCowContractData } from 'modules/advancedOrders'
 
 import { TWAP_PENDING_STATUSES } from '../const'
 import { useAllTwapOrdersInfo } from '../hooks/useAllTwapOrdersInfo'
+import { useIsFallbackHandlerRequired } from '../hooks/useFallbackHandlerVerification'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { useTwapOrdersExecutions } from '../hooks/useTwapOrdersExecutions'
@@ -51,6 +52,12 @@ export function TwapOrdersUpdater(props: {
   const twapOrderExecutions = useRef(_twapOrderExecutions)
   // eslint-disable-next-line react-hooks/refs
   twapOrderExecutions.current = _twapOrderExecutions
+
+  // When the Safe's fallback handler is missing/reset, open orders will never execute
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+  const isFallbackHandlerRequiredRef = useRef(isFallbackHandlerRequired)
+  // eslint-disable-next-line react-hooks/refs
+  isFallbackHandlerRequiredRef.current = isFallbackHandlerRequired
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingTwapOrderIds = useMemo(() => {
@@ -96,6 +103,7 @@ export function TwapOrdersUpdater(props: {
       allOrdersInfo,
       ordersAuthResult,
       twapOrderExecutions.current,
+      isFallbackHandlerRequiredRef.current,
     )
 
     /**

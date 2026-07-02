@@ -37,5 +37,6 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     status,
     apiAdditionalInfo: enrichedOrder,
     isCancelling: order.status === TwapOrderStatus.Cancelling,
+    isUnfillable: order.isUnfillable,
   }
 }

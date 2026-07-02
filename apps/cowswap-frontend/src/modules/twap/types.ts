@@ -43,6 +43,9 @@ export interface TwapOrderItem {
   id: string
   safeTxParams?: SafeTransactionParams
   executionInfo: TwapOrdersExecution
+  // True when an open order cannot be executed because the Safe's ComposableCoW
+  // fallback handler is missing/reset by the user (see issue #5426)
+  isUnfillable?: boolean
 }
 
 export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }
