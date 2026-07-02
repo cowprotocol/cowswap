@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react'
 
+import { HoverTooltip } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/react/macro'
-import { Check, Clock, X } from 'react-feather'
+import { AlertTriangle, Check, Clock, X } from 'react-feather'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -33,6 +35,34 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
             <X size={14} strokeWidth={2.5} />
             <Trans>Order cancelled</Trans>
           </styledEl.CancelledDisplay>
+        </b>
+        <i></i>
+      </>
+    )
+  }
+
+  // An open order is unfillable when it can no longer be executed (e.g. the Safe's ComposableCoW
+  // fallback handler was reset). Surface it instead of the default "pending execution" display.
+  const isUnfillable = childOrders.some((childOrder) => childOrder.isUnfillable)
+
+  if (isUnfillable) {
+    return (
+      <>
+        <b>
+          <HoverTooltip
+            wrapInContainer
+            content={
+              <Trans>
+                This order can’t be executed at the moment (for example, the Safe’s fallback handler was reset), so it
+                won’t be filled until the issue is resolved.
+              </Trans>
+            }
+          >
+            <styledEl.UnfillableDisplay>
+              <AlertTriangle size={14} strokeWidth={2.5} />
+              <Trans>Unfillable</Trans>
+            </styledEl.UnfillableDisplay>
+          </HoverTooltip>
         </b>
         <i></i>
       </>

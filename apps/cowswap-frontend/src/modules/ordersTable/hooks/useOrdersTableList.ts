@@ -57,10 +57,18 @@ export function useOrdersTableList(
 
           const isPending = PENDING_STATES.includes(order.status)
           const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
+          // Composable (TWAP) orders are emulated and carry a derived `isUnfillable` flag
+          // (e.g. Safe fallback handler reset). Regular orders derive it from balance/allowance here.
+          const isComposableOrder = getIsComposableCowOrder(order)
 
           // Check if order is unfillable (insufficient balance or allowance)
           const params = getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState)
           let isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
+
+          // Respect the derived unfillable flag already computed for composable orders
+          if (isComposableOrder && order.isUnfillable) {
+            isUnfillable = true
+          }
 
           // For TWAP orders, also check child orders
           if (!isParsedOrder(item) && item.children) {
@@ -80,8 +88,9 @@ export function useOrdersTableList(
             isUnfillable = isUnfillable || hasUnfillableChild
           }
 
-          // Update the unfillable flag whenever the state changes, not just when becoming unfillable
-          if (isPending && order.isUnfillable !== isUnfillable) {
+          // Persist the recomputed flag for regular orders only; composable orders derive it from
+          // their emulated state, so writing it back here would fight that source.
+          if (isPending && !isComposableOrder && order.isUnfillable !== isUnfillable) {
             setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
           }
 

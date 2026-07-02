@@ -53,11 +53,11 @@ export function TwapOrdersUpdater(props: {
   // eslint-disable-next-line react-hooks/refs
   twapOrderExecutions.current = _twapOrderExecutions
 
-  // When the Safe's fallback handler is missing/reset, open orders will never execute
-  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
-  const isFallbackHandlerRequiredRef = useRef(isFallbackHandlerRequired)
+  // When the Safe's fallback handler is missing/reset, open orders will never execute (they are "broken")
+  const isFallbackHandlerBroken = useIsFallbackHandlerRequired()
+  const isFallbackHandlerBrokenRef = useRef(isFallbackHandlerBroken)
   // eslint-disable-next-line react-hooks/refs
-  isFallbackHandlerRequiredRef.current = isFallbackHandlerRequired
+  isFallbackHandlerBrokenRef.current = isFallbackHandlerBroken
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingTwapOrderIds = useMemo(() => {
@@ -103,7 +103,7 @@ export function TwapOrdersUpdater(props: {
       allOrdersInfo,
       ordersAuthResult,
       twapOrderExecutions.current,
-      isFallbackHandlerRequiredRef.current,
+      isFallbackHandlerBrokenRef.current,
     )
 
     /**
