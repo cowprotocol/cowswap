@@ -117,7 +117,7 @@ const reownAppKit = createAppKit({
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (hasRecentConnector && isMobile && window.ethereum) {
+} else if (isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
 
