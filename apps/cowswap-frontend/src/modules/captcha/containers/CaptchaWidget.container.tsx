@@ -19,10 +19,11 @@ interface ChallengeSuccessHandlers {
   exchangeRequestIdRef: MutableRefObject<number>
   captchaRef: MutableRefObject<TurnstileInstance | undefined>
   setCaptchaJwt: (jwt: string | null) => void
+  setSolved: (solved: boolean) => void
 }
 
 async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessHandlers): Promise<void> {
-  const { exchangeRequestIdRef, captchaRef, setCaptchaJwt } = handlers
+  const { exchangeRequestIdRef, captchaRef, setCaptchaJwt, setSolved } = handlers
   const requestId = exchangeRequestIdRef.current + 1
 
   exchangeRequestIdRef.current = requestId
@@ -39,8 +40,9 @@ async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessH
     }
 
     logCaptcha.info('JWT received', { requestId })
-    // Storing the JWT unmounts the widget, so the solved "Success!" box leaves the form.
+    // Storing the JWT unmounts the widget; clear the solved flag so a later re-mount starts visible.
     setCaptchaJwt(jwt)
+    setSolved(false)
   } catch (error) {
     if (exchangeRequestIdRef.current !== requestId) {
       return
@@ -48,8 +50,9 @@ async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessH
 
     logCaptcha.error('JWT exchange failed', { requestId, error })
     setCaptchaJwt(null)
-    // The exchange failed after Cloudflare solved the challenge; reset the widget so it drops
-    // the stale "Success!" box and re-runs the challenge for the user to re-confirm.
+    // The exchange failed after Cloudflare solved the challenge; reveal the widget again and reset it
+    // so it drops the stale "Success!" box and re-runs the challenge for the user to re-confirm.
+    setSolved(false)
     captchaRef.current?.reset()
   }
 }
@@ -60,6 +63,10 @@ export function CaptchaWidget(): ReactNode {
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
+  // Hide the widget as soon as the challenge is solved so its "Success!" box leaves the form
+  // immediately, even while the JWT exchange is still pending; the widget stays mounted so it can
+  // be reset if the exchange fails.
+  const [isSolved, setIsSolved] = useState(false)
   const theme = useTheme()
 
   useEffect(() => {
@@ -111,7 +118,7 @@ export function CaptchaWidget(): ReactNode {
       key={siteKey}
       ref={captchaRef}
       siteKey={siteKey}
-      style={{ width: '100%', display: 'block' }}
+      style={{ width: '100%', display: isSolved ? 'none' : 'block' }}
       options={{
         theme: theme.darkMode ? 'dark' : 'light',
         size: 'flexible',
@@ -129,12 +136,22 @@ export function CaptchaWidget(): ReactNode {
       onAfterInteractive={() => {
         logCaptcha.debug('Challenge interaction completed')
       }}
-      onSuccess={(token: string) => handleChallengeSuccess(token, { exchangeRequestIdRef, captchaRef, setCaptchaJwt })}
+      onSuccess={(token: string) => {
+        // Hide the solved widget right away; the pending exchange decides whether it stays gone.
+        setIsSolved(true)
+        return handleChallengeSuccess(token, {
+          exchangeRequestIdRef,
+          captchaRef,
+          setCaptchaJwt,
+          setSolved: setIsSolved,
+        })
+      }}
       onExpire={() => {
         exchangeRequestIdRef.current += 1
         logCaptcha.warn('Challenge expired')
         setCaptchaJwt(null)
         logCaptcha.debug('Challenge re-starting')
+        setIsSolved(false)
         captchaRef.current?.reset()
       }}
       onError={(errorCode) => {
@@ -142,6 +159,7 @@ export function CaptchaWidget(): ReactNode {
         logCaptcha.error('Challenge errored', { errorCode, hostname: window.location.hostname })
         setCaptchaJwt(null)
         // Clear any stale solved state so the errored widget re-runs the challenge for re-confirmation.
+        setIsSolved(false)
         captchaRef.current?.reset()
       }}
       onUnsupported={() => {
