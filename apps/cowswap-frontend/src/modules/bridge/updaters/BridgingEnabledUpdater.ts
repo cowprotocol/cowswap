@@ -18,14 +18,15 @@ export function BridgingEnabledUpdater(): null {
   const isSafeApp = useIsSafeApp()
   const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
-  const isSwapOrHooksPage = tradeTypeInfo?.route === Routes.SWAP || tradeTypeInfo?.route === Routes.HOOKS
+  // Bridging is intentionally disabled on the Hooks tab: Hooks orders are partially-fillable,
+  // and bridge orders do not support partial fills, which can leave the order stuck mid-bridge.
+  const isSwapPage = tradeTypeInfo?.route === Routes.SWAP
   const widgetInSafeApp = isSafeApp && isInjectedWidget()
   const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
   const hasBridgeProviders = useHasBridgeProviders()
 
-  const shouldEnableBridging =
-    isSwapOrHooksPage && !disableCrossChainSwap && shouldEnableInWidgetSafe && hasBridgeProviders
+  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe && hasBridgeProviders
 
   useEffect(() => {
     setIsBridgingEnabled(shouldEnableBridging)

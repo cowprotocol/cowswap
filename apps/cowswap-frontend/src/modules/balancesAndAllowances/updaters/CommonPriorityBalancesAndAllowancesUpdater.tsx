@@ -1,7 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
+  balancesWatcherHealthAtom,
   BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
@@ -12,13 +14,20 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
-import { useSourceChainId } from 'modules/tokensList'
+import { Field } from 'legacy/state/types'
+
+import { useSelectTokenWidgetState, useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
+import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
-  const sourceChainId = useSourceChainId().chainId
+  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
+  // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
+  // also yields source='selector' but must keep the normal token-list + user-custom-tokens session.
+  const { field } = useSelectTokenWidgetState()
+  const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
@@ -57,11 +66,17 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const refreshTrigger = useOrdersFilledEventsTrigger()
 
-  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
-    return <BalancesWatcherUpdater account={balancesAccount} chainId={sourceChainId} />
-  }
+  const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
-  return (
+  const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
+  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  // Mount the multicall stack when:
+  // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
+  // - the watcher is in recovery — sticky from the first failure until the next
+  //   successful snapshot, so retry transitions (Connecting/Connected/Fallback)
+  //   don't briefly unmount it and leave a balance gap.
+  const needsMulticallStack = !isWatcherActive || isWatcherRecovering
+  const multicallStack = needsMulticallStack ? (
     <>
       <PriorityTokensUpdater
         // We can and should save one RPC call at the very beginning
@@ -78,5 +93,21 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         refreshTrigger={refreshTrigger}
       />
     </>
-  )
+  ) : null
+
+  if (isWatcherActive) {
+    return (
+      <>
+        <BalancesWatcherUpdater
+          account={balancesAccount}
+          chainId={sourceChainId}
+          isBridgeMode={isBridgeMode}
+          bridgeTokenList={bridgeTokenList}
+        />
+        {multicallStack}
+      </>
+    )
+  }
+
+  return multicallStack
 }
