@@ -67,7 +67,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(currentParams)
+  let iframe = createIframe(currentParams)
   const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
@@ -159,10 +159,22 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
     iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
 
-    const loadingContext = widgetIframeLoading(container, iframe, setup, destroy, props.onLoadingError)
+    const loadingContext = widgetIframeLoading(container, iframe, reloadIframe, props.onLoadingError)
 
     cancelWidgetLoading = loadingContext.cancelWidgetLoading
     const onWidgetReady = loadingContext.onWidgetReady
+  }
+
+  // Rebuild the iframe from scratch and re-run setup. Reusing the same sandboxed frame and only
+  // swapping its `src` did not reliably re-fetch the widget on retry, so a failed load could never
+  // recover. A brand new iframe gives a clean document that re-emits READY once it loads.
+  function reloadIframe(): void {
+    destroy()
+
+    iframe = createIframe(currentParams)
+    container.appendChild(iframe)
+
+    setup()
   }
 
   function destroy(skipIframeDestroy = false): void {
@@ -191,7 +203,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
-    iframe,
+    // `iframe` is rebuilt on retry, so expose it lazily to always hand back the live element.
+    get iframe() {
+      return iframe
+    },
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
       currentParams = resolveWidgetParams(newParams)

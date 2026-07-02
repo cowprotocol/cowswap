@@ -69,6 +69,15 @@ describe('widgetIframeLoading error UI styling', () => {
     expect(reloadBtn?.disabled).toBe(true)
   })
 
+  it('triggers a full reload when the reload button is clicked', () => {
+    const { container, iframe, reload } = setup()
+    failIframe(iframe)
+
+    container.querySelector<HTMLButtonElement>(`.${ERROR_CLASS} button`)?.click()
+
+    expect(reload).toHaveBeenCalledTimes(1)
+  })
+
   it('removes the error panel and reveals the iframe once the widget is ready', () => {
     const { container, iframe, state } = setup()
     failIframe(iframe)
@@ -91,7 +100,12 @@ describe('widgetIframeLoading error UI styling', () => {
   })
 })
 
-function setup(): { container: HTMLElement; iframe: HTMLIFrameElement; state: LoadingState } {
+function setup(): {
+  container: HTMLElement
+  iframe: HTMLIFrameElement
+  state: LoadingState
+  reload: jest.Mock
+} {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
@@ -99,15 +113,11 @@ function setup(): { container: HTMLElement; iframe: HTMLIFrameElement; state: Lo
   iframe.src = `${WIDGET_ORIGIN}/`
   container.appendChild(iframe)
 
-  const state = widgetIframeLoading(
-    container,
-    iframe,
-    () => void 0,
-    () => void 0,
-  )
+  const reload = jest.fn()
+  const state = widgetIframeLoading(container, iframe, reload)
   activeStates.push(state)
 
-  return { container, iframe, state }
+  return { container, iframe, state, reload }
 }
 
 function failIframe(iframe: HTMLIFrameElement): void {

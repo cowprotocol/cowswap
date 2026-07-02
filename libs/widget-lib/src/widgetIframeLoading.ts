@@ -10,12 +10,9 @@ interface WidgetIframeLoadingContext {
 export function widgetIframeLoading(
   container: HTMLElement,
   iframe: HTMLIFrameElement,
-  setup: () => void,
-  destroy: (skipIframeDestroy?: boolean) => void,
+  reload: () => void,
   onWidgetLoadingError?: () => void,
 ): WidgetIframeLoadingContext {
-  const originalSrc = iframe.src
-
   let cancelled = false
   let timeout: number | null = null
 
@@ -41,17 +38,13 @@ export function widgetIframeLoading(
     reloadBtn.addEventListener('click', () => {
       // Keep the panel mounted and switch it to a loading state so the retry is visibly in
       // progress; it's cleared by onWidgetReady on success or replaced by onLoadingError on
-      // another failure.
+      // another failure. `reload` rebuilds the iframe from scratch so the widget actually
+      // re-fetches and re-emits READY — swapping `iframe.src` on the sandboxed frame in place
+      // did not reliably reload it.
       reloadBtn.disabled = true
       errorText.innerText = 'Loading…'
 
-      destroy(true)
-      iframe.src = 'about:blank'
-
-      setTimeout(() => {
-        iframe.src = originalSrc
-        setup()
-      }, 100)
+      reload()
     })
 
     errorText.innerText = "Couldn't load the page. Please, try again later"
