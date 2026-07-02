@@ -24,6 +24,9 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Abstractions should not depend on details; concrete details should depend on abstractions.
 - If code is shared by two or more apps, move it to `libs/`; if it is used by one app only, keep it in that app.
 
+## Security notes
+- Safe API client token handling is documented in [`docs/safe-api-token.md`](./docs/safe-api-token.md). Treat `REACT_APP_SAFE_API_AUTH_TOKEN` as an intentional public client token unless that document changes.
+
 ## Module structure and boundaries
 - Organize domain code by module under `src/modules/<domain>/`.
 - Typical module entities:

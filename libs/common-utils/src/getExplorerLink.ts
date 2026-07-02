@@ -1,6 +1,8 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isBtcChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { getSafeAbsoluteUrl } from './safeLink'
+
 export enum ExplorerDataType {
   TRANSACTION = 'transaction',
   TOKEN = 'token',
@@ -78,7 +80,12 @@ export function getExplorerLink(
   defaultPrefix = 'https://etherscan.io',
 ): string {
   // Allow override via environment variable for local development (e.g., Otterscan)
-  const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
+  const prefix =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId as SupportedChainId]?.explorer) ||
+    getSafeAbsoluteUrl(defaultPrefix)
+
+  if (!prefix) return ''
 
   if (isBtcChain(chainId)) return getBtcExplorerData(prefix, data, type)
   if (isSolanaChain(chainId)) return getSolExplorerData(prefix, data, type)

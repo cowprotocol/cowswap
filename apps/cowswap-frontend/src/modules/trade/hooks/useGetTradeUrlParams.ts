@@ -8,9 +8,9 @@ import { useTradeRouteContext } from './useTradeRouteContext'
 import { getDefaultTradeRawState, TradeUrlParams } from '../types'
 
 /**
- * Bridging mode is currently enabled only in Swap or Hooks.
- * When we navigate from Swap or Hooks to anywhere else and currently selected trade is bridging.
- * Then navigate to the target widget with default assets.
+ * Bridging mode is currently enabled only on the Swap tab.
+ * When we navigate from a bridging Swap to anywhere else (Hooks included),
+ * drop the cross-chain reference and fall back to the target widget's default assets.
  */
 export function useGetTradeUrlParams(): (item: IMenuItem) => TradeUrlParams {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
@@ -18,11 +18,11 @@ export function useGetTradeUrlParams(): (item: IMenuItem) => TradeUrlParams {
 
   return useCallback(
     (item: IMenuItem): TradeUrlParams => {
-      const isItemSwapOrHooks = item.route === Routes.SWAP || item.route === Routes.HOOKS
+      const isItemSwap = item.route === Routes.SWAP
       const chainId = tradeContext.chainId
       const defaultState = chainId ? getDefaultTradeRawState(+chainId) : null
 
-      return isCurrentTradeBridging && !isItemSwapOrHooks
+      return isCurrentTradeBridging && !isItemSwap
         ? ({
             chainId,
             // Keep inputCurrencyId because it's always from supported chain

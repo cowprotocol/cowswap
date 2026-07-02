@@ -75,9 +75,8 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
       return
     }
     // Arrays/primitives in `balances` would silently corrupt the local map —
-    // reject anything that isn't a plain record. `isRecord` accepts arrays,
-    // hence the extra `Array.isArray` guard.
-    if (!isRecord(payload.balances) || Array.isArray(payload.balances)) {
+    // reject anything that isn't a plain record.
+    if (!isRecord(payload.balances)) {
       terminate(new Error('balance_update payload missing or invalid `balances` field'))
       return
     }

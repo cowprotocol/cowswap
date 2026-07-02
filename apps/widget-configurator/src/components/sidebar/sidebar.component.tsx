@@ -47,7 +47,7 @@ import { AccordionFormSection } from '../ui/Accordion/AccordionFormSection'
 import type { Theme } from '@mui/material/styles'
 
 const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
-  'iframeStyleJson',
+  'rootStyleJson',
   'bodyWrapperStyleJson',
   'cardStyleJson',
   'rawParamsJson',

@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.8.1...ui-v3.9.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/analytics@3.5.2
+
 ## [3.8.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.8.0...ui-v3.8.1) (2026-06-23)
 
 ### Patch Changes

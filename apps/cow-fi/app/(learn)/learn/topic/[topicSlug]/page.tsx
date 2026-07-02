@@ -13,6 +13,7 @@ import {
 import type { Metadata } from 'next'
 
 import { TopicPageComponent } from '@/components/TopicPageComponent'
+import { isValidCmsSlug } from '@/util/cmsValidation'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
 type Props = {
@@ -29,10 +30,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const { topicSlug } = await params
 
-  if (!topicSlug) return {}
+  if (!topicSlug || !isValidCmsSlug(topicSlug)) {
+    return getPageMetadata({
+      absoluteTitle: 'Topic Not Found - Knowledge base',
+      description: 'The requested topic could not be found.',
+    })
+  }
 
   const category = await getCategoryBySlug(topicSlug)
-  const { name, description = '' } = category?.attributes || {}
+
+  if (!category || !category.attributes) {
+    return getPageMetadata({
+      absoluteTitle: 'Topic Not Found - Knowledge base',
+      description: 'The requested topic could not be found.',
+    })
+  }
+
+  const { name, description = '' } = category.attributes
 
   return getPageMetadata({
     absoluteTitle: `${name} - Knowledge base`,
@@ -50,6 +64,11 @@ export async function generateStaticParams(): Promise<{ topicSlug: string }[]> {
 
 export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }): Promise<ReactNode> {
   const { topicSlug } = await params
+
+  if (!isValidCmsSlug(topicSlug)) {
+    notFound()
+  }
+
   const category = await getCategoryBySlug(topicSlug)
 
   if (!category) {
