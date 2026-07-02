@@ -1,3 +1,5 @@
+import { guardMobileInjectedProvider, resetMobileInjectedProviderGuard } from './wagmi/mobileInjectedProviderGuard'
+
 import type { EIP1193EventMap, EIP1193Provider } from 'viem'
 
 /**
@@ -39,7 +41,8 @@ const cache = new WeakMap<object, EIP1193Provider>()
  *
  * 1. Blocks `wallet_revokePermissions` — wagmi calls this on disconnect, but it revokes
  *    permissions for the *entire origin* (all tabs), not just the current tab.
- *    shimDisconnect is sufficient to prevent reconnect on next page load.
+ *    The mobile guard still needs to clear its local connection state here, so
+ *    the next `eth_accounts` can seed through `eth_requestAccounts` again.
  *
  * 2. Filters `accountsChanged` events — only forwards them when this provider is the
  *    active one in this tab, preventing a wallet switch in Tab A from affecting Tab B.
@@ -57,6 +60,7 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
       const method = (args as { method: string }).method
       if (method === 'wallet_revokePermissions') {
         console.log('[providerIsolation] blocked wallet_revokePermissions')
+        resetMobileInjectedProviderGuard(original)
         return null
       }
       return original.request(args as unknown as Parameters<typeof original.request>[0])
@@ -140,8 +144,9 @@ function isBraveWalletInfo(info: Eip6963ProviderInfo): boolean {
 }
 
 function createIsolatedProviderAnnouncement(detail: Eip6963ProviderDetail): CustomEvent<Eip6963ProviderDetail> {
+  const guardedProvider = guardMobileInjectedProvider(detail.provider) ?? detail.provider
   const newEvent = new CustomEvent<Eip6963ProviderDetail>('eip6963:announceProvider', {
-    detail: { info: detail.info, provider: createIsolatedProvider(detail.provider) },
+    detail: { info: detail.info, provider: createIsolatedProvider(guardedProvider) },
   })
   getReDispatched().add(newEvent)
 
