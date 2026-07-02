@@ -1,7 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
+  balancesWatcherHealthAtom,
   BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
@@ -66,18 +68,15 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
-  if (isBwEnabled && !isNonEvmChain(sourceChainId)) {
-    return (
-      <BalancesWatcherUpdater
-        account={balancesAccount}
-        chainId={sourceChainId}
-        isBridgeMode={isBridgeMode}
-        bridgeTokenList={bridgeTokenList}
-      />
-    )
-  }
-
-  return (
+  const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
+  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  // Mount the multicall stack when:
+  // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
+  // - the watcher is in recovery — sticky from the first failure until the next
+  //   successful snapshot, so retry transitions (Connecting/Connected/Fallback)
+  //   don't briefly unmount it and leave a balance gap.
+  const needsMulticallStack = !isWatcherActive || isWatcherRecovering
+  const multicallStack = needsMulticallStack ? (
     <>
       <PriorityTokensUpdater
         // We can and should save one RPC call at the very beginning
@@ -94,5 +93,21 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         refreshTrigger={refreshTrigger}
       />
     </>
-  )
+  ) : null
+
+  if (isWatcherActive) {
+    return (
+      <>
+        <BalancesWatcherUpdater
+          account={balancesAccount}
+          chainId={sourceChainId}
+          isBridgeMode={isBridgeMode}
+          bridgeTokenList={bridgeTokenList}
+        />
+        {multicallStack}
+      </>
+    )
+  }
+
+  return multicallStack
 }
