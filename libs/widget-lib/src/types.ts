@@ -93,11 +93,6 @@ export interface CowSwapWidgetProps {
   listeners?: CowWidgetEventListeners
   onReady?(): void
   onLoadingError?(): void
-  /**
-   * Custom CSS appended to the error document displayed inside the iframe when the widget fails to load.
-   * Use it to override the default look (`.errorContent` and `.reloadButton` classes).
-   */
-  loadingErrorStyles?: string
   enableSafeSdkBridge?: boolean
 }
 
@@ -265,29 +260,30 @@ export interface CowSwapWidgetParams {
    * The width of the outer iframe element. Accepts CSS width values such as `450px` or `100%`.
    * Default: `450px`
    *
-   * @deprecated Use iframeStyle.width instead.
+   * @deprecated Use rootStyle.width instead.
    */
   width?: string
   /**
    * The height of the outer iframe element. Accepts CSS height values such as `640px`.
    * Default: `640px`
    *
-   * @deprecated Use iframeStyle.height instead.
+   * @deprecated Use rootStyle.height instead.
    */
   height?: string
 
   /**
    * The maximum height of the widget in pixels. Default: body.offsetHeight
    *
-   * @deprecated Use iframeStyle.maxHeight instead.
+   * @deprecated Use rootStyle.maxHeight instead.
    */
   maxHeight?: number
 
   /**
-   * Extra inline styles for the outer iframe element (host page only; not sent into the iframe app).
+   * Extra inline styles for the outer container element (host page only; not sent into the iframe app).
    * Applied after width/height attributes. Use e.g. `backgroundColor`, `borderRadius`, `boxShadow`, `border`.
+   * The injected iframe fills this container. Use `height: 'var(--dynamicHeight)'` here for dynamic height.
    */
-  iframeStyle?: CSS.Properties
+  rootStyle?: CSS.Properties
 
   /**
    * Inline styles for the body wrapper (inside the iframe).
@@ -591,7 +587,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks' | 'iframeStyle'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks' | 'rootStyle'>
 
 export interface UpdateParamsPayload {
   urlParams: {

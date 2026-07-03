@@ -38,10 +38,10 @@ export default defineConfig(({ mode }) => {
     cacheDir: '../../node_modules/.vite/widget-configurator',
 
     resolve: {
-      // Match cowswap-frontend's narrow dedupe list. Deduping too many packages
-      // (e.g. @wagmi/core, viem, @reown/appkit-controllers individually) caused
-      // version-selection mismatches that interfere with AppKit's wallet routing.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // Match cowswap-frontend's dedupe list. Keep it narrow: deduping multi-version
+      // packages (e.g. @wagmi/core, viem) forces a version selection that interferes
+      // with AppKit's wallet routing, so leave those out.
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     optimizeDeps: {

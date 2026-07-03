@@ -1,7 +1,7 @@
 import { getLegacyIframeDimensionParams } from './legacyIframeDimensions.utils'
 
 describe('getLegacyIframeDimensionParams', () => {
-  it('maps width and height from iframeStyle', () => {
+  it('maps width and height from rootStyle', () => {
     expect(
       getLegacyIframeDimensionParams({
         width: '100%',

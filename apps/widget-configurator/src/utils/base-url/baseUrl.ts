@@ -29,6 +29,10 @@ export function vercelPreviewSlugToCfPagesSubdomain(
 export const CONFIGURATOR_DEFAULT_WIDGET_BASE_URL = getBaseUrl()
 
 export function getBaseUrl(): string {
+  const localStorageOverride = localStorage.getItem('WIDGET_BASE_URL')
+
+  if (localStorageOverride) return localStorageOverride
+
   if (typeof window === 'undefined' || !window) return ''
 
   if (isLocalHost) return 'http://localhost:3000'

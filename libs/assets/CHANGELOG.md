@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.4.0...assets-v2.5.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
 ## [2.4.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.3.0...assets-v2.4.0) (2026-06-08)
 
 ### Minor Changes

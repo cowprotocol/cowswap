@@ -22,11 +22,11 @@ export function verifyTagReachableFromMain({
   cwd = process.cwd(),
   remote = 'origin',
   branch = 'main',
-  sha = process.env.GITHUB_SHA,
-  ref = process.env.GITHUB_REF ?? sha,
+  sha = process.env.DEPLOY_SHA ?? process.env.GITHUB_SHA,
+  ref = process.env.DEPLOY_REF ?? process.env.GITHUB_REF ?? sha,
 } = {}) {
   if (!sha) {
-    throw new Error('GITHUB_SHA must be set')
+    throw new Error('DEPLOY_SHA or GITHUB_SHA must be set')
   }
 
   const fetchResult = runGit(cwd, ['fetch', '--no-tags', remote, branch])

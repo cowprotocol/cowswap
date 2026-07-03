@@ -17,6 +17,7 @@ export interface VersionedCowSwapWidgetProps {
   provider?: CowSwapWidgetProps['provider']
   listeners?: CowWidgetEventListeners
   onReady?: () => void
+  onLoadingError?: () => void
 }
 
 function attachIframeLoadReveal(host: HTMLElement, onIframeLoad: () => void): void {
@@ -80,8 +81,9 @@ export function VersionedCowSwapWidget({
   provider,
   listeners,
   onReady,
+  onLoadingError,
 }: VersionedCowSwapWidgetProps): ReactNode {
-  const widgetProps = { params, provider, listeners, onReady }
+  const widgetProps = { params, provider, listeners, onReady, onLoadingError }
 
   if (sdkVersion === 'local') {
     return <CowSwapWidget {...widgetProps} />
