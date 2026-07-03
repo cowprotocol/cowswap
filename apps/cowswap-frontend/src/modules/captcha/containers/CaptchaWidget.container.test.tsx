@@ -4,7 +4,7 @@ import { act, CSSProperties, ReactNode } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { setBearerToken } from 'cowSdk'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
@@ -144,7 +144,7 @@ describe('CaptchaWidget', () => {
     await waitFor(() => expect(screen.queryByTestId('turnstile')).toBeNull())
   })
 
-  it('resets and reveals the widget so the user can re-confirm when the JWT exchange fails', async () => {
+  it('shows a failure notice instead of the solved widget when the JWT exchange fails', async () => {
     const store = createStore()
     store.set(featureFlagsAtom, { isCaptchaEnabled: true })
     exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
@@ -155,10 +155,33 @@ describe('CaptchaWidget', () => {
       await mockTurnstileProps.onSuccess?.('challenge-token')
     })
 
-    // Widget stays mounted, is reset (dropping the stale "Success!" box) and revealed again for a fresh challenge.
-    await waitFor(() => expect(mockReset).toHaveBeenCalled())
-    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block')
+    // The solved widget stays hidden and a failure notice is shown instead of implying success.
+    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('none')
+    expect(screen.getByText(/verification failed/i)).not.toBeNull()
+    // No silent re-run: the widget is only reset when the user chooses to retry.
+    expect(mockReset).not.toHaveBeenCalled()
     expect(store.get(captchaJwtAtom)).toBeNull()
+  })
+
+  it('resets and reveals the widget when the user retries after a failed JWT exchange', async () => {
+    const store = createStore()
+    store.set(featureFlagsAtom, { isCaptchaEnabled: true })
+    exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+
+    renderWithStore(store)
+
+    await act(async () => {
+      await mockTurnstileProps.onSuccess?.('challenge-token')
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /try again/i }))
+    })
+
+    // Clicking "Try again" resets the widget and reveals it for a fresh challenge.
+    expect(mockReset).toHaveBeenCalled()
+    expect((screen.getByTestId('turnstile') as HTMLElement).style.display).toBe('block')
+    expect(screen.queryByText(/verification failed/i)).toBeNull()
   })
 
   it('resets the widget when Turnstile reports an error', async () => {
