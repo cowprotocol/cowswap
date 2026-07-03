@@ -139,4 +139,20 @@ describe('useOnAddressInput', () => {
       expect(result.current.chainPrefixWarning).toBe('bnb')
     })
   })
+
+  describe('external clear effect', () => {
+    it('clears warning when value is emptied via an external reset (Clear button)', () => {
+      const { result, rerender } = renderHook(
+        ({ value }: { value: string }) => useOnAddressInput(onChange, 'eth', evmStrategy, value),
+        { initialProps: { value: 'bnb:0xabc' } },
+      )
+
+      act(() => result.current.handleInput(makeEvent('bnb:0xabc')))
+      expect(result.current.chainPrefixWarning).toBe('bnb')
+
+      // The Clear button calls onChange('') directly, so value syncs to '' without going through handleInput.
+      rerender({ value: '' })
+      expect(result.current.chainPrefixWarning).toBe('')
+    })
+  })
 })
