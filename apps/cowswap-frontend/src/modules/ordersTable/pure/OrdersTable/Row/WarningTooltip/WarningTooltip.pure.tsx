@@ -145,3 +145,38 @@ export function WarningTooltip({
     </styledEl.WarningIndicator>
   )
 }
+
+// Shown on the status badge of a TWAP order (and its open parts) whose Safe ComposableCoW fallback
+// handler was reset, so open orders can no longer be created (see issue #5426).
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function FallbackHandlerWarningTooltip({ children }: { children?: ReactNode }) {
+  const tooltipContent = (
+    <styledEl.WarningContent>
+      <styledEl.WarningParagraph>
+        <h3>
+          <Trans>Update fallback handler</Trans>
+        </h3>
+        <p>
+          <Trans>
+            Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
+            created because of that. Please, update the fallback handler in order to make the orders work again.
+          </Trans>
+        </p>
+      </styledEl.WarningParagraph>
+    </styledEl.WarningContent>
+  )
+
+  return (
+    <styledEl.WarningIndicator hasBackground={false}>
+      <styledEl.StyledQuestionHelper
+        text={tooltipContent}
+        placement="bottom"
+        bgColor={`var(${UI.COLOR_DANGER_BG})`}
+        color={`var(${UI.COLOR_DANGER_TEXT})`}
+        Icon={<SVG src={svgFilledInfoCircleSrc} description={t`warning`} width="14" height="14" />}
+      />
+      {children}
+    </styledEl.WarningIndicator>
+  )
+}

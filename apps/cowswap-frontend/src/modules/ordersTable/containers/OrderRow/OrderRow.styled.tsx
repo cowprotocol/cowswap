@@ -195,16 +195,6 @@ export const CancelledDisplay = styled.div`
   font-size: 12px;
 `
 
-export const UnfillableDisplay = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: help;
-  color: var(${UI.COLOR_DANGER});
-  font-weight: 500;
-  font-size: 12px;
-`
-
 export const ExpiredDisplay = styled.div`
   display: flex;
   align-items: center;

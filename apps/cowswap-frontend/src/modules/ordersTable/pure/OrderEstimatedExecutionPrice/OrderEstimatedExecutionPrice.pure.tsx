@@ -21,6 +21,10 @@ import * as warningTooltopEl from '../OrdersTable/Row/WarningTooltip/WarningTool
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 
+// warningText flag (not internationalized on purpose, matches the other flags): an open TWAP order
+// whose Safe ComposableCoW fallback handler was reset can no longer be created (see issue #5426).
+export const UPDATE_FALLBACK_HANDLER_WARNING = 'Update fallback handler'
+
 export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   amountDifference?: CurrencyAmount<Currency>
   amountFee?: CurrencyAmount<Currency>
@@ -101,8 +105,11 @@ export function OrderEstimatedExecutionPrice({
     return () => clearTimeout(timeout)
   }, [approveClicked])
 
-  const internationalizedWarningText =
-    warningText === 'Insufficient balance'
+  const isFallbackHandlerWarning = warningText === UPDATE_FALLBACK_HANDLER_WARNING
+
+  const internationalizedWarningText = isFallbackHandlerWarning
+    ? t`Update fallback handler`
+    : warningText === 'Insufficient balance'
       ? t`Insufficient balance`
       : warningText === 'Insufficient allowance'
         ? t`Insufficient allowance`
@@ -110,6 +117,29 @@ export function OrderEstimatedExecutionPrice({
 
   const unfillableLabel = (
     <styledEl.UnfillableLabel>
+      {isFallbackHandlerWarning && (
+        <HoverTooltip
+          content={
+            <warningTooltopEl.WarningContent>
+              <h3>{internationalizedWarningText}</h3>
+              <p>
+                <Trans>
+                  Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not
+                  getting created because of that. Please, update the fallback handler in order to make the orders work
+                  again.
+                </Trans>
+              </p>
+            </warningTooltopEl.WarningContent>
+          }
+          bgColor={`var(${UI.COLOR_DANGER_BG})`}
+          color={`var(${UI.COLOR_DANGER_TEXT})`}
+        >
+          <styledEl.WarningContent>
+            <SVG src={svgAlertSrc} />
+            {internationalizedWarningText}
+          </styledEl.WarningContent>
+        </HoverTooltip>
+      )}
       {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
         <>
           <HoverTooltip

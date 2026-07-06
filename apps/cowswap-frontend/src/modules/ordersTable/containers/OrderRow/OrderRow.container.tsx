@@ -30,6 +30,7 @@ import { TableRow } from './OrderRow.styled'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
+import { UPDATE_FALLBACK_HANDLER_WARNING } from '../../pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 import { OrderFillsAt } from '../../pure/OrderFillsAt/OrderFillsAt.pure'
 import { OrderFillsAtWithDistance } from '../../pure/OrderFillsAtWithDistance/OrderFillsAtWithDistance.pure'
 import { OrderMarketPrice } from '../../pure/OrderMarketPrice/OrderMarketPrice.pure'
@@ -39,7 +40,10 @@ import {
   TableRowCheckboxWrapper,
 } from '../../pure/OrdersTable/Row/Checkbox/Checkbox.styled'
 import { OrderRowWarningEstimatedPrice } from '../../pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure'
-import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import {
+  FallbackHandlerWarningTooltip,
+  WarningTooltip,
+} from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { OrderActions } from '../../state/ordersTable.types'
 import { OrderParams } from '../../utils/getOrderParams'
@@ -148,13 +152,22 @@ export function OrderRow({
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
 
-  const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
+  // A still-open order (or open part) carrying the derived `isUnfillable` flag is blocked by a reset
+  // Safe ComposableCoW fallback handler (see issue #5426); surface the "Update fallback handler"
+  // reason with the same danger design as the balance/allowance warnings.
+  const isFallbackHandlerUnfillable =
+    order.isUnfillable === true && (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
+
+  const isUnfillable =
+    isFallbackHandlerUnfillable ||
+    (!percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning))
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
   // NOTE: Don't internationalize this, the text is being used as a flag...
-  const warningText =
-    hasEnoughBalance === false
+  const warningText = isFallbackHandlerUnfillable
+    ? UPDATE_FALLBACK_HANDLER_WARNING
+    : hasEnoughBalance === false
       ? `Insufficient balance`
       : hasEnoughAllowance === false
         ? `Insufficient allowance`
@@ -346,16 +359,20 @@ export function OrderRow({
           <styledEl.StatusBox>
             <OrderStatusBox
               order={order}
-              withWarning={withWarning}
+              withWarning={withWarning || isFallbackHandlerUnfillable}
               onClick={onClick}
               WarningTooltip={
-                <WarningTooltip
-                  hasEnoughBalance={hasEnoughBalance ?? false}
-                  hasEnoughAllowance={hasEnoughAllowance ?? false}
-                  inputTokenSymbol={inputTokenSymbol}
-                  isOrderScheduled={isOrderScheduled}
-                  onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                />
+                isFallbackHandlerUnfillable ? (
+                  <FallbackHandlerWarningTooltip />
+                ) : (
+                  <WarningTooltip
+                    hasEnoughBalance={hasEnoughBalance ?? false}
+                    hasEnoughAllowance={hasEnoughAllowance ?? false}
+                    inputTokenSymbol={inputTokenSymbol}
+                    isOrderScheduled={isOrderScheduled}
+                    onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                  />
+                )
               }
             />
           </styledEl.StatusBox>

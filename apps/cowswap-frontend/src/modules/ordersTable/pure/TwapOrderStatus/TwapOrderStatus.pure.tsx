@@ -1,9 +1,7 @@
 import React, { ReactNode } from 'react'
 
-import { HoverTooltip } from '@cowprotocol/ui'
-
 import { Trans } from '@lingui/react/macro'
-import { AlertTriangle, Check, Clock, X } from 'react-feather'
+import { Check, Clock, X } from 'react-feather'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -11,6 +9,10 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 // TODO: make CancelledDisplay, FilledDisplay, ExpiredDisplay common
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
+import {
+  OrderEstimatedExecutionPrice,
+  UPDATE_FALLBACK_HANDLER_WARNING,
+} from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 
 export interface FillsAtStatusProps {
   childOrders?: ParsedOrder[]
@@ -49,20 +51,14 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
     return (
       <>
         <b>
-          <HoverTooltip
-            wrapInContainer
-            content={
-              <Trans>
-                This order can’t be executed at the moment (for example, the Safe’s fallback handler was reset), so it
-                won’t be filled until the issue is resolved.
-              </Trans>
-            }
-          >
-            <styledEl.UnfillableDisplay>
-              <AlertTriangle size={14} strokeWidth={2.5} />
-              <Trans>Unfillable</Trans>
-            </styledEl.UnfillableDisplay>
-          </HoverTooltip>
+          <OrderEstimatedExecutionPrice
+            amount={undefined}
+            tokenSymbol={undefined}
+            isInverted={false}
+            isUnfillable={true}
+            canShowWarning={true}
+            warningText={UPDATE_FALLBACK_HANDLER_WARNING}
+          />
         </b>
         <i></i>
       </>
