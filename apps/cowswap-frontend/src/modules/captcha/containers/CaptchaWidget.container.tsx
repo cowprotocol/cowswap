@@ -3,7 +3,7 @@ import { MutableRefObject, ReactNode, useCallback, useEffect, useRef, useState }
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl } from '@cowprotocol/common-utils'
-import { ButtonSecondary } from '@cowprotocol/ui'
+import { BannerOrientation, ButtonSecondary, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
@@ -21,15 +21,27 @@ import { logCaptcha } from '../logger'
 // show a failure notice so the solved widget is never left implying success on a rejected token.
 type CaptchaStatus = 'challenge' | 'solved' | 'failed'
 
-const FailedBox = styled.div`
+const CaptchaFailureContent = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 10px;
   width: 100%;
-  padding: 12px;
-  text-align: center;
-  color: ${({ theme }) => theme.danger};
+  min-width: 0;
+
+  > span {
+    min-width: 0;
+    text-align: left;
+    font-weight: 500;
+  }
+`
+
+const CaptchaRetryButton = styled(ButtonSecondary)`
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
+  white-space: nowrap;
 `
 
 interface ChallengeSuccessHandlers {
@@ -73,11 +85,22 @@ async function handleChallengeSuccess(token: string, handlers: ChallengeSuccessH
 }
 
 function CaptchaFailedNotice({ onRetry }: { onRetry: () => void }): ReactNode {
+  // Compact inline danger banner so the retry action stays visually secondary to the form's
+  // primary "Connect Wallet" CTA below it, instead of competing as a second full-width button.
   return (
-    <FailedBox>
-      <span>Verification failed. Please try again.</span>
-      <ButtonSecondary onClick={onRetry}>Try again</ButtonSecondary>
-    </FailedBox>
+    <InlineBanner
+      bannerType={StatusColorVariant.Danger}
+      orientation={BannerOrientation.Horizontal}
+      borderRadius="12px"
+      iconSize={18}
+      padding="10px 12px"
+      noWrapContent
+    >
+      <CaptchaFailureContent>
+        <span>Verification failed. Please try again.</span>
+        <CaptchaRetryButton onClick={onRetry}>Try again</CaptchaRetryButton>
+      </CaptchaFailureContent>
+    </InlineBanner>
   )
 }
 

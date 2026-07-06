@@ -14,6 +14,12 @@ import { CaptchaWidget } from './CaptchaWidget.container'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
 
+jest.mock('react-inlinesvg', () => {
+  return function MockSvg() {
+    return <svg />
+  }
+})
+
 jest.mock('@cowprotocol/common-hooks', () => {
   const actualModule = jest.requireActual('@cowprotocol/common-hooks')
 
