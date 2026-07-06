@@ -1,12 +1,18 @@
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
-import { Address } from 'viem'
+import { Address, BaseError } from 'viem'
 import { simulateContract } from 'wagmi/actions'
 
 import { ApprovalState } from 'modules/erc20Approve'
 
 import type { Config } from 'wagmi'
+
+// viem errors are multi-line `BaseError`s; logging the whole object floods the console with a
+// scary stack + docs links. We only need the one-line reason here.
+function getSimulationErrorReason(e: unknown): string {
+  return e instanceof BaseError ? e.shortMessage : String(e)
+}
 
 const erc20Abi = [
   {
@@ -63,7 +69,10 @@ export async function shouldZeroApprove({
 
     return false
   } catch (e) {
-    console.error('shouldZeroApprove #1 error', e)
+    // Approving a non-zero amount over an existing non-zero allowance reverts for USDT-style tokens
+    // that require resetting the allowance to zero first. This is expected and is exactly how we
+    // detect that a zero-approval is needed, so keep it as a quiet debug breadcrumb.
+    console.debug('shouldZeroApprove: approve simulation reverted, checking zero-approval', getSimulationErrorReason(e))
     try {
       await simulateContract(config, {
         address: tokenAddress,
@@ -73,7 +82,8 @@ export async function shouldZeroApprove({
       })
       return true
     } catch (e) {
-      console.error('shouldZeroApprove #2 error', e)
+      // The zero-amount approval also reverted, so we can't determine the allowance behaviour.
+      console.warn('shouldZeroApprove: zero-amount approve simulation reverted', getSimulationErrorReason(e))
       return false
     }
   }
