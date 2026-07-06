@@ -78,12 +78,17 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 // connector, dropping the Safe address. Detecting "we're loaded as a Safe App" lets us skip
 // that rehydration path entirely in the Safe context — the wagmi `safe()` connector then wins
 // uncontested and Safe stays connected.
-// Mirror libs/wallet/utils/getIsSafeAppIframe.ts — main + internal preview + local
+// Mirror libs/wallet/src/utils/getIsSafeAppIframe.ts (extended by PR #7784 to cover Safe's
+// dev/staging/review preview environments). Cannot import from `@cowprotocol/wallet` — it's
+// not a dep of widget-configurator and shouldn't become one.
 const SAFE_APP_ORIGINS = [
   'https://app.safe.global',
-  'https://safe-wallet-monorepo-cowswap-web.vercel.app',
+  'https://safe-wallet-monorepo-cowswap-web.vercel.app', // internal Safe app for testing
+  'https://safe-wallet-web.dev.5afe.dev', // Safe's dev env
+  'https://safe-wallet-web.staging.5afe.dev', // Safe's staging env
   'http://localhost:4003',
-] as const
+].map((origin) => new URL(origin).origin)
+const SAFE_APP_PREVIEW_HOST_SUFFIX = '.review.5afe.dev' // Safe's per-PR review env
 
 function getParentOrigin(): string | undefined {
   if (typeof window === 'undefined' || window.parent === window) return undefined
@@ -100,7 +105,18 @@ function getParentOrigin(): string | undefined {
 function isSafeAppIframe(): boolean {
   const parentOrigin = getParentOrigin()
   if (!parentOrigin || parentOrigin === 'null') return false
-  return (SAFE_APP_ORIGINS as readonly string[]).includes(parentOrigin)
+
+  let originUrl: URL
+  try {
+    originUrl = new URL(parentOrigin)
+  } catch {
+    return false
+  }
+
+  return (
+    SAFE_APP_ORIGINS.includes(originUrl.origin) ||
+    (originUrl.protocol === 'https:' && !originUrl.port && originUrl.hostname.endsWith(SAFE_APP_PREVIEW_HOST_SUFFIX))
+  )
 }
 
 const IS_SAFE_APP_IFRAME = isSafeAppIframe()
