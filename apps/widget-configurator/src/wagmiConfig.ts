@@ -186,8 +186,16 @@ export const reownAppKit = createAppKit({
 // With `enableReconnect: false` in Safe context (needed to prevent the cross-tab Rabby-session
 // leak from a standalone tab), Reown never fires `syncAdapterConnections` on init — so the
 // Safe SDK connector isn't auto-connected either. Explicitly trigger it here so the configurator
-// inside Safe still boots up connected to the Safe wallet without user interaction. Mirrors what
-// `libs/wallet/src/wagmi/config.ts` does for the cowswap-frontend main dApp via `connectWalletById`.
+// inside Safe still boots up connected to the Safe wallet without user interaction.
+//
+// Must wait for `reownAppKit.ready()`: with `enableReconnect: false`, AppKit's `initialize()`
+// calls `unSyncExistingConnection()` which disconnects every namespace. Firing the imperative
+// connect before that async chain resolves would race — we'd connect Safe, then AppKit's init
+// would immediately disconnect it. Awaiting `ready()` guarantees `unSyncExistingConnection()`
+// has already run before we lay down the Safe connection.
 if (IS_SAFE_APP_IFRAME && typeof window !== 'undefined') {
-  void wagmiAdapter.connect({ id: 'safe', type: 'safe' }).catch(() => undefined)
+  void reownAppKit
+    .ready()
+    .then(() => wagmiAdapter.connect({ id: 'safe', type: 'safe' }))
+    .catch(() => undefined)
 }
