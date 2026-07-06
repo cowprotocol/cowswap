@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
+import { useIsZeroBalance } from 'modules/combinedBalances'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -72,8 +72,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
-  // Re-check the balance against the (frozen) sell amount in case it changed while the modal was open
-  const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputAmount)
+  // Limit orders may be placed with amount > balance, so only block when the sell token balance
+  // dropped to 0 while the modal was open (e.g. a previous order fully filled) — see issue #5645.
+  const isInsufficientBalance = useIsZeroBalance(inputAmount?.currency)
   const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance
 
   const inputSymbol = inputAmount?.currency?.symbol || t`token`
