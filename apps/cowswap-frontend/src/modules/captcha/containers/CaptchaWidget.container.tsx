@@ -23,6 +23,7 @@ const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
 /* eslint-disable max-lines-per-function */
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
+  const [captchaError, setCaptchaError] = useState<Error | null>(null)
   const { isCaptchaEnabled } = useAtomValue(featureFlagsAtom)
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
@@ -73,7 +74,7 @@ export function CaptchaWidget(): ReactNode {
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!isCaptchaEnabled || !siteKey || captchaJwt) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt || captchaError) return null
 
   return (
     <Turnstile
@@ -112,20 +113,18 @@ export function CaptchaWidget(): ReactNode {
         try {
           const jwt = await exchangeTurnstileToken(token)
 
-          if (exchangeRequestIdRef.current !== requestId) {
-            logCaptcha.warn('Skipping stale captcha JWT exchange result')
-            return
-          }
+          if (exchangeRequestIdRef.current !== requestId) return
 
           logCaptcha.info('JWT received', { requestId })
           trackCaptcha({ action: 'captcha_challenge_solved' })
           setCaptchaJwt(jwt)
         } catch (err: unknown) {
-          if (exchangeRequestIdRef.current !== requestId) {
-            return
-          }
+          if (exchangeRequestIdRef.current !== requestId) return
 
-          logCaptcha.error(new Error('JWT exchange failed', { cause: normalizeError(err) }), undefined, { requestId })
+          const error = normalizeError(err)
+          setCaptchaError(error)
+
+          logCaptcha.error(new Error('JWT exchange failed', { cause: error }), undefined, { requestId })
           trackCaptcha({ action: 'captcha_challenge_failed', reason: 'jwtExchangeFailed' })
           setCaptchaJwt(null)
         }
