@@ -107,7 +107,9 @@ export function AccountProxyRecoverPage(): ReactNode {
       </TokenWrapper>
 
       <ButtonPrimaryStyled
-        disabled={!validProxyAddress || !validTokenAddress || isFractionFalsy(balance) || !!txSigningStep || txInProgress}
+        disabled={
+          !validProxyAddress || !validTokenAddress || isFractionFalsy(balance) || !!txSigningStep || txInProgress
+        }
         buttonSize={ButtonSize.BIG}
         onClick={onRecover}
       >

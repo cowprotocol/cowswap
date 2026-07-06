@@ -81,11 +81,19 @@ export function HookItem({
                           label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
                         })}
                       >
-                        {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
+                        {simulationData.status ? (
+                          <Trans>Simulation successful</Trans>
+                        ) : (
+                          <Trans>Simulation failed</Trans>
+                        )}
                       </a>
                     ) : (
                       <span>
-                        {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
+                        {simulationData.status ? (
+                          <Trans>Simulation successful</Trans>
+                        ) : (
+                          <Trans>Simulation failed</Trans>
+                        )}
                       </span>
                     )}
                   </styledEl.SimulationLink>

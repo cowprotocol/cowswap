@@ -1,5 +1,5 @@
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -76,14 +76,23 @@ const wagmiAdapter = new WagmiAdapter({
 // WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
+const isSafeApp = getIsSafeAppIframe()
+const isWidget = isInjectedWidget()
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: getReownDefaultNetwork(),
-  enableEIP6963: true,
+  // Widget mode delegates wallet ownership to its host via WidgetEthereumProvider (iframe
+  // transport). Enabling EIP-6963 in a widget context lets Reown discover and connect to
+  // window.ethereum directly, bypassing the transport and leaking browser-wallet state into
+  // embedded contexts.
+  enableEIP6963: !isWidget,
   enableInjected: false,
-  enableReconnect: true,
+  enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -111,9 +120,9 @@ const reownAppKit = createAppKit({
 /**
  * Instantly connect to Safe if in Safe
  */
-if (getIsSafeAppIframe()) {
+if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (isMobile && window.ethereum) {
+} else if (hasRecentConnector && isMobile && window.ethereum) {
   connectWalletById('injected', 'injected')
 }
 
