@@ -8,8 +8,8 @@ const SAFE_APP_PREVIEW_URLS = [
   'https://safe-wallet-web.staging.5afe.dev', // Safe's staging env
 ]
 const SAFE_APP_PREVIEW_HOST_SUFFIX = '.review.5afe.dev' // Safe's preview env
-const SAFE_APP_LOCAL_URLS = ['http://localhost:4003', 'http://localhost:3000']
-const SAFE_SUPPORTED_ORIGINS = [SAFE_APP_ORIGIN, ...SAFE_APP_PREVIEW_URLS, ...SAFE_APP_LOCAL_URLS].map(
+const SAFE_APP_LOCAL_URL = 'http://localhost:4003'
+const SAFE_SUPPORTED_ORIGINS = [SAFE_APP_ORIGIN, ...SAFE_APP_PREVIEW_URLS, SAFE_APP_LOCAL_URL].map(
   (origin) => new URL(origin).origin,
 )
 

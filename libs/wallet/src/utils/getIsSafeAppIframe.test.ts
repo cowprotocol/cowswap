@@ -20,7 +20,6 @@ describe('getIsSafeAppIframe', () => {
     ['https://safe-wallet-web.staging.5afe.dev'],
     ['https://pr-123.review.5afe.dev'],
     ['http://localhost:4003'],
-    ['http://localhost:3000'],
   ])('returns true for supported Safe parent origin %s', (origin) => {
     getParentOriginMock.mockReturnValue(origin)
 
@@ -29,6 +28,7 @@ describe('getIsSafeAppIframe', () => {
 
   it.each([
     undefined,
+    'http://localhost:3000',
     'https://review.5afe.dev',
     'http://pr-123.review.5afe.dev',
     'https://pr-123.review.5afe.dev:444',
