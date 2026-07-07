@@ -25,7 +25,12 @@ export function useValidatePageUrlParams(
       (pagesCount > 0 && currentPageNumber > pagesCount) ||
       currentPageNumber < 1 ||
       currentPageNumber !== params.pageNumber
-    const shouldResetTabId = currentTabId !== params.tabId
+    // Only normalize the tab when the URL has no valid tab.
+    // `currentTabId` may transiently differ from a valid `params.tabId` because of the
+    // empty-tab fallback in `useCurrentTab` (e.g. a freshly placed order has not reached
+    // the Signing list yet). Rewriting the URL in that case would permanently bounce the
+    // user off the tab they were explicitly navigated to.
+    const shouldResetTabId = !params.tabId
 
     if (shouldResetPageNumber || shouldResetTabId) {
       navigate(
