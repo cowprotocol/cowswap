@@ -38,6 +38,7 @@ interface InterestClickParams {
 
 interface TwapDemandAnalytics {
   isInterestRegistered: boolean
+  isInterestButtonVisible: boolean
   isSafeViaWc: boolean
   trackInterestClick(params: InterestClickParams): void
   trackSafeWcBannerClick(): void
@@ -47,16 +48,15 @@ interface TwapDemandAnalytics {
   trackUnsupportedWalletShown(params: UnsupportedWalletShownParams): void
 }
 
+const INTEREST_THANKS_VISIBLE_MS = 10_000
+
 export function useTwapDemandAnalytics(): TwapDemandAnalytics {
   const cowAnalytics = useCowAnalytics()
   const { account } = useWalletInfo()
   const { isSafeViaWc, isWalletTypePending, walletType } = useTwapDemandWalletType(account)
   const trackOncePerSession = useTrackTwapDemandEventOncePerSession(account)
-  const [isInterestRegistered, setIsInterestRegistered] = useState(() => getIsTwapInterestRegistered(account))
-
-  useEffect(() => {
-    setIsInterestRegistered(getIsTwapInterestRegistered(account))
-  }, [account])
+  const { hideRegisteredInterest, isInterestButtonVisible, isInterestRegistered, showRegisteredInterest } =
+    useTwapInterestButtonState(account)
 
   const sendTwapEvent = useCallback(
     (action: TwapDemandAnalyticsEvent, params?: TwapDemandAnalyticsParams) => {
@@ -106,19 +106,19 @@ export function useTwapDemandAnalytics(): TwapDemandAnalytics {
   const trackInterestClick = useCallback(
     ({ sellAmountUsdBucket }: InterestClickParams) => {
       if (getIsTwapInterestRegistered(account)) {
-        setIsInterestRegistered(true)
+        hideRegisteredInterest()
         return
       }
 
       registerTwapInterest(account)
-      setIsInterestRegistered(true)
+      showRegisteredInterest()
 
       sendTwapEvent(TwapDemandAnalyticsEvent.INTEREST_CLICK, {
         wallet_type: walletType,
         sell_amount_usd_bucket: sellAmountUsdBucket,
       })
     },
-    [account, sendTwapEvent, walletType],
+    [account, hideRegisteredInterest, sendTwapEvent, showRegisteredInterest, walletType],
   )
 
   const trackTwapTabOpened = useCallback(() => {
@@ -131,6 +131,7 @@ export function useTwapDemandAnalytics(): TwapDemandAnalytics {
 
   return {
     isInterestRegistered,
+    isInterestButtonVisible,
     isSafeViaWc,
     trackInterestClick,
     trackSafeWcBannerClick,
@@ -139,6 +140,43 @@ export function useTwapDemandAnalytics(): TwapDemandAnalytics {
     trackTwapTabOpened,
     trackUnsupportedWalletShown,
   }
+}
+
+function useTwapInterestButtonState(account?: string): {
+  hideRegisteredInterest(): void
+  isInterestButtonVisible: boolean
+  isInterestRegistered: boolean
+  showRegisteredInterest(): void
+} {
+  const [isInterestRegistered, setIsInterestRegistered] = useState(() => getIsTwapInterestRegistered(account))
+  const [isInterestButtonVisible, setIsInterestButtonVisible] = useState(() => !getIsTwapInterestRegistered(account))
+
+  useEffect(() => {
+    const isRegistered = getIsTwapInterestRegistered(account)
+
+    setIsInterestRegistered(isRegistered)
+    setIsInterestButtonVisible(!isRegistered)
+  }, [account])
+
+  useEffect(() => {
+    if (!isInterestRegistered || !isInterestButtonVisible) return
+
+    const timeout = setTimeout(() => setIsInterestButtonVisible(false), INTEREST_THANKS_VISIBLE_MS)
+
+    return () => clearTimeout(timeout)
+  }, [isInterestButtonVisible, isInterestRegistered])
+
+  const hideRegisteredInterest = useCallback(() => {
+    setIsInterestRegistered(true)
+    setIsInterestButtonVisible(false)
+  }, [])
+
+  const showRegisteredInterest = useCallback(() => {
+    setIsInterestRegistered(true)
+    setIsInterestButtonVisible(true)
+  }, [])
+
+  return { hideRegisteredInterest, isInterestButtonVisible, isInterestRegistered, showRegisteredInterest }
 }
 
 function useTwapDemandWalletType(account?: string): {

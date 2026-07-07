@@ -18,6 +18,7 @@ export interface UnsupportedWalletWarningProps {
   chainId: SupportedChainId
   account?: string
   isSafeViaWc: boolean
+  isInterestButtonVisible: boolean
   isInterestRegistered: boolean
   onInterestClick(): void
   onSafeWcBannerClick(): void
@@ -30,6 +31,7 @@ export function UnsupportedWalletWarning({
   isSafeViaWc,
   chainId,
   account,
+  isInterestButtonVisible,
   isInterestRegistered,
   onInterestClick,
   onSafeWcBannerClick,
@@ -83,15 +85,21 @@ export function UnsupportedWalletWarning({
           <strong>Note:</strong> If you are using a Safe but still see this message, ensure your Safe is deployed!
         </Trans>
       </p>
-      <InterestButton
-        onClick={onInterestClick}
-        disabled={isInterestRegistered}
-        $fontSize="13px"
-        $minHeight="32px"
-        padding="6px 12px"
-      >
-        {isInterestRegistered ? <Trans>Thanks - noted!</Trans> : <Trans>Want TWAP with this wallet? Let us know</Trans>}
-      </InterestButton>
+      {isInterestButtonVisible && (
+        <InterestButton
+          onClick={onInterestClick}
+          disabled={isInterestRegistered}
+          $fontSize="13px"
+          $minHeight="32px"
+          padding="6px 12px"
+        >
+          {isInterestRegistered ? (
+            <Trans>Thanks - noted!</Trans>
+          ) : (
+            <Trans>Want TWAP with this wallet? Let us know</Trans>
+          )}
+        </InterestButton>
+      )}
     </InlineBanner>
   )
 }

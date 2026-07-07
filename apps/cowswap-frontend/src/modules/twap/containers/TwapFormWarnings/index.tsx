@@ -51,6 +51,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const tradeUrlParams = useTradeRouteContext()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
   const {
+    isInterestButtonVisible,
     isInterestRegistered,
     isSafeViaWc,
     trackInterestClick,
@@ -101,6 +102,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
               isSafeViaWc={isSafeViaWc}
               chainId={chainId}
               account={account}
+              isInterestButtonVisible={isInterestButtonVisible}
               isInterestRegistered={isInterestRegistered}
               onInterestClick={handleInterestClick}
               onSafeWcBannerClick={trackSafeWcBannerClick}
