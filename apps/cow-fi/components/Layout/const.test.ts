@@ -37,6 +37,16 @@ function getMoreItemLabels(isSolversEnabled: boolean): string[] {
   return moreItem.children.map((child) => child.label).filter((label): label is string => label !== undefined)
 }
 
+function getAboutItemLabels(): string[] {
+  const aboutItem = getNavItems(false).find((item) => item.label === 'About')
+
+  if (!aboutItem?.children) {
+    throw new Error('Missing About menu item')
+  }
+
+  return aboutItem.children.map((child) => child.label).filter((label): label is string => label !== undefined)
+}
+
 describe('getNavItems', () => {
   it('hides solvers menu item when the solvers flag is disabled', () => {
     expect(getMoreItemLabels(false)).not.toContain('Solvers')
@@ -44,5 +54,12 @@ describe('getNavItems', () => {
 
   it('shows solvers menu item when the solvers flag is enabled', () => {
     expect(getMoreItemLabels(true)).toContain('Solvers')
+  })
+
+  it('does not include Bug Bounty or Affiliate Program in the main menu', () => {
+    const labels = getAboutItemLabels()
+
+    expect(labels).not.toContain('Bug Bounty')
+    expect(labels).not.toContain('Affiliate Program')
   })
 })
