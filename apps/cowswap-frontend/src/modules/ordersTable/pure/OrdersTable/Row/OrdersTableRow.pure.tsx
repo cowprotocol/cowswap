@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { ordersToCancelMapAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
+import { ordersToCancelSetAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
@@ -31,7 +31,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
   const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const getSpotPrice = useGetSpotPrice()
   const pendingOrdersPrices = usePendingOrdersPrices()
-  const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
+  const ordersToCancelSet = useAtomValue(ordersToCancelSetAtom)
   const orderActions = useOrderActions()
 
   const { balancesAndAllowances } = ordersTableState
@@ -52,7 +52,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
     return (
       <OrderRow
         isRowSelectable={isRowSelectable}
-        isRowSelected={!!ordersToCancelMap[order.id]}
+        isRowSelected={ordersToCancelSet.has(order.id)}
         isHistoryTab={currentTab === OrderTabId.HISTORY}
         order={order}
         spotPrice={spotPrice}
@@ -73,7 +73,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
         chainId={chainId}
         balancesAndAllowances={balancesAndAllowances}
         isRowSelectable={isRowSelectable}
-        isRowSelected={!!ordersToCancelMap[item.parent.id]}
+        isRowSelected={ordersToCancelSet.has(item.parent.id)}
         isHistoryTab={currentTab === OrderTabId.HISTORY}
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[item.parent.id]}

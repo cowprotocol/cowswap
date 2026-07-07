@@ -13,17 +13,10 @@ import { tabParamAtom } from '../routes/routes.atom'
 
 export const ordersToCancelAtom = atom<CancellableOrder[]>([])
 
-export const ordersToCancelMapAtom = atom((get) => {
+export const ordersToCancelSetAtom = atom((get) => {
   const ordersToCancel = get(ordersToCancelAtom)
 
-  return ordersToCancel.reduce(
-    (acc, orderToCancel) => {
-      acc[orderToCancel.id] = true
-
-      return acc
-    },
-    {} as Record<string, true>,
-  )
+  return new Set(ordersToCancel.map((orderToCancel) => orderToCancel.id))
 })
 
 export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: CancellableOrder[]) => {

@@ -18,13 +18,22 @@ function getInitialLocation(): Location {
   }
 
   // We are using HashRouter, so we need to extract pathname and search from the hash:
-  const { hash } = window.location
-  const [pathname = '', search = ''] = hash.substring(1).split('?')
+  // e.g.: http://localhost/#/swap?tab=signing&page=1:
+  // - hash: '#/swap?tab=signing&page=1'
+  // - hashPathString: '/swap?tab=signing&page=1'
+  // - pathname: '/swap'
+  // - search: '?tab=signing&page=1'
+
+  const hashPathString = window.location.hash.slice(1) || '/'
+  const hashUrl = new URL(
+    hashPathString.startsWith('/') ? hashPathString : `/${hashPathString}`,
+    window.location.origin,
+  )
 
   return {
     key: `INITIAL_LOCATION_KEY_${Date.now()}`,
-    pathname,
-    search,
+    pathname: hashUrl.pathname,
+    search: hashUrl.search,
     hash: '',
     state: undefined,
   }

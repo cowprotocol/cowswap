@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
-import { ordersToCancelMapAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
+import { ordersToCancelSetAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 import { TabOrderTypes, OrderTabId } from 'entities/routes/routes.atom'
 
 import { usePendingOrdersPrices } from 'modules/orders'
@@ -34,7 +34,7 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = usePendingOrdersPrices()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
-  const ordersToCancelMap = useAtomValue(ordersToCancelMapAtom)
+  const ordersToCancelSet = useAtomValue(ordersToCancelSetAtom)
   const currentPageNumber = useAtomValue(ordersTablePageAtom) || 1
 
   const { filteredOrders, balancesAndAllowances } = useAtomValue(ordersTableStateAtom)
@@ -60,8 +60,8 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   const allOrdersSelected = useMemo(() => {
     if (!cancellableOrders.length) return false
 
-    return cancellableOrders.every((item) => ordersToCancelMap[getParsedOrderFromTableItem(item).id])
-  }, [cancellableOrders, ordersToCancelMap])
+    return cancellableOrders.every((item) => ordersToCancelSet.has(getParsedOrderFromTableItem(item).id))
+  }, [cancellableOrders, ordersToCancelSet])
 
   const getPageUrl = useCallback((index: number) => buildOrdersTableUrl({ pageNumber: index }), [buildOrdersTableUrl])
 
