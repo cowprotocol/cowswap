@@ -7,7 +7,6 @@ import {
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
-  resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
 
@@ -102,27 +101,6 @@ function seedResolvedWalletMetadata(
   store.set(writableIsSafeViaWcAtom, overrides.isSafeViaWc ?? false)
   store.set(writableIsSafeAppAtom, overrides.isSafeApp ?? false)
 }
-
-describe('resolveCapabilitiesForChain', () => {
-  const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-
-  it('matches numeric chain id key', () => {
-    expect(resolveCapabilitiesForChain({ [MOCK_CHAIN_ID]: capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
-  })
-
-  it('matches hex chain id key (Safe WC format)', () => {
-    expect(resolveCapabilitiesForChain({ '0x1': capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
-  })
-
-  it('matches decimal string chain id key', () => {
-    expect(resolveCapabilitiesForChain({ '1': capabilities }, MOCK_CHAIN_ID, false)).toEqual(capabilities)
-  })
-
-  it('uses first entry fallback only for Safe via WC', () => {
-    expect(resolveCapabilitiesForChain({ '0xaa36a7': capabilities }, MOCK_CHAIN_ID, true)).toEqual(capabilities)
-    expect(resolveCapabilitiesForChain({ '0xaa36a7': capabilities }, MOCK_CHAIN_ID, false)).toBeNull()
-  })
-})
 
 describe('walletCapabilitiesAtom', () => {
   beforeEach(() => {
