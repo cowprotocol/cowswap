@@ -1,3 +1,5 @@
+import { logAnalytics } from '@cowprotocol/common-utils'
+
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
 
 import { AnalyticsContext } from '../CowAnalytics'
@@ -109,6 +111,44 @@ describe('CowAnalyticsGtm wallet lifecycle events', () => {
       action: 'Reject',
       label: 'SWAP|COW',
       isBridgeOrder: false,
+    })
+  })
+
+  it('omits undefined custom event params', () => {
+    analytics.sendEvent({
+      category: 'Captcha',
+      action: 'captcha_challenge_solved',
+      reason: undefined,
+    } as GtmEvent<string> & { reason?: string })
+
+    expect(getLastEvent('captcha_challenge_solved')).toEqual(
+      expect.not.objectContaining({
+        reason: expect.anything(),
+      }),
+    )
+  })
+
+  it('logs and suppresses data layer push failures', () => {
+    const warnSpy = jest.spyOn(logAnalytics, 'warn')
+
+    analytics.destroy()
+    window.cowAnalyticsInstance = undefined
+    window.dataLayer = {
+      push() {
+        throw new Error('data layer failed')
+      },
+    } as unknown as unknown[]
+    analytics = new CowAnalyticsGtm()
+
+    expect(() => analytics.sendEvent({ category: 'Trade', action: 'Quote', label: undefined })).not.toThrow()
+    expect(warnSpy).toHaveBeenCalledWith('Data layer push failed', {
+      data: {
+        event: 'Quote',
+        category: 'Trade',
+        action: 'Quote',
+        label: undefined,
+      },
+      error: expect.any(Error),
     })
   })
 })

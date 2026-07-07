@@ -38,3 +38,4 @@ export function createCowLogger(scope: string): CowLogger {
 
 export const logSafeApi = createCowLogger('SafeAPI')
 export const logWallet = createCowLogger('Wallet')
+export const logAnalytics = createCowLogger('Analytics')
