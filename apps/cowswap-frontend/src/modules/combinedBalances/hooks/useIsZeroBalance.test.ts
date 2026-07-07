@@ -23,9 +23,10 @@ const token = {
 
 const balanceKey = getAddressKey(getCurrencyAddress(token))
 
-function mockBalance(raw: string | null): void {
+function mockBalance(raw: string | null, hasFirstLoad = true): void {
   mockUseTokensBalancesCombined.mockReturnValue({
     values: raw === null ? {} : { [balanceKey]: BigInt(raw) },
+    hasFirstLoad,
   } as unknown as ReturnType<typeof useTokensBalancesCombined>)
 }
 
@@ -52,6 +53,14 @@ describe('useIsZeroBalance()', () => {
     const { result } = renderHook(() => useIsZeroBalance(token))
 
     expect(result.current).toBe(true)
+  })
+
+  it('returns false before balances have loaded, even with no balance entry', () => {
+    mockBalance(null, false)
+
+    const { result } = renderHook(() => useIsZeroBalance(token))
+
+    expect(result.current).toBe(false)
   })
 
   it('returns false when the balance is greater than zero (amount > balance is allowed for limit orders)', () => {

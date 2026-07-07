@@ -14,17 +14,18 @@ import { useTokensBalancesCombined } from './useTokensBalancesCombined'
  * only block when the sell token balance drops to 0 (e.g. a previous order fully filled while the
  * modal was open), not whenever amount > balance (issue #5645).
  *
- * Returns `false` when there is no currency yet, so the button is not blocked during loading.
+ * Returns `false` when there is no currency yet or before balances have loaded, so the button is
+ * not blocked by a transient zero while `values` is still empty (issue #5645).
  */
 export function useIsZeroBalance(currency: Nullish<Currency>): boolean {
-  const { values: balances } = useTokensBalancesCombined()
+  const { values: balances, hasFirstLoad } = useTokensBalancesCombined()
 
   return useMemo(() => {
-    if (!currency) return false
+    if (!currency || !hasFirstLoad) return false
 
     const balanceRaw = balances[getAddressKey(getCurrencyAddress(currency))]
     const balance = CurrencyAmount.fromRawAmount(currency, balanceRaw?.toString() ?? '0')
 
     return balance.equalTo(0)
-  }, [balances, currency])
+  }, [balances, hasFirstLoad, currency])
 }
