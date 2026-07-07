@@ -16,6 +16,7 @@ export type WalletCapabilities = {
 }
 
 const WALLET_CAPABILITIES_LOADING_TIMEOUT = ms`5s`
+let timeoutLogged = false
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
   const { chainId, account } = useWalletInfo()
@@ -64,7 +65,11 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
 
     const timeoutId = setTimeout(() => {
       setHasLoadingTimedOut(true)
-      logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
+
+      if (!timeoutLogged) {
+        timeoutLogged = true
+        logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
+      }
     }, WALLET_CAPABILITIES_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
