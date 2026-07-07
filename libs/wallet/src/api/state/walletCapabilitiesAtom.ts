@@ -42,6 +42,8 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
   const { account, chainId } = get(walletInfoAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
 
+  debugger
+
   if (!account || !chainId || isSafeViaWc === null) return null
 
   try {
