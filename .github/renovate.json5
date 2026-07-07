@@ -15,7 +15,7 @@
     // When both major and minor releases exist, propose only the latest bump
     // (typically major) instead of a separate minor PR.
     {
-      matchManagers: ["github-actions"],
+      matchManagers: ["github-actions", "pnpm"],
       schedule: ["on monday"],
       minimumReleaseAge: "14 days",
       // Track upgrades by semver tag, but pin the resolved version to its full
