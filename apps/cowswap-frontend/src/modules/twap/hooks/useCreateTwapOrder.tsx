@@ -5,7 +5,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
@@ -59,7 +59,6 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
-  const isSmartContractWallet = useIsSmartContractWallet()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
@@ -219,7 +218,12 @@ export function useCreateTwapOrder() {
         // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
         // still be no signing orders.
         setTimeout(() => {
-          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+          // A freshly placed TWAP order is always in WaitSigning until the Safe/SC owners
+          // sign it, so navigate to the Signing tab (not Open) regardless of wallet type.
+          navigateToOrdersTableTab(OrderTabId.SIGNING)
+
+          // After we enable TWAP for EOA:
+          // navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
         })
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
@@ -248,7 +252,6 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
-      isSmartContractWallet,
     ],
   )
 }
