@@ -5,6 +5,7 @@ import { BalancesWatcherStreamError } from './types'
 
 const OWNER = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 const BASE_URL = 'https://watcher.example'
+const CLIENT_ID = '00000000-0000-4000-8000-000000000000'
 
 interface MockEvent {
   type: string
@@ -78,11 +79,16 @@ function start(extra: Partial<Parameters<typeof subscribeToBalancesEvents>[0]> =
 describe('subscribeToBalancesEvents', () => {
   beforeEach(() => {
     MockEventSource.lastInstance = null
+    localStorage.setItem('balances-watcher-client-id', CLIENT_ID)
   })
 
-  it('connects to /sse/{chainId}/balances/{owner}', () => {
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  it('connects to /sse/{chainId}/balances/{owner} with client_id in the query string', () => {
     const { source } = start()
-    expect(source.url).toBe(`${BASE_URL}/sse/1/balances/${OWNER}`)
+    expect(source.url).toBe(`${BASE_URL}/sse/1/balances/${OWNER}?client_id=${CLIENT_ID}`)
   })
 
   it('delivers every balance_update payload to onBalances in order', () => {
@@ -210,6 +216,6 @@ describe('subscribeToBalancesEvents', () => {
 
   it('strips a trailing slash from baseUrl', () => {
     const { source } = start({ baseUrl: `${BASE_URL}/` })
-    expect(source.url).toBe(`${BASE_URL}/sse/1/balances/${OWNER}`)
+    expect(source.url).toBe(`${BASE_URL}/sse/1/balances/${OWNER}?client_id=${CLIENT_ID}`)
   })
 })

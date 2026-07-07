@@ -5,6 +5,7 @@ import { BalancesWatcherApiError } from './types'
 
 const OWNER = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 const BASE_URL = 'https://watcher.example'
+const CLIENT_ID = '00000000-0000-4000-8000-000000000000'
 
 function mockFetchResponse(status: number, body: unknown): jest.SpyInstance {
   const init: ResponseInit = {
@@ -16,8 +17,13 @@ function mockFetchResponse(status: number, body: unknown): jest.SpyInstance {
 }
 
 describe('createBalancesWatcherSession', () => {
+  beforeEach(() => {
+    localStorage.setItem('balances-watcher-client-id', CLIENT_ID)
+  })
+
   afterEach(() => {
     jest.restoreAllMocks()
+    localStorage.clear()
   })
 
   it('POSTs to /{chainId}/sessions/{owner} with the request body and resolves on 2xx', async () => {
@@ -38,6 +44,21 @@ describe('createBalancesWatcherSession', () => {
       tokensListsUrls: ['https://lists.example/uni.json'],
       customTokens: ['0xabc'],
     })
+  })
+
+  it('sends the browser-scoped client id in the X-Client-Id header', async () => {
+    const fetchSpy = mockFetchResponse(200, '')
+
+    await createBalancesWatcherSession({
+      chainId: SupportedChainId.MAINNET,
+      owner: OWNER,
+      body: { tokensListsUrls: ['https://lists.example/uni.json'], customTokens: [] },
+      baseUrl: BASE_URL,
+    })
+
+    const [, calledInit] = fetchSpy.mock.calls[0] as [string, RequestInit]
+    const headers = calledInit.headers as Record<string, string>
+    expect(headers['X-Client-Id']).toBe(CLIENT_ID)
   })
 
   it('strips a trailing slash from baseUrl', async () => {
