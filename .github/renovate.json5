@@ -15,7 +15,8 @@
     // When both major and minor releases exist, propose only the latest bump
     // (typically major) instead of a separate minor PR.
     {
-      matchManagers: ["github-actions", "pnpm"],
+      // Note that npm is used for pnpm as well, there's no specific pnpm value for matchManagers.
+      matchManagers: ["github-actions", "npm"],
       schedule: ["on monday"],
       minimumReleaseAge: "14 days",
       // Track upgrades by semver tag, but pin the resolved version to its full
