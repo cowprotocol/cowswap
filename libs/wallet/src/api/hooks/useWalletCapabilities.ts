@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { logWallet } from '@cowprotocol/common-utils'
+
 import ms from 'ms.macro'
 import { useCapabilities } from 'wagmi'
 
@@ -56,17 +58,13 @@ export function useWalletCapabilities(): { data: WalletCapabilities | undefined;
 
   useEffect(() => {
     if (!shouldFetchCapabilities || !capabilitiesState.isLoading) {
-      console.debug('[COW][WalletCapabilities]', 'Wallet capabilities timeout reset')
       setHasLoadingTimedOut(false)
       return
     }
 
     const timeoutId = setTimeout(() => {
       setHasLoadingTimedOut(true)
-      console.warn(
-        '[COW][WalletCapabilities]',
-        `Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`,
-      )
+      logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
     }, WALLET_CAPABILITIES_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
