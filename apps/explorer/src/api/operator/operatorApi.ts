@@ -23,6 +23,10 @@ function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> 
   return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: BARN`)
 }
 
+function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: PROD`)
+}
+
 /**
  * Gets a single order by id.
  *
@@ -179,6 +183,9 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
  * - If one env returns `[]`, we still wait for the other.
  * - If both envs return `[]`, we return `[]`.
  * - If both fail, throws the corresponding `AggregateError`.
+ *
+ * Both env requests are time-bounded: an env that never responds rejects on timeout instead of
+ * leaving `Promise.any` pending forever (which would hang the tx-details search on "loading").
  */
 export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
   const { networkId, txHash } = params
@@ -191,8 +198,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
     return orders
   }
 
-  const orderPromises = orderBookSDK
-    .getTxOrders(txHash, context)
+  const orderPromises = withProdTimeout(orderBookSDK.getTxOrders(txHash, context), 'getTxOrders')
     .then(rejectIfEmpty)
     .catch((error) => {
       if (!(error instanceof EmptyTxOrdersResultError)) {
