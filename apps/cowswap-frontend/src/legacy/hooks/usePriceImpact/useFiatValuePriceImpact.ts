@@ -40,6 +40,11 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
   const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
+  // Restart the safety-valve timeout on a token-pair change OR whenever a new quote begins
+  // (`quoteParamsChanged`). Keying it only off the token pair left `hasLoadingTimedOut` stuck
+  // true after the first 15s, so the stale-value suppression below never fired again for later
+  // same-pair repricing. Plain loading flicker (unchanged params) intentionally does not restart
+  // it, so a stuck quote still times out.
   useEffect(() => {
     logPriceImpact.debug(`Price impact timeout reset`)
     setHasLoadingTimedOut(false)
@@ -51,7 +56,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp, inputToken, outputToken])
+  }, [isTradeSetUp, inputToken, outputToken, quoteParamsChanged])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)

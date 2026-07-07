@@ -4,6 +4,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { act, renderHook } from '@testing-library/react'
 
 import { useDerivedTradeState } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useFiatValuePriceImpact } from './useFiatValuePriceImpact'
@@ -15,6 +16,10 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
+}))
+
+jest.mock('modules/tradeQuote', () => ({
+  useTradeQuote: jest.fn(),
 }))
 
 jest.mock('modules/usdAmount', () => ({
@@ -32,6 +37,7 @@ jest.mock('./logger', () => ({
 
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeUsdAmounts = useTradeUsdAmounts as jest.MockedFunction<typeof useTradeUsdAmounts>
+const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
 
 function createToken(symbol: string, address: string): Token {
   return new Token(ChainId.SEPOLIA, address, 18, symbol, symbol)
@@ -52,6 +58,11 @@ describe('useFiatValuePriceImpact', () => {
       inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
       outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputToken, 1),
     } as ReturnType<typeof useDerivedTradeState>)
+
+    mockedUseTradeQuote.mockReturnValue({
+      isLoading: false,
+      hasParamsChanged: false,
+    } as ReturnType<typeof useTradeQuote>)
   })
 
   afterEach(() => {
@@ -148,6 +159,39 @@ describe('useFiatValuePriceImpact', () => {
       inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
       outputCurrencyAmount: CurrencyAmount.fromRawAmount(updatedOutputToken, 1),
     } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+  })
+
+  it('restarts the loading timeout when a new quote begins after timing out', () => {
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: true },
+      outputAmount: { value: null, isLoading: true },
+    })
+
+    const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
+    })
+
+    // Stale value stays suppressed only until the safety-valve timeout fires
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    // A fresh quote for the same token pair must re-arm the timeout and suppress the stale value again
+    mockedUseTradeQuote.mockReturnValue({
+      isLoading: true,
+      hasParamsChanged: true,
+    } as ReturnType<typeof useTradeQuote>)
     rerender()
 
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
