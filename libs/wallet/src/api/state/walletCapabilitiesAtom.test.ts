@@ -1,6 +1,6 @@
 import { createStore, type WritableAtom } from 'jotai'
 
-import type { EIP1193Provider } from 'viem'
+import type { EIP1193Provider, PublicClient } from 'viem'
 import type { Connector } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -54,25 +54,22 @@ const MOCK_ACCOUNT = '0x1234567890123456789012345678901234567890' as const
 const MOCK_CHAIN_ID = SupportedChainId.MAINNET
 const MOCK_CONNECTOR = { type: 'injected' } as Connector
 
-const mockLogWalletWarn = jest.fn()
 const mockGetCapabilities = jest.fn()
 const mockWagmiConfigGetClient = jest.fn()
 const mockGetIsWalletConnect = jest.fn()
 const mockIsMobile = { value: false }
 
-jest.mock('@cowprotocol/common-utils', () => ({
-  getCurrentChainIdFromUrl: () => 1,
-  get isMobile() {
-    return mockIsMobile.value
-  },
-  logWallet: {
-    warn: (...args: unknown[]) => mockLogWalletWarn(...args),
-  },
-  PromiseWithTimeout: <T>(_: number, handler: (resolve: (value: T) => void) => void): Promise<T> =>
-    new Promise<T>((resolve) => {
-      handler(resolve)
-    }),
-}))
+jest.mock('@cowprotocol/common-utils', () => {
+  const actual = jest.requireActual<typeof import('@cowprotocol/common-utils')>('@cowprotocol/common-utils')
+
+  return {
+    ...actual,
+    getCurrentChainIdFromUrl: () => 1,
+    get isMobile() {
+      return mockIsMobile.value
+    },
+  }
+})
 
 jest.mock('../../wagmi/hooks/useIsWalletConnect', () => ({
   getIsWalletConnect: (...args: unknown[]) => mockGetIsWalletConnect(...args),
@@ -304,21 +301,34 @@ describe('walletCapabilitiesAtom', () => {
       })
     })
 
-    it('returns empty object when getCapabilities does not settle before timeout', async () => {
+    it('returns null when getCapabilities fails and provider does not support EIP-1193 requests', async () => {
+      const error = new Error('viem error')
+      mockGetCapabilities.mockRejectedValue(error)
+
+      const store = createStore()
+      setWalletInfo(store, { provider: {} as PublicClient })
+
+      const result = await store.get(walletCapabilitiesAtom)
+
+      expect(result).toBeNull()
+    })
+
+    it('returns null when getCapabilities times out and provider does not support EIP-1193 requests', async () => {
       jest.useFakeTimers()
       mockGetCapabilities.mockImplementation(() => new Promise(() => undefined))
 
       const store = createStore()
-      setWalletInfo(store)
+      setWalletInfo(store, { provider: {} as PublicClient })
 
-      const resultPromise = store.get(walletCapabilitiesAtom)
-      await jest.advanceTimersByTimeAsync(5_000)
-      const result = await resultPromise
+      try {
+        const resultPromise = store.get(walletCapabilitiesAtom)
+        await jest.advanceTimersByTimeAsync(5_000)
+        const result = await resultPromise
 
-      expect(result).toEqual({})
-      expect(mockLogWalletWarn).toHaveBeenCalledWith(expect.stringContaining('Wallet capabilities loading timed out'))
-
-      jest.useRealTimers()
+        expect(result).toBeNull()
+      } finally {
+        jest.useRealTimers()
+      }
     })
   })
 
@@ -347,6 +357,49 @@ describe('walletCapabilitiesAtom', () => {
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toEqual(capabilities)
+    })
+
+    it('uses legacy fallback when getCapabilities times out', async () => {
+      jest.useFakeTimers()
+      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
+      mockGetCapabilities.mockImplementation(() => new Promise(() => undefined))
+      const mockRequest = jest.fn().mockResolvedValue({ '0x1': capabilities })
+
+      const store = createStore()
+      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
+
+      try {
+        const resultPromise = store.get(walletCapabilitiesAtom)
+        await jest.advanceTimersByTimeAsync(5_000)
+        const result = await resultPromise
+
+        expect(result).toEqual(capabilities)
+        expect(mockRequest).toHaveBeenCalledWith({
+          method: 'wallet_getCapabilities',
+          params: [MOCK_ACCOUNT],
+        })
+      } finally {
+        jest.useRealTimers()
+      }
+    })
+
+    it('returns null when legacy fallback times out', async () => {
+      jest.useFakeTimers()
+      mockGetCapabilities.mockRejectedValue(new Error('viem error'))
+      const mockRequest = jest.fn().mockImplementation(() => new Promise(() => undefined))
+
+      const store = createStore()
+      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
+
+      try {
+        const resultPromise = store.get(walletCapabilitiesAtom)
+        await jest.advanceTimersByTimeAsync(5_000)
+        const result = await resultPromise
+
+        expect(result).toBeNull()
+      } finally {
+        jest.useRealTimers()
+      }
     })
   })
 })
