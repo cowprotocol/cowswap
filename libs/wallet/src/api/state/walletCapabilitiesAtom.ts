@@ -5,7 +5,7 @@ import { logWallet } from '@cowprotocol/common-utils'
 import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
-import { getCapabilities } from 'viem/actions'
+import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
 
 import { wagmiConfig } from '../../wagmi/config'
 import {
@@ -16,8 +16,6 @@ import {
   isSafeWalletAtom,
 } from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
-
-import type { GetCapabilitiesReturnType } from 'viem/actions/wallet/getCapabilities'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
 

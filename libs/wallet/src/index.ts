@@ -51,7 +51,6 @@ export { Web3Provider } from './wagmi/Web3Provider'
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
 export {
-  resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedLoadableAtom,
