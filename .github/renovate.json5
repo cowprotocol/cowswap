@@ -2,7 +2,7 @@
 // easier to maintain.
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  // Disable every built-in manager (npm, dockerfile, ...) except github-actions.
+  // Disable every built-in manager (dockerfile, ...) except github-actions and npm (will use pnpm).
   enabledManagers: ["github-actions", "npm"],
   // PR titles use Conventional Commits: `deps(<action>): ...`
   semanticCommits: "enabled",
