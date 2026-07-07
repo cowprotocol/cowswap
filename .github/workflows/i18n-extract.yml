@@ -50,7 +50,7 @@ jobs:
         id: changes
         run: |
           if git diff --quiet -- 'apps/cowswap-frontend/src/locales/*.po'; then
-            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
