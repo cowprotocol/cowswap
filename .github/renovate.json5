@@ -2,8 +2,8 @@
 // easier to maintain.
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  // Disable every built-in manager (npm, dockerfile, ...) except github-actions.
-  enabledManagers: ["github-actions"],
+  // Disable every built-in manager (dockerfile, ...) except github-actions and npm (will use pnpm).
+  enabledManagers: ["github-actions", "npm"],
   // PR titles use Conventional Commits: `deps(<action>): ...`
   semanticCommits: "enabled",
   semanticCommitType: "deps",
@@ -15,7 +15,8 @@
     // When both major and minor releases exist, propose only the latest bump
     // (typically major) instead of a separate minor PR.
     {
-      matchManagers: ["github-actions"],
+      // Note that npm is used for pnpm as well, there's no specific pnpm value for matchManagers.
+      matchManagers: ["github-actions", "npm"],
       schedule: ["on monday"],
       minimumReleaseAge: "14 days",
       // Track upgrades by semver tag, but pin the resolved version to its full
