@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/core-v3.5.0...core-v3.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/core-v3.4.0...core-v3.5.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/core-v3.3.0...core-v3.4.0) (2026-06-08)
 
 ### Minor Changes

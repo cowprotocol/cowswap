@@ -33,7 +33,7 @@ export type CurrencySelectionCallback = (
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
-export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
+export function useNavigateOnCurrencySelection(enableSellEqBuy = false): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
   const navigate = useTradeNavigate()
@@ -107,21 +107,21 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       if (!isOutputCurrencyBridgeSupported) delete searchParams?.targetChainId
       if (shouldResetBuyOrder) searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
 
-      const currencyIds = areCurrenciesTheSame
-        ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
-        : {
-            inputCurrencyId: targetInputCurrencyId,
-            outputCurrencyId: isBridgeTrade && !isOutputCurrencyBridgeSupported ? null : targetOutputCurrencyId,
-          }
+      const currencyIds =
+        areCurrenciesTheSame && !enableSellEqBuy
+          ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
+          : {
+              inputCurrencyId: targetInputCurrencyId,
+              outputCurrencyId: isBridgeTrade && !isOutputCurrencyBridgeSupported ? null : targetOutputCurrencyId,
+            }
       const nextChainId = isInputField ? targetChainId : chainId
-      const nextState: Partial<ExtendedTradeRawState> = {
+
+      // Apply next state to callback so caller can merge amount and update once (avoids glitch from URL sync effect applying currencies in a second render).
+      stateUpdateCallback?.({
         chainId: nextChainId ?? null,
         ...currencyIds,
         targetChainId: searchParams?.targetChainId ?? null,
-      }
-
-      // Apply next state to callback so caller can merge amount and update once (avoids glitch from URL sync effect applying currencies in a second render).
-      stateUpdateCallback?.(nextState)
+      })
 
       navigate(nextChainId, currencyIds, searchParams)
     },
@@ -133,6 +133,7 @@ export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
       outputCurrency,
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
+      enableSellEqBuy,
     ],
   )
 }

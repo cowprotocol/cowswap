@@ -1,0 +1,61 @@
+import { isDev, isLocalHost, isVercel } from '../env/env.constants'
+
+const vercelWidgetConfiguratorPrefix = 'widget-configurator-git-'
+const cfPagesPreviewSuffix = `.swap-dev-5u6.pages.dev`
+const cfPagesPreviewSubdomainMaxLength = 28
+const cfPagesPreviewSubdomainFallback = 'preview'
+const vercelPreviewHashSuffix = /-[a-f0-9]{6}$/
+
+export function branchNameToCfPagesSubdomain(branchName: string): string {
+  const subdomain = branchName
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .slice(0, cfPagesPreviewSubdomainMaxLength)
+    .replace(/^-+|-+$/g, '')
+
+  return subdomain || cfPagesPreviewSubdomainFallback
+}
+
+export function vercelPreviewSlugToCfPagesSubdomain(
+  branchSlug: string,
+  branchName = process.env.VERCEL_GIT_COMMIT_REF,
+): string {
+  const branch = branchName || branchSlug.replace(vercelPreviewHashSuffix, '')
+
+  return branchNameToCfPagesSubdomain(branch)
+}
+
+/** Used by the configurator preview and as the default `baseUrl` in built params. */
+export const CONFIGURATOR_DEFAULT_WIDGET_BASE_URL = getBaseUrl()
+
+export function getBaseUrl(): string {
+  const localStorageOverride = localStorage.getItem('WIDGET_BASE_URL')
+
+  if (localStorageOverride) return localStorageOverride
+
+  if (typeof window === 'undefined' || !window) return ''
+
+  if (isLocalHost) return 'http://localhost:3000'
+
+  if (isDev) return 'https://dev.swap.cow.fi'
+
+  if (isVercel) {
+    const prKey = window.location.hostname.replace(vercelWidgetConfiguratorPrefix, '')
+
+    return `https://${vercelPreviewSlugToCfPagesSubdomain(prKey)}${cfPagesPreviewSuffix}`
+  }
+
+  return 'https://swap.cow.fi'
+}
+
+export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' | 'Unknown' {
+  if (/^https?:\/\/(localhost|127\.0\.0\.1|::1|\.localhost):\d+/.test(url)) return 'Local'
+
+  if (url.includes(cfPagesPreviewSuffix)) return 'Preview'
+
+  if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'Dev'
+
+  if (url.startsWith('https://swap.cow.fi') || url.startsWith('https://widget.cow.fi')) return 'Production'
+
+  return 'Unknown'
+}

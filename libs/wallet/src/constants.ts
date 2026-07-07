@@ -5,9 +5,6 @@ import type { CaipNetworkId } from '@reown/appkit'
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
 
-/** SessionStorage key: set on user disconnect so InjectedBrowserAutoConnect does not reopen the wallet (e.g. Rabby). */
-export const USER_DISCONNECTED_SESSION_KEY = 'cowswap:userDisconnected:v0'
-
 export const WC_DISABLED_TEXT =
   'Wallet-connect based wallet is already in use. Please disconnect it to connect to this wallet.'
 

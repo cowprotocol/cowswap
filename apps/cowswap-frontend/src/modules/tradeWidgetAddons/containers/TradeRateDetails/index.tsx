@@ -134,7 +134,8 @@ function useNetworkFeeAmount(): CurrencyAmount<Currency> | null {
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
-  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
+  const errorData = tradeQuote?.error as QuoteApiError<{ fee_amount: string }> | undefined
+  const costsExceedFeeRaw = errorData instanceof QuoteApiError ? errorData.data?.fee_amount : undefined
 
   return useMemo(() => {
     if (!costsExceedFeeRaw || !inputCurrency) return null

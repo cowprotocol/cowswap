@@ -132,4 +132,13 @@ export class Fraction {
   get asFraction(): Fraction {
     return new Fraction(this.numerator, this.denominator)
   }
+
+  // Called by JSON.stringify. Native bigint throws when serialized directly,
+  // so we emit string representations that can be parsed back via `new Fraction(n, d)`.
+  toJSON(): { numerator: string; denominator: string } {
+    return {
+      numerator: this.numerator.toString(),
+      denominator: this.denominator.toString(),
+    }
+  }
 }

@@ -22,9 +22,7 @@ import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
-import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
-import { useWalletClient } from 'wagmi'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
@@ -32,7 +30,6 @@ import { PageTitle } from 'modules/application'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 import {
   AccountHeading,
@@ -50,14 +47,8 @@ import {
 } from './styled'
 
 import Delegate from '../Delegate'
-import { CardsLoader } from '../styled'
-
-const TokensLoader = styled(CardsLoader)`
-  min-height: 500px;
-`
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
-type WalletClient = ReturnType<typeof useWalletClient>['data']
 
 enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -87,7 +78,6 @@ export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
   const { chainId, account } = useWalletInfo()
-  const { data: walletClient } = useWalletClient()
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
 
@@ -132,9 +122,6 @@ export default function TokensOverview(): ReactNode {
           <Trans>Deprecated network</Trans>
         ) : (
           <TokensTableContent
-            account={account}
-            walletClient={walletClient}
-            darkMode={theme.darkMode}
             selectedView={selectedView}
             formattedTokens={formattedTokens}
             favoriteTokens={favoriteTokens}
@@ -233,9 +220,6 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
 }
 
 interface TokensTableContentProps {
-  account: string | undefined
-  walletClient: WalletClient
-  darkMode: boolean
   selectedView: PageViewKeys
   formattedTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
@@ -250,9 +234,6 @@ interface TokensTableContentProps {
 
 function TokensTableContent(props: TokensTableContentProps): ReactNode {
   const {
-    account,
-    walletClient,
-    darkMode,
     selectedView,
     formattedTokens,
     favoriteTokens,
@@ -267,14 +248,8 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
 
   const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
 
-  if (account && !walletClient) {
-    return (
-      <TokensLoader>
-        <CowLoadingIcon size={120} isDarkMode={darkMode} />
-      </TokensLoader>
-    )
-  }
-
+  // This is a read-only balance view. Do not block rendering on WalletClient here: MetaMask iOS can leave
+  // wagmi wallet-client requests pending after reconnect while balances are still available from state.
   return (
     <TokenTable
       page={page}

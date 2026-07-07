@@ -7,13 +7,15 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BlockNumberUpdater } from 'entities/blockchain'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
@@ -21,7 +23,7 @@ import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'mo
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
-import { CowEventsUpdater, InjectedWidgetUpdater, WidgetStandaloneModeUpdater } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import {
   OrderProgressEventsUpdater,
@@ -69,11 +71,13 @@ export function Updaters(): ReactNode {
   const { chainId: sourceChainId } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const balancesContext = useBalancesContext()
+  const { standaloneMode } = useInjectedWidgetParams()
   const balancesAccount = balancesContext.account || account
 
   return (
     <>
       <CowSdkUpdater />
+      <BlockNumberUpdater />
       <FeatureFlagsUpdater />
       <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
@@ -94,7 +98,8 @@ export function Updaters(): ReactNode {
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
-      <WidgetStandaloneModeUpdater />
+      <WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />
+      <WidgetSafeApp />
       <CowEventsUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />

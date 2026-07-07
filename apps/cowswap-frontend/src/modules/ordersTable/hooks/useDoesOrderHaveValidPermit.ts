@@ -34,9 +34,9 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   const checkPermit = isPermitValid(permit, chainId, account) && account && publicClient && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
-    checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
-    async ([account, chainId]) => {
-      if (!permit || !order || !account || !publicClient || !chainId || !tokenPermitInfo) {
+    checkPermit ? [account, chainId, publicClient, walletClient, order?.id, tradeType, permit] : null,
+    async ([account, chainId, publicClient, walletClient]) => {
+      if (!permit || !order || !account || !publicClient || !walletClient || !chainId || !tokenPermitInfo) {
         return undefined
       }
 

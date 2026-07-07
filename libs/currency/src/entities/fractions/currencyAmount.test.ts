@@ -229,4 +229,43 @@ describe('CurrencyAmount', () => {
       expect(amount.toExact()).toEqual('0.000000000000025')
     })
   })
+
+  describe('#toJSON', () => {
+    it('includes numerator, denominator, and currency', () => {
+      const token = new Token(1, ADDRESS_ONE, 18, 'TEST', 'Test Token')
+      const amount = CurrencyAmount.fromRawAmount(token, 100)
+      const json = amount.toJSON()
+      expect(json.numerator).toBe('100')
+      expect(json.denominator).toBe('1')
+      expect(json.currency).toBe(token)
+    })
+
+    it('JSON.stringify produces a plain object that survives JSON.parse (no bigint throw)', () => {
+      const token = new Token(1, ADDRESS_ONE, 18, 'TEST', 'Test Token')
+      const amount = CurrencyAmount.fromRawAmount(token, 100)
+      const parsed = JSON.parse(JSON.stringify(amount))
+      expect(parsed.numerator).toBe('100')
+      expect(parsed.denominator).toBe('1')
+      expect(parsed.currency.chainId).toBe(1)
+      expect(parsed.currency.address).toBe(ADDRESS_ONE)
+      expect(parsed.currency.decimals).toBe(18)
+      expect(parsed.currency.symbol).toBe('TEST')
+      expect(parsed.currency.name).toBe('Test Token')
+    })
+
+    it('round-trips via fromFractionalAmount preserving quotient', () => {
+      const token = new Token(1, ADDRESS_ONE, 18)
+      const original = CurrencyAmount.fromRawAmount(token, MAX_UINT256)
+      const parsed = JSON.parse(JSON.stringify(original)) as { numerator: string; denominator: string }
+      const restored = CurrencyAmount.fromFractionalAmount(token, parsed.numerator, parsed.denominator)
+      expect(restored.quotient).toEqual(MAX_UINT256)
+    })
+
+    it('preserves native currency identity on round-trip', () => {
+      const amount = CurrencyAmount.fromRawAmount(mockNativeToken, 100)
+      const parsed = JSON.parse(JSON.stringify(amount))
+      expect(parsed.currency.chainId).toBe(mockNativeToken.chainId)
+      expect(parsed.currency.decimals).toBe(mockNativeToken.decimals)
+    })
+  })
 })

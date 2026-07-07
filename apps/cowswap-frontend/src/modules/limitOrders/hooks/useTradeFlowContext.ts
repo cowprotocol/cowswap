@@ -42,6 +42,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const amountToApprove = useGetAmountToSignApprove()
+  const permitAmountToSign = amountToApprove ? BigInt(amountToApprove.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(amountToApprove || undefined)
   const generatePermitHook = useGeneratePermitHook()
@@ -84,6 +85,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
+      permitAmountToSign,
       getCachedPermit,
       quoteState,
       postOrderParams: {
@@ -127,6 +129,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     enoughAllowance,
     permitInfo,
     generatePermitHook,
+    permitAmountToSign,
     getCachedPermit,
     quoteState,
     sellToken,

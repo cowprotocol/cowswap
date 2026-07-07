@@ -1,0 +1,21 @@
+diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
+index 79697e342068039131b11f6f47d97702e28c9ff2..0fe9085611f5d0d446fe7803462226f6a13c64fe 100644
+--- a/dist/esm/src/client.js
++++ b/dist/esm/src/client.js
+@@ -520,13 +524,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+                         chainId,
+                         token: params.tokens?.[caipNetwork.caipNetworkId]?.address
+                     });
++                    const formatted = balance.formatted ?? formatUnits(balance.value, balance.decimals);
+                     StorageUtil.updateNativeBalanceCache({
+                         caipAddress,
+-                        balance: balance.formatted,
++                        balance: formatted,
+                         symbol: balance.symbol,
+                         timestamp: Date.now()
+                     });
+-                    resolve({ balance: balance.formatted, symbol: balance.symbol });
++                    resolve({ balance: formatted, symbol: balance.symbol });
+                 }
+                 catch (error) {
+                     console.warn('Appkit:WagmiAdapter:getBalance - Error getting balance', error);

@@ -25,6 +25,7 @@ export interface TradeFlowContext {
   allowsOffchainSigning: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  permitAmountToSign?: bigint
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
 }
