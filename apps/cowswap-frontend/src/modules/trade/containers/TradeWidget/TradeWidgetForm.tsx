@@ -51,6 +51,8 @@ import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
+const noop: () => void = () => void 0
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const scrollToMyOrders = () => {
@@ -66,7 +68,7 @@ const scrollToMyOrders = () => {
 // eslint-disable-next-line max-lines-per-function, complexity
 export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, hideOrdersTable, cardStyle } = useInjectedWidgetParams()
+  const { standaloneMode, hideOrdersTable, cardStyle, disableSwitchingTokens } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
@@ -223,6 +225,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const { t } = useLingui()
 
+  const disableTokensSwitching =
+    shouldLockForAlternativeOrder ||
+    isOutputTokenUnsupported ||
+    isProviderNetworkUnsupported ||
+    isProviderNetworkDeprecated ||
+    disableSwitchingTokens === true
+
   return (
     <>
       <styledEl.ContainerBox id="card" style={isInjectedWidgetMode ? (cardStyle as CSSProperties) : undefined}>
@@ -276,18 +285,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                   <CurrencyArrowSeparator
                     isCollapsed={compactView}
                     hasSeparatorLine={!compactView}
-                    onSwitchTokens={
-                      isProviderNetworkUnsupported || isProviderNetworkDeprecated
-                        ? () => void 0
-                        : throttledOnSwitchTokens
-                    }
+                    onSwitchTokens={disableTokensSwitching ? noop : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={
-                      shouldLockForAlternativeOrder ||
-                      isOutputTokenUnsupported ||
-                      isProviderNetworkUnsupported ||
-                      isProviderNetworkDeprecated
-                    }
+                    disabled={disableTokensSwitching}
                     isDarkMode={darkMode}
                   />
                 </styledEl.CurrencySeparatorBox>

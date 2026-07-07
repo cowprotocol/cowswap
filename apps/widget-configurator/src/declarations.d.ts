@@ -1,6 +1,6 @@
 declare module '*.woff2'
 
-declare module 'widget-react-v3.0.5' {
+declare module 'widget-react-v3.2.0' {
   import type { ComponentType } from 'react'
 
   import type { CowSwapWidgetProps } from '@cowprotocol/widget-lib'

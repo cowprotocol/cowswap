@@ -1,4 +1,4 @@
-import { isAddress, shortenAddress } from './legacyAddressUtils'
+import { getBlockExplorerUrl, isAddress, shortenAddress } from './legacyAddressUtils'
 
 describe('utils', () => {
   describe('#isAddress', () => {
@@ -31,6 +31,12 @@ describe('utils', () => {
 
     it('renders checksummed address', () => {
       expect(shortenAddress('0x2E1b342132A67Ea578e4E3B814bae2107dc254CC'.toLowerCase())).toBe('0x2E1b...54CC')
+    })
+  })
+
+  describe('#getBlockExplorerUrl', () => {
+    it('does not introduce double slashes for bare explorer origins', () => {
+      expect(getBlockExplorerUrl(1, 'transaction', 'abc', 'https://etherscan.io')).toBe('https://etherscan.io/tx/abc')
     })
   })
 })

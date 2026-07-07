@@ -30,6 +30,11 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         onChange={(enabled) => onChange('disablePostTradeTips', !enabled)}
       />
       <SwitchInput
+        checked={!values.disableSwitchingTokens}
+        label="Allow switching tokens places by clicking to the arrow between them"
+        onChange={(enabled) => onChange('disableSwitchingTokens', !enabled)}
+      />
+      <SwitchInput
         checked={!values.disableTokenImport}
         label="Allow custom token imports"
         onChange={(enabled) => onChange('disableTokenImport', !enabled)}

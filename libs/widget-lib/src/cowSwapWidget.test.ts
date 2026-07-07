@@ -23,14 +23,14 @@ describe('createCowSwapWidget', () => {
     jest.restoreAllMocks()
   })
 
-  it('updates iframe width and default height when params change', () => {
+  it('updates container width and default height when params change', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
     const handler = createCowSwapWidget(container, {
       params: {
         appCode: 'widget-test',
-        iframeStyle: {
+        rootStyle: {
           width: '100%',
           height: '640px',
           backgroundColor: 'red',
@@ -40,16 +40,14 @@ describe('createCowSwapWidget', () => {
     })
     widgetHandlers.push(handler)
 
-    const iframe = getIframe(container)
-
-    expect(iframe.style.width).toBe('100%')
-    expect(iframe.style.height).toBe('640px')
-    expect(iframe.style.backgroundColor).toBe('red')
-    expect(iframe.style.borderRadius).toBe('1.6rem')
+    expect(container.style.width).toBe('100%')
+    expect(container.style.height).toBe('640px')
+    expect(container.style.backgroundColor).toBe('red')
+    expect(container.style.borderRadius).toBe('1.6rem')
 
     handler.updateParams({
       appCode: 'widget-test',
-      iframeStyle: {
+      rootStyle: {
         width: '320px',
         height: '432px',
         backgroundColor: 'transparent',
@@ -57,13 +55,13 @@ describe('createCowSwapWidget', () => {
       },
     })
 
-    expect(iframe.style.width).toBe('320px')
-    expect(iframe.style.height).toBe('432px')
-    expect(iframe.style.backgroundColor).toBe('transparent')
-    expect(iframe.style.borderRadius).toBe('0')
+    expect(container.style.width).toBe('320px')
+    expect(container.style.height).toBe('432px')
+    expect(container.style.backgroundColor).toBe('transparent')
+    expect(container.style.borderRadius).toBe('0')
   })
 
-  it('applies iframeStyle to the iframe', () => {
+  it('applies rootStyle to the container and makes the iframe fill it', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
@@ -71,16 +69,18 @@ describe('createCowSwapWidget', () => {
       createCowSwapWidget(container, {
         params: {
           appCode: 'widget-test',
-          iframeStyle: { backgroundColor: 'blue', margin: '12px', border: '2px solid green' },
+          rootStyle: { backgroundColor: 'blue', margin: '12px', border: '2px solid green' },
         },
       }),
     )
 
-    const iframe = getIframe(container)
+    expect(container.style.backgroundColor).toBe('blue')
+    expect(container.style.margin).toBe('12px')
+    expect(container.style.border).toBe('2px solid green')
 
-    expect(iframe.style.backgroundColor).toBe('blue')
-    expect(iframe.style.margin).toBe('12px')
-    expect(iframe.style.border).toBe('2px solid green')
+    const iframe = getIframe(container)
+    expect(iframe.style.width).toBe('100%')
+    expect(iframe.style.height).toBe('100%')
   })
 
   it('updates the dynamic height css variable on resize events', () => {
@@ -90,7 +90,7 @@ describe('createCowSwapWidget', () => {
     const handler = createCowSwapWidget(container, {
       params: {
         appCode: 'widget-test',
-        iframeStyle: { height: '640px' },
+        rootStyle: { height: '640px' },
       },
     })
     widgetHandlers.push(handler)
@@ -98,20 +98,20 @@ describe('createCowSwapWidget', () => {
     const iframe = getIframe(container)
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 400 })
-    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('400px')
+    expect(container.style.getPropertyValue('--dynamicHeight')).toBe('400px')
 
     handler.updateParams({
       appCode: 'widget-test',
-      iframeStyle: { height: '432px', maxHeight: '350px' },
+      rootStyle: { height: '432px', maxHeight: '350px' },
     })
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 500 })
-    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('500px')
-    expect(iframe.style.height).toBe('432px')
-    expect(iframe.style.maxHeight).toBe('350px')
+    expect(container.style.getPropertyValue('--dynamicHeight')).toBe('500px')
+    expect(container.style.height).toBe('432px')
+    expect(container.style.maxHeight).toBe('350px')
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.SET_FULL_HEIGHT, {})
-    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('100dvh')
+    expect(container.style.getPropertyValue('--dynamicHeight')).toBe('100dvh')
   })
 
   it('applies deprecated width and height on create and updateParams', () => {
@@ -128,10 +128,8 @@ describe('createCowSwapWidget', () => {
     })
     widgetHandlers.push(handler)
 
-    const iframe = getIframe(container)
-
-    expect(iframe.width).toBe('100%')
-    expect(iframe.height).toBe('640px')
+    expect(container.style.width).toBe('100%')
+    expect(container.style.height).toBe('640px')
 
     handler.updateParams({
       appCode: 'widget-test',
@@ -139,19 +137,19 @@ describe('createCowSwapWidget', () => {
       height: '432px',
     })
 
-    expect(iframe.width).toBe('320px')
-    expect(iframe.height).toBe('432px')
+    expect(container.style.width).toBe('320px')
+    expect(container.style.height).toBe('432px')
     warnSpy.mockRestore()
   })
 
-  it('applies deprecated maxHeight on the iframe without clamping dynamic height', () => {
+  it('applies deprecated maxHeight on the container without clamping dynamic height', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
 
     const handler = createCowSwapWidget(container, {
       params: {
         appCode: 'widget-test',
-        iframeStyle: { height: 'var(--dynamicHeight)' },
+        rootStyle: { height: 'var(--dynamicHeight)' },
         maxHeight: 400,
       },
     })
@@ -161,11 +159,11 @@ describe('createCowSwapWidget', () => {
 
     emitWidgetEvent(iframe, WidgetMethodsEmit.UPDATE_HEIGHT, { height: 500 })
 
-    expect(iframe.style.getPropertyValue('--dynamicHeight')).toBe('500px')
-    expect(iframe.style.maxHeight).toBe('400px')
+    expect(container.style.getPropertyValue('--dynamicHeight')).toBe('500px')
+    expect(container.style.maxHeight).toBe('400px')
   })
 
-  it('warns when deprecated width conflicts with iframeStyle.width', () => {
+  it('warns when deprecated width conflicts with rootStyle.width', () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => void 0)
     const container = document.createElement('div')
     document.body.appendChild(container)
@@ -175,17 +173,15 @@ describe('createCowSwapWidget', () => {
         params: {
           appCode: 'widget-test',
           width: '100%',
-          iframeStyle: { width: '320px' },
+          rootStyle: { width: '320px' },
         },
       }),
     )
 
-    const iframe = getIframe(container)
-
     expect(warnSpy).toHaveBeenCalledWith(
-      'Both params.width and iframeStyle.width have been set. params.width will be ignored.',
+      'Both params.width and rootStyle.width have been set. params.width will be ignored.',
     )
-    expect(iframe.style.width).toBe('320px')
+    expect(container.style.width).toBe('320px')
 
     warnSpy.mockRestore()
   })
