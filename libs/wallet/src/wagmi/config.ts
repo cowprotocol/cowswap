@@ -92,7 +92,7 @@ const reownAppKit = createAppKit({
   // embedded contexts.
   enableEIP6963: !isWidget,
   enableInjected: false,
-  enableReconnect: isMobile || isWidget || hasRecentConnector,
+  enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
