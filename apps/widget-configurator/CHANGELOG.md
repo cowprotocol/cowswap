@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.8.1...widget-configurator-v3.9.0) (2026-06-25)
+
+### Minor Changes
+
+- feat(widget): control tokens switching (#7717)
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix(widget): fix connect wallet btn missing in dapp mode (#7747)
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.4.0
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/widget-react@3.2.0
+  - @cowprotocol/analytics@3.5.2
+
 ## [3.8.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.8.0...widget-configurator-v3.8.1) (2026-06-23)
 
 ### Patch Changes

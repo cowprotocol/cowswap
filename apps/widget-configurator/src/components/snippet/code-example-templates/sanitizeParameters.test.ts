@@ -95,16 +95,16 @@ describe('snippet export', () => {
     expect(snippet).not.toContain('"limit"')
   })
 
-  it('omits deprecated top-level width when iframeStyle carries sizing', () => {
+  it('omits deprecated top-level width when rootStyle carries sizing', () => {
     const params: CowSwapWidgetParams = {
       appCode: 'test-app',
       width: '100%',
-      iframeStyle: { width: '100%', height: 'var(--dynamicHeight)' },
+      rootStyle: { width: '100%', height: 'var(--dynamicHeight)' },
     }
     const snippet = formatParameters(params, 0, false, DEFAULT_DARK_PALETTE)
 
     expect(snippet).not.toMatch(/^  "width":/m)
-    expect(snippet).toContain('"iframeStyle"')
+    expect(snippet).toContain('"rootStyle"')
     expect(snippet).toContain('"width": "100%"')
     expect((snippet.match(/"width": "100%"/g) ?? []).length).toBe(1)
   })

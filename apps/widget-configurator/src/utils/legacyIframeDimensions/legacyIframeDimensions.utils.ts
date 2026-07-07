@@ -20,15 +20,15 @@ function asPixels(value: CSS.Properties['maxHeight']): number | undefined {
 }
 
 /**
- * Maps iframeStyle sizing into deprecated top-level params for widget-lib releases
- * that predate `iframeStyle` (they only read `width` / `height` / `maxHeight`).
+ * Maps rootStyle sizing into deprecated top-level params for widget-lib releases
+ * that predate `rootStyle` (they only read `width` / `height` / `maxHeight`).
  */
 export function getLegacyIframeDimensionParams(
-  iframeStyle: CSS.Properties,
+  rootStyle: CSS.Properties,
 ): Pick<CowSwapWidgetParams, 'width' | 'height' | 'maxHeight'> {
   return {
-    width: asCssDimension(iframeStyle.width),
-    height: asCssDimension(iframeStyle.height),
-    maxHeight: asPixels(iframeStyle.maxHeight),
+    width: asCssDimension(rootStyle.width),
+    height: asCssDimension(rootStyle.height),
+    maxHeight: asPixels(rootStyle.maxHeight),
   }
 }
