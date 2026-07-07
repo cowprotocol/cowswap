@@ -1,5 +1,7 @@
-import { log } from '@cowprotocol/common-utils'
+import { createCowLogger } from '@cowprotocol/common-utils'
+
+const logger = createCowLogger('Affiliate')
 
 export function logAffiliate(...args: unknown[]): void {
-  log('Affiliate', undefined, ...args)
+  logger.debug(...args)
 }
