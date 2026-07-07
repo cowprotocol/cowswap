@@ -250,10 +250,6 @@ msgstr "Network costs (est.)"
 msgid "The account address which will/did receive the bought amount."
 msgstr "The account address which will/did receive the bought amount."
 
-#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-#~ msgid "Selected token: {sym}"
-#~ msgstr "Selected token: {sym}"
-
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #~ msgid "Volume"
 #~ msgstr "Volume"
@@ -5288,6 +5284,11 @@ msgstr "The token pair is constrained"
 msgid "Created"
 msgstr "Created"
 
+#. placeholder {0}: currency?.symbol || ''
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+msgid "Selected token: {0}"
+msgstr "Selected token: {0}"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Wallet signer unavailable."
 #~ msgstr "Wallet signer unavailable."
@@ -5990,8 +5991,8 @@ msgid "Order Expired"
 msgstr "Order Expired"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-msgid "Selected token:"
-msgstr "Selected token:"
+#~ msgid "Selected token:"
+#~ msgstr "Selected token:"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"
