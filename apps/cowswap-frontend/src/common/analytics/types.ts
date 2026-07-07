@@ -18,6 +18,7 @@ export enum CowSwapAnalyticsCategory {
   SURPLUS_MODAL = 'Surplus Modal',
   COWSWAP = 'CoWSwap',
   LIMIT_ORDER_SETTINGS = 'Limit Order Settings',
+  CAPTCHA = 'Captcha',
 
   // UI Categories
   WALLET = 'Wallet',
