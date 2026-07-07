@@ -10,7 +10,7 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './TwapStatusAndToggle.styled'
 
-import { WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import { FallbackHandlerWarningTooltip, WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 
 import type { OrderParams } from '../../utils/getOrderParams'
@@ -56,14 +56,25 @@ export function TwapStatusAndToggle({
 
   const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
+  // A still-open parent or part carrying `isUnfillable` is blocked by a reset Safe ComposableCoW
+  // fallback handler (see issue #5426). Surface the same danger design on the parent status badge
+  // so it matches the reason shown in the Fills-at column and on the individual parts.
+  const isFallbackHandlerUnfillable = (order: ParsedOrder): boolean =>
+    order.isUnfillable === true && (order.status === OrderStatus.PENDING || order.status === OrderStatus.SCHEDULED)
+
+  const isFallbackHandlerBlocked =
+    isFallbackHandlerUnfillable(parent) || childOrders.some((child) => isFallbackHandlerUnfillable(child.order))
+
   return (
     <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={!!warningChild}
+        withWarning={!!warningChild || isFallbackHandlerBlocked}
         WarningTooltip={
-          warningChild ? (
+          isFallbackHandlerBlocked ? (
+            <FallbackHandlerWarningTooltip />
+          ) : warningChild ? (
             <WarningTooltip
               hasEnoughBalance={!childWithBalanceWarning}
               hasEnoughAllowance={!childWithAllowanceWarning}

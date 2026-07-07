@@ -14,16 +14,13 @@ import { Nullish } from 'types'
 
 import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 
+import { UPDATE_FALLBACK_HANDLER_WARNING } from './orderEstimatedExecutionPrice.constants'
 import * as styledEl from './OrderEstimatedExecutionPrice.styled'
 
 import * as orderRowEl from '../../containers/OrderRow/OrderRow.styled'
 import * as warningTooltopEl from '../OrdersTable/Row/WarningTooltip/WarningTooltip.styled'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
-
-// warningText flag (not internationalized on purpose, matches the other flags): an open TWAP order
-// whose Safe ComposableCoW fallback handler was reset can no longer be created (see issue #5426).
-export const UPDATE_FALLBACK_HANDLER_WARNING = 'Update fallback handler'
 
 export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   amountDifference?: CurrencyAmount<Currency>

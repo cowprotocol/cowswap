@@ -4,7 +4,8 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { OrderEstimatedExecutionPrice, UPDATE_FALLBACK_HANDLER_WARNING } from './OrderEstimatedExecutionPrice.pure'
+import { UPDATE_FALLBACK_HANDLER_WARNING } from './orderEstimatedExecutionPrice.constants'
+import { OrderEstimatedExecutionPrice } from './OrderEstimatedExecutionPrice.pure'
 
 jest.mock('react-inlinesvg', () => {
   return function MockSvg() {

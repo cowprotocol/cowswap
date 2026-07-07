@@ -9,10 +9,8 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 // TODO: make CancelledDisplay, FilledDisplay, ExpiredDisplay common
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
-import {
-  OrderEstimatedExecutionPrice,
-  UPDATE_FALLBACK_HANDLER_WARNING,
-} from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
+import { UPDATE_FALLBACK_HANDLER_WARNING } from '../OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
+import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 
 export interface FillsAtStatusProps {
   childOrders?: ParsedOrder[]
