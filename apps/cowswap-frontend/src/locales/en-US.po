@@ -250,10 +250,6 @@ msgstr "Network costs (est.)"
 msgid "The account address which will/did receive the bought amount."
 msgstr "The account address which will/did receive the bought amount."
 
-#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-#~ msgid "Selected token: {sym}"
-#~ msgstr "Selected token: {sym}"
-
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #~ msgid "Volume"
 #~ msgstr "Volume"

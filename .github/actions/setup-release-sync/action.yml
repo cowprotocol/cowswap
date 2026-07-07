@@ -54,6 +54,7 @@ runs:
       run: echo "user-id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
       env:
         APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        GH_TOKEN: ${{ github.token }}
 
     - name: Checkout code
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
