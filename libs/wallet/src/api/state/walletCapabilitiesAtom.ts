@@ -5,10 +5,10 @@ import { logWallet } from '@cowprotocol/common-utils'
 import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
-import { getIsWalletConnect } from 'src/wagmi/hooks/useIsWalletConnect'
 import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
 
 import { wagmiConfig } from '../../wagmi/config'
+import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
 import {
   isSafeAppAtom,
   isSafeViaWcAtom,
