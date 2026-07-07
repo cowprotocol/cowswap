@@ -5,6 +5,7 @@ import { logWallet } from '@cowprotocol/common-utils'
 import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
+import { getIsWalletConnect } from 'src/wagmi/hooks/useIsWalletConnect'
 import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
 
 import { wagmiConfig } from '../../wagmi/config'
@@ -15,6 +16,7 @@ import {
   isSmartContractWalletAtom,
   isSafeWalletAtom,
 } from '../../wagmi/state/walletMetadata.atoms'
+import { isEip1193Provider } from '../../wagmi/utils/isEip1193Provider.utils'
 import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
@@ -39,12 +41,16 @@ function getTimeoutPromise<T = WalletCapabilities | GetCapabilitiesReturnType>()
  */
 // eslint-disable-next-line complexity
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | null> => {
-  const { account, chainId } = get(walletInfoAtom)
+  const { account, chainId, provider, connector } = get(walletInfoAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
 
-  debugger
+  if (!account || !chainId || isSafeViaWc === null || !provider || !connector) return null
 
-  if (!account || !chainId || isSafeViaWc === null) return null
+  const isWalletConnect = getIsWalletConnect(connector)
+
+  console.log('isWalletConnect', isWalletConnect)
+
+  debugger
 
   try {
     const shouldSkipCapabilitiesCheck = !account || !chainId
@@ -55,15 +61,32 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 
     const allCapabilities = await getCapabilities(wagmiConfig.getClient({ chainId }), {
       account: account as `0x${string}`,
-      chainId,
+    }).catch((error) => {
+      console.error('Cannot fetchallCapabilities', error)
+      return {} as GetCapabilitiesReturnType
     })
 
     const capabilitiesForChain = await getCapabilities(wagmiConfig.getClient({ chainId }), {
       account: account as `0x${string}`,
       chainId,
+    }).catch((error) => {
+      console.error('Cannot fetch capabilitiesForChain', error)
+      return {} as GetCapabilitiesReturnType
     })
 
-    console.warn({ allCapabilities, capabilitiesForChain })
+    const legacyCapabilities = isEip1193Provider(provider)
+      ? await provider
+          .request({
+            method: 'wallet_getCapabilities',
+            params: [account],
+          })
+          .catch((error) => {
+            console.error('Cannot fetch legacyCapabilities', error)
+            return {} as GetCapabilitiesReturnType
+          })
+      : null
+
+    console.warn({ allCapabilities, capabilitiesForChain, legacyCapabilities })
 
     if (isSafeViaWc) {
       const getCapabilitiesPromise = getCapabilities(wagmiConfig.getClient({ chainId }), {
