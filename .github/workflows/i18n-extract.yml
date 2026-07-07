@@ -72,7 +72,6 @@ jobs:
         run: echo "user-id=$(gh api \"/users/${APP_SLUG}[bot]\" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Commit and push if changed
         if: steps.changes.outputs.has_changes == 'true'
