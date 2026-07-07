@@ -1,13 +1,9 @@
 import { createStore, type WritableAtom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
-import { Connector } from 'wagmi'
-
 import {
-  getShouldSkipCapabilitiesCheck,
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
@@ -23,10 +19,9 @@ import {
   isSmartContractWalletAtom,
 } from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
-import { ConnectionType } from '../types'
 
 /** Mocked module exports writable primitives; Jest widens atom types, so casts are required for store.set. */
-const writableIsSafeAppAtom = isSafeAppAtom as WritableAtom<boolean, [boolean], unknown>
+const writableIsSafeAppAtom = isSafeAppAtom as WritableAtom<boolean | null, [boolean | null], unknown>
 const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean | null, [boolean | null], unknown>
 const writableAccountTypeAtom = accountTypeAtom as WritableAtom<AccountType | null, [AccountType | null], unknown>
 const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as WritableAtom<
@@ -38,7 +33,6 @@ const writableIsSafeWalletAtom = isSafeWalletAtom as WritableAtom<boolean, [bool
 
 import type { WalletCapabilities } from './walletCapabilitiesAtom'
 import type { WalletInfo } from '../types'
-import type { EIP1193Provider } from 'viem'
 
 jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
   const jotai = require('jotai') as typeof import('jotai')
@@ -55,18 +49,15 @@ jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
 const MOCK_ACCOUNT = '0x1234567890123456789012345678901234567890' as const
 const MOCK_CHAIN_ID = SupportedChainId.MAINNET
 
-const mockIsMobile = jest.fn()
-const mockGetIsWalletConnect = jest.fn()
+const mockLogWalletWarn = jest.fn()
 const mockGetCapabilities = jest.fn()
 const mockWagmiConfigGetClient = jest.fn()
 
 jest.mock('@cowprotocol/common-utils', () => ({
-  ...jest.requireActual('@cowprotocol/common-utils'),
-  isMobile: () => mockIsMobile(),
-}))
-
-jest.mock('../../wagmi/hooks/useIsWalletConnect', () => ({
-  getIsWalletConnect: (...args: unknown[]) => mockGetIsWalletConnect(...args),
+  getCurrentChainIdFromUrl: () => 1,
+  logWallet: {
+    warn: (...args: unknown[]) => mockLogWalletWarn(...args),
+  },
 }))
 
 jest.mock('viem/actions', () => ({
@@ -79,35 +70,16 @@ jest.mock('../../wagmi/config', () => ({
   },
 }))
 
-function createMockConnector(getProviderImpl?: () => Promise<unknown>): WalletInfo['connector'] {
-  return {
-    type: ConnectionType.INJECTED,
-    getProvider: jest.fn().mockImplementation(getProviderImpl ?? (() => Promise.resolve({ request: jest.fn() }))),
-  } as unknown as WalletInfo['connector']
-}
-
-function createMockWalletProvider(): EIP1193Provider {
-  return {
-    request: jest.fn(),
-    on: jest.fn(),
-    removeListener: jest.fn(),
-  } as unknown as EIP1193Provider
-}
-
 function setWalletInfo(
   store: ReturnType<typeof createStore>,
   overrides: Partial<{
     account: string
     chainId: SupportedChainId
-    connector: NonNullable<WalletInfo['connector']>
-    provider: NonNullable<WalletInfo['provider']>
-  }>,
+  }> = {},
 ): void {
   store.set(walletInfoAtom, {
     chainId: overrides.chainId ?? MOCK_CHAIN_ID,
     account: overrides.account ?? MOCK_ACCOUNT,
-    connector: overrides.connector ?? createMockConnector(),
-    provider: overrides.provider ?? createMockWalletProvider(),
   })
 }
 
@@ -155,34 +127,14 @@ describe('resolveCapabilitiesForChain', () => {
 describe('walletCapabilitiesAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.mockReturnValue(false)
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
-  })
-
-  describe('getShouldSkipCapabilitiesCheck (widget meta info)', () => {
-    it('resolves false when WidgetEthereumProvider never sends meta (timeout)', async () => {
-      jest.useFakeTimers()
-      mockIsMobile.mockReturnValue(true)
-      mockGetIsWalletConnect.mockReturnValue(false)
-      const widgetProvider = new WidgetEthereumProvider({ eventSource: window, eventTarget: window })
-      const connector = createMockConnector(() => Promise.resolve(widgetProvider)) as Connector
-
-      const provider = (await connector.getProvider()) as NonNullable<WalletInfo['provider']>
-      const promise = getShouldSkipCapabilitiesCheck(connector, provider)
-      await jest.advanceTimersByTimeAsync(10_000)
-      const result = await promise
-
-      expect(result).toBe(false)
-      jest.useRealTimers()
-    })
   })
 
   it('returns null when isSafeViaWc is still loading', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, null)
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(walletCapabilitiesAtom)
 
@@ -190,54 +142,45 @@ describe('walletCapabilitiesAtom', () => {
     expect(mockGetCapabilities).not.toHaveBeenCalled()
   })
 
-  describe('walletInfoAtom state: missing account, chainId, or connector', () => {
+  describe('walletInfoAtom state: missing account or chainId', () => {
     it('returns null when account is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
-        connector: createMockConnector(),
       })
 
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toBeNull()
+      expect(mockGetCapabilities).not.toHaveBeenCalled()
     })
 
     it('returns null when chainId is missing', async () => {
       const store = createStore()
       store.set(walletInfoAtom, {
         account: MOCK_ACCOUNT,
-        connector: createMockConnector(),
       } as WalletInfo)
 
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toBeNull()
+      expect(mockGetCapabilities).not.toHaveBeenCalled()
     })
 
-    it('returns null when connector is missing', async () => {
+    it('fetches capabilities when only account and chainId are set', async () => {
+      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
+      mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: capabilities })
+
       const store = createStore()
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
         account: MOCK_ACCOUNT,
-      } as WalletInfo)
-
-      const result = await store.get(walletCapabilitiesAtom)
-
-      expect(result).toBeNull()
-    })
-
-    it('returns null when provider is missing', async () => {
-      const store = createStore()
-      store.set(walletInfoAtom, {
-        chainId: MOCK_CHAIN_ID,
-        account: MOCK_ACCOUNT,
-        connector: createMockConnector(),
       })
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toBeNull()
+      expect(result).toEqual(capabilities)
+      expect(mockGetCapabilities).toHaveBeenCalled()
     })
   })
 
@@ -247,7 +190,7 @@ describe('walletCapabilitiesAtom', () => {
       mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: capabilities })
 
       const store = createStore()
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
@@ -261,7 +204,7 @@ describe('walletCapabilitiesAtom', () => {
       mockGetCapabilities.mockResolvedValue({ '0x1': capabilities })
 
       const store = createStore()
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
@@ -274,7 +217,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const store = createStore()
       store.set(writableIsSafeViaWcAtom, false)
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
@@ -287,7 +230,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const store = createStore()
       store.set(writableIsSafeViaWcAtom, true)
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
@@ -298,7 +241,7 @@ describe('walletCapabilitiesAtom', () => {
       mockGetCapabilities.mockResolvedValue({})
 
       const store = createStore()
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
@@ -310,11 +253,28 @@ describe('walletCapabilitiesAtom', () => {
       mockWagmiConfigGetClient.mockReturnValue({})
 
       const store = createStore()
-      setWalletInfo(store, {})
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toBeNull()
+    })
+
+    it('returns null when getCapabilities does not settle before timeout', async () => {
+      jest.useFakeTimers()
+      mockGetCapabilities.mockImplementation(() => new Promise(() => undefined))
+
+      const store = createStore()
+      setWalletInfo(store)
+
+      const resultPromise = store.get(walletCapabilitiesAtom)
+      await jest.advanceTimersByTimeAsync(5_000)
+      const result = await resultPromise
+
+      expect(result).toBeNull()
+      expect(mockLogWalletWarn).toHaveBeenCalledWith(expect.stringContaining('Wallet capabilities loading timed out'))
+
+      jest.useRealTimers()
     })
   })
 })
@@ -322,8 +282,6 @@ describe('walletCapabilitiesAtom', () => {
 describe('isAtomicBatchSupportedAsyncAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.mockReturnValue(false)
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
@@ -342,7 +300,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     mockGetCapabilities.mockResolvedValue({})
 
     const store = createStore()
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -352,7 +310,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
   it('returns true when isSafeAppAtom is true', async () => {
     const store = createStore()
     store.set(writableIsSafeAppAtom, true)
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -363,7 +321,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -374,7 +332,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'ready' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -384,7 +342,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
   it('returns true when atomicBatch.supported is true', async () => {
     const store = createStore()
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomicBatch: { supported: true } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -395,7 +353,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({})
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -406,7 +364,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, false)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -417,7 +375,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     seedResolvedWalletMetadata(store, { accountType: AccountType.EOA, isSafeWallet: false })
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -429,7 +387,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     const store = createStore()
     seedResolvedWalletMetadata(store, { isSmartContractWallet: true, isSafeWallet: false })
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -442,7 +400,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     store.set(writableIsSmartContractWalletAtom, true)
     store.set(writableIsSafeWalletAtom, false)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -455,7 +413,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     store.set(writableAccountTypeAtom, AccountType.EIP7702EOA)
     store.set(writableIsSafeWalletAtom, false)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
@@ -467,8 +425,6 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
 describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.mockReturnValue(false)
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
@@ -482,7 +438,7 @@ describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', ()
     )
 
     const store = createStore()
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     const syncValue = store.get(isAtomicBatchSupportedAtom)
 
@@ -497,7 +453,7 @@ describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', ()
     store.set(writableIsSafeViaWcAtom, false)
     store.set(writableIsSafeAppAtom, false)
     mockGetCapabilities.mockRejectedValue(new Error('network error'))
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     store.get(isAtomicBatchSupportedLoadableAtom)
     const asyncResult = await store.get(isAtomicBatchSupportedAsyncAtom)
@@ -516,7 +472,7 @@ describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', ()
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ [MOCK_CHAIN_ID]: { atomic: { status: 'supported' } } })
-    setWalletInfo(store, {})
+    setWalletInfo(store)
 
     store.get(isAtomicBatchSupportedLoadableAtom)
     const asyncResult = await store.get(isAtomicBatchSupportedAsyncAtom)
