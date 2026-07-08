@@ -25,12 +25,8 @@ export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: Cancell
   })
 })
 
-export const removeOrdersToCancelAtom = atom(null, (get, set, ordersUids: string[]) => {
-  set(ordersToCancelAtom, () => {
-    const state = get(ordersToCancelAtom)
-
-    return state.filter((item) => !ordersUids.includes(item.id))
-  })
+export const removeOrdersToCancelAtom = atom(null, (_, set, ordersUids: string[]) => {
+  set(ordersToCancelAtom, (prev) => prev.filter((item) => !ordersUids.includes(item.id)))
 })
 
 // Reset ordersToCancelAtom every time the network, wallet address or orders table tab change (only while/when
