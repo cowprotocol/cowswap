@@ -99,13 +99,7 @@ function getAboutNavItem(): MenuItem {
         href: 'https://grants.cow.fi/',
         external: true,
       },
-      {
-        label: 'Bug Bounty',
-        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-        external: true,
-      },
       { label: 'Careers', href: '/careers' },
-      { label: 'Affiliate Program', href: '/affiliate-program' },
     ],
   }
 }
