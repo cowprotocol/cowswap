@@ -9,6 +9,7 @@ import {
   WIDGET_IFRAME_ID,
   WIDGET_IFRAME_REFERRER_POLICY,
   WIDGET_IFRAME_SANDBOX,
+  WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS,
 } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -278,7 +279,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 
   iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetUrl(params)
-  iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
+  iframe.setAttribute('sandbox', getIframeSandbox(params))
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
 
@@ -289,6 +290,10 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.style.display = 'block'
 
   return iframe
+}
+
+function getIframeSandbox(params: CowSwapWidgetParams): string {
+  return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
 }
 
 function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {

@@ -19,6 +19,13 @@ export const DEFAULT_WIDGET_PARAMS = {
 export const WIDGET_IFRAME_SANDBOX =
   'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox'
 
+/**
+ * Iframe sandbox allowlist for hosts that opt out of opening widget popups.
+ * Omitting allow-popups makes `disableWindowOpen` browser-enforced instead of
+ * only disabling the parent-window relay.
+ */
+export const WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS = 'allow-scripts allow-same-origin allow-forms'
+
 /** Limits referrer leakage when the widget is embedded on third-party origins. */
 export const WIDGET_IFRAME_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
