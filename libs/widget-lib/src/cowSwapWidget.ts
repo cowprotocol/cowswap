@@ -303,8 +303,17 @@ function reloadIframeOnSandboxChange(iframe: HTMLIFrameElement, params: CowSwapW
 
   if (iframe.getAttribute('sandbox') === sandbox) return false
 
+  const nextSrc = buildWidgetUrl(params)
+
+  iframe.addEventListener(
+    'load',
+    () => {
+      iframe.src = nextSrc
+    },
+    { once: true },
+  )
   iframe.setAttribute('sandbox', sandbox)
-  iframe.src = buildWidgetUrl(params)
+  iframe.src = 'about:blank'
 
   return true
 }

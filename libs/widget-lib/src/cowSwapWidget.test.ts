@@ -327,6 +327,12 @@ describe('createCowSwapWidget', () => {
     dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
 
     expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS)
+    expect(iframe.src).toBe('about:blank')
+
+    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow').mockImplementation(() => void 0)
+    iframe.dispatchEvent(new Event('load'))
+    postMessageSpy.mockRestore()
+
     expect(iframe.src).toBe(buildWidgetUrl(nextParams))
     expect(window.open).not.toHaveBeenCalled()
   })
