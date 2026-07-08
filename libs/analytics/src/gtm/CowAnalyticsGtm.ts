@@ -35,6 +35,7 @@ function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown
 declare global {
   interface Window {
     dataLayer: unknown[]
+    enableGaLogging?: boolean
     /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
     cowAnalyticsInstance?: CowAnalytics
   }
@@ -312,8 +313,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
       const dataLayerEvent = sanitizeRecord({ ...data }) as DataLayerEvent
 
-      // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === 'development' || window.enableGaLogging === true) {
         logAnalytics.debug('Pushing to data layer', dataLayerEvent)
       }
 
