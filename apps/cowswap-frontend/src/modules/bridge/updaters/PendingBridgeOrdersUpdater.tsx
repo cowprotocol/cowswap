@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
-import { timeSinceInSeconds } from '@cowprotocol/common-utils'
+import { getSafeAbsoluteUrl, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { UiOrderType } from '@cowprotocol/types'
@@ -19,10 +19,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 const APPZI_CHECK_INTERVAL = 60_000
 
 function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
+  const safeExplorerUrl = getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined
   const { provider: _, ...eventPayload } = crossChainOrder
 
   // Display snackbar
-  emitBridgingSuccessEvent(eventPayload)
+  emitBridgingSuccessEvent({ ...eventPayload, explorerUrl: safeExplorerUrl })
 
   // Play sound
   getCowSoundSuccess().play()
@@ -31,7 +32,7 @@ function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
   triggerAppziSurvey(
     {
       isBridging: true,
-      explorerUrl: crossChainOrder.explorerUrl,
+      explorerUrl: safeExplorerUrl,
       chainId: crossChainOrder.chainId,
       orderType: UiOrderType.SWAP,
       account: crossChainOrder.order.owner,
@@ -48,6 +49,7 @@ function sendBridgeStatusAnalytics(
   const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
   const { depositTxHash, fillTxHash, status } = crossChainOrder.statusResult
   const providerInfo = crossChainOrder.provider.info
+  const safeExplorerUrl = getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined
 
   const payload = {
     category: CowSwapAnalyticsCategory.Bridge,
@@ -60,7 +62,7 @@ function sendBridgeStatusAnalytics(
     sourceChainId,
     destinationChainId,
     bridgeStatus: status,
-    explorerUrl: crossChainOrder.explorerUrl,
+    explorerUrl: safeExplorerUrl,
     depositTxHash,
     fillTxHash,
     providerName: providerInfo.name,
@@ -100,7 +102,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         // Start counting from bridge creation timestamp
         triggerAppziSurvey({
           isBridging: true,
-          explorerUrl: crossChainOrder.explorerUrl,
+          explorerUrl: getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined,
           chainId: crossChainOrder.chainId,
           orderType: UiOrderType.SWAP,
           account: crossChainOrder.order.owner,

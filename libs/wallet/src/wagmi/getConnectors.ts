@@ -1,10 +1,11 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { injected, safe } from '@wagmi/connectors'
 import { EIP1193Provider } from 'viem'
 
 import { getInjectedProvider } from '../api/utils/connection'
+import { createIsolatedProvider } from '../providerIsolation'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
@@ -15,9 +16,18 @@ function getBrowserInjectedConnector(): CreateConnectorFn {
     target: {
       id: 'injected',
       name: 'Injected',
-      provider: getInjectedProvider,
+      // Keep the mobile-only generic injected connector behind the same
+      // tab-isolation wrapper as EIP-6963 providers. Without this, its
+      // accountsChanged / wallet_revokePermissions calls bypass isolation.
+      provider: (targetWindow) => {
+        const provider = getInjectedProvider(targetWindow)
+        return provider ? createIsolatedProvider(provider) : undefined
+      },
     },
-    shimDisconnect: true,
+    // wagmi's injected shimDisconnect path calls wallet_requestPermissions.
+    // MetaMask iOS can leave that request pending forever, so mobile injected
+    // must use the wallet's eth_requestAccounts flow instead.
+    shimDisconnect: false,
   })
 }
 
@@ -26,7 +36,7 @@ export function getConnectors(): CreateConnectorFn[] | undefined {
   const isWidget = isInjectedWidget()
   const connectors: CreateConnectorFn[] = []
 
-  if (!isSafeApp && !isWidget) {
+  if (!isSafeApp && !isWidget && isMobile) {
     connectors.push(getBrowserInjectedConnector())
   }
 

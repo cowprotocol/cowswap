@@ -39,7 +39,8 @@ jobs:
       - name: Verify tag points to main
         working-directory: deploy-target
         env:
-          GITHUB_SHA: ${{ github.event.workflow_run.head_sha }}
+          DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: node ../tools/scripts/verify-tag-reachable-from-main.mjs
 
       - name: Install pnpm

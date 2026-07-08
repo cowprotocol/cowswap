@@ -1,4 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { logSafeApi, NormalizedError, normalizeError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse, default as SafeApiKitType } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
@@ -45,13 +46,21 @@ const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
+export const SAFE_RATE_LIMIT_MSG = 'Rate limit'
+
+export type SafeApiError = NormalizedError & { statusCode?: number }
+
+export function normalizeSafeError(err: unknown): SafeApiError {
+  return normalizeError(err)
+}
+
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
   }
   if (!SAFE_API_AUTH_TOKEN) {
-    console.warn(
-      '[COW][SAFE] No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.',
+    logSafeApi.warn(
+      'No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.',
     )
   }
   const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
@@ -69,25 +78,21 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  console.log('[COW][SAFE-API] getSafeInfo', chainId, safeAddress)
-  try {
-    const client = await _getClientOrThrow(chainId)
-
-    console.log('[COW][SafeAPI] Fetch Safe info')
-    return client.getSafeInfo(safeAddress)
-  } catch (error) {
-    return Promise.reject(error)
-  }
+  logSafeApi.debug(`Fetch Safe info`, { chainId, safeAddress })
+  const client = await _getClientOrThrow(chainId)
+  const safeInfo = await client.getSafeInfo(safeAddress)
+  logSafeApi.info(`Fetched Safe info`, safeInfo)
+  return safeInfo
 }
 
 export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
 ): Promise<SafeMultisigTransactionResponse> {
-  console.log('[COW][SAFE-API] getSafeTransaction', chainId, safeTxHash)
+  logSafeApi.debug('getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
-  console.log('[COW][SafeAPI] Fetch Safe transaction')
+  logSafeApi.debug('Fetch Safe transaction')
   return client.getTransaction(safeTxHash)
 }
 

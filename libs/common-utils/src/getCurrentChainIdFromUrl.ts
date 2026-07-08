@@ -17,6 +17,7 @@ const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   plasma: SupportedChainId.PLASMA,
   ink: SupportedChainId.INK,
   sepolia: SupportedChainId.SEPOLIA,
+  solana: SupportedChainId.SOLANA,
 }
 
 export function getCurrentChainIdFromUrl(location = window.location): SupportedChainId {
@@ -25,7 +26,7 @@ export function getCurrentChainIdFromUrl(location = window.location): SupportedC
 
 // Trying to get chainId from URL (#/100/swap)
 export function getRawCurrentChainIdFromUrl(location = window.location): SupportedChainId | null {
-  const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)
+  const urlChainIdMatch = location.hash.match(/^#\/(\d{1,16})\D/)
   const searchParams = new URLSearchParams(location.hash.split('?')[1])
   const chainQueryParam = searchParams.get('chain')
 
