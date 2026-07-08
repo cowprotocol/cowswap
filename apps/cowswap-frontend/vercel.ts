@@ -67,6 +67,8 @@ const csp = buildCsp([
   ['upgrade-insecure-requests', []],
 ])
 
+const crossOriginOpenerPolicy = process.env.VERCEL_ENV === 'production' ? 'same-origin-allow-popups' : 'unsafe-none'
+
 // ---------------------------------------------------------------------------
 // Vercel config
 // ---------------------------------------------------------------------------
@@ -87,9 +89,8 @@ export const config: VercelConfig = {
     routes.header('/(.*)', [
       // Controls which resources the browser is allowed to load; prevents XSS and data injection attacks.
       { key: 'Content-Security-Policy', value: csp },
-      // Isolates the browsing context so cross-origin pages cannot access window.opener,
-      // while still allowing this page to open popups (needed for wallet connections).
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+      // Preview deploys use unsafe-none so Tag Assistant can keep its cross-origin debug connection.
+      { key: 'Cross-Origin-Opener-Policy', value: crossOriginOpenerPolicy },
       // Allows any origin to load this page as an iframe, required for the embeddable widget.
       { key: 'Cross-Origin-Resource-Policy', value: 'cross-origin' },
       // Prevents browsers from MIME-sniffing a response away from the declared Content-Type.
