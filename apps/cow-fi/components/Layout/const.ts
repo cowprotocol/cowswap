@@ -1,5 +1,5 @@
 import { initGtm } from '@cowprotocol/analytics'
-import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -105,21 +105,6 @@ function getAboutNavItem(): MenuItem {
 }
 
 export const NAV_ADDITIONAL_BUTTONS = [
-  {
-    label: 'LP on CoW AMM',
-    href: 'https://balancer.fi/pools/cow',
-    utmContent: 'menubar-nav-button-lp-on-cow-amm',
-    onClick: () =>
-      analytics.sendEvent({
-        category: CowFiCategory.NAVIGATION,
-        action: 'Click LP on CoW AMM',
-        label: 'menubar-nav-button',
-      }),
-    external: true,
-    isButton: true,
-    bgColor: Color.cowamm_dark_green,
-    color: Color.cowamm_green,
-  },
   {
     label: COW_SWAP_CTA.text,
     href: COW_SWAP_CTA.deeplinkHref,
