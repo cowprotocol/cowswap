@@ -79,7 +79,7 @@ function start(extra: Partial<Parameters<typeof subscribeToBalancesEvents>[0]> =
 describe('subscribeToBalancesEvents', () => {
   beforeEach(() => {
     MockEventSource.lastInstance = null
-    localStorage.setItem('balances-watcher-client-id', CLIENT_ID)
+    localStorage.setItem('balances-watcher-client-id', JSON.stringify({ id: CLIENT_ID, createdAt: Date.now() }))
   })
 
   afterEach(() => {

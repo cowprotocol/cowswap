@@ -18,7 +18,7 @@ function mockFetchResponse(status: number, body: unknown): jest.SpyInstance {
 
 describe('createBalancesWatcherSession', () => {
   beforeEach(() => {
-    localStorage.setItem('balances-watcher-client-id', CLIENT_ID)
+    localStorage.setItem('balances-watcher-client-id', JSON.stringify({ id: CLIENT_ID, createdAt: Date.now() }))
   })
 
   afterEach(() => {

@@ -1,31 +1,51 @@
+import ms from 'ms.macro'
+
 const STORAGE_KEY = 'balances-watcher-client-id'
 
-let inMemoryFallback: string | null = null
+// Rotated only on the next call after a new tab opens or an existing one is refreshed.
+const CLIENT_ID_TTL_MS = ms`1 day`
 
-/**
- * Browser-scoped identifier for the balances-watcher session key.
- *
- * The watcher backend indexes sessions by `(chainId, owner, clientId)` so a
- * third party who knows the owner address alone cannot mutate or observe
- * someone else's session — they land on a different session bucket.
- *
- * Generated once per browser via `crypto.randomUUID()` and persisted in
- * `localStorage`; falls back to an in-memory UUID when storage is unavailable
- * (Safari third-party context, quota exceeded, storage disabled). The
- * in-memory value is stable for the lifetime of the tab.
- */
+interface StoredClientId {
+  id: string
+  createdAt: number
+}
+
+let inMemoryFallback: StoredClientId | null = null
+
 export function getBalancesWatcherClientId(): string {
   try {
-    const existing = localStorage.getItem(STORAGE_KEY)
-    if (existing) return existing
+    const stored = parseStored(localStorage.getItem(STORAGE_KEY))
+    if (stored && !isExpired(stored)) return stored.id
 
-    const fresh = crypto.randomUUID()
-    localStorage.setItem(STORAGE_KEY, fresh)
-    // Read-after-write: another tab may have raced us to `setItem`. Take the
-    // stored winner so parallel tabs converge on a single id.
-    return localStorage.getItem(STORAGE_KEY) ?? fresh
+    const fresh: StoredClientId = { id: crypto.randomUUID(), createdAt: Date.now() }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh))
+    return fresh.id
   } catch {
-    if (!inMemoryFallback) inMemoryFallback = crypto.randomUUID()
-    return inMemoryFallback
+    if (!inMemoryFallback || isExpired(inMemoryFallback)) {
+      inMemoryFallback = { id: crypto.randomUUID(), createdAt: Date.now() }
+    }
+    return inMemoryFallback.id
   }
+}
+
+function parseStored(raw: string | null): StoredClientId | null {
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      typeof (parsed as StoredClientId).id === 'string' &&
+      typeof (parsed as StoredClientId).createdAt === 'number'
+    ) {
+      return parsed as StoredClientId
+    }
+  } catch {
+    return null
+  }
+  return null
+}
+
+function isExpired(entry: StoredClientId): boolean {
+  return Date.now() - entry.createdAt >= CLIENT_ID_TTL_MS
 }
