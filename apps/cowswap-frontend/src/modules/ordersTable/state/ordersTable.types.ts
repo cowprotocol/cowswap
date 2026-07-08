@@ -50,7 +50,6 @@ export interface OrdersTableParams {
 export interface OrdersTableState {
   /**
    * All orders for the current route that belong to the current account:
-   * - SWAP page => Limit orders
    * - LIMIT page => Limit orders
    * - ADVANCED page => TWAP orders (includes emulated twap orders + emulated part orders + discrete twap orders (from Redux)).
    * */

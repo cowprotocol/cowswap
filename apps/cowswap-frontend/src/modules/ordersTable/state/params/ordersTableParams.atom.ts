@@ -5,7 +5,7 @@ import { clampValue } from '@cowprotocol/common-utils'
 import { msg } from '@lingui/core/macro'
 import { OrderTabId, pageParamAtom, tabParamAtom } from 'entities/routes/routes.atom'
 
-import { OrdersTableList } from 'modules/ordersTable/state/ordersTable.types'
+import { OrdersTableList } from 'modules/ordersTable'
 
 import { OrderTab, ORDERS_TABLE_PAGE_SIZE } from './ordersTableParams.constants'
 

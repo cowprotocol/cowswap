@@ -22,12 +22,12 @@ export const emulatedPartOrdersAtom = atom<Order[]>((get) => {
   get(partOrdersRefreshTriggerAtom)
 
   const twapOrders = get(twapOrdersAtom)
-  const twapParticleOrders = get(twapPartOrdersListAtom)
+  const twapPartOrders = get(twapPartOrdersListAtom)
   const twapOrdersTokens = get(twapOrdersTokensAtom)
 
   if (!twapOrdersTokens) return []
 
-  return emulatePartOrders(twapParticleOrders, twapOrders, twapOrdersTokens)
+  return emulatePartOrders(twapPartOrders, twapOrders, twapOrdersTokens)
 })
 
 /**
@@ -83,11 +83,11 @@ partOrdersRefreshTriggerAtom.onMount = () => {
 }
 
 function emulatePartOrders(
-  twapParticleOrders: TwapPartOrderItem[],
+  twapPartOrders: TwapPartOrderItem[],
   twapOrders: TwapOrdersList,
   tokensByAddress: TokensByAddress,
 ): Order[] {
-  return twapParticleOrders.reduce<Order[]>((acc, item) => {
+  return twapPartOrders.reduce<Order[]>((acc, item) => {
     if (item.isCreatedInOrderBook) return acc
 
     const isVirtualPart = true
