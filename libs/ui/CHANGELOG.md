@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.0...ui-v3.9.1) (2026-07-08)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.8.1...ui-v3.9.0) (2026-06-25)
 
 ### Minor Changes
