@@ -198,7 +198,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       currentParams = resolveWidgetParams(newParams)
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      if (!reloadIframeOnSandboxChange(iframe, currentParams)) {
+        updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      }
       updateInterceptDeepLinks()
       updateWidgetHooks()
     },
@@ -294,6 +296,17 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 
 function getIframeSandbox(params: CowSwapWidgetParams): string {
   return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
+}
+
+function reloadIframeOnSandboxChange(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
+  const sandbox = getIframeSandbox(params)
+
+  if (iframe.getAttribute('sandbox') === sandbox) return false
+
+  iframe.setAttribute('sandbox', sandbox)
+  iframe.src = buildWidgetUrl(params)
+
+  return true
 }
 
 function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {

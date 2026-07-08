@@ -5,6 +5,7 @@
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { WIDGET_IFRAME_SANDBOX, WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS } from './cowSwapWidget.constants'
 import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
+import { buildWidgetUrl } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
 const widgetHandlers: CowSwapWidgetHandler[] = []
@@ -313,6 +314,21 @@ describe('createCowSwapWidget', () => {
     expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS)
     expect(iframe.getAttribute('sandbox')).not.toContain('allow-popups')
     expect(iframe.getAttribute('sandbox')).not.toContain('allow-popups-to-escape-sandbox')
+  })
+
+  it('reloads the iframe with no popup permissions when disableWindowOpen changes on updateParams', () => {
+    const handler = createWidget()
+    const iframe = handler.iframe
+    const nextParams = { appCode: 'test-app', chainId: 100, tradeType: TradeType.SWAP, disableWindowOpen: true }
+
+    expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX)
+
+    handler.updateParams(nextParams)
+    dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
+
+    expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS)
+    expect(iframe.src).toBe(buildWidgetUrl(nextParams))
+    expect(window.open).not.toHaveBeenCalled()
   })
 
   it('keeps parent widget messages while Safe SDK forwarding is disabled', () => {
