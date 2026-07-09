@@ -12,6 +12,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -68,10 +69,20 @@ export async function safeBundleApprovalFlow({
   const tradeAmounts = { inputAmount, outputAmount }
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
-  tradeConfirmActions.onSign(tradeAmounts)
-
   try {
+    const isWidgetHookPassed = await callOnBeforeApprovalWidgetHook({
+      account,
+      amountToApprove,
+      spenderAddress: spender,
+    })
+
+    if (!isWidgetHookPassed) {
+      return false
+    }
+
+    analytics.approveAndPresign(swapFlowAnalyticsContext)
+    tradeConfirmActions.onSign(tradeAmounts)
+
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
     // In the feature users will be able to sort/add steps as they see fit
     logTradeFlow(LOG_PREFIX, 'STEP 2: build approval tx')

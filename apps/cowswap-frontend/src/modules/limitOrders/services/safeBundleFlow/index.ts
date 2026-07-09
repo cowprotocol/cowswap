@@ -13,6 +13,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -47,7 +48,7 @@ export async function safeBundleFlow({
   analytics: TradeFlowAnalytics
   beforeTrade?: Command
   config: Config
-}): Promise<string> {
+}): Promise<string | undefined> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
@@ -68,15 +69,26 @@ export async function safeBundleFlow({
     orderType: UiOrderType.LIMIT,
   }
 
-  logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
-  beforeTrade?.()
-
   const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
   try {
+    const isWidgetHookPassed = await callOnBeforeApprovalWidgetHook({
+      account,
+      amountToApprove: inputAmount,
+      spenderAddress: spender,
+      approvalAmount: maxUint256,
+    })
+
+    if (!isWidgetHookPassed) {
+      return undefined
+    }
+
+    logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
+    analytics.approveAndPresign(swapFlowAnalyticsContext)
+    beforeTrade?.()
+
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
     // In the feature users will be able to sort/add steps as they see fit
     logTradeFlow(LOG_PREFIX, 'STEP 2: build approval tx')
