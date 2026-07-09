@@ -1,4 +1,4 @@
-import { getNullableParentOrigin } from './url.utils'
+import { assertHttpsUrlString, getNullableParentOrigin, isHttpsUrlString } from './url.utils'
 
 // Helpers — all use configurable: true so each test can freely override and afterEach can reset.
 
@@ -27,6 +27,29 @@ afterEach(() => {
   setAncestorOrigins([])
   setReferrer('')
   setParent(window)
+})
+
+describe('isHttpsUrlString', () => {
+  it('accepts https URLs', () => {
+    expect(isHttpsUrlString('https://swap.cow.fi')).toBe(true)
+    expect(isHttpsUrlString('https://example.com/path')).toBe(true)
+  })
+
+  it('accepts http on local dev hostnames', () => {
+    expect(isHttpsUrlString('http://localhost:3000')).toBe(true)
+    expect(isHttpsUrlString('http://127.0.0.1:8080')).toBe(true)
+    expect(isHttpsUrlString('http://app.localhost:3000')).toBe(true)
+    expect(isHttpsUrlString('http://[::1]:3000')).toBe(true)
+  })
+
+  it('rejects http on non-local hosts', () => {
+    expect(isHttpsUrlString('http://evil.com')).toBe(false)
+    expect(isHttpsUrlString('http://notlocalhost:3000')).toBe(false)
+  })
+
+  it('assertHttpsUrlString throws for disallowed http URLs', () => {
+    expect(() => assertHttpsUrlString('http://evil.com')).toThrow(/not a valid HTTPS URL/i)
+  })
 })
 
 describe('getNullableParentOrigin', () => {

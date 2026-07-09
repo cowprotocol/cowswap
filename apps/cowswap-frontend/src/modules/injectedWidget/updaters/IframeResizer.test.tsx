@@ -211,6 +211,7 @@ describe('IframeResizer', () => {
   it('emits full-height updates while a modal is open', () => {
     useAtomValueMock.mockReturnValue(true as never)
     setContentSize({
+      bodyOffsetWidth: 400,
       rootScrollHeight: 520,
       rootOffsetHeight: 500,
     })
@@ -225,6 +226,7 @@ describe('IframeResizer', () => {
     )
 
     setContentSize({
+      bodyOffsetWidth: 400,
       rootScrollHeight: 560,
       rootOffsetHeight: 540,
     })

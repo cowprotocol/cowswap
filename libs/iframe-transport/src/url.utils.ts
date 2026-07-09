@@ -6,10 +6,20 @@ export type HttpUrlString = `http://${string}`
 
 export type UrlString = HttpsUrlString | HttpUrlString
 
+function isLocalDevHostname(hostname: string): boolean {
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname === '[::1]' ||
+    hostname.endsWith('.localhost')
+  )
+}
+
 export function isHttpsUrlString(urlString: string): urlString is HttpsUrlString {
   const url = new URL(urlString)
 
-  return urlString.startsWith('https://') || url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+  return urlString.startsWith('https://') || isLocalDevHostname(url.hostname)
 }
 
 export function assertHttpsUrlString(urlString: string): asserts urlString is HttpsUrlString {

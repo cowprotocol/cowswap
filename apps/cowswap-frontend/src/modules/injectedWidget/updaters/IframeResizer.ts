@@ -3,7 +3,6 @@ import { useLayoutEffect, useRef } from 'react'
 
 import { isIframe, isInjectedWidget, UrlString } from '@cowprotocol/common-utils'
 import { getNullableParentOrigin } from '@cowprotocol/iframe-transport'
-import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'

@@ -38,6 +38,7 @@ describe('sanitizeWidgetBaseUrl', () => {
     expect(sanitizeWidgetBaseUrl('http://localhost:3000')).toBe('http://localhost:3000')
     expect(sanitizeWidgetBaseUrl('http://127.0.0.1:8080')).toBe('http://127.0.0.1:8080')
     expect(sanitizeWidgetBaseUrl('http://app.localhost:3000')).toBe('http://app.localhost:3000')
+    expect(sanitizeWidgetBaseUrl('http://[::1]:3000')).toBe('http://[::1]:3000')
   })
 
   it('when not throwing, logs and returns default for disallowed URLs', () => {

@@ -90,11 +90,8 @@ describe('callWidgetHook', () => {
       id: string
       result: boolean
     }) => void
-    const [, , payload] = mockPostMessageToWindow.mock.calls[0] as [
-      WindowProxy,
-      WidgetMethodsEmit.PROCESS_HOOK,
-      WidgetMethodsEmitPayloadMap[WidgetMethodsEmit.PROCESS_HOOK],
-    ]
+    const payload = mockPostMessageToWindow.mock
+      .calls[0][2] as WidgetMethodsEmitPayloadMap[WidgetMethodsEmit.PROCESS_HOOK]
     hookResultListener({ id: payload.id, result: true })
 
     await expect(hookCall).resolves.toBe(true)

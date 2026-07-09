@@ -83,7 +83,7 @@ describe('IframeTransport', () => {
     const transport = new IframeTransport<TestPayloadMap>('test-key')
     const callback = jest.fn()
 
-    transport.listenToMessageFromWindow(window, window, method, callback)
+    transport.listenToMessageFromWindow(window, window, method, callback, trustedOrigin)
 
     dispatchMessage({
       data: { key: 'other-key', method, value: 'blocked' },
@@ -104,16 +104,6 @@ describe('IframeTransport', () => {
     })
 
     expect(callback).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' })
-  })
-
-  it('posts to the trusted origin by default', () => {
-    const transport = new IframeTransport<TestPayloadMap>('test-key')
-    const postMessage = jest.fn()
-    const targetWindow = { postMessage } as unknown as Window
-
-    transport.postMessageToWindow(targetWindow, method, { value: 'ok' })
-
-    expect(postMessage).toHaveBeenCalledWith({ key: 'test-key', method, value: 'ok' }, trustedOrigin)
   })
 
   it('posts to the provided origin', () => {

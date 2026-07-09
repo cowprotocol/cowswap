@@ -5,5 +5,5 @@ export { IframeTransport, isLocalEnvOrigin } from './IframeTransport'
 export * from './iframeRpcProvider/iframeRpcProviderEvents'
 export * from './types'
 
-// Duplicated from `libs/common-utils/src/url.ts` becase we cannot import from non-buildable dependencies:
+// Duplicated from `libs/common-utils/src/url.ts` because we cannot import from non-buildable dependencies:
 export * from './url.utils'
