@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.7.0...common-utils-v3.8.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(wallet): add Solana to available networks (#7709)
+
+- feat: handle rate limiting in safe api calls (#7729)
+
+### Patch Changes
+
+- fix(twap): approve prod vault relayer regardless of environment (#7695)
+
+- fix: harden frontend security entrypoints (#7601)
+
+- fix: validate cow-fi CMS inputs and revalidation flows (#7618)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.6.0
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.6.1...common-utils-v3.7.0) (2026-06-25)
 
 ### Minor Changes

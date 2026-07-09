@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.4.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.0...widget-lib-v4.4.1) (2026-07-08)
+
+### Patch Changes
+
+- fix: harden frontend security entrypoints (#7601)
+
 ## [4.4.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.3.1...widget-lib-v4.4.0) (2026-06-25)
 
 ### Minor Changes

@@ -1,4 +1,5 @@
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import { isRecord } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
@@ -43,10 +44,6 @@ export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown):
     light: { ...defaults.light, ...parsed.light },
     dark: { ...defaults.dark, ...parsed.dark },
   }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
 
 function parseColorPalette(value: unknown): ColorPalette | null {
