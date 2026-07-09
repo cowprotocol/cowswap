@@ -53,7 +53,13 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchAndClassifyOrder, OrderTransitionData } from './utils'
+import {
+  fetchAndClassifyOrder,
+  getOrdersFromTransitionData,
+  getOrderTypesByUid,
+  OrderTransitionData,
+  OrderTypesByUid,
+} from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 
@@ -87,8 +93,6 @@ interface UpdateOrdersParams {
   allTransactions: ReturnType<typeof useAllTransactions>
   markPollComplete?: (chainId: ChainId) => void
 }
-
-type OrderTypesByUid = Record<string, UiOrderType>
 
 type FulfillOrdersBatchWithTypes = (params: FulfillOrdersBatchParams, orderTypesByUid?: OrderTypesByUid) => void
 
@@ -396,7 +400,7 @@ async function _updateOrders({
   })
 
   if (expired.length > 0) {
-    const expiredOrders = expired.map(({ order }) => order)
+    const expiredOrders = getOrdersFromTransitionData(expired)
 
     expireOrdersBatch({
       ids: expiredOrders.map(({ uid }) => uid),
@@ -410,7 +414,7 @@ async function _updateOrders({
   }
 
   if (cancelled.length > 0) {
-    const cancelledOrders = cancelled.map(({ order }) => order)
+    const cancelledOrders = getOrdersFromTransitionData(cancelled)
 
     cancelOrdersBatch({
       ids: cancelledOrders.map(({ uid }) => uid),
@@ -428,11 +432,8 @@ async function _updateOrders({
   }
 
   if (fulfilled.length > 0) {
-    const fulfilledOrders = fulfilled.map(({ order }) => order)
-    const fulfilledOrderTypesByUid = fulfilled.reduce<OrderTypesByUid>((acc, { order, orderType }) => {
-      acc[order.uid] = orderType
-      return acc
-    }, {})
+    const fulfilledOrders = getOrdersFromTransitionData(fulfilled)
+    const fulfilledOrderTypesByUid = getOrderTypesByUid(fulfilled)
 
     // update redux state
     fulfillOrdersBatch(

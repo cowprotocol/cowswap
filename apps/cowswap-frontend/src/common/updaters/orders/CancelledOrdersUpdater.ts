@@ -16,7 +16,7 @@ import { emitFulfilledOrderEvent } from 'modules/orders'
 
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
-import { fetchAndClassifyOrder, OrderTransitionData } from './utils'
+import { fetchAndClassifyOrder, getOrdersFromTransitionData, OrderTransitionData } from './utils'
 
 const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, OrderTransitionData[]> = {
   fulfilled: [],
@@ -109,7 +109,7 @@ export function CancelledOrdersUpdater(): null {
 
         // Bach state update fulfilled orders, if any
         if (fulfilled.length) {
-          const fulfilledOrders = fulfilled.map(({ order }) => order)
+          const fulfilledOrders = getOrdersFromTransitionData(fulfilled)
 
           fulfillOrdersBatch({
             orders: fulfilledOrders,
