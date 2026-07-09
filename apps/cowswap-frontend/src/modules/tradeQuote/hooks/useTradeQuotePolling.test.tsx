@@ -30,6 +30,23 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   useIsWindowVisible: jest.fn().mockReturnValue(true),
 }))
 
+jest.mock('../utils/getBridgeQuoteSigner', () => {
+  const { privateKeyToAccount } = require('viem/accounts') as typeof import('viem/accounts')
+  const bridgeQuoteSigner = privateKeyToAccount('0x1111111111111111111111111111111111111111111111111111111111111111')
+
+  return {
+    BRIDGE_QUOTE_ACCOUNT: bridgeQuoteSigner.address,
+    COW_QUOTE_BTC_BRIDGE_RECIPIENT: 'bc1q5eapy5ptdr98vtx9c5pfaa2yd20ncd3n397ek4',
+    COW_QUOTE_SOL_BRIDGE_RECIPIENT: 'F2nKBvD1yak1zvvGSdZdBmjKraCQX2gE14rA12Wqt23b',
+    NON_EVM_CHAIN_CONFIG: [],
+    isNonEvmPlaceholderRecipient: jest.fn().mockReturnValue(false),
+    getBridgeQuoteSigner: jest.fn().mockReturnValue({
+      ...bridgeQuoteSigner,
+      getAddress: () => bridgeQuoteSigner.address,
+    }),
+  }
+})
+
 jest.mock('tradingSdk/bridgingSdk', () => ({
   bridgingSdk: {
     getQuote: jest.fn(),
