@@ -474,7 +474,9 @@ export interface CowSwapWidgetParams {
   disableToastMessages?: boolean
 
   /**
-   * When `true`, the host page will not use `window.open` to open links requested by the widget.
+   * When `true`, the host page will not use `window.open` to open links requested by the widget,
+   * and the widget iframe sandbox will not allow direct popups.
+   * Requires `standaloneMode: false`.
    * Defaults to `false`.
    */
   disableWindowOpen?: boolean
