@@ -190,6 +190,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     hideFavoriteTokens,
     hideBridgeInfo,
     hideOrdersTable,
+    disableWindowOpen,
     disableTradeWhenPriceImpactIsUnknown,
     disableTradeWhenPriceImpactIsHigherThan,
 
@@ -268,6 +269,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     hideFavoriteTokens,
     hideBridgeInfo,
     hideOrdersTable,
+    disableWindowOpen: widgetMode === 'dapp' ? disableWindowOpen : false,
     disableTrade: {
       whenPriceImpactIsUnknown: disableTradeWhenPriceImpactIsUnknown,
       whenPriceImpactIsHigherThan: disableTradeWhenPriceImpactIsHigherThan,

@@ -295,7 +295,7 @@ describe('createCowSwapWidget', () => {
   })
 
   it('does not window.open when disableWindowOpen = true', () => {
-    const { iframe } = createWidget(undefined, { disableWindowOpen: true })
+    const { iframe } = createWidget(undefined, { disableWindowOpen: true, standaloneMode: false })
 
     dispatchInterceptWindowOpen('https://example.com', undefined, iframe)
 
@@ -309,7 +309,7 @@ describe('createCowSwapWidget', () => {
   })
 
   it('removes popup permissions from the iframe sandbox when disableWindowOpen = true', () => {
-    const { iframe } = createWidget(undefined, { disableWindowOpen: true })
+    const { iframe } = createWidget(undefined, { disableWindowOpen: true, standaloneMode: false })
 
     expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS)
     expect(iframe.getAttribute('sandbox')).not.toContain('allow-popups')
@@ -319,7 +319,13 @@ describe('createCowSwapWidget', () => {
   it('reloads the iframe with no popup permissions when disableWindowOpen changes on updateParams', () => {
     const handler = createWidget()
     const iframe = handler.iframe
-    const nextParams = { appCode: 'test-app', chainId: 100, tradeType: TradeType.SWAP, disableWindowOpen: true }
+    const nextParams = {
+      appCode: 'test-app',
+      chainId: 100,
+      tradeType: TradeType.SWAP,
+      disableWindowOpen: true,
+      standaloneMode: false,
+    }
 
     expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX)
 
@@ -370,6 +376,57 @@ describe('createCowSwapWidget', () => {
     const { updateParams } = createWidget()
 
     expect(() => updateParams({ appCode: '   ' } as CowSwapWidgetParams)).toThrow('Required param `appCode` is missing')
+  })
+})
+
+describe('createCowSwapWidget param validation', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('throws when disableWindowOpen is enabled outside dapp mode', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    expect(() =>
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'test-app',
+          chainId: 1,
+          tradeType: TradeType.SWAP,
+          disableWindowOpen: true,
+        },
+      }),
+    ).toThrow('`disableWindowOpen: true` requires `standaloneMode: false`')
+
+    expect(() =>
+      createCowSwapWidget(container, {
+        params: {
+          appCode: 'test-app',
+          chainId: 1,
+          tradeType: TradeType.SWAP,
+          disableWindowOpen: true,
+          standaloneMode: true,
+        },
+      }),
+    ).toThrow('`disableWindowOpen: true` requires `standaloneMode: false`')
+
+    expect(container.querySelector('iframe')).toBeNull()
+  })
+
+  it('throws when updateParams enables disableWindowOpen outside dapp mode', () => {
+    const { updateParams } = createWidget()
+
+    expect(() =>
+      updateParams({
+        appCode: 'test-app',
+        chainId: 1,
+        tradeType: TradeType.SWAP,
+        disableWindowOpen: true,
+      }),
+    ).toThrow('`disableWindowOpen: true` requires `standaloneMode: false`')
   })
 })
 

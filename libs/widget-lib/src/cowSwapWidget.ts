@@ -236,6 +236,10 @@ function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
     throw new Error('Required param `appCode` is missing')
   }
 
+  if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
+    throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
+  }
+
   return currentParams
 }
 
