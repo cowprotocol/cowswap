@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
-import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
+import { atomWithIdbStorage } from '@cowprotocol/core'
 import { TokenId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -33,10 +33,13 @@ export const restrictedTokensCacheAtom = atomWithIdbStorage<RestrictedTokenListS
  */
 export const restrictedTokensAtom = atom<RestrictedTokenListState>(initialState)
 
+export const RESTRICTED_TOKENS_LAST_UPDATE_KEY = 'restrictedTokens:lastUpdate:v1'
+export const restrictedTokensLastUpdateStorage = createJSONStorage<number>(() => localStorage)
+
 export const restrictedTokensLastUpdateAtom = atomWithStorage<number>(
-  'restrictedTokens:lastUpdate:v1',
+  RESTRICTED_TOKENS_LAST_UPDATE_KEY,
   0,
-  getJotaiMergerStorage(),
+  restrictedTokensLastUpdateStorage,
   { getOnInit: true },
 )
 

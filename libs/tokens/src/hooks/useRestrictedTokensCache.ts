@@ -12,7 +12,7 @@ import {
 
 const UPDATE_INTERVAL = ms`6h`
 
-function isTimeToUpdate(lastUpdateTime: number): boolean {
+export function isTimeToUpdate(lastUpdateTime: number): boolean {
   if (!Number.isFinite(lastUpdateTime) || lastUpdateTime <= 0) return true
 
   const cacheAge = Date.now() - lastUpdateTime
