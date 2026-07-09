@@ -7,7 +7,19 @@ type AbstractRecord = Record<unknown, unknown>
 const DEFAULT_ORIGIN = 'https://swap.cow.fi' as const satisfies HttpsUrlString
 
 function logWidget(...args: unknown[]): void {
+  if (process.env['NODE_ENV'] === 'test') return
+
   console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
+}
+
+export function isLocalEnvOrigin(origin: string): boolean {
+  try {
+    const { hostname } = new URL(origin)
+
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]'
+  } catch {
+    return false
+  }
 }
 
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
@@ -32,6 +44,7 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
 
   listenToMessageFromWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,
+    targetWindow: Window,
     method: T,
     callback: (payload: MethodsEmitPayloadMap[T]) => void,
     trustedOrigin: UrlString,
@@ -41,16 +54,28 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
         return
       }
 
-      // TODO: fix source check in a follow up PR
-      // if (event.source !== contentWindow) {
-      //   logWidget('Rejected message due to source mismatch', {
-      //     key: this.key,
-      //     method,
-      //     actualSource: event.source,
-      //     expectedSource: contentWindow,
-      //   })
-      //   return
-      // }
+      if (!event.source || event.source !== targetWindow) {
+        const isLocalEnv = isLocalEnvOrigin(event.origin) || isLocalEnvOrigin(trustedOrigin)
+
+        if (!isLocalEnv) {
+          logWidget('Rejected message due to source mismatch', {
+            key: this.key,
+            method,
+            actualSource: event.source,
+            expectedSource: targetWindow,
+          })
+          return
+        }
+
+        // Some local dev setups can deliver MessageEvents with a null `source` or a WindowProxy that doesn't compare
+        // strictly equal, even though origin + payload match. Allow it locally to avoid breaking iframe transports.
+        logWidget('Non-matching or missing message source. Continuing due to local env.', {
+          key: this.key,
+          method,
+          actualSource: event.source,
+          expectedSource: targetWindow,
+        })
+      }
 
       if (event.origin !== trustedOrigin) {
         logWidget('Rejected message due to origin mismatch', {

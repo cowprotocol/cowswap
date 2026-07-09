@@ -4,9 +4,9 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
-import { cowSwapStore } from 'legacy/state'
+import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
-import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
+import { cowSwapStore } from 'legacy/state'
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 

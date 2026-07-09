@@ -17,6 +17,7 @@ interface ProtocolFeeRowProps {
   protocolFeeBps: number | undefined
   withTimelineDot: boolean
   isLast?: boolean
+  loading?: boolean
 }
 
 export function ProtocolFeeRow({
@@ -25,6 +26,7 @@ export function ProtocolFeeRow({
   protocolFeeBps,
   withTimelineDot,
   isLast = false,
+  loading = false,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps
     ? trimTrailingZeros(
@@ -52,8 +54,13 @@ export function ProtocolFeeRow({
           trade is executed.
         </Trans>
       }
-      label={t`Protocol fee (${protocolFeeAsPercent}%)`}
+      label={
+        <>
+          {t`Protocol fee`} {!loading && ` (${protocolFeeAsPercent}%)`}
+        </>
+      }
       isLast={isLast}
+      loading={loading}
     />
   )
 }

@@ -1,41 +1,38 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
-  isBffSupportedNetwork,
+  balancesWatcherHealthAtom,
+  BalancesWatcherUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
-  useIsBffFailed,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isNonEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
-import { useSourceChainId } from 'modules/tokensList'
+import { Field } from 'legacy/state/types'
+
+import { useSelectTokenWidgetState, useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
+import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
-function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  // Early exit for 100%, meaning should be enabled for everyone
-  if (percentage === 100) {
-    return true
-  }
-
-  // Falsy conditions
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
-    return false
-  }
-
-  return BigInt(account) % 100n < percentage
-}
-
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
-  const sourceChainId = useSourceChainId().chainId
+  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
+  // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
+  // also yields source='selector' but must keep the normal token-list + user-custom-tokens session.
+  const { field } = useSelectTokenWidgetState()
+  const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
+
+  const { isBwEnabled } = useFeatureFlags()
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -67,33 +64,50 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const { bffBalanceEnabledPercentage } = useFeatureFlags()
-  const isBffFailed = useIsBffFailed()
-  const isBffSupportNetwork = isBffSupportedNetwork(sourceChainId)
-  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage)
-  const isBffSwitchedOn = isBffEnabled && !isBffFailed && isBffSupportNetwork
-  const invalidateCacheTrigger = useOrdersFilledEventsTrigger()
+  const refreshTrigger = useOrdersFilledEventsTrigger()
 
-  return (
+  const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
+
+  const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
+  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  // Mount the multicall stack when:
+  // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
+  // - the watcher is in recovery — sticky from the first failure until the next
+  //   successful snapshot, so retry transitions (Connecting/Connected/Fallback)
+  //   don't briefly unmount it and leave a balance gap.
+  const needsMulticallStack = !isWatcherActive || isWatcherRecovering
+  const multicallStack = needsMulticallStack ? (
     <>
-      {!isBffSwitchedOn ? (
-        <PriorityTokensUpdater
-          // We can and should save one RPC call at the very beginning
-          // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
-          // We can skip first update for PriorityTokensUpdater
-          account={skipFirstPriorityUpdate ? undefined : balancesAccount}
-          chainId={sourceChainId}
-          tokenAddresses={priorityTokenAddressesAsArray}
-        />
-      ) : null}
+      <PriorityTokensUpdater
+        // We can and should save one RPC call at the very beginning
+        // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
+        // We can skip first update for PriorityTokensUpdater
+        account={skipFirstPriorityUpdate ? undefined : balancesAccount}
+        chainId={sourceChainId}
+        tokenAddresses={priorityTokenAddressesAsArray}
+      />
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
-        isBffSwitchedOn={isBffSwitchedOn}
-        isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
-        invalidateCacheTrigger={invalidateCacheTrigger}
+        refreshTrigger={refreshTrigger}
       />
     </>
-  )
+  ) : null
+
+  if (isWatcherActive) {
+    return (
+      <>
+        <BalancesWatcherUpdater
+          account={balancesAccount}
+          chainId={sourceChainId}
+          isBridgeMode={isBridgeMode}
+          bridgeTokenList={bridgeTokenList}
+        />
+        {multicallStack}
+      </>
+    )
+  }
+
+  return multicallStack
 }

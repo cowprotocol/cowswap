@@ -1,6 +1,6 @@
 import { useCallback, ReactNode } from 'react'
 
-import iconInformation from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
+import svgFilledInfoCircleSrc from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -23,7 +23,7 @@ export function BottomBanners(): ReactNode {
     (close: () => void) => (
       <styledEl.InfoPopup>
         <div className="icon">
-          <SVG src={iconInformation} />
+          <SVG src={svgFilledInfoCircleSrc} />
         </div>
         <div className="content">
           <Trans>Your order may not fill exactly when the market price reaches your limit price.</Trans>{' '}

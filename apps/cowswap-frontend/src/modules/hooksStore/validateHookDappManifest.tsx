@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
@@ -17,7 +18,7 @@ const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image'
 const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 export function validateHookDappManifest(
   data: HookDappBase,
   chainId: SupportedChainId | undefined,
@@ -45,6 +46,10 @@ export function validateHookDappManifest(
 
   if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
     return i18n._(ERROR_MESSAGES.INVALID_HOOK_ID)
+  }
+
+  if (!getSafeAbsoluteUrl(dapp.website)) {
+    return i18n._(ERROR_MESSAGES.INVALID_WEBSITE_URL)
   }
 
   if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {

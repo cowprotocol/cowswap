@@ -12,11 +12,10 @@ The affiliate program will amplify word-of-mouth marketing for CoW Swap by incen
 - Accountants (Finance Squad)
 - Maintainers (Web Squad, DevOps Squad)
 
-## 3) Feature flag
+## 3) Frontend availability
 
-- Gated by a LaunchDarkly feature flag called `isAffiliateProgramEnabled`
-- When enabled:
-  1.  two new pages show up in `Account`, i.e. `My Rewards` and `Affiliate`
+- Always enabled in the frontend:
+  1.  two pages show up in `Account`, i.e. `My Rewards` and `Affiliate`
   2.  the referral code input row shows up in the trade form alongside a Modal to input the code
 - In injected widget mode, the rewards row is hidden.
 

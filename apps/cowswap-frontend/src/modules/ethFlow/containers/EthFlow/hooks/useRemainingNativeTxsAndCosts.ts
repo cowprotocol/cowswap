@@ -4,16 +4,15 @@ import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
-import { parseUnits } from 'ethers/lib/utils'
+import { parseGwei } from 'viem'
 
 import { useGasPrices } from 'legacy/state/gas/hooks'
 
 import { BalanceChecks } from '../../../pure/EthFlowModalContent/EthFlowModalTopContent'
 
-export const MINIMUM_TXS = '10'
-export const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
+export const MINIMUM_TXS = 10
+export const DEFAULT_GAS_FEE = parseGwei('50')
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -23,9 +22,9 @@ export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, nativ
   }
   // TODO: should use DEFAULT_GAS_FEE from backup source
   // when/if implemented
-  const gas = gasPrice?.average || DEFAULT_GAS_FEE
+  const gas = gasPrice?.average ?? DEFAULT_GAS_FEE
 
-  const amount = BigNumber.from(gas).mul(MINIMUM_TXS).mul(AVG_APPROVE_COST_GWEI)
+  const amount = BigInt(gas) * BigInt(MINIMUM_TXS) * BigInt(AVG_APPROVE_COST_GWEI)
 
   return {
     multiTxCost: CurrencyAmount.fromRawAmount(native, amount.toString()),

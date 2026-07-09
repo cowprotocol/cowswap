@@ -1,35 +1,74 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId, HttpsString } from '@cowprotocol/cow-sdk'
+import { logSafeApi, NormalizedError, normalizeError } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse, default as SafeApiKitType } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
-export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, HttpsString> = {
-  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global/api',
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global/api',
-  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global/api',
-  [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global/api',
-  [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global/api',
-  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global/api',
-  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global/api',
-  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global/api',
-  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global/api',
-  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global/api',
-  [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global/api',
+// export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, HttpsString> = {
+//   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global/api',
+//   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global/api',
+//   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global/api',
+//   [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global/api',
+//   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global/api',
+//   [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global/api',
+//   [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global/api',
+//   [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global/api',
+//   [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global/api',
+//   [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global/api',
+//   [SupportedChainId.INK]: 'https://safe-transaction-ink.safe.global/api',
+// }
+
+// Gnosis Safe Transaction Service is EVM-only — non-EVM chains (e.g. Solana) are
+// intentionally omitted. `Partial` keeps the type honest so the `chainId in SAFE_API_NETWORK_ID`
+// gate in `createSafeApiKitInstance` correctly rejects them instead of building a
+// malformed `tx-service//api/` URL from an empty network id.
+const SAFE_API_NETWORK_ID: Partial<Record<SupportedChainId, string>> = {
+  [SupportedChainId.MAINNET]: 'eth',
+  [SupportedChainId.GNOSIS_CHAIN]: 'gno',
+  [SupportedChainId.ARBITRUM_ONE]: 'arb1',
+  [SupportedChainId.BASE]: 'base',
+  [SupportedChainId.SEPOLIA]: 'sep',
+  [SupportedChainId.POLYGON]: 'pol',
+  [SupportedChainId.AVALANCHE]: 'avax',
+  [SupportedChainId.BNB]: 'bnb',
+  [SupportedChainId.LINEA]: 'linea',
+  [SupportedChainId.PLASMA]: 'plasma',
+  [SupportedChainId.INK]: 'ink',
 }
+
+export function getSafeApiUrl(chainId: SupportedChainId): string {
+  return `https://api.safe.global/tx-service/${SAFE_API_NETWORK_ID[chainId]}/api/`
+}
+
+const SAFE_API_AUTH_TOKEN = process.env.REACT_APP_SAFE_API_AUTH_TOKEN
 
 const SAFE_BASE_URL = 'https://app.safe.global'
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKitType | null>> = {}
 
+export const SAFE_RATE_LIMIT_MSG = 'Rate limit'
+
+export type SafeApiError = NormalizedError & { statusCode?: number }
+
+export function normalizeSafeError(err: unknown): SafeApiError {
+  return normalizeError(err)
+}
+
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
-  const url = SAFE_TRANSACTION_SERVICE_URL[chainId as SupportedChainId]
-  if (!url) {
+  if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
   }
-
+  if (!SAFE_API_AUTH_TOKEN) {
+    logSafeApi.warn(
+      'No Safe API auth token provided. Requests to Safe Transaction Service may be rate-limited or fail.',
+    )
+  }
   const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
-
-  return new SafeApiKit({ txServiceUrl: url, chainId: BigInt(chainId) })
+  return new SafeApiKit({
+    txServiceUrl: getSafeApiUrl(chainId as SupportedChainId),
+    chainId: BigInt(chainId),
+    apiKey: SAFE_API_AUTH_TOKEN || undefined,
+  })
 }
 
 export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string): string {
@@ -39,30 +78,28 @@ export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string
 }
 
 export async function getSafeInfo(chainId: number, safeAddress: string): Promise<SafeInfoResponse> {
-  console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
-  try {
-    const client = await _getClientOrThrow(chainId)
-
-    return client.getSafeInfo(safeAddress)
-  } catch (error) {
-    return Promise.reject(error)
-  }
+  logSafeApi.debug(`Fetch Safe info`, { chainId, safeAddress })
+  const client = await _getClientOrThrow(chainId)
+  const safeInfo = await client.getSafeInfo(safeAddress)
+  logSafeApi.info(`Fetched Safe info`, safeInfo)
+  return safeInfo
 }
 
 export async function getSafeTransaction(
   chainId: number,
   safeTxHash: string,
 ): Promise<SafeMultisigTransactionResponse> {
-  console.log('[api/gnosisSafe] getSafeTransaction', chainId, safeTxHash)
+  logSafeApi.debug('getSafeTransaction', chainId, safeTxHash)
   const client = await _getClientOrThrow(chainId)
 
+  logSafeApi.debug('Fetch Safe transaction')
   return client.getTransaction(safeTxHash)
 }
 
 export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
   const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
+  return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {

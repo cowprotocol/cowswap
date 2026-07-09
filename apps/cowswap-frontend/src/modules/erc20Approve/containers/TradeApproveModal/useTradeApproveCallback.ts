@@ -2,10 +2,10 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+import { usePublicClient } from 'wagmi'
 
 import { processApprovalTransaction } from './approveUtils'
 import { useApprovalAnalytics } from './useApprovalAnalytics'
@@ -14,19 +14,21 @@ import { useHandleApprovalError } from './useHandleApprovalError'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
+import type { ApprovalTxReceipt } from './approveUtils'
+
 interface TradeApproveCallbackParams {
   useModals: boolean
   waitForTxConfirmation?: boolean
 }
-
-const EVM_TX_HASH_LENGTH = 64 + 2
 
 const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
   useModals: true,
   waitForTxConfirmation: false,
 }
 
-export type GenerecTradeApproveResult = TradeApproveResult<TransactionResponse> | TradeApproveResult<TransactionReceipt>
+export type ApproveTxResponse = { hash: `0x${string}` }
+
+export type GenerecTradeApproveResult = TradeApproveResult<ApproveTxResponse> | TradeApproveResult<ApprovalTxReceipt>
 
 export interface TradeApproveCallback {
   (
@@ -34,20 +36,20 @@ export interface TradeApproveCallback {
     params?: TradeApproveCallbackParams & {
       waitForTxConfirmation?: false
     },
-  ): Promise<TradeApproveResult<TransactionResponse> | undefined>
+  ): Promise<TradeApproveResult<ApproveTxResponse> | undefined>
 
   (
     amount: bigint,
     params: TradeApproveCallbackParams & {
       waitForTxConfirmation: true
     },
-  ): Promise<TradeApproveResult<TransactionReceipt> | undefined>
+  ): Promise<TradeApproveResult<ApprovalTxReceipt> | undefined>
 }
 
 export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
 
 interface ProcessTransactionConfirmationParams {
-  response: TransactionResponse
+  hash: `0x${string}`
   currency: Currency | undefined
   account: string | undefined
   spender: string | undefined
@@ -57,7 +59,7 @@ interface ProcessTransactionConfirmationParams {
     owner: string
     spender: string
     amount: bigint
-    blockNumber: number
+    blockNumber: bigint
     chainId: number
   }) => void
 }
@@ -69,8 +71,12 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const spender = useTradeSpenderAddress()
   const { chainId, account } = useWalletInfo()
+  const publicClient = usePublicClient()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
+  const isSafeApp = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = isSafeApp || isSafeViaWc
   const approveCallback = useApproveCallback(currency, spender)
   const approvalAnalytics = useApprovalAnalytics()
   const handleApprovalError = useHandleApprovalError(symbol)
@@ -96,23 +102,24 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
         approvalAnalytics('Sign', symbol)
 
-        // Check the length to skip waiting for Safe tx
-        // We have to return undefined in order to avoid jumping into confirm screen after approval tx sending
-        if (response.hash.length !== EVM_TX_HASH_LENGTH) {
+        // Safe wallets return a safeTxHash (not an on-chain tx hash), so we can't wait for a receipt.
+        // We return undefined to avoid the confirm screen hanging indefinitely.
+        if (isSafeWallet) {
           return undefined
         }
 
-        if (waitForTxConfirmation) {
+        if (waitForTxConfirmation && publicClient) {
           return await processTransactionConfirmation({
-            response,
+            hash: response.hash,
             currency,
             account,
             spender,
             chainId,
             setOptimisticAllowance,
+            publicClient,
           })
         } else {
-          return { txResponse: response, approvedAmount: undefined }
+          return { txResponse: { hash: response.hash }, approvedAmount: undefined }
         }
       } catch (err: unknown) {
         handleApprovalError(err)
@@ -133,9 +140,11 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       updateApproveProgressModalState,
       approveCallback,
       resetApproveProgressModalState,
+      isSafeWallet,
       account,
       spender,
       chainId,
+      publicClient,
       setOptimisticAllowance,
       handleApprovalError,
     ],
@@ -143,17 +152,31 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 }
 
 async function processTransactionConfirmation({
-  response,
+  hash,
   currency,
   account,
   spender,
   chainId,
   setOptimisticAllowance,
-}: ProcessTransactionConfirmationParams): Promise<TradeApproveResult<TransactionReceipt>> {
-  const txResponse = await response.wait()
+  publicClient,
+}: ProcessTransactionConfirmationParams & { publicClient: NonNullable<ReturnType<typeof usePublicClient>> }): Promise<
+  TradeApproveResult<ApprovalTxReceipt>
+> {
+  const txResponse = await publicClient.waitForTransactionReceipt({ hash })
+
+  const receipt: ApprovalTxReceipt = {
+    status: txResponse.status,
+    blockNumber: txResponse.blockNumber,
+    transactionHash: txResponse.transactionHash,
+    logs: txResponse.logs.map((log) => ({
+      address: log.address,
+      topics: [...log.topics],
+      data: log.data,
+    })),
+  }
 
   if (!chainId) {
-    return { txResponse, approvedAmount: undefined }
+    return { txResponse: receipt, approvedAmount: undefined }
   }
 
   const approvedAmount = processApprovalTransaction(
@@ -163,12 +186,12 @@ async function processTransactionConfirmation({
       spender,
       chainId,
     },
-    txResponse,
+    receipt,
   )
 
   if (approvedAmount) {
     setOptimisticAllowance(approvedAmount)
   }
 
-  return { txResponse, approvedAmount: approvedAmount?.amount }
+  return { txResponse: receipt, approvedAmount: approvedAmount?.amount }
 }

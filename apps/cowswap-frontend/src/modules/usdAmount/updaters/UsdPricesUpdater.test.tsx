@@ -26,6 +26,13 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => {
   }
 })
 
+// getWrappedToken converts ERC-20s on mainnet to WETH, which breaks identity checks
+// in the mock (currency === USDC). Return the token as-is so mock conditions are met.
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  getWrappedToken: (currency: unknown) => currency,
+}))
+
 const mockGetBffUsdPrice = jest.spyOn(bffUsdApi, 'getBffUsdPrice')
 const mockGetDefillamaUsdPrice = jest.spyOn(defillamaApi, 'getDefillamaUsdPrice')
 const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsdPrice')
@@ -136,18 +143,17 @@ describe('UsdPricesUpdater', () => {
       })
     }, 2)
 
-    expect(state[usdcKey]).toEqual({
-      isLoading: false,
-      price: usdcPrice,
-      currency: USDC,
-      updatedAt: expect.any(Number),
-    })
-    expect(state[cowKey]).toEqual({
-      isLoading: false,
-      price: cowPrice,
-      currency: CowToken,
-      updatedAt: expect.any(Number),
-    })
+    // Use toBe for Fraction/Token fields — toEqual recurses into JSBI (extends Array)
+    // and triggers infinite recursion in Jest's sparseArrayEquality tester.
+    expect(state[usdcKey].isLoading).toBe(false)
+    expect(state[usdcKey].price).toBe(usdcPrice)
+    expect(state[usdcKey].currency).toBe(USDC)
+    expect(state[usdcKey].updatedAt).toEqual(expect.any(Number))
+
+    expect(state[cowKey].isLoading).toBe(false)
+    expect(state[cowKey].price).toBe(cowPrice)
+    expect(state[cowKey].currency).toBe(CowToken)
+    expect(state[cowKey].updatedAt).toEqual(expect.any(Number))
   })
 
   it('Should use BFF API by default', async () => {

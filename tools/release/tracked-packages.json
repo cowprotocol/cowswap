@@ -1,0 +1,32 @@
+{
+  "packages": [
+    "apps/cow-fi",
+    "apps/cowswap-frontend",
+    "apps/explorer",
+    "apps/widget-configurator",
+    "libs/abis",
+    "libs/analytics",
+    "libs/assets",
+    "libs/balances-and-allowances",
+    "libs/common-const",
+    "libs/common-hooks",
+    "libs/common-utils",
+    "libs/core",
+    "libs/currency",
+    "libs/ens",
+    "libs/events",
+    "libs/hook-dapp-lib",
+    "libs/iframe-transport",
+    "libs/multicall",
+    "libs/permit-utils",
+    "libs/snackbars",
+    "libs/tokens",
+    "libs/types",
+    "libs/ui",
+    "libs/ui-utils",
+    "libs/wallet",
+    "libs/wallet-provider",
+    "libs/widget-lib",
+    "libs/widget-react"
+  ]
+}

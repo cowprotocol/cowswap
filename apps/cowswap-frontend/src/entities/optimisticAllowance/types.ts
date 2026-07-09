@@ -1,5 +1,5 @@
 export interface OptimisticAllowance {
   amount: bigint
-  blockNumber: number
+  blockNumber: bigint
   timestamp: number
 }

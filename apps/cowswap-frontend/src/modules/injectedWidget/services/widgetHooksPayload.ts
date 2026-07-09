@@ -1,5 +1,5 @@
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { AtomsAndUnits, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
@@ -37,6 +37,9 @@ interface BuildTradeWidgetHookPayloadParams {
   orderKind?: OrderKind
   maximumSendSellAmount?: CurrencyAmount<Currency> | null
   minimumReceiveBuyAmount?: CurrencyAmount<Currency> | null
+  chainId?: SupportedChainId | null
+  validTo?: number | null
+  slippageBps?: number | null
 }
 
 export function buildTradeWidgetHookPayload({
@@ -47,9 +50,13 @@ export function buildTradeWidgetHookPayload({
   orderKind,
   maximumSendSellAmount,
   minimumReceiveBuyAmount,
+  chainId,
+  validTo,
+  slippageBps,
 }: BuildTradeWidgetHookPayloadParams): OnTradeParamsPayload {
   return {
     orderType,
+    chainId: chainId ?? undefined,
     sellToken: currencyToTokenInfo(inputAmount?.currency),
     buyToken: currencyToTokenInfo(outputAmount?.currency),
     sellTokenAmount: currencyAmountToAtomsAndUnits(inputAmount),
@@ -58,6 +65,8 @@ export function buildTradeWidgetHookPayload({
     minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(minimumReceiveBuyAmount ?? outputAmount),
     recipient: recipient || undefined,
     orderKind,
+    validTo: validTo ?? undefined,
+    slippageBps: slippageBps ?? undefined,
   }
 }
 

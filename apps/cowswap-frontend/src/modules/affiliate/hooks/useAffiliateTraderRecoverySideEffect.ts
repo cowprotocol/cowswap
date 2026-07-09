@@ -11,7 +11,7 @@ import { useRefCodeFromLocalTrades } from './useRefCodeFromLocalTrades'
 import { affiliateTraderSavedCodeAtom, setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 import { logAffiliate } from '../utils/logger'
 
-export function useAffiliateTraderRecoverySideEffect(): void {
+export function useAffiliateTraderRecoverySideEffect(): boolean {
   const { account } = useWalletInfo()
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
   const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
@@ -21,6 +21,7 @@ export function useAffiliateTraderRecoverySideEffect(): void {
     enabled: !localCode && !isLinked,
   })
   const orderbookCode = pastTradesCheck?.refCode
+  const isRecoverySettling = Boolean(!isLinked && (localCode || orderbookCode))
 
   useEffect(() => {
     if (!account || isLinked) {
@@ -38,4 +39,6 @@ export function useAffiliateTraderRecoverySideEffect(): void {
       setSavedCode({ savedCode: orderbookCode, isLinked: true })
     }
   }, [account, isLinked, localCode, orderbookCode, setSavedCode])
+
+  return isRecoverySettling
 }

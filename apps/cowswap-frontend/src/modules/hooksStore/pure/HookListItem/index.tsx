@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
+import svgInfoSrc from '@cowprotocol/assets/cow-swap/info.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
@@ -69,7 +69,7 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
             onOpenDetails()
           }}
         >
-          <SVG src={ICON_INFO} /> <Trans>details</Trans>
+          <SVG src={svgInfoSrc} /> <Trans>details</Trans>
         </i>
       </span>
     </styled.HookDappListItem>

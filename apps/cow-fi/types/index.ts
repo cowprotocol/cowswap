@@ -11,10 +11,10 @@ export interface TokenInfo {
   id: string
   name: string
   symbol: string
-  priceUsd: string | null
-  change24h: string | null
-  volume: string | null
-  marketCap: string | null
+  priceUsd: number | null
+  change24h: number | null
+  volume: number | null
+  marketCap: number | null
   image: {
     large: string | null
   }
@@ -24,8 +24,8 @@ export interface TokenInfo {
 export interface TokenDetails extends TokenInfo {
   description: string
   platforms: Platforms
-  allTimeHigh: string | null
-  allTimeLow: string | null
+  allTimeHigh: number | null
+  allTimeLow: number | null
 }
 
 export interface PaginationParam {

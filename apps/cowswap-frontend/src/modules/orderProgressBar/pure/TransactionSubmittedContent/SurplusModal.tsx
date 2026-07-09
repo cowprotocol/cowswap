@@ -1,6 +1,6 @@
-import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
-import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
-import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
+import svgCheckSingularSrc from '@cowprotocol/assets/cow-swap/check-singular.svg'
+import svgSurplusCowSrc from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
+import svgTwitterSrc from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
@@ -167,10 +167,10 @@ export function SurplusModal(props: SurplusModalProps) {
   return (
     <Wrapper>
       <h2>
-        <SVG src={CheckSingular} title={t`check`} /> <Trans>Swap completed</Trans>
+        <SVG src={svgCheckSingularSrc} title={t`check`} /> <Trans>Swap completed</Trans>
       </h2>
       <span>
-        <img src={SurplusCow} alt={t`surplus cow`} />
+        <img src={svgSurplusCowSrc} alt={t`surplus cow`} />
       </span>
       <h3>
         <Trans>Great!</Trans> {surplusMsg}
@@ -192,7 +192,7 @@ export function SurplusModal(props: SurplusModalProps) {
             action: 'Share on Twitter',
           })}
         >
-          <SVG src={twitterImage} description={`Twitter`} />
+          <SVG src={svgTwitterSrc} description={`Twitter`} />
           <span>
             <Trans>Share this win!</Trans>
           </span>

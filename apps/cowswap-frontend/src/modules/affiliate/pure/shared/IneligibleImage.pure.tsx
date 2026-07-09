@@ -21,7 +21,7 @@ const SAD_COW_FACE_DARK_COLORS = {
 
 const IneligibleImageSvg = styled(SVG)`
   width: 100%;
-  max-width: 180px;
+  max-width: 120px;
   height: auto;
 `
 

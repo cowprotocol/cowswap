@@ -2,12 +2,11 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useUpdateTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -38,19 +37,22 @@ export function AccountProxyRecoverPage(): ReactNode {
   const [txInProgress, setTxInProgress] = useState(false)
 
   const navigateBack = useNavigateBack()
-  const { balance, usdValue } = useTokenBalanceAndUsdValue(tokenAddress)
+  const proxies = useAccountProxies()
+  const ownedProxy = proxies?.find((p) => proxyAddress && areAddressesEqual(p.account, proxyAddress))
+  const validProxyAddress = ownedProxy?.account
+  const validTokenAddress = tokenAddress && isAddress(tokenAddress) ? tokenAddress : undefined
+  const { balance, usdValue } = useTokenBalanceAndUsdValue(validTokenAddress)
   const destroyedRef = useComponentDestroyedRef()
 
-  const proxies = useAccountProxies()
   const updateTokenBalance = useUpdateTokenBalance()
-  const proxyVersion = proxies?.find((p) => areAddressesEqual(p.account, proxyAddress))?.version
+  const proxyVersion = ownedProxy?.version
 
   const recoverFundsContext = useRecoverFundsFromProxy(
-    proxyAddress,
+    validProxyAddress,
     proxyVersion,
-    tokenAddress,
+    validTokenAddress,
     balance,
-    !!tokenAddress && getIsNativeToken(chainId, tokenAddress),
+    !!validTokenAddress && getIsNativeToken(chainId, validTokenAddress),
   )
   const { txSigningStep } = recoverFundsContext
 
@@ -71,11 +73,11 @@ export function AccountProxyRecoverPage(): ReactNode {
         // When tx is successfully mined
         () => {
           navigateBack()
-          tokenAddress && updateTokenBalance(tokenAddress, BigNumber.from(0))
+          validTokenAddress && updateTokenBalance(validTokenAddress, 0n)
         },
       )
     })
-  }, [recoverCallback, navigateBack, updateTokenBalance, tokenAddress, destroyedRef])
+  }, [recoverCallback, navigateBack, updateTokenBalance, validTokenAddress, destroyedRef])
 
   return (
     <Wrapper>
@@ -105,7 +107,9 @@ export function AccountProxyRecoverPage(): ReactNode {
       </TokenWrapper>
 
       <ButtonPrimaryStyled
-        disabled={isFractionFalsy(balance) || !!txSigningStep || txInProgress}
+        disabled={
+          !validProxyAddress || !validTokenAddress || isFractionFalsy(balance) || !!txSigningStep || txInProgress
+        }
         buttonSize={ButtonSize.BIG}
         onClick={onRecover}
       >

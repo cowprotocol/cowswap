@@ -4,13 +4,13 @@ import { StylesheetCSS } from 'cytoscape'
 import styled, { css } from 'styled-components/macro'
 
 // TODO: update icon
-import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'
-import DexIcon from '../../../assets/img/Dex.svg'
-import TokenIcon from '../../../assets/img/eth-network.svg'
+import svgCoWProtocolSrc from '../../../assets/img/CoW-protocol.svg'
+import svgDexSrc from '../../../assets/img/Dex.svg'
+import svgEthNetworkSrc from '../../../assets/img/eth-network.svg'
 // TODO: update icon
-import SpecialIcon from '../../../assets/img/Trader-variant.svg'
+import svgTraderVariantSrc from '../../../assets/img/Trader-variant.svg'
 // TODO: update icon
-import TraderIcon from '../../../assets/img/Trader.svg'
+import svgTraderSrc from '../../../assets/img/Trader.svg'
 import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 import { MEDIA } from '../../../const'
 import { Dropdown } from '../common/Dropdown'
@@ -173,7 +173,7 @@ export function STYLESHEET(): StylesheetCSS[] {
     {
       selector: 'node[type="trader"]',
       css: {
-        'background-image': `url(${TraderIcon})`,
+        'background-image': `url(${svgTraderSrc})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
       },
@@ -181,7 +181,7 @@ export function STYLESHEET(): StylesheetCSS[] {
     {
       selector: 'node[type="special"]',
       css: {
-        'background-image': `url(${SpecialIcon})`,
+        'background-image': `url(${svgTraderVariantSrc})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
       },
@@ -189,7 +189,7 @@ export function STYLESHEET(): StylesheetCSS[] {
     {
       selector: 'node[type="dex"]',
       css: {
-        'background-image': `url(${DexIcon})`,
+        'background-image': `url(${svgDexSrc})`,
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,
@@ -198,7 +198,7 @@ export function STYLESHEET(): StylesheetCSS[] {
     {
       selector: 'node[type="token"]',
       css: {
-        'background-image': `url(${TokenIcon})`,
+        'background-image': `url(${svgEthNetworkSrc})`,
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,
@@ -218,7 +218,7 @@ export function STYLESHEET(): StylesheetCSS[] {
     {
       selector: 'node[type="cowProtocol"]',
       css: {
-        'background-image': `url(${CowProtocolIcon})`,
+        'background-image': `url(${svgCoWProtocolSrc})`,
         height: '90',
         width: '90',
         'text-valign': 'bottom',

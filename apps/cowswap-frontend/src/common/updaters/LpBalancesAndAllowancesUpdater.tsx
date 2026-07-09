@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { BalancesRpcCallUpdater } from '@cowprotocol/balances-and-allowances'
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 
@@ -10,9 +9,7 @@ import ms from 'ms.macro'
 
 import { areLpBalancesLoadedAtom } from './lpBalancesState'
 
-// A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const LP_BALANCES_SWR_CONFIG = { refreshInterval: ms`32s`, revalidateIfStale: false }
-const LP_MULTICALL_OPTIONS = { consequentExecution: true }
+const LP_BALANCES_QUERY_OPTIONS = { refetchInterval: 32_000, refetchOnMount: false } as const
 
 // To avoid high load to the node at the same time
 // We start the updater with a delay
@@ -49,16 +46,17 @@ export function LpBalancesAndAllowancesUpdater({
     setAreLpBalancesLoaded(false)
   }, [account, setAreLpBalancesLoaded])
 
+  const queryOptions = enablePolling ? LP_BALANCES_QUERY_OPTIONS : undefined
+
   return (
     <>
       <BalancesRpcCallUpdater
         chainId={chainId}
         tokenAddresses={lpTokenAddresses}
-        balancesSwrConfig={enablePolling ? LP_BALANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS}
         account={isUpdaterPaused ? undefined : account}
         setLoadingState={false}
         onBalancesLoaded={setAreLpBalancesLoaded}
-        multicallOptions={LP_MULTICALL_OPTIONS}
+        query={queryOptions}
       />
     </>
   )

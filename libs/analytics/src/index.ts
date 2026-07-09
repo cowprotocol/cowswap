@@ -1,5 +1,6 @@
 // Core analytics initialization
 export { initGtm } from './gtm/initGtm'
+export { createNoopCowAnalytics } from './noop/createNoopCowAnalytics'
 export { initPixelAnalytics } from './pixels/initPixelAnalytics'
 export { WebVitalsAnalytics } from './webVitals/WebVitalsAnalytics'
 

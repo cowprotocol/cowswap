@@ -22,6 +22,7 @@ export interface SwapBridgeClickEventData {
   isBridging: boolean
   sellAmount?: CurrencyAmount<Currency> | null
   buyAmount?: CurrencyAmount<Currency> | null
+  surface?: 'trade_button' | 'confirm_modal'
 }
 
 export interface SwapBridgeClickEventInput extends SwapBridgeClickEventData {
@@ -29,7 +30,7 @@ export interface SwapBridgeClickEventInput extends SwapBridgeClickEventData {
 }
 
 export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): string | undefined {
-  const { action, account, isBridging, sellAmount, buyAmount } = input
+  const { action, account, isBridging, sellAmount, buyAmount, surface } = input
 
   if (!isBridging || !sellAmount || !buyAmount) return undefined
 
@@ -73,6 +74,7 @@ export function buildSwapBridgeClickEvent(input: SwapBridgeClickEventInput): str
     buyTokenChainId: buyCurrency.chainId,
     buyAmountExpected: buyAmountRaw,
     buyAmountHuman,
+    surface,
   })
 }
 

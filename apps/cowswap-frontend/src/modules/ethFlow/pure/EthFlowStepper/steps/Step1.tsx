@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
-import Send from '@cowprotocol/assets/cow-swap/send.svg'
-import X from '@cowprotocol/assets/cow-swap/x.svg'
+import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import svgExclamationSrc from '@cowprotocol/assets/cow-swap/exclamation.svg'
+import svgSendSrc from '@cowprotocol/assets/cow-swap/send.svg'
+import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 
 import { t } from '@lingui/core/macro'
 
@@ -44,7 +44,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
   if (hasTransactionError) {
     const errorType = failed ? t`failed` : cancelled ? t`cancelled` : t`replaced`
     return {
-      icon: X,
+      icon: svgXSrc,
       state: 'error',
       label: t`Transaction ${errorType}`,
     }
@@ -52,7 +52,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
 
   if (isCreating && isExpired) {
     return {
-      icon: Exclamation,
+      icon: svgExclamationSrc,
       state: 'error',
       label: t`Order Expired`,
     }
@@ -61,7 +61,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
   // In-progress state
   if (isCreating) {
     return {
-      icon: Send,
+      icon: svgSendSrc,
       state: 'pending',
       label: t`Sending ${nativeTokenSymbol}`,
     }
@@ -69,7 +69,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
 
   // Success state
   return {
-    icon: Checkmark,
+    icon: svgCheckmarkSrc,
     state: 'success',
     label: t`Sent ${nativeTokenSymbol}`,
   }

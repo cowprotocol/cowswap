@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
+import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -12,64 +15,115 @@ import { useIsNativeIn } from './useIsNativeInOrOut'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
+function hasRecipientSearchParam(search: string): boolean {
+  const searchParams = new URLSearchParams(search)
+  return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+}
+
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
+  const location = useLocation()
 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
-  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
+  const hasRecipientInUrl = useMemo(() => hasRecipientSearchParam(location.search), [location.search])
+  const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
+  const outputCurrency = tradeState?.outputCurrency
+  const inputCurrency = tradeState?.inputCurrency
+  const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+  const isNonEvmBridging = isBridging && !!outputCurrency && !isEvmChain(outputCurrency.chainId)
 
   /**
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible && !postHooksRecipientOverride) {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!isAlternativeOrderModalVisible && !postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId changes
+   * Reset recipient whenever chainId or disableCustomRecipient changes,
+   * but preserve any recipient set via URL.
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride) {
+    if (disableCustomRecipient) {
+      onChangeRecipient(null)
+      return
+    }
+
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
+    if (!postHooksRecipientOverride && !isNonEvmBridging) {
       onChangeRecipient(null)
     }
-  }, [chainId, onChangeRecipient, postHooksRecipientOverride])
+  }, [
+    chainId,
+    disableCustomRecipient,
+    onChangeRecipient,
+    postHooksRecipientOverride,
+    isNonEvmBridging,
+    shouldPreserveRecipientFromUrl,
+  ])
 
   /**
    * Remove recipient override when its source hook was deleted
    */
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
 
     if (recipientOverrideWasRemoved) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, isNativeIn, onChangeRecipient])
+  }, [
+    recipient,
+    postHooksRecipientOverride,
+    prevPostHooksRecipientOverride,
+    onChangeRecipient,
+    shouldPreserveRecipientFromUrl,
+  ])
 
   /**
    * Remove recipient when going out from hooks-store page
    */
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     if (!isHooksTradeType) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, onChangeRecipient])
+  }, [isHooksTradeType, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   useEffect(() => {
+    if (shouldPreserveRecipientFromUrl) {
+      return
+    }
+
     if (isHooksTradeType && isNativeIn) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, isNativeIn, onChangeRecipient])
+  }, [isHooksTradeType, isNativeIn, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   return null
 }

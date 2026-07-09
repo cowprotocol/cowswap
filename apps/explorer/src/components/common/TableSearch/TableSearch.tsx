@@ -1,6 +1,6 @@
 import React from 'react'
 
-import searchImg from 'assets/img/search2.svg'
+import svgSearch2Src from 'assets/img/search2.svg'
 
 import { SearchWrapped } from './styled'
 
@@ -19,7 +19,7 @@ export function TableSearch({
 }: SearchProps): React.ReactNode {
   return (
     <SearchWrapped onSubmit={(e): void => e.preventDefault()}>
-      <SearchIcon src={searchImg} />
+      <SearchIcon src={svgSearch2Src} />
       <Input
         autoComplete="off"
         type="search"

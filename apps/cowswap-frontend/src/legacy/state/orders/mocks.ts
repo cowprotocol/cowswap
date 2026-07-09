@@ -36,8 +36,8 @@ const generateOrderId = (ind: number) => {
 }
 
 export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParams): Order => {
-  const sellAmount = randomNumberInRange(0.5, 5) * 10 ** sellToken.decimals // in atoms
-  const buyAmount = randomNumberInRange(0.5, 5) * 10 ** buyToken.decimals // in atoms
+  const sellAmount = Math.floor(randomNumberInRange(0.5, 5) * 10 ** sellToken.decimals) // in atoms (integer)
+  const buyAmount = Math.floor(randomNumberInRange(0.5, 5) * 10 ** buyToken.decimals) // in atoms (integer)
 
   const kind = orderN % 2 ? OrderKind.BUY : OrderKind.SELL
 

@@ -1,12 +1,13 @@
 import { ReactNode, useCallback } from 'react'
 
-import EARN_AS_AFFILIATE_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-affiliate.svg'
+import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+import { useWalletClient } from 'wagmi'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -32,7 +33,7 @@ import {
 } from '../pure/shared'
 
 export function AffiliatePartnerOnboard(): ReactNode {
-  const provider = useWalletProvider()
+  const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const chainId = useWalletChainId()
   const { walletName } = useWalletDetails()
@@ -40,8 +41,9 @@ export function AffiliatePartnerOnboard(): ReactNode {
   const toggleWalletModal = useToggleWalletModal()
 
   const shouldHideNetworkSelector = useShouldHideNetworkSelector()
-  const isUnsupportedNetwork = !isSupportedPayoutsNetwork(chainId)
-  const isSignerAvailable = Boolean(provider)
+  const onPayoutsChain = isSupportedPayoutsNetwork(chainId)
+  const shouldSwitchToPayoutsChain = !!account && !onPayoutsChain
+  const isSignerAvailable = Boolean(walletClient)
   const partnerRewardAmount = getPartnerRewardAmountLabel()
   const triggerVolumeLabel = formatUsdCompact(getDefaultTriggerVolume())
   const affiliateTimeCapDays = PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
@@ -53,7 +55,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
   return (
     <HeroCard>
       <HeroContent>
-        <img src={EARN_AS_AFFILIATE_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsAffiliateSrc} alt="" role="presentation" />
         <HeroTitle $maxWidth={400}>
           <Trans>Invite your friends. Earn together.</Trans>
         </HeroTitle>
@@ -65,16 +67,16 @@ export function AffiliatePartnerOnboard(): ReactNode {
         </HeroSubtitle>
         <HeroActions>
           {!account && (
-            <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={toggleWalletModal} data-testid="affiliate-connect">
+            <ButtonPrimary buttonSize={ButtonSize.BIG} data-testid="affiliate-connect" onClick={toggleWalletModal}>
               <Trans>Connect wallet</Trans>
             </ButtonPrimary>
           )}
-          {!!account && isUnsupportedNetwork && !shouldHideNetworkSelector && (
+          {shouldSwitchToPayoutsChain && !shouldHideNetworkSelector && (
             <ButtonPrimary buttonSize={ButtonSize.BIG} width={'320px'} onClick={onSwitchToMainnet}>
               <Trans>Switch to Ethereum</Trans>
             </ButtonPrimary>
           )}
-          {!!account && isUnsupportedNetwork && shouldHideNetworkSelector && (
+          {shouldSwitchToPayoutsChain && shouldHideNetworkSelector && (
             <WalletSwitchHint>
               <ButtonPrimary buttonSize={ButtonSize.BIG} disabled>
                 <Trans>Switch to Ethereum</Trans>
@@ -88,7 +90,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
               </InlineNote>
             </WalletSwitchHint>
           )}
-          {!!account && !isUnsupportedNetwork && !isSignerAvailable && (
+          {!!account && onPayoutsChain && !isSignerAvailable && (
             <ButtonPrimary onClick={toggleWalletModal} data-testid="affiliate-unlock">
               <Trans>Become an affiliate</Trans>
             </ButtonPrimary>

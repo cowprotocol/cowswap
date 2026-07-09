@@ -42,6 +42,7 @@ export function quoteUsingSameParameters(
       [currentParams.amount === nextParams.amount.toString(), 'amount'],
       [bridgeTradeParams.validFor === nextParams.validFor, 'validFor'],
       [bridgeTradeParams.receiver === nextParams.receiver, 'receiver'],
+      [bridgeTradeParams.bridgeRecipient === nextParams.bridgeRecipient, 'bridgeRecipient'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
       [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
       [areAddressesEqual(currentParams.sellToken, nextParams.sellTokenAddress), 'sellToken'],

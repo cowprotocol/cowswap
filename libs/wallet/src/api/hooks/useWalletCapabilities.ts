@@ -1,105 +1,83 @@
-import { LAUNCH_DARKLY_VIEM_MIGRATION, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import type { Web3Provider } from '@ethersproject/providers'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { logWallet } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
-import useSWR from 'swr'
 import { useCapabilities } from 'wagmi'
 
-import { useWidgetProviderMetaInfo } from './useWidgetProviderMetaInfo'
-
-import { useIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
-import { useIsWalletConnect as legacyUseIsWalletConnect } from '../../web3-react/hooks/useIsWalletConnect'
+import { useIsSafeViaWc } from '../../wagmi/hooks/useWalletMetadata'
 import { useWalletInfo } from '../hooks'
+
+import type { GetCapabilitiesData } from '@wagmi/core/query'
 
 export type WalletCapabilities = {
   atomic?: { status: 'supported' | 'ready' | 'unsupported' }
+  atomicBatch?: { supported: boolean }
 }
 
-const requestTimeout = ms`10s`
-
-const EMPTY_SWR_RESPONSE = { data: undefined, isLoading: true }
-
-/**
- * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
- * to get the capabilities. It breaks the flow with perpetual requests.
- */
-function shouldCheckCapabilities(
-  isWalletConnect: boolean,
-  { data, isLoading }: ReturnType<typeof useWidgetProviderMetaInfo>,
-): boolean {
-  // When widget in the mobile device, wait till providerWcMetadata is loaded
-  // In order to detect if is connected to WalletConnect
-  if (isInjectedWidget() && isMobile && isLoading) {
-    return false
-  }
-
-  const isWalletConnectViaWidget = Boolean(data?.providerWcMetadata)
-
-  return !((isWalletConnect || isWalletConnectViaWidget) && isMobile)
-}
+const WALLET_CAPABILITIES_LOADING_TIMEOUT = ms`5s`
+let timeoutLogged = false
 
 export function useWalletCapabilities(): { data: WalletCapabilities | undefined; isLoading: boolean } {
-  const provider = useWalletProvider()
-  const newIsWalletConnect = useIsWalletConnect()
-  const legacyIsWalletConnect = legacyUseIsWalletConnect()
-  const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
   const { chainId, account } = useWalletInfo()
+  const isSafeViaWc = useIsSafeViaWc()
 
-  const capabilities = useCapabilities({ account, chainId })
+  const shouldFetchCapabilities = useMemo(() => Boolean(account && chainId), [account, chainId])
 
-  let isWalletConnect = legacyIsWalletConnect
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    isWalletConnect = newIsWalletConnect
-  }
+  const select = useCallback(
+    (capabilities: GetCapabilitiesData) => {
+      if (!capabilities || !chainId) return undefined
 
-  const shouldFetchCapabilities = Boolean(
-    shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId,
-  )
-
-  const swrResponse = useSWR<
-    WalletCapabilities | undefined,
-    unknown,
-    readonly [Web3Provider, string, SupportedChainId] | null
-  >(
-    shouldFetchCapabilities ? [provider!, account!, chainId] : null,
-    ([provider, account, chainId]) => {
-      return new Promise((resolve) => {
-        const timeout = setTimeout(() => {
-          resolve(undefined)
-        }, requestTimeout)
-
-        provider
-          .send('wallet_getCapabilities', [account])
-          .then((result: { [chainIdHex: string]: WalletCapabilities }) => {
-            clearTimeout(timeout)
-
-            if (!result) {
-              resolve(undefined)
-              return
-            }
-            const chainIdHex = '0x' + (+chainId).toString(16)
-
-            // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
-            resolve(result[chainIdHex] || result[Object.keys(result)[0]])
-          })
-          .catch((error) => {
-            console.warn('useWalletCapabilities() error', error)
-            clearTimeout(timeout)
-            resolve(undefined)
-          })
-      })
+      // Only apply the Safe wallet fallback (first-entry) when connected via Safe WalletConnect,
+      // since Safe's wallet_getCapabilities response may omit the chain ID key.
+      // For other wallets (e.g. MetaMask), a missing chain entry means the chain is not supported —
+      // using a different chain's capabilities would incorrectly enable features like atomic bundling.
+      return (capabilities[chainId] || (isSafeViaWc ? Object.values(capabilities)[0] : undefined)) as
+        | WalletCapabilities
+        | undefined
     },
-    SWR_NO_REFRESH_OPTIONS,
+    [chainId, isSafeViaWc],
   )
 
-  if (LAUNCH_DARKLY_VIEM_MIGRATION) {
-    return capabilities
-  } else if (!shouldFetchCapabilities && widgetProviderMetaInfo.isLoading) {
-    return EMPTY_SWR_RESPONSE
+  // Fetch capabilities for all chains (no chainId filter) so we can apply
+  // the Safe wallet fallback: if the exact chain is missing, use the first entry.
+  // See https://github.com/safe-global/safe-wallet-monorepo/issues/6906
+  const capabilitiesState = useCapabilities({
+    account,
+    query: {
+      enabled: shouldFetchCapabilities,
+      retry: false,
+      retryOnMount: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      select,
+    },
+  })
+
+  const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
+
+  useEffect(() => {
+    if (!shouldFetchCapabilities || !capabilitiesState.isLoading) {
+      setHasLoadingTimedOut(false)
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      setHasLoadingTimedOut(true)
+
+      if (!timeoutLogged) {
+        timeoutLogged = true
+        logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
+      }
+    }, WALLET_CAPABILITIES_LOADING_TIMEOUT)
+
+    return () => clearTimeout(timeoutId)
+  }, [shouldFetchCapabilities, capabilitiesState.isLoading])
+
+  if (hasLoadingTimedOut && capabilitiesState.isLoading) {
+    return { data: capabilitiesState.data, isLoading: false }
   }
 
-  return swrResponse
+  return capabilitiesState
 }

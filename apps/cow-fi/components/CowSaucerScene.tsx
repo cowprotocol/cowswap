@@ -2,10 +2,10 @@
 
 import { ReactNode } from 'react'
 
-import BG_IMAGE_MED from '@cowprotocol/assets/images/404/cowfi/bg-med.svg'
-import BG_IMAGE_SMALL from '@cowprotocol/assets/images/404/cowfi/bg-small.svg'
-import BG_IMAGE from '@cowprotocol/assets/images/404/cowfi/bg.svg'
-import COW_IMAGE from '@cowprotocol/assets/images/404/cowfi/cow.svg'
+import svgBgMedSrc from '@cowprotocol/assets/images/404/cowfi/bg-med.svg'
+import svgBgSmallSrc from '@cowprotocol/assets/images/404/cowfi/bg-small.svg'
+import svgBgSrc from '@cowprotocol/assets/images/404/cowfi/bg.svg'
+import svgCowSrc from '@cowprotocol/assets/images/404/cowfi/cow.svg'
 import { CowSaucerScene as BaseCowSaucerScene, COWFI_SAUCER_PALETTE_LIGHT, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -17,16 +17,16 @@ const SceneSection = styled.section`
   width: 100%;
   margin: 0 0 calc(${FOOTER_OVERLAP} * -1);
   padding-bottom: ${FOOTER_OVERLAP};
-  background: url(${BG_IMAGE}) left bottom / 100% auto no-repeat;
+  background: url(${svgBgSrc}) left bottom / 100% auto no-repeat;
   overflow: hidden;
 
   ${Media.upToMedium()} {
     margin-top: -10rem;
-    background-image: url(${BG_IMAGE_MED});
+    background-image: url(${svgBgMedSrc});
   }
 
   ${Media.upToSmall()} {
-    background-image: url(${BG_IMAGE_SMALL});
+    background-image: url(${svgBgSmallSrc});
   }
 `
 
@@ -37,7 +37,7 @@ const SceneAnimation = styled(BaseCowSaucerScene)`
 export function CowSaucerScene(): ReactNode {
   return (
     <SceneSection aria-hidden>
-      <SceneAnimation palettes={{ light: COWFI_SAUCER_PALETTE_LIGHT }} cowSprites={{ light: COW_IMAGE }} />
+      <SceneAnimation palettes={{ light: COWFI_SAUCER_PALETTE_LIGHT }} cowSprites={{ light: svgCowSrc }} />
     </SceneSection>
   )
 }

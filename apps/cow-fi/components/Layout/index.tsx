@@ -44,7 +44,7 @@ interface LayoutProps {
 
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
-  const { isSolversEnabled, isAffiliateProgramEnabled } = useFeatureFlags()
+  const { isSolversEnabled } = useFeatureFlags()
 
   const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
@@ -62,7 +62,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
       {/* Override global light theme to force dark mode for MenuBar only */}
       <ThemeProvider theme={darkTheme}>
         <MenuBar
-          navItems={getNavItems(!!isSolversEnabled, !!isAffiliateProgramEnabled)}
+          navItems={getNavItems(!!isSolversEnabled)}
           productVariant={PRODUCT_VARIANT}
           additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
           padding="10px 60px"
@@ -77,7 +77,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
         <Footer
           maxWidth={PAGE_MAX_WIDTH}
           productVariant={PRODUCT_VARIANT}
-          navItems={getGlobalFooterNavItems(!!isAffiliateProgramEnabled)}
+          navItems={getGlobalFooterNavItems()}
           host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
           expanded
           hasTouchFooter

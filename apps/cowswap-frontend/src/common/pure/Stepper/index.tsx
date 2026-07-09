@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import ICON_CHECK from 'assets/icon/check.svg'
+import iconCheckSrc from 'assets/icon/check.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -135,7 +135,7 @@ export function Stepper({ steps, maxWidth, dotSize = 21 }: StepperProps) {
               <i>{step.stepNumber}</i>
             </IconSpinner>
           ) : (
-            <i>{step.stepState === 'finished' ? <SVG src={ICON_CHECK} title={t`checkmark`} /> : step.stepNumber}</i>
+            <i>{step.stepState === 'finished' ? <SVG src={iconCheckSrc} title={t`checkmark`} /> : step.stepNumber}</i>
           )}
           <small>{step.label}</small>
           <hr />

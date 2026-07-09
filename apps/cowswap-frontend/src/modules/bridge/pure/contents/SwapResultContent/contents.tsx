@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
+import svgPlusSrc from '@cowprotocol/assets/cow-swap/plus.svg'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
@@ -94,7 +94,7 @@ export function SurplusConfig({
         <ReceiveAmountTitle
           icon={
             <TimelineIconCircleWrapper>
-              <StyledTimelinePlusIcon src={PlusIcon} />
+              <StyledTimelinePlusIcon src={svgPlusSrc} />
             </TimelineIconCircleWrapper>
           }
         >

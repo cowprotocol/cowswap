@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useIsRestoringConnection } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -11,9 +12,13 @@ import {
   AffiliateTraderLoading,
   AffiliateTraderNextPayout,
   AffiliateTraderOnboard,
+  AffiliateTraderActivityTable,
   AffiliateTraderStats,
   TraderWalletStatus,
+  getAffiliateTraderPageState,
+  useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
+  useTraderActivity,
   AffiliateTraderIneligible,
   AffiliateTraderUnsupportedNetwork,
   ThreeColumnGrid,
@@ -23,15 +28,43 @@ import {
 } from 'modules/affiliate'
 import { PageTitle } from 'modules/application'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
+  const hasSavedCode = !!savedCode
+  const pageState = getAffiliateTraderPageState(walletStatus, hasSavedCode)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isConnectionRestoring = useIsRestoringConnection()
+  const showLoadingSkeleton = isConnectionRestoring || walletStatus === TraderWalletStatus.PENDING
+
+  useAffiliateStateViewAnalytics({
+    action: 'affiliate_trader_page_state_viewed',
+    viewKey: pageState,
+    eventParams: {
+      pageState,
+      walletStatus,
+      hasSavedCode,
+    },
+  })
+
+  // Only show the local affiliate banner when the chain is supported by the app
+  // but not eligible for rewards (e.g. Sepolia). When the chain is globally
+  // unsupported, the app-level banner already covers it.
+  const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
+  const showActivityTable =
+    walletStatus !== TraderWalletStatus.INELIGIBLE &&
+    walletStatus !== TraderWalletStatus.UNSUPPORTED &&
+    !showLoadingSkeleton &&
+    !!savedCode
+  const { data: activityOrders, isLoading: activityLoading } = useTraderActivity(showActivityTable)
 
   return (
     <>
-      {walletStatus === TraderWalletStatus.UNSUPPORTED && <UnsupportedNetwork />}
+      {showAffiliateBanner && <UnsupportedNetwork />}
       <PageWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
@@ -39,7 +72,7 @@ export default function AffiliateTrader(): ReactNode {
           <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
           <AffiliateTraderUnsupportedNetwork />
-        ) : walletStatus === TraderWalletStatus.PENDING ? (
+        ) : showLoadingSkeleton ? (
           <AffiliateTraderLoading />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
           <AffiliateTraderOnboard />
@@ -51,6 +84,7 @@ export default function AffiliateTrader(): ReactNode {
               <AffiliateTraderStats />
               <AffiliateTraderNextPayout />
             </ThreeColumnGrid>
+            <AffiliateTraderActivityTable rows={activityOrders || []} showLoader={activityLoading} />
           </>
         )}
       </PageWrapper>

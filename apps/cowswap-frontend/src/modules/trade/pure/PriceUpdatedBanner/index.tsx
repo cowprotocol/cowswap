@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
-import { InlineBanner } from '@cowprotocol/ui'
+import { UI, InlineBanner } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'

@@ -59,7 +59,25 @@ export const DAI_EIP_2612_PERMIT_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+] as const
+
+export const EIP_2612_PERMIT_ABI = [
+  {
+    type: 'function',
+    name: 'permit',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+      { name: 'v', type: 'uint8' },
+      { name: 'r', type: 'bytes32' },
+      { name: 's', type: 'bytes32' },
+    ],
+    outputs: [],
+  },
+] as const
 
 export const EIP_2612_PERMIT_SELECTOR = '0xd505accf'
 

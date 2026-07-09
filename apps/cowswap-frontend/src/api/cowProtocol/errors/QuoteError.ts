@@ -1,137 +1,68 @@
-import { ApiErrorCodes, ApiErrorObject } from './OperatorError'
-
 export interface QuoteApiErrorObject {
   errorType: QuoteApiErrorCodes
   description: string
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
+  data?: unknown
 }
 
-// Conforms to backend API
-// https://github.com/cowprotocol/services/blob/main/crates/orderbook/openapi.yml
+// TODO: import from SDK `PriceEstimationError.errorType`
 export enum QuoteApiErrorCodes {
-  UnsupportedToken = 'UnsupportedToken',
+  AppDataHashMismatch = 'AppDataHashMismatch',
+  CustomSolverError = 'CustomSolverError',
+  ExcessiveValidTo = 'ExcessiveValidTo',
+  Forbidden = 'Forbidden',
   InsufficientLiquidity = 'InsufficientLiquidity',
-  FeeExceedsFrom = 'FeeExceedsFrom',
-  ZeroPrice = 'ZeroPrice',
-  TransferEthToContract = 'TransferEthToContract',
+  InsufficientValidTo = 'InsufficientValidTo',
+  InternalServerError = 'InternalServerError',
+  InvalidAppData = 'InvalidAppData',
+  InvalidNativeSellToken = 'InvalidNativeSellToken',
+  NoLiquidity = 'NoLiquidity',
+  QuoteNotVerified = 'QuoteNotVerified',
   SameBuyAndSellToken = 'SameBuyAndSellToken',
-  UNHANDLED_ERROR = 'UNHANDLED_ERROR',
+  SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
+  TokenTemporarilySuspended = 'TokenTemporarilySuspended',
+  TradingOutsideAllowedWindow = 'TradingOutsideAllowedWindow',
+  UnsupportedBuyTokenDestination = 'UnsupportedBuyTokenDestination',
+  UnsupportedOrderType = 'UnsupportedOrderType',
+  UnsupportedSellTokenSource = 'UnsupportedSellTokenSource',
+  UnsupportedToken = 'UnsupportedToken',
 }
 
-export const SENTRY_IGNORED_QUOTE_ERRORS = [QuoteApiErrorCodes.FeeExceedsFrom]
+/**
+ * Errors that are expected to happen on regular basis
+ */
+export const SENTRY_IGNORED_QUOTE_ERRORS = [
+  QuoteApiErrorCodes.InsufficientLiquidity,
+  QuoteApiErrorCodes.SellAmountDoesNotCoverFee,
+  QuoteApiErrorCodes.TokenTemporarilySuspended,
+  QuoteApiErrorCodes.TradingOutsideAllowedWindow,
+  QuoteApiErrorCodes.UnsupportedToken,
+  QuoteApiErrorCodes.NoLiquidity,
+]
 
-export enum QuoteApiErrorDetails {
-  UnsupportedToken = 'One of the tokens you are trading is unsupported. Please read the FAQ for more info.',
-  InsufficientLiquidity = 'Token pair selected has insufficient liquidity.',
-  FeeExceedsFrom = 'Current fee exceeds entered "from" amount.',
-  ZeroPrice = 'Quoted price is zero. This is likely due to a significant price difference between the two tokens. Please try increasing amounts.',
-  TransferEthToContract = 'Buying native currencies using smart contract wallets is not currently supported.',
-  SameBuyAndSellToken = 'You are trying to buy and sell the same token.',
-  SellAmountDoesNotCoverFee = 'The selling amount for the order is lower than the fee.',
-  UNHANDLED_ERROR = 'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
-}
+export const UNHANDLED_ERROR_CODE = 'UNHANDLED_ERROR' as const
 
-export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): QuoteApiErrorObject {
-  switch (error?.errorType) {
-    case ApiErrorCodes.NotFound:
-    case ApiErrorCodes.NoLiquidity:
-      return {
-        errorType: QuoteApiErrorCodes.InsufficientLiquidity,
-        description: QuoteApiErrorDetails.InsufficientLiquidity,
-      }
+const UNHANDLED_ERROR_DESC =
+  'Quote fetch failed. This may be due to a server or network connectivity issue. Please try again later.'
 
-    case ApiErrorCodes.SellAmountDoesNotCoverFee:
-      return {
-        errorType: QuoteApiErrorCodes.FeeExceedsFrom,
-        description: QuoteApiErrorDetails.FeeExceedsFrom,
-        data: error?.data,
-      }
-
-    case ApiErrorCodes.UnsupportedToken:
-      return {
-        errorType: QuoteApiErrorCodes.UnsupportedToken,
-        description: error.description,
-      }
-    case ApiErrorCodes.TransferEthToContract:
-      return {
-        errorType: QuoteApiErrorCodes.TransferEthToContract,
-        description: error.description,
-      }
-
-    case ApiErrorCodes.SameBuyAndSellToken:
-      return {
-        errorType: QuoteApiErrorCodes.SameBuyAndSellToken,
-        description: QuoteApiErrorDetails.SameBuyAndSellToken,
-      }
-
-    default:
-      return { errorType: QuoteApiErrorCodes.UNHANDLED_ERROR, description: QuoteApiErrorDetails.UNHANDLED_ERROR }
-  }
-}
-
-export class QuoteApiError extends Error {
-  name = 'QuoteErrorObject'
-  type: QuoteApiErrorCodes
+export class QuoteApiError<Data = unknown> extends Error {
+  name = 'QuoteApiError'
+  type: QuoteApiErrorCodes | typeof UNHANDLED_ERROR_CODE
   description: string
-  // any data attached
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
+  data?: Data
 
-  // Status 400 errors
-  // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static quoteErrorDetails = QuoteApiErrorDetails
+  constructor(quoteError: QuoteApiErrorObject | string) {
+    super(typeof quoteError === 'string' ? quoteError : quoteError.description)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public static async getErrorMessage(response: Response) {
-    try {
-      const orderPostError: QuoteApiErrorObject = await response.json()
-
-      if (orderPostError.errorType) {
-        const errorMessage = QuoteApiError.quoteErrorDetails[orderPostError.errorType]
-        // shouldn't fall through as this error constructor expects the error code to exist but just in case
-        return errorMessage || orderPostError.errorType
-      } else {
-        console.error('Unknown reason for bad quote fetch', orderPostError)
-        return orderPostError.description
-      }
-    } catch {
-      console.error('Error handling 400/404 error. Likely a problem deserialising the JSON response')
-      return QuoteApiError.quoteErrorDetails.UNHANDLED_ERROR
+    if (typeof quoteError === 'string') {
+      this.type = UNHANDLED_ERROR_CODE
+      this.description = UNHANDLED_ERROR_DESC
+      this.message = quoteError
+      return
     }
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  static async getErrorFromStatusCode(response: Response) {
-    switch (response.status) {
-      case 400:
-      case 404:
-        return this.getErrorMessage(response)
-
-      case 500:
-      default:
-        console.error(
-          '[QuoteError::getErrorFromStatusCode] Error fetching quote, status code:',
-          response.status || 'unknown',
-        )
-        return 'Error fetching quote'
-    }
-  }
-
-  constructor(quoteError: QuoteApiErrorObject) {
-    super(quoteError.description)
 
     this.type = quoteError.errorType
     this.description = quoteError.description
-    this.message = QuoteApiError.quoteErrorDetails[quoteError.errorType]
-    this.data = quoteError?.data
+    this.message = quoteError.description
+    this.data = quoteError?.data as Data
   }
-}
-
-export function isValidQuoteError(error: unknown): error is QuoteApiError {
-  return error instanceof QuoteApiError
 }

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
-import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import iconReceiptSrc from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -14,18 +15,24 @@ interface TransactionLinkDisplayProps {
 }
 
 export function TransactionLinkDisplay({ link, label, linkText }: TransactionLinkDisplayProps): ReactNode {
+  const safeLink = getSafeAbsoluteUrl(link)
+
+  if (!safeLink) {
+    return null
+  }
+
   return (
     <ConfirmDetailsItem
       label={
         <>
           <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-            <StyledTimelineReceiptIcon src={ReceiptIcon} />
+            <StyledTimelineReceiptIcon src={iconReceiptSrc} />
           </TimelineIconCircleWrapper>{' '}
           {label}
         </>
       }
     >
-      <ExternalLink href={link}>{linkText}</ExternalLink>
+      <ExternalLink href={safeLink}>{linkText}</ExternalLink>
     </ConfirmDetailsItem>
   )
 }

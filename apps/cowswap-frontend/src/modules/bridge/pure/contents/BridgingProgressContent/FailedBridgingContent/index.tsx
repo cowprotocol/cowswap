@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import iconRefundSrc from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -22,7 +22,7 @@ export function FailedBridgingContent(): ReactNode {
       </ConfirmDetailsItem>
       <ConfirmDetailsItem
         label={
-          <ReceiveAmountTitle icon={<StyledAnimatedTimelineRefundIcon src={RefundIcon} />}>
+          <ReceiveAmountTitle icon={<StyledAnimatedTimelineRefundIcon src={iconRefundSrc} />}>
             <InfoTextSpan>
               <b>
                 <Trans>Refunding</Trans>

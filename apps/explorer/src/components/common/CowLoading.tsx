@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CowLoadingSVG from 'assets/img/CowProtocol-logo.svg'
+import svgCowProtocolSrc from 'assets/img/CowProtocol-logo.svg'
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -36,7 +36,7 @@ export const StyledCowLoading = styled(SVG)`
 
 export const CowLoading: React.FC = () => (
   <WrapperCenter>
-    <StyledCowLoading src={CowLoadingSVG} />
+    <StyledCowLoading src={svgCowProtocolSrc} />
   </WrapperCenter>
 )
 

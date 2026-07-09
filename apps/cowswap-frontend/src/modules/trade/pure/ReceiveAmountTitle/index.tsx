@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
+import svgEqualSrc from '@cowprotocol/assets/cow-swap/equal.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -77,7 +77,7 @@ export function ReceiveAmountTitle({ className, children, icon, variant }: Recei
         )
       ) : (
         <EqualSign variant={variant}>
-          <SVG src={EqualIcon} />
+          <SVG src={svgEqualSrc} />
         </EqualSign>
       )}{' '}
       {children}

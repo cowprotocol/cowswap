@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -38,6 +39,7 @@ export function useApproveAndSwap({
   const { account } = useWalletInfo()
   const tradeSpenderAddress = useTradeSpenderAddress()
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
 
@@ -71,6 +73,7 @@ export function useApproveAndSwap({
       onApproveConfirm,
       minAmountToSignForSwap,
       isPartialApproveEnabledByUser,
+      isInfiniteApproveDisabled: isInfiniteApproveDisabledInWidget,
       handleApprove,
       updateTradeApproveState,
     })
@@ -78,6 +81,7 @@ export function useApproveAndSwap({
     handlePermit,
     amountToApprove,
     isPartialApproveEnabledByUser,
+    isInfiniteApproveDisabledInWidget,
     handleApprove,
     onApproveConfirm,
     updateTradeApproveState,
@@ -92,6 +96,7 @@ interface ApproveAndSwapContext {
   minAmountToSignForSwap?: CurrencyAmount<Currency>
   onApproveConfirm?: (transactionHash: string | null) => void
   isPartialApproveEnabledByUser?: boolean
+  isInfiniteApproveDisabled?: boolean
   handleApprove: ApproveCurrencyCallback
   updateTradeApproveState: UpdateApproveProgressModalState
 }
@@ -101,11 +106,13 @@ async function approveAndSwap({
   onApproveConfirm,
   minAmountToSignForSwap,
   isPartialApproveEnabledByUser,
+  isInfiniteApproveDisabled,
   handleApprove,
   updateTradeApproveState,
 }: ApproveAndSwapContext): Promise<void> {
   const amountToApproveBig = BigInt(amountToApprove.quotient.toString())
-  const toApprove = isPartialApproveEnabledByUser ? amountToApproveBig : MAX_APPROVE_AMOUNT
+  const usePartial = isPartialApproveEnabledByUser || isInfiniteApproveDisabled
+  const toApprove = usePartial ? amountToApproveBig : MAX_APPROVE_AMOUNT
   const tx = await handleApprove(toApprove)
 
   if (tx && onApproveConfirm) {

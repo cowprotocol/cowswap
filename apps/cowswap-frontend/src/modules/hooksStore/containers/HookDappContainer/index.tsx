@@ -1,8 +1,7 @@
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 
@@ -10,11 +9,19 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useTradeState, useTradeNavigate } from 'modules/trade'
 
+import {
+  getValidatedIframeAddHookRequest,
+  getValidatedIframeEditHookRequest,
+  getValidatedIframeTokenAddress,
+  PendingIframeHookMutation,
+} from './hookDappIframeRequests.utils'
+
 import { useAddHook } from '../../hooks/useAddHook'
 import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
 import { useHookStateDiff } from '../../hooks/useStateDiff'
+import { HookDappIframeReview } from '../../pure/HookDappIframeReview'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
@@ -28,18 +35,16 @@ interface HookDappContainerProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: HookDappContainerProps) {
   const { chainId, account } = useWalletInfo()
   const addHook = useAddHook(dapp, isPreHook)
   const editHook = useEditHook(isPreHook)
+  const [pendingIframeMutation, setPendingIframeMutation] = useState<PendingIframeHookMutation | null>(null)
 
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
   const isSmartContract = useIsSmartContractWallet()
-  // TODO M-6 COW-573
-  // This flow will be reviewed and updated later, to include a wagmi alternative
-  const provider = useWalletProvider()
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
@@ -47,7 +52,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const stateDiff = useHookStateDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
-  const signer = useMemo(() => provider?.getSigner(), [provider])
 
   const context = useMemo<HookDappContextType>(() => {
     return {
@@ -55,7 +59,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       account,
       orderParams,
       hookToEdit: hookToEditDetails,
-      signer,
       isSmartContract,
       isPreHook,
       isDarkMode,
@@ -84,7 +87,6 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     chainId,
     account,
     hookToEditDetails,
-    signer,
     isSmartContract,
     tradeNavigate,
     inputCurrencyId,
@@ -97,8 +99,102 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
 
+  useEffect(() => {
+    setPendingIframeMutation(null)
+  }, [dapp.id, hookToEdit])
+
+  const applyPendingIframeMutation = useCallback(() => {
+    if (!pendingIframeMutation) {
+      return
+    }
+
+    if (pendingIframeMutation.type === 'add') {
+      addHook(pendingIframeMutation.payload)
+    } else {
+      editHook(pendingIframeMutation.payload)
+    }
+
+    setPendingIframeMutation(null)
+    onDismiss()
+  }, [addHook, editHook, onDismiss, pendingIframeMutation])
+
+  const cancelPendingIframeMutation = useCallback(() => {
+    setPendingIframeMutation(null)
+  }, [])
+
+  const onAddHookRequest = useCallback(
+    (payload: unknown) => {
+      const mutation = getValidatedIframeAddHookRequest(payload, hookToEdit)
+
+      if (mutation) {
+        setPendingIframeMutation(mutation)
+      }
+    },
+    [hookToEdit],
+  )
+
+  const onEditHookRequest = useCallback(
+    (payload: unknown) => {
+      const mutation = getValidatedIframeEditHookRequest(payload, hookToEdit)
+
+      if (mutation) {
+        setPendingIframeMutation(mutation)
+      }
+    },
+    [hookToEdit],
+  )
+
+  const onSetSellTokenRequest = useCallback(
+    (payload: unknown) => {
+      const tokenAddress = getValidatedIframeTokenAddress(payload)
+
+      if (!tokenAddress) {
+        return
+      }
+
+      tradeNavigate(chainId, { inputCurrencyId: tokenAddress, outputCurrencyId })
+    },
+    [chainId, outputCurrencyId, tradeNavigate],
+  )
+
+  const onSetBuyTokenRequest = useCallback(
+    (payload: unknown) => {
+      const tokenAddress = getValidatedIframeTokenAddress(payload)
+
+      if (!tokenAddress) {
+        return
+      }
+
+      tradeNavigate(chainId, { inputCurrencyId, outputCurrencyId: tokenAddress })
+    },
+    [chainId, inputCurrencyId, tradeNavigate],
+  )
+
   if (isHookDappIframe(dapp)) {
-    return <IframeDappContainer dapp={dapp} context={context} />
+    if (pendingIframeMutation) {
+      return (
+        <HookDappIframeReview
+          chainId={chainId}
+          dappName={dapp.name}
+          dappUrl={dapp.url}
+          isPreHook={isPreHook}
+          mutation={pendingIframeMutation}
+          onCancel={cancelPendingIframeMutation}
+          onConfirm={applyPendingIframeMutation}
+        />
+      )
+    }
+
+    return (
+      <IframeDappContainer
+        dapp={dapp}
+        context={context}
+        onAddHookRequest={onAddHookRequest}
+        onEditHookRequest={onEditHookRequest}
+        onSetSellTokenRequest={onSetSellTokenRequest}
+        onSetBuyTokenRequest={onSetBuyTokenRequest}
+      />
+    )
   }
 
   return dapp.component(dappProps)

@@ -135,9 +135,8 @@ export const LinkedLinkText = styled.span`
   flex: 1 1 auto;
   min-width: 0;
   font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 
   > strong {
     color: var(${UI.COLOR_TEXT});

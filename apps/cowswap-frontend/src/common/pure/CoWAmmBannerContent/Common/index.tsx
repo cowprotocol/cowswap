@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -49,7 +49,7 @@ interface StarIconProps {
 export function StarIcon({ size, top, bottom, right, color }: StarIconProps): ReactNode {
   return (
     <styledEl.StarIcon {...{ size, top, bottom, right, color: color ? `var(${color})` : undefined }}>
-      <SVG src={ICON_STAR} />
+      <SVG src={svgStarShineSrc} />
     </styledEl.StarIcon>
   )
 }

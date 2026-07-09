@@ -35,7 +35,8 @@ function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown
 declare global {
   interface Window {
     dataLayer: unknown[]
-    cowAnalyticsInstance?: CowAnalyticsGtm // For singleton pattern
+    /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
+    cowAnalyticsInstance?: CowAnalytics
   }
 }
 
@@ -252,7 +253,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
             value: event.value,
             non_interaction: event.nonInteraction,
             ...this.getDimensions(),
-            ...(gtmEvent.isBridgeOrder && { isBridgeOrder: gtmEvent.isBridgeOrder }),
+            ...(gtmEvent.isBridgeOrder !== undefined && { isBridgeOrder: gtmEvent.isBridgeOrder }),
             ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
             ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
             ...(gtmEvent.tokenSymbol && {

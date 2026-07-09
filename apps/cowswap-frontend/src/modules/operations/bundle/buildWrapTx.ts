@@ -1,15 +1,24 @@
-import { Weth } from '@cowprotocol/cowswap-abis'
+import { encodeFunctionData, type TransactionRequest } from 'viem'
+
+import type { WethContractData } from 'common/hooks/useContract'
 
 export type BuildWrapTxParams = {
-  wrappedNativeContract: Weth
+  wrappedNativeContract: WethContractData
   weiAmount: string
 }
 
 /**
- * Builds a wrap tx for the given order, without sending it
+ * Builds the wrap (deposit) tx for native token -> WETH, without sending it
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function buildWrapTx({ wrappedNativeContract, weiAmount }: BuildWrapTxParams) {
-  return wrappedNativeContract.populateTransaction.deposit({ value: weiAmount })
+export function buildWrapTx(params: BuildWrapTxParams): TransactionRequest {
+  const { wrappedNativeContract, weiAmount } = params
+  const value = BigInt(weiAmount)
+  return {
+    to: wrappedNativeContract.address as `0x${string}`,
+    data: encodeFunctionData({
+      abi: wrappedNativeContract.abi,
+      functionName: 'deposit',
+    }),
+    value,
+  }
 }

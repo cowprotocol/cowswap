@@ -4,6 +4,7 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
+import { useParams } from 'react-router'
 
 import { AppDataUpdater } from 'modules/appData'
 import { PageTitle } from 'modules/application'
@@ -19,18 +20,24 @@ import {
   limitOrdersDerivedStateAtom,
   useLimitOrdersDerivedStateToFill,
 } from 'modules/limitOrders'
-import { useIsAlternativeOrderModalVisible } from 'modules/trade'
+import { TradeRouteRedirect, useIsAlternativeOrderModalVisible } from 'modules/trade'
 
+import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
 import { AlternativeLimitOrderPage } from './AlternativeLimitOrder.page'
 import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 
 export function LimitOrdersPage(): ReactNode {
+  const params = useParams()
   const isAlternative = useIsAlternativeOrderModalVisible()
   const { i18n } = useLingui()
 
   const limitOrdersDerivedStateToFill = useLimitOrdersDerivedStateToFill()
+
+  if (!params.chainId) {
+    return <TradeRouteRedirect route={Routes.LIMIT_ORDERS} />
+  }
 
   return (
     <HydrateAtom atom={limitOrdersDerivedStateAtom} state={limitOrdersDerivedStateToFill}>

@@ -25,6 +25,7 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: 'ink',
+  [SupportedChainId.SOLANA]: null,
 }
 
 const EMPTY_TOKENS: TokenListByAddress = {}

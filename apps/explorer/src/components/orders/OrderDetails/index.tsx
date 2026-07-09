@@ -28,7 +28,7 @@ import { useCrossChainOrder } from 'modules/bridge'
 import { Order, ORDER_FINAL_FAILED_STATUSES, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
-import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent } from './styled'
+import { TitleUid, StyledExplorerTabs, TabContent } from './styled'
 import { getBridgeTab, getFillsTab, getOverviewTab, TabView } from './tabs'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
@@ -197,11 +197,8 @@ export const OrderDetails: React.FC<Props> = (props) => {
     showSolverDetails && !isMultiFill ? orderWithTxHash : null,
   )
 
-  const ExtraComponentNode: React.ReactNode = (
-    <WrapperExtraComponents>
-      {tabViewSelected === TabView.FILLS && <TablePagination context={FillsTableContext} />}
-    </WrapperExtraComponents>
-  )
+  const ExtraComponentNode: React.ReactNode =
+    tabViewSelected === TabView.FILLS ? <TablePagination context={FillsTableContext} /> : null
 
   // Avoid redirecting until another network is searched again
   useEffect(() => {

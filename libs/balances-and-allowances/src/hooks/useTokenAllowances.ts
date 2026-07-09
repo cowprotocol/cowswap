@@ -1,24 +1,14 @@
 import { useMemo } from 'react'
 
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
-import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
-import { SWRConfiguration } from 'swr'
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
-const MULTICALL_OPTIONS = {}
-
-const SWR_CONFIG: SWRConfiguration = {
-  ...SWR_NO_REFRESH_OPTIONS,
-  refreshInterval: ms`32s`,
-}
-
-export type AllowancesState = Record<string, BigNumber | undefined>
+export type AllowancesState = Record<string, bigint | undefined>
 
 export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
@@ -27,29 +17,32 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
-  const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
 
-  const { data, isLoading } = useMultipleContractSingleData<[BigNumber]>(
-    chainId,
-    tokenAddresses,
-    ERC_20_INTERFACE,
-    'allowance',
-    allowanceParams,
-    MULTICALL_OPTIONS,
-    SWR_CONFIG,
-    account,
-  )
-
-  const results = data?.results
+  const { data: allowances, isLoading } = useReadContracts({
+    contracts: tokenAddresses.map((address) => ({
+      abi: erc20Abi,
+      address: address as `0x${string}`,
+      chainId,
+      functionName: 'allowance',
+      args: [account as `0x${string}`, spender as `0x${string}`],
+    })),
+    query: {
+      enabled: !!account && !!spender && tokenAddresses.length > 0,
+      refetchInterval: ms`32s`,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  })
 
   const state = useMemo(() => {
-    if (!results?.length) return
+    if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
-      acc[address.toLowerCase()] = results[index]?.[0]
+      const result = allowances[index]?.result
+      acc[address.toLowerCase()] = result !== undefined ? (result as bigint) : undefined
       return acc
     }, {})
-  }, [tokenAddresses, results])
+  }, [tokenAddresses, allowances])
 
   return useMemo(() => ({ state, isLoading }), [state, isLoading])
 }

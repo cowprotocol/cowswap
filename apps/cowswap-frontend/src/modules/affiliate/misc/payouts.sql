@@ -2,7 +2,11 @@ with
 params as (
   select
     case when '{{is_staging_env}}' = 'true' then true else false end as is_staging_env,
-    lower('{{payout_type}}') as payout_type
+    lower('{{payout_type}}') as payout_type,
+    case
+      when '{{denied_addresses}}' in ('', 'default value') then cast(array[] as array(varchar))
+      else transform(split('{{denied_addresses}}', ','), x -> lower(trim(x)))
+    end as denied_addresses
 ),
 affiliate_base as (
   select affiliate_address, next_payout
@@ -43,5 +47,6 @@ select
 from base
 where next_payout > 0
   and payout_type = (select payout_type from params)
+  and not contains((select denied_addresses from params), receiver)
 group by 1,2,3
 order by amount desc;

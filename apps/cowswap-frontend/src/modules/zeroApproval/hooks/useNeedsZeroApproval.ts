@@ -1,32 +1,34 @@
 import { useEffect, useState } from 'react'
 
-import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
+import { useConfig } from 'wagmi'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove/shouldZeroApprove'
 
 export function useNeedsZeroApproval(
-  erc20Contract: Nullish<Erc20>,
+  token: Nullish<Token>,
   spender: Nullish<string>,
   sellAmount: Nullish<CurrencyAmount<Token>>,
 ): boolean {
+  const config = useConfig()
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
   useEffect(() => {
-    if (!erc20Contract || !spender || !sellAmount) return
+    if (!token?.address || !spender || !sellAmount || !config) return
 
     shouldZeroApproveFn({
-      tokenContract: erc20Contract,
-      spender: spender,
+      tokenAddress: token.address,
+      spender,
       amountToApprove: sellAmount,
       forceApprove: true,
+      config,
     }).then((res) => {
       setShouldZeroApprove(!!res)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [erc20Contract?.address, sellAmount?.quotient?.toString(), spender])
+  }, [token?.address, sellAmount?.quotient?.toString(), spender, config])
 
   return shouldZeroApprove
 }

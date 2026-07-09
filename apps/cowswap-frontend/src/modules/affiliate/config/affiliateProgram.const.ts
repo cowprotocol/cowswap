@@ -20,7 +20,7 @@ export const AFFILIATE_SUPPORTED_CHAIN_IDS: readonly SupportedChainId[] = [
 ] as const
 
 export const TRADE_ENVS_TO_CHECK: CowEnv[] = ['prod', 'staging']
-export const PAST_ORDERS_SCAN_LIMIT = 10
+export const PAST_ORDERS_SCAN_LIMIT = 10 // per chain and env
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'

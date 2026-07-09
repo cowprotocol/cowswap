@@ -1,3 +1,4 @@
+export { SELL_ETH_RESET_STATE } from './consts'
 export { SwapWidget } from './containers/SwapWidget'
 export { useSwapRawState } from './hooks/useSwapRawState'
 export { useSwapFlowContext } from './hooks/useSwapFlowContext'

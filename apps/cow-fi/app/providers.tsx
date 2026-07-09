@@ -17,7 +17,7 @@ import GlobalStyles from '@/styles/global.styles'
 
 const cowAnalytics = initGtm()
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
   return (
     <Suspense>
       <CacheProvider>
@@ -38,7 +38,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 }
 
-function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
+function StyledComponentsRegistry({ children }: { children: React.ReactNode }): React.ReactNode {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet())
@@ -48,7 +48,7 @@ function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
 
     // Types are out of date, clearTag is not defined.
     // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/65021
-    ;(styledComponentsStyleSheet.instance as any).clearTag()
+    ;(styledComponentsStyleSheet.instance as { clearTag?: () => void }).clearTag?.()
 
     return <>{styles}</>
   })

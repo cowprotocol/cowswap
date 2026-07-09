@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -30,7 +31,13 @@ export function useRecoverFundsCallback(
       return txHash
     } catch (e) {
       console.error(e)
-      handleSetError(e.message || e.toString())
+
+      if (isRejectRequestProviderError(e)) {
+        handleSetError(t`User rejected the request.`)
+      } else {
+        const message = e.shortMessage || e.message || e.toString()
+        handleSetError(message)
+      }
     }
     return
   }, [recoverFundsCallback, addTransaction, accountProxyLabelString, handleSetError])

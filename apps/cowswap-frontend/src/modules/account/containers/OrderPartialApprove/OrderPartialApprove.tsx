@@ -13,39 +13,58 @@ import {
   usePartialApproveAmountModalState,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { OrderActionsWrapper } from './styled'
 
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
+  amountToBuy?: CurrencyAmount<Currency>
   isPartialApproveEnabledBySettings?: boolean
   orderId?: string
 }
 
 export function OrderPartialApprove({
   amountToApprove,
+  amountToBuy,
   isPartialApproveEnabledBySettings,
   orderId,
 }: OrderPartialApproveProps): ReactNode {
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
   const isPartialApprovalModeSelected = useIsPartialApprovalModeSelected()
+  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
 
   const currency = amountToApprove.currency
 
   const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
 
   const finalAmountToApprove = useMemo(() => {
+    if (isInfiniteApproveDisabledInWidget) {
+      return amountToApprove
+    }
+
     if (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected) {
       return partialAmountToApproveFinal
     }
 
     return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
-  }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
+  }, [
+    amountToApprove,
+    isPartialApprovalModeSelected,
+    isPartialApproveEnabledBySettings,
+    partialAmountToApproveFinal,
+    currency,
+    isInfiniteApproveDisabledInWidget,
+  ])
 
   if (isModalOpen) {
     return (
-      <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} amountToSwap={amountToApprove} />
+      <PartialApproveAmountModal
+        initialAmountToApprove={partialAmountToApproveFinal}
+        amountToSwap={amountToApprove}
+        amountToBuy={amountToBuy}
+      />
     )
   }
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
+import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Media, Color, UI } from '@cowprotocol/ui'
 
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
@@ -65,13 +65,11 @@ export type Props = { text: string; onCopy?: (value: string) => void; heightIcon
 export function CopyButton(props: Props): React.ReactNode {
   const { text, onCopy, heightIcon } = props
 
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useCopyClipboard(DISPLAY_TEXT_COPIED_CHECK)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null)
   const buttonRef = useRef<HTMLSpanElement>(null)
 
   const handleOnCopy = (): void => {
-    setCopied(true)
-
     // Calculate tooltip position relative to button
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
@@ -81,31 +79,21 @@ export function CopyButton(props: Props): React.ReactNode {
       })
     }
 
+    setCopied(text)
     onCopy && onCopy(text)
   }
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout | null = null
-
-    if (copied) {
-      timeout = setTimeout(() => {
-        setCopied(false)
-        setTooltipPosition(null)
-      }, DISPLAY_TEXT_COPIED_CHECK)
-    }
-
-    return (): void => {
-      timeout && clearTimeout(timeout)
+    if (!copied) {
+      setTooltipPosition(null)
     }
   }, [copied])
 
   return (
     <>
-      <CopyToClipboard text={text} onCopy={handleOnCopy}>
-        <span ref={buttonRef}>
-          <Icon height={heightIcon} icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />
-        </span>
-      </CopyToClipboard>
+      <span ref={buttonRef} onClick={handleOnCopy}>
+        <Icon height={heightIcon} icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />
+      </span>
       {copied && tooltipPosition && (
         <Portal>
           <CopiedTooltip

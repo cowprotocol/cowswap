@@ -6,11 +6,12 @@ import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
-import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
+import iconGasFreeSrc from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
 import * as styledEl from './styled'
+import { translateTokenListTagText } from './tokenListTagText.utils'
 
 // Programmatic tags that don't come from tokenlists
 const APP_TOKEN_TAGS: TokenListTags = {
@@ -22,7 +23,7 @@ const APP_TOKEN_TAGS: TokenListTags = {
   },
   'gas-free': {
     name: msg`Gas-free`,
-    icon: ICON_GAS_FREE,
+    icon: iconGasFreeSrc,
     description: msg`This token supports gas-free approvals. Enjoy! 🐮`,
     id: '1',
     color: StatusColorVariant.Success,
@@ -77,11 +78,15 @@ function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: T
     <styledEl.TagContainer>
       {tags.map((tag) => {
         const colorEnums = getStatusColorEnums(tag.color || StatusColorVariant.Default)
+        const name = translateTokenListTagText(tag.name)
+        const description = translateTokenListTagText(tag.description)
+        const nameText = extractTextFromStringOrI18nDescriptor(name)
+
         return (
-          <HoverTooltip wrapInContainer key={tag.id} content={extractTextFromStringOrI18nDescriptor(tag.description)}>
+          <HoverTooltip wrapInContainer key={tag.id} content={extractTextFromStringOrI18nDescriptor(description)}>
             <styledEl.Tag tag={tag} colorEnums={colorEnums}>
-              {tag.icon ? <SVG src={tag.icon} title={extractTextFromStringOrI18nDescriptor(tag.name)} /> : null}
-              {extractTextFromStringOrI18nDescriptor(tag.name)}
+              {tag.icon ? <SVG src={tag.icon} title={nameText} /> : null}
+              {nameText}
             </styledEl.Tag>
           </HoverTooltip>
         )

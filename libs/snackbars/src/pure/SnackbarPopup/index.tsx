@@ -63,6 +63,7 @@ export interface SnackbarPopupProps {
 
 export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
   const { id, children, duration, icon, onExpire } = props
+  const hasDuration = duration > 0
 
   const faderStyle = useSpring({
     from: { width: '100%' },
@@ -75,10 +76,12 @@ export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
   }, [id, onExpire])
 
   useEffect(() => {
+    if (!hasDuration) return
+
     const timeout = setTimeout(removeSelf, duration)
 
     return () => clearTimeout(timeout)
-  }, [duration, removeSelf])
+  }, [duration, hasDuration, removeSelf])
 
   return (
     <Wrapper>
@@ -93,7 +96,7 @@ export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
         {icon && <div>{icon}</div>}
         <div>{children}</div>
       </ContentWrapper>
-      <AnimatedFader style={faderStyle} />
+      {hasDuration && <AnimatedFader style={faderStyle} />}
     </Wrapper>
   )
 }

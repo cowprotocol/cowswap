@@ -1,4 +1,4 @@
-import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
+import svgProtectionSrc from '@cowprotocol/assets/cow-swap/protection.svg'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -69,7 +69,7 @@ export function useLabelsTooltips(): LabelTooltipItems {
       label: (
         <>
           <IconImage>
-            <SVG src={ShieldImage} width="16" height="16" title={t`Price protection`} />
+            <SVG src={svgProtectionSrc} width="16" height="16" title={t`Price protection`} />
           </IconImage>{' '}
           <Trans>Price protection</Trans>
         </>

@@ -1,4 +1,4 @@
-import safeLogo from '@cowprotocol/assets/cow-swap/safe-logo.svg'
+import svgSafeSrc from '@cowprotocol/assets/cow-swap/safe-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
@@ -29,7 +29,7 @@ export function SafeTxFields(props: SafeTxFieldsProps) {
   const { chainId, safeAddress, safeTxHash, nonce, confirmationsRequired, confirmations } = props
   const safeTransaction = { safe: safeAddress, safeTxHash }
 
-  const safeLogoImg = <SafeIcon src={safeLogo} alt={t`Safe logo`} />
+  const safeLogoImg = <SafeIcon src={svgSafeSrc} alt={t`Safe logo`} />
 
   return (
     <>

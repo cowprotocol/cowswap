@@ -7,9 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts } from 'modules/trade'
-import { useEstimatedBridgeBuyAmount } from 'modules/trade'
-import { ReceiveAmountInfo } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, ReceiveAmountInfo, useEstimatedBridgeBuyAmount } from 'modules/trade'
 
 import * as styledEl from './styled'
 
@@ -38,6 +36,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
       <div>
         <span>{!isSell ? t`From (incl. fees)` : t`Receive (incl. fees)`}</span>
         <styledEl.QuestionHelperWrapped
+          placement="right"
           text={
             bridgeEstimatedAmounts ? (
               <BridgeReceiveAmountInfo bridgeEstimatedAmounts={bridgeEstimatedAmounts} />

@@ -6,7 +6,7 @@ import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
 import { DefaultTheme } from 'styled-components/macro'
 
-import { Wrapper, TabList } from './styled'
+import { Wrapper, TabList, ExtraContent } from './styled'
 
 // Components
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'
@@ -17,7 +17,6 @@ export enum IndicatorTabSize {
   small = 0.1,
   big = 0.2,
 }
-export type TabBarExtraContent = React.ReactNode
 
 export interface TabItemInterface {
   readonly tab: React.ReactNode
@@ -39,12 +38,13 @@ export interface TabTheme {
   readonly letterSpacing: string
   readonly borderRadius: boolean
 }
-export interface Props {
+
+export interface TabsProps {
   readonly className?: string
   readonly tabItems: TabItemInterface[]
   readonly tabTheme: TabTheme
   readonly selectedTab?: TabId
-  readonly extra?: TabBarExtraContent
+  readonly extra?: React.ReactNode
   readonly extraPosition?: 'top' | 'bottom' | 'both'
   readonly updateSelectedTab?: (activeId: TabId) => void
 }
@@ -64,26 +64,14 @@ export const DEFAULT_TAB_THEME: TabTheme = {
   borderRadius: false,
 }
 
-interface ExtraContentProps {
-  extra?: TabBarExtraContent
-}
-
-const ExtraContent = ({ extra }: ExtraContentProps): React.ReactNode | null => {
-  if (!extra) return null
-
-  return <div className="tab-extra-content">{extra}</div>
-}
-
-const Tabs: React.FC<Props> = (props) => {
-  const {
-    tabTheme = DEFAULT_TAB_THEME,
-    tabItems,
-    selectedTab: parentSelectedTab,
-    extra: tabBarExtraContent,
-    extraPosition = 'top',
-    updateSelectedTab: parentUpdateSelectedTab,
-  } = props
-
+function Tabs({
+  tabTheme = DEFAULT_TAB_THEME,
+  tabItems,
+  selectedTab: parentSelectedTab,
+  extra: tabBarExtraContent,
+  extraPosition = 'top',
+  updateSelectedTab: parentUpdateSelectedTab,
+}: TabsProps): React.ReactNode {
   const [innerSelectedTab, setInnerSelectedTab] = useState(1)
   // Use parent state management if provided, otherwise use internal state
   const selectedTab = parentSelectedTab ?? innerSelectedTab
@@ -102,10 +90,16 @@ const Tabs: React.FC<Props> = (props) => {
             tabTheme={tabTheme}
           />
         ))}
-        {['top', 'both'].includes(extraPosition) && <ExtraContent extra={tabBarExtraContent} />}
+        {tabBarExtraContent && ['top', 'both'].includes(extraPosition) && (
+          <ExtraContent className="tab-extra-content">{tabBarExtraContent}</ExtraContent>
+        )}
       </TabList>
       <TabContent tabItems={tabItems} activeTab={selectedTab} />
-      {['bottom', 'both'].includes(extraPosition) && <ExtraContent extra={tabBarExtraContent} />}
+      {tabBarExtraContent && ['bottom', 'both'].includes(extraPosition) && (
+        <ExtraContent className="tab-extra-content" $isBottom>
+          {tabBarExtraContent}
+        </ExtraContent>
+      )}
     </Wrapper>
   )
 }

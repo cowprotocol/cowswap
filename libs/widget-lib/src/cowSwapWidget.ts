@@ -1,9 +1,25 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { HttpsUrlString, IframeRpcProviderBridge, UrlString, assertHttpsUrlString } from '@cowprotocol/iframe-transport'
+import {
+  HttpsUrlString,
+  IframeRpcProviderBridge,
+  UrlString,
+  assertHttpsUrlString,
+  getNullableParentOrigin,
+} from '@cowprotocol/iframe-transport'
 
+import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
+import { assignElementStyles } from './applyElementStyles'
+import {
+  DEFAULT_WIDGET_PARAMS,
+  WIDGET_IFRAME_ALLOW,
+  WIDGET_IFRAME_ID,
+  WIDGET_IFRAME_REFERRER_POLICY,
+  WIDGET_IFRAME_SANDBOX,
+} from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
+import { isCowSwapWidgetPalette } from './themeUtils'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -16,21 +32,12 @@ import {
   WidgetMethodsListen,
   WindowListener,
 } from './types'
-import { buildWidgetPath, buildWidgetHttpsUrlOrThrow, buildWidgetUrlQuery } from './urlUtils'
+import { buildWidgetPath, buildWidgetUrlQuery, buildWidgetHttpsUrlOrThrow } from './urlUtils'
+import { widgetIframeLoading } from './widgetIframeLoading'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
-const DEFAULT_HEIGHT = '640px'
-const DEFAULT_WIDTH = '450px'
-
-/**
- * Reference: IframeResizer (apps/cowswap-frontend/src/modules/injectedWidget/updaters/IframeResizer.ts)
- * Sometimes MutationObserver doesn't trigger when the height of the widget changes and the widget displays with a scrollbar.
- * To avoid this we add a threshold to the height.
- * 20px
- */
-const HEIGHT_THRESHOLD = 20
-
 const noopHandler: CowSwapWidgetHandler = {
+  iframe: null as never,
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
@@ -41,6 +48,7 @@ const noopHandler: CowSwapWidgetHandler = {
  * Callback function signature for updating the CoW Swap Widget.
  */
 export interface CowSwapWidgetHandler {
+  iframe: HTMLIFrameElement
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
@@ -53,107 +61,193 @@ export interface CowSwapWidgetHandler {
  * @param props - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
+
+// eslint-disable-next-line max-lines-per-function
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady } = props
+  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
+
   let provider = providerAux
-  let currentParams = params
+  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
+  let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframeWithHttpsOriginOrThrow(params)
-  const iframeOrigin = getIframeOrigin(iframe)
+  const iframe = createIframeWithHttpsOriginOrThrow(currentParams)
+  const iframeOriginUrl = getIframeOrigin(iframe)
 
-  if (!iframeOrigin) throw new Error('Could not get iframe origin')
+  if (!iframeOriginUrl) throw new Error('Could not get iframe origin')
 
-  assertHttpsUrlString(iframeOrigin)
+  assertHttpsUrlString(iframeOriginUrl)
 
-  logWidget('Resolved trusted iframe origin', { iframeOrigin })
+  logWidget('Resolved trusted iframe origin', { iframeOriginUrl })
+
+  const iframeOrigin: HttpsUrlString = iframeOriginUrl
 
   const windowListeners: WindowListener[] = []
-
-  if (onReady) {
-    windowListeners.push(listenToReady(iframeOrigin, onReady))
-  }
 
   // 2. Clear the content (delete any previous iFrame if it exists)
   container.innerHTML = ''
   container.appendChild(iframe)
 
-  const { contentWindow: iframeWindow } = iframe
+  // Style the container (the root box). The iframe fills it.
+  applyContainerStyles(container, currentParams)
 
-  if (!iframeWindow) {
-    console.error('Iframe does not contain a window', iframe)
-    throw new Error('Iframe does not contain a window!')
-  }
+  let iframeWindow: Window | null = null
+  let updateInterceptDeepLinks: () => void = () => void 0
+  let updateWidgetHooks: () => void = () => void 0
+  let cancelWidgetLoading: () => void = () => void 0
 
-  // 3. Send appCode (once the widget posts the ACTIVATE message)
-  windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, params.appCode))
+  let iFrameCowEventEmitter: IframeCowEventEmitter | null = null
+  let iframeRpcProviderBridge: IframeRpcProviderBridge | null = null
+  let iframeSafeSdkBridge: IframeSafeSdkBridge | null = null
 
-  // 4. Handle widget height changes
-  windowListeners.push(...listenToHeightChanges(iframe, iframeOrigin, params.height, params.maxHeight))
-
-  // 5. Intercept deeplinks navigation in the iframe
-  windowListeners.push(interceptDeepLinks(iframeOrigin))
-
-  // 6. Handle two-way communication of widget hooks
+  let heightChangeListeners: WindowListener[] = []
   let widgetHooksListener: WindowListener | null = null
 
-  // Do not replace with `function` to avoid hoisting, as we want `iframeWindow` and `iframeOrigin` to have passed the checks above:
-  const updateWidgetHooks = (): void => {
+  function setup(): void {
+    iframeWindow = iframe.contentWindow
+    if (!iframeWindow) {
+      console.error('Iframe does not contain a window', iframe)
+      throw new Error('Iframe does not contain a window!')
+    }
+
+    windowListeners.push(
+      listenToReady(iframeWindow, iframeOrigin, () => {
+        onReady?.()
+        onWidgetReady()
+      }),
+    )
+
+    // 3. Send appCode (once the widget posts the ACTIVATE message)
+    windowListeners.push(sendAppCodeOnActivation(iframeWindow, iframeOrigin, currentParams.appCode))
+
+    // 4. Handle widget height changes (re-registered when params change so defaults/maxHeight stay in sync)
+    heightChangeListeners = listenToHeightChanges(container, iframe, iframeOrigin, (nextHeight) => {
+      lastDynamicHeight = nextHeight
+    })
+
+    // 5. Intercept deeplinks navigation in the iframe
+    let interceptDeepLinksListener: WindowListener | null = null
+
+    updateInterceptDeepLinks = () => {
+      if (!iframeWindow) return
+
+      if (interceptDeepLinksListener) {
+        window.removeEventListener('message', interceptDeepLinksListener)
+      }
+
+      // If `window.open` is disabled, do not intercept deep links.
+      if (currentParams.disableWindowOpen) return
+
+      interceptDeepLinksListener = interceptDeepLinks(iframeOrigin, iframeWindow)
+      windowListeners.push(interceptDeepLinksListener)
+    }
+    // 6. Handle two-way communication of widget hooks
+
+    updateWidgetHooks = () => {
+      if (!iframeWindow) return
+
+      if (widgetHooksListener) {
+        window.removeEventListener('message', widgetHooksListener)
+      }
+
+      widgetHooksListener = processWidgetHooks(iframeWindow, iframeOrigin, currentParams.hooks)
+    }
+
+    updateInterceptDeepLinks()
+    updateWidgetHooks()
+
+    // 7. Handle and forward widget events to the listeners
+    iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, iframeWindow, listeners)
+
+    // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+    iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
+
+    // 9. Schedule the uploading of the params, once the iframe is loaded
+    iframe.addEventListener('load', () => {
+      if (!iframeWindow) return
+      updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+    })
+
+    // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
+    iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
+
+    const loadingContext = widgetIframeLoading(container, iframe, setup, destroy, props.onLoadingError)
+
+    cancelWidgetLoading = loadingContext.cancelWidgetLoading
+    const onWidgetReady = loadingContext.onWidgetReady
+  }
+
+  function destroy(skipIframeDestroy = false): void {
+    // Disconnect rpc provider and unsubscribe to events
+    iframeRpcProviderBridge?.disconnect()
+    // Stop listening for cow events
+    iFrameCowEventEmitter?.stopListeningIframe()
+
+    // Disconnect all listeners
+    heightChangeListeners.forEach((listener) => window.removeEventListener('message', listener))
+    windowListeners.forEach((listener) => window.removeEventListener('message', listener))
     if (widgetHooksListener) {
       window.removeEventListener('message', widgetHooksListener)
     }
 
-    widgetHooksListener = processWidgetHooks(iframeWindow, iframeOrigin, currentParams.hooks)
-    windowListeners.push(widgetHooksListener)
+    // Stop listening for SDK messages
+    iframeSafeSdkBridge?.stopListening()
+
+    // Destroy the iframe
+    if (!skipIframeDestroy && iframe && iframe.parentNode === container) container.removeChild(iframe)
+
+    cancelWidgetLoading?.()
   }
 
-  updateWidgetHooks()
-
-  // 7. Handle and forward widget events to the listeners
-  const iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, listeners)
-
-  // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
-  let iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
-
-  // 9. Schedule the uploading of the params, once the iframe is loaded
-  iframe.addEventListener('load', () => {
-    updateParams(iframeWindow, iframeOrigin, currentParams, provider)
-  })
-
-  // 10. Listen for messages from the iframe
-  const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
+  setup()
 
   // 11. Return the handler, so the widget, listeners, and provider can be updated
   return {
+    iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
-      currentParams = newParams
+      if (!iframeWindow) return
+      currentParams = resolveWidgetParams(newParams)
+
+      applyContainerStyles(container, currentParams, lastDynamicHeight)
       updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      updateInterceptDeepLinks()
       updateWidgetHooks()
     },
-    updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
+    updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter?.updateListeners(newListeners),
     updateProvider: (newProvider) => {
+      if (!iframeWindow) return
+
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, iframeRpcProviderBridge, newProvider)
     },
 
-    destroy: () => {
-      // Disconnect rpc provider and unsubscribe to events
-      iframeRpcProviderBridge.disconnect()
-      // Stop listening for cow events
-      iFrameCowEventEmitter.stopListeningIframe()
-
-      // Disconnect all listeners
-      windowListeners.forEach((listener) => window.removeEventListener('message', listener))
-
-      // Stop listening for SDK messages
-      iframeSafeSdkBridge.stopListening()
-
-      // Destroy the iframe
-      container.removeChild(iframe)
-    },
+    destroy,
   }
+}
+
+function createIframeSafeSdkBridge(
+  enabled: boolean,
+  appWindow: Window,
+  iframeWindow: Window,
+  iframeOrigin: string,
+): IframeSafeSdkBridge | null {
+  if (!enabled) {
+    return null
+  }
+
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getNullableParentOrigin())
+}
+
+function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+  const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
+
+  if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
+    throw new Error('Required param `appCode` is missing')
+  }
+
+  return currentParams
 }
 
 /**
@@ -197,17 +291,67 @@ function updateProvider(
  * @returns The generated HTMLIFrameElement.
  */
 function createIframeWithHttpsOriginOrThrow(params: CowSwapWidgetParams): HTMLIFrameElement {
-  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
-
   const iframe = document.createElement('iframe')
 
+  iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetHttpsUrlOrThrow(params)
-  iframe.width = width
-  iframe.height = height
+  iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
+  iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
+  iframe.allow = WIDGET_IFRAME_ALLOW
+
+  // The container carries the user's rootStyle; the iframe simply fills it.
+  iframe.style.width = '100%'
+  iframe.style.height = '100%'
   iframe.style.border = '0'
-  iframe.allow = 'clipboard-read; clipboard-write'
+  iframe.style.display = 'block'
 
   return iframe
+}
+
+function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
+  assignElementStyles(container, params.rootStyle)
+
+  const deprecatedParams = [
+    {
+      name: 'params.width',
+      value: params.width,
+      replacementName: 'rootStyle.width',
+      replacementValue: params.rootStyle?.width,
+      applyDeprecated: () => (params.width ? (container.style.width = params.width) : void 0),
+    },
+    {
+      name: 'params.height',
+      value: params.height,
+      replacementName: 'rootStyle.height',
+      replacementValue: params.rootStyle?.height,
+      applyDeprecated: () => (params.height ? (container.style.height = params.height) : void 0),
+    },
+    {
+      name: 'params.maxHeight',
+      value: params.maxHeight,
+      replacementName: 'rootStyle.maxHeight',
+      replacementValue: params.rootStyle?.maxHeight,
+      applyDeprecated: () => (params.maxHeight ? (container.style.maxHeight = `${params.maxHeight}px`) : void 0),
+    },
+    {
+      name: 'params.theme.boxShadow',
+      value: isCowSwapWidgetPalette(params.theme) ? params.theme.boxShadow : undefined,
+      replacementName: 'cardStyle.boxShadow',
+      replacementValue: params.cardStyle?.boxShadow,
+      applyDeprecated: () => void 0,
+    },
+  ].filter((paramConfig) => !!paramConfig.value)
+
+  deprecatedParams.forEach((param) => {
+    if (param.replacementValue) {
+      console.warn(`Both ${param.name} and ${param.replacementName} have been set. ${param.name} will be ignored.`)
+    } else {
+      console.warn(`${param.name} is deprecated. Use ${param.replacementName} instead.`)
+      param.applyDeprecated()
+    }
+  })
+
+  if (lastDynamicHeight) container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }
 
 function getIframeOrigin(iframe: HTMLIFrameElement): UrlString {
@@ -234,8 +378,8 @@ function updateParams(
   const pathname = buildWidgetPath(params)
   const search = buildWidgetUrlQuery(params).toString()
 
-  // Omit theme from appParams
-  const { theme: _theme, hooks: _hooks, ...appParams } = params
+  // Omit theme, hooks, and host-only container styles from appParams
+  const { theme: _theme, hooks: _hooks, rootStyle: _rootStyle, ...appParams } = params
 
   widgetIframeTransport.postMessageToWindow(
     contentWindow,
@@ -261,6 +405,7 @@ function sendAppCodeOnActivation(
 
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.ACTIVATE,
     () => {
       // Update the appData
@@ -275,13 +420,14 @@ function sendAppCodeOnActivation(
   )
 }
 
-function listenToReady(iframeOrigin: HttpsUrlString, onReady: () => void): WindowListener {
+function listenToReady(contentWindow: Window, iframeOrigin: HttpsUrlString, onReady: () => void): WindowListener {
   assertHttpsUrlString(iframeOrigin)
 
   let isReady = false
 
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.READY,
     () => {
       if (isReady) return
@@ -296,11 +442,10 @@ function listenToReady(iframeOrigin: HttpsUrlString, onReady: () => void): Windo
 /**
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
-function interceptDeepLinks(iframeOrigin: HttpsUrlString): (payload: MessageEvent<unknown>) => void {
-  assertHttpsUrlString(iframeOrigin)
-
+function interceptDeepLinks(iframeOrigin: HttpsUrlString, iframeWindow: Window): WindowListener {
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    iframeWindow,
     WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
     ({ href, rel, target }) => {
       const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
@@ -329,47 +474,37 @@ function resolveWindowOpenUrl(url: string, iframeOrigin: HttpsUrlString): string
   }
 }
 
-function isAllowedWindowOpenUrl(url: string): boolean {
-  try {
-    const protocol = new URL(url).protocol
+const DYNAMIC_HEIGHT_CSS_VAR = '--dynamicHeight'
 
-    return protocol === 'http:' || protocol === 'https:'
-  } catch {
-    return false
-  }
-}
+const HEIGHT_THRESHOLD = 0
 
-/**
- * Listens for iframeHeight emitted by the widget, and applies dynamic height adjustments to the widget's iframe.
- *
- * @param iframe - The HTMLIFrameElement of the widget.
- * @param defaultHeight - Default height for the widget.
- * @param maxHeight - Maximum height for the widget.
- */
 function listenToHeightChanges(
+  container: HTMLElement,
   iframe: HTMLIFrameElement,
   iframeOrigin: HttpsUrlString,
-  defaultHeight = DEFAULT_HEIGHT,
-  maxHeight?: number,
+  setLastDynamicHeight: (nextHeight: string) => void,
 ): WindowListener[] {
-  assertHttpsUrlString(iframeOrigin)
+  if (!iframe.contentWindow) return []
 
   return [
     widgetIframeTransport.listenToMessageFromWindow(
       window,
+      iframe.contentWindow,
       WidgetMethodsEmit.UPDATE_HEIGHT,
       (data) => {
-        const newHeight = data.height ? data.height + HEIGHT_THRESHOLD : undefined
-
-        iframe.style.height = newHeight ? `${maxHeight ? Math.min(newHeight, maxHeight) : newHeight}px` : defaultHeight
+        const nextHeight = `${(data?.height ?? 0) + HEIGHT_THRESHOLD}px`
+        container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, nextHeight)
+        setLastDynamicHeight(nextHeight)
       },
       iframeOrigin,
     ),
     widgetIframeTransport.listenToMessageFromWindow(
       window,
+      iframe.contentWindow,
       WidgetMethodsEmit.SET_FULL_HEIGHT,
-      ({ isUpToSmall }) => {
-        iframe.style.height = isUpToSmall ? defaultHeight : `${maxHeight || document.body.offsetHeight}px`
+      () => {
+        container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, '100dvh')
+        setLastDynamicHeight('100dvh')
       },
       iframeOrigin,
     ),
@@ -408,6 +543,7 @@ function processWidgetHooks(
 
   return widgetIframeTransport.listenToMessageFromWindow(
     window,
+    contentWindow,
     WidgetMethodsEmit.PROCESS_HOOK,
     async (data) => {
       let isHookPassed = false

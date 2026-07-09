@@ -1,5 +1,3 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-
 import { t } from '@lingui/core/macro'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -9,6 +7,8 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
+
+import type { TransactionReceipt } from 'viem'
 
 export function finalizeEthFlowTx(
   transaction: EnhancedTransactionDetails,
@@ -21,7 +21,7 @@ export function finalizeEthFlowTx(
   const { chainId, isSafeWallet, dispatch, nativeCurrencySymbol } = params
 
   if (subType === 'creation') {
-    if (receipt.status !== 1) {
+    if (receipt.status !== 'success') {
       // If creation failed:
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
@@ -29,15 +29,17 @@ export function finalizeEthFlowTx(
 
       emitOnchainTransactionEvent({
         receipt: {
-          to: receipt.to,
+          to: receipt.to || '',
           from: receipt.from,
-          contractAddress: receipt.contractAddress,
+          contractAddress: receipt.contractAddress || '',
           transactionHash: receipt.transactionHash,
-          blockNumber: receipt.blockNumber,
-          status: receipt.status,
+          blockNumber: Number(receipt.blockNumber),
+          status: 0, // inside receipt.status !== 'success' block
           replacementType: transaction.replacementType,
         },
         summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
+        // `receipt.transactionHash` is an on-chain Ethereum tx hash, not a safeTxHash.
+        isSafeTx: false,
       })
     }
   }

@@ -1,14 +1,15 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Font, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { buildShareHref, copyUrl, openShare, type ShareTarget } from './ShareBlock.utils'
+import { buildShareHref, openShare, type ShareTarget } from './ShareBlock.utils'
 
 const ICON_PATH = '/images/icons/share'
 
@@ -170,7 +171,7 @@ interface ShareState {
   webShareSupported: boolean
   copied: boolean
   handleShare: (target: ShareTarget) => void
-  handleCopy: () => Promise<void>
+  handleCopy: () => void
   handleWebShare: () => Promise<void>
 }
 
@@ -178,8 +179,7 @@ function useShareBlockState({ url, title, onShare }: ShareBlockProps): ShareStat
   const [shareUrl, setShareUrl] = useState(url)
   const [shareTitle, setShareTitle] = useState(title)
   const [webShareSupported, setWebShareSupported] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const copyTimeoutRef = useRef<number | null>(null)
+  const [copied, setCopied] = useCopyClipboard(1500)
 
   useEffect(() => {
     const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
@@ -194,14 +194,6 @@ function useShareBlockState({ url, title, onShare }: ShareBlockProps): ShareStat
     setShareTitle(cleanedTitle || title)
     setWebShareSupported(Boolean(navigator.share))
   }, [title, url])
-
-  useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current !== null) {
-        window.clearTimeout(copyTimeoutRef.current)
-      }
-    }
-  }, [])
 
   const handleShare = useCallback(
     (target: ShareTarget) => {
@@ -218,16 +210,11 @@ function useShareBlockState({ url, title, onShare }: ShareBlockProps): ShareStat
     [shareUrl, shareTitle, title, onShare],
   )
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = useCallback(() => {
     if (!shareUrl) return
-    await copyUrl(shareUrl)
-    setCopied(true)
-    if (copyTimeoutRef.current !== null) {
-      window.clearTimeout(copyTimeoutRef.current)
-    }
-    copyTimeoutRef.current = window.setTimeout(() => setCopied(false), 1500)
+    setCopied(shareUrl)
     onShare?.()
-  }, [shareUrl, onShare])
+  }, [shareUrl, setCopied, onShare])
 
   const handleWebShare = useCallback(async () => {
     if (!shareUrl || !navigator.share) return

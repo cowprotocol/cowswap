@@ -2,14 +2,17 @@ import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 
 import { isSellOrder } from './isSellOrder'
-import { log } from './logger'
+import { createCowLogger } from './logger'
 
 interface Market<T = string> {
   baseToken: T
   quoteToken: T
 }
 
-const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
+// 4001 is the standard EIP-1193 user rejection code.
+// -32000 is a generic server error used by nodes for things like "intrinsic gas too low";
+// it is NOT included here because relying on it alone causes node errors to be silently swallowed.
+const PROVIDER_REJECT_REQUEST_CODES = [4001] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
   'User rejected',
@@ -71,7 +74,7 @@ export const registerOnWindow = (registerMapping: Record<string, unknown>): void
 
   Object.entries(registerMapping).forEach(([key, value]) => {
     ;(window as WindowWithMapping)[key] = value
-    log(undefined, undefined, key, value)
+    createCowLogger('AppMeta').info(key, value)
   })
 }
 
@@ -123,7 +126,12 @@ export function getChainIdValues(): ChainId[] {
  */
 export function getProviderErrorMessage(error: unknown): string | undefined {
   if (typeof error === 'string') return error
-  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  if (error && typeof error === 'object') {
+    // Prefer viem's shortMessage (concise, human-readable) over the full message
+    // which includes verbose request arguments and hex data.
+    if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
+    if ('message' in error) return error.message as string
+  }
   return error?.toString()
 }
 
@@ -171,25 +179,37 @@ export function hashCode(text: string): number {
  *
  * @returns true if the user rejected the request in their wallet
  */
-// TODO: Add proper return type annotation
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-export function isRejectRequestProviderError(error: any) {
-  if (error) {
-    // Check the error code is the user rejection as described in eip-1193
-    if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
-      return true
-    }
+// Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
+// or pathologically deep chain.
+const MAX_ERROR_CAUSE_DEPTH = 8
 
-    // Check for some specific messages returned by some wallets when rejecting requests
-    const message = getProviderErrorMessage(error)
-    if (
-      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
-        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
-      )
-    ) {
-      return true
-    }
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isRejectRequestProviderError(error: any, depth = 0): boolean {
+  if (!error || depth > MAX_ERROR_CAUSE_DEPTH) {
+    return false
+  }
+
+  // Check the error code is the user rejection as described in eip-1193
+  if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
+    return true
+  }
+
+  // Check for some specific messages returned by some wallets when rejecting requests
+  const message = getProviderErrorMessage(error)
+  if (
+    PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
+      (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
+    )
+  ) {
+    return true
+  }
+
+  // Some wallets (e.g. Safe/WalletConnect via viem) wrap the real 4001 rejection inside a
+  // TransactionExecutionError whose top-level shortMessage is "An unknown RPC error occurred.".
+  // The rejection code/message only lives on error.cause, so walk the chain.
+  if (error.cause !== undefined && error.cause !== error) {
+    return isRejectRequestProviderError(error.cause, depth + 1)
   }
 
   return false

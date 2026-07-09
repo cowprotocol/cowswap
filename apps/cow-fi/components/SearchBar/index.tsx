@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 
-import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import iconSearchSrc from '@cowprotocol/assets/images/icon-search.svg'
+import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { useDebounce, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
@@ -204,7 +204,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
     <SearchBarContainer ref={searchContainerRef}>
       <InputContainer>
         <SearchIcon>
-          <SVG src={IMG_ICON_SEARCH} />
+          <SVG src={iconSearchSrc} />
         </SearchIcon>
         <Input
           ref={inputRef}
@@ -233,7 +233,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
               }
             }}
           >
-            <SVG src={IMG_ICON_X} />
+            <SVG src={svgXSrc} />
           </CloseIcon>
         )}
       </InputContainer>

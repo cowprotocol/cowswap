@@ -13,7 +13,7 @@ import { bindPopper, removePopper, updateLayout } from './utils'
 
 import { Order } from '../../../api/operator'
 import { traceToTransfersAndTrades } from '../../../api/tenderly'
-import UnknownToken from '../../../assets/img/question1.svg'
+import svgQuestion1Src from '../../../assets/img/question1.svg'
 import { useMultipleErc20 } from '../../../hooks/useErc20'
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { useTransactionData } from '../../../hooks/useTransactionData'
@@ -195,7 +195,7 @@ function getStylesheets(
       // Right now unknown token image will only be used when the address is undefined
       // which is not likely
       // A way to deal with this would be to first fetch the image and when it fails set the fallback image
-      const image = getImageUrl(node.data.address) || UnknownToken
+      const image = getImageUrl(node.data.address) || svgQuestion1Src
 
       stylesheets.push({
         selector: `node[id="${node.data.id}"]`,

@@ -1,6 +1,6 @@
-import React, { ReactNode, useCallback, useMemo, useState, Suspense, lazy } from 'react'
+import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
-import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
@@ -12,14 +12,13 @@ import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/u
 
 import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -93,11 +92,8 @@ export function FinishedStep({
     }
   }, [chainId, t])
 
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  const twitterUrl = useMemo(() => {
+    return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
   // If order is not set, return null
@@ -197,14 +193,17 @@ export function FinishedStep({
       {children}
       {(!disablePostTradeTips || shouldShowSurplus) && (
         <styledEl.ShareButton
+          as="a"
+          href={twitterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.PROGRESS_BAR,
             action: 'Click Share Button',
             label: shouldShowSurplus ? 'Surplus' : 'Tip',
           })}
-          onClick={shareOnTwitter}
         >
-          <SVG src={ICON_SOCIAL_X} />
+          <SVG src={iconSocialXSrc} />
           <span>
             <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
           </span>

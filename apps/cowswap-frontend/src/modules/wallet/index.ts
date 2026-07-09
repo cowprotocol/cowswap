@@ -1,2 +1,2 @@
 export { WatchAssetInWallet } from './containers/WatchAssetInWallet'
-export { Web3Status } from './containers/Web3Status'
+export { WalletStatusButton } from './containers/WalletStatusButton/WalletStatusButton.container'

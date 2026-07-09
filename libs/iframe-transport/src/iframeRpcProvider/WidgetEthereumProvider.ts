@@ -144,6 +144,13 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   request({ method, params }: JsonRpcRequest) {
+    // Block wallet_revokePermissions — wagmi calls this on disconnect, but via the
+    // IframeRpcProviderBridge it would revoke permissions for the *parent dapp's* origin
+    // (e.g. the configurator), disconnecting the dapp's wallet entirely and making
+    // subsequent connections impossible. shimDisconnect handles local disconnect state.
+    if (method === 'wallet_revokePermissions') {
+      return Promise.resolve(null)
+    }
     return this.send(method, params)
   }
 
@@ -198,6 +205,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
       (message) => {
         this.handleRpcRequests(message)
@@ -207,6 +215,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.PROVIDER_ON_EVENT,
       (message) => {
         this.handleOnEvent(message)
@@ -216,6 +225,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
     iframeRpcProviderTransport.listenToMessageFromWindow(
       this.eventSource,
+      this.eventTarget,
       IframeRpcProviderEvents.SEND_PROVIDER_META_INFO,
       (message) => {
         this.providerMetaInfo = message

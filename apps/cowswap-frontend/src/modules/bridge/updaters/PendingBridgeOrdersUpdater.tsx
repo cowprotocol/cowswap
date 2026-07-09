@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
-import { timeSinceInSeconds } from '@cowprotocol/common-utils'
+import { getSafeAbsoluteUrl, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { UiOrderType } from '@cowprotocol/types'
@@ -19,10 +19,11 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 const APPZI_CHECK_INTERVAL = 60_000
 
 function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
+  const safeExplorerUrl = getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined
   const { provider: _, ...eventPayload } = crossChainOrder
 
   // Display snackbar
-  emitBridgingSuccessEvent(eventPayload)
+  emitBridgingSuccessEvent({ ...eventPayload, explorerUrl: safeExplorerUrl })
 
   // Play sound
   getCowSoundSuccess().play()
@@ -31,13 +32,45 @@ function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
   triggerAppziSurvey(
     {
       isBridging: true,
-      explorerUrl: crossChainOrder.explorerUrl,
+      explorerUrl: safeExplorerUrl,
       chainId: crossChainOrder.chainId,
       orderType: UiOrderType.SWAP,
       account: crossChainOrder.order.owner,
     },
     'nps',
   )
+}
+
+function sendBridgeStatusAnalytics(
+  analytics: ReturnType<typeof useCowAnalytics>,
+  action: 'bridging_succeeded' | 'bridging_failed',
+  crossChainOrder: CrossChainOrder,
+): void {
+  const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
+  const { depositTxHash, fillTxHash, status } = crossChainOrder.statusResult
+  const providerInfo = crossChainOrder.provider.info
+  const safeExplorerUrl = getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined
+
+  const payload = {
+    category: CowSwapAnalyticsCategory.Bridge,
+    action,
+    label: `From: ${sourceChainId}, to: ${destinationChainId}`,
+    orderId: crossChainOrder.order.uid,
+    chainId: sourceChainId,
+    isBridgeOrder: true,
+    walletAddress: crossChainOrder.order.owner,
+    sourceChainId,
+    destinationChainId,
+    bridgeStatus: status,
+    explorerUrl: safeExplorerUrl,
+    depositTxHash,
+    fillTxHash,
+    providerName: providerInfo.name,
+    providerType: providerInfo.type,
+    providerDappId: providerInfo.dappId,
+  } satisfies GtmEvent<CowSwapAnalyticsCategory.Bridge>
+
+  analytics.sendEvent(payload)
 }
 
 interface PendingOrderUpdaterProps {
@@ -69,7 +102,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         // Start counting from bridge creation timestamp
         triggerAppziSurvey({
           isBridging: true,
-          explorerUrl: crossChainOrder.explorerUrl,
+          explorerUrl: getSafeAbsoluteUrl(crossChainOrder.explorerUrl) || undefined,
           chainId: crossChainOrder.chainId,
           orderType: UiOrderType.SWAP,
           account: crossChainOrder.order.owner,
@@ -92,36 +125,18 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
     // TODO: detect also when the bridge hook failed to execute after the order was executed
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
-    const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
-
     // Update bridge order status for ALL status changes, not just EXECUTED
     updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
-
-    const analyticsSummary = `From: ${sourceChainId}, to: ${destinationChainId}`
 
     if (isOrderExecuted) {
       // Display surplus modal
       addOrderToSurplusQueue(orderUid)
 
       processExecutedBridging(crossChainOrder)
-
-      analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.Bridge,
-        action: 'bridging_succeeded',
-        label: analyticsSummary,
-        orderId: orderUid,
-        chainId: sourceChainId,
-      } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
+      sendBridgeStatusAnalytics(analytics, 'bridging_succeeded', crossChainOrder)
     } else if (isOrderFailed) {
       getCowSoundError().play()
-
-      analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.Bridge,
-        action: 'bridging_failed',
-        label: analyticsSummary,
-        orderId: orderUid,
-        chainId: sourceChainId,
-      } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
+      sendBridgeStatusAnalytics(analytics, 'bridging_failed', crossChainOrder)
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics])
 

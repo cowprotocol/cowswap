@@ -1,12 +1,6 @@
 import React from 'react'
 
-import {
-  CowAnalyticsProvider,
-  initGtm,
-  initPixelAnalytics,
-  useAnalyticsReporter,
-  WebVitalsAnalytics,
-} from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtm, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
 import * as Sentry from '@sentry/react'
@@ -29,8 +23,6 @@ import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
 const cowAnalytics = initGtm()
-const pixelAnalytics = initPixelAnalytics()
-const webVitalsAnalytics = new WebVitalsAnalytics(cowAnalytics)
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -137,9 +129,6 @@ const AppContent = (): React.ReactNode => {
     account: undefined, // Explorer doesn't have wallet functionality
     walletName: undefined, // Explorer doesn't have wallet functionality
     chainId: chainId || undefined,
-    cowAnalytics,
-    pixelAnalytics,
-    webVitalsAnalytics,
   })
 
   const location = useLocation()

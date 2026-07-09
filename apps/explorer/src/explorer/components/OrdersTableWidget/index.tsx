@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
-
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
@@ -39,22 +37,6 @@ const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
   ]
 }
 
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
-
-const ExtraComponentNode: React.ReactNode = (
-  <WrapperExtraComponents>
-    <TablePagination context={OrdersTableContext} />
-  </WrapperExtraComponents>
-)
 interface Props {
   ownerAddress: string
   networkId: BlockchainNetwork
@@ -76,6 +58,8 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
   // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = isThereNextOrder
   const addressAccountParams = { ownerAddress, networkId }
+
+  const ExtraComponentNode: React.ReactNode = <TablePagination context={OrdersTableContext} />
 
   return (
     <OrdersTableContext.Provider

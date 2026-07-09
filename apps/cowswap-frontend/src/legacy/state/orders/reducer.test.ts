@@ -24,7 +24,7 @@ describe('orders reducer', () => {
      * It is set via requestOrderCancellation and must survive API refetches
      * until the order reaches a terminal state (cancelled, expired, fulfilled).
 
-     * This is especially relevant for Safe wallets, where there is a a gap between
+     * This is especially relevant for Safe wallets, where there is a gap between
      * signing the cancellation tx and executing it onchain. During that gap,
      * the API still sees the order as pending with isCancelling: false.
     */

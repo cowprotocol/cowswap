@@ -21,6 +21,7 @@ import {
   TargetChainId,
 } from '@cowprotocol/cow-sdk'
 
+import { IS_SOLANA_ENABLED } from './featureFlags'
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
@@ -139,11 +140,11 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'sepolia',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
   },
-  [AdditionalTargetChainId.SOLANA]: {
+  [SupportedChainId.SOLANA]: {
     ...mapChainInfoToBaseChainInfo(solana),
     name: 'solana',
     urlAlias: 'solana',
-    nativeCurrency: NATIVE_CURRENCIES[AdditionalTargetChainId.SOLANA],
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SOLANA],
   },
   [AdditionalTargetChainId.BITCOIN]: {
     ...mapChainInfoToBaseChainInfo(bitcoin),
@@ -170,12 +171,16 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
-  SupportedChainId.LINEA, // TODO: decide where to place Linea
-  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
-  SupportedChainId.INK, // TODO: decide where to place Ink
+  SupportedChainId.LINEA,
+  SupportedChainId.PLASMA,
+  SupportedChainId.INK,
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.SEPOLIA,
 ]
+
+if (IS_SOLANA_ENABLED) {
+  SORTED_CHAIN_IDS.push(SupportedChainId.SOLANA)
+}
 
 /**
  * Sorted array of chain IDs in order of relevance.
@@ -188,11 +193,11 @@ export const SORTED_DST_CHAIN_IDS: TargetChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
-  SupportedChainId.LINEA, // TODO: decide where to place Linea
-  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
-  SupportedChainId.INK, // TODO: decide where to place Ink
+  SupportedChainId.LINEA,
+  SupportedChainId.PLASMA,
+  SupportedChainId.INK,
   SupportedChainId.GNOSIS_CHAIN,
-  AdditionalTargetChainId.SOLANA,
+  SupportedChainId.SOLANA,
   AdditionalTargetChainId.BITCOIN,
   SupportedChainId.SEPOLIA,
 ]

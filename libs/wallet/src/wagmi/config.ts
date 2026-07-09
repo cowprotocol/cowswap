@@ -1,35 +1,131 @@
-import { RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { EvmChains } from '@cowprotocol/cow-sdk'
 
-import { safe, injected } from '@wagmi/connectors'
-import { Chain, http } from 'viem'
-import { arbitrum, avalanche, base, bsc, gnosis, ink, linea, mainnet, plasma, polygon, sepolia } from 'viem/chains'
-import { createConfig, Transport } from 'wagmi'
+import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { OptionsController } from '@reown/appkit-controllers'
+import { http } from 'viem'
+import { type Transport } from 'wagmi'
 
-const SUPPORTED_CHAIN_IDS = Object.values(SupportedChainId).filter((v) => typeof v === 'number')
+import { getConnectors } from './getConnectors'
+import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 
-const SUPPORTED_CHAINS: Record<SupportedChainId, Chain> = {
-  [SupportedChainId.MAINNET]: mainnet,
-  [SupportedChainId.BNB]: bsc,
-  [SupportedChainId.GNOSIS_CHAIN]: gnosis,
-  [SupportedChainId.POLYGON]: polygon,
-  [SupportedChainId.BASE]: base,
-  [SupportedChainId.PLASMA]: plasma,
-  [SupportedChainId.ARBITRUM_ONE]: arbitrum,
-  [SupportedChainId.AVALANCHE]: avalanche,
-  [SupportedChainId.LINEA]: linea,
-  [SupportedChainId.INK]: ink,
-  [SupportedChainId.SEPOLIA]: sepolia,
+import { bindActiveProvider } from '../bindActiveProvider'
+import { interceptEIP6963Providers } from '../providerIsolation'
+import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
+import { connectWalletById } from '../utils/connectWalletById'
+import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
+import { wagmiStorage } from '../wagmiStorage'
+
+interceptEIP6963Providers()
+
+const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
+  (acc, chain) => {
+    const chainId = chain.id as EvmChains
+    const url = RPC_URLS[chainId]
+    if (url) {
+      acc[chainId] = http(url)
+    }
+    return acc
+  },
+  {} as Record<EvmChains, Transport>,
+)
+
+/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
+const customRpcUrls: Record<string, Array<{ url: string }>> = {}
+for (const chain of SUPPORTED_REOWN_NETWORKS) {
+  const url = RPC_URLS[chain.id as EvmChains]
+  if (url) {
+    customRpcUrls[`eip155:${chain.id}`] = [{ url }]
+  }
 }
 
-export const config = createConfig({
-  chains: SUPPORTED_CHAIN_IDS.map((chainId) => SUPPORTED_CHAINS[chainId]) as [Chain, ...Chain[]],
-  transports: SUPPORTED_CHAIN_IDS.reduce(
-    (acc, chainId) => {
-      acc[chainId] = http(RPC_URLS[chainId])
-      return acc
+const projectId = 'ac287751638b5d374a03c39e37f70376'
+
+const metadata = {
+  name: 'CoW Swap | The smartest way to trade cryptocurrencies',
+  description:
+    'CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV',
+  url: 'https://swap.cow.fi',
+  icons: ['https://swap.cow.fi/apple-touch-icon.png'],
+}
+
+const solanaAdapter = new SolanaAdapter()
+
+const wagmiAdapter = new WagmiAdapter({
+  batch: {
+    multicall: {
+      wait: 130, //  coalescing window in ms
+      batchSize: 30_000, // calldata size ceiling (30kb)
     },
-    {} as Record<SupportedChainId, Transport>,
-  ),
-  connectors: [safe(), injected()],
+  },
+  // Frequency (in ms) for polling enabled actions & events.
+  pollingInterval: 12_000,
+  connectors: getConnectors(),
+  customRpcUrls,
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  storage: wagmiStorage,
+  transports: wagmiTransports,
 })
+
+// AppKit 1.8.19 does not copy createAppKit({ enableInjected }) into OptionsController.state.
+// WagmiAdapter.addWagmiConnectors() reads this controller state before adding its default injected connector.
+OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
+
+const isSafeApp = getIsSafeAppIframe()
+const isWidget = isInjectedWidget()
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+
+const reownAppKit = createAppKit({
+  adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
+  allowUnsupportedChain: true,
+  customRpcUrls,
+  defaultNetwork: getReownDefaultNetwork(),
+  // Widget mode delegates wallet ownership to its host via WidgetEthereumProvider (iframe
+  // transport). Enabling EIP-6963 in a widget context lets Reown discover and connect to
+  // window.ethereum directly, bypassing the transport and leaking browser-wallet state into
+  // embedded contexts.
+  enableEIP6963: !isWidget,
+  enableInjected: false,
+  enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
+  enableWalletGuide: false,
+  featuredWalletIds: [
+    // Coinbase Wallet
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
+    'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
+  ],
+  features: {
+    swaps: false,
+    onramp: false,
+    receive: false,
+    send: false,
+    analytics: false,
+    email: false,
+    socials: false,
+    connectorTypeOrder: ['recent', 'injected', 'walletConnect'],
+  },
+  metadata,
+  networks: SUPPORTED_REOWN_NETWORKS,
+  projectId,
+  termsConditionsUrl:
+    'https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link',
+})
+
+/**
+ * Instantly connect to Safe if in Safe
+ */
+if (isSafeApp) {
+  connectWalletById(SAFE_CONNECTOR_ID, 'safe')
+} else if (hasRecentConnector && isMobile && window.ethereum) {
+  connectWalletById('injected', 'injected')
+}
+
+bindActiveProvider(wagmiAdapter)
+
+export { wagmiAdapter, reownAppKit, wagmiStorage }

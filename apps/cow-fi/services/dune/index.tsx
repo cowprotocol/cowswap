@@ -2,8 +2,13 @@ import { strict as assert } from 'node:assert'
 
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-const DUNE_API_KEY = process.env.DUNE_API_KEY!
-assert(DUNE_API_KEY, 'DUNE_API_KEY environment var is required')
+function getDuneApiKey(): string {
+  const apiKey = process.env.DUNE_API_KEY?.trim()
+
+  assert(apiKey, 'DUNE_API_KEY environment var is required')
+
+  return apiKey
+}
 
 // TODO: getFromDune will be moved in a future PR to the SDK
 interface MetadataQuery {
@@ -22,11 +27,13 @@ interface GetFromDuneResult<T> {
 }
 
 export async function getFromDune<T>(queryId: number): Promise<GetFromDuneResult<T>> {
+  const duneApiKey = getDuneApiKey()
+
   const response = await fetch(`https://api.dune.com/api/v0/query/${queryId}/results`, {
     next: { revalidate: DATA_CACHE_TIME_SECONDS },
     headers: {
       accept: 'application/json',
-      'X-DUNE-API-KEY': DUNE_API_KEY,
+      'X-DUNE-API-KEY': duneApiKey,
     },
   })
 
@@ -61,7 +68,7 @@ export async function _getTotalCount(queryId: number): Promise<TotalCount> {
 /**
  * @deprecated
  */
-export const getTotalTrades = () => _getTotalCount(TOTAL_TRADES_COUNT_QUERY_ID)
+export const getTotalTrades = (): Promise<TotalCount> => _getTotalCount(TOTAL_TRADES_COUNT_QUERY_ID)
 
 /**
  * @deprecated

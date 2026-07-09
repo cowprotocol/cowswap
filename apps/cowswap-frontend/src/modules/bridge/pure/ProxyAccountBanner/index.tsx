@@ -6,7 +6,7 @@ import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Link } from 'react-router'
 
-import { getProxyAccountUrl } from 'modules/accountProxy/utils/getProxyAccountUrl'
+import { getProxyAccountUrl } from 'modules/accountProxy'
 
 import { AddressLink } from 'common/pure/AddressLink'
 

@@ -66,7 +66,7 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const MainWrapper = styled.div`
-  --pageMaxWidth: 140rem;
+  --pageMaxWidth: 1600px;
   max-width: var(--pageMaxWidth);
   width: 100%;
   min-height: 100vh;

@@ -6,6 +6,8 @@ import {
   OnTradeParamsPayload,
 } from '@cowprotocol/events'
 
+import type * as CSS from 'csstype'
+
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
@@ -19,6 +21,34 @@ export type FlexibleConfig<T> =
   | PerTradeTypeConfig<T>
   | PerTradeTypeConfig<PerNetworkConfig<T>>
   | PerNetworkConfig<PerTradeTypeConfig<T>>
+
+/**
+ * A single forbidden sell→buy token combination for the widget.
+ *
+ * Used as an entry in {@link CowSwapWidgetParams.tokenPairConstraints} to
+ * prevent users from creating orders that swap the given `sell` token for
+ * the given `buy` token (in that direction). Reversing the direction —
+ * trading `buy` for `sell` — is **not** blocked unless an explicit entry
+ * for the reverse pair is also supplied.
+ *
+ * Addresses are matched case-insensitively against the user's selected
+ * tokens; `chainId` must match the active widget chain for the entry to
+ * apply.
+ *
+ * @example
+ * ```ts
+ * tokenPairConstraints: [
+ *   {
+ *     sell: { address: '0xA0b8...eB48', chainId: SupportedChainId.MAINNET },
+ *     buy:  { address: '0xdAC1...1ec7', chainId: SupportedChainId.MAINNET },
+ *   },
+ * ]
+ * ```
+ */
+export type TokenPairConstraint = {
+  sell: { address: string; chainId: SupportedChainId }
+  buy: { address: string; chainId: SupportedChainId }
+}
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
@@ -62,6 +92,8 @@ export interface CowSwapWidgetProps {
   provider?: EthereumProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
+  onLoadingError?(): void
+  enableSafeSdkBridge?: boolean
 }
 
 export interface JsonRpcRequest {
@@ -163,9 +195,12 @@ export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: st
 
 export type CowSwapWidgetPalette = {
   baseTheme: CowSwapTheme
+
   /**
    * Overrides the main widget card shadow.
    * Accepts any valid CSS box-shadow value, for example `none` or `0 12px 24px rgba(0, 0, 0, 0.12)`.
+   *
+   * @deprecated Use cardStyle.boxShadow instead.
    */
   boxShadow?: string
 } & CowSwapWidgetPaletteParams
@@ -222,18 +257,43 @@ export interface CowSwapWidgetParams {
   appCode: string
 
   /**
-   * The width of the widget in pixels. Default: 400px
+   * The width of the outer iframe element. Accepts CSS width values such as `450px` or `100%`.
+   * Default: `450px`
+   *
+   * @deprecated Use rootStyle.width instead.
    */
   width?: string
   /**
-   * The height of the widget in pixels. Default: 600px
+   * The height of the outer iframe element. Accepts CSS height values such as `640px`.
+   * Default: `640px`
+   *
+   * @deprecated Use rootStyle.height instead.
    */
   height?: string
 
   /**
    * The maximum height of the widget in pixels. Default: body.offsetHeight
+   *
+   * @deprecated Use rootStyle.maxHeight instead.
    */
   maxHeight?: number
+
+  /**
+   * Extra inline styles for the outer container element (host page only; not sent into the iframe app).
+   * Applied after width/height attributes. Use e.g. `backgroundColor`, `borderRadius`, `boxShadow`, `border`.
+   * The injected iframe fills this container. Use `height: 'var(--dynamicHeight)'` here for dynamic height.
+   */
+  rootStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the body wrapper (inside the iframe).
+   */
+  bodyWrapperStyle?: CSS.Properties
+
+  /**
+   * Inline styles for the main trade widget card (inside the iframe).
+   */
+  cardStyle?: CSS.Properties
 
   /**
    * Network ID.
@@ -291,8 +351,19 @@ export interface CowSwapWidgetParams {
    * The base url of the widget implementation
    * The parameter can have the URL directly, or an object with the environment property,
    * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
+   *
+   * For security, values are validated before loading the iframe: only `https` origins are accepted,
+   * except `http` on local dev hosts (localhost, 127.0.0.1, ::1, *.localhost). Invalid URLs
+   * (unparsable, credentials, or disallowed scheme/host) either throw or log and fall back to the
+   * production host, depending on `SHOULD_THROW_IF_INVALID_URL` exported from `@cowprotocol/widget-lib`.
    */
   baseUrl?: string
+
+  /**
+   * Overrides the origin trusted for postMessage communication with the widget iframe.
+   * Defaults to the origin derived from `baseUrl` / iframe src.
+   */
+  trustedOrigin?: string
 
   /**
    * Sell token, and optionally the amount.
@@ -332,10 +403,35 @@ export interface CowSwapWidgetParams {
   disableCrossChainSwap?: boolean
 
   /**
+   * Disable setting custom recipient for all trading widgets (swap,limit,twap)
+   * Important! Cross-chain swaps are based on custom recipient functionality!
+   * If you want always having recipient === order owner, then set disableCrossChainSwap=true as well
+   */
+  disableCustomRecipient?: boolean
+
+  /**
    * Disables adding custom tokens and custom token lists.
    * Defaults to false.
    */
   disableTokenImport?: boolean
+  /**
+   * Disables the EIP-2612 permit signing flow. When `true`, the widget will
+   * never sign an off-chain permit and will always send an on-chain approval
+   * transaction — even for tokens that support permit.
+   *
+   * Defaults to false.
+   */
+  disableEIP2612Permits?: boolean
+
+  /**
+   * Disables infinite (MAX_UINT256) ERC-20 approvals. When `true`, every
+   * approval transaction approves only the exact trade-size amount, and the
+   * "Partial approval" toggle in Settings is shown but locked on.
+   *
+   * Defaults to false.
+   */
+  disableInfiniteApprove?: boolean
+
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.
@@ -352,6 +448,19 @@ export interface CowSwapWidgetParams {
   disableProgressBar?: boolean
 
   /**
+   * Disabled switching tokens places by clicking to the arrow between them
+   */
+  disableSwitchingTokens?: boolean
+
+  /**
+   * Hides scrollbars inside the widget iframe (`overflow: hidden` on the document).
+   * Only use when the host iframe height is driven by `var(--dynamicHeight)` and not constrained (e.g. no max-height).
+   *
+   * Defaults to false.
+   */
+  disableScrollbars?: boolean
+
+  /**
    * Disables CoW Swap educational tips shown after a trade completes when no surplus message is available.
    * Defaults to false.
    */
@@ -363,6 +472,12 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableToastMessages?: boolean
+
+  /**
+   * When `true`, the host page will not use `window.open` to open links requested by the widget.
+   * Defaults to `false`.
+   */
+  disableWindowOpen?: boolean
 
   /**
    * Option to hide the logo in the widget.
@@ -433,6 +548,11 @@ export interface CowSwapWidgetParams {
     whenPriceImpactIsHigherThan?: number
   }
 
+  /**
+   * Disables trading of specific token pair
+   */
+  tokenPairConstraints?: TokenPairConstraint[]
+
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult
     onBeforeWrapOrUnwrap(payload: OnTradeParamsPayload): WidgetHookResult
@@ -448,7 +568,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.READY]: void
   [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
-  [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
+  [WidgetMethodsEmit.SET_FULL_HEIGHT]: void
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
   [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
   [WidgetMethodsEmit.PROCESS_HOOK]: WidgetHookPayload<WidgetHookEvents>
@@ -467,7 +587,7 @@ export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethods
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
-export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks'>
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme' | 'hooks' | 'rootStyle'>
 
 export interface UpdateParamsPayload {
   urlParams: {
@@ -487,10 +607,6 @@ export interface UpdateAppDataPayload {
 
 export interface UpdateWidgetHeightPayload {
   height?: number
-}
-
-export interface SetWidgetFullHeightPayload {
-  isUpToSmall?: boolean
 }
 
 export type WidgetHookId = string

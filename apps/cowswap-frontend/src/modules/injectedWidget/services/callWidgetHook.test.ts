@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getNullableParentOrigin, isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { WidgetHookEvents, widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-lib'
 import type { WidgetMethodsEmitPayloadMap } from '@cowprotocol/widget-lib'
@@ -6,20 +6,16 @@ import type { WidgetMethodsEmitPayloadMap } from '@cowprotocol/widget-lib'
 import { callWidgetHook } from './callWidgetHook'
 
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
-import { getParentOrigin } from '../utils/getParentOrigin.utils'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
+  getNullableParentOrigin: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/core', () => ({
   jotaiStore: {
     get: jest.fn(),
   },
-}))
-
-jest.mock('../utils/getParentOrigin.utils', () => ({
-  getParentOrigin: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/widget-lib', () => ({
@@ -46,7 +42,7 @@ const mockListenToMessageFromWindow = widgetIframeTransport.listenToMessageFromW
 const mockPostMessageToWindow = widgetIframeTransport.postMessageToWindow as jest.MockedFunction<
   typeof widgetIframeTransport.postMessageToWindow
 >
-const mockGetParentOrigin = getParentOrigin as jest.MockedFunction<typeof getParentOrigin>
+const mockGetNullableParentOrigin = getNullableParentOrigin as jest.MockedFunction<typeof getNullableParentOrigin>
 
 describe('callWidgetHook', () => {
   beforeEach(() => {
@@ -54,9 +50,9 @@ describe('callWidgetHook', () => {
     mockJotaiGet.mockReset()
     mockListenToMessageFromWindow.mockReset()
     mockPostMessageToWindow.mockClear()
-    mockGetParentOrigin.mockReset()
+    mockGetNullableParentOrigin.mockReset()
     mockIsInjectedWidget.mockReturnValue(true)
-    mockGetParentOrigin.mockReturnValue('http://localhost')
+    mockGetNullableParentOrigin.mockReturnValue('http://localhost')
     mockJotaiGet.mockImplementation((atom) => (atom === injectedWidgetHooksEnabledAtom ? false : undefined))
   })
 
@@ -74,6 +70,7 @@ describe('callWidgetHook', () => {
 
     expect(mockListenToMessageFromWindow).toHaveBeenCalledWith(
       window,
+      expect.any(Window),
       'HOOK_RESULT',
       expect.any(Function),
       'http://localhost',
@@ -89,7 +86,7 @@ describe('callWidgetHook', () => {
       'http://localhost',
     )
 
-    const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][2] as (payload: {
+    const hookResultListener = mockListenToMessageFromWindow.mock.calls[0][3] as (payload: {
       id: string
       result: boolean
     }) => void

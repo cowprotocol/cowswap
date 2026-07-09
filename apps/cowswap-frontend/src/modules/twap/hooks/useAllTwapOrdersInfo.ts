@@ -52,7 +52,7 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
 
       const info = {
         id,
-        orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput),
+        orderStruct: parseTwapOrderStruct(data.conditionalOrderParams.staticInput as `0x${string}`),
         safeData: data,
       }
 

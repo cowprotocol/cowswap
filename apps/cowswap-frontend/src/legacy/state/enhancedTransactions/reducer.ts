@@ -165,6 +165,10 @@ export default createReducer(initialState, (builder) =>
       tx.receipt = receipt
       tx.confirmedTime = now()
 
+      if (receipt.status === 'reverted') {
+        tx.errorMessage = 'Transaction failed'
+      }
+
       if (tx.linkedTransactionHash) {
         delete transactions[chainId]?.[tx.linkedTransactionHash]
       }

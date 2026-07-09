@@ -29,7 +29,7 @@ describe('useSupportedTargetChains', () => {
 
     const ids = result.current.map((c) => c.id)
     expect(ids).not.toContain(AdditionalTargetChainId.BITCOIN)
-    expect(ids).not.toContain(AdditionalTargetChainId.SOLANA)
+    expect(ids).not.toContain(SupportedChainId.SOLANA)
   })
 
   it('includes BTC when isBtcBridgeEnabled is true', () => {
@@ -39,7 +39,7 @@ describe('useSupportedTargetChains', () => {
 
     const ids = result.current.map((c) => c.id)
     expect(ids).toContain(AdditionalTargetChainId.BITCOIN)
-    expect(ids).not.toContain(AdditionalTargetChainId.SOLANA)
+    expect(ids).not.toContain(SupportedChainId.SOLANA)
   })
 
   it('includes Solana when isSolBridgeEnabled is true', () => {
@@ -48,7 +48,7 @@ describe('useSupportedTargetChains', () => {
     const { result } = renderHook(() => useSupportedTargetChains())
 
     const ids = result.current.map((c) => c.id)
-    expect(ids).toContain(AdditionalTargetChainId.SOLANA)
+    expect(ids).toContain(SupportedChainId.SOLANA)
     expect(ids).not.toContain(AdditionalTargetChainId.BITCOIN)
   })
 
@@ -59,7 +59,7 @@ describe('useSupportedTargetChains', () => {
 
     const ids = result.current.map((c) => c.id)
     expect(ids).toContain(AdditionalTargetChainId.BITCOIN)
-    expect(ids).toContain(AdditionalTargetChainId.SOLANA)
+    expect(ids).toContain(SupportedChainId.SOLANA)
   })
 
   it('always includes EVM supported chains', () => {

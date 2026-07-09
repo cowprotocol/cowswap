@@ -1,10 +1,8 @@
-import { type MouseEvent, type ReactNode, useCallback } from 'react'
+import { type ReactNode } from 'react'
 
-import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, Copy } from 'react-feather'
 
 import { QuoteIdTooltipContent } from './QuoteIdTooltipContent'
 import { QuoteVerificationBadge } from './QuoteVerificationIndicator'
@@ -24,31 +22,17 @@ interface QuoteIdValueProps {
 
 export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
   const { t } = useLingui()
-  const [isCopied, setCopied] = useCopyClipboard(1500)
-
-  const handleCopy = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation()
-      setCopied(quoteId)
-    },
-    [quoteId, setCopied],
-  )
-
   return (
     <styledEl.QuoteIdValueWrapper>
       <styledEl.QuoteIdReference>{formatQuoteIdReference(quoteId)}</styledEl.QuoteIdReference>
-      <styledEl.CopyQuoteIdButton onClick={handleCopy} aria-label={t`Copy full quote ID`}>
-        {isCopied ? (
-          <>
-            <Check size={14} />
-            <styledEl.CopiedLabel>
-              <Trans>Copied!</Trans>
-            </styledEl.CopiedLabel>
-          </>
-        ) : (
-          <Copy size={14} />
-        )}
-      </styledEl.CopyQuoteIdButton>
+      <styledEl.CopyQuoteIdButton
+        value={quoteId}
+        timeoutMs={1500}
+        iconSize={14}
+        copiedLabel={<Trans>Copied!</Trans>}
+        aria-label={t`Copy full quote ID`}
+        onClick={(event) => event.stopPropagation()}
+      />
     </styledEl.QuoteIdValueWrapper>
   )
 }

@@ -108,7 +108,7 @@ function isFetchError(breadcrumb: Sentry.Breadcrumb): boolean {
 }
 
 const URLS_TO_IGNORE_FETCH_ERRORS =
-  /(twnodes\.com)|(assets\/cow-no-connection)|(api\.blocknative\.com)|(api\.country\.is)|(nodereal\.io)|(wallet\.coinbase\.com)|(cowprotocol\/cowswap-banner)/i
+  /(twnodes\.com)|(assets\/cow-no-connection)|(blockscout\.com)|(api\.country\.is)|(nodereal\.io)|(wallet\.coinbase\.com)|(cowprotocol\/cowswap-banner)/i
 
 function isMetamaskRpcError(breadcrumb: Sentry.Breadcrumb): boolean {
   if (breadcrumb.level !== 'error' || !breadcrumb.message) {

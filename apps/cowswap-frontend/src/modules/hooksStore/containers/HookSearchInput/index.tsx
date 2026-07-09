@@ -1,4 +1,4 @@
-import IMG_CLOSE_ICON from '@cowprotocol/assets/cow-swap/x.svg'
+import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 import { SearchInput } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -78,7 +78,7 @@ export function HookSearchInput({ value, onChange, placeholder, ariaLabel, onCle
       />
       {value && (
         <ClearButton onClick={onClear} aria-label={t`Clear search input`}>
-          <SVG src={IMG_CLOSE_ICON} />
+          <SVG src={svgXSrc} />
         </ClearButton>
       )}
     </SearchContainer>

@@ -3,7 +3,7 @@ import { Color, Media, UI } from '@cowprotocol/ui'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import AppDataWrapper from '../../../components/common/AppDataWrapper'
+import { AppDataWrapper } from '../../../components/common/AppDataWrapper'
 import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'
 import { ContentCard as Content, Wrapper as WrapperTemplate } from '../styled'
 
@@ -12,8 +12,6 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 `
 
 export const Wrapper = styled(WrapperTemplate)`
-  max-width: 118rem;
-
   .disclaimer {
     font-size: 1.2rem;
     line-height: 1.3;
@@ -171,6 +169,8 @@ export const Wrapper = styled(WrapperTemplate)`
     }
 
     .hidden-content {
+      width: 100%;
+
       h2 {
         margin: 2rem 0 2rem 0;
         font-size: 2rem;
@@ -179,13 +179,11 @@ export const Wrapper = styled(WrapperTemplate)`
       ${Media.LargeAndUp()} {
         position: sticky;
         top: 2.8rem;
-        width: 30vw;
       }
 
       ${Media.MediumAndUp()} {
         position: sticky;
         top: 3rem;
-        width: 35vw;
       }
 
       ${Media.upToSmall()} {
@@ -198,7 +196,6 @@ export const Wrapper = styled(WrapperTemplate)`
       ${Media.LargeAndUp()} {
         position: sticky;
         top: 4rem;
-        width: 60rem;
       }
     }
   }

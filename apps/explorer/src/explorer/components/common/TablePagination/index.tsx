@@ -4,6 +4,7 @@ import { Color, Media, UI } from '@cowprotocol/ui'
 
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { WrapperExtraComponents } from 'components/orders/OrderDetails/styled'
 import styled, { css } from 'styled-components/macro'
 
 import { Dropdown, DropdownOption } from '../Dropdown'
@@ -158,37 +159,39 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
   const hasPreviousPage = !isLoading && pageOffset > 0
 
   return (
-    <PaginationWrapper>
-      {!fixedResultsPerPage && (
-        <>
-          <PaginationText>Rows per page:</PaginationText>
-          <DropdownPagination
-            disabled={isLoading}
-            dropdownButtonContent={
-              <PaginationDropdownButton>
-                {pageSize} <span>▼</span>
-              </PaginationDropdownButton>
-            }
-            dropdownButtonContentOpened={
-              <PaginationDropdownButton className="selected">{pageSize} ▲</PaginationDropdownButton>
-            }
-            currentItem={quantityPerPage.findIndex((option) => option === pageSize)}
-            items={quantityPerPage.map((pageOption) => (
-              <PaginationItem key={pageOption} onClick={(): void => setPageSize(pageOption)}>
-                {pageOption}
-              </PaginationItem>
-            ))}
-          />
-        </>
-      )}
-      <PaginationText className="legend">{renderPageLegend()}</PaginationText>{' '}
-      <PaginationButton disabled={!hasPreviousPage} onClick={handlePreviousPage}>
-        <Icon icon={faChevronLeft} className="fill" />
-      </PaginationButton>
-      <PaginationButton disabled={!hasNextPage} onClick={handleNextPage}>
-        <Icon icon={faChevronRight} className="fill" />
-      </PaginationButton>
-    </PaginationWrapper>
+    <WrapperExtraComponents>
+      <PaginationWrapper>
+        {!fixedResultsPerPage && (
+          <>
+            <PaginationText>Rows per page:</PaginationText>
+            <DropdownPagination
+              disabled={isLoading}
+              dropdownButtonContent={
+                <PaginationDropdownButton>
+                  {pageSize} <span>▼</span>
+                </PaginationDropdownButton>
+              }
+              dropdownButtonContentOpened={
+                <PaginationDropdownButton className="selected">{pageSize} ▲</PaginationDropdownButton>
+              }
+              currentItem={quantityPerPage.findIndex((option) => option === pageSize)}
+              items={quantityPerPage.map((pageOption) => (
+                <PaginationItem key={pageOption} onClick={(): void => setPageSize(pageOption)}>
+                  {pageOption}
+                </PaginationItem>
+              ))}
+            />
+          </>
+        )}
+        <PaginationText className="legend">{renderPageLegend()}</PaginationText>{' '}
+        <PaginationButton disabled={!hasPreviousPage} onClick={handlePreviousPage}>
+          <Icon icon={faChevronLeft} className="fill" />
+        </PaginationButton>
+        <PaginationButton disabled={!hasNextPage} onClick={handleNextPage}>
+          <Icon icon={faChevronRight} className="fill" />
+        </PaginationButton>
+      </PaginationWrapper>
+    </WrapperExtraComponents>
   )
 }
 

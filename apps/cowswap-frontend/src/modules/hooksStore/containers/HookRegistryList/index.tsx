@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
+import svgHookSrc from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
@@ -134,7 +134,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
         {isAllHooksTab && (
           <DismissableInlineBanner
             orientation={BannerOrientation.Horizontal}
-            customIcon={ICON_HOOK}
+            customIcon={svgHookSrc}
             iconSize={36}
             bannerId="hooks-store-banner-tradeContainer-customHooks"
             margin="10px 10px 0"

@@ -3,7 +3,11 @@ import { CmsSolversInfo, SolverNetwork, SolversInfo } from '../types'
 export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): SolversInfo {
   return cmsSolversInfo.reduce<SolversInfo>((acc, info) => {
     if (info?.attributes) {
-      const { solverId, displayName, image, solver_networks, description } = info.attributes
+      const { solverId, displayName, image, solver_networks, description, active } = info.attributes
+
+      if (active === false) {
+        return acc
+      }
 
       // TODO: Reduce function complexity by extracting logic
       // eslint-disable-next-line complexity

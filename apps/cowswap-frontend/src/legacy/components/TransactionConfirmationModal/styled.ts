@@ -1,6 +1,4 @@
-import { Media, RowBetween } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { Media, RowBetween, ExternalLink, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'

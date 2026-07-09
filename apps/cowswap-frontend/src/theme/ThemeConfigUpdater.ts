@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import type { CowSwapWidgetPalette } from '@cowprotocol/widget-lib'
 
 import { getCowswapTheme } from './getCowswapTheme'
 import { mapWidgetTheme } from './mapWidgetTheme'
@@ -15,15 +16,19 @@ export function ThemeConfigUpdater(): null {
 
   const darkMode = useIsDarkMode()
   const injectedWidgetTheme = useInjectedWidgetPalette()
-  const [widgetTheme, setWidgetTheme] = useState(injectedWidgetTheme)
+  const [widgetTheme, setWidgetTheme] = useState<Partial<CowSwapWidgetPalette> | undefined>(() =>
+    injectedWidgetTheme && typeof injectedWidgetTheme === 'object' ? injectedWidgetTheme : undefined,
+  )
 
   /**
-   * Save widgetTheme from URL to state only if it's present
+   * Sync widgetTheme from URL when the host sends a palette or an explicit reset (`palette=null`).
    */
   useEffect(() => {
-    if (injectedWidgetTheme) {
-      setWidgetTheme(injectedWidgetTheme)
+    if (injectedWidgetTheme === undefined) {
+      return
     }
+
+    setWidgetTheme(injectedWidgetTheme ?? undefined)
   }, [injectedWidgetTheme])
 
   useEffect(() => {

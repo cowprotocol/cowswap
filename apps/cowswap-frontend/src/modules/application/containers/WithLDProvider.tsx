@@ -1,6 +1,7 @@
 import { JSX, PropsWithChildren, ReactNode } from 'react'
 
 import { LAUNCH_DARKLY_CLIENT_KEY } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { withLDProvider } from 'launchdarkly-react-client-sdk'
 
@@ -17,5 +18,6 @@ export const WithLDProvider = withLDProvider<PropsWithChildren & JSX.IntrinsicAt
   },
   options: {
     bootstrap: 'localStorage',
+    sendEvents: !isInjectedWidget(),
   },
 })(InnerWithLDProvider)

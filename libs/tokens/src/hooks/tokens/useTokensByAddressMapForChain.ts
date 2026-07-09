@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { areAddressesEqual, getAddressKey, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
@@ -16,35 +16,40 @@ import { ListState } from '../../types'
  *
  * Lists are processed in priority order (lower priority value = higher precedence).
  * Useful for bridge scenarios where you need tokens from the destination chain.
+ *
  */
-export function useTokensByAddressMapForChain(chainId: SupportedChainId | undefined): TokensByAddress {
+export function useTokensByAddressMapForChain(chainId: SupportedChainId | undefined): TokensByAddress
+export function useTokensByAddressMapForChain(chainId: TargetChainId | undefined): TokensByAddress
+export function useTokensByAddressMapForChain(chainId: TargetChainId | undefined): TokensByAddress {
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
 
   return useMemo(() => {
     if (!chainId) return {}
 
-    const chainLists = listsStatesByChain[chainId]
-    if (!chainLists) return {}
-
-    // Filter out deleted lists and sort by priority (lower is better)
-    const sortedLists = Object.values(chainLists)
-      .filter((listState): listState is ListState => listState !== 'deleted' && !!listState.list?.tokens)
-      .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
-
-    const tokensByAddress: TokensByAddress = {}
-
-    for (const listState of sortedLists) {
-      for (const token of listState.list.tokens) {
-        if (token.chainId !== chainId) continue
-
-        const addressKey = token.address.toLowerCase()
-
-        if (tokensByAddress[addressKey] || NATIVE_CURRENCY_ADDRESS.toLowerCase() === addressKey) continue
-
-        tokensByAddress[addressKey] = TokenWithLogo.fromToken(token as TokenInfo, token.logoURI)
-      }
-    }
-
-    return tokensByAddress
+    return buildTokensByAddress(listsStatesByChain[chainId as SupportedChainId], chainId)
   }, [chainId, listsStatesByChain])
+}
+
+function buildTokensByAddress(
+  chainLists: { [source: string]: ListState | 'deleted' } | undefined,
+  chainId: TargetChainId,
+): TokensByAddress {
+  if (!chainLists) return {}
+
+  const sortedLists = Object.values(chainLists)
+    .filter((listState): listState is ListState => listState !== 'deleted' && !!listState.list?.tokens)
+    .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
+
+  const tokensByAddress: TokensByAddress = {}
+
+  for (const listState of sortedLists) {
+    for (const token of listState.list.tokens) {
+      const addressKey = getAddressKey(token.address)
+      if (tokensByAddress[addressKey] || areAddressesEqual(token.address, NATIVE_CURRENCIES[chainId].address)) continue
+
+      tokensByAddress[addressKey] = TokenWithLogo.fromToken(token as TokenInfo, token.logoURI)
+    }
+  }
+
+  return tokensByAddress
 }

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondaryAlt, InlineBanner, InlineBannerProps } from '@cowprotocol/ui'
+import { ButtonSecondary, InlineBanner, InlineBannerProps } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -44,9 +44,16 @@ export function CustomRecipientWarningBanner({
           <Trans>Order recipient address differs from order owner!</Trans>
         </p>
         {onDismiss && (
-          <ButtonSecondaryAlt minHeight={'28px'} onClick={onDismiss}>
+          <ButtonSecondary
+            $borderRadius="12px"
+            $fontSize="12px"
+            $minHeight="28px"
+            onClick={onDismiss}
+            padding="0 12px"
+            width="fit-content"
+          >
             <Trans>Dismiss</Trans>
-          </ButtonSecondaryAlt>
+          </ButtonSecondary>
         )}
       </RecipientBannerContent>
     </InlineBanner>

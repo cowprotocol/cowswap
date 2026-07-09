@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { Color, Media, UI } from '@cowprotocol/ui'
 
-import SupportIcon from 'assets/img/support.png'
+import imgSupportSrc from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import styled from 'styled-components/macro'
@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 import { Search } from '../../../explorer/components/common/Search'
 
 const Wrapper = styled.div`
-  max-width: 140rem;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -139,7 +138,7 @@ export const OrderAddressNotFound: React.FC = (): React.ReactNode => {
             <span>or</span>
             <Support href="https://discord.com/invite/cowprotocol" target="_blank" rel="noopener noreferrer">
               Get Support
-              <img src={SupportIcon} alt="Support icon" />
+              <img src={imgSupportSrc} alt="Support icon" />
             </Support>
           </SearchContent>
         </SearchSection>

@@ -1,16 +1,16 @@
 import { ReactNode } from 'react'
 
-import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
-import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
-import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
-import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
-import LOGO_COWSWAP_CHRISTMAS_DARK from '@cowprotocol/assets/images/logo-cowswap-christmas-dark.svg'
-import LOGO_COWSWAP_CHRISTMAS from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
-import LOGO_COWSWAP_HALLOWEEN from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
-import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
-import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
-import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
-import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import svgCowammSrc from '@cowprotocol/assets/images/logo-cowamm.svg'
+import svgCowdaoSrc from '@cowprotocol/assets/images/logo-cowdao.svg'
+import svgCowexplorerSrc from '@cowprotocol/assets/images/logo-cowexplorer.svg'
+import svgCowprotocolSrc from '@cowprotocol/assets/images/logo-cowprotocol.svg'
+import svgCowswapChristmasDarkSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-dark.svg'
+import svgCowswapChristmasLightSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
+import svgCowswapHalloweenSrc from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
+import svgCowswapSrc from '@cowprotocol/assets/images/logo-cowswap.svg'
+import iconCowSrc from '@cowprotocol/assets/images/logo-icon-cow.svg'
+import iconMevblockerSrc from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
+import svgMevblockerSrc from '@cowprotocol/assets/images/logo-mevblocker.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { toPixelValue } from '@cowprotocol/ui-utils'
 
@@ -52,38 +52,38 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowSwap]: {
     light: {
       default: {
-        src: LOGO_COWSWAP,
+        src: svgCowswapSrc,
         alt: 'CoW Swap',
         color: '#004293',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Swap',
         color: '#004293',
       },
     },
     dark: {
       default: {
-        src: LOGO_COWSWAP,
+        src: svgCowswapSrc,
         alt: 'CoW Swap',
         color: Color.blue300Primary,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Swap',
         color: Color.blue300Primary,
       },
     },
     darkHalloween: {
       default: {
-        src: LOGO_COWSWAP_HALLOWEEN,
+        src: svgCowswapHalloweenSrc,
         alt: 'CoW Swap',
         preserveOriginalColors: true,
       },
     },
     darkChristmas: {
       default: {
-        src: LOGO_COWSWAP_CHRISTMAS_DARK,
+        src: svgCowswapChristmasDarkSrc,
         alt: 'CoW Swap',
         color: Color.blue300Primary,
         height: '56px',
@@ -93,7 +93,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     },
     lightChristmas: {
       default: {
-        src: LOGO_COWSWAP_CHRISTMAS,
+        src: svgCowswapChristmasLightSrc,
         alt: 'CoW Swap',
         color: '#004293',
         height: '56px',
@@ -107,24 +107,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowExplorer]: {
     light: {
       default: {
-        src: LOGO_COWEXPLORER,
+        src: svgCowexplorerSrc,
         alt: 'CoW Explorer',
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Explorer',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
-        src: LOGO_COWEXPLORER,
+        src: svgCowexplorerSrc,
         alt: 'CoW Explorer',
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Explorer',
         color: Color.neutral100,
       },
@@ -135,24 +135,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowDao]: {
     light: {
       default: {
-        src: LOGO_COWDAO,
+        src: svgCowdaoSrc,
         alt: 'CoW DAO',
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW DAO',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
-        src: LOGO_COWDAO,
+        src: svgCowdaoSrc,
         alt: 'CoW DAO',
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW DAO',
         color: Color.neutral100,
       },
@@ -163,24 +163,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowProtocol]: {
     light: {
       default: {
-        src: LOGO_COWPROTOCOL,
+        src: svgCowprotocolSrc,
         alt: 'CoW Protocol',
         color: Color.neutral0,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Protocol',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
-        src: LOGO_COWPROTOCOL,
+        src: svgCowprotocolSrc,
         alt: 'CoW Protocol',
         color: Color.neutral100,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW Protocol',
         color: Color.neutral100,
       },
@@ -191,24 +191,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.MevBlocker]: {
     light: {
       default: {
-        src: LOGO_MEVBLOCKER,
+        src: svgMevblockerSrc,
         alt: 'MEV Blocker',
         color: '#EC4612',
       },
       logoIconOnly: {
-        src: LOGO_ICON_MEVBLOCKER,
+        src: iconMevblockerSrc,
         alt: 'MEV Blocker',
         color: '#EC4612',
       },
     },
     dark: {
       default: {
-        src: LOGO_MEVBLOCKER,
+        src: svgMevblockerSrc,
         alt: 'MEV Blocker',
         color: '#EC4612',
       },
       logoIconOnly: {
-        src: LOGO_ICON_MEVBLOCKER,
+        src: iconMevblockerSrc,
         alt: 'MEV Blocker',
         color: '#EC4612',
       },
@@ -219,24 +219,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowAmm]: {
     light: {
       default: {
-        src: LOGO_COWAMM,
+        src: svgCowammSrc,
         alt: 'CoW AMM',
         color: Color.blue900Primary,
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW AMM',
         color: Color.blue900Primary,
       },
     },
     dark: {
       default: {
-        src: LOGO_COWAMM,
+        src: svgCowammSrc,
         alt: 'CoW AMM',
         color: '#007CDB',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: iconCowSrc,
         alt: 'CoW AMM',
         color: '#007CDB',
       },
@@ -310,7 +310,7 @@ export const ProductLogoWrapper = styled.span<{
 `
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 export const ProductLogo = ({
   variant,
   theme: customThemeMode,

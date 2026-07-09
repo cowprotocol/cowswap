@@ -1,34 +1,34 @@
-import { getMulticallContract, useMultiCallRpcProvider } from '@cowprotocol/multicall'
-import { BigNumber } from '@ethersproject/bignumber'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useSolanaNativeBalance } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
+import { useBalance, UseBalanceReturnType } from 'wagmi'
 
-const SWR_CONFIG: SWRConfiguration = {
-  refreshInterval: ms`11s`,
-  refreshWhenHidden: false,
-  refreshWhenOffline: false,
-  revalidateOnFocus: false,
-}
+import type { Address } from 'viem'
 
-export function useNativeTokenBalance(
-  account: string | undefined,
-  chainId: number,
-  swrConfig: SWRConfiguration = SWR_CONFIG,
-): SWRResponse<BigNumber | undefined> {
-  const provider = useMultiCallRpcProvider()
+const BALANCE_REFETCH_INTERVAL = ms`11s`
 
-  return useSWR(
-    account && provider ? [account, provider, chainId, 'useNativeTokenBalance'] : null,
-    async ([account, provider, chainId]) => {
-      const providerChainId = (await provider.getNetwork()).chainId
+/**
+ * Chain-agnostic native-balance hook. Detects the active network and delegates to the EVM
+ * (wagmi) or Solana watcher; the other stays disabled. Both return a `UseBalanceReturnType`,
+ * so consumers read `data.value` without knowing which chain is active.
+ */
+export function useNativeTokenBalance(account?: string, chainId?: number): UseBalanceReturnType {
+  const isSolana = !!chainId && isSolanaChain(chainId)
 
-      if (providerChainId !== chainId) return undefined
-
-      const contract = getMulticallContract(provider)
-
-      return contract.callStatic.getEthBalance(account)
+  const evmBalance = useBalance({
+    address: account as Address | undefined,
+    chainId,
+    query: {
+      enabled: !!account && !isSolana,
+      refetchInterval: BALANCE_REFETCH_INTERVAL,
     },
-    swrConfig,
-  )
+  })
+
+  const solanaBalance = useSolanaNativeBalance({
+    account,
+    enabled: !!account && isSolana,
+  })
+
+  return isSolana ? solanaBalance : evmBalance
 }

@@ -133,7 +133,7 @@ function useSetAlternativeRate(): null {
       updateLimitRateState({ marketRate: null })
 
       // Set new active rate
-      // The rate expects a raw fraction which is NOT a Price instace
+      // The rate expects a raw fraction which is NOT a Price instance
       const activeRate = FractionUtils.fromPrice(
         new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount }),
       )
@@ -156,7 +156,7 @@ function useUpdateAlternativeRawState(): null {
   // Use custom recipient address if set and != owner
   const recipientAddress = receiver && receiver !== owner ? receiver : undefined
   // Load used ens name, if any
-  const { name: recipient } = useENS(recipientAddress)
+  const { name: recipient } = useENS(recipientAddress as `0x${string}`)
 
   useEffect(() => {
     if (alternativeOrder) {

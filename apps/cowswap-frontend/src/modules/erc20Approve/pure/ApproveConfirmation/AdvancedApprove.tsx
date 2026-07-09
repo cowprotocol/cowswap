@@ -14,7 +14,6 @@ import { ApproveConfirmationProps } from './index'
 const maxAmountLength = 64
 const digitRegex = /^\d$/
 
-// eslint-disable-next-line max-lines-per-function
 export function AdvancedApprove({
   amountToApprove,
   handleApprove,

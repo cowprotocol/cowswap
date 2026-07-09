@@ -1,4 +1,5 @@
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { cowSwapStore } from '../../../../legacy/state'
 import { addTransaction, finalizeTransaction } from '../../../../legacy/state/enhancedTransactions/actions'
@@ -43,14 +44,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapSuccessfulTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 1,
+        status: 'success',
       },
     }),
   )
@@ -70,14 +71,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapErrorTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 3, // Error
+        status: 'reverted',
       },
     }),
   )
@@ -119,14 +120,14 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveSuccessfulTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 1,
+        status: 'success',
       },
     }),
   )
@@ -151,14 +152,14 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveErrorTxHashMock,
       chainId: 5,
       receipt: {
-        to: '',
-        from: '',
-        contractAddress: '',
+        to: null,
+        from: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+        contractAddress: null,
         transactionIndex: 1,
-        blockHash: '',
-        transactionHash: '',
+        blockHash: '0x',
+        transactionHash: '0x',
         blockNumber: 1,
-        status: 3, // Error
+        status: 'reverted',
       },
     }),
   )

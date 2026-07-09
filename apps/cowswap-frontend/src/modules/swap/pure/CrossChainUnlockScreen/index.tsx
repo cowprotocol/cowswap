@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import CROSS_CHAIN_ICONS from '@cowprotocol/assets/images/cross-chain-icons.svg'
+import iconCrossChainIconsSrc from '@cowprotocol/assets/images/cross-chain-icons.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -31,7 +31,7 @@ export function CrossChainUnlockScreen({ handleUnlock }: CrossChainUnlockScreenP
           </styledEl.Subtitle>
         </styledEl.Content>
         <styledEl.Illustration>
-          <SVG src={CROSS_CHAIN_ICONS} />
+          <SVG src={iconCrossChainIconsSrc} />
         </styledEl.Illustration>
       </styledEl.Container>
       <styledEl.ButtonWrapper>

@@ -1,9 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
-import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
-import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
-import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
-import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
+import svgProgressbarStepCancelledSrc from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
+import svgProgressbarStepExpiredSrc from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
+import svgProgressbarStepSolvingSrc from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
+import svgProgressbarStepUnfillableSrc from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
@@ -40,7 +40,7 @@ export function InitialTopSection({ stepName, order }: InitialTopSectionProps): 
 export function UnfillableTopSection(): ReactNode {
   return (
     <img
-      src={STEP_IMAGE_UNFILLABLE}
+      src={svgProgressbarStepUnfillableSrc}
       alt={t`Order out of market`}
       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
     />
@@ -81,7 +81,7 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
       }}
     >
       <SVG
-        src={STEP_IMAGE_SOLVING}
+        src={svgProgressbarStepSolvingSrc}
         style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
       />
       <CircularCountdown
@@ -164,7 +164,7 @@ export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps)
   return (
     <ProgressImageWrapper stepName={stepName}>
       <img
-        src={STEP_IMAGE_CANCELLED}
+        src={svgProgressbarStepCancelledSrc}
         alt={t`Cancelling order`}
         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
       />
@@ -186,7 +186,7 @@ export function ExpiredTopSection({ stepName }: BaseTopSectionProps): ReactNode 
         }}
       >
         <img
-          src={STEP_IMAGE_EXPIRED}
+          src={svgProgressbarStepExpiredSrc}
           alt={t`Order expired`}
           style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
         />

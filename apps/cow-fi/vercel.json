@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd ../../ && pnpm run build:cowfi",
-  "installCommand": "cd ../../ && pnpm run install:ci",
-  "framework": "nextjs"
-}

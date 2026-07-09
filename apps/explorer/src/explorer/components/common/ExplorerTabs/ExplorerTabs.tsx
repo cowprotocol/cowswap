@@ -4,7 +4,7 @@ import { Color, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize } from '../../../../components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, TabsProps, IndicatorTabSize } from '../../../../components/common/Tabs/Tabs'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -18,18 +18,6 @@ const StyledTabs = styled.div`
     padding: 0;
     width: 100%;
     max-width: 100%;
-  }
-
-  .tab-extra-content {
-    margin: 0 0 0 auto;
-    display: flex;
-    justify-content: flex-end;
-
-    ${Media.upToSmall()} {
-      order: -1;
-      width: 100%;
-      justify-content: space-between;
-    }
   }
 
   ${Media.upToMedium()} {

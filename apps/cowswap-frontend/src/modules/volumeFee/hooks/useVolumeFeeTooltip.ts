@@ -2,8 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { safeAppFeeAtom } from '../state/safeAppFeeAtom'
 

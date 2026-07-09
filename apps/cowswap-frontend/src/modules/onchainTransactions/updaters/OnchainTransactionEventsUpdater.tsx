@@ -9,8 +9,10 @@ import {
 } from '@cowprotocol/events'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 
+import { Trans } from '@lingui/react/macro'
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
+import { ONCHAIN_TRANSACTIONS_EVENTS, OnchainTxEvents } from 'modules/onchainTransactions/onchainTransactionsEvents'
 import { TransactionContentWithLink } from 'modules/orders'
 import { getCowSoundError } from 'modules/sounds'
 
@@ -23,13 +25,13 @@ export function OnchainTransactionEventsUpdater() {
     const listener: CowWidgetEventListener = {
       event: CowWidgetEvents.ON_ONCHAIN_TRANSACTION,
       handler(payload: OnTransactionPayload) {
-        const { receipt, summary } = payload
+        const { receipt, summary, isSafeTx } = payload
         const isSuccess = receipt.status === 1 && receipt.replacementType !== 'cancel'
 
         // Display a snackbar in CowSwap UI
         addSnackbar({
           content: (
-            <TransactionContentWithLink transactionHash={receipt.transactionHash}>
+            <TransactionContentWithLink transactionHash={receipt.transactionHash} isSafeTx={isSafeTx}>
               <>{summary}</>
             </TransactionContentWithLink>
           ),
@@ -59,6 +61,28 @@ export function OnchainTransactionEventsUpdater() {
 
     return () => {
       WIDGET_EVENT_EMITTER.off(listener)
+    }
+  }, [addSnackbar])
+
+  useEffect(() => {
+    const handler = ONCHAIN_TRANSACTIONS_EVENTS.on({
+      event: OnchainTxEvents.TX_CANCELLED_NOT_BROADCAST,
+      handler({ transaction }) {
+        getCowSoundError().play()
+        addSnackbar({
+          id: `cancelled-not-broadcast-${transaction.hash}`,
+          icon: 'alert',
+          content: (
+            <TransactionContentWithLink transactionHash={transaction.hash}>
+              <Trans>Transaction cancelled: it was not submitted to the blockchain.</Trans>
+            </TransactionContentWithLink>
+          ),
+        })
+      },
+    })
+
+    return () => {
+      ONCHAIN_TRANSACTIONS_EVENTS.off(handler)
     }
   }, [addSnackbar])
 

@@ -4,7 +4,7 @@ import Form, { FormValidation } from '@rjsf/core'
 
 import { decodeAppDataSchema, FormProps, handleErrors, transformErrors } from './config'
 
-import { DecodeAppData } from '../../../components/AppData/DecodeAppData'
+import { AppDataRowContent } from '../../../components/AppDataRowContent/AppDataRowContent'
 
 import { TabData } from './index'
 
@@ -91,7 +91,7 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
         </div>
         {isSubmitted && (
           <div className="decode-section">
-            <DecodeAppData showExpanded appData={formData?.appData} />
+            <AppDataRowContent showExpanded appData={formData?.appData} />
           </div>
         )}
       </div>

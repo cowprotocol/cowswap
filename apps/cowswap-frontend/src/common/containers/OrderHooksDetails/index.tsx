@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { ReactElement, ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
@@ -25,11 +25,12 @@ interface OrderHooksDetailsProps {
   isTradeConfirmation?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function OrderHooksDetails({ appData, children, margin, isTradeConfirmation }: OrderHooksDetailsProps) {
+export function OrderHooksDetails({
+  appData,
+  children,
+  margin,
+  isTradeConfirmation,
+}: OrderHooksDetailsProps): ReactNode {
   const [isOpen, setOpen] = useState(false)
   const appDataDoc = useMemo(() => {
     return typeof appData === 'string' ? decodeAppData(appData) : appData.doc
@@ -104,9 +105,7 @@ interface HooksInfoProps {
   hooks: CowHookDetails[]
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function HooksInfo({ data, title, hooks }: HooksInfoProps) {
+function HooksInfo({ data, title, hooks }: HooksInfoProps): ReactNode {
   return (
     <>
       {data.length ? (

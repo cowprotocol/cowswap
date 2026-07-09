@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react'
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { Loader } from '@cowprotocol/ui'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { useTokenListContext } from '../../hooks/useTokenListContext'

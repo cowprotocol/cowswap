@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { CenteredDots, FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
@@ -21,6 +21,7 @@ export type ReviewOrderAmountRowProps = {
   withTimelineDot?: boolean
   highlighted?: boolean
   isLast?: boolean
+  loading?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -34,8 +35,11 @@ export function ReviewOrderModalAmountRow({
   withTimelineDot = false,
   highlighted = false,
   isLast = false,
+  loading = false,
 }: ReviewOrderAmountRowProps): ReactElement {
-  const Amount = (
+  const Amount = loading ? (
+    <CenteredDots />
+  ) : (
     <Content highlighted={highlighted}>
       {children}
       {!isAmountAccurate && '≈ '}

@@ -24,7 +24,6 @@ const Format = styled.strong`
 type ChainPrefixWarningProps = {
   chainPrefixWarning: string
   chainInfo: BaseChainInfo
-  isDarkMode: boolean
 }
 
 export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps): ReactNode {

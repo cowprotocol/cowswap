@@ -12,10 +12,4 @@ const getPlaceholderSrc = (placeholderColor: string): string => {
 
 export const PLACEHOLDER_SRC = getPlaceholderSrc(LAZY_LOADING_CONFIG.placeholderColor)
 
-export const replaceImageUrls = (html: string): string => {
-  return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (_, before, src, after) => {
-    return `<img${before}data-src="${src}" src="${PLACEHOLDER_SRC}"${after}>`
-  })
-}
-
 export { LAZY_LOADING_CONFIG }

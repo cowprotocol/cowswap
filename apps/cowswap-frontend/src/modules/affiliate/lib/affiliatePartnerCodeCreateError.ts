@@ -1,6 +1,4 @@
-import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
-
-import { ApiError } from '../utils/api-utils'
+import { ApiError, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 export enum AffiliatePartnerCodeCreateError {
   SignatureRejected = 'signatureRejected',

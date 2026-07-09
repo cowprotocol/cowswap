@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import EARN_AS_TRADER_ILLUSTRATION from '@cowprotocol/assets/images/earn-as-trader.svg'
+import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -34,7 +34,7 @@ export function AffiliateTraderModalCodeInfo(): ReactNode {
   return (
     <>
       <Body>
-        <img src={EARN_AS_TRADER_ILLUSTRATION} alt="" role="presentation" />
+        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
           <Trans>Already linked to a referral code</Trans>
         </Title>

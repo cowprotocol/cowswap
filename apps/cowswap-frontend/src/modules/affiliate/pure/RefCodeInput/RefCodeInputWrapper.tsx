@@ -10,6 +10,7 @@ interface RefCodeInputWrapperProps extends PropsWithChildren {
   isLoading: boolean
   compactSize?: boolean
   isAdornmentWrappable?: boolean
+  connectedBelow?: boolean
 }
 
 export function RefCodeInputWrapper({
@@ -18,6 +19,7 @@ export function RefCodeInputWrapper({
   isLoading,
   compactSize,
   isAdornmentWrappable = false,
+  connectedBelow = false,
   ...rest
 }: RefCodeInputWrapperProps): ReactNode {
   return (
@@ -27,6 +29,7 @@ export function RefCodeInputWrapper({
       $isLoading={isLoading}
       $compactSize={compactSize}
       $isAdornmentWrappable={isAdornmentWrappable}
+      $connectedBelow={connectedBelow}
       {...rest}
     />
   )
@@ -38,6 +41,7 @@ const InputWrapper = styled.div<{
   $isLoading: boolean
   $compactSize?: boolean
   $isAdornmentWrappable: boolean
+  $connectedBelow: boolean
 }>`
   display: flex;
   align-items: center;
@@ -50,7 +54,7 @@ const InputWrapper = styled.div<{
   background: ${({ $hasError, $disabled }) =>
     $hasError ? `var(${UI.COLOR_DANGER_BG})` : $disabled ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ $hasError }) => ($hasError ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_TEXT})`)};
-  border-radius: 9px;
+  border-radius: ${({ $connectedBelow }) => ($connectedBelow ? '9px 9px 0 0' : '9px')};
   padding: var(--ref-input-pad-y) var(--ref-input-pad-x);
   transition: border 0.2s ease;
   min-height: ${({ $compactSize }) => ($compactSize ? '48px' : '58px')};

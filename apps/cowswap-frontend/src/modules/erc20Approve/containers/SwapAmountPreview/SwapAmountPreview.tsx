@@ -3,7 +3,9 @@ import { ReactNode, useMemo } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Nullish } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -23,8 +25,24 @@ const CapitalizedFirst = styled.span`
   text-transform: capitalize;
 `
 
-export function SwapAmountPreview(): ReactNode {
-  const { inputCurrency, outputCurrency, outputCurrencyAmount, inputCurrencyAmount } = useDerivedTradeState() || {}
+interface SwapAmountPreviewProps {
+  // Optional overrides — use the amounts of the specific order being previewed
+  // (e.g. on the Account modal's Edit partial approval) instead of the global
+  // trade form state, which may belong to an unrelated draft order.
+  inputCurrencyAmount?: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount?: Nullish<CurrencyAmount<Currency>>
+}
+
+export function SwapAmountPreview({
+  inputCurrencyAmount: inputCurrencyAmountOverride,
+  outputCurrencyAmount: outputCurrencyAmountOverride,
+}: SwapAmountPreviewProps = {}): ReactNode {
+  const derivedTradeState = useDerivedTradeState()
+
+  const inputCurrencyAmount = inputCurrencyAmountOverride ?? derivedTradeState?.inputCurrencyAmount
+  const outputCurrencyAmount = outputCurrencyAmountOverride ?? derivedTradeState?.outputCurrencyAmount
+  const inputCurrency = inputCurrencyAmount?.currency ?? derivedTradeState?.inputCurrency
+  const outputCurrency = outputCurrencyAmount?.currency ?? derivedTradeState?.outputCurrency
 
   const inputToken = useMemo(() => (inputCurrency ? getWrappedToken(inputCurrency) : null), [inputCurrency])
   const outputToken = useMemo(() => (outputCurrency ? getWrappedToken(outputCurrency) : null), [outputCurrency])

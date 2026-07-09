@@ -34,6 +34,10 @@ jest.mock('modules/fortune', () => ({
   FortuneWidget: () => null,
 }))
 
+jest.mock('modules/accountProxy', () => ({
+  getProxyAccountUrl: (chainId: number) => `/${chainId}/account/account-proxy`,
+}))
+
 jest.mock('./menuConsts.utils', () => ({
   getSolversExplorerUrl: () => 'https://explorer.cow.fi/solvers',
 }))
@@ -48,7 +52,7 @@ jest.mock('common/constants/routes', () => ({
 }))
 
 function getMoreItemHrefs(isSolversEnabled: boolean): string[] {
-  const navItems = NAV_ITEMS(SupportedChainId.MAINNET, false, isSolversEnabled)
+  const navItems = NAV_ITEMS(SupportedChainId.MAINNET, isSolversEnabled)
   const moreItem = navItems[navItems.length - 1]
 
   if (!moreItem?.children) {

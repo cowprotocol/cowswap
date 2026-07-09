@@ -1,5 +1,4 @@
-import { ButtonSecondary, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonSecondary, Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'

@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey, getTokenId, isBtcAddress, isEvmAddress, isSolanaAddress } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId, isSupportedAddress } from '@cowprotocol/cow-sdk'
 
 export const RECENT_TOKENS_LIMIT = 4
 // Storage schema: { [chainId: number]: StoredRecentToken[] } serialized under this key.
@@ -135,10 +135,6 @@ export function readStoredTokens(limit: number): StoredRecentTokensByChain {
   }
 }
 
-function isValidAddress(address: string): boolean {
-  return isEvmAddress(address) || isBtcAddress(address) || isSolanaAddress(address)
-}
-
 function canUseLocalStorage(): boolean {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 }
@@ -184,7 +180,7 @@ function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
     return null
   }
 
-  if (!isValidAddress(address)) {
+  if (!isSupportedAddress(address)) {
     return null
   }
 

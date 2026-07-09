@@ -2,44 +2,16 @@ name: ipfs
 
 on:
   push:
-    tags: [cowswap-v*]
+    tags: [ cowswap-v* ]
 
-env:
-  REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-  REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
-  REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
-  # Duplicated keys as these are required by `ipfs-deploy`
-  IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
-  IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-  REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
-  REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-  NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-  NODE_VERSION: lts/jod
+permissions:
+  contents: read
 
 jobs:
-  ipfs:
-    name: IPFS
+  queue-ipfs-deploy:
+    name: Queue trusted IPFS deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
-
-      - name: Set up node
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Web Apps
-        run: pnpm run ipfs
+      - name: Queue deploy on trusted workflow code
+        run: echo "Queued trusted IPFS deploy for ${GITHUB_REF} (${GITHUB_SHA})."

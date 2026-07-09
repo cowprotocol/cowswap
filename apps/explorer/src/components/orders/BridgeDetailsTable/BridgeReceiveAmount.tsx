@@ -4,6 +4,7 @@ import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import BigNumber from 'bignumber.js'
+import styled from 'styled-components/macro'
 
 import { isNativeToken } from '../../../utils'
 import { RowWithCopyButton } from '../../common/RowWithCopyButton'
@@ -29,7 +30,7 @@ export function BridgeReceiveAmount({ destinationToken, amount, bridgeProvider }
   )
 
   return (
-    <span>
+    <BridgeReceiveAmountRoot>
       <span>
         <TokenAmount amount={new BigNumber(amount.toString())} token={destinationToken} noSymbol />{' '}
       </span>
@@ -38,6 +39,14 @@ export function BridgeReceiveAmount({ destinationToken, amount, bridgeProvider }
       ) : (
         <RowWithCopyButton textToCopy={destinationToken.address} contentsToDisplay={tokenDisplayElement} />
       )}
-    </span>
+    </BridgeReceiveAmountRoot>
   )
 }
+
+const BridgeReceiveAmountRoot = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+`

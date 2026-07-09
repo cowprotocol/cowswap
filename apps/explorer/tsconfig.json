@@ -8,7 +8,8 @@
     "strict": true,
     "types": ["node", "vite/client"],
     "baseUrl": "src",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "moduleResolution": "bundler"
   },
   "files": [],
   "include": [],

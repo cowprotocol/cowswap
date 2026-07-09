@@ -1,21 +1,21 @@
 'use client'
 
-import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
-import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
-import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
-import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
-import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
-import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
+import iconBuildWithCowSrc from '@cowprotocol/assets/images/icon-build-with-cow.svg'
+import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import iconCowLensSrc from '@cowprotocol/assets/images/icon-cow-lens.svg'
+import iconCrownCowSrc from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
+import iconGhostSrc from '@cowprotocol/assets/images/icon-ghost.svg'
+import iconCurveSrc from '@cowprotocol/assets/images/icon-logo-curve.svg'
+import iconLidoSrc from '@cowprotocol/assets/images/icon-logo-lido.svg'
+import iconSafeSrc from '@cowprotocol/assets/images/icon-logo-safe.svg'
+import iconOwlSrc from '@cowprotocol/assets/images/icon-owl.svg'
+import iconSecureSrc from '@cowprotocol/assets/images/icon-secure.svg'
+import svgBatchauctionsSrc from '@cowprotocol/assets/images/image-batchauctions.svg'
+import svgCowBitsSrc from '@cowprotocol/assets/images/image-cow-bits.svg'
+import svgIntentsSrc from '@cowprotocol/assets/images/image-intents.svg'
+import svgLeadingSrc from '@cowprotocol/assets/images/image-leading.svg'
+import svgSolversSrc from '@cowprotocol/assets/images/image-solvers.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
@@ -85,7 +85,7 @@ export default function Page() {
           </Link>
         </HeroContent>
         <HeroImage width={470} height={470} color={Color.cowfi_purple3}>
-          <LazySVG src={IMG_COW_BITS} />
+          <LazySVG src={svgCowBitsSrc} />
         </HeroImage>
       </HeroContainer>
 
@@ -126,7 +126,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_0})`} maxWidth={700} gap={56}>
             <SectionTitleIcon $size={82}>
-              <LazySVG src={IMG_ICON_CROWN_COW} />
+              <LazySVG src={iconCrownCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
             <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
@@ -135,7 +135,7 @@ export default function Page() {
             </SectionTitleDescription>
           </SectionTitleWrapper>
           <SectionImage>
-            <LazySVG src={IMG_LEADING} />
+            <LazySVG src={svgLeadingSrc} />
           </SectionImage>
         </ContainerCardSection>
       </ContainerCard>
@@ -144,7 +144,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={132}>
-              <LazySVG src={IMG_COW_LENS} />
+              <LazySVG src={iconCowLensSrc} />
             </SectionTitleIcon>
             <SectionTitleText>How it works</SectionTitleText>
             <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
@@ -185,7 +185,7 @@ export default function Page() {
                 orderReverseTablet
                 borderRadius={90}
               >
-                <LazySVG src={IMG_INTENTS} />
+                <LazySVG src={svgIntentsSrc} />
               </TopicImage>
             </TopicCard>
 
@@ -200,7 +200,7 @@ export default function Page() {
                 orderReverseTablet
                 borderRadius={90}
               >
-                <LazySVG src={IMG_SOLVERS} />
+                <LazySVG src={svgSolversSrc} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={51}>Solvers</TopicTitle>
@@ -257,7 +257,7 @@ export default function Page() {
                 orderReverseMobile
                 borderRadius={90}
               >
-                <LazySVG src={IMG_BATCHAUCTIONS} />
+                <LazySVG src={svgBatchauctionsSrc} />
               </TopicImage>
             </TopicCard>
           </TopicList>
@@ -344,7 +344,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={878} color={`var(${UI.COLOR_NEUTRAL_10})`}>
             <SectionTitleIcon $size={128}>
-              <LazySVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={iconBulbCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
           </SectionTitleWrapper>
@@ -358,7 +358,7 @@ export default function Page() {
               asProp="div"
             >
               <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
-                <LazySVG src={IMG_LOGO_CURVE} />
+                <LazySVG src={iconCurveSrc} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>Automating advanced treasury tasks</TopicTitle>
@@ -378,7 +378,7 @@ export default function Page() {
               asProp="div"
             >
               <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
-                <LazySVG src={IMG_LOGO_LIDO} />
+                <LazySVG src={iconLidoSrc} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>
@@ -401,7 +401,7 @@ export default function Page() {
               asProp="div"
             >
               <TopicImage iconColor={Color.cowfi_purple1} bgColor="transparent" height={96} width={'auto'}>
-                <LazySVG src={IMG_LOGO_SAFE} />
+                <LazySVG src={iconSafeSrc} />
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`}>Powering native swaps</TopicTitle>
@@ -420,9 +420,9 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 0">
             <SectionTitleIcon $multiple $size={60}>
-              <LazySVG src={IMG_ICON_OWL} />
+              <LazySVG src={iconOwlSrc} />
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <LazySVG src={IMG_ICON_GHOST} />
+              <LazySVG src={iconGhostSrc} />
             </SectionTitleIcon>
             <SectionTitleText>Trusted by the best</SectionTitleText>
           </SectionTitleWrapper>
@@ -522,7 +522,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100}>
             <SectionTitleIcon $size={78}>
-              <LazySVG src={IMG_ICON_BUILD_WITH_COW} />
+              <LazySVG src={iconBuildWithCowSrc} />
             </SectionTitleIcon>
             <SectionTitleText>Build with CoW Protocol</SectionTitleText>
           </SectionTitleWrapper>
@@ -578,7 +578,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper maxWidth={1000}>
             <SectionTitleIcon $size={100}>
-              <LazySVG src={IMG_ICON_SECURE} />
+              <LazySVG src={iconSecureSrc} />
             </SectionTitleIcon>
             <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
             <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_30})`}>
@@ -616,7 +616,7 @@ export default function Page() {
         <ContainerCardSection>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={62}>
-              <LazySVG src={IMG_ICON_FAQ} />
+              <LazySVG src={iconFaqSrc} />
             </SectionTitleIcon>
             <SectionTitleText>FAQs</SectionTitleText>
           </SectionTitleWrapper>

@@ -1,4 +1,4 @@
-import { LinkStyledButton, UI } from '@cowprotocol/ui'
+import { CopyButton } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -20,7 +20,7 @@ export const QuoteIdTransactionText = styled(TransactionText)`
   align-items: center;
 `
 
-export const CopyQuoteIdButton = styled(LinkStyledButton)`
+export const CopyQuoteIdButton = styled(CopyButton)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -34,10 +34,9 @@ export const CopyQuoteIdButton = styled(LinkStyledButton)`
     text-decoration: none;
     opacity: 1;
   }
-`
 
-export const CopiedLabel = styled.span`
-  color: var(${UI.COLOR_SUCCESS});
-  font-size: 11px;
-  line-height: 1;
+  > span {
+    font-size: 11px;
+    line-height: 1;
+  }
 `

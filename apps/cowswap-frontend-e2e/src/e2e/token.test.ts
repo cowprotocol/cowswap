@@ -6,11 +6,6 @@ describe('Tokens', () => {
     })
   })
 
-  // mock test to pass CI until we fix the test
-  it('should be true', () => {
-    expect(true).to.be.true
-  })
-
   it('should be able to find a token by its name', () => {
     cy.visit('/#/account/tokens?chain=sepolia')
     cy.get('#token-search-input').type('cow')

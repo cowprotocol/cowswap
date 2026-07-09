@@ -19,7 +19,7 @@ export function RowWithCopyButton(props: Props): React.ReactNode {
   return (
     <Wrapper className={className}>
       <Content>{contentsComponent}</Content>
-      <CopyButton text={textToCopy} onCopy={onCopy} />
+      {textToCopy ? <CopyButton text={textToCopy} onCopy={onCopy} /> : null}
     </Wrapper>
   )
 }

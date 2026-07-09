@@ -23,6 +23,7 @@ function ensureListenerRegistered(parentOrigin: UrlString): void {
 
   widgetIframeTransport.listenToMessageFromWindow(
     window,
+    window.parent,
     WidgetMethodsListen.HOOK_RESULT,
     (data) => {
       const callback = callsRegistry.get(data.id)

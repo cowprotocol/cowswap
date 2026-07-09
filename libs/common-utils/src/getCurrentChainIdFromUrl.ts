@@ -1,13 +1,23 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
- * Maps chain names used in URL query parameters to SupportedChainId
- * Those networks are the ones that existed before we started using chain IDs in the URL
+ * Maps chain names used in URL query parameters to SupportedChainId.
+ * The names here must match the `name` field in CHAIN_INFO (libs/common-const/src/chainInfo.ts).
  */
 const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   mainnet: SupportedChainId.MAINNET,
+  ethereum: SupportedChainId.MAINNET,
+  bnb: SupportedChainId.BNB,
+  base: SupportedChainId.BASE,
+  arbitrum_one: SupportedChainId.ARBITRUM_ONE,
+  polygon: SupportedChainId.POLYGON,
+  avalanche: SupportedChainId.AVALANCHE,
   gnosis_chain: SupportedChainId.GNOSIS_CHAIN,
+  linea: SupportedChainId.LINEA,
+  plasma: SupportedChainId.PLASMA,
+  ink: SupportedChainId.INK,
   sepolia: SupportedChainId.SEPOLIA,
+  solana: SupportedChainId.SOLANA,
 }
 
 export function getCurrentChainIdFromUrl(location = window.location): SupportedChainId {
@@ -16,7 +26,7 @@ export function getCurrentChainIdFromUrl(location = window.location): SupportedC
 
 // Trying to get chainId from URL (#/100/swap)
 export function getRawCurrentChainIdFromUrl(location = window.location): SupportedChainId | null {
-  const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)
+  const urlChainIdMatch = location.hash.match(/^#\/(\d{1,16})\D/)
   const searchParams = new URLSearchParams(location.hash.split('?')[1])
   const chainQueryParam = searchParams.get('chain')
 

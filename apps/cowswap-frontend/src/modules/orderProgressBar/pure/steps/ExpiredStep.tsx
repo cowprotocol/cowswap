@@ -1,5 +1,5 @@
-import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
-import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
+import svgProgressbarBadNewsSrc from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
+import svgProgressbarGoodNewsSrc from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/react/macro'
@@ -43,7 +43,7 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
 
       <styledEl.CardWrapper>
         <styledEl.InfoCard variant="warning">
-          <SVG src={PROGRESS_BAR_BAD_NEWS} height={INFO_ICON_HEIGHT} />
+          <SVG src={svgProgressbarBadNewsSrc} height={INFO_ICON_HEIGHT} />
           <h3>
             <Trans>The bad news</Trans>
           </h3>
@@ -54,7 +54,7 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
           </p>
         </styledEl.InfoCard>
         <styledEl.InfoCard variant="success">
-          <SVG src={PROGRESS_BAR_GOOD_NEWS} height={INFO_ICON_HEIGHT} />
+          <SVG src={svgProgressbarGoodNewsSrc} height={INFO_ICON_HEIGHT} />
           <h3>
             <Trans>The good news</Trans>
           </h3>

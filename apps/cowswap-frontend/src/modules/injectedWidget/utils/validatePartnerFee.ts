@@ -1,8 +1,8 @@
 import { isTruthy } from '@cowprotocol/common-utils'
 import { PartnerFee, resolveFlexibleConfigValues } from '@cowprotocol/widget-lib'
-import { getAddress } from '@ethersproject/address'
 
 import { t } from '@lingui/core/macro'
+import { getAddress } from 'viem'
 
 import { PARTNER_FEE_MAX_BPS } from '../consts'
 

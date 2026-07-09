@@ -24,11 +24,10 @@ export function useSetupTradeStateFromUrl(): null {
   const stringifiedParams = JSON.stringify(params)
   const setState = useSetAtom(tradeStateFromUrlAtom)
 
-  const { chainId, recipient, recipientAddress, targetChainId, inputCurrencyId, outputCurrencyId } = useMemo(() => {
+  const { chainId, recipient, targetChainId, inputCurrencyId, outputCurrencyId } = useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     const targetChainId = searchParams.get('targetChainId')
     const recipient = searchParams.get('recipient')
-    const recipientAddress = searchParams.get('recipientAddress')
     const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
 
     return {
@@ -36,7 +35,6 @@ export function useSetupTradeStateFromUrl(): null {
       inputCurrencyId: inputCurrencyId ?? null,
       outputCurrencyId: outputCurrencyId ?? null,
       recipient,
-      recipientAddress,
       targetChainId: getChainId(targetChainId),
     }
   }, [location.search, stringifiedParams])
@@ -53,11 +51,10 @@ export function useSetupTradeStateFromUrl(): null {
       inputCurrencyId,
       outputCurrencyId,
       ...(recipient ? { recipient } : undefined),
-      ...(recipientAddress ? { recipientAddress } : undefined),
     }
 
     setState(state)
-  }, [chainId, recipient, recipientAddress, setState, targetChainId, inputCurrencyId, outputCurrencyId])
+  }, [chainId, recipient, setState, targetChainId, inputCurrencyId, outputCurrencyId])
 
   return null
 }

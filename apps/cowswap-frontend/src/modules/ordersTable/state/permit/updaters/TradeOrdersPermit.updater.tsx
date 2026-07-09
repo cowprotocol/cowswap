@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeType } from 'modules/trade'
 
@@ -11,10 +12,11 @@ import { OrdersPermitUpdater } from './OrdersPermit.updater'
 import { usePendingOrdersFillability } from '../../../hooks/usePendingOrdersFillability'
 
 export function TradeOrdersPermitUpdater(): ReactNode {
+  const { account } = useWalletInfo()
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
   const orders = Object.values(pendingOrdersFillability)
     .map((fillability) => fillability?.order)
     .filter((order): order is GenericOrder => !!order)
 
-  return <OrdersPermitUpdater orders={orders} tradeType={TradeType.SWAP} />
+  return account ? <OrdersPermitUpdater orders={orders} tradeType={TradeType.SWAP} /> : null
 }

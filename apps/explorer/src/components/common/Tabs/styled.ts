@@ -77,6 +77,7 @@ export const TabList = styled.div`
   display: flex;
   justify-content: flex-start;
   border-bottom: 0.1rem solid ${Color.explorer_border};
+  border-radius: 4px;
   box-sizing: border-box;
   flex-flow: row wrap;
 
@@ -90,5 +91,25 @@ export const TabList = styled.div`
     ${Media.upToSmall()} {
       flex: 1 1 auto;
     }
+  }
+`
+
+export const ExtraContent = styled.div<{ $isBottom?: boolean }>`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 48px;
+  width: ${({ $isBottom }) => ($isBottom ? `100%` : 'auto')};
+  margin-left: ${({ $isBottom }) => ($isBottom ? `0` : 'auto')};
+  border-top: ${({ $isBottom }) => ($isBottom ? `0.1rem solid ${Color.explorer_border}` : 'none')};
+
+  &:empty {
+    display: none;
+  }
+
+  ${Media.upToSmall()} {
+    order: -1;
+    width: 100%;
+    justify-content: space-between;
   }
 `

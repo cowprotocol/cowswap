@@ -1,0 +1,16 @@
+{
+  "cow_hook_dapp": {
+    "id": "1111111111111111111111111111111111111111111111111111111111111111",
+    "name": "Review modal fixture",
+    "descriptionShort": "Open the iframe hook review modal with a sample post-hook.",
+    "description": "A deterministic QA fixture that sends a sample iframe hook request to CoW Swap so reviewers can verify the parent-side review step.",
+    "image": "/apple-touch-icon.png",
+    "version": "0.1.0",
+    "website": "https://cow.fi",
+    "conditions": {
+      "position": "post",
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [1, 100, 42161, 8453, 11155111]
+    }
+  }
+}

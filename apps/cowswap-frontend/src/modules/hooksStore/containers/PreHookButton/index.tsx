@@ -1,4 +1,4 @@
-import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
+import svgPlusSrc from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
@@ -48,7 +48,7 @@ export function PreHookButton({ disabled = false, onOpen, onEditHook, hideToolti
 
       <styledEl.Wrapper>
         <styledEl.AddHookButton disabled={disabled} onClick={disabled ? undefined : onOpen}>
-          <SVG src={PLUS_ICON} /> <Trans>Add Pre-Hook Action</Trans> {!hideTooltip && <HookTooltip isPreHook />}
+          <SVG src={svgPlusSrc} /> <Trans>Add Pre-Hook Action</Trans> {!hideTooltip && <HookTooltip isPreHook />}
         </styledEl.AddHookButton>
       </styledEl.Wrapper>
     </>

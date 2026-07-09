@@ -3,9 +3,10 @@ import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-ut
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { renderHook, waitFor } from '@testing-library/react'
+
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -16,6 +17,8 @@ import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
 import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
+
+import type { ApprovalTxReceipt } from '../containers/TradeApproveModal/approveUtils'
 
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
   useTradeSpenderAddress: jest.fn(),
@@ -29,6 +32,9 @@ jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
 jest.mock('../../permit')
 jest.mock('../state')
+jest.mock('modules/injectedWidget', () => ({
+  useIsInfiniteApproveDisabledInWidget: jest.fn(),
+}))
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -42,6 +48,9 @@ const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser 
 >
 const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
   typeof useUpdateApproveProgressModalState
+>
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabledInWidget
 >
 type WalletInfo = ReturnType<typeof useWalletInfo>
 
@@ -58,8 +67,11 @@ describe('useApproveAndSwap', () => {
   const mockGeneratePermitToTrade = jest.fn()
   const mockUpdateTradeApproveState = jest.fn()
 
-  const createMockTransactionReceipt = (): TransactionReceipt => {
+  const createMockTransactionReceipt = (): ApprovalTxReceipt => {
     return {
+      status: 'success',
+      blockNumber: 123456n,
+      transactionHash: '0xtxhash' as `0x${string}`,
       to: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[SupportedChainId.MAINNET],
       from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       contractAddress: mockToken.address,
@@ -68,17 +80,7 @@ describe('useApproveAndSwap', () => {
       gasUsed: { toString: () => '21000' } as any,
       logsBloom: '0x',
       blockHash: '0xblockhash',
-      transactionHash: '0xtxhash',
       logs: [],
-      blockNumber: 123456,
-      confirmations: 1,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cumulativeGasUsed: { toString: () => '21000' } as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      effectiveGasPrice: { toString: () => '1000000000' } as any,
-      byzantium: true,
-      type: 2,
-      status: 1,
     }
   }
 
@@ -92,6 +94,7 @@ describe('useApproveAndSwap', () => {
     mockUseTokenSupportsPermit.mockReturnValue(false)
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
+    mockUseIsInfiniteApproveDisabled.mockReturnValue(false)
   })
 
   describe('permit flow', () => {
@@ -119,7 +122,7 @@ describe('useApproveAndSwap', () => {
       })
     })
 
-    it('should not call onApproveConfirm if permit signing fails', async () => {
+    it('should not fall back to on-chain approve when permit signing fails', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
 
@@ -138,8 +141,9 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).toHaveBeenCalled()
-        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
+        // When permit is supported, the permit flow handles it entirely — no fallback to on-chain approve
         expect(mockHandleApprove).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
@@ -169,7 +173,7 @@ describe('useApproveAndSwap', () => {
     it('should skip permit flow when ignorePermit is true', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'),
       }
@@ -199,7 +203,7 @@ describe('useApproveAndSwap', () => {
   describe('approval flow with TradeApproveResult', () => {
     it('should approve and call confirmSwap when approved amount is sufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'), // More than required
       }
@@ -226,7 +230,7 @@ describe('useApproveAndSwap', () => {
 
     it('should approve and call confirmSwap when approved amount equals required amount', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount, // Exactly what's required
       }
@@ -253,7 +257,7 @@ describe('useApproveAndSwap', () => {
 
     it('should set error state when approved amount is insufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('500000000000000000'), // Less than required
       }
@@ -287,7 +291,7 @@ describe('useApproveAndSwap', () => {
 
     it('should set error state when approved amount is undefined', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: undefined,
       }
@@ -322,7 +326,7 @@ describe('useApproveAndSwap', () => {
     it('should use partial approve amount when user has enabled it', async () => {
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }
@@ -395,7 +399,7 @@ describe('useApproveAndSwap', () => {
 
     it('should not call confirmSwap when confirmSwap callback is not provided', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult<TransactionReceipt> = {
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }
@@ -489,9 +493,9 @@ describe('useApproveAndSwap', () => {
       expect(mockOnApproveConfirm).not.toHaveBeenCalled()
     })
 
-    it('should propagate errors from generatePermitToTrade', async () => {
+    it('should not fall back to approval when generatePermitToTrade throws (user rejection)', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
-      const mockError = new Error('Permit generation failed')
+      const mockError = new Error('User rejected')
       mockGeneratePermitToTrade.mockRejectedValue(mockError)
 
       const { result } = renderHook(
@@ -505,11 +509,65 @@ describe('useApproveAndSwap', () => {
         { wrapper: LinguiWrapper },
       )
 
-      await expect(result.current()).rejects.toThrow('Permit generation failed')
+      await expect(result.current()).rejects.toThrow('User rejected')
 
       expect(mockGeneratePermitToTrade).toHaveBeenCalled()
       expect(mockHandleApprove).not.toHaveBeenCalled()
       expect(mockOnApproveConfirm).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('disableInfiniteApprove widget param', () => {
+    it('approves the exact trade-size amount when disableInfiniteApprove is true and user toggle is off', async () => {
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: mockAmount,
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockHandleApprove).toHaveBeenCalledWith(mockAmount)
+      })
+    })
+
+    it('still uses the permit flow when disableInfiniteApprove is true but permits are supported', async () => {
+      mockUseIsInfiniteApproveDisabled.mockReturnValue(true)
+      mockUseTokenSupportsPermit.mockReturnValue(true)
+      mockGeneratePermitToTrade.mockResolvedValue(true)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      await waitFor(() => {
+        expect(mockGeneratePermitToTrade).toHaveBeenCalled()
+        expect(mockHandleApprove).not.toHaveBeenCalled()
+      })
     })
   })
 })

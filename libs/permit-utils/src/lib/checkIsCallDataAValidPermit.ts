@@ -59,6 +59,8 @@ export async function checkIsCallDataAValidPermit(
       `[checkHasValidPendingPermit] Failed to check permit validity for owner ${owner} with callData ${callData}`,
       e,
     )
-    return false
+    // Return undefined (unknown) instead of false, so the system falls back to
+    // optimistic behavior and uses the static calldata validation instead
+    return undefined
   }
 }

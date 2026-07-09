@@ -1,9 +1,15 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useCowAnalytics } from '@cowprotocol/analytics'
+
+import { type WalletClient } from 'viem'
 
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
+import {
+  normalizeAffiliatePartnerCodeCreateFailureReason,
+  trackAffiliateEvent,
+} from '../analytics/affiliateAnalytics.utils'
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
 import {
@@ -14,7 +20,7 @@ import { buildPartnerTypedData } from '../lib/affiliateProgramUtils'
 
 interface UseAffiliatePartnerCodeCreateParams {
   account: string | undefined
-  provider: ReturnType<typeof useWalletProvider>
+  walletClient?: WalletClient
   code: string
   setError: (error?: AffiliatePartnerCodeCreateError) => void
 }
@@ -26,27 +32,41 @@ interface UseAffiliatePartnerCodeCreateResult {
 
 export function useAffiliatePartnerCodeCreate({
   account,
-  provider,
+  walletClient,
   code,
   setError,
 }: UseAffiliatePartnerCodeCreateParams): UseAffiliatePartnerCodeCreateResult {
+  const analytics = useCowAnalytics()
   const [submitting, setSubmitting] = useState(false)
+  const isSubmittingRef = useRef(false)
   const { mutate: mutatePartnerInfo } = useAffiliatePartnerInfo(account)
 
   const onCreate = useCallback(async (): Promise<void> => {
-    if (!account || !provider) return
-
-    setSubmitting(true)
-    setError(undefined)
+    if (!account || !walletClient || !walletClient.account || isSubmittingRef.current) return
 
     try {
-      const signer = provider.getSigner()
+      isSubmittingRef.current = true
+
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_started',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+      })
+
+      setSubmitting(true)
+      setError(undefined)
       const typedData = buildPartnerTypedData({
         walletAddress: account,
         code,
         chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       })
-      const signedMessage = await signer._signTypedData(typedData.domain, typedData.types, typedData.message)
+      const signedMessage = await walletClient.signTypedData({
+        account: walletClient.account.address,
+        domain: typedData.domain,
+        types: typedData.types,
+        primaryType: 'AffiliateCode',
+        message: typedData.message,
+      })
 
       await bffAffiliateApi.createCode({
         code,
@@ -54,13 +74,29 @@ export function useAffiliatePartnerCodeCreate({
         signedMessage,
       })
 
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_completed',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+        result: 'success',
+      })
       await mutatePartnerInfo().catch()
     } catch (error) {
-      setError(mapAffiliatePartnerCodeCreateError(error))
+      const mappedError = mapAffiliatePartnerCodeCreateError(error)
+
+      setError(mappedError)
+      trackAffiliateEvent({
+        analytics,
+        action: 'affiliate_partner_code_create_completed',
+        chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
+        result: 'failed',
+        failureReason: normalizeAffiliatePartnerCodeCreateFailureReason(mappedError),
+      })
     } finally {
+      isSubmittingRef.current = false
       setSubmitting(false)
     }
-  }, [account, code, mutatePartnerInfo, provider, setError])
+  }, [account, analytics, code, mutatePartnerInfo, setError, walletClient])
 
   return useMemo(() => ({ submitting, onCreate }), [submitting, onCreate])
 }

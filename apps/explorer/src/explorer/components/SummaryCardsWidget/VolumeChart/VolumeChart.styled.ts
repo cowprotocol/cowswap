@@ -2,7 +2,7 @@ import { Media, Color, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
-import GraphSkeleton from '../../../../assets/img/graph-skeleton.svg'
+import svgGraphSkeletonSrc from '../../../../assets/img/graph-skeleton.svg'
 import ShimmerBar from '../../common/ShimmerBar'
 
 const frameAnimation = keyframes`
@@ -19,7 +19,7 @@ export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>
   display: flex;
   justify-content: center;
   align-content: center;
-  background: url(${GraphSkeleton}) no-repeat bottom/contain
+  background: url(${svgGraphSkeletonSrc}) no-repeat bottom/contain
     ${({ backgroundColor = 'grey' }): string =>
       backgroundColor === 'grey' ? Color.explorer_greyOpacity : Color.explorer_orangeOpacity};
   opacity: 0.35;

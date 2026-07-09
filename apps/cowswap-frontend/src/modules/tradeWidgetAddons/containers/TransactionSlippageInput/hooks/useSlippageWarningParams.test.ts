@@ -16,7 +16,7 @@ jest.mock('modules/tradeQuote', () => ({
 }))
 
 jest.mock('modules/tradeSlippage', () => ({
-  ...jest.requireActual('modules/tradeSlippage'),
+  slippageBpsToPercent: (bps: number): number => bps / 100,
   useSlippageConfig: jest.fn(),
   useTradeSlippage: jest.fn(),
 }))

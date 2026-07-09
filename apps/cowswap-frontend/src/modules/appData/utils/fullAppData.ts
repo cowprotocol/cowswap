@@ -11,7 +11,6 @@ const DEFAULT_FULL_APP_DATA = JSON.stringify(DEFAULT_FULL_APP_DATA_OBJ)
 const APP_DATA_PER_ENV: Record<EnvironmentName, string> = {
   production: process.env.REACT_APP_FULL_APP_DATA_PRODUCTION || addEnvToDefaultAppData('production'),
   ens: process.env.REACT_APP_FULL_APP_DATA_ENS || addEnvToDefaultAppData('ens'),
-  barn: process.env.REACT_APP_FULL_APP_DATA_BARN || addEnvToDefaultAppData('barn'),
   staging: process.env.REACT_APP_FULL_APP_DATA_STAGING || addEnvToDefaultAppData('staging'),
   pr: process.env.REACT_APP_FULL_APP_DATA_PR || addEnvToDefaultAppData('pr'),
   development: process.env.REACT_APP_FULL_APP_DATA_DEVELOPMENT || addEnvToDefaultAppData('development'),

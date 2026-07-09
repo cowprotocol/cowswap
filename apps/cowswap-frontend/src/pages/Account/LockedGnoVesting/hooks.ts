@@ -4,35 +4,27 @@ import {
   COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
-  MERKLE_DROP_CONTRACT_ADDRESSES,
-  TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
-import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { ContractTransaction } from '@ethersproject/contracts'
 
 import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useContract, UseContractResult } from 'common/hooks/useContract'
+import { useMerkleDropContract, useTokenDistroContract } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
-const useMerkleDropContract = (): UseContractResult<MerkleDrop> =>
-  useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
+type TokenDistroContract = NonNullable<ReturnType<typeof useTokenDistroContract>['contract']>
 
-const useTokenDistroContract = (): UseContractResult<TokenDistro> =>
-  useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
-
-export const useAllocation = (): CurrencyAmount<Token> => {
+export const useAllocation = (): CurrencyAmount<Currency> => {
   const { t } = useLingui()
   const SupportedChainIdMAINNET = SupportedChainId.MAINNET
 
@@ -41,7 +33,8 @@ export const useAllocation = (): CurrencyAmount<Token> => {
   }
 
   const { chainId, account } = useWalletInfo()
-  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
+  const cowCurrency = _COW as unknown as Currency
+  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(cowCurrency, 0))
   const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
@@ -49,7 +42,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
     if (account && chainId) {
       fetchClaim(account, chainId).then((claim) => {
         if (!canceled) {
-          setAllocation(CurrencyAmount.fromRawAmount(_COW, claim?.amount ?? 0))
+          setAllocation(CurrencyAmount.fromRawAmount(cowCurrency, claim?.amount ?? 0))
         }
       })
     } else {
@@ -58,7 +51,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
     return () => {
       canceled = true
     }
-  }, [chainId, account, initialAllocation])
+  }, [chainId, account, initialAllocation, cowCurrency])
 
   return allocation
 }
@@ -80,14 +73,22 @@ export const useCowFromLockedGnoBalances = () => {
 
   const { contract: tokenDistro } = useTokenDistroContract()
 
+  type SwrKey = [string, string, CurrencyAmount<Currency>, TokenDistroContract | null]
   const { data, isLoading } = useSWR(
     account && tokenDistro && allocated?.greaterThan(0)
-      ? ['useCowFromLockedGnoBalances', account, allocated, tokenDistro]
+      ? (['useCowFromLockedGnoBalances', account, allocated, tokenDistro] as SwrKey)
       : null,
-    async ([, _account, , _tokenDistro]) => _tokenDistro.balances(_account),
+    async (key: SwrKey) => {
+      const [, accountVal, , tokenDistroVal] = key
+      if (!tokenDistroVal) throw new Error('tokenDistro required')
+      return tokenDistroVal.balances(accountVal)
+    },
   )
 
-  const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
+  const claimed = useMemo(
+    () => CurrencyAmount.fromRawAmount(_COW as unknown as Currency, data ? data.claimed.toString() : 0),
+    [data],
+  )
 
   return useMemo(
     () => ({
@@ -110,7 +111,7 @@ export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
   isFirstClaim,
-}: ClaimCallbackParams): () => Promise<ContractTransaction> {
+}: ClaimCallbackParams): () => Promise<{ hash: `0x${string}` }> {
   const { account } = useWalletInfo()
   const { contract: merkleDrop, chainId: merkleDropChainId } = useMerkleDropContract()
   const { contract: tokenDistro, chainId: tokenDistroChainId } = useTokenDistroContract()
@@ -123,7 +124,7 @@ export function useClaimCowFromLockedGnoCallback({
       throw new Error(t`Not connected`)
     }
 
-    if (!merkleDrop || !tokenDistro) {
+    if (!merkleDrop || !tokenDistro || !tokenDistroChainId) {
       throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 
@@ -143,7 +144,7 @@ export function useClaimCowFromLockedGnoCallback({
     openModal(summary)
 
     return claimPromise
-      .then((tx) => {
+      .then((tx: { hash: `0x${string}` }) => {
         addTransaction({
           swapLockedGNOvCow: true,
           hash: tx.hash,

@@ -34,13 +34,15 @@ const mockedFetchSolversInfo = jest.mocked(fetchSolversInfo)
 const ZERO = new BigNumber(0)
 const ONE = new BigNumber(1)
 
+const BLANC_ADDRESS = '0xBlanc0000000000000000000000000000000001'
+
 const MOCK_SOLVERS: SolverInfo[] = [
   {
     solverId: 'projectblanc',
     displayName: 'Project Blanc',
     image: 'https://example.com/blanc.png',
     networks: [],
-    deployments: [],
+    deployments: [{ chainId: 1, chainName: 'mainnet', address: BLANC_ADDRESS, active: true }],
   },
   {
     solverId: 'copperSolver',
@@ -102,14 +104,13 @@ function mockCompetitionStatus(solverName: string): OrderCompetitionStatus {
   }
 }
 
-function mockSolverCompetitionResponse(solverName: string, orderId = '0x1'): SolverCompetitionResponse {
+function mockSolverCompetitionResponse(solverAddress: string, orderId = '0x1'): SolverCompetitionResponse {
   return {
     auctionId: 1,
     solutions: [
       {
-        solver: solverName,
         isWinner: true,
-        solverAddress: '0xsolver',
+        solverAddress,
         ranking: 1,
         orders: [{ id: orderId }],
       } as unknown as NonNullable<SolverCompetitionResponse['solutions']>[0],
@@ -119,6 +120,7 @@ function mockSolverCompetitionResponse(solverName: string, orderId = '0x1'): Sol
 
 describe('useOrderSolver', () => {
   beforeEach(() => {
+    jest.useRealTimers()
     mockedUseNetworkId.mockReset()
     mockedGetOrderCompetitionStatus.mockReset()
     mockedGetSolverCompetitionByTxHash.mockReset()
@@ -194,7 +196,7 @@ describe('useOrderSolver', () => {
   it('falls back to txHash competition when order status has no winner', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(undefined)
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc'))
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS))
 
     const order = createMockOrder({ txHash: '0xfallback' })
     const { result } = renderHook(() => useOrderSolver(order))
@@ -207,6 +209,22 @@ describe('useOrderSolver', () => {
       displayName: 'Project Blanc',
       image: 'https://example.com/blanc.png',
     })
+  })
+
+  it('returns no solver when the txHash competition winner address matches no known deployment', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(undefined)
+    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
+      mockSolverCompetitionResponse('0xUnknownAddress00000000000000000000000000'),
+    )
+
+    const order = createMockOrder({ txHash: '0xunknown' })
+    const { result } = renderHook(() => useOrderSolver(order))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(mockedGetSolverCompetitionByTxHash).toHaveBeenCalledWith({ networkId: 1, txHash: '0xunknown' })
+    expect(result.current.solver).toBeUndefined()
   })
 
   it('does not attempt txHash fallback when no txHash is available', async () => {
@@ -244,7 +262,7 @@ describe('useOrderSolver', () => {
       value: [{ solver: 'invalid-solver', executedAmounts: { sell: 'da1', buy: '0' } }],
     })
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc'))
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS))
 
     const order = createMockOrder({ txHash: '0xmalformed' })
     const { result } = renderHook(() => useOrderSolver(order))
@@ -348,6 +366,36 @@ describe('useOrderSolver', () => {
     expect(result.current.solver).toBeUndefined()
   })
 
+  it('settles loading when competition endpoints are unavailable after delay', async () => {
+    jest.useFakeTimers()
+    try {
+      mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
+      mockedGetOrderCompetitionStatus.mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('competition timeout')), 50)
+          }),
+      )
+      mockedGetSolverCompetitionByTxHash.mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('solver competition timeout')), 50)
+          }),
+      )
+
+      const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+      expect(result.current.isLoading).toBe(true)
+
+      await jest.advanceTimersByTimeAsync(51)
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false))
+      expect(result.current.solver).toBeUndefined()
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
   it('clears stale solver when navigating to an order with no solver data', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('projectblanc'))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
@@ -388,7 +436,7 @@ describe('useOrderSolver', () => {
     // Now provide the txHash via rerender — effect re-runs because currentKey changed
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(undefined)
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse('projectblanc'))
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS))
 
     const withTxHash = createMockOrder({ uid: filledNoTxHash.uid, txHash: '0xnewtx' })
     rerender({ order: withTxHash })

@@ -118,13 +118,23 @@ function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
 function _responseHandlerFactory(body: string) {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (req: any) =>
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    req.reply((res: any) => {
-      const newBody = JSON.stringify(body || res.body)
-      res.body = newBody
-    })
+  return (req: any) => {
+    if (body) {
+      // Fully stub the response without forwarding to the real server
+      req.reply({
+        statusCode: 200,
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+    } else {
+      // Forward to server and pass through the response
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      req.reply((res: any) => {
+        res.body = JSON.stringify(res.body)
+      })
+    }
+  }
 }
 
 // TODO: Add proper return type annotation

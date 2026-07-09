@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
-import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
+import iconMinusSrc from '@cowprotocol/assets/images/icon-minus.svg'
+import iconPlusSrc from '@cowprotocol/assets/images/icon-plus.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -140,11 +140,11 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
         {question}
         {isOpen ? (
           <i>
-            <SVG src={IMG_ICON_MINUS} />
+            <SVG src={iconMinusSrc} />
           </i>
         ) : (
           <i>
-            <SVG src={IMG_ICON_PLUS} />
+            <SVG src={iconPlusSrc} />
           </i>
         )}
       </summary>

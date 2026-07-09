@@ -28,6 +28,7 @@ export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: 'ink',
+  [SupportedChainId.SOLANA]: 'solana',
 }
 
 const BASE_URL = 'https://coins.llama.fi/prices/current'

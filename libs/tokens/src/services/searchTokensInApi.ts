@@ -135,6 +135,7 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: null,
+  [SupportedChainId.SOLANA]: null,
 }
 
 const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(

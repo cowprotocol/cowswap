@@ -1,7 +1,3 @@
-import { t } from '@lingui/core/macro'
-
-type ApiActionType = 'get' | 'create' | 'delete'
-
 export interface ApiErrorObject {
   errorType: ApiErrorCodes
   description: string
@@ -96,85 +92,11 @@ export enum ApiErrorCodeDetails {
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _mapActionToErrorDetail(action?: ApiActionType) {
-  switch (action) {
-    case 'get':
-      return ApiErrorCodeDetails.UNHANDLED_GET_ERROR
-    case 'create':
-      return ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR
-    case 'delete':
-      return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
-    default:
-      console.error(
-        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.',
-      )
-      return `Something failed. Please try again later.`
-  }
-}
-
-export default class OperatorError extends Error {
+export class OperatorError extends Error {
   name = 'OperatorError'
   type: ApiErrorCodes
   description: ApiErrorObject['description']
 
-  // Status 400 errors
-  // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static apiErrorDetails = ApiErrorCodeDetails
-
-  public static getErrorMessage(orderPostError: ApiErrorObject, action: ApiActionType): string {
-    try {
-      if (orderPostError.errorType) {
-        const errorMessage = OperatorError.apiErrorDetails[orderPostError.errorType]
-        // shouldn't fall through as this error constructor expects the error code to exist but just in case
-        return errorMessage || orderPostError.errorType
-      } else {
-        console.error('Unknown reason for bad order submission', orderPostError)
-        return orderPostError.description
-      }
-    } catch {
-      console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
-      return _mapActionToErrorDetail(action)
-    }
-  }
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
-  static getErrorFromStatusCode(statusCode: number, errorObject: ApiErrorObject, action: 'create' | 'delete'): string {
-    switch (statusCode) {
-      case 400:
-      case 404:
-        return this.getErrorMessage(errorObject, action)
-
-      case 403: {
-        const acceptedText = t`accepted`
-        const cancelledText = t`cancelled`
-        const statusText = action === 'create' ? acceptedText : cancelledText
-        return t`The order cannot be ${statusText}. Your account is deny-listed.`
-      }
-
-      case 429: {
-        const placementsText = t`accepted. Too many order placements`
-        const cancellationsText = t`cancelled. Too many order cancellations`
-        const msg = action === 'create' ? placementsText : cancellationsText
-        return t`The order cannot be ${msg}. Please, retry in a minute`
-      }
-
-      case 500:
-      default: {
-        console.error(
-          `[OperatorError::getErrorFromStatusCode] Error ${
-            action === 'create' ? 'creating' : 'cancelling'
-          } the order, status code:`,
-          statusCode || 'unknown',
-        )
-        const creatingText = t`creating`
-        const cancellingText = t`cancelling`
-        const verb = action === 'create' ? creatingText : cancellingText
-        return t`Error ${verb} the order`
-      }
-    }
-  }
   constructor(apiError: ApiErrorObject) {
     super(apiError.description)
 
@@ -184,8 +106,4 @@ export default class OperatorError extends Error {
     // In case we don't have a custom message, use the one provided by the backend in the description
     this.message = message === this.type.toString() ? this.description : message
   }
-}
-
-export function isValidOperatorError(error: unknown): error is OperatorError {
-  return error instanceof OperatorError
 }

@@ -1,5 +1,7 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isBtcChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { getSafeAbsoluteUrl } from './safeLink'
 
 export enum ExplorerDataType {
   TRANSACTION = 'transaction',
@@ -20,6 +22,50 @@ export enum ExplorerDataType {
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
+function getEvmExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
+  switch (type) {
+    case ExplorerDataType.TRANSACTION:
+      return `${prefix}/tx/${data}`
+    case ExplorerDataType.TOKEN:
+      return `${prefix}/token/${data}`
+    case ExplorerDataType.BLOCK:
+      return `${prefix}/block/${data}`
+    case ExplorerDataType.ADDRESS:
+      return `${prefix}/address/${data}`
+    default:
+      return `${prefix}`
+  }
+}
+
+function getSolExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
+  switch (type) {
+    case ExplorerDataType.TRANSACTION:
+      return `${prefix}/tx/${data}`
+    case ExplorerDataType.TOKEN:
+    case ExplorerDataType.ADDRESS:
+      return `${prefix}/address/${data}`
+    case ExplorerDataType.BLOCK:
+      return `${prefix}/block/${data}`
+    default:
+      return `${prefix}`
+  }
+}
+
+function getBtcExplorerData(prefix: string, data: string, type: ExplorerDataType): string {
+  switch (type) {
+    case ExplorerDataType.TRANSACTION:
+      return `${prefix}/tx/${data}`
+    case ExplorerDataType.ADDRESS:
+      return `${prefix}/address/${data}`
+    case ExplorerDataType.BLOCK:
+      return `${prefix}/block/${data}`
+    case ExplorerDataType.TOKEN:
+      return `${prefix}` // BTC has no token page
+    default:
+      return `${prefix}`
+  }
+}
+
 /**
  * Return the explorer link for the given data and data type
  * @param chainId the ID of the chain for which to return the data
@@ -34,21 +80,14 @@ export function getExplorerLink(
   defaultPrefix = 'https://etherscan.io',
 ): string {
   // Allow override via environment variable for local development (e.g., Otterscan)
-  const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
+  const prefix =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId as SupportedChainId]?.explorer) ||
+    getSafeAbsoluteUrl(defaultPrefix)
 
-  switch (type) {
-    case ExplorerDataType.TRANSACTION:
-      return `${prefix}/tx/${data}`
+  if (!prefix) return ''
 
-    case ExplorerDataType.TOKEN:
-      return `${prefix}/token/${data}`
-
-    case ExplorerDataType.BLOCK:
-      return `${prefix}/block/${data}`
-
-    case ExplorerDataType.ADDRESS:
-      return `${prefix}/address/${data}`
-    default:
-      return `${prefix}`
-  }
+  if (isBtcChain(chainId)) return getBtcExplorerData(prefix, data, type)
+  if (isSolanaChain(chainId)) return getSolExplorerData(prefix, data, type)
+  return getEvmExplorerData(prefix, data, type)
 }

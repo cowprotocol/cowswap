@@ -1,20 +1,27 @@
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
 
+import type { Hex, PublicClient, WalletClient } from 'viem'
+
 export async function checkPermitNonceAndAmount(
   account: string,
   chainId: number,
-  provider: JsonRpcProvider,
+  publicClient: PublicClient,
   order: GenericOrder,
-  permitCallData: string,
+  permitCallData: Hex,
   permitInfo: PermitInfo,
+  walletClient?: WalletClient | null,
 ): Promise<boolean | undefined> {
   try {
-    const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
+    const eip2612Utils = await getPermitUtilsInstance({
+      chainId,
+      publicClient,
+      account: account as `0x${string}`,
+      walletClient,
+    })
     const sellTokenAddress = order.inputToken.address
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)
@@ -40,7 +47,7 @@ export async function checkPermitNonceAndAmount(
           permitInfo,
         )
 
-        if (!isPermitValid) return false
+        if (isPermitValid === false) return false
       } catch (error) {
         console.error('Error validating EIP-2612 permit:', error)
         return false

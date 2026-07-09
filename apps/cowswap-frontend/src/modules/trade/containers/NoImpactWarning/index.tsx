@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { TradeWarning } from 'modules/trade/pure/TradeWarning'
 import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { ACTIVE_VALIDATION_CASES, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
@@ -43,13 +43,13 @@ export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeQuote = useTradeQuote()
 
-  const canTrade =
-    (primaryFormValidation === null || primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle) &&
-    !tradeQuote.error
+  const showPriceImpactWarning =
+    !!account &&
+    !tradeQuote.error &&
+    (primaryFormValidation === null || ACTIVE_VALIDATION_CASES.includes(primaryFormValidation)) &&
+    (priceImpactParams.loading || !priceImpactParams.priceImpact)
 
-  const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
-
-  const acceptCallback = (): void => setIsAccepted((state) => !state)
+  const acceptCallback = (accepted: boolean): void => setIsAccepted(accepted)
 
   useEffect(() => {
     setIsAccepted(!showPriceImpactWarning)

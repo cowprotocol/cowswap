@@ -9,8 +9,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 
 import * as styledEl from './styled'
 
-import { STEPS } from '../../constants'
-import { OrderProgressBarStepName } from '../../constants'
+import { STEPS, OrderProgressBarStepName } from '../../constants'
 import { Description } from '../../sharedStyled'
 import { StepsWrapper } from '../StepsWrapper'
 

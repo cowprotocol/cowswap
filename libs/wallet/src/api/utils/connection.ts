@@ -1,43 +1,27 @@
 import { isMobile } from '@cowprotocol/common-utils'
 
-import { default as MetamaskImage } from '../../api/assets/metamask.png'
-import CoinbaseWalletIcon from '../assets/coinbase.svg'
-import TrezorIcon from '../assets/trezor.svg'
-import WalletConnectIcon from '../assets/walletConnectIcon.svg'
-import { ConnectionType } from '../types'
+import { guardMobileInjectedProvider } from '../../wagmi/mobileInjectedProviderGuard'
 
-const connectionTypeToName: Record<ConnectionType, string> = {
-  [ConnectionType.INJECTED]: 'Injected',
-  [ConnectionType.METAMASK]: 'MetaMask',
-  [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
-  [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
-  [ConnectionType.NETWORK]: 'Network',
-  [ConnectionType.GNOSIS_SAFE]: 'Safe',
-  [ConnectionType.TREZOR]: 'Trezor',
+import type { EIP1193Provider } from 'viem'
+
+type WindowWithInjectedProvider = {
+  ethereum?: unknown
 }
 
-const IDENTICON_KEY = 'Identicon'
+export function getInjectedProvider(targetWindow?: WindowWithInjectedProvider): EIP1193Provider | undefined {
+  try {
+    const ethereumWindow = targetWindow ?? (typeof window === 'undefined' ? undefined : window)
 
-const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
-  [ConnectionType.INJECTED]: IDENTICON_KEY,
-  [ConnectionType.METAMASK]: MetamaskImage,
-  [ConnectionType.GNOSIS_SAFE]: IDENTICON_KEY,
-  [ConnectionType.NETWORK]: IDENTICON_KEY,
-  [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
-  [ConnectionType.TREZOR]: TrezorIcon,
-  [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
-}
-
-export function getConnectionIcon(connectionType: ConnectionType): string {
-  return connectionTypeToIcon[connectionType]
-}
-
-export function getConnectionName(connectionType: ConnectionType): string {
-  return connectionTypeToName[connectionType]
+    // Keep all browser-injected access behind this guard. MetaMask iOS can hang
+    // account/discovery RPCs, and wagmi/Reown/viem all consume this provider.
+    return guardMobileInjectedProvider(ethereumWindow?.ethereum as EIP1193Provider | undefined)
+  } catch {
+    return undefined
+  }
 }
 
 export function getIsInjected(): boolean {
-  return Boolean(window.ethereum)
+  return Boolean(getInjectedProvider())
 }
 
 export function getIsInjectedMobileBrowser(): boolean {

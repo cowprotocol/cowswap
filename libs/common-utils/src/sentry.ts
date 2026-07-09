@@ -1,7 +1,5 @@
 import * as Sentry from '@sentry/browser'
 
-import { log } from './logger'
-
 export enum ERROR_TYPES {
   ON_SWAP = 'onSwap',
   ON_APPROVE = 'onApprove',
@@ -27,10 +25,20 @@ export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>
   })
 }
 
-export function captureError(error: Error, errorType: ERROR_TYPES, params?: Record<string, unknown>): void {
-  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
+export function captureError(
+  error: Error,
+  errorType?: ERROR_TYPES,
+  params?: Record<string, unknown>,
+  extraTags?: Record<string, string>,
+): void {
+  const tags = {
+    captureType: 'manual',
+    ...(errorType ? { errorType } : undefined),
+    ...extraTags,
+  }
+
   Sentry.captureException(error, {
-    tags: { errorType, captureType: 'manual' },
+    tags,
     contexts: {
       params,
     },

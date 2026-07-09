@@ -1,7 +1,7 @@
 import { useState, ReactNode, FC } from 'react'
 
-import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
-import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
+import iconMinusSrc from '@cowprotocol/assets/images/icon-minus.svg'
+import iconPlusSrc from '@cowprotocol/assets/images/icon-plus.svg'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
@@ -115,7 +115,7 @@ export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
           <summary onClick={handleToggle(index)}>
             {i18n._(faq.question)}
             <i>
-              <SVG src={openItems[index] ? IMG_ICON_MINUS : IMG_ICON_PLUS} />
+              <SVG src={openItems[index] ? iconMinusSrc : iconPlusSrc} />
             </i>
           </summary>
           {openItems[index] && <div>{faq.answer}</div>}

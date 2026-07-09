@@ -15,22 +15,25 @@ interface ToItemProps {
   chainId: SupportedChainId
   receiver: string
   isBridgingOrder: boolean
+  bridgeProviderType
   onCopy(label: string): void
 }
 
-export function ToItem({ receiver, isBridgingOrder, onCopy, chainId }: ToItemProps): ReactNode {
+export function ToItem({ receiver, isBridgingOrder, bridgeProviderType, onCopy, chainId }: ToItemProps): ReactNode {
+  const toTooltip = isBridgingOrder
+    ? bridgeProviderType === 'ReceiverAccountBridgeProvider'
+      ? DetailsTableTooltips.toBridgeReceiver
+      : DetailsTableTooltips.toBridgeProxy
+    : DetailsTableTooltips.to
+
   return (
-    <DetailRow label="To" tooltipText={DetailsTableTooltips.to}>
+    <DetailRow label="To" tooltipText={toTooltip}>
+      <RowWithCopyButton
+        textToCopy={receiver}
+        onCopy={() => onCopy('receiverAddress')}
+        contentsToDisplay={<AddressLink address={receiver} chainId={chainId} showNetworkName={isBridgingOrder} />}
+      />
       <Wrapper>
-        <RowWithCopyButton
-          textToCopy={receiver}
-          onCopy={() => onCopy('receiverAddress')}
-          contentsToDisplay={
-            <span>
-              <AddressLink address={receiver} chainId={chainId} showNetworkName={isBridgingOrder} />
-            </span>
-          }
-        />
         <LinkButton to={`/address/${receiver}`}>
           <FontAwesomeIcon icon={faHistory} />
           Order history

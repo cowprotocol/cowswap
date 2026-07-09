@@ -1,7 +1,7 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CmsImage, UI, Font, Media } from '@cowprotocol/ui'
+import { UI, Font, Media } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -11,6 +11,7 @@ import { Article } from '../services/cms'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
+import { CmsImage } from '@/components/CmsImage'
 import { SearchBar } from '@/components/SearchBar'
 import {
   Breadcrumbs,

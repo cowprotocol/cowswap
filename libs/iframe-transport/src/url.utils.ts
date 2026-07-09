@@ -19,7 +19,19 @@ export function assertHttpsUrlString(urlString: string): asserts urlString is Ht
 }
 
 export function getNullableParentOrigin(): UrlString | null {
-  return getAncestorOrigin() || getReferrerOrigin() || getParentLocationOrigin() || null
+  const origin =
+    normalizeOrigin(getAncestorOrigin()) ||
+    normalizeOrigin(getReferrerOrigin()) ||
+    normalizeOrigin(getParentLocationOrigin())
+
+  if (!origin) return null
+
+  try {
+    return new URL(origin).origin as UrlString
+  } catch (e) {
+    console.error('[getNullableParentOrigin] origin is invalid', e, { origin })
+    return null
+  }
 }
 
 export function getParentOriginOrThrow(): UrlString {
@@ -30,6 +42,10 @@ export function getParentOriginOrThrow(): UrlString {
   }
 
   return parentOrigin
+}
+
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }
 
 function getAncestorOrigin(): UrlString | undefined {

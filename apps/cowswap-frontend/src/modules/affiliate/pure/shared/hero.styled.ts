@@ -4,15 +4,13 @@ import styled from 'styled-components/macro'
 
 import { Card } from 'pages/Account/styled'
 
-const DEFAULT_CARD_MAX_WIDTH = 540
-
-export const HeroCard = styled(Card)<{ $maxWidth?: number }>`
-  max-width: ${({ $maxWidth }) => `${$maxWidth ?? DEFAULT_CARD_MAX_WIDTH}px`};
+export const HeroCard = styled(Card)`
+  max-width: 100%;
   align-items: center;
   justify-content: center;
   text-align: center;
   background: var(${UI.COLOR_BLUE_100_PRIMARY});
-  padding: 40px 32px 16px;
+  padding: 40px 32px 32px;
 `
 
 export const HeroContent = styled.div`

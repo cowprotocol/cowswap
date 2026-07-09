@@ -1,5 +1,4 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
@@ -23,15 +22,6 @@ jest.mock('@cowprotocol/analytics', () => {
   }
 })
 
-jest.mock('@cowprotocol/common-hooks', () => {
-  const actualModule = jest.requireActual('@cowprotocol/common-hooks')
-
-  return {
-    ...actualModule,
-    useFeatureFlags: jest.fn(),
-  }
-})
-
 jest.mock('@cowprotocol/common-utils', () => {
   const actualModule = jest.requireActual('@cowprotocol/common-utils')
 
@@ -48,7 +38,6 @@ jest.mock('common/hooks/useNavigate', () => {
 })
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
-const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
 const useNavigateMock = useNavigate as jest.MockedFunction<typeof useNavigate>
 
@@ -75,27 +64,14 @@ describe('AffiliateTraderHeaderButton', () => {
     useCowAnalyticsMock.mockReturnValue({
       sendEvent,
     } as unknown as ReturnType<typeof useCowAnalytics>)
-    useFeatureFlagsMock.mockReturnValue({
-      isAffiliateProgramEnabled: true,
-    } as ReturnType<typeof useFeatureFlags>)
     isInjectedWidgetMock.mockReturnValue(false)
     useNavigateMock.mockReturnValue(navigate)
   })
 
-  it('renders the header refer button when the affiliate program is enabled', () => {
+  it('renders the header refer button', () => {
     renderComponent()
 
     expect(screen.getByRole('button', { name: 'Refer' })).not.toBeNull()
-  })
-
-  it('does not render when the affiliate program is disabled', () => {
-    useFeatureFlagsMock.mockReturnValue({
-      isAffiliateProgramEnabled: false,
-    } as ReturnType<typeof useFeatureFlags>)
-
-    renderComponent()
-
-    expect(screen.queryByRole('button', { name: 'Refer' })).toBeNull()
   })
 
   it('does not render in widget mode', () => {

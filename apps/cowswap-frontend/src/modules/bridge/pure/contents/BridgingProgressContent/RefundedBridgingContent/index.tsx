@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -36,7 +36,7 @@ export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: R
           <ReceiveAmountTitle
             icon={
               <TimelineIconCircleWrapper>
-                <StyledTimelineCheckmarkIcon src={CheckmarkIcon} />
+                <StyledTimelineCheckmarkIcon src={svgCheckmarkSrc} />
               </TimelineIconCircleWrapper>
             }
           >

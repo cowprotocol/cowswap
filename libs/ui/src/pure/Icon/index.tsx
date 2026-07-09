@@ -1,6 +1,6 @@
-import iconFilledAlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
-import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
-import iconInformation from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
+import svgAlertSrc from '@cowprotocol/assets/cow-swap/alert.svg'
+import svgCheckSrc from '@cowprotocol/assets/cow-swap/check.svg'
+import svgFilledInfoCircleSrc from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -15,10 +15,10 @@ export enum IconType {
 }
 
 const IconTypeMap: Record<IconType, string> = {
-  [IconType.ALERT]: iconFilledAlertTriangle,
-  [IconType.INFORMATION]: iconInformation,
-  [IconType.DANGER]: iconFilledAlertTriangle,
-  [IconType.SUCCESS]: iconSuccess,
+  [IconType.ALERT]: svgAlertSrc,
+  [IconType.INFORMATION]: svgFilledInfoCircleSrc,
+  [IconType.DANGER]: svgAlertSrc,
+  [IconType.SUCCESS]: svgCheckSrc,
 }
 
 interface IconProps {

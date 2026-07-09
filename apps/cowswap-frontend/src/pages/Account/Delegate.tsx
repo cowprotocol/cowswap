@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import DelegateCowIcon from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
+import svgCowTokenSrc from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import svgDelegateCowSrc from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
 import { ClosableBanner, ButtonPrimary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -28,7 +28,7 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
       <BannerCard rowOnMobile={rowOnMobile}>
         {dismissable && close && <CloseButton onClick={close} />}
         <BannerCardIcon width={159}>
-          <SVG src={DelegateCowIcon} title={t`Delegate`} />
+          <SVG src={svgDelegateCowSrc} title={t`Delegate`} />
         </BannerCardIcon>
         <BannerCardContent>
           <BannerCardTitle>
@@ -39,7 +39,7 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
           </BannerCardTitle>
           <small>
             <Trans>Delegate your</Trans>
-            <img src={CowImage} alt={t`Cow Balance`} height="16" width="16" /> (v)COW
+            <img src={svgCowTokenSrc} alt={t`Cow Balance`} height="16" width="16" /> (v)COW
           </small>
           <ButtonPrimary as="a" href={DELEGATE_URL} target="_blank" rel="noopener nofollow">
             <Trans>Delegate Now</Trans> ↗

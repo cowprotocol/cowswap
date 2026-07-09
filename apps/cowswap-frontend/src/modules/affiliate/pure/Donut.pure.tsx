@@ -1,10 +1,13 @@
 import type { ReactNode } from 'react'
 
+import { useAutoFitText } from 'common/hooks/useAutoFitText'
+
 import * as styledEl from './Donut.styled'
 
 export interface DonutProps {
   value: number
-  children: ReactNode
+  label: ReactNode
+  subtitle?: ReactNode
 }
 
 const SVG_SIZE = 100
@@ -17,11 +20,14 @@ const MAX_VISIBLE_PROGRESS = 100 - Math.ceil(ROUND_CAP_CLOSURE_PERCENT)
 const LAST_INCOMPLETE_PROGRESS = 99
 const TAIL_COMPRESSION_START = MAX_VISIBLE_PROGRESS - 4
 
-export function Donut({ value, children }: DonutProps): ReactNode {
+export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
   const normalizedValue = Math.min(Math.max(value, 0), 100)
   const renderedValue = getRenderedValue(normalizedValue)
   const isComplete = normalizedValue === 100
   const hasProgress = renderedValue > 0
+  const hasSubtitle = shouldRenderSubtitle(subtitle)
+  const labelRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 24, mode: 'single', deps: [label] })
+  const subtitleRef = useAutoFitText<HTMLSpanElement>({ min: 11, max: 15, mode: 'single', deps: [subtitle] })
 
   return (
     <styledEl.Wrapper>
@@ -51,9 +57,32 @@ export function Donut({ value, children }: DonutProps): ReactNode {
         ) : null}
         <circle className="donut-center" cx={SVG_CENTER} cy={SVG_CENTER} r={CENTER_RADIUS} />
       </styledEl.Ring>
-      <styledEl.Content>{children}</styledEl.Content>
+      <styledEl.Content>
+        <styledEl.ContentInner>
+          <styledEl.LabelRow>
+            <styledEl.Label ref={labelRef}>{label}</styledEl.Label>
+          </styledEl.LabelRow>
+          {hasSubtitle ? (
+            <styledEl.SubtitleRow>
+              <styledEl.Subtitle ref={subtitleRef}>{subtitle}</styledEl.Subtitle>
+            </styledEl.SubtitleRow>
+          ) : null}
+        </styledEl.ContentInner>
+      </styledEl.Content>
     </styledEl.Wrapper>
   )
+}
+
+function shouldRenderSubtitle(subtitle: ReactNode): boolean {
+  if (subtitle === null || subtitle === undefined || subtitle === '' || typeof subtitle === 'boolean') {
+    return false
+  }
+
+  if (Array.isArray(subtitle)) {
+    return subtitle.some(shouldRenderSubtitle)
+  }
+
+  return true
 }
 
 function getRenderedValue(value: number): number {

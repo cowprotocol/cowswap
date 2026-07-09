@@ -18,9 +18,7 @@ export function useRateInfoParams(
   outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
 ): RateInfoParams {
   const { chainId } = useWalletInfo()
-
   const activeRate = usePrice(inputCurrencyAmount, outputCurrencyAmount)
-
   const parseRate = useCallback(
     (invert: boolean) => {
       if (!activeRate || activeRate.denominator.toString() === '0' || activeRate.numerator.toString() === '0') return

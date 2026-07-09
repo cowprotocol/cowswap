@@ -52,6 +52,7 @@ export function TradeFees({
       partnerFeeBps={partnerFeeBps}
       volumeFeeTooltip={volumeFeeTooltip}
       isLast={isLast}
+      loading={loading}
     />
   )
 
@@ -62,6 +63,7 @@ export function TradeFees({
       protocolFeeAmount={protocolFeeAmount}
       protocolFeeBps={protocolFeeBps}
       isLast={isLast && !hasPartnerFee}
+      loading={loading}
     />
   )
 
@@ -76,6 +78,7 @@ export function TradeFees({
           protocolFeeUsd={protocolFeeUsd}
           protocolFeeAmount={protocolFeeAmount}
           protocolFeeBps={protocolFeeBps}
+          loading={loading}
         />
         {partnerFeeRow}
       </>
