@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import ms from 'ms.macro'
 
@@ -37,6 +37,7 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
   const setLastUpdateTime = useSetAtom(restrictedTokensLastUpdateAtom)
 
   const hasLoadedFromCache = useRef(false)
+  const [, forceRefresh] = useReducer((value: number) => value + 1, 0)
   const isUpdateNeeded = isTimeToUpdate(lastUpdateTime)
   const hasFreshCache = (runtimeState.isLoaded || cachedState.isLoaded) && !isUpdateNeeded
 
@@ -50,6 +51,23 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
       }
     }
   }, [cachedState, isUpdateNeeded, setRestrictedTokens])
+
+  useEffect(() => {
+    if (!Number.isFinite(lastUpdateTime) || lastUpdateTime <= 0) {
+      return
+    }
+
+    const expiresIn = lastUpdateTime + UPDATE_INTERVAL - Date.now()
+
+    if (expiresIn <= 0) {
+      forceRefresh()
+      return
+    }
+
+    const timeoutId = setTimeout(forceRefresh, expiresIn)
+
+    return () => clearTimeout(timeoutId)
+  }, [lastUpdateTime])
 
   const saveToCache = useCallback(
     (state: RestrictedTokenListState) => {

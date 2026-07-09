@@ -16,15 +16,47 @@ const initialGeoData: GeoData = {
 
 export const geoDataAtom = atom<GeoData>(initialGeoData)
 
+function getCountryFromResponseBody(responseBody: unknown): string | null {
+  if (!responseBody || typeof responseBody !== 'object' || !('country' in responseBody)) {
+    return null
+  }
+
+  const country = responseBody.country
+
+  if (typeof country !== 'string') {
+    return null
+  }
+
+  const normalizedCountry = country.trim().toUpperCase()
+
+  return /^[A-Z]{2}$/.test(normalizedCountry) ? normalizedCountry : null
+}
+
+async function fetchCountry(): Promise<string> {
+  const response = await fetch('https://api.country.is')
+
+  if (!response.ok) {
+    throw new Error(`Geo lookup failed: ${response.status}`)
+  }
+
+  const responseBody: unknown = await response.json()
+  const country = getCountryFromResponseBody(responseBody)
+
+  if (!country) {
+    throw new Error('Geo lookup returned an invalid country')
+  }
+
+  return country
+}
+
 async function doFetchGeoData(set: (update: GeoData) => void, current: GeoData): Promise<void> {
   set({ ...current, isLoading: true })
 
   try {
-    const response = await fetch('https://api.country.is')
-    const data = await response.json()
+    const country = await fetchCountry()
 
     set({
-      country: data.country || null,
+      country,
       isLoading: false,
       isLoaded: true,
       error: null,

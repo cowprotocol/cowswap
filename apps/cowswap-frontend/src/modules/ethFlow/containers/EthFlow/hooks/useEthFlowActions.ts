@@ -95,9 +95,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
 
     const approve = (): Promise<void> => {
       const usePartialAmount = isPartialApproveEnabledBySettings || isInfiniteApproveDisabledInWidget
-      const unitsToApprove = usePartialAmount ? amountToApprove || MAX_APPROVE_AMOUNT : MAX_APPROVE_AMOUNT
+      const unitsToApprove = usePartialAmount ? (amountToApprove ?? MAX_APPROVE_AMOUNT) : MAX_APPROVE_AMOUNT
 
-      if (isInfiniteApproveDisabledInWidget && !amountToApprove) {
+      if (isInfiniteApproveDisabledInWidget && amountToApprove === undefined) {
         throw new Error('Approve amount must be defined when isInfiniteApproveDisabled')
       }
 

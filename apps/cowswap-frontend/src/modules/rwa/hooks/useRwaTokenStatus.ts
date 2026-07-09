@@ -50,6 +50,7 @@ interface GetRwaTokenStatusParams {
   country: string | null
   isGeoLoaded: boolean
   isGeoLoading: boolean
+  hasGeoError: boolean
   hasAccount: boolean
   consentStatus: RwaConsentStatus
   isCountryRestricted: boolean
@@ -123,6 +124,7 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
       country: geoStatus.country,
       isGeoLoaded: geoStatus.isLoaded,
       isGeoLoading: geoStatus.isLoading,
+      hasGeoError: Boolean(geoStatus.error),
       hasAccount: Boolean(account),
       consentStatus,
       isCountryRestricted: countryKey !== null && rwaTokenInfos.some((token) => token.blockedCountries.has(countryKey)),
@@ -131,6 +133,7 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     account,
     consentStatus,
     geoStatus.country,
+    geoStatus.error,
     geoStatus.isLoaded,
     geoStatus.isLoading,
     hasTokenToCheck,
@@ -151,6 +154,7 @@ function getRwaTokenStatus(params: GetRwaTokenStatusParams): RwaTokenStatus {
     country,
     isGeoLoaded,
     isGeoLoading,
+    hasGeoError,
     hasAccount,
     consentStatus,
     isCountryRestricted,
@@ -173,14 +177,17 @@ function getRwaTokenStatus(params: GetRwaTokenStatusParams): RwaTokenStatus {
   }
 
   if (country === null) {
-    return getUnknownCountryStatus({ isGeoLoaded, isGeoLoading, hasAccount, consentStatus })
+    return getUnknownCountryStatus({ isGeoLoaded, isGeoLoading, hasGeoError, hasAccount, consentStatus })
   }
 
   return isCountryRestricted ? RwaTokenStatus.Restricted : RwaTokenStatus.Allowed
 }
 
 function getUnknownCountryStatus(
-  params: Pick<GetRwaTokenStatusParams, 'isGeoLoaded' | 'isGeoLoading' | 'hasAccount' | 'consentStatus'>,
+  params: Pick<
+    GetRwaTokenStatusParams,
+    'isGeoLoaded' | 'isGeoLoading' | 'hasGeoError' | 'hasAccount' | 'consentStatus'
+  >,
 ): RwaTokenStatus {
   if (!params.isGeoLoaded || params.isGeoLoading) {
     return RwaTokenStatus.ChecksPending
@@ -188,6 +195,10 @@ function getUnknownCountryStatus(
 
   if (!params.hasAccount) {
     return RwaTokenStatus.Allowed
+  }
+
+  if (params.hasGeoError) {
+    return RwaTokenStatus.Restricted
   }
 
   return params.consentStatus === 'valid' ? RwaTokenStatus.ConsentIsSigned : RwaTokenStatus.RequiredConsent
