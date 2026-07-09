@@ -49,6 +49,10 @@ export function AffiliateTraderCodeInfo(): ReactNode {
   const approxNextUpdateAt = useMemo(() => getApproxNextStatsUpdateAt(), [])
   const approxNextUpdateTimeAgo = useTimeAgo(approxNextUpdateAt, TIME_AGO_UPDATE_INTERVAL_MS)
 
+  if (!codeLoading && !info && savedCode) {
+    return <CodeNotFound savedCode={savedCode} />
+  }
+
   return (
     <ColumnOneCard showLoader={statsLoading || codeLoading}>
       {!info || !savedCode ? null : (
@@ -124,6 +128,39 @@ export function AffiliateTraderCodeInfo(): ReactNode {
           )}
         </>
       )}
+    </ColumnOneCard>
+  )
+}
+
+function CodeNotFound({ savedCode }: { savedCode: string }): ReactNode {
+  return (
+    <ColumnOneCard>
+      <RewardsHeader>
+        <CardTitle>
+          <Trans>Referral code</Trans>
+        </CardTitle>
+      </RewardsHeader>
+      <LinkedCard $isExpired>
+        <LinkedCodeRow $isExpired>
+          <LinkedCopy>
+            <CopyButton value={savedCode} iconSize={16} iconOnly />
+            <LinkedCodeText>{savedCode}</LinkedCodeText>
+          </LinkedCopy>
+          <ExpiredBadge>
+            <Trans>Not found</Trans>
+          </ExpiredBadge>
+        </LinkedCodeRow>
+      </LinkedCard>
+      <HeroActions>
+        <LinkedMetaList>
+          <MetricItem>
+            <span>
+              The code you used in the past belongs to a different internal backend. You are seeing this because you are
+              using a test environment. Reach out to us in GitHub or Discord if you have any questions.
+            </span>
+          </MetricItem>
+        </LinkedMetaList>
+      </HeroActions>
     </ColumnOneCard>
   )
 }
