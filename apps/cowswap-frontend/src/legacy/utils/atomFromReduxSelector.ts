@@ -1,0 +1,32 @@
+import { atom, PrimitiveAtom } from 'jotai'
+
+import { shallowEqual } from 'react-redux'
+
+import { cowSwapStore, AppState } from 'legacy/state'
+
+export function atomFromReduxSelector<T>(
+  selector: (state: AppState) => T,
+  equalityFn: (a: T, b: T) => boolean = shallowEqual,
+): PrimitiveAtom<T> {
+  const baseAtom = atom<T>(selector(cowSwapStore.getState()))
+
+  baseAtom.onMount = (set) => {
+    const initialValue = selector(cowSwapStore.getState())
+
+    set(initialValue)
+
+    let prev = initialValue
+
+    const unsubscribe = cowSwapStore.subscribe(() => {
+      const next = selector(cowSwapStore.getState())
+      if (!equalityFn(prev, next)) {
+        prev = next
+        set(next)
+      }
+    })
+
+    return unsubscribe
+  }
+
+  return baseAtom
+}
