@@ -1,8 +1,7 @@
-import { getParentOrigin } from '@cowprotocol/iframe-transport'
-
 import { getIsSafeAppIframe } from './getIsSafeAppIframe'
+import { getParentOrigin } from './getParentOrigin'
 
-jest.mock('@cowprotocol/iframe-transport', () => ({
+jest.mock('./getParentOrigin', () => ({
   getParentOrigin: jest.fn(),
 }))
 
