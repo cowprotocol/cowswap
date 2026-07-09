@@ -24,7 +24,7 @@ export function useApprovalStateForSpender(
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
-  const { state: approvalState } = useApproveState(amountToApprove)
+  const { state: approvalState } = useApproveState(amountToApprove, spender)
 
   return useMemo(() => {
     return { approvalState, currentAllowance: currentAllowance?.data }

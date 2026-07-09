@@ -14,14 +14,17 @@ import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 import { ApprovalState } from '../types'
 import { getApprovalState } from '../utils'
 
-export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
+export function useApproveState(
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
+  spender?: string,
+): {
   state: ApprovalState
   currentAllowance: Nullish<bigint>
 } {
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address ? getAddressKey(token.address) : undefined
-  const currentAllowance = useTokenAllowance(token).data
-  const pendingApproval = useHasPendingApproval(tokenAddress)
+  const currentAllowance = useTokenAllowance(token, undefined, spender).data
+  const pendingApproval = useHasPendingApproval(tokenAddress, spender)
 
   const approvalStateBase = useSafeMemo(() => {
     return getApprovalState(amountToApprove, currentAllowance, pendingApproval)

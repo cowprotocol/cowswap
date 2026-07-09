@@ -19,14 +19,15 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
 }
 
 // returns whether a token has a pending approval transaction
-export function useHasPendingApproval(tokenAddress: string | undefined): boolean {
+export function useHasPendingApproval(tokenAddress: string | undefined, approvalSpender?: string): boolean {
   const allTransactions = useAllTransactions()
   const spender = useTradeSpenderAddress()
+  const targetSpender = approvalSpender ?? spender
 
   return useMemo(
     () =>
       typeof tokenAddress === 'string' &&
-      typeof spender === 'string' &&
+      typeof targetSpender === 'string' &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash]
         if (!tx || tx.receipt || tx.replacementType || tx.errorMessage) return false
@@ -34,8 +35,10 @@ export function useHasPendingApproval(tokenAddress: string | undefined): boolean
         const approval = tx.approval
         if (!approval) return false
 
-        return areAddressesEqual(approval.spender, spender) && areAddressesEqual(approval.tokenAddress, tokenAddress)
+        return (
+          areAddressesEqual(approval.spender, targetSpender) && areAddressesEqual(approval.tokenAddress, tokenAddress)
+        )
       }),
-    [allTransactions, spender, tokenAddress],
+    [allTransactions, targetSpender, tokenAddress],
   )
 }
