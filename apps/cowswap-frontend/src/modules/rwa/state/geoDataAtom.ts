@@ -14,6 +14,8 @@ const initialGeoData: GeoData = {
   error: null,
 }
 
+const GEO_FETCH_TIMEOUT_MS = 10_000
+
 export const geoDataAtom = atom<GeoData>(initialGeoData)
 
 function getCountryFromResponseBody(responseBody: unknown): string | null {
@@ -33,24 +35,37 @@ function getCountryFromResponseBody(responseBody: unknown): string | null {
 }
 
 async function fetchCountry(): Promise<string> {
-  const response = await fetch('https://api.country.is')
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), GEO_FETCH_TIMEOUT_MS)
 
-  if (!response.ok) {
-    throw new Error(`Geo lookup failed: ${response.status}`)
+  try {
+    const response = await fetch('https://api.country.is', { signal: controller.signal })
+
+    if (!response.ok) {
+      throw new Error(`Geo lookup failed: ${response.status}`)
+    }
+
+    const responseBody: unknown = await response.json()
+    const country = getCountryFromResponseBody(responseBody)
+
+    if (!country) {
+      throw new Error('Geo lookup returned an invalid country')
+    }
+
+    return country
+  } finally {
+    clearTimeout(timeoutId)
   }
-
-  const responseBody: unknown = await response.json()
-  const country = getCountryFromResponseBody(responseBody)
-
-  if (!country) {
-    throw new Error('Geo lookup returned an invalid country')
-  }
-
-  return country
 }
 
 async function doFetchGeoData(set: (update: GeoData) => void, current: GeoData): Promise<void> {
-  set({ ...current, isLoading: true })
+  set({
+    ...current,
+    country: null,
+    isLoading: true,
+    isLoaded: false,
+    error: null,
+  })
 
   try {
     const country = await fetchCountry()
