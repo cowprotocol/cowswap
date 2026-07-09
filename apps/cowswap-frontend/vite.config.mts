@@ -264,7 +264,7 @@ export default defineConfig(({ mode, isPreview }) => {
       // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
       // peer-instances; without deduping the controllers package, code in libs/wallet reads
       // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
+      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     build: {
