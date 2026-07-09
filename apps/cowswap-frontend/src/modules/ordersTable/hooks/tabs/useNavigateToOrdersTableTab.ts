@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 
+import { OrderTabId } from 'entities/routes/routes.atom'
+
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { OrderTabId } from '../../state/tabs/ordersTableTabs.constants'
 import { useGetBuildOrdersTableUrl } from '../url/useGetBuildOrdersTableUrl'
 
 export function useNavigateToOrdersTableTab(): (tabId: OrderTabId) => void {

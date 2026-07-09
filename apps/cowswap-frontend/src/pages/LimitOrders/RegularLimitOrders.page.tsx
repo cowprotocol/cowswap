@@ -1,29 +1,22 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useMemo } from 'react'
-
-import { UiOrderType } from '@cowprotocol/types'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { ReactNode, Suspense } from 'react'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import { OrderStatus } from 'legacy/state/orders/actions'
-import { useOrders } from 'legacy/state/orders/hooks'
 
 import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
-import { LimitOrdersPermitUpdater, OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
 export function RegularLimitOrdersPage(): ReactNode {
+  useOrdersTable(TabOrderTypes.LIMIT)
+
   const isUnlocked = useIsWidgetUnlocked()
-  const { chainId, account } = useWalletInfo()
-  const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
-  const pendingLimitOrders = useMemo(
-    () => allLimitOrders.filter((order) => order.status === OrderStatus.PENDING),
-    [allLimitOrders],
-  )
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const { hideOrdersTable } = useInjectedWidgetParams()
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -40,9 +33,9 @@ export function RegularLimitOrdersPage(): ReactNode {
 
       {!hideOrdersTable && (
         <styledEl.SecondaryWrapper className="trade-orders-table">
-          {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
+          {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
           <Suspense fallback={<Loading />}>
-            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
           </Suspense>
         </styledEl.SecondaryWrapper>
       )}

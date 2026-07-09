@@ -95,7 +95,8 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'creating',
   'failed',
   'scheduled',
-]
+] as const satisfies OrderTypeKeys[]
+
 export const ORDERS_LIST: OrderLists = {
   pending: {},
   presignaturePending: {},
