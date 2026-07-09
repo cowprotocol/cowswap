@@ -111,6 +111,22 @@ describe('validateTradeForm - xStock logic', () => {
     expect(result || []).not.toContain(TradeFormValidation.RwaConsentRequired)
   })
 
+  test('blocks bridge trades when the account proxy setup is invalid', () => {
+    const context = {
+      ...baseContext,
+      isProxySetupValid: false,
+      tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        outputCurrency: { address: '0x2', chainId: 100 } as unknown as Currency,
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+
+    expect(result).toContain(TradeFormValidation.ProxyAccountUnknown)
+  })
+
   test('does not show xStock minimum trade size for sell orders when xStock sell amount is exactly $10', () => {
     const context = {
       ...baseContext,

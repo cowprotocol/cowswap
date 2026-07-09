@@ -220,7 +220,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
         validations.push(TradeFormValidation.ProxyAccountLoading)
       }
 
-      if (isProxySetupValid === null) {
+      if (isProxySetupValid === null || isProxySetupValid === false) {
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
     }
