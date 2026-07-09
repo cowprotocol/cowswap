@@ -9,7 +9,7 @@ import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled
 
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
-import { permittableTokensAtom } from '../state/permittableTokensAtom'
+import { getTokenAddressFromPermittableTokenKey, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { PermitCompatibleTokens } from '../types'
 
 export function usePermitCompatibleTokens(): PermitCompatibleTokens {
@@ -43,10 +43,10 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
       )
     }
 
-    for (const address of Object.keys(localPermitInfoRef.current)) {
-      const addressLowerCased = getAddressKey(address)
+    for (const permitTokenKey of Object.keys(localPermitInfoRef.current)) {
+      const addressLowerCased = getAddressKey(getTokenAddressFromPermittableTokenKey(permitTokenKey))
 
-      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[addressLowerCased])
+      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[permitTokenKey])
     }
 
     return permitCompatibleTokens

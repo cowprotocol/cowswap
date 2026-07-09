@@ -90,4 +90,31 @@ describe('getTokenPermitInfo request cache', () => {
     expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
     expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
   })
+
+  it('does not cache transient error results', async () => {
+    const tokenAddress = '0x5555555555555555555555555555555555555555' as Address
+    const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation(() => undefined)
+
+    mockedGetPermitUtilsInstance
+      .mockResolvedValueOnce({
+        getTokenNonce: jest.fn().mockRejectedValue(new Error('RPC timeout')),
+      } as Awaited<ReturnType<typeof getPermitUtilsInstance>>)
+      .mockResolvedValueOnce({
+        getTokenNonce: jest.fn().mockResolvedValue(7),
+      } as Awaited<ReturnType<typeof getPermitUtilsInstance>>)
+
+    try {
+      await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({ error: 'RPC timeout' })
+      await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({
+        type: 'eip-2612',
+        name: 'Test Token',
+        version: '1',
+      })
+
+      expect(mockedGetPermitUtilsInstance).toHaveBeenCalledTimes(2)
+      expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+    } finally {
+      consoleDebugSpy.mockRestore()
+    }
+  })
 })

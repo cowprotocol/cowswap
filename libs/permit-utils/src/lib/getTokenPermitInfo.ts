@@ -43,6 +43,17 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
   }
 
   const request = actuallyCheckTokenIsPermittable(params)
+    .then((result) => {
+      if ('error' in result) {
+        delete REQUESTS_CACHE[key]
+      }
+
+      return result
+    })
+    .catch((error) => {
+      delete REQUESTS_CACHE[key]
+      throw error
+    })
 
   REQUESTS_CACHE[key] = request
 

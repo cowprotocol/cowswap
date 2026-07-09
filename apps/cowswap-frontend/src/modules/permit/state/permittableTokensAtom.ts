@@ -14,6 +14,10 @@ export function getPermittableTokenKey(tokenAddress: string, spender: string): s
   return `${getAddressKey(tokenAddress)}-${getAddressKey(spender)}`
 }
 
+export function getTokenAddressFromPermittableTokenKey(permitTokenKey: string): string {
+  return permitTokenKey.split('-')[0]
+}
+
 /**
  * Atom that stores the permittable tokens info for each chain on localStorage.
  * It's meant to be shared across different tabs, thus no special storage handling.
