@@ -3,12 +3,17 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RwaConsentKey, RwaConsentModal, useRwaConsentModalState, useRwaConsentStatus } from 'modules/rwa'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useDerivedTradeState, useTradeConfirmActions } from 'modules/trade'
+
+import { RwaTokenStatus, useRwaTokenStatus } from '../../hooks/useRwaTokenStatus'
 
 export function RwaConsentModalContainer(): ReactNode {
   const { account } = useWalletInfo()
   const { isModalOpen, closeModal, context } = useRwaConsentModalState()
   const tradeConfirmActions = useTradeConfirmActions()
+  const derivedState = useDerivedTradeState()
+  const { inputCurrency, outputCurrency } = derivedState || {}
+  const { status: currentRwaStatus } = useRwaTokenStatus({ inputCurrency, outputCurrency })
 
   const consentKey: RwaConsentKey | null = useMemo(() => {
     if (!context || !account) {
@@ -32,17 +37,27 @@ export function RwaConsentModalContainer(): ReactNode {
       return
     }
 
-    confirmConsent()
-    closeModal()
-
     // if this is a token import flow, call the success callback to proceed to import modal
     // if this is a trade flow, open the trade confirmation
     if (context.onImportSuccess) {
+      confirmConsent()
+      closeModal()
       context.onImportSuccess()
     } else {
-      tradeConfirmActions.onOpen()
+      if (currentRwaStatus === RwaTokenStatus.ChecksPending || currentRwaStatus === RwaTokenStatus.Restricted) {
+        return
+      }
+
+      confirmConsent()
+      closeModal()
+
+      if (context.onTradeConfirm) {
+        context.onTradeConfirm()
+      } else {
+        tradeConfirmActions.onOpen()
+      }
     }
-  }, [account, context, consentKey, confirmConsent, closeModal, tradeConfirmActions])
+  }, [account, context, consentKey, confirmConsent, closeModal, currentRwaStatus, tradeConfirmActions])
 
   if (!isModalOpen || !context) {
     return null

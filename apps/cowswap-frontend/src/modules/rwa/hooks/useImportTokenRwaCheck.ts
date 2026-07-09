@@ -6,7 +6,7 @@ import { useSelectTokenWidgetState } from 'modules/tokensList'
 
 import { useRwaTokenStatus, RwaTokenStatus, RwaTokenInfo } from './useRwaTokenStatus'
 
-type ImportTokenRwaStatus = 'allowed' | 'restricted' | 'requires-consent' | null
+type ImportTokenRwaStatus = 'allowed' | 'restricted' | 'requires-consent' | 'checks-pending' | null
 
 interface UseImportTokenRwaCheckResult {
   tokenToImport: TokenWithLogo | undefined
@@ -16,6 +16,7 @@ interface UseImportTokenRwaCheckResult {
 
 const RWA_STATUS_MAP: Readonly<Record<RwaTokenStatus, ImportTokenRwaStatus>> = {
   [RwaTokenStatus.Allowed]: 'allowed',
+  [RwaTokenStatus.ChecksPending]: 'checks-pending',
   [RwaTokenStatus.Restricted]: 'restricted',
   [RwaTokenStatus.RequiredConsent]: 'requires-consent',
   [RwaTokenStatus.ConsentIsSigned]: 'allowed',

@@ -3,12 +3,14 @@ import { atom } from 'jotai'
 export interface GeoData {
   country: string | null
   isLoading: boolean
+  isLoaded: boolean
   error: string | null
 }
 
 const initialGeoData: GeoData = {
   country: null,
   isLoading: false,
+  isLoaded: false,
   error: null,
 }
 
@@ -24,12 +26,14 @@ async function doFetchGeoData(set: (update: GeoData) => void, current: GeoData):
     set({
       country: data.country || null,
       isLoading: false,
+      isLoaded: true,
       error: null,
     })
   } catch (error) {
     set({
       country: null,
       isLoading: false,
+      isLoaded: true,
       error: error instanceof Error ? error.message : 'Failed to fetch geo data',
     })
   }
@@ -38,7 +42,7 @@ async function doFetchGeoData(set: (update: GeoData) => void, current: GeoData):
 export const fetchGeoDataAtom = atom(null, async (get, set) => {
   const current = get(geoDataAtom)
 
-  if (current.country !== null || current.isLoading) {
+  if (current.isLoaded || current.isLoading) {
     return
   }
 

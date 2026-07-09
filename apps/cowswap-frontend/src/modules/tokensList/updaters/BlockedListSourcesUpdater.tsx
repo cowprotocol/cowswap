@@ -7,9 +7,7 @@ import { blockedListSourcesAtom, getCountryAsKey, restrictedListsAtom } from '@c
 import { useGeoStatus } from 'modules/rwa'
 
 /**
- * update the blockedListSourcesAtom based on geo-blocking only:
- * - only blocks lists when country is known and the list is blocked for that country
- * - does not block when country is unknown (consent check happens at trade/import time)
+ * Keeps restricted token lists hidden until geoblocking checks are satisfied.
  */
 export function BlockedListSourcesUpdater(): null {
   const { isRwaGeoblockEnabled } = useFeatureFlags()
@@ -18,32 +16,40 @@ export function BlockedListSourcesUpdater(): null {
   const setBlockedListSources = useSetAtom(blockedListSourcesAtom)
 
   useEffect(() => {
-    // Skip blocking if feature flag is disabled
-    if (!isRwaGeoblockEnabled) {
+    if (isRwaGeoblockEnabled === false) {
       setBlockedListSources(new Set<string>())
       return
     }
 
-    if (!restrictedLists.isLoaded) {
+    if (isRwaGeoblockEnabled !== true || !restrictedLists.isLoaded) {
       return
     }
 
     const blockedSources = new Set<string>()
 
-    // only block when country is known and list is blocked for that country
-    // when country is unknown, tokens should be visible (consent check happens at trade time)
-    if (geoStatus.country) {
-      const countryKey = getCountryAsKey(geoStatus.country)
+    const sourceKeys = new Set([
+      ...Object.keys(restrictedLists.blockedCountriesPerList),
+      ...Object.keys(restrictedLists.consentHashPerList),
+    ])
 
-      for (const [sourceKey, blockedCountries] of Object.entries(restrictedLists.blockedCountriesPerList)) {
+    for (const sourceKey of sourceKeys) {
+      const blockedCountries = restrictedLists.blockedCountriesPerList[sourceKey] ?? []
+
+      if (geoStatus.country) {
+        const countryKey = getCountryAsKey(geoStatus.country)
+
         if (blockedCountries.includes(countryKey)) {
           blockedSources.add(sourceKey)
         }
+
+        continue
       }
+
+      blockedSources.add(sourceKey)
     }
 
     setBlockedListSources(blockedSources)
-  }, [isRwaGeoblockEnabled, geoStatus, restrictedLists, setBlockedListSources])
+  }, [geoStatus.country, isRwaGeoblockEnabled, restrictedLists, setBlockedListSources])
 
   return null
 }

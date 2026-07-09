@@ -50,7 +50,9 @@ describe('validateTradeForm - xStock logic', () => {
     isAccountProxyLoading: false,
     isProxySetupValid: true,
     customTokenError: undefined,
+    isRwaStatusPending: false,
     isRestrictedForCountry: false,
+    isRwaConsentRequired: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -72,6 +74,28 @@ describe('validateTradeForm - xStock logic', () => {
 
     const result = validateTradeForm(context)
     expect(result).toContain(TradeFormValidation.XstockMinimumTradeSize)
+  })
+
+  test('blocks trading while RWA availability checks are pending', () => {
+    const context = {
+      ...baseContext,
+      isRwaStatusPending: true,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+
+    expect(result).toContain(TradeFormValidation.RwaChecksPending)
+  })
+
+  test('requires consent before trading RWA tokens when country is unknown', () => {
+    const context = {
+      ...baseContext,
+      isRwaConsentRequired: true,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+
+    expect(result).toContain(TradeFormValidation.RwaConsentRequired)
   })
 
   test('does not show xStock minimum trade size for sell orders when xStock sell amount is exactly $10', () => {
@@ -220,7 +244,9 @@ describe('validateTradeForm - price impact loading', () => {
     isAccountProxyLoading: false,
     isProxySetupValid: true,
     customTokenError: undefined,
+    isRwaStatusPending: false,
     isRestrictedForCountry: false,
+    isRwaConsentRequired: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,

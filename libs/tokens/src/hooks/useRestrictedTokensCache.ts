@@ -19,6 +19,7 @@ function isTimeToUpdate(lastUpdateTime: number): boolean {
 
 interface UseRestrictedTokensCacheResult {
   shouldFetch: boolean
+  hasFreshCache: boolean
   saveToCache: (state: RestrictedTokenListState) => void
 }
 
@@ -49,13 +50,17 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
     [setRestrictedTokens, setCache, setLastUpdateTime],
   )
 
+  const isUpdateNeeded = isTimeToUpdate(lastUpdateTime)
+  const hasFreshCache = runtimeState.isLoaded && !isUpdateNeeded
+
   // Should fetch if:
   // 1. Time-based update is needed, OR
   // 2. Runtime state is not loaded (no data available yet)
-  const shouldFetch = isTimeToUpdate(lastUpdateTime) || !runtimeState.isLoaded
+  const shouldFetch = isUpdateNeeded || !runtimeState.isLoaded
 
   return {
     shouldFetch,
+    hasFreshCache,
     saveToCache,
   }
 }
