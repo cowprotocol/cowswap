@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
-import { useIsNoImpactWarningAccepted, useTradeConfirmActions } from 'modules/trade'
+import { useConfirmTradeWithRwaCheck, useIsNoImpactWarningAccepted } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
@@ -32,13 +32,12 @@ interface TradeButtonsProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady, isOutputLpToken }: TradeButtonsProps) {
   const primaryFormValidation = useGetTradeFormValidation()
-  const tradeConfirmActions = useTradeConfirmActions()
+  const { confirmTrade } = useConfirmTradeWithRwaCheck()
   const { feeWarningAccepted } = useHighFeeWarning()
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
   const localFormValidation = useYieldFormState()
 
   const confirmText = primaryFormValidation ? t`Swap` : t`Deposit`
-  const confirmTrade = tradeConfirmActions.onOpen
 
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade)
 

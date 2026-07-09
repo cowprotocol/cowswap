@@ -13,12 +13,18 @@ import {
 const UPDATE_INTERVAL = ms`6h`
 
 function isTimeToUpdate(lastUpdateTime: number): boolean {
-  if (!lastUpdateTime) return true
-  return Date.now() - lastUpdateTime > UPDATE_INTERVAL
+  if (!Number.isFinite(lastUpdateTime) || lastUpdateTime <= 0) return true
+
+  const cacheAge = Date.now() - lastUpdateTime
+
+  if (cacheAge < 0) return true
+
+  return cacheAge > UPDATE_INTERVAL
 }
 
 interface UseRestrictedTokensCacheResult {
   shouldFetch: boolean
+  hasFreshCache: boolean
   saveToCache: (state: RestrictedTokenListState) => void
 }
 
@@ -31,14 +37,19 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
   const setLastUpdateTime = useSetAtom(restrictedTokensLastUpdateAtom)
 
   const hasLoadedFromCache = useRef(false)
+  const isUpdateNeeded = isTimeToUpdate(lastUpdateTime)
+  const hasFreshCache = (runtimeState.isLoaded || cachedState.isLoaded) && !isUpdateNeeded
 
   // load cached data from IndexedDB into runtime state on mount
   useEffect(() => {
     if (cachedState.isLoaded && !hasLoadedFromCache.current) {
       hasLoadedFromCache.current = true
-      setRestrictedTokens(cachedState)
+
+      if (!isUpdateNeeded) {
+        setRestrictedTokens(cachedState)
+      }
     }
-  }, [cachedState, setRestrictedTokens])
+  }, [cachedState, isUpdateNeeded, setRestrictedTokens])
 
   const saveToCache = useCallback(
     (state: RestrictedTokenListState) => {
@@ -52,10 +63,11 @@ export function useRestrictedTokensCache(): UseRestrictedTokensCacheResult {
   // Should fetch if:
   // 1. Time-based update is needed, OR
   // 2. Runtime state is not loaded (no data available yet)
-  const shouldFetch = isTimeToUpdate(lastUpdateTime) || !runtimeState.isLoaded
+  const shouldFetch = isUpdateNeeded || (!runtimeState.isLoaded && !cachedState.isLoaded)
 
   return {
     shouldFetch,
+    hasFreshCache,
     saveToCache,
   }
 }

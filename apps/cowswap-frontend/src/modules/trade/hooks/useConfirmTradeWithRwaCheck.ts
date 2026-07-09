@@ -44,11 +44,19 @@ export function useConfirmTradeWithRwaCheck(
 
   const confirmTrade = useCallback(
     (forcePriceConfirmation?: boolean) => {
+      if (rwaStatus === RwaTokenStatus.ChecksPending || rwaStatus === RwaTokenStatus.Restricted) {
+        return
+      }
+
       // Show consent modal if country unknown and consent not given
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
           consentHash: rwaTokenInfo.consentHash,
           token: TokenWithLogo.fromToken(rwaTokenInfo.token),
+          onTradeConfirm: () => {
+            onConfirmOpen?.()
+            tradeConfirmActions.onOpen(forcePriceConfirmation)
+          },
         })
         return
       }
