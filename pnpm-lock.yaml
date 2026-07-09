@@ -1366,6 +1366,9 @@ importers:
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
+      '@cowprotocol/types':
+        specifier: workspace:*
+        version: link:../types
       react:
         specifier: 19.1.2
         version: 19.1.2
