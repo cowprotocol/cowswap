@@ -28,7 +28,6 @@ import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
-  FulfillOrdersBatchCallback,
   InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
@@ -54,7 +53,7 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchAndClassifyOrder } from './utils'
+import { fetchAndClassifyOrder, OrderTransitionData } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 
@@ -76,7 +75,7 @@ interface UpdateOrdersParams {
   orders: Order[]
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
-  fulfillOrdersBatch: FulfillOrdersBatchCallback
+  fulfillOrdersBatch: FulfillOrdersBatchWithTypes
   invalidateOrdersBatch: InvalidateOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
@@ -88,6 +87,10 @@ interface UpdateOrdersParams {
   allTransactions: ReturnType<typeof useAllTransactions>
   markPollComplete?: (chainId: ChainId) => void
 }
+
+type OrderTypesByUid = Record<string, UiOrderType>
+
+type FulfillOrdersBatchWithTypes = (params: FulfillOrdersBatchParams, orderTypesByUid?: OrderTypesByUid) => void
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -158,8 +161,8 @@ export function PendingOrdersUpdater(): null {
     [chainId, dispatch],
   )
 
-  const fulfillOrdersBatch = useCallback(
-    (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
+  const fulfillOrdersBatch = useCallback<FulfillOrdersBatchWithTypes>(
+    (fulfillOrdersBatchParams, orderTypesByUid) => {
       if (!account) return
 
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
@@ -167,7 +170,7 @@ export function PendingOrdersUpdater(): null {
       fulfillOrdersBatchParams.orders.forEach((order) => {
         const bridgeOrder = getSerializedBridgeOrderRef.current(chainId, order.uid)
 
-        emitFulfilledOrderEvent(chainId, order, bridgeOrder)
+        emitFulfilledOrderEvent(chainId, order, bridgeOrder, orderTypesByUid?.[order.uid])
       })
 
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
@@ -371,55 +374,77 @@ async function _updateOrders({
   // Group resolved promises by status
   // Only pick the status that are final
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, EnrichedOrder[]>
+    Record<OrderTransitionStatus, OrderTransitionData[]>
   >(
     (acc, orderData) => {
       if (orderData && orderData.order) {
-        acc[orderData.status].push(orderData.order)
+        acc[orderData.status].push(orderData)
       }
       return acc
     },
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
-  handlePresignedOrders({ presigned, orders, getSerializedBridgeOrder, chainId, account, isSafeWallet, presignOrders })
+  handlePresignedOrders({
+    presigned: presigned.map(({ order }) => order),
+    orders,
+    getSerializedBridgeOrder,
+    chainId,
+    account,
+    isSafeWallet,
+    presignOrders,
+  })
 
   if (expired.length > 0) {
+    const expiredOrders = expired.map(({ order }) => order)
+
     expireOrdersBatch({
-      ids: expired.map(({ uid }) => uid),
+      ids: expiredOrders.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
 
-    expired.forEach((order) => {
-      emitExpiredOrderEvent({ order, chainId })
+    expired.forEach(({ order, orderType }) => {
+      emitExpiredOrderEvent({ order, orderType, chainId })
     })
   }
 
   if (cancelled.length > 0) {
+    const cancelledOrders = cancelled.map(({ order }) => order)
+
     cancelOrdersBatch({
-      ids: cancelled.map(({ uid }) => uid),
+      ids: cancelledOrders.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
 
-    cancelled.forEach((order) => {
+    cancelled.forEach(({ order, orderType }) => {
       emitCancelledOrderEvent({
         chainId,
         order,
+        orderType,
       })
     })
   }
 
   if (fulfilled.length > 0) {
+    const fulfilledOrders = fulfilled.map(({ order }) => order)
+    const fulfilledOrderTypesByUid = fulfilled.reduce<OrderTypesByUid>((acc, { order, orderType }) => {
+      acc[order.uid] = orderType
+      return acc
+    }, {})
+
     // update redux state
-    fulfillOrdersBatch({
-      orders: fulfilled,
-      chainId,
-      isSafeWallet,
-    })
+    fulfillOrdersBatch(
+      {
+        orders: fulfilledOrders,
+        chainId,
+        isSafeWallet,
+      },
+      fulfilledOrderTypesByUid,
+    )
     // add to surplus queue
-    fulfilled.forEach((order) => {
+    fulfilledOrders.forEach((order) => {
       const { uid, fullAppData, class: orderClass } = order
       if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
         if (!getIsBridgeOrder(order)) {

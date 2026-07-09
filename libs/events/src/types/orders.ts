@@ -7,6 +7,10 @@ export type BaseOrderPayload = {
   order: Omit<EnrichedOrder, 'settlementContract'>
 }
 
+export type BaseOrderLifecyclePayload = BaseOrderPayload & {
+  orderType: UiOrderType
+}
+
 export type BaseOrdersPayload = {
   chainId: SupportedChainId
   orders: Omit<EnrichedOrder, 'settlementContract'>[]
@@ -31,15 +35,15 @@ export type OnPostedOrderPayload = {
   isEthFlow?: boolean
 }
 
-export type OnFulfilledOrderPayload = BaseOrderPayload & {
+export type OnFulfilledOrderPayload = BaseOrderLifecyclePayload & {
   bridgeOrder?: BridgeOrderDataSerialized
 }
 
-export type OnCancelledOrderPayload = BaseOrderPayload & {
+export type OnCancelledOrderPayload = BaseOrderLifecyclePayload & {
   transactionHash?: string
 }
 
-export type OnExpiredOrderPayload = BaseOrderPayload
+export type OnExpiredOrderPayload = BaseOrderLifecyclePayload
 
 export type OnPresignedOrderPayload = BaseOrderPayload & {
   bridgeOrder?: BridgeOrderDataSerialized

@@ -1,21 +1,27 @@
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { UltimateOrderData } from '../../hooks/useUltimateOrder'
 import { TradeAmounts } from '../../types'
 
-type PopupData = {
+export type OrderTransitionData = {
   status: OrderTransitionStatus
   order: EnrichedOrder
+  orderType: UiOrderType
 }
 
-export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+export async function fetchAndClassifyOrder(
+  orderFromStore: Order,
+  chainId: ChainId,
+): Promise<OrderTransitionData | null> {
   // Skip EthFlow creating orders
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null
@@ -29,8 +35,9 @@ export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: Chai
     if (!order) return null
 
     const status = classifyOrder(order)
+    const orderType = getUiOrderType(orderFromStore)
 
-    return { status, order }
+    return { status, order, orderType }
   } catch {
     console.debug(
       `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
