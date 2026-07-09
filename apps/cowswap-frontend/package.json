@@ -133,7 +133,8 @@
     "workbox-expiration": "6.6.1",
     "workbox-precaching": "6.6.1",
     "workbox-routing": "6.6.1",
-    "workbox-strategies": "6.6.1"
+    "workbox-strategies": "6.6.1",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@storybook/react-vite": "10.3.6",
