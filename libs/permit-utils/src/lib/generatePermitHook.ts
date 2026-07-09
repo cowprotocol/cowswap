@@ -100,7 +100,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const nonce = preFetchedNonce === undefined ? await eip2612Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
-  const value = params.amount || DEFAULT_PERMIT_VALUE
+  const value = params.amount ?? DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'
@@ -189,5 +189,5 @@ function getCacheKey(params: PermitHookParams): string {
 
   return `${getAddressKey(inputToken.address)}-${chainId}-${getAddressKey(spender)}${
     account ? `-${getAddressKey(account)}` : ''
-  }${amount ? `-${amount.toString()}` : ''}`
+  }${amount !== undefined ? `-${amount.toString()}` : ''}`
 }

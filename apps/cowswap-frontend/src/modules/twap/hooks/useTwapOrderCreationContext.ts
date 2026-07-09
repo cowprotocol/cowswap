@@ -43,6 +43,7 @@ export function useTwapOrderCreationContext(
       !erc20ContractData?.contract ||
       !spender ||
       !currentBlockFactoryAddress ||
+      needsZeroApproval === undefined ||
       composableCowChainId !== erc20ChainId
     )
       return null

@@ -11,11 +11,15 @@ export function useNeedsZeroApproval(
   token: Nullish<Token>,
   spender: Nullish<string>,
   sellAmount: Nullish<CurrencyAmount<Token>>,
-): boolean {
+): boolean | undefined {
   const config = useConfig()
-  const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
+  const [shouldZeroApprove, setShouldZeroApprove] = useState<boolean | undefined>(undefined)
 
   useEffect(() => {
+    let isStale = false
+
+    setShouldZeroApprove(undefined)
+
     if (!token?.address || !spender || !sellAmount || !config) return
 
     shouldZeroApproveFn({
@@ -25,8 +29,14 @@ export function useNeedsZeroApproval(
       forceApprove: true,
       config,
     }).then((res) => {
+      if (isStale) return
+
       setShouldZeroApprove(!!res)
     })
+
+    return () => {
+      isStale = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token?.address, sellAmount?.quotient?.toString(), spender, config])
 

@@ -81,4 +81,18 @@ describe('generatePermitHook request cache', () => {
 
     expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
   })
+
+  it('preserves an explicit zero amount in permit calldata', async () => {
+    await generatePermitHook({ ...createParams(), amount: 0n })
+
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        callDataParams: expect.arrayContaining([
+          expect.objectContaining({
+            value: '0',
+          }),
+        ]),
+      }),
+    )
+  })
 })

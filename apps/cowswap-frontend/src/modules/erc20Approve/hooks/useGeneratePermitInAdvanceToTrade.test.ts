@@ -1,6 +1,7 @@
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { DEFAULT_PERMIT_VALUE } from '@cowprotocol/permit-utils'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
@@ -157,6 +158,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalledWith({
         account: mockAccount,
         amountToApprove: mockAmountToApprove,
+        approvalAmount: BigInt(mockAmountToApprove.quotient.toString()),
         spenderAddress: mockSpenderAddress,
       })
       expect(mockGeneratePermit).toHaveBeenCalledWith({
@@ -184,6 +186,28 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       expect(result_value).toBe(false)
       expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalled()
       expect(mockGeneratePermit).not.toHaveBeenCalled()
+    })
+
+    it('should report max approval amount to the widget hook for DAI-like permits', async () => {
+      mockUsePermitInfo.mockReturnValue({ type: 'dai-like' })
+      mockGeneratePermit.mockResolvedValue({ signature: '0x123' })
+
+      const { result } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
+
+      await result.current()
+
+      expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalledWith({
+        account: mockAccount,
+        amountToApprove: mockAmountToApprove,
+        approvalAmount: DEFAULT_PERMIT_VALUE,
+        spenderAddress: mockSpenderAddress,
+      })
+      expect(mockGeneratePermit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          amount: BigInt(mockAmountToApprove.quotient.toString()),
+          permitInfo: { type: 'dai-like' },
+        }),
+      )
     })
 
     it('should return false when generatePermit returns null', async () => {

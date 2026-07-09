@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { DEFAULT_PERMIT_VALUE } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
@@ -24,10 +25,14 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   return useCallback(async () => {
     if (!account || !permitInfo || !tradeSpenderAddress) return false
 
+    const permitAmount = BigInt(amountToApprove.quotient.toString())
+    const hookApprovalAmount = permitInfo.type === 'dai-like' ? DEFAULT_PERMIT_VALUE : permitAmount
+
     const isWidgetHookPassed = await callOnBeforeApprovalWidgetHook({
       account,
       amountToApprove,
       spenderAddress: tradeSpenderAddress,
+      approvalAmount: hookApprovalAmount,
     })
 
     if (!isWidgetHookPassed) {
@@ -46,7 +51,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
         inputToken: { name: token.name || '', address: token.address as `0x${string}` },
         account,
         permitInfo,
-        amount: BigInt(amountToApprove.quotient.toString()),
+        amount: permitAmount,
         customSpender: tradeSpenderAddress,
         preSignCallback,
         postSignCallback: resetApproveProgressModalState,

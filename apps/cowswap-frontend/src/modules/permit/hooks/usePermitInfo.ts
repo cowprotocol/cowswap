@@ -1,7 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { getIsNativeToken, getWrappedToken, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import {
+  getIsNativeToken,
+  getWrappedToken,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  isAddress,
+} from '@cowprotocol/common-utils'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
@@ -68,8 +73,9 @@ export function usePermitInfo(
 
   const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
   const defaultSpender = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
-  const spender = customSpender || defaultSpender
-  const shouldUsePreGeneratedInfo = spender === defaultSpender
+  const customSpenderAddress = customSpender ? isAddress(customSpender) || undefined : undefined
+  const spender = customSpender ? customSpenderAddress : defaultSpender
+  const shouldUsePreGeneratedInfo = !customSpender && spender === defaultSpender
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined, spender)

@@ -30,6 +30,7 @@ jest.mock('@cowprotocol/common-utils', () => ({
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS: { 1: defaultSpender },
   getIsNativeToken: jest.fn().mockReturnValue(false),
   getWrappedToken: jest.fn((token) => token),
+  isAddress: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/permit-utils', () => ({
@@ -74,6 +75,10 @@ const mockedUsePreGeneratedPermitInfoForToken = usePreGeneratedPermitInfoForToke
   typeof usePreGeneratedPermitInfoForToken
 >
 
+const commonUtils = jest.requireMock('@cowprotocol/common-utils') as {
+  isAddress: jest.MockedFunction<(value: string | undefined | null) => string | false>
+}
+
 describe('usePermitInfo', () => {
   const token = new Token(1, '0x1234567890123456789012345678901234567890', 18, 'TEST', 'Test Token')
   const addPermitInfo = jest.fn()
@@ -91,6 +96,11 @@ describe('usePermitInfo', () => {
     mockedUseIsPermitEnabled.mockReturnValue(true)
     mockedUsePreGeneratedPermitInfoForToken.mockImplementation(() => ({ permitInfo: undefined, isLoading: false }))
     mockedGetTokenPermitInfo.mockResolvedValue(fetchedPermitInfo)
+    commonUtils.isAddress.mockImplementation((value) => {
+      if (!value || !/^0x[a-fA-F0-9]{40}$/.test(value)) return false
+
+      return value
+    })
   })
 
   it('does not reuse cached permit info that belongs to a different spender', async () => {
@@ -153,6 +163,14 @@ describe('usePermitInfo', () => {
     const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
 
     expect(result.current).toEqual(defaultPermitInfo)
+    expect(mockedGetTokenPermitInfo).not.toHaveBeenCalled()
+  })
+
+  it('skips permit lookup for an invalid custom spender', () => {
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP, '0x1'))
+
+    expect(result.current).toBeUndefined()
+    expect(mockedUsePreGeneratedPermitInfoForToken).toHaveBeenCalledWith(undefined)
     expect(mockedGetTokenPermitInfo).not.toHaveBeenCalled()
   })
 })
