@@ -69,15 +69,26 @@ const StyledProductLogo = styled(ProductLogo)`
 interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
+  onAddHookRequest(payload: unknown): void
+  onEditHookRequest(payload: unknown): void
+  onSetSellTokenRequest(payload: unknown): void
+  onSetBuyTokenRequest(payload: unknown): void
 }
 // eslint-disable-next-line max-lines-per-function
-export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
+export function IframeDappContainer({
+  dapp,
+  context,
+  onAddHookRequest,
+  onEditHookRequest,
+  onSetSellTokenRequest,
+  onSetBuyTokenRequest,
+}: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
-  const addHookRef = useRef(context.addHook)
-  const editHookRef = useRef(context.editHook)
-  const setSellTokenRef = useRef(context.setSellToken)
-  const setBuyTokenRef = useRef(context.setBuyToken)
+  const addHookRequestRef = useRef(onAddHookRequest)
+  const editHookRequestRef = useRef(onEditHookRequest)
+  const setSellTokenRequestRef = useRef(onSetSellTokenRequest)
+  const setBuyTokenRequestRef = useRef(onSetBuyTokenRequest)
 
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -86,13 +97,13 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const { connector } = useAccount()
 
   // eslint-disable-next-line react-hooks/refs
-  addHookRef.current = context.addHook
+  addHookRequestRef.current = onAddHookRequest
   // eslint-disable-next-line react-hooks/refs
-  editHookRef.current = context.editHook
+  editHookRequestRef.current = onEditHookRequest
   // eslint-disable-next-line react-hooks/refs
-  setSellTokenRef.current = context.setSellToken
+  setSellTokenRequestRef.current = onSetSellTokenRequest
   // eslint-disable-next-line react-hooks/refs
-  setBuyTokenRef.current = context.setBuyToken
+  setBuyTokenRequestRef.current = onSetBuyTokenRequest
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -122,28 +133,28 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
         window,
         iframeWindow,
         CoWHookDappEvents.ADD_HOOK,
-        (payload) => addHookRef.current(payload),
+        (payload) => addHookRequestRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
         iframeWindow,
         CoWHookDappEvents.EDIT_HOOK,
-        (payload) => editHookRef.current(payload),
+        (payload) => editHookRequestRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
         iframeWindow,
         CoWHookDappEvents.SET_SELL_TOKEN,
-        (payload) => setSellTokenRef.current(payload.address),
+        (payload) => setSellTokenRequestRef.current(payload),
         dappOrigin,
       ),
       hookDappIframeTransport.listenToMessageFromWindow(
         window,
         iframeWindow,
         CoWHookDappEvents.SET_BUY_TOKEN,
-        (payload) => setBuyTokenRef.current(payload.address),
+        (payload) => setBuyTokenRequestRef.current(payload),
         dappOrigin,
       ),
     )
