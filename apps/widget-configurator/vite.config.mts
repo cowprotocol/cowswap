@@ -31,15 +31,17 @@ export default defineConfig(({ mode }) => {
     root: path.resolve(__dirname, './'),
     define: {
       ...getReactProcessEnv(mode),
+      // Maps Vercel env var into the build so the branch name can be reused inside the app
+      'process.env.VERCEL_GIT_COMMIT_REF': JSON.stringify(process.env.VERCEL_GIT_COMMIT_REF || ''),
     },
 
     cacheDir: '../../node_modules/.vite/widget-configurator',
 
     resolve: {
-      // Match cowswap-frontend's narrow dedupe list. Deduping too many packages
-      // (e.g. @wagmi/core, viem, @reown/appkit-controllers individually) caused
-      // version-selection mismatches that interfere with AppKit's wallet routing.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // Match cowswap-frontend's dedupe list. Keep it narrow: deduping multi-version
+      // packages (e.g. @wagmi/core, viem) forces a version selection that interferes
+      // with AppKit's wallet routing, so leave those out.
+      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     optimizeDeps: {

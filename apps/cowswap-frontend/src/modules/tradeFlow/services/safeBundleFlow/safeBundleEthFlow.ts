@@ -19,6 +19,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
@@ -51,7 +52,14 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract, amountToApprove } = safeBundleContext
+  const {
+    spender,
+    sendBatchTransactions,
+    needsApproval,
+    wrappedNativeContract,
+    amountToApprove,
+    maximumSendSellAmount,
+  } = safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -63,7 +71,8 @@ export async function safeBundleEthFlow(
   const { account, recipientAddressOrName, kind } = orderParams
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  const nativeAmountInWei = inputAmount.quotient.toString()
+  // Wrap the max sell amount (slippage-adjusted for buy orders); inputAmount alone underwraps buy orders and makes them unfillable.
+  const nativeAmountInWei = maximumSendSellAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }
   try {
     const txs: MetaTransactionData[] = []
@@ -116,6 +125,7 @@ export async function safeBundleEthFlow(
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
+    assertValidBridgeRecipient(tradeContext.tradeQuoteState)
 
     const {
       orderId,

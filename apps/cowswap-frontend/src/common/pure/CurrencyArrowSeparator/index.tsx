@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-
-import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
+import { CowLoadingIcon } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 

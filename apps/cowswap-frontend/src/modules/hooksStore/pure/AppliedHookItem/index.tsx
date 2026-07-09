@@ -1,7 +1,10 @@
+import { ReactElement } from 'react'
+
 import svgCheckSingularSrc from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import svgGridSrc from '@cowprotocol/assets/cow-swap/grid.svg'
 import svgTenderlySrc from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -32,6 +35,39 @@ interface HookItemProp {
 // TODO: refactor tu use single simulation as fallback
 const isBundleSimulationReady = true
 
+interface BundleSimulationStatusProps {
+  isSuccessful: boolean
+  safeSimulationUrl: string | null
+  simulationStatus: string
+  simulationTooltip: string
+}
+
+function BundleSimulationStatus({
+  isSuccessful,
+  safeSimulationUrl,
+  simulationStatus,
+  simulationTooltip,
+}: BundleSimulationStatusProps): ReactElement {
+  return (
+    <styledEl.SimulateContainer isSuccessful={isSuccessful}>
+      {isSuccessful ? (
+        <SVG src={svgCheckSingularSrc} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
+      ) : (
+        <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
+      )}
+      {safeSimulationUrl ? (
+        <a href={safeSimulationUrl} target="_blank" rel="noopener noreferrer">
+          {simulationStatus}
+          <ExternalLinkIcon size={14} />
+        </a>
+      ) : (
+        <span>{simulationStatus}</span>
+      )}
+      <InfoTooltip content={simulationTooltip} />
+    </styledEl.SimulateContainer>
+  )
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
@@ -56,6 +92,7 @@ export function AppliedHookItem({
     : t`The Tenderly simulation failed. Please review your transaction.`
 
   const dAppName = dapp?.name ? i18n._(dapp.name) : ''
+  const safeSimulationUrl = simulationData ? getSafeAbsoluteUrl(simulationData.link) : null
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -87,22 +124,12 @@ export function AppliedHookItem({
       </styledEl.HookItemHeader>
 
       {account && isBundleSimulationReady && simulationData && (
-        <styledEl.SimulateContainer isSuccessful={simulationData.status}>
-          {simulationData.status ? (
-            <SVG src={svgCheckSingularSrc} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
-          ) : (
-            <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
-          )}
-          {simulationData.link ? (
-            <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
-              {simulationStatus}
-              <ExternalLinkIcon size={14} />
-            </a>
-          ) : (
-            <span>{simulationStatus}</span>
-          )}
-          <InfoTooltip content={simulationTooltip} />
-        </styledEl.SimulateContainer>
+        <BundleSimulationStatus
+          isSuccessful={simulationData.status}
+          safeSimulationUrl={safeSimulationUrl}
+          simulationStatus={simulationStatus}
+          simulationTooltip={simulationTooltip}
+        />
       )}
 
       {!isBundleSimulationReady && (

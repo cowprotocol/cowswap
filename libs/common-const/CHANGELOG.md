@@ -1,5 +1,65 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.1...common-const-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(wallet): add Solana to available networks (#7709)
+
+### Patch Changes
+
+- fix: harden frontend security entrypoints (#7601)
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.0...common-const-v3.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/types@4.5.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.4.0...common-const-v3.5.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+- feat: replace blocknative gas price with rpc node (#7646)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/types@4.5.0
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.1...common-const-v3.4.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/types@4.4.0
+
 ## [3.3.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.3.0...common-const-v3.3.1) (2026-05-22)
 
 ### Patch Changes

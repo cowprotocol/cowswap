@@ -1,13 +1,27 @@
 import { revalidateTag, revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
+import { normalizeRevalidateRequest } from '../../../util/cmsValidation'
+
 // Secret key for protecting the revalidation endpoint
 const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const secret = request.nextUrl.searchParams.get('secret')
-  const tag = request.nextUrl.searchParams.get('tag') || 'cms-content'
-  const path = request.nextUrl.searchParams.get('path')
+function getSecretFromHeaders(request: NextRequest): string | null {
+  const authorization = request.headers.get('authorization')
+
+  if (authorization?.startsWith('Bearer ')) {
+    return authorization.slice('Bearer '.length)
+  }
+
+  return request.headers.get('x-revalidate-secret')
+}
+
+export async function GET(): Promise<NextResponse> {
+  return NextResponse.json({ message: 'Use POST for revalidation requests' }, { status: 405 })
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const secret = getSecretFromHeaders(request)
 
   // Validate that the secret is configured
   if (!REVALIDATE_SECRET) {
@@ -21,6 +35,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
+    const requestBody: unknown = await request.json()
+    const { path, tag } = normalizeRevalidateRequest(requestBody)
+
     // Revalidate the tag for data freshness
     revalidateTag(tag)
 
@@ -35,13 +52,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     revalidatePath('/learn/[article]')
 
     // If a specific path was provided, revalidate it to update the route manifest
-    if (path) {
-      // Ensure the incoming path starts with a slash
-      const formattedPath = path.startsWith('/') ? path : `/${path}`
-
-      // Revalidate the specific article page (e.g. /learn/my-new-article)
-      revalidatePath(formattedPath)
-    }
+    if (path) revalidatePath(path)
 
     return NextResponse.json({
       revalidated: true,
@@ -49,7 +60,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       date: new Date().toISOString(),
     })
   } catch (err) {
-    // If there was an error, return 500
-    return NextResponse.json({ message: 'Error revalidating', error: (err as Error).message }, { status: 500 })
+    const errorMessage = err instanceof Error ? err.message : 'Unknown revalidation error'
+    return NextResponse.json({ message: 'Error revalidating', error: errorMessage }, { status: 400 })
   }
 }

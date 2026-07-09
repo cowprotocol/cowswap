@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
@@ -16,7 +16,7 @@ import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
-import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
+import { storePermitCacheAtom } from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 type PermitDeps = {
@@ -28,6 +28,7 @@ type PermitDeps = {
   walletClient: WalletClient | undefined
 }
 
+// eslint-disable-next-line complexity
 async function runPermitRequest(
   params: GeneratePermitHookParams,
   amount: bigint,
@@ -39,6 +40,14 @@ async function runPermitRequest(
   walletClient: PermitDeps['walletClient'],
 ): Promise<PermitHookData | undefined> {
   if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
+
+  const chainIdMissMatch = publicClient.chain.id !== chainId
+
+  /**
+   * Never try using eip2612Utils which instantiated with a client on one chain agains another one
+   * Because getTokenNonce() will fail at the first iteration and will never get recovered
+   */
+  if (chainIdMissMatch) return
 
   const eip2612Utils = await getPermitUtilsInstance({
     chainId,
@@ -91,9 +100,6 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
-
-  useAtomValue(staticPermitCacheAtom)
-  useAtomValue(userPermitCacheAtom)
 
   return useCallback(
     (params: GeneratePermitHookParams) =>

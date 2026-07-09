@@ -46,6 +46,7 @@ export async function tradeFlow(
     allowsOffchainSigning,
     dispatch,
     generatePermitHook,
+    permitAmountToSign,
     quoteState,
     config,
   } = params
@@ -80,6 +81,7 @@ export async function tradeFlow(
       account: account as `0x${string}`,
       appData,
       typedHooks,
+      amount: permitAmountToSign,
       generatePermitHook,
     })
 

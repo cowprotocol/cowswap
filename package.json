@@ -39,7 +39,7 @@
     "preview": "NODE_OPTIONS=--max-old-space-size=8192 nx run cowswap-frontend:preview",
     "test": "pnpm run test:all && pnpm run test:tools",
     "test:all": "nx run-many -t test",
-    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs",
+    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs tools/scripts/cf-pages/gh-actions/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck",
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
@@ -51,6 +51,7 @@
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "upgrade-sdk-preview": "node tools/scripts/update-sdk-preview.js",
     "upgrade-sdk-latest": "node tools/scripts/upgrade-sdk-latest.js",
+    "update-widget-sdk-versions": "node apps/widget-configurator/scripts/widget-sdk-versions.script.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
@@ -96,12 +97,14 @@
       "@swc/core": true
     },
     "overrides": {
+      "@wagmi/core": "3.4.8",
+      "react-router-dom": "7.13.0",
+      "react-router": "7.13.0",
       "semver": "7.8.0",
       "undici-types": "6.19.2",
-      "wagmi": "3.6.9",
-      "@wagmi/core": "3.4.8",
-      "viem": "2.48.8",
       "use-sync-external-store": "1.5.0",
+      "viem": "2.48.8",
+      "wagmi": "3.6.9",
       "zod": "3.25.76"
     },
     "peerDependencyRules": {
@@ -118,11 +121,20 @@
       ]
     },
     "packageExtensions": {
+      "@reown/appkit-utils": {
+        "dependencies": {
+          "bs58": "6.0.0",
+          "@solana/web3.js": "1.98.4"
+        }
+      },
       "@walletconnect/modal-ui": {
         "dependencies": {
           "lit-html": "2.8.0"
         }
       }
+    },
+    "patchedDependencies": {
+      "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
     }
   },
   "dependencies": {

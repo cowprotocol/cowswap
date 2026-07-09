@@ -13,6 +13,7 @@ import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
+import { readFile } from 'node:fs/promises'
 import * as path from 'path'
 
 import pkg from './package.json'
@@ -195,6 +196,43 @@ export default defineConfig(({ mode, isPreview }) => {
               })
             },
           },
+          {
+            // @reown/appkit ships .js.map files whose `sources` point at the original
+            // TypeScript (exports/react.ts, src/**/*.ts) without inlining `sourcesContent`,
+            // and the published tarball doesn't include those .ts files. esbuild follows the
+            // sourceMappingURL pragma during prebundling and propagates the null sources into
+            // the optimized dep map, so devtools 404s on every reown source ("DevTools failed
+            // to load source map"). Drop the pragma for @reown files so esbuild treats the
+            // shipped compiled .js as the source and embeds real `sourcesContent` instead.
+            name: 'cow-reown-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@reown[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
+          {
+            // @1inch/permit-signed-approvals-utils ships .js.map files whose `sources` point at
+            // the original TypeScript (../src/**/*.ts) with no inlined `sourcesContent`, and the
+            // published tarball doesn't include those .ts files. Same failure mode as @reown above:
+            // esbuild follows the sourceMappingURL pragma during prebundling and devtools then 404s
+            // on every @1inch source ("DevTools failed to load source map"). Drop the pragma so
+            // esbuild treats the shipped compiled .js as the source and embeds real `sourcesContent`.
+            name: 'cow-1inch-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@1inch[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
         ],
       },
       // Only include packages that are direct or resolvable from the app; transitive
@@ -221,7 +259,12 @@ export default defineConfig(({ mode, isPreview }) => {
       // Dedupe packages that rely on shared React context across workspace libs.
       // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
       // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // @reown/appkit-controllers IS deduped because it holds AppKit's valtio state
+      // singletons (ConnectorController, OptionsController, ...). Since libs/wallet pulled
+      // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
+      // peer-instances; without deduping the controllers package, code in libs/wallet reads
+      // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
+      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
     },
 
     build: {
