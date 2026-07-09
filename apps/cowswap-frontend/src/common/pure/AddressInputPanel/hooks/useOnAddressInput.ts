@@ -8,6 +8,7 @@ export function useOnAddressInput(
   onChange: (value: string) => void,
   addressPrefix: string | undefined,
   strategy: AddressValidationStrategy,
+  value?: string,
 ): { handleInput: (event: ChangeEvent<HTMLInputElement>) => void; chainPrefixWarning: string } {
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
 
@@ -39,6 +40,14 @@ export function useOnAddressInput(
       setChainPrefixWarning('')
     }
   }, [chainPrefixWarning, addressPrefix])
+
+  // Clear the warning when the field is emptied via the Clear button (or any other
+  // external reset). That path calls onChange('') directly and bypasses handleInput.
+  useEffect(() => {
+    if (!value) {
+      setChainPrefixWarning('')
+    }
+  }, [value])
 
   return { handleInput, chainPrefixWarning }
 }
