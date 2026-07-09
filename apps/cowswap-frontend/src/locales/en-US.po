@@ -3281,6 +3281,10 @@ msgstr "Swap to"
 msgid "Select a pool"
 msgstr "Select a pool"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Review token terms"
+msgstr "Review token terms"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerQrModal.tsx
 msgid "Download .WEBP"
 msgstr "Download .WEBP"
