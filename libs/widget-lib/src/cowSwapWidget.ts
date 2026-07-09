@@ -198,7 +198,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       currentParams = resolveWidgetParams(newParams)
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      if (!reloadIframeOnSandboxChange(iframe, currentParams)) {
+      if (requiresIframeReload(iframe, currentParams)) {
+        reloadIframe(iframe, currentParams)
+      } else {
         updateParams(iframeWindow, iframeOrigin, currentParams, provider)
       }
       updateInterceptDeepLinks()
@@ -302,10 +304,14 @@ function getIframeSandbox(params: CowSwapWidgetParams): string {
   return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
 }
 
-function reloadIframeOnSandboxChange(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
+function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
   const sandbox = getIframeSandbox(params)
 
-  if (iframe.getAttribute('sandbox') === sandbox) return false
+  return iframe.getAttribute('sandbox') !== sandbox
+}
+
+function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
+  const sandbox = getIframeSandbox(params)
 
   const nextSrc = buildWidgetUrl(params)
 
@@ -318,8 +324,6 @@ function reloadIframeOnSandboxChange(iframe: HTMLIFrameElement, params: CowSwapW
   )
   iframe.setAttribute('sandbox', sandbox)
   iframe.src = 'about:blank'
-
-  return true
 }
 
 function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
