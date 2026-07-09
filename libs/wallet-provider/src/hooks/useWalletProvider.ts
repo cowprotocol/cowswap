@@ -11,6 +11,7 @@ export function useWalletProvider(): EIP1193Provider | PublicClient | undefined 
 
   useEffect(() => {
     if (!connector || typeof connector.getProvider !== 'function') return
+
     const getProvider = async (): Promise<void> => {
       try {
         const provider = await connector.getProvider()
