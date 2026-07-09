@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-07-07 14:12\n"
+"PO-Revision-Date: 2026-07-09 08:54\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1319,6 +1319,10 @@ msgstr ""
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
+msgid "Dapp"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
 msgstr "Debe dar permiso a los contratos inteligentes del Protocolo CoW para usar su <0/>."
@@ -1790,6 +1794,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Recent"
 msgstr "Recientes"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
+msgid "Recipient override"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Market price"
@@ -2402,6 +2410,7 @@ msgid "Slippage tolerance"
 msgstr "Tolerancia de deslizamiento"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Calldata"
 msgstr "Datos de llamada"
 
@@ -2921,6 +2930,10 @@ msgstr "hacer una nueva orden"
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "Cuando está activado, el precio límite se mantiene fijo al cambiar la cantidad BUY. Cuando está desactivado, el precio límite se actualizará basado en los cambios de la cantidad BUY."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Update pre-hook"
+msgstr ""
+
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW token not present"
 msgstr "token vCW no está presente"
@@ -3042,6 +3055,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/common/pure/IconSpinner/index.tsx
 msgid "Spinning icon"
 msgstr "Icono de Spinning"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Update post-hook"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Return to Swap"
@@ -3587,10 +3604,15 @@ msgstr "Reduce su deslizamiento rompiendo grandes pedidos en pequeños"
 #~ msgid " out of {totalSolvers}"
 #~ msgstr " out of {totalSolvers}"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Add post-hook"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "El intercambio de coW es el único intercambio que coincide con Coincidencias de Wants (CoWs): swaps peer-to-peer que ahorran en costos de liquidación."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copied!"
 msgstr "¡Copiado!"
@@ -3626,6 +3648,7 @@ msgid "TWAP order split into {twapOrderN} parts"
 msgstr "Orden TWAP dividida en partes {twapOrderN}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Gas limit"
 msgstr "Límite de gas"
 
@@ -4333,6 +4356,10 @@ msgstr "Esta cuota ayuda a pagar por mantenimiento y mejoras en la experiencia d
 msgid "No. of parts"
 msgstr "Nº de partes"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "The embedded hook dapp requested a hook-state change. Review the request before it can be applied."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and saved "
 msgstr "y guardado "
@@ -4346,8 +4373,13 @@ msgid "Approve all"
 msgstr "Aprobar todo"
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Caution"
 msgstr "Precaución"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Add pre-hook"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Morpho Borrow"
@@ -4713,11 +4745,16 @@ msgstr "¿Estás seguro de que quieres cancelar los pedidos {ordersCount}?"
 msgid "Convert your <0/> LP tokens into CoW AMM pools and earn up to <1>+{apyDiffFormatted}%</1> more yield compared to <2/>. Or, swap"
 msgstr "Convierte tus fichas <0/> LP en pozos de CoW AMM y gana hasta <1>+{apyDiffFormatted}%</1> más rendimiento en comparación con <2/>. O, cambia"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
+#~ msgid "Only confirm if you trust this dapp and recognize the target contract and calldata below."
+#~ msgstr "Only confirm if you trust this dapp and recognize the target contract and calldata below."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Lock Limit Price"
 msgstr "Bloquear precio límite"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Target"
 msgstr "Objetivo"
 
@@ -5163,6 +5200,10 @@ msgstr "Descuento de cuotas de CoWmunity"
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
 #~ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
+msgid "Action"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
 msgstr "Intercambiar con"
@@ -5296,6 +5337,7 @@ msgstr "Actualizar pre-hook"
 msgid "Governance"
 msgstr "Gobernanza"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
@@ -5325,6 +5367,10 @@ msgstr "La \"Duración total\" es la duración que se tarda en ejecutar todas la
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "to"
 msgstr "a"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
+msgid "Copy calldata"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "24 Hours"
@@ -6160,6 +6206,10 @@ msgstr ""
 #~ msgid "for trading"
 #~ msgstr "for trading"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Only confirm if you trust this dapp and recognize the target contract and calldata above."
+msgstr ""
+
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
 msgstr "como máximo "
@@ -6368,6 +6418,10 @@ msgstr "Pedido completado"
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
 msgid "Confirm swap"
 msgstr "Confirmar intercambio"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Confirm hook"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
@@ -7534,6 +7588,10 @@ msgstr "Usuario rechazó la firma de la transacción de reclamo COW"
 msgid "Cancelled"
 msgstr "Cancelado"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
+msgid "Review hook request"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. <1/>"
 #~ msgstr "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. <1/>"
@@ -7612,6 +7670,10 @@ msgstr "Gestionar"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "We weren't able to check your eligibility. Feel free to continue, but you won't receive rewards if you traded on CoW Swap before."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
+msgid "Source"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
