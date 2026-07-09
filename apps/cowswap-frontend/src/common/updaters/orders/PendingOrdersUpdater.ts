@@ -61,7 +61,7 @@ import {
   OrderTypesByUid,
 } from './utils'
 
-import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
+import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
 
 interface HandlePresignedParams {
   presigned: EnrichedOrder[]
