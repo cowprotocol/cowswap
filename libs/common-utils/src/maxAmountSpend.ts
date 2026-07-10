@@ -4,14 +4,21 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsNativeToken } from './getIsNativeToken'
 
 // Amount of native currency to leave for gas when selling the max amount.
-// Ethereum mainnet has the highest gas costs, so we reserve more there.
-const MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET: bigint = 10n ** 16n // 0.01 ETH
-const MIN_NATIVE_CURRENCY_FOR_GAS_OTHER: bigint = 10n ** 15n // 0.001 native
+// Chains with higher gas costs reserve more of the native balance.
+const MIN_NATIVE_CURRENCY_FOR_GAS_HIGH: bigint = 10n ** 16n // 0.01 native
+const MIN_NATIVE_CURRENCY_FOR_GAS_LOW: bigint = 10n ** 15n // 0.001 native
+
+// Chains that should reserve the higher amount (0.01) of native currency for gas.
+const HIGH_NATIVE_GAS_RESERVE_CHAINS: Set<SupportedChainId> = new Set([
+  SupportedChainId.MAINNET,
+  SupportedChainId.POLYGON,
+  SupportedChainId.SEPOLIA,
+])
 
 function getMinNativeCurrencyForGas(chainId: number): bigint {
-  return chainId === SupportedChainId.MAINNET
-    ? MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET
-    : MIN_NATIVE_CURRENCY_FOR_GAS_OTHER
+  return HIGH_NATIVE_GAS_RESERVE_CHAINS.has(chainId as SupportedChainId)
+    ? MIN_NATIVE_CURRENCY_FOR_GAS_HIGH
+    : MIN_NATIVE_CURRENCY_FOR_GAS_LOW
 }
 
 /**
