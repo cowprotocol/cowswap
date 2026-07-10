@@ -9,15 +9,6 @@ const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 
-function waitForSwapAction(): Cypress.Chainable {
-  return cy
-    .get('#currency-arrow-separator', { timeout: 30_000 })
-    .should('not.have.attr', 'data-isLoading')
-    .get('#do-trade-button', { timeout: 30_000 })
-    .should('be.visible')
-    .and('contain.text', 'Swap')
-}
-
 function acceptFeesExceedWarning(): Cypress.Chainable {
   return waitForSwapAction().then(() => {
     cy.get('body').then(($body) => {
@@ -26,6 +17,15 @@ function acceptFeesExceedWarning(): Cypress.Chainable {
       }
     })
   })
+}
+
+function waitForSwapAction(): Cypress.Chainable {
+  return cy
+    .get('#currency-arrow-separator', { timeout: 30_000 })
+    .should('not.have.attr', 'data-isLoading')
+    .get('#do-trade-button', { timeout: 30_000 })
+    .should('be.visible')
+    .and('contain.text', 'Swap')
 }
 
 describe('Swap (custom)', () => {

@@ -5,27 +5,8 @@
  * Each application should define its own categories that implement these base types.
  */
 
-// Legacy category type for backward compatibility
-export enum Category {
-  // UI Categories
-  SERVICE_WORKER = 'Service Worker',
-  FOOTER = 'Footer',
-  EXTERNAL_LINK = 'External Link',
-}
-
-// Re-export the legacy category as GtmCategory for backward compatibility
-export type GtmCategory = Category
-
-/**
- * GA4-compatible event format
- * See: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
- */
-export interface GA4Event {
-  event: string // The event name
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any // Additional parameters
-}
+// Base type for creating application-specific category enums
+export type AnalyticsCategory = string
 
 /**
  * Base GTM event format - maintained for backward compatibility
@@ -46,8 +27,19 @@ export interface BaseGtmEvent<T extends string = Category> {
   [key: string]: any // Allow additional custom parameters
 }
 
-// Base type for creating application-specific category enums
-export type AnalyticsCategory = string
+/**
+ * GA4-compatible event format
+ * See: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
+ */
+export interface GA4Event {
+  event: string // The event name
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any // Additional parameters
+}
+
+// Re-export the legacy category as GtmCategory for backward compatibility
+export type GtmCategory = Category
 
 /**
  * Helper type for creating application-specific GTM events
@@ -65,6 +57,14 @@ export type AnalyticsCategory = string
  * ```
  */
 export type GtmEvent<T extends AnalyticsCategory = Category> = BaseGtmEvent<T>
+
+// Legacy category type for backward compatibility
+export enum Category {
+  // UI Categories
+  SERVICE_WORKER = 'Service Worker',
+  FOOTER = 'Footer',
+  EXTERNAL_LINK = 'External Link',
+}
 
 // Re-export for backward compatibility
 export { toGtmEvent } from './gtm/types'

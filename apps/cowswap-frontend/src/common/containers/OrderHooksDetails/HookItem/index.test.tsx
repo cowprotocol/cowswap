@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { HookDappType, HookToDappMatch, CowHookDetails } from '@cowprotocol/hook-dapp-lib'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+
+import { HookDappType, HookToDappMatch, CowHookDetails } from '@cowprotocol/hook-dapp-lib'
+
 import { fireEvent, render, screen } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'

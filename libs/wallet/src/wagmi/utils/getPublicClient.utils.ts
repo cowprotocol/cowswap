@@ -1,14 +1,19 @@
+import { custom, createPublicClient, http, type EIP1193Provider, type PublicClient } from 'viem'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { FiniteMap } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
-
-import { custom, createPublicClient, http, type EIP1193Provider, type PublicClient } from 'viem'
 
 import { isEip1193Provider } from './isEip1193Provider.utils'
 
 const publicClientsCache = new FiniteMap<EvmChains, PublicClient>(16)
 
 // TODO: Replace apps/explorer/src/hooks/euler/client with this one.
+
+interface CustomClientCacheEntry {
+  client: PublicClient
+  provider: EIP1193Provider
+}
 
 export function getPublicClient(chainId: EvmChains): PublicClient {
   const cached = publicClientsCache.get(chainId)
@@ -21,11 +26,6 @@ export function getPublicClient(chainId: EvmChains): PublicClient {
 
   publicClientsCache.set(chainId, client)
   return client
-}
-
-interface CustomClientCacheEntry {
-  client: PublicClient
-  provider: EIP1193Provider
 }
 
 const customClientsCache = new FiniteMap<EvmChains, CustomClientCacheEntry>(16)

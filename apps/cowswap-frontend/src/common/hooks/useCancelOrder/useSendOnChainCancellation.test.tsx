@@ -1,11 +1,12 @@
 import { PropsWithChildren } from 'react'
 
+import { pad } from 'viem'
+import { writeContract } from 'wagmi/actions'
+
 import { COW_TOKEN_TO_CHAIN, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
-import { pad } from 'viem'
-import { writeContract } from 'wagmi/actions'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'

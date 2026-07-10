@@ -1,6 +1,7 @@
+import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { UI } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'

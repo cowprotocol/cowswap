@@ -8,6 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
+export type Props = PropsWithId | PropsComposableOrder
+
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType
   label?: string
@@ -15,17 +17,15 @@ interface PropsBase extends PropsWithChildren {
   defaultChain?: SupportedChainId
 }
 
-interface PropsWithId extends PropsBase {
-  type: 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
-  id: string
-}
-
 interface PropsComposableOrder extends PropsBase {
   type: 'composable-order'
   id: string
 }
 
-export type Props = PropsWithId | PropsComposableOrder
+interface PropsWithId extends PropsBase {
+  type: 'transaction' | 'token' | 'address' | 'block' | 'token-transfer'
+  id: string
+}
 
 /**
  * Creates a link to the relevant explorer: Etherscan, GP Explorer or Blockscout
@@ -51,23 +51,6 @@ export function ExplorerLink(props: Props): ReactNode {
   )
 }
 
-function getUrl(chainId: SupportedChainId, account: string, props: Props): string {
-  const { type } = props
-
-  if (type === 'composable-order') {
-    return getSafeWebUrl(chainId, account, props.id)
-  }
-
-  // return
-  return getEtherscanLink(chainId, type, props.id)
-}
-
-function getLabel(chainId: SupportedChainId, props: Props): string {
-  const { label, type } = props
-
-  return label || getExplorerLabel(chainId, type, props.id)
-}
-
 function getContent(chainId: SupportedChainId, props: Props): ReactNode {
   if (props.children) {
     return props.children
@@ -80,4 +63,21 @@ function getContent(chainId: SupportedChainId, props: Props): ReactNode {
       {linkLabel} <span style={{ fontSize: '0.8em' }}>↗</span>
     </>
   )
+}
+
+function getLabel(chainId: SupportedChainId, props: Props): string {
+  const { label, type } = props
+
+  return label || getExplorerLabel(chainId, type, props.id)
+}
+
+function getUrl(chainId: SupportedChainId, account: string, props: Props): string {
+  const { type } = props
+
+  if (type === 'composable-order') {
+    return getSafeWebUrl(chainId, account, props.id)
+  }
+
+  // return
+  return getEtherscanLink(chainId, type, props.id)
 }
