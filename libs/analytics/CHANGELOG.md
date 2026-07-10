@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.2...analytics-v3.5.3) (2026-07-08)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/common-hooks@3.5.1
+
 ## [3.5.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.1...analytics-v3.5.2) (2026-06-25)
 
 ### Patch Changes

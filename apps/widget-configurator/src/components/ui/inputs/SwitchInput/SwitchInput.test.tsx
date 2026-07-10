@@ -21,4 +21,14 @@ describe('SwitchInput', () => {
 
     expect(onChange).toHaveBeenCalledWith(true)
   })
+
+  it('does not call the handler when disabled', () => {
+    const onChange = jest.fn()
+
+    render(<SwitchInput checked={false} disabled label="Block widget popups" onChange={onChange} />)
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Block widget popups' }))
+
+    expect(onChange).not.toHaveBeenCalled()
+  })
 })

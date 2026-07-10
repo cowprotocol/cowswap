@@ -60,6 +60,16 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         onChange={(enabled) => onChange('hideOrdersTable', !enabled)}
       />
       <SwitchInput
+        checked={values.widgetMode === 'dapp' && values.disableWindowOpen}
+        disabled={values.widgetMode !== 'dapp'}
+        label="Block widget popups"
+        helperText={
+          'Only available in dapp mode. ' +
+          'When enabled, the host page will not open widget links and the iframe sandbox blocks direct popups.'
+        }
+        onChange={(enabled) => onChange('disableWindowOpen', enabled)}
+      />
+      <SwitchInput
         checked={values.disableTradeWhenPriceImpactIsUnknown}
         label="Block trade if price impact is unknown"
         onChange={(enabled) => onChange('disableTradeWhenPriceImpactIsUnknown', enabled)}

@@ -5,16 +5,17 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSmartContractWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -58,7 +59,6 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
-  const isSmartContractWallet = useIsSmartContractWallet()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
@@ -215,8 +215,16 @@ export function useCreateTwapOrder() {
 
         // TODO: Clear filters if the new order is not visible before navigating.
 
-        // Navigate to open orders after successful placement
-        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.signing : OrderTabId.open)
+        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
+        // still be no signing orders.
+        setTimeout(() => {
+          // A freshly placed TWAP order is always in WaitSigning until the Safe/SC owners
+          // sign it, so navigate to the Signing tab (not Open) regardless of wallet type.
+          navigateToOrdersTableTab(OrderTabId.SIGNING)
+
+          // After we enable TWAP for EOA:
+          // navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+        })
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
@@ -244,7 +252,6 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
-      isSmartContractWallet,
     ],
   )
 }
