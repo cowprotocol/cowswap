@@ -1,5 +1,31 @@
 # Changelog
 
+## [4.6.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.2...explorer-v4.6.3) (2026-07-08)
+
+### Patch Changes
+
+- fix(explorer): show 'no results found' instead of hanging on an unfetchable tx (#7783)
+
+- fix(explorer): hide socket links for cancelled or expired bridge orders (#7713)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ui@3.9.1
+
+## [4.6.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.1...explorer-v4.6.2) (2026-06-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/analytics@3.5.2
+
 ## [4.6.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.0...explorer-v4.6.1) (2026-06-23)
 
 ### Patch Changes

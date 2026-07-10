@@ -1,14 +1,17 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
 
-import { ReactNode, StrictMode, useCallback, useContext } from 'react'
+import { PropsWithChildren, ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import svgMoonSrc from '@cowprotocol/assets/cow-swap/moon.svg'
 import svgSunSrc from '@cowprotocol/assets/cow-swap/sun.svg'
 import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { BlockNumberUpdater } from 'entities/blockchain'
 import { LanguageProvider } from 'i18n'
+import ms from 'ms.macro'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router'
@@ -19,7 +22,6 @@ import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
-import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
 
 /** No locale import in Cosmos: .po needs Lingui transform, .js is CJS and breaks in the iframe. Fixtures still render; some text may show as message IDs. */
@@ -93,18 +95,25 @@ export const DemoContainer = styled.div`
 // Initialize analytics for cosmos
 const cowAnalytics = initGtm()
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const Fixture = ({ children }: { children: ReactNode }) => {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: ms`5m`,
+    },
+  },
+})
+
+function Fixture({ children }: PropsWithChildren): ReactNode {
   return (
     <StrictMode>
       <Provider store={cowSwapStore}>
-        <HashRouter>
-          <ThemeProvider>
-            <ThemedGlobalStyle />
-            <LanguageProvider messages={COSMOS_MESSAGES}>
-              <Web3Provider>
-                <BlockNumberProvider>
+        <QueryClientProvider client={queryClient}>
+          <HashRouter>
+            <ThemeProvider>
+              <ThemedGlobalStyle />
+              <LanguageProvider messages={COSMOS_MESSAGES}>
+                <Web3Provider>
+                  <BlockNumberUpdater />
                   <WalletUpdater />
                   <ThemeConfigUpdater />
                   <Wrapper>
@@ -114,11 +123,11 @@ const Fixture = ({ children }: { children: ReactNode }) => {
                       </DarkModeToggle>
                     </CowAnalyticsProvider>
                   </Wrapper>
-                </BlockNumberProvider>
-              </Web3Provider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </HashRouter>
+                </Web3Provider>
+              </LanguageProvider>
+            </ThemeProvider>
+          </HashRouter>
+        </QueryClientProvider>
       </Provider>
     </StrictMode>
   )

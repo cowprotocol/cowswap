@@ -1,5 +1,98 @@
 # Changelog
 
+## [3.18.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.0...cowswap-v3.18.1) (2026-07-09)
+
+### Patch Changes
+
+- fix: fix bridging with bungee (#7831)
+
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.17.0...cowswap-v3.18.0) (2026-07-08)
+
+### Minor Changes
+
+- feat: bw fallback to multicall (#7767)
+
+- feat(wallet): add Solana to available networks (#7709)
+
+- feat(balances): add bridge tokens to bw session (#7688)
+
+- feat(wallet): watch Solana block number (#7710)
+
+- feat: handle rate limiting in safe api calls (#7729)
+
+### Patch Changes
+
+- fix(wallet): guard mobile injected provider (#7757)
+
+- fix(account): show Unfillable warning for swap-and-bridge orders (#7701)
+
+- fix(twap): approve prod vault relayer regardless of environment (#7695)
+
+- fix: harden frontend security entrypoints (#7601)
+
+- fix(safe-eth-flow): wrap slippage-adjusted sell amount for buy orders (#7727)
+
+- fix(trade): preserve visible recipient URL flow (#7611)
+
+- fix(widget): hide widget connector in standalone mode (#7764)
+
+- fix(bridge): disable swap-and-bridge on the Hooks tab (#7696)
+
+- fix(zero-approval): stop logging expected USDT approve revert as an error (#7775)
+
+- fix(wallet): keep injected provider isolated (#7766)
+
+- fix: fix unlimited approval for limit (#7792)
+
+- fix(account): show correct order amounts in Unfillable edit-approval modal (#7718)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.6.0
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/widget-lib@4.4.1
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/tokens@3.8.3
+  - @cowprotocol/multicall@3.4.3
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ens@3.4.3
+  - @cowprotocol/ui@3.9.1
+  - @cowprotocol/snackbars@2.2.5
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.16.1...cowswap-v3.17.0) (2026-06-25)
+
+### Minor Changes
+
+- feat(widget): control tokens switching (#7717)
+
+- feat: add balancec-watcher updater [pr 2 - connection logic] (#7640)
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix: tighten frontend trust boundaries and client secrets (#7623)
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- fix(trade-state): preserve URL chainId on first load when wallet is connected (#7692)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+  - @cowprotocol/widget-lib@4.4.0
+  - @cowprotocol/balances-and-allowances@3.5.0
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/multicall@3.4.2
+  - @cowprotocol/analytics@3.5.2
+  - @cowprotocol/snackbars@2.2.4
+  - @cowprotocol/tokens@3.8.2
+  - @cowprotocol/ens@3.4.2
+
 ## [3.16.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.16.0...cowswap-v3.16.1) (2026-06-23)
 
 ### Patch Changes

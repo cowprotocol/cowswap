@@ -1,5 +1,56 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.2...wallet-v3.8.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(solana): fetch native SOL balance (#7741)
+
+- feat(wallet): add Solana to available networks (#7709)
+
+- feat(wallet): watch Solana block number (#7710)
+
+- feat: handle rate limiting in safe api calls (#7729)
+
+### Patch Changes
+
+- fix(wallet): guard mobile injected provider (#7757)
+
+- fix: handle injected provider connection issues (#7800)
+
+- fix: add Safe preview/test urls to iframe allowlist (#7784)
+
+- fix(wallet): keep injected provider isolated (#7766)
+
+- fix: Fix wallet detection in widget (#7815)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ens@3.4.3
+  - @cowprotocol/ui@3.9.1
+
+## [3.7.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.1...wallet-v3.7.2) (2026-06-25)
+
+### Patch Changes
+
+- fix(wallet): auto connect mobile injected wallet (#7746)
+
+- fix: prevent MetaMask mobile quote button hang
+
+- fix: revert pr 7726 (#7752)
+
+- fix: unblock cowswap production build
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/ens@3.4.2
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.0...wallet-v3.7.1) (2026-06-23)
 
 ### Patch Changes

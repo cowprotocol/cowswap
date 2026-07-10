@@ -1,5 +1,5 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { assignElementStyles } from './applyElementStyles'
@@ -9,6 +9,7 @@ import {
   WIDGET_IFRAME_ID,
   WIDGET_IFRAME_REFERRER_POLICY,
   WIDGET_IFRAME_SANDBOX,
+  WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS,
 } from './cowSwapWidget.constants'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
@@ -157,7 +158,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     })
 
     // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
-    iframeSafeSdkBridge = enableSafeSdkBridge ? new IframeSafeSdkBridge(window, iframeWindow) : null
+    iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
 
     const loadingContext = widgetIframeLoading(container, iframe, setup, destroy, props.onLoadingError)
 
@@ -197,7 +198,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       currentParams = resolveWidgetParams(newParams)
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      if (requiresIframeReload(iframe, currentParams)) {
+        reloadIframe(iframe, currentParams)
+      } else {
+        updateParams(iframeWindow, iframeOrigin, currentParams, provider)
+      }
       updateInterceptDeepLinks()
       updateWidgetHooks()
     },
@@ -213,11 +218,28 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   }
 }
 
+function createIframeSafeSdkBridge(
+  enabled: boolean,
+  appWindow: Window,
+  iframeWindow: Window,
+  iframeOrigin: string,
+): IframeSafeSdkBridge | null {
+  if (!enabled) {
+    return null
+  }
+
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
+}
+
 function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
   const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
 
   if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
     throw new Error('Required param `appCode` is missing')
+  }
+
+  if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
+    throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
   }
 
   return currentParams
@@ -265,7 +287,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
 
   iframe.id = WIDGET_IFRAME_ID
   iframe.src = buildWidgetUrl(params)
-  iframe.setAttribute('sandbox', WIDGET_IFRAME_SANDBOX)
+  iframe.setAttribute('sandbox', getIframeSandbox(params))
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
 
@@ -276,6 +298,32 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.style.display = 'block'
 
   return iframe
+}
+
+function getIframeSandbox(params: CowSwapWidgetParams): string {
+  return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
+}
+
+function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
+  const sandbox = getIframeSandbox(params)
+
+  return iframe.getAttribute('sandbox') !== sandbox
+}
+
+function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
+  const sandbox = getIframeSandbox(params)
+
+  const nextSrc = buildWidgetUrl(params)
+
+  iframe.addEventListener(
+    'load',
+    () => {
+      iframe.src = nextSrc
+    },
+    { once: true },
+  )
+  iframe.setAttribute('sandbox', sandbox)
+  iframe.src = 'about:blank'
 }
 
 function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {

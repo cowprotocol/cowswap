@@ -13,4 +13,10 @@ describe('#getExplorerLink', () => {
   it('unrecognized chain id defaults to mainnet', () => {
     expect(getExplorerLink(2, 'abc', ExplorerDataType.ADDRESS)).toEqual('https://etherscan.io/address/abc')
   })
+
+  it('does not introduce double slashes for bare explorer origins', () => {
+    expect(getExplorerLink(1, 'abc', ExplorerDataType.TRANSACTION, 'https://etherscan.io')).toEqual(
+      'https://etherscan.io/tx/abc',
+    )
+  })
 })

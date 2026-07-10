@@ -167,6 +167,10 @@
     {
       "priority": 5,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
+    },
+    {
+      "priority": 6,
+      "source": "https://raw.githubusercontent.com/reserve-protocol/dtf-interface/refs/heads/main/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json"
     }
   ],
   "59144": [

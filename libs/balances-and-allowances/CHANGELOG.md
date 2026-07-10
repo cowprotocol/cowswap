@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.5.0...balances-and-allowances-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(solana): fetch native SOL balance (#7741)
+
+- feat: bw fallback to multicall (#7767)
+
+- feat(balances): add bridge tokens to bw session (#7688)
+
+### Patch Changes
+
+- fix: validate cow-fi CMS inputs and revalidation flows (#7618)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/tokens@3.8.3
+  - @cowprotocol/multicall@3.4.3
+  - @cowprotocol/common-hooks@3.5.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.1...balances-and-allowances-v3.5.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: add balancec-watcher updater [pr 2 - connection logic] (#7640)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/multicall@3.4.2
+  - @cowprotocol/tokens@3.8.2
+
 ## [3.4.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.0...balances-and-allowances-v3.4.1) (2026-06-23)
 
 ### Patch Changes

@@ -92,3 +92,52 @@ test('rejects commits that are not reachable from main', (t) => {
     /not reachable from origin\/main/,
   )
 })
+
+test('prefers deploy env over ambient GitHub workflow env', (t) => {
+  const { originDir, reachableSha, rootDir, unreachableSha } = createRepoFixture()
+  const checkoutDir = createDetachedCheckout(originDir, reachableSha)
+  const originalDeployRef = process.env.DEPLOY_REF
+  const originalDeploySha = process.env.DEPLOY_SHA
+  const originalGitHubRef = process.env.GITHUB_REF
+  const originalGitHubSha = process.env.GITHUB_SHA
+
+  t.after(() => {
+    if (originalDeployRef === undefined) {
+      delete process.env.DEPLOY_REF
+    } else {
+      process.env.DEPLOY_REF = originalDeployRef
+    }
+
+    if (originalDeploySha === undefined) {
+      delete process.env.DEPLOY_SHA
+    } else {
+      process.env.DEPLOY_SHA = originalDeploySha
+    }
+
+    if (originalGitHubRef === undefined) {
+      delete process.env.GITHUB_REF
+    } else {
+      process.env.GITHUB_REF = originalGitHubRef
+    }
+
+    if (originalGitHubSha === undefined) {
+      delete process.env.GITHUB_SHA
+    } else {
+      process.env.GITHUB_SHA = originalGitHubSha
+    }
+
+    rmSync(rootDir, { force: true, recursive: true })
+    rmSync(checkoutDir, { force: true, recursive: true })
+  })
+
+  process.env.DEPLOY_REF = 'refs/tags/cowswap-v1.2.3'
+  process.env.DEPLOY_SHA = reachableSha
+  process.env.GITHUB_REF = 'refs/heads/develop'
+  process.env.GITHUB_SHA = unreachableSha
+
+  assert.doesNotThrow(() =>
+    verifyTagReachableFromMain({
+      cwd: checkoutDir,
+    }),
+  )
+})

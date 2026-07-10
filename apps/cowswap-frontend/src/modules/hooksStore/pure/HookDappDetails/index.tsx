@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
@@ -11,6 +12,7 @@ import * as styled from './styled'
 
 import { HookDapp } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
+import { InfoTable } from '../HookInfoTable/HookInfoTable.styled'
 
 interface HookDappDetailsProps {
   dapp: HookDapp
@@ -25,6 +27,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
   const { i18n } = useLingui()
   const tags = useMemo(() => {
     const { version, website, type, conditions } = dapp
+    const safeWebsiteUrl = getSafeAbsoluteUrl(website)
     const walletCompatibility = conditions?.walletCompatibility || []
 
     // TODO: Add proper return type annotation
@@ -51,7 +54,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
 
     return [
       { label: t`Hook version`, value: version },
-      { label: t`Website`, link: website },
+      { label: t`Website`, value: website, link: safeWebsiteUrl || undefined },
       {
         label: t`Type`,
         value: typeLabel,
@@ -78,7 +81,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
           <h3>
             <Trans>Information</Trans>
           </h3>
-          <table>
+          <InfoTable>
             <tbody>
               {tags
                 .filter(({ value, link }) => value || link)
@@ -100,7 +103,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
                   </tr>
                 ))}
             </tbody>
-          </table>
+          </InfoTable>
         </styled.Tags>
       )}
     </styled.Wrapper>
