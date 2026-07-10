@@ -76,6 +76,7 @@ export interface ConfiguratorFormValues {
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableWindowOpen: boolean
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
   // Note that `disableToastMessages` is stored/handled by `useToastsManager` hook.

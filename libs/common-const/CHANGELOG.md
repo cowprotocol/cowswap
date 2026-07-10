@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.1...common-const-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(wallet): add Solana to available networks (#7709)
+
+### Patch Changes
+
+- fix: harden frontend security entrypoints (#7601)
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.0...common-const-v3.5.1) (2026-06-23)
 
 ### Patch Changes

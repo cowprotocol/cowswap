@@ -97,7 +97,6 @@ export function TradeRateDetails({
         receiveAmountInfo={receiveAmountInfo}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
-        showTotalRow
       />
       {slippageRow} {/* Always show slippage inside accordion */}
       {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}

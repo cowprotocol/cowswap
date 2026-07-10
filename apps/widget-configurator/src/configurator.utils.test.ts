@@ -41,6 +41,7 @@ describe('configurator.utils', () => {
 
     expect(resolved.appCode).toBe('dedicated-key-app')
     expect(resolved.theme).toBe(DEFAULT_CONFIGURATOR_FORM_VALUES.theme)
+    expect(resolved.disableWindowOpen).toBe(false)
   })
 
   it('merges persisted custom colors with defaults', () => {
@@ -59,6 +60,7 @@ describe('configurator.utils', () => {
       formValues: {
         ...DEFAULT_CONFIGURATOR_FORM_VALUES,
         chainId: SupportedChainId.MAINNET,
+        disableWindowOpen: true,
       },
       effectiveChainId: SupportedChainId.ARBITRUM_ONE,
       colorPalette: DEFAULT_LIGHT_PALETTE,
@@ -69,6 +71,7 @@ describe('configurator.utils', () => {
     expect(state.chainId).toBe(SupportedChainId.ARBITRUM_ONE)
     expect(state.partnerFeeRecipient).toBe(ARBITRUM_PARTNER_FEE_RECIPIENT)
     expect(state.partnerFeeRecipient).not.toBe(MAINNET_PARTNER_FEE_RECIPIENT)
+    expect(state.disableWindowOpen).toBe(true)
   })
 
   it('throws when effectiveChainId is undefined', () => {

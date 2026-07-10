@@ -182,7 +182,7 @@ export function LpTokenLists({
           <div>
             <Trans>Can't find the pool you're looking for?</Trans>
           </div>
-          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">
+          <CreatePoolLink href="https://balancer.fi/create/step-1-type">
             <Trans>Create a pool</Trans> ↗
           </CreatePoolLink>
         </NoPoolWrapper>
