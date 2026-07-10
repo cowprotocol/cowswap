@@ -1,4 +1,4 @@
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 
 import { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
@@ -33,8 +33,10 @@ const REQUESTS_CACHE: Record<string, Promise<GetTokenPermitIntoResult>> = {}
 const UNSUPPORTED: PermitInfo = { type: 'unsupported' }
 
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { tokenAddress, chainId } = params
-  const key = getTokenId({ address: tokenAddress, chainId })
+  const { tokenAddress, chainId, spender, amount = DEFAULT_PERMIT_VALUE, minGasLimit = DEFAULT_MIN_GAS_LIMIT } = params
+  const key = `${getTokenId({ address: tokenAddress, chainId })}-${getAddressKey(
+    spender,
+  )}-${amount.toString()}-${minGasLimit.toString()}`
 
   const cached = REQUESTS_CACHE[key]
 
@@ -43,6 +45,17 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
   }
 
   const request = actuallyCheckTokenIsPermittable(params)
+    .then((result) => {
+      if ('error' in result) {
+        delete REQUESTS_CACHE[key]
+      }
+
+      return result
+    })
+    .catch((error) => {
+      delete REQUESTS_CACHE[key]
+      throw error
+    })
 
   REQUESTS_CACHE[key] = request
 
