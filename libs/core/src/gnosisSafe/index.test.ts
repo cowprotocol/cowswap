@@ -1,7 +1,7 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { getSafeWebUrl } from './index'
+import { getSafeWebUrl, normalizeSafeError, SafeApiError } from './index'
 
 const SAFE_ADDRESS = '0x000000000000000000000000000000000000dEaD'
 const SAFE_TX_HASH = '0x' + 'a'.repeat(64)
@@ -37,5 +37,16 @@ describe('getSafeWebUrl', () => {
     expect(url).toContain(`?safe=${gnosisPrefix}:${SAFE_ADDRESS}`)
     expect(url).toContain(`&id=multisig_${SAFE_ADDRESS}_${SAFE_TX_HASH}`)
     expect(url).not.toContain(`/${gnosisPrefix}:${SAFE_ADDRESS}/transactions`)
+  })
+})
+
+describe('normalizeSafeError', () => {
+  it('preserves statusCode from Safe API errors', () => {
+    const err: SafeApiError = Object.assign(new Error('Rate limit'), { statusCode: 429 })
+
+    expect(normalizeSafeError(err)).toMatchObject({
+      message: 'Rate limit',
+      statusCode: 429,
+    })
   })
 })

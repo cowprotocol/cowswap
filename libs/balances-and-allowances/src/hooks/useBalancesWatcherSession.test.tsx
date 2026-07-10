@@ -10,6 +10,7 @@ import { act, renderHook } from '@testing-library/react'
 import {
   FALLBACK_RETRY_INTERVAL_MS,
   FIRST_SNAPSHOT_TIMEOUT_MS,
+  HIDDEN_SESSION_TIMEOUT_MS,
   useBalancesWatcherSession,
   UseBalancesWatcherSessionParams,
 } from './useBalancesWatcherSession'
@@ -603,5 +604,152 @@ describe('useBalancesWatcherSession — isRecovering sticky flag', () => {
     })
     expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
     expect(result.current.health.isRecovering).toBe(false)
+  })
+})
+
+describe('useBalancesWatcherSession — idle gating on tab visibility', () => {
+  async function setVisibility(state: 'visible' | 'hidden'): Promise<void> {
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => state,
+    })
+    await act(async () => {
+      document.dispatchEvent(new Event('visibilitychange'))
+    })
+  }
+
+  beforeEach(() => {
+    jest.useFakeTimers()
+    jest.clearAllMocks()
+    mockCreateSession.mockReturnValue(Promise.resolve())
+    mockSubscribe.mockReturnValue({ close: jest.fn() } satisfies BalancesSubscription)
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => 'visible',
+    })
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => 'visible',
+    })
+  })
+
+  it('keeps the session running when the tab hides for less than HIDDEN_SESSION_TIMEOUT_MS', async () => {
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      session.resolve()
+    })
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+
+    await setVisibility('hidden')
+    await advanceTimers(HIDDEN_SESSION_TIMEOUT_MS - 1)
+    await setVisibility('visible')
+
+    // Brief hide must not tear down the SSE channel or restart the session.
+    expect(close).not.toHaveBeenCalled()
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+  })
+
+  it('terminates the session after HIDDEN_SESSION_TIMEOUT_MS of continuous hiddenness', async () => {
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      session.resolve()
+    })
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+
+    await setVisibility('hidden')
+    await advanceTimers(HIDDEN_SESSION_TIMEOUT_MS)
+
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
+    expect(result.current.health.isRecovering).toBe(false)
+  })
+
+  it('starts a fresh session when the tab becomes visible again after termination', async () => {
+    const firstSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(firstSession.promise)
+    mockSubscribe.mockReturnValueOnce({ close: jest.fn() })
+
+    const { result } = renderSession()
+
+    await act(async () => {
+      firstSession.resolve()
+    })
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '1' })
+    })
+
+    await setVisibility('hidden')
+    await advanceTimers(HIDDEN_SESSION_TIMEOUT_MS)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
+
+    const resumeSession = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(resumeSession.promise)
+    mockSubscribe.mockReturnValueOnce({ close: jest.fn() })
+
+    await setVisibility('visible')
+
+    expect(mockCreateSession).toHaveBeenCalledTimes(2)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connecting)
+
+    await act(async () => {
+      resumeSession.resolve()
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Connected)
+
+    await act(async () => {
+      capturedSubscribeParams().onBalances({ [TOKEN_A]: '2' })
+    })
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
+    expect(result.current.balances.values[getAddressKey(TOKEN_A)]).toBe(2n)
+  })
+
+  it('does not create a session at all if the tab is already hidden past the threshold when the hook mounts', async () => {
+    // Simulate a mount that happens after the tab has been hidden long enough
+    // for another consumer's timer to already have fired — represented here by
+    // the tab flipping to hidden before any SSE traffic and waiting out the
+    // threshold before the first snapshot could arrive.
+    const session = deferred<void>()
+    mockCreateSession.mockReturnValueOnce(session.promise)
+    const close = jest.fn()
+    mockSubscribe.mockReturnValueOnce({ close })
+
+    const { result } = renderSession()
+    await act(async () => {
+      session.resolve()
+    })
+
+    await setVisibility('hidden')
+    await advanceTimers(HIDDEN_SESSION_TIMEOUT_MS)
+
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
+
+    // Advancing further does not trigger any retry — session is fully torn down.
+    await advanceTimers(FALLBACK_RETRY_INTERVAL_MS * 2)
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,4 +1,4 @@
-import { isTruthy } from '@cowprotocol/common-utils'
+import { isTruthy, logSafeApi } from '@cowprotocol/common-utils'
 import { localForageJotai } from '@cowprotocol/core'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -65,7 +65,7 @@ async function fetchFreshTwapOrders(
   ).catch((error) => {
     if (!cached) throw error
 
-    console.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
+    logSafeApi.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
     return null
   })
 }
@@ -132,7 +132,7 @@ async function writeSafeTwapScanCache(
       orders,
     }
 
-    console.log(`[COW][SafeAPI] Saving to cache TWAP executed orders newestSubmissionDate=${newestSubmissionDate}`)
+    logSafeApi.debug(`Saving to cache TWAP executed orders newestSubmissionDate=${newestSubmissionDate}`)
     await localForageJotai.setItem(SAFE_TX_SCAN_CACHE_IDB_KEY, cache)
   } catch {
     // Ignore storage failures. The next load will run without cache.
