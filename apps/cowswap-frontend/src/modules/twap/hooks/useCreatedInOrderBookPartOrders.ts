@@ -11,11 +11,9 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { getTokensListFromOrders, useSWRProdOrders, useTokensForOrdersList } from 'modules/orders'
 
-import { useTwapPartOrdersList } from './useTwapPartOrdersList'
-
 import { TWAP_FINAL_STATUSES } from '../const'
 import { EMPTY_CACHE, useTwapPartOrdersCache } from '../hooks/useTwapPartOrdersCache'
-import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
+import { TwapPartOrderItem, twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 import { TwapPartOrdersCacheByUid } from '../state/twapPartOrdersCacheAtom'
 import { TwapOrderItem } from '../types'
 import { fetchMissingPartOrders } from '../updaters/fetchMissingPartOrders'
@@ -43,7 +41,7 @@ export function useCreatedInOrderBookPartOrders({
 }: UseCreatedInOrderBookPartOrdersParams): UseCreatedInOrderBookPartOrdersResult {
   const prodOrders = useSWRProdOrders()
   const getTokensForOrdersList = useTokensForOrdersList()
-  const twapPartOrdersList = useTwapPartOrdersList()
+  const twapPartOrdersList = useAtomValue(twapPartOrdersListAtom)
   const twapOrders = useAtomValue(twapOrdersAtom)
   const { cacheByUid, cachedFinalizedTwapOrderIds } = useTwapPartOrdersCache()
   const abortControllerRef = useRef<AbortController | null>(null)

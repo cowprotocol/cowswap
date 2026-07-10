@@ -47,16 +47,16 @@ export function groupOrdersTable(allOrders: Order[]): OrderTableItem[] {
     return acc
   }, [])
 
-  const groups = Array.from(groupsMap.entries()) //
-    .reduce<OrderTableGroup[]>((acc, [, group]) => {
-      if (group.parent) {
-        acc.push({
-          parent: group.parent,
-          children: group.children.sort(childrenOrdersSorter),
-        })
-      }
-      return acc
-    }, [])
+  const groups = Array.from(groupsMap.entries()).reduce<OrderTableGroup[]>((acc, [, group]) => {
+    if (group.parent) {
+      acc.push({
+        parent: group.parent,
+        children: group.children.sort(childrenOrdersSorter),
+      })
+    }
+
+    return acc
+  }, [])
 
   return [...orders, ...groups]
 }

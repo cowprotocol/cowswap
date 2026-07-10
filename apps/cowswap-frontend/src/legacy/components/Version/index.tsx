@@ -22,7 +22,20 @@ import styled from 'styled-components/macro'
 import pkg from '../../../../package.json'
 import { orderBookApi } from '../../../cowSdk'
 
+const GIT_COMMIT_HASH = process.env.REACT_APP_GIT_COMMIT_HASH ?? ''
+const GIT_RELEASE_TAG = process.env.REACT_APP_GIT_RELEASE_TAG ?? ''
+
 const contractsTsVersion = CONTRACTS_PKG_VERSION
+
+function getCommitHref(): string {
+  if (GIT_RELEASE_TAG) {
+    return `${CODE_LINK}/releases/tag/${GIT_RELEASE_TAG}`
+  }
+  if (GIT_COMMIT_HASH) {
+    return `${CODE_LINK}/commit/${GIT_COMMIT_HASH}`
+  }
+  return CODE_LINK
+}
 
 const _getContractsUrls = (
   chainId: ChainId,
@@ -166,6 +179,10 @@ export const Version = ({ className }: { className?: string }): ReactNode => {
     Web: {
       version: 'v' + pkg.version,
       href: () => CODE_LINK,
+    },
+    Commit: {
+      version: GIT_COMMIT_HASH || 'unknown',
+      href: () => getCommitHref(),
     },
     'Vault Relayer': {
       version: 'v' + contractsTsVersion,
