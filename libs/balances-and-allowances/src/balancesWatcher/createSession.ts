@@ -2,6 +2,7 @@ import { BALANCES_WATCHER_BASE_URL } from '@cowprotocol/common-const'
 import { fetchWithTimeout, JSON_HEADERS, parseJsonResponse, stripTrailingSlash } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { getBalancesWatcherClientId } from './clientId'
 import { BalancesWatcherApiError, type BalancesWatcherErrorPayload, type CreateSessionRequest } from './types'
 
 const DEFAULT_SESSION_TIMEOUT_MS = 10_000
@@ -26,7 +27,7 @@ export async function createBalancesWatcherSession(params: CreateSessionParams):
 
   const response = await fetchWithTimeout(url, {
     method: 'POST',
-    headers: JSON_HEADERS,
+    headers: { ...JSON_HEADERS, 'X-Client-Id': getBalancesWatcherClientId() },
     body: JSON.stringify(params.body),
     timeout: params.timeoutMs ?? DEFAULT_SESSION_TIMEOUT_MS,
   })
