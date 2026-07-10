@@ -2,7 +2,10 @@ import ms from 'ms.macro'
 
 const STORAGE_KEY = 'balances-watcher-client-id'
 
-// Rotated only on the next call after a new tab opens or an existing one is refreshed.
+// TTL is evaluated once per tab (on the first call), not per request. That way
+// the POST /sessions and SSE /balances handshake always use the same id even
+// if the TTL boundary is crossed mid-session; rotation happens on the next
+// page load / tab open.
 const CLIENT_ID_TTL_MS = ms`1 day`
 
 interface StoredClientId {
@@ -10,21 +13,37 @@ interface StoredClientId {
   createdAt: number
 }
 
-let inMemoryFallback: StoredClientId | null = null
+let cachedClientId: string | null = null
 
 export function getBalancesWatcherClientId(): string {
-  try {
-    const stored = parseStored(localStorage.getItem(STORAGE_KEY))
-    if (stored && !isExpired(stored)) return stored.id
+  if (cachedClientId) return cachedClientId
 
-    const fresh: StoredClientId = { id: crypto.randomUUID(), createdAt: Date.now() }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh))
-    return fresh.id
+  const stored = readStored()
+  if (stored && !isExpired(stored)) {
+    cachedClientId = stored.id
+    return stored.id
+  }
+
+  const fresh: StoredClientId = { id: crypto.randomUUID(), createdAt: Date.now() }
+  cachedClientId = fresh.id
+  tryPersist(fresh)
+  return fresh.id
+}
+
+function readStored(): StoredClientId | null {
+  try {
+    return parseStored(localStorage.getItem(STORAGE_KEY))
   } catch {
-    if (!inMemoryFallback || isExpired(inMemoryFallback)) {
-      inMemoryFallback = { id: crypto.randomUUID(), createdAt: Date.now() }
-    }
-    return inMemoryFallback.id
+    return null
+  }
+}
+
+function tryPersist(entry: StoredClientId): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entry))
+  } catch {
+    // Storage disabled (private mode / quota / blocked). The in-memory cache
+    // above still keeps the id stable for this tab.
   }
 }
 
