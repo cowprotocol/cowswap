@@ -15,6 +15,7 @@ import {
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  allowedTokens?: TokenWithLogo[]
   activeChainId?: number
   maxItems?: number
 }
@@ -28,11 +29,16 @@ export interface RecentTokensState {
 export function useRecentTokens({
   allTokens,
   favoriteTokens,
+  allowedTokens,
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
   const tokensByKey = useMemo(() => buildTokensByKey(allTokens), [allTokens])
   const favoriteKeys = useMemo(() => buildFavoriteTokenKeys(favoriteTokens), [favoriteTokens])
+  const allowedTokenKeys = useMemo(
+    () => (allowedTokens ? buildFavoriteTokenKeys(allowedTokens) : undefined),
+    [allowedTokens],
+  )
 
   const {
     storedTokensByChain,
@@ -47,6 +53,7 @@ export function useRecentTokens({
     storedTokensByChain,
     tokensByKey,
     favoriteKeys,
+    allowedTokenKeys,
     activeChainId,
     maxItems,
   })

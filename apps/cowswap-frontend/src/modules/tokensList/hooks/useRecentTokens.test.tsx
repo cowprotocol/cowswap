@@ -93,6 +93,82 @@ describe('useRecentTokens', () => {
     expect(result.current.recentTokens[0].symbol).toBe('TKN')
   })
 
+  it('hydrates persisted custom tokens when no token-list restriction is active', () => {
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'CUSTOM')],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [],
+          favoriteTokens: [],
+          activeChainId: SupportedChainId.MAINNET,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toHaveLength(1)
+    expect(result.current.recentTokens[0].symbol).toBe('CUSTOM')
+  })
+
+  it('omits persisted tokens outside the allowed token set', () => {
+    const allowedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED')
+    const blockedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED')
+
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED'),
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED'),
+      ],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [allowedToken, blockedToken],
+          favoriteTokens: [],
+          allowedTokens: [allowedToken],
+          activeChainId: SupportedChainId.MAINNET,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toEqual([allowedToken])
+  })
+
+  it('filters blocked tokens before applying the recent-token limit', () => {
+    const allowedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED')
+    const blockedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED')
+
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED'),
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED'),
+      ],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [allowedToken, blockedToken],
+          favoriteTokens: [],
+          allowedTokens: [allowedToken],
+          activeChainId: SupportedChainId.MAINNET,
+          maxItems: 1,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toEqual([allowedToken])
+  })
+
   it('does not return tokens from other chains', () => {
     setStoredTokens({
       [SupportedChainId.GNOSIS_CHAIN]: [createStoredToken(SupportedChainId.GNOSIS_CHAIN, ADDRESS_1, 'TKN')],

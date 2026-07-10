@@ -7,6 +7,7 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
@@ -31,6 +32,10 @@ jest.mock('entities/bridgeProvider', () => ({
   useBridgeSupportedTokens: jest.fn(),
 }))
 
+jest.mock('entities/injectedWidget', () => ({
+  useInjectedWidgetParams: jest.fn(),
+}))
+
 jest.mock('./useSelectTokenWidgetState', () => ({
   useSelectTokenWidgetState: jest.fn(),
 }))
@@ -47,6 +52,7 @@ const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseFavoriteTokens = useFavoriteTokens as jest.MockedFunction<typeof useFavoriteTokens>
 const mockUseBridgeSupportedTokens = useBridgeSupportedTokens as jest.MockedFunction<typeof useBridgeSupportedTokens>
+const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseChainsToSelect = useChainsToSelect as jest.MockedFunction<typeof useChainsToSelect>
 
@@ -113,6 +119,7 @@ describe('useTokensToSelect', () => {
     mockUseAtomValue.mockReturnValue([mainnetToken])
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseFavoriteTokens.mockReturnValue([])
+    mockUseInjectedWidgetParams.mockReturnValue({})
     mockUseBridgeSupportedTokens.mockReturnValue({
       data: { tokens: [lineaToken], isRouteAvailable: true },
       isLoading: false,
@@ -141,6 +148,7 @@ describe('useTokensToSelect', () => {
     })
     expect(result.current.areTokensFromBridge).toBe(true)
     expect(result.current.tokens).toEqual([lineaToken])
+    expect(result.current.allowedRecentTokens).toBeUndefined()
   })
 
   it('passes sellChainId/buyChainId when selecting output token on a different chain', () => {
@@ -202,12 +210,43 @@ describe('useTokensToSelect', () => {
     expect(result.current.favoriteTokens).toEqual([scopedFavoriteToken])
   })
 
+  it.each([
+    ['sellTokenLists', Field.INPUT, { sellTokenLists: ['https://example.com/sell.json'] }, true],
+    ['buyTokenLists', Field.OUTPUT, { buyTokenLists: ['https://example.com/buy.json'] }, true],
+    ['shared tokenLists input', Field.INPUT, { tokenLists: ['https://example.com/shared.json'] }, true],
+    ['shared tokenLists output', Field.OUTPUT, { tokenLists: ['https://example.com/shared.json'] }, true],
+    ['buyTokenLists on input', Field.INPUT, { buyTokenLists: ['https://example.com/buy.json'] }, false],
+    ['sellTokenLists on output', Field.OUTPUT, { sellTokenLists: ['https://example.com/sell.json'] }, false],
+  ])('applies the expected recent-token scope for %s', (_label, field, widgetParams, isRestricted) => {
+    mockUseAtomValue.mockReturnValue([scopedFavoriteToken])
+    mockUseInjectedWidgetParams.mockReturnValue(widgetParams)
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field,
+        selectedTargetChainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const { result } = renderHook(() => useTokensToSelect())
+
+    expect(result.current.hasScopedListRestriction).toBe(isRestricted)
+    expect(result.current.allowedRecentTokens).toEqual(isRestricted ? [scopedFavoriteToken] : undefined)
+  })
+
   it('filters bridge favorites to the field-scoped selectable token set', () => {
     const scopedBridgeFavorite = { ...scopedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
+    const scopedUnsupportedRecent = {
+      address: '0x3333333333333333333333333333333333333333',
+      chainId: SupportedChainId.LINEA,
+      decimals: 18,
+      symbol: 'RECENT',
+      name: 'Scoped unsupported recent',
+    } as TokenWithLogo
     const leakedBridgeFavorite = { ...leakedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
 
-    mockUseAtomValue.mockReturnValue([scopedBridgeFavorite])
+    mockUseAtomValue.mockReturnValue([scopedBridgeFavorite, scopedUnsupportedRecent])
     mockUseFavoriteTokens.mockReturnValue([scopedBridgeFavorite, leakedBridgeFavorite])
+    mockUseInjectedWidgetParams.mockReturnValue({ buyTokenLists: ['https://example.com/buy.json'] })
     mockUseBridgeSupportedTokens.mockReturnValue({
       data: { tokens: [scopedBridgeFavorite, leakedBridgeFavorite], isRouteAvailable: true },
       isLoading: false,
@@ -224,5 +263,6 @@ describe('useTokensToSelect', () => {
 
     expect(result.current.tokens).toEqual([scopedBridgeFavorite, leakedBridgeFavorite])
     expect(result.current.favoriteTokens).toEqual([scopedBridgeFavorite])
+    expect(result.current.allowedRecentTokens).toEqual([scopedBridgeFavorite, scopedUnsupportedRecent])
   })
 })
