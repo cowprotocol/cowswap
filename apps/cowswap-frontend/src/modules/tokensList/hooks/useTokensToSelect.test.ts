@@ -201,4 +201,28 @@ describe('useTokensToSelect', () => {
     expect(result.current.tokens).toEqual([scopedFavoriteToken])
     expect(result.current.favoriteTokens).toEqual([scopedFavoriteToken])
   })
+
+  it('filters bridge favorites to the field-scoped selectable token set', () => {
+    const scopedBridgeFavorite = { ...scopedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
+    const leakedBridgeFavorite = { ...leakedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
+
+    mockUseAtomValue.mockReturnValue([scopedBridgeFavorite])
+    mockUseFavoriteTokens.mockReturnValue([scopedBridgeFavorite, leakedBridgeFavorite])
+    mockUseBridgeSupportedTokens.mockReturnValue({
+      data: { tokens: [scopedBridgeFavorite, leakedBridgeFavorite], isRouteAvailable: true },
+      isLoading: false,
+    } as ReturnType<typeof useBridgeSupportedTokens>)
+    mockUseSelectTokenWidgetState.mockReturnValue(
+      createWidgetState({
+        field: Field.OUTPUT,
+        selectedTargetChainId: SupportedChainId.LINEA,
+        oppositeToken: mainnetToken,
+      }),
+    )
+
+    const { result } = renderHook(() => useTokensToSelect())
+
+    expect(result.current.tokens).toEqual([scopedBridgeFavorite, leakedBridgeFavorite])
+    expect(result.current.favoriteTokens).toEqual([scopedBridgeFavorite])
+  })
 })
