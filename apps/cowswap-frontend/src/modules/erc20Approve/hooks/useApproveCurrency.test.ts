@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { useTradeApproveCallback } from 'modules/erc20Approve'
-import { callWidgetHook } from 'modules/injectedWidget'
+import { callOnBeforeApprovalWidgetHook } from 'modules/injectedWidget'
 import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
 import { useApproveCurrency } from './useApproveCurrency'
@@ -23,7 +23,7 @@ jest.mock('modules/erc20Approve', () => ({
 }))
 
 jest.mock('modules/injectedWidget', () => ({
-  callWidgetHook: jest.fn(),
+  callOnBeforeApprovalWidgetHook: jest.fn(),
 }))
 
 jest.mock('modules/zeroApproval', () => ({
@@ -34,7 +34,9 @@ jest.mock('modules/zeroApproval', () => ({
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseTradeApproveCallback = useTradeApproveCallback as jest.MockedFunction<typeof useTradeApproveCallback>
-const mockCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
+const mockCallOnBeforeApprovalWidgetHook = callOnBeforeApprovalWidgetHook as jest.MockedFunction<
+  typeof callOnBeforeApprovalWidgetHook
+>
 const mockUseShouldZeroApprove = useShouldZeroApprove as jest.MockedFunction<typeof useShouldZeroApprove>
 const mockUseZeroApprove = useZeroApprove as jest.MockedFunction<typeof useZeroApprove>
 
@@ -54,7 +56,7 @@ describe('useApproveCurrency', () => {
     mockUseTradeSpenderAddress.mockReturnValue(spenderAddress)
     mockUseWalletInfo.mockReturnValue({ account } as ReturnType<typeof useWalletInfo>)
     mockUseTradeApproveCallback.mockReturnValue(tradeApproveCallback)
-    mockCallWidgetHook.mockResolvedValue(true)
+    mockCallOnBeforeApprovalWidgetHook.mockResolvedValue(true)
     shouldZeroApprove.mockResolvedValue(false)
     mockUseShouldZeroApprove.mockReturnValue(shouldZeroApprove)
     mockUseZeroApprove.mockReturnValue(zeroApprove)
@@ -66,18 +68,11 @@ describe('useApproveCurrency', () => {
     await result.current(approveAmount)
 
     await waitFor(() => {
-      expect(mockCallWidgetHook).toHaveBeenCalledWith('ON_BEFORE_APPROVAL', {
-        chainId: mockToken.chainId,
-        sellToken: expect.objectContaining({
-          address: mockToken.address,
-          chainId: mockToken.chainId,
-          decimals: mockToken.decimals,
-          name: mockToken.name,
-          symbol: mockToken.symbol,
-        }),
-        sellAmount: approveAmount.toString(),
-        walletAddress: account,
+      expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalledWith({
+        account,
+        amountToApprove,
         spenderAddress,
+        approvalAmount: approveAmount,
       })
       expect(tradeApproveCallback).toHaveBeenCalledWith(approveAmount, {
         useModals: true,
@@ -87,14 +82,14 @@ describe('useApproveCurrency', () => {
   })
 
   it('does not run on-chain approval when widget hook blocks it', async () => {
-    mockCallWidgetHook.mockResolvedValue(false)
+    mockCallOnBeforeApprovalWidgetHook.mockResolvedValue(false)
 
     const { result } = renderHook(() => useApproveCurrency(amountToApprove, true))
 
     await result.current(approveAmount)
 
     await waitFor(() => {
-      expect(mockCallWidgetHook).toHaveBeenCalled()
+      expect(mockCallOnBeforeApprovalWidgetHook).toHaveBeenCalled()
       expect(shouldZeroApprove).not.toHaveBeenCalled()
       expect(zeroApprove).not.toHaveBeenCalled()
       expect(tradeApproveCallback).not.toHaveBeenCalled()
