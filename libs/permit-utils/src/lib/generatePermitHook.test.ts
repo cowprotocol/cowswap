@@ -3,7 +3,7 @@ import { estimateGas } from 'wagmi/actions'
 
 import { generatePermitHook } from './generatePermitHook'
 
-import { buildEip2612PermitCallData } from '../utils/buildPermitCallData'
+import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 
 import type { PermitHookParams } from '../types'
 import type { Config } from 'wagmi'
@@ -29,6 +29,9 @@ const mockEstimateGas = estimateGas as jest.MockedFunction<typeof estimateGas>
 const mockBuildEip2612PermitCallData = buildEip2612PermitCallData as jest.MockedFunction<
   typeof buildEip2612PermitCallData
 >
+const mockBuildDaiLikePermitCallData = buildDaiLikePermitCallData as jest.MockedFunction<
+  typeof buildDaiLikePermitCallData
+>
 
 describe('generatePermitHook request cache', () => {
   const config = {} as Config
@@ -41,7 +44,7 @@ describe('generatePermitHook request cache', () => {
     getTokenNonce: jest.fn().mockResolvedValue(7),
   }
 
-  function createParams(customSpender = spender): PermitHookParams {
+  function createParams(overrides: Partial<PermitHookParams> = {}): PermitHookParams {
     return {
       chainId: 1,
       config,
@@ -55,10 +58,11 @@ describe('generatePermitHook request cache', () => {
         name: 'Test Token',
         version: '1',
       },
-      spender: customSpender,
+      spender,
       account,
       amount: 123n,
       nonce: 7,
+      ...overrides,
     }
   }
 
@@ -67,6 +71,7 @@ describe('generatePermitHook request cache', () => {
 
     mockEstimateGas.mockResolvedValue(45000n)
     mockBuildEip2612PermitCallData.mockResolvedValue('0xpermit')
+    mockBuildDaiLikePermitCallData.mockResolvedValue('0xpermit')
   })
 
   it('reuses the in-flight request when the spender is unchanged', async () => {
@@ -77,9 +82,34 @@ describe('generatePermitHook request cache', () => {
   })
 
   it('does not reuse the in-flight request when the spender changes', async () => {
-    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams(otherSpender))])
+    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ spender: otherSpender }))])
 
     expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not reuse the in-flight request when the nonce changes', async () => {
+    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ nonce: 8 }))])
+
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+  })
+
+  it.each([
+    ['name', { type: 'eip-2612' as const, name: 'Other Token', version: '1' }],
+    ['version', { type: 'eip-2612' as const, name: 'Test Token', version: '2' }],
+  ])('does not reuse the in-flight request when the permit %s changes', async (_, permitInfo) => {
+    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ permitInfo }))])
+
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not reuse the in-flight request when the permit type changes', async () => {
+    await Promise.all([
+      generatePermitHook(createParams()),
+      generatePermitHook(createParams({ permitInfo: { type: 'dai-like', name: 'Test Token', version: '1' } })),
+    ])
+
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockBuildDaiLikePermitCallData).toHaveBeenCalledTimes(1)
   })
 
   it('preserves an explicit zero amount in permit calldata', async () => {

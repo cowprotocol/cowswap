@@ -185,9 +185,19 @@ async function calculateGasLimit({
 }
 
 function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account, amount, spender } = params
+  const { inputToken, chainId, account, amount, nonce, permitInfo, spender } = params
+  const owner = account ?? PERMIT_ACCOUNT.address
+  const tokenName = permitInfo.name || inputToken.name
 
-  return `${getAddressKey(inputToken.address)}-${chainId}-${getAddressKey(spender)}${
-    account ? `-${getAddressKey(account)}` : ''
-  }${amount !== undefined ? `-${amount.toString()}` : ''}`
+  return JSON.stringify({
+    tokenAddress: getAddressKey(inputToken.address),
+    chainId,
+    owner: getAddressKey(owner),
+    spender: getAddressKey(spender),
+    amount: (amount ?? DEFAULT_PERMIT_VALUE).toString(),
+    nonce: nonce ?? null,
+    permitType: permitInfo.type,
+    tokenName: tokenName ?? null,
+    permitVersion: permitInfo.version ?? null,
+  })
 }

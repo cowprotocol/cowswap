@@ -75,7 +75,7 @@ export function usePermitInfo(
   const defaultSpender = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
   const customSpenderAddress = customSpender ? isAddress(customSpender) || undefined : undefined
   const spender = customSpender ? customSpenderAddress : defaultSpender
-  const shouldUsePreGeneratedInfo = !customSpender && spender === defaultSpender
+  const shouldUsePreGeneratedInfo = !customSpender
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined, spender)
