@@ -22,7 +22,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   // todo check for safe wallet
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
 
-  const needsApproval = useNeedsApproval(maximumSendSellAmount)
+  const needsApproval = useNeedsApproval(maximumSendSellAmount, spender)
   const tokenAddress = useMemo(() => {
     return maximumSendSellAmount ? getCurrencyAddress(maximumSendSellAmount.currency) : undefined
   }, [maximumSendSellAmount])
