@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo, useRef } from 'react'
 
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,7 +10,11 @@ import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled
 
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
-import { getTokenAddressFromPermittableTokenKey, permittableTokensAtom } from '../state/permittableTokensAtom'
+import {
+  getPermittableTokenKey,
+  getTokenAddressFromPermittableTokenKey,
+  permittableTokensAtom,
+} from '../state/permittableTokensAtom'
 import { PermitCompatibleTokens } from '../types'
 
 export function usePermitCompatibleTokens(): PermitCompatibleTokens {
@@ -17,6 +22,7 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   const permitInfoAllChains = useAtomValue(permittableTokensAtom)
   const localPermitInfo = permitInfoAllChains[chainId] || {}
   const { allPermitInfo } = usePreGeneratedPermitInfo()
+  const defaultSpender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const isPermitEnabled = useIsPermitEnabled()
 
@@ -44,7 +50,11 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
     }
 
     for (const permitTokenKey of Object.keys(localPermitInfoRef.current)) {
-      const addressLowerCased = getAddressKey(getTokenAddressFromPermittableTokenKey(permitTokenKey))
+      const tokenAddress = getTokenAddressFromPermittableTokenKey(permitTokenKey)
+
+      if (!defaultSpender || permitTokenKey !== getPermittableTokenKey(tokenAddress, defaultSpender)) continue
+
+      const addressLowerCased = getAddressKey(tokenAddress)
 
       permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[permitTokenKey])
     }
@@ -52,5 +62,5 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
     return permitCompatibleTokens
     // Reducing unnecessary re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stableRef, isPermitEnabled])
+  }, [defaultSpender, stableRef, isPermitEnabled])
 }
