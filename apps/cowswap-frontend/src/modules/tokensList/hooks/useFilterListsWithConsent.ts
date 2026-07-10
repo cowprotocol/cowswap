@@ -1,59 +1,44 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getSourceAsKey, ListState, restrictedListsAtom, useFilterBlockedLists } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
+import { useGeoStatus } from 'modules/rwa'
 
 /**
  * filters token lists that should not be visible:
  * 1. lists blocked for the users country (when country is known)
- * 2. restricted lists when country is unknown and consent is not given
+ * 2. restricted lists when country is unknown
  */
 export function useFilterListsWithConsent(lists: ListState[]): ListState[] {
-  const { account } = useWalletInfo()
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
   const restrictedLists = useAtomValue(restrictedListsAtom)
-  const consentCache = useAtomValue(rwaConsentCacheAtom)
 
   // First, filter by country if known
   const countryFilteredLists = useFilterBlockedLists(lists, geoStatus.country)
 
   return useMemo(() => {
+    if (isRwaGeoblockEnabled === false) {
+      return lists
+    }
+
+    if (isRwaGeoblockEnabled !== true || !restrictedLists.isLoaded) {
+      return []
+    }
+
     // If country is known, just return country-filtered lists
     if (geoStatus.country) {
       return countryFilteredLists
     }
 
-    // If geo is still loading, return all lists for now
-    if (geoStatus.isLoading) {
-      return countryFilteredLists
-    }
-
-    // if restricted lists not loaded, return all
-    if (!restrictedLists.isLoaded) {
-      return countryFilteredLists
-    }
-
-    return countryFilteredLists.filter((list) => {
+    return countryFilteredLists.filter((list): boolean => {
       const sourceKey = getSourceAsKey(list.source)
-      const consentHash = restrictedLists.consentHashPerList[sourceKey]
+      const hasBlockedCountries = Boolean(restrictedLists.blockedCountriesPerList[sourceKey]?.length)
+      const hasConsentHash = Boolean(restrictedLists.consentHashPerList[sourceKey])
 
-      if (!consentHash) {
-        return true
-      }
-
-      if (!account) {
-        // no wallet connected - hide restricted lists
-        return false
-      }
-
-      const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
-      const existingConsent = getConsentFromCache(consentCache, consentKey)
-
-      // Only show if consent is given
-      return !!existingConsent?.acceptedAt
+      return !hasBlockedCountries && !hasConsentHash
     })
-  }, [countryFilteredLists, geoStatus, restrictedLists, account, consentCache])
+  }, [countryFilteredLists, geoStatus.country, isRwaGeoblockEnabled, lists, restrictedLists])
 }

@@ -244,8 +244,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ProxyAccountUnknown]: {
     text: <ProxyAccountUnknown />,
   },
+  [TradeFormValidation.RwaChecksPending]: {
+    text: <Trans>Checking token availability</Trans>,
+  },
   [TradeFormValidation.RestrictedForCountry]: {
     text: <Trans>This token is not available in your region</Trans>,
+  },
+  [TradeFormValidation.RwaConsentRequired]: ({ confirmTrade, isDisabled = false }: ButtonComponentProps) => {
+    return (
+      <TradeFormBlankButton disabled={isDisabled} onClick={confirmTrade}>
+        <Trans>Review token terms</Trans>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.DisableTradeWithUnknownPriceImpact]: () => {
     return (

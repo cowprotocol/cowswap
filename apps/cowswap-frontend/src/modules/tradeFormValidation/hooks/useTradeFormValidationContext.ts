@@ -69,7 +69,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
   const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
-  const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
+  const isProxySetupValid = hasHookBridgeProvidersEnabled ? proxyAccount?.isProxySetupValid : true
 
   const isNonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
 
@@ -89,7 +89,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     inputCurrency,
     outputCurrency,
   })
+  const isRwaStatusPending = rwaStatus === RwaTokenStatus.ChecksPending
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
+  const isRwaConsentRequired = rwaStatus === RwaTokenStatus.RequiredConsent
 
   return useMemo(() => {
     if (!derivedTradeState) return null
@@ -115,6 +117,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
+      isRwaStatusPending,
+      isRwaConsentRequired,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
       injectedWidgetParams,
@@ -138,6 +142,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isOnline,
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
+    isRwaStatusPending,
+    isRwaConsentRequired,
     isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,

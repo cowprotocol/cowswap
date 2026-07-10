@@ -22,8 +22,7 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
   const consentCache = useAtomValue(rwaConsentCacheAtom)
 
   return useMemo(() => {
-    // skip consent check if ff is disabled
-    if (!isRwaGeoblockEnabled) {
+    if (isRwaGeoblockEnabled === false) {
       return { requiresConsent: false, consentHash: null, isLoading: false }
     }
 
@@ -32,8 +31,7 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
       return { requiresConsent: false, consentHash: null, isLoading: false }
     }
 
-    // If still loading, return loading state
-    if (!restrictedLists.isLoaded || geoStatus.isLoading) {
+    if (isRwaGeoblockEnabled !== true || !restrictedLists.isLoaded) {
       return { requiresConsent: false, consentHash: null, isLoading: true }
     }
 
@@ -51,9 +49,8 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
     }
 
     // Country is unknown - check if consent is given
-    // If no wallet connected, don't block - the consent modal will handle wallet connection
     if (!account) {
-      return { requiresConsent: false, consentHash, isLoading: false }
+      return { requiresConsent: true, consentHash, isLoading: false }
     }
 
     const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
@@ -65,5 +62,5 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
       consentHash,
       isLoading: false,
     }
-  }, [isRwaGeoblockEnabled, listSource, restrictedLists, geoStatus, account, consentCache])
+  }, [account, consentCache, geoStatus.country, isRwaGeoblockEnabled, listSource, restrictedLists])
 }

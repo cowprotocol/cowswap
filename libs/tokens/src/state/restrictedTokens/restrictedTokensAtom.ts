@@ -1,7 +1,6 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
-import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { TokenId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -20,23 +19,18 @@ const initialState: RestrictedTokenListState = {
 }
 
 /**
- * Persisted cache in IndexedDB - loaded asynchronously on app start
- */
-export const restrictedTokensCacheAtom = atomWithIdbStorage<RestrictedTokenListState>(
-  'restrictedTokens:v1',
-  initialState,
-)
-
-/**
  * Runtime state for synchronous access by hooks.
- * Populated from cache on mount, updated by the updater.
+ * Populated only by the updater so browser storage cannot become RWA policy truth.
  */
 export const restrictedTokensAtom = atom<RestrictedTokenListState>(initialState)
 
+export const RESTRICTED_TOKENS_LAST_UPDATE_KEY = 'restrictedTokens:lastUpdate:v1'
+export const restrictedTokensLastUpdateStorage = createJSONStorage<number>(() => localStorage)
+
 export const restrictedTokensLastUpdateAtom = atomWithStorage<number>(
-  'restrictedTokens:lastUpdate:v1',
+  RESTRICTED_TOKENS_LAST_UPDATE_KEY,
   0,
-  getJotaiMergerStorage(),
+  restrictedTokensLastUpdateStorage,
   { getOnInit: true },
 )
 

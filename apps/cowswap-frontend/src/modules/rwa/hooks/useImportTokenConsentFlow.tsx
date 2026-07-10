@@ -12,13 +12,13 @@ import { useImportTokenWithConsent } from './useImportTokenWithConsent'
 
 import { RwaConsentModal } from '../pure/RwaConsentModal'
 
-function getRestrictedFlowResult(): CustomFlowResult<TokenSelectorView.ImportToken> {
+function getBlockedFlowResult(message: string): CustomFlowResult<TokenSelectorView.ImportToken> {
   return {
     content: null,
     data: {
       restriction: {
         isBlocked: true,
-        message: t`This token is not available in your region.`,
+        message,
       },
     },
   }
@@ -38,7 +38,11 @@ export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.Im
       if (!tokenToImport) return null
 
       if (rwaStatus === 'restricted') {
-        return getRestrictedFlowResult()
+        return getBlockedFlowResult(t`This token is not available in your region.`)
+      }
+
+      if (rwaStatus === 'checks-pending') {
+        return getBlockedFlowResult(t`Checking token availability.`)
       }
 
       // Don't show consent modal to non-connected users - they can import the token

@@ -31,7 +31,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRwaStatusPending,
     isRestrictedForCountry,
+    isRwaConsentRequired,
     isBalancesLoading,
     isBundlingSupported,
     injectedWidgetParams,
@@ -77,8 +79,16 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.CustomTokenError)
   }
 
+  if (isRwaStatusPending) {
+    validations.push(TradeFormValidation.RwaChecksPending)
+  }
+
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  if (account && isRwaConsentRequired) {
+    validations.push(TradeFormValidation.RwaConsentRequired)
   }
 
   // Return early as these take precedence
@@ -210,7 +220,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
         validations.push(TradeFormValidation.ProxyAccountLoading)
       }
 
-      if (isProxySetupValid === null) {
+      if (isProxySetupValid === null || isProxySetupValid === false) {
         validations.push(TradeFormValidation.ProxyAccountUnknown)
       }
     }
