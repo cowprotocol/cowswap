@@ -22,6 +22,18 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
+// Percentage-based rollout: hashes the wallet address into a stable 0..99
+// bucket and enables the watcher for buckets below `percentage`. Same account
+// -> same bucket, so the toggle is sticky per wallet across sessions/tabs.
+// - 100 -> everyone (including not-yet-connected wallets)
+// - 0 / undefined / out-of-range / non-number -> nobody
+function shouldEnableBalancesWatcher(account: string | undefined, percentage: number | boolean | undefined): boolean {
+  if (percentage === 100) return true
+  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) return false
+
+  return BigInt(account) % 100n < percentage
+}
+
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
   // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
@@ -32,7 +44,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
 
-  const { isBwEnabled } = useFeatureFlags()
+  const { bwEnabledPercentage } = useFeatureFlags()
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -69,7 +81,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
   const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
-  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  const isWatcherActive = shouldEnableBalancesWatcher(account, bwEnabledPercentage) && !isNonEvmChain(sourceChainId)
   // Mount the multicall stack when:
   // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
   // - the watcher is in recovery — sticky from the first failure until the next

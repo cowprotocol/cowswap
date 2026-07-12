@@ -119,7 +119,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseFeatureFlags.mockReturnValue({ isBwEnabled: true } as ReturnType<typeof useFeatureFlags>)
+    mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 100 } as ReturnType<typeof useFeatureFlags>)
     mockUseWalletInfo.mockReturnValue({
       account: '0x0000000000000000000000000000000000000001',
       chainId: SupportedChainId.MAINNET,
@@ -209,7 +209,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
 
     it('mounts only the multicall stack when the bw feature flag is disabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isBwEnabled: false } as ReturnType<typeof useFeatureFlags>)
+      mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 0 } as ReturnType<typeof useFeatureFlags>)
 
       renderWithHealth(healthy())
 
