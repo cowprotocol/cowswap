@@ -114,6 +114,23 @@ describe('useCrossChainFamilySwitch', () => {
     expect(closeModal).not.toHaveBeenCalled()
   })
 
+  it('reports via snackbar and leaves the URL unchanged when the disconnect fails', async () => {
+    setWallet(SupportedChainId.MAINNET, '0xConnected')
+    triggerConfirmation.mockResolvedValue(true)
+    disconnectWallet.mockRejectedValue(new Error('disconnect failed'))
+    const { result } = renderHook(() => useCrossChainFamilySwitch())
+
+    let handled = false
+    await act(async () => {
+      handled = await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(handled).toBe(true)
+    expect(setChainIdToUrl).not.toHaveBeenCalled()
+    expect(openWalletConnectionModal).not.toHaveBeenCalled()
+    expect(closeModal).not.toHaveBeenCalled()
+  })
+
   it('keeps the network selector open when skipClose is passed', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     triggerConfirmation.mockResolvedValue(true)

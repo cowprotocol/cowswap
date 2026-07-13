@@ -55,8 +55,16 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
         return true
       }
 
+      try {
+        // Only change the URL after the wallet is actually disconnected, so URL and wallet
+        // stay in sync if the disconnect fails.
+        await disconnectWallet()
+      } catch (error) {
+        console.error('Failed to disconnect wallet while switching network type', error)
+        return true
+      }
+
       setChainIdToUrl(targetChain)
-      await disconnectWallet()
       openWalletConnectionModal()
 
       if (!skipClose) {
