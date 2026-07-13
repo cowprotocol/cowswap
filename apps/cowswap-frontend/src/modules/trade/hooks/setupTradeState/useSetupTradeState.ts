@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { useWalletClient } from 'wagmi'
+
 import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
-
-import { useWalletClient } from 'wagmi'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'

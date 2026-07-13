@@ -1,7 +1,7 @@
-import { namehash, normalize } from 'viem/ens'
+import type { Config } from 'wagmi'
 import { readContract } from 'wagmi/actions'
 
-import type { Config } from 'wagmi'
+import { namehash, normalize } from 'viem/ens'
 
 const REGISTRAR_ABI = [
   {

@@ -1,10 +1,10 @@
+import { encodeFunctionData } from 'viem'
+
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
-
-import { encodeFunctionData } from 'viem'
 
 import { CowHook } from 'modules/hooksStore/types/hooks'
 
@@ -17,10 +17,6 @@ export interface GetTransferTenderlySimulationInput {
   token: string
 }
 
-export type TokenBuyTransferInfo = {
-  sender: string
-  amount: string
-}[]
 export interface PostBundleSimulationParams {
   account: string
   chainId: SupportedChainId
@@ -32,6 +28,10 @@ export interface PostBundleSimulationParams {
   orderReceiver: string
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
+export type TokenBuyTransferInfo = {
+  sender: string
+  amount: string
+}[]
 
 export const completeBundleSimulation = async (params: PostBundleSimulationParams): Promise<SimulationData[]> => {
   const input = getBundleTenderlySimulationInput(params)
@@ -58,33 +58,6 @@ const simulateBundle = async (input: SimulationInput[], chainId: SupportedChainI
   }).then((res) => res.json())
 
   return response as SimulationData[]
-}
-
-export function getCoWHookTenderlySimulationInput(from: string, params: CowHook): SimulationInput {
-  return {
-    input: params.callData,
-    to: params.target,
-    from,
-  }
-}
-
-export function getTransferTenderlySimulationInput({
-  currencyAmount,
-  from,
-  receiver,
-  token,
-}: GetTransferTenderlySimulationInput): SimulationInput {
-  const callData = encodeFunctionData({
-    abi: Erc20Abi,
-    functionName: 'transfer',
-    args: [receiver as `0x${string}`, BigInt(currencyAmount)],
-  })
-
-  return {
-    input: callData,
-    to: token,
-    from,
-  }
 }
 
 export function getBundleTenderlySimulationInput({
@@ -122,4 +95,31 @@ export function getBundleTenderlySimulationInput({
   )
 
   return [...preHooksSimulations, sellTokenTransfer, ...buyTokenTransfers, ...postHooksSimulations]
+}
+
+export function getCoWHookTenderlySimulationInput(from: string, params: CowHook): SimulationInput {
+  return {
+    input: params.callData,
+    to: params.target,
+    from,
+  }
+}
+
+export function getTransferTenderlySimulationInput({
+  currencyAmount,
+  from,
+  receiver,
+  token,
+}: GetTransferTenderlySimulationInput): SimulationInput {
+  const callData = encodeFunctionData({
+    abi: Erc20Abi,
+    functionName: 'transfer',
+    args: [receiver as `0x${string}`, BigInt(currencyAmount)],
+  })
+
+  return {
+    input: callData,
+    to: token,
+    from,
+  }
 }

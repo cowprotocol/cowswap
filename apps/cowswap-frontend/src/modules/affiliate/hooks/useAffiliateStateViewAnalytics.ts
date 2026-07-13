@@ -16,20 +16,6 @@ interface UseAffiliateStateViewAnalyticsParams {
   viewKey?: string
 }
 
-function sanitizeEventParams(
-  eventParams: AffiliateAnalyticsEventParams | undefined,
-): Record<string, unknown> | undefined {
-  if (!eventParams) {
-    return undefined
-  }
-
-  const sanitizedParams = { ...eventParams } as Record<string, unknown>
-  delete sanitizedParams.action
-  delete sanitizedParams.analytics
-
-  return sanitizedParams
-}
-
 export function useAffiliateStateViewAnalytics({
   action,
   eventParams,
@@ -70,4 +56,18 @@ export function useAffiliateStateViewAnalytics({
       ...(sanitizedEventParams || {}),
     })
   }, [action, analytics, eventSignature, sanitizedEventParams])
+}
+
+function sanitizeEventParams(
+  eventParams: AffiliateAnalyticsEventParams | undefined,
+): Record<string, unknown> | undefined {
+  if (!eventParams) {
+    return undefined
+  }
+
+  const sanitizedParams = { ...eventParams } as Record<string, unknown>
+  delete sanitizedParams.action
+  delete sanitizedParams.analytics
+
+  return sanitizedParams
 }

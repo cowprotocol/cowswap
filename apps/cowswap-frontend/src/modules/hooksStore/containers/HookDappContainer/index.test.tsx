@@ -1,10 +1,11 @@
 import type { ComponentProps } from 'react'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { HookDappType } from '@cowprotocol/hook-dapp-lib'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 

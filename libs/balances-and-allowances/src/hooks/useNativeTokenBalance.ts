@@ -1,10 +1,10 @@
+import type { Address } from 'viem'
+import { useBalance, UseBalanceReturnType } from 'wagmi'
+
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useSolanaNativeBalance } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { useBalance, UseBalanceReturnType } from 'wagmi'
-
-import type { Address } from 'viem'
 
 const BALANCE_REFETCH_INTERVAL = ms`11s`
 

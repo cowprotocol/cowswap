@@ -49,16 +49,6 @@ let triggerResizeObserver: (() => void) | null = null
 let triggerMutationObserver: (() => void) | null = null
 let rootElement: HTMLDivElement | null = null
 
-class MockResizeObserver {
-  constructor(callback: ResizeObserverCallback) {
-    triggerResizeObserver = () => callback([], this as unknown as ResizeObserver)
-  }
-
-  observe = resizeObserverObserveMock
-  disconnect = resizeObserverDisconnectMock
-  unobserve = resizeObserverUnobserveMock
-}
-
 class MockMutationObserver {
   constructor(callback: MutationCallback) {
     triggerMutationObserver = () => callback([], this as unknown as MutationObserver)
@@ -69,6 +59,16 @@ class MockMutationObserver {
   takeRecords(): MutationRecord[] {
     return []
   }
+}
+
+class MockResizeObserver {
+  constructor(callback: ResizeObserverCallback) {
+    triggerResizeObserver = () => callback([], this as unknown as ResizeObserver)
+  }
+
+  observe = resizeObserverObserveMock
+  disconnect = resizeObserverDisconnectMock
+  unobserve = resizeObserverUnobserveMock
 }
 
 describe('IframeResizer', () => {
@@ -267,6 +267,14 @@ describe('IframeResizer', () => {
   })
 })
 
+function getRootElement(): HTMLDivElement {
+  if (!rootElement) {
+    throw new Error('Root element is not initialized')
+  }
+
+  return rootElement
+}
+
 function setContentSize({
   bodyOffsetWidth,
   rootScrollHeight,
@@ -311,24 +319,16 @@ function setContentSize({
   }))
 }
 
-function getRootElement(): HTMLDivElement {
-  if (!rootElement) {
-    throw new Error('Root element is not initialized')
-  }
-
-  return rootElement
-}
-
-function setResizeObserver(value: typeof ResizeObserver | undefined): void {
-  Object.defineProperty(global, 'ResizeObserver', {
+function setMutationObserver(value: typeof MutationObserver | undefined): void {
+  Object.defineProperty(global, 'MutationObserver', {
     configurable: true,
     value,
     writable: true,
   })
 }
 
-function setMutationObserver(value: typeof MutationObserver | undefined): void {
-  Object.defineProperty(global, 'MutationObserver', {
+function setResizeObserver(value: typeof ResizeObserver | undefined): void {
+  Object.defineProperty(global, 'ResizeObserver', {
     configurable: true,
     value,
     writable: true,

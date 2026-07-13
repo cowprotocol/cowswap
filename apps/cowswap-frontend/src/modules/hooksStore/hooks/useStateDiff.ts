@@ -9,16 +9,6 @@ import { SimulationData } from 'modules/tenderly/types'
 
 const EMPTY_STATE_DIFF: StateDiff[] = []
 
-function getHookStateDiff(
-  data: Record<string, SimulationData> | undefined,
-  hooks: CowHookDetails[],
-): StateDiff[] | null {
-  if (!data || !hooks) return null
-
-  const lastHook = hooks[hooks.length - 1]
-  return data[lastHook?.uuid]?.stateDiff || null
-}
-
 export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): StateDiff[] {
   const { data } = useTenderlyBundleSimulation()
   const { preHooks, postHooks } = useHooks()
@@ -49,4 +39,14 @@ export function useHookStateDiff(isPreHook: boolean, hookToEditUid?: string): St
     if (isPreHook) return preHookStateDiff || EMPTY_STATE_DIFF
     return postHookStateDiff || preHookStateDiff || EMPTY_STATE_DIFF
   }, [hookToEditStateDiff, hookToEditUid, isPreHook, postHookStateDiff, preHookStateDiff])
+}
+
+function getHookStateDiff(
+  data: Record<string, SimulationData> | undefined,
+  hooks: CowHookDetails[],
+): StateDiff[] | null {
+  if (!data || !hooks) return null
+
+  const lastHook = hooks[hooks.length - 1]
+  return data[lastHook?.uuid]?.stateDiff || null
 }

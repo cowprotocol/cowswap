@@ -60,6 +60,54 @@ const FooterCtaLinkOuter = styled.div`
 `
 
 type SendEvent = (action: string) => void
+export default function Page(): ReactNode {
+  const analytics = useCowAnalytics()
+
+  const sendEvent = (action: string): void => {
+    analytics.sendEvent({ category: CowFiCategory.COWSWAP, action })
+  }
+  return (
+    <PageWrapper>
+      <AffiliateHero sendEvent={sendEvent} />
+      <HowItWorksSection />
+      <WhyCowSwapSection />
+      <AffiliateFaqSection sendEvent={sendEvent} />
+      <FooterCtaSection sendEvent={sendEvent} />
+    </PageWrapper>
+  )
+}
+function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
+  return (
+    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`}>
+      <ContainerCardSection padding="0">
+        <SectionTitleWrapper margin="6rem auto 0">
+          <SectionTitleIcon $size={62}>
+            <LazySVG src={iconFaqSrc} />
+          </SectionTitleIcon>
+          <SectionTitleText>FAQs</SectionTitleText>
+        </SectionTitleWrapper>
+        <FAQ faqs={getAffiliateProgramFaq(sendEvent)} fontSize={18} />
+
+        <SectionTitleWrapper margin="2.4rem auto" maxWidth={900} gap={36}>
+          <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_40})`}>
+            Looking for more details? Read the full documentation and FAQ.
+          </SectionTitleDescription>
+          <Link
+            bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
+            color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
+            href={AFFILIATE_PROGRAM_DOCS_CTA.href}
+            external
+            linkType={LinkType.SectionTitleButton}
+            utmContent="affiliate-program-read-full-docs"
+            onClick={() => sendEvent('click-read-full-affiliate-docs')}
+          >
+            Read the docs &#8594;
+          </Link>
+        </SectionTitleWrapper>
+      </ContainerCardSection>
+    </ContainerCard>
+  )
+}
 function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
   return (
     <HeroContainer variant="secondary" minHeight="40vh">
@@ -94,6 +142,36 @@ function AffiliateHero({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
         <LazySVG src={svgAffiliateHeroSrc} />
       </HeroImage>
     </HeroContainer>
+  )
+}
+function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
+  return (
+    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
+      <ContainerCardSection padding="6rem 0">
+        <SectionTitleWrapper margin="0 auto">
+          <SectionTitleIcon>
+            <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
+          </SectionTitleIcon>
+          <SectionTitleText>Ready to turn your audience into earnings?</SectionTitleText>
+          <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_30})`}>
+            Generate your link. Share it. Earn USDC - every week.
+          </SectionTitleDescription>
+          <FooterCtaLinkOuter>
+            <Link
+              bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
+              color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
+              href={AFFILIATE_PROGRAM_CTA.href}
+              external
+              linkType={LinkType.SectionTitleButton}
+              utmContent="affiliate-program-footer-generate-link"
+              onClick={() => sendEvent('click-generate-referral-link')}
+            >
+              Generate your referral link &#8594;
+            </Link>
+          </FooterCtaLinkOuter>
+        </SectionTitleWrapper>
+      </ContainerCardSection>
+    </ContainerCard>
   )
 }
 function HowItWorksSection(): ReactNode {
@@ -187,83 +265,5 @@ function WhyCowSwapSection(): ReactNode {
         </TopicList>
       </ContainerCardSection>
     </ContainerCard>
-  )
-}
-function AffiliateFaqSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
-  return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`}>
-      <ContainerCardSection padding="0">
-        <SectionTitleWrapper margin="6rem auto 0">
-          <SectionTitleIcon $size={62}>
-            <LazySVG src={iconFaqSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>FAQs</SectionTitleText>
-        </SectionTitleWrapper>
-        <FAQ faqs={getAffiliateProgramFaq(sendEvent)} fontSize={18} />
-
-        <SectionTitleWrapper margin="2.4rem auto" maxWidth={900} gap={36}>
-          <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_40})`}>
-            Looking for more details? Read the full documentation and FAQ.
-          </SectionTitleDescription>
-          <Link
-            bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
-            color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
-            href={AFFILIATE_PROGRAM_DOCS_CTA.href}
-            external
-            linkType={LinkType.SectionTitleButton}
-            utmContent="affiliate-program-read-full-docs"
-            onClick={() => sendEvent('click-read-full-affiliate-docs')}
-          >
-            Read the docs &#8594;
-          </Link>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
-  )
-}
-function FooterCtaSection({ sendEvent }: { sendEvent: SendEvent }): ReactNode {
-  return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
-      <ContainerCardSection padding="6rem 0">
-        <SectionTitleWrapper margin="0 auto">
-          <SectionTitleIcon>
-            <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
-          </SectionTitleIcon>
-          <SectionTitleText>Ready to turn your audience into earnings?</SectionTitleText>
-          <SectionTitleDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_30})`}>
-            Generate your link. Share it. Earn USDC - every week.
-          </SectionTitleDescription>
-          <FooterCtaLinkOuter>
-            <Link
-              bgColor={`var(${UI.COLOR_YELLOW_300_PRIMARY})`}
-              color={`var(${UI.COLOR_YELLOW_800_PRIMARY})`}
-              href={AFFILIATE_PROGRAM_CTA.href}
-              external
-              linkType={LinkType.SectionTitleButton}
-              utmContent="affiliate-program-footer-generate-link"
-              onClick={() => sendEvent('click-generate-referral-link')}
-            >
-              Generate your referral link &#8594;
-            </Link>
-          </FooterCtaLinkOuter>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
-  )
-}
-export default function Page(): ReactNode {
-  const analytics = useCowAnalytics()
-
-  const sendEvent = (action: string): void => {
-    analytics.sendEvent({ category: CowFiCategory.COWSWAP, action })
-  }
-  return (
-    <PageWrapper>
-      <AffiliateHero sendEvent={sendEvent} />
-      <HowItWorksSection />
-      <WhyCowSwapSection />
-      <AffiliateFaqSection sendEvent={sendEvent} />
-      <FooterCtaSection sendEvent={sendEvent} />
-    </PageWrapper>
   )
 }

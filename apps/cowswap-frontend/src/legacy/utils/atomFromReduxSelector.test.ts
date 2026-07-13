@@ -21,12 +21,12 @@ jest.mock('legacy/state', () => ({
 
 import { atomFromReduxSelector } from './atomFromReduxSelector'
 
-function selectCounter(state: AppState): number {
-  return (state as unknown as { counter: number }).counter
-}
-
 function notifySubscribers(): void {
   mockRedux.listeners.forEach((listener) => listener())
+}
+
+function selectCounter(state: AppState): number {
+  return (state as unknown as { counter: number }).counter
 }
 
 describe('atomFromReduxSelector', () => {

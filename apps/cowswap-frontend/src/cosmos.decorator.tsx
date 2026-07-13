@@ -3,12 +3,13 @@ import './polyfills'
 
 import { PropsWithChildren, ReactNode, StrictMode, useCallback, useContext } from 'react'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import svgMoonSrc from '@cowprotocol/assets/cow-swap/moon.svg'
 import svgSunSrc from '@cowprotocol/assets/cow-swap/sun.svg'
 import { WalletUpdater, Web3Provider } from '@cowprotocol/wallet'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BlockNumberUpdater } from 'entities/blockchain'
 import { LanguageProvider } from 'i18n'
 import ms from 'ms.macro'
