@@ -1,12 +1,11 @@
-import { components } from '@cowprotocol/cms'
-import { getCmsClient } from '@cowprotocol/core'
+import { CmsClient, components } from '@cowprotocol/cms'
 
 import { PaginationParam } from 'types'
 
 import { isValidCmsSlug, normalizeSearchArticlesInput } from 'util/cmsValidation'
 import { toQueryParams } from 'util/queryParams'
 
-import { DEFAULT_PAGE_SIZE, clientAddons } from './config'
+import { CMS_BASE_URL, DEFAULT_PAGE_SIZE, clientAddons } from './config'
 import { querySerializer, getPopulateConfig } from './helpers'
 
 type Schemas = components['schemas']
@@ -64,8 +63,11 @@ function handleCmsBuildFailure<T>(operation: string, error: unknown, fallback: T
 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
+ * Instantiated here (not via @cowprotocol/core) so content pages don't pull trading/wallet code.
  */
-export const client = getCmsClient()
+export const client = CmsClient({
+  url: CMS_BASE_URL,
+})
 
 /**
  * Returns all article slugs.

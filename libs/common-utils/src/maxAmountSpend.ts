@@ -2,7 +2,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 
-const MIN_NATIVE_CURRENCY_FOR_GAS: bigint = 10n ** 16n // .01 ETH
+// Use a literal — `10n ** 16n` is sometimes transpiled to Math.pow, which rejects BigInt
+const MIN_NATIVE_CURRENCY_FOR_GAS = 10_000_000_000_000_000n // .01 ETH
 
 /**
  * Given some token amount, return the max that can be spent of it
