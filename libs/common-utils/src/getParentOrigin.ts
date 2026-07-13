@@ -27,15 +27,20 @@ export function getParentOrigin(): string | undefined {
   }
 }
 
-function normalizeOrigin(origin: string | undefined): string | undefined {
-  return origin && origin !== 'null' ? origin : undefined
-}
-
 function getAncestorOrigin(): string | undefined {
   if (typeof window === 'undefined') return undefined
   const ancestorOrigins = window.location.ancestorOrigins
   if (!ancestorOrigins || ancestorOrigins.length === 0) return undefined
   return ancestorOrigins[0]
+}
+
+function getParentLocationOrigin(): string | undefined {
+  if (typeof window === 'undefined' || !window.parent || window.parent === window) return undefined
+  try {
+    return window.parent.location.origin
+  } catch {
+    return undefined
+  }
 }
 
 function getReferrerOrigin(): string | undefined {
@@ -47,11 +52,6 @@ function getReferrerOrigin(): string | undefined {
   }
 }
 
-function getParentLocationOrigin(): string | undefined {
-  if (typeof window === 'undefined' || !window.parent || window.parent === window) return undefined
-  try {
-    return window.parent.location.origin
-  } catch {
-    return undefined
-  }
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }
