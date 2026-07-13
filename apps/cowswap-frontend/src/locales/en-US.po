@@ -381,7 +381,9 @@ msgid "Set any limit price and time horizon"
 msgstr "Set any limit price and time horizon"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "token"
 msgstr "token"
 
@@ -545,6 +547,11 @@ msgstr "Buy COW"
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Reject"
 msgstr "Reject"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Insufficient {inputSymbol} balance"
+msgstr "Insufficient {inputSymbol} balance"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
