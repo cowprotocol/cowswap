@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
+// TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -12,21 +12,25 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
-
+import { useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
-  const setWalletConnectionError = useSetWalletConnectionError()
   const switchNetwork = useSwitchNetwork()
+  const handleCrossChainFamilySwitch = useCrossChainFamilySwitch()
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
+      // Switching between EVM and non-EVM networks requires a different wallet and is handled
+      // separately (confirm + disconnect + reconnect) instead of a regular network switch.
+      if (await handleCrossChainFamilySwitch(targetChain, skipClose)) {
+        return
+      }
+
       try {
-        setWalletConnectionError(undefined)
         await switchNetwork(targetChain)
 
         setChainIdToUrl(targetChain)
@@ -52,14 +56,12 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
             </Trans>
           ),
         })
-
-        setWalletConnectionError(error.message)
       }
 
       if (!skipClose) {
         closeModal()
       }
     },
-    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl],
+    [handleCrossChainFamilySwitch, switchNetwork, addSnackbar, closeModal, setChainIdToUrl],
   )
 }
