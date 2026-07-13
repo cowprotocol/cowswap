@@ -148,6 +148,10 @@ const nextConfig: WithNxOptions & NextConfig = {
         source: '/learn/:path*',
         headers: [DEFAULT_CACHE_CONTROL_HEADER],
       },
+      {
+        source: '/resources/:path*',
+        headers: [DEFAULT_CACHE_CONTROL_HEADER],
+      },
       // Cache all other pages for 1 hour
       {
         source: '/:path*',

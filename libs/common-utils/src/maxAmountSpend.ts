@@ -2,7 +2,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 
-const MIN_NATIVE_CURRENCY_FOR_GAS: bigint = 10n ** 16n // .01 ETH
+// Avoid BigInt literals / ** — Webpack/Babel can rewrite them to Math.pow/Number and crash
+const MIN_NATIVE_CURRENCY_FOR_GAS = BigInt('10000000000000000') // 0.01 ETH
 
 /**
  * Given some token amount, return the max that can be spent of it
@@ -21,7 +22,7 @@ export function maxAmountSpend(
         currencyAmount.quotient - MIN_NATIVE_CURRENCY_FOR_GAS,
       )
     } else {
-      return CurrencyAmount.fromRawAmount(currencyAmount.currency, 0n)
+      return CurrencyAmount.fromRawAmount(currencyAmount.currency, BigInt(0))
     }
   }
   return currencyAmount
