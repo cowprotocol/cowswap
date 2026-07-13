@@ -10,7 +10,7 @@ export const querySerializer = (params: unknown): string => {
 }
 
 // Helper function to get populate configuration for different endpoints
-export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/pages'): PopulateConfig {
+export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/pages' | '/resources'): PopulateConfig {
   switch (endpoint) {
     case '/categories':
       return {
@@ -33,6 +33,15 @@ export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/page
           populate: { shareImage: { fields: ['url'] } },
         },
         authorsBio: { fields: ['name'] },
+      }
+    case '/resources':
+      return {
+        cover: { fields: ['url', 'width', 'height', 'alternativeText'] },
+        blocks: '*',
+        seo: {
+          fields: ['metaTitle', 'metaDescription'],
+          populate: { shareImage: { fields: ['url'] } },
+        },
       }
   }
 }

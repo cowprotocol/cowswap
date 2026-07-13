@@ -26,6 +26,29 @@ export type ArticleListResponse = {
 
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
+export type Resource = Schemas['ResourceListResponseDataItem']
+
+export type ResourceListResponse = {
+  data: Resource[]
+  meta: {
+    pagination: {
+      page: number
+      pageSize: number
+      pageCount: number
+      total: number
+    }
+  }
+}
+
+export type ResourceSlugParam = {
+  campaign: string
+  slug: string
+}
+
+export type CampaignSummary = {
+  campaign: string
+  count: number
+}
 
 const SKIP_CMS_FETCH_DURING_BUILD =
   process.env.NEXT_PHASE === 'phase-production-build' || process.env.SKIP_COW_FI_CMS_FETCH === 'true'
@@ -285,11 +308,123 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
   return getBySlugAux(slug, '/pages')
 }
 
+/**
+ * Get resources sorted by descending published date.
+ */
+export async function getResources({
+  page = 0,
+  pageSize = DEFAULT_PAGE_SIZE,
+  filters = {},
+}: PaginationParam & { filters?: Record<string, unknown> } = {}): Promise<ResourceListResponse> {
+  try {
+    const { data, error, response } = await client.GET('/resources', {
+      params: {
+        query: {
+          'populate[0]': 'cover',
+          'populate[1]': 'blocks',
+          'populate[2]': 'seo',
+          'pagination[page]': page,
+          'pagination[pageSize]': pageSize,
+          sort: 'publishDate:desc,publishedAt:desc',
+          filters,
+        },
+      },
+      querySerializer,
+      ...clientAddons,
+    })
+
+    if (error) {
+      console.error(`Error ${response.status} getting resources: ${response.url}. Page ${page}`, error)
+      throw error
+    }
+
+    return { data: data.data, meta: data.meta }
+  } catch (error) {
+    return handleCmsBuildFailure('getResources', error, {
+      data: [],
+      meta: {
+        pagination: {
+          page,
+          pageSize,
+          pageCount: 0,
+          total: 0,
+        },
+      },
+    })
+  }
+}
+
+/**
+ * Returns all resource slugs grouped by campaign.
+ */
+export async function getAllResourceSlugs(): Promise<ResourceSlugParam[]> {
+  try {
+    const { data, error, response } = await client.GET('/resources', {
+      params: {
+        query: {
+          fields: ['slug', 'campaign'],
+          'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+        },
+      },
+      querySerializer,
+      ...clientAddons,
+    })
+
+    if (error) {
+      console.error(`Error ${response.status} getting resource slugs: ${response.url}`, error)
+      throw error
+    }
+
+    return data.data
+      .filter((resource: Resource) => resource.attributes?.slug && resource.attributes?.campaign)
+      .map((resource: Resource) => ({
+        campaign: resource.attributes!.campaign!,
+        slug: resource.attributes!.slug!,
+      }))
+  } catch (error) {
+    return handleCmsBuildFailure('getAllResourceSlugs', error, [])
+  }
+}
+
+/**
+ * Returns campaign summaries derived from published resources.
+ */
+export async function getCampaignSummaries(): Promise<CampaignSummary[]> {
+  const slugs = await getAllResourceSlugs()
+  const counts = new Map<string, number>()
+
+  for (const { campaign } of slugs) {
+    counts.set(campaign, (counts.get(campaign) ?? 0) + 1)
+  }
+
+  return Array.from(counts.entries())
+    .map(([campaign, count]) => ({ campaign, count }))
+    .sort((a, b) => a.campaign.localeCompare(b.campaign))
+}
+
+/**
+ * Get resource by slug.
+ */
+export async function getResourceBySlug(slug: string): Promise<Resource | null> {
+  if (!slug) throw new Error('Resource slug is required')
+
+  try {
+    return await getBySlugAux(slug, '/resources')
+  } catch (error) {
+    console.error(`Error getting resource by slug ${slug}:`, error)
+    throw error
+  }
+}
+
 async function getBySlugAux(slug: string, endpoint: '/articles'): Promise<Article | null>
 async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Category | null>
 async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
+async function getBySlugAux(slug: string, endpoint: '/resources'): Promise<Resource | null>
 
-async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
+async function getBySlugAux(
+  slug: string,
+  endpoint: '/categories' | '/articles' | '/pages' | '/resources',
+): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
   if (!isValidCmsSlug(slug)) return null
 
