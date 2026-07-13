@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -9,7 +11,6 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
 import { OrderTabId } from 'entities/routes/routes.atom'
-import { useConfig } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -35,21 +36,6 @@ import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
-  const analytics = useCowAnalytics()
-
-  return useCallback(
-    (wasPlaced: boolean) => {
-      analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action: 'alternative_modal_completion',
-        label: wasPlaced ? 'placed' : 'not-placed',
-      })
-    },
-    [analytics],
-  )
-}
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -232,4 +218,19 @@ function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
     inputAmount: tradeContext.postOrderParams.inputAmount,
     outputAmount: tradeContext.postOrderParams.outputAmount,
   }
+}
+
+function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
+  const analytics = useCowAnalytics()
+
+  return useCallback(
+    (wasPlaced: boolean) => {
+      analytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'alternative_modal_completion',
+        label: wasPlaced ? 'placed' : 'not-placed',
+      })
+    },
+    [analytics],
+  )
 }

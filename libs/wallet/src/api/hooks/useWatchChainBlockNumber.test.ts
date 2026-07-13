@@ -1,7 +1,8 @@
+import { useWatchBlockNumber } from 'wagmi'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
-import { useWatchBlockNumber } from 'wagmi'
 
 import { useWatchChainBlockNumber } from './useWatchChainBlockNumber'
 import { useWatchSolanaSlot } from './useWatchSolanaSlot'

@@ -7,6 +7,20 @@ import { abbreviateString } from '../../../utils'
 
 import type { TokenErc20 } from '@gnosis.pm/dex-js'
 
+export function getNetworkSuffix(effectiveChainId: SupportedChainId): string {
+  try {
+    const chainInfo = getChainInfo(effectiveChainId as SupportedChainId)
+
+    if (chainInfo && chainInfo.label) {
+      return chainInfo.label
+    }
+  } catch (error) {
+    console.warn(`Could not get chain info for chainId: ${effectiveChainId}`, error)
+  }
+
+  return ''
+}
+
 export function getTokenLabelBaseNode(erc20: TokenErc20, showAbbreviated?: boolean): ReactNode {
   const abbreviated = abbreviateString(erc20.address, 6, 4)
 
@@ -25,18 +39,4 @@ export function getTokenLabelBaseNode(erc20: TokenErc20, showAbbreviated?: boole
   }
 
   return <i>{abbreviated}</i>
-}
-
-export function getNetworkSuffix(effectiveChainId: SupportedChainId): string {
-  try {
-    const chainInfo = getChainInfo(effectiveChainId as SupportedChainId)
-
-    if (chainInfo && chainInfo.label) {
-      return chainInfo.label
-    }
-  } catch (error) {
-    console.warn(`Could not get chain info for chainId: ${effectiveChainId}`, error)
-  }
-
-  return ''
 }

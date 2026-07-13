@@ -1,6 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
 
 import { isHex } from 'viem'
+
 import { generatePrivateKey } from 'viem/accounts'
 
 export type BridgeQuotePrivateKey = ReturnType<typeof generatePrivateKey>

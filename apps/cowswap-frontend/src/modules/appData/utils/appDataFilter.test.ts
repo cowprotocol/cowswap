@@ -1,7 +1,7 @@
+import { encodeFunctionData } from 'viem'
+
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
-
-import { encodeFunctionData } from 'viem'
 
 import { filterPermitSignerPermit } from './appDataFilter'
 
@@ -9,6 +9,10 @@ import { CowHook } from '../types'
 
 const SPENDER = '0x1111111111111111111111111111111111111111'
 const REAL_OWNER = '0x2222222222222222222222222222222222222222'
+
+function buildHook(callData: string): CowHook {
+  return { target: '0xToken', callData, gasLimit: '80000' }
+}
 
 function buildPermitCallData(owner: string): string {
   return encodeFunctionData({
@@ -24,10 +28,6 @@ function buildPermitCallData(owner: string): string {
       '0x0000000000000000000000000000000000000000000000000000000000000000', // s
     ],
   })
-}
-
-function buildHook(callData: string): CowHook {
-  return { target: '0xToken', callData, gasLimit: '80000' }
 }
 
 describe('filterPermitSignerPermit', () => {
