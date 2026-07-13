@@ -3,10 +3,6 @@ import BN from 'bn.js'
 import { DATE } from './data'
 export * from './data'
 
-export function mockTimes(dateToUse: Date = DATE): void {
-  jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse.valueOf())
-}
-
 /**
  * Clones balances or allowances objects
  *
@@ -24,4 +20,8 @@ export function clone(obj: any): any {
     newObj[key] = obj[key] instanceof BN ? obj[key].clone() : clone(obj[key])
     return newObj
   }, {})
+}
+
+export function mockTimes(dateToUse: Date = DATE): void {
+  jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse.valueOf())
 }

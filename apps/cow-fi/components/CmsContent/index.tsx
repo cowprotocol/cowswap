@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react'
-import type { HTMLAttributes, AnchorHTMLAttributes } from 'react'
+import type { ReactNode, HTMLAttributes, AnchorHTMLAttributes } from 'react'
 import { isValidElement } from 'react'
 
 import { Font, Media, UI } from '@cowprotocol/ui'

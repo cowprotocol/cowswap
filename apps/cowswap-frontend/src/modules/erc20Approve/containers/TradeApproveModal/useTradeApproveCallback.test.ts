@@ -1,3 +1,5 @@
+import { usePublicClient } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
@@ -7,7 +9,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
-import { usePublicClient } from 'wagmi'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 

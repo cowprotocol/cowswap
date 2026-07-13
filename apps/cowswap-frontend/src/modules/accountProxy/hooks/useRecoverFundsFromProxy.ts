@@ -1,5 +1,8 @@
 import { useCallback, useState } from 'react'
 
+import { stringToHex } from 'viem'
+import { useWalletClient } from 'wagmi'
+
 import { delay } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
@@ -7,8 +10,6 @@ import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { stringToHex } from 'viem'
-import { useWalletClient } from 'wagmi'
 
 import { useCowShedHooks } from './useCowShedHooks'
 

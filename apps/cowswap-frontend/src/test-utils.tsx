@@ -3,11 +3,12 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo, useState } from 'react'
 
-import { Web3Provider } from '@cowprotocol/wallet'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+
+import { Web3Provider } from '@cowprotocol/wallet'
+
 import { render } from '@testing-library/react'
 import ms from 'ms.macro'
 import { Provider } from 'react-redux'

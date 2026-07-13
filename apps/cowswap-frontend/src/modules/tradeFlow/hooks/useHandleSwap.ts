@@ -1,10 +1,10 @@
 import { useCallback, useRef } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
-
-import { useConfig } from 'wagmi'
 
 import { Field } from 'legacy/state/types'
 

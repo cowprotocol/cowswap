@@ -1,8 +1,9 @@
+import { useConnection } from 'wagmi'
+
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { render, RenderResult, waitFor } from '@testing-library/react'
-import { useConnection } from 'wagmi'
 
 import { WidgetStandaloneModeUpdater } from './WidgetStandaloneMode.updater'
 
@@ -70,12 +71,12 @@ const OTHER_CONNECTOR_ID = 'metamask'
 const DAPP_MODE = false
 const STANDALONE_MODE = true
 
-function setConnector(id: string | undefined): void {
-  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
-}
-
 function renderUpdater(standaloneMode: boolean | undefined): RenderResult {
   return render(<WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />)
+}
+
+function setConnector(id: string | undefined): void {
+  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
 }
 
 beforeEach(() => {

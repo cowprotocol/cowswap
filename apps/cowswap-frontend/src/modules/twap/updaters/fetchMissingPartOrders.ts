@@ -6,26 +6,6 @@ const PROD_ORDERS_PAGE_SIZE = 999
 const PROD_ORDERS_LIMIT = PROD_ORDERS_PAGE_SIZE + 1
 const MAX_PROD_PAGES_TO_SCAN = 20
 
-function shouldStopScanning(
-  orders: EnrichedOrder[],
-  missingPartIds: Set<string>,
-  fetchedOrdersByUid: Record<string, EnrichedOrder>,
-): boolean {
-  if (!orders.length) return true
-
-  const hasNextPage = orders.length > PROD_ORDERS_PAGE_SIZE
-  const ordersToScan = hasNextPage ? orders.slice(0, PROD_ORDERS_PAGE_SIZE) : orders
-
-  for (const order of ordersToScan) {
-    if (!missingPartIds.has(order.uid)) continue
-
-    fetchedOrdersByUid[order.uid] = order
-    missingPartIds.delete(order.uid)
-  }
-
-  return !hasNextPage
-}
-
 export async function fetchMissingPartOrders(
   chainId: SupportedChainId,
   owner: string,
@@ -50,4 +30,24 @@ export async function fetchMissingPartOrders(
   }
 
   return Object.values(fetchedOrdersByUid)
+}
+
+function shouldStopScanning(
+  orders: EnrichedOrder[],
+  missingPartIds: Set<string>,
+  fetchedOrdersByUid: Record<string, EnrichedOrder>,
+): boolean {
+  if (!orders.length) return true
+
+  const hasNextPage = orders.length > PROD_ORDERS_PAGE_SIZE
+  const ordersToScan = hasNextPage ? orders.slice(0, PROD_ORDERS_PAGE_SIZE) : orders
+
+  for (const order of ordersToScan) {
+    if (!missingPartIds.has(order.uid)) continue
+
+    fetchedOrdersByUid[order.uid] = order
+    missingPartIds.delete(order.uid)
+  }
+
+  return !hasNextPage
 }

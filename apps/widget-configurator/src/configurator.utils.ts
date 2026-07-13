@@ -12,66 +12,6 @@ import { normalizeWidgetSdkVersion } from './utils/widget-sdk-versions/widget-sd
 
 import type * as CSS from 'csstype'
 
-export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalette> {
-  return {
-    light: { ...DEFAULT_LIGHT_PALETTE },
-    dark: { ...DEFAULT_DARK_PALETTE },
-  }
-}
-
-export function resolveConfiguratorFormValues(persistedValue: unknown): ConfiguratorFormValues {
-  if (!isRecord(persistedValue)) {
-    return DEFAULT_CONFIGURATOR_FORM_VALUES
-  }
-
-  const merged = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, ...persistedValue }
-
-  return {
-    ...merged,
-    sdkVersion: normalizeWidgetSdkVersion(merged.sdkVersion),
-  }
-}
-
-export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {
-  const defaults = getDefaultCustomColorsByTheme()
-  const parsed = parseCustomColorsByTheme(persistedValue)
-
-  if (!parsed) {
-    return defaults
-  }
-
-  return {
-    light: { ...defaults.light, ...parsed.light },
-    dark: { ...defaults.dark, ...parsed.dark },
-  }
-}
-
-function parseColorPalette(value: unknown): ColorPalette | null {
-  if (!isRecord(value)) return null
-
-  const keys = Object.keys(DEFAULT_LIGHT_PALETTE) as (keyof ColorPalette)[]
-  const palette = {} as ColorPalette
-
-  for (const key of keys) {
-    const color = value[key]
-    if (typeof color !== 'string') return null
-    palette[key] = color
-  }
-
-  return palette
-}
-
-function parseCustomColorsByTheme(value: unknown): Record<PaletteMode, ColorPalette> | null {
-  if (!isRecord(value)) return null
-
-  const light = parseColorPalette(value.light)
-  const dark = parseColorPalette(value.dark)
-
-  if (!light || !dark) return null
-
-  return { light, dark }
-}
-
 export interface BuildConfiguratorStateParams {
   formValues: ConfiguratorFormValues
   effectiveChainId: SupportedChainId
@@ -110,4 +50,64 @@ export function buildConfiguratorState({
     partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[effectiveChainId],
     rawParams: parseJsonOrFallback<Partial<CowSwapWidgetParams>>(rawParamsJson, {}),
   }
+}
+
+export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalette> {
+  return {
+    light: { ...DEFAULT_LIGHT_PALETTE },
+    dark: { ...DEFAULT_DARK_PALETTE },
+  }
+}
+
+export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {
+  const defaults = getDefaultCustomColorsByTheme()
+  const parsed = parseCustomColorsByTheme(persistedValue)
+
+  if (!parsed) {
+    return defaults
+  }
+
+  return {
+    light: { ...defaults.light, ...parsed.light },
+    dark: { ...defaults.dark, ...parsed.dark },
+  }
+}
+
+export function resolveConfiguratorFormValues(persistedValue: unknown): ConfiguratorFormValues {
+  if (!isRecord(persistedValue)) {
+    return DEFAULT_CONFIGURATOR_FORM_VALUES
+  }
+
+  const merged = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, ...persistedValue }
+
+  return {
+    ...merged,
+    sdkVersion: normalizeWidgetSdkVersion(merged.sdkVersion),
+  }
+}
+
+function parseColorPalette(value: unknown): ColorPalette | null {
+  if (!isRecord(value)) return null
+
+  const keys = Object.keys(DEFAULT_LIGHT_PALETTE) as (keyof ColorPalette)[]
+  const palette = {} as ColorPalette
+
+  for (const key of keys) {
+    const color = value[key]
+    if (typeof color !== 'string') return null
+    palette[key] = color
+  }
+
+  return palette
+}
+
+function parseCustomColorsByTheme(value: unknown): Record<PaletteMode, ColorPalette> | null {
+  if (!isRecord(value)) return null
+
+  const light = parseColorPalette(value.light)
+  const dark = parseColorPalette(value.dark)
+
+  if (!light || !dark) return null
+
+  return { light, dark }
 }
