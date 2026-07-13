@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 
+import { usePublicClient } from 'wagmi'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
-import { usePublicClient } from 'wagmi'
 
 import { processApprovalTransaction } from './approveUtils'
 import { useApprovalAnalytics } from './useApprovalAnalytics'

@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { useExtractText } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { NavLink } from 'react-router'
 

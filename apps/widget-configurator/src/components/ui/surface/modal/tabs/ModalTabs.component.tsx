@@ -9,19 +9,28 @@ import { modalTabsSx } from './ModalTabs.styles'
 
 import type { SxProps, Theme } from '@mui/material/styles'
 
-export interface ModalLabelTabInfo<TValue extends string = string> {
-  value: TValue
-  label: string
-  icon?: ReactElement
-}
-
 export interface ModalIconTabInfo<TValue extends string = string> {
   value: TValue
   tooltip: string
   icon: ReactElement
 }
 
+export interface ModalLabelTabInfo<TValue extends string = string> {
+  value: TValue
+  label: string
+  icon?: ReactElement
+}
+
 export type ModalTabInfo<TValue extends string = string> = ModalLabelTabInfo<TValue> | ModalIconTabInfo<TValue>
+
+export interface ModalTabsProps<TValue extends string = string> {
+  tabs: ModalTabInfo<TValue>[]
+  value: TValue
+  onChange: (event: SyntheticEvent, value: TValue) => void
+  ariaLabel: string
+  idPrefix?: string
+  sx?: SxProps<Theme>
+}
 
 export function isIconOnlyModalTab<TValue extends string>(tab: ModalTabInfo<TValue>): tab is ModalIconTabInfo<TValue> {
   return 'tooltip' in tab
@@ -33,15 +42,6 @@ export function modalTabId(prefix: string, value: string): string {
 
 export function modalTabPanelId(prefix: string, value: string): string {
   return `${prefix}-tabpanel-${value}`
-}
-
-export interface ModalTabsProps<TValue extends string = string> {
-  tabs: ModalTabInfo<TValue>[]
-  value: TValue
-  onChange: (event: SyntheticEvent, value: TValue) => void
-  ariaLabel: string
-  idPrefix?: string
-  sx?: SxProps<Theme>
 }
 
 export function ModalTabs<TValue extends string>({

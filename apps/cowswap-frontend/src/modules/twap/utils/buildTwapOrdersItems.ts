@@ -1,3 +1,5 @@
+import type { Hex } from 'viem'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TwapOrdersList } from 'entities/twap'
@@ -14,8 +16,6 @@ import {
   type TwapOrdersExecution,
   type TwapOrdersSafeData,
 } from '../types'
-
-import type { Hex } from 'viem'
 
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,

@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import {
   INPUT_OUTPUT_EXPLANATION,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
@@ -8,9 +10,23 @@ import {
 } from '@cowprotocol/common-const'
 import { SimpleStyledText } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+
+export interface GetNonNativeSlippageTooltipParams {
+  isDynamic?: boolean
+  isSettingsModal?: boolean
+  slippageWarningParams?: null | SlippageWarningParams
+}
+
+export interface SlippageWarningParams {
+  tooHigh: boolean
+  tooLow: boolean
+  min: number
+  max: number
+  lowSlippageBound: number
+  highSlippageBound: number
+}
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined): ReactNode {
   const symbolName = symbols?.[0] || t`Native currency (e.g ETH)`
@@ -27,17 +43,6 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
       <p>
         <Trans>Orders not matched after the threshold time are automatically refunded.</Trans>
       </p>
-    </SimpleStyledText>
-  )
-}
-
-export function getNonNativeOrderDeadlineTooltip(): ReactNode {
-  return (
-    <SimpleStyledText>
-      <p>
-        <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
-      </p>
-      <p>{i18n._(INPUT_OUTPUT_EXPLANATION)}</p>
     </SimpleStyledText>
   )
 }
@@ -70,19 +75,15 @@ export function getNativeSlippageTooltip(
   )
 }
 
-export interface SlippageWarningParams {
-  tooHigh: boolean
-  tooLow: boolean
-  min: number
-  max: number
-  lowSlippageBound: number
-  highSlippageBound: number
-}
-
-export interface GetNonNativeSlippageTooltipParams {
-  isDynamic?: boolean
-  isSettingsModal?: boolean
-  slippageWarningParams?: null | SlippageWarningParams
+export function getNonNativeOrderDeadlineTooltip(): ReactNode {
+  return (
+    <SimpleStyledText>
+      <p>
+        <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
+      </p>
+      <p>{i18n._(INPUT_OUTPUT_EXPLANATION)}</p>
+    </SimpleStyledText>
+  )
 }
 
 export function getNonNativeSlippageTooltip({

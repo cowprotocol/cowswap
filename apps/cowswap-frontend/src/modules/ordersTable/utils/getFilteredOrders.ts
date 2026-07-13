@@ -10,16 +10,16 @@ import { getParsedOrderFromTableItem } from './orderTableGroupUtils'
 
 import { OrderTableItem } from '../state/ordersTable.types'
 
+export interface UseFilteredOrdersFilters {
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
+}
+
 export enum HistoryStatusFilter {
   FILLED = 'filled',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
   ALL = 'all',
-}
-
-export interface UseFilteredOrdersFilters {
-  searchTerm: string
-  historyStatusFilter: HistoryStatusFilter
 }
 
 export function getFilteredOrders(
