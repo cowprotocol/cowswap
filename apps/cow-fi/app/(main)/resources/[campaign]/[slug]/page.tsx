@@ -79,20 +79,22 @@ export async function generateStaticParams(): Promise<{ campaign: string; slug: 
 export default async function ResourcePage({ params }: Props): Promise<ReactNode> {
   const { campaign, slug } = await params
 
+  let resource
   try {
-    const resource = await getResourceBySlug(slug)
-
-    if (!resource?.attributes) {
-      return notFound()
-    }
-
-    if (resource.attributes.campaign !== campaign) {
-      permanentRedirect(`/resources/${resource.attributes.campaign}/${slug}`)
-    }
-
-    return <ResourcePageComponent resource={resource} />
+    resource = await getResourceBySlug(slug)
   } catch (error) {
     console.error(`Error fetching resource ${slug}:`, error)
     return notFound()
   }
+
+  if (!resource?.attributes) {
+    return notFound()
+  }
+
+  // Keep outside try/catch — permanentRedirect throws a control-flow error Next must handle
+  if (resource.attributes.campaign !== campaign) {
+    permanentRedirect(`/resources/${resource.attributes.campaign}/${slug}`)
+  }
+
+  return <ResourcePageComponent resource={resource} />
 }
