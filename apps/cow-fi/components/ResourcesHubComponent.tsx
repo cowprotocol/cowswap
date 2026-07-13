@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react'
 
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -51,7 +51,7 @@ const Wrapper = styled.div`
 
 const CampaignCount = styled.span`
   color: var(${UI.COLOR_NEUTRAL_50});
-  font-size: ${Font.size.small};
+  font-size: 14px;
 `
 
 interface ResourcesHubComponentProps {
