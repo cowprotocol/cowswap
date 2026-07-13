@@ -7,6 +7,8 @@ import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowp
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
@@ -35,6 +37,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const { data: walletClient } = useWalletClient()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
+  const onSelectNetwork = useOnSelectNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
@@ -56,9 +59,13 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
   const switchNetworkInWallet = useCallback(
-    async (targetChainId: SupportedChainId, currentProviderChainId: SupportedChainId | null) => {
+    async (targetChainId: SupportedChainId, currentProviderChainId: SupportedChainId | null, selectNetwork = false) => {
       try {
-        await switchNetwork(targetChainId)
+        if (selectNetwork) {
+          await onSelectNetwork(targetChainId)
+        } else {
+          await switchNetwork(targetChainId)
+        }
       } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
@@ -77,7 +84,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       // Clean up rememberedUrlStateRef when network switching is finished
       rememberedUrlStateRef.current = null
     },
-    [switchNetwork, tradeNavigate],
+    [switchNetwork, onSelectNetwork, tradeNavigate],
   )
 
   const navigateAndSwitchNetwork = useCallback(
@@ -244,7 +251,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
     if (!providerChainId || providerChainId === currentChainId || !isUrlChainIdChanged) return
 
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
-    switchNetworkInWallet(targetChainId, providerChainId)
+    switchNetworkInWallet(targetChainId, providerChainId, true)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { walletClient, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
