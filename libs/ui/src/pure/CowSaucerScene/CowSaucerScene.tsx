@@ -152,15 +152,6 @@ const starPaths = [
   'M7.63265 477.629 11 469.996l3.3673 7.633 7.6327 3.367-7.6327 3.367-3.3673 7.633-3.36735-7.633-7.63265-3.367z',
 ]
 
-export interface SaucerPalette {
-  beam: string
-  beamOpacity: number
-  side: string
-  dome: string
-  cap: string
-  stars: string
-}
-
 export interface CowSaucerSceneProps {
   darkMode?: boolean
   cowSprites: {
@@ -174,19 +165,13 @@ export interface CowSaucerSceneProps {
   className?: string
 }
 
-function SaucerSvg({ palette }: { palette: SaucerPalette }): ReactNode {
-  return (
-    <StyledSaucerSvg viewBox="0 0 528 698" role="presentation">
-      <path d={beamPath} fill={palette.beam} fillOpacity={palette.beamOpacity} />
-      <path d={sideLeftPath} fill={palette.side} />
-      <path d={sideRightPath} fill={palette.side} />
-      <path d={domePath} fill={palette.dome} />
-      <path d={capPath} fill={palette.cap} />
-      {starPaths.map((path, index) => (
-        <path key={path} className={`star star--${index + 1}`} d={path} fill={palette.stars} />
-      ))}
-    </StyledSaucerSvg>
-  )
+export interface SaucerPalette {
+  beam: string
+  beamOpacity: number
+  side: string
+  dome: string
+  cap: string
+  stars: string
 }
 
 export function CowSaucerScene({ darkMode = false, palettes, cowSprites, className }: CowSaucerSceneProps): ReactNode {
@@ -202,6 +187,21 @@ export function CowSaucerScene({ darkMode = false, palettes, cowSprites, classNa
         <SaucerSvg palette={palette} />
       </SaucerWrapper>
     </SceneCanvas>
+  )
+}
+
+function SaucerSvg({ palette }: { palette: SaucerPalette }): ReactNode {
+  return (
+    <StyledSaucerSvg viewBox="0 0 528 698" role="presentation">
+      <path d={beamPath} fill={palette.beam} fillOpacity={palette.beamOpacity} />
+      <path d={sideLeftPath} fill={palette.side} />
+      <path d={sideRightPath} fill={palette.side} />
+      <path d={domePath} fill={palette.dome} />
+      <path d={capPath} fill={palette.cap} />
+      {starPaths.map((path, index) => (
+        <path key={path} className={`star star--${index + 1}`} d={path} fill={palette.stars} />
+      ))}
+    </StyledSaucerSvg>
   )
 }
 

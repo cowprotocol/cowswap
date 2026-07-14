@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.18.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.0...cowswap-v3.18.1) (2026-07-09)
+
+### Patch Changes
+
+- fix: fix bridging with bungee (#7831)
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.17.0...cowswap-v3.18.0) (2026-07-08)
 
 ### Minor Changes

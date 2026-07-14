@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { toHex } from 'viem'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@cowprotocol/currency'
-
-import { toHex } from 'viem'
 
 import { useTokensBalances } from './useTokensBalances'
 

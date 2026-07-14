@@ -1,5 +1,10 @@
 import { atom } from 'jotai'
 
+export interface WatcherHealthState {
+  status: BalancesWatcherHealth
+  isRecovering: boolean
+}
+
 /**
  * Lifecycle of the balances-watcher session.
  *
@@ -18,11 +23,6 @@ export enum BalancesWatcherHealth {
   Connected = 'connected',
   Healthy = 'healthy',
   Fallback = 'fallback',
-}
-
-export interface WatcherHealthState {
-  status: BalancesWatcherHealth
-  isRecovering: boolean
 }
 
 export const DEFAULT_WATCHER_HEALTH_STATE: WatcherHealthState = {

@@ -32,9 +32,9 @@ import { ModalHeader } from '../ui/surface/modal/header/ModalHeader.component'
 import { ModalTabPanel } from '../ui/surface/modal/tabs/ModalTabPanel.component'
 import { ModalIconTabInfo, ModalTabs } from '../ui/surface/modal/tabs/ModalTabs.component'
 
-type SnippetTabId = 'react' | 'typescript' | 'javascript' | 'html'
-
 type SnippetGenerator = (params: CowSwapWidgetProps['params'], defaultPalette: ColorPalette) => string
+
+type SnippetTabId = 'react' | 'typescript' | 'javascript' | 'html'
 
 const SNIPPET_TABS_ID_PREFIX = 'simple'
 

@@ -1,3 +1,5 @@
+import type { TransactionReceipt, Hex } from 'viem'
+
 import { finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
@@ -7,8 +9,6 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 import { ONCHAIN_TRANSACTIONS_EVENTS, OnchainTxEvents } from '../../../onchainTransactionsEvents'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
-
-import type { TransactionReceipt, Hex } from 'viem'
 
 export function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
