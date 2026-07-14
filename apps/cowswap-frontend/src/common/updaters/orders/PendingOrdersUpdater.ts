@@ -390,7 +390,7 @@ async function _updateOrders({
   )
 
   handlePresignedOrders({
-    presigned: presigned.map(({ order }) => order),
+    presigned: getOrdersFromTransitionData(presigned),
     orders,
     getSerializedBridgeOrder,
     chainId,
