@@ -119,7 +119,7 @@ function setWalletInfo(
     account: string
     chainId: SupportedChainId
     connector: Connector
-    provider: EIP1193Provider
+    provider: NonNullable<WalletInfo['provider']>
   }> = {},
 ): void {
   store.set(walletInfoAtom, {
