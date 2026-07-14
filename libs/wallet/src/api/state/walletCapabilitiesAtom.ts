@@ -4,7 +4,7 @@ import { loadable } from 'jotai/utils'
 import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { Connector } from 'wagmi'
 
-import { isMobile, logWallet, PromiseWithTimeout } from '@cowprotocol/common-utils'
+import { isMobile, logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
@@ -25,9 +25,7 @@ import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
 
-const WALLET_CAPABILITIES_LOADING_TIMEOUT = ms`5s`
-
-let timeoutLogged = false
+const REQUEST_TIMEOUT_MS = ms`5s`
 
 /**
  * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
@@ -48,18 +46,6 @@ export async function getShouldSkipCapabilitiesCheck(
 
   return isWalletConnectViaWidget
 }
-
-function getTimeoutPromise<T = WalletCapabilities | GetCapabilitiesReturnType>(): Promise<T> {
-  return new Promise<void>((resolve) => setTimeout(() => resolve(), WALLET_CAPABILITIES_LOADING_TIMEOUT)).then(() => {
-    if (!timeoutLogged) {
-      timeoutLogged = true
-      logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
-    }
-    return {} as T
-  })
-}
-
-const REQUEST_TIMEOUT_MS = ms`5s`
 
 /**
  * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
@@ -84,11 +70,16 @@ async function fetchWidgetProviderMetaInfo(
   provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
 ): Promise<ProviderMetaInfoPayload | null> {
   if (provider instanceof WidgetEthereumProvider) {
-    return PromiseWithTimeout<ProviderMetaInfoPayload>(REQUEST_TIMEOUT_MS, (resolve) => {
+    const providerMetaInfo = new Promise<ProviderMetaInfoPayload>((resolve) => {
       provider.onProviderMetaInfo((data) => {
         provider.clearProviderMetaInfoListener()
         resolve(data)
       })
+    })
+
+    return withTimeout(providerMetaInfo, {
+      timeout: REQUEST_TIMEOUT_MS,
+      timeoutMessage: `Widget provider meta info request timed out after ${REQUEST_TIMEOUT_MS}ms`,
     }).catch(() => {
       provider.clearProviderMetaInfoListener()
       return null
@@ -103,6 +94,7 @@ async function fetchWidgetProviderMetaInfo(
  * Returns capabilities for the current account and chain, or null when disconnected or on error.
  */
 
+// eslint-disable-next-line complexity
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | null> => {
   const { account, chainId, provider, connector } = get(walletInfoAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
@@ -168,38 +160,53 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
      * ```
      */
 
-    const getCapabilitiesPromise = getCapabilities(wagmiConfig.getClient({ chainId }), {
-      account: account as `0x${string}`,
-      chainId,
-    })
+    logWallet.debug('Fetching wallet capabilities', { account, chainId })
 
-    capabilities = await Promise.race([getCapabilitiesPromise, getTimeoutPromise<WalletCapabilities>()])
-  } catch (getCapabilitiesError) {
+    capabilities = await withTimeout(
+      getCapabilities(wagmiConfig.getClient({ chainId }), {
+        account: account as `0x${string}`,
+        chainId,
+      }),
+      {
+        timeout: REQUEST_TIMEOUT_MS,
+        timeoutMessage: `Wallet capabilities loading timed out after ${REQUEST_TIMEOUT_MS / 1000}s`,
+      },
+    )
+
+    logWallet.debug('Fetched wallet capabilities', { account, chainId, capabilities })
+  } catch (err: unknown) {
+    const wagmiError = normalizeError(err)
+
     if (!isEip1193Provider(provider)) {
-      console.error('Cannot fetch wallet capabilities', getCapabilitiesError)
-      throw getCapabilitiesError
+      logWallet.error('Cannot fetch wallet capabilities via wagmi', { account, chainId }, wagmiError)
+      return null
     }
 
     try {
-      const legacyCapabilitiesPromise = provider.request({
-        method: 'wallet_getCapabilities',
-        params: [account],
-      })
-
-      const legacyCapabilities = await Promise.race([
-        legacyCapabilitiesPromise,
-        getTimeoutPromise<GetCapabilitiesReturnType>(),
-      ])
+      const legacyCapabilities = await withTimeout(
+        provider.request({
+          method: 'wallet_getCapabilities',
+          params: [account],
+        }),
+        {
+          timeout: REQUEST_TIMEOUT_MS,
+          timeoutMessage: `Wallet capabilities loading timed out after ${REQUEST_TIMEOUT_MS / 1000}s`,
+        },
+      )
 
       capabilities = resolveCapabilitiesForChain(legacyCapabilities, chainId)
 
-      console.warn('getCapabilities() failed, but wallet_getCapabilities returned capabilities', legacyCapabilities)
-    } catch (walletGetCapabilitiesError) {
-      console.error(
-        'Both getCapabilities() and wallet_getCapabilities failed',
-        getCapabilitiesError,
-        walletGetCapabilitiesError,
-      )
+      logWallet.warn('getCapabilities() failed, but wallet_getCapabilities returned capabilities', legacyCapabilities)
+    } catch (err: unknown) {
+      const rpcError = normalizeError(err)
+
+      if (rpcError instanceof TimeoutError) {
+        logWallet.warn(rpcError.message)
+      } else {
+        logWallet.error('Cannot fetch wallet capabilities via rpc', { account, chainId }, rpcError)
+      }
+
+      return null
     }
   }
 
