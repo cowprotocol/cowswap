@@ -37,6 +37,7 @@ import {
   useIsFallbackHandlerCompatible,
   useIsFallbackHandlerRequired,
 } from '../../hooks/useFallbackHandlerVerification'
+import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -88,6 +89,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
 
   const cowAnalytics = useCowAnalytics()
+  const { trackTwapTabOpened } = useTwapDemandAnalytics()
 
   useEffect(() => {
     if (widgetDeadline) {
@@ -126,6 +128,10 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
       action: 'Open Advanced Orders Tab',
     })
   }, [updateSettingsState, cowAnalytics])
+
+  useEffect(() => {
+    trackTwapTabOpened()
+  }, [trackTwapTabOpened])
 
   useEffect(() => {
     if (account && verification) {
