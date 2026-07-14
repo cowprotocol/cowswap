@@ -60,13 +60,24 @@ export function isPromiseFulfilled<T>(
   return promiseResult.status === 'fulfilled'
 }
 
-export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
-  const failOnTimeout = delay(ms).then(() => {
-    const errorMessage = 'Timeout after ' + ms + ' ms'
-    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
+export class TimeoutError extends Error {}
+
+interface TimeoutOptions {
+  timeout: number
+  timeoutMessage: string
+}
+
+export async function withTimeout<T>(promise: Promise<T>, options: TimeoutOptions): Promise<T> {
+  const { timeout, timeoutMessage } = options
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+  const failOnTimeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new TimeoutError(timeoutMessage)), timeout)
   })
 
-  return Promise.race([promise, failOnTimeout])
+  return Promise.race([promise, failOnTimeout]).finally(() => {
+    clearTimeout(timeoutId)
+  })
 }
 
 export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
