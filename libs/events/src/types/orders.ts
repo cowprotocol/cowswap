@@ -2,6 +2,10 @@ import type { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/co
 import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/types'
 
+export type BaseOrderLifecyclePayload = BaseOrderPayload & {
+  orderType: UiOrderType
+}
+
 export type BaseOrderPayload = {
   chainId: SupportedChainId
   order: Omit<EnrichedOrder, 'settlementContract'>
@@ -14,13 +18,13 @@ export type BaseOrdersPayload = {
 
 export type OnBridgingSuccessPayload = Omit<CrossChainOrder, 'provider'>
 
-export type OnCancelledOrderPayload = BaseOrderPayload & {
+export type OnCancelledOrderPayload = BaseOrderLifecyclePayload & {
   transactionHash?: string
 }
 
-export type OnExpiredOrderPayload = BaseOrderPayload
+export type OnExpiredOrderPayload = BaseOrderLifecyclePayload
 
-export type OnFulfilledOrderPayload = BaseOrderPayload & {
+export type OnFulfilledOrderPayload = BaseOrderLifecyclePayload & {
   bridgeOrder?: BridgeOrderDataSerialized
 }
 
