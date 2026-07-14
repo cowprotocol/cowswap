@@ -22,6 +22,7 @@ export interface TwapFormStateParams {
   partTime: number | undefined
   numberOfPartsValue: number
   tradeFormValidationContext: TradeFormValidationContext | null
+  isTwapEoaEnabled: boolean
 }
 
 export enum TwapFormState {
@@ -43,11 +44,15 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     partTime,
     tradeFormValidationContext,
     numberOfPartsValue,
+    isTwapEoaEnabled,
   } = props
 
-  if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
+  // When TWAP for EOA is enabled, skip Safe/tx-bundling gates so EOAs can review and confirm.
+  if (!isTwapEoaEnabled) {
+    if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
-  if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
+    if (verification === null || isTxBundlingSupported === null) return TwapFormState.LOADING_SAFE_INFO
+  }
 
   if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL
