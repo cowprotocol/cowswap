@@ -12,6 +12,13 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useConfirmationRequest } from './useConfirmationRequest'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
+export enum CrossChainFamilySwitchState {
+  NOT_CROSSING_CHAIN,
+  NOT_CONFIRMED,
+  DISCONNECT_FAILED,
+  FINISHED,
+}
+
 /**
  * Handles switching to a network that belongs to a different chain family than the
  * currently connected wallet (EVM ↔ non-EVM, e.g. Ethereum → Solana).
@@ -25,7 +32,10 @@ import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
  * confirmed or cancelled), and `false` when the caller should perform a regular
  * same-family network switch.
  */
-export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<boolean> {
+export function useCrossChainFamilySwitch(): (
+  chainId: SupportedChainId,
+  skipClose?: boolean,
+) => Promise<CrossChainFamilySwitchState> {
   const { chainId: currentChainId, account } = useWalletInfo()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
@@ -39,7 +49,7 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
       const crossingChainFamily = !isSameChainFamily(currentChainId, targetChain)
 
       if (!isWalletConnected || !crossingChainFamily) {
-        return false
+        return CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
       }
 
       const confirmed = await triggerConfirmation({
@@ -52,7 +62,7 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
       })
 
       if (!confirmed) {
-        return true
+        return CrossChainFamilySwitchState.NOT_CONFIRMED
       }
 
       try {
@@ -61,7 +71,7 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
         await disconnectWallet()
       } catch (error) {
         console.error('Failed to disconnect wallet while switching network type', error)
-        return true
+        return CrossChainFamilySwitchState.DISCONNECT_FAILED
       }
 
       setChainIdToUrl(targetChain)
@@ -71,7 +81,7 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
         closeModal()
       }
 
-      return true
+      return CrossChainFamilySwitchState.FINISHED
     },
     [
       account,

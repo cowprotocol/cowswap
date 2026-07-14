@@ -12,7 +12,7 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
+import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
@@ -26,7 +26,9 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       // Switching between EVM and non-EVM networks requires a different wallet and is handled
       // separately (confirm + disconnect + reconnect) instead of a regular network switch.
-      if (await handleCrossChainFamilySwitch(targetChain, skipClose)) {
+      if (
+        (await handleCrossChainFamilySwitch(targetChain, skipClose)) !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
+      ) {
         return
       }
 

@@ -6,7 +6,7 @@ import { act, renderHook } from '@testing-library/react'
 import { useCloseModal } from 'legacy/state/application/hooks'
 
 import { useConfirmationRequest } from './useConfirmationRequest'
-import { useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
+import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 jest.mock('@cowprotocol/wallet')
@@ -52,45 +52,45 @@ describe('useCrossChainFamilySwitch', () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
   })
 
-  it('returns false for a same-family change without prompting', async () => {
+  it('returns NOT_CROSSING_CHAIN for a same-family change without prompting', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
-    let handled = true
+    let handled: CrossChainFamilySwitchState | undefined
     await act(async () => {
       handled = await result.current(SupportedChainId.ARBITRUM_ONE)
     })
 
-    expect(handled).toBe(false)
+    expect(handled).toBe(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
     expect(triggerConfirmation).not.toHaveBeenCalled()
     expect(disconnectWallet).not.toHaveBeenCalled()
   })
 
-  it('returns false for a cross-family change when no wallet is connected', async () => {
+  it('returns NOT_CROSSING_CHAIN for a cross-family change when no wallet is connected', async () => {
     setWallet(SupportedChainId.MAINNET, undefined)
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
-    let handled = true
+    let handled: CrossChainFamilySwitchState | undefined
     await act(async () => {
       handled = await result.current(SupportedChainId.SOLANA)
     })
 
-    expect(handled).toBe(false)
+    expect(handled).toBe(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
     expect(triggerConfirmation).not.toHaveBeenCalled()
     expect(disconnectWallet).not.toHaveBeenCalled()
   })
 
-  it('confirms, disconnects, opens the connect modal and returns true for a cross-family change when connected', async () => {
+  it('confirms, disconnects, opens the connect modal and returns FINISHED for a cross-family change when connected', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     triggerConfirmation.mockResolvedValue(true)
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
-    let handled = false
+    let handled: CrossChainFamilySwitchState | undefined
     await act(async () => {
       handled = await result.current(SupportedChainId.SOLANA)
     })
 
-    expect(handled).toBe(true)
+    expect(handled).toBe(CrossChainFamilySwitchState.FINISHED)
     expect(triggerConfirmation).toHaveBeenCalledWith(expect.objectContaining({ skipInput: true }))
     expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
     expect(disconnectWallet).toHaveBeenCalled()
@@ -98,34 +98,34 @@ describe('useCrossChainFamilySwitch', () => {
     expect(closeModal).toHaveBeenCalled()
   })
 
-  it('returns true but does nothing else when the user cancels', async () => {
+  it('returns NOT_CONFIRMED but does nothing else when the user cancels', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     triggerConfirmation.mockResolvedValue(false)
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
-    let handled = false
+    let handled: CrossChainFamilySwitchState | undefined
     await act(async () => {
       handled = await result.current(SupportedChainId.SOLANA)
     })
 
-    expect(handled).toBe(true)
+    expect(handled).toBe(CrossChainFamilySwitchState.NOT_CONFIRMED)
     expect(disconnectWallet).not.toHaveBeenCalled()
     expect(openWalletConnectionModal).not.toHaveBeenCalled()
     expect(closeModal).not.toHaveBeenCalled()
   })
 
-  it('leaves the URL unchanged when the disconnect fails', async () => {
+  it('returns DISCONNECT_FAILED and leaves the URL unchanged when the disconnect fails', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     triggerConfirmation.mockResolvedValue(true)
     disconnectWallet.mockRejectedValue(new Error('disconnect failed'))
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
-    let handled = false
+    let handled: CrossChainFamilySwitchState | undefined
     await act(async () => {
       handled = await result.current(SupportedChainId.SOLANA)
     })
 
-    expect(handled).toBe(true)
+    expect(handled).toBe(CrossChainFamilySwitchState.DISCONNECT_FAILED)
     expect(setChainIdToUrl).not.toHaveBeenCalled()
     expect(openWalletConnectionModal).not.toHaveBeenCalled()
     expect(closeModal).not.toHaveBeenCalled()
