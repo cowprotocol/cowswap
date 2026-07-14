@@ -38,22 +38,6 @@ export function AffiliateFeedbackButton(): ReactNode {
   return null
 }
 
-function AffiliatePartnerFeedbackButton(): ReactNode {
-  const chainId = useWalletChainId()
-
-  return <AffiliateFeedbackTrigger canShow={isSupportedTradingNetwork(chainId)} chainId={chainId} />
-}
-
-function AffiliateTraderFeedbackButton(): ReactNode {
-  const chainId = useWalletChainId()
-  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const walletStatus = useAffiliateTraderWallet()
-  const canShow =
-    isSupportedTradingNetwork(chainId) && Boolean(savedCode) && walletStatus !== TraderWalletStatus.INELIGIBLE
-
-  return <AffiliateFeedbackTrigger canShow={canShow} chainId={chainId} />
-}
-
 function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTriggerProps): ReactNode {
   const { account } = useWalletInfo()
   const { walletName } = useWalletDetails()
@@ -80,4 +64,20 @@ function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTrigger
       </styledEl.Button>
     </styledEl.Wrapper>
   )
+}
+
+function AffiliatePartnerFeedbackButton(): ReactNode {
+  const chainId = useWalletChainId()
+
+  return <AffiliateFeedbackTrigger canShow={isSupportedTradingNetwork(chainId)} chainId={chainId} />
+}
+
+function AffiliateTraderFeedbackButton(): ReactNode {
+  const chainId = useWalletChainId()
+  const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
+  const walletStatus = useAffiliateTraderWallet()
+  const canShow =
+    isSupportedTradingNetwork(chainId) && Boolean(savedCode) && walletStatus !== TraderWalletStatus.INELIGIBLE
+
+  return <AffiliateFeedbackTrigger canShow={canShow} chainId={chainId} />
 }

@@ -26,6 +26,8 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
 
+type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
@@ -58,16 +60,25 @@ export function isPromiseFulfilled<T>(
   return promiseResult.status === 'fulfilled'
 }
 
-export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
-  const failOnTimeout = delay(ms).then(() => {
-    const errorMessage = 'Timeout after ' + ms + ' ms'
-    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
-  })
+export class TimeoutError extends Error {}
 
-  return Promise.race([promise, failOnTimeout])
+interface TimeoutOptions {
+  timeout: number
+  timeoutMessage: string
 }
 
-type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+export async function withTimeout<T>(promise: Promise<T>, options: TimeoutOptions): Promise<T> {
+  const { timeout, timeoutMessage } = options
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+  const failOnTimeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new TimeoutError(timeoutMessage)), timeout)
+  })
+
+  return Promise.race([promise, failOnTimeout]).finally(() => {
+    clearTimeout(timeoutId)
+  })
+}
 
 export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
   if (typeof window === 'undefined') return

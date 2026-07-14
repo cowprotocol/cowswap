@@ -1,12 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { usePublicClient } from 'wagmi'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
-import { usePublicClient } from 'wagmi'
 
 import { getPermitCacheAtom } from '../state/permitCacheAtom'
 

@@ -1,6 +1,7 @@
 import React, { isValidElement } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
+
 import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'

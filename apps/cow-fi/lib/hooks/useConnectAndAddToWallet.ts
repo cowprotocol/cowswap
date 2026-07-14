@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
+import { useDisconnect, useWalletClient } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { CowFiCategory } from 'src/common/analytics/types'
-import { useDisconnect, useWalletClient } from 'wagmi'
 
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
 import { useConnect } from './useConnect'

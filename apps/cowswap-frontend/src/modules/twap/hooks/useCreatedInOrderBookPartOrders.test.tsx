@@ -3,16 +3,16 @@ import { useAtomValue } from 'jotai'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook, waitFor } from '@testing-library/react'
+import { twapOrdersAtom } from 'entities/twap'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { useSWRProdOrders, useTokensForOrdersList } from 'modules/orders'
 
 import { useCreatedInOrderBookPartOrders } from './useCreatedInOrderBookPartOrders'
-import { useTwapPartOrdersList } from './useTwapPartOrdersList'
 
 import { useTwapPartOrdersCache } from '../hooks/useTwapPartOrdersCache'
-import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
+import { twapPartOrdersListAtom, type TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapPartOrdersCacheByUid } from '../state/twapPartOrdersCacheAtom'
 import { TwapOrderStatus } from '../types'
 import { fetchMissingPartOrders } from '../updaters/fetchMissingPartOrders'
@@ -24,7 +24,6 @@ jest.mock('jotai', () => ({
 }))
 
 jest.mock('modules/orders')
-jest.mock('./useTwapPartOrdersList')
 jest.mock('../hooks/useTwapPartOrdersCache')
 jest.mock('../updaters/fetchMissingPartOrders')
 jest.mock('../utils/mapPartOrderToStoreOrder')
@@ -32,7 +31,6 @@ jest.mock('../utils/mapPartOrderToStoreOrder')
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useSWRProdOrdersMock = useSWRProdOrders as jest.MockedFunction<typeof useSWRProdOrders>
 const useTokensForOrdersListMock = useTokensForOrdersList as jest.MockedFunction<typeof useTokensForOrdersList>
-const useTwapPartOrdersListMock = useTwapPartOrdersList as jest.MockedFunction<typeof useTwapPartOrdersList>
 const useTwapPartOrdersCacheMock = useTwapPartOrdersCache as jest.MockedFunction<typeof useTwapPartOrdersCache>
 const fetchMissingPartOrdersMock = fetchMissingPartOrders as jest.MockedFunction<typeof fetchMissingPartOrders>
 const mapPartOrderToStoreOrderMock = mapPartOrderToStoreOrder as jest.MockedFunction<typeof mapPartOrderToStoreOrder>
@@ -43,19 +41,32 @@ function createTestOrder(uid: string): EnrichedOrder {
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111'
 
+const defaultTwapOrders = {
+  'twap-1': {
+    id: 'twap-1',
+    status: TwapOrderStatus.Fulfilled,
+  },
+  'twap-2': {
+    id: 'twap-2',
+    status: TwapOrderStatus.Pending,
+  },
+}
+
 describe('useCreatedInOrderBookPartOrders', () => {
+  let mockPartOrdersList: TwapPartOrderItem[]
+
   beforeEach(() => {
     jest.clearAllMocks()
 
-    useAtomValueMock.mockReturnValue({
-      'twap-1': {
-        id: 'twap-1',
-        status: TwapOrderStatus.Fulfilled,
-      },
-      'twap-2': {
-        id: 'twap-2',
-        status: TwapOrderStatus.Pending,
-      },
+    mockPartOrdersList = []
+    useAtomValueMock.mockImplementation((atom) => {
+      if (atom === twapPartOrdersListAtom) {
+        return mockPartOrdersList
+      }
+      if (atom === twapOrdersAtom) {
+        return defaultTwapOrders
+      }
+      return undefined
     })
     useSWRProdOrdersMock.mockReturnValue([])
     useTokensForOrdersListMock.mockReturnValue(jest.fn(() => Promise.resolve({})))
@@ -71,7 +82,7 @@ describe('useCreatedInOrderBookPartOrders', () => {
     const existingOrdersByUid: TwapPartOrdersCacheByUid = {}
     const partOrderIds = ['order_part_1']
 
-    useTwapPartOrdersListMock.mockReturnValue(partOrdersList)
+    mockPartOrdersList = partOrdersList
     useTwapPartOrdersCacheMock.mockReturnValue({
       cacheByUid: existingOrdersByUid,
       cachedFinalizedTwapOrderIds: new Set(['twap-2']),
@@ -116,7 +127,7 @@ describe('useCreatedInOrderBookPartOrders', () => {
       },
     }
 
-    useTwapPartOrdersListMock.mockReturnValue(partOrdersList)
+    mockPartOrdersList = partOrdersList
     useTwapPartOrdersCacheMock.mockReturnValue({
       cacheByUid: existingOrdersByUid,
       cachedFinalizedTwapOrderIds: new Set(['twap-1']),

@@ -1,16 +1,15 @@
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import type { MetaTransactionData } from '@safe-global/types-kit'
-
+import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { sendCalls } from 'wagmi/actions'
 
-import { useWalletCapabilities } from './useWalletCapabilities'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
-
-import type { Hex } from 'viem'
+import { isAtomicBatchSupportedAtom } from '../state/walletCapabilitiesAtom'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 
@@ -18,11 +17,14 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
   const config = useConfig()
   const safeAppsSdk = useSafeAppsSdk()
   const { chainId, account } = useWalletInfo()
-  const { data: capabilities } = useWalletCapabilities()
-  const isAtomicBatchSupported = capabilities?.atomic?.status === 'supported' || capabilities?.atomicBatch?.supported
+  const isAtomicBatchSupported = useAtomValue(isAtomicBatchSupportedAtom)
 
   return useCallback(
     async (txs: MetaTransactionData[]) => {
+      if (isAtomicBatchSupported === null) {
+        throw new Error('Batch transactions status not know yet')
+      }
+
       if (isAtomicBatchSupported && account && chainId) {
         const calls = txs.map(({ to, value, data }) => ({
           to: to as Hex,

@@ -4,69 +4,9 @@ import { setJsonToLocalStorage } from '@cowprotocol/common-utils'
 
 import { useDebounce } from './useDebounce'
 
-type LocalStorageResolveValue<T> = (persistedValue: unknown) => T
-
 type LocalStorageDefaultValue<T> = T | LocalStorageResolveValue<T>
 
-function isPrimitive(value: unknown): value is string | number | boolean | bigint | symbol | null | undefined {
-  return value === null || (typeof value !== 'object' && typeof value !== 'function')
-}
-
-function isLocalStorageResolveValue<T>(
-  defaultValue: LocalStorageDefaultValue<T>,
-): defaultValue is LocalStorageResolveValue<T> {
-  return typeof defaultValue === 'function'
-}
-
-function readStoredValue(storageKey: string): unknown {
-  const raw = localStorage.getItem(storageKey)
-
-  if (raw === null) {
-    return null
-  }
-
-  try {
-    return JSON.parse(raw) as unknown
-  } catch {
-    return raw
-  }
-}
-
-function writeStoredValue<T>(storageKey: string, value: T): void {
-  setJsonToLocalStorage(storageKey, value)
-}
-
-/**
- * Reads and resolves the initial value for {@link useLocalStorageState}.
- *
- * Normalization writes run immediately (they are not debounced).
- *
- * @param storageKey - Key used for JSON serialization in `localStorage`.
- * @param defaultValue - Static fallback when nothing is stored, or a resolver
- *   `(persistedValue) => T` to validate, migrate, or normalize the stored value.
- * @returns The resolved state value used for the hook's initial `useState`.
- */
-function resolveStoredValue<T>(storageKey: string, defaultValue: LocalStorageDefaultValue<T>): T {
-  const persistedValue = readStoredValue(storageKey)
-
-  if (isLocalStorageResolveValue(defaultValue)) {
-    const resolved = defaultValue(persistedValue)
-
-    if (persistedValue !== resolved && isPrimitive(resolved)) {
-      writeStoredValue(storageKey, resolved)
-    }
-
-    return resolved
-  }
-
-  const resolved = persistedValue != null ? (persistedValue as T) : defaultValue
-
-  if (persistedValue !== resolved && isPrimitive(resolved)) {
-    writeStoredValue(storageKey, resolved)
-  }
-
-  return resolved
-}
+type LocalStorageResolveValue<T> = (persistedValue: unknown) => T
 
 type LocalStorageStaticValue<T> = T extends (persistedValue: unknown) => unknown ? never : T
 
@@ -86,13 +26,11 @@ export function useLocalStorageState<T>(
   resolveValue: LocalStorageResolveValue<T>,
   delayMs?: number,
 ): [T, Dispatch<SetStateAction<T>>]
-
 export function useLocalStorageState<T>(
   storageKey: string,
   defaultValue: LocalStorageStaticValue<T>,
   delayMs?: number,
 ): [T, Dispatch<SetStateAction<T>>]
-
 export function useLocalStorageState<T>(
   storageKey: string,
   defaultValue: LocalStorageDefaultValue<T>,
@@ -131,4 +69,64 @@ export function useLocalStorageState<T>(
   )
 
   return [state, setPersistedState]
+}
+
+function isLocalStorageResolveValue<T>(
+  defaultValue: LocalStorageDefaultValue<T>,
+): defaultValue is LocalStorageResolveValue<T> {
+  return typeof defaultValue === 'function'
+}
+
+function isPrimitive(value: unknown): value is string | number | boolean | bigint | symbol | null | undefined {
+  return value === null || (typeof value !== 'object' && typeof value !== 'function')
+}
+
+function readStoredValue(storageKey: string): unknown {
+  const raw = localStorage.getItem(storageKey)
+
+  if (raw === null) {
+    return null
+  }
+
+  try {
+    return JSON.parse(raw) as unknown
+  } catch {
+    return raw
+  }
+}
+
+/**
+ * Reads and resolves the initial value for {@link useLocalStorageState}.
+ *
+ * Normalization writes run immediately (they are not debounced).
+ *
+ * @param storageKey - Key used for JSON serialization in `localStorage`.
+ * @param defaultValue - Static fallback when nothing is stored, or a resolver
+ *   `(persistedValue) => T` to validate, migrate, or normalize the stored value.
+ * @returns The resolved state value used for the hook's initial `useState`.
+ */
+function resolveStoredValue<T>(storageKey: string, defaultValue: LocalStorageDefaultValue<T>): T {
+  const persistedValue = readStoredValue(storageKey)
+
+  if (isLocalStorageResolveValue(defaultValue)) {
+    const resolved = defaultValue(persistedValue)
+
+    if (persistedValue !== resolved && isPrimitive(resolved)) {
+      writeStoredValue(storageKey, resolved)
+    }
+
+    return resolved
+  }
+
+  const resolved = persistedValue != null ? (persistedValue as T) : defaultValue
+
+  if (persistedValue !== resolved && isPrimitive(resolved)) {
+    writeStoredValue(storageKey, resolved)
+  }
+
+  return resolved
+}
+
+function writeStoredValue<T>(storageKey: string, value: T): void {
+  setJsonToLocalStorage(storageKey, value)
 }

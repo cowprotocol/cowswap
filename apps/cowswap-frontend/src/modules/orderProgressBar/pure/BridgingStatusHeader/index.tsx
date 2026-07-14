@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { Currency } from '@cowprotocol/currency'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 

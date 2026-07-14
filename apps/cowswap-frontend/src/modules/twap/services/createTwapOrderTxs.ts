@@ -1,6 +1,6 @@
-import type { MetaTransactionData } from '@safe-global/types-kit'
-
 import { encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
+
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'

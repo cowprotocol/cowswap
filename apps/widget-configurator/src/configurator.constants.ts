@@ -23,6 +23,11 @@ import type { SelectInputOption } from './components/ui/inputs/Select/base/BaseS
 /** Live preview `appCode` when Basics is blank; embed snippet treats this like unset and substitutes the snippet placeholder app code. */
 export const CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK = 'CoW Widget Configurator' as const
 
+/** Strip the preview analytics suffix before exporting embed snippets. */
+export function sanitizeConfiguratorAppCode(appCode: string): string {
+  return appCode.replace(` (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`, '').trim()
+}
+
 /** Scope preview appCode so configurator traffic can be excluded from analytics. */
 export function scopeConfiguratorAppCode(appCode: string): string {
   const trimmed = appCode.trim()
@@ -30,11 +35,6 @@ export function scopeConfiguratorAppCode(appCode: string): string {
   return trimmed
     ? `${trimmed} (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`
     : CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK
-}
-
-/** Strip the preview analytics suffix before exporting embed snippets. */
-export function sanitizeConfiguratorAppCode(appCode: string): string {
-  return appCode.replace(` (${CONFIGURATOR_WIDGET_PREVIEW_APP_CODE_FALLBACK})`, '').trim()
 }
 
 /**
@@ -193,6 +193,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   hideFavoriteTokens: false,
   hideBridgeInfo: false,
   hideOrdersTable: false,
+  disableWindowOpen: false,
   disableTradeWhenPriceImpactIsUnknown: false,
   disableTradeWhenPriceImpactIsHigherThan: undefined,
 

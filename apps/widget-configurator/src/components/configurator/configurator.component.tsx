@@ -1,5 +1,7 @@
 import React, { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
@@ -7,7 +9,6 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { Box, IconButton, Snackbar } from '@mui/material'
 import { X } from 'react-feather'
-import { useConnection } from 'wagmi'
 
 import {
   COW_CONFIGURATOR_PREVIEW_HOST_ATTR,

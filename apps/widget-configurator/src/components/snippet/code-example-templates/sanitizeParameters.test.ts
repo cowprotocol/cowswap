@@ -64,6 +64,18 @@ describe('snippet export', () => {
     expect(snippet).not.toContain('standaloneMode')
   })
 
+  it('preserves disableWindowOpen when enabled in dapp mode', () => {
+    const snippet = formatParameters(
+      { appCode: 'test-app', standaloneMode: false, disableWindowOpen: true },
+      0,
+      false,
+      DEFAULT_DARK_PALETTE,
+    )
+
+    expect(snippet).toContain('"standaloneMode": false')
+    expect(snippet).toContain('"disableWindowOpen": true')
+  })
+
   it('omits configurator reset deadline values from copied snippets', () => {
     const params: CowSwapWidgetParams = {
       appCode: 'test-app',

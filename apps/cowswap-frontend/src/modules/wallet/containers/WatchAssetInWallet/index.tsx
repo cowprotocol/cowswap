@@ -1,5 +1,7 @@
 import { ReactElement, useCallback, useState } from 'react'
 
+import { useWalletClient } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
@@ -7,8 +9,6 @@ import { Currency } from '@cowprotocol/currency'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
-
-import { useWalletClient } from 'wagmi'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'

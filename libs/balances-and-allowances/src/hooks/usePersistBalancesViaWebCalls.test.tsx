@@ -2,11 +2,12 @@ import { Provider } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import React, { ReactNode } from 'react'
 
+import { useReadContracts } from 'wagmi'
+
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { renderHook } from '@testing-library/react'
-import { useReadContracts } from 'wagmi'
 
 import { PersistBalancesAndAllowancesParams, usePersistBalancesViaWebCalls } from './usePersistBalancesViaWebCalls'
 
