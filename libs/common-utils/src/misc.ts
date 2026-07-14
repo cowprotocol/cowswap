@@ -75,11 +75,9 @@ export async function withTimeout<T>(promise: Promise<T>, options: TimeoutOption
     timeoutId = setTimeout(() => reject(new TimeoutError(timeoutMessage)), timeout)
   })
 
-  try {
-    return await Promise.race([promise, failOnTimeout])
-  } finally {
-    if (timeoutId) clearTimeout(timeoutId)
-  }
+  return Promise.race([promise, failOnTimeout]).finally(() => {
+    clearTimeout(timeoutId)
+  })
 }
 
 export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
