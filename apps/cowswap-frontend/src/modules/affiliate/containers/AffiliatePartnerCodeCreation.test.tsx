@@ -1,11 +1,12 @@
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+import { useWalletClient } from 'wagmi'
+
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { fireEvent, render, screen, type RenderResult } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
-import { useWalletClient } from 'wagmi'
 
 import { AffiliatePartnerCodeCreation } from './AffiliatePartnerCodeCreation'
 

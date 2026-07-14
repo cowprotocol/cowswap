@@ -6,15 +6,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
-export interface TradeFlowAnalyticsContext {
-  account: string | null
-  recipient?: string | null
-  recipientAddress?: string | null
-  marketLabel?: string
-  isBridgeOrder?: boolean
-  orderType: UiOrderType
-}
-
 export interface TradeFlowAnalytics {
   trade(context: TradeFlowAnalyticsContext): void
   sign(context: TradeFlowAnalyticsContext): void
@@ -22,6 +13,15 @@ export interface TradeFlowAnalytics {
   placeAdvancedOrder(context: TradeFlowAnalyticsContext): void
   wrapApproveAndPresign(context: TradeFlowAnalyticsContext): void
   error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext): void
+}
+
+export interface TradeFlowAnalyticsContext {
+  account: string | null
+  recipient?: string | null
+  recipientAddress?: string | null
+  marketLabel?: string
+  isBridgeOrder?: boolean
+  orderType: UiOrderType
 }
 
 export function useTradeFlowAnalytics(): TradeFlowAnalytics {

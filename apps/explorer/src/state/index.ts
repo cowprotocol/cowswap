@@ -1,18 +1,18 @@
 import { Reducer, AnyAction, Action } from 'combine-reducers'
 import { Theme } from 'theme/types'
 
+export type ActionCreator<T, P> = (payload: P) => Actions<T, P>
+
 export interface Actions<T, P> {
   type: T
   payload: P
 }
 
-export type ActionCreator<T, P> = (payload: P) => Actions<T, P>
-
-export type ReducerCreator<S, A> = (state: S, action: A) => S
-
 export interface GlobalState {
   theme: Theme
 }
+
+export type ReducerCreator<S, A> = (state: S, action: A) => S
 
 /**********************************
  * Initial Global State

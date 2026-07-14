@@ -43,6 +43,17 @@ export async function fetchCachedTwapOrdersFromSafe(
   return merged
 }
 
+async function cleanupOlderCacheVersions(): Promise<void> {
+  try {
+    const keys = await localForageJotai.keys()
+    const oldKeys = keys.filter(
+      (key) => key.startsWith(SAFE_TX_SCAN_CACHE_KEY_PREFIX) && key !== SAFE_TX_SCAN_CACHE_IDB_KEY,
+    )
+
+    await Promise.all(oldKeys.map((key) => localForageJotai.removeItem(key)))
+  } catch {}
+}
+
 async function fetchFreshTwapOrders(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -70,6 +81,18 @@ async function fetchFreshTwapOrders(
   })
 }
 
+function getNewestSubmissionDate(dates: (string | undefined)[]): string {
+  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
+}
+
+function getOverlappedSubmissionDate(submissionDate: string): string {
+  return new Date(new Date(submissionDate).getTime() - SAFE_TX_SCAN_OVERLAP).toISOString()
+}
+
+function getSafeTwapScanCacheEntryKey(chainId: SupportedChainId, safeAddress: string): string {
+  return `${chainId}:${getAddressKey(safeAddress)}`
+}
+
 async function mergeAndCacheTwapOrders(
   chainId: SupportedChainId,
   safeAddress: string,
@@ -89,10 +112,6 @@ async function mergeAndCacheTwapOrders(
   }
 
   return merged
-}
-
-function getSafeTwapScanCacheEntryKey(chainId: SupportedChainId, safeAddress: string): string {
-  return `${chainId}:${getAddressKey(safeAddress)}`
 }
 
 async function readSafeTwapScanCache(
@@ -137,23 +156,4 @@ async function writeSafeTwapScanCache(
   } catch {
     // Ignore storage failures. The next load will run without cache.
   }
-}
-
-async function cleanupOlderCacheVersions(): Promise<void> {
-  try {
-    const keys = await localForageJotai.keys()
-    const oldKeys = keys.filter(
-      (key) => key.startsWith(SAFE_TX_SCAN_CACHE_KEY_PREFIX) && key !== SAFE_TX_SCAN_CACHE_IDB_KEY,
-    )
-
-    await Promise.all(oldKeys.map((key) => localForageJotai.removeItem(key)))
-  } catch {}
-}
-
-function getOverlappedSubmissionDate(submissionDate: string): string {
-  return new Date(new Date(submissionDate).getTime() - SAFE_TX_SCAN_OVERLAP).toISOString()
-}
-
-function getNewestSubmissionDate(dates: (string | undefined)[]): string {
-  return dates.filter(isTruthy).reduce((latest, date) => (date > latest ? date : latest), '')
 }

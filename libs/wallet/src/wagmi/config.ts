@@ -1,3 +1,6 @@
+import { http } from 'viem'
+import { type Transport } from 'wagmi'
+
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
@@ -6,8 +9,6 @@ import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
-import { http } from 'viem'
-import { type Transport } from 'wagmi'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'

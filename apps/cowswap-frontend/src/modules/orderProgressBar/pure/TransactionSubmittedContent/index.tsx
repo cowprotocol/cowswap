@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
+import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'

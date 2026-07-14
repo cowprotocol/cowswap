@@ -1,12 +1,13 @@
 import { ReactNode, useMemo, useState } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import svgArrowDownRightSrc from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@cowprotocol/currency'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'

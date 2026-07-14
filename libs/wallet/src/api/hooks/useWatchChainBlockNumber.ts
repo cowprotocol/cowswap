@@ -1,6 +1,6 @@
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
-
 import { useWatchBlockNumber } from 'wagmi'
+
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { useWatchSolanaSlot } from './useWatchSolanaSlot'
 

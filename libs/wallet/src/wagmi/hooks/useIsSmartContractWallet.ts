@@ -1,8 +1,9 @@
+import { useConnection, usePublicClient } from 'wagmi'
+
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { AccountType } from '@cowprotocol/types'
 
 import useSWR from 'swr'
-import { useConnection, usePublicClient } from 'wagmi'
 
 import { useIsSafeWallet } from './useWalletMetadata'
 

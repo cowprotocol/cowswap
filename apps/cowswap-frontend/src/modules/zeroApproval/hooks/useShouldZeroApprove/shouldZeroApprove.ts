@@ -1,12 +1,12 @@
+import { Address, BaseError } from 'viem'
+import type { Config } from 'wagmi'
+import { simulateContract } from 'wagmi/actions'
+
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
-import { Address, BaseError } from 'viem'
-import { simulateContract } from 'wagmi/actions'
 
 import { ApprovalState } from 'modules/erc20Approve'
-
-import type { Config } from 'wagmi'
 
 // viem errors are multi-line `BaseError`s; logging the whole object floods the console with a
 // scary stack + docs links. We only need the one-line reason here.

@@ -1,11 +1,9 @@
 import { Command } from '@cowprotocol/types'
 
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-function waitRandom(min: number, max: number): Promise<void> {
-  return wait(min + Math.round(Math.random() * Math.max(0, max - min)))
+export interface RetryOptions {
+  n: number
+  minWait: number
+  maxWait: number
 }
 
 /**
@@ -24,12 +22,6 @@ export class CancelledError extends Error {
  */
 export class RetryableError extends Error {
   public isRetryableError = true
-}
-
-export interface RetryOptions {
-  n: number
-  minWait: number
-  maxWait: number
 }
 
 /**
@@ -82,4 +74,12 @@ export function retry<T>(
       rejectCancelled(new CancelledError())
     },
   }
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function waitRandom(min: number, max: number): Promise<void> {
+  return wait(min + Math.round(Math.random() * Math.max(0, max - min)))
 }
