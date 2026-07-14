@@ -119,7 +119,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseFeatureFlags.mockReturnValue({ isBwEnabled: true } as ReturnType<typeof useFeatureFlags>)
+    mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 100 } as ReturnType<typeof useFeatureFlags>)
     mockUseWalletInfo.mockReturnValue({
       account: '0x0000000000000000000000000000000000000001',
       chainId: SupportedChainId.MAINNET,
@@ -209,7 +209,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
 
     it('mounts only the multicall stack when the bw feature flag is disabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isBwEnabled: false } as ReturnType<typeof useFeatureFlags>)
+      mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 0 } as ReturnType<typeof useFeatureFlags>)
 
       renderWithHealth(healthy())
 
@@ -222,6 +222,24 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })
 
       renderWithHealth(healthy())
+
+      expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
+      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+    })
+
+    // Regression guard: a Solana base58 account would crash `BigInt(account)` inside
+    // the rollout gate. sourceChainId can be selector-derived (i.e. an EVM chain even
+    // when the wallet is Solana), so the isNonEvmChain(sourceChainId) guard alone
+    // does not prevent the throw — the gate must reject non-EVM accounts itself.
+    it('does not throw and mounts only the multicall stack for a non-EVM (Solana) account within a partial rollout', () => {
+      mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 50 } as ReturnType<typeof useFeatureFlags>)
+      mockUseWalletInfo.mockReturnValue({
+        account: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+        chainId: SupportedChainId.MAINNET,
+      } as WalletInfo)
+
+      expect(() => renderWithHealth(healthy())).not.toThrow()
 
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)

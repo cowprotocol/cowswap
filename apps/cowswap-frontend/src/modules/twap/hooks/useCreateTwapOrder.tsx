@@ -2,10 +2,11 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
@@ -62,6 +63,8 @@ export function useCreateTwapOrder() {
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
+  const isSafeWallet = useIsSafeWallet()
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
@@ -110,6 +113,12 @@ export function useCreateTwapOrder() {
     // TODO: Reduce function complexity by extracting logic
 
     async (fallbackHandlerIsNotSet: boolean) => {
+      // EOA placement is not implemented yet; allow review/confirm UI only.
+      if (isTwapEoaEnabled && !isSafeWallet) {
+        alert('Not implemented yet')
+        return
+      }
+
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (
         !inputCurrencyAmount ||
@@ -234,6 +243,8 @@ export function useCreateTwapOrder() {
       }
     },
     [
+      isTwapEoaEnabled,
+      isSafeWallet,
       chainId,
       account,
       inputCurrencyAmount,
