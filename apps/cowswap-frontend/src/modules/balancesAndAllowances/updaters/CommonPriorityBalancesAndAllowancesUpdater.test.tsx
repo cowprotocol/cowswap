@@ -227,5 +227,23 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
       expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
     })
+
+    // Regression guard: a Solana base58 account would crash `BigInt(account)` inside
+    // the rollout gate. sourceChainId can be selector-derived (i.e. an EVM chain even
+    // when the wallet is Solana), so the isNonEvmChain(sourceChainId) guard alone
+    // does not prevent the throw — the gate must reject non-EVM accounts itself.
+    it('does not throw and mounts only the multicall stack for a non-EVM (Solana) account within a partial rollout', () => {
+      mockUseFeatureFlags.mockReturnValue({ bwEnabledPercentage: 50 } as ReturnType<typeof useFeatureFlags>)
+      mockUseWalletInfo.mockReturnValue({
+        account: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+        chainId: SupportedChainId.MAINNET,
+      } as WalletInfo)
+
+      expect(() => renderWithHealth(healthy())).not.toThrow()
+
+      expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
+      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+    })
   })
 })

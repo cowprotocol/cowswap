@@ -9,7 +9,7 @@ import {
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isNonEvmChain } from '@cowprotocol/cow-sdk'
+import { isEvmAddress, isNonEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -27,9 +27,13 @@ import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrig
 // -> same bucket, so the toggle is sticky per wallet across sessions/tabs.
 // - 100 -> everyone (including not-yet-connected wallets)
 // - 0 / undefined / out-of-range / non-number -> nobody
+// Non-EVM (e.g. Solana base58) accounts are rejected before BigInt() to avoid
+// a render-time SyntaxError; sourceChainId alone can't guard this because it
+// may be selector-derived while the wallet is on a non-EVM chain.
 function shouldEnableBalancesWatcher(account: string | undefined, percentage: number | boolean | undefined): boolean {
   if (percentage === 100) return true
   if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) return false
+  if (!isEvmAddress(account)) return false
 
   return BigInt(account) % 100n < percentage
 }
