@@ -14,7 +14,7 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
+import { useAdvancedOrdersDerivedState, useComposableCowContractData, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -33,9 +33,8 @@ import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
-import { createEoaTwapOrder } from '../services/createEoaTwapOrder'
-import { getCreateTwapOrderTxs } from '../services/createTwapOrderTxs'
-import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
+import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
+import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
@@ -69,7 +68,7 @@ export function useCreateTwapOrder() {
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const appSigner = useAppSigner()
+  const eoaSigner = useAppSigner()
   const config = useConfig()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -89,6 +88,7 @@ export function useCreateTwapOrder() {
 
   const analytics = useCowAnalytics()
   const tradeFlowAnalytics = useTradeFlowAnalytics()
+  const composableCowContract = useComposableCowContractData()
 
   const sendOrderAnalytics = useCallback(
     (action: string, context: string) => {
@@ -129,7 +129,7 @@ export function useCreateTwapOrder() {
       const isEoaTwap = !isSafeWallet
 
       if (isEoaTwap) {
-        if (!appSigner) return
+        if (!eoaSigner) return
       } else if (
         !twapOrderCreationContext ||
         chainId !== twapOrderCreationContext.chainId ||
@@ -137,10 +137,6 @@ export function useCreateTwapOrder() {
       ) {
         return
       }
-
-      const safeTwapOrderCreationContext = twapOrderCreationContext
-      const safeExtensibleFallbackContext = extensibleFallbackContext
-      const eoaSigner = appSigner
 
       const isPriceImpactConfirmed = await confirmPriceImpactWithoutFee(priceImpact)
 
@@ -187,6 +183,8 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
+        // TODO: Is it correct to do this here?
+        console.log("Uploading TWAP app data to API...");
         await uploadAppDataDocOrderbookApi({
           appDataKeccak256: appDataInfo.appDataKeccak256,
           fullAppData: appDataInfo.fullAppData,
@@ -194,38 +192,39 @@ export function useCreateTwapOrder() {
           env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
 
-        let safeTxHashOrSubmissionId: string
+        let safeTxHashOrSellEqualsBuyOrderOId: string
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
 
         if (isEoaTwap) {
-          if (!eoaSigner) return
-
-          // TODO: Rename to placeEoaTwapOrder
-          const { fundingOrderId, proxyAddress } = await createEoaTwapOrder({
+          const { sellEqualsBuyOrderId, proxyAddress } = await placeEoaTwapOrder({
             chainId,
             account,
             twapOrder,
+            twapOrderCreationContext,
             paramsStruct,
             signer: eoaSigner,
             config,
+            composableCowContract,
           })
 
-          safeTxHashOrSubmissionId = fundingOrderId
+          safeTxHashOrSellEqualsBuyOrderOId = sellEqualsBuyOrderId
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
         } else {
-          if (!safeTwapOrderCreationContext || !safeExtensibleFallbackContext) return
-
-          const fallbackSetupTxs = fallbackHandlerIsNotSet
-            ? await extensibleFallbackSetupTxs(safeExtensibleFallbackContext)
-            : []
-
-          // TODO: Create a function placeTwapOrder with a similar interface to the one in the branch above
-          const createOrderTxs = getCreateTwapOrderTxs(twapOrder, paramsStruct, safeTwapOrderCreationContext)
-          safeTxHashOrSubmissionId = await sendSafeTransactions([...fallbackSetupTxs, ...createOrderTxs])
-          safeAddressOrCowShedAddress = account
+          const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
+            twapOrder,
+            twapOrderCreationContext,
+            paramsStruct,
+            fallbackHandlerIsNotSet,
+            extensibleFallbackContext,
+            sendSafeTransactions,
+          })
+          safeTxHashOrSellEqualsBuyOrderOId = safeTxHash
+          safeAddressOrCowShedAddress = safeAddress // === account
           orderStatus = TwapOrderStatus.WaitSigning
+
+          console.warn(safeAddress, account, safeAddress === account);
         }
 
         const orderItem: TwapOrderItem = {
@@ -245,7 +244,7 @@ export function useCreateTwapOrder() {
         emitPostedOrderEvent({
           chainId,
           id: orderId,
-          orderCreationHash: safeTxHashOrSubmissionId,
+          orderCreationHash: safeTxHashOrSellEqualsBuyOrderOId,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: twapOrder.sellAmount,
@@ -257,7 +256,7 @@ export function useCreateTwapOrder() {
         sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
-        tradeConfirmActions.onSuccess(safeTxHashOrSubmissionId)
+        tradeConfirmActions.onSuccess(safeTxHashOrSellEqualsBuyOrderOId)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
@@ -281,7 +280,7 @@ export function useCreateTwapOrder() {
     [
       isTwapEoaEnabled,
       isSafeWallet,
-      appSigner,
+      eoaSigner,
       config,
       chainId,
       account,
@@ -301,6 +300,7 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
+      composableCowContract,
     ],
   )
 }
