@@ -1,14 +1,15 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
+import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
+import { Connector } from 'wagmi'
+
 import { isMobile, logWallet, PromiseWithTimeout } from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
-import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
-import { Connector } from 'wagmi'
 
 import { wagmiConfig } from '../../wagmi/config'
 import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
@@ -27,16 +28,6 @@ export type WalletCapabilities = GetCapabilitiesReturnType[number]
 const WALLET_CAPABILITIES_LOADING_TIMEOUT = ms`5s`
 
 let timeoutLogged = false
-
-function getTimeoutPromise<T = WalletCapabilities | GetCapabilitiesReturnType>(): Promise<T> {
-  return new Promise<void>((resolve) => setTimeout(() => resolve(), WALLET_CAPABILITIES_LOADING_TIMEOUT)).then(() => {
-    if (!timeoutLogged) {
-      timeoutLogged = true
-      logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
-    }
-    return {} as T
-  })
-}
 
 /**
  * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
@@ -58,25 +49,17 @@ export async function getShouldSkipCapabilitiesCheck(
   return isWalletConnectViaWidget
 }
 
-const REQUEST_TIMEOUT_MS = ms`5s`
-
-async function fetchWidgetProviderMetaInfo(
-  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
-): Promise<ProviderMetaInfoPayload | null> {
-  if (provider instanceof WidgetEthereumProvider) {
-    return PromiseWithTimeout<ProviderMetaInfoPayload>(REQUEST_TIMEOUT_MS, (resolve) => {
-      provider.onProviderMetaInfo((data) => {
-        provider.clearProviderMetaInfoListener()
-        resolve(data)
-      })
-    }).catch(() => {
-      provider.clearProviderMetaInfoListener()
-      return null
-    })
-  }
-
-  return Promise.resolve(null)
+function getTimeoutPromise<T = WalletCapabilities | GetCapabilitiesReturnType>(): Promise<T> {
+  return new Promise<void>((resolve) => setTimeout(() => resolve(), WALLET_CAPABILITIES_LOADING_TIMEOUT)).then(() => {
+    if (!timeoutLogged) {
+      timeoutLogged = true
+      logWallet.warn(`Wallet capabilities loading timed out after ${WALLET_CAPABILITIES_LOADING_TIMEOUT / 1000}s`)
+    }
+    return {} as T
+  })
 }
+
+const REQUEST_TIMEOUT_MS = ms`5s`
 
 /**
  * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
@@ -95,6 +78,24 @@ export function resolveCapabilitiesForChain(
   // `numberToHex` above:
 
   return Object.values(capabilities)[0] || null
+}
+
+async function fetchWidgetProviderMetaInfo(
+  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
+): Promise<ProviderMetaInfoPayload | null> {
+  if (provider instanceof WidgetEthereumProvider) {
+    return PromiseWithTimeout<ProviderMetaInfoPayload>(REQUEST_TIMEOUT_MS, (resolve) => {
+      provider.onProviderMetaInfo((data) => {
+        provider.clearProviderMetaInfoListener()
+        resolve(data)
+      })
+    }).catch(() => {
+      provider.clearProviderMetaInfoListener()
+      return null
+    })
+  }
+
+  return Promise.resolve(null)
 }
 
 /**

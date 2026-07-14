@@ -1,7 +1,8 @@
-import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
-
 import { Address, Hex } from 'viem'
+import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
+
+import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
@@ -9,21 +10,11 @@ import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
-import type { Config } from 'wagmi'
-
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
 // User rejection detection (EIP-1193 error codes and common wallet messages)
 const USER_REJECTION_CODES = [4001, -32000]
 const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected transaction', 'transaction was rejected']
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUserRejectionError(error: any): boolean {
-  if (!error) return false
-  if (USER_REJECTION_CODES.includes(error.code)) return true
-  const message = (typeof error === 'string' ? error : error.message)?.toLowerCase() || ''
-  return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
-}
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
@@ -51,6 +42,36 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   REQUESTS_CACHE[permitKey] = request
 
   return request
+}
+
+async function calculateGasLimit({
+  data,
+  from,
+  to,
+  config,
+  isUserAccount,
+}: {
+  data: Hex
+  from: Address
+  to: Address
+  config: Config
+  isUserAccount: boolean
+}): Promise<bigint> {
+  try {
+    // Query the actual gas estimate
+    const actual = await estimateGas(config, { account: from, to, data })
+
+    // Add 10% to actual value to account for minor differences with real account
+    // Do not add it if this is the real user's account
+    const gasLimit = !isUserAccount ? actual + actual / 10n : actual
+
+    // Pick the biggest between estimated and default
+    return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
+  } catch (e) {
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
+
+    return DEFAULT_PERMIT_GAS_LIMIT
+  }
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
@@ -129,37 +150,15 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   }
 }
 
-async function calculateGasLimit({
-  data,
-  from,
-  to,
-  config,
-  isUserAccount,
-}: {
-  data: Hex
-  from: Address
-  to: Address
-  config: Config
-  isUserAccount: boolean
-}): Promise<bigint> {
-  try {
-    // Query the actual gas estimate
-    const actual = await estimateGas(config, { account: from, to, data })
-
-    // Add 10% to actual value to account for minor differences with real account
-    // Do not add it if this is the real user's account
-    const gasLimit = !isUserAccount ? actual + actual / 10n : actual
-
-    // Pick the biggest between estimated and default
-    return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
-  } catch (e) {
-    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
-
-    return DEFAULT_PERMIT_GAS_LIMIT
-  }
-}
-
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account, amount } = params
   return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isUserRejectionError(error: any): boolean {
+  if (!error) return false
+  if (USER_REJECTION_CODES.includes(error.code)) return true
+  const message = (typeof error === 'string' ? error : error.message)?.toLowerCase() || ''
+  return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
 }

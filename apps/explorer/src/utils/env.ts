@@ -1,5 +1,7 @@
 import { getConfiguredEnvironmentNameFromEnvVars } from '@cowprotocol/common-utils'
 
+export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
+
 type EnvsFlags = {
   isLocal: boolean
   isDev: boolean
@@ -7,8 +9,6 @@ type EnvsFlags = {
   isStaging: boolean
   isProd: boolean
 }
-
-export type Envs = 'local' | 'production' | 'staging' | 'development' | 'pr'
 const ALL_ENVIRONMENTS: Envs[] = ['local', 'development', 'pr', 'staging', 'production']
 const ENVIRONMENT_VAR_NAMES = ['REACT_APP_ENVIRONMENT'] as const
 

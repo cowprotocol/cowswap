@@ -1,3 +1,5 @@
+import { MessageDescriptor } from '@lingui/core'
+
 import svgProgressbarFinished1Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
 import svgProgressbarFinished2Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
 import svgProgressbarFinished3Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
@@ -5,7 +7,6 @@ import svgProgressbarFinished4Src from '@cowprotocol/assets/cow-swap/progressbar
 import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 /**

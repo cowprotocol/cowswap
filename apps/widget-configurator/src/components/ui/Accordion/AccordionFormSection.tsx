@@ -2,6 +2,20 @@ import type { ComponentType, ReactNode } from 'react'
 
 import { AccordionSection } from './AccordionSection'
 
+interface AccordionFormSectionProps<
+  TValues,
+  TOnChange,
+  TAllFormProps extends BaseFormProps<TValues, TOnChange> = BaseFormProps<TValues, TOnChange>,
+> {
+  title: string
+  expandedSection: string | null
+  onToggleExpanded: (title: string) => (isExpanded: boolean) => void
+  values: TValues
+  onChange: TOnChange
+  formComponent: ComponentType<TAllFormProps>
+  formProps?: NoInfer<Omit<TAllFormProps, keyof BaseFormProps<TValues, TOnChange>>>
+}
+
 type BaseFormProps<TValues, TOnChange> = {
   values: TValues
   onChange: TOnChange
@@ -32,20 +46,6 @@ type BaseFormProps<TValues, TOnChange> = {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type NoInfer<T> = [T][T extends any ? 0 : never]
-
-interface AccordionFormSectionProps<
-  TValues,
-  TOnChange,
-  TAllFormProps extends BaseFormProps<TValues, TOnChange> = BaseFormProps<TValues, TOnChange>,
-> {
-  title: string
-  expandedSection: string | null
-  onToggleExpanded: (title: string) => (isExpanded: boolean) => void
-  values: TValues
-  onChange: TOnChange
-  formComponent: ComponentType<TAllFormProps>
-  formProps?: NoInfer<Omit<TAllFormProps, keyof BaseFormProps<TValues, TOnChange>>>
-}
 
 export function AccordionFormSection<
   TValues,

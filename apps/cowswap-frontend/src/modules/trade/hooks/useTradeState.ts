@@ -19,6 +19,25 @@ import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 const EMPTY_TRADE_STATE = {}
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function useGetTradeStateByRoute() {
+  const limitOrdersState = useLimitOrdersRawState()
+  const advancedOrdersState = useAdvancedOrdersRawState()
+  const swapTradeState = useSwapRawState()
+  const yieldRawState = useYieldRawState()
+
+  return useCallback(
+    (route: RoutesValues) => {
+      if (route === Routes.SWAP || route === Routes.HOOKS) return swapTradeState
+      if (route === Routes.ABOUT) return advancedOrdersState
+      if (route === Routes.YIELD) return yieldRawState
+      return limitOrdersState
+    },
+    [swapTradeState, advancedOrdersState, yieldRawState, limitOrdersState],
+  )
+}
+
 export function useTradeState(): {
   state?: ExtendedTradeRawState
   updateState?: (update: Partial<ExtendedTradeRawState>) => void
@@ -81,23 +100,4 @@ export function useTradeState(): {
     updateLimitOrdersState,
     updateYieldRawState,
   ])
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useGetTradeStateByRoute() {
-  const limitOrdersState = useLimitOrdersRawState()
-  const advancedOrdersState = useAdvancedOrdersRawState()
-  const swapTradeState = useSwapRawState()
-  const yieldRawState = useYieldRawState()
-
-  return useCallback(
-    (route: RoutesValues) => {
-      if (route === Routes.SWAP || route === Routes.HOOKS) return swapTradeState
-      if (route === Routes.ABOUT) return advancedOrdersState
-      if (route === Routes.YIELD) return yieldRawState
-      return limitOrdersState
-    },
-    [swapTradeState, advancedOrdersState, yieldRawState, limitOrdersState],
-  )
 }

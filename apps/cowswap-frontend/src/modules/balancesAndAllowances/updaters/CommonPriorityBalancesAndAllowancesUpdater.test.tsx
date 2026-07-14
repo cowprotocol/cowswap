@@ -97,6 +97,14 @@ function HealthHydrator({ health, children }: { health: WatcherHealthState; chil
   return <>{children}</>
 }
 
+function healthy(): WatcherHealthState {
+  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
+}
+
+function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
+  return { status, isRecovering: true }
+}
+
 function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_STATE): void {
   render(
     <JotaiProvider>
@@ -105,14 +113,6 @@ function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_ST
       </HealthHydrator>
     </JotaiProvider>,
   )
-}
-
-function healthy(): WatcherHealthState {
-  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
-}
-
-function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
-  return { status, isRecovering: true }
 }
 
 describe('CommonPriorityBalancesAndAllowancesUpdater', () => {

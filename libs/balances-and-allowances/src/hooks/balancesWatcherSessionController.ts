@@ -38,6 +38,11 @@ export const FALLBACK_RETRY_INTERVAL_MS = ms`30s`
  */
 export const HIDDEN_SESSION_TIMEOUT_MS = ms`15s`
 
+export interface SessionController {
+  start(): void
+  cleanup(): void
+}
+
 export interface SessionControllerDeps {
   account: string
   chainId: SupportedChainId
@@ -47,9 +52,14 @@ export interface SessionControllerDeps {
   setHealth: (update: (state: WatcherHealthState) => WatcherHealthState) => void
 }
 
-export interface SessionController {
-  start(): void
-  cleanup(): void
+export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
+  return {
+    ...state,
+    chainId,
+    error: null,
+    isLoading: false,
+    hasFirstLoad: true,
+  }
 }
 
 /**
@@ -153,16 +163,6 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       clearRetryTimer()
       setHealth(() => DEFAULT_WATCHER_HEALTH_STATE)
     },
-  }
-}
-
-export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
-  return {
-    ...state,
-    chainId,
-    error: null,
-    isLoading: false,
-    hasFirstLoad: true,
   }
 }
 

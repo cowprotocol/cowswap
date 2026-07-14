@@ -3,14 +3,15 @@ import { Provider as AtomProvider } from 'jotai'
 import { type ReactNode, StrictMode } from 'react'
 import './sentry'
 
+import { Messages } from '@lingui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
 import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
-import { Messages } from '@lingui/core'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { LanguageProvider } from 'i18n'
 import { useHydrateAtoms } from 'jotai/react/utils'

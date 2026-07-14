@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { toHex } from 'viem'
+
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
-
-import { toHex } from 'viem'
 
 import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
 

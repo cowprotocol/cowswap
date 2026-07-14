@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { useConfig, usePublicClient } from 'wagmi'
+
 import { getIsNativeToken, getWrappedToken, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
@@ -8,7 +10,6 @@ import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowproto
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
-import { useConfig, usePublicClient } from 'wagmi'
 
 import { TradeType } from 'modules/trade/types/TradeType'
 

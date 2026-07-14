@@ -4,10 +4,6 @@ export interface TrustedNotificationLink {
   rel?: 'noopener noreferrer'
 }
 
-function isSingleSlashRelativeUrl(url: string): boolean {
-  return url.startsWith('/') && !url.startsWith('//')
-}
-
 export function getTrustedNotificationLink(url: string | null | undefined): TrustedNotificationLink | null {
   if (!url) {
     return null
@@ -53,4 +49,8 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
   } catch {
     return null
   }
+}
+
+function isSingleSlashRelativeUrl(url: string): boolean {
+  return url.startsWith('/') && !url.startsWith('//')
 }
