@@ -1,3 +1,5 @@
+import type { TransactionReceipt } from 'viem'
+
 import { t } from '@lingui/core/macro'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -7,8 +9,6 @@ import { finalizeOnChainCancellation } from './finalizeOnChainCancellation'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
-
-import type { TransactionReceipt } from 'viem'
 
 export function finalizeEthFlowTx(
   transaction: EnhancedTransactionDetails,

@@ -23,16 +23,19 @@ const ADDRESS_3 = '0x3333333333333333333333333333333333333333'
 
 const DEFAULT_DECIMALS = 18
 
-function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
-  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
-}
-
 function createStoredToken(chainId: number, address: string, symbol?: string): StoredRecentToken {
   return { chainId, address, decimals: DEFAULT_DECIMALS, symbol }
 }
 
-function setStoredTokens(tokens: Record<number, StoredRecentToken[]>): void {
-  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
+function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
+  const store = createStore()
+  // Initialize atom with current localStorage state
+  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
+  return store
+}
+
+function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
+  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
 }
 
 function createTestWrapper(store: ReturnType<typeof createStore>) {
@@ -41,11 +44,8 @@ function createTestWrapper(store: ReturnType<typeof createStore>) {
   }
 }
 
-function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
-  const store = createStore()
-  // Initialize atom with current localStorage state
-  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
-  return store
+function setStoredTokens(tokens: Record<number, StoredRecentToken[]>): void {
+  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
 }
 
 describe('useRecentTokens', () => {

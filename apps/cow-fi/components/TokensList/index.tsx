@@ -29,6 +29,11 @@ export interface TokenListProps {
   tokens: TokenInfo[]
 }
 
+interface TokenItemProps {
+  token: TokenInfo
+  index: number
+}
+
 export function TokenList({ tokens }: TokenListProps) {
   const [search, setSearch] = useState('')
   const [filteredTokens, setFilteredTokens] = useState(tokens)
@@ -76,11 +81,6 @@ export function TokenList({ tokens }: TokenListProps) {
       </TokenTable>
     </Wrapper>
   )
-}
-
-interface TokenItemProps {
-  token: TokenInfo
-  index: number
 }
 
 function TokenItem({ token, index }: TokenItemProps) {

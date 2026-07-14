@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency } from '@cowprotocol/currency'
 import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'

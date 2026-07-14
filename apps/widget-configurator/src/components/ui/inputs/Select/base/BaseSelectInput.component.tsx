@@ -23,29 +23,6 @@ import type { PrimitiveValue, SelectInputOption } from './BaseSelectInput.types'
 const SELECT_DROPDOWN_ICON_SIZE = 20
 const SELECT_DROPDOWN_ICON_STROKE_WIDTH = 2
 
-function SelectDropdownIcon({ className }: { className?: string }): ReactNode {
-  return (
-    <ChevronDown
-      className={className}
-      size={SELECT_DROPDOWN_ICON_SIZE}
-      strokeWidth={SELECT_DROPDOWN_ICON_STROKE_WIDTH}
-      aria-hidden
-    />
-  )
-}
-
-interface BaseSelectInputSharedProps<TValue extends PrimitiveValue> {
-  name: string
-  label: string
-  options: readonly SelectInputOption<TValue>[]
-  disabled?: boolean
-  helperText?: ReactNode
-  multilineSelectedValue?: boolean
-  inputLabelShrink?: boolean
-  menuProps?: SelectProps['MenuProps']
-  renderMenuItemContent: (option: SelectInputOption<TValue>, selected: boolean) => ReactNode
-}
-
 type BaseSelectInputComponentProps<TValue extends PrimitiveValue> =
   | (BaseSelectInputSharedProps<TValue> & {
       multiple?: false
@@ -64,6 +41,18 @@ type BaseSelectInputComponentProps<TValue extends PrimitiveValue> =
       onChange: (name: string, value: TValue[]) => void
       renderSelectedValue: (selectedOptions: SelectInputOption<TValue>[], emptyDisplayLabel?: string) => ReactNode
     })
+
+interface BaseSelectInputSharedProps<TValue extends PrimitiveValue> {
+  name: string
+  label: string
+  options: readonly SelectInputOption<TValue>[]
+  disabled?: boolean
+  helperText?: ReactNode
+  multilineSelectedValue?: boolean
+  inputLabelShrink?: boolean
+  menuProps?: SelectProps['MenuProps']
+  renderMenuItemContent: (option: SelectInputOption<TValue>, selected: boolean) => ReactNode
+}
 
 // eslint-disable-next-line max-lines-per-function
 export function BaseSelectInput<TValue extends PrimitiveValue>({
@@ -219,5 +208,16 @@ export function BaseSelectInput<TValue extends PrimitiveValue>({
       </Select>
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
     </FormControl>
+  )
+}
+
+function SelectDropdownIcon({ className }: { className?: string }): ReactNode {
+  return (
+    <ChevronDown
+      className={className}
+      size={SELECT_DROPDOWN_ICON_SIZE}
+      strokeWidth={SELECT_DROPDOWN_ICON_STROKE_WIDTH}
+      aria-hidden
+    />
   )
 }

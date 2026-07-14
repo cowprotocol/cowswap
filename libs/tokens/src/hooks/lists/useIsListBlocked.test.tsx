@@ -1,5 +1,4 @@
-import { createStore } from 'jotai'
-import { Provider } from 'jotai'
+import { createStore, Provider } from 'jotai'
 import { ReactNode } from 'react'
 
 import { renderHook } from '@testing-library/react'

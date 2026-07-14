@@ -16,16 +16,6 @@ const MOCK_ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const OTHER_OWNER = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 const MOCK_CHAIN = SupportedChainId.MAINNET
 
-function st(address: string): SerializedToken {
-  return {
-    chainId: Number(MOCK_CHAIN),
-    address,
-    decimals: 18,
-    symbol: 'T',
-    name: 'Token',
-  }
-}
-
 function makeOrderObject(params: { id: string; owner: string; orderClass: OrderClass }): OrderObject {
   const sell = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   const buy = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
@@ -54,6 +44,16 @@ function makeOrderObject(params: { id: string; owner: string; orderClass: OrderC
       signingScheme: SigningScheme.EIP712,
       receiver: params.owner.replace(/^0x/i, ''),
     },
+  }
+}
+
+function st(address: string): SerializedToken {
+  return {
+    chainId: Number(MOCK_CHAIN),
+    address,
+    decimals: 18,
+    symbol: 'T',
+    name: 'Token',
   }
 }
 

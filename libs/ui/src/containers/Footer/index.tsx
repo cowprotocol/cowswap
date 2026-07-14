@@ -39,11 +39,6 @@ import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
 export { getGlobalFooterNavItems } from './footer.constants'
 
-export interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
-  label?: string
-  badge?: string
-}
-
 export interface FooterProps {
   description?: string
   navItems?: NavItemProps[]
@@ -53,6 +48,11 @@ export interface FooterProps {
   hasTouchFooter?: boolean
   maxWidth?: number
   host?: string
+}
+
+export interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
+  label?: string
+  badge?: string
 }
 
 interface FooterLinkProps {
