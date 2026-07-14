@@ -9,6 +9,8 @@ import {
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
+
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import {
@@ -48,7 +50,7 @@ interface TwapDemandAnalytics {
   trackUnsupportedWalletShown(params: UnsupportedWalletShownParams): void
 }
 
-const INTEREST_THANKS_VISIBLE_MS = 10_000
+const INTEREST_THANKS_VISIBLE_MS = ms`10s`
 
 export function useTwapDemandAnalytics(): TwapDemandAnalytics {
   const cowAnalytics = useCowAnalytics()
