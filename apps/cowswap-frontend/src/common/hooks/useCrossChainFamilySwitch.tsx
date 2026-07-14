@@ -57,7 +57,7 @@ export function useCrossChainFamilySwitch(): (
         title: t`Switching network type`,
         description: t`You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected.`,
         action: t`switch network type`,
-        callToAction: t`Confirm`,
+        callToAction: t`Connect wallet`,
         skipInput: true,
       })
 
