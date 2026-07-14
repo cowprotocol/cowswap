@@ -55,7 +55,7 @@ export function useCrossChainFamilySwitch(): (
       const confirmed = await triggerConfirmation({
         confirmWord: t`confirm`,
         title: t`Switching network type`,
-        description: t`You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?`,
+        description: t`You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected.`,
         action: t`switch network type`,
         callToAction: t`Confirm`,
         skipInput: true,
