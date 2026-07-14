@@ -39,6 +39,9 @@ export interface TwapOrderItem {
   chainId: SupportedChainId
   executedDate?: string
   submissionDate: string
+  // TODO: Consider renaming to ownerAddress, as this is:
+  // - Safe address for Safe TWAP
+  // - Proxy (CoW Shed) address for EOA TWAP
   safeAddress: string
   id: string
   safeTxParams?: SafeTransactionParams
