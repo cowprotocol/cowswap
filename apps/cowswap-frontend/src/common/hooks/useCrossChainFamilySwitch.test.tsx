@@ -114,7 +114,7 @@ describe('useCrossChainFamilySwitch', () => {
     expect(closeModal).not.toHaveBeenCalled()
   })
 
-  it('reports via snackbar and leaves the URL unchanged when the disconnect fails', async () => {
+  it('leaves the URL unchanged when the disconnect fails', async () => {
     setWallet(SupportedChainId.MAINNET, '0xConnected')
     triggerConfirmation.mockResolvedValue(true)
     disconnectWallet.mockRejectedValue(new Error('disconnect failed'))
