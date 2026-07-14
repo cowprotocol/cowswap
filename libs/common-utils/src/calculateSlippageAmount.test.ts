@@ -1,6 +1,6 @@
-import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
-
 import { zeroAddress } from 'viem'
+
+import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 
 import { calculateSlippageAmount } from './calculateSlippageAmount'
 

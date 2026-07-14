@@ -1,7 +1,7 @@
+import { readContract } from 'wagmi/actions'
+
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
-
-import { readContract } from 'wagmi/actions'
 
 import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
 

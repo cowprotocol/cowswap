@@ -1,14 +1,15 @@
 import { ReactNode, StrictMode, useMemo } from 'react'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
-import { WagmiProvider } from 'wagmi'
 
 import { Configurator } from './components/configurator/configurator.component'
 import { commonComponents } from './theme/commonComponents.constants'

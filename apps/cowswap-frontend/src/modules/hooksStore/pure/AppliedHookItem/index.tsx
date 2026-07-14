@@ -42,32 +42,6 @@ interface BundleSimulationStatusProps {
   simulationTooltip: string
 }
 
-function BundleSimulationStatus({
-  isSuccessful,
-  safeSimulationUrl,
-  simulationStatus,
-  simulationTooltip,
-}: BundleSimulationStatusProps): ReactElement {
-  return (
-    <styledEl.SimulateContainer isSuccessful={isSuccessful}>
-      {isSuccessful ? (
-        <SVG src={svgCheckSingularSrc} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
-      ) : (
-        <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
-      )}
-      {safeSimulationUrl ? (
-        <a href={safeSimulationUrl} target="_blank" rel="noopener noreferrer">
-          {simulationStatus}
-          <ExternalLinkIcon size={14} />
-        </a>
-      ) : (
-        <span>{simulationStatus}</span>
-      )}
-      <InfoTooltip content={simulationTooltip} />
-    </styledEl.SimulateContainer>
-  )
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
@@ -156,5 +130,31 @@ export function AppliedHookItem({
         </styledEl.OldSimulateContainer>
       )}
     </styledEl.HookItemWrapper>
+  )
+}
+
+function BundleSimulationStatus({
+  isSuccessful,
+  safeSimulationUrl,
+  simulationStatus,
+  simulationTooltip,
+}: BundleSimulationStatusProps): ReactElement {
+  return (
+    <styledEl.SimulateContainer isSuccessful={isSuccessful}>
+      {isSuccessful ? (
+        <SVG src={svgCheckSingularSrc} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
+      ) : (
+        <SVG src={svgXSrc} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
+      )}
+      {safeSimulationUrl ? (
+        <a href={safeSimulationUrl} target="_blank" rel="noopener noreferrer">
+          {simulationStatus}
+          <ExternalLinkIcon size={14} />
+        </a>
+      ) : (
+        <span>{simulationStatus}</span>
+      )}
+      <InfoTooltip content={simulationTooltip} />
+    </styledEl.SimulateContainer>
   )
 }

@@ -1,3 +1,7 @@
+import { type Address, encodeAbiParameters, type Hex } from 'viem'
+import { type Config, useConfig } from 'wagmi'
+import { getBytecode, readContract, getStorageAt } from 'wagmi/actions'
+
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { areAddressesEqual, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
@@ -5,9 +9,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
-import { type Address, encodeAbiParameters, type Hex } from 'viem'
-import { type Config, useConfig } from 'wagmi'
-import { getBytecode, readContract, getStorageAt } from 'wagmi/actions'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 

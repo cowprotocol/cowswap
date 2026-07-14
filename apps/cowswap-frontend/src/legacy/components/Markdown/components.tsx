@@ -11,16 +11,6 @@ export const LinkScrollableStyled = styled(Link)`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Table({ children }: { children: ReactElement }) {
-  return (
-    <div id="table-container">
-      <table>{children}</table>
-    </div>
-  )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function H2({ children }: { children: ReactElement }) {
   const ref = useRef<HTMLHeadingElement>(null)
 
@@ -33,4 +23,14 @@ export function H2({ children }: { children: ReactElement }) {
   }, [])
 
   return <h2 ref={ref}>{children}</h2>
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function Table({ children }: { children: ReactElement }) {
+  return (
+    <div id="table-container">
+      <table>{children}</table>
+    </div>
+  )
 }

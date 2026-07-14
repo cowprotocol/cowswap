@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NodeCache from 'node-cache'
 
+interface CacheMethodParams<T, R> extends CacheOptions<T> {
+  fnToCache: (...params: any[]) => R
+}
+
 interface CacheOptions<T> {
   method: keyof T
   ttl?: number
   hashFn?: (...params: any[]) => string
-}
-
-interface CacheMethodParams<T, R> extends CacheOptions<T> {
-  fnToCache: (...params: any[]) => R
 }
 
 export class CacheMixin {

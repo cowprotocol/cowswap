@@ -1,5 +1,6 @@
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { EIP1193Provider } from 'viem'
+
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 import { activeProviderRef, PROVIDER_DISCONNECTED } from './providerIsolation'
 

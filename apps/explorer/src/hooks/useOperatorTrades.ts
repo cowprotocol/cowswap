@@ -19,35 +19,6 @@ type TradesTimestamps = { [txHash: string]: number }
 
 const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
 
-async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
-  const requests = rawTrades.map(({ txHash, blockNumber }) => {
-    const cachedValue = tradesTimestampsCache[blockNumber]
-
-    if (cachedValue) {
-      return cachedValue.then((timestamp) => ({ txHash, timestamp }))
-    }
-
-    const request = web3.eth.getBlock(blockNumber).then(({ timestamp }) => +timestamp)
-
-    tradesTimestampsCache[blockNumber] = request
-
-    return request.then((timestamp) => ({ txHash, timestamp }))
-  })
-
-  const data = await Promise.all(requests)
-
-  return data.reduce((acc, val) => {
-    if (val.txHash) acc[val.txHash] = val.timestamp
-
-    return acc
-  }, {} as TradesTimestamps)
-}
-
-/**
- * Fetches trades for given order
- */
-// TODO: Break down this large function into smaller functions
-
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
@@ -142,4 +113,33 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   const isLoading = rawTrades === null
 
   return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
+}
+
+/**
+ * Fetches trades for given order
+ */
+// TODO: Break down this large function into smaller functions
+
+async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
+  const requests = rawTrades.map(({ txHash, blockNumber }) => {
+    const cachedValue = tradesTimestampsCache[blockNumber]
+
+    if (cachedValue) {
+      return cachedValue.then((timestamp) => ({ txHash, timestamp }))
+    }
+
+    const request = web3.eth.getBlock(blockNumber).then(({ timestamp }) => +timestamp)
+
+    tradesTimestampsCache[blockNumber] = request
+
+    return request.then((timestamp) => ({ txHash, timestamp }))
+  })
+
+  const data = await Promise.all(requests)
+
+  return data.reduce((acc, val) => {
+    if (val.txHash) acc[val.txHash] = val.timestamp
+
+    return acc
+  }, {} as TradesTimestamps)
 }

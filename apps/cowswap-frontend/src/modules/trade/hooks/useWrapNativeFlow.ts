@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -7,7 +9,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { Nullish } from 'types'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 import {
   wrapUnwrapCallback,

@@ -53,20 +53,6 @@ const Wrapper = styled.div``
 export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
 type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: TokenErc20 }
 
-function useGetSurplus(order: Order): OrderSurplus | null {
-  const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
-
-  const surplusToken = isSellOrder(kind) ? buyToken : sellToken
-
-  return useMemo(() => {
-    if (!surplusToken || surplusAmount.isZero()) {
-      return null
-    }
-
-    return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
-  }, [surplusToken, surplusAmount, surplusPercentage])
-}
-
 export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
   const surplus = useGetSurplus(props.order)
 
@@ -84,6 +70,20 @@ export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
       {/*/>*/}
     </Wrapper>
   )
+}
+
+function useGetSurplus(order: Order): OrderSurplus | null {
+  const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
+
+  const surplusToken = isSellOrder(kind) ? buyToken : sellToken
+
+  return useMemo(() => {
+    if (!surplusToken || surplusAmount.isZero()) {
+      return null
+    }
+
+    return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
+  }, [surplusToken, surplusAmount, surplusPercentage])
 }
 
 const HiddenSection = styled.span<{ showHiddenSection: boolean; stretchHiddenSection?: boolean }>`
