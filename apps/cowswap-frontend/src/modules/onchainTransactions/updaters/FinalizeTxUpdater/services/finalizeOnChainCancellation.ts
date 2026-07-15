@@ -1,5 +1,7 @@
 import type { TransactionReceipt } from 'viem'
 
+import { UiOrderType } from '@cowprotocol/types'
+
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
@@ -33,6 +35,7 @@ export function finalizeOnChainCancellation(
       emitCancelledOrderEvent({
         chainId,
         order: twapOrder,
+        orderType: UiOrderType.TWAP,
         transactionHash: hash,
       })
 

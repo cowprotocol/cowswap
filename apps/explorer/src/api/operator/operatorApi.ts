@@ -255,9 +255,15 @@ function ensureSolverCompetition(
 }
 
 function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: BARN`)
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: BARN. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
 }
 
 function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: PROD`)
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: PROD. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
 }
