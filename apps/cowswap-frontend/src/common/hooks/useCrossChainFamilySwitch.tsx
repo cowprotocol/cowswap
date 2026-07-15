@@ -15,10 +15,11 @@ import { useConfirmationRequest } from './useConfirmationRequest'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export enum CrossChainFamilySwitchState {
-  NOT_CROSSING_CHAIN,
-  NOT_CONFIRMED,
-  DISCONNECT_FAILED,
-  FINISHED,
+  WALLET_NOT_CONNECTED = 'WALLET_NOT_CONNECTED',
+  NOT_CROSSING_CHAIN = 'NOT_CROSSING_CHAIN',
+  NOT_CONFIRMED = 'NOT_CONFIRMED',
+  DISCONNECT_FAILED = 'DISCONNECT_FAILED',
+  FINISHED = 'FINISHED',
 }
 
 /**
@@ -50,8 +51,12 @@ export function useCrossChainFamilySwitch(): (
       const isWalletConnected = !!account
       const crossingChainFamily = !isSameChainFamily(currentChainId, targetChainId)
 
-      if (!isWalletConnected || !crossingChainFamily) {
+      if (!crossingChainFamily) {
         return CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
+      }
+
+      if (!isWalletConnected) {
+        return CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
       }
 
       const sourceChainLabel = CHAIN_INFO[currentChainId].label

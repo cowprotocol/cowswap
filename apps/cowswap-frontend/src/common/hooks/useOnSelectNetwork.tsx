@@ -26,8 +26,13 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       // Switching between EVM and non-EVM networks requires a different wallet and is handled
       // separately (confirm + disconnect + reconnect) instead of a regular network switch.
+      const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
+
       if (
-        (await handleCrossChainFamilySwitch(targetChain, skipClose)) !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
+        !(
+          switchChainState === CrossChainFamilySwitchState.FINISHED ||
+          switchChainState === CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
+        )
       ) {
         return
       }

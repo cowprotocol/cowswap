@@ -66,7 +66,7 @@ describe('useCrossChainFamilySwitch', () => {
     expect(disconnectWallet).not.toHaveBeenCalled()
   })
 
-  it('returns NOT_CROSSING_CHAIN for a cross-family change when no wallet is connected', async () => {
+  it('returns WALLET_NOT_CONNECTED for a cross-family change when no wallet is connected', async () => {
     setWallet(SupportedChainId.MAINNET, undefined)
     const { result } = renderHook(() => useCrossChainFamilySwitch())
 
@@ -75,7 +75,7 @@ describe('useCrossChainFamilySwitch', () => {
       handled = await result.current(SupportedChainId.SOLANA)
     })
 
-    expect(handled).toBe(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
+    expect(handled).toBe(CrossChainFamilySwitchState.WALLET_NOT_CONNECTED)
     expect(triggerConfirmation).not.toHaveBeenCalled()
     expect(disconnectWallet).not.toHaveBeenCalled()
   })

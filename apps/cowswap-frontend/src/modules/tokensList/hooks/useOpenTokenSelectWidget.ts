@@ -51,14 +51,16 @@ export function useOpenTokenSelectWidget(): (
         selectedTargetChainId: nextSelectedTargetChainId,
         tradeType,
         onSelectToken: async (currency) => {
-          if (selectedToken) {
+          if (selectedToken && !isOutputField) {
             const isSelectedTokenEvm = isEvmChain(selectedToken.chainId)
             const isNewTokenEvm = isEvmChain(currency.chainId)
             const shouldConfirmNetworkSwitch =
               (isSelectedTokenEvm && !isNewTokenEvm) || (!isSelectedTokenEvm && isNewTokenEvm)
+            const chainSwitchState = await crossChainFamilySwitch(currency.chainId)
 
             const crossChainSwitched =
-              (await crossChainFamilySwitch(currency.chainId)) === CrossChainFamilySwitchState.FINISHED
+              chainSwitchState !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN &&
+              chainSwitchState !== CrossChainFamilySwitchState.NOT_CONFIRMED
 
             /**
              * In case of switching from EVM to non-EVM (and vice versa)
