@@ -14,7 +14,7 @@ interface ConfirmationModalContext {
   activePromise?: Promise<boolean>
   title: string
   callToAction: string
-  description?: string
+  description?: ReactNode
   warning?: string
   confirmWord: string
   action: string

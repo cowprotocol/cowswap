@@ -5,7 +5,7 @@ import { act, renderHook } from '@testing-library/react'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 
-import { useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
+import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 import { useOnSelectNetwork } from './useOnSelectNetwork'
 
@@ -55,7 +55,7 @@ describe('useOnSelectNetwork', () => {
   })
 
   it('delegates to the cross-family flow and short-circuits when it handles the switch', async () => {
-    handleCrossChainFamilySwitch.mockResolvedValue(true)
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.NOT_CONFIRMED)
     const { result } = renderHook(() => useOnSelectNetwork())
 
     await act(async () => {
