@@ -25,6 +25,8 @@ import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
 // Re-export for tests and external usage
 export { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
 
+const DISABLED_SOURCE_CHAINS = new Set<SupportedChainId>([SupportedChainId.SOLANA])
+
 /**
  * Returns an array of chains to select in the token selector widget.
  * The array depends on sell/buy token selection.
@@ -67,6 +69,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
         defaultChainId: selectedTargetChainId,
         chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
         isLoading: false,
+        disabledChainIds: DISABLED_SOURCE_CHAINS,
       }
     }
 
