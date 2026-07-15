@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/react/macro'
@@ -34,11 +36,10 @@ export interface ConfirmationModalProps {
   onEnable: Command
   confirmWord: string
   action: string
+  bottomContent?: ReactNode
   skipInput?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConfirmationModal({
   isOpen,
   title,
@@ -49,8 +50,9 @@ export function ConfirmationModal({
   onEnable,
   action,
   confirmWord,
+  bottomContent,
   skipInput = false,
-}: ConfirmationModalProps) {
+}: ConfirmationModalProps): ReactNode {
   const shouldShowDescription = !!description
   const shouldShowWarning = !!warning
 
@@ -64,7 +66,13 @@ export function ConfirmationModal({
             <Warning>{warning}</Warning>
           </Description>
         )}
-        <ConfirmedButton skipInput={skipInput} action={action} confirmWord={confirmWord} onConfirm={onEnable}>
+        <ConfirmedButton
+          skipInput={skipInput}
+          action={action}
+          confirmWord={confirmWord}
+          onConfirm={onEnable}
+          bottomContent={bottomContent}
+        >
           {callToAction ? callToAction : <Trans>Confirm</Trans>}
         </ConfirmedButton>
       </ModalContentWrapper>

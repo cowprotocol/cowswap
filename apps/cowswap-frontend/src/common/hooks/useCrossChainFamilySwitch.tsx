@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isSameChainFamily } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet, useOpenWalletConnectionModal, useWalletInfo } from '@cowprotocol/wallet'
@@ -44,21 +45,25 @@ export function useCrossChainFamilySwitch(): (
   const triggerConfirmation = useConfirmationRequest({})
 
   return useCallback(
-    async (targetChain: SupportedChainId, skipClose?: boolean) => {
+    async (targetChainId: SupportedChainId, skipClose?: boolean) => {
       const isWalletConnected = !!account
-      const crossingChainFamily = !isSameChainFamily(currentChainId, targetChain)
+      const crossingChainFamily = !isSameChainFamily(currentChainId, targetChainId)
 
       if (!isWalletConnected || !crossingChainFamily) {
         return CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
       }
 
+      const sourceChainLabel = CHAIN_INFO[currentChainId].label
+      const targetChainLabel = CHAIN_INFO[targetChainId].label
+
       const confirmed = await triggerConfirmation({
         confirmWord: t`confirm`,
         title: t`Switching network type`,
-        description: t`You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected.`,
+        description: t`You're switching from ${sourceChainLabel} to ${targetChainLabel}. This requires connecting a different wallet. Your current wallet will be disconnected.`,
         action: t`switch network type`,
         callToAction: t`Connect wallet`,
         skipInput: true,
+        bottomContent: null,
       })
 
       if (!confirmed) {
@@ -74,7 +79,7 @@ export function useCrossChainFamilySwitch(): (
         return CrossChainFamilySwitchState.DISCONNECT_FAILED
       }
 
-      setChainIdToUrl(targetChain)
+      setChainIdToUrl(targetChainId)
       openWalletConnectionModal()
 
       if (!skipClose) {
