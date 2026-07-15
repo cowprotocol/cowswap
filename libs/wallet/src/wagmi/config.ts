@@ -80,7 +80,11 @@ OptionsController.setOptions({ ...OptionsController.state, enableInjected: false
 const isSafeApp = getIsSafeAppIframe()
 const isWidget = isInjectedWidget()
 const hasRecentConnector =
-  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+  typeof localStorage !== 'undefined' &&
+  Boolean(
+    localStorage.getItem('@appkit/eip155:connected_connector_id') ||
+      localStorage.getItem('@appkit/solana:connected_connector_id'),
+  )
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
