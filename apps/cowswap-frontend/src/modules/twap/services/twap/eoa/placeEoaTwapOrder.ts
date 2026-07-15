@@ -212,7 +212,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   // TODO: Maybe easier to use useApproveCallback before calling placeEoaTwapOrder, extract this logic so that it can also be used without hooks.
 
-  // TODO: We could bundle a permit instead for permittable tokens.
+  // TODO: We could bundle a permit instead for permittable tokens, or use EIP-7702 to batch them for wallets that support it.
 
   // Give allowance from the EOA to the Vault Relayer to pull the sell token needed for the BUY sell=buy order
   // (not the shed/proxy path).
