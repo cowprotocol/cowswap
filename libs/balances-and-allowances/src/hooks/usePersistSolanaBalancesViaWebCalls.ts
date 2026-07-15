@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 
 import { getIsToken2022 } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -60,7 +60,7 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
     dataUpdatedAt,
   } = useQuery({
     queryKey,
-    queryFn: () => fetchSolanaTokenBalances(connection!, account!, tokenMints),
+    queryFn: connection && account ? () => fetchSolanaTokenBalances(connection, account, tokenMints) : skipToken,
     enabled,
     refetchInterval: refetchInterval || undefined,
     refetchOnWindowFocus: false,
@@ -116,7 +116,7 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
         ...state,
         [chainId]: {
           ...state[chainId],
-          [account.toLowerCase()]: Date.now(),
+          [getAddressKey(account)]: Date.now(),
         },
       }))
     }

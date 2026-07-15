@@ -200,6 +200,22 @@ describe('usePersistSolanaBalancesViaWebCalls', () => {
     expect(atas[0].toBase58()).toBe(ataKey(MINT_A))
   })
 
+  it('keys the update timestamp by the case-sensitive Solana account, not a lowercased alias', async () => {
+    const { result } = renderHook(
+      () => {
+        usePersistSolanaBalancesViaWebCalls(makeParams())
+        return useAtomValue(balancesUpdateAtom)
+      },
+      { wrapper },
+    )
+
+    await waitFor(() => expect(result.current[SupportedChainId.SOLANA]?.[getAddressKey(ACCOUNT)]).toBeDefined())
+
+    // getAddressKey preserves case for Solana pubkeys; a lowercased key would alias distinct owners.
+    expect(ACCOUNT).not.toBe(ACCOUNT.toLowerCase())
+    expect(result.current[SupportedChainId.SOLANA]?.[ACCOUNT.toLowerCase()]).toBeUndefined()
+  })
+
   it('derives a Token-2022 ATA for mints tagged as Token-2022 in the token list', async () => {
     mockTokensByAddress = { [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG] } }
     mockAmountByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: 999n }
