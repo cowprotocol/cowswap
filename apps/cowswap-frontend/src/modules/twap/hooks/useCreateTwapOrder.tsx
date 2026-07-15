@@ -199,7 +199,7 @@ export function useCreateTwapOrder() {
         if (isEoaTwap) {
           const { sellEqualsBuyOrderId, proxyAddress } = await placeEoaTwapOrder({
             chainId,
-            account,
+            account: account as `0x${string}`,
             twapOrder,
             twapOrderCreationContext,
             paramsStruct,
