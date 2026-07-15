@@ -1,16 +1,26 @@
 import { useCallback } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isSameChainFamily } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet, useOpenWalletConnectionModal, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { useConfirmationRequest } from './useConfirmationRequest'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
+
+export enum CrossChainFamilySwitchState {
+  WALLET_NOT_CONNECTED = 'WALLET_NOT_CONNECTED',
+  NOT_CROSSING_CHAIN = 'NOT_CROSSING_CHAIN',
+  NOT_CONFIRMED = 'NOT_CONFIRMED',
+  DISCONNECT_FAILED = 'DISCONNECT_FAILED',
+  FINISHED = 'FINISHED',
+}
 
 /**
  * Handles switching to a network that belongs to a different chain family than the
@@ -25,7 +35,10 @@ import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
  * confirmed or cancelled), and `false` when the caller should perform a regular
  * same-family network switch.
  */
-export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<boolean> {
+export function useCrossChainFamilySwitch(): (
+  chainId: SupportedChainId,
+  skipClose?: boolean,
+) => Promise<CrossChainFamilySwitchState> {
   const { chainId: currentChainId, account } = useWalletInfo()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
@@ -34,25 +47,43 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
   const triggerConfirmation = useConfirmationRequest({})
 
   return useCallback(
-    async (targetChain: SupportedChainId, skipClose?: boolean) => {
+    async (targetChainId: SupportedChainId, skipClose?: boolean) => {
       const isWalletConnected = !!account
-      const crossingChainFamily = !isSameChainFamily(currentChainId, targetChain)
+      const crossingChainFamily = !isSameChainFamily(currentChainId, targetChainId)
 
-      if (!isWalletConnected || !crossingChainFamily) {
-        return false
+      if (!crossingChainFamily) {
+        return CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
       }
+
+      if (!isWalletConnected) {
+        return CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
+      }
+
+      const sourceChainLabel = CHAIN_INFO[currentChainId].label
+      const targetChainLabel = CHAIN_INFO[targetChainId].label
 
       const confirmed = await triggerConfirmation({
         confirmWord: t`confirm`,
         title: t`Switching network type`,
-        description: t`You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?`,
+        description: (
+          <span>
+            <Trans>
+              You're switching from {sourceChainLabel} to {targetChainLabel}.
+            </Trans>
+            <br />
+            <Trans>This requires connecting a different wallet.</Trans>
+            <br />
+            <Trans>Your current wallet will be disconnected.</Trans>
+          </span>
+        ),
         action: t`switch network type`,
-        callToAction: t`Confirm`,
+        callToAction: t`Connect wallet`,
         skipInput: true,
+        bottomContent: null,
       })
 
       if (!confirmed) {
-        return true
+        return CrossChainFamilySwitchState.NOT_CONFIRMED
       }
 
       try {
@@ -61,17 +92,17 @@ export function useCrossChainFamilySwitch(): (chainId: SupportedChainId, skipClo
         await disconnectWallet()
       } catch (error) {
         console.error('Failed to disconnect wallet while switching network type', error)
-        return true
+        return CrossChainFamilySwitchState.DISCONNECT_FAILED
       }
 
-      setChainIdToUrl(targetChain)
+      setChainIdToUrl(targetChainId)
       openWalletConnectionModal()
 
       if (!skipClose) {
         closeModal()
       }
 
-      return true
+      return CrossChainFamilySwitchState.FINISHED
     },
     [
       account,

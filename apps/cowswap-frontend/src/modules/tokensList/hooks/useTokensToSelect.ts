@@ -8,6 +8,7 @@ import { useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
@@ -22,6 +23,8 @@ export interface TokensToSelectContext {
   isLoading: boolean
   tokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  allowedRecentTokens: TokenWithLogo[] | undefined
+  hasScopedListRestriction: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
   bridgeSupportedTokensMap: Record<string, boolean> | null
@@ -31,6 +34,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   const { chainId } = useWalletInfo()
   const favoriteTokens = useFavoriteTokens()
   const { selectedTargetChainId = chainId, field, oppositeToken } = useSelectTokenWidgetState()
+  const { tokenLists, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
   const chainsToSelect = useChainsToSelect()
   const allTokens = useAtomValue(tokensToSelectAtom)
   const targetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId
@@ -47,6 +51,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [chainId, field, oppositeToken])
 
   const areTokensFromBridge = field === Field.OUTPUT && targetChainId !== sourceChainId
+  const hasScopedListRestriction = getHasScopedListRestriction(field, tokenLists, sellTokenLists, buyTokenLists)
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
@@ -67,23 +72,61 @@ export function useTokensToSelect(): TokensToSelectContext {
     }, {})
   }, [result])
 
+  const visibleTokens = useMemo(() => {
+    return (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS
+  }, [allTokens, areTokensFromBridge, result])
+
+  const allowedRecentTokens = hasScopedListRestriction ? allTokens : undefined
+
   return useMemo(() => {
-    // In bridge mode, hide favorites until we know what's actually bridgeable for this chain pair.
-    // This avoids selecting a favorite token and then getting it cleared by async validation.
+    // Favorites are shortcuts, not permissions: keep them inside the field-scoped token set.
+    // In bridge mode they must also be bridgeable for the current chain pair.
+    const scopedTokenAddresses = new Set(allTokens.map((token) => getAddressKey(token.address)))
+    const visibleTokenAddresses = new Set(visibleTokens.map((token) => getAddressKey(token.address)))
     const favoriteTokensToSelect =
       areTokensFromBridge && bridgeSupportedTokensMap === null
         ? EMPTY_TOKENS
-        : bridgeSupportedTokensMap
-          ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[getAddressKey(token.address)])
-          : favoriteTokens
+        : favoriteTokens.filter((token) => {
+            const address = getAddressKey(token.address)
+
+            return visibleTokenAddresses.has(address) && (!areTokensFromBridge || scopedTokenAddresses.has(address))
+          })
 
     return {
       isLoading: areTokensFromBridge ? isLoading : false,
-      tokens: (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS,
+      tokens: visibleTokens,
       favoriteTokens: favoriteTokensToSelect,
+      allowedRecentTokens,
+      hasScopedListRestriction,
       areTokensFromBridge,
       isRouteAvailable: result?.isRouteAvailable,
       bridgeSupportedTokensMap,
     }
-  }, [allTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens, result])
+  }, [
+    allTokens,
+    allowedRecentTokens,
+    bridgeSupportedTokensMap,
+    favoriteTokens,
+    hasScopedListRestriction,
+    isLoading,
+    areTokensFromBridge,
+    result,
+    visibleTokens,
+  ])
+}
+
+function getHasScopedListRestriction(
+  field: Field | undefined,
+  tokenLists: string[] | undefined,
+  sellTokenLists: string[] | undefined,
+  buyTokenLists: string[] | undefined,
+): boolean {
+  const applicableLists =
+    field === Field.INPUT
+      ? [tokenLists, sellTokenLists]
+      : field === Field.OUTPUT
+        ? [tokenLists, buyTokenLists]
+        : [tokenLists, sellTokenLists, buyTokenLists]
+
+  return applicableLists.some((lists) => Boolean(lists?.length))
 }

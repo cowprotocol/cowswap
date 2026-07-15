@@ -1,4 +1,25 @@
-import { isRejectRequestProviderError } from './misc'
+import { isRejectRequestProviderError, TimeoutError, withTimeout } from './misc'
+
+describe('withTimeout', () => {
+  it('resolves when the promise settles before the timeout', async () => {
+    await expect(withTimeout(Promise.resolve('ok'), { timeout: 1000, timeoutMessage: 'Timed out' })).resolves.toBe('ok')
+  })
+
+  it('rejects with TimeoutError when the promise times out', async () => {
+    await expect(
+      withTimeout(new Promise(() => undefined), { timeout: 50, timeoutMessage: 'Timed out' }),
+    ).rejects.toThrow(TimeoutError)
+  })
+
+  it('rejects with the provided timeout message', async () => {
+    await expect(
+      withTimeout(new Promise(() => undefined), {
+        timeout: 50,
+        timeoutMessage: 'Timed out',
+      }),
+    ).rejects.toThrow('Timed out')
+  })
+})
 
 describe('isRejectRequestProviderError', () => {
   it('detects the standard EIP-1193 rejection code', () => {
