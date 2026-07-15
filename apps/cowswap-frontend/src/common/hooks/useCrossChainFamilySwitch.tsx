@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet, useOpenWalletConnectionModal, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -59,7 +60,17 @@ export function useCrossChainFamilySwitch(): (
       const confirmed = await triggerConfirmation({
         confirmWord: t`confirm`,
         title: t`Switching network type`,
-        description: t`You're switching from ${sourceChainLabel} to ${targetChainLabel}. This requires connecting a different wallet. Your current wallet will be disconnected.`,
+        description: (
+          <span>
+            <Trans>
+              You're switching from {sourceChainLabel} to {targetChainLabel}.
+            </Trans>
+            <br />
+            <Trans>This requires connecting a different wallet.</Trans>
+            <br />
+            <Trans>Your current wallet will be disconnected.</Trans>
+          </span>
+        ),
         action: t`switch network type`,
         callToAction: t`Connect wallet`,
         skipInput: true,

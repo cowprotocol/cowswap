@@ -7,7 +7,7 @@ if (typeof location !== 'undefined') {
 
   if (value === 'true') {
     localStorage.setItem('IS_SOLANA_ENABLED', '1')
-  } else {
+  } else if (value === 'false') {
     localStorage.removeItem('IS_SOLANA_ENABLED')
   }
 }

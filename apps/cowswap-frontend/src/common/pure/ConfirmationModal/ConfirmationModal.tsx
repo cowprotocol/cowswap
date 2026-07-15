@@ -29,7 +29,7 @@ const Warning = styled.strong`
 export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
-  description?: string
+  description?: ReactNode
   warning?: string
   callToAction?: string
   onDismiss: Command
