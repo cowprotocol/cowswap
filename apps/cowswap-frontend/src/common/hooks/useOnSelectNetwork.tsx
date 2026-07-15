@@ -38,8 +38,9 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         setChainIdToUrl(targetChain)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        console.error('Failed to switch networks', error)
+      } catch (_error: any) {
+        console.error('Failed to switch networks', _error)
+        const error = _error.originalError ?? _error
 
         const causeIsRejection = !error.cause || isRejectRequestProviderError(error.cause)
         if (isRejectRequestProviderError(error) && causeIsRejection) {
