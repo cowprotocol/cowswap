@@ -134,6 +134,28 @@ describe('fetchSolanaTokenBalances', () => {
     ])
   })
 
+  it('isolates a malformed mint so valid balances still load', async () => {
+    // Passes the token-list base58 length/charset check but decodes to 33 bytes, so `new PublicKey`
+    // throws. It must not prevent the valid mint's balance from loading.
+    const BAD_MINT = 'z'.repeat(44)
+    const classicAta = ataFor(CLASSIC_MINT, TOKEN_PROGRAM_ID)
+    const connection = createConnection(
+      new Map<string, AccountInfo<Buffer> | null>([
+        [classicAta.toBase58(), encodeTokenAccount(CLASSIC_MINT, OWNER, 500n, TOKEN_PROGRAM_ID)],
+      ]),
+    )
+
+    const result = await fetchSolanaTokenBalances(connection, OWNER.toBase58(), [
+      { mint: BAD_MINT, isToken2022: false },
+      { mint: CLASSIC_MINT.toBase58(), isToken2022: false },
+    ])
+
+    expect(result).toEqual([
+      { mint: BAD_MINT, balance: 0n },
+      { mint: CLASSIC_MINT.toBase58(), balance: 500n },
+    ])
+  })
+
   it('returns a zero balance when the ATA does not exist', async () => {
     const connection = createConnection(new Map<string, AccountInfo<Buffer> | null>())
 

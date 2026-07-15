@@ -40,21 +40,44 @@ export async function fetchSolanaTokenBalances(
 ): Promise<SolanaTokenBalance[]> {
   const owner = new PublicKey(ownerAddress)
 
-  const programIds = tokens.map(({ isToken2022 }) => (isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID))
-  const atas = tokens.map(({ mint }, index) =>
-    getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, programIds[index], ASSOCIATED_TOKEN_PROGRAM_ID),
+  // Every token defaults to a zero balance, keeping the result aligned to `tokens` order regardless
+  // of which ATAs resolve or exist.
+  const balances: SolanaTokenBalance[] = tokens.map(({ mint }) => ({ mint, balance: 0n }))
+
+  // Derive each ATA up front, isolating any mint that fails to parse. A malformed mint can pass the
+  // token list's base58 length/charset check yet still not decode to a 32-byte public key, so
+  // `new PublicKey(mint)` would throw. Building the ATAs in a single `map` would let one bad mint
+  // reject balances for the entire list — instead we drop it and leave its zero balance in place.
+  const resolvable: { index: number; ata: PublicKey; programId: PublicKey }[] = []
+  tokens.forEach(({ mint, isToken2022 }, index) => {
+    const programId = isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
+    try {
+      const ata = getAssociatedTokenAddressSync(
+        new PublicKey(mint),
+        owner,
+        false,
+        programId,
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+      )
+      resolvable.push({ index, ata, programId })
+    } catch {
+      // Malformed mint: leave the default zero balance so the rest of the list still loads.
+    }
+  })
+
+  const ataInfos = await getMultipleAccountsInfoBatched(
+    connection,
+    resolvable.map(({ ata }) => ata),
   )
 
-  const ataInfos = await getMultipleAccountsInfoBatched(connection, atas)
+  ataInfos.forEach((info, i) => {
+    if (!info) return
 
-  return ataInfos.map((info, index) => {
-    const { mint } = tokens[index]
-    if (!info) return { mint, balance: 0n }
-
-    const account = unpackAccount(atas[index], info, programIds[index])
-
-    return { mint, balance: account.amount }
+    const { index, ata, programId } = resolvable[i]
+    balances[index].balance = unpackAccount(ata, info, programId).amount
   })
+
+  return balances
 }
 
 async function getMultipleAccountsInfoBatched(
