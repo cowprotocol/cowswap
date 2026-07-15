@@ -1671,7 +1671,6 @@ msgid "Please contact CoW Swap support!"
 msgstr "Please contact CoW Swap support!"
 
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
-#: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW AMM"
 msgstr "CoW AMM"
 
