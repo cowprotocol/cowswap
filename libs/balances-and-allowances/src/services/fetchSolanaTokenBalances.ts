@@ -1,10 +1,18 @@
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
+  TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   unpackAccount,
 } from '@solana/spl-token'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
+
+export interface SolanaTokenMint {
+  mint: string
+  // Token-2022 mints use a different program, which changes both the ATA address and its data layout.
+  // Sourced from the token list's `extensions.isToken2022` flag.
+  isToken2022: boolean
+}
 
 interface SolanaTokenBalance {
   mint: string
@@ -16,39 +24,49 @@ interface SolanaTokenBalance {
 const MAX_ACCOUNTS_PER_REQUEST = 100
 
 /**
- * Reads SPL-token balances for `tokenMints` owned by `ownerAddress`.
+ * Reads SPL-token balances for `tokens` owned by `ownerAddress`, supporting both the classic SPL Token
+ * program and Token-2022.
  *
- * Balances live on the owner's Associated Token Account (ATA), not on the mint, so we derive the
- * ATA for each mint and batch-read them via `getMultipleAccountsInfo` in chunks of
- * {@link MAX_ACCOUNTS_PER_REQUEST}. A missing account means the owner never held that token, which
- * is a zero balance rather than an error.
+ * Balances live on the owner's Associated Token Account (ATA), not on the mint. The ATA address and its
+ * data layout both depend on the mint's token program, which we take from each token's `isToken2022`
+ * flag rather than an extra RPC round-trip to read the mint. ATAs are batch-read via
+ * `getMultipleAccountsInfo` in chunks of {@link MAX_ACCOUNTS_PER_REQUEST}. A missing account means the
+ * owner never held that token, which is a zero balance rather than an error.
  */
 export async function fetchSolanaTokenBalances(
   connection: Connection,
   ownerAddress: string,
-  tokenMints: string[],
+  tokens: SolanaTokenMint[],
 ): Promise<SolanaTokenBalance[]> {
   const owner = new PublicKey(ownerAddress)
 
-  const atas = tokenMints.map((mint) =>
-    getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID),
+  const programIds = tokens.map(({ isToken2022 }) => (isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID))
+  const atas = tokens.map(({ mint }, index) =>
+    getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, programIds[index], ASSOCIATED_TOKEN_PROGRAM_ID),
   )
 
-  const batches: (typeof atas)[] = []
-  for (let i = 0; i < atas.length; i += MAX_ACCOUNTS_PER_REQUEST) {
-    batches.push(atas.slice(i, i + MAX_ACCOUNTS_PER_REQUEST))
+  const ataInfos = await getMultipleAccountsInfoBatched(connection, atas)
+
+  return ataInfos.map((info, index) => {
+    const { mint } = tokens[index]
+    if (!info) return { mint, balance: 0n }
+
+    const account = unpackAccount(atas[index], info, programIds[index])
+
+    return { mint, balance: account.amount }
+  })
+}
+
+async function getMultipleAccountsInfoBatched(
+  connection: Connection,
+  addresses: PublicKey[],
+): Promise<(AccountInfo<Buffer> | null)[]> {
+  const batches: PublicKey[][] = []
+  for (let i = 0; i < addresses.length; i += MAX_ACCOUNTS_PER_REQUEST) {
+    batches.push(addresses.slice(i, i + MAX_ACCOUNTS_PER_REQUEST))
   }
 
   const infosPerBatch = await Promise.all(batches.map((batch) => connection.getMultipleAccountsInfo(batch)))
-  const infos = infosPerBatch.flat()
 
-  return infos.map((info, index) => {
-    if (!info) {
-      return { mint: tokenMints[index], balance: 0n }
-    }
-
-    const account = unpackAccount(atas[index], info, TOKEN_PROGRAM_ID)
-
-    return { mint: tokenMints[index], balance: account.amount }
-  })
+  return infosPerBatch.flat()
 }
