@@ -1,28 +1,17 @@
 import { isDev, isLocalHost, isVercel } from '../env/env.constants'
 
-const vercelWidgetConfiguratorPrefix = 'widget-configurator-git-'
-const cfPagesPreviewSuffix = `.swap-dev-5u6.pages.dev`
-const cfPagesPreviewSubdomainMaxLength = 28
-const cfPagesPreviewSubdomainFallback = 'preview'
-const vercelPreviewHashSuffix = /-[a-f0-9]{6}$/
+const vercelSwapPreviewPrefix = 'swap-dev-git-'
+const vercelPreviewScopeSuffix = '-cowswap-dev'
+const vercelPreviewDomain = '.vercel.app'
+const vercelBranchMaxLength = 63 - vercelSwapPreviewPrefix.length - vercelPreviewScopeSuffix.length
 
-export function branchNameToCfPagesSubdomain(branchName: string): string {
-  const subdomain = branchName
+export function branchNameToVercelPreviewUrl(branchName: string): string {
+  const branch = branchName
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-')
-    .slice(0, cfPagesPreviewSubdomainMaxLength)
-    .replace(/^-+|-+$/g, '')
+    .replace(/[^a-z0-9-]/g, '-')
+    .slice(0, vercelBranchMaxLength)
 
-  return subdomain || cfPagesPreviewSubdomainFallback
-}
-
-export function vercelPreviewSlugToCfPagesSubdomain(
-  branchSlug: string,
-  branchName = process.env.VERCEL_GIT_COMMIT_REF,
-): string {
-  const branch = branchName || branchSlug.replace(vercelPreviewHashSuffix, '')
-
-  return branchNameToCfPagesSubdomain(branch)
+  return `https://${vercelSwapPreviewPrefix}${branch}${vercelPreviewScopeSuffix}${vercelPreviewDomain}`
 }
 
 /** Used by the configurator preview and as the default `baseUrl` in built params. */
@@ -39,10 +28,8 @@ export function getBaseUrl(): string {
 
   if (isDev) return 'https://dev.swap.cow.fi'
 
-  if (isVercel) {
-    const prKey = window.location.hostname.replace(vercelWidgetConfiguratorPrefix, '')
-
-    return `https://${vercelPreviewSlugToCfPagesSubdomain(prKey)}${cfPagesPreviewSuffix}`
+  if (isVercel && process.env.VERCEL_GIT_COMMIT_REF) {
+    return branchNameToVercelPreviewUrl(process.env.VERCEL_GIT_COMMIT_REF)
   }
 
   return 'https://swap.cow.fi'
@@ -51,7 +38,7 @@ export function getBaseUrl(): string {
 export function getEnvLabel(url: string): 'Local' | 'Preview' | 'Dev' | 'Production' | 'Unknown' {
   if (/^https?:\/\/(localhost|127\.0\.0\.1|::1|\.localhost):\d+/.test(url)) return 'Local'
 
-  if (url.includes(cfPagesPreviewSuffix)) return 'Preview'
+  if (url.includes(vercelPreviewDomain)) return 'Preview'
 
   if (url.startsWith('https://dev.swap.cow.fi') || url.startsWith('https://dev.widget.cow.fi')) return 'Dev'
 
