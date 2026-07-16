@@ -2,7 +2,7 @@ import { type Address, encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@cowprotocol/common-utils'
+import { calculateGasMargin, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowprotocol/common-utils'
 import {
   AccountAddress,
   isEvmChain,
@@ -23,7 +23,7 @@ import { estimateApprove } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
-import { EOA_TWAP_SHED_FACTORY_OPTIONS } from './placeEoaTwapOrder.constants'
+import { EOA_TWAP_POC_DEBUG, EOA_TWAP_SHED_FACTORY_OPTIONS } from './placeEoaTwapOrder.constants'
 
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
@@ -31,6 +31,7 @@ import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 
 const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
+const log = createCowLogger('EOA TWAP')
 
 // TODO: Move to `@cowprotocol/cow-sdk` just like `import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'`?
 const EOA_TWAP_SETUP_DAPP_ID = 'cowswap://twap/eoa-setup' // cow-sdk-scripts://composable-cow/post-twap-for-eoa
@@ -111,8 +112,8 @@ export function getEoaTwapOrderShedCalls({
 
   const { needsApproval, needsZeroApproval } = proxyAllowances
 
-  console.log('EOA approvals', twapOrderCreationContext.needsApproval, twapOrderCreationContext.needsZeroApproval)
-  console.log('Proxy approvals', { needsApproval, needsZeroApproval })
+  eoaTwapDebugLog('EOA approvals', twapOrderCreationContext.needsApproval, twapOrderCreationContext.needsZeroApproval)
+  eoaTwapDebugLog('Proxy approvals', { needsApproval, needsZeroApproval })
 
   const { sellAmount } = twapOrder
   const sellTokenAddress = sellAmount.currency.address
@@ -214,7 +215,7 @@ export async function placeEoaTwapOrder({
   // proxyAddress (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
   const proxyAddress = cowShedSdk.getCowShedAccount(chainId, account) as AccountAddress
 
-  console.log('CowShed account:', proxyAddress)
+  eoaTwapDebugLog('CowShed account:', proxyAddress)
 
   // Define trade parameters
   const { buyAmount, numOfParts } = twapOrder
@@ -222,35 +223,12 @@ export async function placeEoaTwapOrder({
   const buyToken = buyAmount.currency
   const sellAmountFormatted = sellAmount.toExact()
 
-  console.log(
+  eoaTwapDebugLog(
     `TWAP sell ${sellAmountFormatted} ${sellToken.symbol} for ${buyToken.symbol} in ${numOfParts} parts.
 To create the TWAP we will use an intermediate sell=buy order with a post hook:
   - Buy ${sellAmountFormatted} ${sellToken.symbol} with ${sellToken.symbol}, sent to ${proxyAddress}
   - Post-hook will create the TWAP using cow-shed. Each part sells ${sellToken.symbol} for ${buyToken.symbol}`,
   )
-
-  /*
-  console.log("TWAP ID:", twapOrder.id);
-  console.log("TWAP params for cereation of order", {
-    twapParams: twapOrder.leaf,
-    twapData: debugStringify(twapOrder.data),
-    twapAppDataContent: twapOrder.appData,
-  });
-  */
-
-  /*
-  // Already included in twapOrderCreationContext
-  const needsApproval = await getProxyNeedsVaultRelayerApproval({
-    config,
-    sellTokenAddress: sellToken.address,
-    proxyAddress,
-    vaultRelayerAddress,
-    sellAmountAtoms,
-  })
-
-  // TODO: To be implemented...
-  const needsZeroApproval = false;
-  */
 
   const proxyAllowances = await getProxyAllowances({
     config,
@@ -278,7 +256,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     // gasLimit: DEFAULT_GAS_LIMIT,
   })
 
-  console.log('Signed multicall=', signedMulticall)
+  eoaTwapDebugLog('Signed multicall=', signedMulticall)
 
   // TODO: We might want to quote differently for Safe vs EOA TWAPs, and then send the quoteId here
   // to skip this getQuote call:
@@ -320,7 +298,6 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     },
   )
 
-  // Print the quote
   printQuote(quoteResults)
 
   // Funding order sell size from the quote (BUY sell=buy after costs/slippage), which can exceed TWAP sell size.
@@ -328,12 +305,13 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   const fundingSellAmount = CurrencyAmount.fromRawAmount(sellToken, fundingSellAmountAtoms.toString())
   const fundingSellAmountFormatted = fundingSellAmount.toExact()
 
-  // Ask for confirmation before posting the order
-  const confirmed = confirm(
-    `Your CoW Shed will get exactly ${sellAmountFormatted} ${sellToken.symbol} for at most ${fundingSellAmountFormatted} ${sellToken.symbol}. Then a TWAP will be created with each part selling ${sellToken.symbol} for ${buyToken.symbol}. ok?`,
-  )
+  if (EOA_TWAP_POC_DEBUG) {
+    const confirmed = confirm(
+      `Your CoW Shed will get exactly ${sellAmountFormatted} ${sellToken.symbol} for at most ${fundingSellAmountFormatted} ${sellToken.symbol}. Then a TWAP will be created with each part selling ${sellToken.symbol} for ${buyToken.symbol}. ok?`,
+    )
 
-  if (!confirmed) throw new Error('User did not confirm the order')
+    if (!confirmed) throw new Error('User did not confirm the order')
+  }
 
   // TODO: Maybe easier to use useApproveCallback before calling placeEoaTwapOrder, extract this logic so that it can also be used without hooks.
   // TODO: We could use EIP-7702 to batch them for wallets that support it.
@@ -365,7 +343,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       amount: fundingSellAmountAtoms,
       customSpender: spender,
     }).catch((error) => {
-      console.error('Error generating permit data', error)
+      log.warn('Error generating permit data; falling back to approval', error)
       return null
     })
 
@@ -513,14 +491,19 @@ export const jsonReplacer = (_key: string, value: unknown): unknown => {
   return value
 }
 
-export function printQuote(quoteResults: QuoteResults): void {
-  console.log(`\n📉 Suggested slippage: ${quoteResults.suggestedSlippageBps}`)
+function eoaTwapDebugLog(...args: unknown[]): void {
+  if (!EOA_TWAP_POC_DEBUG) return
 
-  console.log('\n🤝 Quote: ', JSON.stringify(quoteResults.quoteResponse, jsonReplacer, 2))
-  console.log('\n💰 Amounts and costs: ', JSON.stringify(quoteResults.amountsAndCosts, jsonReplacer, 2))
-  console.log('\n💿 App Data: ', JSON.stringify(quoteResults.appDataInfo, jsonReplacer, 2))
+  log.debug(...args)
+}
 
-  console.log('\n✍️ Order to sign: ', JSON.stringify(quoteResults.orderToSign, jsonReplacer, 2))
+function printQuote(quoteResults: QuoteResults): void {
+  if (!EOA_TWAP_POC_DEBUG) return
 
-  console.log('\n📝 Order Typed Data: ', JSON.stringify(quoteResults.orderTypedData, jsonReplacer, 2))
+  eoaTwapDebugLog(`Suggested slippage: ${quoteResults.suggestedSlippageBps}`)
+  eoaTwapDebugLog('Quote:', JSON.stringify(quoteResults.quoteResponse, jsonReplacer, 2))
+  eoaTwapDebugLog('Amounts and costs:', JSON.stringify(quoteResults.amountsAndCosts, jsonReplacer, 2))
+  eoaTwapDebugLog('App Data:', JSON.stringify(quoteResults.appDataInfo, jsonReplacer, 2))
+  eoaTwapDebugLog('Order to sign:', JSON.stringify(quoteResults.orderToSign, jsonReplacer, 2))
+  eoaTwapDebugLog('Order Typed Data:', JSON.stringify(quoteResults.orderTypedData, jsonReplacer, 2))
 }

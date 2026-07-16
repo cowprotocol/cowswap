@@ -1,5 +1,11 @@
 import type { ICoWShedOptions } from '@cowprotocol/sdk-cow-shed'
 
+/**
+ * POC helpers: verbose logs + window.confirm before posting the funding order.
+ * Keep true while dogfooding; turn off (or replace with real UI) before general release.
+ */
+export const EOA_TWAP_POC_DEBUG = true
+
 export const EOA_TWAP_SHED_FACTORY_OPTIONS: ICoWShedOptions = {
   factoryAddress: '0x4f4350bf2c74aacd508d598a1ba94ef84378793d',
   implementationAddress: '0x6773d5aA31A1EAD34127D564D6E258E66254EbDb',

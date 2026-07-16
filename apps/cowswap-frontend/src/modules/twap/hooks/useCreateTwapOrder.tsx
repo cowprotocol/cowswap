@@ -5,6 +5,7 @@ import { useConfig } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { createCowLogger } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -14,7 +15,11 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { useAdvancedOrdersDerivedState, useComposableCowContractData, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
+import {
+  useAdvancedOrdersDerivedState,
+  useComposableCowContractData,
+  useUpdateAdvancedOrdersRawState,
+} from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -36,6 +41,7 @@ import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
+import { EOA_TWAP_POC_DEBUG } from '../services/twap/eoa/placeEoaTwapOrder.constants'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
@@ -60,6 +66,8 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
   label: `${UiOrderType.TWAP}|${string}`
 }
 
+const log = createCowLogger('CreateTwapOrder')
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
@@ -81,11 +89,7 @@ export function useCreateTwapOrder() {
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
   // Funding order is a swap-like sell=buy; ADVANCED_ORDERS disables permit, so look up as SWAP.
-  const permitInfo = usePermitInfo(
-    inputCurrencyAmount?.currency,
-    TradeType.SWAP,
-    twapOrderCreationContext?.spender,
-  )
+  const permitInfo = usePermitInfo(inputCurrencyAmount?.currency, TradeType.SWAP, twapOrderCreationContext?.spender)
   const generatePermitHook = useGeneratePermitHook()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
@@ -127,7 +131,7 @@ export function useCreateTwapOrder() {
   return useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function, complexity
+    // eslint-disable-next-line max-lines-per-function
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!isSafeWallet && !isTwapEoaEnabled) {
         return
@@ -194,7 +198,9 @@ export function useCreateTwapOrder() {
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
         // TODO: Is it correct to do this here?
-        console.log("Uploading TWAP app data to API...");
+        if (EOA_TWAP_POC_DEBUG) {
+          log.debug('Uploading TWAP app data to API')
+        }
         await uploadAppDataDocOrderbookApi({
           appDataKeccak256: appDataInfo.appDataKeccak256,
           fullAppData: appDataInfo.fullAppData,
@@ -235,8 +241,6 @@ export function useCreateTwapOrder() {
           safeTxHashOrSellEqualsBuyOrderOId = safeTxHash
           safeAddressOrCowShedAddress = safeAddress // === account
           orderStatus = TwapOrderStatus.WaitSigning
-
-          console.warn(safeAddress, account, safeAddress === account);
         }
 
         const orderItem: TwapOrderItem = {
@@ -282,7 +286,7 @@ export function useCreateTwapOrder() {
           navigateToOrdersTableTab(isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING)
         })
       } catch (error) {
-        console.error('[useCreateTwapOrder] error', error)
+        log.error(error)
         const errorMessage = getErrorMessage(error)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
