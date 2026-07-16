@@ -2,6 +2,9 @@ import React, { isValidElement } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -17,6 +20,7 @@ import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+import { SolanaTradeButtons } from '../SolanaTradeButtons'
 
 const PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION: TradeFormValidation[] = [
   TradeFormValidation.ApproveAndSwapInBundle,
@@ -31,6 +35,7 @@ interface TradeButtonsProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const { i18n, t } = useLingui()
+  const { chainId } = useWalletInfo()
   const CONFIRM_TEXT = t`Review limit order`
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -41,6 +46,12 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
   const isDisabled = !warningsAccepted || !isTradeContextReady
+
+  // Solana limit orders use a dedicated on-chain placement flow (prototype);
+  // the shared validation/quote/approve pipeline is EVM-only
+  if (isSolanaChain(chainId)) {
+    return <SolanaTradeButtons />
+  }
 
   if (!tradeFormButtonContext) return null
 
