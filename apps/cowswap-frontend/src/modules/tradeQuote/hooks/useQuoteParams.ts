@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -74,6 +74,9 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
     if (!inputCurrency || !outputCurrency || !orderKind) return
+
+    // No backend quote exists for Solana pairs; the limit-orders prototype uses a manually entered price
+    if (isSolanaChain(inputCurrency.chainId)) return
 
     if (!amount) {
       return { quoteParams: undefined, inputCurrency, appData: appDataDoc }
