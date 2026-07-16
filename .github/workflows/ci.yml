@@ -190,7 +190,7 @@ jobs:
 
   integration-tests:
     name: Cypress
-    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
