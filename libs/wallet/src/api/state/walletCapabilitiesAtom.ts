@@ -25,7 +25,7 @@ import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
 
-const REQUEST_TIMEOUT_MS = ms`5s`
+export const REQUEST_TIMEOUT_MS = ms`30s`
 
 /**
  * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
