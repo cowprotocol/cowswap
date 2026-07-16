@@ -19,8 +19,10 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
+import { TradeType } from 'modules/trade/types/TradeType'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -77,6 +79,14 @@ export function useCreateTwapOrder() {
   const sendSafeTransactions = useSendBatchTransactions()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
+
+  // Funding order is a swap-like sell=buy; ADVANCED_ORDERS disables permit, so look up as SWAP.
+  const permitInfo = usePermitInfo(
+    inputCurrencyAmount?.currency,
+    TradeType.SWAP,
+    twapOrderCreationContext?.spender,
+  )
+  const generatePermitHook = useGeneratePermitHook()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
@@ -206,6 +216,8 @@ export function useCreateTwapOrder() {
             signer: eoaSigner,
             config,
             composableCowContract,
+            permitInfo,
+            generatePermitHook,
           })
 
           safeTxHashOrSellEqualsBuyOrderOId = sellEqualsBuyOrderId
@@ -301,6 +313,8 @@ export function useCreateTwapOrder() {
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
       composableCowContract,
+      permitInfo,
+      generatePermitHook,
     ],
   )
 }

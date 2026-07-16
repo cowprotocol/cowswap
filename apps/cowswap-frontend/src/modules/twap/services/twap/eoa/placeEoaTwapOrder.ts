@@ -6,12 +6,14 @@ import { calculateGasMargin, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@co
 import { AccountAddress, isEvmChain, QuoteResults, SignerLike, SupportedChainId, areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { CowShedSdk, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { ComposableCowContractData } from 'modules/advancedOrders'
 import { estimateApprove } from 'modules/erc20Approve'
+import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { getCreateTwapOrderCalldata } from 'modules/twap/services/getTwapCreateCalldata'
 import { shouldZeroApprove } from 'modules/zeroApproval/hooks/useShouldZeroApprove'
 
@@ -36,6 +38,9 @@ export interface PlaceEoaTwapOrderParams {
   signer: SignerLike
   config: Config
   composableCowContract: ComposableCowContractData
+  /** Initial buy sell=buy order permit info */
+  permitInfo: IsTokenPermittableResult
+  generatePermitHook: GeneratePermitHook
 }
 
 export interface PlaceEoaTwapOrderResult {
@@ -56,6 +61,8 @@ export async function placeEoaTwapOrder({
   paramsStruct,
   signer,
   config,
+  permitInfo,
+  generatePermitHook,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
 
@@ -161,6 +168,13 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   // we get (into the proxy account) matches the intended sell amount of the actual TWAP. So, solver will
   // compete to offer the best (lowest) sell amount for the TWAP, which at the very least = buy amount + gas costs.
 
+  const approveAndCreateTwapPostHook = {
+    target: signedMulticall.to,
+    callData: signedMulticall.data,
+    gasLimit: gasLimit.toString(),
+    dappId: EOA_TWAP_SETUP_DAPP_ID,
+  }
+
   const { quoteResults, postSwapOrderFromQuote } = await tradingSdk.getQuote(
     {
       kind: OrderKind.BUY,
@@ -181,13 +195,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
         metadata: {
           hooks: {
             post: [
-              // Approve and create the TWAP
-              {
-                target: signedMulticall.to,
-                callData: signedMulticall.data,
-                gasLimit: gasLimit.toString(),
-                dappId: EOA_TWAP_SETUP_DAPP_ID,
-              },
+              approveAndCreateTwapPostHook,
             ],
           },
         },
@@ -211,15 +219,15 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   if (!confirmed) throw new Error('User did not confirm the order')
 
   // TODO: Maybe easier to use useApproveCallback before calling placeEoaTwapOrder, extract this logic so that it can also be used without hooks.
-
-  // TODO: We could bundle a permit instead for permittable tokens, or use EIP-7702 to batch them for wallets that support it.
-
+  // TODO: We could use EIP-7702 to batch them for wallets that support it.
+  //
   // Give allowance from the EOA to the Vault Relayer to pull the sell token needed for the BUY sell=buy order
-  // (not the shed/proxy path).
+  // (not the shed/proxy path). Prefer a permit pre-hook when the token supports it (same as swap);
+  // otherwise approve / zero-approve on-chain.
   //
   // Do not use twapOrderCreationContext.needsApproval / needsZeroApproval here: those flags compare the EOA
   // allowance to the form TWAP sell size. The funding order's quoted sell amount (BUY sell=buy after costs /
-  // slippage) can be higher, so re-check against the quote and approve max if short.
+  // slippage) can be higher, so re-check against the quote.
   const eoaAllowance = await readContract(config, {
     address: sellTokenAddress,
     abi: erc20Abi,
@@ -228,6 +236,39 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   }).catch(() => 0n)
 
   const eoaNeedsApproval = eoaAllowance < fundingSellAmountAtoms
+
+  if (eoaNeedsApproval && isSupportedPermitInfo(permitInfo)) {
+    const permitData = await generatePermitHook({
+      inputToken: {
+        address: sellTokenAddress,
+        name: sellToken.name,
+      },
+      account,
+      permitInfo,
+      amount: fundingSellAmountAtoms,
+      customSpender: spender,
+    }).catch((error) => {
+      console.error('Error generating permit data', error);
+      return null
+    })
+
+    // If `generatePermitHook` fails, we simply continue without a permit, using teh approval flow below.
+    if (permitData) {
+      const { orderId: sellEqualsBuyOrderId } = await postSwapOrderFromQuote({
+        appData: {
+          metadata: {
+            hooks: {
+              // mergeAppDataDoc clears hooks when overriding, so we need to pass both pre (permit) and post (TWAP setup) hooks:
+              pre: [permitData],
+              post: [approveAndCreateTwapPostHook],
+            },
+          },
+        },
+      })
+
+      return { sellEqualsBuyOrderId, proxyAddress }
+    }
+  }
 
   const eoaNeedsZeroApproval = eoaNeedsApproval
     ? !!(await shouldZeroApprove({
