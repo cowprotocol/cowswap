@@ -129,7 +129,8 @@ export function getEoaTwapOrderShedCalls({
       }),
       value: 0n,
       isDelegateCall: false,
-      allowFailure: true,
+      // Must not allow failure: otherwise the sell=buy order can go through while create/approve is skipped, and funds get stuck in the proxy account.
+      allowFailure: false,
     },
   ]
 
@@ -144,7 +145,7 @@ export function getEoaTwapOrderShedCalls({
       }),
       value: 0n,
       isDelegateCall: false,
-      allowFailure: true,
+      allowFailure: false,
     }
 
     txs.unshift(approveTx)
@@ -161,7 +162,7 @@ export function getEoaTwapOrderShedCalls({
       }),
       value: 0n,
       isDelegateCall: false,
-      allowFailure: true,
+      allowFailure: false,
     }
 
     txs.unshift(zeroApproveTx)

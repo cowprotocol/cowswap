@@ -70,13 +70,13 @@ describe('getEoaTwapOrderShedCalls()', () => {
     expect(calls[0].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
     expect(calls[0].value).toBe(0n)
     expect(calls[0].isDelegateCall).toBe(false)
-    expect(calls[0].allowFailure).toBe(true)
+    expect(calls[0].allowFailure).toBe(false)
     expect(calls[0].callData).toMatch(/^0x/)
 
     expect(calls[1].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
     expect(calls[1].value).toBe(0n)
     expect(calls[1].isDelegateCall).toBe(false)
-    expect(calls[1].allowFailure).toBe(true)
+    expect(calls[1].allowFailure).toBe(false)
     expect(calls[1].callData).toMatch(/^0x/)
   })
 
@@ -90,7 +90,7 @@ describe('getEoaTwapOrderShedCalls()', () => {
 
     expect(calls).toHaveLength(1)
     expect(calls[0].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
-    expect(calls[0].allowFailure).toBe(true)
+    expect(calls[0].allowFailure).toBe(false)
   })
 
   it('Includes zero-approve before approve when proxy needsZeroApproval is true', () => {
@@ -103,7 +103,10 @@ describe('getEoaTwapOrderShedCalls()', () => {
 
     expect(calls).toHaveLength(3)
     expect(calls[0].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[0].allowFailure).toBe(false)
     expect(calls[1].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[1].allowFailure).toBe(false)
     expect(calls[2].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
+    expect(calls[2].allowFailure).toBe(false)
   })
 })
