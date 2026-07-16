@@ -5,6 +5,11 @@ const vercelPreviewScopeSuffix = '-cowswap-dev'
 const vercelPreviewDomain = '.vercel.app'
 const vercelDeploymentLabelMaxLength = 63
 
+type VercelRelatedProject = {
+  project: { name: string }
+  preview: { branch?: string }
+}
+
 export function branchNameToVercelPreviewUrl(branchName: string): string | null {
   const branch = branchName
     .toLowerCase()
@@ -15,6 +20,17 @@ export function branchNameToVercelPreviewUrl(branchName: string): string | null 
   return branch && deployment.length <= vercelDeploymentLabelMaxLength
     ? `https://${deployment}${vercelPreviewDomain}`
     : null
+}
+
+export function getRelatedSwapPreviewUrl(value = process.env.VERCEL_RELATED_PROJECTS): string | null {
+  try {
+    const projects = JSON.parse(value || '[]') as VercelRelatedProject[]
+    const hostname = projects.find(({ project }) => project.name === 'swap-dev')?.preview.branch
+
+    return hostname ? `https://${hostname}` : null
+  } catch {
+    return null
+  }
 }
 
 /** Used by the configurator preview and as the default `baseUrl` in built params. */
@@ -31,10 +47,14 @@ export function getBaseUrl(): string {
 
   if (isDev) return 'https://dev.swap.cow.fi'
 
-  if (isVercel && process.env.VERCEL_GIT_COMMIT_REF) {
-    const previewUrl = branchNameToVercelPreviewUrl(process.env.VERCEL_GIT_COMMIT_REF)
+  if (isVercel) {
+    const previewUrl = getRelatedSwapPreviewUrl()
 
     if (previewUrl) return previewUrl
+
+    const branchName = process.env.VERCEL_GIT_COMMIT_REF
+
+    if (branchName) return branchNameToVercelPreviewUrl(branchName) || 'https://swap.cow.fi'
   }
 
   return 'https://swap.cow.fi'

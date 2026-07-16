@@ -31,8 +31,9 @@ export default defineConfig(({ mode }) => {
     root: path.resolve(__dirname, './'),
     define: {
       ...getReactProcessEnv(mode),
-      // Maps Vercel env var into the build so the branch name can be reused inside the app
+      // Expose the Vercel metadata used to select the matching swap preview.
       'process.env.VERCEL_GIT_COMMIT_REF': JSON.stringify(process.env.VERCEL_GIT_COMMIT_REF || ''),
+      'process.env.VERCEL_RELATED_PROJECTS': JSON.stringify(process.env.VERCEL_RELATED_PROJECTS || ''),
     },
 
     cacheDir: '../../node_modules/.vite/widget-configurator',
