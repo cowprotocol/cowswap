@@ -32,7 +32,6 @@ export default defineConfig(({ mode }) => {
     define: {
       ...getReactProcessEnv(mode),
       // Expose the Vercel metadata used to select the matching swap preview.
-      'process.env.VERCEL_GIT_COMMIT_REF': JSON.stringify(process.env.VERCEL_GIT_COMMIT_REF || ''),
       'process.env.VERCEL_RELATED_PROJECTS': JSON.stringify(process.env.VERCEL_RELATED_PROJECTS || ''),
     },
 
