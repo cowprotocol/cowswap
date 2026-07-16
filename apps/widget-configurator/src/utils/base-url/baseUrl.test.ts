@@ -1,4 +1,19 @@
-import { branchNameToVercelPreviewUrl, getEnvLabel } from './baseUrl'
+import { branchNameToVercelPreviewUrl, getEnvLabel, getRelatedSwapPreviewUrl } from './baseUrl'
+
+describe('getRelatedSwapPreviewUrl', () => {
+  it('uses the Vercel-provided swap branch URL', () => {
+    const relatedProjects = JSON.stringify([
+      {
+        project: { name: 'swap-dev' },
+        preview: { branch: 'swap-dev-git-bla-dhqiwuhe-yay0000-weirdandlo-54bda8-cowswap-dev.vercel.app' },
+      },
+    ])
+
+    expect(getRelatedSwapPreviewUrl(relatedProjects)).toBe(
+      'https://swap-dev-git-bla-dhqiwuhe-yay0000-weirdandlo-54bda8-cowswap-dev.vercel.app',
+    )
+  })
+})
 
 describe('branchNameToVercelPreviewUrl', () => {
   it('matches Vercel swap preview URLs', () => {
