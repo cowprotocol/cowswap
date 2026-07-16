@@ -99,12 +99,17 @@ prototype; noted for the production design.
 - Entry path: user enables `IS_SOLANA_ENABLED`, picks Solana in the network selector
   (already listed behind the flag), opens Limit orders. Token selection and balances
   already work on this branch.
-- `modules/tradeFormValidation`: add a Solana path — the form is ready when a Solana
-  wallet is connected, both amounts are set, and an active rate exists. Quote, approval
-  (EVM allowance), and permit checks are skipped for Solana.
-- EVM-only side effects get `isSolanaChain` early-return guards so they no-op on Solana:
-  quote fetching (`QuoteObserverUpdater`), initial-price fetching
-  (`InitialPriceUpdater` — the price is typed manually), permit logic.
+- Form readiness on Solana is implemented in a dedicated `SolanaTradeButtons` container
+  inside `modules/limitOrders` (rendered by the existing `TradeButtons` when
+  `isSolanaChain(chainId)`), instead of adding a Solana path to the shared
+  `modules/tradeFormValidation` — that module's validation context is fed by EVM-only
+  hooks shared with swap/twap, so bypassing it wholesale is safer for a prototype. The
+  Solana button ladder: wallet connected → tokens selected → amounts set → sufficient
+  balance → place order. Quote, approval (EVM allowance), and permit checks never apply.
+- Quote polling is skipped for Solana with an `isSolanaChain` guard in
+  `modules/tradeQuote/hooks/useQuoteParams.ts` (no backend quote exists). Initial-price
+  and market-rate updaters use USD price feeds and fail soft (null) on Solana — no
+  guards needed; the price is typed manually.
 - Post-create UX: success snackbar/toast with the tx signature linking to Solscan and the
   order UID. No orders-table/history integration.
 
