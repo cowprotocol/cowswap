@@ -59,11 +59,8 @@ export function resolveCapabilitiesForChain(
 
   if (capabilitiesForChain) return capabilitiesForChain
 
-  // This fallback was initially here for Safe via WC, even thought it should return a value as shown in the example in
-  // the long TSDoc comment below. `Object.values` should not be needed, as we are already parsing this properly with
-  // `numberToHex` above:
-
-  return Object.values(capabilities)[0] || null
+  logWallet.warn('Cannot resolve wallet capabilities for chain', { chainId, capabilities })
+  return null
 }
 
 async function fetchWidgetProviderMetaInfo(
