@@ -5,9 +5,10 @@ describe('branchNameToVercelPreviewUrl', () => {
     expect(branchNameToVercelPreviewUrl('release/2026-07-15')).toBe(
       'https://swap-dev-git-release-2026-07-15-cowswap-dev.vercel.app',
     )
-    expect(branchNameToVercelPreviewUrl('feature/a-very-long-branch-name-that-exceeds-the-dns-label-limit')).toBe(
-      'https://swap-dev-git-feature-a-very-long-branch-name-that-e-cowswap-dev.vercel.app',
+    expect(branchNameToVercelPreviewUrl('test-----a/-branch')).toBe(
+      'https://swap-dev-git-test-a-branch-cowswap-dev.vercel.app',
     )
+    expect(branchNameToVercelPreviewUrl('test-----a-badna9878979/-long-andweird7896branchname')).toBeNull()
   })
 })
 
