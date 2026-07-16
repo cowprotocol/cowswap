@@ -1,4 +1,4 @@
-import { branchNameToVercelPreviewUrl, getEnvLabel, getRelatedSwapPreviewUrl } from './baseUrl'
+import { getEnvLabel, getRelatedSwapPreviewUrl } from './baseUrl'
 
 describe('getRelatedSwapPreviewUrl', () => {
   it('uses the Vercel-provided swap branch URL', () => {
@@ -12,18 +12,6 @@ describe('getRelatedSwapPreviewUrl', () => {
     expect(getRelatedSwapPreviewUrl(relatedProjects)).toBe(
       'https://swap-dev-git-bla-dhqiwuhe-yay0000-weirdandlo-54bda8-cowswap-dev.vercel.app',
     )
-  })
-})
-
-describe('branchNameToVercelPreviewUrl', () => {
-  it('matches Vercel swap preview URLs', () => {
-    expect(branchNameToVercelPreviewUrl('release/2026-07-15')).toBe(
-      'https://swap-dev-git-release-2026-07-15-cowswap-dev.vercel.app',
-    )
-    expect(branchNameToVercelPreviewUrl('test-----a/-branch')).toBe(
-      'https://swap-dev-git-test-a-branch-cowswap-dev.vercel.app',
-    )
-    expect(branchNameToVercelPreviewUrl('test-----a-badna9878979/-long-andweird7896branchname')).toBeNull()
   })
 })
 
