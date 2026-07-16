@@ -44,6 +44,7 @@ const csp = buildCsp([
 // ---------------------------------------------------------------------------
 
 export const config: VercelConfig = {
+  relatedProjects: ['prj_GvBLCsuQlCvm2pVenPrfuihRRZiB'],
   buildCommand: 'cd ../../ && pnpm build:widget',
   outputDirectory: '../../build/widget-configurator',
   // Uses install:ci because this app may require SDK preview package switching.
