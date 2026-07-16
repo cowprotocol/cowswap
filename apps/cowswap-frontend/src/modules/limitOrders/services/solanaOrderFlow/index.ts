@@ -1,4 +1,4 @@
-import { PublicKey, Transaction } from '@solana/web3.js'
+import { Connection, PublicKey, Transaction, TransactionError } from '@solana/web3.js'
 
 import { buildCreateOrderInstructions } from './buildCreateOrderInstructions'
 
@@ -23,16 +23,47 @@ export async function solanaOrderFlow(ctx: SolanaOrderFlowContext): Promise<Sola
 
   const signature = await walletProvider.sendTransaction(transaction, connection)
 
-  const confirmation = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
+  const err = await confirmOrder(connection, signature, blockhash, lastValidBlockHeight)
 
-  if (confirmation.value.err) {
-    throw new Error(`Solana transaction failed: ${JSON.stringify(confirmation.value.err)}`)
+  if (err) {
+    throw new Error(`Solana transaction failed: ${JSON.stringify(err)}`)
   }
 
   return {
     signature,
     orderUid: uint8ArrayToHex(orderUid),
     orderPda: orderPda.toBase58(),
+  }
+}
+
+/**
+ * Confirm the transaction, tolerating the block-height-exceeded timeout.
+ *
+ * `confirmTransaction` throws `TransactionExpiredBlockheightExceededError` when the blockhash
+ * validity window passes before it observes confirmation — but the transaction has usually landed
+ * right at the edge of that window, because the wallet-signing prompt ages the blockhash before
+ * the tx even broadcasts. On any confirmation error we re-check the signature status before
+ * deciding the order failed. Returns the on-chain error (null on success); rethrows only when the
+ * transaction is genuinely not found after the timeout.
+ */
+async function confirmOrder(
+  connection: Connection,
+  signature: string,
+  blockhash: string,
+  lastValidBlockHeight: number,
+): Promise<TransactionError | null> {
+  try {
+    const { value } = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
+    return value.err
+  } catch (error) {
+    const { value } = await connection.getSignatureStatus(signature, { searchTransactionHistory: true })
+    const landed = value?.confirmationStatus === 'confirmed' || value?.confirmationStatus === 'finalized'
+
+    if (landed) {
+      return value?.err ?? null
+    }
+
+    throw error
   }
 }
 

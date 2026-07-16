@@ -17,12 +17,13 @@ const OWNER = '54o2XBzBTkP7tmQSLu3Um9oDvLdNVrbMyQxqiYVKALLN'
 const BLOCKHASH = 'EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N'
 
 function buildContext(): SolanaOrderFlowContext & {
-  connection: { getLatestBlockhash: jest.Mock; confirmTransaction: jest.Mock }
+  connection: { getLatestBlockhash: jest.Mock; confirmTransaction: jest.Mock; getSignatureStatus: jest.Mock }
   walletProvider: { sendTransaction: jest.Mock }
 } {
   const connection = {
     getLatestBlockhash: jest.fn().mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: 100 }),
     confirmTransaction: jest.fn().mockResolvedValue({ value: { err: null } }),
+    getSignatureStatus: jest.fn().mockResolvedValue({ value: { err: null, confirmationStatus: 'confirmed' } }),
   }
   const walletProvider = {
     sendTransaction: jest.fn().mockResolvedValue('mockSignature'),
@@ -82,5 +83,25 @@ describe('solanaOrderFlow', () => {
     ctx.connection.confirmTransaction.mockResolvedValue({ value: { err: { InstructionError: [2, 'Custom'] } } })
 
     await expect(solanaOrderFlow(ctx)).rejects.toThrow('Solana transaction failed')
+  })
+
+  it('treats a block-height-exceeded timeout as success when the tx actually landed', async () => {
+    const ctx = buildContext()
+    // confirmTransaction throws the expiry error even though the tx landed at the edge of the window
+    ctx.connection.confirmTransaction.mockRejectedValue(new Error('block height exceeded'))
+    ctx.connection.getSignatureStatus.mockResolvedValue({ value: { err: null, confirmationStatus: 'finalized' } })
+
+    const result = await solanaOrderFlow(ctx)
+
+    expect(result.signature).toBe('mockSignature')
+    expect(ctx.connection.getSignatureStatus).toHaveBeenCalledWith('mockSignature', { searchTransactionHistory: true })
+  })
+
+  it('rethrows the timeout when the tx never landed', async () => {
+    const ctx = buildContext()
+    ctx.connection.confirmTransaction.mockRejectedValue(new Error('block height exceeded'))
+    ctx.connection.getSignatureStatus.mockResolvedValue({ value: null })
+
+    await expect(solanaOrderFlow(ctx)).rejects.toThrow('block height exceeded')
   })
 })
