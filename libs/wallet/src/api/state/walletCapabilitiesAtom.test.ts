@@ -11,6 +11,7 @@ import {
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
+  REQUEST_TIMEOUT_MS,
   resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
@@ -322,7 +323,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toBeNull()
@@ -370,7 +371,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toEqual(capabilities)
@@ -393,7 +394,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toBeNull()
