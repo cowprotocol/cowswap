@@ -388,14 +388,14 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   }
 
   const eoaNeedsZeroApproval = eoaNeedsApproval
-    ? !!(await shouldZeroApprove({
+    ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
         owner: account,
         spender,
         amountToApprove: fundingSellAmount,
         forceApprove: true,
         config,
-      }))
+      }).then((result) => result ?? false)
     : false
 
   if (eoaNeedsZeroApproval) {
@@ -479,7 +479,7 @@ async function getProxyAllowances({
   const needsApproval = proxyAllowance < sellAmountAtoms
 
   const needsZeroApproval = needsApproval
-    ? (await shouldZeroApprove({
+    ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
         // TODO: Verify this works propery
         owner: proxyAddress as `0x${string}`,
@@ -487,7 +487,7 @@ async function getProxyAllowances({
         amountToApprove: sellAmount,
         forceApprove: true,
         config,
-      }))!!
+      }).then((result) => result ?? false)
     : false
 
   return {
