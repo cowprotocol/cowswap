@@ -12,7 +12,7 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
+import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
@@ -26,7 +26,9 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       // Switching between EVM and non-EVM networks requires a different wallet and is handled
       // separately (confirm + disconnect + reconnect) instead of a regular network switch.
-      if (await handleCrossChainFamilySwitch(targetChain, skipClose)) {
+      const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
+
+      if (switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED) {
         return
       }
 
@@ -36,8 +38,9 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         setChainIdToUrl(targetChain)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        console.error('Failed to switch networks', error)
+      } catch (_error: any) {
+        console.error('Failed to switch networks', _error)
+        const error = _error.originalError ?? _error
 
         const causeIsRejection = !error.cause || isRejectRequestProviderError(error.cause)
         if (isRejectRequestProviderError(error) && causeIsRejection) {

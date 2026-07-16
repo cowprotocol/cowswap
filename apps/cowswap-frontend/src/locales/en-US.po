@@ -940,8 +940,8 @@ msgstr "switch network type"
 #~ msgstr "You don't have any {orderTabState} orders at the moment."
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
-msgid "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?"
-msgstr "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?"
+#~ msgid "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?"
+#~ msgstr "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected. Are you sure?"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Price Position"
@@ -1048,6 +1048,10 @@ msgstr "Connect your wallet to activate it and start earning rewards when you tr
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
 #~ msgstr "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
+
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
+#~ msgid "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected."
+#~ msgstr "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected."
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW Runner"
@@ -1265,7 +1269,6 @@ msgid "pools available to get yield on your assets!"
 msgstr "pools available to get yield on your assets!"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
-#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
@@ -1590,6 +1593,10 @@ msgstr "smart contracts (e.g. Safe)"
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Quote refresh in"
 msgstr "Quote refresh in"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
+msgid "Want TWAP with this wallet? Let us know"
+msgstr "Want TWAP with this wallet? Let us know"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
@@ -1974,6 +1981,10 @@ msgstr "Pick your own code or generate one. Once saved, it becomes permanently l
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "By clicking Confirm, you expressly represent and warrant that you are NOT:"
 #~ msgstr "By clicking Confirm, you expressly represent and warrant that you are NOT:"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
+msgid "Thanks - noted!"
+msgstr "Thanks - noted!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Total fee"
@@ -4330,6 +4341,7 @@ msgstr "Coinbase Wallet"
 msgid "Only the {limit} most recent orders were searched."
 msgstr "Only the {limit} most recent orders were searched."
 
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
@@ -7759,6 +7771,10 @@ msgstr "<0>CoW Swap requires offline signatures, which is currently not supporte
 msgid "Order expired"
 msgstr "Order expired"
 
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
+msgid "Your current wallet will be disconnected."
+msgstr "Your current wallet will be disconnected."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulate"
 msgstr "Simulate"
@@ -7822,6 +7838,10 @@ msgstr "Leverage advanced strategies for optimal growth"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "View List"
 msgstr "View List"
+
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
+msgid "This requires connecting a different wallet."
+msgstr "This requires connecting a different wallet."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Add liquidity to any of the CoW AMM pools"
@@ -7912,6 +7932,10 @@ msgstr "Distance to market"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
 msgid "Did you know?"
 msgstr "Did you know?"
+
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
+msgid "You're switching from {sourceChainLabel} to {targetChainLabel}."
+msgstr "You're switching from {sourceChainLabel} to {targetChainLabel}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "Insufficient time between parts"
