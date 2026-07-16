@@ -17,12 +17,11 @@ const OWNER = '54o2XBzBTkP7tmQSLu3Um9oDvLdNVrbMyQxqiYVKALLN'
 const BLOCKHASH = 'EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N'
 
 function buildContext(): SolanaOrderFlowContext & {
-  connection: { getLatestBlockhash: jest.Mock; confirmTransaction: jest.Mock; getSignatureStatus: jest.Mock }
+  connection: { getLatestBlockhash: jest.Mock; getSignatureStatus: jest.Mock }
   walletProvider: { sendTransaction: jest.Mock }
 } {
   const connection = {
     getLatestBlockhash: jest.fn().mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: 100 }),
-    confirmTransaction: jest.fn().mockResolvedValue({ value: { err: null } }),
     getSignatureStatus: jest.fn().mockResolvedValue({ value: { err: null, confirmationStatus: 'confirmed' } }),
   }
   const walletProvider = {
@@ -60,10 +59,8 @@ describe('solanaOrderFlow', () => {
     expect(tx.feePayer?.toBase58()).toBe(OWNER)
     expect(tx.recentBlockhash).toBe(BLOCKHASH)
 
-    expect(ctx.connection.confirmTransaction).toHaveBeenCalledWith(
-      { signature: 'mockSignature', blockhash: BLOCKHASH, lastValidBlockHeight: 100 },
-      'confirmed',
-    )
+    // Confirmation is done by polling the signature status, not confirmTransaction's blockhash strategy
+    expect(ctx.connection.getSignatureStatus).toHaveBeenCalledWith('mockSignature', { searchTransactionHistory: true })
   })
 
   it('uses the custom deadline timestamp as validTo when set', async () => {
@@ -78,30 +75,47 @@ describe('solanaOrderFlow', () => {
     expect(createOrderData.readUInt32LE(113)).toBe(1893456000)
   })
 
-  it('throws when on-chain confirmation reports an error', async () => {
+  it('throws when the signature status reports an on-chain error', async () => {
     const ctx = buildContext()
-    ctx.connection.confirmTransaction.mockResolvedValue({ value: { err: { InstructionError: [2, 'Custom'] } } })
+    ctx.connection.getSignatureStatus.mockResolvedValue({
+      value: { err: { InstructionError: [2, 'Custom'] }, confirmationStatus: 'confirmed' },
+    })
 
     await expect(solanaOrderFlow(ctx)).rejects.toThrow('Solana transaction failed')
   })
 
-  it('treats a block-height-exceeded timeout as success when the tx actually landed', async () => {
-    const ctx = buildContext()
-    // confirmTransaction throws the expiry error even though the tx landed at the edge of the window
-    ctx.connection.confirmTransaction.mockRejectedValue(new Error('block height exceeded'))
-    ctx.connection.getSignatureStatus.mockResolvedValue({ value: { err: null, confirmationStatus: 'finalized' } })
+  it('keeps polling until the tx reaches a confirmed status', async () => {
+    jest.useFakeTimers()
+    try {
+      const ctx = buildContext()
+      ctx.connection.getSignatureStatus
+        // still processing on the first poll (mirrors a tx that lands a moment later)
+        .mockResolvedValueOnce({ value: { err: null, confirmationStatus: 'processed' } })
+        .mockResolvedValueOnce({ value: { err: null, confirmationStatus: 'confirmed' } })
 
-    const result = await solanaOrderFlow(ctx)
+      const promise = solanaOrderFlow(ctx)
+      await jest.advanceTimersByTimeAsync(2_000)
+      const result = await promise
 
-    expect(result.signature).toBe('mockSignature')
-    expect(ctx.connection.getSignatureStatus).toHaveBeenCalledWith('mockSignature', { searchTransactionHistory: true })
+      expect(result.signature).toBe('mockSignature')
+      expect(ctx.connection.getSignatureStatus).toHaveBeenCalledTimes(2)
+    } finally {
+      jest.useRealTimers()
+    }
   })
 
-  it('rethrows the timeout when the tx never landed', async () => {
-    const ctx = buildContext()
-    ctx.connection.confirmTransaction.mockRejectedValue(new Error('block height exceeded'))
-    ctx.connection.getSignatureStatus.mockResolvedValue({ value: null })
+  it('throws when the tx is not confirmed within the timeout', async () => {
+    jest.useFakeTimers()
+    try {
+      const ctx = buildContext()
+      ctx.connection.getSignatureStatus.mockResolvedValue({ value: null })
 
-    await expect(solanaOrderFlow(ctx)).rejects.toThrow('block height exceeded')
+      const promise = solanaOrderFlow(ctx)
+      const expectation = expect(promise).rejects.toThrow('was not confirmed within')
+      await jest.advanceTimersByTimeAsync(61_000)
+      await expectation
+    } finally {
+      jest.useRealTimers()
+    }
   })
 })

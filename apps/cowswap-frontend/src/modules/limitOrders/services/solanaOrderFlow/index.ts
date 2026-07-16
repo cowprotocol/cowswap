@@ -6,6 +6,9 @@ import type { SolanaOrderFlowContext, SolanaOrderFlowResult } from './types'
 
 export type { SolanaOrderFlowContext, SolanaOrderFlowResult } from './types'
 
+const CONFIRMATION_TIMEOUT_MS = 60_000
+const CONFIRMATION_POLL_INTERVAL_MS = 2_000
+
 export async function solanaOrderFlow(ctx: SolanaOrderFlowContext): Promise<SolanaOrderFlowResult> {
   const { connection, walletProvider, customDeadlineTimestamp, deadlineMilliseconds, ...orderParams } = ctx
 
@@ -18,12 +21,12 @@ export async function solanaOrderFlow(ctx: SolanaOrderFlowContext): Promise<Sola
   const transaction = new Transaction().add(...instructions)
   transaction.feePayer = new PublicKey(ctx.account)
 
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+  const { blockhash } = await connection.getLatestBlockhash()
   transaction.recentBlockhash = blockhash
 
   const signature = await walletProvider.sendTransaction(transaction, connection)
 
-  const err = await confirmOrder(connection, signature, blockhash, lastValidBlockHeight)
+  const err = await confirmOrder(connection, signature)
 
   if (err) {
     throw new Error(`Solana transaction failed: ${JSON.stringify(err)}`)
@@ -37,34 +40,36 @@ export async function solanaOrderFlow(ctx: SolanaOrderFlowContext): Promise<Sola
 }
 
 /**
- * Confirm the transaction, tolerating the block-height-exceeded timeout.
+ * Wait for the transaction to land by polling its signature status.
  *
- * `confirmTransaction` throws `TransactionExpiredBlockheightExceededError` when the blockhash
- * validity window passes before it observes confirmation — but the transaction has usually landed
- * right at the edge of that window, because the wallet-signing prompt ages the blockhash before
- * the tx even broadcasts. On any confirmation error we re-check the signature status before
- * deciding the order failed. Returns the on-chain error (null on success); rethrows only when the
- * transaction is genuinely not found after the timeout.
+ * We deliberately avoid `connection.confirmTransaction`'s blockhash strategy: it throws
+ * `TransactionExpiredBlockheightExceededError` ("block height exceeded") whenever the blockhash
+ * validity window passes before it observes confirmation — which happens routinely here because
+ * the wallet-signing prompt ages the blockhash before the tx even broadcasts, so the tx lands
+ * right at the edge of the window and is reported as a failure despite succeeding. Polling the
+ * signature status instead reflects what actually happened on-chain.
+ *
+ * Returns the on-chain error (null on success); throws only if the tx never lands within the timeout.
  */
-async function confirmOrder(
-  connection: Connection,
-  signature: string,
-  blockhash: string,
-  lastValidBlockHeight: number,
-): Promise<TransactionError | null> {
-  try {
-    const { value } = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
-    return value.err
-  } catch (error) {
-    const { value } = await connection.getSignatureStatus(signature, { searchTransactionHistory: true })
-    const landed = value?.confirmationStatus === 'confirmed' || value?.confirmationStatus === 'finalized'
+async function confirmOrder(connection: Connection, signature: string): Promise<TransactionError | null> {
+  const deadline = Date.now() + CONFIRMATION_TIMEOUT_MS
 
-    if (landed) {
-      return value?.err ?? null
+  do {
+    const { value } = await connection.getSignatureStatus(signature, { searchTransactionHistory: true })
+
+    if (value) {
+      if (value.err) return value.err
+      if (value.confirmationStatus === 'confirmed' || value.confirmationStatus === 'finalized') return null
     }
 
-    throw error
-  }
+    await sleep(CONFIRMATION_POLL_INTERVAL_MS)
+  } while (Date.now() < deadline)
+
+  throw new Error(`Solana transaction ${signature} was not confirmed within ${CONFIRMATION_TIMEOUT_MS / 1000}s`)
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function uint8ArrayToHex(bytes: Uint8Array): string {
