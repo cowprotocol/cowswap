@@ -1,10 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 
+import { getIsToken2022 } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { Connection } from '@solana/web3.js'
@@ -12,7 +14,7 @@ import { Connection } from '@solana/web3.js'
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 import { PersistBalancesAndAllowancesParams } from './usePersistBalancesViaWebCalls'
 
-import { fetchSolanaTokenBalances } from '../services/fetchSolanaTokenBalances'
+import { fetchSolanaTokenBalances, SolanaTokenMint } from '../services/fetchSolanaTokenBalances'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
 interface SolanaQueryConfig {
@@ -35,10 +37,11 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
 
   const isSolana = isSolanaChain(chainId)
 
-  // Native SOL is handled elsewhere and has no ATA, so deriving one would throw — keep only SPL mints.
-  const tokenMints = useMemo(
-    () => tokenAddresses.filter((address) => !getIsNativeToken(chainId, address)),
-    [tokenAddresses, chainId],
+  const tokensByAddress = useTokensByAddressMapForChain(chainId)
+
+  const tokenMints = useMemo<SolanaTokenMint[]>(
+    () => buildSolanaTokenMints(tokenAddresses, chainId, tokensByAddress),
+    [tokenAddresses, chainId, tokensByAddress],
   )
 
   const { enabled, refetchInterval } = getSolanaQueryConfig(params, isSolana, connection, tokenMints.length)
@@ -57,7 +60,7 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
     dataUpdatedAt,
   } = useQuery({
     queryKey,
-    queryFn: () => fetchSolanaTokenBalances(connection!, account!, tokenMints),
+    queryFn: connection && account ? () => fetchSolanaTokenBalances(connection, account, tokenMints) : skipToken,
     enabled,
     refetchInterval: refetchInterval || undefined,
     refetchOnWindowFocus: false,
@@ -113,7 +116,7 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
         ...state,
         [chainId]: {
           ...state[chainId],
-          [account.toLowerCase()]: Date.now(),
+          [getAddressKey(account)]: Date.now(),
         },
       }))
     }
@@ -128,6 +131,26 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
     onBalancesLoaded,
     setBalancesUpdate,
   ])
+}
+
+// Native SOL is handled elsewhere and has no ATA, so deriving one would throw — keep only SPL mints.
+// The list's `isToken2022` flag picks the token program; mints absent from the list default to classic
+// SPL, so a wrong ATA simply reads as a zero balance rather than erroring.
+function buildSolanaTokenMints(
+  tokenAddresses: string[],
+  chainId: PersistBalancesAndAllowancesParams['chainId'],
+  tokensByAddress: ReturnType<typeof useTokensByAddressMapForChain>,
+): SolanaTokenMint[] {
+  return tokenAddresses
+    .filter((address) => !getIsNativeToken(chainId, address))
+    .map((address) => {
+      const isToken2022 = getIsToken2022(tokensByAddress[getAddressKey(address)])
+
+      return {
+        mint: address,
+        isToken2022,
+      }
+    })
 }
 
 function getSolanaQueryConfig(

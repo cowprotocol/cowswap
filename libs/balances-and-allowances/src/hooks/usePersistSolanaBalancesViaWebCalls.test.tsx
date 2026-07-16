@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import { TOKEN_2022_TAG } from '@cowprotocol/common-const'
 import { getAddressKey, SupportedChainId, mapSupportedNetworks, solana } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
@@ -21,18 +22,39 @@ const MINT_A = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 const MINT_B = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
 const NATIVE_MINT = solana.nativeCurrency.address
 
+const CLASSIC_PROGRAM = 'TOKEN_PROGRAM_ID'
+const TOKEN_2022_PROGRAM = 'TOKEN_2022_PROGRAM_ID'
+
+// The ATA key encodes the selected program, so a test can assert which token program a mint was read under.
+function ataKey(mint: string, program: string = CLASSIC_PROGRAM): string {
+  return `ata:${program}:${mint}`
+}
+
 let mockConnection: MockConnection | undefined
+// getAddressKey(address) -> token metadata, mirroring the token list; its tags drive program selection.
+let mockTokensByAddress: Record<string, { tags: string[] } | undefined>
 
 jest.mock('@reown/appkit-adapter-solana/react', () => ({
   useAppKitConnection: () => ({ connection: mockConnection }),
 }))
 
-// The ATA-derivation math is not what we are testing; make it deterministic and echo the mint back so
-// the mocked RPC/`unpackAccount` can look accounts up by their ATA key. We only assert what lands in the atom.
+jest.mock('@cowprotocol/tokens', () => ({
+  useTokensByAddressMapForChain: () => mockTokensByAddress,
+}))
+
+// The ATA-derivation math is not what we are testing; make it deterministic and echo the mint plus the
+// selected program back so the mocked RPC/`unpackAccount` can look accounts up by their ATA key. We only
+// assert what lands in the atom and which program each ATA was derived with.
 jest.mock('@solana/spl-token', () => ({
   TOKEN_PROGRAM_ID: 'TOKEN_PROGRAM_ID',
+  TOKEN_2022_PROGRAM_ID: 'TOKEN_2022_PROGRAM_ID',
   ASSOCIATED_TOKEN_PROGRAM_ID: 'ASSOCIATED_TOKEN_PROGRAM_ID',
-  getAssociatedTokenAddressSync: (mint: { toBase58(): string }) => ({ toBase58: () => `ata:${mint.toBase58()}` }),
+  getAssociatedTokenAddressSync: (
+    mint: { toBase58(): string },
+    _owner: unknown,
+    _allowOwnerOffCurve: boolean,
+    programId: string,
+  ) => ({ toBase58: () => `ata:${programId}:${mint.toBase58()}` }),
   unpackAccount: (ata: { toBase58(): string }) => ({ amount: mockAmountByAta[ata.toBase58()] }),
 }))
 
@@ -109,8 +131,9 @@ function wrapper({ children }: { children: ReactNode }): ReactNode {
 
 describe('usePersistSolanaBalancesViaWebCalls', () => {
   beforeEach(() => {
-    mockAmountByAta = { [`ata:${MINT_A}`]: 100n, [`ata:${MINT_B}`]: 250n }
-    mockInfoByAta = { [`ata:${MINT_A}`]: { present: true }, [`ata:${MINT_B}`]: { present: true } }
+    mockTokensByAddress = {}
+    mockAmountByAta = { [ataKey(MINT_A)]: 100n, [ataKey(MINT_B)]: 250n }
+    mockInfoByAta = { [ataKey(MINT_A)]: { present: true }, [ataKey(MINT_B)]: { present: true } }
     mockConnection = createConnection()
   })
 
@@ -133,7 +156,7 @@ describe('usePersistSolanaBalancesViaWebCalls', () => {
   })
 
   it('treats a missing token account as a zero balance rather than an error', async () => {
-    delete mockInfoByAta[`ata:${MINT_B}`]
+    delete mockInfoByAta[ataKey(MINT_B)]
 
     const { result } = renderWithBalances(makeParams())
 
@@ -150,8 +173,8 @@ describe('usePersistSolanaBalancesViaWebCalls', () => {
       new PublicKey(Uint8Array.from({ length: 32 }, (_, j) => (i + j + 1) % 256)).toBase58(),
     )
     mints.forEach((mint) => {
-      mockAmountByAta[`ata:${mint}`] = 7n
-      mockInfoByAta[`ata:${mint}`] = { present: true }
+      mockAmountByAta[ataKey(mint)] = 7n
+      mockInfoByAta[ataKey(mint)] = { present: true }
     })
 
     const { result } = renderWithBalances(makeParams({ tokenAddresses: mints }))
@@ -174,6 +197,36 @@ describe('usePersistSolanaBalancesViaWebCalls', () => {
 
     const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
     expect(atas).toHaveLength(1)
-    expect(atas[0].toBase58()).toBe(`ata:${MINT_A}`)
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A))
+  })
+
+  it('keys the update timestamp by the case-sensitive Solana account, not a lowercased alias', async () => {
+    const { result } = renderHook(
+      () => {
+        usePersistSolanaBalancesViaWebCalls(makeParams())
+        return useAtomValue(balancesUpdateAtom)
+      },
+      { wrapper },
+    )
+
+    await waitFor(() => expect(result.current[SupportedChainId.SOLANA]?.[getAddressKey(ACCOUNT)]).toBeDefined())
+
+    // getAddressKey preserves case for Solana pubkeys; a lowercased key would alias distinct owners.
+    expect(ACCOUNT).not.toBe(ACCOUNT.toLowerCase())
+    expect(result.current[SupportedChainId.SOLANA]?.[ACCOUNT.toLowerCase()]).toBeUndefined()
+  })
+
+  it('derives a Token-2022 ATA for mints tagged as Token-2022 in the token list', async () => {
+    mockTokensByAddress = { [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG] } }
+    mockAmountByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: 999n }
+    mockInfoByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: { present: true } }
+
+    const { result } = renderWithBalances(makeParams({ tokenAddresses: [MINT_A] }))
+
+    await waitFor(() => expect(result.current.hasFirstLoad).toBe(true))
+
+    const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A, TOKEN_2022_PROGRAM))
+    expect(result.current.values[getAddressKey(MINT_A)]).toBe(999n)
   })
 })
