@@ -47,14 +47,6 @@ const StyledPath = styled.path`
   stroke: ${Color.cowfi_grey2};
 `
 
-function Wave() {
-  return (
-    <svg width="416" height="160" xmlns="http://www.w3.org/2000/svg">
-      <StyledPath d="M 0 80 Q 104 10, 208 80 T 416 80" fill="transparent" strokeWidth="2" />
-    </svg>
-  )
-}
-
 export function LoadingChart() {
   return (
     <ChartContainer>
@@ -71,5 +63,13 @@ export function LoadingChart() {
         </div>
       </LoadingChartContainer>
     </ChartContainer>
+  )
+}
+
+function Wave() {
+  return (
+    <svg width="416" height="160" xmlns="http://www.w3.org/2000/svg">
+      <StyledPath d="M 0 80 Q 104 10, 208 80 T 416 80" fill="transparent" strokeWidth="2" />
+    </svg>
   )
 }

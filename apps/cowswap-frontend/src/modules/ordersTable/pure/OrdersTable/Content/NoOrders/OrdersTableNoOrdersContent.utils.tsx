@@ -5,55 +5,14 @@ import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { TabOrderTypes, OrderTabId } from 'entities/routes/routes.atom'
 
-import { HistoryStatusFilter } from '../../../../hooks/useFilteredOrders'
-import { TabOrderTypes } from '../../../../state/ordersTable.types'
-import { OrderTabId } from '../../../../state/tabs/ordersTableTabs.constants'
+import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../../LoadMore/Button/LoadMoreOrdersButton'
 
-export interface GetTitleOptions {
-  currentTab: OrderTabId
-  hasOrders: boolean
-  limit: number
-  hasMoreOrders: boolean
-  orderType?: TabOrderTypes
-  searchTerm: string
-  historyStatusFilter: HistoryStatusFilter
-}
-
-export function getTitle({
-  currentTab,
-  hasOrders,
-  limit,
-  hasMoreOrders,
-  orderType,
-  searchTerm,
-  historyStatusFilter,
-}: GetTitleOptions): string {
-  if (currentTab === OrderTabId.unfillable) return t`No unfillable orders`
-
-  if (currentTab === OrderTabId.open) {
-    return hasMoreOrders && orderType === TabOrderTypes.LIMIT
-      ? t`No open orders found in your last ${limit} orders`
-      : t`No open orders found`
-  }
-
-  if (currentTab === OrderTabId.signing) return t`No signing orders`
-
-  if (!hasOrders || (!searchTerm && historyStatusFilter === HistoryStatusFilter.ALL)) return t`No order history`
-
-  // These only appear in the History tab when using the search or the status filter:
-
-  if (historyStatusFilter === HistoryStatusFilter.FILLED) return t`No filled orders found`
-  if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
-  if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
-
-  return t`No matching orders found`
-}
-
 export interface GetDescriptionOptions {
-  currentTab: OrderTabId
+  currentTab: OrderTabId | null
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
@@ -61,7 +20,16 @@ export interface GetDescriptionOptions {
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   isSafeViaWc?: boolean
-  displayOrdersOnlyForSafeApp?: boolean
+}
+
+export interface GetTitleOptions {
+  currentTab: OrderTabId | null
+  hasOrders: boolean
+  limit: number
+  hasMoreOrders: boolean
+  orderType?: TabOrderTypes
+  searchTerm: string
+  historyStatusFilter: HistoryStatusFilter
 }
 
 export function getDescription({
@@ -73,12 +41,11 @@ export function getDescription({
   searchTerm,
   historyStatusFilter,
   isSafeViaWc,
-  displayOrdersOnlyForSafeApp,
 }: GetDescriptionOptions): React.ReactNode[] {
   const areOrdersFiltered = hasOrders && (searchTerm || historyStatusFilter !== HistoryStatusFilter.ALL)
 
-  if (!areOrdersFiltered && displayOrdersOnlyForSafeApp && isSafeViaWc) {
-    const currentTabText = currentTab === OrderTabId.history ? t`orders history` : t`your orders`
+  if (!areOrdersFiltered && orderType === TabOrderTypes.ADVANCED && isSafeViaWc) {
+    const currentTabText = currentTab === OrderTabId.HISTORY ? t`orders history` : t`your orders`
 
     return [
       <Trans>
@@ -87,7 +54,7 @@ export function getDescription({
     ]
   }
 
-  if (currentTab === OrderTabId.open) {
+  if (currentTab === OrderTabId.OPEN) {
     const learnMoreLink =
       orderType === TabOrderTypes.LIMIT ? (
         <styledEl.ExternalLinkStyled href="https://cow.fi/learn/limit-orders-explained">
@@ -133,4 +100,34 @@ export function getDescription({
   }
 
   return [t`Try adjusting your filters`]
+}
+
+export function getTitle({
+  currentTab,
+  hasOrders,
+  limit,
+  hasMoreOrders,
+  orderType,
+  searchTerm,
+  historyStatusFilter,
+}: GetTitleOptions): string {
+  if (currentTab === OrderTabId.UNFILLABLE) return t`No unfillable orders`
+
+  if (currentTab === OrderTabId.OPEN) {
+    return hasMoreOrders && orderType === TabOrderTypes.LIMIT
+      ? t`No open orders found in your last ${limit} orders`
+      : t`No open orders found`
+  }
+
+  if (currentTab === OrderTabId.SIGNING) return t`No signing orders`
+
+  if (!hasOrders || (!searchTerm && historyStatusFilter === HistoryStatusFilter.ALL)) return t`No order history`
+
+  // These only appear in the History tab when using the search or the status filter:
+
+  if (historyStatusFilter === HistoryStatusFilter.FILLED) return t`No filled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
+
+  return t`No matching orders found`
 }

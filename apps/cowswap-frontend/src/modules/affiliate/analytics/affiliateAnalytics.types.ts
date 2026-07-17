@@ -1,3 +1,21 @@
+export type AffiliateAnalyticsAction =
+  | 'affiliate_partner_page_state_viewed'
+  | 'affiliate_partner_code_create_started'
+  | 'affiliate_partner_code_create_completed'
+  | 'affiliate_trader_page_state_viewed'
+  | 'affiliate_trader_modal_opened'
+  | 'affiliate_trader_modal_state_viewed'
+  | 'affiliate_trader_code_verification_started'
+  | 'affiliate_trader_code_verification_completed'
+  | 'affiliate_trader_expired_code_viewed'
+
+export enum AffiliateModalState {
+  CODE_LINKING = 'codeLinking',
+  LINKED = 'linked',
+  INELIGIBLE = 'ineligible',
+  UNSUPPORTED = 'unsupported',
+}
+
 export enum AffiliatePageState {
   ONBOARD = 'onboard',
   CODE_CREATION = 'codeCreation',
@@ -9,11 +27,11 @@ export enum AffiliatePageState {
   LINKED = 'linked',
 }
 
-export enum AffiliateModalState {
-  CODE_LINKING = 'codeLinking',
-  LINKED = 'linked',
-  INELIGIBLE = 'ineligible',
-  UNSUPPORTED = 'unsupported',
+export enum AffiliatePartnerCodeCreateFailureReason {
+  USER_REJECTED_SIGNATURE = 'userRejectedSignature',
+  NETWORK_ERROR = 'networkError',
+  CODE_UNAVAILABLE = 'codeUnavailable',
+  UNEXPECTED_ERROR = 'unexpectedError',
 }
 
 export enum AffiliateVerificationResult {
@@ -23,21 +41,3 @@ export enum AffiliateVerificationResult {
   SELF_REFERRAL = 'selfReferral',
   SERVICE_UNAVAILABLE = 'serviceUnavailable',
 }
-
-export enum AffiliatePartnerCodeCreateFailureReason {
-  USER_REJECTED_SIGNATURE = 'userRejectedSignature',
-  NETWORK_ERROR = 'networkError',
-  CODE_UNAVAILABLE = 'codeUnavailable',
-  UNEXPECTED_ERROR = 'unexpectedError',
-}
-
-export type AffiliateAnalyticsAction =
-  | 'affiliate_partner_page_state_viewed'
-  | 'affiliate_partner_code_create_started'
-  | 'affiliate_partner_code_create_completed'
-  | 'affiliate_trader_page_state_viewed'
-  | 'affiliate_trader_modal_opened'
-  | 'affiliate_trader_modal_state_viewed'
-  | 'affiliate_trader_code_verification_started'
-  | 'affiliate_trader_code_verification_completed'
-  | 'affiliate_trader_expired_code_viewed'

@@ -7,19 +7,6 @@ export interface SafeLinkResult {
   isExternal: boolean
 }
 
-function isLocalDevHostname(hostname: string): boolean {
-  const normalizedHostname = hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname
-
-  return LOCALHOST_HOSTNAMES.has(normalizedHostname) || normalizedHostname.endsWith('.localhost')
-}
-
-function isAllowedHttpUrl(url: URL): boolean {
-  if (url.username || url.password) return false
-  if (url.protocol === 'https:') return true
-
-  return url.protocol === 'http:' && isDevelopmentEnv() && isLocalDevHostname(url.hostname)
-}
-
 export function getSafeAbsoluteUrl(href: string | null | undefined): string | null {
   if (!href) return null
 
@@ -54,4 +41,17 @@ export function getSafeSameOriginOrAbsoluteUrl(
     href: safeAbsoluteUrl,
     isExternal: new URL(safeAbsoluteUrl).origin !== currentOrigin,
   }
+}
+
+function isAllowedHttpUrl(url: URL): boolean {
+  if (url.username || url.password) return false
+  if (url.protocol === 'https:') return true
+
+  return url.protocol === 'http:' && isDevelopmentEnv() && isLocalDevHostname(url.hostname)
+}
+
+function isLocalDevHostname(hostname: string): boolean {
+  const normalizedHostname = hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname
+
+  return LOCALHOST_HOSTNAMES.has(normalizedHostname) || normalizedHostname.endsWith('.localhost')
 }

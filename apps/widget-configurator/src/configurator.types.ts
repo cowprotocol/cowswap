@@ -19,15 +19,6 @@ export type ColorPalette = {
   [key in CowSwapWidgetPaletteColors]: string
 }
 
-export interface TokenListItem {
-  url: string
-  enabled: boolean
-  enabledForSell: boolean
-  enabledForBuy: boolean
-}
-
-export type WidgetMode = 'dapp' | 'standalone'
-
 /** Sidebar form fields persisted in localStorage. JSON style fields are stored as strings. */
 export interface ConfiguratorFormValues {
   // Basics:
@@ -76,6 +67,7 @@ export interface ConfiguratorFormValues {
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  disableWindowOpen: boolean
   disableTradeWhenPriceImpactIsUnknown: boolean
   disableTradeWhenPriceImpactIsHigherThan: number | undefined
   // Note that `disableToastMessages` is stored/handled by `useToastsManager` hook.
@@ -158,3 +150,12 @@ export interface ConfiguratorState
 
   rawParams: Partial<CowSwapWidgetParams>
 }
+
+export interface TokenListItem {
+  url: string
+  enabled: boolean
+  enabledForSell: boolean
+  enabledForBuy: boolean
+}
+
+export type WidgetMode = 'dapp' | 'standalone'

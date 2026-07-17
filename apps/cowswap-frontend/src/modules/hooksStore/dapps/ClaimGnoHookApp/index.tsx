@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { encodeFunctionData, formatUnits } from 'viem'
+import { Config, useConfig } from 'wagmi'
+import { readContract, estimateGas } from 'wagmi/actions'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SBCDepositContractAbi } from '@cowprotocol/cowswap-abis'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { encodeFunctionData, formatUnits } from 'viem'
-import { Config, useConfig } from 'wagmi'
-import { readContract, estimateGas } from 'wagmi/actions'
 
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
 
@@ -115,26 +116,6 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
   )
 }
 
-function fetchClaimableAmount({ config, account }: { config: Config; account: string }): Promise<bigint> {
-  return readContract(config, {
-    abi: SBCDepositContractAbi,
-    address: SBC_DEPOSIT_CONTRACT_ADDRESS,
-    functionName: 'withdrawableAmount',
-    args: [account as `0x${string}`],
-  })
-}
-
-function fetchGasPrice({ config, account }: { config: Config; account: string }): Promise<bigint> {
-  return estimateGas(config, {
-    to: SBC_DEPOSIT_CONTRACT_ADDRESS,
-    data: encodeFunctionData({
-      abi: SBCDepositContractAbi,
-      functionName: 'claimWithdrawal',
-      args: [account as `0x${string}`],
-    }),
-  })
-}
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function ClaimableAmount(props: { loading: boolean; error: boolean; claimable?: bigint }) {
@@ -165,4 +146,24 @@ function ClaimableAmount(props: { loading: boolean; error: boolean; claimable?: 
       </Text>
     </>
   )
+}
+
+function fetchClaimableAmount({ config, account }: { config: Config; account: string }): Promise<bigint> {
+  return readContract(config, {
+    abi: SBCDepositContractAbi,
+    address: SBC_DEPOSIT_CONTRACT_ADDRESS,
+    functionName: 'withdrawableAmount',
+    args: [account as `0x${string}`],
+  })
+}
+
+function fetchGasPrice({ config, account }: { config: Config; account: string }): Promise<bigint> {
+  return estimateGas(config, {
+    to: SBC_DEPOSIT_CONTRACT_ADDRESS,
+    data: encodeFunctionData({
+      abi: SBCDepositContractAbi,
+      functionName: 'claimWithdrawal',
+      args: [account as `0x${string}`],
+    }),
+  })
 }

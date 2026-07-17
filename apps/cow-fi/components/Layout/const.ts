@@ -1,5 +1,5 @@
 import { initGtm } from '@cowprotocol/analytics'
-import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
+import { MenuItem, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -29,6 +29,30 @@ const LEARN_NAV_ITEM: MenuItem = {
 
 export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
   return [getAboutNavItem(), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
+}
+
+function getAboutNavItem(): MenuItem {
+  return {
+    label: 'About',
+    children: [
+      {
+        label: 'Stats',
+        href: 'https://dune.com/cowprotocol/cow-swap-home',
+        external: true,
+      },
+      {
+        label: 'Governance',
+        href: 'https://docs.cow.fi/governance',
+        external: true,
+      },
+      {
+        label: 'Grants',
+        href: 'https://grants.cow.fi/',
+        external: true,
+      },
+      { label: 'Careers', href: '/careers' },
+    ],
+  }
 }
 
 function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
@@ -80,52 +104,7 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
   }
 }
 
-function getAboutNavItem(): MenuItem {
-  return {
-    label: 'About',
-    children: [
-      {
-        label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cow-swap-home',
-        external: true,
-      },
-      {
-        label: 'Governance',
-        href: 'https://docs.cow.fi/governance',
-        external: true,
-      },
-      {
-        label: 'Grants',
-        href: 'https://grants.cow.fi/',
-        external: true,
-      },
-      {
-        label: 'Bug Bounty',
-        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
-        external: true,
-      },
-      { label: 'Careers', href: '/careers' },
-      { label: 'Affiliate Program', href: '/affiliate-program' },
-    ],
-  }
-}
-
 export const NAV_ADDITIONAL_BUTTONS = [
-  {
-    label: 'LP on CoW AMM',
-    href: 'https://balancer.fi/pools/cow',
-    utmContent: 'menubar-nav-button-lp-on-cow-amm',
-    onClick: () =>
-      analytics.sendEvent({
-        category: CowFiCategory.NAVIGATION,
-        action: 'Click LP on CoW AMM',
-        label: 'menubar-nav-button',
-      }),
-    external: true,
-    isButton: true,
-    bgColor: Color.cowamm_dark_green,
-    color: Color.cowamm_green,
-  },
   {
     label: COW_SWAP_CTA.text,
     href: COW_SWAP_CTA.deeplinkHref,

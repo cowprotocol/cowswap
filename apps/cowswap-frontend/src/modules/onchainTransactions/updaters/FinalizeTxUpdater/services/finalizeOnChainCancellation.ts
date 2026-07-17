@@ -1,3 +1,7 @@
+import type { TransactionReceipt } from 'viem'
+
+import { UiOrderType } from '@cowprotocol/types'
+
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
@@ -8,8 +12,6 @@ import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
-
-import type { TransactionReceipt } from 'viem'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -33,6 +35,7 @@ export function finalizeOnChainCancellation(
       emitCancelledOrderEvent({
         chainId,
         order: twapOrder,
+        orderType: UiOrderType.TWAP,
         transactionHash: hash,
       })
 

@@ -1,14 +1,17 @@
+import { http } from 'viem'
+import { createStorage } from 'wagmi'
+import type { Transport } from 'wagmi'
+
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
-import { http } from 'viem'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
-import type { Transport } from 'wagmi'
 
 /**
  * RPC URL for a given chain, used by AppKit's UI (balance display, ENS) and by wagmi
@@ -69,6 +72,16 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
   return acc
 }, {})
 
+// Configurator standalone tab and configurator-inside-Safe tab live on the same origin, so
+// AppKit's `@appkit/*` localStorage keys plus wagmi's own connector state are shared. On first
+// render inside Safe, `wagmi safe()` synchronously auto-connects to the Safe SDK, but then
+// Reown's rehydration (EIP-6963 discovery + reconnect from cached wallet_id) picks up the
+// browser wallet that was connected in the standalone tab (e.g. Rabby) and swaps the active
+// connector, dropping the Safe address. Detecting "we're loaded as a Safe App" lets us skip
+// that rehydration path entirely in the Safe context — the wagmi `safe()` connector then wins
+// uncontested and Safe stays connected.
+const IS_SAFE_APP_IFRAME = getIsSafeAppIframe()
+
 // The Reown wallet-registry returns TWO Coinbase Wallet entries:
 //   - 'fd20...' "Base (formerly Coinbase Wallet)" — the canonical entry; AppKit's
 //     PresetsUtil maps the `coinbaseWalletSDK` connector → this explorerId, so
@@ -83,11 +96,22 @@ const customRpcUrls = EVM_SUPPORTED_CHAIN_IDS.reduce<Record<string, Array<{ url:
 // Wallet" tile in the modal via AppKit's connector-list rendering).
 const COINBASE_LEGACY_WALLET_ID = 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8'
 
+// Isolate wagmi's persisted zustand store (`wagmi.store` = connections Map + active `current`)
+const wagmiStorage = createStorage({
+  key: IS_SAFE_APP_IFRAME ? 'wagmi_safe-app' : 'wagmi',
+  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+})
+
 export const wagmiAdapter = new WagmiAdapter({
   connectors: [safe({ unstable_getInfoTimeout: 1000 }), coinbaseWallet({ preference: { options: 'all' } })],
   customRpcUrls,
+  // Disable wagmi's own EIP-6963 discovery in Safe: otherwise wagmi's `mipd` finds the browser
+  // wallet extension (e.g. Rabby) and adds it as a connector, whose provider then emits `connect`
+  // via `eth_accounts` — swapping the active connector from `safe` after Safe SDK connected.
+  multiInjectedProviderDiscovery: !IS_SAFE_APP_IFRAME,
   networks,
   projectId,
+  storage: wagmiStorage,
   transports,
 })
 
@@ -119,7 +143,8 @@ export const reownAppKit = createAppKit({
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: networks.find((n) => n.id === SupportedChainId.MAINNET),
-  enableEIP6963: true,
+  enableEIP6963: !IS_SAFE_APP_IFRAME,
+  enableReconnect: !IS_SAFE_APP_IFRAME,
   enableWalletGuide: false,
   featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   metadata,
@@ -130,3 +155,20 @@ export const reownAppKit = createAppKit({
     connectorTypeOrder: ['injected', 'recent', 'walletConnect'],
   },
 })
+
+// With `enableReconnect: false` in Safe context (needed to prevent the cross-tab Rabby-session
+// leak from a standalone tab), Reown never fires `syncAdapterConnections` on init — so the
+// Safe SDK connector isn't auto-connected either. Explicitly trigger it here so the configurator
+// inside Safe still boots up connected to the Safe wallet without user interaction.
+//
+// Must wait for `reownAppKit.ready()`: with `enableReconnect: false`, AppKit's `initialize()`
+// calls `unSyncExistingConnection()` which disconnects every namespace. Firing the imperative
+// connect before that async chain resolves would race — we'd connect Safe, then AppKit's init
+// would immediately disconnect it. Awaiting `ready()` guarantees `unSyncExistingConnection()`
+// has already run before we lay down the Safe connection.
+if (IS_SAFE_APP_IFRAME && typeof window !== 'undefined') {
+  void reownAppKit
+    .ready()
+    .then(() => wagmiAdapter.connect({ id: 'safe', type: 'safe' }))
+    .catch(() => undefined)
+}

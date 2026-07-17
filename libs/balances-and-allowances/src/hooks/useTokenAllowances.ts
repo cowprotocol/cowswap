@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
 
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
+
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { erc20Abi } from 'viem'
-import { useReadContracts } from 'wagmi'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
@@ -14,6 +16,15 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
   isLoading: boolean
 } {
+  /*
+  TODO: Replace with tokenAllowancesFamily
+
+  const loadable = useLoadable(tokenAllowancesFamily(tokenAddresses))
+  const isLoading = loadable.state === 'loading'
+  const state = loadable.state === 'hasData' ? loadable.data : undefined
+  return { state, isLoading }
+  */
+
   const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
@@ -39,7 +50,9 @@ export function useTokenAllowances(tokenAddresses: string[]): {
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
       const result = allowances[index]?.result
-      acc[address.toLowerCase()] = result !== undefined ? (result as bigint) : undefined
+
+      acc[getAddressKey(address)] = result !== undefined ? (result as bigint) : undefined
+
       return acc
     }, {})
   }, [tokenAddresses, allowances])

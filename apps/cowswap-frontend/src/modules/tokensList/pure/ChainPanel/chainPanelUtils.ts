@@ -1,5 +1,17 @@
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
+export interface EmptyStateFlags {
+  showSearchEmptyState: boolean
+  showUnavailableState: boolean
+}
+
+interface EmptyStateFlagsParams {
+  filteredChainsLength: number
+  isLoading: boolean
+  normalizedChainQuery: string
+  totalChains: number
+}
+
 export function filterChainsByQuery(chains: ChainInfo[], normalizedChainQuery: string): ChainInfo[] {
   if (!chains.length || !normalizedChainQuery) {
     return chains
@@ -11,18 +23,6 @@ export function filterChainsByQuery(chains: ChainInfo[], normalizedChainQuery: s
 
     return labelMatch || idMatch
   })
-}
-
-interface EmptyStateFlagsParams {
-  filteredChainsLength: number
-  isLoading: boolean
-  normalizedChainQuery: string
-  totalChains: number
-}
-
-export interface EmptyStateFlags {
-  showSearchEmptyState: boolean
-  showUnavailableState: boolean
 }
 
 export function getEmptyStateFlags({
