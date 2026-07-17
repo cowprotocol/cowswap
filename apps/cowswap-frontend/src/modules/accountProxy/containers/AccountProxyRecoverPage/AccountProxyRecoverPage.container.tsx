@@ -16,14 +16,7 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
-import {
-  BalanceWrapper,
-  ButtonPrimaryStyled,
-  TokenAmountStyled,
-  TokenLogoWrapper,
-  TokenWrapper,
-  Wrapper,
-} from './styled'
+import * as styledEl from './AccountProxyRecoverPage.styled'
 
 import { useAccountProxies } from '../../hooks/useAccountProxies'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
@@ -79,33 +72,33 @@ export function AccountProxyRecoverPage(): ReactNode {
   }, [recoverCallback, navigateBack, updateTokenBalance, validTokenAddress, destroyedRef])
 
   return (
-    <Wrapper>
+    <styledEl.Wrapper>
       <ErrorModal />
-      <TokenWrapper>
+      <styledEl.TokenWrapper>
         <span>
           <Trans>Recoverable balance</Trans>
         </span>
-        <BalanceWrapper>
+        <styledEl.BalanceWrapper>
           {balance ? (
             <>
-              <TokenAmountStyled amount={balance} />
-              <TokenLogoWrapper>
+              <styledEl.TokenAmountStyled amount={balance} />
+              <styledEl.TokenLogoWrapper>
                 <TokenLogo token={balance.currency} size={24} />
                 <TokenSymbol token={balance.currency} />
-              </TokenLogoWrapper>
+              </styledEl.TokenLogoWrapper>
             </>
           ) : (
             <div>
               <Loader />
             </div>
           )}
-        </BalanceWrapper>
+        </styledEl.BalanceWrapper>
         <div>
           <FiatAmount amount={usdValue} />
         </div>
-      </TokenWrapper>
+      </styledEl.TokenWrapper>
 
-      <ButtonPrimaryStyled
+      <styledEl.ButtonPrimaryStyled
         disabled={
           !validProxyAddress || !validTokenAddress || isFractionFalsy(balance) || !!txSigningStep || txInProgress
         }
@@ -121,7 +114,7 @@ export function AccountProxyRecoverPage(): ReactNode {
           </>
         )}
         {!txSigningStep && !txInProgress && t`Recover funds`}
-      </ButtonPrimaryStyled>
-    </Wrapper>
+      </styledEl.ButtonPrimaryStyled>
+    </styledEl.Wrapper>
   )
 }

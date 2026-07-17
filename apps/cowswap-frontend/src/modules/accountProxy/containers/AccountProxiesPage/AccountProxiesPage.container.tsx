@@ -7,10 +7,10 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { Title, Wrapper } from './styled'
+import * as styledEl from './AccountProxiesPage.styled'
 
 import { useAccountProxies } from '../../hooks/useAccountProxies'
-import { AccountItem } from '../../pure/AccountItem'
+import { AccountItem } from '../../pure/AccountItem/AccountItem.pure'
 
 export function AccountProxiesPage(): ReactNode {
   const { chainId } = useWalletInfo()
@@ -23,16 +23,16 @@ export function AccountProxiesPage(): ReactNode {
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
   return (
-    <Wrapper>
-      <Title>
+    <styledEl.Wrapper>
+      <styledEl.Title>
         <Trans>
           Select an {accountProxyLabelString} to check for available refunds {chain}
         </Trans>
-      </Title>
+      </styledEl.Title>
 
       {proxies?.map(({ account, version, label }) => {
         return <AccountItem key={account} chainId={chainId} account={account} version={version} label={label} />
       })}
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }

@@ -11,12 +11,12 @@ import { useParams } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
 
-import { AccountCardContainer, ErrorMessage, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
+import * as styledEl from './AccountProxyPage.styled'
 
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
-import { AccountDataCard } from '../../pure/AccountDataCard'
-import { BaseAccountCard } from '../../pure/BaseAccountCard'
+import { AccountDataCard } from '../../pure/AccountDataCard/AccountDataCard.pure'
+import { BaseAccountCard } from '../../pure/BaseAccountCard/BaseAccountCard.pure'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 import { sumUpUsdAmounts } from '../../utils/sumUpUsdAmounts'
 
@@ -39,21 +39,21 @@ export function AccountProxyPage(): ReactNode {
   // Validate proxy address early
   if (!isAddress(proxyAddress)) {
     return (
-      <Wrapper>
-        <AccountCardContainer>
+      <styledEl.Wrapper>
+        <styledEl.AccountCardContainer>
           <BaseAccountCard width="95%" margin="12px auto 34px" minHeight={218} ariaLabel={t`Invalid proxy address`}>
-            <ErrorMessage>
+            <styledEl.ErrorMessage>
               <Trans>Invalid proxy address</Trans>
-            </ErrorMessage>
+            </styledEl.ErrorMessage>
           </BaseAccountCard>
-        </AccountCardContainer>
-      </Wrapper>
+        </styledEl.AccountCardContainer>
+      </styledEl.Wrapper>
     )
   }
 
   return (
-    <Wrapper>
-      <AccountCardContainer>
+    <styledEl.Wrapper>
+      <styledEl.AccountCardContainer>
         <AccountDataCard
           chainId={chainId}
           account={proxyAddress}
@@ -64,14 +64,14 @@ export function AccountProxyPage(): ReactNode {
           minHeight={218}
           showWatermark
         />
-      </AccountCardContainer>
-      <Title>
+      </styledEl.AccountCardContainer>
+      <styledEl.Title>
         <Trans>Recoverable tokens</Trans> · {tokensToRefund?.length || 0}
-      </Title>
+      </styledEl.Title>
       {refundValues &&
         refundValues.map(({ token, balance, usdAmount }) => {
           return (
-            <LinkStyled
+            <styledEl.LinkStyled
               key={token.address}
               to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, {
                 chainId,
@@ -79,12 +79,12 @@ export function AccountProxyPage(): ReactNode {
                 tokenAddress: token.address,
               })}
             >
-              <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
+              <styledEl.TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
                 <ArrowIcon verticalCenter />
-              </TokenListItemStyled>
-            </LinkStyled>
+              </styledEl.TokenListItemStyled>
+            </styledEl.LinkStyled>
           )
         })}
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }

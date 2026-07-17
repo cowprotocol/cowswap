@@ -8,13 +8,13 @@ import { Trans } from '@lingui/react/macro'
 
 import { Routes } from 'common/constants/routes'
 
-import { AccountIcon } from './AccountIcon'
-import { AccountWrapper, Wrapper, MiniContent } from './styled'
+import { AccountIcon } from './AccountIcon.pure'
+import * as styledEl from './AccountItem.styled'
 
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
-import { BaseAccountCard } from '../BaseAccountCard'
-import { CowProtocolIcon } from '../CowProtocolIcon'
-import { SkeletonLines } from '../SkeletonLines'
+import { BaseAccountCard } from '../BaseAccountCard/BaseAccountCard.pure'
+import { CowProtocolIcon } from '../CowProtocolIcon/CowProtocolIcon.pure'
+import { SkeletonLines } from '../SkeletonLines/SkeletonLines.pure'
 
 interface AccountItemProps {
   chainId: SupportedChainId
@@ -25,15 +25,15 @@ interface AccountItemProps {
 }
 export function AccountItem({ chainId, account, version, label, iconSize = 28 }: AccountItemProps): ReactNode {
   return (
-    <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
+    <styledEl.Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
       <BaseAccountCard width={90} height={56} borderRadius={8} padding={8} enableParentHover enableScale>
-        <MiniContent>
+        <styledEl.MiniContent>
           <AccountIcon account={account} size={iconSize} />
           <SkeletonLines skeletonHeight={2} />
           <CowProtocolIcon height={6} positionOffset={0} />
-        </MiniContent>
+        </styledEl.MiniContent>
       </BaseAccountCard>
-      <AccountWrapper>
+      <styledEl.AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
         <p>
           {label ?? (
@@ -42,9 +42,9 @@ export function AccountItem({ chainId, account, version, label, iconSize = 28 }:
             </>
           )}
         </p>
-      </AccountWrapper>
+      </styledEl.AccountWrapper>
 
       <ArrowIcon />
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }
