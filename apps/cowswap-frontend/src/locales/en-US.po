@@ -1909,7 +1909,7 @@ msgstr "Connect Wallet"
 msgid "View all orders"
 msgstr "View all orders"
 
-#: apps/cowswap-frontend/src/modules/accountProxy/consts.ts
+#: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
 msgid "Need help"
 msgstr "Need help"
 
