@@ -65,6 +65,7 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
     refetchInterval: refetchInterval || undefined,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+    refetchOnMount: params.query?.refetchOnMount,
   })
 
   // Skip results from outdated fetches if there is a result from a newer one
