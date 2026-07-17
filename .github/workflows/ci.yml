@@ -252,7 +252,7 @@ jobs:
     name: Notify Slack on Failure
     needs: [setup, test, lint, typecheck, agent-harness, integration-tests]
     runs-on: ubuntu-latest
-    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: always() && failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     steps:
       - name: Notify Failure
