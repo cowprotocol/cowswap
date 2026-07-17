@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.3...analytics-v3.6.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/events@4.8.0
+
 ## [3.5.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.2...analytics-v3.5.3) (2026-07-08)
 
 ### Patch Changes

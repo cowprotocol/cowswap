@@ -11,6 +11,7 @@ import {
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
+  REQUEST_TIMEOUT_MS,
   resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
@@ -141,8 +142,8 @@ describe('resolveCapabilitiesForChain', () => {
     expect(resolveCapabilitiesForChain({ '0x1': capabilities }, MOCK_CHAIN_ID)).toEqual(capabilities)
   })
 
-  it('falls back to the first entry when no chain key matches', () => {
-    expect(resolveCapabilitiesForChain({ '0x64': capabilities }, MOCK_CHAIN_ID)).toEqual(capabilities)
+  it('returns null when no chain key matches', () => {
+    expect(resolveCapabilitiesForChain({ '0x64': capabilities }, MOCK_CHAIN_ID)).toBeNull()
   })
 
   it('returns null for empty capabilities', () => {
@@ -322,7 +323,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toBeNull()
@@ -346,7 +347,7 @@ describe('walletCapabilitiesAtom', () => {
       expect(result).toEqual(capabilities)
     })
 
-    it('falls back to the first legacy capability entry when chain key is missing', async () => {
+    it('returns null when the legacy capabilities chain key is missing', async () => {
       const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
       mockGetCapabilities.mockRejectedValue(new Error('viem error'))
       const mockRequest = jest.fn().mockResolvedValue({ '0x64': capabilities })
@@ -356,7 +357,7 @@ describe('walletCapabilitiesAtom', () => {
 
       const result = await store.get(walletCapabilitiesAtom)
 
-      expect(result).toEqual(capabilities)
+      expect(result).toBeNull()
     })
 
     it('uses legacy fallback when getCapabilities times out', async () => {
@@ -370,7 +371,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toEqual(capabilities)
@@ -393,7 +394,7 @@ describe('walletCapabilitiesAtom', () => {
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(5_000)
+        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
         const result = await resultPromise
 
         expect(result).toBeNull()
