@@ -74,7 +74,13 @@ export async function fetchSolanaTokenBalances(
     if (!info) return
 
     const { index, ata, programId } = resolvable[i]
-    balances[index].balance = unpackAccount(ata, info, programId).amount
+
+    try {
+      balances[index].balance = unpackAccount(ata, info, programId).amount
+    } catch {
+      // Account exists but is not a valid token account (e.g., uninitialized lamport transfer).
+      // Leave the default zero balance.
+    }
   })
 
   return balances
