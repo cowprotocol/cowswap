@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.0...wallet-v3.8.1) (2026-07-17)
+
+### Patch Changes
+
+- fix: clear safe info after disconnect (#7858)
+
+- fix: increase wallet capabilities timeout from 5s to 30s (#7855)
+
+- fix: remove safe fallback (#7861)
+
+- fix: widget configurator with safe (#7807)
+
+- fix: quote loading for walletconnect (#7742)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/ens@3.4.4
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.2...wallet-v3.8.0) (2026-07-08)
 
 ### Minor Changes

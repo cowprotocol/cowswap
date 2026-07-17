@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.4.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.1...widget-lib-v4.4.2) (2026-07-17)
+
+### Patch Changes
+
+- fix(widget-lib): harden disableWindowOpen sandbox (#7826)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.0
+
 ## [4.4.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.0...widget-lib-v4.4.1) (2026-07-08)
 
 ### Patch Changes
