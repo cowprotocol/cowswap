@@ -1462,6 +1462,7 @@ msgid "This app/hook can only be used as a <0>{hookType}-hook</0>"
 msgstr "This app/hook can only be used as a <0>{hookType}-hook</0>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 msgid "Place limit order"
 msgstr "Place limit order"
 
@@ -3840,6 +3841,7 @@ msgstr "Import token"
 #~ msgid "Interface Settings"
 #~ msgstr "Interface Settings"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
 msgid "Enter a price"
 msgstr "Enter a price"
@@ -4059,6 +4061,7 @@ msgstr "You are not eligible for this airdrop"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Select a token"
 msgstr "Select a token"
@@ -4345,6 +4348,7 @@ msgstr "Only the {limit} most recent orders were searched."
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/containers/ConnectWalletModal/index.tsx
 #: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Connect wallet"
@@ -4990,6 +4994,10 @@ msgstr "This percentage only applies to dips; if prices are better than this per
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 msgid "Your wallet is already linked to a referral code."
 msgstr "Your wallet is already linked to a referral code."
+
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
+msgid "View on Solscan"
+msgstr "View on Solscan"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Confirm recipient to swap"
@@ -6115,6 +6123,7 @@ msgstr "You receive exactly"
 msgid "Checking"
 msgstr "Checking"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Enter an amount"
 msgstr "Enter an amount"
@@ -7028,6 +7037,10 @@ msgstr "Your order expired"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Add custom hook"
 msgstr "Add custom hook"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
+msgid "Solana limit order created"
+msgstr "Solana limit order created"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 msgid "Approve {symbol}"
@@ -8177,6 +8190,7 @@ msgstr "partially"
 msgid "View on Bridge Explorer ↗"
 msgstr "View on Bridge Explorer ↗"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/SolanaTradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient balance"
