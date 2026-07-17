@@ -1,0 +1,49 @@
+import { useWalletClient } from 'wagmi'
+
+import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { renderHook } from '@testing-library/react'
+
+import { useRecoverFundsFromProxy } from './useRecoverFundsFromProxy'
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+}))
+
+jest.mock('wagmi', () => ({
+  useWalletClient: jest.fn(),
+}))
+
+const ACCOUNT = '0x1111111111111111111111111111111111111111'
+const PROXY = '0x2222222222222222222222222222222222222222'
+const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useWalletClientMock = useWalletClient as jest.MockedFunction<typeof useWalletClient>
+
+describe('useRecoverFundsFromProxy', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    useWalletInfoMock.mockReturnValue({ account: ACCOUNT } as ReturnType<typeof useWalletInfo>)
+    useWalletClientMock.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
+  })
+
+  it('uses the selected proxy SDK', () => {
+    const proxyOf = jest.fn(() => PROXY)
+    const cowShedHooks = {
+      proxyOf,
+      getFactoryAddress: jest.fn(() => '0x3333333333333333333333333333333333333333'),
+    } as unknown as CowShedHooks
+
+    const { result } = renderHook(() =>
+      useRecoverFundsFromProxy({
+        cowShedHooks,
+        selectedTokenAddress: undefined,
+        tokenBalance: null,
+        isNativeToken: false,
+      }),
+    )
+
+    expect(proxyOf).toHaveBeenCalledWith(ACCOUNT)
+    expect(result.current.proxyAddress).toBe(PROXY)
+  })
+})

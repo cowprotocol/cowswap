@@ -1,25 +1,32 @@
 import { useMemo } from 'react'
 
-import { CowShedHooks, CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { COW_SHED_VERSIONS } from '../consts'
+import { ACCOUNT_PROXY_CONFIGS } from '../accountProxy.constants'
+import { getCowShedHooks } from '../utils/getCowShedHooks'
 
-interface AccountProxyInfo {
-  account: string
-  version: CoWShedVersion
-}
+import type { AccountProxyInfo } from '../accountProxy.types'
 
 export function useAccountProxies(): AccountProxyInfo[] | null {
   const { chainId, account } = useWalletInfo()
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   return useMemo(() => {
     if (!account) return null
 
-    return COW_SHED_VERSIONS.map((version) => {
-      const sdk = new CowShedHooks(chainId, undefined, version)
+    return ACCOUNT_PROXY_CONFIGS.reduce<AccountProxyInfo[]>((proxies, config) => {
+      if (!isTwapEoaEnabled && config.id === 'eoa-twap') return proxies
 
-      return { account: sdk.proxyOf(account), version }
-    })
-  }, [chainId, account])
+      const sdk = getCowShedHooks({ chainId, accountProxyConfig: config })
+
+      proxies.push({
+        ...config,
+        sdk,
+        account: sdk.proxyOf(account),
+      })
+
+      return proxies
+    }, [])
+  }, [chainId, account, isTwapEoaEnabled])
 }

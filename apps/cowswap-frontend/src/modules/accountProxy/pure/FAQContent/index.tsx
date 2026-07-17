@@ -12,7 +12,7 @@ import { Link } from 'react-router'
 
 import { FAQItem, FAQWrapper } from './styled'
 
-import { COW_SHED_VERSIONS } from '../../consts'
+import { COW_SHED_VERSIONS } from '../../accountProxy.constants'
 
 const Answer1: FC = () => {
   const { i18n } = useLingui()

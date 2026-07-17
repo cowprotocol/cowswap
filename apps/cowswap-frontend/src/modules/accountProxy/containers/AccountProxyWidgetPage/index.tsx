@@ -17,7 +17,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyWrapper, HelpLink, TitleWrapper, WidgetWrapper } from './styled'
 
-import { NEED_HELP_LABEL } from '../../consts'
+import { NEED_HELP_LABEL } from '../../accountProxy.constants'
 import { useOnAccountOrChainChanged } from '../../hooks/useOnAccountOrChainChanged'
 import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
