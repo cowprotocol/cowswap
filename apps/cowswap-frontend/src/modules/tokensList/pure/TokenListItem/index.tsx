@@ -108,9 +108,6 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   })
 
   const isTokenSelected = checkIsTokenSelected(token, selectedToken)
-  // Balances are only fetched for EVM chains (wagmi + BFF are EVM-only). Bridge-only
-  // destinations like Solana or Bitcoin land here too — for them, skip the balance column
-  // entirely instead of rendering an indefinite loading skeleton.
   const shouldShowBalances = isWalletConnected
   const shouldFormatBalances = shouldShowBalances && hasIntersected
   const balanceAmount =
