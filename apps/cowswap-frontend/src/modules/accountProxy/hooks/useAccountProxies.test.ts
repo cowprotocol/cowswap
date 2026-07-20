@@ -47,8 +47,9 @@ describe('useAccountProxies', () => {
 
   it('includes the custom EOA TWAP proxy', () => {
     const { result } = renderHook(() => useAccountProxies())
-    const eoaTwapProxy = result.current?.find(({ label }) => label === 'TWAP Account Proxy')
+    const eoaTwapProxy = result.current?.find(({ id }) => id === 'twap-account-proxy')
 
+    expect(eoaTwapProxy?.label?.message).toBe('TWAP Account Proxy')
     expect(eoaTwapProxy?.factoryOptions).toBe(EOA_TWAP_SHED_FACTORY_OPTIONS)
     expect(eoaTwapProxy?.account).toBe(CUSTOM_PROXY)
     expect(CowShedHooksMock).toHaveBeenCalledWith(CHAIN_ID, EOA_TWAP_SHED_FACTORY_OPTIONS, undefined)

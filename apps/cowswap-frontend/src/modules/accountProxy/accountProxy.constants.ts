@@ -21,7 +21,7 @@ export const ACCOUNT_PROXY_CONFIGS = [
   },
   {
     id: 'twap-account-proxy',
-    label: 'TWAP Account Proxy',
+    label: msg`TWAP Account Proxy`,
     factoryOptions: EOA_TWAP_SHED_FACTORY_OPTIONS,
   },
 ] as const satisfies AccountProxyConfig[]
