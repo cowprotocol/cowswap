@@ -7,14 +7,10 @@ import { BalancesWatcherApiError, BalancesWatcherStreamError } from './types'
 
 const HTTP_TOO_MANY_REQUESTS = 429
 
-// Dedicated logger for the balances-watcher SSE service. Errors from this service
-// (session POST failures, backend limits, terminal stream errors, snapshot
-// timeouts) are reported under this scope only, separate from the multicall path.
 const logger = createCowLogger('BalancesWatcher')
 
-// The session POST retries on a 30s interval and the first-snapshot timeout is
-// ~20s, so a sustained outage would emit an event per retry. Shared throttle:
-// at most one report per window across the whole service.
+// Session POST retries every ~30s and the first-snapshot timeout is ~20s, so one
+// shared window keeps a sustained outage from emitting an event per retry.
 const REPORT_THROTTLE_MS = ms`60s`
 let lastReportedAt: number | undefined
 
@@ -77,15 +73,12 @@ function extractWatcherErrorCodes(error: unknown): { status?: number; code?: num
   return {}
 }
 
-function resolveErrorName(phase: WatcherErrorPhase, isRateLimited: boolean): string {
-  if (isRateLimited) return 'BalancesWatcherRateLimitError'
+const ERROR_NAME_BY_PHASE: Record<WatcherErrorPhase, string> = {
+  session: 'BalancesWatcherSessionError',
+  stream: 'BalancesWatcherStreamError',
+  'first-snapshot-timeout': 'BalancesWatcherSnapshotTimeout',
+}
 
-  switch (phase) {
-    case 'session':
-      return 'BalancesWatcherSessionError'
-    case 'stream':
-      return 'BalancesWatcherStreamError'
-    case 'first-snapshot-timeout':
-      return 'BalancesWatcherSnapshotTimeout'
-  }
+function resolveErrorName(phase: WatcherErrorPhase, isRateLimited: boolean): string {
+  return isRateLimited ? 'BalancesWatcherRateLimitError' : ERROR_NAME_BY_PHASE[phase]
 }
