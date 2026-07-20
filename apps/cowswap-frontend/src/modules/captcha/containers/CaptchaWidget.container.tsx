@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { createCowTracker } from '@cowprotocol/analytics'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { getJwtTtl } from '@cowprotocol/common-utils'
+import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
@@ -120,12 +120,12 @@ export function CaptchaWidget(): ReactNode {
           logCaptcha.info('JWT received', { requestId })
           trackCaptcha({ action: 'captcha_challenge_solved' })
           setCaptchaJwt(jwt)
-        } catch (error) {
+        } catch (err: unknown) {
           if (exchangeRequestIdRef.current !== requestId) {
             return
           }
 
-          logCaptcha.error('JWT exchange failed', { requestId, error })
+          logCaptcha.error(new Error('JWT exchange failed', { cause: normalizeError(err) }), undefined, { requestId })
           trackCaptcha({ action: 'captcha_challenge_failed', reason: 'jwtExchangeFailed' })
           setCaptchaJwt(null)
         }
@@ -142,7 +142,7 @@ export function CaptchaWidget(): ReactNode {
       onError={(errorCode) => {
         exchangeRequestIdRef.current += 1
 
-        logCaptcha.error('Challenge errored', { errorCode, hostname: window.location.hostname })
+        logCaptcha.error(new Error('Challenge errored'), undefined, { errorCode, hostname: window.location.hostname })
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'turnstileError' })
         setCaptchaJwt(null)
       }}

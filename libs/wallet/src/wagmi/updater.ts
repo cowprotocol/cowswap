@@ -256,7 +256,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               logSafeApi.warn('Fetching safe info: NOT a safe', account)
               setIsKnownNotSafe(true)
             } else {
-              logSafeApi.error(`Unhandled safe error ${error.statusCode}`, account)
+              logSafeApi.error(new Error('Failed to fetch Safe info', { cause: error }))
             }
             setSafeInfo(undefined)
           }
