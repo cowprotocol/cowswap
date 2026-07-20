@@ -17,6 +17,9 @@ import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../conf
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
 import { logCaptcha } from '../logger'
 
+const trackCaptchaEvent = createCowTracker(CowSwapAnalyticsCategory.CAPTCHA)
+const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
+
 /* eslint-disable max-lines-per-function */
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
@@ -26,9 +29,7 @@ export function CaptchaWidget(): ReactNode {
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
   const theme = useTheme()
 
-  const trackCaptcha = createCowTracker(CowSwapAnalyticsCategory.CAPTCHA, {
-    enabled: siteKey !== TURNSTILE_DEMO_INTERACTIVE_SITE_KEY,
-  })
+  const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
 
   useEffect(() => {
     if (!isCaptchaEnabled) {
