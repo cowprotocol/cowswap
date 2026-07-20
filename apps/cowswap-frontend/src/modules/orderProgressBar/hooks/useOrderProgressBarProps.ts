@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -564,7 +564,7 @@ function mergeSolverData(
   // the name. Resolve CMS branding by address in that case; otherwise fall back to the legacy
   // name-based lookup (backend still returns a name, e.g. `naive`, `barter-solve`).
   if (rawSolver.startsWith('0x') && rawSolver.length === 42) {
-    const solverInfo = solversInfoByAddress[rawSolver.toLowerCase()]
+    const solverInfo = solversInfoByAddress[getAddressKey(rawSolver)]
     const solverId = solverInfo?.solverId ?? rawSolver
     return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
   }

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SolverInfo, solversInfoAtom } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export function useSolversInfo(chainId: SupportedChainId): Record<string, SolverInfo> {
   const allSolversInfo = useAtomValue(solversInfoAtom)
@@ -27,7 +27,7 @@ export function useSolversInfo(chainId: SupportedChainId): Record<string, Solver
 }
 
 /**
- * Same as {@link useSolversInfo} but keyed by the on-chain solver address (lowercased) for the
+ * Same as {@link useSolversInfo} but keyed by the on-chain solver address (normalized) for the
  * given chain/env. Used to resolve solver branding from the address returned by the orderbook
  * `/status` endpoint, without relying on the (soon to be removed) backend solver name.
  */
@@ -41,7 +41,7 @@ export function useSolversInfoByAddress(chainId: SupportedChainId): Record<strin
     return allSolversInfo.reduce<Record<string, SolverInfo>>((acc, info) => {
       info.solverNetworks.forEach(({ env: solverEnv, chainId: solverChainId, address }) => {
         if (solverEnv === envToFilter && solverChainId === chainId && address) {
-          acc[address.toLowerCase()] = info
+          acc[getAddressKey(address)] = info
         }
       })
 
