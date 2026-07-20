@@ -2,7 +2,7 @@ import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
-import { TokenUsdAmounts } from '../types'
+import { TokenUsdAmounts } from '../accountProxy.types'
 
 export function sumUpUsdAmounts(chainId: SupportedChainId, amounts: TokenUsdAmounts): CurrencyAmount<Token> {
   const usdcToken = USDC[chainId]

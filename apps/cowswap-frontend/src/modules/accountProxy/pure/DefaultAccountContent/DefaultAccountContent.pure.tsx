@@ -18,10 +18,10 @@ import { MoreHorizontal } from 'react-feather'
 
 import { safeShortenAddress } from 'utils/address'
 
-import { LeftBottom, LeftTop, RightTop, AddressDisplay, AddressLinkWrapper, ValueLabel, ValueAmount } from './styled'
+import * as styledEl from './DefaultAccountContent.styled'
 
-import { AccountIcon } from '../AccountItem/AccountIcon'
-import { CowProtocolIcon } from '../CowProtocolIcon'
+import { AccountIcon } from '../AccountItem/AccountIcon.pure'
+import { CowProtocolIcon } from '../CowProtocolIcon/CowProtocolIcon.pure'
 
 interface DefaultAccountContentProps {
   account: string
@@ -40,15 +40,15 @@ export function DefaultAccountContent({
 
   return (
     <>
-      <LeftTop>
-        <ValueLabel>
+      <styledEl.LeftTop>
+        <styledEl.ValueLabel>
           <Trans>Recoverable value</Trans>
-        </ValueLabel>
-        <ValueAmount aria-live="polite">
+        </styledEl.ValueLabel>
+        <styledEl.ValueAmount aria-live="polite">
           {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
-        </ValueAmount>
-      </LeftTop>
-      <RightTop>
+        </styledEl.ValueAmount>
+      </styledEl.LeftTop>
+      <styledEl.RightTop>
         <ContextMenuTooltip
           placement="bottom"
           content={
@@ -60,19 +60,19 @@ export function DefaultAccountContent({
         >
           <MoreHorizontal size={20} />
         </ContextMenuTooltip>
-      </RightTop>
-      <LeftBottom>
+      </styledEl.RightTop>
+      <styledEl.LeftBottom>
         <ExternalLink
           href={addressLink}
           aria-label={t`View account` + ` ${safeShortenAddress(account)} ` + t`on explorer`}
           rel="noopener noreferrer"
         >
-          <AddressLinkWrapper>
+          <styledEl.AddressLinkWrapper>
             <AccountIcon account={account} size={28} />
-            <AddressDisplay>{safeShortenAddress(account)}</AddressDisplay>
-          </AddressLinkWrapper>
+            <styledEl.AddressDisplay>{safeShortenAddress(account)}</styledEl.AddressDisplay>
+          </styledEl.AddressLinkWrapper>
         </ExternalLink>
-      </LeftBottom>
+      </styledEl.LeftBottom>
       <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
     </>
   )

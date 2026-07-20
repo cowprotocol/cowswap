@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import { AccountCardWrapper, WatermarkIcon } from '../AccountCard/styled'
+import * as styledEl from './BaseAccountCard.styled'
 
 interface BaseAccountCardProps {
   children: ReactNode
@@ -32,7 +32,7 @@ export function BaseAccountCard({
   ariaLabel,
 }: BaseAccountCardProps): ReactNode {
   return (
-    <AccountCardWrapper
+    <styledEl.AccountCardWrapper
       $width={width}
       $height={height}
       $borderRadius={borderRadius}
@@ -46,10 +46,10 @@ export function BaseAccountCard({
     >
       {children}
       {showWatermark && (
-        <WatermarkIcon>
+        <styledEl.WatermarkIcon>
           <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
-        </WatermarkIcon>
+        </styledEl.WatermarkIcon>
       )}
-    </AccountCardWrapper>
+    </styledEl.AccountCardWrapper>
   )
 }
