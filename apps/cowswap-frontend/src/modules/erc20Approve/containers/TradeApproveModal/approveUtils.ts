@@ -1,25 +1,26 @@
+import { decodeAbiParameters, getAddress, keccak256, stringToBytes } from 'viem'
+
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 import { SetOptimisticAllowanceParams } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
-import { decodeAbiParameters, getAddress, keccak256, stringToBytes } from 'viem'
 
 // ERC20 Approval event signature: Approval(address indexed owner, address indexed spender, uint256 value)
 const APPROVAL_EVENT_TOPIC = keccak256(stringToBytes('Approval(address,address,uint256)'))
-
-interface ApprovalTransactionParams {
-  chainId: SupportedChainId
-  account: string | undefined
-  spender: string | undefined
-  currency: Nullish<Currency>
-}
 
 export type ApprovalTxReceipt = {
   status: 'success' | 'reverted'
   blockNumber: bigint
   transactionHash: `0x${string}`
   logs: Array<{ address: string; topics: string[]; data: `0x${string}` }>
+}
+
+interface ApprovalTransactionParams {
+  chainId: SupportedChainId
+  account: string | undefined
+  spender: string | undefined
+  currency: Nullish<Currency>
 }
 
 export function processApprovalTransaction(

@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.9.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.8.1...cow-fi-v2.9.0) (2026-07-17)
+
+### Minor Changes
+
+- feat(cow-fi): remove LP on CoW AMM header CTA (#7814)
+
+- feat(cow-fi): remove Bug Bounty and Affiliate menu links (#7820)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/events@4.8.0
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/widget-react@3.2.2
+
+## [2.8.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.8.0...cow-fi-v2.8.1) (2026-07-08)
+
+### Patch Changes
+
+- fix: validate cow-fi CMS inputs and revalidation flows (#7618)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ui@3.9.1
+  - @cowprotocol/widget-react@3.2.1
+
 ## [2.8.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.7.4...cow-fi-v2.8.0) (2026-06-25)
 
 ### Minor Changes

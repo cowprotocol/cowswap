@@ -85,16 +85,16 @@ const Arrow = styled(BaseTooltip.Arrow)`
   }
 `
 
-type Side = 'top' | 'right' | 'bottom' | 'left'
-type Align = 'start' | 'center' | 'end'
-
-export type TooltipPlacement = Side | `${Side}-${Exclude<Align, 'center'>}`
-
 export interface NewTooltipProps {
   content: ReactNode
   children: ReactNode
   placement?: TooltipPlacement
 }
+export type TooltipPlacement = Side | `${Side}-${Exclude<Align, 'center'>}`
+
+type Align = 'start' | 'center' | 'end'
+
+type Side = 'top' | 'right' | 'bottom' | 'left'
 
 export function NewTooltip(props: NewTooltipProps): ReactNode {
   const { content, children, placement } = props

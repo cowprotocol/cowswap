@@ -1,5 +1,7 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { useLocalStorageState, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -7,7 +9,6 @@ import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
-import { useConnection } from 'wagmi'
 
 import { SidebarFooter } from './footer/sidebar-footer.component'
 import { SidebarHeader } from './header/sidebar-header.component'

@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -5,7 +6,7 @@ import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { BridgeOrderData, Nullish } from '@cowprotocol/types'
 
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
-import { mapTwapOrderToStoreOrder, useTwapOrderById, useTwapOrdersTokens } from 'entities/twap'
+import { mapTwapOrderToStoreOrder, useTwapOrderById, twapOrdersTokensAtom } from 'entities/twap'
 
 import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -23,7 +24,7 @@ export function useUltimateOrder(
   const swapOrderFromStore = useOrder({ id: orderUid, chainId })
   const bridgeOrderFromStore = useBridgeOrderData(orderUid)
   const { data: bridgeOrderFromApi } = useCrossChainOrder(chainId, orderUid)
-  const twapOrdersTokens = useTwapOrdersTokens()
+  const twapOrdersTokens = useAtomValue(twapOrdersTokensAtom)
   const twapOrder = useTwapOrderById(orderUid)
 
   const twapOrderFromStore = useMemo(() => {

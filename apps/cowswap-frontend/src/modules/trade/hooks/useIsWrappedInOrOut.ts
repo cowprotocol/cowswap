@@ -7,12 +7,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeState } from './useTradeState'
 
-function getIsWrappedNativeToken(chainId: SupportedChainId, tokenId: string): boolean {
-  const nativeToken = WRAPPED_NATIVE_CURRENCIES[chainId]
-
-  return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
-}
-
 export function useIsWrappedIn(): boolean {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
@@ -23,6 +17,7 @@ export function useIsWrappedIn(): boolean {
     [chainId, inputCurrencyId],
   )
 }
+
 export function useIsWrappedOut(): boolean {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
@@ -32,4 +27,9 @@ export function useIsWrappedOut(): boolean {
     () => Boolean(chainId && outputCurrencyId && getIsWrappedNativeToken(chainId, outputCurrencyId)),
     [chainId, outputCurrencyId],
   )
+}
+function getIsWrappedNativeToken(chainId: SupportedChainId, tokenId: string): boolean {
+  const nativeToken = WRAPPED_NATIVE_CURRENCIES[chainId]
+
+  return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
 }

@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.6.0...balances-and-allowances-v3.7.0) (2026-07-17)
+
+### Minor Changes
+
+- feat(bw): disconnect session when user idle (#7833)
+
+- feat: add client id parameter into bw query (#7823)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/tokens@3.8.4
+  - @cowprotocol/core@3.6.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.5.0...balances-and-allowances-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(solana): fetch native SOL balance (#7741)
+
+- feat: bw fallback to multicall (#7767)
+
+- feat(balances): add bridge tokens to bw session (#7688)
+
+### Patch Changes
+
+- fix: validate cow-fi CMS inputs and revalidation flows (#7618)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/tokens@3.8.3
+  - @cowprotocol/multicall@3.4.3
+  - @cowprotocol/common-hooks@3.5.1
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.1...balances-and-allowances-v3.5.0) (2026-06-25)
 
 ### Minor Changes

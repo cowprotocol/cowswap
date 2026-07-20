@@ -19,14 +19,6 @@ export { getAccountOrders } from './accountOrderUtils'
 
 const ENV_REQUEST_TIMEOUT_MS = 12_000
 
-function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: BARN`)
-}
-
-function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: PROD`)
-}
-
 /**
  * Gets a single order by id.
  *
@@ -260,4 +252,18 @@ function ensureSolverCompetition(
   }
 
   return competition
+}
+
+function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: BARN. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
+}
+
+function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: PROD. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
 }

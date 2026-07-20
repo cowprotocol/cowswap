@@ -12,18 +12,6 @@ import { useImportTokenWithConsent } from './useImportTokenWithConsent'
 
 import { RwaConsentModal } from '../pure/RwaConsentModal'
 
-function getRestrictedFlowResult(): CustomFlowResult<TokenSelectorView.ImportToken> {
-  return {
-    content: null,
-    data: {
-      restriction: {
-        isBlocked: true,
-        message: t`This token is not available in your region.`,
-      },
-    },
-  }
-}
-
 /**
  * Hook that provides preFlow for ImportToken view.
  * Handles consent modal and restriction data for RWA tokens.
@@ -66,4 +54,16 @@ export function useImportTokenConsentFlow(): ViewFlowConfig<TokenSelectorView.Im
     if (!tokenToImport) return null
     return { preFlow }
   }, [tokenToImport, preFlow])
+}
+
+function getRestrictedFlowResult(): CustomFlowResult<TokenSelectorView.ImportToken> {
+  return {
+    content: null,
+    data: {
+      restriction: {
+        isBlocked: true,
+        message: t`This token is not available in your region.`,
+      },
+    },
+  }
 }

@@ -29,6 +29,20 @@ export const FIRST_SNAPSHOT_TIMEOUT_MS = ms`20s`
  */
 export const FALLBACK_RETRY_INTERVAL_MS = ms`30s`
 
+/**
+ * How long the tab may stay hidden (`document.visibilityState === 'hidden'`)
+ * before the session is torn down to stop consuming the SSE channel. A short
+ * hide (tab switch, brief window occlusion) does not trigger termination; only
+ * continuous hidden state past this threshold does. When the tab becomes
+ * visible again, a fresh session is started (POST + SSE).
+ */
+export const HIDDEN_SESSION_TIMEOUT_MS = ms`15s`
+
+export interface SessionController {
+  start(): void
+  cleanup(): void
+}
+
 export interface SessionControllerDeps {
   account: string
   chainId: SupportedChainId
@@ -38,9 +52,14 @@ export interface SessionControllerDeps {
   setHealth: (update: (state: WatcherHealthState) => WatcherHealthState) => void
 }
 
-export interface SessionController {
-  start(): void
-  cleanup(): void
+export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
+  return {
+    ...state,
+    chainId,
+    error: null,
+    isLoading: false,
+    hasFirstLoad: true,
+  }
 }
 
 /**
@@ -144,16 +163,6 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       clearRetryTimer()
       setHealth(() => DEFAULT_WATCHER_HEALTH_STATE)
     },
-  }
-}
-
-export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
-  return {
-    ...state,
-    chainId,
-    error: null,
-    isLoading: false,
-    hasFirstLoad: true,
   }
 }
 

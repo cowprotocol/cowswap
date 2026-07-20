@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { Config, useConnection, UseConnectionReturnType } from 'wagmi'
+
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UseAppKitAccountReturn } from '@reown/appkit'
-import { useConnection } from 'wagmi'
 
 import { CAIP_TO_SUPPORTED_CHAIN_ID } from '../../constants'
 import { reownAppKit } from '../config'
 
-export interface AccountState {
+export type AccountState = EvmOrBitcoinAccountState | SolanaAccountState
+
+type EvmOrBitcoinAccountState = Omit<UseConnectionReturnType<Config>, 'chainId'> & {
   chainId: SupportedChainId
-  address: string | undefined
-  isConnected: boolean
-  status: 'reconnecting' | 'connected' | 'disconnected' | 'connecting' | undefined
+}
+
+type SolanaAccountState = UseAppKitAccountReturn & {
+  chainId: SupportedChainId.SOLANA
+  connector?: never
 }
 
 export function useAccountState(): AccountState {
