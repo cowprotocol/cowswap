@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai'
 
+import type { BalancesState } from '@cowprotocol/balances-and-allowances'
+
 import { balancesCombinedAtom } from '../state/balanceCombinedAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useTokensBalancesCombined() {
+export function useTokensBalancesCombined(): BalancesState {
   return useAtomValue(balancesCombinedAtom)
 }

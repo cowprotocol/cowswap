@@ -71,6 +71,7 @@
     "@reach/menu-button": "0.18.0",
     "@react-spring/web": "9.7.3",
     "@reduxjs/toolkit": "1.9.5",
+    "@reown/appkit-adapter-solana": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",
     "@reown/appkit": "1.8.19",
