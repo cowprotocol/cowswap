@@ -5,6 +5,9 @@ import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SolverInfo, solversInfoAtom } from '@cowprotocol/core'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+// Maps solver-id -> SolverInfo; should be removed after BE releases (prod)
+// https://github.com/cowprotocol/services/pull/4647
+// The mergeSolverData function should be updated then
 export function useSolversInfo(chainId: SupportedChainId): Record<string, SolverInfo> {
   const allSolversInfo = useAtomValue(solversInfoAtom)
 
