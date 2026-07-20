@@ -73,11 +73,11 @@ function extractWatcherErrorCodes(error: unknown): { status?: number; code?: num
   return {}
 }
 
-const ERROR_NAME_BY_PHASE: Record<WatcherErrorPhase, string> = {
+const ERROR_NAME_BY_PHASE = {
   session: 'BalancesWatcherSessionError',
   stream: 'BalancesWatcherStreamError',
   'first-snapshot-timeout': 'BalancesWatcherSnapshotTimeout',
-}
+} as const satisfies Record<WatcherErrorPhase, string>
 
 function resolveErrorName(phase: WatcherErrorPhase, isRateLimited: boolean): string {
   return isRateLimited ? 'BalancesWatcherRateLimitError' : ERROR_NAME_BY_PHASE[phase]
