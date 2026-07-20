@@ -36,6 +36,7 @@
     "@cowprotocol/sdk-viem-adapter": "0.3.24",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
+    "@cowprotocol/wallet": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "6.7.1",
     "@fortawesome/free-solid-svg-icons": "6.7.1",
