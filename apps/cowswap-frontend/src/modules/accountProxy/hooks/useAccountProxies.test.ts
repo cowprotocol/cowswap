@@ -1,7 +1,7 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
@@ -20,6 +20,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
+  useIsSafeWallet: jest.fn(),
 }))
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111'
@@ -27,6 +28,7 @@ const CUSTOM_PROXY = '0x2222222222222222222222222222222222222222'
 const CHAIN_ID = SupportedChainId.MAINNET
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const useIsSafeWalletMock = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
 const CowShedHooksMock = CowShedHooks as jest.MockedClass<typeof CowShedHooks>
 const proxyOfMock = jest.fn()
 
@@ -34,6 +36,7 @@ describe('useAccountProxies', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useFeatureFlagsMock.mockReturnValue({ isTwapEoaEnabled: true })
+    useIsSafeWalletMock.mockReturnValue(false)
     useWalletInfoMock.mockReturnValue({ account: ACCOUNT, chainId: CHAIN_ID } as ReturnType<typeof useWalletInfo>)
     proxyOfMock
       .mockReturnValueOnce('0x3333333333333333333333333333333333333333')
@@ -44,7 +47,7 @@ describe('useAccountProxies', () => {
 
   it('includes the custom EOA TWAP proxy', () => {
     const { result } = renderHook(() => useAccountProxies())
-    const eoaTwapProxy = result.current?.find(({ label }) => label === 'EOA TWAP')
+    const eoaTwapProxy = result.current?.find(({ label }) => label === 'TWAP Account Proxy')
 
     expect(eoaTwapProxy?.factoryOptions).toBe(EOA_TWAP_SHED_FACTORY_OPTIONS)
     expect(eoaTwapProxy?.account).toBe(CUSTOM_PROXY)
@@ -56,7 +59,16 @@ describe('useAccountProxies', () => {
 
     const { result } = renderHook(() => useAccountProxies())
 
-    expect(result.current?.some(({ id }) => id === 'eoa-twap')).toBe(false)
+    expect(result.current?.some(({ id }) => id === 'twap-account-proxy')).toBe(false)
+    expect(proxyOfMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('excludes the custom EOA TWAP proxy for Safe wallets', () => {
+    useIsSafeWalletMock.mockReturnValue(true)
+
+    const { result } = renderHook(() => useAccountProxies())
+
+    expect(result.current?.some(({ id }) => id === 'twap-account-proxy')).toBe(false)
     expect(proxyOfMock).toHaveBeenCalledTimes(2)
   })
 

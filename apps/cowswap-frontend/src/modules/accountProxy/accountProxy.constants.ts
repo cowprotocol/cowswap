@@ -20,8 +20,8 @@ export const ACCOUNT_PROXY_CONFIGS = [
     version: COW_SHED_1_0_0_VERSION,
   },
   {
-    id: 'eoa-twap',
-    label: 'EOA TWAP',
+    id: 'twap-account-proxy',
+    label: 'TWAP Account Proxy',
     factoryOptions: EOA_TWAP_SHED_FACTORY_OPTIONS,
   },
 ] as const satisfies AccountProxyConfig[]
