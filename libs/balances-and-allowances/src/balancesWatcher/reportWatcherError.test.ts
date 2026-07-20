@@ -1,6 +1,8 @@
 import { captureError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import ms from 'ms.macro'
+
 import { reportWatcherError } from './reportWatcherError'
 import { BalancesWatcherApiError, BalancesWatcherStreamError } from './types'
 
@@ -11,9 +13,19 @@ jest.mock('@cowprotocol/common-utils', () => ({
 
 const captureErrorMock = captureError as jest.Mock
 
+// The reporter keeps one shared throttle timestamp across all errors, so each
+// test advances the mocked clock past the window to start unthrottled.
+let mockedNow = 0
+
 describe('reportWatcherError', () => {
   beforeEach(() => {
     captureErrorMock.mockReset()
+    mockedNow += ms`61s`
+    jest.spyOn(Date, 'now').mockImplementation(() => mockedNow)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('tags a 429 session error as a distinct rate-limit error', () => {
@@ -67,23 +79,29 @@ describe('reportWatcherError', () => {
     expect(tags.phase).toBe('first-snapshot-timeout')
   })
 
-  it('does not throttle distinct backend codes sharing the same HTTP status', () => {
-    // Both 400, but different limit errors — each must report independently.
-    const tokenLimit = new BalancesWatcherApiError(400, { code: 4001, message: 'Token limit exceeded' })
-    const tooManyClients = new BalancesWatcherApiError(400, { code: 4002, message: 'Too many clients' })
-
-    reportWatcherError({ error: tokenLimit, phase: 'session', chainId: SupportedChainId.AVALANCHE })
-    reportWatcherError({ error: tooManyClients, phase: 'session', chainId: SupportedChainId.AVALANCHE })
-
-    expect(captureErrorMock).toHaveBeenCalledTimes(2)
-  })
-
-  it('throttles repeated reports for the same chain + phase + status + code', () => {
-    const error = new BalancesWatcherStreamError({ code: 503, message: 'unavailable' })
-    // A dedicated chain keeps this test's throttle window isolated from the others.
-    reportWatcherError({ error, phase: 'stream', chainId: SupportedChainId.POLYGON })
-    reportWatcherError({ error, phase: 'stream', chainId: SupportedChainId.POLYGON })
+  it('throttles any further report within the shared window, regardless of error kind', () => {
+    reportWatcherError({
+      error: new BalancesWatcherStreamError({ code: 503, message: 'unavailable' }),
+      phase: 'stream',
+      chainId: SupportedChainId.POLYGON,
+    })
+    // Different phase, chain, and error — still suppressed by the shared throttle.
+    reportWatcherError({
+      error: new BalancesWatcherApiError(429, { code: 429, message: 'Too many requests' }),
+      phase: 'session',
+      chainId: SupportedChainId.MAINNET,
+    })
 
     expect(captureErrorMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('reports again once the window has passed', () => {
+    const error = new Error('boom')
+    reportWatcherError({ error, phase: 'session', chainId: SupportedChainId.MAINNET })
+
+    mockedNow += ms`61s`
+    reportWatcherError({ error, phase: 'session', chainId: SupportedChainId.MAINNET })
+
+    expect(captureErrorMock).toHaveBeenCalledTimes(2)
   })
 })

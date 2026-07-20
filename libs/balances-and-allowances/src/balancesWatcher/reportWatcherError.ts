@@ -13,10 +13,10 @@ const HTTP_TOO_MANY_REQUESTS = 429
 const logger = createCowLogger('BalancesWatcher')
 
 // The session POST retries on a 30s interval and the first-snapshot timeout is
-// ~20s, so a sustained outage would emit an event per retry. Report at most once
-// per (chainId + phase + status + code) per window while keeping the errors visible.
+// ~20s, so a sustained outage would emit an event per retry. Shared throttle:
+// at most one report per window across the whole service.
 const REPORT_THROTTLE_MS = ms`60s`
-const lastReportedAt = new Map<string, number>()
+let lastReportedAt: number | undefined
 
 export interface ReportWatcherErrorParams {
   error: unknown
@@ -36,20 +36,16 @@ export type WatcherErrorPhase = 'session' | 'stream' | 'first-snapshot-timeout'
  * Report a balances-watcher service failure to Sentry under the `BalancesWatcher`
  * scope. Provider rate-limiting (HTTP 429) is tagged distinctly (`rateLimited`,
  * `httpStatus: 429`), and the backend error `code` (limits, etc.) is preserved.
- * Throttled per (chainId + phase + status + code) so a persistent outage does not flood Sentry.
+ * Throttled to at most one report per window so a persistent outage does not flood Sentry.
  */
 export function reportWatcherError({ error, phase, chainId }: ReportWatcherErrorParams): void {
+  const now = Date.now()
+
+  if (lastReportedAt !== undefined && now - lastReportedAt < REPORT_THROTTLE_MS) return
+  lastReportedAt = now
+
   const { status, code } = extractWatcherErrorCodes(error)
   const isRateLimited = status === HTTP_TOO_MANY_REQUESTS
-
-  // Both status AND code so distinct backend limit errors sharing an HTTP status
-  // (e.g. token-limit vs too-many-clients, both 400) throttle independently.
-  const throttleKey = `${chainId}:${phase}:${status ?? 'x'}:${code ?? 'x'}`
-  const now = Date.now()
-  const last = lastReportedAt.get(throttleKey)
-
-  if (last !== undefined && now - last < REPORT_THROTTLE_MS) return
-  lastReportedAt.set(throttleKey, now)
 
   const message = error instanceof Error ? error.message : String(error)
   const sentryError = new Error(message, { cause: error })
