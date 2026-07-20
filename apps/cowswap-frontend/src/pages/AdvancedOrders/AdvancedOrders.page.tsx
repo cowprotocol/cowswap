@@ -5,10 +5,10 @@ import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 import { useParams } from 'react-router'
 
 import { Loading } from 'legacy/components/FlashingLoading'
-import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   advancedOrdersAtom,
@@ -19,7 +19,7 @@ import {
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect } from 'modules/trade'
 import {
@@ -27,7 +27,6 @@ import {
   TwapConfirmModal,
   TwapFormWidget,
   TwapUpdaters,
-  useAllEmulatedOrders,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
   useTwapFormState,
@@ -41,12 +40,14 @@ import { HydrateAtom } from 'common/state/HydrateAtom'
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export function AdvancedOrdersPage(): ReactNode {
+  useOrdersTable(TabOrderTypes.ADVANCED)
+
   const params = useParams()
   const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
-  const allEmulatedOrders = useAllEmulatedOrders()
+  const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const twapFormValidation = useTwapFormState()
@@ -56,8 +57,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
-  const pendingOrders = allEmulatedOrders.filter((order) => order.status === OrderStatus.PENDING)
-
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
   if (!params.chainId) {
@@ -94,11 +93,7 @@ export function AdvancedOrdersPage(): ReactNode {
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper className="trade-orders-table">
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget
-                displayOrdersOnlyForSafeApp
-                orderType={TabOrderTypes.ADVANCED}
-                orders={allEmulatedOrders}
-              />
+              <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
             </Suspense>
           </styledEl.SecondaryWrapper>
         )}

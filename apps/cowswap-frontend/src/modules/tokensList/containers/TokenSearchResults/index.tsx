@@ -4,10 +4,6 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
-
-import { Field } from 'legacy/state/types'
-
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
@@ -19,28 +15,16 @@ import { TokenSearchContent } from '../../pure/TokenSearchContent'
 export function TokenSearchResults(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
-  const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap } = useTokenListContext()
-  const { tokenLists, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
+  const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap, hasScopedListRestriction } =
+    useTokenListContext()
 
   const { onTokenListItemClick } = selectTokenContext
 
-  const { field, onSelectToken } = useSelectTokenWidgetState()
+  const { onSelectToken } = useSelectTokenWidgetState()
 
   // Search all tokens (used in both modes)
   const defaultSearchResults = useSearchToken(searchInput)
   const filter = useMemo(() => getTokenSearchFilter(searchInput), [searchInput])
-  const hasScopedListRestriction = useMemo(() => {
-    if (field === Field.INPUT) {
-      return !!(tokenLists?.length || sellTokenLists?.length)
-    }
-
-    if (field === Field.OUTPUT) {
-      return !!(tokenLists?.length || buyTokenLists?.length)
-    }
-
-    return !!(tokenLists?.length || sellTokenLists?.length || buyTokenLists?.length)
-  }, [buyTokenLists?.length, field, sellTokenLists?.length, tokenLists?.length])
-
   const searchResults: TokenSearchResponse = useMemo(() => {
     if (!hasScopedListRestriction && !areTokensFromBridge) {
       return defaultSearchResults

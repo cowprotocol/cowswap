@@ -4,21 +4,6 @@ import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
 
-function formatBpsAsPercent(bps: number): string {
-  const percent = bps / 100
-
-  if (bps === 0) {
-    return '0%'
-  }
-
-  const formatted = new Intl.NumberFormat(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 4,
-  }).format(percent)
-
-  return `${formatted}%`
-}
-
 export function IntegrationsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
     <NumberInput
@@ -42,4 +27,19 @@ export function IntegrationsSectionForm({ values, onChange }: SidebarSectionForm
       }}
     />
   )
+}
+
+function formatBpsAsPercent(bps: number): string {
+  const percent = bps / 100
+
+  if (bps === 0) {
+    return '0%'
+  }
+
+  const formatted = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 4,
+  }).format(percent)
+
+  return `${formatted}%`
 }

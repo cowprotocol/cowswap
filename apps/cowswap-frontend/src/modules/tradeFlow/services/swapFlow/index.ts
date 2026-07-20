@@ -1,3 +1,7 @@
+import type { Hex } from 'viem'
+import { maxUint256 } from 'viem'
+import { sendTransaction } from 'wagmi/actions'
+
 import {
   captureError,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
@@ -18,8 +22,6 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { maxUint256 } from 'viem'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -36,8 +38,6 @@ import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
-
-import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 

@@ -3,7 +3,7 @@
 export function getIntOrFloat(amount: string | null): string | null {
   if (!amount) return null
 
-  if (/^\.\d+|\d+\.?\d*$/.test(amount)) return amount
+  if (/^(\.\d+|\d+\.?\d*)$/.test(amount)) return amount
 
   return null
 }

@@ -13,6 +13,27 @@ import * as styledEl from './styled'
 import { truncateWithEllipsis } from '../helpers'
 import { OrderProgressBarProps } from '../types'
 
+export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
+  const isSmallScreen = useMediaQuery(Media.upToSmall(false))
+
+  const benefitRef = useAutoFitText<HTMLDivElement>({
+    min: 12,
+    max: isSmallScreen ? 28 : 36,
+    deps: [randomBenefit, isSmallScreen],
+  })
+
+  return (
+    <styledEl.BenefitSurplusContainer>
+      <styledEl.BenefitTagLine>
+        <Trans>Did you know?</Trans>
+      </styledEl.BenefitTagLine>
+      <styledEl.BenefitText>
+        <styledEl.BenefitResponsiveText ref={benefitRef}>{randomBenefit}</styledEl.BenefitResponsiveText>
+      </styledEl.BenefitText>
+    </styledEl.BenefitSurplusContainer>
+  )
+}
+
 export function ShowSurplus({
   order,
   shouldShowSurplus,
@@ -38,27 +59,6 @@ export function ShowSurplus({
       <styledEl.Surplus>
         <styledEl.SurplusValue ref={surplusRef}>{surplusText}</styledEl.SurplusValue>
       </styledEl.Surplus>
-    </styledEl.BenefitSurplusContainer>
-  )
-}
-
-export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
-  const isSmallScreen = useMediaQuery(Media.upToSmall(false))
-
-  const benefitRef = useAutoFitText<HTMLDivElement>({
-    min: 12,
-    max: isSmallScreen ? 28 : 36,
-    deps: [randomBenefit, isSmallScreen],
-  })
-
-  return (
-    <styledEl.BenefitSurplusContainer>
-      <styledEl.BenefitTagLine>
-        <Trans>Did you know?</Trans>
-      </styledEl.BenefitTagLine>
-      <styledEl.BenefitText>
-        <styledEl.BenefitResponsiveText ref={benefitRef}>{randomBenefit}</styledEl.BenefitResponsiveText>
-      </styledEl.BenefitText>
     </styledEl.BenefitSurplusContainer>
   )
 }

@@ -1,3 +1,7 @@
+import { maxUint256 } from 'viem'
+import type { Hex } from 'viem'
+import { sendTransaction } from 'wagmi/actions'
+
 import {
   captureError,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
@@ -13,8 +17,6 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { maxUint256 } from 'viem'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -33,8 +35,6 @@ import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAna
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function, complexity

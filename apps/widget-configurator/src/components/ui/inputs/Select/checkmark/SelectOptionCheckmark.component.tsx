@@ -8,12 +8,12 @@ import { selectOptionCheckIconSx, selectOptionCheckPlaceholderSx } from '../base
 const SELECT_OPTION_CHECK_SIZE = 18
 const SELECT_OPTION_CHECK_STROKE_WIDTH = 2
 
-type SelectOptionCheckmarkVariant = 'check' | 'checkbox'
-
 interface SelectOptionCheckmarkProps {
   selected: boolean
   variant?: SelectOptionCheckmarkVariant
 }
+
+type SelectOptionCheckmarkVariant = 'check' | 'checkbox'
 
 export function SelectOptionCheckmark({ selected, variant = 'check' }: SelectOptionCheckmarkProps): ReactNode {
   if (variant === 'checkbox') {

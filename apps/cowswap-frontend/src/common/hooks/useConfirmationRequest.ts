@@ -1,6 +1,6 @@
 import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -9,21 +9,18 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { ConfirmationModalProps } from '../pure/ConfirmationModal'
 
-type TriggerConfirmationParams = Pick<
-  ConfirmationModalProps,
-  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
->
 interface ConfirmationModalContext {
   onDismiss: Command
   activePromise?: Promise<boolean>
   title: string
   callToAction: string
-  description?: string
+  description?: ReactNode
   warning?: string
   confirmWord: string
   action: string
   onEnable: Command
   skipInput?: boolean
+  bottomContent?: ReactNode
   triggerConfirmation: ({
     title,
     description,
@@ -32,6 +29,10 @@ interface ConfirmationModalContext {
     skipInput,
   }: TriggerConfirmationParams) => Promise<void>
 }
+type TriggerConfirmationParams = Pick<
+  ConfirmationModalProps,
+  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput' | 'bottomContent'
+>
 
 export const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
   onDismiss: () => {},

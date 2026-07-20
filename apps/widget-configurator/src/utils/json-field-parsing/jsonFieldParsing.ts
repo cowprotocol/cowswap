@@ -1,7 +1,3 @@
-export function jsonHelperText(hasError: boolean): string {
-  return hasError ? 'Invalid JSON.' : 'Optional. CamelCase CSS properties as JSON, e.g. { "fooBar": "1234" }'
-}
-
 /** True when the value is non-empty but cannot be parsed as JSON. Empty values are considered valid. */
 export function isInvalidJson(value: string | null): boolean {
   if (!value?.trim()) return false
@@ -12,6 +8,10 @@ export function isInvalidJson(value: string | null): boolean {
   } catch {
     return true
   }
+}
+
+export function jsonHelperText(hasError: boolean): string {
+  return hasError ? 'Invalid JSON.' : 'Optional. CamelCase CSS properties as JSON, e.g. { "fooBar": "1234" }'
 }
 
 /** Parses a JSON string field, returning the fallback when empty or invalid. */

@@ -5,6 +5,12 @@ import { useQrBarcodeScanner } from './useQrBarcodeScanner'
 const mockDetect = jest.fn()
 const mockStop = jest.fn()
 
+function installBarcodeDetector(): void {
+  window.BarcodeDetector = jest.fn().mockImplementation(() => ({
+    detect: mockDetect,
+  })) as unknown as typeof window.BarcodeDetector
+}
+
 function makeMockStream(): MediaStream {
   return {
     getTracks: () => [{ stop: mockStop } as unknown as MediaStreamTrack],
@@ -15,12 +21,6 @@ function makeVideoRef(readyState = 4): React.RefObject<HTMLVideoElement | null> 
   return {
     current: { readyState } as HTMLVideoElement,
   }
-}
-
-function installBarcodeDetector(): void {
-  window.BarcodeDetector = jest.fn().mockImplementation(() => ({
-    detect: mockDetect,
-  })) as unknown as typeof window.BarcodeDetector
 }
 
 function removeBarcodeDetector(): void {
