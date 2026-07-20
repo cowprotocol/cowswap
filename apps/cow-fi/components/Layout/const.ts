@@ -68,14 +68,6 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
         href: '/cow-protocol',
       },
       {
-        label: 'CoW AMM',
-        href: '/cow-amm',
-      },
-      {
-        label: 'MEV Blocker',
-        href: '/mev-blocker',
-      },
-      {
         label: 'More',
         children: [
           {
