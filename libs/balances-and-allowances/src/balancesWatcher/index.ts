@@ -6,3 +6,6 @@ export type { BalancesSubscription, SubscribeToBalancesEventsParams } from './su
 
 export { BalancesWatcherApiError, BalancesWatcherStreamError } from './types'
 export type { BalanceUpdateEvent, BalancesMap, BalancesWatcherErrorPayload, CreateSessionRequest } from './types'
+
+export { reportWatcherError } from './reportWatcherError'
+export type { ReportWatcherErrorParams, WatcherErrorPhase } from './reportWatcherError'
