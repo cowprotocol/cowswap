@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import { CowWidgetEvents } from '@cowprotocol/events'
+
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { WIDGET_IFRAME_SANDBOX, WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS } from './cowSwapWidget.constants'
 import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
@@ -427,6 +429,51 @@ describe('createCowSwapWidget param validation', () => {
         disableWindowOpen: true,
       }),
     ).toThrow('`disableWindowOpen: true` requires `standaloneMode: false`')
+  })
+})
+
+describe('createCowSwapWidget listeners', () => {
+  const handlers: CowSwapWidgetHandler[] = []
+
+  afterEach(() => {
+    handlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('re-wires runtime updateListeners across an iframe retry', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const initialListener = jest.fn()
+    const updatedListener = jest.fn()
+
+    const handler = createCowSwapWidget(container, {
+      params: { appCode: 'test-app', chainId: 1, tradeType: TradeType.SWAP },
+      listeners: [{ event: CowWidgetEvents.ON_TOAST_MESSAGE, handler: initialListener }],
+    })
+    handlers.push(handler)
+
+    // Runtime update (the React wrapper does this when its `listeners` prop changes)
+    handler.updateListeners([{ event: CowWidgetEvents.ON_TOAST_MESSAGE, handler: updatedListener }])
+
+    // Simulate a failed load: the error panel with a Reload button is shown
+    handler.iframe.dispatchEvent(new Event('error'))
+    const reloadBtn = container.querySelector<HTMLButtonElement>('button')
+    expect(reloadBtn).not.toBeNull()
+
+    // Reload rebuilds the iframe from scratch and re-runs setup()
+    reloadBtn?.click()
+
+    // Emit a cow event from the rebuilt iframe
+    emitWidgetEvent(handler.iframe, WidgetMethodsEmit.EMIT_COW_EVENT, {
+      event: CowWidgetEvents.ON_TOAST_MESSAGE,
+      payload: { messageType: 'info', message: 'hi' },
+    })
+
+    // Only the listener set via updateListeners runs; the mount-time one does not return
+    expect(updatedListener).toHaveBeenCalledTimes(1)
+    expect(initialListener).not.toHaveBeenCalled()
   })
 })
 

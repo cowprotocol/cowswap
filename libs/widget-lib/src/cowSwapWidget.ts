@@ -64,6 +64,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   let provider = providerAux
   let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
   let lastDynamicHeight: string = ''
+  // Track the current listeners so rebuilding the iframe on retry re-wires the latest ones set via
+  // `updateListeners()`, instead of reverting to the initial `props.listeners`.
+  let currentListeners = listeners
 
   if (typeof window === 'undefined') return noopHandler
 
@@ -146,7 +149,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateWidgetHooks()
 
     // 7. Handle and forward widget events to the listeners
-    iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, iframeWindow, listeners)
+    iFrameCowEventEmitter = new IframeCowEventEmitter(window, iframeOrigin, iframeWindow, currentListeners)
 
     // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
     iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
@@ -160,16 +163,18 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     // 10. Listen for Safe SDK messages from the iframe only when explicitly enabled by the host.
     iframeSafeSdkBridge = createIframeSafeSdkBridge(enableSafeSdkBridge, window, iframeWindow, iframeOrigin)
 
-    const loadingContext = widgetIframeLoading(container, iframe, reloadIframe, props.onLoadingError)
+    const loadingContext = widgetIframeLoading(container, iframe, rebuildIframe, props.onLoadingError)
 
     cancelWidgetLoading = loadingContext.cancelWidgetLoading
     const onWidgetReady = loadingContext.onWidgetReady
   }
 
-  // Rebuild the iframe from scratch and re-run setup. Reusing the same sandboxed frame and only
-  // swapping its `src` did not reliably re-fetch the widget on retry, so a failed load could never
-  // recover. A brand new iframe gives a clean document that re-emits READY once it loads.
-  function reloadIframe(): void {
+  // Rebuild the iframe from scratch and re-run setup (used on retry after a loading error). Reusing
+  // the same sandboxed frame and only swapping its `src` did not reliably re-fetch the widget, so a
+  // failed load could never recover. A brand new iframe gives a clean document that re-emits READY
+  // once it loads. (Distinct from the module-level `reloadIframe`, which does the lighter
+  // `about:blank` src swap used when params like `disableWindowOpen` change.)
+  function rebuildIframe(): void {
     destroy()
 
     iframe = createIframe(currentParams)
@@ -221,7 +226,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       updateInterceptDeepLinks()
       updateWidgetHooks()
     },
-    updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter?.updateListeners(newListeners),
+    updateListeners: (newListeners?: CowWidgetEventListeners) => {
+      currentListeners = newListeners
+      iFrameCowEventEmitter?.updateListeners(newListeners)
+    },
     updateProvider: (newProvider) => {
       if (!iframeWindow) return
 
