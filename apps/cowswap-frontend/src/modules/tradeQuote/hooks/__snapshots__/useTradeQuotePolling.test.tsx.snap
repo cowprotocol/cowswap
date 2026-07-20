@@ -2,7 +2,7 @@
 
 exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver" field in the quote request should be undefined 1`] = `
 {
-  "account": "0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9",
+  "account": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
   "amount": 10000000n,
   "appCode": "CoW Swap",
   "buyTokenAddress": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
@@ -22,7 +22,7 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver"
     "9745": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
   },
   "kind": "sell",
-  "owner": "0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9",
+  "owner": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
   "partiallyFillable": false,
   "receiver": undefined,
   "sellTokenAddress": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
@@ -63,10 +63,10 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "sellTokenChainId": 11155111,
     "sellTokenDecimals": 18,
     "signer": {
-      "address": "0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9",
+      "address": "0x19E7E376E7C213B7E7e7e46cc70A5dD086DAff2A",
       "getAddress": [Function],
       "nonceManager": undefined,
-      "publicKey": "0x04e08d5acfd3225da0cb2b0a781991200cb4dae9f02fe63394ddf5dc592643e572224c8172a2373fdfb3f6b034d10fbd91a3462d56f8d09a5df8e1fb6c02b0c98d",
+      "publicKey": "0x044f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa385b6b1b8ead809ca67454d9683fcf2ba03456d6fe2c4abe2b07f0fbdbb2f1c1",
       "sign": [Function],
       "signAuthorization": [Function],
       "signMessage": [Function],
@@ -78,6 +78,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "validFor": 1800,
   },
   {
+    "allowIntermediateEqSellToken": true,
     "appData": undefined,
     "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,

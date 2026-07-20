@@ -1,14 +1,16 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { usePublicClient } from 'wagmi'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { logSafeApi } from '@cowprotocol/common-utils'
+import { normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
-
-import { usePublicClient } from 'wagmi'
 
 import { useApproveCallback } from 'modules/erc20Approve'
 
@@ -73,9 +75,13 @@ async function waitForSafeTransactionExecution({
   return await pollUntil(
     async () => {
       try {
-        console.log('[COW][SafeAPI] Wait for Safe transaction execution')
+        logSafeApi.info('Wait for Safe transaction execution')
         return await safeApiKit.getTransaction(txHash)
-      } catch {
+      } catch (err: unknown) {
+        const error = normalizeSafeError(err)
+        if (error.statusCode === 429) {
+          logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
+        }
         return null
       }
     },

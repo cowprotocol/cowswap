@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { useBlockNumber } from 'entities/blockchain'
 
-import { useBlockNumber } from 'common/hooks/useBlockNumber'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

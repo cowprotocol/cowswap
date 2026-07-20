@@ -53,6 +53,7 @@ import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
+import { SwapDebugPanel } from '../SwapDebugPanel'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
@@ -78,7 +79,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     quoteError instanceof QuoteApiError && quoteError.type === QuoteApiErrorCodes.SellAmountDoesNotCoverFee
   const hideQuoteAmount = useShouldHideTradeRateDetails()
   const priceImpact = useTradePriceImpact()
-  const widgetActions = useSwapWidgetActions()
+  const widgetActions = useSwapWidgetActions(hooksEnabledState[0])
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { disableCustomRecipient } = useInjectedWidgetParams()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
@@ -262,6 +263,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const params = {
     compactView: true,
     enableSmartSlippage: true,
+    enableSellEqBuy: hooksEnabledState[0],
     isMarketOrderWidget: true,
     isSellingEthSupported: true,
     allowSwapSameToken,
@@ -273,6 +275,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   return (
     <Container>
+      <SwapDebugPanel contextIsReady={doTrade.contextIsReady} deadline={deadlineState[0]} />
       {showAddIntermediateTokenModal ? (
         <AddIntermediateTokenModal
           onDismiss={handleCloseImportModal}

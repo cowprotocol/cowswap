@@ -31,15 +31,6 @@ interface TitleWithFeedbackProps {
   name?: string
 }
 
-function TitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
-  return (
-    <TitleRow>
-      <Title id={id}>{name}</Title>
-      <AffiliateFeedbackButton />
-    </TitleRow>
-  )
-}
-
 function AccountTitle({ id, name, pathname }: AccountTitleProps): ReactNode {
   if (pathname === RoutesEnum.ACCOUNT_AFFILIATE_PARTNER || pathname === RoutesEnum.ACCOUNT_AFFILIATE_TRADER) {
     return <TitleWithFeedback id={id} name={name} />
@@ -72,6 +63,15 @@ function getPropsFromRoute(route: string): string[] {
     default:
       return []
   }
+}
+
+function TitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
+  return (
+    <TitleRow>
+      <Title id={id}>{name}</Title>
+      <AffiliateFeedbackButton />
+    </TitleRow>
+  )
 }
 
 // Note: As we build these single pages, we will remove this component in the future

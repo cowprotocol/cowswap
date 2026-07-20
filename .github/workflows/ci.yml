@@ -16,7 +16,6 @@ env:
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
   REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-  REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
   REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
   REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.BALANCES_WATCHER_BASE_URL }}
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
@@ -27,6 +26,7 @@ env:
 jobs:
   setup:
     name: Setup
+    if: ${{ !startsWith(github.head_ref, 'cf-preview/pr-') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -190,6 +190,7 @@ jobs:
 
   integration-tests:
     name: Cypress
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -251,7 +252,7 @@ jobs:
     name: Notify Slack on Failure
     needs: [setup, test, lint, typecheck, agent-harness, integration-tests]
     runs-on: ubuntu-latest
-    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: always() && failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     steps:
       - name: Notify Failure

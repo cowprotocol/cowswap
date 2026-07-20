@@ -156,6 +156,7 @@ describe('fetchAndProcessQuote', () => {
 
       expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true, sameChainQuoteParams)
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(sameChainQuoteParams, {
+        allowIntermediateEqSellToken: true,
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
@@ -236,6 +237,7 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
+        allowIntermediateEqSellToken: true,
         quoteRequest: {
           priceQuality: PriceQuality.OPTIMAL,
         },
@@ -270,6 +272,7 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
+        allowIntermediateEqSellToken: true,
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },
@@ -662,6 +665,7 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
+        allowIntermediateEqSellToken: true,
         quoteRequest: {
           priceQuality: PriceQuality.FAST,
         },

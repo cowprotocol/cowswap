@@ -1,26 +1,28 @@
 import { ReactNode, StrictMode, useMemo } from 'react'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
-import { WagmiProvider } from 'wagmi'
 
-import { Configurator } from './app/configurator'
-import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
-import { commonTypography } from './theme/commonTypography'
-import { useColorMode } from './theme/hooks/useColorMode'
-import { darkPalette, lightPalette } from './theme/paletteOptions'
+import { Configurator } from './components/configurator/configurator.component'
+import { commonComponents } from './theme/commonComponents.constants'
+import { commonTypography } from './theme/commonTypography.constants'
+import { ColorModeProvider } from './theme/context/ColorModeProvider'
+import { useColorMode } from './theme/context/hooks/useColorMode'
+import { globalStyles } from './theme/globalStyles.constants'
+import { darkPalette, lightPalette } from './theme/palettes.constants'
 // Importing for side effects: createAppKit() runs at module load.
 import { wagmiConfig } from './wagmiConfig'
 import { WithLDProvider } from './WithLDProvider'
 
-// Initialize analytics instance
-export const cowAnalytics = initGtm()
+const cowAnalytics = initGtm()
 
 const queryClient = new QueryClient()
 
@@ -31,9 +33,8 @@ const WrapperStyled = {
   width: '100%',
 }
 
-function Root(): ReactNode {
-  const colorMode = useColorMode()
-  const { mode } = colorMode
+function ConfiguratorApp(): ReactNode {
+  const { mode } = useColorMode()
 
   const theme = useMemo(() => {
     const palette: PaletteOptions = mode === 'dark' ? darkPalette : lightPalette
@@ -41,48 +42,33 @@ function Root(): ReactNode {
     return createTheme({
       palette,
       typography: commonTypography,
-      components: {
-        MuiCssBaseline: {
-          styleOverrides: {
-            '@global': {
-              html: {
-                fontFamily: '"Inter var", "Inter", sans-serif',
-              },
-              body: {
-                fontFamily: '"Inter var", "Inter", sans-serif',
-              },
-              '@supports (font-variation-settings: normal)': {
-                html: {
-                  fontFamily: '"Inter var", "Inter", sans-serif',
-                },
-                body: {
-                  fontFamily: '"Inter var", "Inter", sans-serif',
-                },
-              },
-            },
-          },
-        },
-      },
+      components: commonComponents,
     })
   }, [mode])
 
   return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <GlobalStyles styles={globalStyles(theme)} />
+      <Box sx={WrapperStyled}>
+        <WithLDProvider>
+          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+            <Configurator title="CoW Widget" />
+          </CowAnalyticsProvider>
+        </WithLDProvider>
+      </Box>
+    </ThemeProvider>
+  )
+}
+
+function Root(): ReactNode {
+  return (
     <StrictMode>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <ColorModeContext.Provider value={colorMode}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
-              <Box sx={WrapperStyled}>
-                <WithLDProvider>
-                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                    <Configurator title="CoW Widget" />
-                  </CowAnalyticsProvider>
-                </WithLDProvider>
-              </Box>
-            </ThemeProvider>
-          </ColorModeContext.Provider>
+          <ColorModeProvider>
+            <ConfiguratorApp />
+          </ColorModeProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </StrictMode>
@@ -90,8 +76,5 @@ function Root(): ReactNode {
 }
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
-root.render(
-  <StrictMode>
-    <Root />
-  </StrictMode>,
-)
+
+root.render(<Root />)

@@ -19,6 +19,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     disableNativeSelling = false,
     disableSuggestedSlippageApi = false,
     allowSwapSameToken = false,
+    enableSellEqBuy = false,
     enableSmartSlippage,
   } = params
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
@@ -45,6 +46,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     <>
       <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen} isTokenSelectWide={isTokenSelectWide}>
         <TradeWidgetUpdaters
+          enableSellEqBuy={enableSellEqBuy}
           allowSwapSameToken={allowSwapSameToken}
           disableQuotePolling={disableQuotePolling}
           disableNativeSelling={disableNativeSelling}

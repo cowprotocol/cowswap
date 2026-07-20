@@ -13,6 +13,10 @@ const mockIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIs
 const mockIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
 const mockTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 
+function render(showRecipient: boolean): boolean {
+  return renderHook(() => useIsWithRecipient(showRecipient)).result.current
+}
+
 function setup({
   isWrapOrUnwrap = false,
   isNonEvmBridging = false,
@@ -23,10 +27,6 @@ function setup({
   mockTradeStateFromUrl.mockReturnValue(
     recipientInUrl ? ({ recipient: recipientInUrl } as ReturnType<typeof useTradeStateFromUrl>) : null,
   )
-}
-
-function render(showRecipient: boolean): boolean {
-  return renderHook(() => useIsWithRecipient(showRecipient)).result.current
 }
 
 describe('useIsWithRecipient', () => {
@@ -84,5 +84,13 @@ describe('useIsWithRecipient', () => {
       setup({ recipientInUrl: '0xrecipient' })
       expect(render(true)).toBe(true)
     })
+  })
+
+  it('does not show when only recipientAddress exists without recipient', () => {
+    mockTradeStateFromUrl.mockReturnValue({ recipientAddress: '0xrecipient' } as ReturnType<
+      typeof useTradeStateFromUrl
+    >)
+
+    expect(render(false)).toBe(false)
   })
 })

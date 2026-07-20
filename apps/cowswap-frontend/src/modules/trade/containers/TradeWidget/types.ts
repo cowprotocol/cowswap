@@ -31,18 +31,8 @@ export interface TradeWidgetParams {
   displayChainName?: boolean
   isPriceStatic?: boolean
   allowSwapSameToken?: boolean
+  enableSellEqBuy?: boolean
   customSelectTokenButton?: ReactNode
-}
-
-export interface TradeWidgetSlots {
-  settingsWidget: ReactNode
-  lockScreen?: ReactNode
-  topContent?: ReactNode
-  middleContent?: ReactNode
-  bottomContent?(warnings: ReactNode | null): ReactNode
-  outerContent?: ReactNode
-  updaters?: ReactNode
-  selectTokenWidget?: ReactNode
 }
 
 export interface TradeWidgetProps {
@@ -55,4 +45,15 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+}
+
+export interface TradeWidgetSlots {
+  settingsWidget: ReactNode
+  lockScreen?: ReactNode
+  topContent?: ReactNode
+  middleContent?: ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
+  outerContent?: ReactNode
+  updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }

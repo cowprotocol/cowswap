@@ -1,0 +1,23 @@
+import { getEnvLabel, getRelatedSwapPreviewUrl } from './baseUrl'
+
+describe('getRelatedSwapPreviewUrl', () => {
+  it('uses the Vercel-provided swap branch URL', () => {
+    const relatedProjects = JSON.stringify([
+      {
+        project: { name: 'swap-dev' },
+        preview: { branch: 'swap-dev-git-bla-dhqiwuhe-yay0000-weirdandlo-54bda8-cowswap-dev.vercel.app' },
+      },
+    ])
+
+    expect(getRelatedSwapPreviewUrl(relatedProjects)).toBe(
+      'https://swap-dev-git-bla-dhqiwuhe-yay0000-weirdandlo-54bda8-cowswap-dev.vercel.app',
+    )
+  })
+})
+
+describe('getEnvLabel', () => {
+  it('recognizes only Vercel preview URLs', () => {
+    expect(getEnvLabel('https://swap-dev-git-release-2026-07-15-cowswap-dev.vercel.app')).toBe('Preview')
+    expect(getEnvLabel('https://release-2026-07-15.swap-dev-5u6.pages.dev')).toBe('Unknown')
+  })
+})

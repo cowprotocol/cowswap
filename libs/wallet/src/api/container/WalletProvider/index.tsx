@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 
-import { reownAppKit } from '../../../reown/init'
+import { reownAppKit } from '../../../wagmi/config'
 
 interface WalletProviderProps {
   children: ReactNode

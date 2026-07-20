@@ -1,5 +1,8 @@
 import { MouseEventHandler, ReactNode, useCallback } from 'react'
 
+import { VirtualItem } from '@tanstack/react-virtual'
+import { toHex } from 'viem'
+
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -10,9 +13,7 @@ import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbo
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { VirtualItem } from '@tanstack/react-virtual'
 import { Info } from 'react-feather'
-import { toHex } from 'viem'
 
 import { PoolInfoStates } from 'modules/yield/shared'
 
@@ -182,7 +183,7 @@ export function LpTokenLists({
           <div>
             <Trans>Can't find the pool you're looking for?</Trans>
           </div>
-          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">
+          <CreatePoolLink href="https://balancer.fi/create/step-1-type">
             <Trans>Create a pool</Trans> ↗
           </CreatePoolLink>
         </NoPoolWrapper>

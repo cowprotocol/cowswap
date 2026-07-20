@@ -44,6 +44,11 @@ interface FillsTableRowProps {
   showSolverDetails: boolean
 }
 
+type TradeSolverCellProps = {
+  txHash: string
+  orderId: string
+}
+
 export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: FillsTableRowProps): React.ReactNode {
   const network = useNetworkId() ?? undefined
   const {
@@ -123,11 +128,6 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
       )}
     </tr>
   )
-}
-
-type TradeSolverCellProps = {
-  txHash: string
-  orderId: string
 }
 
 function TradeSolverCell({ txHash, orderId }: TradeSolverCellProps): React.ReactNode {

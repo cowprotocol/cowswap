@@ -1,9 +1,10 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import iconMessageReadSrc from '@cowprotocol/assets/images/icon-message-read.svg'
 
-import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -23,6 +24,7 @@ import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
 import { isSidebarNotification } from '../../utils/filterNotifications.utils'
+import { getTrustedNotificationLink } from '../../utils/getTrustedNotificationLink'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 
 interface EmptyNotificationsProps {
@@ -104,20 +106,16 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
             <h4>{group.date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</h4>
             <NotificationsListWrapper key={group.date.getTime()}>
               {group.notifications.map(({ id, thumbnail, title, description, url }) => {
-                const target = url
-                  ? url.includes(window.location.host) || url.startsWith('/')
-                    ? '_parent'
-                    : '_blank'
-                  : undefined
+                const trustedLink = getTrustedNotificationLink(url)
 
                 return (
                   <NotificationCard
                     key={id}
                     isRead={!unreadNotifications[id]}
-                    href={url || undefined}
-                    target={target}
+                    href={trustedLink?.href}
+                    target={trustedLink?.target}
                     noImage={!thumbnail}
-                    rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                    rel={trustedLink?.rel || ''}
                     data-click-event={toCowSwapGtmEvent({
                       category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                       action: 'Click Notification Card',

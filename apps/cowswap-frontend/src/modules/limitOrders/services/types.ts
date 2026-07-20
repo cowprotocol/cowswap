@@ -1,3 +1,5 @@
+import type { Config } from 'wagmi'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 
@@ -10,7 +12,10 @@ import type { TradeQuoteState } from 'modules/tradeQuote'
 
 import type { SettlementContractData } from 'common/hooks/useContract'
 
-import type { Config } from 'wagmi'
+export interface SafeBundleFlowContext extends TradeFlowContext {
+  spender: string
+  sendBatchTransactions: SendBatchTxCallback
+}
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -25,13 +30,9 @@ export interface TradeFlowContext {
   allowsOffchainSigning: boolean
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  permitAmountToSign?: bigint
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
-}
-
-export interface SafeBundleFlowContext extends TradeFlowContext {
-  spender: string
-  sendBatchTransactions: SendBatchTxCallback
 }
 
 export class PriceImpactDeclineError extends Error {}

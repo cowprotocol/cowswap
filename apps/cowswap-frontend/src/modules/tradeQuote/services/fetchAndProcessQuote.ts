@@ -47,8 +47,7 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
     getCorrelatedTokens,
-    // TODO: sell=buy feature. Set allowIntermediateEqSellToken: true once the feature is ready
-    // allowIntermediateEqSellToken: true
+    allowIntermediateEqSellToken: true,
   }
 
   const processQuoteError = (errorLocation: string, error: unknown): void => {
@@ -65,35 +64,6 @@ export async function fetchAndProcessQuote(
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
     await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
-  }
-}
-
-async function fetchSwapQuote(
-  fetchParams: TradeQuoteFetchParams,
-  quoteParams: QuoteBridgeRequest,
-  advancedSettings: SwapAdvancedSettings,
-  tradeQuoteManager: TradeQuoteManager,
-  processQuoteError: (errorLocation: string, error: unknown) => void,
-): Promise<void> {
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
-
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
-    : getFastQuote(quoteParams, advancedSettings)
-
-  try {
-    const { cancelled, data } = await request
-
-    if (cancelled) {
-      return
-    }
-
-    const quoteAndPost = data as QuoteAndPost
-
-    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
-  } catch (error) {
-    processQuoteError('fetchSwapQuote', error)
   }
 }
 
@@ -140,6 +110,35 @@ async function fetchBridgingQuote(
     // we only expect error to be returned as promise result
   } catch (error) {
     processQuoteError('fetchBridgingQuote', error)
+  }
+}
+
+async function fetchSwapQuote(
+  fetchParams: TradeQuoteFetchParams,
+  quoteParams: QuoteBridgeRequest,
+  advancedSettings: SwapAdvancedSettings,
+  tradeQuoteManager: TradeQuoteManager,
+  processQuoteError: (errorLocation: string, error: unknown) => void,
+): Promise<void> {
+  const { priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
+  const request = isOptimalQuote
+    ? getOptimalQuote(quoteParams, advancedSettings)
+    : getFastQuote(quoteParams, advancedSettings)
+
+  try {
+    const { cancelled, data } = await request
+
+    if (cancelled) {
+      return
+    }
+
+    const quoteAndPost = data as QuoteAndPost
+
+    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
+  } catch (error) {
+    processQuoteError('fetchSwapQuote', error)
   }
 }
 

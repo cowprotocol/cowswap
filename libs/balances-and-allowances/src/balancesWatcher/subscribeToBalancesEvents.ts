@@ -2,6 +2,7 @@ import { BALANCES_WATCHER_BASE_URL } from '@cowprotocol/common-const'
 import { isRecord, stripTrailingSlash, tryParseJson } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { getBalancesWatcherClientId } from './clientId'
 import {
   type BalanceUpdateEvent,
   type BalancesMap,
@@ -46,7 +47,11 @@ export interface SubscribeToBalancesEventsParams {
 
 export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParams): BalancesSubscription {
   const baseUrl = stripTrailingSlash(params.baseUrl ?? BALANCES_WATCHER_BASE_URL)
-  const url = `${baseUrl}/sse/${params.chainId}/balances/${params.owner}`
+  // `client_id` goes on the query string because the native `EventSource` API
+  // does not support custom request headers, so we cannot mirror the
+  // `X-Client-Id` header used on the POST side. The backend accepts both.
+  const url = new URL(`${baseUrl}/sse/${params.chainId}/balances/${params.owner}`)
+  url.searchParams.set('client_id', getBalancesWatcherClientId())
   const EventSourceConstructor = params.EventSourceConstructor ?? globalThis.EventSource
 
   if (!EventSourceConstructor) {
@@ -54,7 +59,7 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
   }
 
   let closed = false
-  const eventSource = new EventSourceConstructor(url)
+  const eventSource = new EventSourceConstructor(url.toString())
 
   const terminate = (error: Error): void => {
     closed = true
@@ -75,9 +80,8 @@ export function subscribeToBalancesEvents(params: SubscribeToBalancesEventsParam
       return
     }
     // Arrays/primitives in `balances` would silently corrupt the local map —
-    // reject anything that isn't a plain record. `isRecord` accepts arrays,
-    // hence the extra `Array.isArray` guard.
-    if (!isRecord(payload.balances) || Array.isArray(payload.balances)) {
+    // reject anything that isn't a plain record.
+    if (!isRecord(payload.balances)) {
       terminate(new Error('balance_update payload missing or invalid `balances` field'))
       return
     }

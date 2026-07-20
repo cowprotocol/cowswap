@@ -1,11 +1,12 @@
 import { useAtomValue } from 'jotai'
 
+import { useConfig, useWalletClient } from 'wagmi'
+
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
-import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -42,6 +43,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const amountToApprove = useGetAmountToSignApprove()
+  const permitAmountToSign = amountToApprove ? BigInt(amountToApprove.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(amountToApprove || undefined)
   const generatePermitHook = useGeneratePermitHook()
@@ -84,6 +86,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       rateImpact,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
+      permitAmountToSign,
       getCachedPermit,
       quoteState,
       postOrderParams: {
@@ -127,6 +130,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     enoughAllowance,
     permitInfo,
     generatePermitHook,
+    permitAmountToSign,
     getCachedPermit,
     quoteState,
     sellToken,

@@ -14,7 +14,7 @@ const swrOptions: SWRConfiguration<CrossChainOrder | null> = {
   revalidateOnFocus: false,
   revalidateOnReconnect: false,
   refreshWhenOffline: false,
-  refreshWhenHidden: false,
+  refreshWhenHidden: true,
   refreshInterval(data) {
     if (data) {
       const isBridgingFinished = BRIDGING_FINAL_STATUSES.includes(data.statusResult.status)

@@ -276,4 +276,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WidgetConstrainedTokenPair]: {
     text: <Trans>The token pair is constrained</Trans>,
   },
+  [TradeFormValidation.RestoringWallet]: {
+    text: <Trans>Restoring wallet</Trans>,
+  },
 }

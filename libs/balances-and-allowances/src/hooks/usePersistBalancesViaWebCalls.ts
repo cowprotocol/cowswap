@@ -1,13 +1,14 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+import { usePersistSolanaBalancesViaWebCalls } from './usePersistSolanaBalancesViaWebCalls'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
@@ -49,6 +50,9 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   // wagmi + viem only support evm chains
   const isEvm = isEvmChain(chainId)
 
+  // Non-EVM chains (e.g. Solana) load balances via their own web calls
+  usePersistSolanaBalancesViaWebCalls(params)
+
   const {
     data: balances,
     isLoading: isBalancesLoading,
@@ -79,21 +83,21 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Set balances loading state
   useEffect(() => {
-    if (!setLoadingState) return
+    if (!setLoadingState || !isEvm) return
 
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
-  }, [setBalances, isBalancesLoading, setLoadingState, chainId])
+  }, [setBalances, isBalancesLoading, setLoadingState, isEvm, chainId])
 
   // Set balances error state for full balances fetches only
   useEffect(() => {
-    if (!setLoadingState) return
+    if (!setLoadingState || !isEvm) return
 
     if (!error) return
 
     const message = error instanceof Error ? error.message : String(error)
 
     setBalances((state) => ({ ...state, error: message, isLoading: false }))
-  }, [setBalances, error, setLoadingState])
+  }, [setBalances, error, setLoadingState, isEvm])
 
   // Set balances to the store
   useEffect(() => {

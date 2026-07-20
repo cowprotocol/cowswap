@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
-import type { TokenInfo } from '@uniswap/token-lists'
 
 import BigNumber from 'bignumber.js'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
@@ -12,6 +11,8 @@ import { AmountDetailBlock, AmountLabel, AmountTokenDisplayAndCopyWrapper } from
 
 import { isNativeToken } from '../../../utils'
 import { TokenAmount } from '../../token/TokenAmount'
+
+import type { TokenInfo } from '@uniswap/token-lists'
 
 interface BridgeAmountDisplayProps {
   labelPrefix: string
