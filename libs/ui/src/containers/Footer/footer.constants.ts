@@ -63,20 +63,6 @@ export const PRODUCT_LOGO_LINKS = [
     external: true,
     utmContent: 'product-cow-protocol',
   },
-  {
-    href: 'https://cow.fi/mev-blocker',
-    label: 'MEV Blocker',
-    productVariant: ProductVariant.MevBlocker,
-    external: true,
-    utmContent: 'product-mev-blocker',
-  },
-  {
-    href: 'https://cow.fi/cow-amm',
-    label: 'CoW AMM',
-    productVariant: ProductVariant.CowAmm,
-    external: true,
-    utmContent: 'product-cow-amm',
-  },
 ] as const satisfies NavItemChildrenProps[]
 
 export const GLOBAL_FOOTER_DESCRIPTION =
@@ -96,13 +82,6 @@ const FOOTER_NAV_GROUP_PRODUCTS = {
       href: 'https://cow.fi/cow-protocol',
       external: true,
       utmContent: 'footer-products-cow-protocol',
-    },
-    { label: 'CoW AMM', href: 'https://cow.fi/cow-amm', external: true, utmContent: 'footer-products-cow-amm' },
-    {
-      label: 'MEV Blocker',
-      href: 'https://cow.fi/mev-blocker',
-      external: true,
-      utmContent: 'footer-products-mev-blocker',
     },
     {
       label: 'CoW Explorer',

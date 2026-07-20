@@ -85,7 +85,6 @@ export const COW_SWAP_BENEFITS = [
   msg`Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for.`,
   msg`On CoW Swap, you can set limit orders for balances you don't have yet.`,
   msg`Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!`,
-  msg`You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker.`,
   msg`Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots.`,
   msg`CoW Swap has over 20 active solvers - more than any other exchange.`,
   msg`CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.`,

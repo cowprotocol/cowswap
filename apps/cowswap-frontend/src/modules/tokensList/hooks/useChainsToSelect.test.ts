@@ -182,6 +182,38 @@ describe('useChainsToSelect state builders', () => {
     expect(state.defaultChainId).toBe(SupportedChainId.LINEA)
   })
 
+  it('disables all chains except source when source is Solana (bridge-only destination, no bridging out)', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.SOLANA),
+    ]
+    // Solana IS a bridge-supported network (you can bridge *to* it), unlike Sepolia
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.SOLANA),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.SOLANA, // Source is Solana
+      currentChainInfo: createChainInfoForTests(SupportedChainId.SOLANA),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Even though Solana is in the bridge networks, it can't be a bridge *source*,
+    // so every other chain is disabled and only Solana remains selectable.
+    expect(state.disabledChainIds?.has(SupportedChainId.SOLANA)).toBeFalsy()
+    expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.BASE)).toBe(true)
+    // Default falls back to the source since the selected target is disabled
+    expect(state.defaultChainId).toBe(SupportedChainId.SOLANA)
+  })
+
   it('disables all chains except source when routes are unavailable from the source', () => {
     const supportedChains = [
       createChainInfoForTests(SupportedChainId.MAINNET),
