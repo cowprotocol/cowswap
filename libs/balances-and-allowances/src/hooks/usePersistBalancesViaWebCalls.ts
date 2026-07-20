@@ -11,6 +11,7 @@ import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 import { usePersistSolanaBalancesViaWebCalls } from './usePersistSolanaBalancesViaWebCalls'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+import { reportBalancesError } from '../utils/reportBalancesError'
 
 export interface BalancesQueryConfig {
   refetchInterval: number
@@ -87,6 +88,15 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
   }, [setBalances, isBalancesLoading, setLoadingState, isEvm, chainId])
+
+  // Report balances multicall failures to Sentry (provider rate-limiting / HTTP 429
+  // is tagged distinctly). Runs for every EVM instance, not only full fetches, so
+  // rate-limiting is visible regardless of which balances query hit it.
+  useEffect(() => {
+    if (!isEvm || !error) return
+
+    reportBalancesError({ error, chainId, tokenAddressesCount: tokenAddresses.length })
+  }, [error, isEvm, chainId, tokenAddresses.length])
 
   // Set balances error state for full balances fetches only
   useEffect(() => {
