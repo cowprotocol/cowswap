@@ -1,17 +1,18 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
+import { Address } from 'viem'
+import { useEnsName } from 'wagmi'
+
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
 import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 import type { SafeInfoExtended } from '@safe-global/safe-apps-sdk'
 
 import ms from 'ms.macro'
-import { Address } from 'viem'
-import { useEnsName } from 'wagmi'
 
 import { useAccountState } from './hooks/useAccountState'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
@@ -172,6 +173,41 @@ export function WalletUpdater(): null {
   return null
 }
 
+function parseSafeInfoFromApi(
+  prevSafeInfo: GnosisSafeInfo | undefined,
+  safeInfoFromApi: SafeInfoResponse,
+  chainId: SupportedChainId,
+): GnosisSafeInfo {
+  const { address, threshold, owners, nonce } = safeInfoFromApi
+  return {
+    ...prevSafeInfo,
+    chainId,
+    address,
+    threshold,
+    owners,
+    // Time to time Safe sends a string or a number
+    nonce: Number(nonce),
+    isReadOnly: false,
+  }
+}
+
+function parseSafeInfoFromSdk(
+  prevSafeInfo: GnosisSafeInfo | undefined,
+  safeInfoFromSdk: SafeInfoExtended,
+  chainId: SupportedChainId,
+): GnosisSafeInfo {
+  const { safeAddress, threshold, owners, isReadOnly, nonce } = safeInfoFromSdk
+  return {
+    ...prevSafeInfo,
+    address: safeAddress,
+    chainId,
+    threshold,
+    owners,
+    nonce: Number(nonce),
+    isReadOnly,
+  }
+}
+
 function useIsPossibleSafe(): boolean {
   const accountType = useAccountType()
   const isSafeViaWc = useIsSafeViaWc()
@@ -245,6 +281,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       if (!shouldFetchSafeInfo) {
         clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
         longSafeInfoInterval = null
+        setSafeInfo(undefined)
         return
       }
     }
@@ -259,40 +296,9 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
     }
   }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
 
+  if (!safeInfo || !account || safeInfo.chainId !== chainId || !areAddressesEqual(safeInfo.address, account)) {
+    return undefined
+  }
+
   return safeInfo
-}
-
-function parseSafeInfoFromSdk(
-  prevSafeInfo: GnosisSafeInfo | undefined,
-  safeInfoFromSdk: SafeInfoExtended,
-  chainId: SupportedChainId,
-): GnosisSafeInfo {
-  const { safeAddress, threshold, owners, isReadOnly, nonce } = safeInfoFromSdk
-  return {
-    ...prevSafeInfo,
-    address: safeAddress,
-    chainId,
-    threshold,
-    owners,
-    nonce: Number(nonce),
-    isReadOnly,
-  }
-}
-
-function parseSafeInfoFromApi(
-  prevSafeInfo: GnosisSafeInfo | undefined,
-  safeInfoFromApi: SafeInfoResponse,
-  chainId: SupportedChainId,
-): GnosisSafeInfo {
-  const { address, threshold, owners, nonce } = safeInfoFromApi
-  return {
-    ...prevSafeInfo,
-    chainId,
-    address,
-    threshold,
-    owners,
-    // Time to time Safe sends a string or a number
-    nonce: Number(nonce),
-    isReadOnly: false,
-  }
 }

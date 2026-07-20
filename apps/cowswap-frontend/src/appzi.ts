@@ -74,6 +74,31 @@ type AppziSettings = {
   data?: Partial<AppziCustomSettings>
 }
 
+export function isOrderInPendingTooLong(openSince: number | undefined, isBridging?: boolean): boolean {
+  const now = Date.now()
+  const pendingTime = isBridging ? PENDING_TOO_LONG_TIME_BRIDGE : PENDING_TOO_LONG_TIME_SWAP
+
+  return !!openSince && now - openSince > pendingTime
+}
+
+export function openAffiliateFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
+  const { account, chainId, walletName } = params
+
+  if (typeof window !== 'undefined') {
+    updateAppziSettings({ data: { account, chainId, walletName } })
+    window.appzi?.openSurvey(AFFILIATE_FEEDBACK_SURVEY_ID)
+  }
+}
+
+export function openFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
+  const { account, chainId, walletName } = params
+
+  if (typeof window !== 'undefined') {
+    updateAppziSettings({ data: { account, chainId, walletName } })
+    window.appzi?.openWidget(FEEDBACK_KEY)
+  }
+}
+
 function initialize(): void {
   if (!isAppziEnabled || typeof window === 'undefined') return
 
@@ -88,31 +113,6 @@ function updateAppziSettings({ data = {}, userId = '' }: AppziSettings): void {
   if (typeof window !== 'undefined') {
     window.appziSettings = { ...(window.appziSettings || {}), data, userId }
   }
-}
-
-export function openFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
-  const { account, chainId, walletName } = params
-
-  if (typeof window !== 'undefined') {
-    updateAppziSettings({ data: { account, chainId, walletName } })
-    window.appzi?.openWidget(FEEDBACK_KEY)
-  }
-}
-
-export function openAffiliateFeedbackAppzi(params: { account?: string; walletName?: string; chainId: number }): void {
-  const { account, chainId, walletName } = params
-
-  if (typeof window !== 'undefined') {
-    updateAppziSettings({ data: { account, chainId, walletName } })
-    window.appzi?.openSurvey(AFFILIATE_FEEDBACK_SURVEY_ID)
-  }
-}
-
-export function isOrderInPendingTooLong(openSince: number | undefined, isBridging?: boolean): boolean {
-  const now = Date.now()
-  const pendingTime = isBridging ? PENDING_TOO_LONG_TIME_BRIDGE : PENDING_TOO_LONG_TIME_SWAP
-
-  return !!openSince && now - openSince > pendingTime
 }
 
 // Different triggers for each NPS survey.
@@ -131,6 +131,10 @@ const LIMIT_SURVEY_DATA = isProdLike ? LIMIT_SURVEY_DATA_PROD : LIMIT_SURVEY_DAT
 
 type SurveyType = 'nps' | 'limit'
 
+export function getSurveyType(orderType: UiOrderType | undefined): SurveyType {
+  return orderType === UiOrderType.LIMIT ? 'limit' : 'nps'
+}
+
 /**
  * Opening of the modal is delegated to Appzi
  * It'll display only if the trigger rules are met
@@ -144,10 +148,6 @@ export function triggerAppziSurvey(
   const surveyData = surveyType === 'limit' ? LIMIT_SURVEY_DATA : NPS_DATA
 
   updateAppziSettings({ data: { ...data, ...surveyData } })
-}
-
-export function getSurveyType(orderType: UiOrderType | undefined): SurveyType {
-  return orderType === UiOrderType.LIMIT ? 'limit' : 'nps'
 }
 
 initialize()

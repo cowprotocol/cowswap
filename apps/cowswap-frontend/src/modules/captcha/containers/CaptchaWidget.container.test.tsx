@@ -45,14 +45,6 @@ const useThemeMock = useTheme as jest.MockedFunction<typeof useTheme>
 const setBearerTokenMock = setBearerToken as jest.MockedFunction<typeof setBearerToken>
 const exchangeTurnstileTokenMock = exchangeTurnstileToken as jest.MockedFunction<typeof exchangeTurnstileToken>
 
-function renderWithStore(store = createStore()): ReturnType<typeof render> {
-  function Wrapper({ children }: { children: ReactNode }): ReactNode {
-    return <JotaiProvider store={store}>{children}</JotaiProvider>
-  }
-
-  return render(<CaptchaWidget />, { wrapper: Wrapper })
-}
-
 function createJwt(): string {
   const payload = globalThis
     .btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }))
@@ -61,6 +53,14 @@ function createJwt(): string {
     .replace(/=+$/, '')
 
   return `header.${payload}.signature`
+}
+
+function renderWithStore(store = createStore()): ReturnType<typeof render> {
+  function Wrapper({ children }: { children: ReactNode }): ReactNode {
+    return <JotaiProvider store={store}>{children}</JotaiProvider>
+  }
+
+  return render(<CaptchaWidget />, { wrapper: Wrapper })
 }
 
 describe('CaptchaWidget', () => {

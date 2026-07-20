@@ -1,9 +1,10 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import iconMessageReadSrc from '@cowprotocol/assets/images/icon-message-read.svg'
 
-import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'

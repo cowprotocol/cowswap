@@ -11,10 +11,6 @@ import { ColorInput } from '../../ui/inputs/ColorInput/ColorInput.component'
 
 const visibleColorKeys: Array<keyof ColorPalette> = ['primary', 'paper', 'text']
 
-function formatPaletteColorLabel(colorKey: keyof ColorPalette): string {
-  return String(colorKey).charAt(0).toUpperCase() + String(colorKey).slice(1)
-}
-
 export function PaletteControl({ paletteManager }: { paletteManager: ColorPaletteManager }): ReactNode {
   const { colorPalette, setColorPalette, defaultPalette, resetColorPalette } = paletteManager
 
@@ -55,4 +51,8 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
       </Box>
     </div>
   )
+}
+
+function formatPaletteColorLabel(colorKey: keyof ColorPalette): string {
+  return String(colorKey).charAt(0).toUpperCase() + String(colorKey).slice(1)
 }

@@ -326,18 +326,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   )
 }
 
-function JsonContent({ content, isError }: { content: string; isError: boolean }): React.ReactNode {
-  return (
-    <>
-      <RowWithCopyButton
-        textToCopy={content}
-        contentsToDisplay={<pre className={(isError ? 'error ' : '') + 'json-formatter'}>{content}</pre>}
-      />
-      {isError && <span className="error">The AppData content is not valid, check the errors in the input form.</span>}
-    </>
-  )
-}
-
 async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
   const doc = await metadataApiSDK.generateAppDataDoc(formData)
 
@@ -360,6 +348,18 @@ async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
     fullAppDataPrettified: JSON.stringify(doc, null, 2), // prettified string
     isValidAppData: await metadataApiSDK.validateAppDataDoc(doc).then((result) => result.success),
   }
+}
+
+function JsonContent({ content, isError }: { content: string; isError: boolean }): React.ReactNode {
+  return (
+    <>
+      <RowWithCopyButton
+        textToCopy={content}
+        contentsToDisplay={<pre className={(isError ? 'error ' : '') + 'json-formatter'}>{content}</pre>}
+      />
+      {isError && <span className="error">The AppData content is not valid, check the errors in the input form.</span>}
+    </>
+  )
 }
 
 export default EncodePage

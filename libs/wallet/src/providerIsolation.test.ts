@@ -5,8 +5,6 @@ jest.mock('./wagmi/mobileInjectedProviderGuard', () => ({
   resetMobileInjectedProviderGuard: jest.fn(),
 }))
 
-type ProviderIsolationModule = typeof import('./providerIsolation')
-
 type IsolationTestWindow = Window &
   typeof globalThis & {
     __cowEip6963InterceptRegistered?: boolean
@@ -15,10 +13,17 @@ type IsolationTestWindow = Window &
     __cowEip6963AnnounceProviderListener?: EventListener
   }
 
+type ProviderIsolationModule = typeof import('./providerIsolation')
+
 const provider: EIP1193Provider = {
   request: jest.fn(),
   on: jest.fn(),
   removeListener: jest.fn(),
+}
+
+async function loadProviderIsolation(): Promise<ProviderIsolationModule> {
+  jest.resetModules()
+  return import('./providerIsolation')
 }
 
 function resetWindowState(): void {
@@ -32,11 +37,6 @@ function resetWindowState(): void {
   delete win.__cowEip6963ReDispatched
   delete win.__cowEip6963DeferredBraveWallet
   delete win.__cowEip6963AnnounceProviderListener
-}
-
-async function loadProviderIsolation(): Promise<ProviderIsolationModule> {
-  jest.resetModules()
-  return import('./providerIsolation')
 }
 
 describe('interceptEIP6963Providers', () => {

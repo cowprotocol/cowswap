@@ -28,14 +28,6 @@ function HydrateAtoms({ children }: { children: ReactNode }): ReactNode {
   return <>{children}</>
 }
 
-function Wrapper({ children }: { children: ReactNode }): ReactNode {
-  return (
-    <Provider>
-      <HydrateAtoms>{children}</HydrateAtoms>
-    </Provider>
-  )
-}
-
 function renderUpdater(account: string | undefined, chainId: SupportedChainId): { result: { current: BalancesState } } {
   return renderHook(
     () => {
@@ -43,6 +35,14 @@ function renderUpdater(account: string | undefined, chainId: SupportedChainId): 
       return useAtomValue(balancesAtom)
     },
     { wrapper: Wrapper },
+  )
+}
+
+function Wrapper({ children }: { children: ReactNode }): ReactNode {
+  return (
+    <Provider>
+      <HydrateAtoms>{children}</HydrateAtoms>
+    </Provider>
   )
 }
 

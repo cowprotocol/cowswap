@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
+import { erc20Abi } from 'viem'
+import { useReadContracts } from 'wagmi'
+
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { erc20Abi } from 'viem'
-import { useReadContracts } from 'wagmi'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 

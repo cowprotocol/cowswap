@@ -2,11 +2,12 @@ import { Provider } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import React, { ReactNode } from 'react'
 
+import { useReadContracts } from 'wagmi'
+
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { renderHook } from '@testing-library/react'
-import { useReadContracts } from 'wagmi'
 
 import { PersistBalancesAndAllowancesParams, usePersistBalancesViaWebCalls } from './usePersistBalancesViaWebCalls'
 
@@ -14,6 +15,12 @@ import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balanc
 
 jest.mock('wagmi', () => ({
   useReadContracts: jest.fn(),
+}))
+
+// The Solana path has its own dedicated test; stub it here so this suite stays focused on
+// EVM wagmi gating and avoids pulling in the reown/web3/react-query runtime.
+jest.mock('./usePersistSolanaBalancesViaWebCalls', () => ({
+  usePersistSolanaBalancesViaWebCalls: jest.fn(),
 }))
 
 const mockBalancesUpdate: PersistentStateByChain<Record<string, number | undefined>> = mapSupportedNetworks({})
