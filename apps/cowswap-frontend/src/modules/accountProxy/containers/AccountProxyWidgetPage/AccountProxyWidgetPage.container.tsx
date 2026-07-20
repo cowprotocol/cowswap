@@ -15,15 +15,15 @@ import { Routes } from 'common/constants/routes'
 import { useNavigate, useNavigateBack } from 'common/hooks/useNavigate'
 import { NewModal } from 'common/pure/NewModal'
 
-import { EmptyWrapper, HelpLink, TitleWrapper, WidgetWrapper } from './styled'
+import * as styledEl from './AccountProxyWidgetPage.styled'
 
 import { NEED_HELP_LABEL } from '../../accountProxy.constants'
 import { useOnAccountOrChainChanged } from '../../hooks/useOnAccountOrChainChanged'
 import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
-import { WalletNotConnected } from '../../pure/WalletNotConnected'
+import { WalletNotConnected } from '../../pure/WalletNotConnected/WalletNotConnected.pure'
 import { getProxyAccountUrl } from '../../utils/getProxyAccountUrl'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
-import { WidgetPageTitle } from '../WidgetPageTitle'
+import { WidgetPageTitle } from '../WidgetPageTitle/WidgetPageTitle.container'
 
 const URL_NETWORK_CHANGED_STATE = 'network-changed'
 
@@ -69,21 +69,21 @@ export function AccountProxyWidgetPage(): ReactNode {
   }, [accountOrChainChanged, chainId, navigate])
 
   return (
-    <EmptyWrapper>
-      <WidgetWrapper>
+    <styledEl.EmptyWrapper>
+      <styledEl.WidgetWrapper>
         <NewModal
           showBackButton={!isRootProxyPage}
           title={
-            <TitleWrapper>
+            <styledEl.TitleWrapper>
               <span>
                 <WidgetPageTitle />
               </span>
               {!isHelpPage && (
-                <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>
+                <styledEl.HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>
                   {i18n._(NEED_HELP_LABEL)}?
-                </HelpLink>
+                </styledEl.HelpLink>
               )}
-            </TitleWrapper>
+            </styledEl.TitleWrapper>
           }
           onDismiss={onDismiss}
           contentPadding="10px"
@@ -91,7 +91,7 @@ export function AccountProxyWidgetPage(): ReactNode {
         >
           {isWalletConnected || isHelpPage ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
         </NewModal>
-      </WidgetWrapper>
-    </EmptyWrapper>
+      </styledEl.WidgetWrapper>
+    </styledEl.EmptyWrapper>
   )
 }

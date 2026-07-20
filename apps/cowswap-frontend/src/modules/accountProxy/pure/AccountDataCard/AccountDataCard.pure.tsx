@@ -5,8 +5,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { safeShortenAddress } from 'utils/address'
 
-import { DefaultAccountContent } from '../AccountCard/DefaultAccountContent'
-import { BaseAccountCard } from '../BaseAccountCard'
+import { BaseAccountCard } from '../BaseAccountCard/BaseAccountCard.pure'
+import { DefaultAccountContent } from '../DefaultAccountContent/DefaultAccountContent.pure'
 
 interface AccountDataCardProps {
   account: string

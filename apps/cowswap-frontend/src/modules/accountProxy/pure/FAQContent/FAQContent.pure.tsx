@@ -10,7 +10,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
-import { FAQItem, FAQWrapper } from './styled'
+import * as styledEl from './FAQContent.styled'
 
 import { COW_SHED_VERSIONS } from '../../accountProxy.constants'
 
@@ -109,9 +109,9 @@ export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
   ]
 
   return (
-    <FAQWrapper>
+    <styledEl.FAQWrapper>
       {FAQ_DATA.map((faq, index) => (
-        <FAQItem key={index} open={openItems[index]}>
+        <styledEl.FAQItem key={index} open={openItems[index]}>
           <summary onClick={handleToggle(index)}>
             {i18n._(faq.question)}
             <i>
@@ -119,8 +119,8 @@ export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
             </i>
           </summary>
           {openItems[index] && <div>{faq.answer}</div>}
-        </FAQItem>
+        </styledEl.FAQItem>
       ))}
-    </FAQWrapper>
+    </styledEl.FAQWrapper>
   )
 }
