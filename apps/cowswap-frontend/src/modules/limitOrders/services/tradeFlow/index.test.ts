@@ -1,14 +1,19 @@
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
+import { callWidgetHook } from 'modules/injectedWidget'
 import { handlePermit } from 'modules/permit'
 
-import { TradeFlowContext } from '../types'
+import { TradeFlowContext, WidgetHookDeclineError } from '../types'
 
 import { tradeFlow } from './index'
 
 jest.mock('modules/permit', () => ({
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),
   callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
+}))
+
+jest.mock('modules/injectedWidget', () => ({
+  callWidgetHook: jest.fn().mockResolvedValue(true),
 }))
 
 jest.mock('tradingSdk/tradingSdk', () => ({
@@ -43,6 +48,7 @@ jest.mock('modules/limitOrders/utils/calculateLimitOrdersDeadline', () => ({
 }))
 
 const mockHandlePermit = handlePermit as jest.MockedFunction<typeof handlePermit>
+const mockCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
 
 describe('limit orders tradeFlow - permit amount', () => {
   const sellToken = new Token(1, '0x1111111111111111111111111111111111111111', 18, 'SELL', 'Sell Token')
@@ -98,11 +104,12 @@ describe('limit orders tradeFlow - permit amount', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockHandlePermit.mockResolvedValue({ fullAppData: '{}', doc: {} } as never)
+    mockCallWidgetHook.mockResolvedValue(true)
   })
 
-  it('signs the permit with the bounded amount from permitAmountToSign', async () => {
-    await tradeFlow(
-      buildParams(),
+  function runTradeFlow(params: TradeFlowContext): Promise<unknown> {
+    return tradeFlow(
+      params,
       { priceImpact: undefined } as never,
       {} as never,
       analytics as never,
@@ -110,8 +117,41 @@ describe('limit orders tradeFlow - permit amount', () => {
       jest.fn().mockResolvedValue(undefined),
       jest.fn(),
     )
+  }
+
+  it('signs the permit with the bounded amount from permitAmountToSign', async () => {
+    await runTradeFlow(buildParams())
 
     expect(mockHandlePermit).toHaveBeenCalledTimes(1)
     expect(mockHandlePermit).toHaveBeenCalledWith(expect.objectContaining({ amount: permitAmountToSign }))
+  })
+
+  it('looks up the cached permit with the bounded permit amount', async () => {
+    const params = buildParams()
+    await runTradeFlow(params)
+
+    expect(params.getCachedPermit).toHaveBeenCalledWith(sellToken.address, permitAmountToSign)
+  })
+
+  it('skips the ON_BEFORE_APPROVAL hook when a cached permit is reused', async () => {
+    const params = buildParams()
+    ;(params.getCachedPermit as jest.Mock).mockResolvedValue({ fullAppData: '{}' })
+
+    await runTradeFlow(params)
+
+    expect(mockCallWidgetHook).not.toHaveBeenCalled()
+    // Permit handling still runs (it reuses the cached permit internally)
+    expect(mockHandlePermit).toHaveBeenCalledTimes(1)
+  })
+
+  it('aborts before signing when an uncached permit is declined by the host widget', async () => {
+    const params = buildParams()
+    ;(params.getCachedPermit as jest.Mock).mockResolvedValue(undefined)
+    mockCallWidgetHook.mockResolvedValue(false)
+
+    await expect(runTradeFlow(params)).rejects.toBeInstanceOf(WidgetHookDeclineError)
+
+    expect(mockCallWidgetHook).toHaveBeenCalledTimes(1)
+    expect(mockHandlePermit).not.toHaveBeenCalled()
   })
 })

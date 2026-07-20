@@ -7,13 +7,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { callWidgetHook } from 'modules/injectedWidget'
-import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
 export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmount<Currency>): () => Promise<boolean> {
   const generatePermit = useGeneratePermitHook()
+  const getCachedPermit = useGetCachedPermit()
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
@@ -27,20 +28,29 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
 
     const amountRaw = BigInt(amountToApprove.quotient.toString())
 
-    const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
-    const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
-      chainId: tokenAmount.currency.chainId,
-      sellToken: {
-        ...tokenAmount.currency,
-        name: tokenAmount.currency.name || '',
-        symbol: tokenAmount.currency.symbol || '',
-      },
-      sellAmount: amountRaw.toString(),
-      walletAddress: account,
-      spenderAddress: tradeSpenderAddress,
-    })
+    // Only ask the host widget to approve when a permit signature is actually needed. A permit
+    // already cached under this token/amount/spender is reused by `generatePermit` without any
+    // signature, so firing ON_BEFORE_APPROVAL for it would let the integrator wrongly abort a trade
+    // that needs no approval. `generatePermit` caches with the default spender (vault relayer), so
+    // the lookup uses the same default here.
+    const cachedPermit = await getCachedPermit(token.address, amountRaw)
 
-    if (!isWidgetHookPassed) return false
+    if (!cachedPermit) {
+      const tokenAmount = currencyAmountToTokenAmount(amountToApprove)
+      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_APPROVAL, {
+        chainId: tokenAmount.currency.chainId,
+        sellToken: {
+          ...tokenAmount.currency,
+          name: tokenAmount.currency.name || '',
+          symbol: tokenAmount.currency.symbol || '',
+        },
+        sellAmount: amountRaw.toString(),
+        walletAddress: account,
+        spenderAddress: tradeSpenderAddress,
+      })
+
+      if (!isWidgetHookPassed) return false
+    }
 
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
@@ -71,6 +81,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     account,
     amountToApprove,
     generatePermit,
+    getCachedPermit,
     permitInfo,
     resetApproveProgressModalState,
     token.address,

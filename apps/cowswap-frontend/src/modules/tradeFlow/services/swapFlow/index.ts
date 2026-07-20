@@ -18,6 +18,7 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { maxUint256 } from 'viem'
 import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -83,7 +84,9 @@ export async function swapFlow(
   } = input
   const { chainId } = context
   const inputCurrency = inputAmount.currency
-  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign)
+  // Match the amount the permit is (or would be) cached under (`generatePermitHook` falls back to
+  // `maxUint256`) so a cached permit is reused and ON_BEFORE_APPROVAL is not fired needlessly.
+  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign ?? maxUint256)
 
   const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId

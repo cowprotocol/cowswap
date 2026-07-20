@@ -13,6 +13,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { maxUint256 } from 'viem'
 import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -83,7 +84,10 @@ export async function tradeFlow(
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
     if (isSupportedPermitInfo(permitInfo)) {
-      const cachedPermit = await params.getCachedPermit(sellToken.address)
+      // Match the amount the permit is (or would be) cached under (see `generatePermitHook`, which
+      // falls back to `maxUint256`), otherwise an amount-keyed cached permit is missed and the
+      // ON_BEFORE_APPROVAL hook fires even though no signature is needed.
+      const cachedPermit = await params.getCachedPermit(sellToken.address, permitAmountToSign ?? maxUint256)
 
       if (!cachedPermit) {
         const sellTokenAmount = currencyAmountToTokenAmount(inputAmount)
