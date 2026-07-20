@@ -1477,6 +1477,10 @@ msgstr "Insufficient {symbol} balance"
 msgid "This hook is not compatible with your wallet"
 msgstr "This hook is not compatible with your wallet"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
+msgid "TWAP Account Proxy"
+msgstr "TWAP Account Proxy"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started with limit orders"
 msgstr "Get started with limit orders"

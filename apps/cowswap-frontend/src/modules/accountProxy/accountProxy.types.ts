@@ -1,3 +1,5 @@
+import type { MessageDescriptor } from '@lingui/core'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { CoWShedVersion, CowShedHooks, ICoWShedOptions } from '@cowprotocol/sdk-cow-shed'
@@ -5,7 +7,7 @@ import { CoWShedVersion, CowShedHooks, ICoWShedOptions } from '@cowprotocol/sdk-
 export interface AccountProxyConfig {
   id: string
   version?: CoWShedVersion
-  label?: string
+  label?: MessageDescriptor
   factoryOptions?: ICoWShedOptions
 }
 

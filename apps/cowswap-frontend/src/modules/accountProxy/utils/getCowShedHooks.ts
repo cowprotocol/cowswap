@@ -1,16 +1,15 @@
+import { FiniteMap } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
-
-import { CacheSet } from '@swyg/memo'
 
 import { ACCOUNT_PROXY_CONFIGS, COW_SHED_LATEST_VERSION_ID } from '../accountProxy.constants'
 
 import type { AccountProxyConfig } from '../accountProxy.types'
 
-const cowShedHooksCache = new CacheSet<string, CowShedHooks>({
+const cowShedHooksCache = new FiniteMap<string, CowShedHooks>(
   // So that we don't end up with ACCOUNT_PROXY_CONFIGS.length for each chain in memory:
-  slots: 2 * ACCOUNT_PROXY_CONFIGS.length,
-})
+  2 * ACCOUNT_PROXY_CONFIGS.length,
+)
 
 export interface GetCowShedHooksParams {
   chainId: SupportedChainId
