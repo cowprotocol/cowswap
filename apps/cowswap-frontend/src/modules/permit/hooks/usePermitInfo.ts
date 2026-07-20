@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { useConfig, usePublicClient } from 'wagmi'
 
 import { getIsNativeToken, getWrappedToken, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
-import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isNonEvmChain, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -73,9 +73,11 @@ export function usePermitInfo(
 
   const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
+  // eslint-disable-next-line complexity
   useEffect(() => {
     if (
       !chainId ||
+      isNonEvmChain(chainId) ||
       !isPermitEnabled ||
       !lowerCaseAddress ||
       !config ||

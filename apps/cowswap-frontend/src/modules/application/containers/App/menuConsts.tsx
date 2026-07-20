@@ -110,11 +110,6 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
       external: true,
     },
     {
-      href: 'https://cow.fi/cow-amm',
-      label: msg`CoW AMM`,
-      external: true,
-    },
-    {
       href: 'https://cow.fi/careers',
       label: msg`Careers`,
       external: true,

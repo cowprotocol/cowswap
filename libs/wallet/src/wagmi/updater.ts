@@ -6,7 +6,7 @@ import { useEnsName } from 'wagmi'
 
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
 import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
@@ -281,6 +281,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       if (!shouldFetchSafeInfo) {
         clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
         longSafeInfoInterval = null
+        setSafeInfo(undefined)
         return
       }
     }
@@ -294,6 +295,10 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       longSafeInfoInterval = null
     }
   }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
+
+  if (!safeInfo || !account || safeInfo.chainId !== chainId || !areAddressesEqual(safeInfo.address, account)) {
+    return undefined
+  }
 
   return safeInfo
 }
