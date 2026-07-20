@@ -1,7 +1,5 @@
 import * as Sentry from '@sentry/browser'
 
-import { log } from './logger'
-
 export enum ERROR_TYPES {
   ON_SWAP = 'onSwap',
   ON_APPROVE = 'onApprove',
@@ -10,6 +8,26 @@ export enum ERROR_TYPES {
 export enum SentryTag {
   DISCONNECTED = 'DISCONNECTED',
   UNKNOWN = 'UNKNOWN',
+}
+
+export function captureError(
+  error: Error,
+  errorType?: ERROR_TYPES,
+  params?: Record<string, unknown>,
+  extraTags?: Record<string, string>,
+): void {
+  const tags = {
+    captureType: 'manual',
+    ...(errorType ? { errorType } : undefined),
+    ...extraTags,
+  }
+
+  Sentry.captureException(error, {
+    tags,
+    contexts: {
+      params,
+    },
+  })
 }
 
 export function reportPermitWithDefaultSigner(params: Record<string, unknown>): void {
@@ -24,26 +42,5 @@ export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>
   Sentry.captureException('Attempt to place order with expired quote', {
     tags: { errorType: 'placeOrderWithExpiredQuote' },
     contexts: { params },
-  })
-}
-
-export function captureError(
-  error: Error,
-  errorType?: ERROR_TYPES,
-  params?: Record<string, unknown>,
-  extraTags?: Record<string, string>,
-): void {
-  log('Sentry', '#ff0000', `Capturing error of type ${errorType}:`, error, params)
-  const tags = {
-    captureType: 'manual',
-    ...(errorType ? { errorType } : undefined),
-    ...extraTags,
-  }
-
-  Sentry.captureException(error, {
-    tags,
-    contexts: {
-      params,
-    },
   })
 }

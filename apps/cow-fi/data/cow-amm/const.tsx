@@ -179,7 +179,7 @@ export const FAQ_DATA = [
       <>
         Anyone can create a CoW AMM pool easily and permissionlessly with the{' '}
         <Link
-          href="https://pool-creator.balancer.fi/cow"
+          href="https://balancer.fi/create/step-1-type"
           external
           utmContent="cow-amm-pool-creator"
           onClick={() =>

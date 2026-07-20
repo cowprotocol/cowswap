@@ -18,6 +18,12 @@ import { HookItem } from './HookItem'
 import * as styledEl from './styled'
 import { CircleCount } from './styled'
 
+interface HooksInfoProps {
+  data: HookToDappMatch[]
+  title: string
+  hooks: CowHookDetails[]
+}
+
 interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
   children: (content: ReactElement) => ReactElement
@@ -97,12 +103,6 @@ export function OrderHooksDetails({
       )}
     </styledEl.Wrapper>,
   )
-}
-
-interface HooksInfoProps {
-  data: HookToDappMatch[]
-  title: string
-  hooks: CowHookDetails[]
 }
 
 function HooksInfo({ data, title, hooks }: HooksInfoProps): ReactNode {

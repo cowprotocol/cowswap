@@ -167,24 +167,6 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 }
 
 /**
- * Increase `value` by `step`
- *
- * If no `value`, use `min`
- * If no `min`, use `step`
- *
- * Uses BigNumberJS for avoiding JS finicky float point math
- */
-function increaseValue(value: string, step: number, min: number | undefined): string {
-  const n = new BigNumberJs(value)
-
-  if (!n.isNaN()) {
-    return n.plus(step).toString()
-  }
-
-  return min?.toString() || step.toString()
-}
-
-/**
  * Decrease `value` by `step`
  *
  * If no `value`, use `min`
@@ -199,6 +181,24 @@ function decreaseValue(value: string, step: number, min: number | undefined) {
 
   if (!n.isNaN()) {
     return n.minus(step).toString()
+  }
+
+  return min?.toString() || step.toString()
+}
+
+/**
+ * Increase `value` by `step`
+ *
+ * If no `value`, use `min`
+ * If no `min`, use `step`
+ *
+ * Uses BigNumberJS for avoiding JS finicky float point math
+ */
+function increaseValue(value: string, step: number, min: number | undefined): string {
+  const n = new BigNumberJs(value)
+
+  if (!n.isNaN()) {
+    return n.plus(step).toString()
   }
 
   return min?.toString() || step.toString()

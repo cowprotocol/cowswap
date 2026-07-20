@@ -1,5 +1,39 @@
 # Changelog
 
+## [3.9.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.1...widget-configurator-v3.9.2) (2026-07-17)
+
+### Patch Changes
+
+- fix: harden deferred HIGH frontend follow-ups (#7612)
+
+- fix: widget configurator with safe (#7807)
+
+- fix(widget-lib): harden disableWindowOpen sandbox (#7826)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/events@4.8.0
+  - @cowprotocol/widget-lib@4.4.2
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/widget-react@3.2.2
+
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.0...widget-configurator-v3.9.1) (2026-07-08)
+
+### Patch Changes
+
+- fix(widget): hide widget connector in standalone mode (#7764)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/widget-lib@4.4.1
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ui@3.9.1
+  - @cowprotocol/widget-react@3.2.1
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.8.1...widget-configurator-v3.9.0) (2026-06-25)
 
 ### Minor Changes

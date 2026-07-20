@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
+import type { Hex } from 'viem'
+
 import { doesHookHavePermit } from '@cowprotocol/hook-dapp-lib'
 
 import { getAppDataHooks } from 'modules/appData'
 
 import { GenericOrder } from 'common/types'
-
-import type { Hex } from 'viem'
 
 export function doesOrderHavePermit(order: GenericOrder): boolean {
   return !!getOrderPermitIfExists(order)

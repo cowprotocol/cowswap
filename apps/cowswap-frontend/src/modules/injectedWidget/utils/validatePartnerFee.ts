@@ -1,8 +1,9 @@
+import { getAddress } from 'viem'
+
 import { isTruthy } from '@cowprotocol/common-utils'
 import { PartnerFee, resolveFlexibleConfigValues } from '@cowprotocol/widget-lib'
 
 import { t } from '@lingui/core/macro'
-import { getAddress } from 'viem'
 
 import { PARTNER_FEE_MAX_BPS } from '../consts'
 
@@ -23,6 +24,16 @@ export function validatePartnerFee(input: PartnerFee | undefined): string[] | un
   return errors.length > 0 ? errors : undefined
 }
 
+function validateRecipientAddress(recipient: string): string | undefined {
+  try {
+    getAddress(recipient)
+  } catch (error) {
+    return error.message
+  }
+
+  return undefined
+}
+
 function validateRecipients(recipients: PartnerFee['recipient'][]): (string | undefined)[] {
   return recipients.map((recipient) => {
     if (!recipient) return t`Partner fee recipient must be set!`
@@ -33,14 +44,4 @@ function validateRecipients(recipients: PartnerFee['recipient'][]): (string | un
 
     return errors.length > 0 ? errors.join(', ') : undefined
   })
-}
-
-function validateRecipientAddress(recipient: string): string | undefined {
-  try {
-    getAddress(recipient)
-  } catch (error) {
-    return error.message
-  }
-
-  return undefined
 }

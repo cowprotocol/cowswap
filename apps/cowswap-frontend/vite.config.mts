@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -39,9 +40,37 @@ const sentryOrg = process.env.SENTRY_ORG || defaultSentryOrg
 const sentryProject = process.env.SENTRY_PROJECT || defaultSentryProject
 const sentryReleaseName = `CowSwap@v${pkg.version}`
 
+function getGitBuildInfo(): {
+  commitHash: string
+  commitDate: string
+  releaseTag: string
+} {
+  try {
+    const commitHash = execSync('git rev-parse --short=7 HEAD').toString().trim()
+    const commitDate = execSync('git show -s --format=%cI HEAD').toString().trim()
+    let releaseTag = ''
+    try {
+      const tag = execSync('git describe --exact-match --tags HEAD').toString().trim()
+      if (tag.startsWith('cowswap-v')) {
+        releaseTag = tag
+      }
+    } catch {
+      // HEAD is not on an exact tag
+    }
+    return { commitHash, commitDate, releaseTag }
+  } catch {
+    return {
+      commitHash: process.env.REACT_APP_GIT_COMMIT_HASH || '',
+      commitDate: process.env.REACT_APP_GIT_COMMIT_DATE || '',
+      releaseTag: process.env.REACT_APP_GIT_RELEASE_TAG || '',
+    }
+  }
+}
+
 // eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode, isPreview }) => {
   const isProduction = mode === 'production'
+  const gitBuildInfo = getGitBuildInfo()
 
   const plugins: PluginOption[] = [
     nodePolyfills({
@@ -138,12 +167,9 @@ export default defineConfig(({ mode, isPreview }) => {
     base: './',
     define: {
       ...getReactProcessEnv(mode),
-      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(
-        execSync('git rev-parse --short=7 HEAD').toString().trim(),
-      ),
-      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(
-        execSync('git show -s --format=%cI HEAD').toString().trim(),
-      ),
+      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(gitBuildInfo.commitHash),
+      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(gitBuildInfo.commitDate),
+      'process.env.REACT_APP_GIT_RELEASE_TAG': JSON.stringify(gitBuildInfo.releaseTag),
     },
 
     assetsInclude: ['**/*.md'],
@@ -264,7 +290,14 @@ export default defineConfig(({ mode, isPreview }) => {
       // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
       // peer-instances; without deduping the controllers package, code in libs/wallet reads
       // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
+      dedupe: [
+        'react-router',
+        '@reown/appkit',
+        '@reown/appkit-adapter-wagmi',
+        '@reown/appkit-adapter-solana',
+        '@reown/appkit-controllers',
+        'wagmi',
+      ],
     },
 
     build: {

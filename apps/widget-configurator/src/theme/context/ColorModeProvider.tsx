@@ -10,10 +10,6 @@ import { ColorModeContext } from './ColorModeContext'
 
 import { CONFIGURATOR_THEME_STORAGE_KEY } from '../../configurator.constants'
 
-function isPaletteMode(value: unknown): value is PaletteMode {
-  return value === 'light' || value === 'dark'
-}
-
 export function ColorModeProvider({ children }: PropsWithChildren): ReactNode {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const [mode, setMode] = useLocalStorageState<PaletteMode>(CONFIGURATOR_THEME_STORAGE_KEY, (persistedValue) =>
@@ -38,4 +34,8 @@ export function ColorModeProvider({ children }: PropsWithChildren): ReactNode {
   )
 
   return <ColorModeContext.Provider value={value}>{children}</ColorModeContext.Provider>
+}
+
+function isPaletteMode(value: unknown): value is PaletteMode {
+  return value === 'light' || value === 'dark'
 }

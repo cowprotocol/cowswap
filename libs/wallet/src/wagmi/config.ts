@@ -1,13 +1,14 @@
+import { http } from 'viem'
+import { type Transport } from 'wagmi'
+
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { isMobile } from '@cowprotocol/common-utils'
-import { EvmChains } from '@cowprotocol/cow-sdk'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { EvmChains, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
-import { http } from 'viem'
-import { type Transport } from 'wagmi'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
@@ -37,7 +38,7 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
 /** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as EvmChains]
+  const url = RPC_URLS[chain.id as TargetChainId]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -77,17 +78,26 @@ const wagmiAdapter = new WagmiAdapter({
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
 
 const isSafeApp = getIsSafeAppIframe()
+const isWidget = isInjectedWidget()
 const hasRecentConnector =
-  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+  typeof localStorage !== 'undefined' &&
+  Boolean(
+    localStorage.getItem('@appkit/eip155:connected_connector_id') ||
+      localStorage.getItem('@appkit/solana:connected_connector_id'),
+  )
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: getReownDefaultNetwork(),
-  enableEIP6963: true,
+  // Widget mode delegates wallet ownership to its host via WidgetEthereumProvider (iframe
+  // transport). Enabling EIP-6963 in a widget context lets Reown discover and connect to
+  // window.ethereum directly, bypassing the transport and leaking browser-wallet state into
+  // embedded contexts.
+  enableEIP6963: !isWidget,
   enableInjected: false,
-  enableReconnect: hasRecentConnector,
+  enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
   featuredWalletIds: [
     // Coinbase Wallet
@@ -123,4 +133,6 @@ if (isSafeApp) {
 
 bindActiveProvider(wagmiAdapter)
 
-export { wagmiAdapter, reownAppKit, wagmiStorage }
+const { wagmiConfig } = wagmiAdapter
+
+export { wagmiConfig, wagmiAdapter, reownAppKit, wagmiStorage }

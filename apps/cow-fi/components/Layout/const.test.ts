@@ -1,4 +1,4 @@
-import { getNavItems } from './const'
+import { getNavItems, NAV_ADDITIONAL_BUTTONS } from './const'
 
 jest.mock('@cowprotocol/analytics', () => ({
   initGtm: () => ({
@@ -44,5 +44,14 @@ describe('getNavItems', () => {
 
   it('shows solvers menu item when the solvers flag is enabled', () => {
     expect(getMoreItemLabels(true)).toContain('Solvers')
+  })
+})
+
+describe('NAV_ADDITIONAL_BUTTONS', () => {
+  it('does not include the LP on CoW AMM button', () => {
+    const labels = NAV_ADDITIONAL_BUTTONS.map((button) => button.label)
+
+    expect(labels).not.toContain('LP on CoW AMM')
+    expect(labels).toContain('Trade on CoW Swap')
   })
 })

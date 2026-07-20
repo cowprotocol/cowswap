@@ -13,6 +13,7 @@ import {
   OnPostedOrderPayload,
   SimpleCowEventEmitter,
 } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { getCowAnalytics } from '../utils'
 
@@ -24,6 +25,7 @@ type EnrichedOrderWithTokens = EnrichedOrder & {
 }
 
 type RawAmount = string | number | bigint | null | undefined
+type OrderTypeAnalyticsField = { orderType?: UiOrderType }
 
 type Tokenish = {
   address?: string
@@ -56,11 +58,12 @@ export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): Analyti
   }
 }
 
-export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
+export function buildBaseFields(payload: BaseOrderPayload & OrderTypeAnalyticsField): AnalyticsPayload {
   return {
     walletAddress: safeGetString(payload.order, 'owner'),
     orderId: safeGetString(payload.order, 'uid'),
     chainId: payload.chainId.toString(),
+    ...(payload.orderType ? { orderType: payload.orderType } : {}),
   }
 }
 
@@ -77,7 +80,7 @@ export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undef
   }
 }
 
-export function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
+export function getOrderPayload(payload: BaseOrderPayload & OrderTypeAnalyticsField): AnalyticsPayload {
   const meta = extractTokenMeta(payload.order)
   const base = buildBaseFields(payload)
   const tokenFields = buildTokenFields(payload, meta)

@@ -1,6 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { maxUint256, type WalletClient } from 'viem'
+import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
@@ -10,9 +13,6 @@ import {
   PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { maxUint256, type WalletClient } from 'viem'
-import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -26,6 +26,33 @@ type PermitDeps = {
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   storePermit: ReturnType<typeof useSetAtom<typeof storePermitCacheAtom>>
   walletClient: WalletClient | undefined
+}
+
+/**
+ * Hook that returns callback to generate permit hook data
+ */
+export function useGeneratePermitHook(): GeneratePermitHook {
+  const config = useConfig()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const { chainId } = useWalletInfo()
+  const storePermit = useSetAtom(storePermitCacheAtom)
+  const getCachedPermit = useGetCachedPermit()
+
+  return useCallback(
+    (params: GeneratePermitHookParams) =>
+      runPermitRequest(
+        params,
+        params.amount ?? maxUint256,
+        config,
+        publicClient,
+        chainId,
+        getCachedPermit,
+        storePermit,
+        walletClient,
+      ),
+    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
+  )
 }
 
 // eslint-disable-next-line complexity
@@ -88,31 +115,4 @@ async function runPermitRequest(
   } finally {
     params.postSignCallback?.()
   }
-}
-
-/**
- * Hook that returns callback to generate permit hook data
- */
-export function useGeneratePermitHook(): GeneratePermitHook {
-  const config = useConfig()
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
-  const { chainId } = useWalletInfo()
-  const storePermit = useSetAtom(storePermitCacheAtom)
-  const getCachedPermit = useGetCachedPermit()
-
-  return useCallback(
-    (params: GeneratePermitHookParams) =>
-      runPermitRequest(
-        params,
-        params.amount ?? maxUint256,
-        config,
-        publicClient,
-        chainId,
-        getCachedPermit,
-        storePermit,
-        walletClient,
-      ),
-    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
-  )
 }

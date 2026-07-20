@@ -7,6 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
+import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -97,7 +98,10 @@ export function TwapConfirmModal() {
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
-  const isConfirmDisabled = !!localFormValidation
+  // Re-check the balance against the (frozen) sell amount in case it changed while the modal was open
+  const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
+  const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
+  const inputSymbol = inputCurrencyAmount?.currency?.symbol || t`token`
 
   const priceImpact = useTradePriceImpact()
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
@@ -134,7 +138,7 @@ export function TwapConfirmModal() {
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
-        buttonText={t`Place TWAP order`}
+        buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbol} balance` : t`Place TWAP order`}
         recipient={recipient}
       >
         {(warnings) => (

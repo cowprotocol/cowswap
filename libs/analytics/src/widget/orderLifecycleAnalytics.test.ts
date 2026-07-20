@@ -6,6 +6,7 @@ import type {
   OnCancelledOrderPayload,
   OnExpiredOrderPayload,
 } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util'
 
@@ -93,7 +94,7 @@ describe('orderLifecycleAnalytics', () => {
       },
       inputAmount: BigInt('1000000000000000000'),
       outputAmount: BigInt('2500000'),
-      orderType: 'SWAP' as OnPostedOrderPayload['orderType'],
+      orderType: UiOrderType.SWAP,
       partiallyFillable: true,
       kind: OrderKind.SELL,
     }
@@ -113,6 +114,7 @@ describe('orderLifecycleAnalytics', () => {
   it('formats fulfilled order amounts and cross-chain flag', () => {
     const payload: OnFulfilledOrderPayload = {
       chainId: 1,
+      orderType: UiOrderType.SWAP,
       order: buildOrder({
         executedSellAmount: '1000000000000000000',
         executedBuyAmount: '999410',
@@ -136,6 +138,7 @@ describe('orderLifecycleAnalytics', () => {
   it('adds cancellation metadata and preserves aliases', () => {
     const payload: OnCancelledOrderPayload = {
       chainId: 1,
+      orderType: UiOrderType.LIMIT,
       order: buildOrder(),
       transactionHash: '0xdeadbeef',
     }
@@ -150,6 +153,7 @@ describe('orderLifecycleAnalytics', () => {
   it('marks expired orders with reason and aliases', () => {
     const payload: OnExpiredOrderPayload = {
       chainId: 1,
+      orderType: UiOrderType.LIMIT,
       order: buildOrder(),
     }
 
@@ -157,5 +161,56 @@ describe('orderLifecycleAnalytics', () => {
     expect(result.reason).toBe('expired')
     expect(result.fromCurrencyAddress).toBe(defaultInputToken.address)
     expect(result.toCurrencyAddress).toBe(defaultOutputToken.address)
+  })
+
+  describe.each([
+    {
+      name: 'swap',
+      orderType: UiOrderType.SWAP,
+      order: buildOrder({ class: OrderClass.MARKET }),
+    },
+    {
+      name: 'limit',
+      orderType: UiOrderType.LIMIT,
+      order: buildOrder({ class: OrderClass.LIMIT }),
+    },
+    {
+      name: 'twap',
+      orderType: UiOrderType.TWAP,
+      order: buildOrder({
+        class: OrderClass.LIMIT,
+        fullAppData: JSON.stringify({ metadata: { orderClass: { orderClass: 'twap' } } }),
+      }),
+    },
+  ])('final lifecycle orderType mapping for $name-shaped orders', ({ orderType, order }) => {
+    it('includes orderType on fulfilled payloads', () => {
+      const payload: OnFulfilledOrderPayload = {
+        chainId: 1,
+        orderType,
+        order,
+      }
+
+      expect(mapFulfilledOrder(payload).orderType).toBe(orderType)
+    })
+
+    it('includes orderType on cancelled payloads', () => {
+      const payload: OnCancelledOrderPayload = {
+        chainId: 1,
+        orderType,
+        order,
+      }
+
+      expect(mapCancelledOrder(payload).orderType).toBe(orderType)
+    })
+
+    it('includes orderType on expired payloads', () => {
+      const payload: OnExpiredOrderPayload = {
+        chainId: 1,
+        orderType,
+        order,
+      }
+
+      expect(mapExpiredOrder(payload).orderType).toBe(orderType)
+    })
   })
 })

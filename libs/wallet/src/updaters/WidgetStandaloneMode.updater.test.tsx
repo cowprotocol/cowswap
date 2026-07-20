@@ -1,8 +1,9 @@
+import { useConnection } from 'wagmi'
+
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { ConnectorController } from '@reown/appkit-controllers'
+import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { render, RenderResult, waitFor } from '@testing-library/react'
-import { useConnection } from 'wagmi'
 
 import { WidgetStandaloneModeUpdater } from './WidgetStandaloneMode.updater'
 
@@ -30,7 +31,11 @@ jest.mock('../utils/getIsSafeAppIframe', () => ({
 
 jest.mock('../wagmi/config', () => ({
   reownAppKit: { disconnect: jest.fn() },
-  wagmiAdapter: { disconnect: jest.fn(), syncConnections: jest.fn() },
+  wagmiAdapter: { disconnect: jest.fn(), syncConnections: jest.fn(), syncConnectors: jest.fn() },
+}))
+
+jest.mock('../providerIsolation', () => ({
+  flushDeferredProviders: jest.fn(),
 }))
 
 jest.mock('../wagmi/hooks/useDisconnectWallet', () => ({
@@ -42,6 +47,9 @@ jest.mock('@reown/appkit-controllers', () => ({
     subscribe: jest.fn(),
     state: { connectors: [], allConnectors: [] },
   },
+  OptionsController: {
+    setEIP6963Enabled: jest.fn(),
+  },
 }))
 
 const isInjectedWidgetMock = isInjectedWidget as jest.Mock
@@ -52,6 +60,8 @@ const useDisconnectWalletMock = useDisconnectWallet as jest.Mock
 const reownAppKitDisconnectMock = reownAppKit.disconnect as jest.Mock
 const wagmiAdapterDisconnectMock = wagmiAdapter.disconnect as jest.Mock
 const wagmiAdapterSyncConnectionsMock = wagmiAdapter.syncConnections as jest.Mock
+const wagmiAdapterSyncConnectorsMock = wagmiAdapter.syncConnectors as jest.Mock
+const optionsControllerSetEIP6963EnabledMock = OptionsController.setEIP6963Enabled as jest.Mock
 const connectorControllerSubscribeMock = ConnectorController.subscribe as jest.Mock
 
 const disconnectMock = jest.fn()
@@ -61,12 +71,12 @@ const OTHER_CONNECTOR_ID = 'metamask'
 const DAPP_MODE = false
 const STANDALONE_MODE = true
 
-function setConnector(id: string | undefined): void {
-  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
-}
-
 function renderUpdater(standaloneMode: boolean | undefined): RenderResult {
   return render(<WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />)
+}
+
+function setConnector(id: string | undefined): void {
+  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
 }
 
 beforeEach(() => {
@@ -139,6 +149,38 @@ describe('WidgetStandaloneModeUpdater', () => {
       rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
 
       expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('standalone mode: injected wallet discovery', () => {
+    it('enables EIP-6963 in standalone mode', () => {
+      renderUpdater(STANDALONE_MODE)
+
+      expect(optionsControllerSetEIP6963EnabledMock).toHaveBeenCalledWith(true)
+      expect(wagmiAdapterSyncConnectorsMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('enables EIP-6963 when standalone mode is undefined', () => {
+      renderUpdater(undefined)
+
+      expect(optionsControllerSetEIP6963EnabledMock).toHaveBeenCalledWith(true)
+      expect(wagmiAdapterSyncConnectorsMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('disables EIP-6963 in dapp mode', () => {
+      renderUpdater(DAPP_MODE)
+
+      expect(optionsControllerSetEIP6963EnabledMock).toHaveBeenCalledWith(false)
+      expect(wagmiAdapterSyncConnectorsMock).not.toHaveBeenCalled()
+    })
+
+    it('does not change EIP-6963 outside injected widget mode', () => {
+      isInjectedWidgetMock.mockReturnValue(false)
+
+      renderUpdater(STANDALONE_MODE)
+
+      expect(optionsControllerSetEIP6963EnabledMock).not.toHaveBeenCalled()
+      expect(wagmiAdapterSyncConnectorsMock).not.toHaveBeenCalled()
     })
   })
 

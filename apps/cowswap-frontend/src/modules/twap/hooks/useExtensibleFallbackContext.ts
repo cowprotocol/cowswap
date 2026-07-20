@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { type Config, useConfig } from 'wagmi'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { type Config, useConfig } from 'wagmi'
 
 import { type SettlementContractData, useGP2SettlementContractProd } from 'common/hooks/useContract'
 

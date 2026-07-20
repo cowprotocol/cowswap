@@ -10,11 +10,12 @@ interface SwitchInputProps {
   checked: boolean
   label: string
   onChange: (checked: boolean) => void
+  disabled?: boolean
   helperText?: ReactNode
   tooltip?: string
 }
 
-export function SwitchInput({ checked, label, onChange, helperText, tooltip }: SwitchInputProps): ReactNode {
+export function SwitchInput({ checked, label, onChange, disabled, helperText, tooltip }: SwitchInputProps): ReactNode {
   const labelContent = tooltip ? (
     <Tooltip title={tooltip} arrow placement="top">
       <span>{label}</span>
@@ -26,6 +27,7 @@ export function SwitchInput({ checked, label, onChange, helperText, tooltip }: S
   return (
     <Box>
       <FormControlLabel
+        disabled={disabled}
         sx={{
           margin: 0,
           width: '100%',
@@ -35,7 +37,18 @@ export function SwitchInput({ checked, label, onChange, helperText, tooltip }: S
         }}
         label={labelContent}
         labelPlacement="start"
-        control={<Switch size="small" checked={checked} onChange={(_, nextChecked) => onChange(nextChecked)} />}
+        control={
+          <Switch
+            size="small"
+            checked={checked}
+            disabled={disabled}
+            onChange={(_, nextChecked) => {
+              if (!disabled) {
+                onChange(nextChecked)
+              }
+            }}
+          />
+        }
       />
       {helperText ? (
         <Typography sx={{ marginTop: '0.4rem', color: 'text.secondary', display: 'block' }} variant="caption">

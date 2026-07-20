@@ -111,4 +111,26 @@ describe('CowAnalyticsGtm wallet lifecycle events', () => {
       isBridgeOrder: false,
     })
   })
+
+  it.each([
+    ['swap_executed', 'SWAP'],
+    ['swap_cancelled', 'LIMIT'],
+    ['swap_expired', 'TWAP'],
+  ])('preserves %s orderType fields on string event payloads', (event, orderType) => {
+    const orderId = `0x${orderType.toLowerCase()}`
+
+    analytics.sendEvent(event, {
+      orderId,
+      orderType,
+      walletAddress: '0x1111111111111111111111111111111111111111',
+    })
+
+    expect(getLastEvent(event)).toMatchObject({
+      event,
+      dimension_chainId: '1',
+      orderId,
+      orderType,
+      walletAddress: '0x1111111111111111111111111111111111111111',
+    })
+  })
 })

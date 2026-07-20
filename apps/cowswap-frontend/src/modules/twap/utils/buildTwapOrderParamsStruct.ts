@@ -1,6 +1,6 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { padHex, toHex, encodeAbiParameters } from 'viem'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { twapOrderToStruct } from './twapOrderToStruct'
 

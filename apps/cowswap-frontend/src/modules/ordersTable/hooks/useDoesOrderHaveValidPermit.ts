@@ -1,8 +1,10 @@
+import type { Hex } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
@@ -13,8 +15,6 @@ import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'
 
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
-
-import type { Hex } from 'viem'
 
 const SWR_CONFIG: SWRConfiguration = {
   refreshInterval: ms`30s`,
