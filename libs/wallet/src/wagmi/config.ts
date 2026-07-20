@@ -3,7 +3,7 @@ import { type Transport } from 'wagmi'
 
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import { EvmChains } from '@cowprotocol/cow-sdk'
+import { EvmChains, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -38,7 +38,7 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
 /** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as EvmChains]
+  const url = RPC_URLS[chain.id as TargetChainId]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -80,7 +80,11 @@ OptionsController.setOptions({ ...OptionsController.state, enableInjected: false
 const isSafeApp = getIsSafeAppIframe()
 const isWidget = isInjectedWidget()
 const hasRecentConnector =
-  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+  typeof localStorage !== 'undefined' &&
+  Boolean(
+    localStorage.getItem('@appkit/eip155:connected_connector_id') ||
+      localStorage.getItem('@appkit/solana:connected_connector_id'),
+  )
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
