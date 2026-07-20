@@ -1,10 +1,12 @@
 import { ReactNode } from 'react'
 
+import type { MessageDescriptor } from '@lingui/core'
+
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ArrowIcon } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { Routes } from 'common/constants/routes'
 
@@ -19,10 +21,13 @@ import { SkeletonLines } from '../SkeletonLines'
 interface AccountItemProps {
   chainId: SupportedChainId
   account: string
-  version: string
+  version?: string
+  label?: MessageDescriptor
   iconSize?: number
 }
-export function AccountItem({ chainId, account, version, iconSize = 28 }: AccountItemProps): ReactNode {
+export function AccountItem({ chainId, account, version, label, iconSize = 28 }: AccountItemProps): ReactNode {
+  const { i18n } = useLingui()
+
   return (
     <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
       <BaseAccountCard width={90} height={56} borderRadius={8} padding={8} enableParentHover enableScale>
@@ -35,7 +40,13 @@ export function AccountItem({ chainId, account, version, iconSize = 28 }: Accoun
       <AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
         <p>
-          <Trans>Version</Trans>: {version}
+          {label ? (
+            i18n._(label)
+          ) : (
+            <>
+              <Trans>Version</Trans>: {version}
+            </>
+          )}
         </p>
       </AccountWrapper>
 

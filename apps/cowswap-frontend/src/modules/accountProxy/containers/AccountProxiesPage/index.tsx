@@ -30,8 +30,8 @@ export function AccountProxiesPage(): ReactNode {
         </Trans>
       </Title>
 
-      {proxies?.map(({ account, version }) => {
-        return <AccountItem key={account} chainId={chainId} account={account} version={version} />
+      {proxies?.map(({ account, version, label }) => {
+        return <AccountItem key={account} chainId={chainId} account={account} version={version} label={label} />
       })}
     </Wrapper>
   )

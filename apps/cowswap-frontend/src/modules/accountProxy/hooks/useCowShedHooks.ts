@@ -1,12 +1,12 @@
-import { CowShedHooks, CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
+import { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import useSWR from 'swr'
+import { getCowShedHooks } from '../utils/getCowShedHooks'
 
-export function useCowShedHooks(version?: CoWShedVersion): CowShedHooks | undefined {
+import type { AccountProxyConfig } from '../accountProxy.types'
+
+export function useCowShedHooks(accountProxyConfig?: AccountProxyConfig): CowShedHooks | undefined {
   const { chainId } = useWalletInfo()
 
-  return useSWR([chainId, version, 'CowShedHooks'], ([chainId, version]) => {
-    return new CowShedHooks(chainId, undefined, version)
-  }).data
+  return getCowShedHooks({ chainId, accountProxyConfig })
 }

@@ -45,15 +45,14 @@ export function AccountProxyRecoverPage(): ReactNode {
   const destroyedRef = useComponentDestroyedRef()
 
   const updateTokenBalance = useUpdateTokenBalance()
-  const proxyVersion = ownedProxy?.version
 
-  const recoverFundsContext = useRecoverFundsFromProxy(
-    validProxyAddress,
-    proxyVersion,
-    validTokenAddress,
-    balance,
-    !!validTokenAddress && getIsNativeToken(chainId, validTokenAddress),
-  )
+  const recoverFundsContext = useRecoverFundsFromProxy({
+    cowShedHooks: ownedProxy?.sdk,
+    selectedTokenAddress: validTokenAddress,
+    tokenBalance: balance,
+    isNativeToken: !!validTokenAddress && getIsNativeToken(chainId, validTokenAddress),
+  })
+
   const { txSigningStep } = recoverFundsContext
 
   const { handleSetError, ErrorModal } = useErrorModal()
