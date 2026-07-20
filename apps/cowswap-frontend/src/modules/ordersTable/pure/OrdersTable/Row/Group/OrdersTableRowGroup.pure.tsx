@@ -10,6 +10,7 @@ import styled from 'styled-components/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { PendingOrderPrices } from 'modules/orders'
+import { useIsFallbackHandlerRequired } from 'modules/twap'
 
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
 import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
@@ -58,6 +59,10 @@ export function OrdersTableRowGroup({
 }: OrdersTableRowGroupProps) {
   const { parent, children } = item
 
+  // Per-account condition (the Safe's ComposableCoW fallback handler was reset); resolved here in the
+  // view and passed to the status badge rather than persisted onto the order (see issue #5426).
+  const isFallbackHandlerBroken = useIsFallbackHandlerRequired()
+
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
@@ -103,6 +108,7 @@ export function OrdersTableRowGroup({
             parent={parent}
             childrenLength={childrenLength}
             isCollapsed={isCollapsed}
+            isFallbackHandlerBroken={isFallbackHandlerBroken}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
             childOrders={childrenWithParams}

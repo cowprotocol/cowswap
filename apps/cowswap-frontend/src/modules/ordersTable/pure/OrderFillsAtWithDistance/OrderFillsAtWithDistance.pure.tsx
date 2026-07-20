@@ -28,6 +28,7 @@ export interface OrderFillsAtWithDistanceProps {
   order: ParsedOrder
   isInverted: boolean
   isUnfillable: boolean
+  isFallbackHandlerBroken?: boolean
   withWarning: boolean
   warningText: string
   onApprove?: Command
@@ -49,6 +50,7 @@ export function OrderFillsAtWithDistance({
   order,
   isInverted,
   isUnfillable,
+  isFallbackHandlerBroken,
   withWarning,
   warningText,
   onApprove,
@@ -60,7 +62,11 @@ export function OrderFillsAtWithDistance({
     return (
       estimatedPriceWarning || (
         <styledEl.CellElement doubleRow>
-          <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
+          <TwapOrderStatus
+            orderStatus={order.status}
+            childOrders={childOrders}
+            isFallbackHandlerBroken={isFallbackHandlerBroken}
+          >
             <TwapScheduledOrderStatus
               childOrders={childOrders}
               isInverted={isInverted}

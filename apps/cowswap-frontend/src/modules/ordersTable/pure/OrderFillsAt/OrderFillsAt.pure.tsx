@@ -33,6 +33,7 @@ export interface OrderFillsAtProps {
   isTwapTable?: boolean
   isChild?: boolean
   isUnfillable: boolean
+  isFallbackHandlerBroken?: boolean
   isInverted: boolean
   withWarning: boolean
   estimatedPriceWarning: ReactNode | undefined
@@ -57,6 +58,7 @@ export function OrderFillsAt({
   isTwapTable,
   isChild,
   isUnfillable,
+  isFallbackHandlerBroken,
   estimatedPriceWarning,
   childOrders,
   estimatedExecutionPrice,
@@ -103,7 +105,11 @@ export function OrderFillsAt({
     return (
       estimatedPriceWarning || (
         <styledEl.CellElement doubleRow>
-          <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
+          <TwapOrderStatus
+            orderStatus={order.status}
+            childOrders={childOrders}
+            isFallbackHandlerBroken={isFallbackHandlerBroken}
+          >
             -
           </TwapOrderStatus>
         </styledEl.CellElement>

@@ -14,6 +14,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
+import { useIsFallbackHandlerRequired } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -46,6 +47,7 @@ import {
 } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { OrderActions } from '../../state/ordersTable.types'
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
 import { OrderParams } from '../../utils/getOrderParams'
 import { shouldShowDashForExpiration } from '../../utils/shouldShowDashForExpiration'
 import { getActivityUrl } from '../../utils/url/getActivityUrl'
@@ -152,11 +154,13 @@ export function OrderRow({
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
 
-  // A still-open order (or open part) carrying the derived `isUnfillable` flag is blocked by a reset
-  // Safe ComposableCoW fallback handler (see issue #5426); surface the "Update fallback handler"
-  // reason with the same danger design as the balance/allowance warnings.
+  // The Safe ComposableCoW fallback handler being reset/removed is a per-account condition, so it is
+  // resolved here in the view (not persisted onto the order) and combined with the per-order status.
+  // It only applies to composable (TWAP) orders; surface it with the same danger design as the
+  // balance/allowance warnings (see issue #5426).
+  const isFallbackHandlerBroken = useIsFallbackHandlerRequired()
   const isFallbackHandlerUnfillable =
-    order.isUnfillable === true && (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
+    isTwapTable === true && getIsFallbackHandlerUnfillable(status, isFallbackHandlerBroken)
 
   const isUnfillable =
     isFallbackHandlerUnfillable ||
@@ -195,6 +199,7 @@ export function OrderRow({
       estimatedExecutionPrice={estimatedExecutionPrice}
       estimatedPriceWarning={estimatedPriceWarning}
       isChild={isChild}
+      isFallbackHandlerBroken={isFallbackHandlerBroken}
       isInverted={isInverted}
       isSafeWallet={isSafeWallet}
       isTwapTable={isTwapTable}
@@ -269,6 +274,7 @@ export function OrderRow({
                 onApprove={onApprove}
                 isInverted={isInverted}
                 isUnfillable={isUnfillable}
+                isFallbackHandlerBroken={isFallbackHandlerBroken}
                 estimatedExecutionPrice={estimatedExecutionPrice}
                 spotPrice={spotPrice}
                 estimatedPriceWarning={estimatedPriceWarning}

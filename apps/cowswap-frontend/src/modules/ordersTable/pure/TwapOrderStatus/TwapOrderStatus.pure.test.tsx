@@ -28,18 +28,18 @@ beforeAll(() => {
 function childOrder(overrides: Partial<ParsedOrder>): ParsedOrder {
   return {
     status: OrderStatus.SCHEDULED,
-    isUnfillable: false,
     executionData: { filledPercentDisplay: '0' },
     ...overrides,
   } as unknown as ParsedOrder
 }
 
 describe('TwapOrderStatus()', () => {
-  it('shows the "Update fallback handler" reason when an open part is unfillable', () => {
+  it('shows the "Update fallback handler" reason when the handler is broken and a part is open', () => {
     render(
       <TwapOrderStatus
         orderStatus={OrderStatus.PENDING}
-        childOrders={[childOrder({ status: OrderStatus.PENDING, isUnfillable: true })]}
+        isFallbackHandlerBroken={true}
+        childOrders={[childOrder({ status: OrderStatus.PENDING })]}
       >
         fallback children
       </TwapOrderStatus>,
@@ -49,11 +49,12 @@ describe('TwapOrderStatus()', () => {
     expect(screen.queryByText('fallback children')).toBeNull()
   })
 
-  it('renders the passed children when no part is unfillable', () => {
+  it('renders the passed children when the fallback handler is not broken', () => {
     render(
       <TwapOrderStatus
         orderStatus={OrderStatus.PENDING}
-        childOrders={[childOrder({ status: OrderStatus.PENDING, isUnfillable: false })]}
+        isFallbackHandlerBroken={false}
+        childOrders={[childOrder({ status: OrderStatus.PENDING })]}
       >
         fallback children
       </TwapOrderStatus>,

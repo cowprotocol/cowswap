@@ -10,6 +10,7 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './TwapStatusAndToggle.styled'
 
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
 import { FallbackHandlerWarningTooltip, WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 
@@ -24,6 +25,7 @@ interface TwapStatusAndToggleProps {
   parent: ParsedOrder
   childrenLength: number
   isCollapsed: boolean
+  isFallbackHandlerBroken?: boolean
   onToggle: () => void
   onClick: () => void
   childOrders: ChildOrderItems[]
@@ -36,6 +38,7 @@ export function TwapStatusAndToggle({
   parent,
   childrenLength,
   isCollapsed,
+  isFallbackHandlerBroken,
   onToggle,
   onClick,
   childOrders,
@@ -56,14 +59,12 @@ export function TwapStatusAndToggle({
 
   const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
-  // A still-open parent or part carrying `isUnfillable` is blocked by a reset Safe ComposableCoW
-  // fallback handler (see issue #5426). Surface the same danger design on the parent status badge
-  // so it matches the reason shown in the Fills-at column and on the individual parts.
-  const isFallbackHandlerUnfillable = (order: ParsedOrder): boolean =>
-    order.isUnfillable === true && (order.status === OrderStatus.PENDING || order.status === OrderStatus.SCHEDULED)
-
+  // A reset Safe ComposableCoW fallback handler blocks a still-open order (see issue #5426). The
+  // broken state is per-account (resolved in the view, not persisted onto the order); surface the
+  // same danger design on the parent status badge so it matches the Fills-at column and the parts.
   const isFallbackHandlerBlocked =
-    isFallbackHandlerUnfillable(parent) || childOrders.some((child) => isFallbackHandlerUnfillable(child.order))
+    getIsFallbackHandlerUnfillable(parent.status, !!isFallbackHandlerBroken) ||
+    childOrders.some((child) => getIsFallbackHandlerUnfillable(child.order.status, !!isFallbackHandlerBroken))
 
   return (
     <>
