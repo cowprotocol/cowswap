@@ -41,7 +41,6 @@ import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
-import { EOA_TWAP_POC_DEBUG } from '../services/twap/eoa/placeEoaTwapOrder.constants'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
@@ -197,10 +196,6 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
-        // TODO: Is it correct to do this here?
-        if (EOA_TWAP_POC_DEBUG) {
-          log.debug('Uploading TWAP app data to API')
-        }
         await uploadAppDataDocOrderbookApi({
           appDataKeccak256: appDataInfo.appDataKeccak256,
           fullAppData: appDataInfo.fullAppData,

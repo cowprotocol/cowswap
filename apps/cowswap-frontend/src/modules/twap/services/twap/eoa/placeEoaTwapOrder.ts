@@ -1,29 +1,26 @@
-import { type Address, encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
+import { type Address, encodeFunctionData, erc20Abi, maxUint256, stringToHex } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowprotocol/common-utils'
 import {
-  AccountAddress,
-  isEvmChain,
-  QuoteResults,
-  SignerLike,
-  SupportedChainId,
-  areAddressesEqual,
-  OrderKind,
-} from '@cowprotocol/cow-sdk'
+  calculateGasMargin,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
+  createCowLogger,
+  isProdLike,
+} from '@cowprotocol/common-utils'
+import { AccountAddress, isEvmChain, QuoteResults, SignerLike, SupportedChainId, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { CowShedSdk, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
+import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
-import { tradingSdk } from 'tradingSdk/tradingSdk'
+import { prodTradingSdk } from 'tradingSdk/tradingSdk'
 
+import { getCowShedHooks, EOA_TWAP_ACCOUNT_PROXY_CONFIG, EOA_TWAP_SHED_FACTORY_OPTIONS } from 'modules/accountProxy'
 import { ComposableCowContractData } from 'modules/advancedOrders'
 import { estimateApprove } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
-
-import { EOA_TWAP_POC_DEBUG, EOA_TWAP_SHED_FACTORY_OPTIONS } from './placeEoaTwapOrder.constants'
 
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
@@ -32,6 +29,7 @@ import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
 const log = createCowLogger('EOA TWAP')
+const EOA_TWAP_POC_DEBUG = true
 
 // TODO: Move to `@cowprotocol/cow-sdk` just like `import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'`?
 const EOA_TWAP_SETUP_DAPP_ID = 'cowswap://twap/eoa-setup' // cow-sdk-scripts://composable-cow/post-twap-for-eoa
@@ -43,6 +41,7 @@ export interface GetEoaTwapOrderShedCallsParams {
   twapOrder: TWAPOrder
   twapOrderCreationContext: TwapOrderCreationContext
   paramsStruct: ConditionalOrderParams
+  spender: AccountAddress
   proxyAllowances: {
     needsApproval: boolean
     needsZeroApproval: boolean
@@ -93,18 +92,22 @@ interface ApproveEoaSellTokenParams {
  * Builds cow-shed multicall that runs after the BUY sell=buy order as a post-hook:
  * - Optionally zero-approve the TWAP proxy (vault relayer)
  * - Optionally approve the TWAP proxy (vault relayer)
- * - Ceate the TWAP on ComposableCow (owner = shed).
+ * - Create the TWAP on ComposableCow (owner = shed).
  */
 export function getEoaTwapOrderShedCalls({
   twapOrder,
   twapOrderCreationContext,
   paramsStruct,
+  spender,
   proxyAllowances,
 }: GetEoaTwapOrderShedCallsParams): ICoWShedCall[] {
   // Note: `twapOrderCreationContext.needsApproval` and `twapOrderCreationContext.needsZeroApproval` refer to the
-  // connected wallet (EOA/Safe), not to the proxy account. DO NO USE THEM HERE.
+  // connected wallet (EOA/Safe), not to the proxy account. DO NOT USE THEM HERE.
+  //
+  // Also, `twapOrderCreationContext.spender` follows the current app env (prod vs staging) via
+  // `useTradeSpenderAddress`. Use the `spender` parameter instead, which is always the PROD Vault Relayer address.
 
-  const { composableCowContract, spender, currentBlockFactoryAddress } = twapOrderCreationContext
+  const { composableCowContract, currentBlockFactoryAddress } = twapOrderCreationContext
 
   if (!currentBlockFactoryAddress) {
     throw new Error('currentBlockFactoryAddress is required to create a TWAP order')
@@ -119,7 +122,7 @@ export function getEoaTwapOrderShedCalls({
   const sellTokenAddress = sellAmount.currency.address
   const sellAmountAtoms = maxUint256
 
-  // At the very lest, we need the create order tx:
+  // At the very least, we need the create order tx:
   const txs: ICoWShedCall[] = [
     {
       target: composableCowContract.address,
@@ -142,7 +145,7 @@ export function getEoaTwapOrderShedCalls({
       callData: encodeFunctionData({
         abi: erc20Abi,
         functionName: 'approve',
-        args: [spender as `0x${string}`, sellAmountAtoms],
+        args: [spender, sellAmountAtoms],
       }),
       value: 0n,
       isDelegateCall: false,
@@ -191,29 +194,53 @@ export async function placeEoaTwapOrder({
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
 
-  const { spender } = twapOrderCreationContext
-
   const { sellAmount } = twapOrder
   const sellTokenAddress = sellAmount.currency.address as `0x${string}`
   const sellAmountAtoms = sellAmount.quotient
+
+  /**
+   * TWAP for EOA is prod-only:
+   * - WatchTower creates part orders on prod.
+   * - AppData is uploaded to prod.
+   * - Both the funding sell=buy order and proxy approvals target the production Vault Relayer.
+   *
+   * So we will always use the PROD Vault Relayer address as `spender`. If we support other envs in the future, we can use `twapOrderCreationContext.spender`
+   * instead, which follows the current app env (prod vs staging) via `useTradeSpenderAddress`.
+   * @see https://github.com/anxolin/cow-sdk-scripts/pull/12
+   */
   const vaultRelayerAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId]
 
   if (!vaultRelayerAddress) {
     throw new Error(`Vault relayer address is not configured for chain ${chainId}`)
-  } else if (!areAddressesEqual(spender, vaultRelayerAddress)) {
-    throw new Error(`The spender should be the Vault Relayer`)
   }
-
-  // spender comes from TwapUpdaters. TWAP orders always approve against the production vault relayer regardless of the current environment.
-  // const vaultRelayerAddress = spender
 
   // TODO: Do we need to show as unfillable orders where the TWAP proxy allowance is not enough, or can we assume that should never happen?
 
-  // TODO: This can probably be accessed using a version one published:
-  const cowShedSdk = new CowShedSdk(undefined, EOA_TWAP_SHED_FACTORY_OPTIONS)
+  // TODO: This could be simplified by using `CowShedSdk` instead of `CowShedHooks`, but right now it does not support passing a custom version, and it defaults
+  // to 1.0.1, so signature verification will fail.
+  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+  const factoryAddress = EOA_TWAP_SHED_FACTORY_OPTIONS.factoryAddress as `0x${string}`
 
-  // proxyAddress (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
-  const proxyAddress = cowShedSdk.getCowShedAccount(chainId, account) as AccountAddress
+  // `proxyAddress` (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
+  const proxyAddress = cowShedHooks.proxyOf(account) as AccountAddress
+
+  // Check if the factory is deployed (skip in prod-like envs):
+
+  if (!isProdLike) {
+    const publicClient = getPublicClient(config)
+
+    if (!publicClient) {
+      throw new Error('Public client is required to place an EOA TWAP order')
+    }
+
+    const factoryBytecode = await publicClient.getBytecode({ address: factoryAddress })
+
+    if (!factoryBytecode || factoryBytecode === '0x') {
+      throw new Error(
+        `EOA TWAP shed factory is not deployed on chain ${chainId} (${factoryAddress}). Deploy the ComposableCoW cow-shed factory before placing EOA TWAP orders.`,
+      )
+    }
+  }
 
   eoaTwapDebugLog('CowShed account:', proxyAddress)
 
@@ -234,18 +261,22 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     config,
     sellAmount,
     proxyAddress,
-    spender: spender as `0x${string}`,
+    spender: vaultRelayerAddress,
   })
 
   const calls = getEoaTwapOrderShedCalls({
     twapOrder,
     twapOrderCreationContext,
     paramsStruct,
+    spender: vaultRelayerAddress,
     proxyAllowances,
   })
 
   const deadline = BigInt(Math.ceil(Date.now() / 1000)) + BigInt(FUNDING_ORDER_VALID_FOR_SEC)
 
+  // TODO: Revert to this once we switch from `getCowShedHooks` to `CowShedSdk.signCalls`, once it forwards a custom
+  // EIP-712 version.
+  /*
   const { signedMulticall, gasLimit } = await cowShedSdk.signCalls({
     chainId,
     calls,
@@ -255,6 +286,19 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     // TODO: Could the estimation be too low for newly created sheds?
     // gasLimit: DEFAULT_GAS_LIMIT,
   })
+  */
+
+  const nonceHex = stringToHex(Date.now().toString()).slice(2)
+  const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
+  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
+  const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
+  const signedMulticall = {
+    to: factoryAddress,
+    data: callData,
+    value: 0n,
+  }
+  // TODO: Could estimation be too low for newly created sheds?
+  const gasLimit = DEFAULT_GAS_LIMIT
 
   eoaTwapDebugLog('Signed multicall=', signedMulticall)
 
@@ -272,14 +316,16 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     dappId: EOA_TWAP_SETUP_DAPP_ID,
   }
 
-  const { quoteResults, postSwapOrderFromQuote } = await tradingSdk.getQuote(
+  // Using the regular `tradingSdk` will use the staging orderbook for barn backend env. Passing `env: 'prod'` and `settlementContractOverride` would work,
+  // but `getQuote` will then mutate the shared OrderBookApi context, so the easiest solution is to use the prod-only `prodTradingSdk`.
+  const { quoteResults, postSwapOrderFromQuote } = await prodTradingSdk.getQuote(
     {
       kind: OrderKind.BUY,
       sellToken: sellToken.address,
       sellTokenDecimals: sellToken.decimals,
       buyToken: sellToken.address,
       buyTokenDecimals: sellToken.decimals,
-      // BUY sell=buy order = TWAP sell amoun:
+      // BUY sell=buy order (buy) amount = TWAP sell amount:
       amount: sellAmountAtoms.toString(),
       receiver: proxyAddress,
       owner: account,
@@ -316,8 +362,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   // TODO: Maybe easier to use useApproveCallback before calling placeEoaTwapOrder, extract this logic so that it can also be used without hooks.
   // TODO: We could use EIP-7702 to batch them for wallets that support it.
   //
-  // Give allowance from the EOA to the Vault Relayer to pull the sell token needed for the BUY sell=buy order
-  // (not the shed/proxy path). Prefer a permit pre-hook when the token supports it (same as swap);
+  // Give allowance from the EOA to the production Vault Relayer to pull the sell token needed for the BUY
+  // sell=buy funding order (always posted to prod). Prefer a permit pre-hook when the token supports it;
   // otherwise approve / zero-approve on-chain.
   //
   // Do not use twapOrderCreationContext.needsApproval / needsZeroApproval here: those flags compare the EOA
@@ -327,7 +373,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     address: sellTokenAddress,
     abi: erc20Abi,
     functionName: 'allowance',
-    args: [account, spender],
+    args: [account, vaultRelayerAddress],
   }).catch(() => 0n)
 
   const eoaNeedsApproval = eoaAllowance < fundingSellAmountAtoms
@@ -341,13 +387,13 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       account,
       permitInfo,
       amount: fundingSellAmountAtoms,
-      customSpender: spender,
+      customSpender: vaultRelayerAddress,
     }).catch((error) => {
       log.warn('Error generating permit data; falling back to approval', error)
       return null
     })
 
-    // If `generatePermitHook` fails, we simply continue without a permit, using teh approval flow below.
+    // If `generatePermitHook` fails, we simply continue without a permit, using the approval flow below.
     if (permitData) {
       const { orderId: sellEqualsBuyOrderId } = await postSwapOrderFromQuote({
         appData: {
@@ -369,7 +415,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
         owner: account,
-        spender,
+        spender: vaultRelayerAddress,
         amountToApprove: fundingSellAmount,
         forceApprove: true,
         config,
@@ -382,7 +428,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       chainId,
       account,
       sellTokenAddress,
-      spender,
+      spender: vaultRelayerAddress,
       amount: 0n,
     })
   }
@@ -393,7 +439,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       chainId,
       account,
       sellTokenAddress,
-      spender,
+      spender: vaultRelayerAddress,
       amount: maxUint256,
     })
   }
@@ -459,7 +505,7 @@ async function getProxyAllowances({
   const needsZeroApproval = needsApproval
     ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
-        // TODO: Verify this works propery
+        // TODO: Verify this works properly
         owner: proxyAddress as `0x${string}`,
         spender: spender,
         amountToApprove: sellAmount,

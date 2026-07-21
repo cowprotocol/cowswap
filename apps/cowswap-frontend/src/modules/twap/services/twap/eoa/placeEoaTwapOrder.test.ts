@@ -62,6 +62,7 @@ describe('getEoaTwapOrderShedCalls()', () => {
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
+      spender: vaultRelayer,
       proxyAllowances: { needsApproval: true, needsZeroApproval: false },
     })
 
@@ -85,6 +86,7 @@ describe('getEoaTwapOrderShedCalls()', () => {
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
+      spender: vaultRelayer,
       proxyAllowances: { needsApproval: false, needsZeroApproval: false },
     })
 
@@ -98,6 +100,7 @@ describe('getEoaTwapOrderShedCalls()', () => {
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
+      spender: vaultRelayer,
       proxyAllowances: { needsApproval: true, needsZeroApproval: true },
     })
 

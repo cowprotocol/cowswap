@@ -7,3 +7,9 @@ export { ProxyRecipient } from './containers/ProxyRecipient/ProxyRecipient.conta
 export { InvalidCoWShedSetup } from './containers/InvalidCoWShedSetup/InvalidCoWShedSetup.container'
 export { useCurrentAccountProxy, useCurrentAccountProxyAddress } from './hooks/useCurrentAccountProxy'
 export { getProxyAccountUrl } from './utils/getProxyAccountUrl'
+export { getCowShedHooks } from './utils/getCowShedHooks'
+export {
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+  EOA_TWAP_SHED_FACTORY_OPTIONS,
+  EOA_TWAP_SHED_EIP712_VERSION,
+} from './accountProxy.constants'
