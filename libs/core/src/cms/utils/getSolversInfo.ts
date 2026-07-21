@@ -36,7 +36,7 @@ async function fetchSolversInfo(): Promise<CmsSolversInfo | null> {
         query: {
           populate: {
             solver_networks: {
-              fields: ['active'],
+              fields: ['active', 'address'],
               populate: {
                 network: {
                   fields: ['chainId'],
