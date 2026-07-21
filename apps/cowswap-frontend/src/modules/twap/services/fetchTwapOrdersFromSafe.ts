@@ -158,7 +158,7 @@ async function fetchRecentlyExecutedTransactions(
     if (error.statusCode === 429) {
       logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
     } else {
-      logSafeApi.error('Error fetching executed Safe transactions', { safeAddress }, error)
+      logSafeApi.error(new Error('Failed to fetch executed Safe transactions', { cause: error }))
     }
     return { orders: [], complete: false }
   }
@@ -184,7 +184,7 @@ async function fetchSafeTransactionsChunk(
       if (error.statusCode === 429) {
         logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
       } else {
-        logSafeApi.error('Error fetching Safe transactions', { safeAddress, nextUrl }, error)
+        logSafeApi.error(new Error('Failed to fetch Safe transactions', { cause: error }), undefined, { nextUrl })
       }
 
       return { results: [], count: 0, fetchError: true }
@@ -201,7 +201,7 @@ async function fetchSafeTransactionsChunk(
     if (error.statusCode === 429) {
       logSafeApi.error(new Error(SAFE_RATE_LIMIT_MSG))
     } else {
-      logSafeApi.error('Error fetching Safe transactions', { safeAddress }, error)
+      logSafeApi.error(new Error('Failed to fetch Safe transactions', { cause: error }))
     }
 
     return { results: [], count: 0, fetchError: true }
