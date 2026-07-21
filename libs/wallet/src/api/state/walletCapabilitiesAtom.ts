@@ -175,7 +175,10 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     const wagmiError = normalizeError(err)
 
     if (!isEip1193Provider(provider)) {
-      logWallet.error('Cannot fetch wallet capabilities via wagmi', { account, chainId }, wagmiError)
+      logWallet.error(new Error('Failed to fetch wallet capabilities via wagmi', { cause: wagmiError }), undefined, {
+        account,
+        chainId,
+      })
       return null
     }
 
@@ -200,7 +203,10 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
       if (rpcError instanceof TimeoutError) {
         logWallet.warn(rpcError.message)
       } else {
-        logWallet.error('Cannot fetch wallet capabilities via rpc', { account, chainId }, rpcError)
+        logWallet.error(new Error('Failed to fetch wallet capabilities via RPC', { cause: rpcError }), undefined, {
+          account,
+          chainId,
+        })
       }
 
       return null
