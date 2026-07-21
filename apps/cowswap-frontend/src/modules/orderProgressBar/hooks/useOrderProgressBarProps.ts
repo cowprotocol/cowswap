@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { SolverInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -566,7 +567,10 @@ function mergeSolverData(
   if (rawSolver.startsWith('0x') && rawSolver.length === 42) {
     const solverInfo = solversInfoByAddress[getAddressKey(rawSolver)]
     const solverId = solverInfo?.solverId ?? rawSolver
-    return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
+    // When the address isn't found in CMS, fall back to a shortened address for display so the
+    // full 42-char address doesn't break the UI layout.
+    const solver = solverInfo ? solverId : shortenAddress(rawSolver)
+    return { ...solverCompetition, ...solverInfo, solverId, solver }
   }
 
   // Backend has the prefix `-solve` on some solvers. We should discard that for now.
