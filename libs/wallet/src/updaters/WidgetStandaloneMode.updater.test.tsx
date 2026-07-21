@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { render, RenderResult, waitFor } from '@testing-library/react'
@@ -8,12 +8,12 @@ import { WidgetStandaloneModeUpdater } from './WidgetStandaloneMode.updater'
 
 import { COW_WIDGET_CONNECTOR_ID, SAFE_CONNECTOR_ID } from '../reown/consts'
 import { connectWalletById } from '../utils/connectWalletById'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
+  getIsSafeAppIframe: jest.fn(),
 }))
 
 jest.mock('wagmi', () => ({
@@ -22,10 +22,6 @@ jest.mock('wagmi', () => ({
 
 jest.mock('../utils/connectWalletById', () => ({
   connectWalletById: jest.fn(),
-}))
-
-jest.mock('../utils/getIsSafeAppIframe', () => ({
-  getIsSafeAppIframe: jest.fn(),
 }))
 
 jest.mock('../wagmi/config', () => ({

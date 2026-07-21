@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
 
+import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
+
 import { useConnection } from 'wagmi'
 
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
 import { connectWalletById } from '../utils/connectWalletById'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 
 /**

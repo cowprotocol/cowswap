@@ -1,5 +1,5 @@
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -17,7 +17,6 @@ import { interceptEIP6963Providers } from '../providerIsolation'
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { connectWalletById } from '../utils/connectWalletById'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
 
 interceptEIP6963Providers()
@@ -128,4 +127,6 @@ if (isSafeApp) {
 
 bindActiveProvider(wagmiAdapter)
 
-export { wagmiAdapter, reownAppKit, wagmiStorage }
+const { wagmiConfig } = wagmiAdapter
+
+export { wagmiConfig, wagmiAdapter, reownAppKit, wagmiStorage }

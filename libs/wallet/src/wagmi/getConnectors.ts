@@ -1,4 +1,4 @@
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { injected, safe } from '@wagmi/connectors'
@@ -7,7 +7,6 @@ import { EIP1193Provider } from 'viem'
 import { getInjectedProvider } from '../api/utils/connection'
 import { createIsolatedProvider } from '../providerIsolation'
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
 import type { CreateConnectorFn } from 'wagmi'
 

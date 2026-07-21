@@ -1,3 +1,5 @@
+import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
+
 import { render, RenderResult, waitFor } from '@testing-library/react'
 import { useConnection } from 'wagmi'
 
@@ -5,7 +7,6 @@ import { WidgetSafeApp } from './WidgetSafeApp.updater'
 
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
 import { connectWalletById } from '../utils/connectWalletById'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 
 jest.mock('wagmi', () => ({
@@ -16,7 +17,7 @@ jest.mock('../utils/connectWalletById', () => ({
   connectWalletById: jest.fn(),
 }))
 
-jest.mock('../utils/getIsSafeAppIframe', () => ({
+jest.mock('@cowprotocol/common-utils', () => ({
   getIsSafeAppIframe: jest.fn(),
 }))
 

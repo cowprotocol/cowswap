@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { useConnection } from 'wagmi'
@@ -9,7 +9,6 @@ import { useConnection } from 'wagmi'
 import { COW_WIDGET_CONNECTOR_ID, SAFE_CONNECTOR_ID } from '../reown/consts'
 import { appWalletContextAtom } from '../state/appWalletContext.atom'
 import { connectWalletById } from '../utils/connectWalletById'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 

@@ -1,13 +1,12 @@
 import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getNullableParentOrigin } from '@cowprotocol/iframe-transport'
 import {
   COW_WIDGET_CONNECTOR_ID,
   getIsInjectedMobileBrowser,
-  getIsSafeAppIframe,
   useIsEagerConnectInProgress,
   useIsSmartContractWallet,
   useWalletDetails,

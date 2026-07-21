@@ -1,9 +1,8 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { createStorage } from 'wagmi'
 
 import { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
-import { getIsSafeAppIframe } from './utils/getIsSafeAppIframe'
 
 const safeSuffix = getIsSafeAppIframe() ? '_safe-app' : ''
 /**

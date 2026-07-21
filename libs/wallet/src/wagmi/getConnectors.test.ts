@@ -1,14 +1,20 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { injected, safe } from '@wagmi/connectors'
 
 import { getConnectors } from './getConnectors'
 
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
-import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 
 import type { EIP1193Provider } from 'viem'
 import type { CreateConnectorFn } from 'wagmi'
+
+type InjectedConnectorParams = {
+  target?: {
+    id?: string
+    provider?: (targetWindow?: { ethereum?: unknown }) => EIP1193Provider | undefined
+  }
+}
 
 let mockIsMobile = false
 const mockBrowserInjectedConnector = (() => undefined) as unknown as CreateConnectorFn
@@ -20,6 +26,7 @@ jest.mock('@cowprotocol/common-utils', () => ({
     return mockIsMobile
   },
   isInjectedWidget: jest.fn(),
+  getIsSafeAppIframe: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/iframe-transport', () => ({
@@ -31,10 +38,6 @@ jest.mock('@wagmi/connectors', () => ({
     params.target?.id === 'cow-widget' ? mockWidgetConnector : mockBrowserInjectedConnector,
   ),
   safe: jest.fn(() => mockSafeConnector),
-}))
-
-jest.mock('../utils/getIsSafeAppIframe', () => ({
-  getIsSafeAppIframe: jest.fn(),
 }))
 
 jest.mock('../providerIsolation', () => ({
@@ -76,12 +79,15 @@ describe('getConnectors', () => {
 
     getConnectors()
 
-    const injectedCall = injectedMock.mock.calls.find(([params]) => params?.target?.id === 'injected')
-    const providerFactory = injectedCall?.[0]?.target?.provider as (targetWindow?: {
-      ethereum?: unknown
-    }) => EIP1193Provider | undefined
+    const injectedCall = injectedMock.mock.calls.find(
+      ([params]) => (params as InjectedConnectorParams).target?.id === 'injected',
+    )
+    const providerFactory = (injectedCall?.[0] as InjectedConnectorParams | undefined)?.target?.provider
 
     expect(typeof providerFactory).toBe('function')
+    if (typeof providerFactory !== 'function') {
+      throw new Error('Expected browser injected provider factory')
+    }
 
     const rawProvider = { request: jest.fn(), on: jest.fn(), removeListener: jest.fn() } as unknown as EIP1193Provider
     const isolated = providerFactory({ ethereum: rawProvider })
