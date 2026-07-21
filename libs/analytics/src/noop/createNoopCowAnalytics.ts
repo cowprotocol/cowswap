@@ -2,7 +2,7 @@
  * No-op analytics implementation for environments where third-party scripts must not load (e.g. embedded widget).
  */
 
-import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
+import { AnalyticsContext, AnalyticsEvent, CowAnalytics, OutboundLinkParams } from '../CowAnalytics'
 
 const state = {
   instance: null as CowAnalytics | null,
@@ -49,7 +49,7 @@ class CowAnalyticsNoop implements CowAnalytics {
 
   sendPageView(_path?: string, _params?: string[], _title?: string): void {}
 
-  sendEvent(_event: string | EventOptions, _params?: unknown): void {}
+  sendEvent(_event: AnalyticsEvent, _params?: unknown): void {}
 
   sendTiming(_timingCategory: string, _timingVar: string, _timingValue: number, _timingLabel: string): void {}
 
