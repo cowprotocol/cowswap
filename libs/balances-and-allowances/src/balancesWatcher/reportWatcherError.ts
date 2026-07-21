@@ -1,4 +1,4 @@
-import { captureError, createCowLogger } from '@cowprotocol/common-utils'
+import { captureError, createCowLogger, normalizeError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
@@ -9,10 +9,10 @@ const HTTP_TOO_MANY_REQUESTS = 429
 
 const logger = createCowLogger('BalancesWatcher')
 
-// Session POST retries every ~30s and the first-snapshot timeout is ~20s, so one
-// shared window keeps a sustained outage from emitting an event per retry.
-const REPORT_THROTTLE_MS = ms`60s`
-let lastReportedAt: number | undefined
+// Session POST retries every ~30s and the first-snapshot timeout is ~20s, so the
+// caller throttles reporting to this window (see `useThrottledCallback` in
+// useBalancesWatcherSession) to keep a sustained outage from flooding Sentry.
+export const REPORT_THROTTLE_MS = ms`60s`
 
 export interface ReportWatcherErrorParams {
   error: unknown
@@ -35,16 +35,12 @@ export type WatcherErrorPhase = 'session' | 'stream' | 'first-snapshot-timeout'
  * Throttled to at most one report per window so a persistent outage does not flood Sentry.
  */
 export function reportWatcherError({ error, phase, chainId }: ReportWatcherErrorParams): void {
-  const now = Date.now()
-
-  if (lastReportedAt !== undefined && now - lastReportedAt < REPORT_THROTTLE_MS) return
-  lastReportedAt = now
-
   const { status, code } = extractWatcherErrorCodes(error)
   const isRateLimited = status === HTTP_TOO_MANY_REQUESTS
 
-  const message = error instanceof Error ? error.message : String(error)
-  const sentryError = new Error(message, { cause: error })
+  const normalizedError = normalizeError(error)
+  const { message } = normalizedError
+  const sentryError = new Error(message, { cause: normalizedError })
   sentryError.name = resolveErrorName(phase, isRateLimited)
 
   logger.warn(`${sentryError.name} (phase: ${phase}, status: ${status ?? 'n/a'}, code: ${code ?? 'n/a'})`, {

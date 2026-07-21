@@ -5,8 +5,8 @@ import ms from 'ms.macro'
 import {
   type BalancesMap,
   type BalancesSubscription,
+  type ReportWatcherErrorParams,
   createBalancesWatcherSession,
-  reportWatcherError,
   subscribeToBalancesEvents,
 } from '../balancesWatcher'
 import { BalancesState } from '../state/balancesAtom'
@@ -51,6 +51,8 @@ export interface SessionControllerDeps {
   customTokens: string[]
   setBalances: (update: (state: BalancesState) => BalancesState) => void
   setHealth: (update: (state: WatcherHealthState) => WatcherHealthState) => void
+  // Throttled Sentry reporter, injected by the hook (see `useThrottledCallback`).
+  reportError: (params: ReportWatcherErrorParams) => void
 }
 
 export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
@@ -72,7 +74,7 @@ export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId):
  */
 // eslint-disable-next-line max-lines-per-function
 export function createSessionController(deps: SessionControllerDeps): SessionController {
-  const { account, chainId, tokensListsUrls, customTokens, setBalances, setHealth } = deps
+  const { account, chainId, tokensListsUrls, customTokens, setBalances, setHealth, reportError } = deps
 
   let cancelled = false
   let subscription: BalancesSubscription | undefined
@@ -116,7 +118,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
   const openStream = (): void => {
     firstSnapshotTimer = setTimeout(() => {
       if (cancelled) return
-      reportWatcherError({
+      reportError({
         error: new Error(`No snapshot received within ${FIRST_SNAPSHOT_TIMEOUT_MS}ms`),
         phase: 'first-snapshot-timeout',
         chainId,
@@ -138,7 +140,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       },
       onError: (error, terminal) => {
         if (cancelled || !terminal) return
-        reportWatcherError({ error, phase: 'stream', chainId })
+        reportError({ error, phase: 'stream', chainId })
         enterFallback()
       },
     })
@@ -161,7 +163,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       })
       .catch((error) => {
         if (cancelled) return
-        reportWatcherError({ error, phase: 'session', chainId })
+        reportError({ error, phase: 'session', chainId })
         enterFallback()
       })
   }

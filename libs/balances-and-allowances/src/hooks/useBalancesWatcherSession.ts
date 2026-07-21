@@ -1,11 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useIsWindowIdle } from '@cowprotocol/common-hooks'
+import { useIsWindowIdle, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { applyEmptyLoad, createSessionController, HIDDEN_SESSION_TIMEOUT_MS } from './balancesWatcherSessionController'
 
+import { REPORT_THROTTLE_MS, reportWatcherError } from '../balancesWatcher'
 import { balancesAtom } from '../state/balancesAtom'
 import { balancesWatcherHealthAtom, DEFAULT_WATCHER_HEALTH_STATE } from '../state/balancesWatcherHealthAtom'
 
@@ -51,6 +52,7 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
   const setBalances = useSetAtom(balancesAtom)
   const setHealth = useSetAtom(balancesWatcherHealthAtom)
   const isIdle = useIsWindowIdle(HIDDEN_SESSION_TIMEOUT_MS)
+  const reportError = useThrottledCallback(reportWatcherError, REPORT_THROTTLE_MS)
 
   useEffect(() => {
     if (!account || !isEvmChain(chainId)) {
@@ -77,8 +79,9 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
       customTokens,
       setBalances,
       setHealth,
+      reportError,
     })
     controller.start()
     return controller.cleanup
-  }, [account, chainId, tokensListsUrls, customTokens, isIdle, setBalances, setHealth])
+  }, [account, chainId, tokensListsUrls, customTokens, isIdle, setBalances, setHealth, reportError])
 }

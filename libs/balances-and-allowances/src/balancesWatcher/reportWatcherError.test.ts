@@ -1,31 +1,20 @@
 import { captureError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import ms from 'ms.macro'
-
 import { reportWatcherError } from './reportWatcherError'
 import { BalancesWatcherApiError, BalancesWatcherStreamError } from './types'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   captureError: jest.fn(),
   createCowLogger: () => ({ debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() }),
+  normalizeError: (err: unknown) => (err instanceof Error ? err : new Error(String(err))),
 }))
 
 const captureErrorMock = captureError as jest.Mock
 
-// The reporter keeps one shared throttle timestamp across all errors, so each
-// test advances the mocked clock past the window to start unthrottled.
-let mockedNow = 0
-
 describe('reportWatcherError', () => {
   beforeEach(() => {
     captureErrorMock.mockReset()
-    mockedNow += ms`61s`
-    jest.spyOn(Date, 'now').mockImplementation(() => mockedNow)
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
   })
 
   it('tags a 429 session error as a distinct rate-limit error', () => {
@@ -77,31 +66,5 @@ describe('reportWatcherError', () => {
     const [capturedError, , , tags] = captureErrorMock.mock.calls[0]
     expect(capturedError.name).toBe('BalancesWatcherSnapshotTimeout')
     expect(tags.phase).toBe('first-snapshot-timeout')
-  })
-
-  it('throttles any further report within the shared window, regardless of error kind', () => {
-    reportWatcherError({
-      error: new BalancesWatcherStreamError({ code: 503, message: 'unavailable' }),
-      phase: 'stream',
-      chainId: SupportedChainId.POLYGON,
-    })
-    // Different phase, chain, and error — still suppressed by the shared throttle.
-    reportWatcherError({
-      error: new BalancesWatcherApiError(429, { code: 429, message: 'Too many requests' }),
-      phase: 'session',
-      chainId: SupportedChainId.MAINNET,
-    })
-
-    expect(captureErrorMock).toHaveBeenCalledTimes(1)
-  })
-
-  it('reports again once the window has passed', () => {
-    const error = new Error('boom')
-    reportWatcherError({ error, phase: 'session', chainId: SupportedChainId.MAINNET })
-
-    mockedNow += ms`61s`
-    reportWatcherError({ error, phase: 'session', chainId: SupportedChainId.MAINNET })
-
-    expect(captureErrorMock).toHaveBeenCalledTimes(2)
   })
 })
