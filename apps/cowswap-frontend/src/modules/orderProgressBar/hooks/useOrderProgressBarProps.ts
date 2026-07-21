@@ -181,14 +181,31 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
-  const winnerSolver = useMemo(
-    () =>
-      apiSolverCompetition?.[0]
-        ? mergeSolverData(apiSolverCompetition[0], solversInfo, solversInfoByAddress)
-        : undefined,
-    [apiSolverCompetition, solversInfo, solversInfoByAddress],
+  const solverCompetition = useMemo(() => {
+    const solversMap = apiSolverCompetition?.reduce(
+      (acc, entry) => {
+        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
+        if (!entry || !entry.solver || !entry.executedAmounts) {
+          return acc
+        }
+        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
+        acc[entry.solver] = mergeSolverData(entry, solversInfo, solversInfoByAddress)
+        return acc
+      },
+      {} as Record<string, SolverCompetition>,
+    )
+
+    return (
+      Object.values(solversMap || {})
+        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
+        .reverse()
+    )
+  }, [apiSolverCompetition, solversInfo, solversInfoByAddress])
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(
+    chainId,
+    isBridgingTrade ? order : undefined,
+    solverCompetition?.[0],
   )
-  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
@@ -216,27 +233,6 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     backendApiStatus,
     isUnfillable || isCancelled || isCancelling || isExpired,
   )
-
-  const solverCompetition = useMemo(() => {
-    const solversMap = apiSolverCompetition?.reduce(
-      (acc, entry) => {
-        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
-        if (!entry || !entry.solver || !entry.executedAmounts) {
-          return acc
-        }
-        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
-        acc[entry.solver] = mergeSolverData(entry, solversInfo, solversInfoByAddress)
-        return acc
-      },
-      {} as Record<string, SolverCompetition>,
-    )
-
-    return (
-      Object.values(solversMap || {})
-        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse()
-    )
-  }, [apiSolverCompetition, solversInfo, solversInfoByAddress])
 
   return useMemo(() => {
     if (disableProgressBar) {
