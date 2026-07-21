@@ -1,5 +1,5 @@
+import { getPublicClient } from '@cowprotocol/common-utils'
 import { AddressKey } from '@cowprotocol/cow-sdk'
-import { getPublicClient } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 

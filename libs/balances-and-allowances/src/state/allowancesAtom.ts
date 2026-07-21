@@ -3,11 +3,10 @@ import { atomWithStorage } from 'jotai/utils'
 import { erc20Abi, type Address } from 'viem'
 import { Connector } from 'wagmi'
 
-import { asyncAtomFamily } from '@cowprotocol/common-utils'
+import { asyncAtomFamily, getPublicClientFromProvider } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { getPublicClientFromProvider } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
