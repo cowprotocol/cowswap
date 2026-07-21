@@ -9,6 +9,8 @@ import { Config, useConnection, UseConnectionReturnType } from 'wagmi'
 import { CAIP_TO_SUPPORTED_CHAIN_ID } from '../../constants'
 import { reownAppKit } from '../config'
 
+export type AccountState = EvmOrBitcoinAccountState | SolanaAccountState
+
 type EvmOrBitcoinAccountState = Omit<UseConnectionReturnType<Config>, 'chainId'> & {
   chainId: SupportedChainId
 }
@@ -17,8 +19,6 @@ type SolanaAccountState = UseAppKitAccountReturn & {
   chainId: SupportedChainId.SOLANA
   connector?: never
 }
-
-export type AccountState = EvmOrBitcoinAccountState | SolanaAccountState
 
 export function useAccountState(): AccountState {
   const [chainId, setChainId] = useState<SupportedChainId>(getCurrentChainIdFromUrl())

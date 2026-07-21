@@ -28,6 +28,33 @@ type PermitDeps = {
   walletClient: WalletClient | undefined
 }
 
+/**
+ * Hook that returns callback to generate permit hook data
+ */
+export function useGeneratePermitHook(): GeneratePermitHook {
+  const config = useConfig()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const { chainId } = useWalletInfo()
+  const storePermit = useSetAtom(storePermitCacheAtom)
+  const getCachedPermit = useGetCachedPermit()
+
+  return useCallback(
+    (params: GeneratePermitHookParams) =>
+      runPermitRequest(
+        params,
+        params.amount ?? maxUint256,
+        config,
+        publicClient,
+        chainId,
+        getCachedPermit,
+        storePermit,
+        walletClient,
+      ),
+    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
+  )
+}
+
 // eslint-disable-next-line complexity
 async function runPermitRequest(
   params: GeneratePermitHookParams,
@@ -88,31 +115,4 @@ async function runPermitRequest(
   } finally {
     params.postSignCallback?.()
   }
-}
-
-/**
- * Hook that returns callback to generate permit hook data
- */
-export function useGeneratePermitHook(): GeneratePermitHook {
-  const config = useConfig()
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
-  const { chainId } = useWalletInfo()
-  const storePermit = useSetAtom(storePermitCacheAtom)
-  const getCachedPermit = useGetCachedPermit()
-
-  return useCallback(
-    (params: GeneratePermitHookParams) =>
-      runPermitRequest(
-        params,
-        params.amount ?? maxUint256,
-        config,
-        publicClient,
-        chainId,
-        getCachedPermit,
-        storePermit,
-        walletClient,
-      ),
-    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
-  )
 }

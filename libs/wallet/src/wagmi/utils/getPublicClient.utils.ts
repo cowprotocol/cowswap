@@ -10,6 +10,11 @@ const publicClientsCache = new FiniteMap<EvmChains, PublicClient>(16)
 
 // TODO: Replace apps/explorer/src/hooks/euler/client with this one.
 
+interface CustomClientCacheEntry {
+  client: PublicClient
+  provider: EIP1193Provider
+}
+
 export function getPublicClient(chainId: EvmChains): PublicClient {
   const cached = publicClientsCache.get(chainId)
   if (cached) return cached
@@ -21,11 +26,6 @@ export function getPublicClient(chainId: EvmChains): PublicClient {
 
   publicClientsCache.set(chainId, client)
   return client
-}
-
-interface CustomClientCacheEntry {
-  client: PublicClient
-  provider: EIP1193Provider
 }
 
 const customClientsCache = new FiniteMap<EvmChains, CustomClientCacheEntry>(16)

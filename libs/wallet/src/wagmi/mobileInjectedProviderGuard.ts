@@ -12,14 +12,14 @@ const GUARDED_METHODS: Partial<Record<string, () => unknown>> = {
   wallet_revokePermissions: () => null,
 }
 
-type ProviderRequestArgs = { method: string; params?: unknown }
-type ProviderRequest = (args: ProviderRequestArgs) => Promise<unknown>
 type GuardedProvider = Omit<EIP1193Provider, 'request'> & {
   [GUARD_FLAG]?: true
   [GUARD_RESET]?: () => void
   chainId?: unknown
   request: ProviderRequest
 }
+type ProviderRequest = (args: ProviderRequestArgs) => Promise<unknown>
+type ProviderRequestArgs = { method: string; params?: unknown }
 
 /**
  * MetaMask iOS can leave provider RPCs pending forever. The dangerous cases for
@@ -133,6 +133,10 @@ export function resetMobileInjectedProviderGuard(provider: EIP1193Provider): voi
   guardedProvider[GUARD_RESET]?.()
 }
 
+function getProviderChainId(provider: GuardedProvider): string | undefined {
+  return typeof provider.chainId === 'string' && provider.chainId.startsWith('0x') ? provider.chainId : undefined
+}
+
 function requestChainIdWithFallback(chainIdRequest: Promise<unknown>, provider: GuardedProvider): Promise<unknown> {
   return Promise.race([
     chainIdRequest,
@@ -147,8 +151,4 @@ function requestChainIdWithFallback(chainIdRequest: Promise<unknown>, provider: 
       }, GUARD_TIMEOUT_MS)
     }),
   ])
-}
-
-function getProviderChainId(provider: GuardedProvider): string | undefined {
-  return typeof provider.chainId === 'string' && provider.chainId.startsWith('0x') ? provider.chainId : undefined
 }

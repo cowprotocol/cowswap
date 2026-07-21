@@ -115,6 +115,94 @@ export function SwapDebugPanel(props: SwapDebugPanelProps): ReactNode {
   return <SwapDebugPanelContent {...props} />
 }
 
+async function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text)
+
+    return
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', 'true')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '0'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+
+  try {
+    if (!document.execCommand('copy')) {
+      throw new Error('Copy command failed')
+    }
+  } finally {
+    document.body.removeChild(textarea)
+  }
+}
+
+function formatCurrency(
+  currency: Currency | null | undefined,
+): { chainId: number; symbol?: string; address?: string } | null {
+  if (!currency) return null
+
+  return {
+    chainId: currency.chainId,
+    symbol: currency.symbol ?? undefined,
+    address: currency.isToken ? currency.address : undefined,
+  }
+}
+
+function formatCurrencyAmount(amount: CurrencyAmount<Currency> | null | undefined): string | null {
+  if (!amount) return null
+
+  return `${amount.toSignificant(8)} ${amount.currency.symbol ?? amount.currency.name ?? 'UNKNOWN'}`
+}
+
+function getErrorInfo(error: unknown): { name?: string; message?: string } | null {
+  if (!error) return null
+
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message }
+  }
+
+  return { message: String(error) }
+}
+
+function getExpectedWagmiStorageKey({
+  isWidget,
+  isSafeAppIframe,
+}: {
+  isWidget: boolean
+  isSafeAppIframe: boolean
+}): string {
+  const safeSuffix = isSafeAppIframe ? '_safe-app' : ''
+
+  return isWidget ? `cowswap-wallet-${COW_WIDGET_CONNECTOR_ID}${safeSuffix}` : `cowswap-wallet${safeSuffix}`
+}
+
+function getWalletStorageKeys(): string[] {
+  if (typeof window === 'undefined') return []
+
+  try {
+    return Object.keys(window.localStorage).filter((key) => key.includes('cowswap-wallet') || key.includes('wagmi'))
+  } catch {
+    return []
+  }
+}
+
+function stringifyDebug(value: unknown): string {
+  return JSON.stringify(
+    value,
+    (_key: string, nestedValue: unknown) => {
+      if (typeof nestedValue === 'bigint') return `${nestedValue.toString()}n`
+
+      return nestedValue
+    },
+    2,
+  )
+}
+
 // TODO: Remove this temporary panel after the MetaMask iOS trade-flow issue is diagnosed.
 // eslint-disable-next-line max-lines-per-function, complexity
 function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps): ReactNode {
@@ -412,92 +500,4 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       </details>
     </Wrapper>
   )
-}
-
-function getErrorInfo(error: unknown): { name?: string; message?: string } | null {
-  if (!error) return null
-
-  if (error instanceof Error) {
-    return { name: error.name, message: error.message }
-  }
-
-  return { message: String(error) }
-}
-
-function formatCurrencyAmount(amount: CurrencyAmount<Currency> | null | undefined): string | null {
-  if (!amount) return null
-
-  return `${amount.toSignificant(8)} ${amount.currency.symbol ?? amount.currency.name ?? 'UNKNOWN'}`
-}
-
-function formatCurrency(
-  currency: Currency | null | undefined,
-): { chainId: number; symbol?: string; address?: string } | null {
-  if (!currency) return null
-
-  return {
-    chainId: currency.chainId,
-    symbol: currency.symbol ?? undefined,
-    address: currency.isToken ? currency.address : undefined,
-  }
-}
-
-function stringifyDebug(value: unknown): string {
-  return JSON.stringify(
-    value,
-    (_key: string, nestedValue: unknown) => {
-      if (typeof nestedValue === 'bigint') return `${nestedValue.toString()}n`
-
-      return nestedValue
-    },
-    2,
-  )
-}
-
-async function copyTextToClipboard(text: string): Promise<void> {
-  if (navigator.clipboard) {
-    await navigator.clipboard.writeText(text)
-
-    return
-  }
-
-  const textarea = document.createElement('textarea')
-  textarea.value = text
-  textarea.setAttribute('readonly', 'true')
-  textarea.style.position = 'fixed'
-  textarea.style.top = '0'
-  textarea.style.left = '0'
-  textarea.style.opacity = '0'
-  document.body.appendChild(textarea)
-  textarea.select()
-
-  try {
-    if (!document.execCommand('copy')) {
-      throw new Error('Copy command failed')
-    }
-  } finally {
-    document.body.removeChild(textarea)
-  }
-}
-
-function getExpectedWagmiStorageKey({
-  isWidget,
-  isSafeAppIframe,
-}: {
-  isWidget: boolean
-  isSafeAppIframe: boolean
-}): string {
-  const safeSuffix = isSafeAppIframe ? '_safe-app' : ''
-
-  return isWidget ? `cowswap-wallet-${COW_WIDGET_CONNECTOR_ID}${safeSuffix}` : `cowswap-wallet${safeSuffix}`
-}
-
-function getWalletStorageKeys(): string[] {
-  if (typeof window === 'undefined') return []
-
-  try {
-    return Object.keys(window.localStorage).filter((key) => key.includes('cowswap-wallet') || key.includes('wagmi'))
-  } catch {
-    return []
-  }
 }

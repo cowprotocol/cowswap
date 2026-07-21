@@ -32,6 +32,24 @@ const REQUESTS_CACHE: Record<string, Promise<GetTokenPermitIntoResult>> = {}
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported' }
 
+type BaseParams = {
+  tokenAddress: Address
+  tokenName: string
+  chainId: number
+  walletAddress: Address
+  spender: string
+  eip2612PermitUtils: Eip2612PermitUtils
+  nonce: number
+  version: string | undefined
+  minGasLimit?: bigint | undefined
+  amount?: bigint
+}
+
+type EstimateParams = BaseParams & {
+  type: PermitType
+  config: Config
+}
+
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
   const { tokenAddress, chainId } = params
   const key = getTokenId({ address: tokenAddress, chainId })
@@ -176,24 +194,6 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   }
 }
 
-type BaseParams = {
-  tokenAddress: Address
-  tokenName: string
-  chainId: number
-  walletAddress: Address
-  spender: string
-  eip2612PermitUtils: Eip2612PermitUtils
-  nonce: number
-  version: string | undefined
-  minGasLimit?: bigint | undefined
-  amount?: bigint
-}
-
-type EstimateParams = BaseParams & {
-  type: PermitType
-  config: Config
-}
-
 async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPermitIntoResult> {
   const { config, walletAddress, tokenAddress, tokenName, type, version, minGasLimit = DEFAULT_MIN_GAS_LIMIT } = params
 
@@ -214,6 +214,32 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
         name: tokenName,
       }
     : { ...UNSUPPORTED, name: tokenName }
+}
+
+async function getDaiLikeCallData(params: BaseParams): Promise<Hex | false> {
+  const { eip2612PermitUtils, tokenAddress, walletAddress, spender, nonce, chainId, tokenName, version } = params
+
+  const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
+
+  if (permitTypeHash === oneInchPermitUtilsConsts.DAI_LIKE_PERMIT_TYPEHASH) {
+    return buildDaiLikePermitCallData({
+      eip2612Utils: eip2612PermitUtils,
+      callDataParams: [
+        {
+          ...DAI_LIKE_PERMIT_PARAMS,
+          holder: walletAddress,
+          spender,
+          nonce,
+        },
+        chainId as number,
+        tokenName,
+        tokenAddress,
+        version,
+      ],
+    })
+  }
+
+  return false
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<Hex> {
@@ -241,30 +267,4 @@ async function isDaiLikeTypeHash(tokenAddress: string, eip2612PermitUtils: Eip26
   const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
 
   return permitTypeHash === oneInchPermitUtilsConsts.DAI_LIKE_PERMIT_TYPEHASH
-}
-
-async function getDaiLikeCallData(params: BaseParams): Promise<Hex | false> {
-  const { eip2612PermitUtils, tokenAddress, walletAddress, spender, nonce, chainId, tokenName, version } = params
-
-  const permitTypeHash = await eip2612PermitUtils.getPermitTypeHash(tokenAddress)
-
-  if (permitTypeHash === oneInchPermitUtilsConsts.DAI_LIKE_PERMIT_TYPEHASH) {
-    return buildDaiLikePermitCallData({
-      eip2612Utils: eip2612PermitUtils,
-      callDataParams: [
-        {
-          ...DAI_LIKE_PERMIT_PARAMS,
-          holder: walletAddress,
-          spender,
-          nonce,
-        },
-        chainId as number,
-        tokenName,
-        tokenAddress,
-        version,
-      ],
-    })
-  }
-
-  return false
 }

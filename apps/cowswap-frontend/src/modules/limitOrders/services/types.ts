@@ -12,6 +12,11 @@ import type { SettlementContractData } from 'common/hooks/useContract'
 
 import type { Config } from 'wagmi'
 
+export interface SafeBundleFlowContext extends TradeFlowContext {
+  spender: string
+  sendBatchTransactions: SendBatchTxCallback
+}
+
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
@@ -28,11 +33,6 @@ export interface TradeFlowContext {
   permitAmountToSign?: bigint
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
-}
-
-export interface SafeBundleFlowContext extends TradeFlowContext {
-  spender: string
-  sendBatchTransactions: SendBatchTxCallback
 }
 
 export class PriceImpactDeclineError extends Error {}

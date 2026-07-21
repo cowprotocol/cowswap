@@ -59,6 +59,11 @@ const ACCOUNT = '0x1234567890123456789012345678901234567890'
 const TOKEN_A = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
 const TOKEN_B = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
 
+interface SessionView {
+  balances: BalancesState
+  health: WatcherHealthState
+}
+
 function makeParams(overrides: Partial<UseBalancesWatcherSessionParams> = {}): UseBalancesWatcherSessionParams {
   return {
     account: ACCOUNT,
@@ -69,12 +74,19 @@ function makeParams(overrides: Partial<UseBalancesWatcherSessionParams> = {}): U
   }
 }
 
-interface SessionView {
-  balances: BalancesState
-  health: WatcherHealthState
+let currentInitialBalances: BalancesState = DEFAULT_BALANCES_STATE
+
+async function advanceTimers(ms: number): Promise<void> {
+  await act(async () => {
+    jest.advanceTimersByTime(ms)
+  })
 }
 
-let currentInitialBalances: BalancesState = DEFAULT_BALANCES_STATE
+function capturedSubscribeParams(): SubscribeToBalancesEventsParams {
+  const calls = mockSubscribe.mock.calls
+  expect(calls.length).toBeGreaterThan(0)
+  return calls[calls.length - 1][0] as SubscribeToBalancesEventsParams
+}
 
 function HydrateAtoms({ children }: { children: ReactNode }): ReactNode {
   useHydrateAtoms([
@@ -82,14 +94,6 @@ function HydrateAtoms({ children }: { children: ReactNode }): ReactNode {
     [balancesWatcherHealthAtom, DEFAULT_WATCHER_HEALTH_STATE],
   ])
   return <>{children}</>
-}
-
-function Wrapper({ children }: { children: ReactNode }): ReactNode {
-  return (
-    <Provider>
-      <HydrateAtoms>{children}</HydrateAtoms>
-    </Provider>
-  )
 }
 
 function renderSession(
@@ -109,16 +113,12 @@ function renderSession(
   )
 }
 
-function capturedSubscribeParams(): SubscribeToBalancesEventsParams {
-  const calls = mockSubscribe.mock.calls
-  expect(calls.length).toBeGreaterThan(0)
-  return calls[calls.length - 1][0] as SubscribeToBalancesEventsParams
-}
-
-async function advanceTimers(ms: number): Promise<void> {
-  await act(async () => {
-    jest.advanceTimersByTime(ms)
-  })
+function Wrapper({ children }: { children: ReactNode }): ReactNode {
+  return (
+    <Provider>
+      <HydrateAtoms>{children}</HydrateAtoms>
+    </Provider>
+  )
 }
 
 describe('useBalancesWatcherSession', () => {

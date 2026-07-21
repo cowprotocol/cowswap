@@ -71,26 +71,6 @@ const VALID_BTC_ADDRESS = 'bc1qvalid_long_enough'
 
 // --- Mock helpers ---
 
-function mockSolanaChainInfo(): void {
-  mockUseReceiverChainInfo.mockReturnValue({
-    chainId: SupportedChainId.SOLANA,
-    chainInfo: SOL_CHAIN_INFO,
-    isNonEvm: true,
-    chainIcon: undefined,
-    strategy: NON_EVM_STRATEGY,
-  })
-}
-
-function mockBitcoinChainInfo(): void {
-  mockUseReceiverChainInfo.mockReturnValue({
-    chainId: AdditionalTargetChainId.BITCOIN,
-    chainInfo: BTC_CHAIN_INFO,
-    isNonEvm: true,
-    chainIcon: undefined,
-    strategy: NON_EVM_STRATEGY,
-  })
-}
-
 function mockArbitrumChainInfo(): void {
   mockUseReceiverChainInfo.mockReturnValue({
     chainId: SupportedChainId.ARBITRUM_ONE,
@@ -101,13 +81,13 @@ function mockArbitrumChainInfo(): void {
   })
 }
 
-function mockValidAddress(explorerUrl: string | null = null): void {
-  mockUseReceiverValidation.mockReturnValue({
-    loading: false,
-    isEmpty: false,
-    isValid: true,
-    isError: false,
-    explorerUrl,
+function mockBitcoinChainInfo(): void {
+  mockUseReceiverChainInfo.mockReturnValue({
+    chainId: AdditionalTargetChainId.BITCOIN,
+    chainInfo: BTC_CHAIN_INFO,
+    isNonEvm: true,
+    chainIcon: undefined,
+    strategy: NON_EVM_STRATEGY,
   })
 }
 
@@ -131,7 +111,31 @@ function mockLoadingAddress(): void {
   })
 }
 
+function mockSolanaChainInfo(): void {
+  mockUseReceiverChainInfo.mockReturnValue({
+    chainId: SupportedChainId.SOLANA,
+    chainInfo: SOL_CHAIN_INFO,
+    isNonEvm: true,
+    chainIcon: undefined,
+    strategy: NON_EVM_STRATEGY,
+  })
+}
+
+function mockValidAddress(explorerUrl: string | null = null): void {
+  mockUseReceiverValidation.mockReturnValue({
+    loading: false,
+    isEmpty: false,
+    isValid: true,
+    isError: false,
+    explorerUrl,
+  })
+}
+
 // --- Render helpers ---
+
+function renderComponent(props: Partial<React.ComponentProps<typeof ReceiverPanelBody>> = {}): RenderResult {
+  return render(wrap(<ReceiverPanelBody className="test-class" value="" onChange={jest.fn()} {...props} />))
+}
 
 function wrap(element: React.ReactElement): React.ReactElement {
   return (
@@ -139,10 +143,6 @@ function wrap(element: React.ReactElement): React.ReactElement {
       <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>{element}</StyledComponentsThemeProvider>
     </I18nProvider>
   )
-}
-
-function renderComponent(props: Partial<React.ComponentProps<typeof ReceiverPanelBody>> = {}): RenderResult {
-  return render(wrap(<ReceiverPanelBody className="test-class" value="" onChange={jest.fn()} {...props} />))
 }
 
 // --- Tests ---

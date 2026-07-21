@@ -39,10 +39,6 @@ type RawTokenData = {
   }
 }
 
-function normalizeNullableNumber(value: unknown): number | null {
-  return typeof value === 'number' && Number.isFinite(value) ? value : null
-}
-
 export function isRawTokenData(value: unknown): value is RawTokenData {
   return (
     isRecord(value) &&
@@ -51,6 +47,12 @@ export function isRawTokenData(value: unknown): value is RawTokenData {
     typeof value.symbol === 'string' &&
     value.symbol.length > 0
   )
+}
+
+export function normalizeOptionalUsdMetric(value: unknown): number | null {
+  if (!isRecord(value)) return null
+
+  return normalizeNullableNumber(value.usd)
 }
 
 export function normalizePlatformData(value: unknown): PlatformData | null {
@@ -85,16 +87,14 @@ export function normalizePlatforms(detailPlatforms: unknown, networks: readonly 
   }, {})
 }
 
-export function normalizeOptionalUsdMetric(value: unknown): number | null {
-  if (!isRecord(value)) return null
-
-  return normalizeNullableNumber(value.usd)
-}
-
 export function normalizeTokenMarketCapRank(value: unknown): number | null {
   return typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : null
 }
 
 export function normalizeTokenSymbol(value: string): string {
   return value.toUpperCase()
+}
+
+function normalizeNullableNumber(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null
 }

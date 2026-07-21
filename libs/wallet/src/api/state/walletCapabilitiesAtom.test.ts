@@ -95,23 +95,6 @@ function createMockEip1193Provider(request = jest.fn()): EIP1193Provider {
   } as unknown as EIP1193Provider
 }
 
-function setWalletInfo(
-  store: ReturnType<typeof createStore>,
-  overrides: Partial<{
-    account: string
-    chainId: SupportedChainId
-    connector: Connector
-    provider: EIP1193Provider
-  }> = {},
-): void {
-  store.set(walletInfoAtom, {
-    chainId: overrides.chainId ?? MOCK_CHAIN_ID,
-    account: overrides.account ?? MOCK_ACCOUNT,
-    connector: overrides.connector ?? MOCK_CONNECTOR,
-    provider: overrides.provider ?? createMockEip1193Provider(),
-  })
-}
-
 function seedResolvedWalletMetadata(
   store: ReturnType<typeof createStore>,
   overrides: Partial<{
@@ -130,6 +113,23 @@ function seedResolvedWalletMetadata(
   )
   store.set(writableIsSafeViaWcAtom, overrides.isSafeViaWc ?? false)
   store.set(writableIsSafeAppAtom, overrides.isSafeApp ?? false)
+}
+
+function setWalletInfo(
+  store: ReturnType<typeof createStore>,
+  overrides: Partial<{
+    account: string
+    chainId: SupportedChainId
+    connector: Connector
+    provider: EIP1193Provider
+  }> = {},
+): void {
+  store.set(walletInfoAtom, {
+    chainId: overrides.chainId ?? MOCK_CHAIN_ID,
+    account: overrides.account ?? MOCK_ACCOUNT,
+    connector: overrides.connector ?? MOCK_CONNECTOR,
+    provider: overrides.provider ?? createMockEip1193Provider(),
+  })
 }
 
 describe('resolveCapabilitiesForChain', () => {

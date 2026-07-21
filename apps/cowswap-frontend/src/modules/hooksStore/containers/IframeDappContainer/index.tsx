@@ -67,12 +67,6 @@ const StyledProductLogo = styled(ProductLogo)`
   }
 `
 
-interface IframeState {
-  isLoading: boolean
-  isActive: boolean
-  hasError: boolean
-}
-
 interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
@@ -80,6 +74,12 @@ interface IframeDappContainerProps {
   onEditHookRequest(payload: unknown): void
   onSetSellTokenRequest(payload: unknown): void
   onSetBuyTokenRequest(payload: unknown): void
+}
+
+interface IframeState {
+  isLoading: boolean
+  isActive: boolean
+  hasError: boolean
 }
 // eslint-disable-next-line max-lines-per-function
 export function IframeDappContainer({

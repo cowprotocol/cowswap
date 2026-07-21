@@ -125,8 +125,6 @@ const CountryFlag: FC<{ locale: string }> = ({ locale }) => (
   />
 )
 
-type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
-
 export interface MenuItem {
   href?: string
   label?: string
@@ -147,6 +145,11 @@ export interface MenuItem {
   utmSource?: string
   badgeImage?: string
   badgeType?: BadgeType
+}
+
+interface DropdownMenuContent {
+  title: string | undefined
+  items?: DropdownMenuItem[]
 }
 
 interface DropdownMenuItem {
@@ -172,11 +175,6 @@ interface DropdownMenuItem {
   badgeType?: BadgeType
 }
 
-interface DropdownMenuContent {
-  title: string | undefined
-  items?: DropdownMenuItem[]
-}
-
 interface DropdownProps {
   isOpen: boolean
   item: MenuItem
@@ -187,6 +185,8 @@ interface DropdownProps {
   isNavItemDropdown?: boolean
   LinkComponent: LinkComponentType
 }
+
+type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
 interface NavItemProps {
   item: MenuItem
@@ -770,15 +770,6 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
   )
 })
 
-function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
-  return (e: React.MouseEvent<HTMLElement>) => {
-    if (item.onClick) {
-      item.onClick(e as React.MouseEvent<HTMLButtonElement | HTMLDivElement>)
-    }
-    postClick?.()
-  }
-}
-
 interface MenuBarProps {
   LinkComponent: LinkComponentType
   activeBackgroundDark?: string
@@ -808,6 +799,15 @@ interface MenuBarProps {
   settingsNavItems?: MenuItem[]
   showGlobalSettings?: boolean
   isInternationalizationEnabled?: boolean
+}
+
+function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
+  return (e: React.MouseEvent<HTMLElement>) => {
+    if (item.onClick) {
+      item.onClick(e as React.MouseEvent<HTMLButtonElement | HTMLDivElement>)
+    }
+    postClick?.()
+  }
 }
 
 // TODO: Break down this large function into smaller functions

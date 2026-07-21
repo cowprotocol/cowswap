@@ -7,12 +7,12 @@ import { estimateGas } from 'wagmi/actions'
 
 import type { SWRConfiguration } from 'swr'
 
+type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
+
 type ITransactionData = {
   to?: Address
   data?: Hex
 }
-
-type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
 export const useHookGasLimitCalculator = (): IHookGasCalculator => {
   const config = useConfig()

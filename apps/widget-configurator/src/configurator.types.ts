@@ -19,15 +19,6 @@ export type ColorPalette = {
   [key in CowSwapWidgetPaletteColors]: string
 }
 
-export interface TokenListItem {
-  url: string
-  enabled: boolean
-  enabledForSell: boolean
-  enabledForBuy: boolean
-}
-
-export type WidgetMode = 'dapp' | 'standalone'
-
 /** Sidebar form fields persisted in localStorage. JSON style fields are stored as strings. */
 export interface ConfiguratorFormValues {
   // Basics:
@@ -158,3 +149,12 @@ export interface ConfiguratorState
 
   rawParams: Partial<CowSwapWidgetParams>
 }
+
+export interface TokenListItem {
+  url: string
+  enabled: boolean
+  enabledForSell: boolean
+  enabledForBuy: boolean
+}
+
+export type WidgetMode = 'dapp' | 'standalone'

@@ -23,6 +23,16 @@ export function validatePartnerFee(input: PartnerFee | undefined): string[] | un
   return errors.length > 0 ? errors : undefined
 }
 
+function validateRecipientAddress(recipient: string): string | undefined {
+  try {
+    getAddress(recipient)
+  } catch (error) {
+    return error.message
+  }
+
+  return undefined
+}
+
 function validateRecipients(recipients: PartnerFee['recipient'][]): (string | undefined)[] {
   return recipients.map((recipient) => {
     if (!recipient) return t`Partner fee recipient must be set!`
@@ -33,14 +43,4 @@ function validateRecipients(recipients: PartnerFee['recipient'][]): (string | un
 
     return errors.length > 0 ? errors.join(', ') : undefined
   })
-}
-
-function validateRecipientAddress(recipient: string): string | undefined {
-  try {
-    getAddress(recipient)
-  } catch (error) {
-    return error.message
-  }
-
-  return undefined
 }

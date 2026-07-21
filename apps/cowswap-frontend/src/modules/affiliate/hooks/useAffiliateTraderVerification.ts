@@ -24,6 +24,36 @@ interface VerificationParams {
   setError(error?: string): void
 }
 
+interface VerificationParams {
+  setError(error?: string): void
+}
+
+export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
+  const { setError } = params
+  const analytics = useCowAnalytics()
+  const [isVerifying, setIsVerifying] = useState(false)
+  const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
+
+  const verifyCode = useCallback(
+    async (code: string, account: string): Promise<void> => {
+      setIsVerifying(true)
+
+      try {
+        await verifyTraderAffiliateCode(analytics, account, code, setError, setSavedCode)
+      } catch (error) {
+        setError(t`Affiliate service is unreachable. Try again later.`)
+        logAffiliate(safeShortenAddress(account), `Code verification failed`, error)
+        trackTraderVerificationCompleted(analytics, AffiliateVerificationResult.SERVICE_UNAVAILABLE)
+      } finally {
+        setIsVerifying(false)
+      }
+    },
+    [analytics, setError, setSavedCode],
+  )
+
+  return useMemo(() => ({ isVerifying, verifyCode }), [isVerifying, verifyCode])
+}
+
 function trackTraderVerificationCompleted(
   analytics: ReturnType<typeof useCowAnalytics>,
   verificationResult: AffiliateVerificationResult,
@@ -83,34 +113,4 @@ async function verifyTraderAffiliateCode(
   setSavedCode({ savedCode: formattedCode, isLinked: false })
   setError(undefined)
   trackTraderVerificationCompleted(analytics, AffiliateVerificationResult.SUCCESS)
-}
-
-interface VerificationParams {
-  setError(error?: string): void
-}
-
-export function useAffiliateTraderVerification(params: VerificationParams): UseAffiliateTraderVerificationResult {
-  const { setError } = params
-  const analytics = useCowAnalytics()
-  const [isVerifying, setIsVerifying] = useState(false)
-  const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
-
-  const verifyCode = useCallback(
-    async (code: string, account: string): Promise<void> => {
-      setIsVerifying(true)
-
-      try {
-        await verifyTraderAffiliateCode(analytics, account, code, setError, setSavedCode)
-      } catch (error) {
-        setError(t`Affiliate service is unreachable. Try again later.`)
-        logAffiliate(safeShortenAddress(account), `Code verification failed`, error)
-        trackTraderVerificationCompleted(analytics, AffiliateVerificationResult.SERVICE_UNAVAILABLE)
-      } finally {
-        setIsVerifying(false)
-      }
-    },
-    [analytics, setError, setSavedCode],
-  )
-
-  return useMemo(() => ({ isVerifying, verifyCode }), [isVerifying, verifyCode])
 }

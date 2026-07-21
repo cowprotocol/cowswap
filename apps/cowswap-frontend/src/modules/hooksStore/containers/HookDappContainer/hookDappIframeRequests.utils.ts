@@ -106,10 +106,8 @@ export function getValidatedIframeTokenAddress(payload: unknown): string | null 
   return parsedPayload?.address || null
 }
 
-function parseSchema<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, payload: unknown): T | null {
-  const parsed = schema.safeParse(payload)
-
-  return parsed.success ? parsed.data : null
+function isHexData(value: string): value is Hex {
+  return /^0x([0-9a-fA-F]{2})*$/.test(value)
 }
 
 function isPositiveIntegerString(value: string): boolean {
@@ -124,6 +122,8 @@ function isPositiveIntegerString(value: string): boolean {
   }
 }
 
-function isHexData(value: string): value is Hex {
-  return /^0x([0-9a-fA-F]{2})*$/.test(value)
+function parseSchema<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, payload: unknown): T | null {
+  const parsed = schema.safeParse(payload)
+
+  return parsed.success ? parsed.data : null
 }

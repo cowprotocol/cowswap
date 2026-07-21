@@ -8,18 +8,18 @@ export interface AirdropDataInfo {
   amount: string
   proof: string[]
 }
-export interface IClaimData extends AirdropDataInfo {
-  isClaimed: boolean
-  contractAddress: string
-  callData: Hex
-  token: TokenWithLogo
-  formattedAmount: string
-}
-
 export interface IAirdrop {
   name: string
   dataBaseUrl: string
   chainId: SupportedChainId
   address: Address
   token: TokenWithLogo
+}
+
+export interface IClaimData extends AirdropDataInfo {
+  isClaimed: boolean
+  contractAddress: string
+  callData: Hex
+  token: TokenWithLogo
+  formattedAmount: string
 }

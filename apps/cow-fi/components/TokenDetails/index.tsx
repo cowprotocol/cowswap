@@ -31,17 +31,72 @@ import { SwapLinkCard } from '@/components/SwapLinkCard'
 import { SwapWidget } from '@/components/SwapWidget'
 import { Network, NETWORK_MAP } from '@/const/networkMap'
 
-function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
-  const { token } = props
-  const { name, symbol, image } = token
+export interface TokenDetailProps {
+  token: TokenDetailsType
+}
+
+export function TokenDetails({ token }: TokenDetailProps): JSX.Element {
+  const { id, name, symbol, image, marketCap, allTimeHigh, allTimeLow, volume, description, platforms } = token
+
   return (
-    <DetailHeading>
-      <TokenTitle>
-        <Image src={image?.large ?? ''} alt={`${name} (${symbol})`} width={100} height={100} />
-        <h1>{name}</h1>
-        <span>{symbol}</span>
-      </TokenTitle>
-    </DetailHeading>
+    <Wrapper>
+      <MainContent>
+        <Breadcrumbs crumbs={[{ text: 'Tokens', href: '/tokens' }, { text: `${name} Price` }]} />
+
+        <TokenDetailsHeading token={token} />
+
+        <TokenChart>
+          <ChartSection platforms={platforms} />
+        </TokenChart>
+        <Section>
+          <TokenTitle>{symbol} Stats</TokenTitle>
+
+          <Stats>
+            <StatItem>
+              <StatTitle>Market Cap</StatTitle>
+              <StatValue>{formatUSDPrice(marketCap)}</StatValue>
+            </StatItem>
+
+            <StatItem>
+              <StatTitle>24H Volume</StatTitle>
+              <StatValue>{formatUSDPrice(volume)}</StatValue>
+            </StatItem>
+
+            <StatItem>
+              <StatTitle>All-time High</StatTitle>
+              <StatValue>{formatUSDPrice(allTimeHigh)}</StatValue>
+            </StatItem>
+
+            <StatItem>
+              <StatTitle>All-time Low</StatTitle>
+              <StatValue>{formatUSDPrice(allTimeLow)}</StatValue>
+            </StatItem>
+          </Stats>
+        </Section>
+        <Section>
+          <h1>
+            About {name} ({symbol}) token
+          </h1>
+          <div dangerouslySetInnerHTML={{ __html: description }}></div>
+
+          <br />
+          <br />
+
+          <SwapCardsComponent token={token} />
+        </Section>
+        <Section>
+          <h4>Explorers</h4>
+
+          <NetworkTableComponent token={token} />
+        </Section>
+      </MainContent>
+
+      <StickyContent>
+        <SwapWidgetWrapper>
+          <SwapWidget tokenSymbol={symbol} tokenImage={image?.large ?? ''} platforms={platforms} tokenId={id} />
+        </SwapWidgetWrapper>
+      </StickyContent>
+    </Wrapper>
   )
 }
 
@@ -134,71 +189,16 @@ function SwapCardsComponent(props: { token: TokenDetailsType }): JSX.Element {
   )
 }
 
-export interface TokenDetailProps {
-  token: TokenDetailsType
-}
-
-export function TokenDetails({ token }: TokenDetailProps): JSX.Element {
-  const { id, name, symbol, image, marketCap, allTimeHigh, allTimeLow, volume, description, platforms } = token
-
+function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
+  const { token } = props
+  const { name, symbol, image } = token
   return (
-    <Wrapper>
-      <MainContent>
-        <Breadcrumbs crumbs={[{ text: 'Tokens', href: '/tokens' }, { text: `${name} Price` }]} />
-
-        <TokenDetailsHeading token={token} />
-
-        <TokenChart>
-          <ChartSection platforms={platforms} />
-        </TokenChart>
-        <Section>
-          <TokenTitle>{symbol} Stats</TokenTitle>
-
-          <Stats>
-            <StatItem>
-              <StatTitle>Market Cap</StatTitle>
-              <StatValue>{formatUSDPrice(marketCap)}</StatValue>
-            </StatItem>
-
-            <StatItem>
-              <StatTitle>24H Volume</StatTitle>
-              <StatValue>{formatUSDPrice(volume)}</StatValue>
-            </StatItem>
-
-            <StatItem>
-              <StatTitle>All-time High</StatTitle>
-              <StatValue>{formatUSDPrice(allTimeHigh)}</StatValue>
-            </StatItem>
-
-            <StatItem>
-              <StatTitle>All-time Low</StatTitle>
-              <StatValue>{formatUSDPrice(allTimeLow)}</StatValue>
-            </StatItem>
-          </Stats>
-        </Section>
-        <Section>
-          <h1>
-            About {name} ({symbol}) token
-          </h1>
-          <div dangerouslySetInnerHTML={{ __html: description }}></div>
-
-          <br />
-          <br />
-
-          <SwapCardsComponent token={token} />
-        </Section>
-        <Section>
-          <h4>Explorers</h4>
-
-          <NetworkTableComponent token={token} />
-        </Section>
-      </MainContent>
-
-      <StickyContent>
-        <SwapWidgetWrapper>
-          <SwapWidget tokenSymbol={symbol} tokenImage={image?.large ?? ''} platforms={platforms} tokenId={id} />
-        </SwapWidgetWrapper>
-      </StickyContent>
-    </Wrapper>
+    <DetailHeading>
+      <TokenTitle>
+        <Image src={image?.large ?? ''} alt={`${name} (${symbol})`} width={100} height={100} />
+        <h1>{name}</h1>
+        <span>{symbol}</span>
+      </TokenTitle>
+    </DetailHeading>
   )
 }

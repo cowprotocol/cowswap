@@ -133,6 +133,38 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
+function useFetchTokenFromBlockchain(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo | null> {
+  const { chainId } = useAtomValue(environmentAtom)
+  const config = useConfig()
+
+  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input], () => {
+    if (isTokenAlreadyFoundByAddress || !input || !isAddress(input)) {
+      return null
+    }
+
+    return fetchTokenFromBlockchain(input, chainId, config).then(TokenWithLogo.fromToken)
+  })
+}
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+function useSearchTokensInApi(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo[] | null> {
+  const { chainId } = useAtomValue(environmentAtom)
+
+  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
+    if (isTokenAlreadyFoundByAddress || !input) {
+      return null
+    }
+
+    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
+  })
+}
+
 function useSearchTokensInLists(input: string | undefined): FromListsResult {
   const { chainId } = useAtomValue(environmentAtom)
   const activeTokens = useAtomValue(allActiveTokensAtom).tokens
@@ -152,36 +184,4 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   )
 
   return inListsResult ?? emptyFromListsResult
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-function useSearchTokensInApi(
-  input: string | undefined,
-  isTokenAlreadyFoundByAddress: boolean,
-): SWRResponse<TokenWithLogo[] | null> {
-  const { chainId } = useAtomValue(environmentAtom)
-
-  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input) {
-      return null
-    }
-
-    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
-  })
-}
-
-function useFetchTokenFromBlockchain(
-  input: string | undefined,
-  isTokenAlreadyFoundByAddress: boolean,
-): SWRResponse<TokenWithLogo | null> {
-  const { chainId } = useAtomValue(environmentAtom)
-  const config = useConfig()
-
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input], () => {
-    if (isTokenAlreadyFoundByAddress || !input || !isAddress(input)) {
-      return null
-    }
-
-    return fetchTokenFromBlockchain(input, chainId, config).then(TokenWithLogo.fromToken)
-  })
 }

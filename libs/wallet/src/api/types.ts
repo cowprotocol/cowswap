@@ -15,13 +15,10 @@ export const ConnectionType = {
 
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
-export interface WalletInfo {
-  chainId: SupportedChainId
-  account?: string
-  active?: boolean
-  connector?: WagmiConnector
-  provider?: EIP1193Provider | WidgetEthereumProvider | PublicClient
-  isConnectionRestoring?: boolean
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
+  isReadOnly?: boolean
+  chainId: number
+  nonce: number
 }
 
 export interface WalletDetails {
@@ -39,10 +36,13 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
-  isReadOnly?: boolean
-  chainId: number
-  nonce: number
+export interface WalletInfo {
+  chainId: SupportedChainId
+  account?: string
+  active?: boolean
+  connector?: WagmiConnector
+  provider?: EIP1193Provider | WidgetEthereumProvider | PublicClient
+  isConnectionRestoring?: boolean
 }
 
 export enum WalletType {

@@ -6,20 +6,9 @@ type AbstractRecord = Record<unknown, unknown>
 
 const DEFAULT_ORIGIN = 'https://swap.cow.fi' as const satisfies HttpsUrlString
 
-function logWidget(...args: unknown[]): void {
-  if (process.env['NODE_ENV'] === 'test') return
-
-  console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
-}
-
-export function isLocalEnvOrigin(origin: string): boolean {
-  try {
-    const { hostname } = new URL(origin)
-
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]'
-  } catch {
-    return false
-  }
+interface EventData {
+  key: string
+  method: string
 }
 
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
@@ -108,9 +97,14 @@ export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
   }
 }
 
-interface EventData {
-  key: string
-  method: string
+export function isLocalEnvOrigin(origin: string): boolean {
+  try {
+    const { hostname } = new URL(origin)
+
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]'
+  } catch {
+    return false
+  }
 }
 
 function isEventData(obj: unknown): obj is EventData {
@@ -122,4 +116,10 @@ function isEventData(obj: unknown): obj is EventData {
     typeof obj.key === 'string' &&
     typeof obj.method === 'string'
   )
+}
+
+function logWidget(...args: unknown[]): void {
+  if (process.env['NODE_ENV'] === 'test') return
+
+  console.debug('%c [COW][Widget]', 'font-weight: bold; color: #ff0000', ...args)
 }

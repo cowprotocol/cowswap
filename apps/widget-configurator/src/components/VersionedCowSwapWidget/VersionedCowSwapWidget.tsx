@@ -9,8 +9,6 @@ import { widgetSdkVersionSupportsReadyEvent } from '../../utils/widget-sdk-versi
 
 import type { WidgetSdkVersion } from '../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 
-type PinnedWidgetSdkVersion = Exclude<WidgetSdkVersion, 'local'>
-
 export interface VersionedCowSwapWidgetProps {
   sdkVersion: WidgetSdkVersion
   params: CowSwapWidgetParams
@@ -20,11 +18,49 @@ export interface VersionedCowSwapWidgetProps {
   onLoadingError?: () => void
 }
 
+type PinnedWidgetSdkVersion = Exclude<WidgetSdkVersion, 'local'>
+
+export function VersionedCowSwapWidget({
+  sdkVersion,
+  params,
+  provider,
+  listeners,
+  onReady,
+  onLoadingError,
+}: VersionedCowSwapWidgetProps): ReactNode {
+  const widgetProps = { params, provider, listeners, onReady, onLoadingError }
+
+  if (sdkVersion === 'local') {
+    return <CowSwapWidget {...widgetProps} />
+  }
+
+  return <LazyPinnedCowSwapWidget sdkVersion={sdkVersion} {...widgetProps} />
+}
+
 function attachIframeLoadReveal(host: HTMLElement, onIframeLoad: () => void): void {
   const iframe = host.querySelector('iframe')
   if (!iframe) return
 
   iframe.addEventListener('load', onIframeLoad, { once: true })
+}
+
+function LazyPinnedCowSwapWidget({
+  sdkVersion,
+  params,
+  provider,
+  listeners,
+  onReady,
+}: VersionedCowSwapWidgetProps & { sdkVersion: PinnedWidgetSdkVersion }): ReactNode {
+  const LazyCowSwapWidget = LAZY_WIDGETS_BY_VERSION[sdkVersion]
+  const legacyIframeLoadReveal = widgetSdkVersionSupportsReadyEvent(sdkVersion) ? undefined : onReady
+
+  return (
+    <Suspense fallback={null}>
+      <LegacyPinnedPreviewReveal onIframeLoad={legacyIframeLoadReveal}>
+        <LazyCowSwapWidget params={params} provider={provider} listeners={listeners} onReady={onReady} />
+      </LegacyPinnedPreviewReveal>
+    </Suspense>
+  )
 }
 
 /**
@@ -54,40 +90,4 @@ function LegacyPinnedPreviewReveal({
       {children}
     </div>
   )
-}
-
-function LazyPinnedCowSwapWidget({
-  sdkVersion,
-  params,
-  provider,
-  listeners,
-  onReady,
-}: VersionedCowSwapWidgetProps & { sdkVersion: PinnedWidgetSdkVersion }): ReactNode {
-  const LazyCowSwapWidget = LAZY_WIDGETS_BY_VERSION[sdkVersion]
-  const legacyIframeLoadReveal = widgetSdkVersionSupportsReadyEvent(sdkVersion) ? undefined : onReady
-
-  return (
-    <Suspense fallback={null}>
-      <LegacyPinnedPreviewReveal onIframeLoad={legacyIframeLoadReveal}>
-        <LazyCowSwapWidget params={params} provider={provider} listeners={listeners} onReady={onReady} />
-      </LegacyPinnedPreviewReveal>
-    </Suspense>
-  )
-}
-
-export function VersionedCowSwapWidget({
-  sdkVersion,
-  params,
-  provider,
-  listeners,
-  onReady,
-  onLoadingError,
-}: VersionedCowSwapWidgetProps): ReactNode {
-  const widgetProps = { params, provider, listeners, onReady, onLoadingError }
-
-  if (sdkVersion === 'local') {
-    return <CowSwapWidget {...widgetProps} />
-  }
-
-  return <LazyPinnedCowSwapWidget sdkVersion={sdkVersion} {...widgetProps} />
 }

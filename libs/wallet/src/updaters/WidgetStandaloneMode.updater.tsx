@@ -12,24 +12,6 @@ import { connectWalletById } from '../utils/connectWalletById'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 
-/**
- * In `libs/wallet/src/wagmi/config.ts`, we set `enableEIP6963: !isWidget`. However, if widget is being used in
- * standalone mode, we need to re-enable EIP-6963 so browser wallets are discoverable.
- */
-function syncInjectedWalletDiscovery(enableEIP6963: boolean): void {
-  OptionsController.setEIP6963Enabled(enableEIP6963)
-
-  if (!enableEIP6963) return
-
-  // Not strictly necessary, but ensures new providers are discovered immediately.
-  window.dispatchEvent(new Event('eip6963:requestProvider'))
-
-  // Note: Brave Wallet will not be discovered, even if we call `flushDeferredProviders()` here.
-  // TODO: See if that's related to Brave Shield or other setting.
-
-  void wagmiAdapter.syncConnectors()
-}
-
 interface WidgetStandaloneModeUpdaterProps {
   standaloneMode: boolean | undefined
 }
@@ -143,4 +125,22 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   }, [isWidgetConnector, isDappMode, isStandaloneMode, disconnect, connector, isSafeApp, isSafeConnector])
 
   return null
+}
+
+/**
+ * In `libs/wallet/src/wagmi/config.ts`, we set `enableEIP6963: !isWidget`. However, if widget is being used in
+ * standalone mode, we need to re-enable EIP-6963 so browser wallets are discoverable.
+ */
+function syncInjectedWalletDiscovery(enableEIP6963: boolean): void {
+  OptionsController.setEIP6963Enabled(enableEIP6963)
+
+  if (!enableEIP6963) return
+
+  // Not strictly necessary, but ensures new providers are discovered immediately.
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+
+  // Note: Brave Wallet will not be discovered, even if we call `flushDeferredProviders()` here.
+  // TODO: See if that's related to Brave Shield or other setting.
+
+  void wagmiAdapter.syncConnectors()
 }

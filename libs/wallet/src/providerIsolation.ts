@@ -23,18 +23,29 @@ export const PROVIDER_DISCONNECTED: unique symbol = Symbol('PROVIDER_DISCONNECTE
  */
 export const activeProviderRef: { current: EIP1193Provider | typeof PROVIDER_DISCONNECTED | null } = { current: null }
 
-type Eip6963ProviderInfo = { name?: string; rdns?: string }
-type Eip6963ProviderDetail = {
-  info: Eip6963ProviderInfo
-  provider: EIP1193Provider
-}
 type DeferredBraveWalletAnnouncement = {
   info: Eip6963ProviderInfo
   event: CustomEvent<Eip6963ProviderDetail>
 }
+type Eip6963ProviderDetail = {
+  info: Eip6963ProviderInfo
+  provider: EIP1193Provider
+}
+type Eip6963ProviderInfo = { name?: string; rdns?: string }
 
 // Cache isolated providers by their original so identity is stable across calls.
 const cache = new WeakMap<object, EIP1193Provider>()
+
+// Guards stored on `window` so they survive HMR — module-local variables are
+// reset on hot reload, but the capture listener stays attached to `window`.
+// Without this, each HMR reload would add another listener and the two instances
+// could re-dispatch events back and forth.
+type IsolationWindow = Window & {
+  __cowEip6963InterceptRegistered?: boolean
+  __cowEip6963ReDispatched?: WeakSet<Event>
+  __cowEip6963DeferredBraveWallet?: DeferredBraveWalletAnnouncement[]
+  __cowEip6963AnnounceProviderListener?: EventListener
+}
 
 /**
  * Wraps an EIP-1193 provider to enforce tab-level wallet isolation:
@@ -108,64 +119,6 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
   return proxy
 }
 
-// Guards stored on `window` so they survive HMR — module-local variables are
-// reset on hot reload, but the capture listener stays attached to `window`.
-// Without this, each HMR reload would add another listener and the two instances
-// could re-dispatch events back and forth.
-type IsolationWindow = Window & {
-  __cowEip6963InterceptRegistered?: boolean
-  __cowEip6963ReDispatched?: WeakSet<Event>
-  __cowEip6963DeferredBraveWallet?: DeferredBraveWalletAnnouncement[]
-  __cowEip6963AnnounceProviderListener?: EventListener
-}
-
-function getReDispatched(): WeakSet<Event> {
-  const win = window as IsolationWindow
-  if (!win.__cowEip6963ReDispatched) {
-    win.__cowEip6963ReDispatched = new WeakSet<Event>()
-  }
-  return win.__cowEip6963ReDispatched
-}
-
-function getDeferredBraveWalletAnnouncements(): DeferredBraveWalletAnnouncement[] {
-  const win = window as IsolationWindow
-  if (!win.__cowEip6963DeferredBraveWallet) {
-    win.__cowEip6963DeferredBraveWallet = []
-  }
-  return win.__cowEip6963DeferredBraveWallet
-}
-
-function getProviderIdentifier(info: Eip6963ProviderInfo): string {
-  return info.rdns ?? info.name ?? 'unknown'
-}
-
-function isBraveWalletInfo(info: Eip6963ProviderInfo): boolean {
-  return info.rdns === 'com.brave.wallet' || info.name === 'Brave Wallet'
-}
-
-function createIsolatedProviderAnnouncement(detail: Eip6963ProviderDetail): CustomEvent<Eip6963ProviderDetail> {
-  const guardedProvider = guardMobileInjectedProvider(detail.provider) ?? detail.provider
-  const newEvent = new CustomEvent<Eip6963ProviderDetail>('eip6963:announceProvider', {
-    detail: { info: detail.info, provider: createIsolatedProvider(guardedProvider) },
-  })
-  getReDispatched().add(newEvent)
-
-  return newEvent
-}
-
-function deferBraveWalletAnnouncement(info: Eip6963ProviderInfo, event: CustomEvent<Eip6963ProviderDetail>): void {
-  const deferred = getDeferredBraveWalletAnnouncements()
-  const identifier = getProviderIdentifier(info)
-  const replacementIndex = deferred.findIndex((announcement) => getProviderIdentifier(announcement.info) === identifier)
-  const announcement = { info, event }
-
-  if (replacementIndex >= 0) {
-    deferred[replacementIndex] = announcement
-  } else {
-    deferred.push(announcement)
-  }
-}
-
 /**
  * Dispatches Brave Wallet EIP-6963 announcements that were hidden during page load.
  * Call this only from an explicit wallet-selection path; materializing the Brave
@@ -217,4 +170,51 @@ export function interceptEIP6963Providers(): void {
   }) satisfies EventListener
   win.__cowEip6963AnnounceProviderListener = announceProviderListener
   window.addEventListener('eip6963:announceProvider', announceProviderListener, { capture: true })
+}
+
+function createIsolatedProviderAnnouncement(detail: Eip6963ProviderDetail): CustomEvent<Eip6963ProviderDetail> {
+  const guardedProvider = guardMobileInjectedProvider(detail.provider) ?? detail.provider
+  const newEvent = new CustomEvent<Eip6963ProviderDetail>('eip6963:announceProvider', {
+    detail: { info: detail.info, provider: createIsolatedProvider(guardedProvider) },
+  })
+  getReDispatched().add(newEvent)
+
+  return newEvent
+}
+
+function deferBraveWalletAnnouncement(info: Eip6963ProviderInfo, event: CustomEvent<Eip6963ProviderDetail>): void {
+  const deferred = getDeferredBraveWalletAnnouncements()
+  const identifier = getProviderIdentifier(info)
+  const replacementIndex = deferred.findIndex((announcement) => getProviderIdentifier(announcement.info) === identifier)
+  const announcement = { info, event }
+
+  if (replacementIndex >= 0) {
+    deferred[replacementIndex] = announcement
+  } else {
+    deferred.push(announcement)
+  }
+}
+
+function getDeferredBraveWalletAnnouncements(): DeferredBraveWalletAnnouncement[] {
+  const win = window as IsolationWindow
+  if (!win.__cowEip6963DeferredBraveWallet) {
+    win.__cowEip6963DeferredBraveWallet = []
+  }
+  return win.__cowEip6963DeferredBraveWallet
+}
+
+function getProviderIdentifier(info: Eip6963ProviderInfo): string {
+  return info.rdns ?? info.name ?? 'unknown'
+}
+
+function getReDispatched(): WeakSet<Event> {
+  const win = window as IsolationWindow
+  if (!win.__cowEip6963ReDispatched) {
+    win.__cowEip6963ReDispatched = new WeakSet<Event>()
+  }
+  return win.__cowEip6963ReDispatched
+}
+
+function isBraveWalletInfo(info: Eip6963ProviderInfo): boolean {
+  return info.rdns === 'com.brave.wallet' || info.name === 'Brave Wallet'
 }

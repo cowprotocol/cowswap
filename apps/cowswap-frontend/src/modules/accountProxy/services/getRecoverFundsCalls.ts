@@ -9,16 +9,16 @@ const fnSelector = (sig: string): Hex => toKeccak256(sig).slice(0, 10) as Hex
 const fnCalldata = (sig: string, encodedData: Hex): Hex =>
   encodePacked(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
+type CoWShedCall = ICoWShedCall & {
+  callData: Hex
+}
+
 interface RefoverFundsCallParams {
   account: string
   isNativeToken: boolean
   tokenBalance: string
   proxyAddress: string
   selectedTokenAddress: string
-}
-
-type CoWShedCall = ICoWShedCall & {
-  callData: Hex
 }
 
 export function getRecoverFundsCalls({

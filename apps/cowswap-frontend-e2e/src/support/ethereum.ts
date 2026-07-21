@@ -49,6 +49,11 @@ const walletClient = createWalletClient({
   transport: http(PROVIDER_URL),
 })
 
+interface CallRequest {
+  to?: string
+  data?: string
+}
+
 interface EIP1193Request {
   method: string
   params?: unknown[]
@@ -62,11 +67,6 @@ interface TransactionRequest {
   value?: string
   gas?: string
   gasLimit?: string
-}
-
-interface CallRequest {
-  to?: string
-  data?: string
 }
 
 // Custom EIP-1193 provider for e2e testing.

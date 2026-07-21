@@ -7,13 +7,13 @@ import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
+interface ButtonCallback {
+  (): ReactElement | null
+}
+
 interface ButtonConfig {
   text: ReactElement | MessageDescriptor
   id?: string
-}
-
-interface ButtonCallback {
-  (): ReactElement | null
 }
 
 export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: ButtonConfig | ButtonCallback } = {

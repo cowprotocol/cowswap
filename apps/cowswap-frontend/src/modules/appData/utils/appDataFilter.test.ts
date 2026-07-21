@@ -10,6 +10,10 @@ import { CowHook } from '../types'
 const SPENDER = '0x1111111111111111111111111111111111111111'
 const REAL_OWNER = '0x2222222222222222222222222222222222222222'
 
+function buildHook(callData: string): CowHook {
+  return { target: '0xToken', callData, gasLimit: '80000' }
+}
+
 function buildPermitCallData(owner: string): string {
   return encodeFunctionData({
     abi: Erc20Abi,
@@ -24,10 +28,6 @@ function buildPermitCallData(owner: string): string {
       '0x0000000000000000000000000000000000000000000000000000000000000000', // s
     ],
   })
-}
-
-function buildHook(callData: string): CowHook {
-  return { target: '0xToken', callData, gasLimit: '80000' }
 }
 
 describe('filterPermitSignerPermit', () => {

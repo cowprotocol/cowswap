@@ -11,27 +11,49 @@ export const MAX_SEARCH_PAGE = 100
 export const MAX_SEARCH_PAGE_SIZE = 100
 export const MAX_SEARCH_TERM_LENGTH = 100
 
-function readOptionalNumber(value: unknown, fallback: number, max: number): number {
-  if (typeof value === 'undefined') return fallback
-  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
-    throw new Error('Pagination parameters must be non-negative integers')
-  }
-
-  return Math.min(value, max)
+export function isAllowedRevalidatePath(path: string): boolean {
+  return LEARN_REVALIDATE_PATH_PATTERN.test(path)
 }
 
 export function isValidCmsSlug(slug: string): boolean {
   return CMS_SLUG_PATTERN.test(slug)
 }
 
-export function isAllowedRevalidatePath(path: string): boolean {
-  return LEARN_REVALIDATE_PATH_PATTERN.test(path)
-}
-
 export function normalizeCmsSlug(slug: string): string | null {
   const trimmedSlug = slug.trim()
 
   return isValidCmsSlug(trimmedSlug) ? trimmedSlug : null
+}
+
+export function normalizeRevalidateRequest(input: unknown): {
+  path: string | null
+  tag: string
+} {
+  if (!isRecord(input)) {
+    throw new Error('Revalidation body must be an object')
+  }
+
+  const tag = typeof input.tag === 'undefined' ? CMS_REVALIDATE_TAG : input.tag
+
+  if (tag !== CMS_REVALIDATE_TAG) {
+    throw new Error(`Unsupported revalidation tag "${String(tag)}"`)
+  }
+
+  if (typeof input.path === 'undefined') {
+    return { path: null, tag }
+  }
+
+  if (typeof input.path !== 'string') {
+    throw new Error('Revalidation path must be a string')
+  }
+
+  const path = input.path.startsWith('/') ? input.path : `/${input.path}`
+
+  if (!isAllowedRevalidatePath(path)) {
+    throw new Error(`Unsupported revalidation path "${path}"`)
+  }
+
+  return { path, tag }
 }
 
 export function normalizeSearchArticlesInput(input: unknown): {
@@ -70,33 +92,11 @@ export function normalizeSearchArticlesInput(input: unknown): {
   }
 }
 
-export function normalizeRevalidateRequest(input: unknown): {
-  path: string | null
-  tag: string
-} {
-  if (!isRecord(input)) {
-    throw new Error('Revalidation body must be an object')
+function readOptionalNumber(value: unknown, fallback: number, max: number): number {
+  if (typeof value === 'undefined') return fallback
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
+    throw new Error('Pagination parameters must be non-negative integers')
   }
 
-  const tag = typeof input.tag === 'undefined' ? CMS_REVALIDATE_TAG : input.tag
-
-  if (tag !== CMS_REVALIDATE_TAG) {
-    throw new Error(`Unsupported revalidation tag "${String(tag)}"`)
-  }
-
-  if (typeof input.path === 'undefined') {
-    return { path: null, tag }
-  }
-
-  if (typeof input.path !== 'string') {
-    throw new Error('Revalidation path must be a string')
-  }
-
-  const path = input.path.startsWith('/') ? input.path : `/${input.path}`
-
-  if (!isAllowedRevalidatePath(path)) {
-    throw new Error(`Unsupported revalidation path "${path}"`)
-  }
-
-  return { path, tag }
+  return Math.min(value, max)
 }

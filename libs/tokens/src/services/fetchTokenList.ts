@@ -28,22 +28,6 @@ export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
   return isEnsSource ? fetchTokenListByEnsName(list) : fetchTokenListByUrl(list)
 }
 
-async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
-async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
-  const translatedUri = contenthashToUri(contentHashUri)
-  const urls = uriToHttp(translatedUri)
-
-  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
 async function _fetchTokenList(
   source: string,
   urls: string[],
@@ -95,6 +79,35 @@ async function _fetchTokenList(
   throw new Error('Unrecognized list URL protocol.')
 }
 
+async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
+  const translatedUri = contenthashToUri(contentHashUri)
+  const urls = uriToHttp(translatedUri)
+
+  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+/** Lightweight shape check used for token lists that contain non-EVM (Solana) addresses,
+ *  which the Uniswap JSON-schema validator can't parse. */
+function isValidTokenList(value: unknown): value is TokenList {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return (
+    typeof v['name'] === 'string' &&
+    typeof v['version'] === 'object' &&
+    v['version'] !== null &&
+    Array.isArray(v['tokens'])
+  )
+}
+
 function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
   return {
     ...result,
@@ -143,17 +156,4 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   }
 
   return validateTokenList(cleanedList)
-}
-
-/** Lightweight shape check used for token lists that contain non-EVM (Solana) addresses,
- *  which the Uniswap JSON-schema validator can't parse. */
-function isValidTokenList(value: unknown): value is TokenList {
-  if (!value || typeof value !== 'object') return false
-  const v = value as Record<string, unknown>
-  return (
-    typeof v['name'] === 'string' &&
-    typeof v['version'] === 'object' &&
-    v['version'] !== null &&
-    Array.isArray(v['tokens'])
-  )
 }

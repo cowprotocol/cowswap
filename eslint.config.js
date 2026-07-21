@@ -95,7 +95,7 @@ module.exports = [
     rules: {
       // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
       'perfectionist/sort-modules': [
-        'off',
+        'warn',
         {
           groups: [
             ['export-interface', 'export-type'],

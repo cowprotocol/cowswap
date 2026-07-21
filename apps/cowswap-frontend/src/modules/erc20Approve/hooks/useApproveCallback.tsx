@@ -14,6 +14,8 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
 
+export type ApproveTxResult = { hash: `0x${string}` }
+
 export async function estimateApprove(
   publicClient: NonNullable<ReturnType<typeof usePublicClient>>,
   tokenAddress: Address,
@@ -63,8 +65,6 @@ export async function estimateApprove(
   console.error(`[estimateApproveGas] All attempts failed, using default ${GAS_LIMIT_DEFAULT}`)
   return { gasLimit: GAS_LIMIT_DEFAULT }
 }
-
-export type ApproveTxResult = { hash: `0x${string}` }
 
 export function useApproveCallback(
   currency: Currency | undefined,

@@ -6,22 +6,6 @@ export type HttpUrlString = `http://${string}`
 
 export type UrlString = HttpsUrlString | HttpUrlString
 
-function isLocalDevHostname(hostname: string): boolean {
-  return (
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname === '::1' ||
-    hostname === '[::1]' ||
-    hostname.endsWith('.localhost')
-  )
-}
-
-export function isHttpsUrlString(urlString: string): urlString is HttpsUrlString {
-  const url = new URL(urlString)
-
-  return urlString.startsWith('https://') || isLocalDevHostname(url.hostname)
-}
-
 export function assertHttpsUrlString(urlString: string): asserts urlString is HttpsUrlString {
   if (!isHttpsUrlString(urlString)) {
     throw new Error('URL is not a valid HTTPS URL')
@@ -54,8 +38,10 @@ export function getParentOriginOrThrow(): UrlString {
   return parentOrigin
 }
 
-function normalizeOrigin(origin: string | undefined): string | undefined {
-  return origin && origin !== 'null' ? origin : undefined
+export function isHttpsUrlString(urlString: string): urlString is HttpsUrlString {
+  const url = new URL(urlString)
+
+  return urlString.startsWith('https://') || isLocalDevHostname(url.hostname)
 }
 
 function getAncestorOrigin(): UrlString | undefined {
@@ -72,6 +58,18 @@ function getAncestorOrigin(): UrlString | undefined {
   return ancestorOrigins[0] as UrlString
 }
 
+function getParentLocationOrigin(): UrlString | undefined {
+  if (typeof window === 'undefined' || !window.parent || window.parent === window) {
+    return undefined
+  }
+
+  try {
+    return window.parent.location.origin as UrlString
+  } catch {
+    return undefined
+  }
+}
+
 function getReferrerOrigin(): UrlString | undefined {
   if (typeof document === 'undefined' || !document.referrer) {
     return undefined
@@ -84,14 +82,16 @@ function getReferrerOrigin(): UrlString | undefined {
   }
 }
 
-function getParentLocationOrigin(): UrlString | undefined {
-  if (typeof window === 'undefined' || !window.parent || window.parent === window) {
-    return undefined
-  }
+function isLocalDevHostname(hostname: string): boolean {
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname === '[::1]' ||
+    hostname.endsWith('.localhost')
+  )
+}
 
-  try {
-    return window.parent.location.origin as UrlString
-  } catch {
-    return undefined
-  }
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }
