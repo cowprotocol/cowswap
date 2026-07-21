@@ -4,7 +4,14 @@ import { loadable } from 'jotai/utils'
 import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { Connector } from 'wagmi'
 
-import { isMobile, logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
+import {
+  isEip1193Provider,
+  isMobile,
+  logWallet,
+  normalizeError,
+  TimeoutError,
+  withTimeout,
+} from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
@@ -20,7 +27,6 @@ import {
   isSmartContractWalletAtom,
   isSafeWalletAtom,
 } from '../../wagmi/state/walletMetadata.atoms'
-import { isEip1193Provider } from '../../wagmi/utils/isEip1193Provider.utils'
 import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
