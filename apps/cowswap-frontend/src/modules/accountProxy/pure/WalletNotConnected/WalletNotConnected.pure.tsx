@@ -7,33 +7,33 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { Wrapper, Container, WalletIcon } from './styled'
+import * as styledEl from './WalletNotConnected.styled'
 
-import { BaseAccountCard } from '../BaseAccountCard'
-import { CowProtocolIcon } from '../CowProtocolIcon'
-import { SkeletonLines } from '../SkeletonLines'
+import { BaseAccountCard } from '../BaseAccountCard/BaseAccountCard.pure'
+import { CowProtocolIcon } from '../CowProtocolIcon/CowProtocolIcon.pure'
+import { SkeletonLines } from '../SkeletonLines/SkeletonLines.pure'
 
 interface WalletNotConnectedProps {
   onConnect(): void
 }
 export function WalletNotConnected({ onConnect }: WalletNotConnectedProps): ReactNode {
   return (
-    <Container>
-      <Wrapper>
+    <styledEl.Container>
+      <styledEl.Wrapper>
         <BaseAccountCard width={206} height={116} padding={16} enableScale ariaLabel={t`Connect wallet banner`}>
-          <WalletIcon>
+          <styledEl.WalletIcon>
             <SVG src={svgWalletPlusSrc} description={t`connect wallet`} />
-          </WalletIcon>
+          </styledEl.WalletIcon>
           <SkeletonLines />
           <CowProtocolIcon />
         </BaseAccountCard>
         <p>
           <Trans>Connect wallet to recover funds</Trans>
         </p>
-      </Wrapper>
+      </styledEl.Wrapper>
       <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onConnect}>
         Connect wallet
       </ButtonPrimary>
-    </Container>
+    </styledEl.Container>
   )
 }

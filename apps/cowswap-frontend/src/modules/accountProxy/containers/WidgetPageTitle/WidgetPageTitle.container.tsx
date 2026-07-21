@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useLingui } from '@lingui/react/macro'
 import { useLocation, useParams } from 'react-router'
 
-import { NEED_HELP_LABEL } from '../../consts'
+import { NEED_HELP_LABEL } from '../../accountProxy.constants'
 
 export function WidgetPageTitle(): ReactNode {
   const { t, i18n } = useLingui()

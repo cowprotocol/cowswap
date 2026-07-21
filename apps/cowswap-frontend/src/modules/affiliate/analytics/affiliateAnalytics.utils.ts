@@ -12,7 +12,6 @@ import {
 
 import { TraderWalletStatus } from '../hooks/useAffiliateTraderWallet'
 import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
-import { logAffiliate } from '../utils/logger'
 
 interface AffiliatePartnerPageStateParams {
   hasAccount: boolean
@@ -39,6 +38,15 @@ export function getAffiliateModalViewKey(
   }
 
   return [modalState, walletStatus].join(':')
+}
+
+export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.AFFILIATE,
+    action,
+    chainId,
+    ...customParams,
+  } as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>)
 }
 
 export function getAffiliatePartnerPageState({
@@ -107,23 +115,4 @@ export function normalizeAffiliatePartnerCodeCreateFailureReason(
     default:
       return AffiliatePartnerCodeCreateFailureReason.UNEXPECTED_ERROR
   }
-}
-
-export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
-  try {
-    analytics.sendEvent(
-      compactRecord({
-        category: CowSwapAnalyticsCategory.AFFILIATE,
-        action,
-        chainId,
-        ...customParams,
-      }) as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>,
-    )
-  } catch (error) {
-    logAffiliate('Failed to send analytics event', { action, error })
-  }
-}
-
-function compactRecord(value: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(value).filter(([, entryValue]) => entryValue !== undefined))
 }
