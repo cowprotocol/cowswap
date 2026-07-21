@@ -1,12 +1,12 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
+import { getPublicClient } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
-import { getPublicClient } from '../utils/getPublicClient.utils'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
 

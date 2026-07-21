@@ -35,10 +35,14 @@ export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/Account
 
 // Utils
 export * from './api/utils/connection'
-export * from './wagmi/utils/isEip1193Provider.utils'
 export * from './wagmi/utils/isEip7702EOA.utils'
 export * from './wagmi/utils/isSafeConnector.utils'
-export * from './wagmi/utils/getPublicClient.utils'
+export {
+  isEip1193Provider,
+  getPublicClient,
+  getPublicClientFromEIP1193Provider,
+  getPublicClientFromProvider,
+} from '@cowprotocol/common-utils'
 
 export * from './utils/getIsSafeAppIframe'
 export * from './utils/connectWalletById'
