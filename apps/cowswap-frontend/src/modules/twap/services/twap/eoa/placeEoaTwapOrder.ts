@@ -16,7 +16,12 @@ import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { prodTradingSdk } from 'tradingSdk/tradingSdk'
 
-import { getCowShedHooks, EOA_TWAP_ACCOUNT_PROXY_CONFIG, EOA_TWAP_SHED_FACTORY_OPTIONS } from 'modules/accountProxy'
+import {
+  assertFactoryDeployed,
+  getCowShedHooks,
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+  EOA_TWAP_SHED_FACTORY_OPTIONS,
+} from 'modules/accountProxy'
 import { ComposableCowContractData } from 'modules/advancedOrders'
 import { estimateApprove } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
@@ -227,19 +232,7 @@ export async function placeEoaTwapOrder({
   // Check if the factory is deployed (skip in prod-like envs):
 
   if (!isProdLike) {
-    const publicClient = getPublicClient(config)
-
-    if (!publicClient) {
-      throw new Error('Public client is required to place an EOA TWAP order')
-    }
-
-    const factoryBytecode = await publicClient.getBytecode({ address: factoryAddress })
-
-    if (!factoryBytecode || factoryBytecode === '0x') {
-      throw new Error(
-        `EOA TWAP shed factory is not deployed on chain ${chainId} (${factoryAddress}). Deploy the ComposableCoW cow-shed factory before placing EOA TWAP orders.`,
-      )
-    }
+    await assertFactoryDeployed(config, factoryAddress, `chain ${chainId}`)
   }
 
   eoaTwapDebugLog('CowShed account:', proxyAddress)

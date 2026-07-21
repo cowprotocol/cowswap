@@ -1,13 +1,14 @@
-import type { Chain, WalletClient } from 'viem'
+import type { WalletClient } from 'viem'
 import { stringToHex } from 'viem'
 import { type Config } from 'wagmi'
-import { getBytecode } from 'wagmi/actions'
 
 import { delay, isProdLike } from '@cowprotocol/common-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 
 import { getRecoverFundsCalls } from './getRecoverFundsCalls'
+
+import { assertFactoryDeployed } from '../utils/assertFactoryDeployed'
 
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000n
@@ -44,7 +45,7 @@ export async function recoverFundsFromProxy({
   }
 
   if (!isProdLike) {
-    await assertFactoryDeployed(config, walletClient.chain, factoryAddress)
+    await assertFactoryDeployed(config, factoryAddress, walletClient.chain.name ?? 'unknown')
   }
 
   const calls = getRecoverFundsCalls({
@@ -80,15 +81,4 @@ export async function recoverFundsFromProxy({
     chain: walletClient.chain,
     gas: DEFAULT_GAS_LIMIT,
   })
-}
-
-async function assertFactoryDeployed(config: Config, chain: Chain, factoryAddress: string): Promise<void> {
-  const code = await getBytecode(config, { address: factoryAddress as `0x${string}` })
-  const isFactoryDeployed = !!code && code !== '0x'
-
-  if (!isFactoryDeployed) {
-    throw new Error(
-      `Account Proxy factory ${factoryAddress} is not deployed on network ${chain.name ?? 'unknown'}. Funds cannot be recovered until the factory is deployed.`,
-    )
-  }
 }
