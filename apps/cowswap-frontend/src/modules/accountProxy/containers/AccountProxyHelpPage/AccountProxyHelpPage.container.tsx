@@ -4,7 +4,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Routes } from 'common/constants/routes'
 
-import { FAQContent } from '../../pure/FAQContent'
+import { FAQContent } from '../../pure/FAQContent/FAQContent.pure'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 
 export function AccountProxyHelpPage(): ReactNode {
