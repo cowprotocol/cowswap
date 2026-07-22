@@ -9,7 +9,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowpr
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSafeWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useIsSafeWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
@@ -76,6 +76,7 @@ export function useCreateTwapOrder() {
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
   const { isTwapEoaEnabled } = useFeatureFlags()
   const eoaSigner = useAppSigner()
   const config = useConfig()
@@ -137,14 +138,16 @@ export function useCreateTwapOrder() {
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line max-lines-per-function
     async (fallbackHandlerIsNotSet: boolean) => {
-      if (!isSafeWallet && !isTwapEoaEnabled) {
+      // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
+      // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
+      const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+
+      if (!isSafeWallet && !isEoaTwap) {
         return
       }
 
       if (!chainId || !account) return
       if (!inputCurrencyAmount || !outputCurrencyAmount || !appDataInfo || !twapOrder) return
-
-      const isEoaTwap = !isSafeWallet
 
       if (isEoaTwap) {
         if (!eoaSigner) return
@@ -296,6 +299,7 @@ export function useCreateTwapOrder() {
     [
       isTwapEoaEnabled,
       isSafeWallet,
+      isSafeViaWc,
       eoaSigner,
       config,
       chainId,

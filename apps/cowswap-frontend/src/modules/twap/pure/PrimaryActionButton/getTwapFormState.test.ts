@@ -33,6 +33,7 @@ const baseParams = {
   numberOfPartsValue: 1,
   tradeFormValidationContext: null,
   isTwapEoaEnabled: false,
+  isSafeViaWc: false,
 } as const
 
 describe('getTwapFormState()', () => {
@@ -94,9 +95,22 @@ describe('getTwapFormState()', () => {
         isTxBundlingSupported: false,
         verification: null,
         isTwapEoaEnabled: true,
+        isSafeViaWc: false,
       })
 
       expect(result).toEqual(null)
+    })
+
+    it('Keeps Safe guards for Safe via WalletConnect even when EOA flag is on', () => {
+      const result = getTwapFormState({
+        ...baseParams,
+        isTxBundlingSupported: false,
+        verification: null,
+        isTwapEoaEnabled: true,
+        isSafeViaWc: true,
+      })
+
+      expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
     })
   })
 })
