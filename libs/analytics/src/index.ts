@@ -24,6 +24,7 @@ export type { AnalyticsCategory, BaseGtmEvent, GtmEvent } from './types'
 export type { AnalyticsContext, CowAnalytics } from './CowAnalytics'
 
 // Utils
+export { createCowTracker } from './createCowTracker'
 export { getCowAnalytics } from './utils'
 
 export * from './CowAnalytics'
