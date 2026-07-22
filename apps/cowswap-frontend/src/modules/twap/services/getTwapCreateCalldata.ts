@@ -1,10 +1,11 @@
 import { encodeFunctionData } from 'viem'
 
+import { ComposableCowContractData } from 'modules/advancedOrders'
+
 import { ConditionalOrderParams } from '../types'
-import { ComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 export interface GetTwapCreateCalldataParams {
-  composableCowContractAbi: ComposableCowContractData["abi"]
+  composableCowContractAbi: ComposableCowContractData['abi']
   paramsStruct: ConditionalOrderParams
   currentBlockFactoryAddress: string
 }
@@ -14,7 +15,6 @@ export function getCreateTwapOrderCalldata({
   paramsStruct,
   currentBlockFactoryAddress,
 }: GetTwapCreateCalldataParams): `0x${string}` {
-
   return encodeFunctionData({
     abi: composableCowContractAbi,
     functionName: 'createWithContext',

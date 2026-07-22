@@ -1,14 +1,12 @@
 import type { Config } from 'wagmi'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
-import { SupportedChainId, ZERO_ADDRESS } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId, ZERO_ADDRESS } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
-
-import { extensibleFallbackSetupTxs } from '../../extensibleFallbackSetupTxs'
 
 import { getSafeTwapOrderTxs } from './placeSafeTwapOrder'
 
@@ -16,6 +14,7 @@ import { ExtensibleFallbackContext } from '../../../hooks/useExtensibleFallbackC
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../../../types'
 import { buildTwapOrderParamsStruct } from '../../../utils/buildTwapOrderParamsStruct'
+import { extensibleFallbackSetupTxs } from '../../extensibleFallbackSetupTxs'
 
 jest.mock('../../extensibleFallbackSetupTxs')
 jest.mock('modules/permit')
@@ -129,7 +128,7 @@ describe('getSafeTwapOrderTxs', () => {
     })
 
     expect(result).toHaveLength(2)
-    expect(result[0].to?.toLowerCase()).toBe(order.sellAmount.currency.address.toLowerCase())
+    expect(areAddressesEqual(result[0].to, order.sellAmount.currency.address)).toBe(true)
     expect(result[1].to).toBe(COMPOSABLE_COW_ADDRESS[chainId])
   })
 
@@ -148,8 +147,8 @@ describe('getSafeTwapOrderTxs', () => {
     })
 
     expect(result).toHaveLength(3)
-    expect(result[0].to?.toLowerCase()).toBe(order.sellAmount.currency.address.toLowerCase())
-    expect(result[1].to?.toLowerCase()).toBe(order.sellAmount.currency.address.toLowerCase())
+    expect(areAddressesEqual(result[0].to, order.sellAmount.currency.address)).toBe(true)
+    expect(areAddressesEqual(result[1].to, order.sellAmount.currency.address)).toBe(true)
     expect(result[2].to).toBe(COMPOSABLE_COW_ADDRESS[chainId])
   })
 
@@ -166,7 +165,7 @@ describe('getSafeTwapOrderTxs', () => {
     expect(result).toHaveLength(4)
     expect(result[0]).toEqual(fallbackSetupTxs[0])
     expect(result[1]).toEqual(fallbackSetupTxs[1])
-    expect(result[2].to?.toLowerCase()).toBe(order.sellAmount.currency.address.toLowerCase())
+    expect(areAddressesEqual(result[2].to, order.sellAmount.currency.address)).toBe(true)
     expect(result[3].to).toBe(COMPOSABLE_COW_ADDRESS[chainId])
     expect(mockExtensibleFallbackSetupTxs).toHaveBeenCalledWith(extensibleFallbackContext)
   })
