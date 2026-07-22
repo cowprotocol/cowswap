@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.2-pr-933-03abfeeb.0",
-    "@cowprotocol/sdk-bridging": "4.2.2-pr-933-03abfeeb.0",
+    "@cowprotocol/cow-sdk": "9.2.4",
+    "@cowprotocol/sdk-bridging": "4.3.1",
     "@cowprotocol/currency": "workspace:*",
     "eventemitter3": "4.0.7"
   }
