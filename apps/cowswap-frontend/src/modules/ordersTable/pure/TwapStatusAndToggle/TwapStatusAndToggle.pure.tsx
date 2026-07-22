@@ -25,7 +25,7 @@ interface TwapStatusAndToggleProps {
   parent: ParsedOrder
   childrenLength: number
   isCollapsed: boolean
-  isFallbackHandlerBroken?: boolean
+  isFallbackHandlerRequired?: boolean
   onToggle: () => void
   onClick: () => void
   childOrders: ChildOrderItems[]
@@ -38,7 +38,7 @@ export function TwapStatusAndToggle({
   parent,
   childrenLength,
   isCollapsed,
-  isFallbackHandlerBroken,
+  isFallbackHandlerRequired,
   onToggle,
   onClick,
   childOrders,
@@ -59,12 +59,11 @@ export function TwapStatusAndToggle({
 
   const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
-  // A reset Safe ComposableCoW fallback handler blocks a still-open order (see issue #5426). The
-  // broken state is per-account (resolved in the view, not persisted onto the order); surface the
-  // same danger design on the parent status badge so it matches the Fills-at column and the parts.
-  const isFallbackHandlerBlocked =
-    getIsFallbackHandlerUnfillable(parent.status, !!isFallbackHandlerBroken) ||
-    childOrders.some((child) => getIsFallbackHandlerUnfillable(child.order.status, !!isFallbackHandlerBroken))
+  // A reset Safe ComposableCoW fallback handler blocks a still-open order (see issue #5426). This is
+  // a per-account state (resolved in the view, not persisted onto the order); the parent status
+  // already reflects whether the TWAP is still open, so checking it is enough — surface the same
+  // danger design on the parent badge as the Fills-at column and the parts.
+  const isFallbackHandlerBlocked = getIsFallbackHandlerUnfillable(parent.status, !!isFallbackHandlerRequired)
 
   return (
     <>

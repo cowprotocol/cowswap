@@ -31,7 +31,7 @@ import { TableRow } from './OrderRow.styled'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
-import { UPDATE_FALLBACK_HANDLER_WARNING } from '../../pure/OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
+import { WarningReason } from '../../pure/OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
 import { OrderFillsAt } from '../../pure/OrderFillsAt/OrderFillsAt.pure'
 import { OrderFillsAtWithDistance } from '../../pure/OrderFillsAtWithDistance/OrderFillsAtWithDistance.pure'
 import { OrderMarketPrice } from '../../pure/OrderMarketPrice/OrderMarketPrice.pure'
@@ -158,9 +158,9 @@ export function OrderRow({
   // resolved here in the view (not persisted onto the order) and combined with the per-order status.
   // It only applies to composable (TWAP) orders; surface it with the same danger design as the
   // balance/allowance warnings (see issue #5426).
-  const isFallbackHandlerBroken = useIsFallbackHandlerRequired()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerUnfillable =
-    isTwapTable === true && getIsFallbackHandlerUnfillable(status, isFallbackHandlerBroken)
+    isTwapTable === true && getIsFallbackHandlerUnfillable(status, isFallbackHandlerRequired)
 
   const isUnfillable =
     isFallbackHandlerUnfillable ||
@@ -168,14 +168,13 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
-  // NOTE: Don't internationalize this, the text is being used as a flag...
-  const warningText = isFallbackHandlerUnfillable
-    ? UPDATE_FALLBACK_HANDLER_WARNING
+  const warningReason = isFallbackHandlerUnfillable
+    ? WarningReason.FallbackHandler
     : hasEnoughBalance === false
-      ? `Insufficient balance`
+      ? WarningReason.Balance
       : hasEnoughAllowance === false
-        ? `Insufficient allowance`
-        : `Unfillable`
+        ? WarningReason.Allowance
+        : undefined
 
   const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
 
@@ -199,7 +198,7 @@ export function OrderRow({
       estimatedExecutionPrice={estimatedExecutionPrice}
       estimatedPriceWarning={estimatedPriceWarning}
       isChild={isChild}
-      isFallbackHandlerBroken={isFallbackHandlerBroken}
+      isFallbackHandlerRequired={isFallbackHandlerRequired}
       isInverted={isInverted}
       isSafeWallet={isSafeWallet}
       isTwapTable={isTwapTable}
@@ -210,7 +209,7 @@ export function OrderRow({
       prices={prices}
       rateInfoParams={rateInfoParams}
       spotPrice={spotPrice}
-      warningText={warningText}
+      warningReason={warningReason}
       withWarning={withWarning}
     />
   )
@@ -270,11 +269,11 @@ export function OrderRow({
               <OrderFillsAtWithDistance
                 order={order}
                 withWarning={withWarning}
-                warningText={warningText}
+                warningReason={warningReason}
                 onApprove={onApprove}
                 isInverted={isInverted}
                 isUnfillable={isUnfillable}
-                isFallbackHandlerBroken={isFallbackHandlerBroken}
+                isFallbackHandlerRequired={isFallbackHandlerRequired}
                 estimatedExecutionPrice={estimatedExecutionPrice}
                 spotPrice={spotPrice}
                 estimatedPriceWarning={estimatedPriceWarning}

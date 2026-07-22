@@ -2,9 +2,10 @@ import { ReactNode } from 'react'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { UPDATE_FALLBACK_HANDLER_WARNING } from './orderEstimatedExecutionPrice.constants'
+import { WarningReason } from './orderEstimatedExecutionPrice.constants'
 import { OrderEstimatedExecutionPrice } from './OrderEstimatedExecutionPrice.pure'
 
 jest.mock('react-inlinesvg', () => {
@@ -39,7 +40,7 @@ describe('OrderEstimatedExecutionPrice() – fallback handler warning', () => {
         isInverted={false}
         isUnfillable={true}
         canShowWarning={true}
-        warningText={UPDATE_FALLBACK_HANDLER_WARNING}
+        warningReason={WarningReason.FallbackHandler}
       />,
     )
 
@@ -54,7 +55,7 @@ describe('OrderEstimatedExecutionPrice() – fallback handler warning', () => {
         isInverted={false}
         isUnfillable={true}
         canShowWarning={true}
-        warningText={UPDATE_FALLBACK_HANDLER_WARNING}
+        warningReason={WarningReason.FallbackHandler}
       />,
     )
 

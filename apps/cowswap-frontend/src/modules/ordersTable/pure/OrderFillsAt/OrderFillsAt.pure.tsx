@@ -24,6 +24,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
 import { useFeeAmountDifference } from '../../hooks/useFeeAmountDifference'
+import { WarningReason } from '../OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
 import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 
@@ -33,7 +34,7 @@ export interface OrderFillsAtProps {
   isTwapTable?: boolean
   isChild?: boolean
   isUnfillable: boolean
-  isFallbackHandlerBroken?: boolean
+  isFallbackHandlerRequired?: boolean
   isInverted: boolean
   withWarning: boolean
   estimatedPriceWarning: ReactNode | undefined
@@ -43,7 +44,7 @@ export interface OrderFillsAtProps {
   rateInfoParams: RateInfoParams
   prices: PendingOrderPrices | undefined | null
   spotPrice: Nullish<Price<Currency, Currency>>
-  warningText: string
+  warningReason?: WarningReason
   onApprove?: Command
 }
 
@@ -58,7 +59,7 @@ export function OrderFillsAt({
   isTwapTable,
   isChild,
   isUnfillable,
-  isFallbackHandlerBroken,
+  isFallbackHandlerRequired,
   estimatedPriceWarning,
   childOrders,
   estimatedExecutionPrice,
@@ -66,7 +67,7 @@ export function OrderFillsAt({
   rateInfoParams,
   prices,
   spotPrice,
-  warningText,
+  warningReason,
   withWarning,
   onApprove,
 }: OrderFillsAtProps) {
@@ -108,7 +109,7 @@ export function OrderFillsAt({
           <TwapOrderStatus
             orderStatus={order.status}
             childOrders={childOrders}
-            isFallbackHandlerBroken={isFallbackHandlerBroken}
+            isFallbackHandlerRequired={isFallbackHandlerRequired}
           >
             -
           </TwapOrderStatus>
@@ -205,7 +206,7 @@ export function OrderFillsAt({
             amountFee={feeAmount}
             canShowWarning={getUiOrderType(order) !== UiOrderType.SWAP && !isUnfillable}
             isUnfillable={withWarning}
-            warningText={warningText}
+            warningReason={warningReason}
             onApprove={onApprove}
           />
         )}

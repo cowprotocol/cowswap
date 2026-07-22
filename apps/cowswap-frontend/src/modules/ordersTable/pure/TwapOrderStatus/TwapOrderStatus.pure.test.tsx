@@ -38,7 +38,7 @@ describe('TwapOrderStatus()', () => {
     render(
       <TwapOrderStatus
         orderStatus={OrderStatus.PENDING}
-        isFallbackHandlerBroken={true}
+        isFallbackHandlerRequired={true}
         childOrders={[childOrder({ status: OrderStatus.PENDING })]}
       >
         fallback children
@@ -53,7 +53,7 @@ describe('TwapOrderStatus()', () => {
     render(
       <TwapOrderStatus
         orderStatus={OrderStatus.PENDING}
-        isFallbackHandlerBroken={false}
+        isFallbackHandlerRequired={false}
         childOrders={[childOrder({ status: OrderStatus.PENDING })]}
       >
         fallback children

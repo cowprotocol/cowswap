@@ -60,7 +60,7 @@ export function OrdersTableRowGroup({
 
   // Per-account condition (the Safe's ComposableCoW fallback handler was reset); resolved here in the
   // view and passed to the status badge rather than persisted onto the order (see issue #5426).
-  const isFallbackHandlerBroken = useIsFallbackHandlerRequired()
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -107,7 +107,7 @@ export function OrdersTableRowGroup({
             parent={parent}
             childrenLength={childrenLength}
             isCollapsed={isCollapsed}
-            isFallbackHandlerBroken={isFallbackHandlerBroken}
+            isFallbackHandlerRequired={isFallbackHandlerRequired}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
             childOrders={childrenWithParams}
