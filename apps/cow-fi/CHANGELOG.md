@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.9.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.0...cow-fi-v2.9.1) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/wallet@3.8.2
+
 ## [2.9.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.8.1...cow-fi-v2.9.0) (2026-07-17)
 
 ### Minor Changes

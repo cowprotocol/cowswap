@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.19.0...cowswap-v3.20.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/balances-and-allowances@3.7.1
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+  - @cowprotocol/tokens@3.8.5
+  - @cowprotocol/wallet@3.8.2
+  - @cowprotocol/snackbars@2.2.7
+  - @cowprotocol/multicall@3.4.5
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.1...cowswap-v3.19.0) (2026-07-17)
 
 ### Minor Changes

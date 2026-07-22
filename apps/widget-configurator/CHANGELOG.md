@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.9.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.2...widget-configurator-v3.9.3) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+
 ## [3.9.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.1...widget-configurator-v3.9.2) (2026-07-17)
 
 ### Patch Changes
