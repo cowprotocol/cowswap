@@ -5,7 +5,7 @@ import { useConfig } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -87,8 +87,13 @@ export function useCreateTwapOrder() {
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  // Funding order is a swap-like sell=buy; ADVANCED_ORDERS disables permit, so look up as SWAP.
-  const permitInfo = usePermitInfo(inputCurrencyAmount?.currency, TradeType.SWAP, twapOrderCreationContext?.spender)
+  // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
+  // against the production Vault Relayer (same spender placeEoaTwapOrder uses):
+  const permitInfo = usePermitInfo(
+    inputCurrencyAmount?.currency,
+    TradeType.SWAP,
+    chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId] : undefined,
+  )
   const generatePermitHook = useGeneratePermitHook()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
