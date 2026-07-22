@@ -4,21 +4,29 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsNativeToken } from './getIsNativeToken'
 
 // Amount of native currency to leave for gas when selling the max amount.
-// Chains with higher gas costs reserve more of the native balance.
-const MIN_NATIVE_CURRENCY_FOR_GAS_HIGH: bigint = 10n ** 16n // 0.01 native
-const MIN_NATIVE_CURRENCY_FOR_GAS_LOW: bigint = 10n ** 15n // 0.001 native
+// Values were derived from researched live gas costs per chain (see PR discussion).
+const MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET: bigint = 10n ** 16n // 0.01 native (Mainnet, Sepolia)
+const MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON: bigint = 10n ** 17n // 0.1 POL (Polygon: high gas price relative to POL's USD value)
+const MIN_NATIVE_CURRENCY_FOR_GAS_MID: bigint = 3n * 10n ** 15n // 0.003 native (BNB Chain, Linea)
+const MIN_NATIVE_CURRENCY_FOR_GAS_LOW: bigint = 10n ** 15n // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
 
-// Chains that should reserve the higher amount (0.01) of native currency for gas.
-const HIGH_NATIVE_GAS_RESERVE_CHAINS: Set<SupportedChainId> = new Set([
-  SupportedChainId.MAINNET,
-  SupportedChainId.POLYGON,
-  SupportedChainId.SEPOLIA,
-])
+// Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.
+const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
+  [SupportedChainId.MAINNET]: MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET,
+  [SupportedChainId.SEPOLIA]: MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET,
+  [SupportedChainId.POLYGON]: MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON,
+  [SupportedChainId.BNB]: MIN_NATIVE_CURRENCY_FOR_GAS_MID,
+  [SupportedChainId.LINEA]: MIN_NATIVE_CURRENCY_FOR_GAS_MID,
+  [SupportedChainId.GNOSIS_CHAIN]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.ARBITRUM_ONE]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.BASE]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.AVALANCHE]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.INK]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.PLASMA]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+}
 
 function getMinNativeCurrencyForGas(chainId: number): bigint {
-  return HIGH_NATIVE_GAS_RESERVE_CHAINS.has(chainId as SupportedChainId)
-    ? MIN_NATIVE_CURRENCY_FOR_GAS_HIGH
-    : MIN_NATIVE_CURRENCY_FOR_GAS_LOW
+  return MIN_NATIVE_CURRENCY_FOR_GAS[chainId as SupportedChainId] ?? MIN_NATIVE_CURRENCY_FOR_GAS_LOW
 }
 
 /**
