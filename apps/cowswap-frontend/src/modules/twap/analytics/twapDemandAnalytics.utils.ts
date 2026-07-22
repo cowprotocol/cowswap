@@ -33,7 +33,9 @@ export function getAndIncrementTwapUnsupportedWalletEncounterCountBucket(account
   const key = `${ENCOUNTER_COUNT_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
   const encounterCount = getStoredCount(storage, key) + 1
 
-  storage.setItem(key, encounterCount.toString())
+  if (!setBrowserStorageItem(storage, key, encounterCount.toString())) {
+    return TwapEncounterCountBucket.ONE
+  }
 
   return getTwapEncounterCountBucket(encounterCount)
 }
@@ -60,7 +62,7 @@ export function getIsTwapInterestRegistered(account?: string): boolean {
 
   if (!storage) return false
 
-  return storage.getItem(getTwapInterestStorageKey(account)) === '1'
+  return getBrowserStorageItem(storage, getTwapInterestStorageKey(account)) === '1'
 }
 
 export function getTwapDemandSessionStorageKey(action: TwapDemandAnalyticsEvent, account?: string): string {
@@ -115,9 +117,9 @@ export function markTwapDemandEventTrackedInSession(storageKey: string): boolean
   const storage = getBrowserStorage('sessionStorage')
 
   if (!storage) return true
-  if (storage.getItem(storageKey)) return false
+  if (getBrowserStorageItem(storage, storageKey)) return false
 
-  storage.setItem(storageKey, '1')
+  setBrowserStorageItem(storage, storageKey, '1')
 
   return true
 }
@@ -127,7 +129,7 @@ export function registerTwapInterest(account?: string): void {
 
   if (!storage) return
 
-  storage.setItem(getTwapInterestStorageKey(account), '1')
+  setBrowserStorageItem(storage, getTwapInterestStorageKey(account), '1')
 }
 
 function getBrowserStorage(storageName: BrowserStorageName): Storage | null {
@@ -140,8 +142,16 @@ function getBrowserStorage(storageName: BrowserStorageName): Storage | null {
   }
 }
 
+function getBrowserStorageItem(storage: Storage, key: string): string | null {
+  try {
+    return storage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
 function getStoredCount(storage: Storage, key: string): number {
-  const storedValue = storage.getItem(key)
+  const storedValue = getBrowserStorageItem(storage, key)
   const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0
 
   return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0
@@ -153,4 +163,13 @@ function getTwapDemandAccountKey(account?: string): string {
 
 function getTwapInterestStorageKey(account?: string): string {
   return `${INTEREST_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
+}
+
+function setBrowserStorageItem(storage: Storage, key: string, value: string): boolean {
+  try {
+    storage.setItem(key, value)
+    return true
+  } catch {
+    return false
+  }
 }
