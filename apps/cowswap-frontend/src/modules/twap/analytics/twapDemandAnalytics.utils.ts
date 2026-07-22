@@ -33,9 +33,7 @@ export function getAndIncrementTwapUnsupportedWalletEncounterCountBucket(account
   const key = `${ENCOUNTER_COUNT_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
   const encounterCount = getStoredCount(storage, key) + 1
 
-  if (!setBrowserStorageItem(storage, key, encounterCount.toString())) {
-    return TwapEncounterCountBucket.ONE
-  }
+  setBrowserStorageItem(storage, key, encounterCount.toString())
 
   return getTwapEncounterCountBucket(encounterCount)
 }
@@ -165,11 +163,10 @@ function getTwapInterestStorageKey(account?: string): string {
   return `${INTEREST_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
 }
 
-function setBrowserStorageItem(storage: Storage, key: string, value: string): boolean {
+function setBrowserStorageItem(storage: Storage, key: string, value: string): void {
   try {
     storage.setItem(key, value)
-    return true
   } catch {
-    return false
+    // ignore
   }
 }
