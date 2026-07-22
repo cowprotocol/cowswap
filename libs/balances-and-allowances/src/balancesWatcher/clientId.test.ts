@@ -3,10 +3,6 @@ import ms from 'ms.macro'
 const STORAGE_KEY = 'balances-watcher-client-id'
 const TTL_MS = ms`1 day`
 
-function store(id: string, createdAt: number): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ id, createdAt }))
-}
-
 // The module caches the client id at first call for the lifetime of the tab,
 // so each test needs a fresh module instance to exercise the read/generate
 // branch from a clean slate.
@@ -16,6 +12,10 @@ function loadModule(): typeof import('./clientId') {
     mod = require('./clientId')
   })
   return mod
+}
+
+function store(id: string, createdAt: number): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ id, createdAt }))
 }
 
 describe('getBalancesWatcherClientId', () => {

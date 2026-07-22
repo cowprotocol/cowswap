@@ -1,14 +1,21 @@
 import { encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
 
+import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
-import { extensibleFallbackSetupTxs } from '../../extensibleFallbackSetupTxs'
-
+import { ExtensibleFallbackContext } from '../../../hooks/useExtensibleFallbackContext'
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
-import { ExtensibleFallbackContext } from '../../../hooks/useExtensibleFallbackContext'
-import { SendBatchTxCallback } from '../../../../../../../../libs/wallet/src/api/hooks/useSendBatchTransactions'
+import { extensibleFallbackSetupTxs } from '../../extensibleFallbackSetupTxs'
+import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
+
+export interface GetSafeTwapOrderTxsParams {
+  twapOrder: TWAPOrder
+  twapOrderCreationContext: TwapOrderCreationContext
+  paramsStruct: ConditionalOrderParams
+  fallbackHandlerIsNotSet: boolean
+  extensibleFallbackContext: ExtensibleFallbackContext
+}
 
 export interface PlaceSafeTwapOrderParams {
   twapOrder: TWAPOrder
@@ -24,37 +31,6 @@ export interface PlaceSafeTwapOrderResult {
   safeAddress: string
 }
 
-export async function placeSafeTwapOrder({
-  twapOrder,
-  twapOrderCreationContext,
-  paramsStruct,
-  fallbackHandlerIsNotSet,
-  extensibleFallbackContext,
-  sendSafeTransactions,
-}: PlaceSafeTwapOrderParams): Promise<PlaceSafeTwapOrderResult> {
-  if (!twapOrderCreationContext || !extensibleFallbackContext) throw new Error('twapOrderCreationContext and safeExtensibleFallbackContext are required')
-
-  const txs = await getSafeTwapOrderTxs({
-    twapOrder,
-    twapOrderCreationContext,
-    paramsStruct,
-    fallbackHandlerIsNotSet,
-    extensibleFallbackContext,
-  })
-
-  const safeTxHash = await sendSafeTransactions(txs)
-
-  return { safeTxHash, safeAddress: extensibleFallbackContext.safeAddress }
-}
-
-export interface GetSafeTwapOrderTxsParams {
-  twapOrder: TWAPOrder
-  twapOrderCreationContext: TwapOrderCreationContext
-  paramsStruct: ConditionalOrderParams
-  fallbackHandlerIsNotSet: boolean
-  extensibleFallbackContext: ExtensibleFallbackContext
-}
-
 export async function getSafeTwapOrderTxs({
   twapOrder,
   twapOrderCreationContext,
@@ -62,7 +38,8 @@ export async function getSafeTwapOrderTxs({
   fallbackHandlerIsNotSet,
   extensibleFallbackContext,
 }: GetSafeTwapOrderTxsParams): Promise<MetaTransactionData[]> {
-  const { composableCowContract, needsApproval, needsZeroApproval, spender, currentBlockFactoryAddress } = twapOrderCreationContext
+  const { composableCowContract, needsApproval, needsZeroApproval, spender, currentBlockFactoryAddress } =
+    twapOrderCreationContext
 
   if (!currentBlockFactoryAddress) {
     throw new Error('currentBlockFactoryAddress is required to create a TWAP order')
@@ -73,16 +50,18 @@ export async function getSafeTwapOrderTxs({
   const sellAmountAtoms = maxUint256
 
   // At the very lest, we need the create order tx:
-  const txs: MetaTransactionData[] = [{
-    to: composableCowContract.address,
-    data: getCreateTwapOrderCalldata({
-      composableCowContractAbi: composableCowContract.abi,
-      paramsStruct,
-      currentBlockFactoryAddress,
-    }),
-    value: '0',
-    operation: 0,
-  }]
+  const txs: MetaTransactionData[] = [
+    {
+      to: composableCowContract.address,
+      data: getCreateTwapOrderCalldata({
+        composableCowContractAbi: composableCowContract.abi,
+        paramsStruct,
+        currentBlockFactoryAddress,
+      }),
+      value: '0',
+      operation: 0,
+    },
+  ]
 
   if (needsApproval) {
     // If we need to approve the sell token, we need to add the approve tx first:
@@ -122,4 +101,28 @@ export async function getSafeTwapOrderTxs({
   }
 
   return txs
+}
+
+export async function placeSafeTwapOrder({
+  twapOrder,
+  twapOrderCreationContext,
+  paramsStruct,
+  fallbackHandlerIsNotSet,
+  extensibleFallbackContext,
+  sendSafeTransactions,
+}: PlaceSafeTwapOrderParams): Promise<PlaceSafeTwapOrderResult> {
+  if (!twapOrderCreationContext || !extensibleFallbackContext)
+    throw new Error('twapOrderCreationContext and safeExtensibleFallbackContext are required')
+
+  const txs = await getSafeTwapOrderTxs({
+    twapOrder,
+    twapOrderCreationContext,
+    paramsStruct,
+    fallbackHandlerIsNotSet,
+    extensibleFallbackContext,
+  })
+
+  const safeTxHash = await sendSafeTransactions(txs)
+
+  return { safeTxHash, safeAddress: extensibleFallbackContext.safeAddress }
 }
