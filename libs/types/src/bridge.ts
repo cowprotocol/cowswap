@@ -24,6 +24,9 @@ export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
     amountInIntermediateCurrency: Amount
     amountInDestinationCurrency: Amount
   }
+  // Estimated time (in seconds) the bridge leg takes to fill, captured from the quote
+  // so it can be shown while the order is bridging (see issue #6459)
+  expectedFillTimeSeconds?: number
 }
 
 export type SerializedAmount = {
