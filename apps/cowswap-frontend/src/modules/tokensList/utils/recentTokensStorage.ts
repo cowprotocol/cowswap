@@ -18,16 +18,6 @@ export interface StoredRecentToken {
 
 export type StoredRecentTokensByChain = Record<number, StoredRecentToken[]>
 
-export function buildTokenKeySet(tokens: TokenWithLogo[]): Set<string> {
-  const set = new Set<string>()
-
-  for (const token of tokens) {
-    set.add(getTokenId(token))
-  }
-
-  return set
-}
-
 export function buildNextStoredTokens(
   prev: StoredRecentTokensByChain,
   token: TokenWithLogo,
@@ -42,6 +32,16 @@ export function buildNextStoredTokens(
     ...prev,
     [chainId]: updatedChain,
   }
+}
+
+export function buildTokenKeySet(tokens: TokenWithLogo[]): Set<string> {
+  const set = new Set<string>()
+
+  for (const token of tokens) {
+    set.add(getTokenId(token))
+  }
+
+  return set
 }
 
 export function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWithLogo> {
