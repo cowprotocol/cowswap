@@ -22,22 +22,6 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
-// Percentage-based rollout: hashes the wallet address into a stable 0..99
-// bucket and enables the watcher for buckets below `percentage`. Same account
-// -> same bucket, so the toggle is sticky per wallet across sessions/tabs.
-// - 100 -> everyone (including not-yet-connected wallets)
-// - 0 / undefined / out-of-range / non-number -> nobody
-// Non-EVM (e.g. Solana base58) accounts are rejected before BigInt() to avoid
-// a render-time SyntaxError; sourceChainId alone can't guard this because it
-// may be selector-derived while the wallet is on a non-EVM chain.
-function shouldEnableBalancesWatcher(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  if (percentage === 100) return true
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) return false
-  if (!isEvmAddress(account)) return false
-
-  return BigInt(account) % 100n < percentage
-}
-
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
   // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
@@ -126,4 +110,20 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   }
 
   return multicallStack
+}
+
+// Percentage-based rollout: hashes the wallet address into a stable 0..99
+// bucket and enables the watcher for buckets below `percentage`. Same account
+// -> same bucket, so the toggle is sticky per wallet across sessions/tabs.
+// - 100 -> everyone (including not-yet-connected wallets)
+// - 0 / undefined / out-of-range / non-number -> nobody
+// Non-EVM (e.g. Solana base58) accounts are rejected before BigInt() to avoid
+// a render-time SyntaxError; sourceChainId alone can't guard this because it
+// may be selector-derived while the wallet is on a non-EVM chain.
+function shouldEnableBalancesWatcher(account: string | undefined, percentage: number | boolean | undefined): boolean {
+  if (percentage === 100) return true
+  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) return false
+  if (!isEvmAddress(account)) return false
+
+  return BigInt(account) % 100n < percentage
 }

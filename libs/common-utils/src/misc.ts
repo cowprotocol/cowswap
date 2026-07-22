@@ -26,7 +26,14 @@ export const isTruthy = <T>(value: T | null | undefined | false): value is T => 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
 
+interface TimeoutOptions {
+  timeout: number
+  timeoutMessage: string
+}
+
 type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+
+export class TimeoutError extends Error {}
 
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
@@ -58,13 +65,6 @@ export function isPromiseFulfilled<T>(
   promiseResult: PromiseSettledResult<T>,
 ): promiseResult is PromiseFulfilledResult<T> {
   return promiseResult.status === 'fulfilled'
-}
-
-export class TimeoutError extends Error {}
-
-interface TimeoutOptions {
-  timeout: number
-  timeoutMessage: string
 }
 
 export async function withTimeout<T>(promise: Promise<T>, options: TimeoutOptions): Promise<T> {

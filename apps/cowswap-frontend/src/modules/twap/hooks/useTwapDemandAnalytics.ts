@@ -29,11 +29,6 @@ import {
   registerTwapInterest,
 } from '../analytics/twapDemandAnalytics.utils'
 
-interface UnsupportedWalletShownParams {
-  hasFormInput: boolean
-  sellAmountUsdBucket: TwapSellAmountUsdBucket
-}
-
 interface InterestClickParams {
   sellAmountUsdBucket: TwapSellAmountUsdBucket
 }
@@ -48,6 +43,11 @@ interface TwapDemandAnalytics {
   trackSetupLinkClick(): void
   trackTwapTabOpened(): void
   trackUnsupportedWalletShown(params: UnsupportedWalletShownParams): void
+}
+
+interface UnsupportedWalletShownParams {
+  hasFormInput: boolean
+  sellAmountUsdBucket: TwapSellAmountUsdBucket
 }
 
 const INTEREST_THANKS_VISIBLE_MS = ms`10s`
@@ -144,41 +144,23 @@ export function useTwapDemandAnalytics(): TwapDemandAnalytics {
   }
 }
 
-function useTwapInterestButtonState(account?: string): {
-  hideRegisteredInterest(): void
-  isInterestButtonVisible: boolean
-  isInterestRegistered: boolean
-  showRegisteredInterest(): void
-} {
-  const [isInterestRegistered, setIsInterestRegistered] = useState(() => getIsTwapInterestRegistered(account))
-  const [isInterestButtonVisible, setIsInterestButtonVisible] = useState(() => !getIsTwapInterestRegistered(account))
+function useTrackTwapDemandEventOncePerSession(
+  account?: string,
+): (action: TwapDemandAnalyticsEvent, trackEvent: () => void) => void {
+  const fallbackSessionKeys = useRef<Set<string>>(new Set())
 
-  useEffect(() => {
-    const isRegistered = getIsTwapInterestRegistered(account)
+  return useCallback(
+    (action: TwapDemandAnalyticsEvent, trackEvent: () => void) => {
+      const storageKey = getTwapDemandSessionStorageKey(action, account)
 
-    setIsInterestRegistered(isRegistered)
-    setIsInterestButtonVisible(!isRegistered)
-  }, [account])
+      if (fallbackSessionKeys.current.has(storageKey)) return
+      if (!markTwapDemandEventTrackedInSession(storageKey)) return
 
-  useEffect(() => {
-    if (!isInterestRegistered || !isInterestButtonVisible) return
-
-    const timeout = setTimeout(() => setIsInterestButtonVisible(false), INTEREST_THANKS_VISIBLE_MS)
-
-    return () => clearTimeout(timeout)
-  }, [isInterestButtonVisible, isInterestRegistered])
-
-  const hideRegisteredInterest = useCallback(() => {
-    setIsInterestRegistered(true)
-    setIsInterestButtonVisible(false)
-  }, [])
-
-  const showRegisteredInterest = useCallback(() => {
-    setIsInterestRegistered(true)
-    setIsInterestButtonVisible(true)
-  }, [])
-
-  return { hideRegisteredInterest, isInterestButtonVisible, isInterestRegistered, showRegisteredInterest }
+      fallbackSessionKeys.current.add(storageKey)
+      trackEvent()
+    },
+    [account],
+  )
 }
 
 function useTwapDemandWalletType(account?: string): {
@@ -214,21 +196,39 @@ function useTwapDemandWalletType(account?: string): {
   return { isSafeViaWc, isWalletTypePending, walletType }
 }
 
-function useTrackTwapDemandEventOncePerSession(
-  account?: string,
-): (action: TwapDemandAnalyticsEvent, trackEvent: () => void) => void {
-  const fallbackSessionKeys = useRef<Set<string>>(new Set())
+function useTwapInterestButtonState(account?: string): {
+  hideRegisteredInterest(): void
+  isInterestButtonVisible: boolean
+  isInterestRegistered: boolean
+  showRegisteredInterest(): void
+} {
+  const [isInterestRegistered, setIsInterestRegistered] = useState(() => getIsTwapInterestRegistered(account))
+  const [isInterestButtonVisible, setIsInterestButtonVisible] = useState(() => !getIsTwapInterestRegistered(account))
 
-  return useCallback(
-    (action: TwapDemandAnalyticsEvent, trackEvent: () => void) => {
-      const storageKey = getTwapDemandSessionStorageKey(action, account)
+  useEffect(() => {
+    const isRegistered = getIsTwapInterestRegistered(account)
 
-      if (fallbackSessionKeys.current.has(storageKey)) return
-      if (!markTwapDemandEventTrackedInSession(storageKey)) return
+    setIsInterestRegistered(isRegistered)
+    setIsInterestButtonVisible(!isRegistered)
+  }, [account])
 
-      fallbackSessionKeys.current.add(storageKey)
-      trackEvent()
-    },
-    [account],
-  )
+  useEffect(() => {
+    if (!isInterestRegistered || !isInterestButtonVisible) return
+
+    const timeout = setTimeout(() => setIsInterestButtonVisible(false), INTEREST_THANKS_VISIBLE_MS)
+
+    return () => clearTimeout(timeout)
+  }, [isInterestButtonVisible, isInterestRegistered])
+
+  const hideRegisteredInterest = useCallback(() => {
+    setIsInterestRegistered(true)
+    setIsInterestButtonVisible(false)
+  }, [])
+
+  const showRegisteredInterest = useCallback(() => {
+    setIsInterestRegistered(true)
+    setIsInterestButtonVisible(true)
+  }, [])
+
+  return { hideRegisteredInterest, isInterestButtonVisible, isInterestRegistered, showRegisteredInterest }
 }

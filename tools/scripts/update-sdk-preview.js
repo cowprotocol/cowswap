@@ -21,14 +21,19 @@ const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 
 const PR_URL_REGEX = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)$/
 
-function parsePrUrl(url) {
-  const match = url.match(PR_URL_REGEX)
-  if (!match) {
-    console.error(`Invalid PR URL: ${url}`)
-    console.error('Expected format: https://github.com/<owner>/<repo>/pull/<number>')
-    process.exit(1)
+async function fetchAllComments(owner, repo, number) {
+  const comments = []
+  let page = 1
+
+  while (true) {
+    const url = `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}`
+    const batch = await fetchJson(url)
+    if (!Array.isArray(batch) || batch.length === 0) break
+    comments.push(...batch)
+    page++
   }
-  return { owner: match[1], repo: match[2], number: match[3] }
+
+  return comments
 }
 
 function fetchJson(url) {
@@ -55,43 +60,6 @@ function fetchJson(url) {
   })
 }
 
-async function fetchAllComments(owner, repo, number) {
-  const comments = []
-  let page = 1
-
-  while (true) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}`
-    const batch = await fetchJson(url)
-    if (!Array.isArray(batch) || batch.length === 0) break
-    comments.push(...batch)
-    page++
-  }
-
-  return comments
-}
-
-function parseVersionsFromComments(comments) {
-  // Matches package@version where version starts with a digit (semver pre-release)
-  const packageRegex = /(@cowprotocol\/[\w-]+)@(\d[\w.\-]+)/g
-
-  // Search from the last comment backwards — the most recent publish is what we want
-  for (let i = comments.length - 1; i >= 0; i--) {
-    const body = comments[i].body || ''
-    if (!body.includes('GitHub Packages Published')) continue
-
-    const versions = {}
-    let match
-    while ((match = packageRegex.exec(body)) !== null) {
-      versions[match[1]] = match[2]
-    }
-
-    if (Object.keys(versions).length > 0) return versions
-  }
-
-  console.error('Could not find a comment with title "📦 GitHub Packages Published" containing package versions.')
-  process.exit(1)
-}
-
 function getPackageJsonPaths() {
   const paths = []
 
@@ -109,38 +77,6 @@ function getPackageJsonPaths() {
   }
 
   return paths
-}
-
-function shouldUpdate(depName) {
-  return depName === '@cowprotocol/cow-sdk' || depName.startsWith('@cowprotocol/sdk-')
-}
-
-function updatePackageJson(pkgPath, versions) {
-  const content = fs.readFileSync(pkgPath, 'utf-8')
-  const pkg = JSON.parse(content)
-  let updated = false
-
-  for (const section of ['dependencies', 'devDependencies']) {
-    const deps = pkg[section]
-    if (!deps) continue
-
-    for (const depName of Object.keys(deps)) {
-      if (shouldUpdate(depName) && versions[depName]) {
-        const oldVersion = deps[depName]
-        deps[depName] = versions[depName]
-        if (oldVersion !== versions[depName]) {
-          console.log(`  ${depName}: ${oldVersion} -> ${versions[depName]}`)
-          updated = true
-        }
-      }
-    }
-  }
-
-  if (updated) {
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-  }
-
-  return updated
 }
 
 // Main
@@ -183,6 +119,70 @@ async function main() {
     console.log(`\nUpdated ${updatedCount} package.json file(s).`)
     console.log('⚠️ Run `pnpm install --no-frozen-lockfile` to apply the changes!')
   }
+}
+
+function parsePrUrl(url) {
+  const match = url.match(PR_URL_REGEX)
+  if (!match) {
+    console.error(`Invalid PR URL: ${url}`)
+    console.error('Expected format: https://github.com/<owner>/<repo>/pull/<number>')
+    process.exit(1)
+  }
+  return { owner: match[1], repo: match[2], number: match[3] }
+}
+
+function parseVersionsFromComments(comments) {
+  // Matches package@version where version starts with a digit (semver pre-release)
+  const packageRegex = /(@cowprotocol\/[\w-]+)@(\d[\w.\-]+)/g
+
+  // Search from the last comment backwards — the most recent publish is what we want
+  for (let i = comments.length - 1; i >= 0; i--) {
+    const body = comments[i].body || ''
+    if (!body.includes('GitHub Packages Published')) continue
+
+    const versions = {}
+    let match
+    while ((match = packageRegex.exec(body)) !== null) {
+      versions[match[1]] = match[2]
+    }
+
+    if (Object.keys(versions).length > 0) return versions
+  }
+
+  console.error('Could not find a comment with title "📦 GitHub Packages Published" containing package versions.')
+  process.exit(1)
+}
+
+function shouldUpdate(depName) {
+  return depName === '@cowprotocol/cow-sdk' || depName.startsWith('@cowprotocol/sdk-')
+}
+
+function updatePackageJson(pkgPath, versions) {
+  const content = fs.readFileSync(pkgPath, 'utf-8')
+  const pkg = JSON.parse(content)
+  let updated = false
+
+  for (const section of ['dependencies', 'devDependencies']) {
+    const deps = pkg[section]
+    if (!deps) continue
+
+    for (const depName of Object.keys(deps)) {
+      if (shouldUpdate(depName) && versions[depName]) {
+        const oldVersion = deps[depName]
+        deps[depName] = versions[depName]
+        if (oldVersion !== versions[depName]) {
+          console.log(`  ${depName}: ${oldVersion} -> ${versions[depName]}`)
+          updated = true
+        }
+      }
+    }
+  }
+
+  if (updated) {
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+  }
+
+  return updated
 }
 
 main().catch((err) => {

@@ -15,14 +15,56 @@ const SESSION_STORAGE_PREFIX = 'twap-demand-analytics:session:v1'
 const ENCOUNTER_COUNT_STORAGE_PREFIX = 'twap-demand-analytics:unsupported-wallet-encounters:v1'
 const INTEREST_STORAGE_PREFIX = 'twap-demand-analytics:interest:v1'
 
-type BrowserStorageName = 'localStorage' | 'sessionStorage'
-
 export interface GetTwapDemandWalletTypeParams {
   account?: string
   accountType: AccountType | undefined
   isSafeViaWc: boolean
   isSafeWallet: boolean
   isSmartContractWallet: boolean | undefined
+}
+
+type BrowserStorageName = 'localStorage' | 'sessionStorage'
+
+export function getAndIncrementTwapUnsupportedWalletEncounterCountBucket(account?: string): TwapEncounterCountBucket {
+  const storage = getBrowserStorage('localStorage')
+
+  if (!storage) return TwapEncounterCountBucket.ONE
+
+  const key = `${ENCOUNTER_COUNT_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
+  const encounterCount = getStoredCount(storage, key) + 1
+
+  storage.setItem(key, encounterCount.toString())
+
+  return getTwapEncounterCountBucket(encounterCount)
+}
+
+export function getHasTwapFormInput(
+  inputAmount: CurrencyAmount<Currency> | null | undefined,
+  outputAmount: CurrencyAmount<Currency> | null | undefined,
+): boolean {
+  return !isFractionFalsy(inputAmount) || !isFractionFalsy(outputAmount)
+}
+
+export function getIsTwapDemandWalletTypePending(params: GetTwapDemandWalletTypeParams): boolean {
+  const { account, accountType, isSafeViaWc, isSafeWallet } = params
+
+  if (!account) return false
+  if (isSafeWallet) return false
+  if (isSafeViaWc) return accountType === undefined
+
+  return accountType === undefined
+}
+
+export function getIsTwapInterestRegistered(account?: string): boolean {
+  const storage = getBrowserStorage('localStorage')
+
+  if (!storage) return false
+
+  return storage.getItem(getTwapInterestStorageKey(account)) === '1'
+}
+
+export function getTwapDemandSessionStorageKey(action: TwapDemandAnalyticsEvent, account?: string): string {
+  return `${SESSION_STORAGE_PREFIX}:${action}:${getTwapDemandAccountKey(account)}`
 }
 
 export function getTwapDemandWalletType(params: GetTwapDemandWalletTypeParams): TwapDemandWalletType {
@@ -48,21 +90,12 @@ export function getTwapDemandWalletType(params: GetTwapDemandWalletTypeParams): 
   return TwapDemandWalletType.UNKNOWN
 }
 
-export function getIsTwapDemandWalletTypePending(params: GetTwapDemandWalletTypeParams): boolean {
-  const { account, accountType, isSafeViaWc, isSafeWallet } = params
+export function getTwapEncounterCountBucket(encounterCount: number): TwapEncounterCountBucket {
+  if (encounterCount <= 1) return TwapEncounterCountBucket.ONE
+  if (encounterCount <= 3) return TwapEncounterCountBucket.TWO_TO_THREE
+  if (encounterCount <= 7) return TwapEncounterCountBucket.FOUR_TO_SEVEN
 
-  if (!account) return false
-  if (isSafeWallet) return false
-  if (isSafeViaWc) return accountType === undefined
-
-  return accountType === undefined
-}
-
-export function getHasTwapFormInput(
-  inputAmount: CurrencyAmount<Currency> | null | undefined,
-  outputAmount: CurrencyAmount<Currency> | null | undefined,
-): boolean {
-  return !isFractionFalsy(inputAmount) || !isFractionFalsy(outputAmount)
+  return TwapEncounterCountBucket.EIGHT_PLUS
 }
 
 export function getTwapSellAmountUsdBucket(
@@ -78,18 +111,6 @@ export function getTwapSellAmountUsdBucket(
   return TwapSellAmountUsdBucket.GT_100K
 }
 
-export function getTwapEncounterCountBucket(encounterCount: number): TwapEncounterCountBucket {
-  if (encounterCount <= 1) return TwapEncounterCountBucket.ONE
-  if (encounterCount <= 3) return TwapEncounterCountBucket.TWO_TO_THREE
-  if (encounterCount <= 7) return TwapEncounterCountBucket.FOUR_TO_SEVEN
-
-  return TwapEncounterCountBucket.EIGHT_PLUS
-}
-
-export function getTwapDemandSessionStorageKey(action: TwapDemandAnalyticsEvent, account?: string): string {
-  return `${SESSION_STORAGE_PREFIX}:${action}:${getTwapDemandAccountKey(account)}`
-}
-
 export function markTwapDemandEventTrackedInSession(storageKey: string): boolean {
   const storage = getBrowserStorage('sessionStorage')
 
@@ -101,48 +122,12 @@ export function markTwapDemandEventTrackedInSession(storageKey: string): boolean
   return true
 }
 
-export function getAndIncrementTwapUnsupportedWalletEncounterCountBucket(account?: string): TwapEncounterCountBucket {
-  const storage = getBrowserStorage('localStorage')
-
-  if (!storage) return TwapEncounterCountBucket.ONE
-
-  const key = `${ENCOUNTER_COUNT_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
-  const encounterCount = getStoredCount(storage, key) + 1
-
-  storage.setItem(key, encounterCount.toString())
-
-  return getTwapEncounterCountBucket(encounterCount)
-}
-
-export function getIsTwapInterestRegistered(account?: string): boolean {
-  const storage = getBrowserStorage('localStorage')
-
-  if (!storage) return false
-
-  return storage.getItem(getTwapInterestStorageKey(account)) === '1'
-}
-
 export function registerTwapInterest(account?: string): void {
   const storage = getBrowserStorage('localStorage')
 
   if (!storage) return
 
   storage.setItem(getTwapInterestStorageKey(account), '1')
-}
-
-function getTwapDemandAccountKey(account?: string): string {
-  return account ? getAddressKey(account) : UNKNOWN_ACCOUNT_KEY
-}
-
-function getTwapInterestStorageKey(account?: string): string {
-  return `${INTEREST_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
-}
-
-function getStoredCount(storage: Storage, key: string): number {
-  const storedValue = storage.getItem(key)
-  const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0
-
-  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0
 }
 
 function getBrowserStorage(storageName: BrowserStorageName): Storage | null {
@@ -153,4 +138,19 @@ function getBrowserStorage(storageName: BrowserStorageName): Storage | null {
   } catch {
     return null
   }
+}
+
+function getStoredCount(storage: Storage, key: string): number {
+  const storedValue = storage.getItem(key)
+  const parsedValue = storedValue ? Number.parseInt(storedValue, 10) : 0
+
+  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0
+}
+
+function getTwapDemandAccountKey(account?: string): string {
+  return account ? getAddressKey(account) : UNKNOWN_ACCOUNT_KEY
+}
+
+function getTwapInterestStorageKey(account?: string): string {
+  return `${INTEREST_STORAGE_PREFIX}:${getTwapDemandAccountKey(account)}`
 }

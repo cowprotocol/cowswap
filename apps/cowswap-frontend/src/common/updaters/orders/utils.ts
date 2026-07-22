@@ -20,17 +20,6 @@ export type OrderTransitionData = {
 
 export type OrderTypesByUid = Record<string, UiOrderType>
 
-export function getOrdersFromTransitionData(orderData: OrderTransitionData[]): EnrichedOrder[] {
-  return orderData.map(({ order }) => order)
-}
-
-export function getOrderTypesByUid(orderData: OrderTransitionData[]): OrderTypesByUid {
-  return orderData.reduce<OrderTypesByUid>((acc, { order, orderType }) => {
-    acc[order.uid] = orderType
-    return acc
-  }, {})
-}
-
 export async function fetchAndClassifyOrder(
   orderFromStore: Order,
   chainId: ChainId,
@@ -57,6 +46,17 @@ export async function fetchAndClassifyOrder(
     )
     return null
   }
+}
+
+export function getOrdersFromTransitionData(orderData: OrderTransitionData[]): EnrichedOrder[] {
+  return orderData.map(({ order }) => order)
+}
+
+export function getOrderTypesByUid(orderData: OrderTransitionData[]): OrderTypesByUid {
+  return orderData.reduce<OrderTypesByUid>((acc, { order, orderType }) => {
+    acc[order.uid] = orderType
+    return acc
+  }, {})
 }
 
 export function getUltimateOrderTradeAmounts({
