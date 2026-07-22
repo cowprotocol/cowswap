@@ -32,7 +32,10 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
-  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged } = useTradeQuote()
+  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged, fetchParams } = useTradeQuote()
+
+  // Bumps on every genuine quote request (see `doQuotePolling`). Used to re-arm the timeout below.
+  const quoteFetchStartTimestamp = fetchParams?.fetchStartTimestamp
 
   // Trade-quote signals indicate the current output amount is stale (token just changed
   // or a fresh quote is in flight). Compute price impact only once the quote catches up,
@@ -40,11 +43,12 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
   const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
-  // Restart the safety-valve timeout on a token-pair change OR whenever a new quote begins
-  // (`quoteParamsChanged`). Keying it only off the token pair left `hasLoadingTimedOut` stuck
-  // true after the first 15s, so the stale-value suppression below never fired again for later
-  // same-pair repricing. Plain loading flicker (unchanged params) intentionally does not restart
-  // it, so a stuck quote still times out.
+  // Restart the safety-valve timeout on a token-pair change OR whenever a new quote request begins
+  // (`quoteFetchStartTimestamp`, which bumps per fetch). Keying it off the `quoteParamsChanged`
+  // boolean instead left `hasLoadingTimedOut` stuck true once it had timed out: a second changed-
+  // params quote for the same pair keeps the flag `true`, so the effect never re-ran and the stale
+  // value rendered immediately. The per-fetch timestamp re-arms on every genuinely new quote, while
+  // plain loading flicker (no new fetch) still lets a stuck quote time out.
   useEffect(() => {
     logPriceImpact.debug(`Price impact timeout reset`)
     setHasLoadingTimedOut(false)
@@ -56,7 +60,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp, inputToken, outputToken, quoteParamsChanged])
+  }, [isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)

@@ -43,6 +43,20 @@ function createToken(symbol: string, address: string): Token {
   return new Token(ChainId.SEPOLIA, address, 18, symbol, symbol)
 }
 
+// `fetchStartTimestamp` bumps on every genuine quote request and is what the hook keys its
+// safety-valve timeout reset off of, so tests set it explicitly per quote.
+function tradeQuoteState(params: {
+  isLoading: boolean
+  hasParamsChanged: boolean
+  fetchStartTimestamp: number
+}): ReturnType<typeof useTradeQuote> {
+  return {
+    isLoading: params.isLoading,
+    hasParamsChanged: params.hasParamsChanged,
+    fetchParams: { fetchStartTimestamp: params.fetchStartTimestamp },
+  } as unknown as ReturnType<typeof useTradeQuote>
+}
+
 describe('useFiatValuePriceImpact', () => {
   const inputToken = createToken('ETH', '0x0000000000000000000000000000000000000001')
   const outputToken = createToken('COW', '0x0000000000000000000000000000000000000002')
@@ -59,10 +73,9 @@ describe('useFiatValuePriceImpact', () => {
       outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputToken, 1),
     } as ReturnType<typeof useDerivedTradeState>)
 
-    mockedUseTradeQuote.mockReturnValue({
-      isLoading: false,
-      hasParamsChanged: false,
-    } as ReturnType<typeof useTradeQuote>)
+    mockedUseTradeQuote.mockReturnValue(
+      tradeQuoteState({ isLoading: false, hasParamsChanged: false, fetchStartTimestamp: 1 }),
+    )
   })
 
   afterEach(() => {
@@ -188,10 +201,48 @@ describe('useFiatValuePriceImpact', () => {
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
 
     // A fresh quote for the same token pair must re-arm the timeout and suppress the stale value again
-    mockedUseTradeQuote.mockReturnValue({
-      isLoading: true,
-      hasParamsChanged: true,
-    } as ReturnType<typeof useTradeQuote>)
+    mockedUseTradeQuote.mockReturnValue(
+      tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
+    )
+    rerender()
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
+    })
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+  })
+
+  it('re-arms the timeout when a second same-pair quote starts while params are already changed', () => {
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+
+    // First changed-params quote for the pair is in flight
+    mockedUseTradeQuote.mockReturnValue(
+      tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 1 }),
+    )
+
+    const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+    act(() => {
+      jest.advanceTimersByTime(15_000)
+    })
+
+    // Safety valve fired
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
+
+    // A SECOND changed-params quote for the same pair starts: `hasParamsChanged` stays true
+    // (true -> true), only the per-fetch timestamp advances. This must still re-arm the timeout
+    // and keep the stale value suppressed, which keying off the boolean alone failed to do.
+    mockedUseTradeQuote.mockReturnValue(
+      tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
+    )
     rerender()
 
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
