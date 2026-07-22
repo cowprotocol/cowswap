@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
-import { useConfig } from 'wagmi'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove/shouldZeroApprove'
 

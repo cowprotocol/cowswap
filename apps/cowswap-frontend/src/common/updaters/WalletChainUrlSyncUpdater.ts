@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 
-import { isSupportedChainId } from '@cowprotocol/common-utils'
-
 import { useConnection } from 'wagmi'
+
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 
 import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
 

@@ -1,3 +1,5 @@
+import type { Config } from 'wagmi'
+
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
@@ -16,8 +18,6 @@ import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAna
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
 import type { WethContractData } from 'common/hooks/useContract'
-
-import type { Config } from 'wagmi'
 
 export interface SafeBundleFlowContext {
   spender: string

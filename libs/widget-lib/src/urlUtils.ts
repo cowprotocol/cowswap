@@ -12,20 +12,31 @@ const INVALID_BASE_URL_PREFIX = 'CoW Swap widget: invalid baseUrl.'
  */
 export const SHOULD_THROW_IF_INVALID_URL = false
 
-function isLocalDevHostname(hostname: string): boolean {
-  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname.endsWith('.localhost')
+export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
+  const { chainId = 1, sell, buy, tradeType = TradeType.SWAP } = params
+
+  const assetsPath = [sell?.asset || EMPTY_TOKEN, buy?.asset || EMPTY_TOKEN].map(encodeURIComponent).join('/')
+
+  return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
 
-function handleInvalidWidgetBaseUrl(detail: string, throwIfInvalid: boolean): string {
-  const message = `${INVALID_BASE_URL_PREFIX} ${detail}`
+export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
+  const host = sanitizeWidgetBaseUrl(params.baseUrl)
+  const path = buildWidgetPath(params)
 
-  if (throwIfInvalid) {
-    throw new Error(message)
-  }
+  return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
+}
 
-  console.error('[CoW Widget]', message)
+export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  const query = new URLSearchParams()
 
-  return COWSWAP_ORIGIN
+  return addHooksEnabledToQuery(
+    addLocaleToQuery(
+      addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
+      params,
+    ),
+    params,
+  )
 }
 
 /**
@@ -74,42 +85,27 @@ export function sanitizeWidgetBaseUrl(
   return `${parsed.origin}${pathSegment}`
 }
 
-export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
-  const host = sanitizeWidgetBaseUrl(params.baseUrl)
-  const path = buildWidgetPath(params)
-
-  return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
-}
-
-export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
-  const { chainId = 1, sell, buy, tradeType = TradeType.SWAP } = params
-
-  const assetsPath = [sell?.asset || EMPTY_TOKEN, buy?.asset || EMPTY_TOKEN].map(encodeURIComponent).join('/')
-
-  return `/${chainId}/widget/${tradeType}/${assetsPath}`
-}
-
-export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  const query = new URLSearchParams()
-
-  return addHooksEnabledToQuery(
-    addLocaleToQuery(
-      addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
-      params,
-    ),
-    params,
-  )
-}
-
-function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  const { sell, buy } = params
-
-  if (sell?.amount) {
-    query.append('sellAmount', sell.amount)
+function addHooksEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (hasHooks(params.hooks)) {
+    query.append('hooksEnabled', 'true')
+  } else {
+    query.delete('hooksEnabled')
   }
 
-  if (buy?.amount) {
-    query.append('buyAmount', buy.amount)
+  return query
+}
+
+function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (params.locale) {
+    query.append('lng', params.locale)
+  }
+
+  return query
+}
+
+function addTargetChainIdToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (params.targetChainId) {
+    query.append('targetChainId', params.targetChainId.toString())
   }
 
   return query
@@ -134,32 +130,36 @@ function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapW
   return query
 }
 
-function addTargetChainIdToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  if (params.targetChainId) {
-    query.append('targetChainId', params.targetChainId.toString())
+function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  const { sell, buy } = params
+
+  if (sell?.amount) {
+    query.append('sellAmount', sell.amount)
+  }
+
+  if (buy?.amount) {
+    query.append('buyAmount', buy.amount)
   }
 
   return query
 }
 
-function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  if (params.locale) {
-    query.append('lng', params.locale)
+function handleInvalidWidgetBaseUrl(detail: string, throwIfInvalid: boolean): string {
+  const message = `${INVALID_BASE_URL_PREFIX} ${detail}`
+
+  if (throwIfInvalid) {
+    throw new Error(message)
   }
 
-  return query
-}
+  console.error('[CoW Widget]', message)
 
-function addHooksEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  if (hasHooks(params.hooks)) {
-    query.append('hooksEnabled', 'true')
-  } else {
-    query.delete('hooksEnabled')
-  }
-
-  return query
+  return COWSWAP_ORIGIN
 }
 
 function hasHooks(hooks: CowSwapWidgetParams['hooks'] | undefined): boolean {
   return !!hooks && Object.values(hooks).some(Boolean)
+}
+
+function isLocalDevHostname(hostname: string): boolean {
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname.endsWith('.localhost')
 }

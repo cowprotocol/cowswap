@@ -1,8 +1,9 @@
+import { parseUnits } from 'viem'
+
 import { SupportedChainId as ChainId, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 
 import BigNumber from 'bignumber.js'
-import { parseUnits } from 'viem'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

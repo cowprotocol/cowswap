@@ -20,6 +20,13 @@ interface QuoteIdValueProps {
   quoteId: string
 }
 
+interface RowQuoteIdProps {
+  quoteId: QuoteIdInput
+  isVerified?: boolean | null
+  expiration?: QuoteExpirationInput
+  styleProps?: RowStyleProps
+}
+
 export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
   const { t } = useLingui()
   return (
@@ -35,13 +42,6 @@ export function QuoteIdValue({ quoteId }: QuoteIdValueProps): ReactNode {
       />
     </styledEl.QuoteIdValueWrapper>
   )
-}
-
-interface RowQuoteIdProps {
-  quoteId: QuoteIdInput
-  isVerified?: boolean | null
-  expiration?: QuoteExpirationInput
-  styleProps?: RowStyleProps
 }
 
 export function RowQuoteId({ quoteId, isVerified, expiration, styleProps }: RowQuoteIdProps): ReactNode {

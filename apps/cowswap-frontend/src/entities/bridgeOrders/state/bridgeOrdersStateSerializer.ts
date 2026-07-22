@@ -44,6 +44,7 @@ export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAm
           amountInIntermediateCurrency: deserializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
         }
       : undefined,
+    expectedFillTimeSeconds: amounts.expectedFillTimeSeconds,
   }
 }
 
@@ -61,6 +62,7 @@ export function serializeQuoteAmounts(amounts: BridgeQuoteAmounts): BridgeQuoteA
           amountInIntermediateCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
         }
       : undefined,
+    expectedFillTimeSeconds: amounts.expectedFillTimeSeconds,
   }
 }
 

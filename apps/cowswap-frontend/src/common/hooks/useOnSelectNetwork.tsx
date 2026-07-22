@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
+// TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -12,28 +12,35 @@ import { Trans } from '@lingui/react/macro'
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
-
+import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
-  const setWalletConnectionError = useSetWalletConnectionError()
   const switchNetwork = useSwitchNetwork()
+  const handleCrossChainFamilySwitch = useCrossChainFamilySwitch()
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
+      // Switching between EVM and non-EVM networks requires a different wallet and is handled
+      // separately (confirm + disconnect + reconnect) instead of a regular network switch.
+      const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
+
+      if (switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED) {
+        return
+      }
+
       try {
-        setWalletConnectionError(undefined)
         await switchNetwork(targetChain)
 
         setChainIdToUrl(targetChain)
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        console.error('Failed to switch networks', error)
+      } catch (_error: any) {
+        console.error('Failed to switch networks', _error)
+        const error = _error.originalError ?? _error
 
         const causeIsRejection = !error.cause || isRejectRequestProviderError(error.cause)
         if (isRejectRequestProviderError(error) && causeIsRejection) {
@@ -52,14 +59,12 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
             </Trans>
           ),
         })
-
-        setWalletConnectionError(error.message)
       }
 
       if (!skipClose) {
         closeModal()
       }
     },
-    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl],
+    [handleCrossChainFamilySwitch, switchNetwork, addSnackbar, closeModal, setChainIdToUrl],
   )
 }

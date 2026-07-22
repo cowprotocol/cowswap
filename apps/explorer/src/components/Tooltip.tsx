@@ -105,11 +105,6 @@ interface TooltipProps extends TooltipBaseProps {
 
 export const Tooltip = React.memo(React.forwardRef<HTMLDivElement, TooltipProps>(TooltipBase))
 
-type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
-  {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
-  }[Keys]
-
 type BaseTooltipsProps = RequireAtLeastOne<
   {
     tooltip: ReactNode
@@ -120,6 +115,11 @@ type BaseTooltipsProps = RequireAtLeastOne<
   },
   'sourceIconSvg' | 'targetContent'
 >
+
+type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
+  }[Keys]
 
 export const BaseIconTooltipOnClick: React.FC<BaseTooltipsProps> = ({
   tooltip,

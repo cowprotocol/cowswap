@@ -1,16 +1,15 @@
 import { useCallback, useState } from 'react'
 
-import { delay } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
-import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import ms from 'ms.macro'
 import { stringToHex } from 'viem'
 import { useWalletClient } from 'wagmi'
 
-import { useCowShedHooks } from './useCowShedHooks'
+import { delay } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
+import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import ms from 'ms.macro'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
@@ -24,30 +23,37 @@ export interface RecoverFundsContext {
   proxyAddress: string | undefined
 }
 
+export interface UseRecoverFundsFromProxyParams {
+  cowShedHooks?: CowShedHooks
+  selectedTokenAddress?: string
+  tokenBalance: CurrencyAmount<Currency> | null
+  isNativeToken: boolean
+}
+
 export enum RecoverSigningStep {
   SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
   SIGN_TRANSACTION = 'SIGN_TRANSACTION',
 }
 
-export function useRecoverFundsFromProxy(
-  proxyAddress: string | undefined,
-  proxyVersion: CoWShedVersion | undefined,
-  selectedTokenAddress: string | undefined,
-  tokenBalance: CurrencyAmount<Currency> | null,
-  isNativeToken: boolean,
-): RecoverFundsContext {
+export function useRecoverFundsFromProxy({
+  cowShedHooks,
+  selectedTokenAddress,
+  tokenBalance,
+  isNativeToken,
+}: UseRecoverFundsFromProxyParams): RecoverFundsContext {
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
   const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
-  const cowShedHooks = useCowShedHooks(proxyVersion)
 
-  const factoryAddress = cowShedHooks?.getFactoryAddress()
+  const proxyAddress = account && cowShedHooks ? cowShedHooks.proxyOf(account) : undefined
+  const factoryAddress = cowShedHooks ? cowShedHooks.getFactoryAddress() : undefined
 
   const callback = useCallback(async () => {
     if (
       !cowShedHooks ||
       !walletClient ||
+      !walletClient.account ||
       !proxyAddress ||
       !factoryAddress ||
       !selectedTokenAddress ||
@@ -97,7 +103,7 @@ export function useRecoverFundsFromProxy(
       const hash = await walletClient.sendTransaction({
         to: factoryAddress as `0x${string}`,
         data: callData as `0x${string}`,
-        account: walletClient.account!,
+        account: walletClient.account,
         chain: walletClient.chain,
         gas: DEFAULT_GAS_LIMIT,
       })

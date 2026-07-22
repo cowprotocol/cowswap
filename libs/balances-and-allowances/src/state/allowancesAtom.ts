@@ -1,14 +1,14 @@
 import { atomWithStorage } from 'jotai/utils'
 
-import { asyncAtomFamily } from '@cowprotocol/common-utils'
+import { erc20Abi, type Address } from 'viem'
+import { Connector } from 'wagmi'
+
+import { asyncAtomFamily, getPublicClientFromProvider } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
-import { getPublicClientFromProvider } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
-import { erc20Abi, type Address } from 'viem'
-import { Connector } from 'wagmi'
 
 export type AllowancesState = Record<string, bigint | undefined>
 
@@ -53,6 +53,18 @@ export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<stri
   getJotaiMergerStorage(),
 )
 
+export interface TokenAllowancesFamilyParams {
+  connector?: Connector
+  chainId: SupportedChainId
+  account?: string
+  spender?: string
+  tokenAddresses: string[]
+}
+
+function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenAllowancesFamilyParams): boolean {
+  return tokenAllowancesFamilyKey(a) === tokenAllowancesFamilyKey(b)
+}
+
 /** Stable key for atomFamily so [a,b] and [b,a] resolve to the same atom. */
 function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
   return [
@@ -61,18 +73,6 @@ function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
     getAddressKey(params.spender ?? ''),
     ...params.tokenAddresses.map((a) => getAddressKey(a)).sort(),
   ].join(',')
-}
-
-function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenAllowancesFamilyParams): boolean {
-  return tokenAllowancesFamilyKey(a) === tokenAllowancesFamilyKey(b)
-}
-
-export interface TokenAllowancesFamilyParams {
-  connector?: Connector
-  chainId: SupportedChainId
-  account?: string
-  spender?: string
-  tokenAddresses: string[]
 }
 
 // TODO: Combine apps/cowswap-frontend/src/common/hooks/useTokenAllowance.ts and optimisticAllowancesAtom

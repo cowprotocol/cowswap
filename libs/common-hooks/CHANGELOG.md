@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.5.1...common-hooks-v3.6.0) (2026-07-17)
+
+### Minor Changes
+
+- feat(bw): disconnect session when user idle (#7833)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.1
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.5.0...common-hooks-v3.5.1) (2026-07-08)
 
 ### Patch Changes
