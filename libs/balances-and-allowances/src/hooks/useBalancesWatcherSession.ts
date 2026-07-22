@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useIsWindowIdle, useThrottledCallback } from '@cowprotocol/common-hooks'
+import { useIsWindowIdle, useStableStringList, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { applyEmptyLoad, createSessionController, HIDDEN_SESSION_TIMEOUT_MS } from './balancesWatcherSessionController'
@@ -47,7 +47,13 @@ export {
  * the tab is visible again, a fresh session (POST + SSE) is started.
  */
 export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParams): void {
-  const { account, chainId, tokensListsUrls, customTokens } = params
+  const { account, chainId } = params
+
+  // The token arrays arrive with a fresh reference on every hydration recompute
+  // (see `useStableStringList`). Stabilize by content so the session effect only
+  // re-runs — and only POSTs a new session — when the tracked set actually changes.
+  const tokensListsUrls = useStableStringList(params.tokensListsUrls)
+  const customTokens = useStableStringList(params.customTokens)
 
   const setBalances = useSetAtom(balancesAtom)
   const setHealth = useSetAtom(balancesWatcherHealthAtom)
