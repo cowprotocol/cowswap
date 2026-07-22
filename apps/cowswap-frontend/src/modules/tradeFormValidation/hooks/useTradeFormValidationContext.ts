@@ -64,7 +64,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isBundlingSupported = useIsTxBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()
-  const { isSupportedWallet } = useWalletDetails()
+  const { allowsOffchainSigning, isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
@@ -77,6 +77,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isApproveRequired = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    allowsOffchainSigning,
   }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER

@@ -150,6 +150,25 @@ describe('useHandleOrderPlacement', () => {
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
   })
 
+  it('uses the regular permit flow instead of an approval bundle', async () => {
+    mockUseIsSafeApprovalBundle.mockReturnValue(true)
+    const permitTradeContext = {
+      ...tradeContextMock,
+      allowsOffchainSigning: true,
+      permitInfo: { type: 'eip-2612', name: 'USDC', version: '2' },
+    } as TradeFlowContext
+
+    const { result } = renderHook(
+      () =>
+        useHandleOrderPlacement(permitTradeContext, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
+      { wrapper },
+    )
+    await act(result.current)
+
+    expect(mockTradeFlow).toHaveBeenCalled()
+    expect(mockSafeBundleFlow).not.toHaveBeenCalled()
+  })
+
   describe('partiallyFillableOverride', () => {
     it('When partiallyFillableOverride is undefined, then no override should be passed to tradeFlow', async () => {
       // Arrange

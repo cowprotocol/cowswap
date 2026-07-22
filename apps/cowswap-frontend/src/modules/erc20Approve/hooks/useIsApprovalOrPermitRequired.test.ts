@@ -494,7 +494,7 @@ describe('useIsApprovalOrPermitRequired', () => {
   })
 
   describe('when bundling is supported', () => {
-    it('should return BundleApproveRequired when bundling is enabled and approval is needed', () => {
+    it('should bundle approval for an unsupported permit despite offchain signing', () => {
       const nativeAmount = CurrencyAmount.fromRawAmount(mockNativeToken, '1000000000000000000')
       mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
       mockUseDerivedTradeState.mockReturnValue(
@@ -510,7 +510,10 @@ describe('useIsApprovalOrPermitRequired', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
 
       const { result } = renderHook(() =>
-        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: true,
+        }),
       )
 
       expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
@@ -529,6 +532,53 @@ describe('useIsApprovalOrPermitRequired', () => {
 
       const { result } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
+    })
+
+    it.each([
+      ['eip-2612', ApproveRequiredReason.Eip2612PermitRequired],
+      ['dai-like', ApproveRequiredReason.DaiLikePermitRequired],
+    ] as const)('should prefer a %s permit for an offchain-signing swap wallet', (type, expectedReason) => {
+      mockUsePermitInfo.mockReturnValue({ type })
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: true,
+        }),
+      )
+
+      expect(result.current.reason).toBe(expectedReason)
+    })
+
+    it.each([TradeType.LIMIT_ORDER, TradeType.YIELD])(
+      'should prefer permits for offchain-signing %s wallets',
+      (tradeType) => {
+        mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType }))
+        mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
+
+        const { result } = renderHook(() =>
+          useIsApprovalOrPermitRequired({
+            isBundlingSupportedOrEnabledForContext: true,
+            allowsOffchainSigning: true,
+          }),
+        )
+
+        expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+      },
+    )
+
+    it('should keep bundling limit-order permits without offchain signing', () => {
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType: TradeType.LIMIT_ORDER }))
+      mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: false,
+        }),
       )
 
       expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)

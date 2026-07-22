@@ -1,3 +1,6 @@
+import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
+
+import { ApproveRequiredReason, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { useAmountsToSignFromQuote, useIsEoaEthFlow, useIsSafeEthFlow } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -7,18 +10,32 @@ import { FlowType } from '../types/TradeFlowContext'
 export function useTradeFlowType(): FlowType {
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
+  const isBundlingSupported = useIsTxBundlingSupported()
+  const { allowsOffchainSigning } = useWalletDetails()
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
-  // todo check this case
   const isSafeBundle = useIsSafeApprovalBundle(maximumSendSellAmount)
-  return getFlowType(isSafeBundle, isEoaEthFlow, isSafeEthFlow)
+  const { reason: approvalReason } = useIsApprovalOrPermitRequired({
+    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    allowsOffchainSigning,
+  })
+  const isPermitRequired =
+    approvalReason === ApproveRequiredReason.Eip2612PermitRequired ||
+    approvalReason === ApproveRequiredReason.DaiLikePermitRequired
+
+  return getFlowType(isSafeBundle, isEoaEthFlow, isSafeEthFlow, isPermitRequired)
 }
 
-function getFlowType(isSafeBundle: boolean, isEoaEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
+function getFlowType(
+  isSafeBundle: boolean,
+  isEoaEthFlow: boolean,
+  isSafeEthFlow: boolean,
+  isPermitRequired: boolean,
+): FlowType {
   if (isSafeEthFlow) {
     // Takes precedence over bundle approval
     return FlowType.SAFE_BUNDLE_ETH
   }
-  if (isSafeBundle) {
+  if (isSafeBundle && !isPermitRequired) {
     // Takes precedence over eth flow
     return FlowType.SAFE_BUNDLE_APPROVAL
   }

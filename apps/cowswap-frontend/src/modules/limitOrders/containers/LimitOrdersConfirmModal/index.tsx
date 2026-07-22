@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -78,7 +79,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance
 
   const inputSymbol = inputAmount?.currency?.symbol || t`token`
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
+  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount) && !canUsePermit
   const buttonText = isInsufficientBalance ? (
     t`Insufficient ${inputSymbol} balance`
   ) : isSafeApprovalBundle ? (
