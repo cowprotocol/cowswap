@@ -31,6 +31,10 @@ function getFlowType(
   isSafeEthFlow: boolean,
   isPermitRequired: boolean,
 ): FlowType {
+  if (isEoaEthFlow) {
+    // Takes precedence when EIP-7702 also supports bundling
+    return FlowType.EOA_ETH_FLOW
+  }
   if (isSafeEthFlow) {
     // Takes precedence over bundle approval
     return FlowType.SAFE_BUNDLE_ETH
@@ -38,10 +42,6 @@ function getFlowType(
   if (isSafeBundle && !isPermitRequired) {
     // Takes precedence over eth flow
     return FlowType.SAFE_BUNDLE_APPROVAL
-  }
-  if (isEoaEthFlow) {
-    // Takes precedence over regular flow
-    return FlowType.EOA_ETH_FLOW
   }
   return FlowType.REGULAR
 }
