@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, lazy, Suspense } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -20,6 +21,7 @@ interface ProgressContentProps {
   stepName: OrderProgressBarProps['stepName']
   order: OrderProgressBarProps['order']
   countdown: number
+  chainId: SupportedChainId
   randomImage: string
   surplusPercentValue: string
   randomBenefit: string
@@ -66,6 +68,7 @@ export function RenderProgressTopSection({
     stepName,
     order,
     countdown: countdown || 0,
+    chainId,
     randomImage,
     surplusPercentValue,
     randomBenefit,
@@ -94,6 +97,7 @@ function ProgressContent({
   stepName,
   order,
   countdown,
+  chainId,
   randomImage,
   surplusPercentValue,
   randomBenefit,
@@ -125,6 +129,7 @@ function ProgressContent({
               stepName={stepName}
               order={order}
               countdown={countdown}
+              chainId={chainId}
               randomImage={randomImage}
               surplusPercentValue={surplusPercentValue}
               randomBenefit={randomBenefit}

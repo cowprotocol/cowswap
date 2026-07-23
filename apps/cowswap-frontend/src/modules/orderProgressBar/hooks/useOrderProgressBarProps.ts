@@ -28,7 +28,7 @@ import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
+import { DEFAULT_STEP_NAME, getProgressBarTimerDuration, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -53,7 +53,6 @@ type UseOrderProgressBarPropsParams = {
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
-export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
  * Hook for fetching ProgressBar props
@@ -232,6 +231,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     countdown,
     backendApiStatus,
     isUnfillable || isCancelled || isCancelling || isExpired,
+    chainId,
   )
 
   return useMemo(() => {
@@ -369,6 +369,7 @@ function useCountdownStartUpdater(
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   shouldDisableCountdown: boolean,
+  chainId: SupportedChainId,
 ): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
@@ -388,12 +389,12 @@ function useCountdownStartUpdater(
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
-      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
+      setCountdown(orderId, getProgressBarTimerDuration(chainId))
     } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown, chainId])
 }
 
 // local updaters
