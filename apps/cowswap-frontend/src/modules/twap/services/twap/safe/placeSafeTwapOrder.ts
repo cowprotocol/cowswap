@@ -77,22 +77,22 @@ export async function getSafeTwapOrderTxs({
     }
 
     txs.unshift(approveTx)
-  }
 
-  if (needsZeroApproval) {
-    // Some USDT-style tokens require resetting the allowance to zero before we set a new allowance:
-    const zeroApproveTx = {
-      to: sellTokenAddress,
-      data: encodeFunctionData({
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [spender as `0x${string}`, 0n],
-      }),
-      value: '0',
-      operation: 0,
+    if (needsZeroApproval) {
+      // Some USDT-style tokens require resetting the allowance to zero before we set a new allowance:
+      const zeroApproveTx = {
+        to: sellTokenAddress,
+        data: encodeFunctionData({
+          abi: erc20Abi,
+          functionName: 'approve',
+          args: [spender as `0x${string}`, 0n],
+        }),
+        value: '0',
+        operation: 0,
+      }
+
+      txs.unshift(zeroApproveTx)
     }
-
-    txs.unshift(zeroApproveTx)
   }
 
   if (fallbackHandlerIsNotSet) {

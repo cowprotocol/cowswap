@@ -490,7 +490,7 @@ async function getProxyAllowances({
     args: [proxyAddress, spender],
   }).catch(() => {
     // Include approve so the post-hook still sets it up if there's any kind of issue:
-    return 0
+    return 0n
   })
 
   const needsApproval = proxyAllowance < sellAmountAtoms
