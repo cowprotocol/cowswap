@@ -133,6 +133,16 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PR_URL: ${{ steps.create-pr.outputs.pull-request-url }}
 
+      - name: Notify Slack for develop sync failure
+        if: failure()
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+            --data "{\"text\": \"❌ Develop sync automation failed. <$RUN_URL|Open workflow run>.\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
   sync-staging:
     name: Fast-forward staging to main
     if: startsWith(github.ref, 'refs/tags/cowswap-') || startsWith(github.ref, 'refs/tags/explorer-')
