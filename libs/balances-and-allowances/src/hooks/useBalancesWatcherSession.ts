@@ -22,6 +22,13 @@ export interface UseBalancesWatcherSessionParams {
    * in the session POST.
    */
   customTokens: string[]
+  /**
+   * Whether the token set matches `chainId`. The lists/custom tokens are derived
+   * from `environmentAtom.chainId`, which lags the wallet chainId by one commit on
+   * a chain switch — POSTing before it catches up would send the previous chain's
+   * lists to the new chain's session.
+   */
+  isChainSynced: boolean
 }
 
 // Re-exported here so callers can keep importing constants from the hook module.
@@ -47,7 +54,7 @@ export {
  * the tab is visible again, a fresh session (POST + SSE) is started.
  */
 export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParams): void {
-  const { account, chainId } = params
+  const { account, chainId, isChainSynced } = params
 
   // The token arrays arrive with a fresh reference on every hydration recompute
   // (see `useStableStringList`). Stabilize by content so the session effect only
@@ -62,6 +69,12 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
 
   useEffect(() => {
     if (!account || !isEvmChain(chainId)) {
+      setHealth(DEFAULT_WATCHER_HEALTH_STATE)
+      return
+    }
+    if (!isChainSynced) {
+      // Token set still reflects the previous chain — wait for it to catch up so
+      // we don't POST the wrong chain's lists (and a redundant session).
       setHealth(DEFAULT_WATCHER_HEALTH_STATE)
       return
     }
@@ -89,5 +102,5 @@ export function useBalancesWatcherSession(params: UseBalancesWatcherSessionParam
     })
     controller.start()
     return controller.cleanup
-  }, [account, chainId, tokensListsUrls, customTokens, isIdle, setBalances, setHealth, reportError])
+  }, [account, chainId, isChainSynced, tokensListsUrls, customTokens, isIdle, setBalances, setHealth, reportError])
 }
