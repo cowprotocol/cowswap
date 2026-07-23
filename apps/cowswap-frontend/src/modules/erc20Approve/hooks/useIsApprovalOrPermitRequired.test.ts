@@ -553,22 +553,22 @@ describe('useIsApprovalOrPermitRequired', () => {
       expect(result.current.reason).toBe(expectedReason)
     })
 
-    it.each([TradeType.LIMIT_ORDER, TradeType.YIELD])(
-      'should prefer permits for offchain-signing %s wallets',
-      (tradeType) => {
-        mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType }))
-        mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
+    it.each([
+      [TradeType.LIMIT_ORDER, ApproveRequiredReason.NotRequired],
+      [TradeType.YIELD, ApproveRequiredReason.Eip2612PermitRequired],
+    ])('should return the expected permit requirement for offchain-signing %s wallets', (tradeType, expectedReason) => {
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType }))
+      mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-        const { result } = renderHook(() =>
-          useIsApprovalOrPermitRequired({
-            isBundlingSupportedOrEnabledForContext: true,
-            allowsOffchainSigning: true,
-          }),
-        )
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: true,
+        }),
+      )
 
-        expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
-      },
-    )
+      expect(result.current.reason).toBe(expectedReason)
+    })
 
     it('should keep bundling limit-order permits without offchain signing', () => {
       mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType: TradeType.LIMIT_ORDER }))

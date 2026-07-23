@@ -42,6 +42,8 @@ export function useIsApprovalOrPermitRequired({
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const permitInfo = usePermitInfo(inputCurrency, tradeType)
   const type = permitInfo?.type
+  const offchainPermitRequirement =
+    tradeType === TradeType.LIMIT_ORDER ? ApproveRequiredReason.NotRequired : getPermitRequirements(type)
 
   const reason = (() => {
     if (!isApproveSupportedByFlowOrWallet(inputCurrency, tradeType, !!isBundlingSupportedOrEnabledForContext)) {
@@ -55,7 +57,7 @@ export function useIsApprovalOrPermitRequired({
     const isPermitSupported = isSupportedPermitInfo(permitInfo)
 
     if (allowsOffchainSigning && isPermitSupported) {
-      return getPermitRequirements(type)
+      return offchainPermitRequirement
     }
 
     if (!isPermitSupported && isApprovalRequired(approvalState)) {
