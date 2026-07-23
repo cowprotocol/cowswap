@@ -54,6 +54,15 @@ type UseOrderProgressBarPropsParams = {
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 
+// Steps that should be shown immediately, bypassing the minimum step-display debounce
+const IMMEDIATE_STEP_NAMES: OrderProgressBarStepName[] = [
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
+  OrderProgressBarStepName.CANCELLING,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.EXPIRED,
+]
+
 /**
  * Hook for fetching ProgressBar props
  * TODO FIXME: refactor this
@@ -459,10 +468,7 @@ function useProgressBarStepNameUpdater(
     if (
       lastTimeChangedSteps === undefined ||
       timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
+      IMMEDIATE_STEP_NAMES.includes(stepName)
     ) {
       updateStepName(stepName)
 
