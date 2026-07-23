@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.1...common-utils-v3.9.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
 ## [3.8.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.0...common-utils-v3.8.1) (2026-07-17)
 
 ### Patch Changes
