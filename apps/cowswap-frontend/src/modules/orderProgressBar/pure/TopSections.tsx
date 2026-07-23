@@ -39,6 +39,7 @@ interface InitialTopSectionProps extends BaseTopSectionProps {
 
 interface SolvingTopSectionProps {
   countdown: number
+  chainId: OrderProgressBarProps['chainId']
 }
 
 // delayed, submissionFailed, solved
@@ -163,7 +164,7 @@ export function InitialTopSection({ stepName, order }: InitialTopSectionProps): 
   )
 }
 
-export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactNode {
+export function SolvingTopSection({ countdown, chainId }: SolvingTopSectionProps): ReactNode {
   return (
     <div
       style={{
@@ -181,6 +182,7 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
       />
       <CircularCountdown
         countdown={countdown || 0}
+        chainId={chainId}
         isDelayed={countdown === 0}
         bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
       />

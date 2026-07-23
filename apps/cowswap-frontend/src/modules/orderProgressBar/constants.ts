@@ -35,6 +35,10 @@ export enum OrderProgressBarStepName {
 
 export const DEFAULT_STEP_NAME: OrderProgressBarStepName = OrderProgressBarStepName.INITIAL
 
+// Progress bar countdown durations, matching the solve deadlines per chain (in seconds)
+const PROGRESS_BAR_TIMER_DURATION_MAINNET = 10
+const PROGRESS_BAR_TIMER_DURATION_DEFAULT = 7
+
 /**
  * Visual states for progress bar steps UI presentation.
  * These are purely for styling and visual feedback, determining:
@@ -54,9 +58,15 @@ export enum StepStatus {
   FUTURE = 'future',
   DONE = 'done',
 }
-type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
 
+type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
 type StepConfig = { title: MessageDescriptor; description?: MessageDescriptor }
+
+export function getProgressBarTimerDuration(chainId: SupportedChainId): number {
+  return chainId === SupportedChainId.MAINNET
+    ? PROGRESS_BAR_TIMER_DURATION_MAINNET
+    : PROGRESS_BAR_TIMER_DURATION_DEFAULT
+}
 
 export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {

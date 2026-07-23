@@ -20,6 +20,7 @@ interface ProgressContentProps {
   stepName: OrderProgressBarProps['stepName']
   order: OrderProgressBarProps['order']
   countdown: number
+  chainId: OrderProgressBarProps['chainId']
   randomImage: string
   surplusPercentValue: string
   randomBenefit: string
@@ -66,6 +67,7 @@ export function RenderProgressTopSection({
     stepName,
     order,
     countdown: countdown || 0,
+    chainId,
     randomImage,
     surplusPercentValue,
     randomBenefit,
@@ -94,6 +96,7 @@ function ProgressContent({
   stepName,
   order,
   countdown,
+  chainId,
   randomImage,
   surplusPercentValue,
   randomBenefit,
@@ -125,6 +128,7 @@ function ProgressContent({
               stepName={stepName}
               order={order}
               countdown={countdown}
+              chainId={chainId}
               randomImage={randomImage}
               surplusPercentValue={surplusPercentValue}
               randomBenefit={randomBenefit}
