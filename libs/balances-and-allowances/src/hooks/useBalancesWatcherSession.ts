@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useIsWindowIdle, useStableStringList, useThrottledCallback } from '@cowprotocol/common-hooks'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { applyEmptyLoad, createSessionController, HIDDEN_SESSION_TIMEOUT_MS } from './balancesWatcherSessionController'
 
@@ -21,7 +21,7 @@ export interface UseBalancesWatcherSessionParams {
    * Custom (user-imported) token addresses for the current chain. Sent verbatim
    * in the session POST.
    */
-  customTokens: string[]
+  customTokens: AddressKey[]
   /**
    * Whether the token set matches `chainId`. The lists/custom tokens are derived
    * from `environmentAtom.chainId`, which lags the wallet chainId by one commit on
