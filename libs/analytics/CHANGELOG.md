@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.6.0...analytics-v3.7.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/common-hooks@3.6.1
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.3...analytics-v3.6.0) (2026-07-17)
 
 ### Minor Changes
