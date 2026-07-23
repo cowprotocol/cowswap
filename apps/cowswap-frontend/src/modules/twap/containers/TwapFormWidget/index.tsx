@@ -135,7 +135,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+      if (localFormValidation === TwapFormState.WALLET_NOT_SUPPORTED) {
         cowAnalytics.sendEvent({
           category: CowSwapAnalyticsCategory.TWAP,
           action: 'non-compatible',

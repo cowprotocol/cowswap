@@ -1,57 +1,20 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
-import { Connector } from 'wagmi'
+import { numberToHex } from 'viem'
 
-import {
-  isEip1193Provider,
-  isMobile,
-  logWallet,
-  normalizeError,
-  TimeoutError,
-  withTimeout,
-} from '@cowprotocol/common-utils'
-import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
-import { AccountType } from '@cowprotocol/types'
+import { isEip1193Provider, logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
 import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
 
 import { wagmiConfig } from '../../wagmi/config'
-import { getIsWalletConnect } from '../../wagmi/hooks/useIsWalletConnect'
-import {
-  isSafeAppAtom,
-  isSafeViaWcAtom,
-  accountTypeAtom,
-  isSmartContractWalletAtom,
-  isSafeWalletAtom,
-} from '../../wagmi/state/walletMetadata.atoms'
+import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
 
 export const REQUEST_TIMEOUT_MS = ms`30s`
-
-/**
- * WalletConnect in mobile browsers initiates a request with confirmation to the wallet
- * to get the capabilities. It breaks the flow with perpetual requests.
- */
-export async function getShouldSkipCapabilitiesCheck(
-  connector: Connector,
-  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
-): Promise<boolean> {
-  if (!isMobile) return false
-
-  const isWalletConnect = getIsWalletConnect(connector)
-
-  if (isWalletConnect) return true
-
-  const widgetProviderMetaInfo = await fetchWidgetProviderMetaInfo(provider)
-  const isWalletConnectViaWidget = !!widgetProviderMetaInfo?.providerWcMetadata
-
-  return isWalletConnectViaWidget
-}
 
 /**
  * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
@@ -69,35 +32,11 @@ export function resolveCapabilitiesForChain(
   return null
 }
 
-async function fetchWidgetProviderMetaInfo(
-  provider: EIP1193Provider | WidgetEthereumProvider | PublicClient,
-): Promise<ProviderMetaInfoPayload | null> {
-  if (provider instanceof WidgetEthereumProvider) {
-    const providerMetaInfo = new Promise<ProviderMetaInfoPayload>((resolve) => {
-      provider.onProviderMetaInfo((data) => {
-        provider.clearProviderMetaInfoListener()
-        resolve(data)
-      })
-    })
-
-    return withTimeout(providerMetaInfo, {
-      timeout: REQUEST_TIMEOUT_MS,
-      timeoutMessage: `Widget provider meta info request timed out after ${REQUEST_TIMEOUT_MS}ms`,
-    }).catch(() => {
-      provider.clearProviderMetaInfoListener()
-      return null
-    })
-  }
-
-  return Promise.resolve(null)
-}
-
 /**
  * Async atom that fetches wallet capabilities (EIP-5792) via wagmi/viem.
  * Returns capabilities for the current account and chain, or null when disconnected or on error.
  */
 
-// eslint-disable-next-line complexity
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | null> => {
   const { account, chainId, provider, connector } = get(walletInfoAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
@@ -107,12 +46,6 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
   let capabilities: WalletCapabilities | null = null
 
   try {
-    const shouldSkipCapabilitiesCheck = await getShouldSkipCapabilitiesCheck(connector, provider)
-
-    if (shouldSkipCapabilitiesCheck) {
-      return null
-    }
-
     /**
      * Viem takes care here of getting the capabilities for the exact chainId, so we don't need to do it manually.
      * However, keep in mind this branch MUST run for Safe via WC, but getCapabilities() will throw an error. However,
@@ -165,6 +98,7 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
 
     logWallet.debug('Fetching wallet capabilities', { account, chainId })
 
+    // TODO remove this completely: it doesn't resolve capabilities for no wallet: MM, Safe, Ambire.
     capabilities = await withTimeout(
       getCapabilities(wagmiConfig.getClient({ chainId }), {
         account: account as `0x${string}`,
@@ -199,10 +133,11 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
           timeoutMessage: `Wallet capabilities loading timed out after ${REQUEST_TIMEOUT_MS / 1000}s`,
         },
       )
+      logWallet.warn('getCapabilities() failed, but wallet_getCapabilities returned capabilities', legacyCapabilities)
 
       capabilities = resolveCapabilitiesForChain(legacyCapabilities, chainId)
 
-      logWallet.warn('getCapabilities() failed, but wallet_getCapabilities returned capabilities', legacyCapabilities)
+      logWallet.info('Wallet capabilities for this chain:', capabilities)
     } catch (err: unknown) {
       const rpcError = normalizeError(err)
 
@@ -222,42 +157,31 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
   return capabilities
 })
 
-// eslint-disable-next-line complexity
 export const isAtomicBatchSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
   const isSafeApp = get(isSafeAppAtom)
-
-  if (isSafeApp === null) return null
-
-  if (isSafeApp) return true
-
-  const accountType = get(accountTypeAtom)
-  const isSmartContractWallet = get(isSmartContractWalletAtom)
-  const isSafeWallet = get(isSafeWalletAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
 
-  if (accountType === null || isSmartContractWallet === null || isSafeViaWc === null) return null
-
-  // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
-  // fallback handler mechanism TWAP requires, so we treat them as unsupported.
-  // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
-  // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
-  if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet && !isSafeViaWc) return false
+  /**
+   * A SafeWallet connected through SafeApp is assumed to have support.
+   * A SafeWallet connected through WC or any other provider needs to pass the capabilities check.
+   */
+  if (isSafeApp) return true
+  if (isSafeApp === null || isSafeViaWc === null) return null
 
   const walletCapabilities = await get(walletCapabilitiesAtom)
 
-  // If `walletCapabilitiesAtom` returns `null` it's because `shouldSkipCapabilitiesCheck === true`,
-  // or because some kind of API empty response or error. So, if we cannot check, then we must be false,
+  // If `walletCapabilitiesAtom` returns `null` it's because some kind of API empty response
+  // or error. So, if we cannot check, then we must be false,
   // not null (as some components/functions like `validateTradeForm` treat `null` as loading):
-  if (!walletCapabilities) return false
+  if (walletCapabilities === null) return false
 
-  const status = walletCapabilities.atomic?.status || ''
-  const supported = walletCapabilities?.atomicBatch?.supported
+  const status = walletCapabilities.atomic?.status
+  const isLegacyAtomicBatchSupported = Boolean(walletCapabilities?.atomicBatch?.supported)
 
   // See https://www.eip5792.xyz/getting-started:
   // - supported: The wallet will execute all calls atomically and contiguously
   // - ready: The wallet is able to upgrade to supported pending user approval (e.g. via EIP-7702)
-  return status === 'supported' || !!supported
-  // return status === 'supported' || status === 'ready'
+  return status === 'supported' || status === 'ready' || isLegacyAtomicBatchSupported
 })
 
 export const isAtomicBatchSupportedLoadableAtom = loadable(isAtomicBatchSupportedAsyncAtom)
