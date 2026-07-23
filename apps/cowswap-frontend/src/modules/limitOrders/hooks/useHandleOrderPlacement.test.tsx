@@ -68,6 +68,7 @@ const tradeContextMock = {
     partiallyFillable: true,
     inputAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '1'),
     outputAmount: CurrencyAmount.fromRawAmount(USDT_BASE, '1'),
+    isSafeWallet: true,
   },
 } as never as TradeFlowContext
 const priceImpactMock: PriceImpact = {

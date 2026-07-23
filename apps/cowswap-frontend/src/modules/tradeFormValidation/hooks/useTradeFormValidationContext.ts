@@ -78,7 +78,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
   // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
-  const isBundlingSupportedForContext = tradeType === TradeType.LIMIT_ORDER ? isSafeWallet : isBundlingSupported
+  const isBundlingSupportedForContext =
+    tradeType === TradeType.LIMIT_ORDER ? isSafeWallet && isBundlingSupported : isBundlingSupported
   const isApproveRequired = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupportedForContext,
     allowsOffchainSigning,
