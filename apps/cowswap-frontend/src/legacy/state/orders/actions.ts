@@ -69,8 +69,11 @@ export interface BaseOrder extends OrderCreation {
   fullAppData?: EnrichedOrder['fullAppData']
 
   // Wallet specific
-  presignGnosisSafeTxHash?: string // Gnosis Safe tx
+  presignGnosisSafeTxHash?: string // Gnosis Safe tx, or an EIP-5792 bundle id when presignIsEip5792Bundle is set
   presignGnosisSafeTx?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
+  // When true, presignGnosisSafeTxHash holds an EIP-5792 bundle id (EIP-7702 atomic batch) that must
+  // be tracked via getCallsStatus rather than the Safe transaction service.
+  presignIsEip5792Bundle?: boolean
 
   // Sell amount before the fee applied - necessary for later calculations (unfilled orders)
   sellAmountBeforeFee: string

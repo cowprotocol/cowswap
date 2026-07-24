@@ -62,8 +62,7 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
-  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
-  const shouldUseSafeBundle = isSafeBundle && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
+  const shouldUseSafeBundle = isSafeBundle && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
