@@ -18,7 +18,12 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
   useEffect(() => {
-    if (!needsApproval || !tokenAddress || !spender || !amount || !config) return
+    if (!needsApproval || !tokenAddress || !spender || !amount || !config) {
+      setShouldZeroApprove(false)
+      return
+    }
+
+    let cancelled = false
 
     shouldZeroApproveFn({
       tokenAddress,
@@ -27,8 +32,13 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
       forceApprove: true,
       config,
     }).then((res) => {
+      if (cancelled) return
       setShouldZeroApprove(!!res)
     })
+
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [needsApproval, tokenAddress, spender, amount?.quotient?.toString(), config])
 
