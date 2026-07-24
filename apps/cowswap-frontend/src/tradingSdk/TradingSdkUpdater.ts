@@ -4,9 +4,9 @@ import { useEffect } from 'react'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { tradingSdk } from './tradingSdk'
+import { tradingSdk, prodTradingSdk } from './tradingSdk'
 
-import { appSignerAtom, orderBookApi } from '../cowSdk'
+import { appSignerAtom, orderBookApi, prodOrderBookApi } from '../cowSdk'
 import { useAppCode } from '../modules/appData/hooks'
 
 // TODO: Add proper return type annotation
@@ -25,6 +25,19 @@ export function TradingSdkUpdater() {
         ...(appSigner ? { signer: appSigner } : {}),
       })
       orderBookApi.context.chainId = chainId
+
+      if (prodTradingSdk !== tradingSdk) {
+        prodTradingSdk.setTraderParams({
+          chainId,
+          appCode,
+          env: 'prod',
+          ...(appSigner ? { signer: appSigner } : {}),
+        })
+      }
+
+      if (prodOrderBookApi !== orderBookApi) {
+        prodOrderBookApi.context.chainId = chainId
+      }
     }
   }, [chainId, appCode, appSigner])
 
