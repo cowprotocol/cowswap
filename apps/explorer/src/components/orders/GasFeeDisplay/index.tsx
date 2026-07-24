@@ -69,13 +69,10 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
   // in wrapped native, so the wrapped address resolves to the (native) sell token.
   const tokenByKey = useMemo(() => {
     const map = new Map<AddressKey, TokenErc20>()
-    const add = (token?: TokenErc20 | null): void => {
+    const candidates = [...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]
+    for (const token of candidates) {
       if (token) map.set(getAddressKey(token.address), token)
     }
-    Object.values(feeTokens).forEach(add)
-    add(nativeToken)
-    add(order.buyToken)
-    add(order.sellToken)
     if (wrappedKey && order.sellToken && isNativeToken(order.sellTokenAddress)) map.set(wrappedKey, order.sellToken)
     return map
   }, [feeTokens, nativeToken, order.buyToken, order.sellToken, order.sellTokenAddress, wrappedKey])
