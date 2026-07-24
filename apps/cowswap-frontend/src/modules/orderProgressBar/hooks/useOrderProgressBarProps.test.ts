@@ -1,4 +1,6 @@
-import { getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
+import { ApiSolverCompetition } from 'common/types/soverCompetition'
+
+import { buildSolverCompetition, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -92,5 +94,55 @@ describe('shouldUpdateStepImmediately', () => {
 
   it('shows the first step immediately when there is no previous change timestamp', () => {
     expect(shouldUpdateStepImmediately(OrderProgressBarStepName.SOLVING, undefined, 0)).toBe(true)
+  })
+})
+
+describe('buildSolverCompetition', () => {
+  // Backend returns entries ranked ascending, so the last entry is the winner. A `marker` tags
+  // each raw entry so we can assert which duplicate occurrence survived deduplication.
+  function entry(solver: string, marker: string): ApiSolverCompetition {
+    return { solver, marker, executedAmounts: { sell: '1', buy: '1' } } as unknown as ApiSolverCompetition
+  }
+
+  it('keeps the highest-ranked occurrence of a repeated solver as the winner', () => {
+    const result = buildSolverCompetition(
+      [entry('naive', 'first'), entry('barter-solve', 'barter'), entry('naive', 'last')],
+      {},
+      {},
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['naive', 'barter'])
+    // Winner stays at index 0 and is the highest-ranked (last) `naive` entry, not the first.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('last')
+  })
+
+  it('deduplicates legacy aliases that normalize to the same solverId', () => {
+    const result = buildSolverCompetition(
+      [entry('naive', 'first'), entry('barter-solve', 'barter'), entry('naive-solve', 'alias')],
+      {},
+      {},
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['naive', 'barter'])
+    // `naive-solve` outranks `naive`, so its entry is the one retained.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('alias')
+  })
+
+  it('excludes entries without a solver or executedAmounts', () => {
+    const result = buildSolverCompetition(
+      [
+        { marker: 'no-solver', executedAmounts: {} } as unknown as ApiSolverCompetition,
+        { solver: 'naive', marker: 'no-amounts' } as unknown as ApiSolverCompetition,
+        entry('barter-solve', 'valid'),
+      ],
+      {},
+      {},
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['barter'])
+  })
+
+  it('returns an empty list when there is no competition data', () => {
+    expect(buildSolverCompetition(undefined, {}, {})).toEqual([])
   })
 })
