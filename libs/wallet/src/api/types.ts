@@ -1,9 +1,7 @@
-import { EIP1193Provider, PublicClient } from 'viem'
 import { Connector as WagmiConnector } from 'wagmi'
 import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export const ConnectionType = {
@@ -41,8 +39,6 @@ export interface WalletInfo {
   account?: string
   active?: boolean
   connector?: WagmiConnector
-  provider?: EIP1193Provider | WidgetEthereumProvider | PublicClient
-  isConnectionRestoring?: boolean
 }
 
 export enum WalletType {
