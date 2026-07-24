@@ -1,34 +1,49 @@
 import { useEffect, useState } from 'react'
 
+import { useConfig } from 'wagmi'
+
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
-import { useConfig } from 'wagmi'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove/shouldZeroApprove'
 
-export function useNeedsZeroApproval(
-  token: Nullish<Token>,
-  spender: Nullish<string>,
-  sellAmount: Nullish<CurrencyAmount<Token>>,
-): boolean {
+export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, needsApproval: boolean): boolean {
+  const spender = useTradeSpenderAddress()
+  const { account } = useWalletInfo()
+  const token = amount ? getWrappedToken(amount.currency) : undefined
+  const tokenAddress = token?.address
   const config = useConfig()
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
   useEffect(() => {
-    if (!token?.address || !spender || !sellAmount || !config) return
+    if (!needsApproval || !tokenAddress || !spender || !amount || !account || !config) {
+      setShouldZeroApprove(false)
+      return
+    }
+
+    let cancelled = false
 
     shouldZeroApproveFn({
-      tokenAddress: token.address,
+      tokenAddress,
+      owner: account,
       spender,
-      amountToApprove: sellAmount,
+      amountToApprove: amount,
       forceApprove: true,
       config,
     }).then((res) => {
+      if (cancelled) return
       setShouldZeroApprove(!!res)
     })
+
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token?.address, sellAmount?.quotient?.toString(), spender, config])
+  }, [needsApproval, tokenAddress, spender, account, amount?.quotient?.toString(), config])
 
   return shouldZeroApprove
 }

@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.6.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.4...explorer-v4.6.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
+## [4.6.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.3...explorer-v4.6.4) (2026-07-17)
+
+### Patch Changes
+
+- fix(bridge): keep bridge order status polling while tab is hidden (#7707)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+
 ## [4.6.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.2...explorer-v4.6.3) (2026-07-08)
 
 ### Patch Changes

@@ -40,7 +40,8 @@
     "test": "pnpm run test:all && pnpm run test:tools",
     "test:all": "nx run-many -t test",
     "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs tools/scripts/cf-pages/gh-actions/*.test.mjs",
-    "typecheck": "nx run cowswap-frontend:typecheck",
+    "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
+    "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
@@ -56,7 +57,7 @@
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
-    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
+    "analyze-build": "rm -rf build/cowswap && cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build:cowswap -- --skip-nx-cache",
     "install:ci": "node tools/scripts/install.js"
   },
   "browser": {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/events-v4.7.1...events-v4.8.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
 ## [4.7.1](https://github.com/cowprotocol/cowswap/compare/events-v4.7.0...events-v4.7.1) (2026-06-23)
 
 ### Patch Changes

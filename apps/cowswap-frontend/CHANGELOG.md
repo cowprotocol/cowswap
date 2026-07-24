@@ -1,5 +1,81 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.19.0...cowswap-v3.20.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/balances-and-allowances@3.7.1
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+  - @cowprotocol/tokens@3.8.5
+  - @cowprotocol/wallet@3.8.2
+  - @cowprotocol/snackbars@2.2.7
+  - @cowprotocol/multicall@3.4.5
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.1...cowswap-v3.19.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add client id parameter into bw query (#7823)
+
+- feat(bw): implement percentage-based rollout (#7845)
+
+- feat(twap): track unsupported wallet demand (#7816)
+
+- feat(cow-fi): remove LP on CoW AMM header CTA (#7814)
+
+- feat: unlock TWAP UI for EOA (WIP, behind flag) (#7849)
+
+- feat(affiliate): handle code not found (#7830)
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
+- feat: add commit hash to footer to help identify IPFS deployments
+
+### Patch Changes
+
+- fix(limit-twap): disable confirm when balance is insufficient (#7804)
+
+- fix: harden deferred HIGH frontend follow-ups (#7612)
+
+- fix(bridge): keep bridge order status polling while tab is hidden (#7707)
+
+- fix(twap): stay on Signing tab after placing a TWAP order (#7730)
+
+- fix: query bot ID using curl instead of gh (#7817)
+
+- fix(trade): remove 'total fee' row from swap form (#7805)
+
+- fix(tradeQuote): clear stale error on params change (#7728)
+
+- fix(address-input): drop chain-prefix warning when recipient is cleared (#7720)
+
+- fix: enforce widget token list restrictions (#7834)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.7.0
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/events@4.8.0
+  - @cowprotocol/widget-lib@4.4.2
+  - @cowprotocol/tokens@3.8.4
+  - @cowprotocol/snackbars@2.2.6
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/multicall@3.4.4
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/ens@3.4.4
+
 ## [3.18.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.0...cowswap-v3.18.1) (2026-07-09)
 
 ### Patch Changes

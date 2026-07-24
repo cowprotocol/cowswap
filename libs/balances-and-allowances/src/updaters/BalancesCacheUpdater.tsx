@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai/index'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 
@@ -36,7 +36,7 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
         {} as Record<string, string>,
       )
 
-      const currentCache = state[chainId]?.[account.toLowerCase()] || {}
+      const currentCache = state[chainId]?.[getAddressKey(account)] || {}
       // Remove zero balances from the current cache
       const updatedCache = Object.keys(currentCache).reduce(
         (acc, tokenAddress) => {
@@ -53,7 +53,7 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
         ...state,
         [chainId]: {
           ...state[chainId],
-          [account.toLowerCase()]: {
+          [getAddressKey(account)]: {
             ...updatedCache,
             ...balancesToCache,
           },
@@ -67,7 +67,7 @@ export function BalancesCacheUpdater({ chainId, account, excludedTokens }: Balan
     if (!account) return
     if (lastChainCacheUpdateRef.current === chainId) return
 
-    const cache = balancesCache[chainId]?.[account.toLowerCase()]
+    const cache = balancesCache[chainId]?.[getAddressKey(account)]
 
     if (!cache) return
 

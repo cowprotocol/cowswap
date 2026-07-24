@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -111,6 +112,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   if (analyzeBundle) {
     plugins.push(
+      bundleStats() as PluginOption,
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
@@ -120,7 +122,6 @@ export default defineConfig(({ mode, isPreview }) => {
         filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
-    plugins.push(bundleStats() as PluginOption)
   }
 
   if (isProduction && sentryAuthToken) {
@@ -289,7 +290,14 @@ export default defineConfig(({ mode, isPreview }) => {
       // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
       // peer-instances; without deduping the controllers package, code in libs/wallet reads
       // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
-      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
+      dedupe: [
+        'react-router',
+        '@reown/appkit',
+        '@reown/appkit-adapter-wagmi',
+        '@reown/appkit-adapter-solana',
+        '@reown/appkit-controllers',
+        'wagmi',
+      ],
     },
 
     build: {

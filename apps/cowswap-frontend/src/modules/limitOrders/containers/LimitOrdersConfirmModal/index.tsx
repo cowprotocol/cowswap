@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -9,6 +10,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useIsZeroBalance } from 'modules/combinedBalances'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -70,10 +72,20 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
 
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
-  const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
-  const buttonText = isSafeApprovalBundle ? (
+  // Limit orders may be placed with amount > balance, so only block when the sell token balance
+  // dropped to 0 while the modal was open (e.g. a previous order fully filled) — see issue #5645.
+  const isInsufficientBalance = useIsZeroBalance(inputAmount?.currency)
+  const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance
+
+  const inputSymbol = inputAmount?.currency?.symbol || t`token`
+  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const isSafeApprovalBundle =
+    useIsSafeApprovalBundle(inputAmount) && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
+  const buttonText = isInsufficientBalance ? (
+    t`Insufficient ${inputSymbol} balance`
+  ) : isSafeApprovalBundle ? (
     <>
       <Trans>Confirm</Trans> (<Trans>Approve</Trans>&nbsp;
       <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />

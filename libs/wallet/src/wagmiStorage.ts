@@ -1,6 +1,6 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-
 import { createStorage } from 'wagmi'
+
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
 import { getIsSafeAppIframe } from './utils/getIsSafeAppIframe'

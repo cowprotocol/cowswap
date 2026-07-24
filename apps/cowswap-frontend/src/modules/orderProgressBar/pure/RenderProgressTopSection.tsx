@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, lazy, Suspense } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -20,6 +21,7 @@ interface ProgressContentProps {
   stepName: OrderProgressBarProps['stepName']
   order: OrderProgressBarProps['order']
   countdown: number
+  chainId: SupportedChainId
   randomImage: string
   surplusPercentValue: string
   randomBenefit: string
@@ -28,54 +30,6 @@ interface ProgressContentProps {
 
 const AnimatePresence = lazy(() => import('framer-motion').then((r) => ({ default: r.AnimatePresence })))
 const MotionDiv = lazy(() => import('framer-motion').then((r) => ({ default: r.motion.div })))
-
-function ProgressContent({
-  isLayoutReady,
-  stepName,
-  order,
-  countdown,
-  randomImage,
-  surplusPercentValue,
-  randomBenefit,
-  shouldShowSurplus,
-}: ProgressContentProps): ReactNode {
-  if (!isLayoutReady) {
-    return <ProgressSkeleton />
-  }
-
-  return (
-    <Suspense fallback={<ProgressSkeleton />}>
-      <AnimatePresence mode="wait">
-        <MotionDiv
-          key={stepName}
-          initial={false}
-          animate={{
-            opacity: 1,
-            width: '100%',
-            transition: {
-              duration: 0.3,
-              ease: [0.4, 0, 0.2, 1],
-            },
-          }}
-          exit={{ opacity: 0, width: '100%' }}
-          style={{ width: '100%' }}
-        >
-          {stepName && (
-            <ProgressTopSection
-              stepName={stepName}
-              order={order}
-              countdown={countdown}
-              randomImage={randomImage}
-              surplusPercentValue={surplusPercentValue}
-              randomBenefit={randomBenefit}
-              shouldShowSurplus={shouldShowSurplus}
-            />
-          )}
-        </MotionDiv>
-      </AnimatePresence>
-    </Suspense>
-  )
-}
 
 export function RenderProgressTopSection({
   stepName,
@@ -114,6 +68,7 @@ export function RenderProgressTopSection({
     stepName,
     order,
     countdown: countdown || 0,
+    chainId,
     randomImage,
     surplusPercentValue,
     randomBenefit,
@@ -134,5 +89,55 @@ export function RenderProgressTopSection({
       )}
       {!hideIntent && <OrderIntent order={order} />}
     </>
+  )
+}
+
+function ProgressContent({
+  isLayoutReady,
+  stepName,
+  order,
+  countdown,
+  chainId,
+  randomImage,
+  surplusPercentValue,
+  randomBenefit,
+  shouldShowSurplus,
+}: ProgressContentProps): ReactNode {
+  if (!isLayoutReady) {
+    return <ProgressSkeleton />
+  }
+
+  return (
+    <Suspense fallback={<ProgressSkeleton />}>
+      <AnimatePresence mode="wait">
+        <MotionDiv
+          key={stepName}
+          initial={false}
+          animate={{
+            opacity: 1,
+            width: '100%',
+            transition: {
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1],
+            },
+          }}
+          exit={{ opacity: 0, width: '100%' }}
+          style={{ width: '100%' }}
+        >
+          {stepName && (
+            <ProgressTopSection
+              stepName={stepName}
+              order={order}
+              countdown={countdown}
+              chainId={chainId}
+              randomImage={randomImage}
+              surplusPercentValue={surplusPercentValue}
+              randomBenefit={randomBenefit}
+              shouldShowSurplus={shouldShowSurplus}
+            />
+          )}
+        </MotionDiv>
+      </AnimatePresence>
+    </Suspense>
   )
 }

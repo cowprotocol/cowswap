@@ -1,8 +1,8 @@
 import { useEffect, type ReactNode } from 'react'
 
-import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
-
 import { WagmiProvider } from 'wagmi'
+
+import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { reownAppKit, wagmiAdapter } from './config'
 

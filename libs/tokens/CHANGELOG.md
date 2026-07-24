@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.8.5](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.4...tokens-v3.8.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
+## [3.8.4](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.3...tokens-v3.8.4) (2026-07-17)
+
+### Patch Changes
+
+- fix: enforce widget token list restrictions (#7834)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+
 ## [3.8.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.2...tokens-v3.8.3) (2026-07-08)
 
 ### Patch Changes

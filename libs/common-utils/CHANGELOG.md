@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.1...common-utils-v3.9.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.0...common-utils-v3.8.1) (2026-07-17)
+
+### Patch Changes
+
+- fix: widget configurator with safe (#7807)
+
+- fix: quote loading for walletconnect (#7742)
+
+- fix(errors): show friendly message when wallet rejects order signing (#7781)
+
+- fix(common-utils): anchor getIntOrFloat regex to full string (#7813)
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.7.0...common-utils-v3.8.0) (2026-07-08)
 
 ### Minor Changes

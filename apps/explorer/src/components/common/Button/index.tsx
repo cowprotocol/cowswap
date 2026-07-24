@@ -12,6 +12,8 @@ export interface ButtonBaseProps extends React.ButtonHTMLAttributes<Element> {
   size?: ButtonSizeVariations
 }
 
+export type ButtonSizeVariations = 'default' | 'small' | 'big'
+
 export type ButtonVariations =
   | 'default'
   | 'primary'
@@ -22,8 +24,6 @@ export type ButtonVariations =
   | 'cancel'
   | 'disabled'
   | 'theme'
-
-export type ButtonSizeVariations = 'default' | 'small' | 'big'
 
 // Pre-computed button variant styles
 const BUTTON_VARIANT_STYLES = {

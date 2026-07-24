@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.7.0...balances-and-allowances-v3.7.1) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/tokens@3.8.5
+  - @cowprotocol/wallet@3.8.2
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.6.0...balances-and-allowances-v3.7.0) (2026-07-17)
+
+### Minor Changes
+
+- feat(bw): disconnect session when user idle (#7833)
+
+- feat: add client id parameter into bw query (#7823)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/tokens@3.8.4
+  - @cowprotocol/core@3.6.1
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.5.0...balances-and-allowances-v3.6.0) (2026-07-08)
 
 ### Minor Changes

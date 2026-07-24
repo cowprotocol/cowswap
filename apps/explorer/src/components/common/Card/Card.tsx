@@ -45,13 +45,6 @@ const CardContent = styled.div`
   }
 `
 
-enum CardSize {
-  xs = 12,
-  sm = 6,
-  md = 4,
-  lg = 3,
-}
-
 export interface CardBaseProps {
   children?: React.ReactNode
   emptyContent?: boolean
@@ -59,6 +52,13 @@ export interface CardBaseProps {
   sm?: GridSize
   md?: GridSize
   lg?: GridSize
+}
+
+enum CardSize {
+  xs = 12,
+  sm = 6,
+  md = 4,
+  lg = 3,
 }
 
 /**
