@@ -5,8 +5,9 @@ import { skipToken, useQuery } from '@tanstack/react-query'
 
 import { getIsToken2022 } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
+import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { Connection } from '@solana/web3.js'
@@ -14,24 +15,34 @@ import { Connection } from '@solana/web3.js'
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 import { PersistBalancesAndAllowancesParams } from './usePersistBalancesViaWebCalls'
 
-import { fetchSolanaTokenBalances, SolanaTokenMint } from '../services/fetchSolanaTokenBalances'
+import { findSolanaSettlementStatePda } from '../const/solanaSettlement'
+import { fetchSolanaTokenAccounts, SolanaTokenAccountData, SolanaTokenMint } from '../services/fetchSolanaTokenAccounts'
+import { allowancesAtom } from '../state/allowancesAtom'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+
+type AllowancesByChain = PersistentStateByChain<Record<string, bigint | undefined>>
 
 interface SolanaQueryConfig {
   enabled: boolean
   refetchInterval: number | false | undefined
 }
 
+// The delegate authority is a deterministic PDA — derive it once.
+const SOLANA_DELEGATE_AUTHORITY = findSolanaSettlementStatePda()
+
 /**
- * Solana counterpart to {@link usePersistBalancesViaWebCalls}. Loads SPL-token balances for
- * `tokenAddresses` via the reown Solana adapter's `Connection` and persists them into `balancesAtom`
- * in the same shape the EVM path uses, so downstream consumers stay chain-agnostic.
+ * Solana counterpart to {@link usePersistBalancesViaWebCalls}. A single batched read loads both the SPL
+ * balance and the SPL delegation (the analogue of an EVM allowance) for `tokenAddresses` via the reown
+ * Solana adapter's `Connection` — the delegate rides along with the balance for free. Balances are
+ * persisted into `balancesAtom` and delegations into `allowancesAtom` in the same shapes the EVM path
+ * uses, so downstream consumers stay chain-agnostic.
  */
 export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
   const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded, refreshTrigger } = params
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
+  const setAllowances = useSetAtom(allowancesAtom)
 
   const { connection } = useAppKitConnection()
 
@@ -47,20 +58,23 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
   const { enabled, refetchInterval } = getSolanaQueryConfig(params, isSolana, connection, tokenMints.length)
 
   const queryKey = useMemo(
-    // `rpcEndpoint` keys the cache to the active network so a chain switch does not surface stale balances.
+    // `rpcEndpoint` keys the cache to the active network so a chain switch does not surface stale data.
     // `refreshTrigger` forces an immediate refetch (e.g. after an order is filled), mirroring the EVM `scopeKey`.
-    () => ['solanaTokenBalances', chainId, account, connection?.rpcEndpoint, refreshTrigger, tokenMints] as const,
+    () => ['solanaTokenAccounts', chainId, account, connection?.rpcEndpoint, refreshTrigger, tokenMints] as const,
     [chainId, account, connection?.rpcEndpoint, refreshTrigger, tokenMints],
   )
 
   const {
-    data: balances,
+    data: accounts,
     isLoading: isBalancesLoading,
     error,
     dataUpdatedAt,
   } = useQuery({
     queryKey,
-    queryFn: connection && account ? () => fetchSolanaTokenBalances(connection, account, tokenMints) : skipToken,
+    queryFn:
+      connection && account
+        ? () => fetchSolanaTokenAccounts(connection, account, tokenMints, SOLANA_DELEGATE_AUTHORITY)
+        : skipToken,
     enabled,
     refetchInterval: refetchInterval || undefined,
     refetchOnWindowFocus: false,
@@ -89,49 +103,67 @@ export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAl
     setBalances((state) => ({ ...state, error: message, isLoading: false }))
   }, [setBalances, error, setLoadingState, isSolana])
 
-  // Set balances to the store
+  // Persist balances and delegations to their stores
   useEffect(() => {
-    if (!isSolana || !account || !balances || !isNewData) return
-
-    const balancesState = balances.reduce<BalancesState['values']>((acc, { mint, balance }) => {
-      acc[getAddressKey(mint)] = balance
-      return acc
-    }, {})
+    if (!isSolana || !account || !accounts || !isNewData) return
 
     onBalancesLoaded?.(true)
-
-    setBalances((state) => {
-      return {
-        ...state,
-        chainId,
-        fromCache: false,
-        hasFirstLoad: true,
-        error: null,
-        values: { ...state.values, ...balancesState },
-        ...(setLoadingState ? { isLoading: false } : {}),
-      }
-    })
+    applySolanaBalances(setBalances, chainId, accounts, setLoadingState)
+    applySolanaAllowances(setAllowances, chainId, accounts)
 
     if (setLoadingState) {
       setBalancesUpdate((state) => ({
         ...state,
-        [chainId]: {
-          ...state[chainId],
-          [getAddressKey(account)]: Date.now(),
-        },
+        [chainId]: { ...state[chainId], [getAddressKey(account)]: Date.now() },
       }))
     }
   }, [
     isSolana,
     chainId,
     account,
-    balances,
+    accounts,
     isNewData,
     setBalances,
+    setAllowances,
     setLoadingState,
     onBalancesLoaded,
     setBalancesUpdate,
   ])
+}
+
+function applySolanaAllowances(
+  setAllowances: (update: (prev: AllowancesByChain) => AllowancesByChain) => void,
+  chainId: SupportedChainId,
+  accounts: SolanaTokenAccountData[],
+): void {
+  const chainAllowances = accounts.reduce<Record<string, bigint | undefined>>((acc, { mint, delegatedAmount }) => {
+    acc[getAddressKey(mint)] = delegatedAmount
+    return acc
+  }, {})
+
+  setAllowances((state) => ({ ...state, [chainId]: { ...state[chainId], ...chainAllowances } }))
+}
+
+function applySolanaBalances(
+  setBalances: (update: (prev: BalancesState) => BalancesState) => void,
+  chainId: SupportedChainId,
+  accounts: SolanaTokenAccountData[],
+  setLoadingState?: boolean,
+): void {
+  const values = accounts.reduce<BalancesState['values']>((acc, { mint, balance }) => {
+    acc[getAddressKey(mint)] = balance
+    return acc
+  }, {})
+
+  setBalances((state) => ({
+    ...state,
+    chainId,
+    fromCache: false,
+    hasFirstLoad: true,
+    error: null,
+    values: { ...state.values, ...values },
+    ...(setLoadingState ? { isLoading: false } : {}),
+  }))
 }
 
 // Native SOL is handled elsewhere and has no ATA, so deriving one would throw — keep only SPL mints.

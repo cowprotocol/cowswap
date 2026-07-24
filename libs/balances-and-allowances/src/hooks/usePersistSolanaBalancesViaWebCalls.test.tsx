@@ -58,6 +58,12 @@ jest.mock('@solana/spl-token', () => ({
   unpackAccount: (ata: { toBase58(): string }) => ({ amount: mockAmountByAta[ata.toBase58()] }),
 }))
 
+// The settlement PDA derivation relies on ed25519 curve math that this env can't run; the delegate
+// matching itself is covered in fetchSolanaTokenAccounts.test — here we only assert balances.
+jest.mock('../const/solanaSettlement', () => ({
+  findSolanaSettlementStatePda: () => ({ equals: () => false }),
+}))
+
 interface MockConnection {
   rpcEndpoint: string
   getMultipleAccountsInfo: jest.Mock
