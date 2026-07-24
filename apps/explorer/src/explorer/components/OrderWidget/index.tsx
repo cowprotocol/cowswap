@@ -5,8 +5,9 @@ import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
 import { useOrderProtocolFees, useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
+import { Errors } from '../../../types'
 import { ORDER_QUERY_INTERVAL } from '../../const'
-import { useTable } from '../TokensTableWidget/useTable'
+import { TableState, useTable } from '../TokensTableWidget/useTable'
 
 const RESULTS_PER_PAGE = 10
 
@@ -15,7 +16,7 @@ export const OrderWidget: React.FC = () => {
   const orderId = useSanitizeOrderIdAndUpdateUrl()
 
   const {
-    state: tableState,
+    state: baseTableState,
     setPageSize,
     setPageOffset,
     handleNextPage,
@@ -25,7 +26,7 @@ export const OrderWidget: React.FC = () => {
   const {
     order,
     isLoading: isOrderLoading,
-    errors,
+    errors: orderErrors,
     errorOrderPresentInNetworkId,
   } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const {
@@ -33,25 +34,21 @@ export const OrderWidget: React.FC = () => {
     error,
     isLoading: areTradesLoading,
     hasNextPage,
-  } = useOrderTrades(order, tableState.pageOffset, tableState.pageSize)
+  } = useOrderTrades(order, baseTableState.pageOffset, baseTableState.pageSize)
 
   // Protocol fee breakdown is order-level, so it's derived from all trades rather than the
   // currently selected fills page (which `useOrderTrades` is scoped to).
   const { protocolFees, error: protocolFeesError } = useOrderProtocolFees(order)
 
-  // eslint-disable-next-line react-hooks/immutability
-  tableState['hasNextPage'] = hasNextPage
-
+  // Copy the hook's objects instead of mutating them (they may be reused across renders). Surface the
+  // protocol-fee error only when the trades fetch didn't already fail (same root cause; avoids a
+  // duplicate banner).
+  const tableState: TableState = { ...baseTableState, hasNextPage }
+  const errors: Errors = { ...orderErrors }
   if (error) {
-    // eslint-disable-next-line react-hooks/immutability
-    errors['trades'] = error
-  }
-
-  // Surface a failed protocol-fee fetch so the breakdown isn't silently shown as "no fees".
-  // Skip when the trades fetch already failed: same root cause, avoids a duplicate banner.
-  if (protocolFeesError && !error) {
-    // eslint-disable-next-line react-hooks/immutability
-    errors['protocolFees'] = protocolFeesError
+    errors.trades = error
+  } else if (protocolFeesError) {
+    errors.protocolFees = protocolFeesError
   }
 
   if (errorOrderPresentInNetworkId && networkId !== errorOrderPresentInNetworkId) {

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { AddressKey, areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
@@ -9,7 +9,6 @@ import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, WRAPPED_NATIVE_ADDRESS,
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { Network } from 'types'
 import { abbreviateString, isNativeToken } from 'utils'
 
 import { Order, ProtocolFeeType } from 'api/operator'
@@ -52,8 +51,8 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
  * execution cost, in the native token) followed by the protocol fee and any partner fees.
  */
 function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigNumber }): React.ReactNode {
-  const { protocolFees } = order
   const networkId = useNetworkId() ?? undefined
+  const { protocolFees } = order
 
   const feeTokenAddresses = useMemo(() => (protocolFees ?? []).map((fee) => fee.tokenAddress), [protocolFees])
   const { value: feeTokens } = useMultipleErc20({ networkId, addresses: feeTokenAddresses })
@@ -61,55 +60,48 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
   const nativeToken = networkId
     ? NATIVE_TOKEN_PER_NETWORK[networkId as keyof typeof NATIVE_TOKEN_PER_NETWORK]
     : undefined
+  const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
+  const wrappedKey =
+    networkId !== undefined ? getAddressKey(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId]) : undefined
 
-  const feeTokensByKey = useMemo(() => {
+  // Resolves every address in the breakdown to a token: the order's own tokens, the native token
+  // (network costs) and the fetched fee-token metadata. Ethflow orders sell native ETH but pay fees
+  // in wrapped native, so the wrapped address resolves to the (native) sell token.
+  const tokenByKey = useMemo(() => {
     const map = new Map<AddressKey, TokenErc20>()
-    Object.values(feeTokens).forEach((token) => {
+    const add = (token?: TokenErc20 | null): void => {
       if (token) map.set(getAddressKey(token.address), token)
-    })
-    // Network costs are denominated in the native token, so make it resolvable too.
-    if (nativeToken) map.set(getAddressKey(nativeToken.address), nativeToken)
+    }
+    Object.values(feeTokens).forEach(add)
+    add(nativeToken)
+    add(order.buyToken)
+    add(order.sellToken)
+    if (wrappedKey && order.sellToken && isNativeToken(order.sellTokenAddress)) map.set(wrappedKey, order.sellToken)
     return map
-  }, [feeTokens, nativeToken])
+  }, [feeTokens, nativeToken, order.buyToken, order.sellToken, order.sellTokenAddress, wrappedKey])
 
-  // One row per cost/fee, in display order: network costs first, then the protocol fee (the fee
-  // applied first), then the partner fees that follow it — each partner numbered so an order with
-  // several partner fees (e.g. two distinct partners) can be told apart.
+  // One row per cost/fee: network costs first, then the protocol fee (position 0), then the partner
+  // fees that follow it (numbered so multiple partners can be told apart).
   const lineItems = useMemo<LineItem[]>(() => {
-    const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
     const items: LineItem[] = [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }]
-
     let partnerNumber = 0
     for (const fee of protocolFees ?? []) {
-      // The first applied fee (position 0) is the protocol's own; the fees after it are partner fees.
-      const isProtocolFee = fee.position === 0
-      const label = isProtocolFee ? PROTOCOL_FEE_LABELS[fee.type] : getPartnerFeeLabel(fee.type, ++partnerNumber)
+      const label = fee.position === 0 ? PROTOCOL_FEE_LABELS[fee.type] : getPartnerFeeLabel(fee.type, ++partnerNumber)
       items.push({ label, tokenAddress: fee.tokenAddress, amount: fee.amount })
     }
     return items
-  }, [protocolFees, gasCost, nativeToken])
+  }, [protocolFees, gasCost, nativeKey])
 
-  // Headline total per token, shown above the breakdown. Network costs are in the native token and
-  // protocol fees are often taken in wrapped native (the same asset), so we fold wrapped into the
-  // native bucket to show one figure instead of splitting it as "x ETH, y WETH"; other tokens stay
-  // separate.
-  const totalsByToken = useMemo(() => {
-    const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
-    const wrappedKey =
-      networkId !== undefined ? getAddressKey(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId]) : undefined
-
-    const map = new Map<AddressKey, BigNumber>()
-    for (const item of lineItems) {
-      const key = wrappedKey !== undefined && item.tokenAddress === wrappedKey ? nativeKey : item.tokenAddress
-      const current = map.get(key)
-      map.set(key, current ? current.plus(item.amount) : item.amount)
+  // Headline total per token. Network costs (native) and fees taken in wrapped native are the same
+  // asset, so wrapped folds into native to show one figure; other tokens keep their own total.
+  const total = useMemo(() => {
+    const totals = new Map<AddressKey, BigNumber>()
+    for (const { tokenAddress, amount } of lineItems) {
+      const key = tokenAddress === wrappedKey ? nativeKey : tokenAddress
+      totals.set(key, (totals.get(key) ?? ZERO_BIG_NUMBER).plus(amount))
     }
-    return map
-  }, [lineItems, nativeToken, networkId])
-
-  const total = Array.from(totalsByToken, ([tokenAddress, amount]) =>
-    formatAmount(order, amount, tokenAddress, feeTokensByKey, networkId),
-  ).join(', ')
+    return Array.from(totals, ([key, amount]) => formatAmount(amount, tokenByKey.get(key), key)).join(', ')
+  }, [lineItems, wrappedKey, nativeKey, tokenByKey])
 
   return (
     <>
@@ -120,7 +112,7 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
             {lineItems.map((item, index) => (
               <tr key={`${item.label}-${index}`}>
                 <td>{item.label}:</td>
-                <td>{formatAmount(order, item.amount, item.tokenAddress, feeTokensByKey, networkId)}</td>
+                <td>{formatAmount(item.amount, tokenByKey.get(item.tokenAddress), item.tokenAddress)}</td>
               </tr>
             ))}
           </tbody>
@@ -130,16 +122,9 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
   )
 }
 
-function formatAmount(
-  order: Order,
-  amount: BigNumber,
-  tokenAddress: AddressKey,
-  feeTokensByKey: Map<AddressKey, TokenErc20>,
-  networkId: Network | undefined,
-): string {
-  const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
-  // Token metadata not loaded: we can't know decimals, so show the raw atom amount
-  // alongside a shortened address rather than an unreadable 42-char string.
+// Without token metadata we can't know decimals, so show the raw atom amount alongside a shortened
+// address rather than an unreadable 42-char string.
+function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAddress: AddressKey): string {
   if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
   const { formattedAmount, symbol } = formatTokenAmount(amount, token)
   return `${formattedAmount} ${symbol}`
@@ -200,24 +185,4 @@ function LegacyFeeDisplay({ order }: { order: Order }): React.ReactNode {
       </span>
     </LegacyWrapper>
   )
-}
-
-function resolveToken(
-  order: Order,
-  address: AddressKey,
-  feeTokensByKey: Map<AddressKey, TokenErc20>,
-  networkId: Network | undefined,
-): TokenErc20 | undefined {
-  if (areAddressesEqual(order.sellToken?.address, address)) return order.sellToken || undefined
-  if (areAddressesEqual(order.buyToken?.address, address)) return order.buyToken || undefined
-  // Ethflow orders sell native ETH but pay fees in the wrapped native (WETH) on-chain.
-  // Display them as the native token to stay consistent with the rest of the order details.
-  if (
-    networkId &&
-    isNativeToken(order.sellTokenAddress) &&
-    areAddressesEqual(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId], address)
-  ) {
-    return order.sellToken || undefined
-  }
-  return feeTokensByKey.get(address) || undefined
 }
