@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { getIsNativeToken } from './getIsNativeToken'
 
@@ -34,10 +34,7 @@ export function maxAmountSpend(
   if (getIsNativeToken(currencyAmount.currency) && !canUseAllNative) {
     const minNativeCurrencyForGas = getMinNativeCurrencyForGas(currencyAmount.currency.chainId)
     if (currencyAmount.quotient > minNativeCurrencyForGas) {
-      return CurrencyAmount.fromRawAmount(
-        currencyAmount.currency,
-        currencyAmount.quotient - minNativeCurrencyForGas,
-      )
+      return CurrencyAmount.fromRawAmount(currencyAmount.currency, currencyAmount.quotient - minNativeCurrencyForGas)
     } else {
       return CurrencyAmount.fromRawAmount(currencyAmount.currency, 0n)
     }
