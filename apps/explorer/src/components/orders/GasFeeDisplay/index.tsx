@@ -33,6 +33,8 @@ const LegacyWrapper = styled.div`
 
 export type Props = { order: Order }
 
+type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
+
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const { order } = props
 
@@ -121,6 +123,39 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
   )
 }
 
+function formatAmount(
+  order: Order,
+  amount: BigNumber,
+  tokenAddress: AddressKey,
+  feeTokensByKey: Map<AddressKey, TokenErc20>,
+  networkId: Network | undefined,
+): string {
+  const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
+  // Token metadata not loaded: we can't know decimals, so show the raw atom amount
+  // alongside a shortened address rather than an unreadable 42-char string.
+  if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
+  const { formattedAmount, symbol } = formatTokenAmount(amount, token)
+  return `${formattedAmount} ${symbol}`
+}
+
+/**
+ * Label for a partner fee. The trade API doesn't expose the partner's identity, so partners are
+ * numbered by the order their fees were applied; a single partner with several fee types will show
+ * as separate numbered entries.
+ */
+function getPartnerFeeLabel(type: ProtocolFeeType, partnerNumber: number): string {
+  switch (type) {
+    case ProtocolFeeType.Volume:
+      return `Partner ${partnerNumber} volume fee`
+    case ProtocolFeeType.PriceImprovement:
+      return `Partner ${partnerNumber} price improvement share`
+    case ProtocolFeeType.Surplus:
+      return `Partner ${partnerNumber} surplus fee`
+    default:
+      return `Partner ${partnerNumber} fee`
+  }
+}
+
 /**
  * Legacy display for orders without a recorded gas cost: the combined executed fee in the sell
  * token (network costs + protocol fees together), as it was shown before the breakdown existed.
@@ -158,41 +193,6 @@ function LegacyFeeDisplay({ order }: { order: Order }): React.ReactNode {
       </span>
     </LegacyWrapper>
   )
-}
-
-type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
-
-/**
- * Label for a partner fee. The trade API doesn't expose the partner's identity, so partners are
- * numbered by the order their fees were applied; a single partner with several fee types will show
- * as separate numbered entries.
- */
-function getPartnerFeeLabel(type: ProtocolFeeType, partnerNumber: number): string {
-  switch (type) {
-    case ProtocolFeeType.Volume:
-      return `Partner ${partnerNumber} volume fee`
-    case ProtocolFeeType.PriceImprovement:
-      return `Partner ${partnerNumber} price improvement share`
-    case ProtocolFeeType.Surplus:
-      return `Partner ${partnerNumber} surplus fee`
-    default:
-      return `Partner ${partnerNumber} fee`
-  }
-}
-
-function formatAmount(
-  order: Order,
-  amount: BigNumber,
-  tokenAddress: AddressKey,
-  feeTokensByKey: Map<AddressKey, TokenErc20>,
-  networkId: Network | undefined,
-): string {
-  const token = resolveToken(order, tokenAddress, feeTokensByKey, networkId)
-  // Token metadata not loaded: we can't know decimals, so show the raw atom amount
-  // alongside a shortened address rather than an unreadable 42-char string.
-  if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
-  const { formattedAmount, symbol } = formatTokenAmount(amount, token)
-  return `${formattedAmount} ${symbol}`
 }
 
 function resolveToken(
