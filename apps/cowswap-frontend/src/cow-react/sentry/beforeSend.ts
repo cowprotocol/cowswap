@@ -83,8 +83,7 @@ function shouldIgnoreErrorBasedOnBreadcrumbs(error: SentryErrorEvent): boolean {
   if (
     !exception?.type ||
     !breadcrumbs ||
-    !isTypeError(exception.type, exception?.value) ||
-    !isUnhandledRejectionError(exception.type)
+    (!isTypeError(exception.type, exception?.value) && !isUnhandledRejectionError(exception.type))
   ) {
     return false
   }
@@ -106,11 +105,8 @@ function isFetchError(breadcrumb: Sentry.Breadcrumb): boolean {
   const url = breadcrumb.data?.url as string | undefined
   if (!url) return false
 
-  return URLS_TO_IGNORE_FETCH_ERRORS.test(url)
+  return true
 }
-
-const URLS_TO_IGNORE_FETCH_ERRORS =
-  /(twnodes\.com)|(assets\/cow-no-connection)|(blockscout\.com)|(api\.country\.is)|(nodereal\.io)|(wallet\.coinbase\.com)|(cowprotocol\/cowswap-banner)/i
 
 function isMetamaskRpcError(breadcrumb: Sentry.Breadcrumb): boolean {
   if (breadcrumb.level !== 'error' || !breadcrumb.message) {

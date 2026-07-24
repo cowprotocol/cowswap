@@ -72,4 +72,22 @@ describe('beforeSend', () => {
 
     expect(beforeSend(event, {})).toBeNull()
   })
+
+  it('ignores "Load failed" TypeError caused by a fetch', () => {
+    const event = buildEvent({
+      exception: {
+        values: [{ type: 'TypeError', value: 'Load failed' }],
+      },
+      breadcrumbs: [
+        {
+          level: 'error',
+          category: 'fetch',
+          timestamp: Date.now() / 1000,
+          data: { url: 'https://eth.blockscout.com/api/v2/tokens' },
+        },
+      ],
+    })
+
+    expect(beforeSend(event, {})).toBeNull()
+  })
 })
