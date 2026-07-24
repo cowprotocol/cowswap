@@ -5,6 +5,7 @@ import { useConfig } from 'wagmi'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
@@ -12,13 +13,14 @@ import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove
 
 export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, needsApproval: boolean): boolean {
   const spender = useTradeSpenderAddress()
+  const { account } = useWalletInfo()
   const token = amount ? getWrappedToken(amount.currency) : undefined
   const tokenAddress = token?.address
   const config = useConfig()
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
   useEffect(() => {
-    if (!needsApproval || !tokenAddress || !spender || !amount || !config) {
+    if (!needsApproval || !tokenAddress || !spender || !amount || !account || !config) {
       setShouldZeroApprove(false)
       return
     }
@@ -27,6 +29,7 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
 
     shouldZeroApproveFn({
       tokenAddress,
+      owner: account,
       spender,
       amountToApprove: amount,
       forceApprove: true,
@@ -40,7 +43,7 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [needsApproval, tokenAddress, spender, amount?.quotient?.toString(), config])
+  }, [needsApproval, tokenAddress, spender, account, amount?.quotient?.toString(), config])
 
   return shouldZeroApprove
 }
