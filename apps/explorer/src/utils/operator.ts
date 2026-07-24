@@ -346,6 +346,42 @@ export function getOrderSurplus(order: RawOrder): Surplus {
   }
 }
 
+/**
+ * Aggregates the protocol fees across an order's trades into one total per fee policy, keyed by the
+ * fee's position in `executedProtocolFees` (see {@link ProtocolFee.position}). Fee policies are
+ * fixed per order, so a given position is the same policy in every fill; summing per position
+ * collapses the fills while preserving the applied order.
+ */
+export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
+  const feesByPosition = new Map<number, ProtocolFee>()
+
+  for (const { executedProtocolFees } of trades) {
+    if (!executedProtocolFees) continue
+    executedProtocolFees.forEach(({ amount, token, policy }, position) => {
+      if (!amount || !token) return
+      const parsedAmount = new BigNumber(amount)
+
+      const existing = feesByPosition.get(position)
+      if (existing) {
+        existing.amount = existing.amount.plus(parsedAmount)
+      } else {
+        feesByPosition.set(position, {
+          amount: parsedAmount,
+          tokenAddress: getAddressKey(token),
+          type: getProtocolFeeType(policy),
+          factor: getProtocolFeeFactor(policy),
+          position,
+        })
+      }
+    })
+  }
+
+  // Sort by applied position (protocol fee first, partner fees after); drop policies that charged nothing.
+  return Array.from(feesByPosition.values())
+    .sort((a, b) => a.position - b.position)
+    .filter((fee) => fee.amount.isGreaterThan(0))
+}
+
 export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
   const params: PartialFillSurplusParams = {
     sellAmount: order.sellAmount,
@@ -443,12 +479,16 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
-function getReceiverAddress({ owner, receiver }: RawOrder): string {
-  return !receiver || isZeroAddress(receiver) ? owner : receiver
-}
-
-function isZeroAddress(address: string): boolean {
-  return /^0x0{40}$/.test(address)
+/**
+ * Returns the fee policy's `factor`, when present (meaning is policy-specific; see {@link ProtocolFee.factor}).
+ */
+function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
+  if (policy) {
+    if ('surplus' in policy) return policy.surplus.factor
+    if ('volume' in policy) return policy.volume.factor
+    if ('priceImprovement' in policy) return policy.priceImprovement.factor
+  }
+  return undefined
 }
 
 /**
@@ -464,61 +504,10 @@ function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
   return ProtocolFeeType.Unknown
 }
 
-/**
- * Returns the fee policy's `factor`, when present. Its meaning is policy-specific: for `volume`
- * it's a fraction of trade volume; for `surplus` / `priceImprovement` it's a fraction of the
- * surplus / improvement.
- */
-function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
-  if (policy) {
-    if ('surplus' in policy) return policy.surplus.factor
-    if ('volume' in policy) return policy.volume.factor
-    if ('priceImprovement' in policy) return policy.priceImprovement.factor
-  }
-  return undefined
+function getReceiverAddress({ owner, receiver }: RawOrder): string {
+  return !receiver || isZeroAddress(receiver) ? owner : receiver
 }
 
-/**
- * Collects the protocol fees charged across the order's trades, aggregated so an order with many
- * fills shows one total per policy instead of a row per fill.
- *
- * Fees are aggregated by their position in `executedProtocolFees` ("listed in the order they got
- * applied"). Fee policies are fixed for an order, so the fee at a given position refers to the same
- * policy in every fill — summing per position both collapses the fills and preserves the applied
- * order, which is what lets the UI tell the protocol's own fee (applied first) from the partner
- * fees that follow it (the API doesn't otherwise distinguish them).
- *
- * We intentionally do not try to reconstruct network costs from this: `order.totalFee` mixes
- * network costs and protocol fees and can't be split back apart. Network costs come from the
- * order's `gasCost` instead.
- */
-export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
-  const feesByPosition = new Map<number, ProtocolFee>()
-
-  for (const { executedProtocolFees } of trades) {
-    if (!executedProtocolFees) continue
-    executedProtocolFees.forEach(({ amount, token, policy }, position) => {
-      if (!amount || !token) return
-      const parsedAmount = new BigNumber(amount)
-
-      const existing = feesByPosition.get(position)
-      if (existing) {
-        existing.amount = existing.amount.plus(parsedAmount)
-      } else {
-        feesByPosition.set(position, {
-          amount: parsedAmount,
-          tokenAddress: getAddressKey(token),
-          type: getProtocolFeeType(policy),
-          factor: getProtocolFeeFactor(policy),
-          position,
-        })
-      }
-    })
-  }
-
-  // Order by position (protocol fee first, partner fees after) and drop policies that ended up
-  // charging nothing — a "0" row is just noise in the breakdown.
-  return Array.from(feesByPosition.values())
-    .sort((a, b) => a.position - b.position)
-    .filter((fee) => fee.amount.isGreaterThan(0))
+function isZeroAddress(address: string): boolean {
+  return /^0x0{40}$/.test(address)
 }

@@ -15,9 +15,8 @@ import { abbreviateString, isNativeToken } from 'utils'
 import { Order, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// Label for the protocol's own fee (the first fee applied). The protocol takes a volume fee
-// (2 / 0.3 bps) on most orders, surfaced simply as "Protocol fee"; for orders where it instead
-// takes a surplus / price-improvement fee we keep the descriptive label.
+// Labels for the protocol's own fee (the first applied fee), by policy type. The common case is a
+// plain volume fee, shown simply as "Protocol fee".
 const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
   [ProtocolFeeType.Surplus]: 'Surplus fee',
   [ProtocolFeeType.Volume]: 'Protocol fee',
@@ -90,11 +89,10 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
     return items
   }, [protocolFees, gasCost, nativeToken])
 
-  // Headline total per token (rows in the same token are summed), shown above the breakdown.
-  // Network costs are paid in the native token (ETH) while protocol fees are often taken in the
-  // wrapped native (WETH) — the same asset — so we fold wrapped-native into the native bucket to
-  // show a single figure (e.g. "0.00024 ETH") instead of splitting it as "x ETH, y WETH". Fees in
-  // any other token still get their own per-token total.
+  // Headline total per token, shown above the breakdown. Network costs are in the native token and
+  // protocol fees are often taken in wrapped native (the same asset), so we fold wrapped into the
+  // native bucket to show one figure instead of splitting it as "x ETH, y WETH"; other tokens stay
+  // separate.
   const totalsByToken = useMemo(() => {
     const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
     const wrappedKey =

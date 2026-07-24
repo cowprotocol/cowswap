@@ -201,11 +201,6 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
 }
 
 /**
- * Fetches trades for given order
- */
-// TODO: Break down this large function into smaller functions
-
-/**
  * Fetches every trade of an order, paging until the API runs out of results.
  */
 async function getAllOrderTrades(networkId: Network, orderId: string, signal: AbortSignal): Promise<RawTrade[]> {
