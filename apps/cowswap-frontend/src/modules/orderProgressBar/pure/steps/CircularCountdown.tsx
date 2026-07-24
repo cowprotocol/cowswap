@@ -1,16 +1,19 @@
 import { ReactElement } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import * as styledEl from './styled'
 
-import { PROGRESS_BAR_TIMER_DURATION } from '../../hooks/useOrderProgressBarProps'
+import { getProgressBarTimerDuration } from '../../constants'
 
 interface CircularCountdownProps {
   countdown: number
+  chainId: SupportedChainId
   isDelayed?: boolean
   bgColor?: string
 }
 
-export function CircularCountdown({ countdown, isDelayed, bgColor }: CircularCountdownProps): ReactElement {
+export function CircularCountdown({ countdown, chainId, isDelayed, bgColor }: CircularCountdownProps): ReactElement {
   const radius = 45
   const circumference = 2 * Math.PI * radius
   const displayValue = Math.max(countdown, 1)
@@ -25,7 +28,7 @@ export function CircularCountdown({ countdown, isDelayed, bgColor }: CircularCou
           r={radius}
           strokeDasharray={circumference}
           startAt={countdown}
-          end={PROGRESS_BAR_TIMER_DURATION}
+          end={getProgressBarTimerDuration(chainId)}
         />
       </styledEl.CircularProgress>
       <styledEl.CountdownText $shouldPulse={shouldPulse}>{displayValue}</styledEl.CountdownText>

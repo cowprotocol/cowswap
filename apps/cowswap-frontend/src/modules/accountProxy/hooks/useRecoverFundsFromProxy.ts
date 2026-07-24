@@ -1,20 +1,15 @@
 import { useCallback, useState } from 'react'
 
-import { stringToHex } from 'viem'
-import { useWalletClient } from 'wagmi'
+import { useConfig, useWalletClient } from 'wagmi'
 
-import { delay } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
+import { recoverFundsFromProxy } from '../services/recoverFundsFromProxy.service'
 
-const INFINITE_DEADLINE = 99999999999
-const DEFAULT_GAS_LIMIT = 600_000n
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
 export interface RecoverFundsContext {
@@ -45,6 +40,7 @@ export function useRecoverFundsFromProxy({
 
   const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
+  const config = useConfig()
 
   const proxyAddress = account && cowShedHooks ? cowShedHooks.proxyOf(account) : undefined
   const factoryAddress = cowShedHooks ? cowShedHooks.getFactoryAddress() : undefined
@@ -67,48 +63,19 @@ export function useRecoverFundsFromProxy({
     setTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
 
     try {
-      const calls = getRecoverFundsCalls({
-        isNativeToken,
+      return recoverFundsFromProxy({
+        config,
+        cowShedHooks,
+        walletClient,
         account,
-        tokenBalance: tokenBalance.quotient.toString(),
-        selectedTokenAddress,
         proxyAddress,
+        factoryAddress,
+        selectedTokenAddress,
+        tokenBalanceAtoms: tokenBalance.quotient.toString(),
+        isNativeToken,
+        delayBetweenSignaturesMs: DELAY_BETWEEN_SIGNATURES,
+        onBeforeTransactionSign: () => setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION),
       })
-
-      const hex = stringToHex(Date.now().toString()).slice(2)
-      const nonce = ('0x' + (hex + '0'.repeat(64)).slice(0, 64)) as `0x${string}`
-      // This field is supposed to be used with orders, but here we just do a transaction
-      const validTo = INFINITE_DEADLINE
-
-      const encodedSignature = await cowShedHooks.signCalls(
-        calls,
-        nonce,
-        BigInt(validTo),
-        ContractsSigningScheme.EIP712, // TODO: support other signing types
-      )
-
-      setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
-
-      await delay(DELAY_BETWEEN_SIGNATURES)
-
-      // Use the SDK's own encoder to build the calldata, matching how CowShedSdk.signCalls works internally
-      const callData = cowShedHooks.encodeExecuteHooksForFactory(
-        calls,
-        nonce,
-        BigInt(validTo),
-        account,
-        encodedSignature,
-      )
-
-      const hash = await walletClient.sendTransaction({
-        to: factoryAddress as `0x${string}`,
-        data: callData as `0x${string}`,
-        account: walletClient.account,
-        chain: walletClient.chain,
-        gas: DEFAULT_GAS_LIMIT,
-      })
-
-      return hash
     } finally {
       setTxSigningStep(null)
     }
@@ -121,6 +88,7 @@ export function useRecoverFundsFromProxy({
     tokenBalance,
     cowShedHooks,
     isNativeToken,
+    config,
   ])
 
   return { callback, txSigningStep, proxyAddress }

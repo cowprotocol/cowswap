@@ -1,4 +1,4 @@
-import { getProgressBarStepName } from './useOrderProgressBarProps'
+import { getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -59,5 +59,38 @@ describe('getProgressBarStepName', () => {
     })
 
     expect(result).toBe(OrderProgressBarStepName.EXECUTING)
+  })
+})
+
+describe('shouldUpdateStepImmediately', () => {
+  const MINIMUM_STEP_DISPLAY_TIME = 5000 // ms`5s`
+  const RECENT_CHANGE = 1000 // less than MINIMUM_STEP_DISPLAY_TIME
+
+  it('bypasses the debounce for cancellation and terminal steps even when the last change is recent', () => {
+    const immediateSteps = [
+      OrderProgressBarStepName.CANCELLING,
+      OrderProgressBarStepName.CANCELLED,
+      OrderProgressBarStepName.CANCELLATION_FAILED,
+      OrderProgressBarStepName.EXPIRED,
+      OrderProgressBarStepName.FINISHED,
+    ]
+
+    immediateSteps.forEach((stepName) => {
+      expect(shouldUpdateStepImmediately(stepName, Date.now(), RECENT_CHANGE)).toBe(true)
+    })
+  })
+
+  it('debounces a normal step when the previous step was shown less than the minimum display time ago', () => {
+    expect(shouldUpdateStepImmediately(OrderProgressBarStepName.SOLVING, Date.now(), RECENT_CHANGE)).toBe(false)
+  })
+
+  it('shows a normal step immediately once the minimum display time has elapsed', () => {
+    expect(shouldUpdateStepImmediately(OrderProgressBarStepName.SOLVING, Date.now(), MINIMUM_STEP_DISPLAY_TIME)).toBe(
+      true,
+    )
+  })
+
+  it('shows the first step immediately when there is no previous change timestamp', () => {
+    expect(shouldUpdateStepImmediately(OrderProgressBarStepName.SOLVING, undefined, 0)).toBe(true)
   })
 })

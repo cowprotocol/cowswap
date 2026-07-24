@@ -7,7 +7,7 @@ import { ButtonSecondary, ExternalLink, InlineBanner, StatusColorVariant } from 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
+import { UNSUPPORTED_WALLET_LINK } from '../../../const'
 
 const InterestButton = styled(ButtonSecondary).attrs({ type: 'button' })`
   width: fit-content;
@@ -17,6 +17,9 @@ const InterestButton = styled(ButtonSecondary).attrs({ type: 'button' })`
 export interface UnsupportedWalletWarningProps {
   chainId: SupportedChainId
   account?: string
+  /**
+   * If true, we want to suggest the user to try the Safe web app, because their wallet connection did not confirm tx bundling.
+   */
   isSafeViaWc: boolean
   isInterestButtonVisible: boolean
   isInterestRegistered: boolean
