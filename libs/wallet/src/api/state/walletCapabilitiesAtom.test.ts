@@ -4,10 +4,8 @@ import type { EIP1193Provider, PublicClient } from 'viem'
 import type { Connector } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AccountType } from '@cowprotocol/types'
 
 import {
-  getShouldSkipCapabilitiesCheck,
   isAtomicBatchSupportedAtom,
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
@@ -16,25 +14,12 @@ import {
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
 
-import {
-  accountTypeAtom,
-  isSafeAppAtom,
-  isSafeViaWcAtom,
-  isSafeWalletAtom,
-  isSmartContractWalletAtom,
-} from '../../wagmi/state/walletMetadata.atoms'
+import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
 import { walletInfoAtom } from '../state'
 
 /** Mocked module exports writable primitives; Jest widens atom types, so casts are required for store.set. */
 const writableIsSafeAppAtom = isSafeAppAtom as WritableAtom<boolean | null, [boolean | null], unknown>
 const writableIsSafeViaWcAtom = isSafeViaWcAtom as WritableAtom<boolean | null, [boolean | null], unknown>
-const writableAccountTypeAtom = accountTypeAtom as WritableAtom<AccountType | null, [AccountType | null], unknown>
-const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as WritableAtom<
-  boolean | null,
-  [boolean | null],
-  unknown
->
-const writableIsSafeWalletAtom = isSafeWalletAtom as WritableAtom<boolean, [boolean], unknown>
 
 import type { WalletCapabilities } from './walletCapabilitiesAtom'
 import type { WalletInfo } from '../types'
@@ -45,9 +30,6 @@ jest.mock('../../wagmi/state/walletMetadata.atoms', () => {
   return {
     isSafeAppAtom: jotai.atom(false),
     isSafeViaWcAtom: jotai.atom(false),
-    accountTypeAtom: jotai.atom('EOA'),
-    isSmartContractWalletAtom: jotai.atom(false),
-    isSafeWalletAtom: jotai.atom(false),
   }
 })
 
@@ -57,24 +39,6 @@ const MOCK_CONNECTOR = { type: 'injected' } as Connector
 
 const mockGetCapabilities = jest.fn()
 const mockWagmiConfigGetClient = jest.fn()
-const mockGetIsWalletConnect = jest.fn()
-const mockIsMobile = { value: false }
-
-jest.mock('@cowprotocol/common-utils', () => {
-  const actual = jest.requireActual<typeof import('@cowprotocol/common-utils')>('@cowprotocol/common-utils')
-
-  return {
-    ...actual,
-    getCurrentChainIdFromUrl: () => 1,
-    get isMobile() {
-      return mockIsMobile.value
-    },
-  }
-})
-
-jest.mock('../../wagmi/hooks/useIsWalletConnect', () => ({
-  getIsWalletConnect: (...args: unknown[]) => mockGetIsWalletConnect(...args),
-}))
 
 jest.mock('viem/actions', () => ({
   getCapabilities: (...args: unknown[]) => mockGetCapabilities(...args),
@@ -92,26 +56,6 @@ function createMockEip1193Provider(request = jest.fn()): EIP1193Provider {
     on: jest.fn(),
     removeListener: jest.fn(),
   } as unknown as EIP1193Provider
-}
-
-function seedResolvedWalletMetadata(
-  store: ReturnType<typeof createStore>,
-  overrides: Partial<{
-    accountType: AccountType | null
-    isSafeWallet: boolean
-    isSmartContractWallet: boolean | null
-    isSafeViaWc: boolean
-    isSafeApp: boolean
-  }> = {},
-): void {
-  store.set(writableAccountTypeAtom, overrides.accountType ?? AccountType.EOA)
-  store.set(writableIsSafeWalletAtom, overrides.isSafeWallet ?? false)
-  store.set(
-    writableIsSmartContractWalletAtom,
-    'isSmartContractWallet' in overrides ? (overrides.isSmartContractWallet ?? null) : false,
-  )
-  store.set(writableIsSafeViaWcAtom, overrides.isSafeViaWc ?? false)
-  store.set(writableIsSafeAppAtom, overrides.isSafeApp ?? false)
 }
 
 function setWalletInfo(
@@ -151,29 +95,9 @@ describe('resolveCapabilitiesForChain', () => {
   })
 })
 
-describe('getShouldSkipCapabilitiesCheck', () => {
-  beforeEach(() => {
-    mockIsMobile.value = false
-    mockGetIsWalletConnect.mockReturnValue(false)
-  })
-
-  it('returns false on desktop', async () => {
-    expect(await getShouldSkipCapabilitiesCheck(MOCK_CONNECTOR, createMockEip1193Provider())).toBe(false)
-  })
-
-  it('returns true on mobile WalletConnect', async () => {
-    mockIsMobile.value = true
-    mockGetIsWalletConnect.mockReturnValue(true)
-
-    expect(await getShouldSkipCapabilitiesCheck(MOCK_CONNECTOR, createMockEip1193Provider())).toBe(true)
-  })
-})
-
 describe('walletCapabilitiesAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.value = false
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
@@ -181,19 +105,6 @@ describe('walletCapabilitiesAtom', () => {
   it('returns null when isSafeViaWc is still loading', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, null)
-    setWalletInfo(store)
-
-    const result = await store.get(walletCapabilitiesAtom)
-
-    expect(result).toBeNull()
-    expect(mockGetCapabilities).not.toHaveBeenCalled()
-  })
-
-  it('returns null on mobile WalletConnect without fetching capabilities', async () => {
-    mockIsMobile.value = true
-    mockGetIsWalletConnect.mockReturnValue(true)
-
-    const store = createStore()
     setWalletInfo(store)
 
     const result = await store.get(walletCapabilitiesAtom)
@@ -347,7 +258,7 @@ describe('walletCapabilitiesAtom', () => {
       expect(result).toEqual(capabilities)
     })
 
-    it('returns null when the legacy capabilities chain key is missing', async () => {
+    it('returns null when the current chain capability is missing', async () => {
       const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
       mockGetCapabilities.mockRejectedValue(new Error('viem error'))
       const mockRequest = jest.fn().mockResolvedValue({ '0x64': capabilities })
@@ -408,15 +319,12 @@ describe('walletCapabilitiesAtom', () => {
 describe('isAtomicBatchSupportedAsyncAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.value = false
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   it('returns false when walletInfoAtom yields no capabilities (disconnected)', async () => {
     const store = createStore()
-    seedResolvedWalletMetadata(store)
     store.set(walletInfoAtom, { chainId: MOCK_CHAIN_ID } as WalletInfo)
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
@@ -456,7 +364,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
     expect(result).toBe(true)
   })
 
-  it('returns false when isSafeViaWcAtom and capabilities atomic status is ready', async () => {
+  it('returns true when isSafeViaWcAtom and capabilities atomic status is ready', async () => {
     const store = createStore()
     store.set(writableIsSafeViaWcAtom, true)
     mockGetCapabilities.mockResolvedValue({ atomic: { status: 'ready' } })
@@ -464,7 +372,7 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
 
     const result = await store.get(isAtomicBatchSupportedAsyncAtom)
 
-    expect(result).toBe(false)
+    expect(result).toBe(true)
   })
 
   it('returns true when atomicBatch.supported is true', async () => {
@@ -498,63 +406,11 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
 
     expect(result).toBe(true)
   })
-
-  it('does not wait on Safe info for EOA when gnosisSafeInfo is still undefined', async () => {
-    const store = createStore()
-    seedResolvedWalletMetadata(store, { accountType: AccountType.EOA, isSafeWallet: false })
-    mockGetCapabilities.mockResolvedValue({ atomic: { status: 'supported' } })
-    setWalletInfo(store)
-
-    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
-
-    expect(result).toBe(true)
-    expect(mockGetCapabilities).toHaveBeenCalled()
-  })
-
-  it('returns false for smart contract wallet before Safe info confirms a Safe', async () => {
-    const store = createStore()
-    seedResolvedWalletMetadata(store, { isSmartContractWallet: true, isSafeWallet: false })
-    mockGetCapabilities.mockResolvedValue({ atomic: { status: 'supported' } })
-    setWalletInfo(store)
-
-    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
-
-    expect(result).toBe(false)
-    expect(mockGetCapabilities).not.toHaveBeenCalled()
-  })
-
-  it('returns false for non-Safe smart contract wallet before checking capabilities', async () => {
-    const store = createStore()
-    store.set(writableIsSmartContractWalletAtom, true)
-    store.set(writableIsSafeWalletAtom, false)
-    mockGetCapabilities.mockResolvedValue({ atomic: { status: 'supported' } })
-    setWalletInfo(store)
-
-    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
-
-    expect(result).toBe(false)
-    expect(mockGetCapabilities).not.toHaveBeenCalled()
-  })
-
-  it('returns false for EIP-7702 account before checking capabilities', async () => {
-    const store = createStore()
-    store.set(writableAccountTypeAtom, AccountType.EIP7702EOA)
-    store.set(writableIsSafeWalletAtom, false)
-    mockGetCapabilities.mockResolvedValue({ atomic: { status: 'supported' } })
-    setWalletInfo(store)
-
-    const result = await store.get(isAtomicBatchSupportedAsyncAtom)
-
-    expect(result).toBe(false)
-    expect(mockGetCapabilities).not.toHaveBeenCalled()
-  })
 })
 
 describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsMobile.value = false
-    mockGetIsWalletConnect.mockReturnValue(false)
     mockGetCapabilities.mockResolvedValue({})
     mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })

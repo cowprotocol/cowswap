@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { PermitType } from '@cowprotocol/permit-utils'
+import { isSupportedPermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
 import { usePermitInfo } from 'modules/permit'
@@ -26,16 +26,24 @@ type AdditionalParams = {
   // null is needed to prevent breaking changes, as this param was optional before
   // f.e. for approve and swap its allowed, but for just approve - no
   isBundlingSupportedOrEnabledForContext: boolean | null
+  /** Whether the connected wallet can sign orders and permits off-chain. */
+  allowsOffchainSigning?: boolean
 }
 
-export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext }: AdditionalParams): {
+export function useIsApprovalOrPermitRequired({
+  isBundlingSupportedOrEnabledForContext,
+  allowsOffchainSigning = false,
+}: AdditionalParams): {
   reason: ApproveRequiredReason
   currentAllowance: Nullish<bigint>
 } {
   const amountToApprove = useGetAmountToSignApprove()
   const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
-  const { type } = usePermitInfo(inputCurrency, tradeType) || {}
+  const permitInfo = usePermitInfo(inputCurrency, tradeType)
+  const type = permitInfo?.type
+  const offchainPermitRequirement =
+    tradeType === TradeType.LIMIT_ORDER ? ApproveRequiredReason.NotRequired : getPermitRequirements(type)
 
   const reason = (() => {
     if (!isApproveSupportedByFlowOrWallet(inputCurrency, tradeType, !!isBundlingSupportedOrEnabledForContext)) {
@@ -46,7 +54,11 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
       return ApproveRequiredReason.NotRequired
     }
 
-    const isPermitSupported = type && type !== 'unsupported'
+    const isPermitSupported = isSupportedPermitInfo(permitInfo)
+
+    if (allowsOffchainSigning && isPermitSupported) {
+      return offchainPermitRequirement
+    }
 
     if (!isPermitSupported && isApprovalRequired(approvalState)) {
       return isBundlingSupportedOrEnabledForContext

@@ -28,7 +28,7 @@ import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
+import { DEFAULT_STEP_NAME, getProgressBarTimerDuration, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -53,7 +53,29 @@ type UseOrderProgressBarPropsParams = {
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
-export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
+
+// Steps that should be shown immediately, bypassing the minimum step-display debounce
+const IMMEDIATE_STEP_NAMES: OrderProgressBarStepName[] = [
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
+  OrderProgressBarStepName.CANCELLING,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.EXPIRED,
+]
+
+// A step is shown immediately when it's the first change, when the previous step has been
+// displayed long enough, or when it's a terminal/cancellation step that must not be debounced.
+export function shouldUpdateStepImmediately(
+  stepName: OrderProgressBarStepName,
+  lastTimeChangedSteps: number | undefined,
+  timeSinceLastChange: number,
+): boolean {
+  return (
+    lastTimeChangedSteps === undefined ||
+    timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    IMMEDIATE_STEP_NAMES.includes(stepName)
+  )
+}
 
 /**
  * Hook for fetching ProgressBar props
@@ -232,6 +254,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     countdown,
     backendApiStatus,
     isUnfillable || isCancelled || isCancelling || isExpired,
+    chainId,
   )
 
   return useMemo(() => {
@@ -369,6 +392,7 @@ function useCountdownStartUpdater(
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   shouldDisableCountdown: boolean,
+  chainId: SupportedChainId,
 ): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
@@ -388,12 +412,12 @@ function useCountdownStartUpdater(
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
-      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
+      setCountdown(orderId, getProgressBarTimerDuration(chainId))
     } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown, chainId])
 }
 
 // local updaters
@@ -455,14 +479,7 @@ function useProgressBarStepNameUpdater(
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
+    if (shouldUpdateStepImmediately(stepName, lastTimeChangedSteps, timeSinceLastChange)) {
       updateStepName(stepName)
 
       // schedule update for temporary steps

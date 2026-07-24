@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc, useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeAppAtom, isSafeViaWcAtom, useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { tradeFormValidationContextAtom } from 'modules/tradeFormValidation'
@@ -18,7 +18,6 @@ export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
   const twapOrder = useTwapOrder()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const isSafeViaWc = useIsSafeViaWc()
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { sellAmount } = receiveAmountInfo?.beforeAllFees || {}
@@ -29,9 +28,13 @@ export function useTwapFormState(): TwapFormState | null {
   const tradeFormValidationContext = useAtomValue(tradeFormValidationContextAtom)
 
   const verification = useFallbackHandlerVerification()
+  const isSafeApp = useAtomValue(isSafeAppAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
   const isTxBundlingSupported = useIsTxBundlingSupported()
+  const isWalletSupported = isSafeApp === null || isSafeViaWc === null ? null : isSafeApp || isSafeViaWc
 
   return getTwapFormState({
+    isWalletSupported,
     isTxBundlingSupported,
     verification,
     twapOrder,
