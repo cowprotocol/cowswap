@@ -1,3 +1,4 @@
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import {
@@ -66,11 +67,31 @@ export async function resolveSolverByTxHash(
   return buildSolverInfo(winnerSolverName, solvers)
 }
 
-function buildSolverInfo(winnerSolverName: string, solvers: SolverInfo[]): OrderSolverInfo {
-  const matchingSolver = matchSolverByName(winnerSolverName, solvers)
+function buildSolverInfo(winnerSolver: string, solvers: SolverInfo[]): OrderSolverInfo {
+  // Once the backend migrates, the competition `solver` field carries the on-chain solver address
+  // instead of the name. Resolve CMS branding by address in that case; otherwise fall back to the
+  // legacy name-based lookup (backend still returns a name, e.g. `naive`, `barter-solve`).
+  return isSolverAddress(winnerSolver)
+    ? buildSolverInfoFromAddress(winnerSolver, solvers)
+    : buildSolverInfoFromName(winnerSolver, solvers)
+}
+
+function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): OrderSolverInfo {
+  const matchingSolver = matchSolverByAddress(address, solvers)
   return {
-    solverId: matchingSolver?.solverId || winnerSolverName,
-    displayName: matchingSolver?.displayName || winnerSolverName,
+    solverId: matchingSolver?.solverId || address,
+    // When the address isn't found in CMS, fall back to a shortened address for display so the
+    // full 42-char address doesn't break the UI layout.
+    displayName: matchingSolver?.displayName || shortenAddress(address),
+    image: matchingSolver?.image,
+  }
+}
+
+function buildSolverInfoFromName(solverName: string, solvers: SolverInfo[]): OrderSolverInfo {
+  const matchingSolver = matchSolverByName(solverName, solvers)
+  return {
+    solverId: matchingSolver?.solverId || solverName,
+    displayName: matchingSolver?.displayName || solverName,
     image: matchingSolver?.image,
   }
 }
@@ -103,10 +124,7 @@ function getWinnerSolverName(winner: unknown, solvers: SolverInfo[]): string | u
   const solverAddress = winner.solverAddress
 
   if (typeof solverAddress === 'string') {
-    return (
-      solvers.find((s) => s.deployments.some((d) => areAddressesEqual(d.address, solverAddress)))?.displayName ??
-      undefined
-    )
+    return matchSolverByAddress(solverAddress, solvers)?.displayName ?? undefined
   }
   return undefined
 }
@@ -123,6 +141,14 @@ function isNonZeroAmount(value: ExecutedAmounts['buy']): boolean {
   } catch {
     return false
   }
+}
+
+function isSolverAddress(value: string): boolean {
+  return value.startsWith('0x') && value.length === 42
+}
+
+function matchSolverByAddress(address: string, solvers: SolverInfo[]): SolverInfo | undefined {
+  return solvers.find((candidate) => candidate.deployments.some((d) => areAddressesEqual(d.address, address)))
 }
 
 function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {

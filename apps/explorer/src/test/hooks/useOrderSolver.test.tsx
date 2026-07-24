@@ -60,6 +60,18 @@ const CROSS_NETWORK_SOLVER: SolverInfo = {
   deployments: [],
 }
 
+// A valid 42-char on-chain address (all-hex) so `shortenAddress` and `areAddressesEqual` behave as in prod.
+const ONCHAIN_SOLVER_ADDRESS = '0x1111111111111111111111111111111111111111'
+const UNKNOWN_ONCHAIN_ADDRESS = '0x2222222222222222222222222222222222222222'
+
+const ONCHAIN_SOLVER: SolverInfo = {
+  solverId: 'onchainSolver',
+  displayName: 'On-chain Solver',
+  image: 'https://example.com/onchain.png',
+  networks: [],
+  deployments: [{ chainId: 1, chainName: 'mainnet', address: ONCHAIN_SOLVER_ADDRESS, active: true }],
+}
+
 function createMockOrder(overrides: Partial<Order> = {}): Order {
   return {
     uid: '0x1',
@@ -191,6 +203,37 @@ describe('useOrderSolver', () => {
       image: 'https://example.com/blanc.png',
     })
     expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+  })
+
+  it('resolves solver by on-chain address when the order competition returns an address', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(ONCHAIN_SOLVER_ADDRESS))
+    mockedFetchSolversInfo.mockResolvedValueOnce([ONCHAIN_SOLVER])
+
+    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: 'onchainSolver',
+      displayName: 'On-chain Solver',
+      image: 'https://example.com/onchain.png',
+    })
+    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
+  })
+
+  it('falls back to a shortened address when the competition winner address is not in CMS', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(UNKNOWN_ONCHAIN_ADDRESS))
+    mockedFetchSolversInfo.mockResolvedValueOnce([ONCHAIN_SOLVER])
+
+    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: UNKNOWN_ONCHAIN_ADDRESS,
+      displayName: '0x2222...2222',
+      image: undefined,
+    })
   })
 
   it('falls back to txHash competition when order status has no winner', async () => {
