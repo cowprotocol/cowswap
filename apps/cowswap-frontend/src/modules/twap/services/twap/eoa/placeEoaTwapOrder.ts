@@ -8,7 +8,15 @@ import {
   createCowLogger,
   isProdLike,
 } from '@cowprotocol/common-utils'
-import { AccountAddress, isEvmChain, QuoteResults, SignerLike, SupportedChainId, OrderKind } from '@cowprotocol/cow-sdk'
+import {
+  AccountAddress,
+  isEvmChain,
+  OrderKind,
+  OrderPostingResult,
+  QuoteResults,
+  SignerLike,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
@@ -80,7 +88,7 @@ export interface PlaceEoaTwapOrderParams {
 }
 
 export interface PlaceEoaTwapOrderResult {
-  sellEqualsBuyOrderId: string
+  orderPostingResult: OrderPostingResult
   proxyAddress: AccountAddress
 }
 
@@ -388,7 +396,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
     // If `generatePermitHook` fails, we simply continue without a permit, using the approval flow below.
     if (permitData) {
-      const { orderId: sellEqualsBuyOrderId } = await postSwapOrderFromQuote({
+      const orderPostingResult = await postSwapOrderFromQuote({
         appData: {
           metadata: {
             hooks: {
@@ -400,7 +408,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
         },
       })
 
-      return { sellEqualsBuyOrderId, proxyAddress }
+      return { orderPostingResult, proxyAddress }
     }
   }
 
@@ -437,9 +445,9 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     })
   }
 
-  const { orderId: sellEqualsBuyOrderId } = await postSwapOrderFromQuote()
+  const orderPostingResult = await postSwapOrderFromQuote()
 
-  return { sellEqualsBuyOrderId, proxyAddress }
+  return { orderPostingResult, proxyAddress }
 }
 
 async function approveEoaSellToken({

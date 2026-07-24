@@ -41,6 +41,7 @@ import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
+import { waitForFundingOrderSettlementTx } from '../services/twap/eoa/waitForFundingOrderSettlementTx'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
@@ -136,7 +137,7 @@ export function useCreateTwapOrder() {
   return useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function
+    // eslint-disable-next-line max-lines-per-function, complexity
     async (fallbackHandlerIsNotSet: boolean) => {
       // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
@@ -198,7 +199,9 @@ export function useCreateTwapOrder() {
         }
 
         const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
-        const orderId = getConditionalOrderId(paramsStruct)
+
+        // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
+        const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
         tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
@@ -211,12 +214,20 @@ export function useCreateTwapOrder() {
           env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
 
-        let safeTxHashOrSellEqualsBuyOrderOId: string
+        // Safe only. `= safeTxHash`. Empty for EOA.
+        let orderCreationHash = ''
+
+        // Value passed to `tradeConfirmActions.onSuccess`. Ends up in `PostedOrderNotification`, rendering a Safe or Explorer link in a toast.
+        // Must be truthy to show the success screen.
+        // - EOA: CoW orderbook UID of the intermediate sell=buy funding order (not the TWAP id)
+        // - Safe: safeTxHash
+        let confirmModalHash: string
+
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
 
         if (isEoaTwap) {
-          const { sellEqualsBuyOrderId, proxyAddress } = await placeEoaTwapOrder({
+          const { proxyAddress, orderPostingResult } = await placeEoaTwapOrder({
             chainId,
             account: account as `0x${string}`,
             twapOrder,
@@ -229,9 +240,16 @@ export function useCreateTwapOrder() {
             generatePermitHook,
           })
 
-          safeTxHashOrSellEqualsBuyOrderOId = sellEqualsBuyOrderId
+          // Funding-order UID used for confirm-modal CoW explorer link. `!== twapOrderId`.
+          confirmModalHash = orderPostingResult.orderId
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
+
+          // Used for the toast native chain explorer link.
+          // Not available until the funding order tx settles. If we cannot resolve this, we fallback to the funding
+          // order UID (CoW Explorer).
+          const settlementTxHash = await waitForFundingOrderSettlementTx(chainId, orderPostingResult.orderId)
+          orderCreationHash = settlementTxHash ?? orderPostingResult.orderId
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -241,7 +259,8 @@ export function useCreateTwapOrder() {
             extensibleFallbackContext,
             sendSafeTransactions,
           })
-          safeTxHashOrSellEqualsBuyOrderOId = safeTxHash
+          orderCreationHash = safeTxHash
+          confirmModalHash = safeTxHash
           safeAddressOrCowShedAddress = safeAddress // === account
           orderStatus = TwapOrderStatus.WaitSigning
         }
@@ -252,7 +271,7 @@ export function useCreateTwapOrder() {
           chainId,
           safeAddress: safeAddressOrCowShedAddress,
           submissionDate: new Date().toISOString(),
-          id: orderId,
+          id: twapOrderId,
           executionInfo: { ...DEFAULT_TWAP_EXECUTION },
         }
 
@@ -262,8 +281,8 @@ export function useCreateTwapOrder() {
 
         emitPostedOrderEvent({
           chainId,
-          id: orderId,
-          orderCreationHash: safeTxHashOrSellEqualsBuyOrderOId,
+          id: twapOrderId,
+          orderCreationHash,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: twapOrder.sellAmount,
@@ -275,7 +294,7 @@ export function useCreateTwapOrder() {
         sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
-        tradeConfirmActions.onSuccess(safeTxHashOrSellEqualsBuyOrderOId)
+        tradeConfirmActions.onSuccess(confirmModalHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 

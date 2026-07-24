@@ -117,20 +117,28 @@ describe('TransactionContentWithLink', () => {
       useGnosisSafeInfoMock.mockReturnValue(undefined)
     })
 
-    it('uses empty hash when there is no orderUid and not in eth-flow creating path', () => {
+    it('uses transactionHash when orderUid is absent', () => {
       renderComponent({ transactionHash: ONCHAIN_TX_HASH })
 
       const tx = getRenderedTx()
       expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
-      expect(tx.hash).toBe('')
+      expect(tx.hash).toBe(ONCHAIN_TX_HASH)
     })
 
-    it('uses orderUid as hash when orderUid is provided', () => {
+    it('uses orderUid as hash when orderUid is a CoW order id', () => {
       renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: COW_ORDER_UID })
 
       const tx = getRenderedTx()
       expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
       expect(tx.hash).toBe(COW_ORDER_UID)
+    })
+
+    it('uses transactionHash when orderUid is not a CoW order id (e.g. TWAP conditional id)', () => {
+      renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: SAFE_TX_HASH })
+
+      const tx = getRenderedTx()
+      expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
+      expect(tx.hash).toBe(ONCHAIN_TX_HASH)
     })
 
     it('uses transactionHash as hash for eth-flow creating status', () => {
