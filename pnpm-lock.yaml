@@ -79,6 +79,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: 20.0.0
         version: 20.0.0
+      '@cowprotocol/dx':
+        specifier: workspace:*
+        version: link:libs/dx
       '@eslint/eslintrc':
         specifier: 3.3.3
         version: 3.3.3
@@ -1716,6 +1719,12 @@ importers:
       jsbi:
         specifier: 3.2.5
         version: 3.2.5
+
+  libs/dx:
+    dependencies:
+      prettier:
+        specifier: 3.6.2
+        version: 3.6.2
 
   libs/ens:
     dependencies:
