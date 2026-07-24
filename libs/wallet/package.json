@@ -41,7 +41,6 @@
     "@cowprotocol/iframe-transport": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
-    "@cowprotocol/wallet-provider": "workspace:*",
     "@ethereumjs/util": "10.1.0",
     "@metamask/jazzicon": "2.0.0",
     "@metamask/sdk": "0.31.4",
