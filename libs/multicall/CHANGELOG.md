@@ -1,5 +1,102 @@
 # Changelog
 
+## [3.4.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.4...multicall-v3.4.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.2
+
+## [3.4.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.3...multicall-v3.4.4) (2026-07-17)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.1
+
+## [3.4.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.2...multicall-v3.4.3) (2026-07-08)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-const@3.6.0
+
+## [3.4.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.1...multicall-v3.4.2) (2026-06-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.0...multicall-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/wallet@3.7.1
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.2...multicall-v3.4.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/types@4.5.0
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.1...multicall-v3.3.2) (2026-06-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.3.0...multicall-v3.3.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.5.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.4...multicall-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/wallet-provider@2.2.0
+  - @cowprotocol/wallet@3.5.0
+  - @cowprotocol/cowswap-abis@4.1.0
+
+## 3.2.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+
 ## [3.2.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.2.2...multicall-v3.2.3) (2026-05-22)
 
 ### Patch Changes

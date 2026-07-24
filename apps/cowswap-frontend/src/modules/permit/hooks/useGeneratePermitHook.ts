@@ -1,5 +1,8 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
+
+import { maxUint256, type WalletClient } from 'viem'
+import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
 
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -11,12 +14,9 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { maxUint256, type WalletClient } from 'viem'
-import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
-
 import { useGetCachedPermit } from './useGetCachedPermit'
 
-import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
+import { storePermitCacheAtom } from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 type PermitDeps = {
@@ -28,6 +28,34 @@ type PermitDeps = {
   walletClient: WalletClient | undefined
 }
 
+/**
+ * Hook that returns callback to generate permit hook data
+ */
+export function useGeneratePermitHook(): GeneratePermitHook {
+  const config = useConfig()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const { chainId } = useWalletInfo()
+  const storePermit = useSetAtom(storePermitCacheAtom)
+  const getCachedPermit = useGetCachedPermit()
+
+  return useCallback(
+    (params: GeneratePermitHookParams) =>
+      runPermitRequest(
+        params,
+        params.amount ?? maxUint256,
+        config,
+        publicClient,
+        chainId,
+        getCachedPermit,
+        storePermit,
+        walletClient,
+      ),
+    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
+  )
+}
+
+// eslint-disable-next-line complexity
 async function runPermitRequest(
   params: GeneratePermitHookParams,
   amount: bigint,
@@ -39,6 +67,14 @@ async function runPermitRequest(
   walletClient: PermitDeps['walletClient'],
 ): Promise<PermitHookData | undefined> {
   if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
+
+  const chainIdMissMatch = publicClient.chain.id !== chainId
+
+  /**
+   * Never try using eip2612Utils which instantiated with a client on one chain agains another one
+   * Because getTokenNonce() will fail at the first iteration and will never get recovered
+   */
+  if (chainIdMissMatch) return
 
   const eip2612Utils = await getPermitUtilsInstance({
     chainId,
@@ -79,34 +115,4 @@ async function runPermitRequest(
   } finally {
     params.postSignCallback?.()
   }
-}
-
-/**
- * Hook that returns callback to generate permit hook data
- */
-export function useGeneratePermitHook(): GeneratePermitHook {
-  const config = useConfig()
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
-  const { chainId } = useWalletInfo()
-  const storePermit = useSetAtom(storePermitCacheAtom)
-  const getCachedPermit = useGetCachedPermit()
-
-  useAtomValue(staticPermitCacheAtom)
-  useAtomValue(userPermitCacheAtom)
-
-  return useCallback(
-    (params: GeneratePermitHookParams) =>
-      runPermitRequest(
-        params,
-        params.amount ?? maxUint256,
-        config,
-        publicClient,
-        chainId,
-        getCachedPermit,
-        storePermit,
-        walletClient,
-      ),
-    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
-  )
 }

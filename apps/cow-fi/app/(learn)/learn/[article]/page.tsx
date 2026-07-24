@@ -15,6 +15,7 @@ import type { Metadata } from 'next'
 
 import { ArticlePageComponent } from '@/components/ArticlePageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { isValidCmsSlug } from '@/util/cmsValidation'
 import { fetchArticleWithRetry } from '@/util/fetchHelpers'
 import { getPageMetadata } from '@/util/getPageMetadata'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
@@ -28,23 +29,67 @@ export const revalidate = 43200
 const METADATA_DESCRIPTION_MAX_LENGTH = 150
 const METADATA_DESCRIPTION_TRUNCATE_LENGTH = METADATA_DESCRIPTION_MAX_LENGTH - 3
 
-function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
-  return (
-    typeof block === 'object' &&
-    block !== null &&
-    'body' in block &&
-    typeof (block as { body?: unknown }).body === 'string'
-  )
-}
-
 type Props = {
   params: Promise<{ article: string }>
+}
+
+export default async function ArticlePage({ params }: Props): Promise<ReactNode> {
+  const articleSlug = (await params).article
+
+  if (!isValidCmsSlug(articleSlug)) {
+    return notFound()
+  }
+
+  try {
+    const article = await fetchArticleWithRetry(articleSlug)
+
+    if (!article) {
+      return notFound()
+    }
+
+    // Fetch featured articles
+    const featuredArticlesResponse = await getArticles({
+      filters: {
+        featured: {
+          $eq: true,
+        },
+      },
+      pageSize: FEATURED_ARTICLES_PAGE_SIZE,
+    })
+    const featuredArticles = featuredArticlesResponse.data
+
+    // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
+    const readMoreArticles = featuredArticles.slice(0, 3)
+    const categoriesResponse = await getCategories()
+    const allCategories =
+      categoriesResponse?.map((category: Category) => ({
+        name: category?.attributes?.name || '',
+        slug: category?.attributes?.slug || '',
+      })) || []
+
+    return (
+      <ArticlePageComponent
+        article={article}
+        randomArticles={readMoreArticles}
+        featuredArticles={featuredArticles}
+        allCategories={allCategories}
+      />
+    )
+  } catch (error) {
+    console.error(`Error fetching article ${articleSlug}:`, error)
+    return notFound()
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const articleSlug = (await params).article
 
-  if (!articleSlug) return {}
+  if (!articleSlug || !isValidCmsSlug(articleSlug)) {
+    return getPageMetadata({
+      title: 'Article Not Found',
+      description: 'The requested article could not be found.',
+    })
+  }
 
   try {
     const article = await getArticleBySlug(articleSlug)
@@ -91,46 +136,11 @@ export async function generateStaticParams(): Promise<{ article: string }[]> {
   }
 }
 
-export default async function ArticlePage({ params }: Props): Promise<ReactNode> {
-  const articleSlug = (await params).article
-
-  try {
-    const article = await fetchArticleWithRetry(articleSlug)
-
-    if (!article) {
-      return notFound()
-    }
-
-    // Fetch featured articles
-    const featuredArticlesResponse = await getArticles({
-      filters: {
-        featured: {
-          $eq: true,
-        },
-      },
-      pageSize: FEATURED_ARTICLES_PAGE_SIZE,
-    })
-    const featuredArticles = featuredArticlesResponse.data
-
-    // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
-    const readMoreArticles = featuredArticles.slice(0, 3)
-    const categoriesResponse = await getCategories()
-    const allCategories =
-      categoriesResponse?.map((category: Category) => ({
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-      })) || []
-
-    return (
-      <ArticlePageComponent
-        article={article}
-        randomArticles={readMoreArticles}
-        featuredArticles={featuredArticles}
-        allCategories={allCategories}
-      />
-    )
-  } catch (error) {
-    console.error(`Error fetching article ${articleSlug}:`, error)
-    return notFound()
-  }
+function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
+  return (
+    typeof block === 'object' &&
+    block !== null &&
+    'body' in block &&
+    typeof (block as { body?: unknown }).body === 'string'
+  )
 }

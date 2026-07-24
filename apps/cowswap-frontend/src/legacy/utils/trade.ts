@@ -1,3 +1,5 @@
+import type { WalletClient } from 'viem'
+
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
@@ -28,9 +30,7 @@ import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders
 import { AppDataInfo } from 'modules/appData'
 
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
-import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
-
-import type { WalletClient } from 'viem'
+import { ApiErrorObject, OperatorError } from 'api/cowProtocol/errors/OperatorError'
 
 export type MapUnsignedOrderToOrderParams = {
   unsignedOrder: UnsignedOrder

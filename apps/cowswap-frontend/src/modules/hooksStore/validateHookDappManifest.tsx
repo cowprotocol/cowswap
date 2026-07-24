@@ -1,10 +1,11 @@
 import { ReactElement } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { getChainInfo } from '@cowprotocol/common-const'
+import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
-
-import { i18n } from '@lingui/core'
 
 import { ERROR_MESSAGES } from './pure/AddCustomHookForm/constants'
 
@@ -45,6 +46,10 @@ export function validateHookDappManifest(
 
   if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
     return i18n._(ERROR_MESSAGES.INVALID_HOOK_ID)
+  }
+
+  if (!getSafeAbsoluteUrl(dapp.website)) {
+    return i18n._(ERROR_MESSAGES.INVALID_WEBSITE_URL)
   }
 
   if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
-import { areAddressesEqual, EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
@@ -16,9 +16,9 @@ import { emitFulfilledOrderEvent } from 'modules/orders'
 
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
-import { fetchAndClassifyOrder } from './utils'
+import { fetchAndClassifyOrder, getOrdersFromTransitionData, OrderTransitionData } from './utils'
 
-const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, EnrichedOrder[]> = {
+const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, OrderTransitionData[]> = {
   fulfilled: [],
   presigned: [],
   expired: [],
@@ -97,10 +97,10 @@ export function CancelledOrdersUpdater(): null {
 
         // Group resolved promises by status
         // Only pick fulfilled
-        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, EnrichedOrder[]>>(
+        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderTransitionData[]>>(
           (acc, orderData) => {
             if (orderData && orderData.order) {
-              acc[orderData.status].push(orderData.order)
+              acc[orderData.status].push(orderData)
             }
             return acc
           },
@@ -109,19 +109,21 @@ export function CancelledOrdersUpdater(): null {
 
         // Bach state update fulfilled orders, if any
         if (fulfilled.length) {
+          const fulfilledOrders = getOrdersFromTransitionData(fulfilled)
+
           fulfillOrdersBatch({
-            orders: fulfilled,
+            orders: fulfilledOrders,
             chainId,
             isSafeWallet,
           })
 
-          fulfilled.forEach((order) => {
+          fulfilled.forEach(({ order, orderType }) => {
             if (!getIsBridgeOrder(order)) {
               addOrderToSurplusQueue(order.uid)
             }
 
             const bridgeOrder = getSerializedBridgeOrder(chainId, order.uid)
-            emitFulfilledOrderEvent(chainId, order, bridgeOrder)
+            emitFulfilledOrderEvent(chainId, order, bridgeOrder, orderType)
           })
         }
       } finally {

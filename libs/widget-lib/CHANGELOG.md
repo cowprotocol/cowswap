@@ -1,5 +1,97 @@
 # Changelog
 
+## [4.4.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.1...widget-lib-v4.4.2) (2026-07-17)
+
+### Patch Changes
+
+- fix(widget-lib): harden disableWindowOpen sandbox (#7826)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.0
+
+## [4.4.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.0...widget-lib-v4.4.1) (2026-07-08)
+
+### Patch Changes
+
+- fix: harden frontend security entrypoints (#7601)
+
+## [4.4.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.3.1...widget-lib-v4.4.0) (2026-06-25)
+
+### Minor Changes
+
+- feat(widget): control tokens switching (#7717)
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+## [4.3.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.3.0...widget-lib-v4.3.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/iframe-transport@2.3.2
+
+## [4.3.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.2.0...widget-lib-v4.3.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat(widget): handle widget loading error (#7574)
+
+- feat(widget): add options to control approval flow (#7571)
+
+- feat(widget): control custom recipient (#7573)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/iframe-transport@2.3.1
+
+## [4.2.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.1.0...widget-lib-v4.2.0) (2026-06-09)
+
+### Minor Changes
+
+- feat(widget): handle widget loading error (#7574)
+
+- feat(widget): control custom recipient (#7573)
+
+- feat(widget): add options to control approval flow (#7571)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.6.0
+
+## [4.1.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.5...widget-lib-v4.1.0) (2026-06-08)
+
+### Minor Changes
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(wallet): enable coinbase wallet connection in standalone mode (#7475)
+
+- feat: enhance CowSwapWidget with Safe SDK bridge option and improve e… (#7460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.0
+  - @cowprotocol/events@4.5.0
+
 ## [4.0.5](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.0.4...widget-lib-v4.0.5) (2026-05-22)
 
 ### Patch Changes

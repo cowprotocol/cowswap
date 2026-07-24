@@ -1,3 +1,5 @@
+import { Config } from 'wagmi'
+
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
@@ -5,7 +7,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -18,6 +19,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
@@ -83,6 +85,8 @@ export async function safeBundleApprovalFlow({
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
+    assertValidBridgeRecipient(tradeContext.tradeQuoteState)
+
     const {
       orderId,
       signingScheme,

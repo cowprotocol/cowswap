@@ -1,5 +1,167 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.7.0...balances-and-allowances-v3.7.1) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/tokens@3.8.5
+  - @cowprotocol/wallet@3.8.2
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.6.0...balances-and-allowances-v3.7.0) (2026-07-17)
+
+### Minor Changes
+
+- feat(bw): disconnect session when user idle (#7833)
+
+- feat: add client id parameter into bw query (#7823)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/tokens@3.8.4
+  - @cowprotocol/core@3.6.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.5.0...balances-and-allowances-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(solana): fetch native SOL balance (#7741)
+
+- feat: bw fallback to multicall (#7767)
+
+- feat(balances): add bridge tokens to bw session (#7688)
+
+### Patch Changes
+
+- fix: validate cow-fi CMS inputs and revalidation flows (#7618)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.0
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/tokens@3.8.3
+  - @cowprotocol/multicall@3.4.3
+  - @cowprotocol/common-hooks@3.5.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.1...balances-and-allowances-v3.5.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: add balancec-watcher updater [pr 2 - connection logic] (#7640)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.2
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/multicall@3.4.2
+  - @cowprotocol/tokens@3.8.2
+
+## [3.4.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.4.0...balances-and-allowances-v3.4.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/multicall@3.4.1
+  - @cowprotocol/tokens@3.8.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/wallet@3.7.1
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.2...balances-and-allowances-v3.4.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add basic solana integration (#7587)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+- feat: add balances-watcher integration [pr 1 - interfaces] (#7610)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.7.0
+  - @cowprotocol/tokens@3.8.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/multicall@3.4.0
+  - @cowprotocol/types@4.5.0
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.1...balances-and-allowances-v3.3.2) (2026-06-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.6.0
+  - @cowprotocol/multicall@3.3.2
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.3.0...balances-and-allowances-v3.3.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.5.1
+  - @cowprotocol/multicall@3.3.1
+  - @cowprotocol/tokens@3.7.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.6...balances-and-allowances-v3.3.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat: remove unused bff balances endpoint (#7551)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/multicall@3.3.0
+  - @cowprotocol/tokens@3.7.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/wallet-provider@2.2.0
+  - @cowprotocol/wallet@3.5.0
+  - @cowprotocol/cowswap-abis@4.1.0
+
+## 3.2.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.4.1
+  - @cowprotocol/multicall@3.2.4
+
 ## [3.2.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.2.4...balances-and-allowances-v3.2.5) (2026-05-22)
 
 ### Patch Changes

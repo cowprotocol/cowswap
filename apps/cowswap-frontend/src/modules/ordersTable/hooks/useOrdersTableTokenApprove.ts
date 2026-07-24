@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
-import { CurrencyAmount, Token } from '@cowprotocol/currency'
-
 import { maxUint256 } from 'viem'
+
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { useApproveCurrency } from 'modules/erc20Approve'
 

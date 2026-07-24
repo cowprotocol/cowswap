@@ -259,18 +259,14 @@ export function RateInput() {
           )}
         </styledEl.Header>
         <styledEl.Body>
-          {isLoading && areBothCurrencies ? (
-            <styledEl.RateLoader />
-          ) : (
-            <styledEl.NumericalInput
-              $loading={false}
-              id="rate-limit-amount-input"
-              prependSymbol={isUsdRateMode ? '$' : ''}
-              value={displayedRate + typedTrailingZeros}
-              onUserInput={handleUserInput}
-              disabled={isRateInputDisabled}
-            />
-          )}
+          <styledEl.NumericalInput
+            $loading={isLoading && areBothCurrencies}
+            id="rate-limit-amount-input"
+            prependSymbol={isUsdRateMode ? '$' : ''}
+            value={displayedRate + typedTrailingZeros}
+            onUserInput={handleUserInput}
+            disabled={isRateInputDisabled}
+          />
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>

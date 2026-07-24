@@ -4,3 +4,4 @@ export { useSpeechBubbleNotification } from './hooks/useSpeechBubbleNotification
 export { useHasNotificationSubscription } from './hooks/useHasNotificationSubscription'
 export { useNotificationAlertDismissal } from './hooks/useNotificationAlertDismissal'
 export { useUnreadSidebarNotificationsCount } from './hooks/useUnreadSidebarNotificationsCount'
+export { getTrustedNotificationLink } from './utils/getTrustedNotificationLink'

@@ -1,7 +1,8 @@
+import { Connector as WagmiConnector } from 'wagmi'
+import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
-
-import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 export const ConnectionType = {
   COINBASE_WALLET: coinbaseWallet.type,
@@ -9,13 +10,13 @@ export const ConnectionType = {
   INJECTED: injected.type,
   WALLET_CONNECT_V2: walletConnect.type,
 } as const
+
 export type ConnectionType = (typeof ConnectionType)[keyof typeof ConnectionType]
 
-export interface WalletInfo {
-  chainId: SupportedChainId
-  account?: string
-  active?: boolean
-  isConnectionRestoring?: boolean
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
+  isReadOnly?: boolean
+  chainId: number
+  nonce: number
 }
 
 export interface WalletDetails {
@@ -33,10 +34,11 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners'> & {
-  isReadOnly?: boolean
-  chainId: number
-  nonce: number
+export interface WalletInfo {
+  chainId: SupportedChainId
+  account?: string
+  active?: boolean
+  connector?: WagmiConnector
 }
 
 export enum WalletType {

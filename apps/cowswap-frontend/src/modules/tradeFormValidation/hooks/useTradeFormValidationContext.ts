@@ -6,7 +6,14 @@ import { Nullish } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
-import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import {
+  useGnosisSafeInfo,
+  useIsRestoringConnection,
+  useIsSafeWallet,
+  useIsTxBundlingSupported,
+  useWalletDetails,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -44,6 +51,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
+  const isRestoringConnection = useIsRestoringConnection()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -56,8 +64,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
+  const isSafeWallet = useIsSafeWallet()
   const isWrapUnwrap = useIsWrapOrUnwrap()
-  const { isSupportedWallet } = useWalletDetails()
+  const { allowsOffchainSigning, isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
@@ -68,8 +77,12 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const isBundlingSupportedForContext =
+    tradeType === TradeType.LIMIT_ORDER ? isSafeWallet && isBundlingSupported : isBundlingSupported
   const isApproveRequired = useIsApprovalOrPermitRequired({
-    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    isBundlingSupportedOrEnabledForContext: isBundlingSupportedForContext,
+    allowsOffchainSigning,
   }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
@@ -115,6 +128,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isInputCurrencyXstock,
       isOutputCurrencyXstock,
       isNonEvmReceiverConfirmed,
+      isRestoringConnection,
     }
   }, [
     hasFirstLoad,
@@ -146,11 +160,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     injectedWidgetParams,
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
+    isRestoringConnection,
   ])
-}
-
-function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }
 
 function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
@@ -159,4 +170,8 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
+}
+
+function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
+  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

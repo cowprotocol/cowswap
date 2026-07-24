@@ -5,7 +5,7 @@ import { useIsAnyOfTokensRWA } from '@cowprotocol/tokens'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { isValidQuoteError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 export function useTokenCustomTradeError(
   inputCurrency: Currency | undefined | null,
@@ -25,6 +25,10 @@ export function useTokenCustomTradeError(
 
     return `${rwaToken.symbol} not tradable until Sunday 23:59 UTC`
   }, [isWeekendDay, error, rwaToken])
+}
+
+function isValidQuoteError(error: unknown): error is QuoteApiError {
+  return error instanceof QuoteApiError
 }
 
 function isWeekend(): boolean {

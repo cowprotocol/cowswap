@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
@@ -25,7 +25,7 @@ export function useSwrConfigWithPauseForNetwork(
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 
   const balancesChainId = balances.chainId
-  const lastUpdateTimestamp = account ? balancesUpdate[chainId]?.[account.toLowerCase()] : undefined
+  const lastUpdateTimestamp = account ? balancesUpdate[chainId]?.[getAddressKey(account)] : undefined
 
   const lastUpdateTimestampRef = useRef(lastUpdateTimestamp)
 

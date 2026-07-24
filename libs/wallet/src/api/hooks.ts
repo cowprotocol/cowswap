@@ -1,10 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { AccountType } from '@cowprotocol/types'
-
 import { useConnection } from 'wagmi'
 
-import { useWalletCapabilities } from './hooks/useWalletCapabilities'
 import {
   gnosisSafeInfoAtom,
   walletDetailsAtom,
@@ -12,54 +9,13 @@ import {
   walletInfoAtom,
   isEagerConnectInProgressAtom,
 } from './state'
+import { isAtomicBatchSupportedAtom } from './state/walletCapabilitiesAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
-import { useAccountType, useIsSmartContractWallet } from '../wagmi/hooks/useIsSmartContractWallet'
-import { useIsSafeApp, useIsSafeViaWc, useIsSafeWallet } from '../wagmi/hooks/useWalletMetadata'
-
-export function useWalletInfo(): WalletInfo {
-  return useAtomValue(walletInfoAtom)
-}
-
-export function useWalletDetails(): WalletDetails {
-  return useAtomValue(walletDetailsAtom)
-}
-
-export function useWalletDisplayedAddress(): string {
-  return useAtomValue(walletDisplayedAddress)
-}
 
 export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
   return useAtomValue(gnosisSafeInfoAtom)
-}
-
-export function useIsEagerConnectInProgress(): boolean {
-  return useAtomValue(isEagerConnectInProgressAtom)
-}
-
-export function useIsTxBundlingSupported(): boolean | null {
-  // TODO this will be fixed in M-3 COW-569
-  const { data: capabilities, isLoading: isCapabilitiesLoading } = useWalletCapabilities()
-  const isSafeApp = useIsSafeApp()
-  const isSafeViaWc = useIsSafeViaWc()
-  const accountType = useAccountType()
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const isSafeWallet = useIsSafeWallet()
-
-  // eslint-disable-next-line complexity
-  const result = (() => {
-    if (isSafeApp || isSafeViaWc) return true
-    // Smart accounts (ERC-4337, Coinbase Smart Wallet, EIP-7702, etc.) that are not a Safe lack the
-    // fallback handler mechanism TWAP requires — treat them as unsupported.
-    // Note: useIsSmartContractWallet() only detects AccountType.SMART_CONTRACT, not EIP-7702 accounts
-    // (which keep the same EOA address but have delegation bytecode). We check both explicitly.
-    if ((isSmartContractWallet || accountType === AccountType.EIP7702EOA) && !isSafeWallet) return false
-    if (isCapabilitiesLoading) return null
-    return Boolean(capabilities?.atomic?.status === 'supported' || capabilities?.atomicBatch?.supported)
-  })()
-
-  return result
 }
 
 export function useIsAssetWatchingSupported(): boolean {
@@ -70,16 +26,14 @@ export function useIsAssetWatchingSupported(): boolean {
   return !!rdns && WATCH_ASSET_SUPPORED_WALLETS.includes(rdns)
 }
 
-export function useIsRabbyWallet(): boolean {
-  const { connector } = useConnection()
-
-  return connector?.id === RABBY_RDNS
-}
-
 export function useIsBraveWallet(): boolean {
   const { connector } = useConnection()
 
   return connector?.id === BRAVE_WALLET_RDNS
+}
+
+export function useIsEagerConnectInProgress(): boolean {
+  return useAtomValue(isEagerConnectInProgressAtom)
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
@@ -93,4 +47,26 @@ export function useIsMetamaskBrowserExtensionWallet(): boolean {
   if (!connector || !isInjectedConnection) return false
 
   return METAMASK_RDNS === connector.id
+}
+
+export function useIsRabbyWallet(): boolean {
+  const { connector } = useConnection()
+
+  return connector?.id === RABBY_RDNS
+}
+
+export function useIsTxBundlingSupported(): boolean | null {
+  return useAtomValue(isAtomicBatchSupportedAtom)
+}
+
+export function useWalletDetails(): WalletDetails {
+  return useAtomValue(walletDetailsAtom)
+}
+
+export function useWalletDisplayedAddress(): string {
+  return useAtomValue(walletDisplayedAddress)
+}
+
+export function useWalletInfo(): WalletInfo {
+  return useAtomValue(walletInfoAtom)
 }

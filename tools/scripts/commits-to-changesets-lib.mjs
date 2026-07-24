@@ -2,6 +2,13 @@
 // are intentionally skipped — they don't represent consumer-visible behavior
 // changes, so they don't earn a release. Breaking changes override this and
 // always produce a major bump regardless of type (see parseConventionalCommit).
+import { execFileSync } from 'node:child_process'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const rootDir = join(__dirname, '../..')
+
 const TYPE_BUMP = {
   feat: 'minor',
   fix: 'patch',
@@ -112,4 +119,16 @@ export function findRecentReleasePrCommit(sinceRef, runGit = tryGit) {
     if (sha && isReleaseCommitSubject(subject)) return sha
   }
   return null
+}
+
+function git(args) {
+  return execFileSync('git', args, { cwd: rootDir, encoding: 'utf-8' }).trimEnd()
+}
+
+function tryGit(args) {
+  try {
+    return git(args)
+  } catch {
+    return null
+  }
 }

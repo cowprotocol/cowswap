@@ -1,5 +1,76 @@
 # Changelog
 
+## [3.6.2](https://github.com/cowprotocol/cowswap/compare/core-v3.6.1...core-v3.6.2) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/core-v3.6.0...core-v3.6.1) (2026-07-17)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/core-v3.5.1...core-v3.6.0) (2026-07-08)
+
+### Minor Changes
+
+- feat: handle rate limiting in safe api calls (#7729)
+
+### Patch Changes
+
+- fix: add reverve protocol token list (#7824)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/core-v3.5.0...core-v3.5.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/core-v3.4.0...core-v3.5.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+
+## [3.4.0](https://github.com/cowprotocol/cowswap/compare/core-v3.3.0...core-v3.4.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+### Patch Changes
+
+- fix: use query-param format for Safe transaction URLs
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.4.0
+
 ## [3.3.0](https://github.com/cowprotocol/cowswap/compare/core-v3.2.3...core-v3.3.0) (2026-05-22)
 
 ### Minor Changes

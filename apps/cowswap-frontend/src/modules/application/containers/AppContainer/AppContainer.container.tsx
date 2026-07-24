@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -6,6 +6,8 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
 import { Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
@@ -70,6 +72,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   useInitializeUtm()
   const isInjectedWidgetMode = isInjectedWidget()
+  const { bodyWrapperStyle } = useInjectedWidgetParams()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
@@ -114,6 +117,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         {isYieldEnabled && <CoWAmmBanner />}
 
         <styledEl.BodyWrapper
+          id="bodyWrapper"
+          style={isInjectedWidgetMode ? (bodyWrapperStyle as CSSProperties) : undefined}
           customTheme={customTheme}
           backgroundVariant={pageBackgroundVariant}
           $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}

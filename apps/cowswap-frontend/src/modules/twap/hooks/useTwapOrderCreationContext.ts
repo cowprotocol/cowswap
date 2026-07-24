@@ -33,7 +33,7 @@ export function useTwapOrderCreationContext(
   const erc20ContractData = useTokenContract(inputAmount?.currency.address)
   const erc20ChainId = erc20ContractData.chainId
   const spender = useTradeSpenderAddress()
-  const needsZeroApproval = useNeedsZeroApproval(inputAmount?.currency, spender, inputAmount)
+  const needsZeroApproval = useNeedsZeroApproval(inputAmount, needsApproval)
   const currentBlockFactoryAddress =
     composableCowChainId != null ? CURRENT_BLOCK_FACTORY_ADDRESS[composableCowChainId as SupportedChainId] : null
 

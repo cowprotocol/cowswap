@@ -12,14 +12,6 @@ import {
 
 import { TraderWalletStatus } from '../hooks/useAffiliateTraderWallet'
 import { AffiliatePartnerCodeCreateError } from '../lib/affiliatePartnerCodeCreateError'
-import { logAffiliate } from '../utils/logger'
-
-interface TrackAffiliateEventParams {
-  analytics: CowAnalytics
-  action: AffiliateAnalyticsAction
-  chainId?: SupportedChainId | number
-  [key: string]: unknown
-}
 
 interface AffiliatePartnerPageStateParams {
   hasAccount: boolean
@@ -29,19 +21,23 @@ interface AffiliatePartnerPageStateParams {
   isSupportedTradingNetwork: boolean
 }
 
-export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
-  try {
-    analytics.sendEvent(
-      compactRecord({
-        category: CowSwapAnalyticsCategory.AFFILIATE,
-        action,
-        chainId,
-        ...customParams,
-      }) as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>,
-    )
-  } catch (error) {
-    logAffiliate('Failed to send analytics event', { action, error })
+interface TrackAffiliateEventParams {
+  analytics: CowAnalytics
+  action: AffiliateAnalyticsAction
+  chainId?: SupportedChainId | number
+  [key: string]: unknown
+}
+
+export function getAffiliateModalViewKey(
+  isOpen: boolean,
+  modalState: AffiliateModalState,
+  walletStatus: TraderWalletStatus,
+): string | undefined {
+  if (!isOpen) {
+    return undefined
   }
+
+  return [modalState, walletStatus].join(':')
 }
 
 export function getAffiliatePartnerPageState({
@@ -66,6 +62,19 @@ export function getAffiliatePartnerPageState({
   return hasExistingCode ? AffiliatePageState.CODE_LIVE : AffiliatePageState.CODE_CREATION
 }
 
+export function getAffiliateTraderModalState(walletStatus: TraderWalletStatus): AffiliateModalState {
+  switch (walletStatus) {
+    case TraderWalletStatus.UNSUPPORTED:
+      return AffiliateModalState.UNSUPPORTED
+    case TraderWalletStatus.LINKED:
+      return AffiliateModalState.LINKED
+    case TraderWalletStatus.INELIGIBLE:
+      return AffiliateModalState.INELIGIBLE
+    default:
+      return AffiliateModalState.CODE_LINKING
+  }
+}
+
 export function getAffiliateTraderPageState(
   walletStatus: TraderWalletStatus,
   hasSavedCode: boolean,
@@ -84,31 +93,6 @@ export function getAffiliateTraderPageState(
   }
 }
 
-export function getAffiliateTraderModalState(walletStatus: TraderWalletStatus): AffiliateModalState {
-  switch (walletStatus) {
-    case TraderWalletStatus.UNSUPPORTED:
-      return AffiliateModalState.UNSUPPORTED
-    case TraderWalletStatus.LINKED:
-      return AffiliateModalState.LINKED
-    case TraderWalletStatus.INELIGIBLE:
-      return AffiliateModalState.INELIGIBLE
-    default:
-      return AffiliateModalState.CODE_LINKING
-  }
-}
-
-export function getAffiliateModalViewKey(
-  isOpen: boolean,
-  modalState: AffiliateModalState,
-  walletStatus: TraderWalletStatus,
-): string | undefined {
-  if (!isOpen) {
-    return undefined
-  }
-
-  return [modalState, walletStatus].join(':')
-}
-
 export function normalizeAffiliatePartnerCodeCreateFailureReason(
   error: AffiliatePartnerCodeCreateError | undefined,
 ): AffiliatePartnerCodeCreateFailureReason {
@@ -124,6 +108,11 @@ export function normalizeAffiliatePartnerCodeCreateFailureReason(
   }
 }
 
-function compactRecord(value: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(value).filter(([, entryValue]) => entryValue !== undefined))
+export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.AFFILIATE,
+    action,
+    chainId,
+    ...customParams,
+  } as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>)
 }

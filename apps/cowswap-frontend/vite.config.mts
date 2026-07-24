@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -13,6 +14,7 @@ import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import { execSync } from 'child_process'
+import { readFile } from 'node:fs/promises'
 import * as path from 'path'
 
 import pkg from './package.json'
@@ -38,9 +40,37 @@ const sentryOrg = process.env.SENTRY_ORG || defaultSentryOrg
 const sentryProject = process.env.SENTRY_PROJECT || defaultSentryProject
 const sentryReleaseName = `CowSwap@v${pkg.version}`
 
+function getGitBuildInfo(): {
+  commitHash: string
+  commitDate: string
+  releaseTag: string
+} {
+  try {
+    const commitHash = execSync('git rev-parse --short=7 HEAD').toString().trim()
+    const commitDate = execSync('git show -s --format=%cI HEAD').toString().trim()
+    let releaseTag = ''
+    try {
+      const tag = execSync('git describe --exact-match --tags HEAD').toString().trim()
+      if (tag.startsWith('cowswap-v')) {
+        releaseTag = tag
+      }
+    } catch {
+      // HEAD is not on an exact tag
+    }
+    return { commitHash, commitDate, releaseTag }
+  } catch {
+    return {
+      commitHash: process.env.REACT_APP_GIT_COMMIT_HASH || '',
+      commitDate: process.env.REACT_APP_GIT_COMMIT_DATE || '',
+      releaseTag: process.env.REACT_APP_GIT_RELEASE_TAG || '',
+    }
+  }
+}
+
 // eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode, isPreview }) => {
   const isProduction = mode === 'production'
+  const gitBuildInfo = getGitBuildInfo()
 
   const plugins: PluginOption[] = [
     nodePolyfills({
@@ -82,6 +112,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   if (analyzeBundle) {
     plugins.push(
+      bundleStats() as PluginOption,
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
@@ -91,7 +122,6 @@ export default defineConfig(({ mode, isPreview }) => {
         filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
-    plugins.push(bundleStats() as PluginOption)
   }
 
   if (isProduction && sentryAuthToken) {
@@ -137,12 +167,9 @@ export default defineConfig(({ mode, isPreview }) => {
     base: './',
     define: {
       ...getReactProcessEnv(mode),
-      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(
-        execSync('git rev-parse --short=7 HEAD').toString().trim(),
-      ),
-      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(
-        execSync('git show -s --format=%cI HEAD').toString().trim(),
-      ),
+      'process.env.REACT_APP_GIT_COMMIT_HASH': JSON.stringify(gitBuildInfo.commitHash),
+      'process.env.REACT_APP_GIT_COMMIT_DATE': JSON.stringify(gitBuildInfo.commitDate),
+      'process.env.REACT_APP_GIT_RELEASE_TAG': JSON.stringify(gitBuildInfo.releaseTag),
     },
 
     assetsInclude: ['**/*.md'],
@@ -195,6 +222,43 @@ export default defineConfig(({ mode, isPreview }) => {
               })
             },
           },
+          {
+            // @reown/appkit ships .js.map files whose `sources` point at the original
+            // TypeScript (exports/react.ts, src/**/*.ts) without inlining `sourcesContent`,
+            // and the published tarball doesn't include those .ts files. esbuild follows the
+            // sourceMappingURL pragma during prebundling and propagates the null sources into
+            // the optimized dep map, so devtools 404s on every reown source ("DevTools failed
+            // to load source map"). Drop the pragma for @reown files so esbuild treats the
+            // shipped compiled .js as the source and embeds real `sourcesContent` instead.
+            name: 'cow-reown-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@reown[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
+          {
+            // @1inch/permit-signed-approvals-utils ships .js.map files whose `sources` point at
+            // the original TypeScript (../src/**/*.ts) with no inlined `sourcesContent`, and the
+            // published tarball doesn't include those .ts files. Same failure mode as @reown above:
+            // esbuild follows the sourceMappingURL pragma during prebundling and devtools then 404s
+            // on every @1inch source ("DevTools failed to load source map"). Drop the pragma so
+            // esbuild treats the shipped compiled .js as the source and embeds real `sourcesContent`.
+            name: 'cow-1inch-strip-sourcemap',
+            setup(build) {
+              build.onLoad({ filter: /[\\/]@1inch[\\/].*\.js$/ }, async (args) => {
+                const contents = await readFile(args.path, 'utf8')
+                return {
+                  contents: contents.replace(/\n?\/\/# sourceMappingURL=.*$/gm, ''),
+                  loader: 'js',
+                }
+              })
+            },
+          },
         ],
       },
       // Only include packages that are direct or resolvable from the app; transitive
@@ -221,7 +285,19 @@ export default defineConfig(({ mode, isPreview }) => {
       // Dedupe packages that rely on shared React context across workspace libs.
       // Without this, pnpm creates separate copies per workspace package (different peer dep sets),
       // causing context mismatches (e.g. WagmiProvider in libs/wallet vs useConnection in libs/wallet-provider).
-      dedupe: ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi'],
+      // @reown/appkit-controllers IS deduped because it holds AppKit's valtio state
+      // singletons (ConnectorController, OptionsController, ...). Since libs/wallet pulled
+      // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
+      // peer-instances; without deduping the controllers package, code in libs/wallet reads
+      // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
+      dedupe: [
+        'react-router',
+        '@reown/appkit',
+        '@reown/appkit-adapter-wagmi',
+        '@reown/appkit-adapter-solana',
+        '@reown/appkit-controllers',
+        'wagmi',
+      ],
     },
 
     build: {

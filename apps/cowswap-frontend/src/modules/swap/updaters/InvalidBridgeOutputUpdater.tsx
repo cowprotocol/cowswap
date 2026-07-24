@@ -5,7 +5,7 @@ import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { isAdditionalTargetChain } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
-import { useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
+import { useBridgeProvidersReady, useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
 import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
@@ -18,6 +18,97 @@ import { getInvalidBridgeOutputPatch, getUnsupportedBridgePairPatch } from './In
 
 import { useUpdateSwapRawState } from '../hooks/useUpdateSwapRawState'
 import { swapRawStateAtom, SwapRawState } from '../state/swapRawStateAtom'
+
+export function InvalidBridgeOutputUpdater(): null {
+  const rawState = useAtomValue(swapRawStateAtom)
+  const updateSwapState = useUpdateSwapRawState()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const tradeTypeInfoFromState = useTradeTypeInfo()
+  const tradeTypeInfoFromUrl = useTradeTypeInfoFromUrl()
+  const tradeTypeInfo = tradeTypeInfoFromState ?? tradeTypeInfoFromUrl
+  const tradeRoute = tradeTypeInfo?.route
+
+  const rawChainId = rawState.chainId ?? undefined
+  const rawTargetChainId = rawState.targetChainId ?? undefined
+  const sourceChainId = isSupportedChainId(rawChainId) ? rawChainId : undefined
+  const isValidTargetChain =
+    rawTargetChainId !== undefined &&
+    (isSupportedChainId(rawTargetChainId) || isAdditionalTargetChain(rawTargetChainId))
+  const targetChainId = isValidTargetChain ? rawTargetChainId : undefined
+
+  const { data: bridgeSupportedNetworks, isLoading: isBridgeSupportedNetworksLoading } = useBridgeSupportedNetworks()
+  const areBridgeProvidersReady = useBridgeProvidersReady()
+
+  const unsupportedBridgePairPatch = useMemo(
+    () =>
+      getUnsupportedBridgePairPatch({
+        sourceChainId,
+        targetChainId,
+        bridgeSupportedNetworks,
+        isBridgeSupportedNetworksLoading: isBridgeSupportedNetworksLoading || !areBridgeProvidersReady,
+      }),
+    [sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading, areBridgeProvidersReady],
+  )
+
+  const bridgeRouteParams: BuyTokensParams | undefined = useMemo(() => {
+    if (!areBridgeProvidersReady) {
+      return undefined
+    }
+
+    if (unsupportedBridgePairPatch) {
+      return undefined
+    }
+
+    if (!sourceChainId || !targetChainId || sourceChainId === targetChainId) {
+      return undefined
+    }
+
+    return {
+      sellChainId: sourceChainId,
+      buyChainId: targetChainId,
+    }
+  }, [sourceChainId, targetChainId, unsupportedBridgePairPatch, areBridgeProvidersReady])
+
+  const { data: bridgeRouteData, isLoading: isBridgeRouteLoading } = useBridgeSupportedTokens(bridgeRouteParams)
+
+  const patch = useMemo(() => {
+    return (
+      unsupportedBridgePairPatch ??
+      getInvalidBridgeOutputPatch({
+        sourceChainId,
+        targetChainId,
+        selectedOutputCurrencyId: rawState.outputCurrencyId,
+        bridgeRouteData,
+        isBridgeRouteLoading: isBridgeRouteLoading || !areBridgeProvidersReady,
+      })
+    )
+  }, [
+    sourceChainId,
+    targetChainId,
+    rawState.outputCurrencyId,
+    bridgeRouteData,
+    isBridgeRouteLoading,
+    unsupportedBridgePairPatch,
+    areBridgeProvidersReady,
+  ])
+
+  useEffect(() => {
+    if (!patch) return
+
+    updateSwapState(patch)
+    syncUrlAfterPatch({
+      patch,
+      tradeRoute,
+      rawState,
+      pathname: location.pathname,
+      search: location.search,
+      navigate,
+    })
+  }, [patch, updateSwapState, tradeRoute, rawState, location.pathname, location.search, navigate])
+
+  return null
+}
 
 function syncUrlAfterPatch(params: {
   patch: Partial<SwapRawState>
@@ -55,89 +146,4 @@ function syncUrlAfterPatch(params: {
   if (pathname === nextPathname && search.slice(1) === nextSearch) return
 
   navigate({ pathname: nextPathname, search: nextSearch }, { replace: true })
-}
-
-export function InvalidBridgeOutputUpdater(): null {
-  const rawState = useAtomValue(swapRawStateAtom)
-  const updateSwapState = useUpdateSwapRawState()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const tradeTypeInfoFromState = useTradeTypeInfo()
-  const tradeTypeInfoFromUrl = useTradeTypeInfoFromUrl()
-  const tradeTypeInfo = tradeTypeInfoFromState ?? tradeTypeInfoFromUrl
-  const tradeRoute = tradeTypeInfo?.route
-
-  const rawChainId = rawState.chainId ?? undefined
-  const rawTargetChainId = rawState.targetChainId ?? undefined
-  const sourceChainId = isSupportedChainId(rawChainId) ? rawChainId : undefined
-  const isValidTargetChain =
-    rawTargetChainId !== undefined &&
-    (isSupportedChainId(rawTargetChainId) || isAdditionalTargetChain(rawTargetChainId))
-  const targetChainId = isValidTargetChain ? rawTargetChainId : undefined
-
-  const { data: bridgeSupportedNetworks, isLoading: isBridgeSupportedNetworksLoading } = useBridgeSupportedNetworks()
-
-  const unsupportedBridgePairPatch = useMemo(
-    () =>
-      getUnsupportedBridgePairPatch({
-        sourceChainId,
-        targetChainId,
-        bridgeSupportedNetworks,
-        isBridgeSupportedNetworksLoading,
-      }),
-    [sourceChainId, targetChainId, bridgeSupportedNetworks, isBridgeSupportedNetworksLoading],
-  )
-
-  const bridgeRouteParams: BuyTokensParams | undefined = useMemo(() => {
-    if (unsupportedBridgePairPatch) {
-      return undefined
-    }
-
-    if (!sourceChainId || !targetChainId || sourceChainId === targetChainId) {
-      return undefined
-    }
-
-    return {
-      sellChainId: sourceChainId,
-      buyChainId: targetChainId,
-    }
-  }, [sourceChainId, targetChainId, unsupportedBridgePairPatch])
-
-  const { data: bridgeRouteData, isLoading: isBridgeRouteLoading } = useBridgeSupportedTokens(bridgeRouteParams)
-
-  const patch = useMemo(() => {
-    return (
-      unsupportedBridgePairPatch ??
-      getInvalidBridgeOutputPatch({
-        sourceChainId,
-        targetChainId,
-        selectedOutputCurrencyId: rawState.outputCurrencyId,
-        bridgeRouteData,
-        isBridgeRouteLoading,
-      })
-    )
-  }, [
-    sourceChainId,
-    targetChainId,
-    rawState.outputCurrencyId,
-    bridgeRouteData,
-    isBridgeRouteLoading,
-    unsupportedBridgePairPatch,
-  ])
-
-  useEffect(() => {
-    if (!patch) return
-
-    updateSwapState(patch)
-    syncUrlAfterPatch({
-      patch,
-      tradeRoute,
-      rawState,
-      pathname: location.pathname,
-      search: location.search,
-      navigate,
-    })
-  }, [patch, updateSwapState, tradeRoute, rawState, location.pathname, location.search, navigate])
-
-  return null
 }

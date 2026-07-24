@@ -29,13 +29,13 @@ export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  min-height: ${({ theme }) => (theme.isWidget ? '400px' : '100vh')};
+  min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
 `
 
 export const Marginer = styled.div`
-  margin-top: 5rem;
+  margin-top: ${({ theme }) => (theme.isWidget ? '0' : '5rem')};
 `
 
 export const SceneContainer = styled.div`
@@ -72,7 +72,7 @@ export const BodyWrapper = styled.div<{
   width: 100%;
   align-items: flex-start;
   justify-content: center;
-  flex: 1 1 auto;
+  flex: ${({ theme }) => (theme.isWidget ? '0 0 auto' : '1 1 auto')};
   z-index: 2;
   color: inherit;
   padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>

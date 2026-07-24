@@ -1,5 +1,7 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -10,7 +12,6 @@ import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
@@ -82,6 +83,7 @@ interface OrderSummaryType {
   fulfillmentTime?: string | undefined
   kind?: string
   inputAmount?: CurrencyAmount<Token>
+  outputAmount?: CurrencyAmount<Token>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -235,6 +237,7 @@ export function ActivityDetails(props: {
         : undefined,
       kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
+      outputAmount,
     }
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
@@ -284,6 +287,20 @@ export function ActivityDetails(props: {
   const showWarning = fillability
     ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
     : false
+
+  const fillabilityWarning =
+    fillability && showWarning && orderSummary?.inputAmount ? (
+      <SummaryInnerRow>
+        <DangerText>Unfillable</DangerText>
+        <OrderFillabilityWarning
+          fillability={fillability}
+          inputAmount={orderSummary.inputAmount}
+          outputAmount={orderSummary.outputAmount}
+          enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+          orderId={order?.id}
+        />
+      </SummaryInnerRow>
+    ) : null
 
   return (
     <>
@@ -351,16 +368,19 @@ export function ActivityDetails(props: {
             // Order
             <>
               {order && !skipBridgingDisplay && isBridgeOrder ? (
-                <BridgeActivitySummary
-                  isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
-                  order={order}
-                  swapAndBridgeContext={swapAndBridgeContext}
-                  swapResultContext={swapResultContext}
-                  swapAndBridgeOverview={swapAndBridgeOverview}
-                  orderBasicDetails={orderBasicDetails}
-                >
-                  {hooksDetails}
-                </BridgeActivitySummary>
+                <>
+                  <BridgeActivitySummary
+                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                    order={order}
+                    swapAndBridgeContext={swapAndBridgeContext}
+                    swapResultContext={swapResultContext}
+                    swapAndBridgeOverview={swapAndBridgeOverview}
+                    orderBasicDetails={orderBasicDetails}
+                  >
+                    {hooksDetails}
+                  </BridgeActivitySummary>
+                  {fillabilityWarning}
+                </>
               ) : (
                 // Regular order layout
                 <>
@@ -432,17 +452,7 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
-                  {fillability && showWarning && orderSummary?.inputAmount ? (
-                    <SummaryInnerRow>
-                      <DangerText>Unfillable</DangerText>
-                      <OrderFillabilityWarning
-                        fillability={fillability}
-                        inputAmount={orderSummary.inputAmount}
-                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
-                        orderId={order?.id}
-                      />
-                    </SummaryInnerRow>
-                  ) : null}
+                  {fillabilityWarning}
                 </>
               )}
             </>

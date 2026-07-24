@@ -24,17 +24,17 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
     // Non-EVM recipient (Solana/BTC): pass as bridgeRecipient for the bridge provider,
     // and use account as the EVM receiver for the CoW API.
     // Non-EVM always takes priority over the bridge provider type — do not reorder.
-    const bridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
-    if (bridgeRecipient) {
-      return { receiver: account, bridgeRecipient }
+    const nonEvmBridgeRecipient = resolveNonEvmBridgeRecipient(recipient, outputCurrency)
+    if (nonEvmBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: nonEvmBridgeRecipient }
     }
 
     // For non-EVM output chains, always fall back to the default placeholder when no valid
     // recipient was resolved (empty, invalid, or wrong-chain input).
     // Prevents the quote API from receiving an invalid address and returning errors instead of prices.
-    const defaultBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
-    if (defaultBridgeRecipient) {
-      return { receiver: account, bridgeRecipient: defaultBridgeRecipient }
+    const defaultNonEvmBridgeRecipient = getDefaultNonEvmBridgeRecipient(outputCurrency)
+    if (defaultNonEvmBridgeRecipient) {
+      return { receiver: account, bridgeRecipient: defaultNonEvmBridgeRecipient }
     }
 
     // EVM ReceiverAccountBridgeProvider: use the custom recipient for both
@@ -42,9 +42,26 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
       return { receiver: recipient, bridgeRecipient: recipient }
     }
 
-    // Default: EVM-only receiver, no separate bridge recipient
-    return { receiver: resolveEvmReceiver(recipientAddress, recipient, account), bridgeRecipient: undefined }
+    const resolvedReceiver = resolveEvmReceiver(recipientAddress, recipient, account)
+
+    // Default: EVM receiver, used for both receiver and bridge recipient
+    return { receiver: resolvedReceiver, bridgeRecipient: resolvedReceiver }
   }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
+}
+
+/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
+function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
+  if (!outputCurrency) return undefined
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
+}
+
+/** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
+function resolveEvmReceiver(
+  recipientAddress: Nullish<string>,
+  recipient: Nullish<string>,
+  account: Nullish<string>,
+): Nullish<string> {
+  return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
 }
 
 /** Returns the recipient if it's a non-EVM address accepted for the given output chain, otherwise undefined. */
@@ -63,19 +80,4 @@ function resolveNonEvmBridgeRecipient(
     ({ isChain, isAddress: isNonEvmAddr }) => isChain(outputCurrency.chainId) && isNonEvmAddr(recipient),
   )
   return chainMatches ? recipient : undefined
-}
-
-/** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
-function getDefaultNonEvmBridgeRecipient(outputCurrency: Nullish<{ chainId: number }>): string | undefined {
-  if (!outputCurrency) return undefined
-  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(outputCurrency.chainId))?.defaultRecipient
-}
-
-/** Resolves the EVM receiver from ENS-resolved address, typed recipient, or connected account. */
-function resolveEvmReceiver(
-  recipientAddress: Nullish<string>,
-  recipient: Nullish<string>,
-  account: Nullish<string>,
-): Nullish<string> {
-  return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
 }

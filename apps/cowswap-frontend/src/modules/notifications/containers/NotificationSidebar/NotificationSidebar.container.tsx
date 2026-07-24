@@ -25,29 +25,6 @@ import { NotificationSettingsPopover } from '../../pure/NotificationSettingsPopo
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
 
-interface SettingsHeaderProps {
-  onBack: () => void
-}
-
-function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
-  return (
-    <SidebarHeader>
-      <span>
-        <ArrowLeft
-          onClick={onBack}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-            action: 'Close notification settings',
-          })}
-        />
-      </span>
-      <h3>
-        <Trans>Trade alerts</Trans>
-      </h3>
-    </SidebarHeader>
-  )
-}
-
 interface NotificationsHeaderProps {
   isMobile: boolean
   areTelegramNotificationsEnabled: boolean
@@ -60,69 +37,14 @@ interface NotificationsHeaderProps {
   headerRef: React.RefObject<HTMLDivElement | null>
 }
 
-function NotificationsHeader({
-  isMobile,
-  areTelegramNotificationsEnabled,
-  hasSubscription,
-  onDismiss,
-  onToggleSettings,
-  onEnableAlerts,
-  shouldShowSettingsPopover,
-  onDismissSettingsPopover,
-  headerRef,
-}: NotificationsHeaderProps): ReactNode {
-  return (
-    <SidebarHeader ref={headerRef}>
-      <span>
-        <ArrowLeft
-          onClick={onDismiss}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-            action: 'Close notifications panel',
-            label: isMobile ? 'mobile' : 'desktop',
-          })}
-        />
-      </span>
-      <h3>
-        <Trans>Notifications</Trans>
-      </h3>
-      {areTelegramNotificationsEnabled &&
-        (hasSubscription ? (
-          <NotificationSettingsPopover
-            show={shouldShowSettingsPopover}
-            onDismiss={onDismissSettingsPopover}
-            containerRef={headerRef}
-          >
-            <NotificationSettingsIcon
-              onClick={onToggleSettings}
-              aria-label={t`Trade alert settings`}
-              data-click-event={toCowSwapGtmEvent({
-                category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-                action: 'Open notification settings',
-                label: 'notification sidebar',
-              })}
-            >
-              <SVG src={iconNotificationSettingsSrc} />
-            </NotificationSettingsIcon>
-          </NotificationSettingsPopover>
-        ) : (
-          <EnableAlertsButtonWithIcon
-            onClick={onEnableAlerts}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-              action: 'Enable trade alerts',
-              label: 'notification sidebar',
-            })}
-          />
-        ))}
-    </SidebarHeader>
-  )
-}
-
 interface NotificationSidebarProps {
   isOpen: boolean
   onClose: () => void
   initialSettingsOpen?: boolean
+}
+
+interface SettingsHeaderProps {
+  onBack: () => void
 }
 
 export function NotificationSidebar({
@@ -199,4 +121,82 @@ export function NotificationSidebar({
   const portalTarget = typeof document !== 'undefined' ? document.body : null
 
   return portalTarget ? createPortal(notificationSidebarElement, portalTarget) : notificationSidebarElement
+}
+
+function NotificationsHeader({
+  isMobile,
+  areTelegramNotificationsEnabled,
+  hasSubscription,
+  onDismiss,
+  onToggleSettings,
+  onEnableAlerts,
+  shouldShowSettingsPopover,
+  onDismissSettingsPopover,
+  headerRef,
+}: NotificationsHeaderProps): ReactNode {
+  return (
+    <SidebarHeader ref={headerRef}>
+      <span>
+        <ArrowLeft
+          onClick={onDismiss}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+            action: 'Close notifications panel',
+            label: isMobile ? 'mobile' : 'desktop',
+          })}
+        />
+      </span>
+      <h3>
+        <Trans>Notifications</Trans>
+      </h3>
+      {areTelegramNotificationsEnabled &&
+        (hasSubscription ? (
+          <NotificationSettingsPopover
+            show={shouldShowSettingsPopover}
+            onDismiss={onDismissSettingsPopover}
+            containerRef={headerRef}
+          >
+            <NotificationSettingsIcon
+              onClick={onToggleSettings}
+              aria-label={t`Trade alert settings`}
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+                action: 'Open notification settings',
+                label: 'notification sidebar',
+              })}
+            >
+              <SVG src={iconNotificationSettingsSrc} />
+            </NotificationSettingsIcon>
+          </NotificationSettingsPopover>
+        ) : (
+          <EnableAlertsButtonWithIcon
+            onClick={onEnableAlerts}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+              action: 'Enable trade alerts',
+              label: 'notification sidebar',
+            })}
+          />
+        ))}
+    </SidebarHeader>
+  )
+}
+
+function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
+  return (
+    <SidebarHeader>
+      <span>
+        <ArrowLeft
+          onClick={onBack}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+            action: 'Close notification settings',
+          })}
+        />
+      </span>
+      <h3>
+        <Trans>Trade alerts</Trans>
+      </h3>
+    </SidebarHeader>
+  )
 }

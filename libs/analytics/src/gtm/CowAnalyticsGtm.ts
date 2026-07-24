@@ -1,7 +1,7 @@
-import { debounce } from '@cowprotocol/common-utils'
+import { debounce, logAnalytics } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
-import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
+import { AnalyticsContext, AnalyticsEvent, CowAnalytics, OutboundLinkParams } from '../CowAnalytics'
 import { Category, GtmEvent } from '../types'
 
 type DataLayer = DataLayerEvent[]
@@ -35,6 +35,7 @@ function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown
 declare global {
   interface Window {
     dataLayer: unknown[]
+    enableGaLogging?: boolean
     /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
     cowAnalyticsInstance?: CowAnalytics
   }
@@ -235,7 +236,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     })
   }
 
-  sendEvent(event: string | EventOptions, params?: unknown): void {
+  sendEvent(event: AnalyticsEvent, params?: unknown): void {
     const gtmEvent = event as GtmEvent<Category>
 
     const eventData: DataLayerEvent =
@@ -307,15 +308,18 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }
 
   private pushToDataLayer(data: DataLayerEvent): void {
-    if (typeof window !== 'undefined') {
+    try {
+      if (typeof window === 'undefined') return
+
       const dataLayerEvent = sanitizeRecord({ ...data }) as DataLayerEvent
 
-      // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
-        console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
+      if (process.env.NODE_ENV === 'development' || window.enableGaLogging === true) {
+        logAnalytics.debug('Pushing to data layer', dataLayerEvent)
       }
 
       this.dataLayer.push(dataLayerEvent)
+    } catch (error) {
+      logAnalytics.warn('Data layer push failed', { data, error })
     }
   }
 

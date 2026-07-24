@@ -1,14 +1,17 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { useLingui } from '@lingui/react/macro'
-import { useConfig } from 'wagmi'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -21,34 +24,19 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
-import OperatorError from 'api/cowProtocol/errors/OperatorError'
+import { OperatorError } from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
-
-function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
-  const analytics = useCowAnalytics()
-
-  return useCallback(
-    (wasPlaced: boolean) => {
-      analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action: 'alternative_modal_completion',
-        label: wasPlaced ? 'placed' : 'not-placed',
-      })
-    },
-    [analytics],
-  )
-}
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -73,6 +61,9 @@ export function useHandleOrderPlacement(
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
+  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const shouldUseSafeBundle = isSafeBundle && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
@@ -123,7 +114,7 @@ export function useHandleOrderPlacement(
     const partiallyFillableState =
       typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
 
-    if (isSafeBundle) {
+    if (shouldUseSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
       return safeBundleFlow({
@@ -160,7 +151,7 @@ export function useHandleOrderPlacement(
     )
   }, [
     config,
-    isSafeBundle,
+    shouldUseSafeBundle,
     tradeContext,
     partiallyFillableOverride,
     priceImpact,
@@ -192,8 +183,11 @@ export function useHandleOrderPlacement(
 
         // TODO: Clear filters if the new order is not visible before navigating.
 
-        // Navigate to open orders
-        navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.signing : OrderTabId.open)
+        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
+        // still be no signing orders.
+        setTimeout(() => {
+          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+        })
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -228,4 +222,19 @@ function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
     inputAmount: tradeContext.postOrderParams.inputAmount,
     outputAmount: tradeContext.postOrderParams.outputAmount,
   }
+}
+
+function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
+  const analytics = useCowAnalytics()
+
+  return useCallback(
+    (wasPlaced: boolean) => {
+      analytics.sendEvent({
+        category: CowSwapAnalyticsCategory.TRADE,
+        action: 'alternative_modal_completion',
+        label: wasPlaced ? 'placed' : 'not-placed',
+      })
+    },
+    [analytics],
+  )
 }

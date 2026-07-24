@@ -12,18 +12,11 @@ import {
   nearIntentsBridgeProvider,
 } from 'tradingSdk/bridgingSdk'
 
-import { bridgeProvidersAtom } from './bridgeProvidersAtom'
-
-function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
-  if (flag) {
-    providers.add(provider)
-  } else {
-    providers.delete(provider)
-  }
-}
+import { bridgeProvidersAtom, bridgeProvidersReadyAtom } from './bridgeProvidersAtom'
 
 export function BridgeProvidersUpdater(): null {
   const setBridgeProviders = useSetAtom(bridgeProvidersAtom)
+  const setBridgeProvidersReady = useSetAtom(bridgeProvidersReadyAtom)
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
     useFeatureFlags()
   const isSmartContractWallet = useIsSmartContractWallet()
@@ -35,6 +28,7 @@ export function BridgeProvidersUpdater(): null {
         (v) => typeof v !== 'boolean',
       )
     ) {
+      setBridgeProvidersReady(false)
       return
     }
 
@@ -56,13 +50,23 @@ export function BridgeProvidersUpdater(): null {
 
       return newProviders
     })
+    setBridgeProvidersReady(true)
   }, [
     isNearIntentsBridgeProviderEnabled,
     isAcrossBridgeProviderEnabled,
     isBungeeBridgeProviderEnabled,
     isSmartContractWallet,
     setBridgeProviders,
+    setBridgeProvidersReady,
   ])
 
   return null
+}
+
+function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
+  if (flag) {
+    providers.add(provider)
+  } else {
+    providers.delete(provider)
+  }
 }

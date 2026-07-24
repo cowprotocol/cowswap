@@ -1,23 +1,39 @@
+interface SafeMessage {
+  id: string
+}
+
+interface SafeMessageRequest extends SafeMessage {
+  method: string
+  params: unknown
+  env: {
+    sdkVersion: string
+  }
+}
+
+interface SafeMessageResponse extends SafeMessage {
+  id: string
+  success: boolean
+  version: string
+}
+
 export class IframeSafeSdkBridge {
   forwardSdkMessage: (event: MessageEvent<unknown>) => void
 
   constructor(
     private appWindow: Window,
-    private iframeWidow: Window,
+    private iframeWindow: Window,
+    private iframeOrigin: string,
+    private parentOrigin: string | null,
   ) {
     this.forwardSdkMessage = (event: MessageEvent<unknown>) => {
       if (!isSafeMessage(event.data)) {
         return
       }
 
-      if (typeof window !== 'undefined' && event.origin === window.location.origin) {
-        return
-      }
-
       if (isSafeMessageRequest(event.data)) {
-        this.appWindow.parent.postMessage(event.data, '*')
+        this.forwardRequest(event, event.data)
       } else if (isSafeMessageResponse(event.data)) {
-        this.iframeWidow.postMessage(event.data, '*')
+        this.forwardResponse(event, event.data)
       }
     }
 
@@ -30,6 +46,30 @@ export class IframeSafeSdkBridge {
 
   public stopListening(): void {
     this.appWindow.removeEventListener('message', this.forwardSdkMessage)
+  }
+
+  private forwardRequest(event: MessageEvent<unknown>, message: SafeMessageRequest): void {
+    if (!this.parentOrigin || this.appWindow.parent === this.appWindow) {
+      return
+    }
+
+    if (event.source !== this.iframeWindow || event.origin !== this.iframeOrigin) {
+      return
+    }
+
+    this.appWindow.parent.postMessage(message, this.parentOrigin)
+  }
+
+  private forwardResponse(event: MessageEvent<unknown>, message: SafeMessageResponse): void {
+    if (this.appWindow.parent === this.appWindow) {
+      return
+    }
+
+    if (event.source !== this.appWindow.parent || event.origin !== this.parentOrigin) {
+      return
+    }
+
+    this.iframeWindow.postMessage(message, this.iframeOrigin)
   }
 }
 
@@ -56,22 +96,4 @@ function isSafeMessageResponse(message: SafeMessage): message is SafeMessageResp
     'version' in message &&
     typeof message.version === 'string'
   )
-}
-
-interface SafeMessage {
-  id: string
-}
-
-interface SafeMessageRequest extends SafeMessage {
-  method: string
-  params: unknown
-  env: {
-    sdkVersion: string
-  }
-}
-
-interface SafeMessageResponse extends SafeMessage {
-  id: string
-  success: boolean
-  version: string
 }

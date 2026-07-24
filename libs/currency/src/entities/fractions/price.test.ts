@@ -58,4 +58,46 @@ describe('Price', () => {
       expect(p.toSignificant(4)).toEqual('269700000000')
     })
   })
+
+  describe('#toJSON', () => {
+    it('includes numerator, denominator, baseCurrency, and quoteCurrency', () => {
+      const p = new Price(t0, t1, 123, 456)
+      const json = p.toJSON()
+      expect(json.numerator).toBe('456')
+      expect(json.denominator).toBe('123')
+      expect(json.baseCurrency).toBe(t0)
+      expect(json.quoteCurrency).toBe(t1)
+    })
+
+    it('JSON.stringify produces a plain object (no bigint throw)', () => {
+      const p = new Price(t0, t1, 123, 456)
+      const parsed = JSON.parse(JSON.stringify(p))
+      expect(parsed.numerator).toBe('456')
+      expect(parsed.denominator).toBe('123')
+      expect(parsed.baseCurrency.address).toBe(t0.address)
+      expect(parsed.quoteCurrency.address).toBe(t1.address)
+    })
+
+    it('round-trips through JSON producing an equivalent price', () => {
+      const original = new Price(t0_6, t1, 123, 456)
+      const parsed = JSON.parse(JSON.stringify(original)) as {
+        numerator: string
+        denominator: string
+        baseCurrency: { chainId: number; address: string; decimals: number }
+        quoteCurrency: { chainId: number; address: string; decimals: number }
+      }
+      const baseRestored = new Token(
+        parsed.baseCurrency.chainId,
+        parsed.baseCurrency.address,
+        parsed.baseCurrency.decimals,
+      )
+      const quoteRestored = new Token(
+        parsed.quoteCurrency.chainId,
+        parsed.quoteCurrency.address,
+        parsed.quoteCurrency.decimals,
+      )
+      const restored = new Price(baseRestored, quoteRestored, parsed.denominator, parsed.numerator)
+      expect(restored.toSignificant(4)).toBe(original.toSignificant(4))
+    })
+  })
 })

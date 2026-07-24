@@ -5,13 +5,6 @@ import { toFixed as divToFixed } from '../../utils/toFixed'
 import { toSignificant } from '../../utils/toSignificant'
 import { BigintIsh, Rounding } from '../constants'
 
-function toBigInt(value: BigintIsh): bigint {
-  if (typeof value === 'bigint') return value
-  if (typeof value === 'number') return BigInt(value)
-  if (typeof value === 'string') return BigInt(value)
-  return BigInt(value.toString())
-}
-
 export class Fraction {
   readonly numerator: bigint
   readonly denominator: bigint
@@ -132,4 +125,20 @@ export class Fraction {
   get asFraction(): Fraction {
     return new Fraction(this.numerator, this.denominator)
   }
+
+  // Called by JSON.stringify. Native bigint throws when serialized directly,
+  // so we emit string representations that can be parsed back via `new Fraction(n, d)`.
+  toJSON(): { numerator: string; denominator: string } {
+    return {
+      numerator: this.numerator.toString(),
+      denominator: this.denominator.toString(),
+    }
+  }
+}
+
+function toBigInt(value: BigintIsh): bigint {
+  if (typeof value === 'bigint') return value
+  if (typeof value === 'number') return BigInt(value)
+  if (typeof value === 'string') return BigInt(value)
+  return BigInt(value.toString())
 }

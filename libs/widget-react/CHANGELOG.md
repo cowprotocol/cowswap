@@ -1,5 +1,72 @@
 # Changelog
 
+## [3.2.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.1...widget-react-v3.2.2) (2026-07-17)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.0
+  - @cowprotocol/widget-lib@4.4.2
+
+## [3.2.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.0...widget-react-v3.2.1) (2026-07-08)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.4.1
+
+## [3.2.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.3...widget-react-v3.2.0) (2026-06-25)
+
+### Minor Changes
+
+- feat: Widget Configurator Revamp (#7604)
+
+### Patch Changes
+
+- fix(widget): add iframe loading retry logic (#7636)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.4.0
+
+## [3.1.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.2...widget-react-v3.1.3) (2026-06-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/widget-lib@4.3.1
+
+## [3.1.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.1...widget-react-v3.1.2) (2026-06-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.7.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/widget-lib@4.3.0
+
+## [3.1.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.1.0...widget-react-v3.1.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.2.0
+  - @cowprotocol/events@4.6.0
+
+## [3.1.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.0.5...widget-react-v3.1.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: enhance CowSwapWidget with Safe SDK bridge option and improve e… (#7460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/events@4.5.0
+  - @cowprotocol/widget-lib@4.1.0
+
 ## [3.0.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.0.4...widget-react-v3.0.5) (2026-05-22)
 
 ### Patch Changes

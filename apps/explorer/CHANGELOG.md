@@ -1,5 +1,133 @@
 # Changelog
 
+## [4.6.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.4...explorer-v4.6.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
+## [4.6.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.3...explorer-v4.6.4) (2026-07-17)
+
+### Patch Changes
+
+- fix(bridge): keep bridge order status polling while tab is hidden (#7707)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+
+## [4.6.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.2...explorer-v4.6.3) (2026-07-08)
+
+### Patch Changes
+
+- fix(explorer): show 'no results found' instead of hanging on an unfetchable tx (#7783)
+
+- fix(explorer): hide socket links for cancelled or expired bridge orders (#7713)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/analytics@3.5.3
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ui@3.9.1
+
+## [4.6.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.1...explorer-v4.6.2) (2026-06-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/analytics@3.5.2
+
+## [4.6.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.0...explorer-v4.6.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.1
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/ui@3.8.1
+  - @cowprotocol/hook-dapp-lib@2.2.9
+
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.1...explorer-v4.6.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: make operatorApi treat BARN requests as optional (#7583)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.5.0
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/hook-dapp-lib@2.2.8
+
+## [4.5.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.5.0...explorer-v4.5.1) (2026-06-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.1
+  - @cowprotocol/ui@3.7.1
+
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.1...explorer-v4.5.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(wallet): enable coinbase wallet connection in standalone mode (#7475)
+
+- feat: enhance CowSwapWidget with Safe SDK bridge option and improve e… (#7460)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- fix: make operatorApi treat BARN requests as optional (#7583)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/hook-dapp-lib@2.2.7
+
 ## [4.4.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.4.0...explorer-v4.4.1) (2026-05-22)
 
 ### Patch Changes

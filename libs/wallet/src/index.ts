@@ -8,8 +8,9 @@ export { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
 // Hooks
 export * from './api/hooks'
 export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
-export { useWalletCapabilities } from './api/hooks/useWalletCapabilities'
 export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo'
+export { useWatchChainBlockNumber } from './api/hooks/useWatchChainBlockNumber'
+export { useSolanaNativeBalance } from './api/hooks/useSolanaNativeBalance'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
 export * from './wagmi/hooks/useWalletMetadata'
@@ -20,6 +21,9 @@ export * from './wagmi/hooks/useDisconnectWallet'
 export * from './wagmi/hooks/useSwitchNetwork'
 export * from './wagmi/hooks/useConnectionType'
 export * from './wagmi/hooks/useIsRestoringConnection'
+export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
+export { WidgetSafeApp } from './updaters/WidgetSafeApp.updater'
+export { wagmiConfig, reownAppKit, wagmiAdapter, wagmiStorage } from './wagmi/config'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
@@ -31,6 +35,17 @@ export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/Account
 
 // Utils
 export * from './api/utils/connection'
+export * from './wagmi/utils/isEip7702EOA.utils'
+export * from './wagmi/utils/isSafeConnector.utils'
+export {
+  isEip1193Provider,
+  getPublicClient,
+  getPublicClientFromEIP1193Provider,
+  getPublicClientFromProvider,
+} from '@cowprotocol/common-utils'
+
+export * from './utils/getIsSafeAppIframe'
+export * from './utils/connectWalletById'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'
@@ -39,4 +54,10 @@ export { Web3Provider } from './wagmi/Web3Provider'
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
-export * from './api/state'
+export {
+  walletCapabilitiesAtom,
+  isAtomicBatchSupportedAtom,
+  isAtomicBatchSupportedLoadableAtom,
+  type WalletCapabilities,
+} from './api/state/walletCapabilitiesAtom'
+export * from './wagmi/state/walletMetadata.atoms'

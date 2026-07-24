@@ -1,5 +1,192 @@
 # Changelog
 
+## [3.8.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.1...wallet-v3.8.2) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.0...wallet-v3.8.1) (2026-07-17)
+
+### Patch Changes
+
+- fix: clear safe info after disconnect (#7858)
+
+- fix: increase wallet capabilities timeout from 5s to 30s (#7855)
+
+- fix: remove safe fallback (#7861)
+
+- fix: widget configurator with safe (#7807)
+
+- fix: quote loading for walletconnect (#7742)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/ens@3.4.4
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.2...wallet-v3.8.0) (2026-07-08)
+
+### Minor Changes
+
+- feat(solana): fetch native SOL balance (#7741)
+
+- feat(wallet): add Solana to available networks (#7709)
+
+- feat(wallet): watch Solana block number (#7710)
+
+- feat: handle rate limiting in safe api calls (#7729)
+
+### Patch Changes
+
+- fix(wallet): guard mobile injected provider (#7757)
+
+- fix: handle injected provider connection issues (#7800)
+
+- fix: add Safe preview/test urls to iframe allowlist (#7784)
+
+- fix(wallet): keep injected provider isolated (#7766)
+
+- fix: Fix wallet detection in widget (#7815)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.8.0
+  - @cowprotocol/common-const@3.6.0
+  - @cowprotocol/core@3.6.0
+  - @cowprotocol/common-hooks@3.5.1
+  - @cowprotocol/ens@3.4.3
+  - @cowprotocol/ui@3.9.1
+
+## [3.7.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.1...wallet-v3.7.2) (2026-06-25)
+
+### Patch Changes
+
+- fix(wallet): auto connect mobile injected wallet (#7746)
+
+- fix: prevent MetaMask mobile quote button hang
+
+- fix: revert pr 7726 (#7752)
+
+- fix: unblock cowswap production build
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.5.0
+  - @cowprotocol/common-hooks@3.5.0
+  - @cowprotocol/common-utils@3.7.0
+  - @cowprotocol/ui@3.9.0
+  - @cowprotocol/ens@3.4.2
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.0...wallet-v3.7.1) (2026-06-23)
+
+### Patch Changes
+
+- fix: fix near bridging (#7716)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.1
+  - @cowprotocol/common-hooks@3.4.1
+  - @cowprotocol/common-utils@3.6.1
+  - @cowprotocol/core@3.5.1
+  - @cowprotocol/currency@1.2.1
+  - @cowprotocol/ens@3.4.1
+  - @cowprotocol/types@4.5.1
+  - @cowprotocol/ui@3.8.1
+  - @cowprotocol/iframe-transport@2.3.2
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.6.0...wallet-v3.7.0) (2026-06-23)
+
+### Minor Changes
+
+- feat: add basic solana integration (#7587)
+
+- feat: adjust dApp configuration for Solana as supported chain id (#7525)
+
+- feat(bridge): enable sell=buy feature (#7633)
+
+### Patch Changes
+
+- fix(wallet): do not allow other wallets in Safe App (#7678)
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- fix: detect atomic batch support (#7584)
+
+- fix: BTC bridging (#7532)
+
+- fix(explorer): solver info displaying (#7667)
+
+- fix: add safe connector to widget-cfg explicitly (#7660)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.5.0
+  - @cowprotocol/common-hooks@3.4.0
+  - @cowprotocol/common-utils@3.6.0
+  - @cowprotocol/core@3.5.0
+  - @cowprotocol/currency@1.2.0
+  - @cowprotocol/ens@3.4.0
+  - @cowprotocol/types@4.5.0
+  - @cowprotocol/ui@3.8.0
+  - @cowprotocol/iframe-transport@2.3.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.1...wallet-v3.6.0) (2026-06-16)
+
+### Minor Changes
+
+- feat(wallet): use reown for wallets management (#7639)
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.5.0...wallet-v3.5.1) (2026-06-09)
+
+### Patch Changes
+
+- fix(widget): enforce widget connection in dappMode (#7581)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.7.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.4.1...wallet-v3.5.0) (2026-06-08)
+
+### Minor Changes
+
+- feat: pin all versions and harden build (#7450)
+
+- feat(captcha): integrate turnstile for quote requests (#7030)
+
+- feat(affiliate): trader activity table (#7164)
+
+- feat: evm chains guards (#7552)
+
+### Patch Changes
+
+- fix: fix approve+swap flow in Safe wallet (#7590)
+
+- fix: update dependencies (#7575)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.4.0
+  - @cowprotocol/common-const@3.4.0
+  - @cowprotocol/common-hooks@3.3.0
+  - @cowprotocol/common-utils@3.5.0
+  - @cowprotocol/core@3.4.0
+  - @cowprotocol/currency@1.1.0
+  - @cowprotocol/ens@3.3.0
+  - @cowprotocol/iframe-transport@2.3.0
+  - @cowprotocol/types@4.4.0
+  - @cowprotocol/ui@3.7.0
+  - @cowprotocol/wallet-provider@2.2.0
+
+## 3.4.1
+
+### Patch Changes
+
+- fix: fix brave wallet specific crash (#7603)
+
 ## [3.4.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.3.2...wallet-v3.4.0) (2026-05-22)
 
 ### Minor Changes
