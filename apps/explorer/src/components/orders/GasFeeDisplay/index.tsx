@@ -91,14 +91,23 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
   }, [protocolFees, gasCost, nativeToken])
 
   // Headline total per token (rows in the same token are summed), shown above the breakdown.
+  // Network costs are paid in the native token (ETH) while protocol fees are often taken in the
+  // wrapped native (WETH) — the same asset — so we fold wrapped-native into the native bucket to
+  // show a single figure (e.g. "0.00024 ETH") instead of splitting it as "x ETH, y WETH". Fees in
+  // any other token still get their own per-token total.
   const totalsByToken = useMemo(() => {
+    const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
+    const wrappedKey =
+      networkId !== undefined ? getAddressKey(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId]) : undefined
+
     const map = new Map<AddressKey, BigNumber>()
     for (const item of lineItems) {
-      const current = map.get(item.tokenAddress)
-      map.set(item.tokenAddress, current ? current.plus(item.amount) : item.amount)
+      const key = wrappedKey !== undefined && item.tokenAddress === wrappedKey ? nativeKey : item.tokenAddress
+      const current = map.get(key)
+      map.set(key, current ? current.plus(item.amount) : item.amount)
     }
     return map
-  }, [lineItems])
+  }, [lineItems, nativeToken, networkId])
 
   const total = Array.from(totalsByToken, ([tokenAddress, amount]) =>
     formatAmount(order, amount, tokenAddress, feeTokensByKey, networkId),
