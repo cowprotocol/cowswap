@@ -47,6 +47,42 @@ invalidates the old cache. The build starts the RPC proxy on the fixed port
 (`18545` by default) because MetaMask validates each network's RPC URL when it
 is added, and the URLs are baked into the cached profile.
 
+## Mock wallet (fast path, no MetaMask)
+
+For scenarios that just need *a connected wallet that signs*, import the
+mock-wallet entrypoint instead of the Synpress one:
+
+```ts
+import { test, expect } from '../fixtures/mockWallet'
+import { CHAIN_IDS } from '../support/constants'
+
+test('my scenario', async ({ wallet, page }) => {
+  wallet.stubRpc('wallet_getCapabilities', () => ({ '0xaa36a7': { atomic: { status: 'supported' } } }))
+  await wallet.openApp({ chainId: CHAIN_IDS.SEPOLIA }) // boots already connected
+  // …
+  expect(wallet.rpcCalls('wallet_getCapabilities').length).toBeGreaterThan(0)
+})
+```
+
+- The wallet is a viem account from `INTEGRATION_TEST_PRIVATE_KEY`
+  (override per spec: `test.use({ mockWalletKey: '0x…' })`).
+- Signing is local and instant — no extension, no popups, no `.cache-synpress`
+  build needed. It auto-connects by pre-seeding the AppKit/wagmi reconnect keys,
+  so `openApp` arrives on the page already connected.
+- `wallet.stubRpc(method, handlerOrValue)` / `wallet.restoreRpc(method)` override
+  any RPC method; `wallet.rpcCalls(method?)` returns recorded calls for
+  assertions. A stub may throw `{ code: 4001, message: '…' }` to drive rejection
+  flows.
+- `wallet.switchChain(chainId)` updates the wallet's chain and emits
+  `chainChanged`; `wallet.connectViaModal()` drives the AppKit connect modal for
+  connect-flow specs (the mock wallet appears via EIP-6963 as "E2E Wallet").
+- Chain reads go through the same per-worker RPC proxy partition as Synpress
+  tests, so `rpcProxy.setBalance` / `stubCall` work unchanged.
+- Keep Synpress (`../fixtures`) for scenarios that must exercise real extension
+  UI (connect prompts, network-approval dialogs, popup handling).
+
+Design: `docs/superpowers/specs/2026-07-26-mock-wallet-e2e-design.md`.
+
 ## Commands
 
 | Command | Description |
