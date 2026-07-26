@@ -25,6 +25,9 @@ interface MockWalletFixtures extends SharedFixtures {
 
 interface MockWalletOptions {
   mockWalletKey: Hex | undefined
+  // When false, the fixture does not pre-seed reconnect state — the app boots
+  // disconnected and specs drive `wallet.connectViaModal()` themselves.
+  mockWalletAutoConnect: boolean
 }
 
 function createMockWalletApi(engine: WalletEngine, page: Page): MockWalletApi {
@@ -41,8 +44,16 @@ function createMockWalletApi(engine: WalletEngine, page: Page): MockWalletApi {
       engine.setChainId(chainId)
     },
     async connectViaModal() {
-      await page.getByRole('button', { name: /connect wallet/i }).click()
-      await page.getByRole('button', { name: /e2e wallet/i }).click()
+      // The mock wallet surfaces in the AppKit modal via EIP-6963 as "E2E Wallet".
+      // AppKit renders wallet entries as non-button rows, so match on text, not role.
+      await page
+        .getByRole('button', { name: /connect wallet/i })
+        .first()
+        .click()
+      await page
+        .getByText(/e2e wallet/i)
+        .first()
+        .click()
       await page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })
     },
     stubRpc(method, handler) {
@@ -68,7 +79,8 @@ function resolvePrivateKey(mockWalletKey: Hex | undefined): Hex {
 export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
   ...sharedFixtures,
   mockWalletKey: [undefined, { option: true }],
-  wallet: async ({ context, page, mockWalletKey }, use, testInfo) => {
+  mockWalletAutoConnect: [true, { option: true }],
+  wallet: async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use, testInfo) => {
     const port = process.env[RPC_PROXY_PORT_ENV]
     if (!port) throw new Error(`${RPC_PROXY_PORT_ENV} not set — globalSetup did not run`)
 
@@ -96,10 +108,12 @@ export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
       address: engine.address,
       chainIdHex: toHex(CHAIN_IDS.SEPOLIA),
     })
-    await context.addInitScript(seedAutoConnect, {
-      rdns: E2E_WALLET_INFO.rdns,
-      defaultChainId: CHAIN_IDS.SEPOLIA,
-    })
+    if (mockWalletAutoConnect) {
+      await context.addInitScript(seedAutoConnect, {
+        rdns: E2E_WALLET_INFO.rdns,
+        defaultChainId: CHAIN_IDS.SEPOLIA,
+      })
+    }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(createMockWalletApi(engine, page))

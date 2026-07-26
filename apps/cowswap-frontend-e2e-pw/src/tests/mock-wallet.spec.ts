@@ -132,3 +132,14 @@ appTest.describe('mock wallet (app)', () => {
     await appExpect(page.locator('#web3-status-connected')).toBeVisible()
   })
 })
+
+appTest.describe('mock wallet (modal connect)', () => {
+  appTest.use({ mockWalletAutoConnect: false })
+
+  appTest('connectViaModal connects through the AppKit modal', async ({ wallet, page }) => {
+    await page.goto(`/#/${CHAIN_IDS.SEPOLIA}/swap`)
+    await appExpect(page.locator('#web3-status-connected')).toBeHidden()
+    await wallet.connectViaModal()
+    await appExpect(page.locator('#web3-status-connected')).toContainText(new RegExp(wallet.address.slice(0, 6), 'i'))
+  })
+})

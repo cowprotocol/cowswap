@@ -74,8 +74,9 @@ test('my scenario', async ({ wallet, page }) => {
   assertions. A stub may throw `{ code: 4001, message: '…' }` to drive rejection
   flows.
 - `wallet.switchChain(chainId)` updates the wallet's chain and emits
-  `chainChanged`; `wallet.connectViaModal()` drives the AppKit connect modal for
-  connect-flow specs (the mock wallet appears via EIP-6963 as "E2E Wallet").
+  `chainChanged`. To test the connect flow itself, opt out of auto-connect with
+  `test.use({ mockWalletAutoConnect: false })` and drive `wallet.connectViaModal()`
+  — the mock wallet appears in the AppKit modal via EIP-6963 as "E2E Wallet".
 - Chain reads go through the same per-worker RPC proxy partition as Synpress
   tests, so `rpcProxy.setBalance` / `stubCall` work unchanged.
 - Keep Synpress (`../fixtures`) for scenarios that must exercise real extension
