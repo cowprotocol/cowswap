@@ -10,7 +10,7 @@ export class LimitPage {
   constructor(page: Page) {
     this.page = page
     this.inputAmount = page.locator('#input-currency-input .token-amount-input')
-    this.limitPriceInput = page.locator('[data-testid="limit-price-input"]')
+    this.limitPriceInput = page.locator('#rate-limit-amount-input')
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-limit-orders-btn')
   }

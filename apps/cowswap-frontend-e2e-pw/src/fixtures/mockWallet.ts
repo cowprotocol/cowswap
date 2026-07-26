@@ -80,44 +80,49 @@ export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
   ...sharedFixtures,
   mockWalletKey: [undefined, { option: true }],
   mockWalletAutoConnect: [true, { option: true }],
-  wallet: async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use, testInfo) => {
-    const port = process.env[RPC_PROXY_PORT_ENV]
-    if (!port) throw new Error(`${RPC_PROXY_PORT_ENV} not set — globalSetup did not run`)
+  // `auto: true` so the injected provider and auto-connect seeding are installed for every
+  // test using this entrypoint — the app boots connected whether or not the test body ever
+  // touches the `wallet` handle (Playwright instantiates fixtures lazily otherwise).
+  wallet: [
+    async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use, testInfo) => {
+      const port = process.env[RPC_PROXY_PORT_ENV]
+      if (!port) throw new Error(`${RPC_PROXY_PORT_ENV} not set — globalSetup did not run`)
 
-    const engine = createWalletEngine({
-      privateKey: resolvePrivateKey(mockWalletKey),
-      chainId: CHAIN_IDS.SEPOLIA,
-      workerId: `w${testInfo.workerIndex}`,
-      proxyBaseUrl: `http://127.0.0.1:${port}`,
-      emit: (event, payload) => {
-        page
-          .evaluate(
-            ([e, p]) =>
-              (window as never as { __e2eWalletEmit?(ev: unknown, pl: unknown): void }).__e2eWalletEmit?.(e, p),
-            [event, payload] as const,
-          )
-          .catch(() => undefined) // page may be navigating; event loss is acceptable mid-teardown
-      },
-    })
-
-    await context.exposeBinding('__e2eWalletRequest', (_source, req: { method: string; params?: unknown[] }) =>
-      engine.handleRequest(req),
-    )
-    await context.addInitScript(injectedShim, {
-      ...E2E_WALLET_INFO,
-      address: engine.address,
-      chainIdHex: toHex(CHAIN_IDS.SEPOLIA),
-    })
-    if (mockWalletAutoConnect) {
-      await context.addInitScript(seedAutoConnect, {
-        rdns: E2E_WALLET_INFO.rdns,
-        defaultChainId: CHAIN_IDS.SEPOLIA,
+      const engine = createWalletEngine({
+        privateKey: resolvePrivateKey(mockWalletKey),
+        chainId: CHAIN_IDS.SEPOLIA,
+        workerId: `w${testInfo.workerIndex}`,
+        proxyBaseUrl: `http://127.0.0.1:${port}`,
+        emit: (event, payload) => {
+          page
+            .evaluate(
+              ([e, p]) =>
+                (window as never as { __e2eWalletEmit?(ev: unknown, pl: unknown): void }).__e2eWalletEmit?.(e, p),
+              [event, payload] as const,
+            )
+            .catch(() => undefined) // page may be navigating; event loss is acceptable mid-teardown
+        },
       })
-    }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    await use(createMockWalletApi(engine, page))
-  },
+      await context.exposeBinding('__e2eWalletRequest', (_source, req: { method: string; params?: unknown[] }) =>
+        engine.handleRequest(req),
+      )
+      await context.addInitScript(injectedShim, {
+        ...E2E_WALLET_INFO,
+        address: engine.address,
+        chainIdHex: toHex(CHAIN_IDS.SEPOLIA),
+      })
+      if (mockWalletAutoConnect) {
+        await context.addInitScript(seedAutoConnect, {
+          rdns: E2E_WALLET_INFO.rdns,
+          defaultChainId: CHAIN_IDS.SEPOLIA,
+        })
+      }
+
+      await use(createMockWalletApi(engine, page))
+    },
+    { auto: true },
+  ],
 })
 
 export { expect }
