@@ -3,18 +3,19 @@ import { ReactNode } from 'react'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 
-import { useLoadMoreOrders } from 'modules/orders'
-
+import { useLoadMoreTableOrders } from '../../../../hooks/useLoadMoreTableOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'
 
 export interface LoadMoreOrdersSectionProps {
   totalOpenOrders: number
+  orderType: TabOrderTypes
 }
 
-export function LoadMoreOrdersSection({ totalOpenOrders }: LoadMoreOrdersSectionProps): ReactNode {
-  const { limit, hasMoreOrders } = useLoadMoreOrders()
+export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOrdersSectionProps): ReactNode {
+  const { limit, hasMoreOrders } = useLoadMoreTableOrders(orderType)
 
   const paragraphs = hasMoreOrders ? (
     <>
@@ -30,7 +31,7 @@ export function LoadMoreOrdersSection({ totalOpenOrders }: LoadMoreOrdersSection
         )}
       </p>
       <p>
-        <LoadMoreOrdersButton />
+        <LoadMoreOrdersButton orderType={orderType} />
       </p>
     </>
   ) : (

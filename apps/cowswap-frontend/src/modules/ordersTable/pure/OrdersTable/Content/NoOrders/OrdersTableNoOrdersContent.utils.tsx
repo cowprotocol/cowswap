@@ -63,7 +63,7 @@ export function getDescription({
         </styledEl.ExternalLinkStyled>
       ) : null
 
-    if (hasMoreOrders && orderType === TabOrderTypes.LIMIT) {
+    if (hasMoreOrders && (orderType === TabOrderTypes.LIMIT || orderType === TabOrderTypes.ADVANCED)) {
       return [
         limit === AMOUNT_OF_ORDERS_TO_FETCH
           ? t`Only the ${limit} most recent orders were searched.`
@@ -71,7 +71,7 @@ export function getDescription({
         <>
           <Trans>Press the button below to search older orders, or create a new one!</Trans> {learnMoreLink}
         </>,
-        <LoadMoreOrdersButton />,
+        <LoadMoreOrdersButton orderType={orderType} />,
       ]
     }
 
@@ -114,7 +114,7 @@ export function getTitle({
   if (currentTab === OrderTabId.UNFILLABLE) return t`No unfillable orders`
 
   if (currentTab === OrderTabId.OPEN) {
-    return hasMoreOrders && orderType === TabOrderTypes.LIMIT
+    return hasMoreOrders && (orderType === TabOrderTypes.LIMIT || orderType === TabOrderTypes.ADVANCED)
       ? t`No open orders found in your last ${limit} orders`
       : t`No open orders found`
   }

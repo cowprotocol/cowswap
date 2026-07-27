@@ -8,10 +8,9 @@ import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes, OrderTabId } from 'entities/routes/routes.atom'
 
-import { useLoadMoreOrders } from 'modules/orders'
-
 import { getTitle, getDescription } from './OrdersTableNoOrdersContent.utils'
 
+import { useLoadMoreTableOrders } from '../../../../hooks/useLoadMoreTableOrders'
 import { useNoOrdersAnimation } from '../../../../hooks/useNoOrdersAnimation'
 import { HistoryStatusFilter } from '../../../../utils/getFilteredOrders'
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
@@ -41,7 +40,7 @@ export function OrdersTableNoOrdersContent({
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
-  const { limit, isLoading, hasMoreOrders } = useLoadMoreOrders()
+  const { limit, isLoading, hasMoreOrders } = useLoadMoreTableOrders(orderType)
   const displayLimit = isLoading ? limit - AMOUNT_OF_ORDERS_TO_FETCH : limit
 
   const { title, description } = useMemo(

@@ -57,6 +57,7 @@ function getTwapOrderItem(
     status,
     chainId,
     safeAddress,
+    resolvedOwner: safeAddress,
     id,
     submissionDate,
     executedDate: _executionDate || undefined,

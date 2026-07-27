@@ -74,14 +74,14 @@ export function TwapStatusAndToggle({
           ) : null
         }
       />
-      <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
-        {childrenLength && (
+      {childrenLength > 0 && (
+        <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
           <i>
             {childrenLength} {childrenLength > 1 ? <Trans>parts</Trans> : <Trans>part</Trans>}
           </i>
-        )}
-        <button />
-      </styledEl.ToggleExpandButton>
+          <button />
+        </styledEl.ToggleExpandButton>
+      )}
     </>
   )
 }

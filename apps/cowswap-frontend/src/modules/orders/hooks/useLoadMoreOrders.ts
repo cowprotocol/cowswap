@@ -14,17 +14,21 @@ interface UseLoadMoreOrdersReturn {
   loadMore: () => void
 }
 
-export function useLoadMoreOrders(): UseLoadMoreOrdersReturn {
+export function useLoadMoreOrders(enabled = true): UseLoadMoreOrdersReturn {
   const [{ limit, isLoading }, setOrdersLimit] = useAtom(ordersLimitAtom)
   const orders = useApiOrders()
 
   useEffect(() => {
+    if (!enabled) return
+
     setOrdersLimit((prev) => ({ ...prev, isLoading: false }))
-  }, [orders, setOrdersLimit])
+  }, [enabled, orders, setOrdersLimit])
 
   const loadMore = useCallback((): void => {
+    if (!enabled) return
+
     setOrdersLimit((prev) => ({ limit: prev.limit + AMOUNT_OF_ORDERS_TO_FETCH, isLoading: true }))
-  }, [setOrdersLimit])
+  }, [enabled, setOrdersLimit])
 
   const hasMoreOrders = isLoading || orders.length >= limit
 

@@ -1,4 +1,4 @@
-import { getTwapOrderStatus } from './getTwapOrderStatus'
+import { getTwapOrderStatus, isTwapOrderExpired } from './getTwapOrderStatus'
 
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
@@ -16,6 +16,10 @@ const orderStruct: TWAPOrderStruct = {
 }
 
 describe('getTwapOrderStatus()', () => {
+  it('uses a non-zero on-chain start time without a transaction date', () => {
+    expect(isTwapOrderExpired({ ...orderStruct, t0: 1 }, null)).toBe(true)
+  })
+
   describe('When executedSellAmount equals to partSellAmount * n', () => {
     it('Then an order status is Fulfilled', () => {
       const execution: TwapOrdersExecution = {

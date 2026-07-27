@@ -117,9 +117,11 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
         />
       )}
 
-      {currentTab === OrderTabId.OPEN && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
-        <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} />
-      )}
+      {currentTab === OrderTabId.OPEN &&
+        currentPageNumber === lastPageNumber &&
+        (orderType === TabOrderTypes.LIMIT || orderType === TabOrderTypes.ADVANCED) && (
+          <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} orderType={orderType} />
+        )}
     </>
   )
 }
