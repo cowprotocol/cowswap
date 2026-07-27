@@ -48,6 +48,14 @@ export const orderBookApi = new OrderBookApi({
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
 
+export const prodOrderBookApi = isBarnBackendEnv
+  ? new OrderBookApi({
+      env: 'prod',
+      ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
+      backoffOpts: DEFAULT_BACKOFF_OPTIONS,
+    })
+  : orderBookApi
+
 export const metadataApiSDK = new MetadataApi()
 
 export function CowSdkUpdater(): null {
