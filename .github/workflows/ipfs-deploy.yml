@@ -62,7 +62,6 @@ jobs:
         run: pnpm run build:cowswap
         env:
           REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
           REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
           REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.REACT_APP_BALANCES_WATCHER_BASE_URL }}
           REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
