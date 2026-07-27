@@ -32,23 +32,24 @@ jest.mock('../../explorer/api', () => ({
 
 const mockedGetTrades = jest.mocked(getTrades)
 
-type Policy = NonNullable<RawTrade['executedProtocolFees']>[number]['policy']
+type ExecutedFee = NonNullable<RawTrade['executedProtocolFees']>[number]
+type Policy = ExecutedFee['policy']
+
 const VOLUME_POLICY: Policy = { volume: { factor: 0.002 } }
+const SURPLUS_POLICY: Policy = { surplus: { factor: 0.5, maxVolumeFactor: 0.01 } }
 const PRICE_IMPROVEMENT_POLICY: Policy = {
   priceImprovement: { factor: 0.5, maxVolumeFactor: 0.01, quote: { sellAmount: '1', buyAmount: '1', fee: '0' } },
 }
 
-// Fee policies are fixed for an order and applied in the same order on every fill: a protocol volume
-// fee in WETH (position 0), a partner price-improvement fee in USDT (position 1), and a zero-amount
-// fee (position 2) that must be dropped from the breakdown.
-function fill(): RawTrade {
-  return {
-    executedProtocolFees: [
-      { amount: '10000000000000000', token: WETH.address, policy: VOLUME_POLICY },
-      { amount: '400000', token: USDT.address, policy: PRICE_IMPROVEMENT_POLICY },
-      { amount: '0', token: USDT.address, policy: VOLUME_POLICY },
-    ],
-  } as RawTrade
+const PARTNER = '0x1111111111111111111111111111111111111111'
+
+function appData(partnerFee?: unknown): string {
+  return JSON.stringify({ version: '1.1.0', metadata: partnerFee ? { partnerFee } : {} })
+}
+
+// Fee policies are fixed per order, so every fill reports the same ones.
+function fills(executedProtocolFees: ExecutedFee[], count = 3): RawTrade[] {
+  return Array.from({ length: count }, () => ({ executedProtocolFees }) as RawTrade)
 }
 
 // Wires the real chain the app uses: the hook derives the fees from every trade, then (as
@@ -59,34 +60,112 @@ function Harness({ order }: { order: Order }): React.ReactNode {
   return <GasFeeDisplay order={{ ...order, protocolFees }} />
 }
 
+function order(fullAppData?: string): Order {
+  return { ...RICH_ORDER, gasCost: new BigNumber('2500000000000000'), fullAppData } // 0.0025 native
+}
+
+/** Renders the breakdown, returning the collapsed headline before expanding the per-fee rows. */
+async function renderBreakdown(order: Order): Promise<{ headline: string }> {
+  const { container } = render(<Harness order={order} />)
+  await waitFor(() => expect(screen.queryByText('[+] Show more')).not.toBeNull())
+
+  const headline = container.textContent || ''
+  fireEvent.click(screen.getByText('[+] Show more'))
+
+  return { headline }
+}
+
 describe('costs & fees breakdown (integration)', () => {
   it('derives and renders the breakdown from an order’s trades, end to end', async () => {
-    const fills = [fill(), fill(), fill()]
+    // A protocol volume fee, a protocol surplus fee that captured nothing, and the declared partner
+    // fee last (where the autopilot appends it).
+    const fill: ExecutedFee[] = [
+      { amount: '10000000000000000', token: WETH.address, policy: VOLUME_POLICY },
+      { amount: '0', token: USDT.address, policy: SURPLUS_POLICY },
+      { amount: '400000', token: USDT.address, policy: PRICE_IMPROVEMENT_POLICY },
+    ]
     // Emulate a server that caps pages below the requested size, forcing the hook to page.
-    mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset, offset + 2))
+    const paged = fills(fill)
+    mockedGetTrades.mockImplementation(async ({ offset = 0 }) => paged.slice(offset, offset + 2))
 
-    const order = { ...RICH_ORDER, gasCost: new BigNumber('2500000000000000') } // 0.0025 native
-    const { container } = render(<Harness order={order} />)
-
-    await waitFor(() => expect(screen.queryByText('[+] Show more')).not.toBeNull())
+    const subject = order(appData({ priceImprovementBps: 5000, maxVolumeBps: 100, recipient: PARTNER }))
+    const { headline } = await renderBreakdown(subject)
 
     // The hook paged through every fill (2 + 1, then a terminal empty page), advancing by the records
     // actually returned — so getProtocolFees aggregated across all three fills, not just the first page.
     expect(mockedGetTrades).toHaveBeenCalledTimes(3)
-    expect(mockedGetTrades).toHaveBeenLastCalledWith(expect.objectContaining({ orderId: order.uid, offset: 3 }))
+    expect(mockedGetTrades).toHaveBeenLastCalledWith(expect.objectContaining({ orderId: subject.uid, offset: 3 }))
 
     // Headline folds the native network cost and the WETH protocol fee into one native (ETH) figure,
     // while the USDT partner fee stays as its own per-token total.
-    const headline = container.textContent || ''
     expect(headline).toContain('ETH')
     expect(headline).toContain('USDT')
     expect(headline).not.toContain('WETH')
 
-    fireEvent.click(screen.getByText('[+] Show more'))
     expect(screen.getByText('Network costs:')).not.toBeNull()
-    expect(screen.getByText('Protocol fee:')).not.toBeNull() // position 0 = the protocol's own fee
-    expect(screen.getByText('Partner 1 price improvement share:')).not.toBeNull() // position 1 = partner
-    // The zero-amount fee (position 2) is dropped, so there is no second partner row.
-    expect(screen.queryByText(/Partner 2/)).toBeNull()
+    expect(screen.getByText('Protocol fee:')).not.toBeNull()
+    expect(screen.getByText('Partner price improvement share:')).not.toBeNull()
+    // Dropped rather than shown as a "0" row.
+    expect(screen.queryByText('Protocol surplus fee:')).toBeNull()
+  })
+
+  it('does not report the protocol’s own fees as partner fees', async () => {
+    // The second fee is still the protocol's, even though it was applied after the first.
+    mockedGetTrades.mockImplementation(async ({ offset = 0 }) =>
+      offset === 0
+        ? fills(
+            [
+              { amount: '10000000000000000', token: WETH.address, policy: VOLUME_POLICY },
+              { amount: '400000', token: USDT.address, policy: SURPLUS_POLICY },
+            ],
+            1,
+          )
+        : [],
+    )
+
+    await renderBreakdown(order(appData()))
+
+    expect(screen.getByText('Protocol fee:')).not.toBeNull()
+    expect(screen.getByText('Protocol surplus fee:')).not.toBeNull()
+    expect(screen.queryByText(/Partner/)).toBeNull()
+  })
+
+  it('names fees after their policy alone when there is no app data to attribute them', async () => {
+    mockedGetTrades.mockImplementation(async ({ offset = 0 }) =>
+      offset === 0 ? fills([{ amount: '10000000000000000', token: WETH.address, policy: VOLUME_POLICY }], 1) : [],
+    )
+
+    await renderBreakdown(order(undefined))
+
+    expect(screen.getByText('Volume fee:')).not.toBeNull()
+    expect(screen.queryByText(/Partner/)).toBeNull()
+    expect(screen.queryByText(/Protocol/)).toBeNull()
+  })
+
+  it('numbers rows that would otherwise share a label', async () => {
+    // Two partners each taking a volume fee.
+    mockedGetTrades.mockImplementation(async ({ offset = 0 }) =>
+      offset === 0
+        ? fills(
+            [
+              { amount: '400000', token: USDT.address, policy: VOLUME_POLICY },
+              { amount: '500000', token: USDT.address, policy: VOLUME_POLICY },
+            ],
+            1,
+          )
+        : [],
+    )
+
+    await renderBreakdown(
+      order(
+        appData([
+          { volumeBps: 20, recipient: PARTNER },
+          { volumeBps: 20, recipient: '0x2222222222222222222222222222222222222222' },
+        ]),
+      ),
+    )
+
+    expect(screen.getByText('Partner fee 1:')).not.toBeNull()
+    expect(screen.getByText('Partner fee 2:')).not.toBeNull()
   })
 })

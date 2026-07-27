@@ -6,9 +6,19 @@ import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, ProtocolFee, ProtocolFeeType, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import {
+  Order,
+  OrderStatus,
+  ProtocolFee,
+  ProtocolFeeOwner,
+  ProtocolFeeType,
+  RAW_ORDER_STATUS,
+  RawOrder,
+  Trade,
+} from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
+import { PartnerFeePolicy } from './partnerFeePolicies'
 
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
@@ -351,12 +361,21 @@ export function getOrderSurplus(order: RawOrder): Surplus {
  * fee's position in `executedProtocolFees` (see {@link ProtocolFee.position}). Fee policies are
  * fixed per order, so a given position is the same policy in every fill; summing per position
  * collapses the fills while preserving the applied order.
+ *
+ * `partnerFeePolicies` comes from the order's app data (see {@link getPartnerFeePolicies}) and is
+ * what each fee's owner is derived from.
  */
-export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
+export function getProtocolFees(
+  trades: Array<Pick<Trade, 'executedProtocolFees'>>,
+  partnerFeePolicies?: PartnerFeePolicy[],
+): ProtocolFee[] {
   const feesByPosition = new Map<number, ProtocolFee>()
+  // Longest fill's, so a fill reporting fewer policies can't shift where the partner fees start.
+  let policyCount = 0
 
   for (const { executedProtocolFees } of trades) {
     if (!executedProtocolFees) continue
+    policyCount = Math.max(policyCount, executedProtocolFees.length)
     executedProtocolFees.forEach(({ amount, token, policy }, position) => {
       if (!amount || !token) return
       const parsedAmount = new BigNumber(amount)
@@ -371,12 +390,15 @@ export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'
           type: getProtocolFeeType(policy),
           factor: getProtocolFeeFactor(policy),
           position,
+          owner: ProtocolFeeOwner.Unknown,
         })
       }
     })
   }
 
-  // Sort by applied position (protocol fee first, partner fees after); drop policies that charged nothing.
+  attributeFeeOwners(feesByPosition, policyCount, partnerFeePolicies)
+
+  // Sort by applied position (protocol fees first, partner fees after); drop policies that charged nothing.
   return Array.from(feesByPosition.values())
     .sort((a, b) => a.position - b.position)
     .filter((fee) => fee.amount.isGreaterThan(0))
@@ -480,6 +502,41 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
 }
 
 /**
+ * Marks each applied fee policy as the protocol's or a partner's, in place.
+ *
+ * The API doesn't record who a fee belongs to. The autopilot applies its own configured policies
+ * first and the app data's partner policies after, so the last N are the partner fees.
+ *
+ * The tail is checked against the declarations first; when it doesn't line up (or there is no app
+ * data) every fee is left {@link ProtocolFeeOwner.Unknown} instead of guessing.
+ */
+function attributeFeeOwners(
+  feesByPosition: Map<number, ProtocolFee>,
+  policyCount: number,
+  partnerFeePolicies: PartnerFeePolicy[] | undefined,
+): void {
+  if (!partnerFeePolicies) return
+
+  const partnerStart = policyCount - partnerFeePolicies.length
+  const matchesDeclared =
+    partnerStart >= 0 &&
+    partnerFeePolicies.every((declared, index) =>
+      matchesDeclaredPolicy(feesByPosition.get(partnerStart + index), declared),
+    )
+
+  if (!matchesDeclared) return
+
+  for (const fee of feesByPosition.values()) {
+    if (fee.position < partnerStart) {
+      fee.owner = ProtocolFeeOwner.Protocol
+    } else {
+      fee.owner = ProtocolFeeOwner.Partner
+      fee.recipient = partnerFeePolicies[fee.position - partnerStart]?.recipient
+    }
+  }
+}
+
+/**
  * Returns the fee policy's `factor`, when present (meaning is policy-specific; see {@link ProtocolFee.factor}).
  */
 function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
@@ -510,4 +567,12 @@ function getReceiverAddress({ owner, receiver }: RawOrder): string {
 
 function isZeroAddress(address: string): boolean {
   return /^0x0{40}$/.test(address)
+}
+
+function matchesDeclaredPolicy(fee: ProtocolFee | undefined, declared: PartnerFeePolicy): boolean {
+  if (!fee || fee.type !== declared.type) return false
+
+  // The protocol caps partner fees, so the executed rate can be below the declared one, never above.
+  // The epsilon absorbs the rounding of bps to a fraction.
+  return fee.factor === undefined || fee.factor <= declared.factor + 1e-9
 }

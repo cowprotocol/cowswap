@@ -7,6 +7,7 @@ import { getProtocolFees, transformTrade } from 'utils'
 import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
+import { getPartnerFeePolicies } from '../utils/partnerFeePolicies'
 
 type Result = {
   trades: Trade[]
@@ -170,7 +171,12 @@ export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
     // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new fills.
   }, [networkId, order?.uid, executedSellAmount, executedBuyAmount])
 
-  const protocolFees = useMemo(() => getProtocolFees(rawTrades ?? []), [rawTrades])
+  const partnerFeePolicies = useMemo(() => getPartnerFeePolicies(order?.fullAppData), [order?.fullAppData])
+
+  const protocolFees = useMemo(
+    () => getProtocolFees(rawTrades ?? [], partnerFeePolicies),
+    [rawTrades, partnerFeePolicies],
+  )
   const isLoading = rawTrades === null
 
   return useMemo(() => ({ protocolFees, error, isLoading }), [protocolFees, error, isLoading])

@@ -11,16 +11,29 @@ import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { abbreviateString, isNativeToken } from 'utils'
 
-import { Order, ProtocolFeeType } from 'api/operator'
+import { Order, ProtocolFeeOwner, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// Labels for the protocol's own fee (the first applied fee), by policy type. The common case is a
-// plain volume fee, shown simply as "Protocol fee".
-const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
-  [ProtocolFeeType.Surplus]: 'Surplus fee',
-  [ProtocolFeeType.Volume]: 'Protocol fee',
-  [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
-  [ProtocolFeeType.Unknown]: 'Protocol fee',
+// Row label per fee policy and owner. Unattributed fees are named after their policy alone.
+const FEE_LABELS: Record<ProtocolFeeOwner, Record<ProtocolFeeType, string>> = {
+  [ProtocolFeeOwner.Protocol]: {
+    [ProtocolFeeType.Volume]: 'Protocol fee',
+    [ProtocolFeeType.Surplus]: 'Protocol surplus fee',
+    [ProtocolFeeType.PriceImprovement]: 'Protocol price improvement fee',
+    [ProtocolFeeType.Unknown]: 'Protocol fee',
+  },
+  [ProtocolFeeOwner.Partner]: {
+    [ProtocolFeeType.Volume]: 'Partner fee',
+    [ProtocolFeeType.Surplus]: 'Partner surplus fee',
+    [ProtocolFeeType.PriceImprovement]: 'Partner price improvement share',
+    [ProtocolFeeType.Unknown]: 'Partner fee',
+  },
+  [ProtocolFeeOwner.Unknown]: {
+    [ProtocolFeeType.Volume]: 'Volume fee',
+    [ProtocolFeeType.Surplus]: 'Surplus fee',
+    [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
+    [ProtocolFeeType.Unknown]: 'Fee',
+  },
 }
 
 const LegacyWrapper = styled.div`
@@ -77,16 +90,13 @@ function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigN
     return map
   }, [feeTokens, nativeToken, order.buyToken, order.sellToken, order.sellTokenAddress, wrappedKey])
 
-  // One row per cost/fee: network costs first, then the protocol fee (position 0), then the partner
-  // fees that follow it (numbered so multiple partners can be told apart).
+  // One row per cost/fee: network costs first, then the fees in the order they were applied.
   const lineItems = useMemo<LineItem[]>(() => {
     const items: LineItem[] = [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }]
-    let partnerNumber = 0
     for (const fee of protocolFees ?? []) {
-      const label = fee.position === 0 ? PROTOCOL_FEE_LABELS[fee.type] : getPartnerFeeLabel(fee.type, ++partnerNumber)
-      items.push({ label, tokenAddress: fee.tokenAddress, amount: fee.amount })
+      items.push({ label: FEE_LABELS[fee.owner][fee.type], tokenAddress: fee.tokenAddress, amount: fee.amount })
     }
-    return items
+    return numberRepeatedLabels(items)
   }, [protocolFees, gasCost, nativeKey])
 
   // Headline total per token. Network costs (native) and fees taken in wrapped native are the same
@@ -128,24 +138,6 @@ function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAdd
 }
 
 /**
- * Label for a partner fee. The trade API doesn't expose the partner's identity, so partners are
- * numbered by the order their fees were applied; a single partner with several fee types will show
- * as separate numbered entries.
- */
-function getPartnerFeeLabel(type: ProtocolFeeType, partnerNumber: number): string {
-  switch (type) {
-    case ProtocolFeeType.Volume:
-      return `Partner ${partnerNumber} volume fee`
-    case ProtocolFeeType.PriceImprovement:
-      return `Partner ${partnerNumber} price improvement share`
-    case ProtocolFeeType.Surplus:
-      return `Partner ${partnerNumber} surplus fee`
-    default:
-      return `Partner ${partnerNumber} fee`
-  }
-}
-
-/**
  * Legacy display for orders without a recorded gas cost: the combined executed fee in the sell
  * token (network costs + protocol fees together), as it was shown before the breakdown existed.
  */
@@ -182,4 +174,19 @@ function LegacyFeeDisplay({ order }: { order: Order }): React.ReactNode {
       </span>
     </LegacyWrapper>
   )
+}
+
+/** Numbers duplicate labels, so two partners each taking a volume fee don't render identical rows. */
+function numberRepeatedLabels(items: LineItem[]): LineItem[] {
+  const totals = new Map<string, number>()
+  for (const { label } of items) totals.set(label, (totals.get(label) ?? 0) + 1)
+
+  const seen = new Map<string, number>()
+  return items.map((item) => {
+    if ((totals.get(item.label) ?? 0) < 2) return item
+
+    const ordinal = (seen.get(item.label) ?? 0) + 1
+    seen.set(item.label, ordinal)
+    return { ...item, label: `${item.label} ${ordinal}` }
+  })
 }
