@@ -11,7 +11,7 @@ import useSWR from 'swr'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
-import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useAppData, useAppDataHooks, useIsAppDataHooksInSync } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
@@ -72,6 +72,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const settlementContract = useGP2SettlementContractData()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
+  // appData is rebuilt asynchronously when hooks change; block order placement
+  // until it reflects the latest hooks so a hook can't be dropped from the order (#7872)
+  const appDataHooksInSync = useIsAppDataHooksInSync()
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const amountToSignApprove = useGetAmountToSignApprove()
@@ -101,6 +104,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         buyToken &&
         account &&
         appData &&
+        appDataHooksInSync &&
         tradeQuote.quote &&
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
