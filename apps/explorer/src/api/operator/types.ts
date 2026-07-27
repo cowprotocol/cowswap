@@ -139,10 +139,12 @@ export type ProtocolFee = {
   /**
    * The fee policy's position in the trade's applied-fee order (`executedProtocolFees` is "listed
    * in the order they got applied"). Fee policies are fixed per order, so the same position refers
-   * to the same policy in every fill. Position 0 is the protocol's own fee; the fees that follow
-   * it are partner fees (the API doesn't otherwise distinguish protocol from partner).
+   * to the same policy in every fill.
    */
   position: number
+  owner: ProtocolFeeOwner
+  /** The partner's fee recipient, when the fee mapped to a declared partner policy. */
+  recipient?: string
 }
 
 // Raw API response.
@@ -177,6 +179,18 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 }
 
 export type WithNetworkId = { networkId: Network }
+
+/**
+ * Who a fee in `executedProtocolFees` was charged for. The API doesn't say, so it is derived by
+ * mapping the applied policies onto the partner fee policies the order declared in its app data.
+ */
+export enum ProtocolFeeOwner {
+  Protocol = 'protocol',
+  /** An integrator, from a `metadata.partnerFee` policy in the order's app data. */
+  Partner = 'partner',
+  /** No app data to map against, or the policies didn't match what it declared. */
+  Unknown = 'unknown',
+}
 
 /**
  * How a protocol fee was calculated, derived from the trade's fee policy.
