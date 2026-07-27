@@ -8,6 +8,8 @@ export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
     return null
   } else if (shouldIgnoreErrorBasedOnBreadcrumbs(event)) {
     return null
+  } else if (shouldIgnoreLaunchDarklyNetworkError(event)) {
+    return null
   } else {
     return event
   }
@@ -115,4 +117,30 @@ function isMetamaskRpcError(breadcrumb: Sentry.Breadcrumb): boolean {
     return false
   }
   return /MetaMask.*RPC Error/i.test(breadcrumb.message)
+}
+
+const NETWORK_ERROR_VALUES = new Set(['A network error occurred.'])
+
+function isNetworkError(type: string | undefined, value: string | undefined): boolean {
+  return type === 'NetworkError' || NETWORK_ERROR_VALUES.has(value ?? '')
+}
+
+/**
+ * Ignore network errors thrown by the launchdarkly-js-client-sdk.
+ *
+ * The SDK flushes analytics events synchronously on `pagehide` (e.g. when a mobile browser
+ * tab is backgrounded or the connection drops). On mobile Safari/WKWebView the underlying XHR
+ * often fails with a `NetworkError`, which Sentry captures via its instrumented XHR wrapper.
+ * These are benign (feature-flag analytics, no user impact) and generate a large volume of noise.
+ */
+function shouldIgnoreLaunchDarklyNetworkError(error: SentryErrorEvent): boolean {
+  const exception = error.exception?.values?.[0]
+
+  if (!exception || !isNetworkError(exception.type, exception.value)) {
+    return false
+  }
+
+  const frames = exception.stacktrace?.frames
+
+  return Boolean(frames?.some((frame) => frame.filename?.includes('launchdarkly-js-client-sdk')))
 }
