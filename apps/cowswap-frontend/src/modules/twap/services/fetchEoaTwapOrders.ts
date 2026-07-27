@@ -5,7 +5,7 @@ import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
 
-import type { TwapOrderItem, TwapOrdersExecution, TWAPOrderStruct } from '../types'
+import type { TwapOrderItem, TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
 
 const programmaticOrderApi = new ProgrammaticOrderApi()
@@ -34,38 +34,28 @@ export async function fetchEoaTwapOrders(
   return { orders, totalCount }
 }
 
-function getExecutionInfo(twapOrder: TwapOrder): TwapOrdersExecution {
-  const confirmedPartsCount =
-    twapOrder.status === 'Completed' ? toSafeNumber(twapOrder.schedule.numberOfParts, 'numberOfParts') : 0
-
-  return {
-    confirmedPartsCount,
-    info: {
-      executedSellAmount: twapOrder.executedAmounts.executedSellAmount.toString(),
-      executedBuyAmount: twapOrder.executedAmounts.executedBuyAmount.toString(),
-      executedFeeAmount: twapOrder.executedAmounts.executedFeeAmount.toString(),
-    },
-  }
-}
-
-function mapSchedule({ schedule }: TwapOrder): TWAPOrderStruct {
-  return {
+function mapTwapOrder(twapOrder: TwapOrder): TwapOrderItem {
+  const { schedule, executedAmounts } = twapOrder
+  const order: TWAPOrderStruct = {
     sellToken: schedule.sellToken,
     buyToken: schedule.buyToken,
     receiver: schedule.receiver,
     partSellAmount: schedule.partSellAmount.toString(),
     minPartLimit: schedule.minPartLimit.toString(),
-    t0: toSafeNumber(schedule.effectiveStartTime, 'effectiveStartTime'),
-    n: toSafeNumber(schedule.numberOfParts, 'numberOfParts'),
-    t: toSafeNumber(schedule.timeBetweenParts, 'timeBetweenParts'),
-    span: toSafeNumber(schedule.durationOfPart, 'durationOfPart'),
+    t0: schedule.effectiveStartTime,
+    n: schedule.numberOfParts,
+    t: schedule.timeBetweenParts,
+    span: schedule.durationOfPart,
     appData: schedule.appData,
   }
-}
-
-function mapTwapOrder(twapOrder: TwapOrder): TwapOrderItem {
-  const order = mapSchedule(twapOrder)
-  const executionInfo = getExecutionInfo(twapOrder)
+  const executionInfo = {
+    confirmedPartsCount: twapOrder.status === 'Completed' ? schedule.numberOfParts : 0,
+    info: {
+      executedSellAmount: executedAmounts.executedSellAmount.toString(),
+      executedBuyAmount: executedAmounts.executedBuyAmount.toString(),
+      executedFeeAmount: executedAmounts.executedFeeAmount.toString(),
+    },
+  }
   const createdAt = new Date(twapOrder.createdAt * 1000)
 
   return {
@@ -81,14 +71,4 @@ function mapTwapOrder(twapOrder: TwapOrder): TwapOrderItem {
     partOrdersCount: twapOrder.partOrdersCount,
     executionInfo,
   }
-}
-
-function toSafeNumber(value: bigint, field: string): number {
-  const number = Number(value)
-
-  if (!Number.isSafeInteger(number)) {
-    throw new RangeError(`TWAP ${field} is outside the safe integer range`)
-  }
-
-  return number
 }
