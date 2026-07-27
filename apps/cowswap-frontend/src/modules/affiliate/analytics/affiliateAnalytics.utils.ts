@@ -40,15 +40,6 @@ export function getAffiliateModalViewKey(
   return [modalState, walletStatus].join(':')
 }
 
-export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
-  analytics.sendEvent({
-    category: CowSwapAnalyticsCategory.AFFILIATE,
-    action,
-    chainId,
-    ...customParams,
-  } as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>)
-}
-
 export function getAffiliatePartnerPageState({
   hasAccount,
   hasExistingCode,
@@ -115,4 +106,13 @@ export function normalizeAffiliatePartnerCodeCreateFailureReason(
     default:
       return AffiliatePartnerCodeCreateFailureReason.UNEXPECTED_ERROR
   }
+}
+
+export function trackAffiliateEvent({ analytics, action, chainId, ...customParams }: TrackAffiliateEventParams): void {
+  analytics.sendEvent({
+    category: CowSwapAnalyticsCategory.AFFILIATE,
+    action,
+    chainId,
+    ...customParams,
+  } as GtmEvent<CowSwapAnalyticsCategory.AFFILIATE>)
 }

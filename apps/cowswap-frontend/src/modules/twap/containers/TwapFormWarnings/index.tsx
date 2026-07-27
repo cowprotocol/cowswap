@@ -96,7 +96,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   return (
     <>
       {(() => {
-        if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+        if (isUnsupportedWallet(localFormValidation)) {
           return (
             <UnsupportedWalletWarning
               isSafeViaWc={isSafeViaWc}
@@ -150,4 +150,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
       })()}
     </>
   )
+}
+
+function isUnsupportedWallet(state: TwapFormState | null): boolean {
+  return state === TwapFormState.WALLET_NOT_SUPPORTED || state === TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 }

@@ -32,6 +32,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       bridgeMinReceiveAmount,
       bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,
       bridgeFeeAmounts: receiveAmountInfo.costs.bridgeFee,
+      expectedFillTimeSeconds: bridgeQuote.expectedFillTimeSeconds,
     }
   }, [receiveAmountInfo, swapReceiveAmountInfo, bridgeQuote])
 }

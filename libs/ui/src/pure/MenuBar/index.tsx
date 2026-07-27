@@ -86,22 +86,6 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     external: true,
     utmContent: 'menubar-dao-nav-cowprotocol',
   },
-  {
-    href: 'https://cow.fi/cow-amm',
-    productVariant: ProductVariant.CowAmm,
-    hoverColor: '#007CDB',
-    hoverBgColor: '#CCF8FF',
-    external: true,
-    utmContent: 'menubar-dao-nav-cowamm',
-  },
-  {
-    href: 'https://cow.fi/mev-blocker',
-    productVariant: ProductVariant.MevBlocker,
-    hoverColor: '#F2CD16',
-    hoverBgColor: '#EC4612',
-    external: true,
-    utmContent: 'menubar-dao-nav-mevblocker',
-  },
 ]
 
 const getLanguageName = (locale: string): string => {

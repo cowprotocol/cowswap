@@ -3,9 +3,7 @@ import svgBitsSrc from '@cowprotocol/assets/images/image-bits.svg'
 import svgCoinsSrc from '@cowprotocol/assets/images/image-coins.svg'
 import svgDiscordSrc from '@cowprotocol/assets/images/image-discord.svg'
 import svgForumSrc from '@cowprotocol/assets/images/image-forum.svg'
-import svgGreenWavesSrc from '@cowprotocol/assets/images/image-green-waves.svg'
 import svgSnapshotSrc from '@cowprotocol/assets/images/image-snapshot.svg'
-import svgTubeSrc from '@cowprotocol/assets/images/image-tube.svg'
 import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -58,34 +56,6 @@ export const PRODUCT_LIST = [
     linkColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
     productVariant: ProductVariant.CowDao,
     iconImage: svgCoinsSrc,
-  },
-  {
-    title: 'CoW AMM',
-    description: 'The first MEV-capturing AMM',
-    linkHref: '/cow-amm',
-    linkText: 'Deposit liquidity',
-    linkEvent: 'click-deploy-liquidity',
-    bgColor: Color.cowamm_dark_green,
-    textColor: Color.cowamm_green,
-    descriptionColor: Color.cowamm_green,
-    linkBgColor: Color.cowamm_green,
-    linkColor: Color.cowamm_dark_green,
-    productVariant: ProductVariant.CowDao,
-    iconImage: svgGreenWavesSrc,
-  },
-  {
-    title: 'MEV Blocker',
-    description: 'The best MEV protection RPC under the sun',
-    linkHref: '/mevblocker',
-    linkText: 'Get protected',
-    linkEvent: 'click-get-protected',
-    bgColor: Color.cowfi_orange_pale,
-    textColor: Color.cowfi_orange_bright,
-    descriptionColor: Color.cowfi_orange_bright,
-    linkBgColor: Color.cowfi_orange_bright,
-    linkColor: Color.cowfi_orange_pale,
-    productVariant: ProductVariant.MevBlocker,
-    iconImage: svgTubeSrc,
   },
 ]
 

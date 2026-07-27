@@ -1,9 +1,9 @@
+import { getPublicClient } from '@cowprotocol/common-utils'
 import { AddressKey } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
 import { ERC20_ABI, ERC4626_ABI } from './abis'
-import { getPublicClient } from './client'
 
 import { useEvmNetworkId } from '../../state/network/hooks'
 
