@@ -5,9 +5,9 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
-import { EOA_TWAP_SHED_FACTORY_OPTIONS } from 'modules/cowShed'
-
 import { useAccountProxies } from './useAccountProxies'
+
+import { EOA_TWAP_SHED_EIP712_VERSION, EOA_TWAP_SHED_FACTORY_OPTIONS } from '../accountProxy.constants'
 
 jest.mock('@cowprotocol/sdk-cow-shed', () => ({
   ...jest.requireActual('@cowprotocol/sdk-cow-shed'),
@@ -52,7 +52,7 @@ describe('useAccountProxies', () => {
     expect(eoaTwapProxy?.label?.message).toBe('TWAP Account Proxy')
     expect(eoaTwapProxy?.factoryOptions).toBe(EOA_TWAP_SHED_FACTORY_OPTIONS)
     expect(eoaTwapProxy?.account).toBe(CUSTOM_PROXY)
-    expect(CowShedHooksMock).toHaveBeenCalledWith(CHAIN_ID, EOA_TWAP_SHED_FACTORY_OPTIONS, undefined)
+    expect(CowShedHooksMock).toHaveBeenCalledWith(CHAIN_ID, EOA_TWAP_SHED_FACTORY_OPTIONS, EOA_TWAP_SHED_EIP712_VERSION)
   })
 
   it('excludes the custom EOA TWAP proxy when the feature is disabled', () => {
