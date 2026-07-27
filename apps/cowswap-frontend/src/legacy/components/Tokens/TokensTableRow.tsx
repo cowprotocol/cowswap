@@ -201,6 +201,14 @@ export const TokensTableRow = ({
     return <CardsSpinner />
   }, [account, isNativeToken, allowance, handleApprove, approvalState, balanceLessThanAllowance])
 
+  const explorerLink = (
+    <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
+      <TableButton>
+        <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
+      </TableButton>
+    </ExtLink>
+  )
+
   return (
     <>
       <Cell>
@@ -234,14 +242,16 @@ export const TokensTableRow = ({
         {/* This EVM/Solana split is temporary. Once a Solana approve (delegation) flow exists,
             unify both branches into a single allowance cell instead of branching on chain here. */}
         {isSolana
-          ? !isNativeToken && <SplDelegationCell balance={balance} allowance={allowance} />
+          ? !isNativeToken && (
+              <>
+                {explorerLink}
+                {/* Delegation status is only meaningful for a connected wallet; hide it otherwise. */}
+                {account && <SplDelegationCell balance={balance} allowance={allowance} />}
+              </>
+            )
           : displayApproveContent && (
               <>
-                <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
-                  <TableButton>
-                    <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
-                  </TableButton>
-                </ExtLink>
+                {explorerLink}
                 {displayApproveContent}
               </>
             )}
