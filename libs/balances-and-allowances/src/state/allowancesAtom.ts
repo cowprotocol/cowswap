@@ -48,7 +48,7 @@ async function fetchAllowances(
 
 // In-memory only: values are `bigint` (SPL delegations / EVM allowances), which `JSON.stringify` cannot
 // serialize — persisting via `atomWithStorage` throws on write. Delegations are re-fetched each session
-// by `usePersistSplDataMulticall`, so persistence is unnecessary here.
+// by `usePersistSplViaMulticall`, so persistence is unnecessary here.
 export const allowancesAtom = atom<PersistentStateByChain<Record<string, bigint | undefined>>>(mapSupportedNetworks({}))
 
 export interface TokenAllowancesFamilyParams {

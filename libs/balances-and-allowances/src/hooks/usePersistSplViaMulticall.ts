@@ -37,7 +37,7 @@ const SOLANA_DELEGATE_AUTHORITY = findSolanaSettlementStatePda()
  * along with the balance for free. Balances are persisted into `balancesAtom` and delegations into
  * `allowancesAtom` in the same shapes the EVM path uses, so downstream consumers stay chain-agnostic.
  */
-export function usePersistSplDataMulticall(params: PersistBalancesAndAllowancesParams): void {
+export function usePersistSplViaMulticall(params: PersistBalancesAndAllowancesParams): void {
   const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded, refreshTrigger } = params
 
   const setBalances = useSetAtom(balancesAtom)

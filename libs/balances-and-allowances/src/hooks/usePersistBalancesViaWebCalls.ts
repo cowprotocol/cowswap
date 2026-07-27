@@ -9,7 +9,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
-import { usePersistSplDataMulticall } from './usePersistSplDataMulticall'
+import { usePersistSplViaMulticall } from './usePersistSplViaMulticall'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { REPORT_THROTTLE_MS, reportBalancesError } from '../utils/reportBalancesError'
@@ -53,7 +53,7 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   const isEvm = isEvmChain(chainId)
 
   // Non-EVM chains (e.g. Solana) load balances and delegations via their own web calls
-  usePersistSplDataMulticall(params)
+  usePersistSplViaMulticall(params)
 
   const {
     data: balances,

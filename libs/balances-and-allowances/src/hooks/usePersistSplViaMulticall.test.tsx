@@ -12,7 +12,7 @@ import { PublicKey } from '@solana/web3.js'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { PersistBalancesAndAllowancesParams } from './usePersistBalancesViaWebCalls'
-import { usePersistSplDataMulticall } from './usePersistSplDataMulticall'
+import { usePersistSplViaMulticall } from './usePersistSplViaMulticall'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
@@ -98,7 +98,7 @@ function makeParams(overrides: Partial<PersistBalancesAndAllowancesParams> = {})
 function renderWithBalances(params: PersistBalancesAndAllowancesParams): { result: { current: BalancesState } } {
   return renderHook(
     () => {
-      usePersistSplDataMulticall(params)
+      usePersistSplViaMulticall(params)
       return useAtomValue(balancesAtom)
     },
     { wrapper },
@@ -135,7 +135,7 @@ function wrapper({ children }: { children: ReactNode }): ReactNode {
   )
 }
 
-describe('usePersistSplDataMulticall', () => {
+describe('usePersistSplViaMulticall', () => {
   beforeEach(() => {
     mockTokensByAddress = {}
     mockAmountByAta = { [ataKey(MINT_A)]: 100n, [ataKey(MINT_B)]: 250n }
@@ -209,7 +209,7 @@ describe('usePersistSplDataMulticall', () => {
   it('keys the update timestamp by the case-sensitive Solana account, not a lowercased alias', async () => {
     const { result } = renderHook(
       () => {
-        usePersistSplDataMulticall(makeParams())
+        usePersistSplViaMulticall(makeParams())
         return useAtomValue(balancesUpdateAtom)
       },
       { wrapper },

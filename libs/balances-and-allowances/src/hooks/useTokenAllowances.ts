@@ -33,10 +33,6 @@ export function useTokenAllowances(tokenAddresses: string[]): {
 
   const spender = useTradeSpenderAddress()
 
-  // On Solana there is no ERC20 `allowance` to read on-chain: the SPL delegation stands in for it. It is
-  // fetched off the token account and persisted into `allowancesAtom` by `usePersistSplDataMulticall`, so
-  // read it from the atom here instead of the wagmi call below (which is EVM-only). No separate loading
-  // signal is tracked, matching the EVM path (which gets `isLoading` inline from wagmi).
   const persistedAllowancesByChain = useAtomValue(allowancesAtom)
 
   const { data: allowances, isLoading } = useReadContracts({
@@ -56,8 +52,6 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   })
 
   const state = useMemo(() => {
-    // Solana: the SPL delegation for the active chain is already a ready allowances map (no per-token
-    // decode needed), so it slots in as its own branch of the same computation.
     if (isSolana) return persistedAllowancesByChain[chainId]
 
     if (!allowances?.length) return
