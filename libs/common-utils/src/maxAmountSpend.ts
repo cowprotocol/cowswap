@@ -25,10 +25,6 @@ const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
   [SupportedChainId.PLASMA]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
 }
 
-function getMinNativeCurrencyForGas(chainId: number): bigint {
-  return MIN_NATIVE_CURRENCY_FOR_GAS[chainId as SupportedChainId] ?? MIN_NATIVE_CURRENCY_FOR_GAS_LOW
-}
-
 /**
  * Given some token amount, return the max that can be spent of it
  * @param currencyAmount to return max of
@@ -48,4 +44,8 @@ export function maxAmountSpend(
     }
   }
   return currencyAmount
+}
+
+function getMinNativeCurrencyForGas(chainId: number): bigint {
+  return MIN_NATIVE_CURRENCY_FOR_GAS[chainId as SupportedChainId] ?? MIN_NATIVE_CURRENCY_FOR_GAS_LOW
 }
