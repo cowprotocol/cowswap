@@ -1,29 +1,29 @@
-import { createStore, Provider } from 'jotai'
+import { createStore, Provider, type PrimitiveAtom, useAtomValue } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 import { ReactNode } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
-import { useAccountType, useWalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
+import { accountTypeAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, render, waitFor } from '@testing-library/react'
 import { eoaTwapOrdersAtom } from 'entities/twap'
-import { SWRConfig } from 'swr'
+import { queryClientAtom } from 'jotai-tanstack-query'
 
-import { EoaTwapOrdersUpdater } from './EoaTwapOrdersUpdater'
+import { ordersLimitAtom } from 'modules/orders'
+
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
+import { eoaTwapOrdersEffectAtom } from './eoaTwapOrdersEffectAtom'
 
 import { fetchEoaTwapOrders } from '../services/fetchEoaTwapOrders'
-import { eoaTwapOrdersRequestAtom } from '../state/eoaTwapOrdersRequestAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
-jest.mock('@cowprotocol/common-hooks', () => ({
-  ...jest.requireActual('@cowprotocol/common-hooks'),
-  useFeatureFlags: jest.fn(),
-}))
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
-  useAccountType: jest.fn(),
-  useWalletInfo: jest.fn(),
+  accountTypeAtom: jest.requireActual('jotai').atom(jest.requireActual('@cowprotocol/types').AccountType.EOA),
 }))
 jest.mock('../services/fetchEoaTwapOrders', () => ({ fetchEoaTwapOrders: jest.fn() }))
 jest.mock('entities/twap', () => jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'))
@@ -32,10 +32,8 @@ const EOA_A = '0x1111111111111111111111111111111111111111'
 const EOA_B = '0x2222222222222222222222222222222222222222'
 const CHAIN_ID = SupportedChainId.GNOSIS_CHAIN
 
-const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
-const useAccountTypeMock = useAccountType as jest.MockedFunction<typeof useAccountType>
-const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const fetchEoaTwapOrdersMock = fetchEoaTwapOrders as jest.MockedFunction<typeof fetchEoaTwapOrders>
+const writableAccountTypeAtom = accountTypeAtom as PrimitiveAtom<AccountType | null>
 
 function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {
   return {
@@ -67,34 +65,38 @@ function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {
 }
 
 function testWrapper(store: ReturnType<typeof createStore>): ({ children }: { children: ReactNode }) => ReactNode {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
   return function TestWrapper({ children }: { children: ReactNode }): ReactNode {
+    useHydrateAtoms([[queryClientAtom, queryClient]], { store })
+
     return (
-      <Provider store={store}>
-        <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>{children}</SWRConfig>
-      </Provider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>{children}</Provider>
+      </QueryClientProvider>
     )
   }
 }
 
-describe('EoaTwapOrdersUpdater', () => {
+describe('eoaTwapOrdersEffectAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
-    useFeatureFlagsMock.mockReturnValue({ isTwapEoaEnabled: true })
-    useAccountTypeMock.mockReturnValue(AccountType.EOA)
-    useWalletInfoMock.mockReturnValue({ account: EOA_A, chainId: CHAIN_ID })
     fetchEoaTwapOrdersMock.mockResolvedValue({ orders: {}, totalCount: 0 })
   })
 
   it('loads only explicitly detected EOAs while the feature is enabled', () => {
-    useFeatureFlagsMock.mockReturnValue({ isTwapEoaEnabled: false })
-    const { rerender } = render(<EoaTwapOrdersUpdater />)
+    const store = createStore()
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: false })
+    render(<Effect />, { wrapper: testWrapper(store) })
 
     expect(fetchEoaTwapOrdersMock).not.toHaveBeenCalled()
 
-    useFeatureFlagsMock.mockReturnValue({ isTwapEoaEnabled: true })
-    useAccountTypeMock.mockReturnValue(AccountType.SMART_CONTRACT)
-    rerender(<EoaTwapOrdersUpdater />)
+    act(() => {
+      store.set(writableAccountTypeAtom, AccountType.SMART_CONTRACT)
+      store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    })
 
     expect(fetchEoaTwapOrdersMock).not.toHaveBeenCalled()
   })
@@ -102,17 +104,18 @@ describe('EoaTwapOrdersUpdater', () => {
   it('clears on account changes and ignores stale responses', async () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     const resolvers = new Map<string, (result: { orders: Record<string, TwapOrderItem>; totalCount: number }) => void>()
     fetchEoaTwapOrdersMock.mockImplementation((owner) => new Promise((resolve) => resolvers.set(owner, resolve)))
 
-    const { rerender } = render(<EoaTwapOrdersUpdater />, { wrapper: testWrapper(store) })
+    render(<Effect />, { wrapper: testWrapper(store) })
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 100))
 
     const orderA = makeOrder('event-a', EOA_A)
 
-    useWalletInfoMock.mockReturnValue({ account: EOA_B, chainId: CHAIN_ID })
-    store.set(walletInfoAtom, { account: EOA_B, chainId: CHAIN_ID })
-    rerender(<EoaTwapOrdersUpdater />)
+    act(() => {
+      store.set(walletInfoAtom, { account: EOA_B, chainId: CHAIN_ID })
+    })
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_B, CHAIN_ID, 100))
     await waitFor(() => expect(store.get(eoaTwapOrdersAtom)).toEqual({}))
 
@@ -127,9 +130,10 @@ describe('EoaTwapOrdersUpdater', () => {
   it('keeps the current state empty when loading fails', async () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     fetchEoaTwapOrdersMock.mockRejectedValue(new Error('Unavailable'))
 
-    render(<EoaTwapOrdersUpdater />, { wrapper: testWrapper(store) })
+    render(<Effect />, { wrapper: testWrapper(store) })
 
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalled())
     expect(store.get(eoaTwapOrdersAtom)).toEqual({})
@@ -140,10 +144,11 @@ describe('EoaTwapOrdersUpdater', () => {
     const cachedOrder = makeOrder('cached-event', EOA_A)
     const fetchedOrder = makeOrder('fetched-event', EOA_A)
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     store.set(eoaTwapOrdersAtom, { [cachedOrder.id]: cachedOrder })
     fetchEoaTwapOrdersMock.mockResolvedValue({ orders: { [fetchedOrder.id]: fetchedOrder }, totalCount: 1 })
 
-    render(<EoaTwapOrdersUpdater />, { wrapper: testWrapper(store) })
+    render(<Effect />, { wrapper: testWrapper(store) })
 
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 100))
     await waitFor(() =>
@@ -154,14 +159,14 @@ describe('EoaTwapOrdersUpdater', () => {
     )
 
     act(() => {
-      store.set(eoaTwapOrdersRequestAtom, {
-        requestKey: `${CHAIN_ID}:${EOA_A}`,
-        limit: 200,
-        isLoading: true,
-        totalCount: 1000,
-      })
+      store.set(ordersLimitAtom, 200)
     })
 
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 200))
   })
 })
+
+function Effect(): null {
+  useAtomValue(eoaTwapOrdersEffectAtom)
+  return null
+}

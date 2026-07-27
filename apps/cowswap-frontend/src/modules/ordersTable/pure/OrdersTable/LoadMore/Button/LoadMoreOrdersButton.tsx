@@ -6,14 +6,14 @@ import { Trans } from '@lingui/react/macro'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 import styled from 'styled-components/macro'
 
-import { useLoadMoreTableOrders } from '../../../../hooks/useLoadMoreTableOrders'
+import { useLoadMoreOrders } from 'modules/orders'
 
 export interface LoadMoreOrdersButtonProps {
   orderType: TabOrderTypes
 }
 
 export function LoadMoreOrdersButton({ orderType }: LoadMoreOrdersButtonProps): ReactNode {
-  const { loadMore, hasMoreOrders, isLoading } = useLoadMoreTableOrders(orderType)
+  const { loadMore, hasMoreOrders, isLoading } = useLoadMoreOrders(orderType)
 
   return (
     <LoadMoreButton onClick={loadMore} disabled={isLoading || !hasMoreOrders}>

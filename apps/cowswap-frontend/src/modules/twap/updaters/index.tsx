@@ -8,7 +8,6 @@ import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useCo
 import { AppDataUpdater } from 'modules/appData'
 
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
-import { EoaTwapOrdersUpdater } from './EoaTwapOrdersUpdater'
 import { FallbackHandlerVerificationUpdater } from './FallbackHandlerVerificationUpdater'
 import { FullAmountQuoteUpdater } from './FullAmountQuoteUpdater'
 import { PartOrdersUpdater } from './PartOrdersUpdater'
@@ -37,7 +36,6 @@ export function TwapUpdaters(): ReactNode {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />
       <QuoteObserverUpdater />
-      <EoaTwapOrdersUpdater />
       {shouldLoadTwapOrders && (
         <>
           <FullAmountQuoteUpdater />

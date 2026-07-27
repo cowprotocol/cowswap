@@ -5,7 +5,8 @@ import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { Trans } from '@lingui/react/macro'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
-import { useLoadMoreTableOrders } from '../../../../hooks/useLoadMoreTableOrders'
+import { useLoadMoreOrders } from 'modules/orders'
+
 import * as styledEl from '../../Container/OrdersTableContainer.styled'
 import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'
 
@@ -15,7 +16,7 @@ export interface LoadMoreOrdersSectionProps {
 }
 
 export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOrdersSectionProps): ReactNode {
-  const { limit, hasMoreOrders } = useLoadMoreTableOrders(orderType)
+  const { limit, hasMoreOrders } = useLoadMoreOrders(orderType)
 
   const paragraphs = hasMoreOrders ? (
     <>
