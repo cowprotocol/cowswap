@@ -2124,9 +2124,6 @@ importers:
       '@cowprotocol/ui':
         specifier: workspace:*
         version: link:../ui
-      '@cowprotocol/wallet-provider':
-        specifier: workspace:*
-        version: link:../wallet-provider
       '@ethereumjs/util':
         specifier: 10.1.0
         version: 10.1.0

@@ -44,5 +44,6 @@ export function useTwapFormState(): TwapFormState | null {
     tradeFormValidationContext,
     numberOfPartsValue,
     isTwapEoaEnabled: !!isTwapEoaEnabled,
+    isSafeViaWc,
   })
 }

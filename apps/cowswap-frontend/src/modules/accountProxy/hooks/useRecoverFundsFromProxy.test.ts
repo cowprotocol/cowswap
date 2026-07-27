@@ -1,4 +1,4 @@
-import { useWalletClient } from 'wagmi'
+import { useConfig, useWalletClient } from 'wagmi'
 
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -13,18 +13,21 @@ jest.mock('@cowprotocol/wallet', () => ({
 
 jest.mock('wagmi', () => ({
   useWalletClient: jest.fn(),
+  useConfig: jest.fn(),
 }))
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111'
 const PROXY = '0x2222222222222222222222222222222222222222'
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const useWalletClientMock = useWalletClient as jest.MockedFunction<typeof useWalletClient>
+const useConfigMock = useConfig as jest.MockedFunction<typeof useConfig>
 
 describe('useRecoverFundsFromProxy', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useWalletInfoMock.mockReturnValue({ account: ACCOUNT } as ReturnType<typeof useWalletInfo>)
     useWalletClientMock.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
+    useConfigMock.mockReturnValue({} as ReturnType<typeof useConfig>)
   })
 
   it('uses the selected proxy SDK', () => {

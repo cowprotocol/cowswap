@@ -112,6 +112,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   if (analyzeBundle) {
     plugins.push(
+      bundleStats() as PluginOption,
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
@@ -121,7 +122,6 @@ export default defineConfig(({ mode, isPreview }) => {
         filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
-    plugins.push(bundleStats() as PluginOption)
   }
 
   if (isProduction && sentryAuthToken) {
