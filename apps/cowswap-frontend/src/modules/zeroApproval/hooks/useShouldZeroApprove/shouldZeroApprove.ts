@@ -37,6 +37,7 @@ const erc20Abi = [
 
 export interface ShouldZeroApproveParams {
   tokenAddress: Nullish<Address>
+  owner?: Nullish<Address>
   spender: Nullish<Address>
   amountToApprove: Nullish<CurrencyAmount<Currency>>
   forceApprove?: boolean
@@ -47,6 +48,7 @@ export interface ShouldZeroApproveParams {
 export async function shouldZeroApprove({
   approvalState,
   tokenAddress,
+  owner,
   spender,
   amountToApprove,
   forceApprove,
@@ -65,6 +67,7 @@ export async function shouldZeroApprove({
       abi: erc20Abi,
       functionName: 'approve',
       args: [spender, BigInt(amountToApprove.quotient.toString())],
+      account: owner,
     })
 
     return false
@@ -79,6 +82,7 @@ export async function shouldZeroApprove({
         abi: erc20Abi,
         functionName: 'approve',
         args: [spender, 0n],
+        account: owner,
       })
       return true
     } catch (e) {
