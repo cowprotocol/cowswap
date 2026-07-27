@@ -9,7 +9,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
-import { usePersistSolanaBalancesViaWebCalls } from './usePersistSolanaBalancesViaWebCalls'
+import { usePersistSplDataMulticall } from './usePersistSplDataMulticall'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { REPORT_THROTTLE_MS, reportBalancesError } from '../utils/reportBalancesError'
@@ -52,8 +52,8 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   // wagmi + viem only support evm chains
   const isEvm = isEvmChain(chainId)
 
-  // Non-EVM chains (e.g. Solana) load balances via their own web calls
-  usePersistSolanaBalancesViaWebCalls(params)
+  // Non-EVM chains (e.g. Solana) load balances and delegations via their own web calls
+  usePersistSplDataMulticall(params)
 
   const {
     data: balances,

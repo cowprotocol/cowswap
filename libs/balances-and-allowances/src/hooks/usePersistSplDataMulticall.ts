@@ -31,13 +31,13 @@ interface SolanaQueryConfig {
 const SOLANA_DELEGATE_AUTHORITY = findSolanaSettlementStatePda()
 
 /**
- * Solana counterpart to {@link usePersistBalancesViaWebCalls}. A single batched read loads both the SPL
- * balance and the SPL delegation (the analogue of an EVM allowance) for `tokenAddresses` via the reown
- * Solana adapter's `Connection` — the delegate rides along with the balance for free. Balances are
- * persisted into `balancesAtom` and delegations into `allowancesAtom` in the same shapes the EVM path
- * uses, so downstream consumers stay chain-agnostic.
+ * Solana counterpart to {@link usePersistBalancesViaWebCalls}. A single batched multi-account read (the
+ * Solana analogue of an EVM multicall) loads both the SPL balance and the SPL delegation (the analogue of
+ * an EVM allowance) for `tokenAddresses` via the reown Solana adapter's `Connection` — the delegate rides
+ * along with the balance for free. Balances are persisted into `balancesAtom` and delegations into
+ * `allowancesAtom` in the same shapes the EVM path uses, so downstream consumers stay chain-agnostic.
  */
-export function usePersistSolanaBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
+export function usePersistSplDataMulticall(params: PersistBalancesAndAllowancesParams): void {
   const { account, chainId, tokenAddresses, setLoadingState, onBalancesLoaded, refreshTrigger } = params
 
   const setBalances = useSetAtom(balancesAtom)

@@ -1,10 +1,9 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atom } from 'jotai'
 
 import { erc20Abi, type Address } from 'viem'
 import { Connector } from 'wagmi'
 
 import { asyncAtomFamily, getPublicClientFromProvider } from '@cowprotocol/common-utils'
-import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
@@ -47,11 +46,10 @@ async function fetchAllowances(
   return buildAllowancesState(tokenAddresses, decodedResults)
 }
 
-export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<string, bigint | undefined>>>(
-  'allowancesAtom:v1',
-  mapSupportedNetworks({}),
-  getJotaiMergerStorage(),
-)
+// In-memory only: values are `bigint` (SPL delegations / EVM allowances), which `JSON.stringify` cannot
+// serialize — persisting via `atomWithStorage` throws on write. Delegations are re-fetched each session
+// by `usePersistSplDataMulticall`, so persistence is unnecessary here.
+export const allowancesAtom = atom<PersistentStateByChain<Record<string, bigint | undefined>>>(mapSupportedNetworks({}))
 
 export interface TokenAllowancesFamilyParams {
   connector?: Connector

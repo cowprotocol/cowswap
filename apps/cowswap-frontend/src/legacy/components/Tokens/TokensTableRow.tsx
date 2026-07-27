@@ -9,7 +9,7 @@ import {
   isFractionFalsy,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
 } from '@cowprotocol/common-utils'
-import { MAX_UINT256, getAddressKey } from '@cowprotocol/cow-sdk'
+import { MAX_UINT256, getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -34,6 +34,7 @@ import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 import BalanceCell from './BalanceCell'
 import FavoriteTokenButton from './FavoriteTokenButton'
 import { FiatBalanceCell } from './FiatBalanceCell'
+import { SplDelegationCell } from './SplDelegationCell'
 import {
   ApproveLabel,
   BalanceValue,
@@ -67,6 +68,7 @@ export const TokensTableRow = ({
   toggleWalletModal,
 }: DataRowParams): ReactNode => {
   const { account, chainId } = useWalletInfo()
+  const isSolana = isSolanaChain(chainId)
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
   const theme = useTheme()
@@ -229,16 +231,20 @@ export const TokensTableRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        {displayApproveContent && (
-          <>
-            <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
-              <TableButton>
-                <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
-              </TableButton>
-            </ExtLink>
-            {displayApproveContent}
-          </>
-        )}
+        {/* This EVM/Solana split is temporary. Once a Solana approve (delegation) flow exists,
+            unify both branches into a single allowance cell instead of branching on chain here. */}
+        {isSolana
+          ? !isNativeToken && <SplDelegationCell balance={balance} allowance={allowance} />
+          : displayApproveContent && (
+              <>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
+                  <TableButton>
+                    <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
+                  </TableButton>
+                </ExtLink>
+                {displayApproveContent}
+              </>
+            )}
       </Cell>
     </>
   )

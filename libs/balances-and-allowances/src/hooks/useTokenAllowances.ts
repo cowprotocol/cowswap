@@ -1,14 +1,17 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+import { allowancesAtom } from '../state/allowancesAtom'
 
 export type AllowancesState = Record<string, bigint | undefined>
 
@@ -26,8 +29,15 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   */
 
   const { chainId, account } = useWalletInfo()
+  const isSolana = isSolanaChain(chainId)
 
   const spender = useTradeSpenderAddress()
+
+  // On Solana there is no ERC20 `allowance` to read on-chain: the SPL delegation stands in for it. It is
+  // fetched off the token account and persisted into `allowancesAtom` by `usePersistSplDataMulticall`, so
+  // read it from the atom here instead of the wagmi call below (which is EVM-only). No separate loading
+  // signal is tracked, matching the EVM path (which gets `isLoading` inline from wagmi).
+  const persistedAllowancesByChain = useAtomValue(allowancesAtom)
 
   const { data: allowances, isLoading } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
@@ -38,7 +48,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
       args: [account as `0x${string}`, spender as `0x${string}`],
     })),
     query: {
-      enabled: !!account && !!spender && tokenAddresses.length > 0,
+      enabled: !isSolana && !!account && !!spender && tokenAddresses.length > 0,
       refetchInterval: ms`32s`,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
@@ -46,6 +56,10 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   })
 
   const state = useMemo(() => {
+    // Solana: the SPL delegation for the active chain is already a ready allowances map (no per-token
+    // decode needed), so it slots in as its own branch of the same computation.
+    if (isSolana) return persistedAllowancesByChain[chainId]
+
     if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
@@ -55,7 +69,8 @@ export function useTokenAllowances(tokenAddresses: string[]): {
 
       return acc
     }, {})
-  }, [tokenAddresses, allowances])
+  }, [isSolana, persistedAllowancesByChain, chainId, tokenAddresses, allowances])
 
-  return useMemo(() => ({ state, isLoading }), [state, isLoading])
+  // EVM loading comes from wagmi. Solana has no allowance-loading signal for now; it will be added later.
+  return useMemo(() => ({ state, isLoading: isSolana ? false : isLoading }), [state, isSolana, isLoading])
 }
