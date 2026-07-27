@@ -494,7 +494,7 @@ describe('useIsApprovalOrPermitRequired', () => {
   })
 
   describe('when bundling is supported', () => {
-    it('should bundle approval for an unsupported permit despite offchain signing', () => {
+    it('should not bundle approval for a native ETH-flow swap', () => {
       const nativeAmount = CurrencyAmount.fromRawAmount(mockNativeToken, '1000000000000000000')
       mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
       mockUseDerivedTradeState.mockReturnValue(
@@ -516,7 +516,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Unsupported)
     })
 
     it('should return BundleApproveRequired when bundling is enabled regardless of permit support', () => {
