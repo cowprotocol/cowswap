@@ -49,6 +49,7 @@ function mapTwapOrder(twapOrder: TwapOrder): TwapOrderItem {
     appData: schedule.appData,
   }
   const executionInfo = {
+    // TODO rename this to isCompleted, this is its only purpose and it is confusing to have a count of confirmed parts when we only ever use it as a boolean
     confirmedPartsCount: twapOrder.status === 'Completed' ? schedule.numberOfParts : 0,
     info: {
       executedSellAmount: executedAmounts.executedSellAmount.toString(),
@@ -65,7 +66,13 @@ function mapTwapOrder(twapOrder: TwapOrder): TwapOrderItem {
     safeAddress: twapOrder.owner,
     resolvedOwner: twapOrder.resolvedOwner,
     order,
-    status: getTwapOrderStatus(order, true, createdAt, twapOrder.status !== 'Cancelled', executionInfo),
+    status: getTwapOrderStatus({
+      execution: executionInfo,
+      executionDate: createdAt,
+      isCancelled: twapOrder.status === 'Cancelled',
+      isWaitingForSignature: false,
+      order,
+    }),
     submissionDate: createdAt.toISOString(),
     executedDate: createdAt.toISOString(),
     partOrdersCount: twapOrder.partOrdersCount,

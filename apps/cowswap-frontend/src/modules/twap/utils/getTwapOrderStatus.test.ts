@@ -31,7 +31,13 @@ describe('getTwapOrderStatus()', () => {
         },
       }
 
-      const status = getTwapOrderStatus(orderStruct, true, new Date(), true, execution)
+      const status = getTwapOrderStatus({
+        execution,
+        executionDate: new Date(),
+        isCancelled: false,
+        isWaitingForSignature: false,
+        order: orderStruct,
+      })
 
       expect(status).toBe(TwapOrderStatus.Fulfilled)
     })
@@ -48,14 +54,20 @@ describe('getTwapOrderStatus()', () => {
         },
       }
 
-      const status = getTwapOrderStatus(orderStruct, true, new Date(), true, execution)
+      const status = getTwapOrderStatus({
+        execution,
+        executionDate: new Date(),
+        isCancelled: false,
+        isWaitingForSignature: false,
+        order: orderStruct,
+      })
 
       expect(status).toBe(TwapOrderStatus.Pending)
     })
   })
 
-  describe('When on-chain auth is known but Safe UI snapshot is stale', () => {
-    it('Then Pending when auth is true even if isTransactionExecuted is false', () => {
+  describe('When the Safe UI snapshot is stale', () => {
+    it('Then Pending when the order is not waiting for a signature', () => {
       const execution: TwapOrdersExecution = {
         confirmedPartsCount: 0,
         info: {
@@ -65,12 +77,18 @@ describe('getTwapOrderStatus()', () => {
         },
       }
 
-      const status = getTwapOrderStatus(orderStruct, false, null, true, execution)
+      const status = getTwapOrderStatus({
+        execution,
+        executionDate: null,
+        isCancelled: false,
+        isWaitingForSignature: false,
+        order: orderStruct,
+      })
 
       expect(status).toBe(TwapOrderStatus.Pending)
     })
 
-    it('Then WaitSigning when auth is undefined and isTransactionExecuted is false', () => {
+    it('Then WaitSigning when the order is waiting for a signature', () => {
       const execution: TwapOrdersExecution = {
         confirmedPartsCount: 0,
         info: {
@@ -80,10 +98,37 @@ describe('getTwapOrderStatus()', () => {
         },
       }
 
-      const status = getTwapOrderStatus(orderStruct, false, null, undefined, execution)
+      const status = getTwapOrderStatus({
+        execution,
+        executionDate: null,
+        isCancelled: false,
+        isWaitingForSignature: true,
+        order: orderStruct,
+      })
 
       expect(status).toBe(TwapOrderStatus.WaitSigning)
     })
+  })
+
+  it('returns Cancelled when explicitly cancelled', () => {
+    const execution: TwapOrdersExecution = {
+      confirmedPartsCount: 0,
+      info: {
+        executedSellAmount: '0',
+        executedBuyAmount: '0',
+        executedFeeAmount: '0',
+      },
+    }
+
+    const status = getTwapOrderStatus({
+      execution,
+      executionDate: new Date(),
+      isCancelled: true,
+      isWaitingForSignature: false,
+      order: orderStruct,
+    })
+
+    expect(status).toBe(TwapOrderStatus.Cancelled)
   })
 
   describe('When count of confirmed parts equals to the total parts count', () => {
@@ -97,7 +142,13 @@ describe('getTwapOrderStatus()', () => {
         },
       }
 
-      const status = getTwapOrderStatus(orderStruct, true, new Date(), true, execution)
+      const status = getTwapOrderStatus({
+        execution,
+        executionDate: new Date(),
+        isCancelled: false,
+        isWaitingForSignature: false,
+        order: orderStruct,
+      })
 
       expect(status).toBe(TwapOrderStatus.Expired)
     })

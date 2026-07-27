@@ -50,7 +50,13 @@ function getTwapOrderItem(
 
   const executionDate = _executionDate ? new Date(_executionDate) : null
   const order = parseTwapOrderStruct(conditionalOrderParams.staticInput as `0x${string}`)
-  const status = getTwapOrderStatus(order, isExecuted, executionDate, authorized, executionInfo)
+  const status = getTwapOrderStatus({
+    execution: executionInfo,
+    executionDate,
+    isCancelled: authorized === false && isExecuted,
+    isWaitingForSignature: !isExecuted && authorized !== true,
+    order,
+  })
 
   return {
     order,
