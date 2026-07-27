@@ -23,8 +23,8 @@ const MAX_ACCOUNTS_PER_REQUEST = 100
  * Reads the owner's SPL-token accounts (ATAs) for `tokens`, aligned to input order. An entry is `null`
  * when the ATA does not exist, the mint is malformed, or the account is not a valid token account.
  *
- * Both the balance and the delegate live on this single account, so one batched read serves both
- * {@link fetchSolanaTokenBalances} and `fetchSolanaTokenDelegates` — no per-token polling.
+ * Both the balance and the delegate live on this single account, so one batched read serves both the
+ * balance and delegation consumers downstream — no separate per-token polling.
  *
  * The ATA address and its data layout depend on the mint's token program, taken from each token's
  * `isToken2022` flag rather than an extra RPC round-trip to read the mint.
