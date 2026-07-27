@@ -133,10 +133,6 @@ export const parseOrder = (order: Order): ParsedOrder => {
   }
 }
 
-export function isOffchainOrder(order: Order | ParsedOrder): boolean {
-  return order.signingScheme === SigningScheme.EIP712
-}
-
 export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
   return !!(order as ParsedOrder).executionData
 }
