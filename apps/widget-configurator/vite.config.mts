@@ -83,6 +83,7 @@ export default defineConfig(({ mode }) => {
 
     build: {
       emptyOutDir: true,
+      manifest: true,
     },
 
     plugins,
