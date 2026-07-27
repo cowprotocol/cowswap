@@ -63,11 +63,13 @@ jobs:
         env:
           REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-          REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
           REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
           REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.BALANCES_WATCHER_BASE_URL }}
           REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-          NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
+          REACT_APP_TURNSTILE_SITE_KEY: ${{ secrets.REACT_APP_TURNSTILE_SITE_KEY }}
+          REACT_APP_LAUNCH_DARKLY_KEY: ${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
+          REACT_APP_NEAR_API_KEY: ${{ secrets.REACT_APP_NEAR_API_KEY }}
+          REACT_APP_SAFE_API_AUTH_TOKEN: ${{ secrets.REACT_APP_SAFE_API_AUTH_TOKEN }}
 
       - name: Deploy Web Apps to IPFS
         id: deploy-ipfs
