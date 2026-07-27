@@ -79,6 +79,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: 20.0.0
         version: 20.0.0
+      '@cowprotocol/dx':
+        specifier: workspace:*
+        version: link:libs/dx
       '@eslint/eslintrc':
         specifier: 3.3.3
         version: 3.3.3
@@ -1717,6 +1720,12 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
 
+  libs/dx:
+    dependencies:
+      prettier:
+        specifier: 3.6.2
+        version: 3.6.2
+
   libs/ens:
     dependencies:
       '@cowprotocol/common-const':
@@ -2124,9 +2133,6 @@ importers:
       '@cowprotocol/ui':
         specifier: workspace:*
         version: link:../ui
-      '@cowprotocol/wallet-provider':
-        specifier: workspace:*
-        version: link:../wallet-provider
       '@ethereumjs/util':
         specifier: 10.1.0
         version: 10.1.0

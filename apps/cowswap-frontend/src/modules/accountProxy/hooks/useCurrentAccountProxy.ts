@@ -1,6 +1,6 @@
 import { type Address, encodeAbiParameters, type Hex } from 'viem'
 import { type Config, useConfig } from 'wagmi'
-import { getBytecode, readContract, getStorageAt } from 'wagmi/actions'
+import { readContract, getStorageAt } from 'wagmi/actions'
 
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { areAddressesEqual, type SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -13,6 +13,8 @@ import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { useCowShedHooks } from './useCowShedHooks'
+
+import { hasBytecode } from '../utils/assertFactoryDeployed'
 
 function slot(name: string): Hex {
   return encodeAbiParameters(
@@ -89,8 +91,7 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
       if (!cowShedHooks) return
 
       const proxyAddress = cowShedHooks.proxyOf(account)
-      const proxyCode = await getBytecode(config, { address: proxyAddress as `0x${string}` })
-      const isProxyDeployed = !!proxyCode && proxyCode !== '0x'
+      const isProxyDeployed = await hasBytecode(config, proxyAddress)
 
       const isProxySetupValid = isProxyDeployed
         ? await getIsProxySetupValid(chainId, proxyAddress, config, cowShedHooks)

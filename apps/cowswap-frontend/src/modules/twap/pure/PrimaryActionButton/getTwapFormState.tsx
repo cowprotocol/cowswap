@@ -24,6 +24,7 @@ export interface TwapFormStateParams {
   numberOfPartsValue: number
   tradeFormValidationContext: TradeFormValidationContext | null
   isTwapEoaEnabled: boolean
+  isSafeViaWc: boolean | null
 }
 
 export enum TwapFormState {
@@ -48,10 +49,12 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     tradeFormValidationContext,
     numberOfPartsValue,
     isTwapEoaEnabled,
+    isSafeViaWc,
   } = props
 
-  // When TWAP for EOA is enabled, skip Safe/tx-bundling gates so EOAs can review and confirm.
-  if (!isTwapEoaEnabled) {
+  // When TWAP for EOA is enabled, skip Safe/tx-bundling checks so EOAs can review and confirm.
+  // Keep the checks while Safe-via-WC is true or still loading (null), so it is not treated as an EOA.
+  if (!isTwapEoaEnabled || isSafeViaWc !== false) {
     if (isWalletSupported === false) return TwapFormState.WALLET_NOT_SUPPORTED
     if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
