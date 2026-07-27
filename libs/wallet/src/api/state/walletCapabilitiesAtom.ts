@@ -1,12 +1,11 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { numberToHex } from 'viem'
+import { getCapabilities, type GetCapabilitiesReturnType } from 'wagmi/actions'
 
-import { isEip1193Provider, logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
+import { logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
-import { getCapabilities, type GetCapabilitiesReturnType } from 'viem/actions'
 
 import { wagmiConfig } from '../../wagmi/config'
 import { isSafeAppAtom, isSafeViaWcAtom } from '../../wagmi/state/walletMetadata.atoms'
@@ -17,92 +16,23 @@ export type WalletCapabilities = GetCapabilitiesReturnType[number]
 export const REQUEST_TIMEOUT_MS = ms`30s`
 
 /**
- * Safe WC returns EIP-5792 capabilities keyed by hex chain id (e.g. "0xaa36a7")
- * while walletInfoAtom.chainId is numeric (e.g. 11155111). Numeric lookup alone misses them.
- */
-export function resolveCapabilitiesForChain(
-  capabilities: Record<string, WalletCapabilities>,
-  chainId: number,
-): WalletCapabilities | null {
-  const capabilitiesForChain = capabilities[chainId] ?? capabilities[numberToHex(chainId)]
-
-  if (capabilitiesForChain) return capabilitiesForChain
-
-  logWallet.warn('Cannot resolve wallet capabilities for chain', { chainId, capabilities })
-  return null
-}
-
-/**
  * Async atom that fetches wallet capabilities (EIP-5792) via wagmi/viem.
  * Returns capabilities for the current account and chain, or null when disconnected or on error.
  */
 
 export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabilities | null> => {
-  const { account, chainId, provider, connector } = get(walletInfoAtom)
-  const isSafeViaWc = get(isSafeViaWcAtom)
+  const { account, chainId, connector } = get(walletInfoAtom)
 
-  if (!account || !chainId || !connector || !provider || isSafeViaWc === null) return null
-
-  let capabilities: WalletCapabilities | null = null
+  if (!account || !chainId || !connector) return null
 
   try {
-    /**
-     * Viem takes care here of getting the capabilities for the exact chainId, so we don't need to do it manually.
-     * However, keep in mind this branch MUST run for Safe via WC, but getCapabilities() will throw an error. However,
-     * using `wallet_getCapabilities` directly does work. You can test this with:
-     *
-     * ```
-     * const allCapabilities = await getCapabilities(wagmiConfig.getClient({ chainId }), {
-     *   account: account as `0x${string}`,
-     * }).catch((error) => {
-     *   console.error('Cannot fetchallCapabilities', error)
-     *   return {} as GetCapabilitiesReturnType
-     * })
-     *
-     * const capabilitiesForChain = await getCapabilities(wagmiConfig.getClient({ chainId }), {
-     *   account: account as `0x${string}`,
-     *   chainId,
-     * }).catch((error) => {
-     *   console.error('Cannot fetch capabilitiesForChain', error)
-     *   return {} as GetCapabilitiesReturnType
-     * })
-     *
-     * const legacyCapabilities = isEip1193Provider(provider)
-     *   ? await provider
-     *     .request({
-     *     method: 'wallet_getCapabilities',
-     *     params: [account],
-     *   })
-     *   .catch((error) => {
-     *     console.error('Cannot fetch legacyCapabilities', error)
-     *     return {} as GetCapabilitiesReturnType
-     *   })
-     * : null
-     * ```
-     *
-     * The last one should return:
-     *
-     * ```json
-     * {
-     *   "0xaa36a7": {
-     *     "atomicBatch": {
-     *       "supported": true
-     *     },
-     *     "atomic": {
-     *       "status": "supported"
-     *     }
-     *   }
-     * }
-     * ```
-     */
-
     logWallet.debug('Fetching wallet capabilities', { account, chainId })
 
-    // TODO remove this completely: it doesn't resolve capabilities for no wallet: MM, Safe, Ambire.
-    capabilities = await withTimeout(
-      getCapabilities(wagmiConfig.getClient({ chainId }), {
+    const capabilities = await withTimeout(
+      getCapabilities(wagmiConfig, {
         account: account as `0x${string}`,
         chainId,
+        connector,
       }),
       {
         timeout: REQUEST_TIMEOUT_MS,
@@ -111,50 +41,21 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     )
 
     logWallet.debug('Fetched wallet capabilities', { account, chainId, capabilities })
+    return capabilities
   } catch (err: unknown) {
-    const wagmiError = normalizeError(err)
+    const error = normalizeError(err)
 
-    if (!isEip1193Provider(provider)) {
-      logWallet.error(new Error('Failed to fetch wallet capabilities via wagmi', { cause: wagmiError }), undefined, {
+    if (error instanceof TimeoutError) {
+      logWallet.warn(error.message)
+    } else {
+      logWallet.error(new Error('Failed to fetch wallet capabilities', { cause: error }), undefined, {
         account,
         chainId,
       })
-      return null
     }
 
-    try {
-      const legacyCapabilities = await withTimeout(
-        provider.request({
-          method: 'wallet_getCapabilities',
-          params: [account],
-        }),
-        {
-          timeout: REQUEST_TIMEOUT_MS,
-          timeoutMessage: `Wallet capabilities loading timed out after ${REQUEST_TIMEOUT_MS / 1000}s`,
-        },
-      )
-      logWallet.warn('getCapabilities() failed, but wallet_getCapabilities returned capabilities', legacyCapabilities)
-
-      capabilities = resolveCapabilitiesForChain(legacyCapabilities, chainId)
-
-      logWallet.info('Wallet capabilities for this chain:', capabilities)
-    } catch (err: unknown) {
-      const rpcError = normalizeError(err)
-
-      if (rpcError instanceof TimeoutError) {
-        logWallet.warn(rpcError.message)
-      } else {
-        logWallet.error(new Error('Failed to fetch wallet capabilities via RPC', { cause: rpcError }), undefined, {
-          account,
-          chainId,
-        })
-      }
-
-      return null
-    }
+    return null
   }
-
-  return capabilities
 })
 
 export const isAtomicBatchSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {

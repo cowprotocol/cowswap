@@ -54,6 +54,29 @@ type UseOrderProgressBarPropsParams = {
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 
+// Steps that should be shown immediately, bypassing the minimum step-display debounce
+const IMMEDIATE_STEP_NAMES: OrderProgressBarStepName[] = [
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
+  OrderProgressBarStepName.CANCELLING,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.EXPIRED,
+]
+
+// A step is shown immediately when it's the first change, when the previous step has been
+// displayed long enough, or when it's a terminal/cancellation step that must not be debounced.
+export function shouldUpdateStepImmediately(
+  stepName: OrderProgressBarStepName,
+  lastTimeChangedSteps: number | undefined,
+  timeSinceLastChange: number,
+): boolean {
+  return (
+    lastTimeChangedSteps === undefined ||
+    timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    IMMEDIATE_STEP_NAMES.includes(stepName)
+  )
+}
+
 /**
  * Hook for fetching ProgressBar props
  * TODO FIXME: refactor this
@@ -456,14 +479,7 @@ function useProgressBarStepNameUpdater(
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
+    if (shouldUpdateStepImmediately(stepName, lastTimeChangedSteps, timeSinceLastChange)) {
       updateStepName(stepName)
 
       // schedule update for temporary steps

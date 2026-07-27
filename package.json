@@ -57,7 +57,7 @@
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
-    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
+    "analyze-build": "rm -rf build/cowswap && cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build:cowswap -- --skip-nx-cache",
     "install:ci": "node tools/scripts/install.js"
   },
   "browser": {

@@ -1,6 +1,5 @@
 import { createStore, type WritableAtom } from 'jotai'
 
-import type { EIP1193Provider, PublicClient } from 'viem'
 import type { Connector } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -10,7 +9,6 @@ import {
   isAtomicBatchSupportedAsyncAtom,
   isAtomicBatchSupportedLoadableAtom,
   REQUEST_TIMEOUT_MS,
-  resolveCapabilitiesForChain,
   walletCapabilitiesAtom,
 } from './walletCapabilitiesAtom'
 
@@ -38,25 +36,14 @@ const MOCK_CHAIN_ID = SupportedChainId.MAINNET
 const MOCK_CONNECTOR = { type: 'injected' } as Connector
 
 const mockGetCapabilities = jest.fn()
-const mockWagmiConfigGetClient = jest.fn()
 
-jest.mock('viem/actions', () => ({
+jest.mock('wagmi/actions', () => ({
   getCapabilities: (...args: unknown[]) => mockGetCapabilities(...args),
 }))
 
 jest.mock('../../wagmi/config', () => ({
-  wagmiConfig: {
-    getClient: (...args: unknown[]) => mockWagmiConfigGetClient(...args),
-  },
+  wagmiConfig: {},
 }))
-
-function createMockEip1193Provider(request = jest.fn()): EIP1193Provider {
-  return {
-    request,
-    on: jest.fn(),
-    removeListener: jest.fn(),
-  } as unknown as EIP1193Provider
-}
 
 function setWalletInfo(
   store: ReturnType<typeof createStore>,
@@ -64,53 +51,19 @@ function setWalletInfo(
     account: string
     chainId: SupportedChainId
     connector: Connector
-    provider: NonNullable<WalletInfo['provider']>
   }> = {},
 ): void {
   store.set(walletInfoAtom, {
     chainId: overrides.chainId ?? MOCK_CHAIN_ID,
     account: overrides.account ?? MOCK_ACCOUNT,
     connector: overrides.connector ?? MOCK_CONNECTOR,
-    provider: overrides.provider ?? createMockEip1193Provider(),
   })
 }
-
-describe('resolveCapabilitiesForChain', () => {
-  const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-
-  it('matches numeric chain id key', () => {
-    expect(resolveCapabilitiesForChain({ [MOCK_CHAIN_ID]: capabilities }, MOCK_CHAIN_ID)).toEqual(capabilities)
-  })
-
-  it('matches hex chain id key', () => {
-    expect(resolveCapabilitiesForChain({ '0x1': capabilities }, MOCK_CHAIN_ID)).toEqual(capabilities)
-  })
-
-  it('returns null when no chain key matches', () => {
-    expect(resolveCapabilitiesForChain({ '0x64': capabilities }, MOCK_CHAIN_ID)).toBeNull()
-  })
-
-  it('returns null for empty capabilities', () => {
-    expect(resolveCapabilitiesForChain({}, MOCK_CHAIN_ID)).toBeNull()
-  })
-})
 
 describe('walletCapabilitiesAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetCapabilities.mockResolvedValue({})
-    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
-  })
-
-  it('returns null when isSafeViaWc is still loading', async () => {
-    const store = createStore()
-    store.set(writableIsSafeViaWcAtom, null)
-    setWalletInfo(store)
-
-    const result = await store.get(walletCapabilitiesAtom)
-
-    expect(result).toBeNull()
-    expect(mockGetCapabilities).not.toHaveBeenCalled()
   })
 
   describe('walletInfoAtom state: missing required fields', () => {
@@ -119,7 +72,6 @@ describe('walletCapabilitiesAtom', () => {
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
         connector: MOCK_CONNECTOR,
-        provider: createMockEip1193Provider(),
       })
 
       const result = await store.get(walletCapabilitiesAtom)
@@ -133,7 +85,6 @@ describe('walletCapabilitiesAtom', () => {
       store.set(walletInfoAtom, {
         account: MOCK_ACCOUNT,
         connector: MOCK_CONNECTOR,
-        provider: createMockEip1193Provider(),
       } as WalletInfo)
 
       const result = await store.get(walletCapabilitiesAtom)
@@ -147,21 +98,6 @@ describe('walletCapabilitiesAtom', () => {
       store.set(walletInfoAtom, {
         chainId: MOCK_CHAIN_ID,
         account: MOCK_ACCOUNT,
-        provider: createMockEip1193Provider(),
-      })
-
-      const result = await store.get(walletCapabilitiesAtom)
-
-      expect(result).toBeNull()
-      expect(mockGetCapabilities).not.toHaveBeenCalled()
-    })
-
-    it('returns null when provider is missing', async () => {
-      const store = createStore()
-      store.set(walletInfoAtom, {
-        chainId: MOCK_CHAIN_ID,
-        account: MOCK_ACCOUNT,
-        connector: MOCK_CONNECTOR,
       })
 
       const result = await store.get(walletCapabilitiesAtom)
@@ -171,7 +107,7 @@ describe('walletCapabilitiesAtom', () => {
     })
   })
 
-  describe('getCapabilities (viem)', () => {
+  describe('getCapabilities (wagmi)', () => {
     it('returns capabilities when getCapabilities resolves for the current chain', async () => {
       const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
       mockGetCapabilities.mockResolvedValue(capabilities)
@@ -182,8 +118,14 @@ describe('walletCapabilitiesAtom', () => {
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toEqual(capabilities)
-      expect(mockGetCapabilities).toHaveBeenCalled()
-      expect(mockWagmiConfigGetClient).toHaveBeenCalledWith({ chainId: MOCK_CHAIN_ID })
+      expect(mockGetCapabilities).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          account: MOCK_ACCOUNT,
+          chainId: MOCK_CHAIN_ID,
+          connector: MOCK_CONNECTOR,
+        }),
+      )
     })
 
     it('returns empty capabilities object when getCapabilities resolves with no fields', async () => {
@@ -197,111 +139,23 @@ describe('walletCapabilitiesAtom', () => {
       expect(result).toEqual({})
     })
 
-    it('returns null when getCapabilities and wallet_getCapabilities both fail', async () => {
-      mockGetCapabilities.mockRejectedValue(new Error('viem error'))
-      const mockRequest = jest.fn().mockRejectedValue(new Error('legacy error'))
+    it('returns null when getCapabilities fails', async () => {
+      mockGetCapabilities.mockRejectedValue(new Error('wagmi error'))
 
       const store = createStore()
-      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
-
-      const result = await store.get(walletCapabilitiesAtom)
-
-      expect(result).toBeNull()
-      expect(mockRequest).toHaveBeenCalledWith({
-        method: 'wallet_getCapabilities',
-        params: [MOCK_ACCOUNT],
-      })
-    })
-
-    it('returns null when getCapabilities fails and provider does not support EIP-1193 requests', async () => {
-      const error = new Error('viem error')
-      mockGetCapabilities.mockRejectedValue(error)
-
-      const store = createStore()
-      setWalletInfo(store, { provider: {} as PublicClient })
+      setWalletInfo(store)
 
       const result = await store.get(walletCapabilitiesAtom)
 
       expect(result).toBeNull()
     })
 
-    it('returns null when getCapabilities times out and provider does not support EIP-1193 requests', async () => {
+    it('returns null when getCapabilities times out', async () => {
       jest.useFakeTimers()
       mockGetCapabilities.mockImplementation(() => new Promise(() => undefined))
 
       const store = createStore()
-      setWalletInfo(store, { provider: {} as PublicClient })
-
-      try {
-        const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
-        const result = await resultPromise
-
-        expect(result).toBeNull()
-      } finally {
-        jest.useRealTimers()
-      }
-    })
-  })
-
-  describe('wallet_getCapabilities legacy fallback', () => {
-    it('returns capabilities resolved from hex chain id key when viem throws', async () => {
-      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-      mockGetCapabilities.mockRejectedValue(new Error('viem error'))
-      const mockRequest = jest.fn().mockResolvedValue({ '0x1': capabilities })
-
-      const store = createStore()
-      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
-
-      const result = await store.get(walletCapabilitiesAtom)
-
-      expect(result).toEqual(capabilities)
-    })
-
-    it('returns null when the current chain capability is missing', async () => {
-      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-      mockGetCapabilities.mockRejectedValue(new Error('viem error'))
-      const mockRequest = jest.fn().mockResolvedValue({ '0x64': capabilities })
-
-      const store = createStore()
-      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
-
-      const result = await store.get(walletCapabilitiesAtom)
-
-      expect(result).toBeNull()
-    })
-
-    it('uses legacy fallback when getCapabilities times out', async () => {
-      jest.useFakeTimers()
-      const capabilities: WalletCapabilities = { atomic: { status: 'supported' } }
-      mockGetCapabilities.mockImplementation(() => new Promise(() => undefined))
-      const mockRequest = jest.fn().mockResolvedValue({ '0x1': capabilities })
-
-      const store = createStore()
-      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
-
-      try {
-        const resultPromise = store.get(walletCapabilitiesAtom)
-        await jest.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS)
-        const result = await resultPromise
-
-        expect(result).toEqual(capabilities)
-        expect(mockRequest).toHaveBeenCalledWith({
-          method: 'wallet_getCapabilities',
-          params: [MOCK_ACCOUNT],
-        })
-      } finally {
-        jest.useRealTimers()
-      }
-    })
-
-    it('returns null when legacy fallback times out', async () => {
-      jest.useFakeTimers()
-      mockGetCapabilities.mockRejectedValue(new Error('viem error'))
-      const mockRequest = jest.fn().mockImplementation(() => new Promise(() => undefined))
-
-      const store = createStore()
-      setWalletInfo(store, { provider: createMockEip1193Provider(mockRequest) })
+      setWalletInfo(store)
 
       try {
         const resultPromise = store.get(walletCapabilitiesAtom)
@@ -320,7 +174,6 @@ describe('isAtomicBatchSupportedAsyncAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetCapabilities.mockResolvedValue({})
-    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   it('returns false when walletInfoAtom yields no capabilities (disconnected)', async () => {
@@ -412,7 +265,6 @@ describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', ()
   beforeEach(() => {
     jest.clearAllMocks()
     mockGetCapabilities.mockResolvedValue({})
-    mockWagmiConfigGetClient.mockReturnValue({ chainId: MOCK_CHAIN_ID })
   })
 
   it('isAtomicBatchSupportedAtom returns null while loading', async () => {
@@ -439,9 +291,7 @@ describe('isAtomicBatchSupportedLoadableAtom and isAtomicBatchSupportedAtom', ()
     store.set(writableIsSafeViaWcAtom, false)
     store.set(writableIsSafeAppAtom, false)
     mockGetCapabilities.mockRejectedValue(new Error('network error'))
-    setWalletInfo(store, {
-      provider: createMockEip1193Provider(jest.fn().mockRejectedValue(new Error('legacy error'))),
-    })
+    setWalletInfo(store)
 
     store.get(isAtomicBatchSupportedLoadableAtom)
     const asyncResult = await store.get(isAtomicBatchSupportedAsyncAtom)
