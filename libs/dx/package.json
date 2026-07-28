@@ -1,0 +1,24 @@
+{
+  "name": "@cowprotocol/dx",
+  "version": "0.1.0",
+  "description": "Shared development tooling for CoW Protocol repositories",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/dx"
+  },
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "*.mjs"
+  ],
+  "exports": {
+    "./bundle-size.mjs": "./bundle-size.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "prettier": "3.6.2"
+  }
+}

@@ -1,8 +1,8 @@
-name: i18n Extract
+name: Generated Files
 
 on:
   pull_request:
-    types: [ opened, synchronize ]
+    types: [opened, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -18,11 +18,11 @@ env:
   PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
 
 jobs:
-  i18n-extract:
-    name: Extract i18n strings
+  generated-files:
+    name: Update generated files
     runs-on: ubuntu-latest
-    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks) and NOT cf-preview branches, as that mirrors forked PRs.
-    if: github.event.pull_request.head.repo.full_name == github.repository && !startsWith(github.head_ref, 'cf-preview/pr-')
+    # Only run for PRs from the same repo (GITHUB_TOKEN can't push to forks)
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Checkout PR branch
@@ -46,10 +46,16 @@ jobs:
       - name: Extract i18n strings
         run: pnpm run i18n:extract
 
-      - name: Check for extracted changes
+      - name: Build projects
+        run: pnpm build:all
+
+      - name: Measure bundle sizes
+        run: pnpm bundle:size
+
+      - name: Check for generated changes
         id: changes
         run: |
-          if git diff --quiet -- 'apps/cowswap-frontend/src/locales/*.po'; then
+          if [[ -z "$(git status --porcelain)" ]]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
@@ -79,15 +85,48 @@ jobs:
         env:
           APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
 
-      - name: Commit and push if changed
+      - name: Configure GitHub App bot identity
         if: steps.changes.outputs.has_changes == 'true'
         run: |
           git config user.name "${APP_SLUG}[bot]"
           git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
-          git add 'apps/cowswap-frontend/src/locales/*.po'
-          git commit -m "chore(i18n): extract i18n strings [automatic]"
-          git push "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
         env:
           APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
           APP_USER_ID: ${{ steps.app-user.outputs.user-id }}
+
+      - name: Commit i18n strings
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git add 'apps/cowswap-frontend/src/locales/*.po'
+          if git diff --cached --quiet; then
+            echo "i18n strings unchanged, nothing to commit"
+          else
+            git commit -m "chore(i18n): extract i18n strings [automatic]"
+          fi
+
+      - name: Commit generated files
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git add -A -- . ':(exclude)bundle-size.jsonc'
+          if git diff --cached --quiet; then
+            echo "Generated files unchanged, nothing to commit"
+          else
+            git commit -m "chore: update generated files [automatic]"
+          fi
+
+      - name: Commit bundle sizes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git add bundle-size.jsonc
+          if git diff --cached --quiet; then
+            echo "Bundle sizes unchanged, nothing to commit"
+          else
+            git commit -m "chore: update bundle sizes [automatic]"
+          fi
+
+      - name: Push generated changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git push "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}

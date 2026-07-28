@@ -57,6 +57,10 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
     },
 
+    build: {
+      manifest: true,
+    },
+
     plugins: [
       nodePolyfills({
         globals: {
