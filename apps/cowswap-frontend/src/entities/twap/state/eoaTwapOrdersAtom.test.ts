@@ -5,7 +5,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import type { TwapOrderItem } from 'modules/twap'
 
-import { eoaTwapOrdersAtom, getEoaTwapOrdersCacheKey } from './eoaTwapOrdersAtom'
+import { eoaTwapOrdersAtom } from './eoaTwapOrdersAtom'
 
 const OWNER_A = '0x1111111111111111111111111111111111111111'
 const OWNER_B = '0x2222222222222222222222222222222222222222'
@@ -37,12 +37,11 @@ describe('eoaTwapOrdersAtom', () => {
   it('writes a reloadable cache entry to browser storage', () => {
     const order = makeOrder('cached-event', OWNER_A)
     const store = createStore()
-    const key = getEoaTwapOrdersCacheKey(CHAIN_ID, OWNER_A)
     store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
     store.set(eoaTwapOrdersAtom, { [order.id]: order })
 
     const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v1'))) as Record<string, unknown>
-    expect(persisted[key]).toEqual({ [order.id]: order })
+    expect(Object.values(persisted)).toEqual([{ [order.id]: order }])
     expect(store.get(eoaTwapOrdersAtom)).toEqual({ [order.id]: order })
   })
 
