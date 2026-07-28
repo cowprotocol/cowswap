@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.6.1...common-hooks-v3.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: add TWAP EOA proxy to Account Proxy page (#7866)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.6.0...common-hooks-v3.6.1) (2026-07-22)
 
 ### Patch Changes

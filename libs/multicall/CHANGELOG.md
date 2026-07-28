@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.6](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.5...multicall-v3.4.6) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/wallet@3.9.0
+
 ## [3.4.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.4...multicall-v3.4.5) (2026-07-22)
 
 ### Patch Changes
