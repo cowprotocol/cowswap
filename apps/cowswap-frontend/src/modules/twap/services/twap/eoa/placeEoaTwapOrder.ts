@@ -1,16 +1,10 @@
-import { type Address, encodeFunctionData, erc20Abi, maxUint256, stringToHex } from 'viem'
+import { encodeFunctionData, erc20Abi, maxUint256, stringToHex } from 'viem'
 import type { Config } from 'wagmi'
-import { getPublicClient, readContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions'
+import { readContract } from 'wagmi/actions'
 
-import {
-  calculateGasMargin,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
-  createCowLogger,
-  isProdLike,
-} from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger, isProdLike } from '@cowprotocol/common-utils'
 import {
   AccountAddress,
-  isEvmChain,
   OrderKind,
   OrderPostingResult,
   QuoteResults,
@@ -18,7 +12,6 @@ import {
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
@@ -31,18 +24,24 @@ import {
   EOA_TWAP_SHED_FACTORY_OPTIONS,
 } from 'modules/accountProxy'
 import { ComposableCowContractData } from 'modules/advancedOrders'
-import { estimateApprove } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
+import {
+  ensureEoaTwapVaultRelayerApproval,
+  EoaTwapOnSigningStep,
+  getEoaTwapApprovalNeeds,
+} from './ensureEoaTwapVaultRelayerApproval'
+
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
+import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
 import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 
 const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
 const log = createCowLogger('EOA TWAP')
-const EOA_TWAP_POC_DEBUG = true
+const EOA_TWAP_POC_DEBUG = false
 
 // TODO: Move to `@cowprotocol/cow-sdk` just like `import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'`?
 const EOA_TWAP_SETUP_DAPP_ID = 'cowswap://twap/eoa-setup' // cow-sdk-scripts://composable-cow/post-twap-for-eoa
@@ -85,20 +84,12 @@ export interface PlaceEoaTwapOrderParams {
   /** Initial buy sell=buy order permit info */
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  onSigningStep?: EoaTwapOnSigningStep
 }
 
 export interface PlaceEoaTwapOrderResult {
   orderPostingResult: OrderPostingResult
   proxyAddress: AccountAddress
-}
-
-interface ApproveEoaSellTokenParams {
-  config: Config
-  chainId: SupportedChainId
-  account: AccountAddress
-  sellTokenAddress: Address
-  spender: string
-  amount: bigint
 }
 
 /**
@@ -192,6 +183,13 @@ export function getEoaTwapOrderShedCalls({
  * Places a sell=buy funding order (same TWAP sell token) with post-hooks that
  * approve the vault relayer (when needed) and create the TWAP on ComposableCow via cow-shed.
  * Cow-shed becomes the TWAP owner/trader; TWAP receiver remains the EOA.
+ *
+ * Expected call order (caller typically does step 0 first):
+ * 0. Caller: on-chain vault-relayer approve(maxUint256) with signing UI (optional but recommended).
+ * 1. Sign cow-shed EIP-712 (TwapSetup) encoding proxy approve + create TWAP post-hook.
+ * 2. Quote funding BUY sell=buy order (sell may exceed TWAP sell).
+ * 3. Re-read EOA→vault-relayer allowance vs funding sell; top up on-chain if short (no UI rewind).
+ * 4. Sign/post funding order (FundingOrder), then wait for settlement (CreatingOrder).
  */
 // eslint-disable-next-line max-lines-per-function, complexity
 export async function placeEoaTwapOrder({
@@ -204,6 +202,7 @@ export async function placeEoaTwapOrder({
   config,
   permitInfo,
   generatePermitHook,
+  onSigningStep,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
 
@@ -291,7 +290,9 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   const nonceHex = stringToHex(Date.now().toString()).slice(2)
   const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
+  onSigningStep?.(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningPhase.Sign)
   const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
+  onSigningStep?.(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningPhase.Confirmed)
   const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
   const signedMulticall = {
     to: factoryAddress,
@@ -347,7 +348,17 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   printQuote(quoteResults)
 
-  // Funding order sell size from the quote (BUY sell=buy after costs/slippage), which can exceed TWAP sell size.
+  // ---------------------------------------------------------------------------
+  // Funding-order size vs vault-relayer allowance
+  // ---------------------------------------------------------------------------
+  // The BUY sell=buy funding quote sell amount can exceed the TWAP sell amount (costs/slippage).
+  // Pre-placement requested maxUint256 approve, but wallets may let the user edit that amount.
+  //
+  // Footgun: approving exactly the TWAP sell (e.g. 10 USDC) usually leaves allowance short of the
+  // funding sell (often slightly > 10). A second approve of the same amount does not help —
+  // ERC-20 approve replaces allowance, it does not add — so top-up with the same edited value
+  // still fails the re-check below. Unlimited (or ≥ funding sell) is required.
+  // Always re-read allowance against the *actual* funding sell size before posting.
   const fundingSellAmountAtoms = quoteResults.amountsAndCosts.afterSlippage.sellAmount
   const fundingSellAmount = CurrencyAmount.fromRawAmount(sellToken, fundingSellAmountAtoms.toString())
   const fundingSellAmountFormatted = fundingSellAmount.toExact()
@@ -360,126 +371,99 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     if (!confirmed) throw new Error('User did not confirm the order')
   }
 
-  // TODO: Maybe easier to use useApproveCallback before calling placeEoaTwapOrder, extract this logic so that it can also be used without hooks.
-  // TODO: We could use EIP-7702 to batch them for wallets that support it.
-  //
-  // Give allowance from the EOA to the production Vault Relayer to pull the sell token needed for the BUY
-  // sell=buy funding order (always posted to prod). Prefer a permit pre-hook when the token supports it;
-  // otherwise approve / zero-approve on-chain.
-  //
-  // Do not use twapOrderCreationContext.needsApproval / needsZeroApproval here: those flags compare the EOA
-  // allowance to the form TWAP sell size. The funding order's quoted sell amount (BUY sell=buy after costs /
-  // slippage) can be higher, so re-check against the quote.
-  const eoaAllowance = await readContract(config, {
-    address: sellTokenAddress,
-    abi: erc20Abi,
-    functionName: 'allowance',
-    args: [account, vaultRelayerAddress],
-  }).catch(() => 0n)
+  // Move UI to "Confirm order" before any top-up approve so we never rewind to ApproveOrPermit
+  // (which would mark TwapSetup as upcoming again).
+  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Sign)
 
-  const eoaNeedsApproval = eoaAllowance < fundingSellAmountAtoms
-
-  if (eoaNeedsApproval && isSupportedPermitInfo(permitInfo)) {
-    const permitData = await generatePermitHook({
-      inputToken: {
-        address: sellTokenAddress,
-        name: sellToken.name,
-      },
-      account,
-      permitInfo,
-      amount: fundingSellAmountAtoms,
-      customSpender: vaultRelayerAddress,
-    }).catch((error) => {
-      log.warn('Error generating permit data; falling back to approval', error)
-      return null
-    })
-
-    // If `generatePermitHook` fails, we simply continue without a permit, using the approval flow below.
-    if (permitData) {
-      const orderPostingResult = await postSwapOrderFromQuote({
-        appData: {
-          metadata: {
-            hooks: {
-              // mergeAppDataDoc clears hooks when overriding, so we need to pass both pre (permit) and post (TWAP setup) hooks:
-              pre: [permitData],
-              post: [approveAndCreateTwapPostHook],
-            },
-          },
-        },
-      })
-
-      return { orderPostingResult, proxyAddress }
-    }
+  let ensureResult = {
+    usedPermit: false,
+    permitData: null as Awaited<ReturnType<typeof ensureEoaTwapVaultRelayerApproval>>['permitData'],
+    promptedWallet: false,
   }
 
-  const eoaNeedsZeroApproval = eoaNeedsApproval
-    ? await shouldZeroApprove({
-        tokenAddress: sellTokenAddress,
-        owner: account,
-        spender: vaultRelayerAddress,
-        amountToApprove: fundingSellAmount,
-        forceApprove: true,
-        config,
-      }).then((result) => result ?? false)
-    : false
-
-  if (eoaNeedsZeroApproval) {
-    await approveEoaSellToken({
-      config,
-      chainId,
-      account,
-      sellTokenAddress,
-      spender: vaultRelayerAddress,
-      amount: 0n,
-    })
-  }
-
-  if (eoaNeedsApproval) {
-    await approveEoaSellToken({
-      config,
-      chainId,
-      account,
-      sellTokenAddress,
-      spender: vaultRelayerAddress,
-      amount: maxUint256,
-    })
-  }
-
-  const orderPostingResult = await postSwapOrderFromQuote()
-
-  return { orderPostingResult, proxyAddress }
-}
-
-async function approveEoaSellToken({
-  config,
-  chainId,
-  account,
-  sellTokenAddress,
-  spender,
-  amount,
-}: ApproveEoaSellTokenParams): Promise<void> {
-  if (!isEvmChain(chainId)) {
-    throw new Error(`Unsupported chain for approve: ${chainId}`)
-  }
-
-  const publicClient = getPublicClient(config)
-
-  if (!publicClient) {
-    throw new Error('Public client is required to approve sell token')
-  }
-
-  const estimation = await estimateApprove(publicClient, sellTokenAddress, spender, amount, account, chainId)
-
-  const hash = await writeContract(config, {
-    address: sellTokenAddress,
-    abi: erc20Abi,
-    functionName: 'approve',
-    args: [spender as Address, amount],
-    gas: calculateGasMargin(estimation.gasLimit),
+  const { needsApproval: needsFundingAllowance } = await getEoaTwapApprovalNeeds({
+    config,
     account,
+    sellTokenAddress,
+    spender: vaultRelayerAddress,
+    amountToCover: fundingSellAmountAtoms,
+    amountToApprove: fundingSellAmount,
   })
 
-  await waitForTransactionReceipt(config, { hash })
+  if (needsFundingAllowance) {
+    // Allowance is short of the funding sell (under-approved in wallet, stale max, etc.).
+    // Top up on-chain while keeping the stepper on FundingOrder (map approve phases onto it).
+    log.warn('EOA TWAP funding sell exceeds current vault-relayer allowance; prompting on-chain top-up approve', {
+      fundingSellAmountAtoms: fundingSellAmountAtoms.toString(),
+    })
+
+    ensureResult = await ensureEoaTwapVaultRelayerApproval({
+      config,
+      chainId,
+      account,
+      sellTokenAddress,
+      sellTokenName: sellToken.name,
+      spender: vaultRelayerAddress,
+      amountToCover: fundingSellAmountAtoms,
+      amountToApprove: fundingSellAmount,
+      permitInfo,
+      generatePermitHook,
+      preferOnChainApprove: true,
+      onSigningStep: (_step, phase = EoaTwapSigningPhase.Sign) => {
+        // Keep step = FundingOrder so Approve/TwapSetup stay finished in the UI.
+        if (phase === EoaTwapSigningPhase.WaitingForTx) {
+          onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.WaitingForTx)
+        }
+      },
+    })
+  }
+
+  // Show spinner while we re-read allowance (covers mining lag + edited approve amounts).
+  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Verifying)
+
+  // Wallets can edit the approve amount again on the top-up tx. Re-read before posting so we
+  // fail fast with a clear error instead of posting an unfillable funding order.
+  const { needsApproval: stillNeedsFundingAllowance } = await getEoaTwapApprovalNeeds({
+    config,
+    account,
+    sellTokenAddress,
+    spender: vaultRelayerAddress,
+    amountToCover: fundingSellAmountAtoms,
+    amountToApprove: fundingSellAmount,
+  })
+
+  if (stillNeedsFundingAllowance) {
+    throw new Error(
+      `Vault Relayer allowance is still below the funding order sell amount (${fundingSellAmountFormatted} ${sellToken.symbol}). Approve at least that amount (or unlimited) and try again.`,
+    )
+  }
+
+  // Ready for the funding-order EIP-712 signature.
+  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Sign)
+
+  let orderPostingResult: OrderPostingResult
+
+  if (ensureResult.usedPermit && ensureResult.permitData) {
+    orderPostingResult = await postSwapOrderFromQuote({
+      appData: {
+        metadata: {
+          hooks: {
+            // mergeAppDataDoc clears hooks when overriding, so we need to pass both pre (permit) and post (TWAP setup) hooks:
+            pre: [ensureResult.permitData],
+            post: [approveAndCreateTwapPostHook],
+          },
+        },
+      },
+    })
+  } else {
+    orderPostingResult = await postSwapOrderFromQuote()
+  }
+
+  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Confirmed)
+
+  onSigningStep?.(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.WaitingForTx)
+
+  return { orderPostingResult, proxyAddress }
 }
 
 async function getProxyAllowances({

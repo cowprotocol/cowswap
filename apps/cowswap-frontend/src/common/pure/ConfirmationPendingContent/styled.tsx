@@ -279,6 +279,80 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
   }
 `
 
+export const VerticalStepsWrapper = styled.ol`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0;
+  width: 100%;
+  max-width: 360px;
+  margin-inline: auto;
+`
+
+export const VerticalStepItem = styled.li<{ $status: ConfirmationPendingStepStatusForStyle }>`
+  --circle-size: 65px;
+  display: grid;
+  grid-template-columns: var(--circle-size) 1fr;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  padding: 10px 0;
+  opacity: ${({ $status }) => ($status === 'upcoming' ? 0.45 : 1)};
+
+  ${StepsIconWrapper} {
+    margin: 0;
+
+    &[data-status='active'][data-loading='true']::before {
+      content: '';
+      background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
+      display: block;
+      width: var(--circle-size);
+      padding: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+      border-radius: 100%;
+      z-index: -2;
+      animation: spin 1.5s linear infinite;
+    }
+
+    &[data-status='active'][data-loading='true'] > svg {
+      padding: 0;
+      width: 28px;
+      height: 28px;
+    }
+
+    &[data-status='finished'] > svg {
+      stroke: var(${UI.COLOR_SUCCESS});
+    }
+  }
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--circle-size) / 2 - 1px);
+    top: calc(var(--circle-size) + 10px);
+    bottom: 0;
+    width: 2px;
+    background: var(${UI.COLOR_TEXT});
+    opacity: 0.25;
+  }
+
+  > p {
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: left;
+    margin: 0;
+  }
+`
+
+type ConfirmationPendingStepStatusForStyle = 'finished' | 'active' | 'upcoming'
+
 export const CloseIcon = styled(X)`
   cursor: pointer;
   position: absolute;
