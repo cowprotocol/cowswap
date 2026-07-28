@@ -122,13 +122,12 @@ describe('useEoaTwapPartOrders', () => {
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
   })
 
-  it('ignores stale responses and retries row failures', async () => {
+  it('ignores stale responses and clears row failures', async () => {
     let resolveStale: ((page: QueryPage<TwapPartOrder>) => void) | undefined
     fetchEoaTwapPartOrdersMock
       .mockImplementationOnce(() => new Promise((resolve) => (resolveStale = resolve)))
       .mockResolvedValueOnce(makePartPage('current'))
       .mockRejectedValueOnce(new Error('Unavailable'))
-      .mockResolvedValueOnce(makePartPage('retried'))
     const { result, rerender } = renderHook(({ twapOrder }) => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
       initialProps: { twapOrder: makeTwapOrder() },
     })
@@ -140,10 +139,7 @@ describe('useEoaTwapPartOrders', () => {
     expect(result.current.orders[0]?.id).toBe('current')
 
     rerender({ twapOrder: makeTwapOrder() })
-    await waitFor(() => expect(result.current.error?.message).toBe('Unavailable'))
-
-    act(() => result.current.retry())
-    await waitFor(() => expect(result.current.orders[0]?.id).toBe('retried'))
+    await waitFor(() => expect(result.current).toEqual({ orders: [], isLoading: false }))
   })
 
   it('does not request zero-part parents and clears a loaded page when the count becomes zero', async () => {
@@ -157,7 +153,7 @@ describe('useEoaTwapPartOrders', () => {
     rerender({ twapOrder: makeTwapOrder(0) })
     await waitFor(() => expect(result.current.orders).toEqual([]))
 
-    expect(result.current).toMatchObject({ orders: [], isLoading: false, error: null })
+    expect(result.current).toEqual({ orders: [], isLoading: false })
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(1)
   })
 })

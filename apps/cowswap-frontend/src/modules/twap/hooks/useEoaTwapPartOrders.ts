@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useLatestRef } from '@cowprotocol/common-hooks'
 import { logTwap, normalizeError } from '@cowprotocol/common-utils'
@@ -23,8 +23,6 @@ import { type TwapOrderItem } from '../types'
 interface EoaTwapPartOrdersResult {
   orders: ParsedOrder[]
   isLoading: boolean
-  error: Error | null
-  retry: () => void
 }
 
 export function useEoaTwapPartOrders(
@@ -33,12 +31,10 @@ export function useEoaTwapPartOrders(
   page: number,
   enabled: boolean,
 ): EoaTwapPartOrdersResult {
-  const [result, setResult] = useState<Omit<EoaTwapPartOrdersResult, 'retry'>>({
+  const [result, setResult] = useState<EoaTwapPartOrdersResult>({
     orders: [],
     isLoading: false,
-    error: null,
   })
-  const [retryKey, setRetryKey] = useState(0)
   const partOrdersCount = twapOrder?.partOrdersCount ?? 0
   const parentRef = useLatestRef(parent)
 
@@ -46,13 +42,13 @@ export function useEoaTwapPartOrders(
     if (!enabled) return
 
     if (!twapOrder || partOrdersCount === 0) {
-      setResult({ orders: [], isLoading: false, error: null })
+      setResult({ orders: [], isLoading: false })
       return
     }
 
     let isCurrent = true
 
-    setResult({ orders: [], isLoading: true, error: null })
+    setResult({ orders: [], isLoading: true })
 
     programmaticOrdersApi.fetchEoaTwapPartOrders(twapOrder.id, twapOrder.chainId, page).then(
       (partPage) => {
@@ -65,7 +61,6 @@ export function useEoaTwapPartOrders(
         setResult({
           orders: mapPartOrders(partPage, twapOrder, parentRef.current, page),
           isLoading: false,
-          error: null,
         })
       },
       (err: unknown) => {
@@ -80,7 +75,6 @@ export function useEoaTwapPartOrders(
         setResult({
           orders: [],
           isLoading: false,
-          error,
         })
       },
     )
@@ -88,9 +82,9 @@ export function useEoaTwapPartOrders(
     return () => {
       isCurrent = false
     }
-  }, [enabled, page, parentRef, partOrdersCount, retryKey, twapOrder])
+  }, [enabled, page, parentRef, partOrdersCount, twapOrder])
 
-  return useMemo(() => ({ ...result, retry: () => setRetryKey((value) => value + 1) }), [result])
+  return result
 }
 
 function mapPartOrder(

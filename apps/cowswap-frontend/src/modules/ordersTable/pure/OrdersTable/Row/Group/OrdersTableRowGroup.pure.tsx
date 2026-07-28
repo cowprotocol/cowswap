@@ -108,7 +108,7 @@ export function OrdersTableRowGroup({
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
         isExpanded={!isCollapsed}
-        childOrders={isIndexedEoaOrder ? [] : children}
+        childOrders={isIndexedEoaOrder ? undefined : children}
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
@@ -125,7 +125,11 @@ export function OrdersTableRowGroup({
 
       {!isCollapsed && (
         <div>
-          <PartPageStatus state={indexedParts} />
+          {indexedParts.isLoading && (
+            <PartPageState>
+              <Trans>Loading...</Trans>
+            </PartPageState>
+          )}
           {childrenPage.map((child) => (
             <OrderRow
               {...commonProps}
@@ -149,25 +153,5 @@ export function OrdersTableRowGroup({
         </div>
       )}
     </GroupBox>
-  )
-}
-
-function PartPageStatus({ state }: { state: ReturnType<typeof useEoaTwapPartOrders> }): ReactNode {
-  if (state.isLoading) {
-    return (
-      <PartPageState>
-        <Trans>Loading...</Trans>
-      </PartPageState>
-    )
-  }
-
-  if (!state.error) return null
-
-  return (
-    <PartPageState>
-      <button type="button" onClick={state.retry}>
-        <Trans>Retry</Trans>
-      </button>
-    </PartPageState>
   )
 }
