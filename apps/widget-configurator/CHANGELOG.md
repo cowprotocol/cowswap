@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.9.4](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.3...widget-configurator-v3.9.4) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(widget-preview): revert widget preview to vercel (#7856)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/widget-lib@4.4.3
+  - @cowprotocol/widget-react@3.2.3
+
 ## [3.9.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.2...widget-configurator-v3.9.3) (2026-07-22)
 
 ### Patch Changes

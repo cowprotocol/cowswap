@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.9.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.1...cow-fi-v2.9.2) (2026-07-28)
+
+### Patch Changes
+
+- fix(cow-fi): remove CoW AMM/MEV Blocker mentions (#7852)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/wallet@3.9.0
+  - @cowprotocol/widget-react@3.2.3
+
 ## [2.9.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.0...cow-fi-v2.9.1) (2026-07-22)
 
 ### Patch Changes
