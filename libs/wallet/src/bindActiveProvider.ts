@@ -22,17 +22,12 @@ export function bindActiveProvider(adapter: WagmiAdapter): void {
           activeProviderRef.current = hasEverConnected ? PROVIDER_DISCONNECTED : null
           return
         }
+        hasEverConnected = true
         const connector = adapter.wagmiConfig.connectors.find((c) => c.uid === current)
         if (!connector) {
-          // `current` points to no live connector. Connector uids are regenerated every load,
-          // so a persisted `current` from a previous session (with connections not yet hydrated)
-          // never matches — this is stale hydration state, NOT a user disconnect. Keep events
-          // flowing so reconnection can proceed; only block once we've had a real provider this
-          // session. Otherwise `accountsChanged` is silenced and the wallet never reconnects.
-          activeProviderRef.current = hasEverConnected ? PROVIDER_DISCONNECTED : null
+          activeProviderRef.current = PROVIDER_DISCONNECTED
           return
         }
-        hasEverConnected = true
         const provider = (await connector.getProvider().catch(() => null)) as EIP1193Provider | null
 
         // Ignore stale resolution — a newer subscribe call may have fired while we awaited.

@@ -2,7 +2,7 @@ import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
 import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
-import { getLocalStorageItem, isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains, TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
@@ -83,10 +83,12 @@ const isWidget = isInjectedWidget()
 // stays in sync with the wagmi connection. (Reading AppKit's `@appkit/eip155:connected_connector_id`
 // instead drifts out of sync with the wagmi store and drops the wallet on refresh.)
 // Solana is not managed by wagmi, so it uses the Solana adapter's AppKit key.
-const hasRecentConnector = Boolean(
-  getLocalStorageItem(`${wagmiStorage.key}.recentConnectorId`) ||
-    getLocalStorageItem('@appkit/solana:connected_connector_id'),
-)
+const hasRecentConnector =
+  typeof localStorage !== 'undefined' &&
+  Boolean(
+    localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`) ||
+      localStorage.getItem('@appkit/solana:connected_connector_id'),
+  )
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
