@@ -301,6 +301,7 @@ export default defineConfig(({ mode, isPreview }) => {
     },
 
     build: {
+      manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
       sourcemap: !isPreview,
