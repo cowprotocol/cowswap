@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.4.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.1...permit-utils-v3.4.2) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.10
+
 ## [3.4.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.0...permit-utils-v3.4.1) (2026-06-23)
 
 ### Patch Changes
