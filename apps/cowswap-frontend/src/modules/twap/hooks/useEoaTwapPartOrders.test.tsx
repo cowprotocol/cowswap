@@ -174,4 +174,48 @@ describe('useEoaTwapPartOrders', () => {
     expect(result.current).toEqual({ orders: [], isLoading: false })
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(1)
   })
+
+  it('refreshes an expanded part page', async () => {
+    jest.useFakeTimers()
+    fetchEoaTwapPartOrdersMock
+      .mockResolvedValueOnce(makePartPage('stale-part'))
+      .mockResolvedValueOnce(makePartPage('updated-part'))
+
+    try {
+      const { result } = renderHook(() => useEoaTwapPartOrders(makeTwapOrder(), parent, 1, true), {
+        wrapper: SwrTestProvider,
+      })
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(0)
+      })
+      expect(result.current.orders[0]?.id).toBe('stale-part')
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(30_000)
+      })
+      expect(result.current.orders[0]?.id).toBe('updated-part')
+      expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('refreshes parts when the parent status changes', async () => {
+    fetchEoaTwapPartOrdersMock
+      .mockResolvedValueOnce(makePartPage('pending-parent-part'))
+      .mockResolvedValueOnce(makePartPage('fulfilled-parent-part'))
+    const twapOrder = makeTwapOrder()
+    const { result, rerender } = renderHook(({ order }) => useEoaTwapPartOrders(order, parent, 1, true), {
+      initialProps: { order: twapOrder },
+      wrapper: SwrTestProvider,
+    })
+
+    await waitFor(() => expect(result.current.orders[0]?.id).toBe('pending-parent-part'))
+
+    rerender({ order: { ...twapOrder, status: TwapOrderStatus.Fulfilled } })
+
+    await waitFor(() => expect(result.current.orders[0]?.id).toBe('fulfilled-parent-part'))
+    expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
+  })
 })

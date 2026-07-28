@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { ORDER_BOOK_API_UPDATE_INTERVAL, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { logTwap, normalizeError } from '@cowprotocol/common-utils'
 import {
   type EnrichedOrder,
@@ -44,6 +44,8 @@ export function useEoaTwapPartOrders(
           page,
           ORDERS_TABLE_PAGE_SIZE,
           partOrdersCount,
+          twapOrder.status,
+          twapOrder.executionInfo,
         ] as const)
       : null,
     async ([, eventId, chainId, page, pageSize]) => {
@@ -66,7 +68,11 @@ export function useEoaTwapPartOrders(
         throw error
       }
     },
-    { ...SWR_NO_REFRESH_OPTIONS, shouldRetryOnError: false },
+    {
+      ...SWR_NO_REFRESH_OPTIONS,
+      refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL,
+      shouldRetryOnError: false,
+    },
   )
 
   return useMemo(() => {
