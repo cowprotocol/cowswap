@@ -1,13 +1,17 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { fetchEoaTwapOrders } from './fetchEoaTwapOrders'
+import { programmaticOrdersApi } from './programmaticOrdersApi'
 
 const EOA = '0x016f34D4f2578c3e9DFfC3f2b811Ba30c0c9e7f3'
 const LIVE_ORDER_HASH = '0xf8edb9707569dec76a362bb6bac1909fdf43d5afe70beca3e422ec7b1bbaa237'
 
 describe('fetchEoaTwapOrders', () => {
   it('maps a known EOA TWAP from the live programmatic orders API', async () => {
-    const { orders, totalCount } = await fetchEoaTwapOrders(EOA, SupportedChainId.GNOSIS_CHAIN, 100)
+    const { orders, totalCount } = await programmaticOrdersApi.fetchEoaTwapOrders(
+      EOA,
+      SupportedChainId.GNOSIS_CHAIN,
+      100,
+    )
     const order = Object.values(orders).find(({ hash }) => hash === LIVE_ORDER_HASH)
 
     expect(order?.id).toBeTruthy()

@@ -20,6 +20,7 @@ export const MAX_TWAP_SLIPPAGE = 99.99 // 99.99%
 export type OrderDeadline = { label: MessageDescriptor; value: number }
 
 export const DEFAULT_NUM_OF_PARTS = 2
+export const EOA_TWAP_PARTS_PAGE_SIZE = 10
 
 export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: msg`1 Hour`, value: ms`1 hour` }
 

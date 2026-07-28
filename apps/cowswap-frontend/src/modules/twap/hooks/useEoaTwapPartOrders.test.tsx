@@ -10,15 +10,17 @@ import { parseOrder } from 'utils/orderUtils/parseOrder'
 
 import { useEoaTwapPartOrders } from './useEoaTwapPartOrders'
 
-import { fetchEoaTwapPartOrders } from '../services/fetchEoaTwapPartOrders'
+import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderStatus, type TwapOrderItem } from '../types'
 
-jest.mock('../services/fetchEoaTwapPartOrders', () => ({
-  ...jest.requireActual('../services/fetchEoaTwapPartOrders'),
-  fetchEoaTwapPartOrders: jest.fn(),
+jest.mock('../services/programmaticOrdersApi', () => ({
+  ...jest.requireActual('../services/programmaticOrdersApi'),
+  programmaticOrdersApi: { fetchEoaTwapPartOrders: jest.fn() },
 }))
 
-const fetchEoaTwapPartOrdersMock = fetchEoaTwapPartOrders as jest.MockedFunction<typeof fetchEoaTwapPartOrders>
+const fetchEoaTwapPartOrdersMock = programmaticOrdersApi.fetchEoaTwapPartOrders as jest.MockedFunction<
+  typeof programmaticOrdersApi.fetchEoaTwapPartOrders
+>
 const owner = '0x1111111111111111111111111111111111111111'
 const inputToken = new Token(SupportedChainId.GNOSIS_CHAIN, '0x2222222222222222222222222222222222222222', 18)
 const outputToken = new Token(SupportedChainId.GNOSIS_CHAIN, '0x3333333333333333333333333333333333333333', 18)

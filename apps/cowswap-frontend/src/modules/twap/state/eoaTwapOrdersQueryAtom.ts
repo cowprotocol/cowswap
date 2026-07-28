@@ -9,9 +9,9 @@ import { ordersLimitAtom } from 'modules/orders/state/ordersLimitAtom'
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
-import { fetchEoaTwapOrders } from '../services/fetchEoaTwapOrders'
+import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 
-type EoaTwapOrdersQueryData = Awaited<ReturnType<typeof fetchEoaTwapOrders>>
+type EoaTwapOrdersQueryData = Awaited<ReturnType<typeof programmaticOrdersApi.fetchEoaTwapOrders>>
 
 export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get) => {
   const { account, chainId } = get(walletInfoAtom)
@@ -23,7 +23,7 @@ export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get
     queryFn: async () => {
       if (!chainId || !owner) return { orders: {}, totalCount: 0 }
 
-      return fetchEoaTwapOrders(owner, chainId, limit)
+      return programmaticOrdersApi.fetchEoaTwapOrders(owner, chainId, limit)
     },
     enabled:
       get(featureFlagsAtom).isTwapEoaEnabled === true &&

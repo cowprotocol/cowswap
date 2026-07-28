@@ -18,21 +18,25 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { eoaTwapOrdersEffectAtom } from './eoaTwapOrdersEffectAtom'
 
-import { fetchEoaTwapOrders } from '../services/fetchEoaTwapOrders'
+import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   accountTypeAtom: jest.requireActual('jotai').atom(jest.requireActual('@cowprotocol/types').AccountType.EOA),
 }))
-jest.mock('../services/fetchEoaTwapOrders', () => ({ fetchEoaTwapOrders: jest.fn() }))
+jest.mock('../services/programmaticOrdersApi', () => ({
+  programmaticOrdersApi: { fetchEoaTwapOrders: jest.fn() },
+}))
 jest.mock('entities/twap', () => jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'))
 
 const EOA_A = '0x1111111111111111111111111111111111111111'
 const EOA_B = '0x2222222222222222222222222222222222222222'
 const CHAIN_ID = SupportedChainId.GNOSIS_CHAIN
 
-const fetchEoaTwapOrdersMock = fetchEoaTwapOrders as jest.MockedFunction<typeof fetchEoaTwapOrders>
+const fetchEoaTwapOrdersMock = programmaticOrdersApi.fetchEoaTwapOrders as jest.MockedFunction<
+  typeof programmaticOrdersApi.fetchEoaTwapOrders
+>
 const writableAccountTypeAtom = accountTypeAtom as PrimitiveAtom<AccountType | null>
 
 function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {

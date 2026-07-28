@@ -16,7 +16,8 @@ import { OrderStatus, type Order } from 'legacy/state/orders/actions'
 
 import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { EOA_TWAP_PARTS_PAGE_SIZE, fetchEoaTwapPartOrders } from '../services/fetchEoaTwapPartOrders'
+import { EOA_TWAP_PARTS_PAGE_SIZE } from '../const'
+import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { type TwapOrderItem } from '../types'
 
 interface EoaTwapPartOrdersResult {
@@ -53,7 +54,7 @@ export function useEoaTwapPartOrders(
 
     setResult({ orders: [], isLoading: true, error: null })
 
-    fetchEoaTwapPartOrders(twapOrder.id, twapOrder.chainId, page).then(
+    programmaticOrdersApi.fetchEoaTwapPartOrders(twapOrder.id, twapOrder.chainId, page).then(
       (partPage) => {
         if (!isCurrent) return
 
