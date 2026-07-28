@@ -4,12 +4,15 @@ import { useEffect } from 'react'
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
+import { useThrottledCallback } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+import { usePersistSolanaBalancesViaWebCalls } from './usePersistSolanaBalancesViaWebCalls'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+import { REPORT_THROTTLE_MS, reportBalancesError } from '../utils/reportBalancesError'
 
 export interface BalancesQueryConfig {
   refetchInterval: number
@@ -49,6 +52,9 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
   // wagmi + viem only support evm chains
   const isEvm = isEvmChain(chainId)
 
+  // Non-EVM chains (e.g. Solana) load balances via their own web calls
+  usePersistSolanaBalancesViaWebCalls(params)
+
   const {
     data: balances,
     isLoading: isBalancesLoading,
@@ -79,21 +85,32 @@ export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowanc
 
   // Set balances loading state
   useEffect(() => {
-    if (!setLoadingState) return
+    if (!setLoadingState || !isEvm) return
 
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
-  }, [setBalances, isBalancesLoading, setLoadingState, chainId])
+  }, [setBalances, isBalancesLoading, setLoadingState, isEvm, chainId])
+
+  // Report balances multicall failures to Sentry (provider rate-limiting / HTTP 429
+  // is tagged distinctly). Runs for every EVM instance, not only full fetches, so
+  // rate-limiting is visible regardless of which balances query hit it.
+  const reportError = useThrottledCallback(reportBalancesError, REPORT_THROTTLE_MS)
+
+  useEffect(() => {
+    if (!isEvm || !error) return
+
+    reportError({ error, chainId, tokensCount: tokenAddresses.length })
+  }, [reportError, error, isEvm, chainId, tokenAddresses.length])
 
   // Set balances error state for full balances fetches only
   useEffect(() => {
-    if (!setLoadingState) return
+    if (!setLoadingState || !isEvm) return
 
     if (!error) return
 
     const message = error instanceof Error ? error.message : String(error)
 
     setBalances((state) => ({ ...state, error: message, isLoading: false }))
-  }, [setBalances, error, setLoadingState])
+  }, [setBalances, error, setLoadingState, isEvm])
 
   // Set balances to the store
   useEffect(() => {

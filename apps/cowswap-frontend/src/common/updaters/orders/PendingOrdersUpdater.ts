@@ -63,6 +63,8 @@ import {
 
 import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
 
+type FulfillOrdersBatchWithTypes = (params: FulfillOrdersBatchParams, orderTypesByUid?: OrderTypesByUid) => void
+
 interface HandlePresignedParams {
   presigned: EnrichedOrder[]
   orders: Order[]
@@ -93,8 +95,6 @@ interface UpdateOrdersParams {
   allTransactions: ReturnType<typeof useAllTransactions>
   markPollComplete?: (chainId: ChainId) => void
 }
-
-type FulfillOrdersBatchWithTypes = (params: FulfillOrdersBatchParams, orderTypesByUid?: OrderTypesByUid) => void
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function

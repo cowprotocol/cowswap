@@ -1,6 +1,8 @@
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
+  isTwapEoaEnabled?: boolean
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }

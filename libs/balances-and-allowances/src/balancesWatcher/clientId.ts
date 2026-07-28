@@ -30,21 +30,8 @@ export function getBalancesWatcherClientId(): string {
   return fresh.id
 }
 
-function readStored(): StoredClientId | null {
-  try {
-    return parseStored(localStorage.getItem(STORAGE_KEY))
-  } catch {
-    return null
-  }
-}
-
-function tryPersist(entry: StoredClientId): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entry))
-  } catch {
-    // Storage disabled (private mode / quota / blocked). The in-memory cache
-    // above still keeps the id stable for this tab.
-  }
+function isExpired(entry: StoredClientId): boolean {
+  return Date.now() - entry.createdAt >= CLIENT_ID_TTL_MS
 }
 
 function parseStored(raw: string | null): StoredClientId | null {
@@ -65,6 +52,19 @@ function parseStored(raw: string | null): StoredClientId | null {
   return null
 }
 
-function isExpired(entry: StoredClientId): boolean {
-  return Date.now() - entry.createdAt >= CLIENT_ID_TTL_MS
+function readStored(): StoredClientId | null {
+  try {
+    return parseStored(localStorage.getItem(STORAGE_KEY))
+  } catch {
+    return null
+  }
+}
+
+function tryPersist(entry: StoredClientId): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entry))
+  } catch {
+    // Storage disabled (private mode / quota / blocked). The in-memory cache
+    // above still keeps the id stable for this tab.
+  }
 }

@@ -4,7 +4,14 @@ import { loadable } from 'jotai/utils'
 import { EIP1193Provider, numberToHex, PublicClient } from 'viem'
 import { Connector } from 'wagmi'
 
-import { isMobile, logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
+import {
+  isEip1193Provider,
+  isMobile,
+  logWallet,
+  normalizeError,
+  TimeoutError,
+  withTimeout,
+} from '@cowprotocol/common-utils'
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { AccountType } from '@cowprotocol/types'
 
@@ -20,7 +27,6 @@ import {
   isSmartContractWalletAtom,
   isSafeWalletAtom,
 } from '../../wagmi/state/walletMetadata.atoms'
-import { isEip1193Provider } from '../../wagmi/utils/isEip1193Provider.utils'
 import { walletInfoAtom } from '../state'
 
 export type WalletCapabilities = GetCapabilitiesReturnType[number]
@@ -175,7 +181,10 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
     const wagmiError = normalizeError(err)
 
     if (!isEip1193Provider(provider)) {
-      logWallet.error('Cannot fetch wallet capabilities via wagmi', { account, chainId }, wagmiError)
+      logWallet.error(new Error('Failed to fetch wallet capabilities via wagmi', { cause: wagmiError }), undefined, {
+        account,
+        chainId,
+      })
       return null
     }
 
@@ -200,7 +209,10 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
       if (rpcError instanceof TimeoutError) {
         logWallet.warn(rpcError.message)
       } else {
-        logWallet.error('Cannot fetch wallet capabilities via rpc', { account, chainId }, rpcError)
+        logWallet.error(new Error('Failed to fetch wallet capabilities via RPC', { cause: rpcError }), undefined, {
+          account,
+          chainId,
+        })
       }
 
       return null

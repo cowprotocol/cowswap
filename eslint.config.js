@@ -94,7 +94,7 @@ module.exports = [
     plugins: { perfectionist },
     rules: {
       'perfectionist/sort-modules': [
-        'warn',
+        'error',
         {
           groups: [
             ['export-interface', 'export-type'],
