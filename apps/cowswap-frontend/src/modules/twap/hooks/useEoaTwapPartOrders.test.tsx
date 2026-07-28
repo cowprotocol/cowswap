@@ -1,10 +1,15 @@
+import type { PropsWithChildren, ReactElement } from 'react'
+
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId, type UID } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import type { QueryPage, TwapPartOrder } from '@cowprotocol/sdk-composable'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { SWRConfig } from 'swr'
 
 import { OrderStatus, type Order } from 'legacy/state/orders/actions'
+
+import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 
 import { parseOrder } from 'utils/orderUtils/parseOrder'
 
@@ -13,6 +18,7 @@ import { useEoaTwapPartOrders } from './useEoaTwapPartOrders'
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderStatus, type TwapOrderItem } from '../types'
 
+jest.mock('modules/ordersTable', () => ({ ORDERS_TABLE_PAGE_SIZE: 10 }))
 jest.mock('../services/programmaticOrdersApi', () => ({
   ...jest.requireActual('../services/programmaticOrdersApi'),
   programmaticOrdersApi: { fetchEoaTwapPartOrders: jest.fn() },
@@ -96,28 +102,38 @@ function makeTwapOrder(partOrdersCount = 1): TwapOrderItem {
   }
 }
 
+function SwrTestProvider({ children }: PropsWithChildren): ReactElement {
+  return <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+}
+
 describe('useEoaTwapPartOrders', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('refetches the page when the parent snapshot refreshes', async () => {
+  it('remaps parent snapshots and refetches when the part count changes', async () => {
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce(makePartPage('part-1'))
       .mockResolvedValueOnce(makePartPage('part-2'))
     const twapOrder = makeTwapOrder()
     const { result, rerender } = renderHook(
       ({ parentOrder, twapOrder }) => useEoaTwapPartOrders(twapOrder, parentOrder, 1, true),
-      { initialProps: { parentOrder: parent, twapOrder } },
+      { initialProps: { parentOrder: parent, twapOrder }, wrapper: SwrTestProvider },
     )
 
     expect(result.current.isLoading).toBe(true)
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('part-1'))
+    expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledWith(
+      'event',
+      SupportedChainId.GNOSIS_CHAIN,
+      1,
+      ORDERS_TABLE_PAGE_SIZE,
+    )
 
     rerender({ parentOrder: { ...parent }, twapOrder })
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(1)
 
-    rerender({ parentOrder: parent, twapOrder: makeTwapOrder() })
+    rerender({ parentOrder: parent, twapOrder: makeTwapOrder(2) })
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('part-2'))
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
   })
@@ -130,15 +146,16 @@ describe('useEoaTwapPartOrders', () => {
       .mockRejectedValueOnce(new Error('Unavailable'))
     const { result, rerender } = renderHook(({ twapOrder }) => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
       initialProps: { twapOrder: makeTwapOrder() },
+      wrapper: SwrTestProvider,
     })
 
-    rerender({ twapOrder: makeTwapOrder() })
+    rerender({ twapOrder: makeTwapOrder(2) })
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('current'))
 
     act(() => resolveStale?.(makePartPage('stale')))
     expect(result.current.orders[0]?.id).toBe('current')
 
-    rerender({ twapOrder: makeTwapOrder() })
+    rerender({ twapOrder: makeTwapOrder(3) })
     await waitFor(() => expect(result.current).toEqual({ orders: [], isLoading: false }))
   })
 
@@ -146,6 +163,7 @@ describe('useEoaTwapPartOrders', () => {
     fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('part'))
     const { result, rerender } = renderHook(({ twapOrder }) => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
       initialProps: { twapOrder: makeTwapOrder() },
+      wrapper: SwrTestProvider,
     })
 
     await waitFor(() => expect(result.current.orders).toHaveLength(1))

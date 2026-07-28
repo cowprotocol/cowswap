@@ -3,7 +3,6 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProgrammaticOrderApi } from '@cowprotocol/sdk-composable'
 import type { QueryPage, TwapPartOrder } from '@cowprotocol/sdk-composable'
 
-import { EOA_TWAP_PARTS_PAGE_SIZE } from '../const'
 import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
 
 import type { TWAPOrderStruct } from '../types'
@@ -77,13 +76,18 @@ class ProgrammaticOrdersApi {
     return { orders, totalCount }
   }
 
-  fetchEoaTwapPartOrders(eventId: string, chainId: SupportedChainId, page: number): Promise<QueryPage<TwapPartOrder>> {
+  fetchEoaTwapPartOrders(
+    eventId: string,
+    chainId: SupportedChainId,
+    page: number,
+    pageSize: number,
+  ): Promise<QueryPage<TwapPartOrder>> {
     return this.api.getTwapPartOrders(
       { eventId, chainId },
       {
         direction: 'asc',
-        offset: (page - 1) * EOA_TWAP_PARTS_PAGE_SIZE,
-        limit: EOA_TWAP_PARTS_PAGE_SIZE,
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
       },
     )
   }

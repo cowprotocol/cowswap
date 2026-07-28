@@ -68,11 +68,14 @@ export function OrdersTableRowGroup({
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const twapOrder = useTwapOrderById(parent.id)
-  const isIndexedEoaOrder = twapOrder?.partOrdersCount !== undefined
-  const childrenLength = isIndexedEoaOrder ? (twapOrder.partOrdersCount ?? 0) : children.length
+  const isEoaTwapOrder = parent.isEoaTwapOrder === true
+  const isOptimisticEoaOrder = isEoaTwapOrder && twapOrder?.partOrdersCount === undefined
+  // Safe and optimistic EOA orders use local children; indexed EOA orders fetch their parts.
+  const usesLocalChildren = !isEoaTwapOrder || isOptimisticEoaOrder
+  const childrenLength = usesLocalChildren ? children.length : (twapOrder?.partOrdersCount ?? 0)
   const step = currentPage * ORDERS_TABLE_PAGE_SIZE
-  const indexedParts = useEoaTwapPartOrders(twapOrder, parent, currentPage, isIndexedEoaOrder && !isCollapsed)
-  const childrenPage = isIndexedEoaOrder ? indexedParts.orders : children.slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+  const indexedParts = useEoaTwapPartOrders(twapOrder, parent, currentPage, !usesLocalChildren && !isCollapsed)
+  const childrenPage = usesLocalChildren ? children.slice(step - ORDERS_TABLE_PAGE_SIZE, step) : indexedParts.orders
 
   useEffect(() => {
     if (currentPage > Math.max(1, Math.ceil(childrenLength / ORDERS_TABLE_PAGE_SIZE))) setCurrentPage(1)
@@ -93,7 +96,7 @@ export function OrdersTableRowGroup({
   }
 
   // Create an array of child order data with their orderParams
-  const childrenWithParams = (isIndexedEoaOrder ? [] : children).map((child) => ({
+  const childrenWithParams = (usesLocalChildren ? children : []).map((child) => ({
     order: child,
     orderParams: getOrderParams(chainId, balancesAndAllowances, child),
   }))
@@ -108,7 +111,7 @@ export function OrdersTableRowGroup({
         orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
         onClick={() => orderActions.selectReceiptOrder(parent)}
         isExpanded={!isCollapsed}
-        childOrders={isIndexedEoaOrder ? undefined : children}
+        childOrders={usesLocalChildren ? children : undefined}
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
