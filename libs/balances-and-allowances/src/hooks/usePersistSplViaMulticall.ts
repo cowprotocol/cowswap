@@ -10,7 +10,7 @@ import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { Connection } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 import { PersistBalancesAndAllowancesParams } from './usePersistBalancesViaWebCalls'
@@ -27,8 +27,10 @@ interface SolanaQueryConfig {
   refetchInterval: number | false | undefined
 }
 
-// The delegate authority is a deterministic PDA — derive it once.
-const SOLANA_DELEGATE_AUTHORITY = findSolanaSettlementStatePda()
+// The delegate authority is a deterministic PDA. Derived lazily on first fetch (not at module load) and
+// cached: deriving eagerly would run Solana crypto the moment the balances barrel imports this module,
+// which breaks environments that can't run it (e.g. unit tests).
+let solanaDelegateAuthority: PublicKey | undefined
 
 /**
  * Solana counterpart to {@link usePersistBalancesViaWebCalls}. A single batched multi-account read (the
@@ -73,7 +75,11 @@ export function usePersistSplViaMulticall(params: PersistBalancesAndAllowancesPa
     queryKey,
     queryFn:
       connection && account
-        ? () => fetchSolanaTokenAccounts(connection, account, tokenMints, SOLANA_DELEGATE_AUTHORITY)
+        ? () => {
+            solanaDelegateAuthority ??= findSolanaSettlementStatePda()
+
+            return fetchSolanaTokenAccounts(connection, account, tokenMints, solanaDelegateAuthority)
+          }
         : skipToken,
     enabled,
     refetchInterval: refetchInterval || undefined,
