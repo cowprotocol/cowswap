@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.5...explorer-v4.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: use a single getPublicClient util (#7870)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/hook-dapp-lib@2.2.10
+
 ## [4.6.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.4...explorer-v4.6.5) (2026-07-22)
 
 ### Patch Changes

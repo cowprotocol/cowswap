@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.6.3](https://github.com/cowprotocol/cowswap/compare/core-v3.6.2...core-v3.6.3) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- fix: move from solver ID to address
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+
 ## [3.6.2](https://github.com/cowprotocol/cowswap/compare/core-v3.6.1...core-v3.6.2) (2026-07-22)
 
 ### Patch Changes
