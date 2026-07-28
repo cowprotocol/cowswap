@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.8.1](https://github.com/cowprotocol/cowswap/compare/events-v4.8.0...events-v4.8.1) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+
 ## [4.8.0](https://github.com/cowprotocol/cowswap/compare/events-v4.7.1...events-v4.8.0) (2026-07-17)
 
 ### Minor Changes

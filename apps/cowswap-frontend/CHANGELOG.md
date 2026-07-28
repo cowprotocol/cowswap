@@ -1,5 +1,60 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.20.0...cowswap-v3.21.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: add TWAP EOA proxy to Account Proxy page (#7866)
+
+- feat(bridge): show approximate bridging time while order is pending (#7803)
+
+- feat: track captcha analytics (#7822)
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix: add deprecation note
+
+- fix(cow-fi): remove CoW AMM/MEV Blocker mentions (#7852)
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(swap-n-bridge): winning solver order (#7877)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- fix: rename accountProxy index/styled files (#7867)
+
+- fix: shorten address when not found in DB
+
+- fix: move from solver ID to address
+
+- fix: coderabbit comments
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/balances-and-allowances@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/ens@3.4.6
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/multicall@3.4.6
+  - @cowprotocol/permit-utils@3.4.2
+  - @cowprotocol/tokens@3.8.6
+  - @cowprotocol/wallet@3.9.0
+  - @cowprotocol/widget-lib@4.4.3
+  - @cowprotocol/snackbars@2.2.8
+  - @cowprotocol/iframe-transport@2.3.3
+  - @cowprotocol/hook-dapp-lib@2.2.10
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.19.0...cowswap-v3.20.0) (2026-07-22)
 
 ### Minor Changes

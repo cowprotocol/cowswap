@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.4.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.2...widget-lib-v4.4.3) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/iframe-transport@2.3.3
+
 ## [4.4.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.1...widget-lib-v4.4.2) (2026-07-17)
 
 ### Patch Changes
