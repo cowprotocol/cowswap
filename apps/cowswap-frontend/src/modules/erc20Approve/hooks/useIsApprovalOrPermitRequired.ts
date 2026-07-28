@@ -46,7 +46,14 @@ export function useIsApprovalOrPermitRequired({
     tradeType === TradeType.LIMIT_ORDER ? ApproveRequiredReason.NotRequired : getPermitRequirements(type)
 
   const reason = (() => {
-    if (!isApproveSupportedByFlowOrWallet(inputCurrency, tradeType, !!isBundlingSupportedOrEnabledForContext)) {
+    if (
+      !isApproveSupportedByFlowOrWallet(
+        inputCurrency,
+        tradeType,
+        !!isBundlingSupportedOrEnabledForContext,
+        allowsOffchainSigning,
+      )
+    ) {
       return ApproveRequiredReason.Unsupported
     }
 
@@ -97,12 +104,13 @@ function isApproveSupportedByFlowOrWallet(
   inputCurrency: Nullish<Currency>,
   tradeType: Nullish<TradeType>,
   isBundlingSupportedOrEnabledForContext: boolean,
+  allowsOffchainSigning: boolean,
 ): boolean {
   const isNativeFlow = !!inputCurrency && getIsNativeToken(inputCurrency)
   if (!isNativeFlow) return true
 
   const isSwap = tradeType === TradeType.SWAP
-  return isSwap ? isBundlingSupportedOrEnabledForContext : false
+  return isSwap ? isBundlingSupportedOrEnabledForContext && !allowsOffchainSigning : false
 }
 
 function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Currency> | null): boolean {
