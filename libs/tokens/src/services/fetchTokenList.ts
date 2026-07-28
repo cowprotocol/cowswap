@@ -16,9 +16,15 @@ import { TokenList } from '@uniswap/token-lists'
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
 
+// Read-only config used solely for ENS content-hash resolution on mainnet.
+// It must NOT touch wallets: disable EIP-6963 discovery so it doesn't compete with the app's
+// provider isolation, and disable persistence so it doesn't create a second `wagmi.store`
+// alongside the real wallet adapter's `cowswap-wallet.store`.
 const MAINNET_CONFIG = createConfig({
   chains: [mainnet],
   transports: { [mainnet.id]: http(RPC_URLS[SupportedChainId.MAINNET]) },
+  multiInjectedProviderDiscovery: false,
+  storage: null,
 })
 
 /**
