@@ -7,8 +7,7 @@ import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { eoaTwapOrdersQueryAtom } from 'modules/twap/state/eoaTwapOrdersQueryAtom'
 
-import { useApiOrdersState } from './useApiOrders'
-
+import { apiOrdersAtom } from '../state/apiOrdersAtom'
 import { ordersLimitAtom } from '../state/ordersLimitAtom'
 
 interface UseLoadMoreOrdersReturn {
@@ -22,7 +21,7 @@ export function useLoadMoreOrders(orderType: TabOrderTypes): UseLoadMoreOrdersRe
   const isAdvancedOrders = orderType === TabOrderTypes.ADVANCED
   const eoaTwapOrdersQuery = useAtomValue(eoaTwapOrdersQueryAtom)
   const [limit, setLimit] = useAtom(ordersLimitAtom)
-  const { orders: apiOrders, isLoading: apiOrdersLoading } = useApiOrdersState()
+  const { orders: apiOrders, isLoading: apiOrdersLoading } = useAtomValue(apiOrdersAtom)
   const isLoading = isAdvancedOrders
     ? eoaTwapOrdersQuery.isFetching && eoaTwapOrdersQuery.isPlaceholderData
     : apiOrdersLoading
