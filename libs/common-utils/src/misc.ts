@@ -45,7 +45,7 @@ export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
   const debounced = (...args: any) => {
     clearTimeout(timeout)
-    timeout = setTimeout(() => func(args), wait)
+    timeout = setTimeout(() => func(...args), wait)
   }
 
   return debounced
