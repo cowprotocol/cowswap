@@ -133,7 +133,7 @@ jobs:
       # Per-package `<short>-v<version>` tag + GitHub release for every pending
       # entry — apps included. Runs AFTER npm publish so a failed publish
       # doesn't leave orphan tags. The `cowswap-v*` and `explorer-v*` tags
-      # this pushes are what triggers deployment.yml.
+      # this pushes are what triggers deployment-v2.yml.
       - name: Create tags and GitHub releases
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}

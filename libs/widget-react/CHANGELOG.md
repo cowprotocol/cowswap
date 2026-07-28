@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.2...widget-react-v3.2.3) (2026-07-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/widget-lib@4.4.3
+
 ## [3.2.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.1...widget-react-v3.2.2) (2026-07-17)
 
 ### Patch Changes
