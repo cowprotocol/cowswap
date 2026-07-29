@@ -1,8 +1,7 @@
 import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
 
-import { installBff, type BffMock } from '../mocks/bff'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
-import { installCowOrderApi, type CowOrderApiMock } from '../mocks/cowOrderApi'
+import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
@@ -22,8 +21,7 @@ export interface SharedFixtures {
   confirmModal: ConfirmModal
   rpcProxy: RpcProxyHandle
   mocks: {
-    cowOrderApi: CowOrderApiMock
-    bff: BffMock
+    cowApi: CowProtocolApiMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
     bungee: BungeeMock
@@ -54,20 +52,26 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
     await use(handle)
     await handle.reset()
   },
-  mocks: async ({ context, page }, use) => {
-    const cowOrderApi = installCowOrderApi(context, page)
-    const bff = installBff(context)
+  mocks: async ({ context }, use) => {
+    const cowApi = installCowProtocolApi(context)
     const tokenLists = installTokenLists(context)
     const safeSdk = installSafeSdk(context)
     const bungee = installBungee(context)
     const nearIntents = installNearIntents(context)
-    await use({ cowOrderApi, bff, tokenLists, safeSdk, bungee, nearIntents })
-    bff.reset()
+
+    await use({ cowApi, tokenLists, safeSdk, bungee, nearIntents })
+
     tokenLists.reset()
     bungee.reset()
     nearIntents.reset()
     await safeSdk.disable()
-    await cowOrderApi.reset()
+    // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
+    // resets above must still happen.
+    try {
+      cowApi.assertNoUnmatched()
+    } finally {
+      cowApi.reset()
+    }
   },
 }
 /* eslint-enable react-hooks/rules-of-hooks */

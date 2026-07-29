@@ -82,6 +82,56 @@ test('my scenario', async ({ wallet, page }) => {
 
 Design: `docs/superpowers/specs/2026-07-26-mock-wallet-e2e-design.md`.
 
+## CoW Protocol API mocks
+
+Every request to `api.cow.fi` and `barn.api.cow.fi` is intercepted. Defaults come
+from committed fixtures in `src/mocks/cowProtocolApi/fixtures/`, recorded from
+the live barn API.
+
+```ts
+import { reply } from '../mocks/cowProtocolApi'
+
+// a literal body
+mocks.cowApi.set('accountOrders', [openOrder, filledOrder])
+
+// a factory — gets the parsed request plus the resolved default body
+mocks.cowApi.set('order', ({ params, defaults }) => ({
+  ...defaults,
+  uid: params.uid,
+  status: 'fulfilled',
+}))
+
+// an error path
+mocks.cowApi.set('quote', reply(429, { errorType: 'TooManyRequests' }))
+```
+
+`mocks.cowApi.posted` records every `POST /api/v1/orders` body with the uid the
+mock generated. `mocks.cowApi.clear(key)` drops one override; overrides reset
+between tests automatically.
+
+**Un-mocked endpoints fail the test.** A request with no catalogue entry is
+blocked and reported at teardown with the exact URL. To fix, add an entry to
+`COW_API_ENDPOINTS` in `src/mocks/cowProtocolApi/endpoints.ts`, add a matching
+`Recording` in `record.ts`, and run `pnpm e2e:record-mocks`. For a
+work-in-progress spec, `mocks.cowApi.allowUnmocked()` suppresses the failure.
+A mock-internal error (a missing fixture, an override that throws) is a
+separate failure mode — it is fulfilled as HTTP 500 so the request never hangs,
+and it also fails the test at teardown, but `allowUnmocked()` does **not**
+suppress it: that escape hatch is only for routes with no catalogue entry yet.
+
+Order and quote fixtures are re-owned and time-shifted per request
+(`src/mocks/cowProtocolApi/normalize.ts`) so they don't render as a stranger's
+expired orders. The default quote price is a deterministic placeholder derived
+from the fixture's ratio — a spec asserting on a specific output amount must
+override `quote`.
+
+### Not yet mocked
+
+These still reach the network and are the next round of work:
+
+- `bff.cow.fi` — `usdPrice`, `topHolders`, `simulateBundle`, affiliate endpoints
+- `partners.cow.fi` / `partners.barn.cow.fi`
+
 ## Commands
 
 | Command | Description |
@@ -91,6 +141,7 @@ Design: `docs/superpowers/specs/2026-07-26-mock-wallet-e2e-design.md`.
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
 | `pnpm e2e:report` | Regenerate `coverage-report.md` from current tests + xlsx |
+| `pnpm e2e:record-mocks` | Re-record the CoW Protocol API response fixtures from the live barn API |
 | `pnpm e2e:sync-checklist` | Regenerate `src/checklist/checklist.json` from `e2e-checklist.xlsx` |
 
 Run a single spec or test from inside this directory:

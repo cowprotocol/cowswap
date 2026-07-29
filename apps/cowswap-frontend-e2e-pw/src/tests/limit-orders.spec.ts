@@ -10,9 +10,7 @@ const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 test.use({ mockWalletKey: process.env.E2E_ACCOUNT_PK as Hex | undefined })
 
 test.describe('Limit Orders', () => {
-  test('[LO-01] Place sell limit order: WETH → USDC @smoke', async ({ limitPage, mocks, confirmModal }) => {
-    mocks.cowOrderApi.expectPostOrderOnce({ status: 'open' })
-
+  test('[LO-01] Place sell limit order: WETH → USDC @smoke', async ({ limitPage, confirmModal }) => {
     await limitPage.goto({ chainId: CHAIN_IDS.SEPOLIA, sell: WETH, buy: USDC })
     await limitPage.inputAmount.fill('0.5')
     await limitPage.setLimitPrice('2000')
