@@ -1,0 +1,25 @@
+{
+  "quote": {
+    "sellToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "receiver": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+    "sellAmount": "998860760014952024",
+    "buyAmount": "1893366032",
+    "validTo": 1785339452,
+    "appData": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "feeAmount": "1139239985047976",
+    "gasAmount": "237944",
+    "gasPrice": "4787849179",
+    "sellTokenPrice": "1",
+    "kind": "sell",
+    "partiallyFillable": false,
+    "sellTokenBalance": "erc20",
+    "buyTokenBalance": "erc20",
+    "signingScheme": "eip712"
+  },
+  "from": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+  "expiration": "2026-07-29T15:09:32.814322958Z",
+  "id": 38705406,
+  "verified": true,
+  "protocolFeeBps": "2"
+}

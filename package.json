@@ -26,6 +26,7 @@
     "e2e:smoke": "nx run cowswap-frontend-e2e-pw:e2e:smoke",
     "e2e:ui": "nx run cowswap-frontend-e2e-pw:e2e:ui",
     "e2e:report": "nx run cowswap-frontend-e2e-pw:e2e:report",
+    "e2e:record-mocks": "nx run cowswap-frontend-e2e-pw:e2e:record-mocks",
     "e2e:sync-checklist": "nx run cowswap-frontend-e2e-pw:sync-checklist",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
