@@ -1,8 +1,6 @@
 # cowswap-frontend-e2e-pw
 
-Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi). The
-scenarios mirror `e2e-checklist.xlsx` at the repo root; every checklist ID is
-represented in the suite as one of:
+Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 
 - An **automated** Playwright test (test title starts with `[XX-NN]`).
 - A **manual** placeholder (`test.skip()` + `annotation.type === 'manual'`) for
