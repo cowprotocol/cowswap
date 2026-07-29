@@ -88,6 +88,9 @@ const config: StorybookConfig = {
   },
   async viteFinal(config, { configType = 'DEVELOPMENT' }) {
     return mergeConfig(config, {
+      build: {
+        manifest: true,
+      },
       define: getStorybookProcessEnv(configType),
       plugins: [macrosPlugin(), viteTsConfigPaths({ root: process.cwd() })],
       resolve: {
