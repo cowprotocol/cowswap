@@ -104,6 +104,7 @@ interface CowApiEndpoint {
                                  // default is computed (postOrder, putAppData)
   dynamicDefault?: (req: CowApiRequest) => unknown
   normalizeDefault?: (body: unknown, req: CowApiRequest) => unknown
+  contentType?: string           // defaults to 'application/json'
 }
 ```
 
@@ -210,7 +211,21 @@ visible rather than buried in the handler:
   `receiver` to the requesting address (`params.address`, or the connected
   account for `trades` via the `owner` query param), set `creationDate` to now
   and `validTo` to now + 1 hour.
+- `quote`: echo the request's `sellToken`, `buyToken`, `receiver`, `from`,
+  `kind` and `appData`; set the requested side's amount to exactly what was
+  asked for; derive the opposite side by scaling the fixture's own
+  `buyAmount`/`sellAmount` ratio. The recorded fixture is a mainnet WETH→USDC
+  quote, so without this a Sepolia swap would render mainnet amounts for the
+  wrong tokens. `validTo` and `expiration` are refreshed. The derived price is
+  a deterministic placeholder — any spec asserting on a specific output amount
+  must override `quote`.
 - Other endpoints: no normalization.
+
+`GET /api/v1/version` returns `text/plain`, not JSON (verified against the live
+API). Catalogue entries therefore carry an optional `contentType` defaulting to
+`application/json`. Its fixture stays a `.json` file holding a JSON string; the
+fulfil step sends a resolved string body raw when `contentType` is not JSON, and
+`JSON.stringify`s otherwise.
 
 Overrides bypass `normalizeDefault` entirely — a spec that supplies a body gets
 exactly that body. A factory that wants normalization applied can spread
