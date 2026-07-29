@@ -34,7 +34,15 @@ export interface CowApiRequest {
 
 const REPLY_BRAND = '__cowApiReply' as const
 
-export type CowApiOverride = unknown | CowApiReply | CowApiOverrideFactory
+/**
+ * A single function member keeps this union from collapsing to `unknown`:
+ * `unknown | CowApiReply | CowApiOverrideFactory` would erase all contextual
+ * typing for a spec's factory override (its destructured params would be
+ * implicitly `any`). Every override is ultimately serialised with
+ * `JSON.stringify`, so a non-JSON literal body was never usable here anyway —
+ * `JsonValue` is not a real narrowing in practice.
+ */
+export type CowApiOverride = CowApiReply | CowApiOverrideFactory | JsonValue
 
 export type CowApiOverrideFactory = (req: CowApiRequest) => unknown | Promise<unknown>
 
@@ -43,6 +51,8 @@ export interface CowApiReply {
   status: number
   body: unknown
 }
+
+export type JsonValue = null | boolean | number | string | JsonValue[] | { [k: string]: JsonValue }
 
 export function isReply(value: unknown): value is CowApiReply {
   return typeof value === 'object' && value !== null && REPLY_BRAND in value

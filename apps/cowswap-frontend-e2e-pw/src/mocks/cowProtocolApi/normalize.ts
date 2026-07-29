@@ -50,8 +50,12 @@ export function normalizeOrder(body: unknown, req: CowApiRequest): unknown {
 
 /**
  * Recorded order fixtures belong to a real account and carry absolute
- * timestamps, so verbatim they render as a stranger's expired orders. Re-own
- * them and push their deadlines forward.
+ * timestamps, so verbatim they render as a stranger's expired orders.
+ * Deadlines are always pushed forward. Re-owning also requires the request to
+ * identify an address (`params.address` or an `owner` query param) — the
+ * `accountOrders` and `order` routes do, but `transactionOrders` only
+ * captures a `txHash`, so its results keep the fixture's own owner/receiver
+ * and get timestamp refreshing only.
  */
 export function normalizeOrderList(body: unknown, req: CowApiRequest): unknown {
   if (!Array.isArray(body)) return body

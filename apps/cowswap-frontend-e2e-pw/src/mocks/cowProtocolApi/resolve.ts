@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import { isReply } from './types'
 
-import type { CowApiEndpoint, CowApiOverride, CowApiOverrideFactory, CowApiRequest } from './types'
+import type { CowApiEndpoint, CowApiOverride, CowApiRequest } from './types'
 
 const FIXTURES_DIR = path.join(__dirname, 'fixtures')
 const JSON_CONTENT_TYPE = 'application/json'
@@ -49,8 +49,7 @@ export async function resolveResponse(args: {
     return { status: 200, body: defaults, contentType }
   }
 
-  const resolved =
-    typeof override === 'function' ? await (override as CowApiOverrideFactory)({ ...req, defaults }) : override
+  const resolved = typeof override === 'function' ? await override({ ...req, defaults }) : override
 
   if (isReply(resolved)) {
     return { status: resolved.status, body: resolved.body, contentType }

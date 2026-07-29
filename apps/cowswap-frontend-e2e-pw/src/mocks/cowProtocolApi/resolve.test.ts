@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
 import { COW_API_ENDPOINTS } from './endpoints'
-import { resolveDefaultBody, resolveResponse } from './resolve'
+import { resolveDefaultBody, resolveResponse, serializeBody } from './resolve'
 import { reply } from './types'
 
 import type { CowApiEndpoint, CowApiRequest } from './types'
@@ -103,11 +103,7 @@ test('a factory override receives the normalized defaults', async () => {
   const res = await resolveResponse({
     endpoint: endpoint('order'),
     req: makeRequest({ params: { uid: `0x${'cd'.repeat(56)}` } }),
-    override: ({ params, defaults }: CowApiRequest) => ({
-      ...(defaults as object),
-      uid: params.uid,
-      status: 'fulfilled',
-    }),
+    override: ({ params, defaults }) => ({ ...(defaults as object), uid: params.uid, status: 'fulfilled' }),
   })
   const body = res.body as Record<string, unknown>
   assert.equal(body.status, 'fulfilled')
@@ -151,4 +147,18 @@ test('postOrder computes a deterministic uid from the request', () => {
   assert.equal(typeof first, 'string')
   assert.match(first as string, /^0x[0-9a-f]{112}$/)
   assert.equal(first, second, 'same request body must yield the same uid')
+})
+
+test('serializeBody renders a null or undefined body as an empty string', () => {
+  assert.equal(serializeBody(null, 'application/json'), '')
+  assert.equal(serializeBody(undefined, 'text/plain'), '')
+})
+
+test('serializeBody sends a non-JSON string body raw, not quoted', () => {
+  const version = 'main@2193c8c69c65c7d439d63e0e34f6bdb587dd4970'
+  assert.equal(serializeBody(version, 'text/plain'), version)
+})
+
+test('serializeBody JSON-encodes an object body under a JSON content type', () => {
+  assert.equal(serializeBody({ uid: '0xdead' }, 'application/json'), JSON.stringify({ uid: '0xdead' }))
 })
