@@ -1,4 +1,5 @@
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { SOLANA_SETTLEMENT_PROGRAM_ID_STAGING, SOLANA_SETTLEMENT_PROGRAM_ID } from '@cowprotocol/cow-sdk'
 
 import { PublicKey } from '@solana/web3.js'
 
@@ -6,13 +7,10 @@ import { PublicKey } from '@solana/web3.js'
 // Prod vs staging is picked by environment, mirroring how EVM contract addresses are handled
 // (see `COW_PROTOCOL_VAULT_RELAYER_ADDRESS`). Also mirrors the order-flow constant in
 // cowswap-frontend's solanaOrderFlow; consolidate to one source once both land.
-const SOLANA_SETTLEMENT_PROGRAM_ID_PROD = new PublicKey('moosEjJg5mbGRPRU7Vg4AaHZLvbbgknevWR9J1bNgME')
-// TODO: swap in the dedicated staging program id once deployed — same as prod until then.
-const SOLANA_SETTLEMENT_PROGRAM_ID_STAGING = SOLANA_SETTLEMENT_PROGRAM_ID_PROD
 
-export const SOLANA_SETTLEMENT_PROGRAM_ID = isBarnBackendEnv
+export const solSettlementAddress = isBarnBackendEnv
   ? SOLANA_SETTLEMENT_PROGRAM_ID_STAGING
-  : SOLANA_SETTLEMENT_PROGRAM_ID_PROD
+  : SOLANA_SETTLEMENT_PROGRAM_ID
 
 const SETTLEMENT_SEED = new TextEncoder().encode('settlement')
 
@@ -22,5 +20,5 @@ const SETTLEMENT_SEED = new TextEncoder().encode('settlement')
  * sell funds through it at execution time). This is the Solana analogue of the EVM vault relayer spender.
  */
 export function findSolanaSettlementStatePda(): PublicKey {
-  return PublicKey.findProgramAddressSync([SETTLEMENT_SEED], SOLANA_SETTLEMENT_PROGRAM_ID)[0]
+  return PublicKey.findProgramAddressSync([SETTLEMENT_SEED], new PublicKey(solSettlementAddress))[0]
 }
