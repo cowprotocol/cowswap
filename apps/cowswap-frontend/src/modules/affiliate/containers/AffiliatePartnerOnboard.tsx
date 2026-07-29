@@ -4,7 +4,7 @@ import { useWalletClient } from 'wagmi'
 
 import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
-import { useShouldHideNetworkSelector, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useNetworkSwitchUnsupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
@@ -40,7 +40,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()
 
-  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
   const onPayoutsChain = isSupportedPayoutsNetwork(chainId)
   const shouldSwitchToPayoutsChain = !!account && !onPayoutsChain
   const isSignerAvailable = Boolean(walletClient)

@@ -1,7 +1,7 @@
 import { useIsSafeApp, useIsSafeViaWc } from '../../wagmi/hooks/useWalletMetadata'
 import { useIsRabbyWallet } from '../hooks'
 
-export function useShouldHideNetworkSelector(): boolean {
+export function useNetworkSwitchUnsupported(): boolean {
   const isSafeApp = useIsSafeApp()
   const isSafeViaWc = useIsSafeViaWc()
   const isRabbyWallet = useIsRabbyWallet()
