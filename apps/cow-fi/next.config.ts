@@ -11,6 +11,7 @@ const DEFAULT_CACHE_CONTROL_HEADER = {
 
 const nextConfig: WithNxOptions & NextConfig = {
   reactStrictMode: true,
+  generateBuildId: process.env.BUNDLE_SIZE_BUILD === 'true' ? async () => 'bundle-size' : undefined,
   nx: {},
   env: {
     REACT_APP_ENVIRONMENT: configuredEnvironment,
