@@ -3,15 +3,13 @@ import { useMemo } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, useShouldHideNetworkSelector } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
-
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSupportedChains } from './useSupportedChains'

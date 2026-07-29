@@ -3,7 +3,7 @@ import { ReactNode, useRef, type MouseEvent } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, useShouldHideNetworkSelector } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
@@ -13,7 +13,6 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 import { NetworksList } from 'common/pure/NetworksList/NetworksList.pure'
 
 import * as styledEl from './NetworkSelector.styled'

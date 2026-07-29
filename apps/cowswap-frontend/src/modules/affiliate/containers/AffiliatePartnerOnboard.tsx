@@ -4,7 +4,7 @@ import { useWalletClient } from 'wagmi'
 
 import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useShouldHideNetworkSelector, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/react/macro'
@@ -13,7 +13,6 @@ import styled from 'styled-components/macro'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { AFFILIATE_PAYOUTS_CHAIN_ID, AFFILIATE_TERMS_URL, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
 import {

@@ -5,12 +5,11 @@ import { useMemo } from 'react'
 
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { useShouldHideNetworkSelector } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
-
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useChainsToSelect } from '../../../hooks/useChainsToSelect'
 import { useOnSelectChain } from '../../../hooks/useOnSelectChain'
