@@ -6,8 +6,9 @@ import { UiOrderType } from '@cowprotocol/types'
 import { IS_EDIT_ORDER_ENABLED, useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { isOffchainOrder } from 'common/utils/isOffchainOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 import { receiptAtom, updateReceiptAtom } from '../../state/receip/ordersTableReceip.atoms'
