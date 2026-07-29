@@ -136,10 +136,12 @@ spreads the default rather than restating a whole order.
 ### Override API
 
 ```ts
+type JsonValue = null | boolean | number | string | JsonValue[] | { [k: string]: JsonValue }
+
 type CowApiOverride =
-  | unknown                                        // a literal body
   | CowApiReply                                    // reply(status, body)
   | ((req: CowApiRequest) => unknown | CowApiReply | Promise<unknown | CowApiReply>)
+  | JsonValue                                      // a literal body
 
 interface CowProtocolApiMock {
   set(key: CowApiEndpointKey, override: CowApiOverride): void
@@ -149,6 +151,13 @@ interface CowProtocolApiMock {
   reset(): void
 }
 ```
+
+The literal-body member is `JsonValue`, not `unknown`: TypeScript reduces
+`unknown | X` to plain `unknown`, which would make `set()` check nothing and
+force every factory override to carry an explicit `(req: CowApiRequest)`
+annotation — taxing the exact "vary the body by request" capability this API
+exists for. `JsonValue` is not a real narrowing, since every override is
+`JSON.stringify`d on the way out anyway.
 
 Usage:
 
@@ -207,10 +216,13 @@ verbatim, an order fixture belongs to a stranger and is already expired.
 `normalizeDefault` handles this, declared per-entry in the catalogue so it is
 visible rather than buried in the handler:
 
-- `accountOrders`, `order`, `transactionOrders`, `trades`: stamp `owner` and
-  `receiver` to the requesting address (`params.address`, or the connected
-  account for `trades` via the `owner` query param), set `creationDate` to now
-  and `validTo` to now + 1 hour.
+- `accountOrders`, `order`, `trades`: stamp `owner` and `receiver` to the
+  requesting address (`params.address`, or the `owner` query param for
+  `trades`), set `creationDate` to now and `validTo` to now + 1 hour.
+- `transactionOrders`: timestamp refreshing only. `GET
+  /api/v1/transactions/{txHash}/orders` identifies no address, so there is
+  nothing to re-own to; the recorded account stays in `owner`/`receiver`. A
+  spec that needs a specific owner overrides the endpoint.
 - `quote`: echo the request's `sellToken`, `buyToken`, `receiver`, `from`,
   `kind` and `appData`; set the requested side's amount to exactly what was
   asked for; derive the opposite side by scaling the fixture's own
