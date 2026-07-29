@@ -1,4 +1,5 @@
 import { NETWORK_SLUG_TO_CHAIN_ID } from './networks'
+import { fakeOrderUid, normalizeOrder, normalizeOrderList, normalizeQuote, normalizeTrades } from './normalize'
 
 import type { CowApiEndpoint, CowApiEnv } from './types'
 
@@ -12,6 +13,7 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
     method: 'GET',
     match: new RegExp(`^/api/v1/account/(?<address>${HEX_ADDRESS})/orders$`),
     fixture: 'accountOrders.json',
+    normalizeDefault: normalizeOrderList,
   },
   {
     key: 'orderStatus',
@@ -24,14 +26,16 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
     method: 'GET',
     match: new RegExp(`^/api/v1/orders/(?<uid>${HEX_UID})$`),
     fixture: 'order.json',
+    normalizeDefault: normalizeOrder,
   },
-  { key: 'postOrder', method: 'POST', match: /^\/api\/v1\/orders$/ },
-  { key: 'cancelOrders', method: 'DELETE', match: /^\/api\/v1\/orders$/ },
+  { key: 'postOrder', method: 'POST', match: /^\/api\/v1\/orders$/, dynamicDefault: (req) => fakeOrderUid(req.body) },
+  { key: 'cancelOrders', method: 'DELETE', match: /^\/api\/v1\/orders$/, dynamicDefault: () => null },
   {
     key: 'transactionOrders',
     method: 'GET',
     match: new RegExp(`^/api/v1/transactions/(?<txHash>${HEX_32})/orders$`),
     fixture: 'transactionOrders.json',
+    normalizeDefault: normalizeOrderList,
   },
   {
     key: 'nativePrice',
@@ -51,8 +55,19 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
     match: new RegExp(`^/api/v1/app_data/(?<hash>${HEX_32})$`),
     fixture: 'appData.json',
   },
-  { key: 'putAppData', method: 'PUT', match: new RegExp(`^/api/v1/app_data/(?<hash>${HEX_32})$`) },
-  { key: 'quote', method: 'POST', match: /^\/api\/v1\/quote$/, fixture: 'quote.json' },
+  {
+    key: 'putAppData',
+    method: 'PUT',
+    match: new RegExp(`^/api/v1/app_data/(?<hash>${HEX_32})$`),
+    dynamicDefault: (req) => req.params.hash,
+  },
+  {
+    key: 'quote',
+    method: 'POST',
+    match: /^\/api\/v1\/quote$/,
+    fixture: 'quote.json',
+    normalizeDefault: normalizeQuote,
+  },
   {
     key: 'version',
     method: 'GET',
@@ -60,7 +75,13 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
     fixture: 'version.json',
     contentType: 'text/plain',
   },
-  { key: 'trades', method: 'GET', match: /^\/api\/v2\/trades$/, fixture: 'trades.json' },
+  {
+    key: 'trades',
+    method: 'GET',
+    match: /^\/api\/v2\/trades$/,
+    fixture: 'trades.json',
+    normalizeDefault: normalizeTrades,
+  },
   {
     key: 'solverCompetitionByTx',
     method: 'GET',
