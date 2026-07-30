@@ -2,8 +2,9 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapChainEnum, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { allowancesAtom } from '../state/allowancesAtom'
 import { balancesAtom, balancesCacheAtom, balancesUpdateAtom, DEFAULT_BALANCES_STATE } from '../state/balancesAtom'
 
 interface BalancesResetUpdaterProps {
@@ -18,15 +19,20 @@ export function BalancesResetUpdater({ account, chainId }: BalancesResetUpdaterP
 
   const setBalances = useSetAtom(balancesAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
+  const setAllowances = useSetAtom(allowancesAtom)
 
   // Reset states when wallet is not connected
   useEffect(() => {
     if (prevAccount && prevAccount !== account) {
       setBalances(DEFAULT_BALANCES_STATE)
-      setBalancesCache(mapSupportedNetworks({}))
-      setBalancesUpdate(mapSupportedNetworks({}))
+      setBalancesCache(mapChainEnum(SupportedChainId, {}))
+      setBalancesUpdate(mapChainEnum(SupportedChainId, {}))
+      // Allowances (e.g. Solana SPL delegations) are keyed by chain+token but not by account, so a
+      // same-chain wallet switch would otherwise surface the previous account's approvals until the new
+      // fetch lands. Clear them alongside balances.
+      setAllowances(mapChainEnum(SupportedChainId, {}))
     }
-  }, [chainId, account, prevAccount, setBalances, setBalancesCache, setBalancesUpdate])
+  }, [chainId, account, prevAccount, setBalances, setBalancesCache, setBalancesUpdate, setAllowances])
 
   /**
    * Reset balances and allowances when chainId is changed.
