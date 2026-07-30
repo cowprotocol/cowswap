@@ -600,8 +600,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.0
-        version: 4.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.1
+        version: 4.4.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.3.2
         version: 3.3.2
@@ -981,8 +981,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.0
-        version: 4.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.1
+        version: 4.4.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.3.2
         version: 3.3.2
@@ -1791,8 +1791,8 @@ importers:
         specifier: 9.2.5
         version: 9.2.5(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.0
-        version: 4.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.1
+        version: 4.4.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1999,8 +1999,8 @@ importers:
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.0
-        version: 4.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.1
+        version: 4.4.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       eventemitter3:
         specifier: 4.0.7
         version: 4.0.7
@@ -3329,8 +3329,8 @@ packages:
   '@cowprotocol/sdk-bridging@4.2.2':
     resolution: {integrity: sha512-WCrFxNMwNzExQPTF1o/GuMl3D4MrWIildWip7o2cP66FlbUfSSh3n5c3xSSxmg065woFOlsM+dme/PMGcSU29g==}
 
-  '@cowprotocol/sdk-bridging@4.4.0':
-    resolution: {integrity: sha512-TPuFHemANOop2FPA6ZSZR2WTTgVHZLmv9piyeDqGBx9XeUsEdnEQtKl5ofm3LkLzCqg3WaPk92BVICJSFExJKg==}
+  '@cowprotocol/sdk-bridging@4.4.1':
+    resolution: {integrity: sha512-crwa2tpWrk5vmIsKm8tAIMpyRTiUkYTwCov8OPy+gfZbNoYqPbwG+s8NthlK+VddiCFYxZhYvrNshpe8c9UNZQ==}
 
   '@cowprotocol/sdk-common@0.10.1':
     resolution: {integrity: sha512-2EYpgXDwD0F5KR9W+jT2Vr/vzaJ8meAvEPm4fGjJUVr2otrUkhUG7ayx68L1AgKZWYzDtNrlM/+1EeyEjjEaWg==}
@@ -20221,7 +20221,7 @@ snapshots:
       - multiformats
       - supports-color
 
-  '@cowprotocol/sdk-bridging@4.4.0(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-bridging@4.4.1(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-app-data': 5.3.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-common': 0.12.0

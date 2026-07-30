@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "3.21.0",
+  "version": "3.22.0",
   "private": true,
   "description": "CoW Swap",
   "main": "index.js",
@@ -49,7 +49,7 @@
     "@cowprotocol/iframe-transport": "workspace:*",
     "@cowprotocol/multicall": "workspace:*",
     "@cowprotocol/permit-utils": "workspace:*",
-    "@cowprotocol/sdk-bridging": "4.4.0",
+    "@cowprotocol/sdk-bridging": "4.4.1",
     "@cowprotocol/sdk-contracts-ts": "3.3.2",
     "@cowprotocol/sdk-cow-shed": "0.4.4",
     "@cowprotocol/sdk-order-book": "4.0.1",

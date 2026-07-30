@@ -3,15 +3,13 @@ import { useMemo } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
-
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSupportedChains } from './useSupportedChains'
@@ -38,7 +36,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
-  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
 
   const supportedChains = useSupportedChains()
   const supportedTargetChains = useSupportedTargetChains()
