@@ -34,3 +34,5 @@ export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void>
     [isConnected, networkSwitchUnsupported, setWalletInfo],
   )
 }
+
+//asd
