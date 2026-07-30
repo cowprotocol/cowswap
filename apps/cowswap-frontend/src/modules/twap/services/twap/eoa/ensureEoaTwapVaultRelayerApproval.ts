@@ -11,6 +11,7 @@ import { estimateApprove } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
+import { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { EoaTwapApprovalNeeds } from '../../../utils/buildEoaTwapSigningStepPlan'
 
@@ -32,7 +33,7 @@ export interface EnsureEoaTwapVaultRelayerApprovalParams {
    * Permit amount must match the funding order; unlimited pre-placement prefers on-chain max approve.
    */
   preferOnChainApprove?: boolean
-  onSigningStep?: EoaTwapOnSigningStep
+  onSigningStep?: EoaTwapFlowUpdater
 }
 
 export interface EnsureEoaTwapVaultRelayerApprovalResult {
@@ -40,8 +41,6 @@ export interface EnsureEoaTwapVaultRelayerApprovalResult {
   permitData: PermitHookData | null
   promptedWallet: boolean
 }
-
-export type EoaTwapOnSigningStep = (step: EoaTwapSigningSteps, phase?: EoaTwapSigningPhase) => void
 
 export interface GetEoaTwapApprovalNeedsParams {
   config: Config
@@ -52,13 +51,29 @@ export interface GetEoaTwapApprovalNeedsParams {
   amountToApprove: CurrencyAmount<Token>
 }
 
+interface RunOnChainApprovalStepParams {
+  config: Config
+  chainId: SupportedChainId
+  account: AccountAddress
+  sellTokenAddress: Address
+  spender: string
+  amount: bigint
+  step: EoaTwapSigningSteps.ZeroApprove | EoaTwapSigningSteps.ApproveOrPermit
+  onSigningStep?: EoaTwapFlowUpdater
+}
+
 /**
  * Ensures the EOA has allowance (or a permit) for the production Vault Relayer to pull `amountToCover`.
  *
  * Used in two places:
- * - Pre-placement (`preferOnChainApprove: true`, often `amountToCover = maxUint256`) with signing UI.
- * - Funding top-up after the quote (same preferOnChain, **without** `onSigningStep`) so a user who
- *   edited the approve amount in their wallet can top up without regressing the stepper UI.
+ *
+ * - Approval check / step (`preferOnChainApprove: true`, `amountToCover` = TWAP sell + funding buffer) with
+ *   signing UI. See `getEoaTwapPrePlacementAmountToCover`. When approval is needed, the on-chain tx
+ *   still approves `maxUint256`.
+ *
+ * - Funding check after quote in the FundingOrder step (`amountToCover` = actual funding sell) so a user
+ *   whose allowance still falls short (edited approve amount, buffer exceeded, etc.) can still place the order
+ *   without going back. If the allowance falls short once again, an error will be shown.
  *
  * When `preferOnChainApprove` is false and the token is permittable, a permit may be returned
  * for the caller to attach as a pre-hook instead of an on-chain approve.
@@ -223,16 +238,7 @@ async function runOnChainApprovalStep({
   amount,
   step,
   onSigningStep,
-}: {
-  config: Config
-  chainId: SupportedChainId
-  account: AccountAddress
-  sellTokenAddress: Address
-  spender: string
-  amount: bigint
-  step: EoaTwapSigningSteps.ZeroApprove | EoaTwapSigningSteps.ApproveOrPermit
-  onSigningStep?: EoaTwapOnSigningStep
-}): Promise<void> {
+}: RunOnChainApprovalStepParams): Promise<void> {
   onSigningStep?.(step, EoaTwapSigningPhase.Sign)
 
   await approveEoaSellToken({

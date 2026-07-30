@@ -7,7 +7,15 @@ export interface EoaTwapApprovalNeeds {
 
 /**
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
- * Approval steps are included only when needed; setup / funding / creating always follow.
+ * - (Optional) Zero approval step
+ * - (Optional) Approval step
+ * - (Required) Setup step
+ * - (Required) Funding order step
+ * - (Required) Creating order step
+ *
+ * Note that approval steps are included only when needed at plan/build time based on the `needs` param,
+ * which accounts for TWAP sell amount + funding buffer.
+ * @see `getEoaTwapPrePlacementAmountToCover`
  */
 export function buildEoaTwapSigningStepPlan(needs: EoaTwapApprovalNeeds): EoaTwapSigningSteps[] {
   const steps: EoaTwapSigningSteps[] = []

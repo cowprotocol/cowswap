@@ -29,7 +29,7 @@ import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import {
   ensureEoaTwapVaultRelayerApproval,
-  EoaTwapOnSigningStep,
+  EnsureEoaTwapVaultRelayerApprovalResult,
   getEoaTwapApprovalNeeds,
 } from './ensureEoaTwapVaultRelayerApproval'
 
@@ -37,6 +37,8 @@ import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationCon
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
 import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
+
+import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
 const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
@@ -84,7 +86,7 @@ export interface PlaceEoaTwapOrderParams {
   /** Initial buy sell=buy order permit info */
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
-  onSigningStep?: EoaTwapOnSigningStep
+  onSigningStep?: EoaTwapFlowUpdater
 }
 
 export interface PlaceEoaTwapOrderResult {
@@ -351,33 +353,30 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   // ---------------------------------------------------------------------------
   // Funding-order size vs vault-relayer allowance
   // ---------------------------------------------------------------------------
-  // The BUY sell=buy funding quote sell amount can exceed the TWAP sell amount (costs/slippage).
-  // Pre-placement requested maxUint256 approve, but wallets may let the user edit that amount.
   //
-  // Footgun: approving exactly the TWAP sell (e.g. 10 USDC) usually leaves allowance short of the
-  // funding sell (often slightly > 10). A second approve of the same amount does not help —
-  // ERC-20 approve replaces allowance, it does not add — so top-up with the same edited value
-  // still fails the re-check below. Unlimited (or ≥ funding sell) is required.
-  // Always re-read allowance against the *actual* funding sell size before posting.
+  // The BUY sell=buy funding quote sell amount can exceed the TWAP sell amount, as it includes costs/slippage.
+  // We therefore check if the allowance covers the sell amount + small buffer. If it doesn't, and we need
+  // to show the Approve step, we'll request unlimited approval (`maxUint256`). However, wallets may let
+  // the user edit that amount.
+  //
+  // If they edit it and approving exactly the amount the intend to sell, the allowance will fall short
+  // and a second approve request will be presented to the user in the FundingOrder step.
+
   const fundingSellAmountAtoms = quoteResults.amountsAndCosts.afterSlippage.sellAmount
   const fundingSellAmount = CurrencyAmount.fromRawAmount(sellToken, fundingSellAmountAtoms.toString())
   const fundingSellAmountFormatted = fundingSellAmount.toExact()
 
-  if (EOA_TWAP_POC_DEBUG) {
-    const confirmed = confirm(
-      `Your CoW Shed will get exactly ${sellAmountFormatted} ${sellToken.symbol} for at most ${fundingSellAmountFormatted} ${sellToken.symbol}. Then a TWAP will be created with each part selling ${sellToken.symbol} for ${buyToken.symbol}. ok?`,
-    )
-
-    if (!confirmed) throw new Error('User did not confirm the order')
-  }
+  eoaTwapDebugLog(
+    `Your CoW Shed will get exactly ${sellAmountFormatted} ${sellToken.symbol} for at most ${fundingSellAmountFormatted} ${sellToken.symbol}. Then a TWAP will be created with each part selling ${sellToken.symbol} for ${buyToken.symbol}.`,
+  )
 
   // Move UI to "Confirm order" before any top-up approve so we never rewind to ApproveOrPermit
   // (which would mark TwapSetup as upcoming again).
   onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Sign)
 
-  let ensureResult = {
+  let ensureResult: EnsureEoaTwapVaultRelayerApprovalResult = {
     usedPermit: false,
-    permitData: null as Awaited<ReturnType<typeof ensureEoaTwapVaultRelayerApproval>>['permitData'],
+    permitData: null,
     promptedWallet: false,
   }
 

@@ -24,7 +24,7 @@ import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
-import { useEoaTwapSigningStep, useResetEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
+import { useEoaTwapFlowUpdater, useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
@@ -100,7 +100,7 @@ export function TwapConfirmModal() {
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
-  const resetEoaTwapSigningStep = useResetEoaTwapSigningStep()
+  const updateEoaTwapFlow = useEoaTwapFlowUpdater()
 
   // Re-check the balance against the (frozen) sell amount in case it changed while the modal was open
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
@@ -111,9 +111,9 @@ export function TwapConfirmModal() {
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
 
   const onDismiss = useCallback(() => {
-    resetEoaTwapSigningStep()
+    updateEoaTwapFlow(null)
     tradeConfirmActions.onDismiss()
-  }, [resetEoaTwapSigningStep, tradeConfirmActions])
+  }, [updateEoaTwapFlow, tradeConfirmActions])
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,

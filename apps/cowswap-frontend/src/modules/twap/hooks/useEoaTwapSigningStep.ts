@@ -8,29 +8,32 @@ import {
   EoaTwapSigningSteps,
 } from '../state/eoaTwapSigningStepAtom'
 
-export function useEoaTwapSigningStep(): EoaTwapSigningStepState | null {
-  return useAtomValue(eoaTwapSigningStepAtom)
-}
-
-export function useResetEoaTwapSigningStep(): () => void {
-  const setState = useSetAtom(eoaTwapSigningStepAtom)
-
-  return useCallback(() => {
-    setState(null)
-  }, [setState])
-}
-
-export function useSetEoaTwapSigningStep(): (
-  step: EoaTwapSigningSteps,
-  plan: EoaTwapSigningSteps[],
+export type EoaTwapFlowUpdater = (
+  step: EoaTwapSigningSteps | null,
   phase?: EoaTwapSigningPhase,
-) => void {
+  plan?: EoaTwapSigningSteps[],
+) => void
+
+export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
   const setState = useSetAtom(eoaTwapSigningStepAtom)
 
   return useCallback(
-    (step: EoaTwapSigningSteps, plan: EoaTwapSigningSteps[], phase: EoaTwapSigningPhase = EoaTwapSigningPhase.Sign) => {
-      setState({ step, plan, phase })
+    (step: EoaTwapSigningSteps | null, phase?: EoaTwapSigningPhase, plan?: EoaTwapSigningSteps[]) => {
+      if (!step || !phase) {
+        setState(null)
+        return
+      }
+
+      setState((prev) => ({
+        plan: plan ?? prev?.plan ?? [],
+        step,
+        phase,
+      }))
     },
     [setState],
   )
+}
+
+export function useEoaTwapSigningStep(): EoaTwapSigningStepState | null {
+  return useAtomValue(eoaTwapSigningStepAtom)
 }

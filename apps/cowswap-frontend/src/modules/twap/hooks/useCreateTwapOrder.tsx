@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { maxUint256 } from 'viem'
 import { useConfig } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -36,7 +35,7 @@ import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
-import { useResetEoaTwapSigningStep, useSetEoaTwapSigningStep } from './useEoaTwapSigningStep'
+import { useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -55,6 +54,7 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildEoaTwapSigningStepPlan } from '../utils/buildEoaTwapSigningStepPlan'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { getEoaTwapPrePlacementAmountToCover } from '../utils/getEoaTwapPrePlacementAmountToCover'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
@@ -109,8 +109,7 @@ export function useCreateTwapOrder() {
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
   const tradeConfirmActions = useTradeConfirmActions()
-  const setEoaTwapSigningStep = useSetEoaTwapSigningStep()
-  const resetEoaTwapSigningStep = useResetEoaTwapSigningStep()
+  const updateEoaTwapFlow = useEoaTwapFlowUpdater()
 
   const { priceImpact } = useTradePriceImpact()
   const isBridge = getAreBridgeCurrencies(inputCurrencyAmount?.currency, outputCurrencyAmount?.currency)
@@ -245,43 +244,30 @@ export function useCreateTwapOrder() {
 
           const sellTokenAddress = twapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = twapOrder.sellAmount.currency
-
-          // -------------------------------------------------------------------------
-          // EOA TWAP placement (step-by-step)
-          // -------------------------------------------------------------------------
-          // 1) Figure signing UI steps from whether zero-approve / approve are needed.
-          // 2) Show ConfirmationPendingContent and walk the wallet through those steps.
-          // 3) Pre-placement: request on-chain approve(maxUint256) for the prod Vault Relayer
-          //    so a later funding quote (often slightly larger than the TWAP sell) is covered.
-          //    Wallets may still let the user edit that amount — placeEoaTwapOrder re-checks.
-          // 4) placeEoaTwapOrder: cow-shed EIP-712 (TWAP setup) → funding quote → allowance
-          //    check vs funding sell → optional top-up approve (no UI rewind) → sign/post
-          //    funding order → wait for settlement (CreatingOrder).
-          // -------------------------------------------------------------------------
+          const sellAmountAtoms = BigInt(twapOrder.sellAmount.quotient.toString())
+          // Exact amount is unknown until after Twap Setup, so we cover the sell amount + buffer:
+          const amountToCover = getEoaTwapPrePlacementAmountToCover(sellAmountAtoms)
           const approvalNeeds = await getEoaTwapApprovalNeeds({
             config,
             account: account as `0x${string}`,
             sellTokenAddress,
             spender: vaultRelayerAddress,
-            amountToCover: maxUint256,
+            amountToCover,
             amountToApprove: twapOrder.sellAmount,
           })
+
           const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
-          const onSigningStep = (
-            step: EoaTwapSigningSteps,
-            phase: EoaTwapSigningPhase = EoaTwapSigningPhase.Sign,
-          ): void => {
-            setEoaTwapSigningStep(step, signingStepPlan, phase)
-          }
 
           // Open the multi-step pending UI as soon as the plan is known.
           const firstStep = signingStepPlan[0]
+
           if (firstStep) {
-            onSigningStep(firstStep, EoaTwapSigningPhase.Sign)
+            updateEoaTwapFlow(firstStep, EoaTwapSigningPhase.Sign, signingStepPlan)
           }
 
-          // Prefer on-chain max approve (not permit): funding sell size is unknown until after
-          // the quote inside placeEoaTwapOrder, so a funding-sized permit would be premature.
+          // Prefer on-chain max approve (not permit) when approval is needed: funding sell size
+          // is unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
+          // already covers sell + buffer.
           await ensureEoaTwapVaultRelayerApproval({
             config,
             chainId,
@@ -289,12 +275,12 @@ export function useCreateTwapOrder() {
             sellTokenAddress,
             sellTokenName: sellToken.name,
             spender: vaultRelayerAddress,
-            amountToCover: maxUint256,
+            amountToCover,
             amountToApprove: twapOrder.sellAmount,
             permitInfo,
             generatePermitHook,
             preferOnChainApprove: true,
-            onSigningStep,
+            onSigningStep: updateEoaTwapFlow,
           })
 
           const { proxyAddress, orderPostingResult } = await placeEoaTwapOrder({
@@ -308,7 +294,7 @@ export function useCreateTwapOrder() {
             composableCowContract,
             permitInfo,
             generatePermitHook,
-            onSigningStep,
+            onSigningStep: updateEoaTwapFlow,
           })
 
           // Funding-order UID used for confirm-modal CoW explorer link. `!== twapOrderId`.
@@ -317,7 +303,7 @@ export function useCreateTwapOrder() {
           orderStatus = TwapOrderStatus.Pending
 
           // CreatingOrder WaitingForTx already set at end of placeEoaTwapOrder; keep it through settlement wait.
-          onSigningStep(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.WaitingForTx)
+          updateEoaTwapFlow(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.WaitingForTx)
 
           // Used for the toast native chain explorer link.
           // Not available until the funding order tx settles. If we cannot resolve this, we fallback to the funding
@@ -325,7 +311,7 @@ export function useCreateTwapOrder() {
           const settlementTxHash = await waitForFundingOrderSettlementTx(chainId, orderPostingResult.orderId)
           orderCreationHash = settlementTxHash ?? orderPostingResult.orderId
 
-          onSigningStep(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.Confirmed)
+          updateEoaTwapFlow(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.Confirmed)
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -370,7 +356,7 @@ export function useCreateTwapOrder() {
         sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
-        resetEoaTwapSigningStep()
+        updateEoaTwapFlow(null)
         tradeConfirmActions.onSuccess(confirmModalHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
@@ -387,7 +373,7 @@ export function useCreateTwapOrder() {
       } catch (error) {
         log.error(error)
         const errorMessage = getErrorMessage(error)
-        resetEoaTwapSigningStep()
+        updateEoaTwapFlow(null)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
@@ -420,8 +406,7 @@ export function useCreateTwapOrder() {
       composableCowContract,
       permitInfo,
       generatePermitHook,
-      setEoaTwapSigningStep,
-      resetEoaTwapSigningStep,
+      updateEoaTwapFlow,
     ],
   )
 }
