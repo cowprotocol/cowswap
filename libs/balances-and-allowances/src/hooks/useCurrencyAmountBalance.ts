@@ -17,7 +17,8 @@ export function useCurrencyAmountBalance(
 
     const balance = balances[token.address.toLowerCase()]
 
-    if (!balance) return undefined
+    // A zero balance is a valid value, only a missing one means the balance is unknown
+    if (balance === undefined || balance === null) return undefined
 
     return CurrencyAmount.fromRawAmount(token, toHex(balance))
   }, [token, balances])
