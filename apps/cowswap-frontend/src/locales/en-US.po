@@ -1531,6 +1531,7 @@ msgid "Select an {accountProxyLabelString} to check for available refunds {chain
 msgstr "Select an {accountProxyLabelString} to check for available refunds {chain}"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Unsupported wallet"
 msgstr "Unsupported wallet"
 

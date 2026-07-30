@@ -9,6 +9,7 @@ import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowpr
 import {
   useGnosisSafeInfo,
   useIsRestoringConnection,
+  useIsSafeWallet,
   useIsTxBundlingSupported,
   useWalletDetails,
   useWalletInfo,
@@ -63,8 +64,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
+  const isSafeWallet = useIsSafeWallet()
   const isWrapUnwrap = useIsWrapOrUnwrap()
-  const { isSupportedWallet } = useWalletDetails()
+  const { allowsOffchainSigning, isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
@@ -75,8 +77,12 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const isBundlingSupportedForContext =
+    tradeType === TradeType.LIMIT_ORDER ? isSafeWallet && isBundlingSupported : isBundlingSupported
   const isApproveRequired = useIsApprovalOrPermitRequired({
-    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    isBundlingSupportedOrEnabledForContext: isBundlingSupportedForContext,
+    allowsOffchainSigning,
   }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER

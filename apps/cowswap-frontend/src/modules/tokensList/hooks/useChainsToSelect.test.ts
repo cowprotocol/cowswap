@@ -24,6 +24,7 @@ const DEFAULT_ROUTES_AVAILABILITY = {
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
+  useNetworkSwitchUnsupported: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
@@ -43,14 +44,11 @@ jest.mock('./useSelectTokenWidgetState', () => ({
   useSelectTokenWidgetState: jest.fn(),
 }))
 
-jest.mock('common/hooks/useShouldHideNetworkSelector', () => ({
-  useShouldHideNetworkSelector: jest.fn(),
-}))
-
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 
 const { useIsBridgingEnabled, useAvailableChains } = require('@cowprotocol/common-hooks')
+const { useNetworkSwitchUnsupported } = require('@cowprotocol/wallet')
 const mockUseIsBridgingEnabled = useIsBridgingEnabled as jest.MockedFunction<typeof useIsBridgingEnabled>
 const mockUseAvailableChains = useAvailableChains as jest.MockedFunction<typeof useAvailableChains>
 
@@ -60,9 +58,8 @@ const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.Mocked
 >
 const mockUseRoutesAvailability = useRoutesAvailability as jest.MockedFunction<typeof useRoutesAvailability>
 
-const { useShouldHideNetworkSelector } = require('common/hooks/useShouldHideNetworkSelector')
-const mockUseShouldHideNetworkSelector = useShouldHideNetworkSelector as jest.MockedFunction<
-  typeof useShouldHideNetworkSelector
+const mockuseNetworkSwitchUnsupported = useNetworkSwitchUnsupported as jest.MockedFunction<
+  typeof useNetworkSwitchUnsupported
 >
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
@@ -369,7 +366,7 @@ describe('useChainsToSelect hook', () => {
       isLoading: false,
     })
     mockUseRoutesAvailability.mockReturnValue(DEFAULT_ROUTES_AVAILABILITY)
-    mockUseShouldHideNetworkSelector.mockReturnValue(false)
+    mockuseNetworkSwitchUnsupported.mockReturnValue(false)
   })
 
   it('returns undefined for LIMIT_ORDER + OUTPUT (buy token)', () => {

@@ -45,6 +45,10 @@ function getGitBuildInfo(): {
   commitDate: string
   releaseTag: string
 } {
+  if (process.env.BUNDLE_SIZE_BUILD === 'true') {
+    return { commitHash: '0000000', commitDate: '1970-01-01T00:00:00+00:00', releaseTag: 'v1.0.0' }
+  }
+
   try {
     const commitHash = execSync('git rev-parse --short=7 HEAD').toString().trim()
     const commitDate = execSync('git show -s --format=%cI HEAD').toString().trim()
@@ -112,6 +116,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   if (analyzeBundle) {
     plugins.push(
+      bundleStats() as PluginOption,
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
@@ -121,7 +126,6 @@ export default defineConfig(({ mode, isPreview }) => {
         filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
-    plugins.push(bundleStats() as PluginOption)
   }
 
   if (isProduction && sentryAuthToken) {
@@ -301,6 +305,7 @@ export default defineConfig(({ mode, isPreview }) => {
     },
 
     build: {
+      manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
       sourcemap: !isPreview,

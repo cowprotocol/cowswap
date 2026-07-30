@@ -5,6 +5,7 @@ import svgProgressbarStepExpiredSrc from '@cowprotocol/assets/cow-swap/progressb
 import svgProgressbarStepSolvingSrc from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import svgProgressbarStepUnfillableSrc from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -39,6 +40,7 @@ interface InitialTopSectionProps extends BaseTopSectionProps {
 
 interface SolvingTopSectionProps {
   countdown: number
+  chainId: SupportedChainId
 }
 
 // delayed, submissionFailed, solved
@@ -163,7 +165,7 @@ export function InitialTopSection({ stepName, order }: InitialTopSectionProps): 
   )
 }
 
-export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactNode {
+export function SolvingTopSection({ countdown, chainId }: SolvingTopSectionProps): ReactNode {
   return (
     <div
       style={{
@@ -181,6 +183,7 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
       />
       <CircularCountdown
         countdown={countdown || 0}
+        chainId={chainId}
         isDelayed={countdown === 0}
         bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
       />

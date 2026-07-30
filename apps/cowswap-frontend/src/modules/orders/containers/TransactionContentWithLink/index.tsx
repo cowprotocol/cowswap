@@ -50,8 +50,20 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
   const isEthFlowCreating =
     isEthFlow && transactionHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status)
 
+  let hash = ''
+
+  if (isOrder && !isEthFlow) {
+    hash = orderUid || ''
+  } else if (isEthFlowCreating) {
+    hash = transactionHash || ''
+  } else if (isSafeOrder) {
+    hash = orderUid || ''
+  } else {
+    hash = transactionHash || orderUid || ''
+  }
+
   const tx = {
-    hash: (isOrder && !isEthFlow ? orderUid : isEthFlowCreating ? transactionHash : orderUid) || '',
+    hash,
     hashType: (isSafeOrder || isSafeTx) && !isOrder ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: transactionHash || '',
