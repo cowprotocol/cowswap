@@ -1,15 +1,16 @@
 {
   "quote": {
-    "sellToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    "receiver": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
-    "sellAmount": "998860760014952024",
-    "buyAmount": "1893366032",
-    "validTo": 1785339452,
-    "appData": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "feeAmount": "1139239985047976",
-    "gasAmount": "237944",
-    "gasPrice": "4787849179",
+    "sellToken": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+    "buyToken": "0xbe72e441bf55620febc26715db68d3494213d8cb",
+    "receiver": "0x6468B8cE5d68528CdF62791431c2914E1e028244",
+    "sellAmount": "499728378678100948",
+    "buyAmount": "273346350884534691538",
+    "validTo": 1785422153,
+    "appData": "{\"appCode\":\"CoW Swap\",\"environment\":\"development\",\"metadata\":{\"orderClass\":{\"orderClass\":\"limit\"},\"quote\":{\"slippageBips\":0}},\"version\":\"1.15.0\"}",
+    "appDataHash": "0x87b51830df29f77bd6ff1812697703a744b17659e8094e4264e860beb27559ad",
+    "feeAmount": "271621321899052",
+    "gasAmount": "222253",
+    "gasPrice": "1222126684",
     "sellTokenPrice": "1",
     "kind": "sell",
     "partiallyFillable": false,
@@ -17,9 +18,9 @@
     "buyTokenBalance": "erc20",
     "signingScheme": "eip712"
   },
-  "from": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
-  "expiration": "2026-07-29T15:09:32.814322958Z",
-  "id": 38705406,
+  "from": "0x6468B8cE5d68528CdF62791431c2914E1e028244",
+  "expiration": "2026-07-30T14:07:53.488762137Z",
+  "id": 620730,
   "verified": true,
-  "protocolFeeBps": "2"
+  "protocolFeeBps": "0.3"
 }
