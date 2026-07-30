@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/types-v4.6.0...types-v4.7.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
 ## [4.6.0](https://github.com/cowprotocol/cowswap/compare/types-v4.5.1...types-v4.6.0) (2026-07-28)
 
 ### Minor Changes
