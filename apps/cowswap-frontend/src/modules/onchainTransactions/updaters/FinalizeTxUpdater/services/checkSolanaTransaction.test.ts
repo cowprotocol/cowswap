@@ -29,19 +29,30 @@ const transaction = {
 function createParams({
   status,
   blockHeight = LAST_VALID_BLOCK_HEIGHT - 1,
+  historicalStatus = null,
 }: {
   status: SignatureStatus | null
   blockHeight?: number
-}): { params: CheckEthereumTransactions; dispatch: jest.Mock } {
+  /** What a `searchTransactionHistory` lookup finds, which reaches beyond the recent status cache. */
+  historicalStatus?: SignatureStatus | null
+}): { params: CheckEthereumTransactions; dispatch: jest.Mock; getSignatureStatuses: jest.Mock } {
   const dispatch = jest.fn()
 
+  const getSignatureStatuses = jest.fn(
+    async (_signatures: string[], config?: { searchTransactionHistory?: boolean }) => ({
+      context: { slot: 42 },
+      value: [config?.searchTransactionHistory ? historicalStatus : status],
+    }),
+  )
+
   const solanaConnection = {
-    getSignatureStatuses: jest.fn().mockResolvedValue({ context: { slot: 42 }, value: [status] }),
+    getSignatureStatuses,
     getBlockHeight: jest.fn().mockResolvedValue(blockHeight),
   } as unknown as Connection
 
   return {
     dispatch,
+    getSignatureStatuses,
     params: {
       chainId: SupportedChainId.SOLANA,
       account: ACCOUNT,
@@ -112,6 +123,56 @@ describe('checkSolanaTransaction', () => {
     await waitFor(() => expect(dispatch).toHaveBeenCalled())
 
     expect(dispatch.mock.calls[0][0].payload.receipt.status).toBe('reverted')
+  })
+
+  describe('when the signature has aged out of the recent status cache', () => {
+    // The status cache only spans ~150 slots, so a landed transaction reads back as `null` once the
+    // user leaves the tab (slot polling stops) or reloads. Absence there is not proof of failure.
+    it('confirms against transaction history rather than declaring failure', async () => {
+      const { params, dispatch, getSignatureStatuses } = createParams({
+        status: null,
+        blockHeight: LAST_VALID_BLOCK_HEIGHT + 1,
+        historicalStatus: { slot: 99, confirmations: null, err: null, confirmationStatus: 'finalized' },
+      })
+
+      checkSolanaTransaction(transaction, params)
+
+      await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+      expect(dispatch.mock.calls[0][0].payload.receipt.status).toBe('success')
+      expect(dispatch.mock.calls[0][0].payload.receipt.blockNumber).toBe(99)
+      expect(getSignatureStatuses).toHaveBeenLastCalledWith([SIGNATURE], { searchTransactionHistory: true })
+    })
+
+    it('still reports a genuine on-chain failure found in history', async () => {
+      const { params, dispatch } = createParams({
+        status: null,
+        blockHeight: LAST_VALID_BLOCK_HEIGHT + 1,
+        historicalStatus: {
+          slot: 99,
+          confirmations: null,
+          err: { InstructionError: [0, 'Custom'] },
+          confirmationStatus: 'finalized',
+        },
+      })
+
+      checkSolanaTransaction(transaction, params)
+
+      await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+      expect(dispatch.mock.calls[0][0].payload.receipt.status).toBe('reverted')
+    })
+
+    it('does not pay for a history search while the blockhash is still valid', async () => {
+      const { params, getSignatureStatuses } = createParams({ status: null })
+
+      checkSolanaTransaction(transaction, params)
+
+      await waitFor(() => expect(getSignatureStatuses).toHaveBeenCalled())
+
+      expect(getSignatureStatuses).toHaveBeenCalledTimes(1)
+      expect(getSignatureStatuses).toHaveBeenCalledWith([SIGNATURE])
+    })
   })
 
   it('does not dispatch anything after being cancelled', async () => {

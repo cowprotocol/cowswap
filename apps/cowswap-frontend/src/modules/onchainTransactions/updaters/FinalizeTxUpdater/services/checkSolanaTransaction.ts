@@ -88,6 +88,7 @@ async function checkStatus(
 ): Promise<StatusResult> {
   if (!connection) return { type: 'pending' }
 
+  // The cheap lookup: consults only the node's recent status cache.
   const { context, value } = await connection.getSignatureStatuses([signature])
   const [status] = value
 
@@ -105,7 +106,23 @@ async function checkStatus(
 
   const blockHeight = await connection.getBlockHeight()
 
-  return blockHeight > lastValidBlockHeight ? { type: 'reverted', slot: context.slot } : { type: 'pending' }
+  if (blockHeight <= lastValidBlockHeight) return { type: 'pending' }
+
+  // The blockhash has expired and the signature is not in the recent status cache — but that cache only
+  // spans ~150 slots, so a transaction that landed and then aged out reads back exactly like one that
+  // never landed. Slot polling stops while the tab is hidden, so simply switching away for a minute is
+  // enough to miss the window and mistake a confirmed transaction for a failed one.
+  //
+  // Confirm against transaction history before declaring failure. That lookup is expensive for the node,
+  // which is why it is reached only here: once per transaction, at the point of no return.
+  const historical = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
+  const [historicalStatus] = historical.value
+
+  if (!historicalStatus) return { type: 'reverted', slot: context.slot }
+
+  return historicalStatus.err
+    ? { type: 'reverted', slot: historicalStatus.slot }
+    : { type: 'success', slot: historicalStatus.slot }
 }
 
 function getLastValidBlockHeight(transaction: EnhancedTransactionDetails): number | undefined {
