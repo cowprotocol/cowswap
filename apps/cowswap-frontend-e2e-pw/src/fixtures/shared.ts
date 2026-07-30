@@ -52,26 +52,33 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
     await use(handle)
     await handle.reset()
   },
-  mocks: async ({ context }, use) => {
-    const cowApi = installCowProtocolApi(context)
-    const tokenLists = installTokenLists(context)
-    const safeSdk = installSafeSdk(context)
-    const bungee = installBungee(context)
-    const nearIntents = installNearIntents(context)
+  // `auto: true`: nothing destructures `mocks` directly anymore (Task 4 dropped the last two
+  // call sites), but every test still needs the CoW API lockdown installed and asserted at
+  // teardown. A plain (non-auto) fixture is only set up when requested, so without this the
+  // whole mock stack — including `assertNoUnmatched()` — would silently never run.
+  mocks: [
+    async ({ context }, use) => {
+      const cowApi = installCowProtocolApi(context)
+      const tokenLists = installTokenLists(context)
+      const safeSdk = installSafeSdk(context)
+      const bungee = installBungee(context)
+      const nearIntents = installNearIntents(context)
 
-    await use({ cowApi, tokenLists, safeSdk, bungee, nearIntents })
+      await use({ cowApi, tokenLists, safeSdk, bungee, nearIntents })
 
-    tokenLists.reset()
-    bungee.reset()
-    nearIntents.reset()
-    await safeSdk.disable()
-    // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
-    // resets above must still happen.
-    try {
-      cowApi.assertNoUnmatched()
-    } finally {
-      cowApi.reset()
-    }
-  },
+      tokenLists.reset()
+      bungee.reset()
+      nearIntents.reset()
+      await safeSdk.disable()
+      // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
+      // resets above must still happen.
+      try {
+        cowApi.assertNoUnmatched()
+      } finally {
+        cowApi.reset()
+      }
+    },
+    { auto: true },
+  ],
 }
 /* eslint-enable react-hooks/rules-of-hooks */

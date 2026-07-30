@@ -96,7 +96,7 @@ mocks.cowApi.set('accountOrders', [openOrder, filledOrder])
 
 // a factory — gets the parsed request plus the resolved default body
 mocks.cowApi.set('order', ({ params, defaults }) => ({
-  ...defaults,
+  ...(defaults as object),
   uid: params.uid,
   status: 'fulfilled',
 }))
