@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.0...common-const-v3.7.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.6.0...common-const-v3.7.0) (2026-07-28)
 
 ### Minor Changes
