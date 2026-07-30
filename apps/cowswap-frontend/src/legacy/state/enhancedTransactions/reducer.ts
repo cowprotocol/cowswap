@@ -68,6 +68,8 @@ export interface EnhancedTransactionState {
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',
   GNOSIS_SAFE_TX = 'GNOSIS_SAFE_TX',
+  /** Solana transaction signature. Unlike EVM, there is no nonce and no receipt to poll for. */
+  SOLANA_TX = 'SOLANA_TX',
 }
 
 export const initialState: EnhancedTransactionState = {}
@@ -122,7 +124,9 @@ export default createReducer(initialState, (builder) =>
         const txs = transactions[chainId] ?? {}
         txs[hash] = {
           hash,
-          transactionHash: hashType === HashType.ETHEREUM_TX ? hash : null,
+          // Only Safe transactions start life without a real on-chain hash: they are offchain-signed
+          // first, and the tx hash only appears once the Safe executes them.
+          transactionHash: hashType === HashType.GNOSIS_SAFE_TX ? null : hash,
           nonce,
           hashType,
           addedTime: now(),

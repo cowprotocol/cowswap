@@ -128,6 +128,7 @@ msgid "Total duration"
 msgstr "Total duration"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Unwrap {amountStr} {wrapped} to {native}"
 msgstr "Unwrap {amountStr} {wrapped} to {native}"
 
@@ -549,6 +550,7 @@ msgstr "Buy COW"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Reject"
 msgstr "Reject"
 
@@ -4030,6 +4032,7 @@ msgstr "both {joinedSupportedTypes}"
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Error"
 msgstr "Error"
 
@@ -4092,6 +4095,7 @@ msgstr "Read more about unsupported tokens"
 #~ msgstr "This wallet isn't eligible."
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Signing transaction"
 msgstr "Signing transaction"
 
@@ -5658,6 +5662,7 @@ msgstr "Unlock the Power of TWAP Orders"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Unwrapping"
 msgstr "Unwrapping"
 
@@ -6914,6 +6919,7 @@ msgstr "Safe logo"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Wrapping"
 msgstr "Wrapping"
 
@@ -7459,6 +7465,7 @@ msgstr "Estimated fill price"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Transaction failed"
 msgstr "Transaction failed"
 
@@ -7890,6 +7897,7 @@ msgid "Check that you are providing a sufficient gas limit for the transaction i
 msgstr "Check that you are providing a sufficient gas limit for the transaction in your wallet."
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Wrap {amountStr} {native} to {wrapped}"
 msgstr "Wrap {amountStr} {native} to {wrapped}"
 
