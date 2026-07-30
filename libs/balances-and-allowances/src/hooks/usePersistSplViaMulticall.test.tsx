@@ -12,7 +12,7 @@ import { PublicKey } from '@solana/web3.js'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { PersistBalancesAndAllowancesParams } from './usePersistBalancesViaWebCalls'
-import { usePersistSolanaBalancesViaWebCalls } from './usePersistSolanaBalancesViaWebCalls'
+import { usePersistSplViaMulticall } from './usePersistSplViaMulticall'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
@@ -58,6 +58,12 @@ jest.mock('@solana/spl-token', () => ({
   unpackAccount: (ata: { toBase58(): string }) => ({ amount: mockAmountByAta[ata.toBase58()] }),
 }))
 
+// The settlement PDA derivation relies on ed25519 curve math that this env can't run; the delegate
+// matching itself is covered in fetchSolanaTokenAccounts.test — here we only assert balances.
+jest.mock('../const/solanaSettlement', () => ({
+  findSolanaSettlementStatePda: () => ({ equals: () => false }),
+}))
+
 interface MockConnection {
   rpcEndpoint: string
   getMultipleAccountsInfo: jest.Mock
@@ -92,7 +98,7 @@ function makeParams(overrides: Partial<PersistBalancesAndAllowancesParams> = {})
 function renderWithBalances(params: PersistBalancesAndAllowancesParams): { result: { current: BalancesState } } {
   return renderHook(
     () => {
-      usePersistSolanaBalancesViaWebCalls(params)
+      usePersistSplViaMulticall(params)
       return useAtomValue(balancesAtom)
     },
     { wrapper },
@@ -129,7 +135,7 @@ function wrapper({ children }: { children: ReactNode }): ReactNode {
   )
 }
 
-describe('usePersistSolanaBalancesViaWebCalls', () => {
+describe('usePersistSplViaMulticall', () => {
   beforeEach(() => {
     mockTokensByAddress = {}
     mockAmountByAta = { [ataKey(MINT_A)]: 100n, [ataKey(MINT_B)]: 250n }
@@ -203,7 +209,7 @@ describe('usePersistSolanaBalancesViaWebCalls', () => {
   it('keys the update timestamp by the case-sensitive Solana account, not a lowercased alias', async () => {
     const { result } = renderHook(
       () => {
-        usePersistSolanaBalancesViaWebCalls(makeParams())
+        usePersistSplViaMulticall(makeParams())
         return useAtomValue(balancesUpdateAtom)
       },
       { wrapper },
