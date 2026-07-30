@@ -1194,7 +1194,6 @@ import { type Hex } from 'viem'
 
 import {
   classifyCall,
-  collectAllowanceCalls,
   encodeAllowanceResult,
   isFullyMocked,
   resolveBatchResult,
@@ -1423,7 +1422,7 @@ function parseBody(route: Route): unknown {
 }
 ```
 
-Note `collectAllowanceCalls` is imported but only needed if a later spec wants call ordering without triggering resolution; if the linter flags it as unused, drop it from the import list rather than adding a suppression.
+`collectAllowanceCalls` (Task 3) is deliberately **not** imported here — resolution walks the tree itself via `resolveBatchResult`. It stays exported because it is the natural way for a future spec to inspect call ordering without triggering resolution, and it is covered by its own test.
 
 - [ ] **Step 2: Wire it into `shared.ts`**
 
@@ -1492,7 +1491,7 @@ cd /Users/shoom/IdeaProjects/cowswap-2
 pnpm nx lint cowswap-frontend-e2e-pw
 ```
 
-Expected: no errors. A `noUnusedLocals`-style complaint about `collectAllowanceCalls` is resolved by removing it from the import list.
+Expected: no errors.
 
 - [ ] **Step 4: Run the whole unit suite**
 
