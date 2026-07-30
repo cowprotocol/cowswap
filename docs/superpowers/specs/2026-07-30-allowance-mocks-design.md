@@ -140,8 +140,15 @@ that already resets those.
 
 ### Resolution
 
-`resolve(owner, chainId, token)` lowercases owner and token, walks
-`overrides` then `fixture`, and returns `0n` when any level is missing. There
+The nested JSON is flattened at load into a single
+`Map<string, bigint>` keyed by `` `${owner}|${chainId}|${token}` `` with
+addresses lowercased. Overrides are a second map of the same shape, which makes
+"override wins, else fixture, else 0" a two-line lookup and per-token merging
+trivial — no nested-object cloning.
+
+`resolveAllowance(fixture, overrides, owner, chainId, token)` lowercases owner
+and token, checks `overrides` then `fixture`, and returns `0n` when neither has
+the key. The example above is illustrative — the committed file is `{}`. There
 are no wildcards: an owner absent from the file gets `0n` for every token, as
 does a token absent from a present owner's chain map. This is the "default to 0"
 rule — a spec is deterministic before it configures anything, and the cost of
@@ -218,13 +225,28 @@ CI, so a committed fixture keyed to one address yields all-zero allowances for
 anyone else — every token silently rendering as needs-approval.
 
 At teardown, `reportUnknownOwners()` emits a **non-fatal** `console.warn` listing
-every owner address that was queried but has no entry in the fixture or the
-overrides, so the fix is a copy-paste into the JSON or a `set()` call. It runs
-alongside the existing `cowApi.assertNoUnmatched()` teardown, before reset.
+every owner address that was queried but has no entry, so the fix is a
+copy-paste into the JSON or a `set()` call. It runs alongside the existing
+`cowApi.assertNoUnmatched()` teardown, before reset.
+
+It warns **only when the effective lookup is non-empty** — that is, when the
+fixture or an override configures at least one owner, but not the one that was
+queried. With nothing configured, "no allowances declared, everything is 0" is a
+coherent intentional state, and warning about it on every run would be noise
+that trains people to ignore the message. The dangerous case — a fixture keyed
+to one developer's address, run by someone else — is exactly the case the
+condition catches.
 
 Non-fatal is deliberate: an unknown owner is the *expected* state for reads the
 spec does not care about (the token list produces an allowance read per token),
 so failing on it would make the mock unusable.
+
+Decode failures are reported by the same non-fatal channel, in the same warning.
+
+`fixtures/allowances.json` **ships as `{}`**. The shape lives in the README, and
+a populated file is what a spec author writes when they want committed defaults
+for a fixed address. Shipping a placeholder owner instead would make the lookup
+non-empty and trip the warning on every run, for no gain.
 
 ### Known gap
 
