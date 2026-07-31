@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.4.4](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.3...widget-lib-v4.4.4) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/iframe-transport@2.3.4
+
 ## [4.4.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.2...widget-lib-v4.4.3) (2026-07-28)
 
 ### Patch Changes

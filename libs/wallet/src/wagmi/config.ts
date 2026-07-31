@@ -1,9 +1,9 @@
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
-import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
+import { IS_SOLANA_ENABLED, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import { EvmChains, TargetChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -35,10 +35,10 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<EvmChains, Transport>,
 )
 
-/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
+/** Public RPCs for AppKit's UI and wallet network-add prompts. */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as TargetChainId]
+  const url = VIEM_CHAINS[chain.id as EvmChains]?.rpcUrls.default.http[0]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
