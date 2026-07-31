@@ -5,8 +5,8 @@
 {
   "schemaVersion": 1,
   "apps": {
-    "@cowprotocol/cow-fi": 6130633, // 5.85 MiB
-    "@cowprotocol/cowswap": 12985236, // 12.38 MiB
+    "@cowprotocol/cow-fi": 6130637, // 5.85 MiB
+    "@cowprotocol/cowswap": 12986458, // 12.38 MiB
     "@cowprotocol/explorer": 12754162, // 12.16 MiB
     "@cowprotocol/sdk-tools": 12411597, // 11.84 MiB
     "@cowprotocol/storybook": 4953374, // 4.72 MiB
