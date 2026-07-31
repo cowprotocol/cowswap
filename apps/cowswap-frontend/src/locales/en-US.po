@@ -128,7 +128,6 @@ msgid "Total duration"
 msgstr "Total duration"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
-#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Unwrap {amountStr} {wrapped} to {native}"
 msgstr "Unwrap {amountStr} {wrapped} to {native}"
 
@@ -2517,6 +2516,10 @@ msgstr "MEV Slicer"
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "From (incl. fees)"
 msgstr "From (incl. fees)"
+
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+msgid "Wrap {inputAmountStr} {native} to {receiveAmountStr} {wrapped}"
+msgstr "Wrap {inputAmountStr} {native} to {receiveAmountStr} {wrapped}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
@@ -7028,6 +7031,10 @@ msgstr "If you approve an unlimited amount, you will only have to do this once p
 msgid "Try Again"
 msgstr "Try Again"
 
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+msgid "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
+msgstr "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "The order remains open. Execution requires adequate allowance for"
 msgstr "The order remains open. Execution requires adequate allowance for"
@@ -7899,7 +7906,6 @@ msgid "Check that you are providing a sufficient gas limit for the transaction i
 msgstr "Check that you are providing a sufficient gas limit for the transaction in your wallet."
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
-#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Wrap {amountStr} {native} to {wrapped}"
 msgstr "Wrap {amountStr} {native} to {wrapped}"
 
