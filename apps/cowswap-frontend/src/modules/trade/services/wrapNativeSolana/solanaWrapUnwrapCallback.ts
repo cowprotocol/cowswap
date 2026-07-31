@@ -165,7 +165,8 @@ async function readWsolBalance(connection: Connection, owner: PublicKey): Promis
     const { value } = await connection.getTokenAccountBalance(associatedTokenAccount)
 
     return BigInt(value.amount)
-  } catch {
+  } catch (error) {
+    console.error('Could not fetch Solana token account balance', error)
     return 0n
   }
 }
