@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useWalletClient } from 'wagmi'
+import { useConnection, useWalletClient } from 'wagmi'
 
 import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
@@ -48,6 +48,16 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const enableSellEqBuyRef = useRef<boolean>(enableSellEqBuy)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+
+  // Latch whether the current connection was restored from a persisted session (page refresh) rather
+  // than freshly initiated by the user. The status flips to 'connected' by the time the provider
+  // chain settles, so we remember it here. Used to tell a refresh (keep the user's URL chain) from a
+  // fresh connect (follow the wallet's chain). #7863
+  const { status: connectionStatus } = useConnection()
+  const wasConnectionRestoredRef = useRef(false)
+  useEffect(() => {
+    if (connectionStatus === 'reconnecting') wasConnectionRestoredRef.current = true
+  }, [connectionStatus])
 
   const isWalletConnected = !!account
   const urlChainId = tradeStateFromUrl?.chainId
@@ -111,13 +121,17 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       if (isFirstLoad && isWalletConnected) {
         setIsFirstLoad(false)
 
-        // URL has explicit chainId at load time: ask the wallet to switch to it and keep the URL.
-        // Skipping the navigate below avoids overwriting the user-picked chain with the wallet's
-        // chain on refresh (e.g. EOA + WalletConnect where the persisted session reports its own chain).
-        if (urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
-          switchNetworkInWallet(urlChainId, providerChainId)
+        // Refresh with a restored session: keep the chain the user had in the URL and do NOT prompt
+        // the wallet to switch. Prompting on every load pops a network-switch modal (mobile/
+        // WalletConnect) and the wallet keeps whatever chain its session restored on, so the app
+        // would end up mismatched anyway. Preserving the URL keeps the user's pre-refresh chain. #7863
+        if (wasConnectionRestoredRef.current && urlChainId && INITIAL_CHAIN_ID_FROM_URL !== null) {
           return
         }
+
+        // Fresh connect: the URL chain is just the current route (not a deliberate selection), so
+        // follow the wallet's chain via the navigate below instead of forcing the wallet onto the
+        // URL default — which previously left the app on the wrong chain after connecting. #7863
       }
 
       navigateAndSwitchNetwork(providerChainId, getDefaultTradeRawState(providerChainId), null)
