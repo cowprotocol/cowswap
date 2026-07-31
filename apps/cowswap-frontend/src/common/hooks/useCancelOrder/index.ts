@@ -3,6 +3,7 @@ import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -58,9 +59,13 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
-      // 2. The wallet must support offChain singing
-      // 3. The order must be PENDING
-      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
+      // 2. Pre-signed orders (e.g. an approve+presign bundle) are signed on-chain, so they must be
+      //    cancelled on-chain too — the orderbook rejects an off-chain cancellation for them
+      // 3. The wallet must support offChain singing
+      // 4. The order must be PENDING
+      const isPreSignedOrder = order.signingScheme === SigningScheme.PRESIGN
+      const isOffChainCancellable =
+        !isEthFlowOrder && !isPreSignedOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
 
       // When the order is not cancellable, there won't be a callback
       if (!isOrderCancellable(order)) {
