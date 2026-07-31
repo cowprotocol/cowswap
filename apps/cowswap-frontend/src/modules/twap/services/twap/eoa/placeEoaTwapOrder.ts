@@ -43,7 +43,7 @@ import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
 const log = createCowLogger('EOA TWAP')
-const EOA_TWAP_POC_DEBUG = false
+const EOA_TWAP_POC_DEBUG = true
 
 // TODO: Move to `@cowprotocol/cow-sdk` just like `import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'`?
 const EOA_TWAP_SETUP_DAPP_ID = 'cowswap://twap/eoa-setup' // cow-sdk-scripts://composable-cow/post-twap-for-eoa
