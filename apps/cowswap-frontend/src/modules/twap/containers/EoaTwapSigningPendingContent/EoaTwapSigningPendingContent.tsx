@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 
-import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
+import { MultiConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { buildEoaTwapConfirmationPendingSteps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
@@ -44,7 +44,7 @@ export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendin
   )
 
   return (
-    <ConfirmationPendingContent
+    <MultiConfirmationPendingContent
       title={title}
       description={t`Confirm each step in your wallet`}
       steps={steps}

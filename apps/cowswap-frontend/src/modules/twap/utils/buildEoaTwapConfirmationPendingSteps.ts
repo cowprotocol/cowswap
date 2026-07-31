@@ -2,7 +2,7 @@ import { i18n, MessageDescriptor } from '@lingui/core'
 
 import { msg } from '@lingui/core/macro'
 
-import { ConfirmationPendingStep } from 'common/pure/ConfirmationPendingContent'
+import { MultiConfirmationPendingStep } from 'common/pure/ConfirmationPendingContent'
 
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
@@ -44,7 +44,9 @@ const LOADING_PHASES: ReadonlySet<EoaTwapSigningPhase> = new Set([
   EoaTwapSigningPhase.Verifying,
 ])
 
-export function buildEoaTwapConfirmationPendingSteps(signingStep: EoaTwapSigningStepState): ConfirmationPendingStep[] {
+export function buildEoaTwapConfirmationPendingSteps(
+  signingStep: EoaTwapSigningStepState,
+): MultiConfirmationPendingStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
   return signingStep.plan.map((step, index) => {

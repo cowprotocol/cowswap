@@ -1,2 +1,6 @@
 export { ConfirmationPendingContent } from './ConfirmationPendingContent'
-export type { ConfirmationPendingStep, ConfirmationPendingStepStatus } from './ConfirmationPendingContent'
+export { MultiConfirmationPendingContent } from './multi/MultiConfirmationPendingContent'
+export type {
+  MultiConfirmationPendingStep,
+  MultiConfirmationPendingStepStatus,
+} from './multi/MultiConfirmationPendingContent'

@@ -22,6 +22,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         step: EoaTwapSigningSteps.ApproveOrPermit,
         plan,
         phase: EoaTwapSigningPhase.WaitingForTx,
+        lockDismiss: false,
       }),
     ).toEqual([
       {
@@ -56,6 +57,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         step: EoaTwapSigningSteps.ApproveOrPermit,
         plan,
         phase: EoaTwapSigningPhase.Sign,
+        lockDismiss: false,
       }),
     ).toEqual([
       {
@@ -80,6 +82,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         step: EoaTwapSigningSteps.TwapSetup,
         plan,
         phase: EoaTwapSigningPhase.Sign,
+        lockDismiss: false,
       }),
     ).toEqual([
       {
@@ -109,6 +112,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         step: EoaTwapSigningSteps.FundingOrder,
         plan,
         phase: EoaTwapSigningPhase.Verifying,
+        lockDismiss: false,
       }),
     ).toEqual([
       {
