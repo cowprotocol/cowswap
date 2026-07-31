@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-07-31 16:53\n"
+"PO-Revision-Date: 2026-07-31 19:56\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -362,7 +362,7 @@ msgstr "Réseaux pris en charge :"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
-msgstr "Wallets EOA"
+msgstr "Portefeuilles EOA"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
@@ -621,7 +621,7 @@ msgstr "Votre ordre a été annulé"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "Ninja Cow"
-msgstr "Ninja Cow"
+msgstr "Vache Ninja"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/FeeItem.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
@@ -1224,7 +1224,7 @@ msgstr "Le montant de tokens supplémentaires que vous recevez en plus de votre 
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeLinking.tsx
 msgid "Connect wallet to activate"
-msgstr "Connecter le wallet pour activer"
+msgstr "Connecter votre wallet pour activer"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "sandwich-icon"
@@ -1514,7 +1514,7 @@ msgstr "Actif officiellement émis par {assetIssuedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Claimable amount"
-msgstr "Montant réclamable"
+msgstr "Montant récupérable"
 
 #: apps/cowswap-frontend/src/modules/governance/pure/GovernanceList/index.tsx
 msgid "Proposal 1"
@@ -1951,7 +1951,7 @@ msgstr "Fermé"
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
-msgstr "Page CoW Swap 404 introuvable"
+msgstr "CoW Swap 404 introuvable"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The trader already reached the rewardable volume cap for this referral code."
@@ -3394,7 +3394,7 @@ msgstr "La simulation Tenderly a échoué. Veuillez vérifier votre transaction.
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
 msgid "Paid weekly by Friday via airdrop"
-msgstr "Versé chaque semaine au plus tard le vendredi via airdrop"
+msgstr "Versé chaque semaine au plus tard le vendredi via un airdrop"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "Fill or kill"
@@ -3916,7 +3916,7 @@ msgstr "Non connecté"
 
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
 msgid "Order presigned"
-msgstr "Ordre présigné"
+msgstr "Ordre pré-signé"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/HowItWorks.tsx
 msgid "See how it works."
