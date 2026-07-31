@@ -35,13 +35,13 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<EvmChains, Transport>,
 )
 
-/** Public RPCs for AppKit's UI and wallet network-add prompts. */
 const walletRpcUrlOverrides: Partial<Record<EvmChains, string>> = {
   // Viem's Thirdweb defaults rate-limit wallet chain-ID checks.
   [EvmChains.BNB]: 'https://bsc-rpc.publicnode.com',
   [EvmChains.SEPOLIA]: 'https://ethereum-sepolia-rpc.publicnode.com',
 }
 
+/** Public RPCs for AppKit's UI and wallet network-add prompts. */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
   const chainId = chain.id as EvmChains
