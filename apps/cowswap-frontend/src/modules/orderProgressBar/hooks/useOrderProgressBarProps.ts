@@ -567,10 +567,17 @@ export function buildSolverCompetition(
     // Merge with the info fetched from CMS, then deduplicate on the merged solver identity rather
     // than the raw backend value, so legacy aliases (e.g. `naive` and `naive-solve`) collapse.
     const merged = mergeSolverData(entry, solversInfo, solversInfoByAddress)
-    if (seenSolverIds.has(merged.solverId)) {
+    const { solverId } = merged
+    // solverId is always set by mergeSolverData, but the SolverCompetition type keeps it optional;
+    // entries without one can't be deduplicated by identity, so keep them as-is.
+    if (solverId === undefined) {
+      acc.push(merged)
       return acc
     }
-    seenSolverIds.add(merged.solverId)
+    if (seenSolverIds.has(solverId)) {
+      return acc
+    }
+    seenSolverIds.add(solverId)
     acc.push(merged)
     return acc
   }, [])
