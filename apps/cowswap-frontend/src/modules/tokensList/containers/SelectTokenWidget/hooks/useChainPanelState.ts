@@ -5,12 +5,11 @@ import { useMemo } from 'react'
 
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade'
-
-import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 
 import { useChainsToSelect } from '../../../hooks/useChainsToSelect'
 import { useOnSelectChain } from '../../../hooks/useOnSelectChain'
@@ -31,7 +30,7 @@ export function useChainPanelState(tradeType: TradeType | undefined, field?: Fie
   const isBridgeFeatureEnabled = useIsBridgingEnabled()
   // Hide the sell (INPUT) network panel only for wallets locked to a single chain (e.g. Safe app / Safe via WC),
   // consistently with the main network selector. Notably Rabby (even with a Safe imported) is not locked.
-  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
+  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
 
   const shouldDisableForYield = tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
   const shouldDisableForSellField = field === Field.INPUT && shouldHideNetworkSelector

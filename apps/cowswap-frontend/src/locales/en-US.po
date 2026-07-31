@@ -1295,6 +1295,8 @@ msgid "is on {chainName} network"
 msgstr "is on {chainName} network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 msgid "Approved"
