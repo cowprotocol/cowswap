@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
-import { useAddSnackbar } from '@cowprotocol/snackbars'
+import { useAddSnackbar, useRemoveSnackbar } from '@cowprotocol/snackbars'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { safeShortenAddress } from 'utils/address'
@@ -20,6 +20,7 @@ export function useAffiliateTraderRecoverySideEffect(): boolean {
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
   const setSavedCode = useSetAtom(setAffiliateTraderSavedCodeAtom)
   const addSnackbar = useAddSnackbar()
+  const removeSnackbar = useRemoveSnackbar()
   const localCode = useRefCodeFromLocalTrades(account)
   const { data: pastTradesCheck } = useAffiliateTraderPastOrders({
     account,
@@ -31,18 +32,47 @@ export function useAffiliateTraderRecoverySideEffect(): boolean {
   const { data: localCodeInfo } = useAffiliateTraderInfo(localCode)
   const localCodeTimeCapDays = localCodeInfo?.timeCapDays ?? PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
 
+  // Accounts whose baseline has been recorded. A code already present on the first evaluation for an
+  // account is a pre-existing (historical) link and must stay silent; only a code that appears
+  // afterwards — a partial fill linking a code live in this session — should raise the toast.
+  const baselineAccountsRef = useRef<Set<string>>(new Set())
+  // Id of the affiliate toast currently shown, so it can be dismissed when the account changes.
+  const shownSnackbarIdRef = useRef<string | null>(null)
+  const prevAccountRef = useRef(account)
+
+  // Dismiss a lingering 'code linked' toast when the account changes, so it doesn't stay on screen
+  // for (or bleed into) a different account (#7527).
+  useEffect(() => {
+    if (prevAccountRef.current !== account) {
+      if (shownSnackbarIdRef.current) {
+        removeSnackbar(shownSnackbarIdRef.current)
+        shownSnackbarIdRef.current = null
+      }
+      prevAccountRef.current = account
+    }
+  }, [account, removeSnackbar])
+
   useEffect(() => {
     if (!account || isLinked) {
       return
     }
 
+    const isBaselineRecorded = baselineAccountsRef.current.has(account)
+    baselineAccountsRef.current.add(account)
+
     if (localCode) {
       logAffiliate(safeShortenAddress(account), 'Recovered trader code from local orders:', localCode)
       setSavedCode({ savedCode: localCode, isLinked: true })
-      // A partially-filled order never reaches FULFILLED, so the fulfilled-order toast never fires for
-      // it. Notify here from the partial-aware local-trade detection instead. The snackbar id is keyed
-      // on the code, so this dedupes with the fulfilled-order path if both ever run.
-      addSnackbar(buildAffiliateLinkedCodeSnackbar(localCode, localCodeTimeCapDays))
+      // Only notify when the code was linked live this session (it appeared after the account's
+      // baseline was recorded). A code that already existed on load is a historical link and stays
+      // silent, like the orderbook path below — otherwise every visit to an already-linked account
+      // would re-show the toast (#7527). The snackbar id is keyed on the code, so it also dedupes
+      // with the fulfilled-order path if both ever run.
+      if (isBaselineRecorded) {
+        const snackbar = buildAffiliateLinkedCodeSnackbar(localCode, localCodeTimeCapDays)
+        addSnackbar(snackbar)
+        shownSnackbarIdRef.current = snackbar.id
+      }
       return
     }
 
