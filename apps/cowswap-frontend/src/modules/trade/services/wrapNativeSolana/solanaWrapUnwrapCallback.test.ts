@@ -28,34 +28,43 @@ interface Harness {
   closeModals: jest.Mock
   openErrorModal: jest.Mock
   openTransactionConfirmationModal: jest.Mock
+  getLatestBlockhash: jest.Mock
 }
 
 function createHarness({
   amount,
+  wsolAccountExists = true,
   wsolBalance = '1000',
   rentExemptLamports = 9_000,
-  sendError,
+  sendErrors = [],
 }: {
   amount: CurrencyAmount<typeof SOL>
+  /** Whether the WSOL associated token account already exists — affects wrap's send amount. */
+  wsolAccountExists?: boolean
   wsolBalance?: string
   rentExemptLamports?: number
-  sendError?: unknown
+  /** One rejection per call to `sendTransaction`, oldest first; calls past the array resolve normally. */
+  sendErrors?: unknown[]
 }): Harness {
   const sentTransactions: Transaction[] = []
+  const getLatestBlockhash = jest
+    .fn()
+    .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT })
 
   const connection = {
-    getLatestBlockhash: jest
-      .fn()
-      .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT }),
-    // Truthy: the associated token account exists, so `readWsolBalance` goes on to read its balance.
-    getAccountInfo: jest.fn().mockResolvedValue({}),
+    getLatestBlockhash,
+    getAccountInfo: jest.fn().mockResolvedValue(wsolAccountExists ? {} : null),
     getTokenAccountBalance: jest.fn().mockResolvedValue({ value: { amount: wsolBalance } }),
     getMinimumBalanceForRentExemption: jest.fn().mockResolvedValue(rentExemptLamports),
   } as unknown as Connection
 
+  let sendCallCount = 0
   const provider = {
     sendTransaction: jest.fn(async (transaction: Transaction) => {
-      if (sendError) throw sendError
+      const error = sendErrors[sendCallCount]
+      sendCallCount++
+      if (error) throw error
+
       sentTransactions.push(transaction)
 
       return SIGNATURE
@@ -73,6 +82,7 @@ function createHarness({
     closeModals,
     openErrorModal,
     openTransactionConfirmationModal,
+    getLatestBlockhash,
     context: {
       account: ACCOUNT,
       amount,
@@ -124,12 +134,51 @@ describe('solanaWrapUnwrapCallback', () => {
       expect(harness.closeModals).toHaveBeenCalled()
     })
 
-    it('shows the pending screen the exact WSOL amount that will land, 1:1 with what was typed', async () => {
-      const harness = createHarness({ amount })
+    it('shows the pending screen the exact WSOL amount that will land, 1:1 with what was typed, when the account already exists', async () => {
+      const harness = createHarness({ amount, wsolAccountExists: true })
 
       await solanaWrapUnwrapCallback(harness.context)
 
-      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(WSOL, 500n))
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith({
+        sendAmount: CurrencyAmount.fromRawAmount(SOL, 500n),
+        receiveAmount: CurrencyAmount.fromRawAmount(WSOL, 500n),
+      })
+    })
+
+    it('deducts the one-time rent-exempt deposit from the received WSOL when the account does not exist yet, spending exactly what was typed', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(SOL, 10_000n),
+        wsolAccountExists: false,
+        rentExemptLamports: 9_000,
+      })
+
+      await solanaWrapUnwrapCallback(harness.context)
+
+      // Spends exactly the 10_000 lamports typed; the 9000 lamport deposit needed to create the
+      // associated token account comes out of that, leaving 1000 lamports of WSOL.
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith({
+        sendAmount: CurrencyAmount.fromRawAmount(SOL, 10_000n),
+        receiveAmount: CurrencyAmount.fromRawAmount(WSOL, 1_000n),
+      })
+      expect(harness.addTransaction).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: 'Wrap 0.00001 SOL to 0.000001 WSOL' }),
+      )
+    })
+
+    it('rejects wrapping an amount too small to cover a new account rent-exempt deposit', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(SOL, 500n),
+        wsolAccountExists: false,
+        rentExemptLamports: 9_000,
+      })
+
+      const result = await solanaWrapUnwrapCallback(harness.context)
+
+      expect(result).toBeNull()
+      expect(harness.openErrorModal).toHaveBeenCalledWith(
+        'Wrap amount is too small to cover the new account rent-exempt deposit',
+      )
+      expect(harness.context.provider.sendTransaction).not.toHaveBeenCalled()
     })
   })
 
@@ -158,7 +207,10 @@ describe('solanaWrapUnwrapCallback', () => {
       await solanaWrapUnwrapCallback(harness.context)
 
       // 1000 lamports typed + the 9000 lamport rent-exempt reserve the closed account refunds
-      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(SOL, 10_000n))
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith({
+        sendAmount: CurrencyAmount.fromRawAmount(WSOL, 1000n),
+        receiveAmount: CurrencyAmount.fromRawAmount(SOL, 10_000n),
+      })
     })
 
     it('re-wraps the remainder when unwrapping part of the balance', async () => {
@@ -181,15 +233,18 @@ describe('solanaWrapUnwrapCallback', () => {
 
       await solanaWrapUnwrapCallback(harness.context)
 
-      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(SOL, 400n))
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith({
+        sendAmount: CurrencyAmount.fromRawAmount(WSOL, 400n),
+        receiveAmount: CurrencyAmount.fromRawAmount(SOL, 400n),
+      })
     })
   })
 
   describe('when the user rejects', () => {
-    it('closes the modal without surfacing an error', async () => {
+    it('closes the modal without surfacing an error, without retrying', async () => {
       const harness = createHarness({
         amount: CurrencyAmount.fromRawAmount(SOL, 500n),
-        sendError: { code: 4001, message: 'User rejected the request.' },
+        sendErrors: [{ code: 4001, message: 'User rejected the request.' }],
       })
 
       const result = await solanaWrapUnwrapCallback(harness.context)
@@ -198,30 +253,74 @@ describe('solanaWrapUnwrapCallback', () => {
       expect(harness.closeModals).toHaveBeenCalled()
       expect(harness.openErrorModal).not.toHaveBeenCalled()
       expect(harness.addTransaction).not.toHaveBeenCalled()
+      expect(harness.context.provider.sendTransaction).toHaveBeenCalledTimes(1)
     })
   })
 
-  describe('when the transaction fails', () => {
-    it('shows the failure in the modal', async () => {
+  describe('when the blockhash expires before the wallet signs', () => {
+    it('retries with a freshly fetched blockhash and succeeds', async () => {
       const harness = createHarness({
         amount: CurrencyAmount.fromRawAmount(SOL, 500n),
-        sendError: new Error('Blockhash not found'),
+        sendErrors: [new Error('failed to send transaction: Blockhash not found')],
+      })
+
+      const result = await solanaWrapUnwrapCallback(harness.context)
+
+      expect(result).toEqual({ hash: SIGNATURE })
+      expect(harness.context.provider.sendTransaction).toHaveBeenCalledTimes(2)
+      expect(harness.getLatestBlockhash).toHaveBeenCalledTimes(2)
+      expect(harness.openErrorModal).not.toHaveBeenCalled()
+    })
+
+    it('gives up and surfaces the error after exhausting its retries', async () => {
+      const persistentError = new Error('failed to send transaction: Blockhash not found')
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(SOL, 500n),
+        sendErrors: [persistentError, persistentError, persistentError],
       })
 
       const result = await solanaWrapUnwrapCallback(harness.context)
 
       expect(result).toBeNull()
-      expect(harness.openErrorModal).toHaveBeenCalledWith('Blockhash not found')
+      expect(harness.context.provider.sendTransaction).toHaveBeenCalledTimes(3)
+      expect(harness.openErrorModal).toHaveBeenCalledWith(persistentError.message)
+    })
+
+    it('does not retry a failure unrelated to the blockhash', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(SOL, 500n),
+        sendErrors: [new Error('insufficient funds for rent')],
+      })
+
+      const result = await solanaWrapUnwrapCallback(harness.context)
+
+      expect(result).toBeNull()
+      expect(harness.context.provider.sendTransaction).toHaveBeenCalledTimes(1)
+      expect(harness.openErrorModal).toHaveBeenCalledWith('insufficient funds for rent')
+    })
+  })
+
+  describe('when the transaction fails for another reason', () => {
+    it('shows the failure in the modal', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(SOL, 500n),
+        sendErrors: [new Error('Some other failure')],
+      })
+
+      const result = await solanaWrapUnwrapCallback(harness.context)
+
+      expect(result).toBeNull()
+      expect(harness.openErrorModal).toHaveBeenCalledWith('Some other failure')
     })
 
     it('rethrows instead of opening a modal when modals are disabled', async () => {
       const harness = createHarness({
         amount: CurrencyAmount.fromRawAmount(SOL, 500n),
-        sendError: new Error('Blockhash not found'),
+        sendErrors: [new Error('Some other failure')],
       })
 
       await expect(solanaWrapUnwrapCallback(harness.context, { useModals: false })).rejects.toThrow(
-        'Blockhash not found',
+        'Some other failure',
       )
       expect(harness.openErrorModal).not.toHaveBeenCalled()
       expect(harness.openTransactionConfirmationModal).not.toHaveBeenCalled()

@@ -14,7 +14,7 @@ import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WrapNativeModal() {
-  const [{ receiveAmount }, setWrapNativeState] = useWrapNativeScreenState()
+  const [{ sendAmount, receiveAmount }, setWrapNativeState] = useWrapNativeScreenState()
 
   const state = useDerivedTradeState()
 
@@ -31,7 +31,8 @@ export function WrapNativeModal() {
 
   const title = (
     <span>
-      {operationLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> <Trans>to</Trans>{' '}
+      {operationLabel} <TokenAmount amount={sendAmount ?? inputCurrencyAmount} tokenSymbol={inputCurrency} />{' '}
+      <Trans>to</Trans>{' '}
       {receiveAmount ? (
         <TokenAmount amount={receiveAmount} tokenSymbol={outputCurrency} />
       ) : (

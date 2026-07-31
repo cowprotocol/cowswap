@@ -6,10 +6,11 @@ interface WrapNativeState {
   isOpen: boolean
   errorMessage?: string
   /**
-   * The amount the owner will actually receive, when it's known ahead of signing (Solana only, for now
-   * — see `solanaWrapUnwrapCallback`). Undefined means "assume it matches the typed input", which is
-   * always true for EVM wrap/unwrap.
+   * The amounts the owner will actually send and receive, when known ahead of signing (Solana only, for
+   * now — see `solanaWrapUnwrapCallback`). Undefined means "assume it matches the typed input", which
+   * is always true for EVM wrap/unwrap.
    */
+  sendAmount?: CurrencyAmount<Currency>
   receiveAmount?: CurrencyAmount<Currency>
 }
 

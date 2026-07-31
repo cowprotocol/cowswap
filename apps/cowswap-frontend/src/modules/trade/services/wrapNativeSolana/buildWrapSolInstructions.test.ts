@@ -19,7 +19,7 @@ const ata = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM
 
 describe('buildWrapSolInstructions', () => {
   it('creates the associated token account idempotently before funding it', () => {
-    const [createAta] = buildWrapSolInstructions({ owner, lamports: 1n })
+    const [createAta] = buildWrapSolInstructions({ owner, transferLamports: 1n })
 
     expect(createAta.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID)).toBe(true)
     // The idempotent variant is discriminated from the plain one by a `1` byte payload
@@ -27,7 +27,7 @@ describe('buildWrapSolInstructions', () => {
   })
 
   it('transfers the requested lamports to the associated token account', () => {
-    const [, transfer] = buildWrapSolInstructions({ owner, lamports: 12_345n })
+    const [, transfer] = buildWrapSolInstructions({ owner, transferLamports: 12_345n })
 
     expect(transfer.programId.equals(SystemProgram.programId)).toBe(true)
 
@@ -38,7 +38,7 @@ describe('buildWrapSolInstructions', () => {
   })
 
   it('syncs the native balance so the token amount matches the transferred lamports', () => {
-    const instructions = buildWrapSolInstructions({ owner, lamports: 1n })
+    const instructions = buildWrapSolInstructions({ owner, transferLamports: 1n })
 
     expect(instructions).toHaveLength(3)
 
@@ -47,6 +47,6 @@ describe('buildWrapSolInstructions', () => {
   })
 
   it('rejects a non-positive amount', () => {
-    expect(() => buildWrapSolInstructions({ owner, lamports: 0n })).toThrow('Wrap amount must be positive')
+    expect(() => buildWrapSolInstructions({ owner, transferLamports: 0n })).toThrow('Wrap amount must be positive')
   })
 })
