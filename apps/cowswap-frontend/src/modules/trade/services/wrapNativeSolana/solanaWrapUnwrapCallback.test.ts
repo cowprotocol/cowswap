@@ -47,6 +47,8 @@ function createHarness({
     getLatestBlockhash: jest
       .fn()
       .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT }),
+    // Truthy: the associated token account exists, so `readWsolBalance` goes on to read its balance.
+    getAccountInfo: jest.fn().mockResolvedValue({}),
     getTokenAccountBalance: jest.fn().mockResolvedValue({ value: { amount: wsolBalance } }),
     getMinimumBalanceForRentExemption: jest.fn().mockResolvedValue(rentExemptLamports),
   } as unknown as Connection

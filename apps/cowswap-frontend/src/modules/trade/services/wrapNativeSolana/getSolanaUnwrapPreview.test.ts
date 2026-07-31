@@ -17,17 +17,17 @@ const SOL = NATIVE_CURRENCIES[SupportedChainId.SOLANA]
 function createConnection({
   wsolBalance,
   rentExemptLamports = 9_000,
-  tokenAccountError,
+  accountExists = true,
 }: {
   wsolBalance?: string
   rentExemptLamports?: number
-  tokenAccountError?: unknown
+  accountExists?: boolean
 }): Connection {
   return {
-    getTokenAccountBalance: jest.fn().mockImplementation(() => {
-      if (tokenAccountError) return Promise.reject(tokenAccountError)
-      return Promise.resolve({ value: { amount: wsolBalance } })
-    }),
+    // `readWsolBalance` checks existence first: a closed/never-created account has no lamports at all,
+    // as opposed to a token account balance of zero.
+    getAccountInfo: jest.fn().mockResolvedValue(accountExists ? {} : null),
+    getTokenAccountBalance: jest.fn().mockResolvedValue({ value: { amount: wsolBalance } }),
     getMinimumBalanceForRentExemption: jest.fn().mockResolvedValue(rentExemptLamports),
   } as unknown as Connection
 }
@@ -50,12 +50,13 @@ describe('getSolanaUnwrapPreview', () => {
     expect(preview.receiveAmount).toEqual(CurrencyAmount.fromRawAmount(SOL, 400n))
   })
 
-  it('treats a missing token account as a zero balance instead of throwing', async () => {
-    const connection = createConnection({ tokenAccountError: new Error('Account not found'), rentExemptLamports: 0 })
+  it('treats a missing associated token account as a zero balance, without reading its balance', async () => {
+    const connection = createConnection({ accountExists: false, rentExemptLamports: 0 })
 
     const preview = await getSolanaUnwrapPreview(connection, OWNER, 0n)
 
     expect(preview.wsolBalance).toBe(0n)
     expect(preview.receiveAmount).toEqual(CurrencyAmount.fromRawAmount(SOL, 0n))
+    expect(connection.getTokenAccountBalance).not.toHaveBeenCalled()
   })
 })
