@@ -27,9 +27,15 @@ export function useAccountState(): AccountState {
 
   // Chain explicitly present in the URL at load (user's pre-refresh selection), captured once.
   const [explicitUrlChainId] = useState(getRawCurrentChainIdFromUrl)
-  const initialStateAppliedRef = useRef(false)
 
   const evmState = useConnection()
+
+  // Mirror the live connection status so the appkit subscription (an event callback that
+  // runs outside React's render) can tell a session restore from a fresh user connect.
+  const isRestoringRef = useRef(false)
+  useEffect(() => {
+    isRestoringRef.current = evmState.status === 'reconnecting'
+  }, [evmState.status])
 
   useEffect(() => {
     if (!reownAppKit) return
@@ -45,13 +51,12 @@ export function useAccountState(): AccountState {
         const supportedChainId = CAIP_TO_SUPPORTED_CHAIN_ID[state.selectedNetworkId]
         if (!supportedChainId) return
 
-        // The first chain reported after a (re)connect is the wallet's stored chain.
-        // Don't let it override a chain the user explicitly had in the URL before a
-        // refresh, otherwise the app switches networks unexpectedly on reload (#7863).
-        // Chains the user switches to after reconnect are still applied normally.
-        if (!initialStateAppliedRef.current) {
-          initialStateAppliedRef.current = true
-          if (explicitUrlChainId != null && explicitUrlChainId !== supportedChainId) return
+        // While a previous session is being restored on refresh, keep the chain the user
+        // explicitly had in the URL rather than the wallet's stored chain (#7863). On a
+        // fresh connect there is no restore, so the wallet's chain is applied (the app
+        // follows the wallet). User-initiated switches after the restore settles still apply.
+        if (isRestoringRef.current && explicitUrlChainId != null && explicitUrlChainId !== supportedChainId) {
+          return
         }
 
         setChainId(supportedChainId)

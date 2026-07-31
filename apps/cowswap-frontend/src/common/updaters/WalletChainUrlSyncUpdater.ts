@@ -12,32 +12,27 @@ import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
  * that masks unsupported chains with the URL chain.
  */
 export function WalletChainUrlSyncUpdater(): null {
-  const { chainId, isConnected } = useConnection()
+  const { chainId, isConnected, status } = useConnection()
   const setChainIdToUrl = useLegacySetChainIdToUrl()
   const prevChainIdRef = useRef(chainId)
   // Chain explicitly present in the URL at load (user's pre-refresh selection), captured once.
   const [explicitUrlChainId] = useState(getRawCurrentChainIdFromUrl)
-  const hasSyncedRef = useRef(false)
 
   useEffect(() => {
     // Only sync supported chains from a connected wallet
     if (isConnected && isSupportedChainId(chainId)) {
-      const isInitialReconnect = !hasSyncedRef.current
-      hasSyncedRef.current = true
+      // While a previous session is being restored on refresh, don't overwrite the chain the
+      // user explicitly had in the URL with the wallet's stored chain — that's what switched
+      // networks on refresh (#7863). Fresh connects and later user switches still sync as before.
+      const preserveUrlDuringRestore =
+        status === 'reconnecting' && explicitUrlChainId != null && explicitUrlChainId !== chainId
 
-      // On the first reconnect emission, don't overwrite a chain the user explicitly had in
-      // the URL with the wallet's stored chain — that's what switched networks on refresh (#7863).
-      // Later chain switches (and cases without an explicit URL chain) still sync as before.
-      const skipInitialOverride = isInitialReconnect && explicitUrlChainId != null && explicitUrlChainId !== chainId
-
-      if (!skipInitialOverride && chainId !== prevChainIdRef.current) {
+      if (!preserveUrlDuringRestore && chainId !== prevChainIdRef.current) {
         setChainIdToUrl(chainId)
       }
-    } else if (!isConnected) {
-      hasSyncedRef.current = false
     }
     prevChainIdRef.current = chainId
-  }, [isConnected, chainId, setChainIdToUrl, explicitUrlChainId])
+  }, [isConnected, chainId, status, setChainIdToUrl, explicitUrlChainId])
 
   return null
 }
