@@ -26,7 +26,6 @@ import { WSOL_MINT } from './const'
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
-
 type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 
 /**
