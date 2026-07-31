@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { maxUint256 } from 'viem'
 import { useConfig } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -53,6 +54,11 @@ import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildEoaTwapSigningStepPlan } from '../utils/buildEoaTwapSigningStepPlan'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
+import {
+  EoaTwapPlacementCancelledError,
+  isEoaTwapPlacementCancelled,
+  startEoaTwapPlacement,
+} from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getEoaTwapPrePlacementAmountToCover } from '../utils/getEoaTwapPrePlacementAmountToCover'
 import { getErrorMessage } from '../utils/parseTwapError'
@@ -190,6 +196,8 @@ export function useCreateTwapOrder() {
         orderType,
       }
 
+      startEoaTwapPlacement()
+
       try {
         const isWidgetHookPassed = await callWidgetHook(
           WidgetHookEvents.ON_BEFORE_TRADE,
@@ -223,6 +231,10 @@ export function useCreateTwapOrder() {
           env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
 
+        if (isEoaTwapPlacementCancelled()) {
+          return
+        }
+
         // Safe only. `= safeTxHash`. Empty for EOA.
         let orderCreationHash = ''
 
@@ -253,7 +265,7 @@ export function useCreateTwapOrder() {
             sellTokenAddress,
             spender: vaultRelayerAddress,
             amountToCover,
-            amountToApprove: twapOrder.sellAmount,
+            amountToApprove: maxUint256,
           })
 
           const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
@@ -262,26 +274,29 @@ export function useCreateTwapOrder() {
           const firstStep = signingStepPlan[0]
 
           if (firstStep) {
-            updateEoaTwapFlow(firstStep, EoaTwapSigningPhase.Sign, signingStepPlan)
+            updateEoaTwapFlow({ step: firstStep, phase: EoaTwapSigningPhase.Sign, plan: signingStepPlan })
           }
 
-          // Prefer on-chain max approve (not permit) when approval is needed: funding sell size
-          // is unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
-          // already covers sell + buffer.
-          await ensureEoaTwapVaultRelayerApproval({
-            config,
-            chainId,
-            account: account as `0x${string}`,
-            sellTokenAddress,
-            sellTokenName: sellToken.name,
-            spender: vaultRelayerAddress,
-            amountToCover,
-            amountToApprove: twapOrder.sellAmount,
-            permitInfo,
-            generatePermitHook,
-            preferOnChainApprove: true,
-            onSigningStep: updateEoaTwapFlow,
-          })
+          if (approvalNeeds.needsApproval) {
+            // Prefer on-chain max approve (not permit) when approval is needed: funding sell size
+            // is unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
+            // already covers sell + buffer.
+            await ensureEoaTwapVaultRelayerApproval({
+              config,
+              chainId,
+              account: account as `0x${string}`,
+              sellTokenAddress,
+              sellTokenName: sellToken.name,
+              spender: vaultRelayerAddress,
+              amountToCover,
+              amountToApprove: maxUint256,
+              permitInfo,
+              generatePermitHook,
+              preferOnChainApprove: true,
+              onSigningStep: updateEoaTwapFlow,
+              approvalNeeds,
+            })
+          }
 
           const { proxyAddress, orderPostingResult } = await placeEoaTwapOrder({
             chainId,
@@ -303,7 +318,10 @@ export function useCreateTwapOrder() {
           orderStatus = TwapOrderStatus.Pending
 
           // CreatingOrder WaitingForTx already set at end of placeEoaTwapOrder; keep it through settlement wait.
-          updateEoaTwapFlow(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.WaitingForTx)
+          updateEoaTwapFlow({
+            step: EoaTwapSigningSteps.CreatingOrder,
+            phase: EoaTwapSigningPhase.WaitingForTx,
+          })
 
           // Used for the toast native chain explorer link.
           // Not available until the funding order tx settles. If we cannot resolve this, we fallback to the funding
@@ -311,7 +329,10 @@ export function useCreateTwapOrder() {
           const settlementTxHash = await waitForFundingOrderSettlementTx(chainId, orderPostingResult.orderId)
           orderCreationHash = settlementTxHash ?? orderPostingResult.orderId
 
-          updateEoaTwapFlow(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.Confirmed)
+          updateEoaTwapFlow({
+            step: EoaTwapSigningSteps.CreatingOrder,
+            phase: EoaTwapSigningPhase.Confirmed,
+          })
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -357,6 +378,7 @@ export function useCreateTwapOrder() {
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         updateEoaTwapFlow(null)
+
         tradeConfirmActions.onSuccess(confirmModalHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
@@ -371,6 +393,10 @@ export function useCreateTwapOrder() {
           navigateToOrdersTableTab(isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING)
         })
       } catch (error) {
+        if (error instanceof EoaTwapPlacementCancelledError) {
+          return
+        }
+
         log.error(error)
         const errorMessage = getErrorMessage(error)
         updateEoaTwapFlow(null)

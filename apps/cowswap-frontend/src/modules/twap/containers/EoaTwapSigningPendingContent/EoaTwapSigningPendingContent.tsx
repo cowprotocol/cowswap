@@ -45,10 +45,10 @@ export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendin
 
   return (
     <ConfirmationPendingContent
-      onDismiss={onDismiss}
       title={title}
       description={t`Confirm each step in your wallet`}
       steps={steps}
+      onDismiss={!!signingStep?.lockDismiss ? undefined : onDismiss}
     />
   )
 }

@@ -1,10 +1,9 @@
-import { type Address, erc20Abi, maxUint256 } from 'viem'
+import { type Address, erc20Abi } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions'
 
 import { calculateGasMargin, createCowLogger } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
 import { estimateApprove } from 'modules/erc20Approve'
@@ -25,7 +24,7 @@ export interface EnsureEoaTwapVaultRelayerApprovalParams {
   sellTokenName: string | undefined
   spender: AccountAddress
   amountToCover: bigint
-  amountToApprove: CurrencyAmount<Token>
+  amountToApprove: bigint
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   /**
@@ -33,7 +32,9 @@ export interface EnsureEoaTwapVaultRelayerApprovalParams {
    * Permit amount must match the funding order; unlimited pre-placement prefers on-chain max approve.
    */
   preferOnChainApprove?: boolean
-  onSigningStep?: EoaTwapFlowUpdater
+  step?: EoaTwapSigningSteps
+  onSigningStep: EoaTwapFlowUpdater
+  approvalNeeds: EoaTwapApprovalNeeds
 }
 
 export interface EnsureEoaTwapVaultRelayerApprovalResult {
@@ -48,7 +49,17 @@ export interface GetEoaTwapApprovalNeedsParams {
   sellTokenAddress: Address
   spender: AccountAddress
   amountToCover: bigint
-  amountToApprove: CurrencyAmount<Token>
+  amountToApprove: bigint
+}
+
+interface ApproveEoaSellTokenParams {
+  config: Config
+  chainId: SupportedChainId
+  account: AccountAddress
+  sellTokenAddress: Address
+  spender: string
+  amount: bigint
+  onSubmitted: () => void
 }
 
 interface RunOnChainApprovalStepParams {
@@ -58,8 +69,8 @@ interface RunOnChainApprovalStepParams {
   sellTokenAddress: Address
   spender: string
   amount: bigint
-  step: EoaTwapSigningSteps.ZeroApprove | EoaTwapSigningSteps.ApproveOrPermit
-  onSigningStep?: EoaTwapFlowUpdater
+  step: EoaTwapSigningSteps
+  onSigningStep: EoaTwapFlowUpdater
 }
 
 /**
@@ -78,6 +89,7 @@ interface RunOnChainApprovalStepParams {
  * When `preferOnChainApprove` is false and the token is permittable, a permit may be returned
  * for the caller to attach as a pre-hook instead of an on-chain approve.
  */
+// eslint-disable-next-line complexity
 export async function ensureEoaTwapVaultRelayerApproval({
   config,
   chainId,
@@ -90,23 +102,18 @@ export async function ensureEoaTwapVaultRelayerApproval({
   permitInfo,
   generatePermitHook,
   preferOnChainApprove = false,
+  step,
   onSigningStep,
+  approvalNeeds,
 }: EnsureEoaTwapVaultRelayerApprovalParams): Promise<EnsureEoaTwapVaultRelayerApprovalResult> {
-  const { needsApproval, needsZeroApproval } = await getEoaTwapApprovalNeeds({
-    config,
-    account,
-    sellTokenAddress,
-    spender,
-    amountToCover,
-    amountToApprove,
-  })
+  const { needsApproval, needsZeroApproval } = approvalNeeds
 
   if (!needsApproval) {
     return { usedPermit: false, permitData: null, promptedWallet: false }
   }
 
   if (!preferOnChainApprove && isSupportedPermitInfo(permitInfo)) {
-    onSigningStep?.(EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningPhase.Sign)
+    onSigningStep({ step: step ?? EoaTwapSigningSteps.ApproveOrPermit, phase: EoaTwapSigningPhase.Sign })
 
     const permitData = await generatePermitHook({
       inputToken: {
@@ -123,7 +130,7 @@ export async function ensureEoaTwapVaultRelayerApproval({
     })
 
     if (permitData) {
-      onSigningStep?.(EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningPhase.Confirmed)
+      onSigningStep({ step: step ?? EoaTwapSigningSteps.ApproveOrPermit, phase: EoaTwapSigningPhase.Confirmed })
       return { usedPermit: true, permitData, promptedWallet: true }
     }
   }
@@ -136,7 +143,7 @@ export async function ensureEoaTwapVaultRelayerApproval({
       sellTokenAddress,
       spender,
       amount: 0n,
-      step: EoaTwapSigningSteps.ZeroApprove,
+      step: step ?? EoaTwapSigningSteps.ZeroApprove,
       onSigningStep,
     })
   }
@@ -147,8 +154,8 @@ export async function ensureEoaTwapVaultRelayerApproval({
     account,
     sellTokenAddress,
     spender,
-    amount: maxUint256,
-    step: EoaTwapSigningSteps.ApproveOrPermit,
+    amount: amountToApprove,
+    step: step ?? EoaTwapSigningSteps.ApproveOrPermit,
     onSigningStep,
   })
 
@@ -194,15 +201,7 @@ async function approveEoaSellToken({
   spender,
   amount,
   onSubmitted,
-}: {
-  config: Config
-  chainId: SupportedChainId
-  account: AccountAddress
-  sellTokenAddress: Address
-  spender: string
-  amount: bigint
-  onSubmitted?: () => void
-}): Promise<void> {
+}: ApproveEoaSellTokenParams): Promise<void> {
   if (!isEvmChain(chainId)) {
     throw new Error(`Unsupported chain for approve: ${chainId}`)
   }
@@ -224,7 +223,7 @@ async function approveEoaSellToken({
     account,
   })
 
-  onSubmitted?.()
+  onSubmitted()
 
   await waitForTransactionReceipt(config, { hash })
 }
@@ -239,7 +238,7 @@ async function runOnChainApprovalStep({
   step,
   onSigningStep,
 }: RunOnChainApprovalStepParams): Promise<void> {
-  onSigningStep?.(step, EoaTwapSigningPhase.Sign)
+  onSigningStep({ step, phase: EoaTwapSigningPhase.Sign })
 
   await approveEoaSellToken({
     config,
@@ -249,9 +248,9 @@ async function runOnChainApprovalStep({
     spender,
     amount,
     onSubmitted: () => {
-      onSigningStep?.(step, EoaTwapSigningPhase.WaitingForTx)
+      onSigningStep({ step, phase: EoaTwapSigningPhase.WaitingForTx })
     },
   })
 
-  onSigningStep?.(step, EoaTwapSigningPhase.Confirmed)
+  onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed })
 }

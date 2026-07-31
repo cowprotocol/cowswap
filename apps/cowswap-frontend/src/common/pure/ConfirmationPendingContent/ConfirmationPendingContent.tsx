@@ -21,7 +21,6 @@ export interface ConfirmationPendingStep {
 export type ConfirmationPendingStepStatus = 'finished' | 'active' | 'upcoming'
 
 interface ConfirmationPendingContentProps {
-  onDismiss: Command
   title: ReactNode
   description: ReactNode
   modalMode?: boolean
@@ -36,16 +35,19 @@ interface ConfirmationPendingContentProps {
    * Arbitrary multi-step progress. When set, steps render vertically.
    */
   steps?: ConfirmationPendingStep[]
+
+  /** Hide the back/close button if `onDismiss` is `undefined`. */
+  onDismiss?: Command
 }
 
 export function ConfirmationPendingContent({
   title,
   description,
   operationLabel,
-  onDismiss,
   modalMode,
   isPendingInProgress,
   steps,
+  onDismiss,
 }: ConfirmationPendingContentProps): ReactNode {
   const walletAddress = useWalletDisplayedAddress()
   const { t } = useLingui()

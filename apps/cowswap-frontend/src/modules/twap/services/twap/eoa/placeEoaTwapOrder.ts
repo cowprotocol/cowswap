@@ -86,7 +86,7 @@ export interface PlaceEoaTwapOrderParams {
   /** Initial buy sell=buy order permit info */
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
-  onSigningStep?: EoaTwapFlowUpdater
+  onSigningStep: EoaTwapFlowUpdater
 }
 
 export interface PlaceEoaTwapOrderResult {
@@ -193,7 +193,7 @@ export function getEoaTwapOrderShedCalls({
  * 4. Re-check EOA => vault-relayer allowance vs funding order sell. Re-request approval if short.
  * 5. Sign/post funding order (FundingOrder), then wait for settlement (CreatingOrder).
  */
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
   chainId,
   account,
@@ -292,9 +292,9 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   const nonceHex = stringToHex(Date.now().toString()).slice(2)
   const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
-  onSigningStep?.(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningPhase.Sign)
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
   const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
-  onSigningStep?.(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningPhase.Confirmed)
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
   const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
   const signedMulticall = {
     to: factoryAddress,
@@ -372,7 +372,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   // Move UI to "Confirm order" before any top-up approve so we never rewind to ApproveOrPermit
   // (which would mark TwapSetup as upcoming again).
-  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Sign)
+  onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Sign })
 
   let ensureResult: EnsureEoaTwapVaultRelayerApprovalResult = {
     usedPermit: false,
@@ -380,16 +380,16 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     promptedWallet: false,
   }
 
-  const { needsApproval: needsFundingAllowance } = await getEoaTwapApprovalNeeds({
+  const approvalNeeds = await getEoaTwapApprovalNeeds({
     config,
     account,
     sellTokenAddress,
     spender: vaultRelayerAddress,
     amountToCover: fundingSellAmountAtoms,
-    amountToApprove: fundingSellAmount,
+    amountToApprove: maxUint256,
   })
 
-  if (needsFundingAllowance) {
+  if (approvalNeeds.needsApproval) {
     // Allowance is short of the funding sell (under-approved in wallet, stale max, etc.).
     // Top up on-chain while keeping the stepper on FundingOrder (map approve phases onto it).
     log.warn('EOA TWAP funding sell exceeds current vault-relayer allowance; prompting on-chain top-up approve', {
@@ -404,21 +404,20 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       sellTokenName: sellToken.name,
       spender: vaultRelayerAddress,
       amountToCover: fundingSellAmountAtoms,
-      amountToApprove: fundingSellAmount,
+      amountToApprove: maxUint256,
       permitInfo,
       generatePermitHook,
       preferOnChainApprove: true,
-      onSigningStep: (_step, phase = EoaTwapSigningPhase.Sign) => {
-        // Keep step = FundingOrder so Approve/TwapSetup stay finished in the UI.
-        if (phase === EoaTwapSigningPhase.WaitingForTx) {
-          onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.WaitingForTx)
-        }
-      },
+      // No approval should be needed here, but if it does, we don't want to reset the step to
+      // ZeroApprove/ApproveOrPermit, so we pass `step`:
+      step: EoaTwapSigningSteps.FundingOrder,
+      onSigningStep,
+      approvalNeeds,
     })
   }
 
   // Show spinner while we re-read allowance (covers mining lag + edited approve amounts).
-  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Verifying)
+  onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Verifying })
 
   // Wallets can edit the approve amount again on the top-up tx. Re-read before posting so we
   // fail fast with a clear error instead of posting an unfillable funding order.
@@ -428,7 +427,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     sellTokenAddress,
     spender: vaultRelayerAddress,
     amountToCover: fundingSellAmountAtoms,
-    amountToApprove: fundingSellAmount,
+    amountToApprove: maxUint256,
   })
 
   if (stillNeedsFundingAllowance) {
@@ -437,8 +436,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     )
   }
 
-  // Ready for the funding-order EIP-712 signature.
-  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Sign)
+  // Ready for the funding-order EIP-712 signature. Past this point the pending UI hides dismiss.
+  onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Sign, lockDismiss: true })
 
   let orderPostingResult: OrderPostingResult
 
@@ -458,9 +457,9 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     orderPostingResult = await postSwapOrderFromQuote()
   }
 
-  onSigningStep?.(EoaTwapSigningSteps.FundingOrder, EoaTwapSigningPhase.Confirmed)
+  onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Confirmed })
 
-  onSigningStep?.(EoaTwapSigningSteps.CreatingOrder, EoaTwapSigningPhase.WaitingForTx)
+  onSigningStep({ step: EoaTwapSigningSteps.CreatingOrder, phase: EoaTwapSigningPhase.WaitingForTx })
 
   return { orderPostingResult, proxyAddress }
 }

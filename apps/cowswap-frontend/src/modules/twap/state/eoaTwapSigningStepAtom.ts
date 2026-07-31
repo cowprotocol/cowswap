@@ -2,8 +2,23 @@ import { atom } from 'jotai'
 
 export interface EoaTwapSigningStepState {
   step: EoaTwapSigningSteps
-  plan: EoaTwapSigningSteps[]
   phase: EoaTwapSigningPhase
+
+  /**
+   * The plan of steps to execute the TWAP.
+   *
+   * Set when the TWAP creation flow is initiated and preserved until the end of the flow (unless any step needs to
+   * update it mid-flow).
+   */
+  plan: EoaTwapSigningSteps[]
+
+  /**
+   * When true, hide back/close in `ConfirmationPendingContentShell`.
+   *
+   * Set once the funding-order EIP-712 signature is requested and preserved until the end of the flow (unless any step
+   * needs to update it mid-flow).
+   */
+  lockDismiss: boolean
 }
 
 /**
