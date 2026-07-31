@@ -44,7 +44,14 @@ export function useIsAppDataHooksInSync(): boolean {
   const currentHooks = useAtomValue(appDataHooksAtom)
   const builtWithHooks = useAtomValue(appDataBuiltWithHooksAtom)
 
-  return useMemo(() => deepEqual(currentHooks, builtWithHooks), [currentHooks, builtWithHooks])
+  return useMemo(() => {
+    // Both undefined (no hooks) — or the same reference — count as in sync. Guard here because
+    // deepEqual calls Object.keys() and would throw on the undefined atoms present on first render.
+    if (currentHooks === builtWithHooks) return true
+    if (!currentHooks || !builtWithHooks) return false
+
+    return deepEqual(currentHooks, builtWithHooks)
+  }, [currentHooks, builtWithHooks])
 }
 
 // TODO: Add proper return type annotation
