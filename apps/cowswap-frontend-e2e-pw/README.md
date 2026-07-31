@@ -132,6 +132,63 @@ These still reach the network and are the next round of work:
 - `bff.cow.fi` — `usdPrice`, `topHolders`, `simulateBundle`, affiliate endpoints
 - `partners.cow.fi` / `partners.barn.cow.fi`
 
+## Token allowances
+
+Every ERC-20 `allowance()` read the app makes is intercepted on the app's RPC
+endpoint and answered from `src/mocks/allowances/fixtures/allowances.json`. Both
+allowance hooks are covered — `useTokenAllowances` (the token list) and
+`useTokenAllowance` (the trade flow) — because both end up on the same viem
+transport, batched into Multicall3.
+
+```json
+{
+  "0x1111111111111111111111111111111111111111": {
+    "11155111": {
+      "0xfff9976782d46cc05630d1f6ebab18b2324d6b14": "5000000",
+      "0x0625afb445c3b6b7b929342a04a22599fd5dbb59": "0"
+    }
+  }
+}
+```
+
+`owner -> chainId -> token -> raw atoms`. Notes:
+
+- **Raw atoms**, always — `"5000000"` is 5 USDC, not 5,000,000. Write values above
+  2^53 as strings; a bare `1000000000000000000` is rejected at load time because
+  `JSON.parse` rounds it.
+- **Anything not listed reads as 0**, including an owner with no entry at all. So
+  the default state of every test is "nothing is approved".
+- **Spender is not part of the key.** Any spender gets the same value; the spender
+  is recorded in `reads()` if a spec needs to assert on it.
+- The committed file is `{}`. Use it for defaults tied to a fixed address.
+
+Because the wallet address comes from `INTEGRATION_TEST_PRIVATE_KEY`, a spec
+normally configures allowances at runtime instead:
+
+```ts
+test('[MO-XX] approval', async ({ wallet, mocks, swapPage }) => {
+  mocks.allowances.set(wallet.address, CHAIN_IDS.SEPOLIA, {
+    '0xfff9976782d46cc05630d1f6ebab18b2324d6b14': '5000000',
+  })
+  await wallet.openApp({ chainId: CHAIN_IDS.SEPOLIA })
+  // ...
+  expect(mocks.allowances.reads().length).toBeGreaterThan(0)
+})
+```
+
+`set()` merges token by token into `(owner, chainId)`; `clear()` drops all
+overrides. Overrides and recorded reads reset between tests.
+
+If allowances are read for an owner that has no entry — the classic case being a
+fixture keyed to another developer's address — the mock emits a **non-fatal**
+warning at teardown naming the address. It stays quiet when nothing is
+configured at all, since "everything is 0" is then the intended state.
+
+Not covered: `tokenAllowancesFamily` in `libs/balances-and-allowances/src/state/allowancesAtom.ts`
+reads through the *connector's* provider rather than the app transport. It is dead
+code today; when the TODO in `useTokenAllowances.ts` lands, this mock needs a
+second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
+
 ## Commands
 
 | Command | Description |
@@ -141,6 +198,7 @@ These still reach the network and are the next round of work:
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
 | `pnpm e2e:report` | Regenerate `coverage-report.md` from current tests + xlsx |
+| `npx nx test cowswap-frontend-e2e-pw` | Unit tests for the mocks and support code (`node:test` via tsx) |
 | `pnpm e2e:record-mocks` | Re-record the CoW Protocol API response fixtures from the live barn API |
 | `pnpm e2e:sync-checklist` | Regenerate `src/checklist/checklist.json` from `e2e-checklist.xlsx` |
 

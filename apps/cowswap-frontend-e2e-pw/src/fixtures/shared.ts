@@ -1,5 +1,6 @@
 import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
 
+import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
@@ -21,6 +22,7 @@ export interface SharedFixtures {
   confirmModal: ConfirmModal
   rpcProxy: RpcProxyHandle
   mocks: {
+    allowances: AllowancesMock
     cowApi: CowProtocolApiMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
@@ -58,18 +60,22 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
   // whole mock stack — including `assertNoUnmatched()` — would silently never run.
   mocks: [
     async ({ context }, use) => {
+      const allowances = installAllowances(context)
       const cowApi = installCowProtocolApi(context)
       const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
 
-      await use({ cowApi, tokenLists, safeSdk, bungee, nearIntents })
+      await use({ allowances, cowApi, tokenLists, safeSdk, bungee, nearIntents })
 
       tokenLists.reset()
       bungee.reset()
       nearIntents.reset()
       await safeSdk.disable()
+      // Non-fatal, so it must run before the throwing assert below.
+      allowances.reportUnknownOwners()
+      allowances.reset()
       // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
       // resets above must still happen.
       try {
