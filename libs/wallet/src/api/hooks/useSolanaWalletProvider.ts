@@ -1,6 +1,6 @@
 import { useAppKitProvider } from '@reown/appkit/react'
 
-import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana'
+import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 /**
  * The connected Solana wallet's provider, or `undefined` when no Solana wallet is connected.

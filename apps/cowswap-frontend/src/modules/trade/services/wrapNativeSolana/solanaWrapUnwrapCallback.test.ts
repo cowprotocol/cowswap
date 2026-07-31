@@ -11,7 +11,7 @@ import { Connection, Transaction } from '@solana/web3.js'
 
 import { solanaWrapUnwrapCallback, SolanaWrapUnwrapContext } from './solanaWrapUnwrapCallback'
 
-import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana'
+import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 const ACCOUNT = '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'
 const SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'

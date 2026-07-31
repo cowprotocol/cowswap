@@ -23,7 +23,7 @@ import { buildUnwrapSolInstructions } from './buildUnwrapSolInstructions'
 import { buildWrapSolInstructions } from './buildWrapSolInstructions'
 import { WSOL_MINT } from './const'
 
-import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana'
+import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 

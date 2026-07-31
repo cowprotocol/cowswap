@@ -137,7 +137,6 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WETH_PLASMA,
   ]),
   [SupportedChainId.INK]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK], USDT_INK, USDC_INK]),
-  // Swapping from Solana isn't wired up yet, but SOL/WSOL wrapping is — so both need to be selectable.
   [SupportedChainId.SOLANA]: tokensListToMap([
     NATIVE_CURRENCIES[SupportedChainId.SOLANA],
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA],
