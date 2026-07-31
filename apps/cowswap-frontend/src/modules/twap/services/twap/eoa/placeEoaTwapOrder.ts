@@ -187,11 +187,11 @@ export function getEoaTwapOrderShedCalls({
  * Cow-shed becomes the TWAP owner/trader; TWAP receiver remains the EOA.
  *
  * Expected call order (caller typically does step 0 first):
- * 0. Caller: on-chain vault-relayer approve(maxUint256) with signing UI (optional but recommended).
- * 1. Sign cow-shed EIP-712 (TwapSetup) encoding proxy approve + create TWAP post-hook.
- * 2. Quote funding BUY sell=buy order (sell may exceed TWAP sell).
- * 3. Re-read EOA→vault-relayer allowance vs funding sell; top up on-chain if short (no UI rewind).
- * 4. Sign/post funding order (FundingOrder), then wait for settlement (CreatingOrder).
+ * 1. (Optional) On-chain vault-relayer approve(maxUint256).
+ * 2. Sign cow-shed EIP-712 (TwapSetup) encoding proxy approve + create TWAP post-hook.
+ * 3. Quote funding BUY sell=buy order.
+ * 4. Re-check EOA => vault-relayer allowance vs funding order sell. Re-request approval if short.
+ * 5. Sign/post funding order (FundingOrder), then wait for settlement (CreatingOrder).
  */
 // eslint-disable-next-line max-lines-per-function, complexity
 export async function placeEoaTwapOrder({
