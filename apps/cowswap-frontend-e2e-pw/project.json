@@ -58,6 +58,13 @@
       "options": {
         "lintFilePatterns": ["apps/cowswap-frontend-e2e-pw/**/*.{js,ts}"]
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "command": "tsx --test \"src/**/*.test.ts\""
+      }
     }
   },
   "tags": [],
