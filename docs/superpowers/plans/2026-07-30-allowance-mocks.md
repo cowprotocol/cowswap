@@ -60,7 +60,7 @@ Split rationale: `codec.ts` is the only part with real algorithmic risk (ABI enc
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: the command `pnpm nx test cowswap-frontend-e2e-pw`, used by every later task to run unit tests. Equivalent direct form (faster while iterating): `cd apps/cowswap-frontend-e2e-pw && pnpm exec tsx --test 'src/**/*.test.ts'`.
+- Produces: the command `npx nx test cowswap-frontend-e2e-pw`, used by every later task to run unit tests. Equivalent direct form (faster while iterating): `cd apps/cowswap-frontend-e2e-pw && pnpm exec tsx --test $(find src -name '*.test.ts')`. Note `pnpm nx <target> <project>` does NOT work in this repo — root package.json maps `"nx": "npx nx run"`, which reorders the words.
 
 - [ ] **Step 1: Confirm the gap is real**
 
@@ -81,18 +81,25 @@ In `apps/cowswap-frontend-e2e-pw/project.json`, inside `"targets"`, add this ent
       "executor": "nx:run-commands",
       "options": {
         "cwd": "apps/cowswap-frontend-e2e-pw",
-        "command": "tsx --test \"src/**/*.test.ts\""
+        "command": "tsx --test $(find src -name '*.test.ts')"
       }
     }
 ```
 
-Note the glob is quoted so **node** expands it, not the shell. It matches `*.test.ts` anywhere under `src/`, and cannot pick up the Playwright specs (those are `*.spec.ts`).
+`find` does the expansion, not a shell glob and not node. Both alternatives were tried and rejected:
 
-- [ ] **Step 3: Run it and record what the five pre-existing files do**
+- A quoted `"src/**/*.test.ts"` passed positionally to `node --test` needs **Node ≥ 21** for pattern support. On Node 20.19.1 — inside this repo's engines range — it fails with `Could not find '…/src/**/*.test.ts'` and the target discovers **zero** tests while looking plausible.
+- An unquoted `src/**/*.test.ts` depends on `globstar`, which zsh has but the `sh` that nx's `run-commands` uses does not.
+
+`find` works on both Node versions and in plain `sh`. It matches `*.test.ts` anywhere under `src/` and cannot pick up the Playwright specs (those are `*.spec.ts`).
+
+- [ ] **Step 3: Run it and record what the pre-existing files do**
+
+There are **seven** pre-existing `*.test.ts` files, not five: add `src/support/checklist.test.ts` and `src/checklist/coverageReport.test.ts` to the five named below.
 
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx test cowswap-frontend-e2e-pw
+npx nx test cowswap-frontend-e2e-pw
 ```
 
 Expected: the runner discovers `src/mocks/cowProtocolApi/endpoints.test.ts`, `.../resolve.test.ts`, `.../install.test.ts`, `src/mockWallet/walletEngine.test.ts`, `src/support/rpcProxy.test.ts`.
@@ -513,7 +520,7 @@ Expected: PASS, 8 tests.
 
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx lint cowswap-frontend-e2e-pw
+npx nx lint cowswap-frontend-e2e-pw
 git add apps/cowswap-frontend-e2e-pw/src/mocks/allowances
 git commit -m "test(e2e): parse and resolve allowance fixtures"
 ```
@@ -1020,7 +1027,7 @@ Expected: `0x82ad56cb` then `0xdd62ed3e`. If either differs, fix the constant in
 
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx lint cowswap-frontend-e2e-pw
+npx nx lint cowswap-frontend-e2e-pw
 git add apps/cowswap-frontend-e2e-pw/src/mocks/allowances
 git commit -m "test(e2e): decode allowance and aggregate3 calldata"
 ```
@@ -1164,7 +1171,7 @@ Expected: PASS, 6 tests.
 
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx lint cowswap-frontend-e2e-pw
+npx nx lint cowswap-frontend-e2e-pw
 git add apps/cowswap-frontend-e2e-pw/src/mocks/allowances
 git commit -m "test(e2e): map app RPC urls to chain ids for the allowance mock"
 ```
@@ -1488,7 +1495,7 @@ Replace the body of the `mocks` fixture (currently lines 59-82) with:
 cd /Users/shoom/IdeaProjects/cowswap-2/apps/cowswap-frontend-e2e-pw
 pnpm exec tsc --noEmit -p tsconfig.json
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx lint cowswap-frontend-e2e-pw
+npx nx lint cowswap-frontend-e2e-pw
 ```
 
 Expected: no errors.
@@ -1497,7 +1504,7 @@ Expected: no errors.
 
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
-pnpm nx test cowswap-frontend-e2e-pw
+npx nx test cowswap-frontend-e2e-pw
 ```
 
 Expected: PASS for all four new files (43 tests total across `fixture`, `resolve`, `codec`, `rpcUrls`), plus whatever Task 1 recorded about the five pre-existing files.
@@ -1568,7 +1575,7 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 Add a row to the commands table, after the `e2e:report` row:
 
 ```markdown
-| `pnpm nx test cowswap-frontend-e2e-pw` | Unit tests for the mocks and support code (`node:test` via tsx) |
+| `npx nx test cowswap-frontend-e2e-pw` | Unit tests for the mocks and support code (`node:test` via tsx) |
 ```
 
 - [ ] **Step 6: Commit**
@@ -1654,7 +1661,7 @@ The probe is scaffolding, not a checklist-backed test. `pnpm e2e:report` require
 ```bash
 cd /Users/shoom/IdeaProjects/cowswap-2
 rm apps/cowswap-frontend-e2e-pw/src/tests/allowance-mock.spec.ts
-pnpm nx test cowswap-frontend-e2e-pw
+npx nx test cowswap-frontend-e2e-pw
 git status --short
 ```
 
