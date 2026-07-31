@@ -47,8 +47,8 @@ export function useSolanaWrapNativeCallback(amount: Nullish<CurrencyAmount<Curre
           closeModals() {
             setWrapNativeState({ isOpen: false })
           },
-          openTransactionConfirmationModal() {
-            setWrapNativeState({ isOpen: true })
+          openTransactionConfirmationModal(receiveAmount) {
+            setWrapNativeState({ isOpen: true, receiveAmount })
           },
           openErrorModal(errorMessage: string) {
             setWrapNativeState({ isOpen: true, errorMessage })

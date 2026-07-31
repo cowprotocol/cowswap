@@ -33,10 +33,12 @@ interface Harness {
 function createHarness({
   amount,
   wsolBalance = '1000',
+  rentExemptLamports = 9_000,
   sendError,
 }: {
   amount: CurrencyAmount<typeof SOL>
   wsolBalance?: string
+  rentExemptLamports?: number
   sendError?: unknown
 }): Harness {
   const sentTransactions: Transaction[] = []
@@ -46,6 +48,7 @@ function createHarness({
       .fn()
       .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT }),
     getTokenAccountBalance: jest.fn().mockResolvedValue({ value: { amount: wsolBalance } }),
+    getMinimumBalanceForRentExemption: jest.fn().mockResolvedValue(rentExemptLamports),
   } as unknown as Connection
 
   const provider = {
@@ -113,10 +116,18 @@ describe('solanaWrapUnwrapCallback', () => {
 
       expect(harness.addTransaction).toHaveBeenCalledWith({
         hash: SIGNATURE,
-        summary: 'Wrap 0.0000005 SOL to WSOL',
+        summary: 'Wrap 0.0000005 SOL to 0.0000005 WSOL',
         data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
       })
       expect(harness.closeModals).toHaveBeenCalled()
+    })
+
+    it('shows the pending screen the exact WSOL amount that will land, 1:1 with what was typed', async () => {
+      const harness = createHarness({ amount })
+
+      await solanaWrapUnwrapCallback(harness.context)
+
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(WSOL, 500n))
     })
   })
 
@@ -131,8 +142,21 @@ describe('solanaWrapUnwrapCallback', () => {
 
       expect(harness.sentTransactions[0].instructions).toHaveLength(1)
       expect(harness.addTransaction).toHaveBeenCalledWith(
-        expect.objectContaining({ summary: 'Unwrap 0.000001 WSOL to SOL' }),
+        expect.objectContaining({ summary: 'Unwrap 0.000001 WSOL to 0.00001 SOL' }),
       )
+    })
+
+    it('surfaces the reclaimed rent-exempt reserve on the pending screen before the transaction is sent', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(WSOL, 1000n),
+        wsolBalance: '1000',
+        rentExemptLamports: 9_000,
+      })
+
+      await solanaWrapUnwrapCallback(harness.context)
+
+      // 1000 lamports typed + the 9000 lamport rent-exempt reserve the closed account refunds
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(SOL, 10_000n))
     })
 
     it('re-wraps the remainder when unwrapping part of the balance', async () => {
@@ -144,6 +168,18 @@ describe('solanaWrapUnwrapCallback', () => {
       await solanaWrapUnwrapCallback(harness.context)
 
       expect(harness.sentTransactions[0].instructions).toHaveLength(4)
+    })
+
+    it('does not add the rent-exempt reserve when a remainder stays wrapped', async () => {
+      const harness = createHarness({
+        amount: CurrencyAmount.fromRawAmount(WSOL, 400n),
+        wsolBalance: '1000',
+        rentExemptLamports: 9_000,
+      })
+
+      await solanaWrapUnwrapCallback(harness.context)
+
+      expect(harness.openTransactionConfirmationModal).toHaveBeenCalledWith(CurrencyAmount.fromRawAmount(SOL, 400n))
     })
   })
 

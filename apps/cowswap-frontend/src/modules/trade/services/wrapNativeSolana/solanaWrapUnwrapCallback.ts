@@ -11,7 +11,6 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
-import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 
 import { WrapUnwrapCallbackParams } from 'legacy/hooks/useWrapCallback'
@@ -21,7 +20,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { buildUnwrapSolInstructions } from './buildUnwrapSolInstructions'
 import { buildWrapSolInstructions } from './buildWrapSolInstructions'
-import { WSOL_MINT } from './const'
+import { getSolanaUnwrapPreview } from './getSolanaUnwrapPreview'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
@@ -48,8 +47,18 @@ export interface SolanaWrapUnwrapContext {
   addTransaction: TransactionAdder
   analytics: ReturnType<typeof useCowAnalytics>
   closeModals: Command
-  openTransactionConfirmationModal: Command
+  /**
+   * Takes the amount the owner will actually receive so the pending screen can show it. For a
+   * full-balance unwrap this is more than the typed amount — see `buildUnwrapPlan` below.
+   */
+  openTransactionConfirmationModal: (receiveAmount: CurrencyAmount<Currency>) => void
   openErrorModal: (message: string) => void
+}
+
+interface SolanaWrapPlan {
+  instructions: ReturnType<typeof buildWrapSolInstructions> | ReturnType<typeof buildUnwrapSolInstructions>
+  /** What the owner will actually end up with — not necessarily the typed amount, see `buildUnwrapPlan`. */
+  receiveAmount: CurrencyAmount<Currency>
 }
 
 /**
@@ -73,18 +82,18 @@ export async function solanaWrapUnwrapCallback(
 
   const isNativeIn = getIsNativeToken(amount.currency)
   const useModals = params.useModals
-  const { operationMessage, summary } = getSolanaWrapDescription(isNativeIn, amount)
+  const operationMessage = getSolanaOperationMessage(isNativeIn)
 
   try {
-    useModals && openTransactionConfirmationModal()
-    sendWrapEvent(analytics, 'Send', operationMessage, amount)
-
     const owner = new PublicKey(account)
     const lamports = amount.quotient
 
-    const instructions = isNativeIn
-      ? buildWrapSolInstructions({ owner, lamports })
-      : buildUnwrapSolInstructions({ owner, lamports, wsolBalance: await readWsolBalance(connection, owner) })
+    const { instructions, receiveAmount } = isNativeIn
+      ? buildWrapPlan(owner, lamports)
+      : await buildUnwrapPlan(connection, owner, lamports)
+
+    useModals && openTransactionConfirmationModal(receiveAmount)
+    sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
     // The wallet provider populates neither the blockhash nor the fee payer, so the transaction has to
     // be complete before it is handed over.
@@ -96,7 +105,11 @@ export async function solanaWrapUnwrapCallback(
     sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
     // `lastValidBlockHeight` lets the finalizer tell "not landed yet" apart from "dropped for good".
-    addTransaction({ hash, summary, data: { lastValidBlockHeight } })
+    addTransaction({
+      hash,
+      summary: getSolanaWrapSummary(isNativeIn, amount, receiveAmount),
+      data: { lastValidBlockHeight },
+    })
 
     useModals && closeModals()
 
@@ -106,18 +119,50 @@ export async function solanaWrapUnwrapCallback(
   }
 }
 
-function getSolanaWrapDescription(
-  isWrap: boolean,
-  inputAmount: CurrencyAmount<Currency>,
-): { operationMessage: string; summary: string } {
-  const { native, wrapped } = SOLANA_CURRENCY_SYMBOLS
-  const amountStr = formatTokenAmount(inputAmount)
+/**
+ * Unwrapping closes the WSOL account (Solana has no partial-unwrap primitive) and, when there's a
+ * remainder, re-creates and re-funds it in the same transaction — see `buildUnwrapSolInstructions`.
+ * That re-creation is what re-pays the account's rent-exempt reserve. When the owner unwraps their
+ * *entire* balance there's no remainder, so nothing re-pays it: the close instruction refunds the
+ * unwrapped amount plus the reserve that was locked up for as long as the account existed. That's a
+ * legitimate reclaim, not a bug, but the owner needs to see it coming rather than be surprised by the
+ * wallet's simulated balance change.
+ */
+async function buildUnwrapPlan(connection: Connection, owner: PublicKey, lamports: bigint): Promise<SolanaWrapPlan> {
+  const { wsolBalance, receiveAmount } = await getSolanaUnwrapPreview(connection, owner, lamports)
 
   return {
-    summary: isWrap ? t`Wrap ${amountStr} ${native} to ${wrapped}` : t`Unwrap ${amountStr} ${wrapped} to ${native}`,
-    // Keep analytics label un-translated on purpose
-    operationMessage: isWrap ? t`Wrapping` + ' ' + native : t`Unwrapping` + ' ' + wrapped,
+    instructions: buildUnwrapSolInstructions({ owner, lamports, wsolBalance }),
+    receiveAmount,
   }
+}
+
+function buildWrapPlan(owner: PublicKey, lamports: bigint): SolanaWrapPlan {
+  return {
+    instructions: buildWrapSolInstructions({ owner, lamports }),
+    receiveAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA], lamports),
+  }
+}
+
+function getSolanaOperationMessage(isWrap: boolean): string {
+  const { native, wrapped } = SOLANA_CURRENCY_SYMBOLS
+
+  // Keep analytics label un-translated on purpose
+  return isWrap ? t`Wrapping` + ' ' + native : t`Unwrapping` + ' ' + wrapped
+}
+
+function getSolanaWrapSummary(
+  isWrap: boolean,
+  inputAmount: CurrencyAmount<Currency>,
+  receiveAmount: CurrencyAmount<Currency>,
+): string {
+  const { native, wrapped } = SOLANA_CURRENCY_SYMBOLS
+  const inputAmountStr = formatTokenAmount(inputAmount)
+  const receiveAmountStr = formatTokenAmount(receiveAmount)
+
+  return isWrap
+    ? t`Wrap ${inputAmountStr} ${native} to ${receiveAmountStr} ${wrapped}`
+    : t`Unwrap ${inputAmountStr} ${wrapped} to ${receiveAmountStr} ${native}`
 }
 
 /**
@@ -150,25 +195,6 @@ function handleSendError(
   }
 
   throw typeof error === 'string' ? new Error(error) : error
-}
-
-/**
- * Read straight from the chain rather than from the balances cache: a stale value would make the
- * remainder calculation wrong and silently unwrap the wrong amount.
- *
- * A missing account is a zero balance — the owner simply never held WSOL.
- */
-async function readWsolBalance(connection: Connection, owner: PublicKey): Promise<bigint> {
-  const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
-
-  try {
-    const { value } = await connection.getTokenAccountBalance(associatedTokenAccount)
-
-    return BigInt(value.amount)
-  } catch (error) {
-    console.error('Could not fetch Solana token account balance', error)
-    return 0n
-  }
 }
 
 function sendWrapEvent(
