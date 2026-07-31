@@ -371,6 +371,14 @@ export const ApproveLabel = styled.span`
   font-weight: 500;
 `
 
+// Neutral (muted) label for the Solana "not delegated" placeholder — deliberately not the green
+// `ApproveLabel`, since a dash is an empty state rather than an approval.
+export const NotDelegatedLabel = styled.span`
+  color: inherit;
+  opacity: 0.5;
+  font-weight: 500;
+`
+
 export const CustomLimit = styled.div`
   > span:last-child {
     cursor: default;

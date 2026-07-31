@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.2...cow-fi-v2.10.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: measure bundle size changes (#7899)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/wallet@3.10.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/analytics@3.8.1
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/widget-react@3.2.4
+  - @cowprotocol/common-const@3.7.1
+
 ## [2.9.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.1...cow-fi-v2.9.2) (2026-07-28)
 
 ### Patch Changes

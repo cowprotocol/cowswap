@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.7](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.6...ens-v3.4.7) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/common-const@3.7.1
+
 ## [3.4.6](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.5...ens-v3.4.6) (2026-07-28)
 
 ### Patch Changes

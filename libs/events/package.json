@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/events",
-  "version": "4.8.1",
+  "version": "4.9.0",
   "description": "CoW Swap events",
   "repository": {
     "type": "git",
@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.5",
-    "@cowprotocol/sdk-bridging": "4.4.0",
+    "@cowprotocol/cow-sdk": "9.2.6",
+    "@cowprotocol/sdk-bridging": "4.4.2",
     "@cowprotocol/types": "workspace:*"
   }
 }

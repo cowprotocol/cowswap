@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.2...permit-utils-v3.4.3) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.11
+
 ## [3.4.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.1...permit-utils-v3.4.2) (2026-07-28)
 
 ### Patch Changes
