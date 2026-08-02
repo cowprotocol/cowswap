@@ -71,6 +71,7 @@ function makeParams(overrides: Partial<UseBalancesWatcherSessionParams> = {}): U
     chainId: SupportedChainId.MAINNET,
     tokensListsUrls: ['https://example.com/tokens.json'],
     customTokens: [],
+    isChainSynced: true,
     ...overrides,
   }
 }
@@ -160,6 +161,22 @@ describe('useBalancesWatcherSession', () => {
 
     expect(mockCreateSession).not.toHaveBeenCalled()
     expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
+  })
+
+  it('does not create a session while the token set has not caught up to the chain (isChainSynced=false)', () => {
+    const { result } = renderSession(makeParams({ isChainSynced: false }))
+
+    expect(mockCreateSession).not.toHaveBeenCalled()
+    expect(result.current.health.status).toBe(BalancesWatcherHealth.Idle)
+  })
+
+  it('creates the session once the chain syncs', () => {
+    const { rerender } = renderSession(makeParams({ isChainSynced: false }))
+    expect(mockCreateSession).not.toHaveBeenCalled()
+
+    rerender({ params: makeParams({ isChainSynced: true }) })
+
+    expect(mockCreateSession).toHaveBeenCalledTimes(1)
   })
 
   it('walks idle → connecting → connected → healthy through the happy path', async () => {

@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.0...common-const-v3.7.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.6.0...common-const-v3.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/currency@1.2.2
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.1...common-const-v3.6.0) (2026-07-08)
 
 ### Minor Changes

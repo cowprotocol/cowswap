@@ -45,6 +45,10 @@ function getGitBuildInfo(): {
   commitDate: string
   releaseTag: string
 } {
+  if (process.env.BUNDLE_SIZE_BUILD === 'true') {
+    return { commitHash: '0000000', commitDate: '1970-01-01T00:00:00+00:00', releaseTag: 'v1.0.0' }
+  }
+
   try {
     const commitHash = execSync('git rev-parse --short=7 HEAD').toString().trim()
     const commitDate = execSync('git show -s --format=%cI HEAD').toString().trim()
@@ -301,6 +305,7 @@ export default defineConfig(({ mode, isPreview }) => {
     },
 
     build: {
+      manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
       sourcemap: !isPreview,

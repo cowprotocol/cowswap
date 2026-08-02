@@ -149,4 +149,24 @@ describe('walletMetadata atoms', () => {
 
     expect(store.get(isSafeViaWcAtom)).toBe(true)
   })
+
+  it('detects a Safe account imported into an injected wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      chainId: SupportedChainId.MAINNET,
+      nonce: 0,
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(true)
+  })
 })
