@@ -105,9 +105,9 @@ describe('useLoadMoreOrders', () => {
     expect(result.current).toMatchObject({ isLoading: false, hasMoreOrders: false })
   })
 
-  it('uses the simple orders request loading state', () => {
+  it('uses the simple orders load-more state', () => {
     const store = createStore()
-    store.set(apiOrdersAtom, { orders: [], isLoading: true })
+    store.set(apiOrdersAtom, { orders: [], isLoadingMore: true })
 
     const { result } = renderHook(() => useLoadMoreOrders(TabOrderTypes.LIMIT), {
       wrapper: testWrapper(store),

@@ -21,10 +21,10 @@ export function useLoadMoreOrders(orderType: TabOrderTypes): UseLoadMoreOrdersRe
   const isAdvancedOrders = orderType === TabOrderTypes.ADVANCED
   const eoaTwapOrdersQuery = useAtomValue(eoaTwapOrdersQueryAtom)
   const [limit, setLimit] = useAtom(ordersLimitAtom)
-  const { orders: apiOrders, isLoading: apiOrdersLoading } = useAtomValue(apiOrdersAtom)
+  const { orders: apiOrders, isLoadingMore: apiOrdersLoadingMore } = useAtomValue(apiOrdersAtom)
   const isLoading = isAdvancedOrders
     ? eoaTwapOrdersQuery.isFetching && eoaTwapOrdersQuery.isPlaceholderData
-    : apiOrdersLoading
+    : apiOrdersLoadingMore
 
   const loadMore = useCallback((): void => {
     setLimit((prev) =>

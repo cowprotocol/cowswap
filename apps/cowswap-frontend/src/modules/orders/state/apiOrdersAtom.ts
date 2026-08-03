@@ -4,7 +4,7 @@ import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 export interface ApiOrdersState {
   orders: EnrichedOrder[]
-  isLoading: boolean
+  isLoadingMore: boolean
 }
 
-export const apiOrdersAtom = atom<ApiOrdersState>({ orders: [], isLoading: false })
+export const apiOrdersAtom = atom<ApiOrdersState>({ orders: [], isLoadingMore: false })

@@ -14,7 +14,7 @@ const emptyOrders: EnrichedOrder[] = []
 
 interface OrdersFromOrderBookState {
   orders: EnrichedOrder[]
-  isLoading: boolean
+  isLoadingMore: boolean
 }
 
 export function useOrdersFromOrderBook(): OrdersFromOrderBookState {
@@ -52,6 +52,6 @@ export function useOrdersFromOrderBook(): OrdersFromOrderBookState {
 
   return {
     orders: isLoadingMore ? prevEnvOrdersState.orders : currentEnvOrders,
-    isLoading: isLoadingMore,
+    isLoadingMore,
   }
 }
