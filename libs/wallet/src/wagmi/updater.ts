@@ -16,7 +16,7 @@ import ms from 'ms.macro'
 import { useAccountState } from './hooks/useAccountState'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
@@ -195,13 +195,10 @@ function parseSafeInfoFromSdk(
 
 function useIsPossibleSafe(): boolean {
   const accountType = useAccountType()
-  const isSafeViaWc = useIsSafeViaWc()
 
-  if (!isSafeViaWc) return false
-  if (accountType === AccountType.EOA) return false
-  if (accountType === AccountType.EIP7702EOA) return false
-
-  return true
+  // Imported Safes may use an injected connector (for example, Ambire or Rabby),
+  // so connector metadata alone cannot identify them.
+  return accountType === AccountType.SMART_CONTRACT
 }
 
 function useSafeInfo(): GnosisSafeInfo | undefined {

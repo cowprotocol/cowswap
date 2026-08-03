@@ -369,8 +369,8 @@ describe('getReceiveAmountInfo', () => {
 
       const slippagePercent = new Percent(50, 10000) // 0.5%
       const bridgeFeeAmounts = {
-        amountInSellCurrency: BigInt('5000'), // 0.005 USDC in destination decimals (6)
-        amountInBuyCurrency: BigInt('5000'), // 0.005 USDC in intermediate decimals (6)
+        amountInSellCurrency: BigInt('5000'), // 0.005 USDC in intermediate decimals (6)
+        amountInBuyCurrency: BigInt('5000'), // 0.005 USDC in destination decimals (6)
       }
 
       const result = getCrossChainReceiveAmountInfo({
@@ -407,8 +407,8 @@ describe('getReceiveAmountInfo', () => {
 
       const slippagePercent = new Percent(50, 10000) // 0.5%
       const bridgeFeeAmounts = {
-        amountInSellCurrency: BigInt('50000'), // 0.05 USDC in destination decimals (6)
-        amountInBuyCurrency: BigInt('50000000000000000'), // 0.05 in intermediate decimals (18)
+        amountInSellCurrency: BigInt('50000000000000000'), // 0.05 WETH in intermediate decimals (18)
+        amountInBuyCurrency: BigInt('50000'), // 0.05 USDC in destination decimals (6)
       }
 
       const result = getCrossChainReceiveAmountInfo({
@@ -448,8 +448,8 @@ describe('getReceiveAmountInfo', () => {
 
       const slippagePercent = new Percent(50, 10000) // 0.5%
       const bridgeFeeAmounts = {
-        amountInSellCurrency: BigInt('50000000000000000'), // 0.05 WETH in destination decimals (18)
-        amountInBuyCurrency: BigInt('50000'), // 0.05 in intermediate decimals (6)
+        amountInSellCurrency: BigInt('50000'), // 0.05 USDC in intermediate decimals (6)
+        amountInBuyCurrency: BigInt('50000000000000000'), // 0.05 WETH in destination decimals (18)
       }
 
       const result = getCrossChainReceiveAmountInfo({

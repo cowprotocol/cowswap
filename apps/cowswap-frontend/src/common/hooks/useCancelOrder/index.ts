@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -10,13 +10,14 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useGasPrices } from 'legacy/state/gas/hooks'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { buildOrderWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
@@ -55,12 +56,8 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      const isEthFlowOrder = getIsNativeToken(order.inputToken)
-
-      // 1. EthFlow orders will never be able to be cancelled offChain
-      // 2. The wallet must support offChain singing
-      // 3. The order must be PENDING
-      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
+      // The wallet must support off-chain signing
+      const isOffChainCancellable = allowsOffchainSigning && isOrderOffChainCancellable(order)
 
       // When the order is not cancellable, there won't be a callback
       if (!isOrderCancellable(order)) {

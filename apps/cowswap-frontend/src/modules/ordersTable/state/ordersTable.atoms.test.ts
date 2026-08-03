@@ -7,7 +7,7 @@ import {
   type BalancesState,
 } from '@cowprotocol/balances-and-allowances'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol/wallet'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
@@ -68,7 +68,6 @@ jest.mock('@cowprotocol/wallet', () => {
   const { atom } = require('jotai') as typeof import('jotai')
 
   return {
-    isAtomicBatchSupportedLoadableAtom: atom({ data: true, state: 'hasData' }),
     walletInfoAtom: atom({}),
   }
 })
@@ -398,7 +397,7 @@ describe('observeReduxOrders', () => {
     )
   })
 
-  it('composes advanced orders from emulated TWAPs, emulated parts, and discrete TWAP orders', () => {
+  it('composes advanced orders without gating history on wallet batching support', () => {
     const connector = { id: 'mock-connector' }
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
@@ -457,7 +456,6 @@ describe('observeReduxOrders', () => {
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
         [tabParamAtom, null],
-        [isAtomicBatchSupportedLoadableAtom, { data: true, state: 'hasData' }],
         [emulatedTwapOrdersAtom, [emulatedTwapOrder]],
         [emulatedPartOrdersAtom, [emulatedPartOrder]],
         [

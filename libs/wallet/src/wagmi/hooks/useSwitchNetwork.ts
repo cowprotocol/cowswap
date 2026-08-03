@@ -5,16 +5,20 @@ import { useConnection } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useNetworkSwitchUnsupported } from '../../api/hooks/useNetworkSwitchUnsupported'
 import { walletInfoAtom } from '../../api/state'
 import { SUPPORTED_REOWN_NETWORKS } from '../../reown/networks'
 import { reownAppKit } from '../config'
 
 export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
   const { isConnected } = useConnection()
+  const networkSwitchUnsupported = useNetworkSwitchUnsupported()
   const setWalletInfo = useSetAtom(walletInfoAtom)
 
   return useCallback(
     async (chainId: SupportedChainId) => {
+      if (networkSwitchUnsupported) return
+
       if (isConnected) {
         const network = SUPPORTED_REOWN_NETWORKS.find(({ id }) => id === chainId)
 
@@ -27,6 +31,6 @@ export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void>
         setWalletInfo((prev) => ({ ...prev, chainId }))
       }
     },
-    [isConnected, setWalletInfo],
+    [isConnected, networkSwitchUnsupported, setWalletInfo],
   )
 }
