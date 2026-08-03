@@ -39,6 +39,7 @@ type Props = {
   order: Order | null
   trades: Trade[]
   // Order-level protocol fee breakdown, derived from *all* trades (not the current fills page).
+  // Undefined while it is unknown — see `Order.protocolFees`.
   protocolFees?: ProtocolFee[]
   isOrderLoading: boolean
   areTradesLoading: boolean
@@ -51,7 +52,6 @@ type Props = {
 }
 
 const DEFAULT_TAB = TabView[1]
-const NO_PROTOCOL_FEES: ProtocolFee[] = []
 
 function useQueryViewParams(): string {
   const query = useQuery()
@@ -73,7 +73,7 @@ const tabItems = (
   _order: Order | null,
   crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
-  protocolFees: ProtocolFee[],
+  protocolFees: ProtocolFee[] | undefined,
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
@@ -155,7 +155,8 @@ const tabItems = (
 /**
  * Returns the order enriched with fields derived from its trades:
  * - protocolFees: the order-level protocol fee breakdown (computed from *all* trades by the
- *   caller, not just the current fills page, so it doesn't change as the user pages)
+ *   caller, not just the current fills page, so it doesn't change as the user pages). Undefined
+ *   while it is still unknown.
  * - txHash and executionDate when the order has a single trade (fill or kill,
  *   or a partial fill with a single trade so far)
  */
@@ -163,7 +164,7 @@ function enrichOrderFromTrades(
   order: Order | null,
   trades: Trade[],
   hasMultipleTrades: boolean,
-  protocolFees: ProtocolFee[],
+  protocolFees: ProtocolFee[] | undefined,
 ): Order | null {
   if (!order) return order
 
@@ -190,7 +191,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     areTradesLoading,
     errors,
     trades,
-    protocolFees = NO_PROTOCOL_FEES,
+    protocolFees,
     tableState,
     setPageSize,
     setPageOffset,

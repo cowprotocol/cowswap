@@ -25,20 +25,27 @@ const Template: Story<Props> = (args) => (
   </div>
 )
 
-// On-chain gas cost (native token wei) — its presence switches on the costs & fees breakdown.
+// On-chain gas cost (native token wei). Both it and `protocolFees` must be present for the
+// breakdown to render; otherwise the total would be missing one of its components.
 const GAS_COST = new BigNumber('2500000000000000')
 
 // No recorded gas cost -> legacy display of the combined executed fee in the sell token.
 export const LegacyNoGasCost = Template.bind({})
-LegacyNoGasCost.args = { order: { ...RICH_ORDER, gasCost: undefined } }
+LegacyNoGasCost.args = { order: { ...RICH_ORDER, gasCost: undefined, protocolFees: [] } }
 
-// Gas cost present but no protocol fees -> breakdown with just the Network costs line.
+// Fees not known yet (still loading, or their fetch failed) -> legacy display rather than a total
+// that silently omits them.
+export const FeesUnavailable = Template.bind({})
+FeesUnavailable.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: undefined } }
+
+// Gas cost present and the order provably charged no fees -> network costs alone, and no expander,
+// since it would only repeat the total.
 export const NetworkCostsOnly = Template.bind({})
 NetworkCostsOnly.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] } }
 
-// Network costs + the protocol's own fee (the first applied fee, position 0).
-export const ProtocolFee = Template.bind({})
-ProtocolFee.args = {
+// Network costs plus a single fee, charged in a different token than the gas -> two totals.
+export const SingleFee = Template.bind({})
+SingleFee.args = {
   order: {
     ...RICH_ORDER,
     gasCost: GAS_COST,
@@ -53,9 +60,9 @@ ProtocolFee.args = {
   },
 }
 
-// Network costs + protocol fee + two partner fees (numbered by applied order).
-export const ProtocolAndPartnerFees = Template.bind({})
-ProtocolAndPartnerFees.args = {
+// Several fees, including two of the same type — those get numbered so they can be told apart.
+export const MultipleFees = Template.bind({})
+MultipleFees.args = {
   order: {
     ...RICH_ORDER,
     gasCost: GAS_COST,

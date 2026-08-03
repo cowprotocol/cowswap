@@ -6,7 +6,16 @@ import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, ProtocolFee, ProtocolFeeType, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import {
+  Order,
+  OrderStatus,
+  ProtocolFee,
+  ProtocolFeeType,
+  RAW_ORDER_STATUS,
+  RawOrder,
+  RawTrade,
+  Trade,
+} from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
@@ -347,37 +356,39 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 }
 
 /**
- * Aggregates the protocol fees across an order's trades into one total per fee policy, keyed by the
- * fee's position in `executedProtocolFees` (see {@link ProtocolFee.position}). Fee policies are
- * fixed per order, so a given position is the same policy in every fill; summing per position
- * collapses the fills while preserving the applied order.
+ * Aggregates the fees charged across an order's trades into one total per fee policy.
+ *
+ * A fill's `executedProtocolFees` lists its fees in the order they were applied, and that ordering
+ * is stable across the order's fills, so the position is what lets us collapse the fills. It is
+ * *not* enough on its own: a fee at the same position can be charged in a different token or under
+ * a different policy from one fill to the next, and summing those together would produce a total in
+ * no particular token. Keying on (position, type, token) keeps each of those distinct, while
+ * `position` still orders the result.
  */
-export function getProtocolFees(trades: Array<Pick<Trade, 'executedProtocolFees'>>): ProtocolFee[] {
-  const feesByPosition = new Map<number, ProtocolFee>()
+export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFees'>>): ProtocolFee[] {
+  const feesByPolicy = new Map<string, ProtocolFee>()
 
   for (const { executedProtocolFees } of trades) {
     if (!executedProtocolFees) continue
+
     executedProtocolFees.forEach(({ amount, token, policy }, position) => {
       if (!amount || !token) return
-      const parsedAmount = new BigNumber(amount)
 
-      const existing = feesByPosition.get(position)
+      const type = getProtocolFeeType(policy)
+      const tokenAddress = getAddressKey(token)
+      const key = `${position}-${type}-${tokenAddress}`
+
+      const existing = feesByPolicy.get(key)
       if (existing) {
-        existing.amount = existing.amount.plus(parsedAmount)
+        existing.amount = existing.amount.plus(amount)
       } else {
-        feesByPosition.set(position, {
-          amount: parsedAmount,
-          tokenAddress: getAddressKey(token),
-          type: getProtocolFeeType(policy),
-          factor: getProtocolFeeFactor(policy),
-          position,
-        })
+        feesByPolicy.set(key, { amount: new BigNumber(amount), tokenAddress, type, position })
       }
     })
   }
 
-  // Sort by applied position (protocol fee first, partner fees after); drop policies that charged nothing.
-  return Array.from(feesByPosition.values())
+  // Keep the applied order; drop policies that ended up charging nothing.
+  return Array.from(feesByPolicy.values())
     .sort((a, b) => a.position - b.position)
     .filter((fee) => fee.amount.isGreaterThan(0))
 }
@@ -477,18 +488,6 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
     surplusPercentage: percentage,
     executionTime: executionTimestamp ? new Date(executionTimestamp * 1000) : null,
   }
-}
-
-/**
- * Returns the fee policy's `factor`, when present (meaning is policy-specific; see {@link ProtocolFee.factor}).
- */
-function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
-  if (policy) {
-    if ('surplus' in policy) return policy.surplus.factor
-    if ('volume' in policy) return policy.volume.factor
-    if ('priceImprovement' in policy) return policy.priceImprovement.factor
-  }
-  return undefined
 }
 
 /**

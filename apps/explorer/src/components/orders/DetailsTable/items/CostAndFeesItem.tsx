@@ -12,6 +12,7 @@ interface CostAndFeesItemProps {
 
 export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
   return (
+    // The breakdown renders as a total plus an expandable table, so it needs the stacked layout.
     <DetailRow label="Costs and fees" tooltipText={DetailsTableTooltips.fees} stack>
       <GasFeeDisplay order={order} />
     </DetailRow>

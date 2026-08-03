@@ -1,26 +1,27 @@
 import React, { useMemo } from 'react'
 
-import { AddressKey, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AddressKey, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, WRAPPED_NATIVE_ADDRESS, ZERO_BIG_NUMBER } from 'const'
+import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, ZERO_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { abbreviateString, isNativeToken } from 'utils'
+import { abbreviateString } from 'utils'
 
-import { Order, ProtocolFeeType } from 'api/operator'
+import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// Labels for the protocol's own fee (the first applied fee), by policy type. The common case is a
-// plain volume fee, shown simply as "Protocol fee".
-const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
+// The API reports how each fee was calculated but not who charged it, so the labels describe the
+// policy rather than guessing at "protocol" vs "partner" — an order can carry a partner fee and no
+// protocol fee, and attributing that to the protocol would be wrong.
+const FEE_TYPE_LABELS: Record<ProtocolFeeType, string> = {
   [ProtocolFeeType.Surplus]: 'Surplus fee',
-  [ProtocolFeeType.Volume]: 'Protocol fee',
+  [ProtocolFeeType.Volume]: 'Volume fee',
   [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
-  [ProtocolFeeType.Unknown]: 'Protocol fee',
+  [ProtocolFeeType.Unknown]: 'Fee',
 }
 
 const LegacyWrapper = styled.div`
@@ -36,113 +37,120 @@ type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const { order } = props
 
-  // Orders settled before the orderbook started recording gas costs (or not yet settled) have no
-  // gasCost. Without it we can't split the executed fee into network costs + protocol/partner fees,
-  // so we fall back to the legacy display that just shows the combined executed fee.
-  if (!order.gasCost || !order.gasCost.isGreaterThan(0)) {
+  // The breakdown needs both halves of the picture to add up: the gas cost, which is missing on
+  // orders settled before the orderbook recorded it (and on ones not yet settled), and the protocol
+  // fees, which are undefined until their fetch succeeds. Without either, showing a total would
+  // mean quietly leaving a component out of it, so we fall back to the legacy display of the
+  // combined executed fee, which is complete on its own terms.
+  if (!order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
     return <LegacyFeeDisplay order={order} />
   }
 
-  return <CostsAndFeesBreakdown order={order} gasCost={order.gasCost} />
+  return <CostsAndFeesBreakdown order={order} gasCost={order.gasCost} protocolFees={order.protocolFees} />
 }
 
 /**
- * New breakdown shown once the order reports its gas cost: a "Network costs" line (the on-chain
- * execution cost, in the native token) followed by the protocol fee and any partner fees.
+ * Breakdown of what the order cost to execute: a "Network costs" line (the on-chain execution cost,
+ * in the native token) followed by one line per fee policy that charged something.
  */
-function CostsAndFeesBreakdown({ order, gasCost }: { order: Order; gasCost: BigNumber }): React.ReactNode {
+function CostsAndFeesBreakdown({
+  order,
+  gasCost,
+  protocolFees,
+}: {
+  order: Order
+  gasCost: BigNumber
+  protocolFees: ProtocolFee[]
+}): React.ReactNode {
   const networkId = useNetworkId() ?? undefined
-  const { protocolFees } = order
 
-  const feeTokenAddresses = useMemo(() => (protocolFees ?? []).map((fee) => fee.tokenAddress), [protocolFees])
-  const { value: feeTokens } = useMultipleErc20({ networkId, addresses: feeTokenAddresses })
+  const feeTokenAddresses = useMemo(() => protocolFees.map((fee) => fee.tokenAddress), [protocolFees])
+  const { value: feeTokens, isLoading: areFeeTokensLoading } = useMultipleErc20({
+    networkId,
+    addresses: feeTokenAddresses,
+  })
 
   const nativeToken = networkId
     ? NATIVE_TOKEN_PER_NETWORK[networkId as keyof typeof NATIVE_TOKEN_PER_NETWORK]
     : undefined
   const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
-  const wrappedKey =
-    networkId !== undefined ? getAddressKey(WRAPPED_NATIVE_ADDRESS[networkId as SupportedChainId]) : undefined
 
   // Resolves every address in the breakdown to a token: the order's own tokens, the native token
-  // (network costs) and the fetched fee-token metadata. Ethflow orders sell native ETH but pay fees
-  // in wrapped native, so the wrapped address resolves to the (native) sell token.
+  // (network costs) and the fetched fee-token metadata.
   const tokenByKey = useMemo(() => {
     const map = new Map<AddressKey, TokenErc20>()
-    const candidates = [...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]
-    for (const token of candidates) {
+    for (const token of [...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]) {
       if (token) map.set(getAddressKey(token.address), token)
     }
-    if (wrappedKey && order.sellToken && isNativeToken(order.sellTokenAddress)) map.set(wrappedKey, order.sellToken)
     return map
-  }, [feeTokens, nativeToken, order.buyToken, order.sellToken, order.sellTokenAddress, wrappedKey])
+  }, [feeTokens, nativeToken, order.buyToken, order.sellToken])
 
-  // One row per cost/fee: network costs first, then the protocol fee (position 0), then the partner
-  // fees that follow it (numbered so multiple partners can be told apart).
+  // One row per cost: network costs first, then each fee in the order the policies were applied.
+  // Policies of the same type are numbered so they can be told apart; a type that occurs once keeps
+  // its plain label, which is the common case.
   const lineItems = useMemo<LineItem[]>(() => {
-    const items: LineItem[] = [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }]
-    let partnerNumber = 0
-    for (const fee of protocolFees ?? []) {
-      const label = fee.position === 0 ? PROTOCOL_FEE_LABELS[fee.type] : getPartnerFeeLabel(fee.type, ++partnerNumber)
-      items.push({ label, tokenAddress: fee.tokenAddress, amount: fee.amount })
-    }
-    return items
+    const labels = protocolFees.map((fee) => FEE_TYPE_LABELS[fee.type])
+    const occurrences = new Map<string, number>()
+    const numbered = new Map<string, number>()
+
+    for (const label of labels) occurrences.set(label, (occurrences.get(label) ?? 0) + 1)
+
+    const feeItems = protocolFees.map(({ tokenAddress, amount }, index) => {
+      const label = labels[index]
+      const seen = (numbered.get(label) ?? 0) + 1
+      numbered.set(label, seen)
+
+      return { label: occurrences.get(label) === 1 ? label : `${label} (${seen})`, tokenAddress, amount }
+    })
+
+    return [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }, ...feeItems]
   }, [protocolFees, gasCost, nativeKey])
 
-  // Headline total per token. Network costs (native) and fees taken in wrapped native are the same
-  // asset, so wrapped folds into native to show one figure; other tokens keep their own total.
-  const total = useMemo(() => {
-    const totals = new Map<AddressKey, BigNumber>()
+  // Headline total per token. Fees are charged in the surplus-side token, so an order can pay in
+  // more than one; each keeps its own figure rather than being folded together, because the wrapped
+  // native token and the native token the gas is paid in are not interchangeable to the user.
+  const totals = useMemo(() => {
+    const byToken = new Map<AddressKey, BigNumber>()
     for (const { tokenAddress, amount } of lineItems) {
-      const key = tokenAddress === wrappedKey ? nativeKey : tokenAddress
-      totals.set(key, (totals.get(key) ?? ZERO_BIG_NUMBER).plus(amount))
+      byToken.set(tokenAddress, (byToken.get(tokenAddress) ?? ZERO_BIG_NUMBER).plus(amount))
     }
-    return Array.from(totals, ([key, amount]) => formatAmount(amount, tokenByKey.get(key), key)).join(', ')
-  }, [lineItems, wrappedKey, nativeKey, tokenByKey])
+    return Array.from(byToken, ([key, amount]) => formatAmount(amount, tokenByKey.get(key), key)).join(', ')
+  }, [lineItems, tokenByKey])
+
+  // Amounts are meaningless without the token's decimals, so wait for the metadata rather than
+  // briefly rendering unscaled numbers that read as real amounts.
+  if (areFeeTokensLoading) return null
 
   return (
     <>
-      <span>{total}</span>
-      <NumbersBreakdown>
-        <table>
-          <tbody>
-            {lineItems.map((item, index) => (
-              <tr key={`${item.label}-${index}`}>
-                <td>{item.label}:</td>
-                <td>{formatAmount(item.amount, tokenByKey.get(item.tokenAddress), item.tokenAddress)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </NumbersBreakdown>
+      <span>{totals}</span>
+      {/* A lone network-costs row would just repeat the total. */}
+      {lineItems.length > 1 && (
+        <NumbersBreakdown>
+          <table>
+            <tbody>
+              {lineItems.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.label}:</td>
+                  <td>{formatAmount(item.amount, tokenByKey.get(item.tokenAddress), item.tokenAddress)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </NumbersBreakdown>
+      )}
     </>
   )
 }
 
-// Without token metadata we can't know decimals, so show the raw atom amount alongside a shortened
-// address rather than an unreadable 42-char string.
+// Without token metadata we don't know the decimals, so there is no honest way to render the
+// amount. Show the token it was charged in and mark the figure as unscaled rather than printing a
+// bare number that looks like a real amount.
 function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAddress: AddressKey): string {
-  if (!token) return `${amount.toString(10)} ${abbreviateString(tokenAddress, 6, 4)}`
+  if (!token) return `${amount.toString(10)} (raw) ${abbreviateString(tokenAddress, 6, 4)}`
+
   const { formattedAmount, symbol } = formatTokenAmount(amount, token)
   return `${formattedAmount} ${symbol}`
-}
-
-/**
- * Label for a partner fee. The trade API doesn't expose the partner's identity, so partners are
- * numbered by the order their fees were applied; a single partner with several fee types will show
- * as separate numbered entries.
- */
-function getPartnerFeeLabel(type: ProtocolFeeType, partnerNumber: number): string {
-  switch (type) {
-    case ProtocolFeeType.Volume:
-      return `Partner ${partnerNumber} volume fee`
-    case ProtocolFeeType.PriceImprovement:
-      return `Partner ${partnerNumber} price improvement share`
-    case ProtocolFeeType.Surplus:
-      return `Partner ${partnerNumber} surplus fee`
-    default:
-      return `Partner ${partnerNumber} fee`
-  }
 }
 
 /**

@@ -102,8 +102,10 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedFee: BigNumber | null
   totalFee: BigNumber
-  // Derived client-side from the trades' executedProtocolFees (not returned directly on the order).
-  // Aggregated per category (token + fee type).
+  // Derived client-side from the trades' executedProtocolFees (not returned directly on the order),
+  // summed across fills per (position, type, token). Undefined means "not available" — still
+  // loading, the fetch failed, or the breakdown is disabled — as opposed to `[]`, which means the
+  // order was checked and charged no protocol fee.
   protocolFees?: ProtocolFee[]
   // On-chain gas cost attributed to the order (native-token wei), as reported by the orderbook.
   // Undefined for orders settled before this was recorded, or not yet settled.
@@ -131,23 +133,19 @@ export type ProtocolFee = {
   tokenAddress: AddressKey
   type: ProtocolFeeType
   /**
-   * The fee policy's `factor`, when known. Its meaning is policy-specific: for
-   * {@link ProtocolFeeType.Volume} / {@link ProtocolFeeType.PriceImprovement} it's a fraction of
-   * trade volume / price improvement; for surplus fees a fraction of the surplus.
-   */
-  factor?: number
-  /**
    * The fee policy's position in the trade's applied-fee order (`executedProtocolFees` is "listed
-   * in the order they got applied"). Fee policies are fixed per order, so the same position refers
-   * to the same policy in every fill. Position 0 is the protocol's own fee; the fees that follow
-   * it are partner fees (the API doesn't otherwise distinguish protocol from partner).
+   * in the order they got applied"), used only to keep the breakdown in that same order.
+   *
+   * The API does not say which fee belongs to the protocol and which to an integrating partner, so
+   * we deliberately don't infer it from the position — see the labels in `GasFeeDisplay`.
    */
   position: number
 }
 
 // Raw API response.
-// `gasCost` is served by the orderbook (decimal string of native-token wei, summed across the
-// order's fills) but isn't yet in the SDK's EnrichedOrder type — added here until the SDK ships it.
+// TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
+// The orderbook already serves it (decimal string of native-token wei, summed across the order's
+// fills); the SDK type just hasn't caught up.
 export type RawOrder = EnrichedOrder & { gasCost?: string | null }
 
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
@@ -160,7 +158,7 @@ export type RawTrade = TradeMetaData
 /**
  * Enriched Trade type
  */
-export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash' | 'executedProtocolFees'> & {
+export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
   orderId: string
   kind?: OrderKind
   buyAmount: BigNumber
@@ -179,7 +177,7 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 export type WithNetworkId = { networkId: Network }
 
 /**
- * How a protocol fee was calculated, derived from the trade's fee policy.
+ * How a fee was calculated, derived from the trade's fee policy.
  * Used to label each fee so the different fees on an order can be told apart.
  */
 export enum ProtocolFeeType {
