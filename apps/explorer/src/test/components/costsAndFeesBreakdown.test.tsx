@@ -58,7 +58,8 @@ function fill(index: number): RawTrade {
 // OrderDetails.enrichOrderFromTrades does) they are attached to the order for GasFeeDisplay to render.
 function Harness({ order }: { order: Order }): React.ReactNode {
   const { protocolFees } = useOrderProtocolFees(order)
-  return <GasFeeDisplay order={{ ...order, protocolFees }} />
+  // `showBreakdown` stands in for the `isExplorerFeeDisplayEnabled` flag, which `CostAndFeesItem` reads.
+  return <GasFeeDisplay order={{ ...order, protocolFees }} showBreakdown />
 }
 
 // The fees are cached by order, so each case needs its own cache — otherwise the first test's

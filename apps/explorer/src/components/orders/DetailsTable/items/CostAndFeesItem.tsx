@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
+import { useFeeDisplayFeatureFlag } from 'hooks/useFeeDisplayFeatureFlag'
 
 import { Order } from '../../../../api/operator'
 import { DetailRow } from '../../../common/DetailRow'
@@ -11,10 +12,17 @@ interface CostAndFeesItemProps {
 }
 
 export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
+  const showBreakdown = useFeeDisplayFeatureFlag()
+
   return (
-    // The breakdown renders as a total plus an expandable table, so it needs the stacked layout.
-    <DetailRow label="Costs and fees" tooltipText={DetailsTableTooltips.fees} stack>
-      <GasFeeDisplay order={order} />
+    // The breakdown renders as a total plus an expandable table, so it needs the stacked layout;
+    // the legacy single-line fee keeps the inline one.
+    <DetailRow
+      label={showBreakdown ? 'Costs and fees' : 'Costs & Fees'}
+      tooltipText={showBreakdown ? DetailsTableTooltips.feesBreakdown : DetailsTableTooltips.fees}
+      stack={showBreakdown}
+    >
+      <GasFeeDisplay order={order} showBreakdown={showBreakdown} />
     </DetailRow>
   )
 }

@@ -30,19 +30,26 @@ const LegacyWrapper = styled.div`
   }
 `
 
-export type Props = { order: Order }
+export type Props = {
+  order: Order
+  /**
+   * Whether the costs & fees breakdown may be shown. Off by default: the feature is behind the
+   * `isExplorerFeeDisplayEnabled` flag, read by the caller (see `CostAndFeesItem`).
+   */
+  showBreakdown?: boolean
+}
 
 type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
-  const { order } = props
+  const { order, showBreakdown = false } = props
 
   // The breakdown needs both halves of the picture to add up: the gas cost, which is missing on
   // orders settled before the orderbook recorded it (and on ones not yet settled), and the protocol
   // fees, which are undefined until their fetch succeeds. Without either, showing a total would
   // mean quietly leaving a component out of it, so we fall back to the legacy display of the
   // combined executed fee, which is complete on its own terms.
-  if (!order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
+  if (!showBreakdown || !order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
     return <LegacyFeeDisplay order={order} />
   }
 

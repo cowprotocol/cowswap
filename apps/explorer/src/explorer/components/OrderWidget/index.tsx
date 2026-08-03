@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { OrderDetails } from '../../../components/orders/OrderDetails'
+import { useFeeDisplayFeatureFlag } from '../../../hooks/useFeeDisplayFeatureFlag'
 import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
 import { useOrderProtocolFees, useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
@@ -38,9 +39,10 @@ export const OrderWidget: React.FC = () => {
 
   // Protocol fee breakdown is order-level, so it's derived from all trades rather than the
   // currently selected fills page (which `useOrderTrades` is scoped to). That fetch pages over
-  // every fill, so it's skipped unless its result can actually be displayed — which needs the order
-  // to have a gas cost to break down (see `GasFeeDisplay`).
-  const canShowFeeBreakdown = Boolean(order?.gasCost?.isGreaterThan(0))
+  // every fill, so it's skipped unless its result can actually be displayed: the feature has to be
+  // enabled, and the order needs a gas cost to break down (see `GasFeeDisplay`).
+  const isFeeDisplayEnabled = useFeeDisplayFeatureFlag()
+  const canShowFeeBreakdown = isFeeDisplayEnabled && Boolean(order?.gasCost?.isGreaterThan(0))
   const { protocolFees, error: protocolFeesError } = useOrderProtocolFees(canShowFeeBreakdown ? order : null)
 
   // Copy the hook's objects instead of mutating them (they may be reused across renders). Surface the
