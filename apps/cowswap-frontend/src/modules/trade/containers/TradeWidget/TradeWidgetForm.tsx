@@ -39,6 +39,7 @@ import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner
 import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
 import { useResetRecipientOnChainChange } from '../../hooks/useResetRecipientOnChainChange'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
+import { useSolanaWrapReceiveAmount } from '../../hooks/useSolanaWrapReceiveAmount'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
 import { useIsWithRecipient } from '../../hooks/useWithRecipient'
 import { SetRecipient } from '../../pure/SetRecipient'
@@ -115,13 +116,17 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     return info
   }, [isWrapOrUnwrap, props.inputCurrencyInfo, hideQuoteAmount, isSellTrade, isPriceStatic])
 
+  const solanaWrapReceiveAmount = useSolanaWrapReceiveAmount()
+
   const outputCurrencyInfo = useMemo(() => {
     const info = isPriceStatic
       ? props.outputCurrencyInfo
       : mapCurrencyInfo(props.outputCurrencyInfo, isSellTrade, hideQuoteAmount)
 
     if (isWrapOrUnwrap) {
-      return { ...info, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
+      // Wrap/unwrap has no quote to mirror, and on Solana the amount can differ from the input — see
+      // `useSolanaWrapReceiveAmount`. Fall back to the input while that's still being previewed.
+      return { ...info, amount: solanaWrapReceiveAmount ?? props.inputCurrencyInfo.amount, receiveAmountInfo: null }
     }
 
     return info
@@ -129,6 +134,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     isWrapOrUnwrap,
     props.outputCurrencyInfo,
     props.inputCurrencyInfo.amount,
+    solanaWrapReceiveAmount,
     hideQuoteAmount,
     isSellTrade,
     isPriceStatic,

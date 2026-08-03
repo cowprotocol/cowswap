@@ -9,7 +9,7 @@ import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
 
 import { useTokensToRefund } from './useTokensToRefund'
 
-import { TokenUsdAmounts } from '../types'
+import { TokenUsdAmounts } from '../accountProxy.types'
 
 export function useRefundAmounts(): TokenUsdAmounts | null {
   const tokensToRefund = useTokensToRefund()

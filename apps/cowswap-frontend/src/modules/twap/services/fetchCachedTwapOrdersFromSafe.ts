@@ -1,4 +1,4 @@
-import { isTruthy, logSafeApi } from '@cowprotocol/common-utils'
+import { isTruthy, logSafeApi, normalizeError } from '@cowprotocol/common-utils'
 import { localForageJotai } from '@cowprotocol/core'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -73,10 +73,11 @@ async function fetchFreshTwapOrders(
     undefined,
     [],
     onProgress,
-  ).catch((error) => {
-    if (!cached) throw error
+  ).catch((err: unknown) => {
+    const error = normalizeError(err)
+    logSafeApi.error(new Error('Failed to fetch TWAP orders from Safe', { cause: error }))
 
-    logSafeApi.error('Error fetching TWAP orders from Safe', { safeAddress }, error)
+    if (!cached) throw error
     return null
   })
 }

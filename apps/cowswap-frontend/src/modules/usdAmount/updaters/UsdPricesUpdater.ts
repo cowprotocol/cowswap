@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getWrappedToken, normalizeError } from '@cowprotocol/common-utils'
 import { Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
@@ -65,7 +65,7 @@ export function UsdPricesUpdater() {
     }
 
     if (error) {
-      logUsdPrices.error('Error loading USD prices', error)
+      logUsdPrices.error(new Error('Failed to load USD prices', { cause: normalizeError(error) }))
       return
     }
 

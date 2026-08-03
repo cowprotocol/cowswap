@@ -1,5 +1,65 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.9.0...wallet-v3.10.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: allow EIP7702 wallets to batch transactions (#7844)
+
+### Patch Changes
+
+- fix(wallet): prevent network switching (#7922)
+
+- fix: allow safes imported in other wallets to use twaps (#7915)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ens@3.4.7
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/common-const@3.7.1
+  - @cowprotocol/iframe-transport@2.3.4
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.2...wallet-v3.9.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat: use a single getPublicClient util (#7870)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/ens@3.4.6
+  - @cowprotocol/iframe-transport@2.3.3
+
+## [3.8.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.1...wallet-v3.8.2) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+
 ## [3.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.0...wallet-v3.8.1) (2026-07-17)
 
 ### Patch Changes

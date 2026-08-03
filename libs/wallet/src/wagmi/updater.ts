@@ -8,7 +8,6 @@ import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } fro
 import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 import type { SafeInfoExtended } from '@safe-global/safe-apps-sdk'
 
@@ -17,7 +16,7 @@ import ms from 'ms.macro'
 import { useAccountState } from './hooks/useAccountState'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useIsSafeViaWc, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
@@ -47,8 +46,7 @@ function useBrowserUrlKey(): string {
 function useWalletInfo(): WalletInfo {
   // TODO: Replace urlKey with locationNetworkAtom, which will also trigger the useMemo below less often.
   const urlKey = useBrowserUrlKey()
-  const { address, chainId, isConnected, status, connector } = useAccountState()
-  const isConnectionRestoring = status === 'reconnecting'
+  const { address, chainId, isConnected, connector } = useAccountState()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
   const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
@@ -84,19 +82,8 @@ function useWalletInfo(): WalletInfo {
       active: isConnected,
       account: address,
       connector,
-      isConnectionRestoring,
     }
-  }, [
-    address,
-    chainId,
-    isConnected,
-    connector,
-    isChainIdUnsupported,
-    isConnectionRestoring,
-    lastStableChainId,
-    lastResolvedChainId,
-    urlKey,
-  ])
+  }, [address, chainId, isConnected, connector, isChainIdUnsupported, lastStableChainId, lastResolvedChainId, urlKey])
 
   useEffect(() => {
     setLastResolvedChainId(walletInfo.chainId)
@@ -141,7 +128,7 @@ let shortSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 
 export function WalletUpdater(): null {
-  const { chainId, active, account, connector, isConnectionRestoring } = useWalletInfo()
+  const { chainId, active, account, connector } = useWalletInfo()
 
   const walletDetails = useWalletDetails(account)
   const gnosisSafeInfo = useSafeInfo()
@@ -150,11 +137,9 @@ export function WalletUpdater(): null {
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
 
-  const provider = useWalletProvider()
-
   useEffect(() => {
-    setWalletInfo({ chainId, active, account, connector, isConnectionRestoring, provider })
-  }, [chainId, active, account, connector, isConnectionRestoring, provider, setWalletInfo])
+    setWalletInfo({ chainId, active, account, connector })
+  }, [chainId, active, account, connector, setWalletInfo])
 
   useEffect(() => {
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
@@ -210,13 +195,10 @@ function parseSafeInfoFromSdk(
 
 function useIsPossibleSafe(): boolean {
   const accountType = useAccountType()
-  const isSafeViaWc = useIsSafeViaWc()
 
-  if (!isSafeViaWc) return false
-  if (accountType === AccountType.EOA) return false
-  if (accountType === AccountType.EIP7702EOA) return false
-
-  return true
+  // Imported Safes may use an injected connector (for example, Ambire or Rabby),
+  // so connector metadata alone cannot identify them.
+  return accountType === AccountType.SMART_CONTRACT
 }
 
 function useSafeInfo(): GnosisSafeInfo | undefined {
@@ -256,7 +238,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
               logSafeApi.warn('Fetching safe info: NOT a safe', account)
               setIsKnownNotSafe(true)
             } else {
-              logSafeApi.error(`Unhandled safe error ${error.statusCode}`, account)
+              logSafeApi.error(new Error('Failed to fetch Safe info', { cause: error }))
             }
             setSafeInfo(undefined)
           }

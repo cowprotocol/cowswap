@@ -1,8 +1,11 @@
 import { captureError } from './sentry'
 
-export type CowLogger = Record<CowLogLevel, (...args: unknown[]) => void>
+export type CowLogger = Record<Exclude<CowLogLevel, 'error'>, (...args: unknown[]) => void> & {
+  error: (error: Error, tags?: Record<string, string>, context?: Record<string, SentryPrimitive>) => void
+}
 
 export type CowLogLevel = 'debug' | 'info' | 'warn' | 'error'
+type SentryPrimitive = string | number | boolean | null
 
 const LOG_STYLE: Record<CowLogLevel, string> = {
   debug: 'font-weight: bold; color: #6b7280',
@@ -16,18 +19,11 @@ export function createCowLogger(scope: string): CowLogger {
     debug: (...args) => logCow('debug', scope, ...args),
     info: (...args) => logCow('info', scope, ...args),
     warn: (...args) => logCow('warn', scope, ...args),
-    error: (...args) => {
-      logCow('error', scope, ...args)
-      captureCowError(scope, args)
+    error: (error, tags, context) => {
+      logCow('error', scope, error, ...(tags || context ? [{ tags, context }] : []))
+      captureError(error, undefined, context, { ...tags, scope })
     },
   }
-}
-
-function captureCowError(scope: string, args: unknown[]): void {
-  const message = typeof args[0] === 'string' ? args[0] : `${scope} error`
-  const error = args.find((arg) => arg instanceof Error)
-
-  captureError(error || new Error(message), undefined, { args }, { scope })
 }
 
 function logCow(level: CowLogLevel, scope: string, ...args: unknown[]): void {
@@ -38,3 +34,4 @@ function logCow(level: CowLogLevel, scope: string, ...args: unknown[]): void {
 
 export const logSafeApi = createCowLogger('SafeAPI')
 export const logWallet = createCowLogger('Wallet')
+export const logAnalytics = createCowLogger('Analytics')

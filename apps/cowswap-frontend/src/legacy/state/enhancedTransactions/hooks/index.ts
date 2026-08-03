@@ -3,7 +3,10 @@ import { useCallback, useMemo } from 'react'
 import { useConfig } from 'wagmi'
 import { getTransactionCount } from 'wagmi/actions'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
+
+import { SOLANA_UNUSED_NONCE } from 'common/constants/common'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
@@ -63,11 +66,27 @@ export function useTransactionAdder(): TransactionAdder {
     async (addTransactionParams: AddTransactionHookParams) => {
       if (!account) return
 
-      const hashType = isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
-
       if (!addTransactionParams.hash) {
         throw Error('No transaction hash found')
       }
+
+      // Solana has no nonce, and asking wagmi for one on a Solana chain id fails outright — which the
+      // catch below would swallow, dropping the transaction from the store entirely.
+      if (isSolanaChain(chainId)) {
+        dispatch(
+          addTransaction({
+            hashType: HashType.SOLANA_TX,
+            from: account,
+            chainId,
+            ...addTransactionParams,
+            nonce: SOLANA_UNUSED_NONCE,
+          }),
+        )
+
+        return
+      }
+
+      const hashType = isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
 
       try {
         // Use 'pending' so the next tx gets the next nonce when multiple txs are sent in quick succession (e.g. wrap then unwrap).

@@ -21,7 +21,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
   const swapBuyAmountRaw = quoteResults?.amountsAndCosts.afterPartnerFees.buyAmount
   const bridgeSellAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.sellAmount
   const bridgeBuyAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
-  const feeAmountRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
+  const feeAmountRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInBuyCurrency
 
   return useMemo(() => {
     if (
