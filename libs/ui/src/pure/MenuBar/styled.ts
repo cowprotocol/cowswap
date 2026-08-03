@@ -524,6 +524,42 @@ export const StyledDropdownContentItem = styled.li<{
 export const DropdownContentLanguages = styled(DropdownContent)`
   max-height: 200px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  /* Firefox-only styles */
+  @supports (-moz-appearance: none) {
+    /* other browsers support ::-webkit-scrollbar, so we need "scrollbar-color" only for Firefox */
+    /* see https://caniuse.com/mdn-css_selectors_-webkit-scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(${UI.COLOR_NEUTRAL_70}) var(${UI.COLOR_NEUTRAL_90});
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(${UI.COLOR_NEUTRAL_90});
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(${UI.COLOR_NEUTRAL_70});
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(${UI.COLOR_NEUTRAL_50});
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  
 
   ${StyledDropdownContentItem} {
     text-transform: capitalize;
