@@ -6,8 +6,8 @@ import { CHAIN_IDS } from '../support/constants'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 
-// Connected wallet is a viem account from E2E_ACCOUNT_PK (mock wallet, no MetaMask extension).
-test.use({ mockWalletKey: process.env.E2E_ACCOUNT_PK as Hex | undefined })
+// Connected wallet is a viem account from INTEGRATION_TEST_PRIVATE_KEY (mock wallet, no MetaMask extension).
+test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Limit Orders', () => {
   test('[LO-01] Place sell limit order: WETH → USDC @smoke', async ({ limitPage, confirmModal }) => {
