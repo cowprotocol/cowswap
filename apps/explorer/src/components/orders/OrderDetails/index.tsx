@@ -38,8 +38,7 @@ import { StatusLabel } from '../StatusLabel'
 type Props = {
   order: Order | null
   trades: Trade[]
-  // Order-level protocol fee breakdown, derived from *all* trades (not the current fills page).
-  // Undefined while it is unknown — see `Order.protocolFees`.
+  // Derived from *all* trades, not the current fills page. Undefined while unknown.
   protocolFees?: ProtocolFee[]
   isOrderLoading: boolean
   areTradesLoading: boolean
@@ -153,12 +152,8 @@ const tabItems = (
 }
 
 /**
- * Returns the order enriched with fields derived from its trades:
- * - protocolFees: the order-level protocol fee breakdown (computed from *all* trades by the
- *   caller, not just the current fills page, so it doesn't change as the user pages). Undefined
- *   while it is still unknown.
- * - txHash and executionDate when the order has a single trade (fill or kill,
- *   or a partial fill with a single trade so far)
+ * Returns the order enriched from its trades: the fee breakdown, plus txHash and executionDate when
+ * there is a single trade (a fill or kill, or a partial fill with one trade so far).
  */
 function enrichOrderFromTrades(
   order: Order | null,

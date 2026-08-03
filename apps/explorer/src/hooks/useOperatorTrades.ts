@@ -126,37 +126,28 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
 }
 
-// Request a large page so most orders are covered in a single call. We still page defensively
-// (advancing by the number of records actually returned) in case the API serves a smaller page
-// than requested.
+// Large enough that most orders need a single call.
 const ALL_TRADES_PAGE_SIZE = 1000
-// Safety bound in case the API stops honouring `offset`. Reaching it is an error rather than a
-// truncation: 100 full pages would be 100k fills, so in practice it means the paging is broken and
-// the fees we have are not to be trusted.
+// Safety bound. Reaching it means the paging is broken, not that the order has this many fills, so
+// it throws rather than returning what it has.
 const MAX_TRADES_PAGES = 100
 
 const PROTOCOL_FEES_ERROR = 'Failed to fetch the costs and fees breakdown'
 
 /**
- * Derives the order-level protocol fee breakdown from *all* of an order's trades.
- *
- * Unlike {@link useOrderTrades} (which only holds the currently selected Fills table
- * page), this fetches every fill, so the breakdown covers the whole order and does not
- * change as the user pages through the fills.
+ * Order-level fee breakdown, derived from every fill. Unlike {@link useOrderTrades}, which is
+ * scoped to the selected Fills page, this does not change as the user pages.
  */
 export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
   const networkId = useNetworkId()
   const orderUid = order?.uid
 
-  // The executed amounts are part of the cache key so a new fill refetches instead of serving the
-  // breakdown from before it. They only change when a fill actually lands, not on every poll of
-  // the order, so a settled order keeps hitting the same key.
+  // In the key so a new fill refetches. They change only when a fill lands, not on every poll.
   const executedSellAmount = order?.executedSellAmount.toString()
   const executedBuyAmount = order?.executedBuyAmount.toString()
 
-  // Keying by order is also what keeps a previous order's fees from being shown as the current
-  // one's: the route is `/orders/:orderId`, so searching another order swaps the param without
-  // remounting, and a key it has no data for reads as "not known yet" rather than as stale data.
+  // Keying by order is also what stops one order's fees being shown as another's: a key with no
+  // data reads as "not known yet" rather than as the previous order's breakdown.
   const { data, error, isLoading } = useSWR(
     networkId && orderUid ? ['orderProtocolFees', networkId, orderUid, executedSellAmount, executedBuyAmount] : null,
     async ([, network, uid]: [string, Network, string, ...unknown[]]) =>
@@ -204,11 +195,8 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
 }
 
 /**
- * Fetches every trade of an order, paging until the API runs out of results.
- *
- * Duplicates here would be silently summed into the fee totals, so the paging is deliberately
- * distrustful of the API: it skips records it has already seen, and gives up rather than returning
- * a partial list if that never terminates the loop.
+ * Fetches every trade of an order. Duplicates would be silently summed into the fee totals, so
+ * already-seen records are skipped and an unterminated loop throws instead of returning a partial.
  */
 async function getAllOrderTrades(networkId: Network, orderId: string): Promise<RawTrade[]> {
   const allTrades: RawTrade[] = []
@@ -217,8 +205,7 @@ async function getAllOrderTrades(networkId: Network, orderId: string): Promise<R
   for (let page = 0; page < MAX_TRADES_PAGES; page++) {
     const trades = await getTrades({ networkId, orderId, offset: allTrades.length, limit: ALL_TRADES_PAGE_SIZE })
 
-    // A trade is uniquely identified by where it was settled. Records we've already collected mean
-    // the API ignored `offset` and re-served an earlier page, so they must not be counted twice.
+    // Already-collected records mean `offset` was ignored and an earlier page was re-served.
     const newTrades = trades.filter((trade) => {
       const key = `${trade.txHash}-${trade.logIndex}`
       if (seen.has(key)) return false
@@ -228,11 +215,8 @@ async function getAllOrderTrades(networkId: Network, orderId: string): Promise<R
 
     allTrades.push(...newTrades)
 
-    // Stop on an empty page, or on one that added nothing new. Deliberately *not* on a page merely
-    // shorter than requested: the API is free to cap the page size below what we ask for, and
-    // treating that as the end would silently drop fills. Advancing the offset by the number of
-    // records actually returned handles that case; the all-duplicates check is what terminates us
-    // if `offset` is being ignored.
+    // Deliberately not stopping on a merely short page: the API may cap the page size below what we
+    // ask for, and treating that as the end would drop fills.
     if (newTrades.length === 0) return allTrades
   }
 

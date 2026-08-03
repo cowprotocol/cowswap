@@ -18,8 +18,7 @@ jest.mock('api/operator', () => ({
   getTrades: jest.fn(),
 }))
 
-// getProtocolFees is exercised directly in test/utils/operator/protocolFees.test.ts; here we only
-// care about which trades reach it, so a pass-through keeps the assertions about paging.
+// getProtocolFees has its own unit test; a pass-through keeps these assertions about the paging.
 jest.mock('utils', () => ({
   transformTrade: jest.fn(),
   getProtocolFees: jest.fn((trades) => trades),
@@ -109,8 +108,7 @@ function createTransformedTrade(overrides: Partial<Trade> = {}): Trade {
   } as Trade
 }
 
-// useOrderProtocolFees caches by order, so each test needs its own cache — otherwise one test's
-// fetched fees satisfy another's key and the fetcher never runs.
+// Fees are cached by order, so without a fresh cache one test's fees satisfy another's key.
 function FreshSwrCache({ children }: { children: React.ReactNode }): React.ReactNode {
   return <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
 }
@@ -181,8 +179,7 @@ describe('useOrderProtocolFees', () => {
 
   it('pages until the API runs out of trades, even when it serves shorter pages than requested', async () => {
     const fills = [createFill(0), createFill(1), createFill(2)]
-    // Emulate a server that caps pages below the requested size: stopping at the first short page
-    // would silently drop the third fill.
+    // A server capping pages below the requested size: stopping on a short page would drop fill 3.
     mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset, offset + 2))
 
     const { result } = renderHook(() => useOrderProtocolFees(createMockOrder()), { wrapper: FreshSwrCache })
@@ -194,8 +191,7 @@ describe('useOrderProtocolFees', () => {
   })
 
   it('stops instead of double-counting when the API ignores the offset', async () => {
-    // Always serves the same fill. Without duplicate detection this would accumulate one copy per
-    // page and inflate every fee total by the number of pages fetched.
+    // Always the same fill: without dedupe this accumulates one copy per page and inflates the total.
     mockedGetTrades.mockResolvedValue([createFill(0)])
 
     const { result } = renderHook(() => useOrderProtocolFees(createMockOrder()), { wrapper: FreshSwrCache })
@@ -230,8 +226,7 @@ describe('useOrderProtocolFees', () => {
 
     await waitFor(() => expect(result.current.protocolFees).toHaveLength(2))
 
-    // Searching a second order swaps the route param without remounting the widget. Its first page
-    // is held open; the follow-up page returns empty so the paging terminates once it resolves.
+    // Its first page is held open; the follow-up page is empty so paging ends once it resolves.
     let resolveSecond: (trades: RawTrade[]) => void = () => undefined
     const pending = new Promise<RawTrade[]>((resolve) => (resolveSecond = resolve))
     mockedGetTrades.mockImplementationOnce(() => pending).mockResolvedValue([])

@@ -15,8 +15,7 @@ export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
   const showBreakdown = useFeeDisplayFeatureFlag()
 
   return (
-    // The breakdown renders as a total plus an expandable table, so it needs the stacked layout;
-    // the legacy single-line fee keeps the inline one.
+    // The breakdown is a total plus an expandable table, so it stacks; the legacy fee stays inline.
     <DetailRow
       label={showBreakdown ? 'Costs and fees' : 'Costs & Fees'}
       tooltipText={showBreakdown ? DetailsTableTooltips.feesBreakdown : DetailsTableTooltips.fees}

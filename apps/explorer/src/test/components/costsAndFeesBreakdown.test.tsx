@@ -19,8 +19,7 @@ jest.mock('hooks/useErc20', () => ({
   useMultipleErc20: jest.fn(() => ({ isLoading: false, error: {}, value: {} })),
 }))
 
-// Mock only the trades HTTP call; keep the real types/enums so getProtocolFees and the component's
-// labels run for real.
+// Only the HTTP call is mocked; the real types/enums keep getProtocolFees and the labels running.
 jest.mock('api/operator', () => ({
   ...jest.requireActual('api/operator/types'),
   getTrades: jest.fn(),
@@ -39,9 +38,8 @@ const PRICE_IMPROVEMENT_POLICY: Policy = {
   priceImprovement: { factor: 0.5, maxVolumeFactor: 0.01, quote: { sellAmount: '1', buyAmount: '1', fee: '0' } },
 }
 
-// Fee policies are applied in the same order on every fill: a volume fee in WETH (position 0), a
-// price-improvement fee in USDT (position 1), and a zero-amount fee (position 2) that must be
-// dropped from the breakdown. Fills need distinct txHash/logIndex to survive deduplication.
+// Every fill charges the same three policies: a WETH volume fee, a USDT price-improvement fee, and a
+// zero-amount one that must be dropped. Distinct txHash/logIndex so the fills survive deduplication.
 function fill(index: number): RawTrade {
   return {
     txHash: `0xfill${index}`,
@@ -54,16 +52,14 @@ function fill(index: number): RawTrade {
   } as RawTrade
 }
 
-// Wires the real chain the app uses: the hook derives the fees from every trade, then (as
-// OrderDetails.enrichOrderFromTrades does) they are attached to the order for GasFeeDisplay to render.
+// The real chain the app uses: derive the fees from every trade, attach them to the order, render.
 function Harness({ order }: { order: Order }): React.ReactNode {
   const { protocolFees } = useOrderProtocolFees(order)
-  // `showBreakdown` stands in for the `isExplorerFeeDisplayEnabled` flag, which `CostAndFeesItem` reads.
+  // Stands in for the `isExplorerFeeDisplayEnabled` flag that `CostAndFeesItem` reads.
   return <GasFeeDisplay order={{ ...order, protocolFees }} showBreakdown />
 }
 
-// The fees are cached by order, so each case needs its own cache — otherwise the first test's
-// resolved fees are served to the second one and it never sees the loading state.
+// Fees are cached by order, so without a fresh cache the second case is served the first's fees.
 function renderHarness(order: Order): ReturnType<typeof render> {
   return render(
     <SWRConfig value={{ provider: () => new Map() }}>
@@ -85,12 +81,10 @@ describe('costs & fees breakdown (integration)', () => {
 
     await waitFor(() => expect(screen.queryByText('[+] Show more')).not.toBeNull())
 
-    // The hook paged through every fill, advancing by the records actually returned — so
-    // getProtocolFees aggregated across all three fills, not just the first page.
+    // Reached offset 3, so the fees were aggregated across all three fills, not just the first page.
     expect(mockedGetTrades).toHaveBeenLastCalledWith(expect.objectContaining({ orderId: order.uid, offset: 3 }))
 
-    // Each token keeps its own total: the native gas cost is not folded into the WETH fee, because
-    // they are not the same asset to the user.
+    // Each token keeps its own total; the native gas cost is not folded into the WETH fee.
     const headline = container.textContent || ''
     expect(headline).toContain('ETH')
     expect(headline).toContain('WETH')

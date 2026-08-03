@@ -14,9 +14,8 @@ import { abbreviateString } from 'utils'
 import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// The API reports how each fee was calculated but not who charged it, so the labels describe the
-// policy rather than guessing at "protocol" vs "partner" — an order can carry a partner fee and no
-// protocol fee, and attributing that to the protocol would be wrong.
+// The API says how each fee was calculated but not who charged it, so labels describe the policy
+// instead of guessing at "protocol" vs "partner".
 const FEE_TYPE_LABELS: Record<ProtocolFeeType, string> = {
   [ProtocolFeeType.Surplus]: 'Surplus fee',
   [ProtocolFeeType.Volume]: 'Volume fee',
@@ -32,10 +31,7 @@ const LegacyWrapper = styled.div`
 
 export type Props = {
   order: Order
-  /**
-   * Whether the costs & fees breakdown may be shown. Off by default: the feature is behind the
-   * `isExplorerFeeDisplayEnabled` flag, read by the caller (see `CostAndFeesItem`).
-   */
+  /** Gated by `isExplorerFeeDisplayEnabled`, which the caller reads. */
   showBreakdown?: boolean
 }
 
@@ -44,11 +40,8 @@ type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const { order, showBreakdown = false } = props
 
-  // The breakdown needs both halves of the picture to add up: the gas cost, which is missing on
-  // orders settled before the orderbook recorded it (and on ones not yet settled), and the protocol
-  // fees, which are undefined until their fetch succeeds. Without either, showing a total would
-  // mean quietly leaving a component out of it, so we fall back to the legacy display of the
-  // combined executed fee, which is complete on its own terms.
+  // The total needs both the gas cost and the fees. Without either, fall back to the legacy
+  // combined fee rather than showing a total that silently omits a component.
   if (!showBreakdown || !order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
     return <LegacyFeeDisplay order={order} />
   }
@@ -56,10 +49,6 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   return <CostsAndFeesBreakdown order={order} gasCost={order.gasCost} protocolFees={order.protocolFees} />
 }
 
-/**
- * Breakdown of what the order cost to execute: a "Network costs" line (the on-chain execution cost,
- * in the native token) followed by one line per fee policy that charged something.
- */
 function CostsAndFeesBreakdown({
   order,
   gasCost,
@@ -82,8 +71,6 @@ function CostsAndFeesBreakdown({
     : undefined
   const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
 
-  // Resolves every address in the breakdown to a token: the order's own tokens, the native token
-  // (network costs) and the fetched fee-token metadata.
   const tokenByKey = useMemo(() => {
     const map = new Map<AddressKey, TokenErc20>()
     for (const token of [...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]) {
@@ -92,9 +79,7 @@ function CostsAndFeesBreakdown({
     return map
   }, [feeTokens, nativeToken, order.buyToken, order.sellToken])
 
-  // One row per cost: network costs first, then each fee in the order the policies were applied.
-  // Policies of the same type are numbered so they can be told apart; a type that occurs once keeps
-  // its plain label, which is the common case.
+  // Network costs first, then the fees in the order they were applied. Repeated types get numbered.
   const lineItems = useMemo<LineItem[]>(() => {
     const labels = protocolFees.map((fee) => FEE_TYPE_LABELS[fee.type])
     const occurrences = new Map<string, number>()
@@ -113,9 +98,8 @@ function CostsAndFeesBreakdown({
     return [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }, ...feeItems]
   }, [protocolFees, gasCost, nativeKey])
 
-  // Headline total per token. Fees are charged in the surplus-side token, so an order can pay in
-  // more than one; each keeps its own figure rather than being folded together, because the wrapped
-  // native token and the native token the gas is paid in are not interchangeable to the user.
+  // One total per token. Wrapped native is deliberately not folded into native — to the user those
+  // are different assets, and folding them made the headline disagree with the rows below it.
   const totals = useMemo(() => {
     const byToken = new Map<AddressKey, BigNumber>()
     for (const { tokenAddress, amount } of lineItems) {
@@ -124,8 +108,7 @@ function CostsAndFeesBreakdown({
     return Array.from(byToken, ([key, amount]) => formatAmount(amount, tokenByKey.get(key), key)).join(', ')
   }, [lineItems, tokenByKey])
 
-  // Amounts are meaningless without the token's decimals, so wait for the metadata rather than
-  // briefly rendering unscaled numbers that read as real amounts.
+  // Amounts mean nothing without decimals; wait rather than flash unscaled numbers.
   if (areFeeTokensLoading) return null
 
   return (
@@ -150,9 +133,7 @@ function CostsAndFeesBreakdown({
   )
 }
 
-// Without token metadata we don't know the decimals, so there is no honest way to render the
-// amount. Show the token it was charged in and mark the figure as unscaled rather than printing a
-// bare number that looks like a real amount.
+// No metadata means no decimals, so mark the figure unscaled rather than pass it off as an amount.
 function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAddress: AddressKey): string {
   if (!token) return `${amount.toString(10)} (raw) ${abbreviateString(tokenAddress, 6, 4)}`
 
@@ -160,10 +141,7 @@ function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAdd
   return `${formattedAmount} ${symbol}`
 }
 
-/**
- * Legacy display for orders without a recorded gas cost: the combined executed fee in the sell
- * token (network costs + protocol fees together), as it was shown before the breakdown existed.
- */
+// The combined executed fee in the sell token, shown whenever the breakdown can't be.
 function LegacyFeeDisplay({ order }: { order: Order }): React.ReactNode {
   const { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee } = order
 

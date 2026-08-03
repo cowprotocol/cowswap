@@ -356,14 +356,11 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 }
 
 /**
- * Aggregates the fees charged across an order's trades into one total per fee policy.
+ * Aggregates the fees charged across an order's fills into one total per fee policy.
  *
- * A fill's `executedProtocolFees` lists its fees in the order they were applied, and that ordering
- * is stable across the order's fills, so the position is what lets us collapse the fills. It is
- * *not* enough on its own: a fee at the same position can be charged in a different token or under
- * a different policy from one fill to the next, and summing those together would produce a total in
- * no particular token. Keying on (position, type, token) keeps each of those distinct, while
- * `position` still orders the result.
+ * Position alone is not a safe key: a fee at the same position can be charged in a different token
+ * or under a different policy from one fill to the next, and summing those would give a total in no
+ * particular token. Keying on (position, type, token) keeps them distinct.
  */
 export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFees'>>): ProtocolFee[] {
   const feesByPolicy = new Map<string, ProtocolFee>()
@@ -387,7 +384,6 @@ export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFe
     })
   }
 
-  // Keep the applied order; drop policies that ended up charging nothing.
   return Array.from(feesByPolicy.values())
     .sort((a, b) => a.position - b.position)
     .filter((fee) => fee.amount.isGreaterThan(0))
@@ -490,10 +486,7 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
-/**
- * Classifies a fee policy into a {@link ProtocolFeeType} based on its wrapper key
- * (`{ surplus: {...} }` / `{ volume: {...} }` / `{ priceImprovement: {...} }`).
- */
+// Classifies a fee policy by its wrapper key: `{ surplus: {...} }`, `{ volume: {...} }`, etc.
 function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
   if (policy) {
     if ('surplus' in policy) return ProtocolFeeType.Surplus

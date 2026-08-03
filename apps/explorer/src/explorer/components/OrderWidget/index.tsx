@@ -37,17 +37,14 @@ export const OrderWidget: React.FC = () => {
     hasNextPage,
   } = useOrderTrades(order, baseTableState.pageOffset, baseTableState.pageSize)
 
-  // Protocol fee breakdown is order-level, so it's derived from all trades rather than the
-  // currently selected fills page (which `useOrderTrades` is scoped to). That fetch pages over
-  // every fill, so it's skipped unless its result can actually be displayed: the feature has to be
-  // enabled, and the order needs a gas cost to break down (see `GasFeeDisplay`).
+  // This pages over every fill, so skip it unless the result can be displayed: the feature has to
+  // be on, and the order needs a gas cost to break down.
   const isFeeDisplayEnabled = useFeeDisplayFeatureFlag()
   const canShowFeeBreakdown = isFeeDisplayEnabled && Boolean(order?.gasCost?.isGreaterThan(0))
   const { protocolFees, error: protocolFeesError } = useOrderProtocolFees(canShowFeeBreakdown ? order : null)
 
-  // Copy the hook's objects instead of mutating them (they may be reused across renders). Surface the
-  // protocol-fee error only when the trades fetch didn't already fail (same root cause; avoids a
-  // duplicate banner).
+  // Copy the hook's objects instead of mutating them (they may be reused across renders). A failed
+  // trades fetch already tells the user the fills are unavailable, so don't also banner the fees.
   const tableState: TableState = { ...baseTableState, hasNextPage }
   const errors: Errors = { ...orderErrors }
   if (error) {

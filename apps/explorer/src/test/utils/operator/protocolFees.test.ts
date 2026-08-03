@@ -56,8 +56,7 @@ describe('getProtocolFees', () => {
     ])
   })
 
-  // The regression this guards: keying only by position would add a WETH amount to a USDT one and
-  // render the total using whichever token happened to come first.
+  // Keying only by position would add the WETH amount to the USDT one and format it as whichever came first.
   it('does not merge fees charged in different tokens at the same position', () => {
     const fees = getProtocolFees([
       fill([{ amount: '1000000000000000000', token: WETH.address, policy: VOLUME }]),

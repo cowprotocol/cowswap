@@ -25,12 +25,10 @@ const Template: Story<Props> = (args) => (
   </div>
 )
 
-// On-chain gas cost (native token wei). Both it and `protocolFees` must be present for the
-// breakdown to render; otherwise the total would be missing one of its components.
+// Native token wei. The breakdown needs both this and `protocolFees` to render a complete total.
 const GAS_COST = new BigNumber('2500000000000000')
 
-// `showBreakdown` mirrors the `isExplorerFeeDisplayEnabled` flag the app reads in `CostAndFeesItem`.
-// Off -> legacy display, whatever the order carries.
+// `showBreakdown` mirrors the flag. Off -> legacy display, whatever else the order carries.
 export const BreakdownDisabled = Template.bind({})
 BreakdownDisabled.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] }, showBreakdown: false }
 
@@ -38,13 +36,11 @@ BreakdownDisabled.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFe
 export const LegacyNoGasCost = Template.bind({})
 LegacyNoGasCost.args = { order: { ...RICH_ORDER, gasCost: undefined, protocolFees: [] }, showBreakdown: true }
 
-// Fees not known yet (still loading, or their fetch failed) -> legacy display rather than a total
-// that silently omits them.
+// Fees not known yet (loading, or the fetch failed) -> legacy display rather than a partial total.
 export const FeesUnavailable = Template.bind({})
 FeesUnavailable.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: undefined }, showBreakdown: true }
 
-// Gas cost present and the order provably charged no fees -> network costs alone, and no expander,
-// since it would only repeat the total.
+// Provably no fees -> network costs alone, and no expander, since it would repeat the total.
 export const NetworkCostsOnly = Template.bind({})
 NetworkCostsOnly.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] }, showBreakdown: true }
 
