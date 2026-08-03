@@ -2595,8 +2595,8 @@ msgid "and"
 msgstr "and"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-#~ msgid "Waiting for confirmation."
-#~ msgstr "Waiting for confirmation."
+msgid "Waiting for confirmation."
+msgstr "Waiting for confirmation."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
 #~ msgid "The code <0>{refCode}</0> from your link wasn't applied because this wallet has already traded on CoW Swap."
@@ -2661,8 +2661,8 @@ msgid "up"
 msgstr "up"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-#~ msgid "Sign the {operationLabel} with your wallet."
-#~ msgstr "Sign the {operationLabel} with your wallet."
+msgid "Sign the {operationLabel} with your wallet."
+msgstr "Sign the {operationLabel} with your wallet."
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -4843,8 +4843,8 @@ msgid "No cancelled orders found"
 msgstr "No cancelled orders found"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-#~ msgid "The {operationLabel} is submitted."
-#~ msgstr "The {operationLabel} is submitted."
+msgid "The {operationLabel} is submitted."
+msgstr "The {operationLabel} is submitted."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Invalid manifest format at {manifestUrl}: missing cow_hook_dapp property"
@@ -5395,8 +5395,8 @@ msgid "Created"
 msgstr "Created"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-msgid "operation"
-msgstr "operation"
+#~ msgid "operation"
+#~ msgstr "operation"
 
 #. placeholder {0}: currency?.symbol || ''
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
@@ -5655,6 +5655,7 @@ msgid "Orders not matched after the threshold time are automatically refunded."
 msgstr "Orders not matched after the threshold time are automatically refunded."
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/multi/MultiConfirmationPendingContent.tsx
 msgid "Follow these steps:"
 msgstr "Follow these steps:"
 
@@ -8126,8 +8127,8 @@ msgid "{label} token bridge"
 msgstr "{label} token bridge"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-#~ msgid "The {operationLabel} is signed."
-#~ msgstr "The {operationLabel} is signed."
+msgid "The {operationLabel} is signed."
+msgstr "The {operationLabel} is signed."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
