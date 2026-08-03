@@ -22,6 +22,8 @@ export interface TradeFlowAnalyticsContext {
   marketLabel?: string
   isBridgeOrder?: boolean
   orderType: UiOrderType
+  quoteId?: number
+  allowsOffchainSigning?: boolean
 }
 
 export function useTradeFlowAnalytics(): TradeFlowAnalytics {
@@ -34,6 +36,8 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
       marketLabel?: string,
       value?: number,
       isBridgeOrder?: boolean,
+      quoteId?: number,
+      allowsOffchainSigning?: boolean,
     ): void => {
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.TRADE,
@@ -41,12 +45,22 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
         label: `${orderType}|${marketLabel}`,
         ...(value !== undefined && { value }),
         isBridgeOrder,
+        ...(quoteId !== undefined && { quoteId }),
+        ...(allowsOffchainSigning !== undefined && { allowsOffchainSigning }),
       } as GtmEvent<CowSwapAnalyticsCategory.TRADE>)
     }
 
     return {
       trade(context: TradeFlowAnalyticsContext) {
-        sendTradeAnalytics('Send', context.orderType, context.marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics(
+          'Send',
+          context.orderType,
+          context.marketLabel,
+          undefined,
+          context.isBridgeOrder,
+          context.quoteId,
+          context.allowsOffchainSigning,
+        )
       },
       sign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
