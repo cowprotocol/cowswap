@@ -14,6 +14,7 @@ import { useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
+import { SOLANA_UNUSED_NONCE } from 'common/constants/common'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -42,7 +43,7 @@ export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthe
       // Fallback to 0 on failure so receipt checking can still run even when the nonce fetch fails
       // (e.g. temporary RPC errors). The nonce-based replacement check will simply be skipped.
       const transactionsCount = isSolanaChain(chainId)
-        ? 0
+        ? SOLANA_UNUSED_NONCE
         : await getTransactionCount(config, { address: account }).catch(() => 0)
 
       const params: CheckEthereumTransactions = {

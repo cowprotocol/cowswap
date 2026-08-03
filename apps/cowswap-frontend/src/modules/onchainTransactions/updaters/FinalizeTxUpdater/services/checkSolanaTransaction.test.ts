@@ -5,7 +5,7 @@ import { waitFor } from '@testing-library/react'
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { checkSolanaTransaction } from './checkSolanaTransaction'
+import { checkSolanaTransaction, HISTORICAL_LOOKUP_GRACE_PERIOD_MS } from './checkSolanaTransaction'
 
 import { CheckEthereumTransactions } from '../types'
 
@@ -15,16 +15,20 @@ const SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS
 const ACCOUNT = '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'
 const LAST_VALID_BLOCK_HEIGHT = 1_000
 
-const transaction = {
-  hash: SIGNATURE,
-  transactionHash: SIGNATURE,
-  hashType: HashType.SOLANA_TX,
-  nonce: 0,
-  addedTime: Date.now(),
-  from: ACCOUNT,
-  summary: 'Wrap 1 SOL to WSOL',
-  data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
-} as EnhancedTransactionDetails
+function createTransaction(addedTime = Date.now()): EnhancedTransactionDetails {
+  return {
+    hash: SIGNATURE,
+    transactionHash: SIGNATURE,
+    hashType: HashType.SOLANA_TX,
+    nonce: 0,
+    addedTime,
+    from: ACCOUNT,
+    summary: 'Wrap 1 SOL to WSOL',
+    data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
+  } as EnhancedTransactionDetails
+}
+
+const transaction = createTransaction()
 
 function createParams({
   status,
@@ -115,16 +119,6 @@ describe('checkSolanaTransaction', () => {
     )
   })
 
-  it('finalizes as reverted once the blockhash has expired and the signature never landed', async () => {
-    const { params, dispatch } = createParams({ status: null, blockHeight: LAST_VALID_BLOCK_HEIGHT + 1 })
-
-    checkSolanaTransaction(transaction, params)
-
-    await waitFor(() => expect(dispatch).toHaveBeenCalled())
-
-    expect(dispatch.mock.calls[0][0].payload.receipt.status).toBe('reverted')
-  })
-
   describe('when the signature has aged out of the recent status cache', () => {
     // The status cache only spans ~150 slots, so a landed transaction reads back as `null` once the
     // user leaves the tab (slot polling stops) or reloads. Absence there is not proof of failure.
@@ -172,6 +166,34 @@ describe('checkSolanaTransaction', () => {
 
       expect(getSignatureStatuses).toHaveBeenCalledTimes(1)
       expect(getSignatureStatuses).toHaveBeenCalledWith([SIGNATURE])
+    })
+
+    describe('and transaction history has no record either', () => {
+      // A landed transaction can outrun the RPC provider's own archival ingestion, so absence there
+      // right after expiry is not proof of failure — only proof we asked too soon.
+      it('keeps waiting rather than immediately declaring the transaction dropped', async () => {
+        const recentTransaction = createTransaction(Date.now())
+        const { params, dispatch } = createParams({ status: null, blockHeight: LAST_VALID_BLOCK_HEIGHT + 1 })
+
+        checkSolanaTransaction(recentTransaction, params)
+
+        await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+        expect(dispatch).toHaveBeenCalledWith(
+          checkedTransaction({ chainId: SupportedChainId.SOLANA, hash: SIGNATURE, blockNumber: 42 }),
+        )
+      })
+
+      it('finalizes as reverted once the grace period has elapsed with still no record anywhere', async () => {
+        const staleTransaction = createTransaction(Date.now() - HISTORICAL_LOOKUP_GRACE_PERIOD_MS - 1)
+        const { params, dispatch } = createParams({ status: null, blockHeight: LAST_VALID_BLOCK_HEIGHT + 1 })
+
+        checkSolanaTransaction(staleTransaction, params)
+
+        await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+        expect(dispatch.mock.calls[0][0].payload.receipt.status).toBe('reverted')
+      })
     })
   })
 

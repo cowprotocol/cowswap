@@ -6,6 +6,8 @@ import { getTransactionCount } from 'wagmi/actions'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
 
+import { SOLANA_UNUSED_NONCE } from 'common/constants/common'
+
 import { useAllTransactions } from './TransactionHooksMod'
 
 import { useAppDispatch } from '../../hooks'
@@ -16,10 +18,6 @@ export * from './TransactionHooksMod'
 
 export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from' | 'hashType' | 'nonce'> // The hook requires less params for convenience
 export type TransactionAdder = (params: AddTransactionHookParams) => void
-
-// `nonce` is required by the store shape but is an EVM concept. Nothing reads it for Solana
-// transactions — only `checkOnChainTransaction`'s replacement detection uses it.
-const SOLANA_UNUSED_NONCE = 0
 
 type EnhancedTransactionDetailsMap = {
   [txHash: string]: EnhancedTransactionDetails

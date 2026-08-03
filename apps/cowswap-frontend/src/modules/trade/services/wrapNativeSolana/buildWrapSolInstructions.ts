@@ -10,7 +10,14 @@ import { WSOL_MINT } from './const'
 
 export interface BuildWrapSolInstructionsParams {
   owner: PublicKey
-  lamports: bigint
+  /**
+   * Lamports moved into the WSOL account by the transfer instruction. This is the owner's *total*
+   * spend (`lamports` typed in the form) only when the associated token account already exists; when
+   * it doesn't, the idempotent create instruction also draws the account's rent-exempt reserve from
+   * the owner as part of this same transaction, so the transfer itself must be reduced by that amount
+   * to keep the owner's total spend equal to what they typed — see `getSolanaWrapPreview`.
+   */
+  transferLamports: bigint
 }
 
 /**
@@ -26,9 +33,9 @@ export interface BuildWrapSolInstructionsParams {
  */
 export function buildWrapSolInstructions({
   owner,
-  lamports,
+  transferLamports,
 }: BuildWrapSolInstructionsParams): TransactionInstruction[] {
-  if (lamports <= 0n) {
+  if (transferLamports <= 0n) {
     throw new Error('Wrap amount must be positive')
   }
 
@@ -36,7 +43,7 @@ export function buildWrapSolInstructions({
 
   return [
     createAssociatedTokenAccountIdempotentInstruction(owner, associatedTokenAccount, owner, WSOL_MINT),
-    SystemProgram.transfer({ fromPubkey: owner, toPubkey: associatedTokenAccount, lamports }),
+    SystemProgram.transfer({ fromPubkey: owner, toPubkey: associatedTokenAccount, lamports: transferLamports }),
     createSyncNativeInstruction(associatedTokenAccount, TOKEN_PROGRAM_ID),
   ]
 }

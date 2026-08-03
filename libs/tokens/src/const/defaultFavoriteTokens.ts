@@ -45,7 +45,7 @@ import {
   NATIVE_CURRENCIES,
   USDC_SOLANA,
 } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
@@ -54,7 +54,7 @@ const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
     if (!token) {
       return acc
     }
-    acc[token.address.toLowerCase()] = {
+    acc[getAddressKey(token.address)] = {
       chainId: token.chainId,
       address: token.address,
       name: token.name || '',
