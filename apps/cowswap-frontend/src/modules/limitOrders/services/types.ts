@@ -36,3 +36,5 @@ export interface TradeFlowContext {
 }
 
 export class PriceImpactDeclineError extends Error {}
+
+export { WidgetHookDeclineError } from 'modules/injectedWidget'
