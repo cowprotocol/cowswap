@@ -15,6 +15,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
+import { t } from '@lingui/core/macro'
 import { prodTradingSdk } from 'tradingSdk/tradingSdk'
 
 import {
@@ -416,11 +417,12 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
     })
   }
 
-  // Show spinner while we re-read allowance (covers mining lag + edited approve amounts).
+  // Receipt/log validation in `ensureEoaTwapVaultRelayerApproval` only proves what the approve tx set. We re-read
+  // current allowance before funding EIP-712 in case another tab/device (or prior order) may have consumed the
+  // allowance, and the Vault Relayer allowance is still below the funding order sell amount.
+
   onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Verifying })
 
-  // Wallets can edit the approve amount again on the top-up tx. Re-read before posting so we
-  // fail fast with a clear error instead of posting an unfillable funding order.
   const { needsApproval: stillNeedsFundingAllowance } = await getEoaTwapApprovalNeeds({
     config,
     account,
@@ -431,9 +433,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   })
 
   if (stillNeedsFundingAllowance) {
-    throw new Error(
-      `Vault Relayer allowance is still below the funding order sell amount (${fundingSellAmountFormatted} ${sellToken.symbol}). Approve at least that amount (or unlimited) and try again.`,
-    )
+    // TODO: Use custom errors instead:
+    throw new Error(t`Approved amount is not sufficient!`)
   }
 
   // Ready for the funding-order EIP-712 signature. Past this point the pending UI hides dismiss.

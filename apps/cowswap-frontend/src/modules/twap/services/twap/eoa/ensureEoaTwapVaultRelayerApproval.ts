@@ -6,7 +6,9 @@ import { calculateGasMargin, createCowLogger } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
-import { estimateApprove } from 'modules/erc20Approve'
+import { t } from '@lingui/core/macro'
+
+import { estimateApprove, extractApprovalAmountFromLogs, type ApprovalTxReceipt } from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
@@ -67,10 +69,15 @@ interface RunOnChainApprovalStepParams {
   chainId: SupportedChainId
   account: AccountAddress
   sellTokenAddress: Address
-  spender: string
+  spender: AccountAddress
   amount: bigint
   step: EoaTwapSigningSteps
   onSigningStep: EoaTwapFlowUpdater
+  /**
+   * When set, read the Approval event from the mined receipt and throw if the
+   * approved amount is below this (e.g. the user edited the wallet approve amount down).
+   */
+  minApprovedAmount?: bigint
 }
 
 /**
@@ -84,7 +91,8 @@ interface RunOnChainApprovalStepParams {
  *
  * - Funding check after quote in the FundingOrder step (`amountToCover` = actual funding sell) so a user
  *   whose allowance still falls short (edited approve amount, buffer exceeded, etc.) can still place the order
- *   without going back. If the allowance falls short once again, an error will be shown.
+ *   without going back. If the Approval event amount from the mined receipt is still too low, throws
+ *   "Approved amount is not sufficient!".
  *
  * When `preferOnChainApprove` is false and the token is permittable, a permit may be returned
  * for the caller to attach as a pre-hook instead of an on-chain approve.
@@ -157,6 +165,7 @@ export async function ensureEoaTwapVaultRelayerApproval({
     amount: amountToApprove,
     step: step ?? EoaTwapSigningSteps.ApproveOrPermit,
     onSigningStep,
+    minApprovedAmount: amountToCover,
   })
 
   return { usedPermit: false, permitData: null, promptedWallet: true }
@@ -201,7 +210,7 @@ async function approveEoaSellToken({
   spender,
   amount,
   onSubmitted,
-}: ApproveEoaSellTokenParams): Promise<void> {
+}: ApproveEoaSellTokenParams): Promise<ApprovalTxReceipt> {
   if (!isEvmChain(chainId)) {
     throw new Error(`Unsupported chain for approve: ${chainId}`)
   }
@@ -225,7 +234,18 @@ async function approveEoaSellToken({
 
   onSubmitted()
 
-  await waitForTransactionReceipt(config, { hash })
+  const txResponse = await waitForTransactionReceipt(config, { hash })
+
+  return {
+    status: txResponse.status,
+    blockNumber: txResponse.blockNumber,
+    transactionHash: txResponse.transactionHash,
+    logs: txResponse.logs.map((log) => ({
+      address: log.address,
+      topics: [...log.topics],
+      data: log.data,
+    })),
+  }
 }
 
 async function runOnChainApprovalStep({
@@ -237,10 +257,11 @@ async function runOnChainApprovalStep({
   amount,
   step,
   onSigningStep,
+  minApprovedAmount,
 }: RunOnChainApprovalStepParams): Promise<void> {
   onSigningStep({ step, phase: EoaTwapSigningPhase.Sign })
 
-  await approveEoaSellToken({
+  const receipt = await approveEoaSellToken({
     config,
     chainId,
     account,
@@ -251,6 +272,18 @@ async function runOnChainApprovalStep({
       onSigningStep({ step, phase: EoaTwapSigningPhase.WaitingForTx })
     },
   })
+
+  if (receipt.status !== 'success') {
+    throw new Error('Approval transaction failed')
+  }
+
+  if (minApprovedAmount !== undefined) {
+    const approvedAmount = extractApprovalAmountFromLogs(receipt, sellTokenAddress, account, spender)
+
+    if (approvedAmount === undefined || approvedAmount < minApprovedAmount) {
+      throw new Error(t`Approved amount is not sufficient!`)
+    }
+  }
 
   onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed })
 }
