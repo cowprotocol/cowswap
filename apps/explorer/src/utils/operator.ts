@@ -1,12 +1,21 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { FeePolicy, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
-import { Order, OrderStatus, RAW_ORDER_STATUS, RawOrder, Trade } from 'api/operator/types'
+import {
+  Order,
+  OrderStatus,
+  ProtocolFee,
+  ProtocolFeeType,
+  RAW_ORDER_STATUS,
+  RawOrder,
+  RawTrade,
+  Trade,
+} from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
 
@@ -346,6 +355,40 @@ export function getOrderSurplus(order: RawOrder): Surplus {
   }
 }
 
+/**
+ * Aggregates the fees charged across an order's fills into one total per fee policy.
+ *
+ * Position alone is not a safe key: a fee at the same position can be charged in a different token
+ * or under a different policy from one fill to the next, and summing those would give a total in no
+ * particular token. Keying on (position, type, token) keeps them distinct.
+ */
+export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFees'>>): ProtocolFee[] {
+  const feesByPolicy = new Map<string, ProtocolFee>()
+
+  for (const { executedProtocolFees } of trades) {
+    if (!executedProtocolFees) continue
+
+    executedProtocolFees.forEach(({ amount, token, policy }, position) => {
+      if (!amount || !token) return
+
+      const type = getProtocolFeeType(policy)
+      const tokenAddress = getAddressKey(token)
+      const key = `${position}-${type}-${tokenAddress}`
+
+      const existing = feesByPolicy.get(key)
+      if (existing) {
+        existing.amount = existing.amount.plus(amount)
+      } else {
+        feesByPolicy.set(key, { amount: new BigNumber(amount), tokenAddress, type, position })
+      }
+    })
+  }
+
+  return Array.from(feesByPolicy.values())
+    .sort((a, b) => a.position - b.position)
+    .filter((fee) => fee.amount.isGreaterThan(0))
+}
+
 export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
   const params: PartialFillSurplusParams = {
     sellAmount: order.sellAmount,
@@ -380,6 +423,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount,
     executedFee,
     totalFee,
+    gasCost,
     invalidated,
     ...rest
   } = rawOrder
@@ -407,6 +451,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount: new BigNumber(executedFeeAmount),
     executedFee: executedFee ? new BigNumber(executedFee) : null,
     totalFee: new BigNumber(totalFee),
+    gasCost: gasCost ? new BigNumber(gasCost) : undefined,
     cancelled: invalidated,
     status,
     partiallyFilled,
@@ -439,6 +484,16 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
     surplusPercentage: percentage,
     executionTime: executionTimestamp ? new Date(executionTimestamp * 1000) : null,
   }
+}
+
+// Classifies a fee policy by its wrapper key: `{ surplus: {...} }`, `{ volume: {...} }`, etc.
+function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
+  if (policy) {
+    if ('surplus' in policy) return ProtocolFeeType.Surplus
+    if ('volume' in policy) return ProtocolFeeType.Volume
+    if ('priceImprovement' in policy) return ProtocolFeeType.PriceImprovement
+  }
+  return ProtocolFeeType.Unknown
 }
 
 function getReceiverAddress({ owner, receiver }: RawOrder): string {

@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useNetworkId } from 'state/network'
-import { Network, UiError } from 'types'
-import { transformTrade } from 'utils'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 
-import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { useNetworkId } from 'state/network'
+import useSWR from 'swr'
+import { Network, UiError } from 'types'
+import { getProtocolFees, transformTrade } from 'utils'
+
+import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
 
@@ -18,6 +21,14 @@ type Result = {
 type TradesTimestamps = { [txHash: string]: number }
 
 const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
+
+type ProtocolFeesResult = {
+  // Undefined until the fees are known: while loading, after a failed fetch, or when no order was
+  // given. Callers must not treat that as "this order charged no fees" — `[]` means that.
+  protocolFees?: ProtocolFee[]
+  error?: UiError
+  isLoading: boolean
+}
 
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
   const [error, setError] = useState<UiError>()
@@ -115,10 +126,49 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
 }
 
+// Large enough that most orders need a single call.
+const ALL_TRADES_PAGE_SIZE = 1000
+// Safety bound. Reaching it means the paging is broken, not that the order has this many fills, so
+// it throws rather than returning what it has.
+const MAX_TRADES_PAGES = 100
+
+const PROTOCOL_FEES_ERROR = 'Failed to fetch the costs and fees breakdown'
+
 /**
- * Fetches trades for given order
+ * Order-level fee breakdown, derived from every fill. Unlike {@link useOrderTrades}, which is
+ * scoped to the selected Fills page, this does not change as the user pages.
  */
-// TODO: Break down this large function into smaller functions
+export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
+  const networkId = useNetworkId()
+  const orderUid = order?.uid
+
+  // In the key so a new fill refetches. They change only when a fill lands, not on every poll.
+  const executedSellAmount = order?.executedSellAmount.toString()
+  const executedBuyAmount = order?.executedBuyAmount.toString()
+
+  // Keying by order is also what stops one order's fees being shown as another's: a key with no
+  // data reads as "not known yet" rather than as the previous order's breakdown.
+  const { data, error, isLoading } = useSWR(
+    networkId && orderUid ? ['orderProtocolFees', networkId, orderUid, executedSellAmount, executedBuyAmount] : null,
+    async ([, network, uid]: [string, Network, string, ...unknown[]]) =>
+      getProtocolFees(await getAllOrderTrades(network, uid)),
+    {
+      ...SWR_NO_REFRESH_OPTIONS,
+      errorRetryCount: 0,
+      onError: (e) => console.error(`[useOrderProtocolFees] ${PROTOCOL_FEES_ERROR}`, e),
+    },
+  )
+
+  return useMemo<ProtocolFeesResult>(
+    () => ({
+      protocolFees: data,
+      // Distinct from useOrderTrades' message: the Fills table can load fine while this fails.
+      error: error ? { message: PROTOCOL_FEES_ERROR, type: 'error' } : undefined,
+      isLoading,
+    }),
+    [data, error, isLoading],
+  )
+}
 
 async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
@@ -142,4 +192,33 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
 
     return acc
   }, {} as TradesTimestamps)
+}
+
+/**
+ * Fetches every trade of an order. Duplicates would be silently summed into the fee totals, so
+ * already-seen records are skipped and an unterminated loop throws instead of returning a partial.
+ */
+async function getAllOrderTrades(networkId: Network, orderId: string): Promise<RawTrade[]> {
+  const allTrades: RawTrade[] = []
+  const seen = new Set<string>()
+
+  for (let page = 0; page < MAX_TRADES_PAGES; page++) {
+    const trades = await getTrades({ networkId, orderId, offset: allTrades.length, limit: ALL_TRADES_PAGE_SIZE })
+
+    // Already-collected records mean `offset` was ignored and an earlier page was re-served.
+    const newTrades = trades.filter((trade) => {
+      const key = `${trade.txHash}-${trade.logIndex}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+
+    allTrades.push(...newTrades)
+
+    // Deliberately not stopping on a merely short page: the API may cap the page size below what we
+    // ask for, and treating that as the end would drop fills.
+    if (newTrades.length === 0) return allTrades
+  }
+
+  throw new Error(`Reached ${MAX_TRADES_PAGES} pages of trades for order ${orderId}; the API is not paging correctly`)
 }

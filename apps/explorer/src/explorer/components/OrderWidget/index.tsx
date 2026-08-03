@@ -1,12 +1,14 @@
 import React from 'react'
 
 import { OrderDetails } from '../../../components/orders/OrderDetails'
+import { useFeeDisplayFeatureFlag } from '../../../hooks/useFeeDisplayFeatureFlag'
 import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
-import { useOrderTrades } from '../../../hooks/useOperatorTrades'
+import { useOrderProtocolFees, useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
+import { Errors } from '../../../types'
 import { ORDER_QUERY_INTERVAL } from '../../const'
-import { useTable } from '../TokensTableWidget/useTable'
+import { TableState, useTable } from '../TokensTableWidget/useTable'
 
 const RESULTS_PER_PAGE = 10
 
@@ -15,7 +17,7 @@ export const OrderWidget: React.FC = () => {
   const orderId = useSanitizeOrderIdAndUpdateUrl()
 
   const {
-    state: tableState,
+    state: baseTableState,
     setPageSize,
     setPageOffset,
     handleNextPage,
@@ -25,7 +27,7 @@ export const OrderWidget: React.FC = () => {
   const {
     order,
     isLoading: isOrderLoading,
-    errors,
+    errors: orderErrors,
     errorOrderPresentInNetworkId,
   } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const {
@@ -33,14 +35,22 @@ export const OrderWidget: React.FC = () => {
     error,
     isLoading: areTradesLoading,
     hasNextPage,
-  } = useOrderTrades(order, tableState.pageOffset, tableState.pageSize)
+  } = useOrderTrades(order, baseTableState.pageOffset, baseTableState.pageSize)
 
-  // eslint-disable-next-line react-hooks/immutability
-  tableState['hasNextPage'] = hasNextPage
+  // This pages over every fill, so skip it unless the result can be displayed: the feature has to
+  // be on, and the order needs a gas cost to break down.
+  const isFeeDisplayEnabled = useFeeDisplayFeatureFlag()
+  const canShowFeeBreakdown = isFeeDisplayEnabled && Boolean(order?.gasCost?.isGreaterThan(0))
+  const { protocolFees, error: protocolFeesError } = useOrderProtocolFees(canShowFeeBreakdown ? order : null)
 
+  // Copy the hook's objects instead of mutating them (they may be reused across renders). A failed
+  // trades fetch already tells the user the fills are unavailable, so don't also banner the fees.
+  const tableState: TableState = { ...baseTableState, hasNextPage }
+  const errors: Errors = { ...orderErrors }
   if (error) {
-    // eslint-disable-next-line react-hooks/immutability
-    errors['trades'] = error
+    errors.trades = error
+  } else if (protocolFeesError) {
+    errors.protocolFees = protocolFeesError
   }
 
   if (errorOrderPresentInNetworkId && networkId !== errorOrderPresentInNetworkId) {
@@ -51,6 +61,7 @@ export const OrderWidget: React.FC = () => {
     <OrderDetails
       order={order}
       trades={trades}
+      protocolFees={protocolFees}
       isOrderLoading={isOrderLoading}
       areTradesLoading={areTradesLoading}
       errors={errors}

@@ -1,11 +1,14 @@
 import React from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { Story, Meta } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
-import { ZERO_BIG_NUMBER } from 'const'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { RICH_ORDER, WETH } from '../../../test/data'
+import { ProtocolFeeType } from 'api/operator'
+
+import { RICH_ORDER, USDT, WETH } from '../../../test/data'
 
 import { GasFeeDisplay, Props } from '.'
 
@@ -22,28 +25,69 @@ const Template: Story<Props> = (args) => (
   </div>
 )
 
-const order = {
-  ...RICH_ORDER,
-  feeAmount: new BigNumber('200000'),
-  executedFeeAmount: ZERO_BIG_NUMBER,
+// Native token wei. The breakdown needs both this and `protocolFees` to render a complete total.
+const GAS_COST = new BigNumber('2500000000000000')
+
+// `showBreakdown` mirrors the flag. Off -> legacy display, whatever else the order carries.
+export const BreakdownDisabled = Template.bind({})
+BreakdownDisabled.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] }, showBreakdown: false }
+
+// No recorded gas cost -> legacy display of the combined executed fee in the sell token.
+export const LegacyNoGasCost = Template.bind({})
+LegacyNoGasCost.args = { order: { ...RICH_ORDER, gasCost: undefined, protocolFees: [] }, showBreakdown: true }
+
+// Fees not known yet (loading, or the fetch failed) -> legacy display rather than a partial total.
+export const FeesUnavailable = Template.bind({})
+FeesUnavailable.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: undefined }, showBreakdown: true }
+
+// Provably no fees -> network costs alone, and no expander, since it would repeat the total.
+export const NetworkCostsOnly = Template.bind({})
+NetworkCostsOnly.args = { order: { ...RICH_ORDER, gasCost: GAS_COST, protocolFees: [] }, showBreakdown: true }
+
+// Network costs plus a single fee, charged in a different token than the gas -> two totals.
+export const SingleFee = Template.bind({})
+SingleFee.args = {
+  showBreakdown: true,
+  order: {
+    ...RICH_ORDER,
+    gasCost: GAS_COST,
+    protocolFees: [
+      {
+        amount: new BigNumber('1166200'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 0,
+      },
+    ],
+  },
 }
 
-const defaultProps: Props = { order }
-
-export const NoFee = Template.bind({})
-NoFee.args = { ...defaultProps }
-
-export const PartialFee = Template.bind({})
-PartialFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('100000') } }
-
-export const FullFee = Template.bind({})
-FullFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: order.feeAmount, fullyFilled: true } }
-
-export const TinyFee6DecimalsToken = Template.bind({})
-TinyFee6DecimalsToken.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('1') } }
-
-export const TinyFee18DecimalsToken = Template.bind({})
-TinyFee18DecimalsToken.args = {
-  ...defaultProps,
-  order: { ...order, executedFeeAmount: new BigNumber('1'), sellToken: WETH },
+// Several fees, including two of the same type — those get numbered so they can be told apart.
+export const MultipleFees = Template.bind({})
+MultipleFees.args = {
+  showBreakdown: true,
+  order: {
+    ...RICH_ORDER,
+    gasCost: GAS_COST,
+    protocolFees: [
+      {
+        amount: new BigNumber('1166200'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 0,
+      },
+      {
+        amount: new BigNumber('800000'),
+        tokenAddress: getAddressKey(USDT.address),
+        type: ProtocolFeeType.Volume,
+        position: 1,
+      },
+      {
+        amount: new BigNumber('50000000000000000'),
+        tokenAddress: getAddressKey(WETH.address),
+        type: ProtocolFeeType.PriceImprovement,
+        position: 2,
+      },
+    ],
+  },
 }

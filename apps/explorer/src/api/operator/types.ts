@@ -1,4 +1,5 @@
 import {
+  AddressKey,
   CompetitionOrderStatus,
   EnrichedOrder,
   OrderKind,
@@ -101,6 +102,10 @@ export type Order = Pick<
   executedFeeAmount: BigNumber
   executedFee: BigNumber | null
   totalFee: BigNumber
+  // Derived client-side from the trades. Undefined when unknown; `[]` means no fee was charged.
+  protocolFees?: ProtocolFee[]
+  // Native-token wei, from the orderbook. Undefined if unsettled, or settled before it was recorded.
+  gasCost?: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -114,8 +119,18 @@ export type Order = Pick<
 
 export type OrderCompetitionStatus = CompetitionOrderStatus
 
-// Raw API response
-export type RawOrder = EnrichedOrder
+/** One fee policy's total across all of an order's fills. */
+export type ProtocolFee = {
+  amount: BigNumber
+  tokenAddress: AddressKey
+  type: ProtocolFeeType
+  // Index in a fill's `executedProtocolFees`, kept only to preserve the order the fees were applied
+  // in. It does not identify who charged the fee — the API doesn't say.
+  position: number
+}
+
+// TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
+export type RawOrder = EnrichedOrder & { gasCost?: string | null }
 
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 
@@ -144,5 +159,13 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 }
 
 export type WithNetworkId = { networkId: Network }
+
+/** How a fee was calculated, derived from the trade's fee policy. */
+export enum ProtocolFeeType {
+  Surplus = 'surplus',
+  Volume = 'volume',
+  PriceImprovement = 'priceImprovement',
+  Unknown = 'unknown',
+}
 
 export type { SolverCompetitionResponse }
