@@ -51,7 +51,6 @@ export function OrdersTableNoOrdersContent({
         hasOrders,
         limit: displayLimit,
         hasMoreOrders,
-        orderType,
         searchTerm,
         historyStatusFilter,
       }),

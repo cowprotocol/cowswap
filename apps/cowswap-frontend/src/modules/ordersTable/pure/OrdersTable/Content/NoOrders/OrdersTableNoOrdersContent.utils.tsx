@@ -16,7 +16,7 @@ export interface GetDescriptionOptions {
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
-  orderType?: TabOrderTypes
+  orderType: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   isSafeViaWc?: boolean
@@ -27,7 +27,6 @@ export interface GetTitleOptions {
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
-  orderType?: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 }
@@ -63,7 +62,7 @@ export function getDescription({
         </styledEl.ExternalLinkStyled>
       ) : null
 
-    if (hasMoreOrders && (orderType === TabOrderTypes.LIMIT || orderType === TabOrderTypes.ADVANCED)) {
+    if (hasMoreOrders) {
       return [
         limit === AMOUNT_OF_ORDERS_TO_FETCH
           ? t`Only the ${limit} most recent orders were searched.`
@@ -107,16 +106,13 @@ export function getTitle({
   hasOrders,
   limit,
   hasMoreOrders,
-  orderType,
   searchTerm,
   historyStatusFilter,
 }: GetTitleOptions): string {
   if (currentTab === OrderTabId.UNFILLABLE) return t`No unfillable orders`
 
   if (currentTab === OrderTabId.OPEN) {
-    return hasMoreOrders && (orderType === TabOrderTypes.LIMIT || orderType === TabOrderTypes.ADVANCED)
-      ? t`No open orders found in your last ${limit} orders`
-      : t`No open orders found`
+    return hasMoreOrders ? t`No open orders found in your last ${limit} orders` : t`No open orders found`
   }
 
   if (currentTab === OrderTabId.SIGNING) return t`No signing orders`
