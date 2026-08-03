@@ -1,8 +1,9 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { allowancesAtom, useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -33,6 +34,7 @@ export function useTokenAllowance(
   const { contract: erc20Contract } = useTokenContract(tokenAddress)
   const tradeSpender = useTradeSpenderAddress()
   const [optimisticAllowances, setOptimisticAllowances] = useAtom(optimisticAllowancesAtom)
+  const solanaAllowance = useSolanaDelegationAllowance(tokenAddress)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
@@ -81,8 +83,28 @@ export function useTokenAllowance(
   return useMemo(
     () => ({
       ...swrResponse,
-      data: optimisticAllowance?.amount ?? swrResponse.data,
+      data: solanaAllowance ?? optimisticAllowance?.amount ?? swrResponse.data,
     }),
-    [optimisticAllowance?.amount, swrResponse],
+    [solanaAllowance, optimisticAllowance?.amount, swrResponse],
   )
+}
+
+/**
+ * Solana has no ERC-20 `allowance` call; the SPL delegation persisted into `allowancesAtom` is the
+ * equivalent. Reading it here lets the approve gating (`useApproveState`, `useNeedsApproval`) work on
+ * Solana. Returns `undefined` on non-Solana chains so the EVM allowance path is used unchanged.
+ *
+ * A token that isn't delegated to the settlement authority is stored as `undefined` (the display's
+ * "not delegated" marker). For the approve gating that means "no allowance", so it is coalesced to `0`
+ * here — otherwise `getApprovalState` would read it as `UNKNOWN` and hide the Approve button.
+ */
+function useSolanaDelegationAllowance(tokenAddress: string | undefined): bigint | undefined {
+  const { chainId } = useWalletInfo()
+  const persistedAllowancesByChain = useAtomValue(allowancesAtom)
+
+  return useMemo(() => {
+    if (!isSolanaChain(chainId) || !tokenAddress) return undefined
+
+    return persistedAllowancesByChain[chainId]?.[getAddressKey(tokenAddress)] ?? 0n
+  }, [persistedAllowancesByChain, chainId, tokenAddress])
 }

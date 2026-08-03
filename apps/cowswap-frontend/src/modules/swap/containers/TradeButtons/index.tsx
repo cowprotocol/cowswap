@@ -1,7 +1,8 @@
 import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -52,6 +53,7 @@ export function TradeButtons({
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency } = useSwapDerivedState()
+  const { chainId } = useWalletInfo()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -112,8 +114,12 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
+  // The Solana order-flow context isn't wired yet, so `isTradeContextReady` is always false on Solana.
+  // Don't gate on it there, otherwise the Solana approve button can never be enabled. The Solana swap
+  // callback is a no-op until the order flow lands, so leaving the swap button enabled is harmless.
+  const isSolana = isSolanaChain(chainId)
   const isDisabled =
-    !isTradeContextReady ||
+    (!isSolana && !isTradeContextReady) ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
     (isNonEvmBridging || shouldCheckBridgingRecipient ? !nonEvmReceiverConfirmed : false)
