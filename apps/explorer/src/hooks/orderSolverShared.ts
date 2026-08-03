@@ -44,9 +44,12 @@ export async function resolveSolver(
 
   if (!txHash) return undefined
 
-  const winner = findCompetitionWinner(await getSolverCompetitionByTxHash({ networkId, txHash }), solvers, orderUid)
+  const competitionWinner = findCompetitionWinnerAddress(
+    await getSolverCompetitionByTxHash({ networkId, txHash }),
+    orderUid,
+  )
 
-  return winner && toOrderSolverInfo(winner)
+  return competitionWinner ? buildSolverInfoFromAddress(competitionWinner, solvers) : undefined
 }
 
 export async function resolveSolverByTxHash(
@@ -59,9 +62,9 @@ export async function resolveSolverByTxHash(
     fetchSolversInfo().catch(() => []),
   ])
 
-  const winner = findCompetitionWinner(competition, solvers, orderId)
+  const winnerAddress = findCompetitionWinnerAddress(competition, orderId)
 
-  return winner && toOrderSolverInfo(winner)
+  return winnerAddress ? buildSolverInfoFromAddress(winnerAddress, solvers) : undefined
 }
 
 function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): OrderSolverInfo {
@@ -79,19 +82,16 @@ function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): Ord
 }
 
 /**
- * The solver competition reports the winner by its on-chain address as well, so both sources join
- * on the CMS deployments the same way.
+ * The solver competition reports the winner by its on-chain address as well, so both sources feed
+ * the same CMS join and share the shortened-address fallback.
  */
-function findCompetitionWinner(
+function findCompetitionWinnerAddress(
   competition: SolverCompetitionResponse | undefined,
-  solvers: SolverInfo[],
   orderId: string | undefined,
-): SolverInfo | undefined {
-  if (!competition?.solutions?.length || !solvers.length || !orderId) return undefined
+): string | undefined {
+  if (!competition?.solutions?.length || !orderId) return undefined
 
-  const winner = competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))
-
-  return winner?.solverAddress ? matchSolverByAddress(winner.solverAddress, solvers) : undefined
+  return competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))?.solverAddress
 }
 
 /**

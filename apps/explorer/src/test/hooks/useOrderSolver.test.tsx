@@ -215,7 +215,7 @@ describe('useOrderSolver', () => {
     })
   })
 
-  it('returns no solver when the txHash competition winner address matches no known deployment', async () => {
+  it('falls back to a shortened address when the txHash competition winner is not in CMS', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(undefined)
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
     mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(UNKNOWN_ADDRESS))
@@ -226,7 +226,11 @@ describe('useOrderSolver', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(mockedGetSolverCompetitionByTxHash).toHaveBeenCalledWith({ networkId: 1, txHash: '0xunknown' })
-    expect(result.current.solver).toBeUndefined()
+    expect(result.current.solver).toEqual({
+      solverId: UNKNOWN_ADDRESS,
+      displayName: '0x3333...3333',
+      image: undefined,
+    })
   })
 
   it('does not attempt txHash fallback when no txHash is available', async () => {
