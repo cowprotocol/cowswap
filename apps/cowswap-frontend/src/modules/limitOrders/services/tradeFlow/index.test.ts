@@ -2,7 +2,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { handlePermit } from 'modules/permit'
 
-import { TradeFlowContext } from '../types'
+import { TradeFlowContext, WidgetHookDeclineError } from '../types'
 
 import { tradeFlow } from './index'
 
@@ -10,6 +10,13 @@ jest.mock('modules/permit', () => ({
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),
   callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
 }))
+
+jest.mock('modules/injectedWidget', () => {
+  // The ON_BEFORE_APPROVAL veto now fires inside `handlePermit` (mocked here); the flow only needs
+  // to recognise its decline error, so provide a real class for `instanceof` checks.
+  class WidgetHookDeclineError extends Error {}
+  return { callWidgetHook: jest.fn().mockResolvedValue(true), WidgetHookDeclineError }
+})
 
 jest.mock('tradingSdk/tradingSdk', () => ({
   tradingSdk: {
@@ -100,9 +107,9 @@ describe('limit orders tradeFlow - permit amount', () => {
     mockHandlePermit.mockResolvedValue({ fullAppData: '{}', doc: {} } as never)
   })
 
-  it('signs the permit with the bounded amount from permitAmountToSign', async () => {
-    await tradeFlow(
-      buildParams(),
+  function runTradeFlow(params: TradeFlowContext): Promise<unknown> {
+    return tradeFlow(
+      params,
       { priceImpact: undefined } as never,
       {} as never,
       analytics as never,
@@ -110,8 +117,28 @@ describe('limit orders tradeFlow - permit amount', () => {
       jest.fn().mockResolvedValue(undefined),
       jest.fn(),
     )
+  }
+
+  it('signs the permit with the bounded amount from permitAmountToSign', async () => {
+    await runTradeFlow(buildParams())
 
     expect(mockHandlePermit).toHaveBeenCalledTimes(1)
     expect(mockHandlePermit).toHaveBeenCalledWith(expect.objectContaining({ amount: permitAmountToSign }))
+  })
+
+  it('delegates the ON_BEFORE_APPROVAL veto to handlePermit via a preSignCallback', async () => {
+    // The cache lookup + widget veto + "requesting signature" UI all live inside handlePermit now;
+    // the flow just hands it the beforePermit callback to flag the signing step.
+    await runTradeFlow(buildParams())
+
+    expect(mockHandlePermit).toHaveBeenCalledWith(expect.objectContaining({ preSignCallback: expect.any(Function) }))
+  })
+
+  it('rethrows WidgetHookDeclineError (without swap-error analytics) when handlePermit is declined', async () => {
+    mockHandlePermit.mockRejectedValue(new WidgetHookDeclineError())
+
+    await expect(runTradeFlow(buildParams())).rejects.toBeInstanceOf(WidgetHookDeclineError)
+
+    expect(analytics.error).not.toHaveBeenCalled()
   })
 })
