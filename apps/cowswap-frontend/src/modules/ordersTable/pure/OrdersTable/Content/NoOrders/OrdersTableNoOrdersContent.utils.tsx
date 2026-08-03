@@ -16,6 +16,8 @@ export interface GetDescriptionOptions {
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
+  isLoading: boolean
+  loadMore: () => void
   orderType: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
@@ -36,6 +38,8 @@ export function getDescription({
   hasOrders,
   limit,
   hasMoreOrders,
+  isLoading,
+  loadMore,
   orderType,
   searchTerm,
   historyStatusFilter,
@@ -70,7 +74,7 @@ export function getDescription({
         <>
           <Trans>Press the button below to search older orders, or create a new one!</Trans> {learnMoreLink}
         </>,
-        <LoadMoreOrdersButton orderType={orderType} />,
+        <LoadMoreOrdersButton disabled={isLoading || !hasMoreOrders} onClick={loadMore} />,
       ]
     }
 

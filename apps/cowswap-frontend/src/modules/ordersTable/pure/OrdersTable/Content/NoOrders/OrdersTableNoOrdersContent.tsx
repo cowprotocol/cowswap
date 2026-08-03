@@ -41,7 +41,7 @@ export function OrdersTableNoOrdersContent({
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
   const { t } = useLingui()
-  const { limit, isLoading, hasMoreOrders } = useLoadMoreOrders(orderType)
+  const { limit, isLoading, hasMoreOrders, loadMore } = useLoadMoreOrders(orderType)
   const displayLimit = isLoading ? limit - AMOUNT_OF_ORDERS_TO_FETCH : limit
 
   const { title, description } = useMemo(
@@ -59,13 +59,26 @@ export function OrdersTableNoOrdersContent({
         hasOrders,
         limit: displayLimit,
         hasMoreOrders,
+        isLoading,
+        loadMore,
         orderType,
         searchTerm,
         historyStatusFilter,
         isSafeViaWc,
       }),
     }),
-    [currentTab, hasOrders, displayLimit, hasMoreOrders, orderType, searchTerm, historyStatusFilter, isSafeViaWc],
+    [
+      currentTab,
+      hasOrders,
+      displayLimit,
+      hasMoreOrders,
+      isLoading,
+      loadMore,
+      orderType,
+      searchTerm,
+      historyStatusFilter,
+      isSafeViaWc,
+    ],
   )
 
   return (

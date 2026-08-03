@@ -3,20 +3,16 @@ import { ReactNode } from 'react'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { TabOrderTypes } from 'entities/routes/routes.atom'
 import styled from 'styled-components/macro'
 
-import { useLoadMoreOrders } from 'modules/orders'
-
 export interface LoadMoreOrdersButtonProps {
-  orderType: TabOrderTypes
+  disabled: boolean
+  onClick: () => void
 }
 
-export function LoadMoreOrdersButton({ orderType }: LoadMoreOrdersButtonProps): ReactNode {
-  const { loadMore, hasMoreOrders, isLoading } = useLoadMoreOrders(orderType)
-
+export function LoadMoreOrdersButton({ disabled, onClick }: LoadMoreOrdersButtonProps): ReactNode {
   return (
-    <LoadMoreButton onClick={loadMore} disabled={isLoading || !hasMoreOrders}>
+    <LoadMoreButton onClick={onClick} disabled={disabled}>
       <Trans>Search older orders</Trans>
     </LoadMoreButton>
   )

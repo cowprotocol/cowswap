@@ -16,7 +16,7 @@ export interface LoadMoreOrdersSectionProps {
 }
 
 export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOrdersSectionProps): ReactNode {
-  const { limit, hasMoreOrders } = useLoadMoreOrders(orderType)
+  const { limit, hasMoreOrders, isLoading, loadMore } = useLoadMoreOrders(orderType)
 
   const paragraphs = hasMoreOrders ? (
     <>
@@ -32,7 +32,7 @@ export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOr
         )}
       </p>
       <p>
-        <LoadMoreOrdersButton orderType={orderType} />
+        <LoadMoreOrdersButton disabled={isLoading || !hasMoreOrders} onClick={loadMore} />
       </p>
     </>
   ) : (
