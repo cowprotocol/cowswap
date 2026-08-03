@@ -20,8 +20,8 @@ jest.mock('wagmi', () => ({
 
 // The Solana path has its own dedicated test; stub it here so this suite stays focused on
 // EVM wagmi gating and avoids pulling in the reown/web3/react-query runtime.
-jest.mock('./usePersistSolanaBalancesViaWebCalls', () => ({
-  usePersistSolanaBalancesViaWebCalls: jest.fn(),
+jest.mock('./usePersistSplViaMulticall', () => ({
+  usePersistSplViaMulticall: jest.fn(),
 }))
 
 jest.mock('../utils/reportBalancesError', () => ({
