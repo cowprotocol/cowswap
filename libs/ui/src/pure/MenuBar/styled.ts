@@ -559,7 +559,7 @@ export const DropdownContentLanguages = styled(DropdownContent)`
 
   &::-webkit-scrollbar-corner {
     background: transparent;
-  
+  }
 
   ${StyledDropdownContentItem} {
     text-transform: capitalize;
