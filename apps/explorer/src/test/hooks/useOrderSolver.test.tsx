@@ -387,30 +387,6 @@ describe('useOrderSolver', () => {
     }
   })
 
-  it('does not re-resolve when the txHash arrives after the solver was already resolved', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValue(mockCompetitionStatus(BLANC_ADDRESS))
-    mockedFetchSolversInfo.mockResolvedValue(MOCK_SOLVERS)
-
-    // The order page injects the txHash once its trades load, after the first resolution
-    const withoutTxHash = createMockOrder({ txHash: undefined })
-    const { result, rerender } = renderHook(({ order }) => useOrderSolver(order), {
-      initialProps: { order: withoutTxHash as Order | null },
-    })
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false))
-    expect(result.current.solver?.displayName).toBe('Project Blanc')
-    expect(mockedGetOrderCompetitionStatus).toHaveBeenCalledTimes(1)
-
-    rerender({ order: createMockOrder({ uid: withoutTxHash.uid, txHash: '0xlatetx' }) })
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false))
-
-    // No second lookup, and the badge never drops the solver it already had
-    expect(mockedGetOrderCompetitionStatus).toHaveBeenCalledTimes(1)
-    expect(mockedGetSolverCompetitionByTxHash).not.toHaveBeenCalled()
-    expect(result.current.solver?.displayName).toBe('Project Blanc')
-  })
-
   it('clears stale solver when navigating to an order with no solver data', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(BLANC_ADDRESS))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)

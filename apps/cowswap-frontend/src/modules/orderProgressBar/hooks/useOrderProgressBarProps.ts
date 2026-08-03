@@ -198,7 +198,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   } = useGetExecutingOrderState(orderId)
 
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
-  // Count distinct solvers, not deployments: a solver can run several addresses on the same chain
+  // Count distinct solvers, not addresses: the CMS keeps a solver's retired deployments alongside
+  // the live one, so one solver can contribute several addresses for the same chain.
   const totalSolvers = new Set(Object.values(solversInfoByAddress).map(({ solverId }) => solverId)).size
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
