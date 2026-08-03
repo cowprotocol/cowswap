@@ -532,7 +532,7 @@ export const DropdownContentLanguages = styled(DropdownContent)`
     /* other browsers support ::-webkit-scrollbar, so we need "scrollbar-color" only for Firefox */
     /* see https://caniuse.com/mdn-css_selectors_-webkit-scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(${UI.COLOR_NEUTRAL_70}) var(${UI.COLOR_NEUTRAL_90});
+    scrollbar-color: var(${UI.COLOR_TEXT_OPACITY_25}) var(${UI.COLOR_TEXT_OPACITY_10});
   }
 
   &::-webkit-scrollbar {
@@ -540,17 +540,17 @@ export const DropdownContentLanguages = styled(DropdownContent)`
   }
 
   &::-webkit-scrollbar-track {
-    background: var(${UI.COLOR_NEUTRAL_90});
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(${UI.COLOR_NEUTRAL_70});
+    background: var(${UI.COLOR_TEXT_OPACITY_25});
     border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: var(${UI.COLOR_NEUTRAL_50});
+    background: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 
   &::-webkit-scrollbar-button {
