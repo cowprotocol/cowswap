@@ -2,6 +2,8 @@ export const SUPPORTED_LOCALES = [
   // order as they appear in the language dropdown
   'en-US',
   'es-ES',
+  'fr-FR',
+  'pt-BR',
   'ru-RU',
 ]
 
@@ -13,5 +15,7 @@ export const DEFAULT_LOCALE: SupportedLocale = 'en-US'
 export const LOCALE_DISPLAY_NAMES: Partial<Record<SupportedLocale, string>> = {
   'en-US': 'English (US)',
   'es-ES': 'Español (España)',
+  'fr-FR': 'Français (France)',
+  'pt-BR': 'Português (Brasil)',
   'ru-RU': 'Русский (Россия)',
 }
