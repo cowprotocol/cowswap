@@ -8,7 +8,8 @@ import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 /**
  * Maps the on-chain solver address (normalized) -> SolverInfo, for the given chain/env.
  *
- * Used to resolve solver branding from the address returned by the orderbook `/status` endpoint.
+ * Used to resolve a solver's display name and logo from the address returned by the orderbook
+ * `/status` endpoint.
  */
 export function useSolversInfoByAddress(chainId: SupportedChainId): Record<string, SolverInfo> {
   const allSolversInfo = useAtomValue(solversInfoAtom)

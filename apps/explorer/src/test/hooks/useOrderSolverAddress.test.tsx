@@ -87,8 +87,8 @@ function mockCompetitionStatus(solver: string): OrderCompetitionStatus {
 }
 
 /**
- * The competition `solver` field carries the on-chain solver address, so CMS branding is joined on
- * the address.
+ * The competition `solver` field carries the on-chain solver address, so the CMS display name and
+ * logo are joined on that address.
  */
 describe('useOrderSolver - solver address resolution', () => {
   beforeEach(() => {
@@ -101,7 +101,7 @@ describe('useOrderSolver - solver address resolution', () => {
     mockedUseNetworkId.mockReturnValue(1)
   })
 
-  it('resolves CMS branding when the order competition returns an address', async () => {
+  it('resolves the CMS solver info when the order competition returns an address', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(CMS_ADDRESS_LOWERCASE))
     mockedFetchSolversInfo.mockResolvedValueOnce([createSolver(CMS_ADDRESS_LOWERCASE)])
 

@@ -1,5 +1,5 @@
-import { shortenAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isSupportedAddress } from '@cowprotocol/cow-sdk'
+import { safeShortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import {
   getOrderCompetitionStatus,
@@ -29,8 +29,9 @@ export async function resolveSolver(
   orderUid: string,
   txHash: string | undefined,
 ): Promise<OrderSolverInfo | undefined> {
-  // Solver branding is global metadata. Do not scope this by network, because CMS network mappings can lag
-  // behind the competition winner data and would hide valid logos/display names on order and fill views.
+  // A solver's display name and logo are global metadata. Do not scope this by network, because CMS
+  // network mappings can lag behind the competition winner data and would hide valid names/logos on
+  // order and fill views.
   const [competitionStatus, solvers] = await Promise.all([
     getOrderCompetitionStatus({ networkId, orderId: orderUid }),
     fetchSolversInfo().catch(() => []),
@@ -72,13 +73,8 @@ function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): Ord
 
   if (matchingSolver) return toOrderSolverInfo(matchingSolver)
 
-  return {
-    solverId: address,
-    // When the address isn't found in CMS, fall back to a shortened address for display so the
-    // full 42-char address doesn't break the UI layout. `shortenAddress` throws on anything that
-    // isn't a known address format, hence the guard.
-    displayName: isSupportedAddress(address) ? shortenAddress(address) : address,
-  }
+  // Unknown to the CMS: display the address itself, shortened when possible.
+  return { solverId: address, displayName: safeShortenAddress(address) }
 }
 
 /**

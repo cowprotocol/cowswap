@@ -2,9 +2,9 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { shortenAddress } from '@cowprotocol/common-utils'
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, getAddressKey, isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -21,7 +21,7 @@ import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useSolversInfoByAddress } from 'common/hooks/useSolversInfo'
+import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
@@ -565,8 +565,8 @@ const POOLING_SWR_OPTIONS = {
  * Merges solverCompetition data returned by the orderbook /status endpoint with
  * solver info fetched from CMS.
  *
- * The endpoint's `solver` field carries the on-chain solver address, which is what the CMS
- * branding is resolved by.
+ * The endpoint's `solver` field carries the on-chain solver address, so that address is the key
+ * the CMS display name and logo are looked up by.
  *
  * @param solverCompetition
  * @param solversInfoByAddress
@@ -579,11 +579,8 @@ function mergeSolverData(
   const solverInfo = solversInfoByAddress[getAddressKey(solverAddress)]
 
   if (!solverInfo) {
-    // Unknown to the CMS: display a shortened address so the full one doesn't break the UI layout.
-    // `shortenAddress` throws on anything that isn't a known address format, hence the guard.
-    const solver = isSupportedAddress(solverAddress) ? shortenAddress(solverAddress) : solverAddress
-
-    return { ...solverCompetition, solverId: solverAddress, solver }
+    // Unknown to the CMS: display the address itself, shortened when possible.
+    return { ...solverCompetition, solverId: solverAddress, solver: safeShortenAddress(solverAddress) }
   }
 
   return { ...solverCompetition, ...solverInfo, solverId: solverInfo.solverId, solver: solverInfo.solverId }
