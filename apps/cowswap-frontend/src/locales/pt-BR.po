@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-03 01:35\n"
+"PO-Revision-Date: 2026-08-03 02:46\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1140,7 +1140,7 @@ msgstr "Tentar novamente"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The estimated time for the bridge transaction to complete."
-msgstr ""
+msgstr "O tempo estimado para a transação de bridge ser concluída."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "months"
@@ -1148,15 +1148,15 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "Delegate (v)COW"
-msgstr ""
+msgstr "Delegar (v)COW"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
-msgstr ""
+msgstr "No CoW Swap, você pode definir ordens limite para saldos que ainda não possui."
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
-msgstr ""
+msgstr "O endereço do destinatário que você inseriu tinha o prefixo de rede <0>{chainPrefixWarning}</0>, que não é o esperado para a rede de destino do token."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
