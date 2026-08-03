@@ -1,5 +1,7 @@
 import { Command } from '@cowprotocol/types'
 
+import ms from 'ms.macro'
+
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
@@ -9,6 +11,16 @@ import { CheckEthereumTransactions } from '../types'
 import type { Connection } from '@solana/web3.js'
 
 type StatusResult = { type: 'success' | 'reverted'; slot: number } | { type: 'pending' }
+
+/**
+ * `searchTransactionHistory` reaches into the RPC provider's own archival index rather than the
+ * validator's live ledger, and that archive commonly lags real time by up to a minute or two while a
+ * landed transaction is ingested into it. Trusting a single empty result the moment the blockhash
+ * expires would misreport a landed-but-not-yet-archived transaction as reverted, so a genuine "not
+ * found anywhere" verdict is only trusted once this much real time has passed since submission —
+ * comfortably longer than that ingestion lag.
+ */
+export const HISTORICAL_LOOKUP_GRACE_PERIOD_MS = ms`3m`
 
 /**
  * Solana counterpart to {@link checkOnChainTransaction}.
@@ -81,6 +93,29 @@ export function checkSolanaTransaction(
   }
 }
 
+async function checkHistoricalStatus(
+  connection: Connection,
+  signature: string,
+  transaction: EnhancedTransactionDetails,
+  fallbackSlot: number,
+): Promise<StatusResult> {
+  const { value } = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
+  const [historicalStatus] = value
+
+  if (historicalStatus) {
+    return historicalStatus.err
+      ? { type: 'reverted', slot: historicalStatus.slot }
+      : { type: 'success', slot: historicalStatus.slot }
+  }
+
+  // Still nothing, anywhere — but if we're only just past the blockhash's validity window, the archive
+  // may simply not have ingested it yet. Keep waiting until the grace period passes before concluding
+  // the transaction was dropped rather than merely not-yet-archived.
+  const hasWaitedOutIngestionLag = Date.now() - transaction.addedTime > HISTORICAL_LOOKUP_GRACE_PERIOD_MS
+
+  return hasWaitedOutIngestionLag ? { type: 'reverted', slot: fallbackSlot } : { type: 'pending' }
+}
+
 async function checkStatus(
   connection: Connection | undefined,
   signature: string,
@@ -114,15 +149,8 @@ async function checkStatus(
   // enough to miss the window and mistake a confirmed transaction for a failed one.
   //
   // Confirm against transaction history before declaring failure. That lookup is expensive for the node,
-  // which is why it is reached only here: once per transaction, at the point of no return.
-  const historical = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
-  const [historicalStatus] = historical.value
-
-  if (!historicalStatus) return { type: 'reverted', slot: context.slot }
-
-  return historicalStatus.err
-    ? { type: 'reverted', slot: historicalStatus.slot }
-    : { type: 'success', slot: historicalStatus.slot }
+  // which is why it is reached only here, once the recent cache is no longer an option.
+  return checkHistoricalStatus(connection, signature, transaction, context.slot)
 }
 
 function getLastValidBlockHeight(transaction: EnhancedTransactionDetails): number | undefined {
