@@ -36,9 +36,11 @@ export const isSafeViaWcAtom = atom((get) => {
   // TODO: connector will be undefined on page load until the WalletUpdater kicks in. Consider replacing the updater with atom's onMount/observer.
   if (!connector) return null
 
-  if (isSafeApp || connector.type !== ConnectionType.WALLET_CONNECT_V2) return false
-
+  // TODO: Separate Safe identity from connection type. Imported Safes in injected wallets
+  // are intentionally treated as Safe-via-WC until isSafeWalletAtom exposes its loading state.
   if (get(isSafeWalletAtom)) return true
+
+  if (isSafeApp || connector.type !== ConnectionType.WALLET_CONNECT_V2) return false
 
   const { walletName } = get(walletDetailsAtom)
   const peerName = walletName?.toLowerCase() || ''

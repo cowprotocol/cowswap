@@ -13,7 +13,7 @@ import {
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol/wallet'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
@@ -207,19 +207,11 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   }
 
   if (orderType === TabOrderTypes.ADVANCED) {
-    const isAtomicBatchSupportedLoadable = get(isAtomicBatchSupportedLoadableAtom)
-    const isAtomicBatchSupported =
-      isAtomicBatchSupportedLoadable.state === 'hasData' ? !!isAtomicBatchSupportedLoadable.data : false
+    const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
+    const emulatedPartOrders = get(emulatedPartOrdersAtom)
+    const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
 
-    if (!isAtomicBatchSupported) {
-      reduxOrders = []
-    } else {
-      const emulatedTwapOrders = get(emulatedTwapOrdersAtom)
-      const emulatedPartOrders = get(emulatedPartOrdersAtom)
-      const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
-
-      reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders).concat(discreteTwapOrders)
-    }
+    reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders, discreteTwapOrders)
   }
 
   logOrdersTableDebug(`2. reduxOrders (${orderType} / ${uiOrderType}) =`, reduxOrders)

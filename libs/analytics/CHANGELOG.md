@@ -1,5 +1,36 @@
 # Changelog
 
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.8.0...analytics-v3.8.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.7.0...analytics-v3.8.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/events@4.8.1
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.6.0...analytics-v3.7.0) (2026-07-22)
 
 ### Minor Changes
