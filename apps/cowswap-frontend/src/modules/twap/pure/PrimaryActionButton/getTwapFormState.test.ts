@@ -32,10 +32,37 @@ const baseParams = {
   partTime: 300,
   numberOfPartsValue: 1,
   tradeFormValidationContext: null,
+  isWalletSupported: true,
   isTwapEoaEnabled: false,
+  isSafeViaWc: false,
 } as const
 
 describe('getTwapFormState()', () => {
+  it('returns WALLET_NOT_SUPPORTED for a non-Safe wallet', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isWalletSupported: false,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_NOTHING,
+      sellAmountPartFiat: null,
+      partTime: undefined,
+    })
+
+    expect(result).toEqual(TwapFormState.WALLET_NOT_SUPPORTED)
+  })
+
+  it('returns TX_BUNDLING_NOT_SUPPORTED for a Safe without batching support', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: false,
+      verification: ExtensibleFallbackVerification.HAS_NOTHING,
+      sellAmountPartFiat: null,
+      partTime: undefined,
+    })
+
+    expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
+  })
+
   describe('When sell fiat amount is under threshold', () => {
     it('And order has buy amount, then should return SELL_AMOUNT_TOO_SMALL', () => {
       const result = getTwapFormState({
@@ -91,12 +118,39 @@ describe('getTwapFormState()', () => {
     it('Skips Safe guards when EOA flag is on so unsupported wallets can proceed', () => {
       const result = getTwapFormState({
         ...baseParams,
+        isWalletSupported: false,
         isTxBundlingSupported: false,
         verification: null,
         isTwapEoaEnabled: true,
+        isSafeViaWc: false,
       })
 
       expect(result).toEqual(null)
+    })
+
+    it('Keeps Safe guards for Safe via WalletConnect even when EOA flag is on', () => {
+      const result = getTwapFormState({
+        ...baseParams,
+        isTxBundlingSupported: false,
+        verification: null,
+        isTwapEoaEnabled: true,
+        isSafeViaWc: true,
+      })
+
+      expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
+    })
+
+    it('Keeps Safe guards while Safe-via-WC status is still loading', () => {
+      const result = getTwapFormState({
+        ...baseParams,
+        isWalletSupported: null,
+        isTxBundlingSupported: null,
+        verification: null,
+        isTwapEoaEnabled: true,
+        isSafeViaWc: null,
+      })
+
+      expect(result).toEqual(TwapFormState.LOADING_SAFE_INFO)
     })
   })
 })

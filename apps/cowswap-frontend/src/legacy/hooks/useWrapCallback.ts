@@ -32,7 +32,11 @@ export interface WrapDescription {
   summary: string
 }
 
-export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<{ hash: Hash } | null>
+/**
+ * `hash` is a plain string rather than a viem `Hash` because Solana signatures are base58, not
+ * `0x`-prefixed. `wrapUnwrapCallback` below still returns the narrower EVM type for its own callers.
+ */
+export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<{ hash: string } | null>
 
 export interface WrapUnwrapCallbackParams {
   useModals?: boolean

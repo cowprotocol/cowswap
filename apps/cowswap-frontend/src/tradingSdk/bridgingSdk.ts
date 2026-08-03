@@ -13,9 +13,13 @@ import { tradingSdk } from './tradingSdk'
 
 const bungeeApiBase = getBungeeApiBase()
 
+const bungeeIncludeBridgesOverride = localStorage.getItem('bungeeIncludeBridges')
+
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
-    includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
+    includeBridges: bungeeIncludeBridgesOverride
+      ? JSON.parse(bungeeIncludeBridgesOverride)
+      : ['across', 'cctp-v2-fast', 'cctp-v2', 'gnosis-native-bridge'],
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
     manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
     affiliate: bungeeApiBase ? bungeeAffiliateCode : undefined,

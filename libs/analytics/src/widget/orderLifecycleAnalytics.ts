@@ -24,8 +24,8 @@ type EnrichedOrderWithTokens = EnrichedOrder & {
   outputToken?: TokenInfo
 }
 
-type RawAmount = string | number | bigint | null | undefined
 type OrderTypeAnalyticsField = { orderType?: UiOrderType }
+type RawAmount = string | number | bigint | null | undefined
 
 type Tokenish = {
   address?: string

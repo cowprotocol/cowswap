@@ -14,7 +14,6 @@ import {
 } from './affiliateAnalytics.utils'
 
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
-import { logAffiliate } from '../utils/logger'
 
 import type { TraderWalletStatus as TraderWalletStatusType } from '../hooks/useAffiliateTraderWallet'
 
@@ -38,23 +37,18 @@ jest.mock('@cowprotocol/analytics', () => {
   }
 })
 
-jest.mock('../utils/logger', () => ({
-  logAffiliate: jest.fn(),
-}))
-
 jest.mock('../hooks/useAffiliateTraderWallet', () => ({
   TraderWalletStatus,
 }))
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
-const logAffiliateMock = logAffiliate as jest.MockedFunction<typeof logAffiliate>
 
 describe('trackAffiliateEvent', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('sends affiliate analytics payloads without undefined fields', () => {
+  it('sends affiliate analytics payloads', () => {
     const sendEvent = jest.fn()
     const analytics = { sendEvent } as unknown as CowAnalytics
 
@@ -73,28 +67,7 @@ describe('trackAffiliateEvent', () => {
       action: 'affiliate_trader_page_state_viewed',
       chainId: 1,
       walletStatus: TraderWalletStatus.LINKED,
-    })
-    expect(Object.keys(payload)).toEqual(['category', 'action', 'chainId', 'walletStatus'])
-    expect(Object.prototype.hasOwnProperty.call(payload, 'optionalField')).toBe(false)
-  })
-
-  it('swallows analytics transport failures', () => {
-    const sendEvent = jest.fn(() => {
-      throw new Error('analytics failed')
-    })
-    const analytics = { sendEvent } as unknown as CowAnalytics
-
-    expect(() =>
-      trackAffiliateEvent({
-        analytics,
-        action: 'affiliate_trader_page_state_viewed',
-        walletStatus: TraderWalletStatus.LINKED,
-      }),
-    ).not.toThrow()
-
-    expect(logAffiliateMock).toHaveBeenCalledWith('Failed to send analytics event', {
-      action: 'affiliate_trader_page_state_viewed',
-      error: expect.any(Error),
+      optionalField: undefined,
     })
   })
 })

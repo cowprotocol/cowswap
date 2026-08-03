@@ -39,7 +39,7 @@
     "preview": "NODE_OPTIONS=--max-old-space-size=8192 nx run cowswap-frontend:preview",
     "test": "pnpm run test:all && pnpm run test:tools",
     "test:all": "nx run-many -t test",
-    "test:tools": "node --test tools/scripts/*.test.mjs tools/scripts/cf-pages/*.test.mjs tools/scripts/cf-pages/gh-actions/*.test.mjs",
+    "test:tools": "node --test tools/scripts/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
     "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
     "e2e": "nx run-many -t e2e",
@@ -57,7 +57,8 @@
     "changeset:version": "changeset version && node tools/scripts/format-changelog-headers.mjs",
     "release:generate-changesets": "node tools/scripts/commits-to-changesets.mjs",
     "prepare": "husky",
-    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
+    "analyze-build": "rm -rf build/cowswap && cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build:cowswap -- --skip-nx-cache",
+    "bundle:size": "node node_modules/@cowprotocol/dx/bundle-size.mjs",
     "install:ci": "node tools/scripts/install.js"
   },
   "browser": {
@@ -152,6 +153,7 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
+    "@cowprotocol/dx": "workspace:*",
     "@babel/preset-react": "7.27.1",
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.31.0",

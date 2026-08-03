@@ -1,5 +1,60 @@
 # Changelog
 
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.7.0...explorer-v4.8.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: measure bundle size changes (#7899)
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+### Patch Changes
+
+- fix(explorer): solver CMS casing (#7925)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/analytics@3.8.1
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/common-const@3.7.1
+  - @cowprotocol/hook-dapp-lib@2.2.11
+
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.5...explorer-v4.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: use a single getPublicClient util (#7870)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/hook-dapp-lib@2.2.10
+
+## [4.6.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.4...explorer-v4.6.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
 ## [4.6.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.6.3...explorer-v4.6.4) (2026-07-17)
 
 ### Patch Changes
