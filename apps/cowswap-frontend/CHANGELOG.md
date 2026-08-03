@@ -1,5 +1,63 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.21.0...cowswap-v3.22.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: measure bundle size changes (#7899)
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+- feat: allow EIP7702 wallets to batch transactions (#7844)
+
+- feat: introduce separate branches for Safe vs EOA TWAP (#7851)
+
+### Patch Changes
+
+- fix(sentry): ignore any fetch error (#7900)
+
+- fix(order-progress): show cancelling screen from unfillable step (#7889)
+
+- fix: fix ethflow & cancellation for MM smart accounts (#7914)
+
+- fix(wallet): prevent network switching (#7922)
+
+- fix(ipfs): update ipfs flow/env vars to support turnstile (#7913)
+
+- fix: hide captcha if BE is down (#7812)
+
+- fix: fix measure bundle loop (#7919)
+
+- fix: remove `new` flag from Plasma and Ink chains (#7911)
+
+- fix(order-progress): match countdown to reduced solve deadlines
+
+- fix(sentry): ignore launchdarkly noisy NetworkError (#7896)
+
+- fix(token-selector): show sell network panel for Rabby with Safe imported (#7890)
+
+- fix: allow safes imported in other wallets to use twaps (#7915)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/wallet@3.10.0
+  - @cowprotocol/balances-and-allowances@3.9.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/analytics@3.8.1
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ens@3.4.7
+  - @cowprotocol/tokens@3.8.7
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/widget-lib@4.4.4
+  - @cowprotocol/common-const@3.7.1
+  - @cowprotocol/iframe-transport@2.3.4
+  - @cowprotocol/multicall@3.4.7
+  - @cowprotocol/snackbars@2.2.9
+  - @cowprotocol/hook-dapp-lib@2.2.11
+  - @cowprotocol/permit-utils@3.4.3
+
 ## [3.21.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.20.0...cowswap-v3.21.0) (2026-07-28)
 
 ### Minor Changes

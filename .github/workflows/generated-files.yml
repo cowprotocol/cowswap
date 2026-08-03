@@ -48,6 +48,8 @@ jobs:
 
       - name: Build projects
         run: pnpm build:all
+        env:
+          BUNDLE_SIZE_BUILD: 'true'
 
       - name: Measure bundle sizes
         run: pnpm bundle:size

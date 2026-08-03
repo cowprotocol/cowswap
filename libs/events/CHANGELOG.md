@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.9.0](https://github.com/cowprotocol/cowswap/compare/events-v4.8.1...events-v4.9.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
 ## [4.8.1](https://github.com/cowprotocol/cowswap/compare/events-v4.8.0...events-v4.8.1) (2026-07-28)
 
 ### Patch Changes
