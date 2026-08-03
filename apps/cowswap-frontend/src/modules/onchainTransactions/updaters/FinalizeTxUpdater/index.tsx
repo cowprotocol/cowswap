@@ -7,6 +7,7 @@ import { usePendingTransactionsContext } from './hooks/usePendingTransactionsCon
 import { useShouldCheckPendingTx } from './hooks/useShouldCheckPendingTx'
 import { checkOnChainTransaction } from './services/checkOnChainTransaction'
 import { checkSafeTransaction } from './services/checkSafeTransaction'
+import { checkSolanaTransaction } from './services/checkSolanaTransaction'
 
 import { OnchainTransactionEventsUpdater } from '../OnchainTransactionEventsUpdater'
 
@@ -26,6 +27,8 @@ export function FinalizeTxUpdater() {
     const promiseCancellations = transactions.map((transaction) => {
       if (transaction.hashType === HashType.GNOSIS_SAFE_TX) {
         return checkSafeTransaction(transaction, params)
+      } else if (transaction.hashType === HashType.SOLANA_TX) {
+        return checkSolanaTransaction(transaction, params)
       } else {
         return checkOnChainTransaction(transaction, params)
       }

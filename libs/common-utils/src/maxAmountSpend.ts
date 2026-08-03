@@ -9,6 +9,10 @@ const MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET: bigint = 10n ** 16n // 0.01 native (M
 const MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON: bigint = 10n ** 17n // 0.1 POL (Polygon: high gas price relative to POL's USD value)
 const MIN_NATIVE_CURRENCY_FOR_GAS_MID: bigint = 3n * 10n ** 15n // 0.003 native (BNB Chain, Linea)
 const MIN_NATIVE_CURRENCY_FOR_GAS_LOW: bigint = 10n ** 15n // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
+// SOL has 9 decimals, unlike the 18-decimal tiers above, so it needs its own value rather than the
+// LOW fallback. Covers the ~5_000 lamport fee plus the 2_039_280 lamport rent-exempt reserve that
+// creating the wrapped-SOL associated token account requires.
+const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA: bigint = 10n ** 7n // 0.01 SOL
 
 // Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.
 const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
@@ -23,6 +27,7 @@ const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
   [SupportedChainId.AVALANCHE]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
   [SupportedChainId.INK]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
   [SupportedChainId.PLASMA]: MIN_NATIVE_CURRENCY_FOR_GAS_LOW,
+  [SupportedChainId.SOLANA]: MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA,
 }
 
 /**
