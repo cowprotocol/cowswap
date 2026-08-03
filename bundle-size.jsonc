@@ -5,12 +5,12 @@
 {
   "schemaVersion": 1,
   "apps": {
-    "@cowprotocol/cow-fi": 5035, // 4.92 MiB
-    "@cowprotocol/cowswap": 10582, // 10.33 MiB
-    "@cowprotocol/explorer": 12455, // 12.16 MiB
-    "@cowprotocol/sdk-tools": 12121, // 11.84 MiB
-    "@cowprotocol/storybook": 4837, // 4.72 MiB
-    "@cowprotocol/widget-configurator": 12585, // 12.29 MiB
+    "@cowprotocol/cow-fi": 5032, // 4.91 MiB
+    "@cowprotocol/cowswap": 10574, // 10.33 MiB
+    "@cowprotocol/explorer": 11078, // 10.82 MiB
+    "@cowprotocol/sdk-tools": 10118, // 9.88 MiB
+    "@cowprotocol/storybook": 3626, // 3.54 MiB
+    "@cowprotocol/widget-configurator": 11350, // 11.08 MiB
   },
   "packages": {
     "@cowprotocol/currency": 12, // 12 KiB
