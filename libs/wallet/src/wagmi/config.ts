@@ -132,7 +132,9 @@ const reownAppKit = createAppKit({
  * connecting, giving up after a timeout so we never hang.
  */
 function autoConnectInjectedWhenReady(): void {
-  const connect = (): void => connectWalletById('injected', 'injected')
+  const connect = (): void => {
+    void connectWalletById('injected', 'injected')
+  }
 
   if (window.ethereum) {
     connect()
