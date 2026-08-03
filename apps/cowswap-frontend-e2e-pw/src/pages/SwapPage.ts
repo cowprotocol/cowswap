@@ -7,19 +7,23 @@ export class SwapPage {
   readonly inputAmount: Locator
   readonly outputAmount: Locator
   readonly swapButton: Locator
+  readonly approveButton: Locator
   readonly arrowSeparator: Locator
   readonly maxButton: Locator
   readonly openOrders: Locator
   readonly tokens: TokenSelector
+  readonly unlockButton: Locator
 
   constructor(page: Page) {
     this.page = page
     this.inputAmount = page.locator('#input-currency-input .token-amount-input')
     this.outputAmount = page.locator('#output-currency-input .token-amount-input')
     this.swapButton = page.locator('#do-trade-button')
+    this.approveButton = page.locator('#approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.maxButton = page.getByRole('button', { name: /^max$/i })
     this.openOrders = page.locator('[data-testid="open-orders-list"]')
+    this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.tokens = new TokenSelector(page)
   }
 
@@ -27,6 +31,15 @@ export class SwapPage {
     const sell = opts.sell ?? ''
     const buy = opts.buy ?? ''
     await this.page.goto(`/#/${opts.chainId}/swap/${sell}/${buy}`)
+    await this.unlockIfNeeded()
+  }
+
+  // The first visit shows an "unlock" intro screen instead of the order form — dismiss it.
+  private async unlockIfNeeded(): Promise<void> {
+    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    if (await this.unlockButton.isVisible()) {
+      await this.unlockButton.click()
+    }
   }
 
   async waitForQuote(): Promise<void> {
