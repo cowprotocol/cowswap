@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.10.0...common-utils-v3.11.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: reserve chain-specific native amount for max sell (#7841)
+
+- feat: introduce separate branches for Safe vs EOA TWAP (#7851)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-const@3.7.1
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.9.0...common-utils-v3.10.0) (2026-07-28)
 
 ### Minor Changes

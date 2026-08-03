@@ -1,4 +1,5 @@
 import {
+  type Account,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
   TOKEN_2022_PROGRAM_ID,
@@ -14,40 +15,32 @@ export interface SolanaTokenMint {
   isToken2022: boolean
 }
 
-interface SolanaTokenBalance {
-  mint: string
-  balance: bigint
-}
-
 // Solana's `getMultipleAccounts` RPC rejects requests for more than 100 accounts, so ATAs must be
 // read in batches — a single request for a full token list (hundreds of tokens) fails outright.
 const MAX_ACCOUNTS_PER_REQUEST = 100
 
 /**
- * Reads SPL-token balances for `tokens` owned by `ownerAddress`, supporting both the classic SPL Token
- * program and Token-2022.
+ * Reads the owner's SPL-token accounts (ATAs) for `tokens`, aligned to input order. An entry is `null`
+ * when the ATA does not exist, the mint is malformed, or the account is not a valid token account.
  *
- * Balances live on the owner's Associated Token Account (ATA), not on the mint. The ATA address and its
- * data layout both depend on the mint's token program, which we take from each token's `isToken2022`
- * flag rather than an extra RPC round-trip to read the mint. ATAs are batch-read via
- * `getMultipleAccountsInfo` in chunks of {@link MAX_ACCOUNTS_PER_REQUEST}. A missing account means the
- * owner never held that token, which is a zero balance rather than an error.
+ * Both the balance and the delegate live on this single account, so one batched read serves both the
+ * balance and delegation consumers downstream — no separate per-token polling.
+ *
+ * The ATA address and its data layout depend on the mint's token program, taken from each token's
+ * `isToken2022` flag rather than an extra RPC round-trip to read the mint.
  */
-export async function fetchSolanaTokenBalances(
+export async function readSolanaTokenAccounts(
   connection: Connection,
   ownerAddress: string,
   tokens: SolanaTokenMint[],
-): Promise<SolanaTokenBalance[]> {
+): Promise<(Account | null)[]> {
   const owner = new PublicKey(ownerAddress)
 
-  // Every token defaults to a zero balance, keeping the result aligned to `tokens` order regardless
-  // of which ATAs resolve or exist.
-  const balances: SolanaTokenBalance[] = tokens.map(({ mint }) => ({ mint, balance: 0n }))
+  const accounts: (Account | null)[] = tokens.map(() => null)
 
   // Derive each ATA up front, isolating any mint that fails to parse. A malformed mint can pass the
   // token list's base58 length/charset check yet still not decode to a 32-byte public key, so
-  // `new PublicKey(mint)` would throw. Building the ATAs in a single `map` would let one bad mint
-  // reject balances for the entire list — instead we drop it and leave its zero balance in place.
+  // `new PublicKey(mint)` throws — drop it and leave its `null` in place instead of failing the batch.
   const resolvable: { index: number; ata: PublicKey; programId: PublicKey }[] = []
   tokens.forEach(({ mint, isToken2022 }, index) => {
     const programId = isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
@@ -61,7 +54,7 @@ export async function fetchSolanaTokenBalances(
       )
       resolvable.push({ index, ata, programId })
     } catch {
-      // Malformed mint: leave the default zero balance so the rest of the list still loads.
+      // Malformed mint: leave the default `null` so the rest of the list still loads.
     }
   })
 
@@ -76,14 +69,13 @@ export async function fetchSolanaTokenBalances(
     const { index, ata, programId } = resolvable[i]
 
     try {
-      balances[index].balance = unpackAccount(ata, info, programId).amount
+      accounts[index] = unpackAccount(ata, info, programId)
     } catch {
-      // Account exists but is not a valid token account (e.g., uninitialized lamport transfer).
-      // Leave the default zero balance.
+      // Account exists but is not a valid token account (e.g., uninitialized lamport transfer). Leave `null`.
     }
   })
 
-  return balances
+  return accounts
 }
 
 async function getMultipleAccountsInfoBatched(
