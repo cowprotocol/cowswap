@@ -6,8 +6,8 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { useSolanaApproveCallback } from 'modules/trade'
 
-import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
-import { ApprovalState } from '../../types'
+import { LegacyApproveButton } from '../pure/LegacyApproveButton'
+import { ApprovalState } from '../types'
 
 export interface SolanaTradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>

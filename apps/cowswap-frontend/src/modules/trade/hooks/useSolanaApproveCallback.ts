@@ -11,6 +11,8 @@ import { Nullish } from 'types'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useSolanaApproveScreenState } from './useSolanaApproveScreenState'
+
 import { SOLANA_MAX_APPROVE_AMOUNT } from '../services/solanaApprove/const'
 import { solanaApproveCallback } from '../services/solanaApprove/solanaApproveCallback'
 
@@ -21,9 +23,9 @@ export type SolanaApproveCallback = (amount?: bigint) => Promise<{ hash: string 
  * Solana wallet is connected), which lets callers keep delegating to the EVM approve untouched.
  *
  * The returned callback delegates `amount` (default unlimited, `SOLANA_MAX_APPROVE_AMOUNT`, with the
- * parameter left open for partial approvals later). Once the approval confirms, the delegation is
- * written into `allowancesAtom` optimistically so the trade form leaves its "approve required" state
- * immediately, without waiting for the next delegation refetch.
+ * parameter left open for partial approvals later), driving the shared Solana pending/error modal via
+ * `solanaApproveStateAtom`. Once the approval succeeds, the delegation is written into `allowancesAtom`
+ * optimistically so the trade form leaves its "approve required" state without waiting for a refetch.
  */
 export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaApproveCallback | null {
   const { chainId, account } = useWalletInfo()
@@ -31,6 +33,7 @@ export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaA
   const { connection } = useAppKitConnection()
   const addTransaction = useTransactionAdder()
   const setAllowances = useSetAtom(allowancesAtom)
+  const [, setSolanaApproveState] = useSolanaApproveScreenState()
 
   return useMemo(() => {
     if (!isSolanaChain(chainId) || !account || !token || !provider || !connection) {
@@ -38,7 +41,25 @@ export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaA
     }
 
     return async (amount: bigint = SOLANA_MAX_APPROVE_AMOUNT) => {
-      const result = await solanaApproveCallback({ account, token, amount, connection, provider, addTransaction })
+      const result = await solanaApproveCallback({
+        account,
+        token,
+        amount,
+        connection,
+        provider,
+        addTransaction,
+        modals: {
+          openTransactionConfirmationModal() {
+            setSolanaApproveState({ isOpen: true, tokenSymbol: token.symbol })
+          },
+          openErrorModal(errorMessage: string) {
+            setSolanaApproveState({ isOpen: true, tokenSymbol: token.symbol, errorMessage })
+          },
+          closeModals() {
+            setSolanaApproveState({ isOpen: false })
+          },
+        },
+      })
 
       if (result) {
         setAllowances((state) => ({
@@ -49,5 +70,5 @@ export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaA
 
       return result
     }
-  }, [chainId, account, token, provider, connection, addTransaction, setAllowances])
+  }, [chainId, account, token, provider, connection, addTransaction, setAllowances, setSolanaApproveState])
 }
