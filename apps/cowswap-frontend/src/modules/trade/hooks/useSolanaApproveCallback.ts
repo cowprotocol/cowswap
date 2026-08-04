@@ -19,8 +19,8 @@ import { solanaApproveCallback } from '../services/solanaApprove/solanaApproveCa
 export type SolanaApproveCallback = (amount?: bigint) => Promise<{ hash: string } | null>
 
 /**
- * Solana counterpart to the EVM approve callback. Returns `null` on every non-Solana chain (and until a
- * Solana wallet is connected), which lets callers keep delegating to the EVM approve untouched.
+ * Returns `null` on every non-Solana chain (and until a Solana wallet is connected), so callers keep
+ * using the EVM approve untouched.
  *
  * The returned callback delegates `amount` (default unlimited, `SOLANA_MAX_APPROVE_AMOUNT`, with the
  * parameter left open for partial approvals later), driving the shared Solana pending/error modal via

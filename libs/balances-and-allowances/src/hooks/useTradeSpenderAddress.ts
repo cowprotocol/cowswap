@@ -16,7 +16,7 @@ export function useTradeSpenderAddress(): string | undefined {
     if (spenderOverride) return spenderOverride
     if (!chainId) return undefined
 
-    // Solana's SPL delegate authority is the settlement state PDA — the analogue of the EVM vault relayer.
+    // On Solana the spender is the settlement state PDA — the SPL delegate authority the sell token is approved to.
     if (isSolanaChain(chainId)) return findSolanaSettlementStatePda().toBase58()
 
     return COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]

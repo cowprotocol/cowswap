@@ -90,9 +90,9 @@ export function useTokenAllowance(
 }
 
 /**
- * Solana has no ERC-20 `allowance` call; the SPL delegation persisted into `allowancesAtom` is the
- * equivalent. Reading it here lets the approve gating (`useApproveState`, `useNeedsApproval`) work on
- * Solana. Returns `undefined` on non-Solana chains so the EVM allowance path is used unchanged.
+ * Solana has no ERC-20 `allowance` call, so the approve gating (`useApproveState`, `useNeedsApproval`)
+ * reads the SPL delegation persisted into `allowancesAtom` here instead. Returns `undefined` on
+ * non-Solana chains so the EVM allowance path is used unchanged.
  *
  * A token that isn't delegated to the settlement authority is stored as `undefined` (the display's
  * "not delegated" marker). For the approve gating that means "no allowance", so it is coalesced to `0`

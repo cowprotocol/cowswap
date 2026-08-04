@@ -36,10 +36,6 @@ export interface SolanaApproveParams {
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
-/**
- * Solana counterpart to the EVM ERC20 approve. Builds and sends an SPL `approve` delegating the CoW
- * settlement-state PDA on the owner's token account for `token`, up to `amount`.
- */
 export async function solanaApproveCallback(
   context: SolanaApproveContext,
   params: SolanaApproveParams = { useModals: true },

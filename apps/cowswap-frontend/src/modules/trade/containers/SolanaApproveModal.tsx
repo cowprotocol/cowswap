@@ -6,11 +6,6 @@ import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingConte
 
 import { useSolanaApproveScreenState } from '../hooks/useSolanaApproveScreenState'
 
-/**
- * Pending screen for the Solana SPL approve, mirroring {@link WrapNativeModal}: the shared
- * `ConfirmationPendingContent` while the wallet signs. Errors are shown by `TradeWidgetModals` via the
- * shared `TransactionErrorContent`, driven by `solanaApproveStateAtom.errorMessage`.
- */
 export function SolanaApproveModal(): ReactNode {
   const [{ tokenSymbol }, setSolanaApproveState] = useSolanaApproveScreenState()
 

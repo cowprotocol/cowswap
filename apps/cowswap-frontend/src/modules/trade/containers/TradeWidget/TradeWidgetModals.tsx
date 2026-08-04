@@ -25,6 +25,8 @@ import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApprova
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
+import { SolanaFlowScreen } from './SolanaFlowScreen'
+
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { useSolanaApproveScreenState } from '../../hooks/useSolanaApproveScreenState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
@@ -33,12 +35,6 @@ import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 import { SolanaApproveModal } from '../SolanaApproveModal'
 import { WrapNativeModal } from '../WrapNativeModal'
-
-interface SolanaFlowScreenProps {
-  error?: string
-  onDismiss: () => void
-  children: ReactNode
-}
 
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
@@ -208,15 +204,4 @@ export function TradeWidgetModals({
   }
 
   return renderFallback()
-}
-
-/**
- * Shared pending-or-error screen for Solana trade flows (wrap/unwrap and approve)
- */
-function SolanaFlowScreen({ error, onDismiss, children }: SolanaFlowScreenProps): ReactNode {
-  if (error) {
-    return <TransactionErrorContent message={error} onDismiss={onDismiss} />
-  }
-
-  return <>{children}</>
 }

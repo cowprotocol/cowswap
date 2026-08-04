@@ -19,8 +19,7 @@ export interface BuildApproveInstructionParams {
 
 /**
  * SPL `approve` instruction delegating `delegate` (the CoW settlement-state PDA) on the owner's
- * associated token account for `mint`, up to `amount` — the Solana analogue of an EVM ERC20 `approve`
- * to the vault relayer.
+ * associated token account for `mint`, up to `amount`.
  *
  * The token program (classic vs Token-2022, taken from `isToken2022`) selects both the ATA address and
  * the instruction encoding, avoiding an extra RPC read of the mint. The ATA is derived the same way as

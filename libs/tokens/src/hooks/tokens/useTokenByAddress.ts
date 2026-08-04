@@ -14,8 +14,6 @@ export function useTokenByAddress(tokenAddress: Nullish<string>): Nullish<TokenW
       return null
     }
 
-    // The map is keyed by a lower-cased address. `getAddressKey` lower-cases EVM addresses but preserves
-    // case for non-EVM ones (e.g. Solana base58), so fall back to the lower-cased key for those to resolve.
-    return tokensByAddress[getAddressKey(tokenAddress)] ?? tokensByAddress[tokenAddress.toLowerCase()]
+    return tokensByAddress[getAddressKey(tokenAddress)]
   }, [tokensByAddress, tokenAddress])
 }
