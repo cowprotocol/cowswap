@@ -28,12 +28,10 @@ import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { SolanaFlowScreen } from './SolanaFlowScreen'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
-import { useSolanaApproveScreenState } from '../../hooks/useSolanaApproveScreenState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
-import { SolanaApproveModal } from '../SolanaApproveModal'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 interface TradeWidgetModalsProps {
@@ -57,8 +55,6 @@ export function TradeWidgetModals({
   const { field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen, errorMessage: wrapNativeError }, setWrapNativeScreenState] =
     useWrapNativeScreenState()
-  const [{ isOpen: isSolanaApproveOpen, errorMessage: solanaApproveError }, setSolanaApproveScreenState] =
-    useSolanaApproveScreenState()
   const {
     approveInProgress,
     isPendingInProgress,
@@ -88,7 +84,6 @@ export function TradeWidgetModals({
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (shouldCloseTokenSelectWidget) closeTokenSelectWidget()
       setWrapNativeScreenState({ isOpen: false })
-      setSolanaApproveScreenState({ isOpen: false })
       resetApproveModalState()
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
@@ -100,7 +95,6 @@ export function TradeWidgetModals({
       closeAutoImportModal,
       closeTokenSelectWidget,
       setWrapNativeScreenState,
-      setSolanaApproveScreenState,
       resetApproveModalState,
       updateApproveAmountState,
       setTokenListAddingError,
@@ -175,14 +169,6 @@ export function TradeWidgetModals({
     return (
       <SolanaFlowScreen error={wrapNativeError} onDismiss={() => setWrapNativeScreenState({ isOpen: false })}>
         <WrapNativeModal />
-      </SolanaFlowScreen>
-    )
-  }
-
-  if (isSolanaApproveOpen) {
-    return (
-      <SolanaFlowScreen error={solanaApproveError} onDismiss={() => setSolanaApproveScreenState({ isOpen: false })}>
-        <SolanaApproveModal />
       </SolanaFlowScreen>
     )
   }
