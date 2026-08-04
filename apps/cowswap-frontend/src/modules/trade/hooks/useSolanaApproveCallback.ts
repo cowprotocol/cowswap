@@ -41,10 +41,12 @@ export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaA
     }
 
     return async (amount: bigint = SOLANA_MAX_APPROVE_AMOUNT) => {
+      const approveAmount = amount > SOLANA_MAX_APPROVE_AMOUNT ? SOLANA_MAX_APPROVE_AMOUNT : amount
+
       const result = await solanaApproveCallback({
         account,
         token,
-        amount,
+        amount: approveAmount,
         connection,
         provider,
         addTransaction,
@@ -64,7 +66,7 @@ export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaA
       if (result) {
         setAllowances((state) => ({
           ...state,
-          [chainId]: { ...state[chainId], [getAddressKey(token.address)]: amount },
+          [chainId]: { ...state[chainId], [getAddressKey(token.address)]: approveAmount },
         }))
       }
 

@@ -7,6 +7,7 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useSolanaApproveCallback } from 'modules/trade'
 
 import { LegacyApproveButton } from '../pure/LegacyApproveButton'
+import { useIsPartialApproveSelectedByUser } from '../state'
 import { ApprovalState } from '../types'
 
 export interface SolanaTradeApproveButtonProps {
@@ -15,25 +16,18 @@ export interface SolanaTradeApproveButtonProps {
   approveClickEvent?: string
 }
 
-/**
- * Solana counterpart to {@link TradeApproveButton}. Reuses the shared `LegacyApproveButton` visuals but
- * runs the SPL delegation approve (unlimited) instead of the EVM ERC20 approve — kept as a separate
- * component/hook so no Solana logic leaks into the EVM approve path.
- *
- * Solana approvals are always unlimited for now (partial can be added via the callback's amount
- * parameter later), so this mirrors the EVM "legacy" (non-partial) approve button.
- */
-export function SolanaTradeApproveButton(props: SolanaTradeApproveButtonProps): ReactNode {
-  const { amountToApprove, isDisabled, approveClickEvent } = props
+export function SolanaTradeApproveButton(approveParams: SolanaTradeApproveButtonProps): ReactNode {
+  const { amountToApprove, isDisabled, approveClickEvent } = approveParams
   const token = amountToApprove.currency as TokenWithLogo
   const approve = useSolanaApproveCallback(token)
 
+  const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
+  const partialApproveAmount = isPartialApproveSelectedByUser ? BigInt(amountToApprove.quotient.toString()) : undefined
+
   const { callback: onClick, isExecuting } = usePreventDoubleExecution(async () => {
-    await approve?.()
+    await approve?.(partialApproveAmount)
   })
 
-  // The form only renders this while an approval is required, so it is never "approved" here; the state
-  // is just pending (signing → confirmation) vs. ready to click.
   const state = isExecuting ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
 
   return (

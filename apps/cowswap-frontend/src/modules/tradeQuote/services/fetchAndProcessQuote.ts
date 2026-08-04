@@ -1,3 +1,4 @@
+import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { PriceQuality, SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
@@ -57,10 +58,11 @@ export async function fetchAndProcessQuote(
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
-    // There is no Solana quote backend yet, so swallow Solana quote errors instead of surfacing them:
-    // `reset` just clears the loading spinner. The swap path serves a mock quote (see `fetchSwapQuote`),
-    // so this mainly covers any other Solana error.
-    if (isSolanaChain(chainId)) {
+    // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet, so swallow
+    // Solana quote errors instead of surfacing them (`reset` just clears the loading spinner). The swap
+    // path serves a mock quote (see `fetchSwapQuote`), so this mainly covers any other Solana error.
+    // Remove once real Solana quotes are wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
+    if (IS_SOLANA_ENABLED && isSolanaChain(chainId)) {
       console.warn('[fetchAndProcessQuote]:: Solana quote error ignored (no Solana quote backend yet)', parsedError)
       tradeQuoteManager.reset()
 
@@ -132,9 +134,10 @@ async function fetchSwapQuote(
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
 ): Promise<void> {
-  // There is no Solana quote backend yet — serve a mock quote so the trade-widget flow can reach the
-  // Approve step. Remove once real Solana quotes are wired.
-  if (isSolanaChain(quoteParams.sellTokenChainId)) {
+  // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet — serve a
+  // mock quote so the trade-widget flow can reach the Approve step. Remove once real Solana quotes are
+  // wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
+  if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
     tradeQuoteManager.onResponse(getSolanaMockQuote(quoteParams), null, fetchParams, quoteParams)
 
     return
