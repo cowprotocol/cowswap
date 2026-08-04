@@ -4,6 +4,7 @@ import { loadable } from 'jotai/utils'
 import { getCapabilities, type GetCapabilitiesReturnType } from 'wagmi/actions'
 
 import { logWallet, normalizeError, TimeoutError, withTimeout } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 
@@ -58,10 +59,13 @@ export const walletCapabilitiesAtom = atom(async (get): Promise<WalletCapabiliti
   }
 })
 
+// eslint-disable-next-line complexity
 export const isAtomicBatchSupportedAsyncAtom = atom(async (get): Promise<boolean | null> => {
   const isSafeApp = get(isSafeAppAtom)
   const isSafeViaWc = get(isSafeViaWcAtom)
+  const { chainId } = get(walletInfoAtom)
 
+  if (isSolanaChain(chainId)) return false
   /**
    * A SafeWallet connected through SafeApp is assumed to have support.
    * A SafeWallet connected through WC or any other provider needs to pass the capabilities check.
