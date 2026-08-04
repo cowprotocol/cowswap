@@ -116,7 +116,7 @@ async function handleSse(
   // Slow the browser's default auto-reconnect (~3s) so a route re-fulfil doesn't
   // repeatedly re-fire for the rest of the test; each reconnect just re-sends the
   // same snapshot anyway.
-  const body = `retry: 3000\nevent: balance_update\ndata: ${JSON.stringify({ balances: snapshot })}\n\n`
+  const body = `retry: 500\nevent: balance_update\ndata: ${JSON.stringify({ balances: snapshot })}\n\n`
 
   await route.fulfill({ status: 200, contentType: 'text/event-stream', body })
 }
