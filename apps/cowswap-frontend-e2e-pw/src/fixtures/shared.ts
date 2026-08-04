@@ -7,6 +7,7 @@ import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProt
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
+import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountPage } from '../pages/AccountPage'
 import { ConfirmModal } from '../pages/ConfirmModal'
 import { LimitPage } from '../pages/LimitPage'
@@ -32,6 +33,7 @@ export interface SharedFixtures {
     safeSdk: SafeSdkMock
     bungee: BungeeMock
     nearIntents: NearIntentsMock
+    usdPrices: UsdPricesMock
   }
 }
 
@@ -83,12 +85,14 @@ export const sharedFixtures: Fixtures<
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
+      const usdPrices = installUsdPrices(context)
 
-      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents })
+      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents, usdPrices })
 
       tokenLists.reset()
       bungee.reset()
       nearIntents.reset()
+      usdPrices.reset()
       await safeSdk.disable()
       // Non-fatal, so it must run before the throwing assert below.
       allowances.reportUnknownOwners()

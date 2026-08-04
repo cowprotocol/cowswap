@@ -1,6 +1,7 @@
 import type { Hex } from 'viem'
 
 import { test, expect } from '../fixtures/mockWallet'
+import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
@@ -151,5 +152,30 @@ test.describe('Market Orders', () => {
       `${BigInt(fulfillment.getPostedBuyAmount()) / 10n ** 18n} USDC`,
       { timeout: 15_000 },
     )
+  })
+
+  test('[MO-05] Shows "Price impact unknown" warning when USD prices are unavailable', async ({
+    setupTestConditions,
+    swapPage,
+    mocks,
+  }) => {
+    // Break all three USD price sources `UsdPricesUpdater` tries (BFF, Defillama, and the CoW
+    // Protocol native price fallback) for both legs of the trade, so neither can resolve a fiat
+    // value and the price impact is left unknown rather than computed.
+    mocks.usdPrices.setUnknown(WETH)
+    mocks.usdPrices.setUnknown(USDC)
+    mocks.cowApi.set('nativePrice', () => reply(404, { errorType: 'NotFound', description: 'token not found' }))
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1', USDC: '0' },
+      allowances: { WETH: '10' },
+    })
+
+    await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
   })
 })
