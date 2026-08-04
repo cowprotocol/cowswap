@@ -88,6 +88,7 @@ export function TradeWidgetModals({
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (shouldCloseTokenSelectWidget) closeTokenSelectWidget()
       setWrapNativeScreenState({ isOpen: false })
+      setSolanaApproveScreenState({ isOpen: false })
       resetApproveModalState()
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
@@ -99,6 +100,7 @@ export function TradeWidgetModals({
       closeAutoImportModal,
       closeTokenSelectWidget,
       setWrapNativeScreenState,
+      setSolanaApproveScreenState,
       resetApproveModalState,
       updateApproveAmountState,
       setTokenListAddingError,

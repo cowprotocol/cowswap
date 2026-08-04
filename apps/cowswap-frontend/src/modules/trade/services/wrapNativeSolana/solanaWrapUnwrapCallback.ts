@@ -83,7 +83,7 @@ export async function solanaWrapUnwrapCallback(
   } = context
 
   const isNativeIn = getIsNativeToken(amount.currency)
-  const useModals = params.useModals
+  const useModals = params.useModals ?? true
   const operationMessage = getSolanaOperationMessage(isNativeIn)
 
   try {

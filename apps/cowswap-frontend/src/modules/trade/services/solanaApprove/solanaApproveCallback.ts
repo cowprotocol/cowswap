@@ -42,7 +42,7 @@ export async function solanaApproveCallback(
 ): Promise<{ hash: string } | null> {
   const { account, token, amount, connection, provider, addTransaction, modals } = context
 
-  const useModals = params.useModals
+  const useModals = params.useModals ?? true
 
   try {
     const owner = new PublicKey(account)
