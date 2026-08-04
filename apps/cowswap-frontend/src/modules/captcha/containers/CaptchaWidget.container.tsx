@@ -2,6 +2,7 @@ import { useAtom, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { createCowTracker } from '@cowprotocol/analytics'
+import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
@@ -10,6 +11,8 @@ import { setBearerToken } from 'cowSdk'
 import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
+
+import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -31,6 +34,7 @@ export function CaptchaWidget(): ReactNode {
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
   const theme = useTheme()
+  const locale = useActiveLocale()
 
   const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
 
@@ -93,6 +97,7 @@ export function CaptchaWidget(): ReactNode {
       style={{ width: '100%', display: 'block' }}
       options={{
         theme: theme.darkMode ? 'dark' : 'light',
+        language: locale === 'pseudo' ? DEFAULT_LOCALE : locale,
         size: 'flexible',
         appearance: 'interaction-only',
         // execution: 'execute',
