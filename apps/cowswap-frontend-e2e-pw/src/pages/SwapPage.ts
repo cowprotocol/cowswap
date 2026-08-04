@@ -6,6 +6,8 @@ export class SwapPage {
   readonly page: Page
   readonly inputAmount: Locator
   readonly outputAmount: Locator
+  readonly sellBalance: Locator
+  readonly buyBalance: Locator
   readonly swapButton: Locator
   readonly approveButton: Locator
   readonly arrowSeparator: Locator
@@ -13,17 +15,24 @@ export class SwapPage {
   readonly openOrders: Locator
   readonly tokens: TokenSelector
   readonly unlockButton: Locator
+  readonly orderProgressBarModal: Locator
 
   constructor(page: Page) {
     this.page = page
     this.inputAmount = page.locator('#input-currency-input .token-amount-input')
     this.outputAmount = page.locator('#output-currency-input .token-amount-input')
+    // The wallet balance shown under each amount field: `TokenAmount` sets the
+    // exact-precision value + symbol (e.g. "0.5 WETH") as the `title` attribute,
+    // which is the only titled element in either panel outside USD-values mode.
+    this.sellBalance = page.locator('#input-currency-input .currency-balance-text > span')
+    this.buyBalance = page.locator('#output-currency-input .currency-balance-text > span')
     this.swapButton = page.locator('#do-trade-button')
     this.approveButton = page.locator('#approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.maxButton = page.getByRole('button', { name: /^max$/i })
     this.openOrders = page.locator('[data-testid="open-orders-list"]')
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
+    this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
     this.tokens = new TokenSelector(page)
   }
 

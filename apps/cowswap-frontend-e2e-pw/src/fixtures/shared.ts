@@ -1,6 +1,7 @@
 import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
 
 import { installAllowances, type AllowancesMock } from '../mocks/allowances'
+import { installBalances, type BalancesMock } from '../mocks/balances'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
@@ -23,6 +24,7 @@ export interface SharedFixtures {
   rpcProxy: RpcProxyHandle
   mocks: {
     allowances: AllowancesMock
+    balances: BalancesMock
     cowApi: CowProtocolApiMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
@@ -61,13 +63,14 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
   mocks: [
     async ({ context }, use) => {
       const allowances = installAllowances(context)
+      const balances = installBalances(context)
       const cowApi = installCowProtocolApi(context)
       const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
 
-      await use({ allowances, cowApi, tokenLists, safeSdk, bungee, nearIntents })
+      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents })
 
       tokenLists.reset()
       bungee.reset()
@@ -76,6 +79,8 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
       // Non-fatal, so it must run before the throwing assert below.
       allowances.reportUnknownOwners()
       allowances.reset()
+      balances.reportUnknownOwners()
+      balances.reset()
       // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
       // resets above must still happen.
       try {
