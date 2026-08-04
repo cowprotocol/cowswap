@@ -11,6 +11,10 @@ const TOKENS: Partial<Record<SupportedChainId, Record<string, TokenInfo>>> = {
     WETH: { address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14', decimals: 18 },
     USDC: { address: '0xbe72E441BF55620febc26715db68d3494213D8Cb', decimals: 6 },
   },
+  [CHAIN_IDS.GNOSIS]: {
+    WXDAI: { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', decimals: 18 },
+    USDC: { address: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', decimals: 6 },
+  },
 }
 
 export function resolveToken(chainId: SupportedChainId, symbol: string): TokenInfo {

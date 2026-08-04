@@ -37,11 +37,17 @@ export class SwapPage implements TradePage {
   readonly tokens: TokenSelector
   readonly unlockButton: Locator
   readonly orderProgressBarModal: Locator
+  readonly sellTokenSelect: Locator
+  readonly buyTokenSelect: Locator
 
   constructor(page: Page) {
     this.page = page
     this.inputAmount = page.locator('#input-currency-input .token-amount-input')
     this.outputAmount = page.locator('#output-currency-input .token-amount-input')
+    // `CurrencySelectButton` sets `aria-label="Selected token: <symbol>"`, which is a more
+    // reliable read of the selected currency than the (truncatable) rendered symbol text.
+    this.sellTokenSelect = page.locator('#input-currency-input .open-currency-select-button')
+    this.buyTokenSelect = page.locator('#output-currency-input .open-currency-select-button')
     // The wallet balance shown under each amount field: `TokenAmount` sets the
     // exact-precision value + symbol (e.g. "0.5 WETH") as the `title` attribute,
     // which is the only titled element in either panel outside USD-values mode.

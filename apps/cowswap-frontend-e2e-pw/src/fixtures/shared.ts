@@ -10,6 +10,7 @@ import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountPage } from '../pages/AccountPage'
 import { ConfirmModal } from '../pages/ConfirmModal'
+import { HeaderPage } from '../pages/HeaderPage'
 import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
@@ -23,6 +24,7 @@ export interface SharedFixtures {
   twapPage: TwapPage
   accountPage: AccountPage
   confirmModal: ConfirmModal
+  header: HeaderPage
   rpcProxy: RpcProxyHandle
   setupTestConditions: SetupTestConditions
   mocks: {
@@ -62,6 +64,9 @@ export const sharedFixtures: Fixtures<
   },
   confirmModal: async ({ page }, use) => {
     await use(new ConfirmModal(page))
+  },
+  header: async ({ page }, use) => {
+    await use(new HeaderPage(page))
   },
   setupTestConditions: async ({ wallet, mocks, swapPage, limitPage, twapPage }, use) => {
     await use(createSetupTestConditions({ wallet, mocks, swapPage, limitPage, twapPage }))
