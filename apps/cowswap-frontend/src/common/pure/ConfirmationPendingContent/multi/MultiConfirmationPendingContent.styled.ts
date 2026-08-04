@@ -8,6 +8,7 @@ export const StepsList = styled.ol`
   --icon-size: 14px;
   --status-bg: var(${UI.COLOR_TEXT_OPACITY_10});
   --status-color: var(${UI.COLOR_TEXT_OPACITY_70});
+  --spacing-around: 12px;
 
   list-style: none;
   margin: 0;
@@ -24,13 +25,13 @@ export const StepItem = styled.li`
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 12px calc(var(--circle-size) + 12px) 12px calc(var(--circle-size) + 12px);
+  padding: 0 0 var(--spacing-around) calc(var(--circle-size) + var(--spacing-around));
 
   &:not(:last-child)::before {
     content: '';
     position: absolute;
-    top: calc(12px + var(--circle-size) + 6px);
-    bottom: calc(-12px + 6px);
+    top: calc(1.5 * var(--spacing-around) + var(--circle-size));
+    bottom: calc(0.5 * var(--spacing-around));
     left: calc(var(--circle-size) / 2);
     transform: translateX(-50%);
     border-left: 2px solid var(${UI.COLOR_TEXT_OPACITY_10});
@@ -39,7 +40,7 @@ export const StepItem = styled.li`
 
 export const StepsIconWrapper = styled.div`
   position: absolute;
-  top: 12px;
+  top: var(--spacing-around);
   left: 0;
   border-radius: var(--circle-size);
   height: var(--circle-size);
@@ -134,6 +135,31 @@ export const StepsIconWrapper = styled.div`
   }
 `
 
+export const StepHeaderButton = styled.button`
+  position: relative;
+  padding: var(--spacing-around) calc(var(--circle-size) + var(--spacing-around)) 0 0;
+  border: none;
+  background: transparent;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(-0.5 * var(--spacing-around));
+    right: calc(-0.5 * var(--spacing-around));
+    bottom: calc(-1 * var(--spacing-around));
+    border-radius: 14px;
+  }
+
+  &:not(:disabled):hover::before {
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
+  }
+`
+
 export const StepLabel = styled.strong`
   display: block;
   flex: 1;
@@ -154,11 +180,10 @@ export const StepLabel = styled.strong`
   }
 `
 
-export const StepExpandButton = styled.button`
+export const StepExpandIcon = styled.button`
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 14px;
   background: none;
   border: none;
   cursor: pointer;
@@ -185,7 +210,7 @@ export const StepDetailsInner = styled.div`
   display: flex;
   flex-flow: column nowrap;
   gap: 4px;
-  padding-top: 16px;
+  padding: var(--spacing-around) 0 0 0;
 
   & p {
     margin: 0;

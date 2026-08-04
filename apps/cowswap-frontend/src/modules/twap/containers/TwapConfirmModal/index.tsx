@@ -30,7 +30,7 @@ import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountIn
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent'
+import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'

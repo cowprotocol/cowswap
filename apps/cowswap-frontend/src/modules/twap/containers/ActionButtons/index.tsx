@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -22,13 +22,11 @@ interface ActionButtonsProps {
   fallbackHandlerIsNotSet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ActionButtons({
   localFormValidation,
   primaryFormValidation,
   fallbackHandlerIsNotSet,
-}: ActionButtonsProps) {
+}: ActionButtonsProps): ReactNode {
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
   const isSafeWallet = useIsSafeWallet()

@@ -92,13 +92,15 @@ function MultiConfirmationItem({ step: { label, description, status } }: MultiCo
     <styledEl.StepItem data-status={status}>
       <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
 
-      {canExpand ? (
-        <styledEl.StepExpandButton onClick={toggleIsUserExpanded} aria-expanded={isUserExpanded}>
-          <ChevronDown aria-label={isUserExpanded ? 'Collapse' : 'Expand'} strokeWidth={ICON_STROKE_WIDTH} />
-        </styledEl.StepExpandButton>
-      ) : null}
+      <styledEl.StepHeaderButton onClick={toggleIsUserExpanded} aria-expanded={isUserExpanded} disabled={!canExpand}>
+        <styledEl.StepLabel>{label}</styledEl.StepLabel>
 
-      <styledEl.StepLabel>{label}</styledEl.StepLabel>
+        {canExpand ? (
+          <styledEl.StepExpandIcon>
+            <ChevronDown aria-label={isUserExpanded ? 'Collapse' : 'Expand'} strokeWidth={ICON_STROKE_WIDTH} />
+          </styledEl.StepExpandIcon>
+        ) : null}
+      </styledEl.StepHeaderButton>
 
       {description != null ? (
         <ExpandableContent expanded={isExpanded}>

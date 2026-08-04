@@ -433,7 +433,6 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
   })
 
   if (stillNeedsFundingAllowance) {
-    // TODO: Use custom errors instead:
     throw new Error(t`Approved amount is not sufficient!`)
   }
 
