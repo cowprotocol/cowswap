@@ -11,10 +11,13 @@ import styled from 'styled-components/macro'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useTradeConfirmActions } from 'modules/trade'
+
 import { useExtensibleFallbackContext } from '../../hooks/useExtensibleFallbackContext'
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
 import { verifyExtensibleFallback } from '../../services/verifyExtensibleFallback'
 import { updateFallbackHandlerVerificationAtom } from '../../state/fallbackHandlerVerificationAtom'
+import { getErrorMessage } from '../../utils/parseTwapError'
 
 const Banner = styled(InlineBanner)`
   /* TODO: Make all these part of the InlineBanner props */
@@ -83,10 +86,9 @@ export function SetupFallbackHandlerWarning() {
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
   const [isSendingTx, setIsSendingTx] = useState(false)
-  const [setupError, setSetupError] = useState<string | null>(null)
+  const tradeConfirmActions = useTradeConfirmActions()
 
   const handleUpdateClick = useCallback(async (): Promise<void> => {
-    setSetupError(null)
     setIsSendingTx(true)
 
     try {
@@ -96,11 +98,15 @@ export function SetupFallbackHandlerWarning() {
         setPendingTxHash(txHash)
       }
     } catch (error) {
-      setSetupError(error instanceof Error ? error.message : String(error))
+      /**
+       * Wallet rejections and other failures are displayed in the trade form error screen,
+       * the same way as it works for TWAP order placement
+       */
+      tradeConfirmActions.onError(getErrorMessage(error))
     } finally {
       setIsSendingTx(false)
     }
-  }, [setupFallbackHandler, setPendingTxHash])
+  }, [setupFallbackHandler, setPendingTxHash, tradeConfirmActions])
 
   const checkFallbackHandler = useCallback(() => {
     if (!extensibleFallbackContext || !account) return Promise.resolve()
@@ -168,11 +174,6 @@ export function SetupFallbackHandlerWarning() {
           <ActionButton disabled={isSendingTx || isTransactionPending} onClick={handleUpdateClick}>
             {isSendingTx || isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
           </ActionButton>
-          {setupError && (
-            <p>
-              <Trans>The transaction could not be sent</Trans>: {setupError}
-            </p>
-          )}
         </span>
       </Banner>
     </div>
