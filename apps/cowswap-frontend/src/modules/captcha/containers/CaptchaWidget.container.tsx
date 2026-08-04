@@ -7,6 +7,7 @@ import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
+import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -16,7 +17,6 @@ import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
 import { logCaptcha } from '../logger'
-import { captchaErrorAtom } from '../state/captchaErrorAtom'
 
 const trackCaptchaEvent = createCowTracker(CowSwapAnalyticsCategory.CAPTCHA)
 const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
@@ -142,13 +142,24 @@ export function CaptchaWidget(): ReactNode {
       onError={(errorCode) => {
         exchangeRequestIdRef.current += 1
 
-        logCaptcha.error(new Error('Challenge errored'), undefined, { errorCode, hostname: window.location.hostname })
+        const error = new Error('Challenge errored')
+        logCaptcha.error(error, undefined, { errorCode, hostname: window.location.hostname })
+        setCaptchaError(error)
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'turnstileError' })
         setCaptchaJwt(null)
       }}
       onUnsupported={() => {
-        logCaptcha.warn('Challenge unsupported by browser')
+        const error = new Error('Challenge unsupported by browser')
+        logCaptcha.error(error)
+        setCaptchaError(error)
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'browserUnsupported' })
+      }}
+      scriptOptions={{
+        onError: () => {
+          const error = new Error('Turnstile script failed to load')
+          logCaptcha.error(error)
+          setCaptchaError(error)
+        },
       }}
     />
   )

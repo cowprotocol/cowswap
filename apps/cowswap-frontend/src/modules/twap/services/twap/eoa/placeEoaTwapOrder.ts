@@ -8,6 +8,7 @@ import {
   createCowLogger,
   isProdLike,
 } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   AccountAddress,
   isEvmChain,
@@ -22,6 +23,7 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { prodTradingSdk } from 'tradingSdk/tradingSdk'
 
 import {
@@ -206,6 +208,7 @@ export async function placeEoaTwapOrder({
   generatePermitHook,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
+  if (!jotaiStore.get(captchaCanQuoteAtom)) throw new Error('Complete the CAPTCHA before you request a quote')
 
   const { sellAmount } = twapOrder
   const sellTokenAddress = sellAmount.currency.address as `0x${string}`
@@ -319,6 +322,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   // Using the regular `tradingSdk` will use the staging orderbook for barn backend env. Passing `env: 'prod'` and `settlementContractOverride` would work,
   // but `getQuote` will then mutate the shared OrderBookApi context, so the easiest solution is to use the prod-only `prodTradingSdk`.
+  if (!jotaiStore.get(captchaCanQuoteAtom)) throw new Error('Complete the CAPTCHA before you request a quote')
+
   const { quoteResults, postSwapOrderFromQuote } = await prodTradingSdk.getQuote(
     {
       kind: OrderKind.BUY,
