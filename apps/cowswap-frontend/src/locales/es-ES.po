@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-03 20:36\n"
+"PO-Revision-Date: 2026-08-04 20:43\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1378,7 +1378,7 @@ msgstr "Se ha agotado el tiempo de espera de la solicitud de su cartera. Por fav
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searching again for the best price for you."
-msgstr "Algo salió mal. Pero no te preocupes! <0>Los solucionadores de intercambio de CoW </0> están buscando de nuevo el mejor precio para ti."
+msgstr "Algo salió mal. Pero no te preocupes! <0>Los solucionadores de CoW Swap </0> están buscando de nuevo el mejor precio para ti."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "your orders"
@@ -1931,7 +1931,7 @@ msgstr "Necesita ayuda"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "CoW Swap is the only token exchange that gets you extra tokens."
-msgstr "CoW Swap es el único intercambio de tokens que le da tokens extra."
+msgstr "CoW Swap es el único exchange de tokens que le da tokens extra."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
@@ -1944,7 +1944,7 @@ msgstr "Saldo (v)COW"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "MEV-Protected Slippage"
-msgstr ""
+msgstr "Slippage protegido contra MEV"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Closed"
@@ -1952,7 +1952,7 @@ msgstr "Cerrado"
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
-msgstr "Intercambio de CoW 404 no encontrado"
+msgstr "CoW Swap 404 no encontrado"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The trader already reached the rewardable volume cap for this referral code."
@@ -1996,7 +1996,7 @@ msgstr "Saldo recuperable"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr ""
+msgstr "Tu precio límite es {absoluteRateImpact}% más bajo que el precio de mercado actual. Podría estar vendiendo tu <0/> con pérdida (aunque CoW Swap siempre intentará darte el mejor precio de todos modos)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
@@ -2238,7 +2238,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Your referral traffic"
-msgstr ""
+msgstr "Tu tráfico de afiliados"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #~ msgid "An order’s actual execution price will vary based on the market price and network costs."
@@ -2707,7 +2707,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This referral code was not found in the affiliate program configuration."
-msgstr ""
+msgstr "Este código de afiliados no se encontró en la configuración del programa de afiliados."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
