@@ -141,4 +141,23 @@ describe('limit orders tradeFlow - permit amount', () => {
 
     expect(analytics.error).not.toHaveBeenCalled()
   })
+
+  it('propagates quoteId and allowsOffchainSigning on the Send analytics event', async () => {
+    await runTradeFlow(buildParams())
+
+    expect(analytics.trade).toHaveBeenCalledWith(expect.objectContaining({ quoteId: 1, allowsOffchainSigning: true }))
+  })
+
+  it('omits quoteId on the Send analytics event when the quote id is unavailable', async () => {
+    const params = buildParams()
+    params.postOrderParams.quoteId = undefined
+
+    await runTradeFlow(params)
+
+    // The undefined quoteId still flows through here; sendTradeAnalytics (tradeFlowAnalytics.ts)
+    // is what actually drops the key from the GTM payload when it's undefined.
+    expect(analytics.trade).toHaveBeenCalledWith(
+      expect.objectContaining({ quoteId: undefined, allowsOffchainSigning: true }),
+    )
+  })
 })
