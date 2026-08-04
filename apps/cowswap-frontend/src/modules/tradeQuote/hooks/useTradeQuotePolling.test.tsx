@@ -1,3 +1,4 @@
+import { createStore } from 'jotai'
 import { ReactNode } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
@@ -5,7 +6,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 
-import { renderHook, waitFor } from '@testing-library/react'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -13,11 +14,12 @@ import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/li
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
-import { featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
+import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
 import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
+import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
@@ -97,10 +99,12 @@ const jotaiMock = [
 const Wrapper =
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (mocks: any) =>
+  (mocks: any, store?: ReturnType<typeof createStore>) =>
     ({ children }: { children: ReactNode }) => (
       <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
+        <JotaiTestProvider initialValues={mocks} store={store}>
+          {children}
+        </JotaiTestProvider>
       </WithMockedWeb3>
     )
 
@@ -143,6 +147,43 @@ describe('useTradeQuotePolling()', () => {
       expect(bridgingSdkMock.getQuote).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })
+  })
+
+  it('does not tick the polling counter while CAPTCHA blocks quoting', () => {
+    jest.useFakeTimers()
+    const previousSiteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY
+    process.env.REACT_APP_TURNSTILE_SITE_KEY = 'site-key'
+
+    try {
+      const store = createStore()
+      const initialCounter = 5_000
+      const mocks = [
+        ...jotaiMock,
+        [featureFlagsAtom, { isCaptchaEnabled: true }],
+        [tradeQuoteCounterAtom, initialCounter],
+      ]
+
+      renderHook(
+        () =>
+          useTradeQuotePolling({
+            isConfirmOpen: false,
+            isQuoteUpdatePossible: true,
+            useSuggestedSlippageApi: false,
+            hasPendingTrade: false,
+          }),
+        { wrapper: Wrapper(mocks, store) },
+      )
+
+      const frozenCounter = store.get(tradeQuoteCounterAtom)
+
+      act(() => jest.advanceTimersByTime(2_000))
+
+      expect(store.get(tradeQuoteCounterAtom)).toBe(frozenCounter)
+    } finally {
+      if (previousSiteKey === undefined) delete process.env.REACT_APP_TURNSTILE_SITE_KEY
+      else process.env.REACT_APP_TURNSTILE_SITE_KEY = previousSiteKey
+      jest.useRealTimers()
+    }
   })
 
   describe('When wallet is NOT connected', () => {

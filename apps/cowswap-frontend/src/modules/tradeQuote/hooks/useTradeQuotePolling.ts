@@ -111,8 +111,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    */
   useLayoutEffect(() => {
     const interval = setInterval(() => {
-      // Do not tick while quote is loading
-      if (tradeQuoteRef.current.isLoading) return
+      // Do not tick while quoting is blocked or a quote is loading
+      if (!canQuote || tradeQuoteRef.current.isLoading) return
 
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
@@ -128,7 +128,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     return () => {
       clearInterval(interval)
     }
-  }, [setTradeQuotePolling])
+  }, [canQuote, setTradeQuotePolling])
 
   /**
    * Once quote is expired - update quote

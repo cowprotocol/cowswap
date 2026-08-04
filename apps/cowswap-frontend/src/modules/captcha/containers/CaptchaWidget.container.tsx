@@ -34,6 +34,7 @@ export function CaptchaWidget(): ReactNode {
   const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
 
   useEffect(() => {
+    if (isCaptchaEnabled === undefined) return
     if (!isCaptchaEnabled) {
       logCaptcha.debug('Disabled by feature flag')
       return
