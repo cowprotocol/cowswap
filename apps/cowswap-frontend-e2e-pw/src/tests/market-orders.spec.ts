@@ -7,9 +7,6 @@ const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
 
-// Every test in this file gets a wallet that already holds this much WETH and no USDC — a
-// sufficient, deterministic starting balance so none of them fall back to a real balance
-// fetch (which is what "Couldn't load balances" in the UI would otherwise come from).
 const DEFAULT_WETH_BALANCE = 1_000_000_000_000_000_000n // 1 WETH
 const DEFAULT_USDC_BALANCE = 0n
 
