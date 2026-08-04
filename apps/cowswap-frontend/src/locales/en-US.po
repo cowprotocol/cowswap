@@ -781,8 +781,8 @@ msgid "If your order has not been filled by this date & time, it will expire. Do
 msgstr "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Creating order"
-msgstr "Creating order"
+#~ msgid "Creating order"
+#~ msgstr "Creating order"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
@@ -932,6 +932,10 @@ msgstr "Signing..."
 msgid "switch network type"
 msgstr "switch network type"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm this required setup signature in your connected wallet."
+msgstr "Confirm this required setup signature in your connected wallet."
+
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/controller.helpers.tsx
 #~ msgid "Wallet ineligible. Try another code"
 #~ msgstr "Wallet ineligible. Try another code"
@@ -975,6 +979,10 @@ msgstr "Can't find the pool you're looking for?"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Custom slippage amount set{amountRange}."
 msgstr "Custom slippage amount set{amountRange}."
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Activating TWAP"
+msgstr "Activating TWAP"
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -2904,8 +2912,8 @@ msgstr "BFF did not return a price for '{currencyAddress}' on chain '{currencyCh
 #~ msgstr "Code binds on your first eligible trade. Earn 10 USDC per 50k eligible volume in 90 days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Reset approval"
-msgstr "Reset approval"
+#~ msgid "Reset approval"
+#~ msgstr "Reset approval"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "This tool helps you recover your funds."
@@ -2916,16 +2924,14 @@ msgid "Enable trade alerts"
 msgstr "Enable trade alerts"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Approval reset"
-msgstr "Approval reset"
+#~ msgid "Approval reset"
+#~ msgstr "Approval reset"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Transaction completed"
 msgstr "Transaction completed"
 
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Waiting for tx"
 msgstr "Waiting for tx"
 
@@ -3283,7 +3289,6 @@ msgid "Next {rewardAmountLabel} reward"
 msgstr "Next {rewardAmountLabel} reward"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 msgid "Confirm approval"
 msgstr "Confirm approval"
 
@@ -3395,8 +3400,8 @@ msgstr "Maximize your yield on existing LP positions"
 #~ msgstr "Pool description"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Approval confirmed"
-msgstr "Approval confirmed"
+#~ msgid "Approval confirmed"
+#~ msgstr "Approval confirmed"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code expired before this trade was executed."
@@ -4443,6 +4448,10 @@ msgstr "No. of parts"
 msgid "The embedded hook dapp requested a hook-state change. Review the request before it can be applied."
 msgstr "The embedded hook dapp requested a hook-state change. Review the request before it can be applied."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Verifying approval"
+msgstr "Verifying approval"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and saved "
 msgstr "and saved "
@@ -4649,6 +4658,10 @@ msgstr "Scan QR code"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
 msgstr "No signatures yet"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign TWAP"
+msgstr "Sign TWAP"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Invalid format"
@@ -4902,6 +4915,7 @@ msgstr "Unsupported Network"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve"
 msgstr "Approve"
 
@@ -5245,8 +5259,8 @@ msgstr "Network costs"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Verifying allowance"
-msgstr "Verifying allowance"
+#~ msgid "Verifying allowance"
+#~ msgstr "Verifying allowance"
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/controller.helpers.tsx
 #~ msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for 90 days."
@@ -5882,6 +5896,10 @@ msgstr "Links/codes don't reveal your wallet."
 msgid "Save & lock code"
 msgstr "Save & lock code"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign in your wallet. We'll submit the funding order automatically."
+msgstr "Sign in your wallet. We'll submit the funding order automatically."
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 msgid "To at least"
 msgstr "To at least"
@@ -5926,6 +5944,8 @@ msgstr "Favorite tokens"
 #~ msgstr "{0} - {1}%: Recommended slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.tsx
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapVaultRelayerApproval.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
 msgid "Approved amount is not sufficient!"
 msgstr "Approved amount is not sufficient!"
 
@@ -6095,8 +6115,8 @@ msgstr "Choose where to display the limit price input."
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Sign TWAP setup"
-msgstr "Sign TWAP setup"
+#~ msgid "Sign TWAP setup"
+#~ msgstr "Sign TWAP setup"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Error loading price. You are currently offline."
@@ -6861,8 +6881,8 @@ msgid "Order ID"
 msgstr "Order ID"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Order confirmed"
-msgstr "Order confirmed"
+#~ msgid "Order confirmed"
+#~ msgstr "Order confirmed"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "The order was executed before it could be cancelled."
@@ -6872,7 +6892,6 @@ msgstr "The order was executed before it could be cancelled."
 msgid "a native currency"
 msgstr "a native currency"
 
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldConfirmModal/index.tsx
 msgid "Confirm order"
 msgstr "Confirm order"
@@ -7009,6 +7028,10 @@ msgstr "Failed to load manifest. Please verify the URL and try again."
 msgid "Order Created"
 msgstr "Order Created"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm the approval transaction in your connected wallet."
+msgstr "Confirm the approval transaction in your connected wallet."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/OrderStatusBox.pure.tsx
@@ -7106,6 +7129,7 @@ msgid "Add custom hook"
 msgstr "Add custom hook"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Approve {symbol}"
 
@@ -7191,8 +7215,8 @@ msgid "Confirm {orderType}"
 msgstr "Confirm {orderType}"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Order created"
-msgstr "Order created"
+#~ msgid "Order created"
+#~ msgstr "Order created"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Route"
@@ -7433,6 +7457,10 @@ msgstr "Reload page"
 msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Settling the funding order and registering your TWAP"
+msgstr "Settling the funding order and registering your TWAP"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Earn more by adding a referral code."
 msgstr "Earn more by adding a referral code."
@@ -7577,8 +7605,8 @@ msgid "Best price found!"
 msgstr "Best price found!"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "TWAP setup signed"
-msgstr "TWAP setup signed"
+#~ msgid "TWAP setup signed"
+#~ msgstr "TWAP setup signed"
 
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 msgid "Bridging succeeded"
@@ -7938,8 +7966,8 @@ msgstr "This requires connecting a different wallet."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
-msgid "Waiting for settlement"
-msgstr "Waiting for settlement"
+#~ msgid "Waiting for settlement"
+#~ msgstr "Waiting for settlement"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/AccountProxyPage.container.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/AccountProxyPage.container.tsx
@@ -8090,6 +8118,10 @@ msgstr "Confirm bridging"
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "<0>COW vesting from the GNO lock</0> is vested linearly over four years, starting on"
 msgstr "<0>COW vesting from the GNO lock</0> is vested linearly over four years, starting on"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Set up TWAP"
+msgstr "Set up TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
