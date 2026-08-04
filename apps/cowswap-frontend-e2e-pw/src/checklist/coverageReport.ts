@@ -4,16 +4,31 @@ import { fileURLToPath } from 'node:url'
 
 import type { Checklist } from '../support/checklist'
 
-type State = 'automated' | 'manual' | 'todo'
-
 interface Found {
   id: string
   state: State
   reason?: string
 }
 
+type State = 'automated' | 'manual' | 'todo'
+
 const TEST_PATTERN =
   /test\(\s*(['"`])\[([A-Z]{2,3}-\d{2,3})\][\s\S]*?\1\s*(?:,\s*\{[^}]*annotation:\s*\{[^}]*type:\s*['"`](manual|todo)['"`][^}]*description:\s*(['"`])([\s\S]*?)\4)?/g
+
+export interface CoverageReport {
+  generatedAt: string
+  sheets: CoverageSheetReport[]
+  totals: { automated: number; manual: number; todo: number; missing: number; total: number }
+}
+
+export interface CoverageSheetReport {
+  name: string
+  automated: string[]
+  manual: { id: string; reason?: string }[]
+  todo: { id: string; reason?: string }[]
+  missing: string[]
+  stray: string[]
+}
 
 function parseFile(content: string): Found[] {
   const found: Found[] = []
@@ -28,21 +43,6 @@ function parseFile(content: string): Found[] {
     }
   }
   return found
-}
-
-export interface CoverageSheetReport {
-  name: string
-  automated: string[]
-  manual: { id: string; reason?: string }[]
-  todo: { id: string; reason?: string }[]
-  missing: string[]
-  stray: string[]
-}
-
-export interface CoverageReport {
-  generatedAt: string
-  sheets: CoverageSheetReport[]
-  totals: { automated: number; manual: number; todo: number; missing: number; total: number }
 }
 
 const SHEET_TO_FILE: Record<string, string> = {
@@ -93,13 +93,6 @@ export function computeCoverage(checklist: Checklist, specs: Map<string, string>
   return { generatedAt: new Date().toISOString(), sheets, totals: tot }
 }
 
-function renderMarkdown(r: CoverageReport): string {
-  const rows = r.sheets
-    .map((s) => `| ${s.name} | ${s.automated.length} | ${s.manual.length} | ${s.todo.length} | ${s.missing.length} |`)
-    .join('\n')
-  return `# Coverage report\n\nGenerated: ${r.generatedAt}\n\n| Sheet | Automated | Manual | TODO | Missing |\n|---|---|---|---|---|\n${rows}\n| **Total** | ${r.totals.automated} | ${r.totals.manual} | ${r.totals.todo} | ${r.totals.missing} |\n`
-}
-
 async function main(): Promise<void> {
   const here = dirname(fileURLToPath(import.meta.url))
   const checklist = JSON.parse(await readFile(resolve(here, 'checklist.json'), 'utf8')) as Checklist
@@ -118,6 +111,13 @@ async function main(): Promise<void> {
     console.error('Coverage report failed: missing or stray IDs')
     process.exit(1)
   }
+}
+
+function renderMarkdown(r: CoverageReport): string {
+  const rows = r.sheets
+    .map((s) => `| ${s.name} | ${s.automated.length} | ${s.manual.length} | ${s.todo.length} | ${s.missing.length} |`)
+    .join('\n')
+  return `# Coverage report\n\nGenerated: ${r.generatedAt}\n\n| Sheet | Automated | Manual | TODO | Missing |\n|---|---|---|---|---|\n${rows}\n| **Total** | ${r.totals.automated} | ${r.totals.manual} | ${r.totals.todo} | ${r.totals.missing} |\n`
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

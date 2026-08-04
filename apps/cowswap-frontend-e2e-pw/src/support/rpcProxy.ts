@@ -2,8 +2,22 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 
 import type { AddressInfo } from 'node:net'
 
-type StubKey = string
-type Stubs = Map<StubKey, string>
+export interface CreateRpcProxyOpts {
+  sepoliaRpcUrl: string
+  port: number
+}
+export interface ResetOpts {
+  workerId?: string
+}
+
+export interface RpcProxy {
+  url: string
+  port: number
+  setBalance(opts: SetBalanceOpts): void
+  stubCall(opts: StubCallOpts): void
+  reset(opts?: ResetOpts): void
+  close(): Promise<void>
+}
 
 export interface SetBalanceOpts {
   chainId: number
@@ -20,22 +34,12 @@ export interface StubCallOpts {
   returnHex: string
 }
 
-export interface ResetOpts {
-  workerId?: string
-}
-
-export interface CreateRpcProxyOpts {
-  sepoliaRpcUrl: string
-  port: number
-}
-
-export interface RpcProxy {
-  url: string
-  port: number
-  setBalance(opts: SetBalanceOpts): void
-  stubCall(opts: StubCallOpts): void
-  reset(opts?: ResetOpts): void
-  close(): Promise<void>
+interface HandlerContext {
+  chainId: number
+  workerId: string
+  balances: Stubs
+  calls: Stubs
+  forward: (method: string, params: unknown[] | undefined) => Promise<JsonRpcResponse>
 }
 
 interface JsonRpcRequest {
@@ -52,13 +56,9 @@ interface JsonRpcResponse {
   error?: { code: number; message: string }
 }
 
-interface HandlerContext {
-  chainId: number
-  workerId: string
-  balances: Stubs
-  calls: Stubs
-  forward: (method: string, params: unknown[] | undefined) => Promise<JsonRpcResponse>
-}
+type StubKey = string
+
+type Stubs = Map<StubKey, string>
 
 const FORWARD_METHODS = new Set([
   'eth_sendRawTransaction',
@@ -71,6 +71,21 @@ const FORWARD_METHODS = new Set([
   'eth_getTransactionCount',
   'eth_estimateGas',
 ])
+
+function badRequest(res: ServerResponse, message: string): void {
+  res.writeHead(400, { 'content-type': 'application/json' })
+  res.end(JSON.stringify({ error: message }))
+}
+
+function clearWorker(balances: Stubs, calls: Stubs, workerId: string): void {
+  for (const k of [...balances.keys()]) if (k.startsWith(`${workerId}|`)) balances.delete(k)
+  for (const k of [...calls.keys()]) if (k.startsWith(`${workerId}|`)) calls.delete(k)
+}
+
+function okJson(res: ServerResponse, obj: unknown): void {
+  res.writeHead(200, { 'content-type': 'application/json' })
+  res.end(JSON.stringify(obj))
+}
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -86,197 +101,11 @@ function send(res: ServerResponse, body: JsonRpcResponse): void {
   res.end(JSON.stringify(body))
 }
 
-function okJson(res: ServerResponse, obj: unknown): void {
-  res.writeHead(200, { 'content-type': 'application/json' })
-  res.end(JSON.stringify(obj))
-}
-
-function badRequest(res: ServerResponse, message: string): void {
-  res.writeHead(400, { 'content-type': 'application/json' })
-  res.end(JSON.stringify({ error: message }))
-}
-
-function clearWorker(balances: Stubs, calls: Stubs, workerId: string): void {
-  for (const k of [...balances.keys()]) if (k.startsWith(`${workerId}|`)) balances.delete(k)
-  for (const k of [...calls.keys()]) if (k.startsWith(`${workerId}|`)) calls.delete(k)
-}
-
 const balanceKey = (workerId: string, chainId: number, address: string): StubKey =>
   `${workerId}|${chainId}|${address.toLowerCase()}`
 
 const callKey = (workerId: string, chainId: number, to: string, dataPrefix: string): StubKey =>
   `${workerId}|${chainId}|${to.toLowerCase()}|${dataPrefix.toLowerCase()}`
-
-async function tryForward(
-  ctx: HandlerContext,
-  id: number | string,
-  method: string,
-  params: unknown[] | undefined,
-): Promise<JsonRpcResponse> {
-  try {
-    const f = await ctx.forward(method, params)
-    return { ...f, id }
-  } catch (e) {
-    return { jsonrpc: '2.0', id, error: { code: -32000, message: String(e) } }
-  }
-}
-
-async function handleGetBalance(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
-  const first = params[0]
-  if (typeof first !== 'string') {
-    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_getBalance' } }
-  }
-  const addr: string = first
-  const stubbed = ctx.balances.get(balanceKey(ctx.workerId, ctx.chainId, addr))
-  if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
-  return tryForward(ctx, id, 'eth_getBalance', params)
-}
-
-async function handleCall(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
-  const first = params[0]
-  if (
-    typeof first !== 'object' ||
-    first === null ||
-    !('to' in first) ||
-    typeof (first as { to: unknown }).to !== 'string'
-  ) {
-    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_call' } }
-  }
-  const callObj = first as { to: string; data?: string }
-  const data = (callObj.data ?? '').slice(0, 10) // 0x + 4-byte selector
-  const stubbed = ctx.calls.get(callKey(ctx.workerId, ctx.chainId, callObj.to, data))
-  if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
-  return tryForward(ctx, id, 'eth_call', params)
-}
-
-async function dispatch(ctx: HandlerContext, body: JsonRpcRequest): Promise<JsonRpcResponse> {
-  const params = body.params ?? []
-  const { id, method } = body
-  switch (method) {
-    case 'eth_chainId':
-      return { jsonrpc: '2.0', id, result: `0x${ctx.chainId.toString(16)}` }
-    case 'net_version':
-      return { jsonrpc: '2.0', id, result: String(ctx.chainId) }
-    case 'wallet_switchEthereumChain':
-    case 'wallet_addEthereumChain':
-      return { jsonrpc: '2.0', id, result: null }
-    case 'eth_getBalance':
-      return handleGetBalance(ctx, id, params)
-    case 'eth_call':
-      return handleCall(ctx, id, params)
-    default:
-      if (FORWARD_METHODS.has(method)) return tryForward(ctx, id, method, params)
-      return { jsonrpc: '2.0', id, error: { code: -32601, message: `Method not supported by proxy: ${method}` } }
-  }
-}
-
-function parseJson(raw: string): unknown {
-  try {
-    return JSON.parse(raw) as unknown
-  } catch {
-    return undefined
-  }
-}
-
-function asRecord(value: unknown): Record<string, unknown> | undefined {
-  if (typeof value !== 'object' || value === null) return undefined
-  return value as Record<string, unknown>
-}
-
-async function handleAdminSetBalance(req: IncomingMessage, res: ServerResponse, balances: Stubs): Promise<void> {
-  const body = asRecord(parseJson(await readBody(req)))
-  if (!body) {
-    badRequest(res, 'invalid body')
-    return
-  }
-  const { chainId, workerId, address, valueHex } = body
-  if (
-    typeof chainId !== 'number' ||
-    typeof workerId !== 'string' ||
-    typeof address !== 'string' ||
-    typeof valueHex !== 'string'
-  ) {
-    badRequest(res, 'invalid body')
-    return
-  }
-  balances.set(balanceKey(workerId, chainId, address), valueHex)
-  okJson(res, { ok: true })
-}
-
-async function handleAdminStubCall(req: IncomingMessage, res: ServerResponse, calls: Stubs): Promise<void> {
-  const body = asRecord(parseJson(await readBody(req)))
-  if (!body) {
-    badRequest(res, 'invalid body')
-    return
-  }
-  const { chainId, workerId, to, dataPrefix, returnHex } = body
-  if (
-    typeof chainId !== 'number' ||
-    typeof workerId !== 'string' ||
-    typeof to !== 'string' ||
-    typeof dataPrefix !== 'string' ||
-    typeof returnHex !== 'string'
-  ) {
-    badRequest(res, 'invalid body')
-    return
-  }
-  calls.set(callKey(workerId, chainId, to, dataPrefix), returnHex)
-  okJson(res, { ok: true })
-}
-
-async function handleAdminReset(
-  req: IncomingMessage,
-  res: ServerResponse,
-  balances: Stubs,
-  calls: Stubs,
-): Promise<void> {
-  const body = asRecord(parseJson(await readBody(req))) ?? {}
-  const { workerId } = body
-  if (workerId !== undefined && typeof workerId !== 'string') {
-    badRequest(res, 'invalid body')
-    return
-  }
-  if (typeof workerId === 'string') {
-    clearWorker(balances, calls, workerId)
-  } else {
-    balances.clear()
-    calls.clear()
-  }
-  okJson(res, { ok: true })
-}
-
-async function handleRequest(
-  req: IncomingMessage,
-  res: ServerResponse,
-  balances: Stubs,
-  calls: Stubs,
-  forward: HandlerContext['forward'],
-): Promise<void> {
-  const url = new URL(req.url ?? '/', 'http://localhost')
-  if (req.method === 'POST' && url.pathname === '/admin/setBalance') {
-    await handleAdminSetBalance(req, res, balances)
-    return
-  }
-  if (req.method === 'POST' && url.pathname === '/admin/stubCall') {
-    await handleAdminStubCall(req, res, calls)
-    return
-  }
-  if (req.method === 'POST' && url.pathname === '/admin/reset') {
-    await handleAdminReset(req, res, balances, calls)
-    return
-  }
-  const match = url.pathname.match(/^\/rpc\/(\d+)\/(w\d+)$/)
-  if (!match || req.method !== 'POST') {
-    res.writeHead(404).end()
-    return
-  }
-  const chainId = Number.parseInt(match[1], 10)
-  const workerId = match[2]
-  const body = JSON.parse(await readBody(req)) as JsonRpcRequest
-  const ctx: HandlerContext = { chainId, workerId, balances, calls, forward }
-  const response = await dispatch(ctx, body)
-  send(res, response)
-}
 
 export async function createRpcProxy(opts: CreateRpcProxyOpts): Promise<RpcProxy> {
   const balances: Stubs = new Map() // key: workerId|chainId|address-lower
@@ -323,5 +152,176 @@ export async function createRpcProxy(opts: CreateRpcProxyOpts): Promise<RpcProxy
     async close() {
       await new Promise<void>((resolve) => server.close(() => resolve()))
     },
+  }
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  if (typeof value !== 'object' || value === null) return undefined
+  return value as Record<string, unknown>
+}
+
+async function dispatch(ctx: HandlerContext, body: JsonRpcRequest): Promise<JsonRpcResponse> {
+  const params = body.params ?? []
+  const { id, method } = body
+  switch (method) {
+    case 'eth_chainId':
+      return { jsonrpc: '2.0', id, result: `0x${ctx.chainId.toString(16)}` }
+    case 'net_version':
+      return { jsonrpc: '2.0', id, result: String(ctx.chainId) }
+    case 'wallet_switchEthereumChain':
+    case 'wallet_addEthereumChain':
+      return { jsonrpc: '2.0', id, result: null }
+    case 'eth_getBalance':
+      return handleGetBalance(ctx, id, params)
+    case 'eth_call':
+      return handleCall(ctx, id, params)
+    default:
+      if (FORWARD_METHODS.has(method)) return tryForward(ctx, id, method, params)
+      return { jsonrpc: '2.0', id, error: { code: -32601, message: `Method not supported by proxy: ${method}` } }
+  }
+}
+
+async function handleAdminReset(
+  req: IncomingMessage,
+  res: ServerResponse,
+  balances: Stubs,
+  calls: Stubs,
+): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req))) ?? {}
+  const { workerId } = body
+  if (workerId !== undefined && typeof workerId !== 'string') {
+    badRequest(res, 'invalid body')
+    return
+  }
+  if (typeof workerId === 'string') {
+    clearWorker(balances, calls, workerId)
+  } else {
+    balances.clear()
+    calls.clear()
+  }
+  okJson(res, { ok: true })
+}
+
+async function handleAdminSetBalance(req: IncomingMessage, res: ServerResponse, balances: Stubs): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req)))
+  if (!body) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  const { chainId, workerId, address, valueHex } = body
+  if (
+    typeof chainId !== 'number' ||
+    typeof workerId !== 'string' ||
+    typeof address !== 'string' ||
+    typeof valueHex !== 'string'
+  ) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  balances.set(balanceKey(workerId, chainId, address), valueHex)
+  okJson(res, { ok: true })
+}
+
+async function handleAdminStubCall(req: IncomingMessage, res: ServerResponse, calls: Stubs): Promise<void> {
+  const body = asRecord(parseJson(await readBody(req)))
+  if (!body) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  const { chainId, workerId, to, dataPrefix, returnHex } = body
+  if (
+    typeof chainId !== 'number' ||
+    typeof workerId !== 'string' ||
+    typeof to !== 'string' ||
+    typeof dataPrefix !== 'string' ||
+    typeof returnHex !== 'string'
+  ) {
+    badRequest(res, 'invalid body')
+    return
+  }
+  calls.set(callKey(workerId, chainId, to, dataPrefix), returnHex)
+  okJson(res, { ok: true })
+}
+
+async function handleCall(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
+  const first = params[0]
+  if (
+    typeof first !== 'object' ||
+    first === null ||
+    !('to' in first) ||
+    typeof (first as { to: unknown }).to !== 'string'
+  ) {
+    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_call' } }
+  }
+  const callObj = first as { to: string; data?: string }
+  const data = (callObj.data ?? '').slice(0, 10) // 0x + 4-byte selector
+  const stubbed = ctx.calls.get(callKey(ctx.workerId, ctx.chainId, callObj.to, data))
+  if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
+  return tryForward(ctx, id, 'eth_call', params)
+}
+
+async function handleGetBalance(ctx: HandlerContext, id: number | string, params: unknown[]): Promise<JsonRpcResponse> {
+  const first = params[0]
+  if (typeof first !== 'string') {
+    return { jsonrpc: '2.0', id, error: { code: -32602, message: 'Invalid params for eth_getBalance' } }
+  }
+  const addr: string = first
+  const stubbed = ctx.balances.get(balanceKey(ctx.workerId, ctx.chainId, addr))
+  if (stubbed !== undefined) return { jsonrpc: '2.0', id, result: stubbed }
+  return tryForward(ctx, id, 'eth_getBalance', params)
+}
+
+async function handleRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+  balances: Stubs,
+  calls: Stubs,
+  forward: HandlerContext['forward'],
+): Promise<void> {
+  const url = new URL(req.url ?? '/', 'http://localhost')
+  if (req.method === 'POST' && url.pathname === '/admin/setBalance') {
+    await handleAdminSetBalance(req, res, balances)
+    return
+  }
+  if (req.method === 'POST' && url.pathname === '/admin/stubCall') {
+    await handleAdminStubCall(req, res, calls)
+    return
+  }
+  if (req.method === 'POST' && url.pathname === '/admin/reset') {
+    await handleAdminReset(req, res, balances, calls)
+    return
+  }
+  const match = url.pathname.match(/^\/rpc\/(\d+)\/(w\d+)$/)
+  if (!match || req.method !== 'POST') {
+    res.writeHead(404).end()
+    return
+  }
+  const chainId = Number.parseInt(match[1], 10)
+  const workerId = match[2]
+  const body = JSON.parse(await readBody(req)) as JsonRpcRequest
+  const ctx: HandlerContext = { chainId, workerId, balances, calls, forward }
+  const response = await dispatch(ctx, body)
+  send(res, response)
+}
+
+function parseJson(raw: string): unknown {
+  try {
+    return JSON.parse(raw) as unknown
+  } catch {
+    return undefined
+  }
+}
+
+async function tryForward(
+  ctx: HandlerContext,
+  id: number | string,
+  method: string,
+  params: unknown[] | undefined,
+): Promise<JsonRpcResponse> {
+  try {
+    const f = await ctx.forward(method, params)
+    return { ...f, id }
+  } catch (e) {
+    return { jsonrpc: '2.0', id, error: { code: -32000, message: String(e) } }
   }
 }

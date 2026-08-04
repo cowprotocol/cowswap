@@ -55,8 +55,9 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/cowswap-frontend-e2e-pw/**/*.{js,ts}"]
+        "lintFilePatterns": ["apps/cowswap-frontend-e2e-pw/src/**/*.{js,ts}"]
       }
     },
     "test": {

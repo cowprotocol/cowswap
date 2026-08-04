@@ -53,13 +53,6 @@ const MANUAL_IDS = new Set([
   'UI-03',
 ])
 
-function reasonFor(id: string): { kind: 'manual' | 'todo'; description: string } {
-  if (MANUAL_IDS.has(id)) {
-    return { kind: 'manual', description: 'requires real wallet or environment per spec §6.4' }
-  }
-  return { kind: 'todo', description: 'implement in upcoming milestone' }
-}
-
 function escapeName(s: string): string {
   return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 }
@@ -100,6 +93,13 @@ async function main(): Promise<void> {
     await writeFile(filePath, next)
     console.log(`Updated ${filename} (+${missing.length})`)
   }
+}
+
+function reasonFor(id: string): { kind: 'manual' | 'todo'; description: string } {
+  if (MANUAL_IDS.has(id)) {
+    return { kind: 'manual', description: 'requires real wallet or environment per spec §6.4' }
+  }
+  return { kind: 'todo', description: 'implement in upcoming milestone' }
 }
 
 main().catch((e) => {

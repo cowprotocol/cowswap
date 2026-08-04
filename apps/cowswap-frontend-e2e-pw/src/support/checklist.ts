@@ -1,5 +1,10 @@
 import ExcelJS from 'exceljs'
 
+export interface Checklist {
+  generatedAt: string
+  sheets: ChecklistSheet[]
+}
+
 export interface ChecklistRow {
   id: string
   name: string
@@ -10,11 +15,6 @@ export interface ChecklistRow {
 export interface ChecklistSheet {
   name: string
   rows: ChecklistRow[]
-}
-
-export interface Checklist {
-  generatedAt: string
-  sheets: ChecklistSheet[]
 }
 
 const TEST_SHEETS = new Set([
@@ -32,20 +32,6 @@ const TEST_SHEETS = new Set([
 ])
 
 const ID_PATTERN = /^[A-Z]{2,3}-\d{2,3}$/
-
-function cellText(v: ExcelJS.CellValue): string {
-  if (v == null) return ''
-  if (typeof v === 'string') return v
-  if (typeof v === 'number' || typeof v === 'boolean') return String(v)
-  if (typeof v === 'object') {
-    if ('richText' in v && Array.isArray((v as { richText: unknown[] }).richText)) {
-      return (v as { richText: { text: string }[] }).richText.map((r) => r.text).join('')
-    }
-    if ('text' in v) return String((v as { text: unknown }).text)
-    if ('result' in v) return String((v as { result: unknown }).result)
-  }
-  return ''
-}
 
 export async function parseChecklist(xlsxPath: string): Promise<Checklist> {
   const wb = new ExcelJS.Workbook()
@@ -67,4 +53,18 @@ export async function parseChecklist(xlsxPath: string): Promise<Checklist> {
     sheets.push({ name: ws.name, rows })
   }
   return { generatedAt: new Date().toISOString(), sheets }
+}
+
+function cellText(v: ExcelJS.CellValue): string {
+  if (v == null) return ''
+  if (typeof v === 'string') return v
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v)
+  if (typeof v === 'object') {
+    if ('richText' in v && Array.isArray((v as { richText: unknown[] }).richText)) {
+      return (v as { richText: { text: string }[] }).richText.map((r) => r.text).join('')
+    }
+    if ('text' in v) return String((v as { text: unknown }).text)
+    if ('result' in v) return String((v as { result: unknown }).result)
+  }
+  return ''
 }

@@ -30,22 +30,6 @@ interface RunResult {
   stdout: string
 }
 
-function run(command: string, args: string[], extraEnv: Record<string, string>): Promise<RunResult> {
-  return new Promise<RunResult>((resolve, reject) => {
-    const child = spawn(command, args, {
-      stdio: ['inherit', 'pipe', 'inherit'],
-      env: { ...process.env, ...extraEnv },
-    })
-    let stdout = ''
-    child.stdout.on('data', (chunk: Buffer) => {
-      stdout += chunk.toString('utf8')
-      process.stdout.write(chunk)
-    })
-    child.on('error', reject)
-    child.on('close', (code) => resolve({ exitCode: code ?? 1, stdout }))
-  })
-}
-
 async function main(): Promise<number> {
   const sepoliaRpcUrl = process.env[SEPOLIA_RPC_URL_ENV]
   if (!sepoliaRpcUrl) {
@@ -92,6 +76,22 @@ async function main(): Promise<number> {
   await cp(path.join(cacheRoot, cliHash), aliasDir, { recursive: true })
   console.log(`Aliased cache ${cliHash} -> ${runtimeHash} (hash Synpress computes at test runtime).`)
   return 0
+}
+
+function run(command: string, args: string[], extraEnv: Record<string, string>): Promise<RunResult> {
+  return new Promise<RunResult>((resolve, reject) => {
+    const child = spawn(command, args, {
+      stdio: ['inherit', 'pipe', 'inherit'],
+      env: { ...process.env, ...extraEnv },
+    })
+    let stdout = ''
+    child.stdout.on('data', (chunk: Buffer) => {
+      stdout += chunk.toString('utf8')
+      process.stdout.write(chunk)
+    })
+    child.on('error', reject)
+    child.on('close', (code) => resolve({ exitCode: code ?? 1, stdout }))
+  })
 }
 
 main()

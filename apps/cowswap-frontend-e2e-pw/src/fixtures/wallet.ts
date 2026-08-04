@@ -12,14 +12,6 @@ const CHAIN_NAME_BY_ID: Record<SupportedChainId, string> = {
   [CHAIN_IDS.SEPOLIA]: 'Sepolia',
 }
 
-function resolveChainName(chainId: SupportedChainId): string {
-  const chainName = CHAIN_NAME_BY_ID[chainId]
-  if (!chainName) {
-    throw new Error(`Unsupported chainId: ${chainId}`)
-  }
-  return chainName
-}
-
 export interface WalletApi {
   readonly address: string
   connectAsEOA(opts: { chainId: SupportedChainId }): Promise<void>
@@ -70,4 +62,12 @@ export function createWalletApi(metamask: MetaMask, page: Page): WalletApi {
       await metamask.approveTokenPermission()
     },
   }
+}
+
+function resolveChainName(chainId: SupportedChainId): string {
+  const chainName = CHAIN_NAME_BY_ID[chainId]
+  if (!chainName) {
+    throw new Error(`Unsupported chainId: ${chainId}`)
+  }
+  return chainName
 }
