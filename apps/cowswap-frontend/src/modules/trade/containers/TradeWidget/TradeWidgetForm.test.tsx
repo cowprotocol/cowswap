@@ -24,6 +24,7 @@ import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
+import { useSolanaWrapReceiveAmount } from '../../hooks/useSolanaWrapReceiveAmount'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 
@@ -88,6 +89,7 @@ jest.mock('../../hooks/useIsQuoteUpdatePossible', () => ({ useIsQuoteUpdatePossi
 jest.mock('../../hooks/useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
 jest.mock('../../hooks/useLimitOrdersPromoBanner', () => ({ useLimitOrdersPromoBanner: jest.fn() }))
 jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAmounts: jest.fn() }))
+jest.mock('../../hooks/useSolanaWrapReceiveAmount', () => ({ useSolanaWrapReceiveAmount: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 jest.mock('../../hooks/useTradeTypeInfoFromUrl', () => ({ useTradeTypeInfoFromUrl: jest.fn() }))
 jest.mock('../../state/alternativeOrder', () => ({
@@ -153,6 +155,9 @@ const mockedUseIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typ
 const mockedUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 const mockedUseLimitOrdersPromoBanner = useLimitOrdersPromoBanner as jest.MockedFunction<
   typeof useLimitOrdersPromoBanner
+>
+const mockedUseSolanaWrapReceiveAmount = useSolanaWrapReceiveAmount as jest.MockedFunction<
+  typeof useSolanaWrapReceiveAmount
 >
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -224,6 +229,7 @@ function setupDefaults({
   ;(useIsEoaEthFlow as jest.Mock).mockReturnValue(false)
   ;(useIsQuoteUpdatePossible as jest.Mock).mockReturnValue(false)
   ;(useShouldHideQuoteAmounts as jest.Mock).mockReturnValue(false)
+  mockedUseSolanaWrapReceiveAmount.mockReturnValue(undefined)
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────

@@ -23,3 +23,7 @@ export const RETRY_BASE_DELAY_MS = 1000
 export const APP_HEADER_ELEMENT_ID = 'cowswap-app-header'
 
 export const PROTOCOL_FEE_SCALE = 100_000
+
+// `nonce` is required by the store shape but is an EVM concept. Nothing reads it for Solana
+// transactions — only `checkOnChainTransaction`'s replacement detection uses it.
+export const SOLANA_UNUSED_NONCE = 0
