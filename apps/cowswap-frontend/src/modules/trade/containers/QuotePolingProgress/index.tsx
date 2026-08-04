@@ -9,12 +9,12 @@ import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 
 import { useTradeQuoteCounter, QUOTE_POLLING_INTERVAL, useTradeQuote } from 'modules/tradeQuote'
 
-import { featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
+import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 
 const size = 18
 
 export function QuotePolingProgress(): ReactNode {
-  const featureFlagsHydrated = useAtomValue(featureFlagsHydratedAtom)
+  const featureFlagsStatus = useAtomValue(featureFlagsStatusAtom)
   const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { isLoading } = useTradeQuote()
   const counter = useTradeQuoteCounter()
@@ -23,7 +23,7 @@ export function QuotePolingProgress(): ReactNode {
 
   const content = (
     <span>
-      {!canQuote && featureFlagsHydrated
+      {!canQuote && featureFlagsStatus === 'ready'
         ? t`Complete the CAPTCHA to get a quote`
         : counter === 0
           ? t`Quote is updating...`

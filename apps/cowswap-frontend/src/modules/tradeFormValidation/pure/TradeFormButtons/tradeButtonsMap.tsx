@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -8,12 +7,10 @@ import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 
 import { TradeApproveButton } from 'modules/erc20Approve'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
-import { featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
@@ -30,15 +27,6 @@ type ButtonComponentProps = TradeFormButtonContext & { isDisabled?: boolean }
 interface ButtonErrorConfig {
   text: ReactNode
   id?: string
-}
-
-function QuoteLoadingButton(): ReactNode {
-  const featureFlagsHydrated = useAtomValue(featureFlagsHydratedAtom)
-  const canQuote = useAtomValue(captchaCanQuoteAtom)
-
-  if (!featureFlagsHydrated) return <CenteredDots smaller />
-
-  return canQuote ? <TradeLoadingButton /> : <Trans>Complete the CAPTCHA</Trans>
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonComponent> = {
@@ -155,8 +143,16 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
+  [TradeFormValidation.CaptchaLoading]: {
+    text: <CenteredDots smaller />,
+    id: 'captcha-loading',
+  },
+  [TradeFormValidation.CaptchaRequired]: {
+    text: <Trans>Complete the CAPTCHA</Trans>,
+    id: 'complete-captcha',
+  },
   [TradeFormValidation.QuoteLoading]: {
-    text: <QuoteLoadingButton />,
+    text: <TradeLoadingButton />,
   },
   [TradeFormValidation.ImpactLoading]: {
     text: (

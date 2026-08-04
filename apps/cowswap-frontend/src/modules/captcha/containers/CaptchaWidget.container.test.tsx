@@ -2,13 +2,11 @@ import { Provider as JotaiProvider } from 'jotai'
 import { createStore } from 'jotai/vanilla'
 import { act, ReactNode } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 
 import { render, screen, waitFor } from '@testing-library/react'
 import { setBearerToken } from 'cowSdk'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
-
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { CaptchaWidget } from './CaptchaWidget.container'
 
@@ -19,6 +17,7 @@ jest.mock('@cowprotocol/common-hooks', () => {
 
   return {
     ...actualModule,
+    useFeatureFlags: jest.fn(),
     useTheme: jest.fn(),
   }
 })
@@ -42,6 +41,7 @@ jest.mock('../config/captcha.const', () => ({
 }))
 
 const useThemeMock = useTheme as jest.MockedFunction<typeof useTheme>
+const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const setBearerTokenMock = setBearerToken as jest.MockedFunction<typeof setBearerToken>
 const exchangeTurnstileTokenMock = exchangeTurnstileToken as jest.MockedFunction<typeof exchangeTurnstileToken>
 
@@ -68,6 +68,7 @@ describe('CaptchaWidget', () => {
     jest.clearAllMocks()
     localStorage.clear()
     useThemeMock.mockReturnValue({ darkMode: false } as ReturnType<typeof useTheme>)
+    useFeatureFlagsMock.mockReturnValue({})
   })
 
   it('does not clear stored captcha state when the captcha flag is missing', () => {
@@ -85,19 +86,17 @@ describe('CaptchaWidget', () => {
   })
 
   it('does not render when the captcha flag is disabled', () => {
-    const store = createStore()
-    store.set(featureFlagsAtom, { isCaptchaEnabled: false })
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: false })
 
-    renderWithStore(store)
+    renderWithStore()
 
     expect(screen.queryByTestId('turnstile')).toBeNull()
   })
 
   it('renders Turnstile when the captcha flag is enabled', () => {
-    const store = createStore()
-    store.set(featureFlagsAtom, { isCaptchaEnabled: true })
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
 
-    renderWithStore(store)
+    renderWithStore()
 
     expect(screen.getByTestId('turnstile')).not.toBeNull()
   })
@@ -106,15 +105,16 @@ describe('CaptchaWidget', () => {
     const store = createStore()
     const jwt = createJwt()
 
-    store.set(featureFlagsAtom, { isCaptchaEnabled: true })
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
     store.set(captchaJwtAtom, jwt)
 
-    renderWithStore(store)
+    const view = renderWithStore(store)
 
     await waitFor(() => expect(setBearerTokenMock).toHaveBeenCalledWith(jwt))
 
     act(() => {
-      store.set(featureFlagsAtom, { isCaptchaEnabled: false })
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: false })
+      view.rerender(<CaptchaWidget />)
     })
 
     await waitFor(() => {

@@ -1,8 +1,8 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { createCowTracker } from '@cowprotocol/analytics'
-import { useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
@@ -11,7 +11,6 @@ import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../config/captcha.const'
@@ -25,7 +24,7 @@ const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
   const [captchaError, setCaptchaError] = useAtom(captchaErrorAtom)
-  const { isCaptchaEnabled } = useAtomValue(featureFlagsAtom)
+  const { isCaptchaEnabled } = useFeatureFlags()
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)

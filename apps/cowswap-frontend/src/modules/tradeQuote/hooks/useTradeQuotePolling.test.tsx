@@ -14,7 +14,7 @@ import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/li
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
-import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
+import { featureFlagsAtom, featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
@@ -90,7 +90,7 @@ const limitOrdersDerivedStateMock: LimitOrdersDerivedState = {
 }
 
 const jotaiMock = [
-  [featureFlagsHydratedAtom, true],
+  [featureFlagsStatusAtom, 'ready'],
   [tradeQuoteInputAtom, { amount: inputCurrencyAmount, orderKind: OrderKind.SELL }],
   [limitOrdersDerivedStateAtom, limitOrdersDerivedStateMock],
   [tradeTypeAtom, { tradeType: TradeType.LIMIT_ORDER, route: '' }],

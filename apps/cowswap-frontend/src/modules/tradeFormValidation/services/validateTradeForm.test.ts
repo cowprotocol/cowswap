@@ -57,6 +57,8 @@ describe('validateTradeForm - xStock logic', () => {
     isOutputCurrencyXstock: false,
     injectedWidgetParams: {},
     tradePriceImpact: { loading: false, priceImpact: undefined },
+    isCaptchaLoading: false,
+    isCaptchaRequired: false,
   }
 
   test('shows xStock minimum trade size for sell orders when xStock sell amount is below $10', () => {
@@ -184,6 +186,26 @@ describe('validateTradeForm - xStock logic', () => {
 
     const result = validateTradeForm(context)
     expect(result).toEqual([TradeFormValidation.XstockMinimumTradeSize])
+  })
+
+  test('prioritizes CAPTCHA loading over wallet connection', () => {
+    const context = {
+      ...baseContext,
+      account: undefined,
+      isCaptchaLoading: true,
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.CaptchaLoading])
+  })
+
+  test('prioritizes required CAPTCHA over wallet connection', () => {
+    const context = {
+      ...baseContext,
+      account: undefined,
+      isCaptchaRequired: true,
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.CaptchaRequired])
   })
 })
 
