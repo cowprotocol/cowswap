@@ -15,7 +15,7 @@ jobs:
         shard: [1, 2, 3, 4]
     env:
       INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.INTEGRATION_TEST_PRIVATE_KEY }}
-      REACT_APP_NETWORK_URL_11155111: ${{ secrets.SEPOLIA_RPC_URL }}
+      REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
       E2E_PW_MM_SEED: ${{ secrets.E2E_PW_MM_SEED }}
       CI: 'true'
     steps:
