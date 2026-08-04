@@ -20,10 +20,11 @@ interface EoaTwapSigningPendingContentProps {
 export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const symbol = inputCurrencyAmount?.currency.symbol
 
   const steps = useMemo(() => {
-    return signingStep ? buildEoaTwapConfirmationPendingSteps(signingStep) : undefined
-  }, [signingStep])
+    return signingStep ? buildEoaTwapConfirmationPendingSteps(signingStep, { symbol }) : undefined
+  }, [signingStep, symbol])
 
   if (!steps) {
     return null

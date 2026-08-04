@@ -1,23 +1,28 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { CheckCircle, UserCheck } from 'react-feather'
+import { Check, X, AlertTriangle, ChevronDown } from 'react-feather'
+
+import { ExpandableContent } from 'common/pure/ExpandableContent/ExpandableContent.pure'
+
+import * as styledEl from './MultiConfirmationPendingContent.styled'
 
 import { ConfirmationPendingContentShell } from '../ConfirmationPendingContentShell'
-import { StepsIconWrapper, VerticalStepItem, VerticalStepsWrapper } from '../styled'
 
 export interface MultiConfirmationPendingStep {
-  id?: string
+  id: string
   label: ReactNode
+  description?: string | ReactNode
   status: MultiConfirmationPendingStepStatus
-  /** When true on an active step, show a spinner (e.g. waiting for tx). */
-  loading?: boolean
 }
 
-export type MultiConfirmationPendingStepStatus = 'finished' | 'active' | 'upcoming'
+export type MultiConfirmationPendingStepStatus = 'upcoming' | 'active' | 'loading' | 'success' | 'error' | 'warning'
+
+interface MultiConfirmationItemProps {
+  step: MultiConfirmationPendingStep
+}
 
 interface MultiConfirmationPendingContentProps {
   title: ReactNode
@@ -53,31 +58,55 @@ export function MultiConfirmationPendingContent({
         </>
       }
     >
-      <VerticalStepsList steps={steps} />
+      <styledEl.StepsList>
+        {steps.map((step) => (
+          <MultiConfirmationItem key={step.id} step={step} />
+        ))}
+      </styledEl.StepsList>
     </ConfirmationPendingContentShell>
   )
 }
 
-function VerticalStepsList({ steps }: { steps: MultiConfirmationPendingStep[] }): ReactNode {
+const ICON_STROKE_WIDTH = 2.5
+
+const ICONS_BY_STATUS = {
+  upcoming: null,
+  active: null,
+  loading: null,
+  success: <Check strokeWidth={ICON_STROKE_WIDTH} />,
+  error: <X strokeWidth={ICON_STROKE_WIDTH} />,
+  warning: <AlertTriangle strokeWidth={ICON_STROKE_WIDTH} />,
+} as const satisfies Record<MultiConfirmationPendingStepStatus, ReactNode | null>
+
+const EXPANDABLE_STATUSES = new Set(['success', 'error', 'warning'])
+const ALWAYS_EXPANDED_STATUSES = new Set(['active', 'loading'])
+
+function MultiConfirmationItem({ step: { label, description, status } }: MultiConfirmationItemProps): ReactNode {
+  const [isUserExpanded, setIsUserExpanded] = useState(false)
+  const canExpand = !!description && EXPANDABLE_STATUSES.has(status)
+  const isExpanded = (canExpand && isUserExpanded) || ALWAYS_EXPANDED_STATUSES.has(status)
+
+  const toggleIsUserExpanded = (): void => setIsUserExpanded((prev) => !prev)
+
   return (
-    <VerticalStepsWrapper>
-      {steps.map((step, index) => (
-        <VerticalStepItem
-          key={step.id ?? (typeof step.label === 'string' ? step.label : `step-${index}`)}
-          $status={step.status}
-        >
-          <StepsIconWrapper data-status={step.status} data-loading={step.loading ? 'true' : undefined}>
-            {step.status === 'finished' ? (
-              <CheckCircle />
-            ) : step.status === 'active' && step.loading ? (
-              <Loader size="28px" />
-            ) : (
-              <UserCheck />
-            )}
-          </StepsIconWrapper>
-          <p>{step.label}</p>
-        </VerticalStepItem>
-      ))}
-    </VerticalStepsWrapper>
+    <styledEl.StepItem data-status={status}>
+      <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
+
+      {canExpand ? (
+        <styledEl.StepExpandButton onClick={toggleIsUserExpanded} aria-expanded={isUserExpanded}>
+          <ChevronDown aria-label={isUserExpanded ? 'Collapse' : 'Expand'} strokeWidth={ICON_STROKE_WIDTH} />
+        </styledEl.StepExpandButton>
+      ) : null}
+
+      <styledEl.StepLabel>{label}</styledEl.StepLabel>
+
+      {description != null ? (
+        <ExpandableContent expanded={isExpanded}>
+          <styledEl.StepDetailsInner>
+            {typeof description === 'string' ? <p>{description}</p> : description}
+          </styledEl.StepDetailsInner>
+        </ExpandableContent>
+      ) : null}
+    </styledEl.StepItem>
   )
 }
