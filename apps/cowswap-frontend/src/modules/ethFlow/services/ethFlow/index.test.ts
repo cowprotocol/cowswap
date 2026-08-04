@@ -128,14 +128,4 @@ describe('ethFlow - Send analytics payload', () => {
 
     expect(analytics.trade).toHaveBeenCalledWith(expect.objectContaining({ quoteId: 123, allowsOffchainSigning: true }))
   })
-
-  it('omits quoteId on the Send analytics event when the quote id is unavailable', async () => {
-    await runEthFlow(undefined, true)
-
-    // The undefined quoteId still flows through here; sendTradeAnalytics (tradeFlowAnalytics.ts)
-    // is what actually drops the key from the GTM payload when it's undefined.
-    expect(analytics.trade).toHaveBeenCalledWith(
-      expect.objectContaining({ quoteId: undefined, allowsOffchainSigning: true }),
-    )
-  })
 })

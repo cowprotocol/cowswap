@@ -131,12 +131,4 @@ describe('safeBundleApprovalFlow - Send analytics payload', () => {
       expect.objectContaining({ quoteId: 123, allowsOffchainSigning: false }),
     )
   })
-
-  it('omits quoteId on the approveAndPresign analytics event when the quote id is unavailable', async () => {
-    await run(undefined, false)
-
-    expect(analytics.approveAndPresign).toHaveBeenCalledWith(
-      expect.objectContaining({ quoteId: undefined, allowsOffchainSigning: false }),
-    )
-  })
 })

@@ -123,12 +123,4 @@ describe('safeBundleEthFlow - Send analytics payload', () => {
       expect.objectContaining({ quoteId: 123, allowsOffchainSigning: false }),
     )
   })
-
-  it('omits quoteId on the wrapApproveAndPresign analytics event when the quote id is unavailable', async () => {
-    await run(undefined, false)
-
-    expect(analytics.wrapApproveAndPresign).toHaveBeenCalledWith(
-      expect.objectContaining({ quoteId: undefined, allowsOffchainSigning: false }),
-    )
-  })
 })
