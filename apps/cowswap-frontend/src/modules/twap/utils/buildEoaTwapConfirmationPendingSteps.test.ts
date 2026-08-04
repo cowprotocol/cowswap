@@ -144,6 +144,17 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     ])
     expect(steps[1]?.description).toBeTruthy()
   })
+
+  it('throws when the current step is missing from the plan', () => {
+    expect(() =>
+      buildEoaTwapConfirmationPendingSteps({
+        step: EoaTwapSigningSteps.FundingOrder,
+        plan: [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.CreatingOrder],
+        phase: EoaTwapSigningPhase.Sign,
+        lockDismiss: false,
+      }),
+    ).toThrow('EOA TWAP signing step "FundingOrder" is not present in plan [TwapSetup, CreatingOrder]')
+  })
 })
 
 describe('getEoaTwapStepLabel()', () => {

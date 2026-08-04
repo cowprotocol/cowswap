@@ -22,6 +22,12 @@ export function buildEoaTwapConfirmationPendingSteps(
 ): MultiConfirmationPendingStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
+  if (currentIndex === -1) {
+    throw new Error(
+      `EOA TWAP signing step "${signingStep.step}" is not present in plan [${signingStep.plan.join(', ')}]`,
+    )
+  }
+
   return signingStep.plan.map((step, index) => {
     const label = getEoaTwapStepLabel(step, symbol)
 
