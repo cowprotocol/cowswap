@@ -204,7 +204,13 @@ export function useCreateTwapOrder() {
         const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
-        tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
+        tradeFlowAnalytics.placeAdvancedOrder({
+          ...twapFlowAnalyticsContext,
+          // No quote/quoteId exists yet at this point for either TWAP path (the EOA path only fetches
+          // one later, inside placeEoaTwapOrder); isEoaTwap is the accurate proxy for off-chain vs
+          // on-chain signing since it's what actually decides which code path below executes.
+          allowsOffchainSigning: isEoaTwap,
+        })
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
         await uploadAppDataDocOrderbookApi({

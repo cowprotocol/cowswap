@@ -5,7 +5,7 @@ import { renderHook } from '@testing-library/react'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { useTradeFlowAnalytics } from './tradeFlowAnalytics'
+import { TradeFlowAnalytics, useTradeFlowAnalytics } from './tradeFlowAnalytics'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -19,7 +19,17 @@ jest.mock('@cowprotocol/analytics', () => {
 
 const useCowAnalyticsMock = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 
-describe('useTradeFlowAnalytics.trade', () => {
+const PRE_SIGNATURE_METHODS: Array<{
+  method: 'trade' | 'placeAdvancedOrder' | 'approveAndPresign' | 'wrapApproveAndPresign'
+  action: string
+}> = [
+  { method: 'trade', action: 'Send' },
+  { method: 'placeAdvancedOrder', action: 'Place Advanced Order' },
+  { method: 'approveAndPresign', action: 'Bundle Approve and Swap' },
+  { method: 'wrapApproveAndPresign', action: 'Bundled Eth Flow' },
+]
+
+describe.each(PRE_SIGNATURE_METHODS)('useTradeFlowAnalytics.$method', ({ method, action }) => {
   const sendEvent = jest.fn()
 
   beforeEach(() => {
@@ -27,10 +37,13 @@ describe('useTradeFlowAnalytics.trade', () => {
     useCowAnalyticsMock.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
   })
 
-  it('includes quoteId and allowsOffchainSigning on the Send event when provided', () => {
+  function call(context: Parameters<TradeFlowAnalytics[typeof method]>[0]): void {
     const { result } = renderHook(() => useTradeFlowAnalytics())
+    result.current[method](context)
+  }
 
-    result.current.trade({
+  it(`includes quoteId and allowsOffchainSigning on the ${action} event when provided`, () => {
+    call({
       account: '0xaccount',
       orderType: UiOrderType.SWAP,
       marketLabel: 'WETH,COW',
@@ -40,7 +53,7 @@ describe('useTradeFlowAnalytics.trade', () => {
 
     expect(sendEvent).toHaveBeenCalledWith({
       category: CowSwapAnalyticsCategory.TRADE,
-      action: 'Send',
+      action,
       label: `${UiOrderType.SWAP}|WETH,COW`,
       isBridgeOrder: undefined,
       quoteId: 123,
@@ -49,9 +62,7 @@ describe('useTradeFlowAnalytics.trade', () => {
   })
 
   it('omits quoteId and allowsOffchainSigning when not provided', () => {
-    const { result } = renderHook(() => useTradeFlowAnalytics())
-
-    result.current.trade({
+    call({
       account: '0xaccount',
       orderType: UiOrderType.SWAP,
       marketLabel: 'WETH,COW',
