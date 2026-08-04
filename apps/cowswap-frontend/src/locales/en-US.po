@@ -4383,6 +4383,10 @@ msgstr "Recoverable value"
 msgid "is worth"
 msgstr "is worth"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
+msgid "The transaction could not be sent"
+msgstr "The transaction could not be sent"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
 msgstr "View account"
