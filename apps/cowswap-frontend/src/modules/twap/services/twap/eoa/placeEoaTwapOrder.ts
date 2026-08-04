@@ -401,6 +401,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
     // If `generatePermitHook` fails, we simply continue without a permit, using the approval flow below.
     if (permitData) {
+      if (!jotaiStore.get(captchaCanQuoteAtom)) throw new Error('Complete the CAPTCHA before you request a quote')
+
       const orderPostingResult = await postSwapOrderFromQuote({
         appData: {
           metadata: {
@@ -449,6 +451,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       amount: maxUint256,
     })
   }
+
+  if (!jotaiStore.get(captchaCanQuoteAtom)) throw new Error('Complete the CAPTCHA before you request a quote')
 
   const orderPostingResult = await postSwapOrderFromQuote()
 
