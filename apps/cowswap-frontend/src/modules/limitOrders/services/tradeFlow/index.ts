@@ -90,7 +90,11 @@ export async function tradeFlow(
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
-    analytics.trade(swapFlowAnalyticsContext)
+    analytics.trade({
+      ...swapFlowAnalyticsContext,
+      quoteId: postOrderParams.quoteId,
+      allowsOffchainSigning: postOrderParams.allowsOffchainSigning,
+    })
 
     beforeTrade()
 

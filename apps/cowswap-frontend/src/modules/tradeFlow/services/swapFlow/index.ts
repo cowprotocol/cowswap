@@ -115,7 +115,11 @@ export async function swapFlow(
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
-    analytics.trade(swapFlowAnalyticsContext)
+    analytics.trade({
+      ...swapFlowAnalyticsContext,
+      quoteId: orderParams.quoteId,
+      allowsOffchainSigning: orderParams.allowsOffchainSigning,
+    })
 
     tradeConfirmActions.onSign(tradeAmounts)
 
