@@ -1,11 +1,13 @@
+import type { TradePage } from './TradePage'
 import type { Page, Locator } from '@playwright/test'
 
-export class LimitPage {
+export class LimitPage implements TradePage {
   readonly page: Page
   readonly inputAmount: Locator
   readonly limitPriceInput: Locator
   readonly placeOrderButton: Locator
   readonly unlockButton: Locator
+  readonly arrowSeparator: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -13,6 +15,7 @@ export class LimitPage {
     this.limitPriceInput = page.locator('#rate-limit-amount-input')
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-limit-orders-btn')
+    this.arrowSeparator = page.locator('#currency-arrow-separator')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -32,5 +35,18 @@ export class LimitPage {
 
   async setLimitPrice(value: string): Promise<void> {
     await this.limitPriceInput.fill(value)
+  }
+
+  async enterSellAmount(amount: string): Promise<void> {
+    await this.inputAmount.fill(amount)
+  }
+
+  async waitForQuote(): Promise<void> {
+    await this.arrowSeparator.waitFor({ state: 'visible' })
+    await this.page.waitForFunction(
+      () => !document.querySelector('#currency-arrow-separator')?.getAttribute('data-isLoading'),
+      undefined,
+      { timeout: 30_000 },
+    )
   }
 }

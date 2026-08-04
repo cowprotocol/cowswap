@@ -13,34 +13,35 @@ const DEFAULT_USDC_BALANCE = 0n
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Market Orders', () => {
-  test.beforeEach(async ({ wallet, mocks }) => {
-    mocks.balances.set(wallet.address, CHAIN_ID, {
-      [WETH]: DEFAULT_WETH_BALANCE.toString(),
-      [USDC]: DEFAULT_USDC_BALANCE.toString(),
+  test('[MO-01] Sell order: WETH → USDC @smoke', async ({ setupTestConditions, swapPage, confirmModal }) => {
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1', USDC: '0' },
+      allowances: { WETH: '10' },
     })
-  })
-
-  test('[MO-01] Sell order: WETH → USDC @smoke', async ({ swapPage, mocks, wallet, confirmModal }) => {
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
-    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
-    await swapPage.waitForQuote()
-    await swapPage.enterSellAmount('0.5')
     await expect(swapPage.outputAmount).not.toHaveValue('')
     await swapPage.clickSwap()
     await expect(confirmModal.confirmButton).toContainText(/confirm swap/i)
   })
 
   test('[MO-02] Sufficient allowance: proceeds straight to confirm swap', async ({
+    setupTestConditions,
     swapPage,
-    wallet,
     confirmModal,
-    mocks,
   }) => {
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
-
-    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
-    await swapPage.waitForQuote()
-    await swapPage.enterSellAmount('0.5')
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1', USDC: '0' },
+      allowances: { WETH: '10' },
+    })
     await expect(swapPage.outputAmount).not.toHaveValue('')
 
     await expect(swapPage.swapButton).not.toContainText(/approve/i)
@@ -48,12 +49,16 @@ test.describe('Market Orders', () => {
     await expect(confirmModal.confirmButton).toContainText(/confirm swap/i)
   })
 
-  test('[MO-03] Insufficient allowance: asks for approval', async ({ swapPage, wallet, mocks }) => {
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '0' })
-
-    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
-    await swapPage.waitForQuote()
-    await swapPage.enterSellAmount('0.5')
+  test('[MO-03] Insufficient allowance: asks for approval', async ({ setupTestConditions, swapPage }) => {
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1', USDC: '0' },
+      allowances: { WETH: '0' },
+    })
 
     await expect(swapPage.approveButton).toContainText(/approve/i)
   })
@@ -66,6 +71,10 @@ test.describe('Market Orders', () => {
   }) => {
     const PRICE_FACTOR = 12_000n // buy-token units per 1 sell-token unit — arbitrary, just needs to stay proportional
 
+    mocks.balances.set(wallet.address, CHAIN_ID, {
+      [WETH]: DEFAULT_WETH_BALANCE.toString(),
+      [USDC]: DEFAULT_USDC_BALANCE.toString(),
+    })
     mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
 
     // Pin buyAmount proportional to whatever sellAmount was actually requested, not a fixed

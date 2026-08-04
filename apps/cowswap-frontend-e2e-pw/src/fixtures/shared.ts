@@ -12,6 +12,7 @@ import { ConfirmModal } from '../pages/ConfirmModal'
 import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
+import { createSetupTestConditions, type SetupTestConditions } from '../support/setupTestConditions'
 
 import type { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions } from '@playwright/test'
 
@@ -22,6 +23,7 @@ export interface SharedFixtures {
   accountPage: AccountPage
   confirmModal: ConfirmModal
   rpcProxy: RpcProxyHandle
+  setupTestConditions: SetupTestConditions
   mocks: {
     allowances: AllowancesMock
     balances: BalancesMock
@@ -33,8 +35,17 @@ export interface SharedFixtures {
   }
 }
 
+/** The subset of `wallet` (MockWalletApi | WalletApi) that `setupTestConditions` needs. */
+interface WalletLike {
+  readonly address: string
+}
+
 /* eslint-disable react-hooks/rules-of-hooks */
-export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs & PlaywrightTestOptions> = {
+export const sharedFixtures: Fixtures<
+  SharedFixtures,
+  object,
+  PlaywrightTestArgs & PlaywrightTestOptions & { wallet: WalletLike }
+> = {
   swapPage: async ({ page }, use) => {
     await use(new SwapPage(page))
   },
@@ -49,6 +60,9 @@ export const sharedFixtures: Fixtures<SharedFixtures, object, PlaywrightTestArgs
   },
   confirmModal: async ({ page }, use) => {
     await use(new ConfirmModal(page))
+  },
+  setupTestConditions: async ({ wallet, mocks, swapPage, limitPage, twapPage }, use) => {
+    await use(createSetupTestConditions({ wallet, mocks, swapPage, limitPage, twapPage }))
   },
   rpcProxy: async ({}, use, testInfo) => {
     const handle = createRpcProxyHandle(testInfo)

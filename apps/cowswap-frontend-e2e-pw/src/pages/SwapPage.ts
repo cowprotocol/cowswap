@@ -1,5 +1,6 @@
 import { TokenSelector } from './TokenSelector'
 
+import type { TradePage } from './TradePage'
 import type { BalancesMock } from '../mocks/balances'
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { Page, Locator } from '@playwright/test'
@@ -22,7 +23,7 @@ interface PostOrderBody {
   signature: string
 }
 
-export class SwapPage {
+export class SwapPage implements TradePage {
   readonly page: Page
   readonly inputAmount: Locator
   readonly outputAmount: Locator
