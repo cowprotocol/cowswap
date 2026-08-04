@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { captchaCanQuoteAtom } from 'entities/captcha'
 
 import {
   DEFAULT_LIMIT_DERIVED_STATE,

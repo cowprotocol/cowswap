@@ -74,7 +74,7 @@ describe('FeatureFlagsUpdater', () => {
       </Provider>,
     )
 
-    act(() => jest.advanceTimersByTime(3_000))
+    act(() => jest.advanceTimersByTime(5_000))
 
     expect(store.get(featureFlagsAtom)).toEqual({})
     expect(store.get(featureFlagsStatusAtom)).toBe('unavailable')
@@ -88,7 +88,9 @@ describe('FeatureFlagsUpdater', () => {
       </Provider>,
     )
 
-    act(() => jest.advanceTimersByTime(3_000))
+    act(() => jest.advanceTimersByTime(5_000))
+
+    expect(store.get(featureFlagsStatusAtom)).toBe('unavailable')
 
     const flags = { isCaptchaEnabled: true }
     useFeatureFlagsMock.mockReturnValue(flags)
