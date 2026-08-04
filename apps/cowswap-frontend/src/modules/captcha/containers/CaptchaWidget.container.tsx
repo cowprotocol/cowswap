@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useAtom, useSetAtom } from 'jotai'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { createCowTracker } from '@cowprotocol/analytics'
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
@@ -8,6 +8,7 @@ import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
 import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
+import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -24,6 +25,7 @@ const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
   const [captchaError, setCaptchaError] = useAtom(captchaErrorAtom)
+  const setCaptchaInteractionRequired = useSetAtom(captchaInteractionRequiredAtom)
   const { isCaptchaEnabled } = useFeatureFlags()
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
@@ -31,6 +33,12 @@ export function CaptchaWidget(): ReactNode {
   const theme = useTheme()
 
   const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
+
+  useLayoutEffect(() => {
+    setCaptchaInteractionRequired(false)
+
+    return () => setCaptchaInteractionRequired(false)
+  }, [captchaError, captchaJwt, isCaptchaEnabled, setCaptchaInteractionRequired, siteKey])
 
   useEffect(() => {
     if (isCaptchaEnabled === undefined) return
@@ -91,19 +99,23 @@ export function CaptchaWidget(): ReactNode {
         // refreshExpired: 'manual',
       }}
       onWidgetLoad={(widgetId) => {
+        setCaptchaInteractionRequired(false)
         logCaptcha.debug('Challenge starting', { widgetId })
         trackCaptcha({ action: 'captcha_challenge_started' })
         captchaRef.current?.execute()
       }}
       onBeforeInteractive={() => {
+        setCaptchaInteractionRequired(true)
         logCaptcha.debug('Challenge requires interaction')
         trackCaptcha({ action: 'captcha_interaction_required' })
       }}
       onAfterInteractive={() => {
+        setCaptchaInteractionRequired(false)
         logCaptcha.debug('Challenge interaction completed')
         trackCaptcha({ action: 'captcha_interaction_completed' })
       }}
       onSuccess={async (token: string) => {
+        setCaptchaInteractionRequired(false)
         const requestId = exchangeRequestIdRef.current + 1
 
         exchangeRequestIdRef.current = requestId
@@ -131,6 +143,7 @@ export function CaptchaWidget(): ReactNode {
         }
       }}
       onExpire={() => {
+        setCaptchaInteractionRequired(false)
         exchangeRequestIdRef.current += 1
 
         logCaptcha.warn('Challenge expired')
@@ -140,6 +153,7 @@ export function CaptchaWidget(): ReactNode {
         captchaRef.current?.reset()
       }}
       onError={(errorCode) => {
+        setCaptchaInteractionRequired(false)
         exchangeRequestIdRef.current += 1
 
         const error = new Error('Challenge errored')
@@ -149,6 +163,7 @@ export function CaptchaWidget(): ReactNode {
         setCaptchaJwt(null)
       }}
       onUnsupported={() => {
+        setCaptchaInteractionRequired(false)
         const error = new Error('Challenge unsupported by browser')
         logCaptcha.error(error)
         setCaptchaError(error)
@@ -156,6 +171,7 @@ export function CaptchaWidget(): ReactNode {
       }}
       scriptOptions={{
         onError: () => {
+          setCaptchaInteractionRequired(false)
           const error = new Error('Turnstile script failed to load')
           logCaptcha.error(error)
           setCaptchaError(error)

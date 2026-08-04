@@ -4,8 +4,9 @@ import { act, ReactNode } from 'react'
 
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { setBearerToken } from 'cowSdk'
+import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
 import { CaptchaWidget } from './CaptchaWidget.container'
@@ -24,7 +25,18 @@ jest.mock('@cowprotocol/common-hooks', () => {
 
 jest.mock('@marsidev/react-turnstile', () => ({
   __esModule: true,
-  Turnstile: () => <div data-testid="turnstile" />,
+  Turnstile: ({
+    onBeforeInteractive,
+    onAfterInteractive,
+  }: {
+    onBeforeInteractive(): void
+    onAfterInteractive(): void
+  }) => (
+    <div data-testid="turnstile">
+      <button data-testid="before-interactive" onClick={onBeforeInteractive} />
+      <button data-testid="after-interactive" onClick={onAfterInteractive} />
+    </div>
+  ),
 }))
 
 jest.mock('cowSdk', () => ({
@@ -99,6 +111,21 @@ describe('CaptchaWidget', () => {
     renderWithStore()
 
     expect(screen.getByTestId('turnstile')).not.toBeNull()
+  })
+
+  it('tracks when the CAPTCHA requires interaction', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+    renderWithStore(store)
+
+    expect(store.get(captchaInteractionRequiredAtom)).toBe(false)
+
+    fireEvent.click(screen.getByTestId('before-interactive'))
+    expect(store.get(captchaInteractionRequiredAtom)).toBe(true)
+
+    fireEvent.click(screen.getByTestId('after-interactive'))
+    expect(store.get(captchaInteractionRequiredAtom)).toBe(false)
   })
 
   it('clears a stored captcha JWT and bearer token when the flag is disabled', async () => {

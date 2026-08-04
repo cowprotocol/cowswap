@@ -57,7 +57,7 @@ describe('validateTradeForm - xStock logic', () => {
     isOutputCurrencyXstock: false,
     injectedWidgetParams: {},
     tradePriceImpact: { loading: false, priceImpact: undefined },
-    isCaptchaLoading: false,
+    isCaptchaPending: false,
     isCaptchaRequired: false,
   }
 
@@ -188,14 +188,14 @@ describe('validateTradeForm - xStock logic', () => {
     expect(result).toEqual([TradeFormValidation.XstockMinimumTradeSize])
   })
 
-  test('prioritizes CAPTCHA loading over wallet connection', () => {
+  test('prioritizes pending CAPTCHA over wallet connection', () => {
     const context = {
       ...baseContext,
       account: undefined,
-      isCaptchaLoading: true,
+      isCaptchaPending: true,
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.CaptchaLoading])
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.CaptchaPending])
   })
 
   test('prioritizes required CAPTCHA over wallet connection', () => {

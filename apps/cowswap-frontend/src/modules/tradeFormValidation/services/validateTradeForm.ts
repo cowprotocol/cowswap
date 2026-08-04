@@ -38,7 +38,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
     isRestoringConnection,
-    isCaptchaLoading,
+    isCaptchaPending,
     isCaptchaRequired,
   } = context
 
@@ -94,8 +94,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
-  if (isCaptchaLoading) {
-    return [TradeFormValidation.CaptchaLoading]
+  if (isCaptchaPending) {
+    return [TradeFormValidation.CaptchaPending]
   }
 
   if (isCaptchaRequired) {

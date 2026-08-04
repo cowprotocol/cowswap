@@ -143,9 +143,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
-  [TradeFormValidation.CaptchaLoading]: {
+  [TradeFormValidation.CaptchaPending]: {
     text: <CenteredDots smaller />,
-    id: 'captcha-loading',
+    id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {
     text: <Trans>Complete the CAPTCHA</Trans>,

@@ -18,6 +18,7 @@ import {
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
@@ -55,6 +56,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOnline = useIsOnline()
   const featureFlagsStatus = useAtomValue(featureFlagsStatusAtom)
   const canQuote = useAtomValue(captchaCanQuoteAtom)
+  const captchaInteractionRequired = useAtomValue(captchaInteractionRequiredAtom)
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const isRestoringConnection = useIsRestoringConnection()
 
@@ -134,8 +136,10 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isOutputCurrencyXstock,
       isNonEvmReceiverConfirmed,
       isRestoringConnection,
-      isCaptchaLoading: featureFlagsStatus === 'loading',
-      isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote,
+      isCaptchaPending:
+        featureFlagsStatus === 'loading' ||
+        (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
+      isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
     }
   }, [
     hasFirstLoad,
@@ -170,6 +174,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isRestoringConnection,
     featureFlagsStatus,
     canQuote,
+    captchaInteractionRequired,
   ])
 }
 
