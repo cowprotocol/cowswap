@@ -5,30 +5,27 @@ import { CHAIN_IDS } from '../support/constants'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
+const CHAIN_ID = CHAIN_IDS.SEPOLIA
 
-interface PostOrderBody {
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  receiver: string
-  validTo: number
-  appData: string
-  appDataHash: string
-  feeAmount: string
-  kind: string
-  partiallyFillable: boolean
-  sellTokenBalance: string
-  buyTokenBalance: string
-  signingScheme: string
-  signature: string
-}
+// Every test in this file gets a wallet that already holds this much WETH and no USDC — a
+// sufficient, deterministic starting balance so none of them fall back to a real balance
+// fetch (which is what "Couldn't load balances" in the UI would otherwise come from).
+const DEFAULT_WETH_BALANCE = 1_000_000_000_000_000_000n // 1 WETH
+const DEFAULT_USDC_BALANCE = 0n
 
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Market Orders', () => {
-  test('[MO-01] Sell order: WETH → USDC @smoke', async ({ swapPage, confirmModal }) => {
-    await swapPage.goto({ chainId: CHAIN_IDS.SEPOLIA, sell: WETH, buy: USDC })
+  test.beforeEach(async ({ wallet, mocks }) => {
+    mocks.balances.set(wallet.address, CHAIN_ID, {
+      [WETH]: DEFAULT_WETH_BALANCE.toString(),
+      [USDC]: DEFAULT_USDC_BALANCE.toString(),
+    })
+  })
+
+  test('[MO-01] Sell order: WETH → USDC @smoke', async ({ swapPage, mocks, wallet, confirmModal }) => {
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
     await swapPage.waitForQuote()
     await swapPage.enterSellAmount('0.5')
     await expect(swapPage.outputAmount).not.toHaveValue('')
@@ -42,9 +39,9 @@ test.describe('Market Orders', () => {
     confirmModal,
     mocks,
   }) => {
-    mocks.allowances.set(wallet.address, CHAIN_IDS.SEPOLIA, { [WETH]: '10000000000000000000' })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
 
-    await swapPage.goto({ chainId: CHAIN_IDS.SEPOLIA, sell: WETH, buy: USDC })
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
     await swapPage.waitForQuote()
     await swapPage.enterSellAmount('0.5')
     await expect(swapPage.outputAmount).not.toHaveValue('')
@@ -55,9 +52,9 @@ test.describe('Market Orders', () => {
   })
 
   test('[MO-03] Insufficient allowance: asks for approval', async ({ swapPage, wallet, mocks }) => {
-    mocks.allowances.set(wallet.address, CHAIN_IDS.SEPOLIA, { [WETH]: '0' })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '0' })
 
-    await swapPage.goto({ chainId: CHAIN_IDS.SEPOLIA, sell: WETH, buy: USDC })
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
     await swapPage.waitForQuote()
     await swapPage.enterSellAmount('0.5')
 
@@ -70,12 +67,9 @@ test.describe('Market Orders', () => {
     confirmModal,
     mocks,
   }) => {
-    const chainId = CHAIN_IDS.SEPOLIA
-    const SELL_BALANCE_BEFORE = 1_000_000_000_000_000_000n // 1 WETH
     const PRICE_FACTOR = 12_000n // buy-token units per 1 sell-token unit — arbitrary, just needs to stay proportional
 
-    mocks.allowances.set(wallet.address, chainId, { [WETH]: '10000000000000000000' })
-    mocks.balances.set(wallet.address, chainId, { [WETH]: SELL_BALANCE_BEFORE.toString(), [USDC]: '0' })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
 
     // Pin buyAmount proportional to whatever sellAmount was actually requested, not a fixed
     // absolute value: the swap form defaults the sell input to the full wallet balance before
@@ -95,80 +89,19 @@ test.describe('Market Orders', () => {
       }
     })
 
-    // `accountOrders` starts out as the plain fixture list; once the order below is posted,
-    // this starts prepending it — fulfilled — so "My orders" reflects the trade emulated
-    // as settled in the orderbook, without the app ever seeing a real fill on-chain.
-    let postedOrder: Record<string, unknown> | null = null
-    mocks.cowApi.set('accountOrders', (req) => {
-      const defaults = req.defaults as unknown[]
-      return postedOrder ? [postedOrder, ...defaults] : defaults
-    })
+    // The orderbook is fully mocked already (the shared `mocks` fixture blocks and fails the
+    // test on any un-mocked CoW API URL) — this additionally keeps the rest of the mock stack
+    // in sync with what posting the order actually did, exactly as the real backend would once
+    // the trade settles on-chain.
+    const fulfillment = swapPage.mockSwapFulfillment(
+      mocks.cowApi,
+      mocks.balances,
+      wallet.address,
+      CHAIN_ID,
+      DEFAULT_WETH_BALANCE,
+    )
 
-    // The orderbook is fully mocked already (the shared `mocks` fixture blocks and fails
-    // the test on any un-mocked CoW API URL) — this override additionally keeps the
-    // balances mock in sync with what posting the order actually did, exactly as the
-    // real balances-watcher would once the trade settles on-chain.
-    let postedBuyAmount = ''
-    mocks.cowApi.set('postOrder', (req) => {
-      const body = req.body as PostOrderBody
-      const uid = req.defaults as string
-      const remainingSell = SELL_BALANCE_BEFORE - BigInt(body.sellAmount)
-      postedBuyAmount = body.buyAmount
-      mocks.balances.set(wallet.address, chainId, {
-        [WETH]: remainingSell.toString(),
-        [USDC]: body.buyAmount,
-      })
-
-      postedOrder = {
-        creationDate: new Date().toISOString(),
-        owner: wallet.address,
-        uid,
-        availableBalance: null,
-        executedBuyAmount: body.buyAmount,
-        executedSellAmount: body.sellAmount,
-        executedSellAmountBeforeFees: body.sellAmount,
-        executedFeeAmount: '0',
-        executedFee: '123000000000',
-        executedFeeToken: body.sellToken,
-        invalidated: false,
-        status: 'fulfilled',
-        class: 'market',
-        settlementContract: '0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13',
-        isLiquidityOrder: false,
-        fullAppData: body.appData,
-        sellToken: body.sellToken,
-        buyToken: body.buyToken,
-        receiver: body.receiver,
-        sellAmount: body.sellAmount,
-        buyAmount: body.buyAmount,
-        validTo: body.validTo,
-        appData: body.appDataHash,
-        feeAmount: body.feeAmount,
-        kind: body.kind,
-        partiallyFillable: body.partiallyFillable,
-        sellTokenBalance: body.sellTokenBalance,
-        buyTokenBalance: body.buyTokenBalance,
-        signingScheme: body.signingScheme,
-        signature: body.signature,
-        interactions: { pre: [], post: [] },
-      }
-
-      // Order-progress polls this once the order exists — "traded" is what moves it past
-      // "still searching" to a fulfilled state, mirroring the same fill emulated above.
-      mocks.cowApi.set('orderStatus', () => ({
-        type: 'traded',
-        value: [
-          {
-            solver: '0x99b4136666ca1d13020830350ca8d01a0e5e466b',
-            executedAmounts: { sell: body.sellAmount, buy: body.buyAmount },
-          },
-        ],
-      }))
-
-      return req.defaults
-    })
-
-    await swapPage.goto({ chainId, sell: WETH, buy: USDC })
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
     await swapPage.waitForQuote()
     // The swap form defaults the sell input to the full wallet balance (1 WETH), firing its
     // own quote for a not-quite-round amount (a pre-existing app quirk unrelated to this
@@ -196,19 +129,21 @@ test.describe('Market Orders', () => {
 
     // The currency panels hide their balance while a trade is pending/just-submitted
     // (`CurrencyInputPanel` only renders it when `!disabled`). Posting the order opens the
-    // order-progress screen (unmocked order status, so it sits on "still searching"
-    // indefinitely) — its back arrow has no accessible name, but it dismisses on Escape,
+    // order-progress screen; `orderStatus` reporting "traded" (mocked above) is what moves it
+    // to a completed state, whose back arrow has no accessible name but dismisses on Escape,
     // returning to the normal, interactive swap form.
     await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
     await swapPage.page.keyboard.press('Escape')
 
-    // Waits out the balances-watcher SSE reconnect that picks up the `postOrder`
-    // override's update above — Playwright's `expect` polls until this passes.
-    await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 150_000 })
+    // Waits out the balances-watcher SSE reconnect that picks up `mockSwapFulfillment`'s
+    // update above — Playwright's `expect` polls until this passes.
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
     // The order's buyAmount is the quote's buyAmount minus the app's own slippage — assert
-    // against what was actually posted (captured above) rather than re-deriving that math.
-    await expect(swapPage.buyBalance).toHaveAttribute('title', `${BigInt(postedBuyAmount) / 10n ** 18n} USDC`, {
-      timeout: 150_000,
-    })
+    // against what was actually posted rather than re-deriving that math.
+    await expect(swapPage.buyBalance).toHaveAttribute(
+      'title',
+      `${BigInt(fulfillment.getPostedBuyAmount()) / 10n ** 18n} USDC`,
+      { timeout: 15_000 },
+    )
   })
 })

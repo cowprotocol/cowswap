@@ -1,6 +1,26 @@
 import { TokenSelector } from './TokenSelector'
 
+import type { BalancesMock } from '../mocks/balances'
+import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { Page, Locator } from '@playwright/test'
+
+interface PostOrderBody {
+  sellToken: string
+  buyToken: string
+  sellAmount: string
+  buyAmount: string
+  receiver: string
+  validTo: number
+  appData: string
+  appDataHash: string
+  feeAmount: string
+  kind: string
+  partiallyFillable: boolean
+  sellTokenBalance: string
+  buyTokenBalance: string
+  signingScheme: string
+  signature: string
+}
 
 export class SwapPage {
   readonly page: Page
@@ -70,5 +90,95 @@ export class SwapPage {
 
   async clickSwap(): Promise<void> {
     await this.swapButton.click()
+  }
+
+  /**
+   * Emulates the orderbook fulfilling whatever order gets posted next: keeps the balances mock
+   * in sync with the trade (debits the sell token, credits the buy token), makes `accountOrders`
+   * include it as `fulfilled`, and makes `orderStatus` report it as `traded` — the three things
+   * the real backend would eventually reflect once the trade settles on-chain.
+   *
+   * Returns a handle to read the posted buyAmount back once the order goes through, since the
+   * app applies its own slippage on top of the quote — a caller asserting on the resulting
+   * balance needs the amount that was actually posted, not the pre-slippage quote.
+   */
+  mockSwapFulfillment(
+    cowApi: CowProtocolApiMock,
+    balances: BalancesMock,
+    owner: string,
+    chainId: number,
+    sellTokenBalanceBefore: bigint,
+  ): { getPostedBuyAmount(): string } {
+    let postedOrder: Record<string, unknown> | null = null
+    let postedBuyAmount = ''
+
+    // Starts out as the plain fixture list; once the order below is posted, this starts
+    // prepending it — fulfilled — so "My orders" reflects the trade emulated as settled in the
+    // orderbook, without the app ever seeing a real fill on-chain.
+    cowApi.set('accountOrders', (req) => {
+      const defaults = req.defaults as unknown[]
+      return postedOrder ? [postedOrder, ...defaults] : defaults
+    })
+
+    cowApi.set('postOrder', (req) => {
+      const body = req.body as PostOrderBody
+      const uid = req.defaults as string
+      postedBuyAmount = body.buyAmount
+
+      balances.set(owner, chainId, {
+        [body.sellToken]: (sellTokenBalanceBefore - BigInt(body.sellAmount)).toString(),
+        [body.buyToken]: body.buyAmount,
+      })
+
+      postedOrder = {
+        creationDate: new Date().toISOString(),
+        owner,
+        uid,
+        availableBalance: null,
+        executedBuyAmount: body.buyAmount,
+        executedSellAmount: body.sellAmount,
+        executedSellAmountBeforeFees: body.sellAmount,
+        executedFeeAmount: '0',
+        executedFee: '123000000000',
+        executedFeeToken: body.sellToken,
+        invalidated: false,
+        status: 'fulfilled',
+        class: 'market',
+        settlementContract: '0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13',
+        isLiquidityOrder: false,
+        fullAppData: body.appData,
+        sellToken: body.sellToken,
+        buyToken: body.buyToken,
+        receiver: body.receiver,
+        sellAmount: body.sellAmount,
+        buyAmount: body.buyAmount,
+        validTo: body.validTo,
+        appData: body.appDataHash,
+        feeAmount: body.feeAmount,
+        kind: body.kind,
+        partiallyFillable: body.partiallyFillable,
+        sellTokenBalance: body.sellTokenBalance,
+        buyTokenBalance: body.buyTokenBalance,
+        signingScheme: body.signingScheme,
+        signature: body.signature,
+        interactions: { pre: [], post: [] },
+      }
+
+      // Order-progress polls this once the order exists — "traded" is what moves it past
+      // "still searching" to a fulfilled state, mirroring the same fill emulated above.
+      cowApi.set('orderStatus', () => ({
+        type: 'traded',
+        value: [
+          {
+            solver: '0x99b4136666ca1d13020830350ca8d01a0e5e466b',
+            executedAmounts: { sell: body.sellAmount, buy: body.buyAmount },
+          },
+        ],
+      }))
+
+      return req.defaults
+    })
+
+    return { getPostedBuyAmount: () => postedBuyAmount }
   }
 }
