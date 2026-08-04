@@ -148,7 +148,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {
-    text: <Trans>Complete the CAPTCHA</Trans>,
+    text: <Trans>Click the checkbox</Trans>,
     id: 'complete-captcha',
   },
   [TradeFormValidation.QuoteLoading]: {

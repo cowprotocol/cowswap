@@ -24,7 +24,7 @@ export function QuotePolingProgress(): ReactNode {
   const content = (
     <span>
       {!canQuote && featureFlagsStatus === 'ready'
-        ? t`Complete the CAPTCHA to get a quote`
+        ? t`Click the checkbox to get a quote`
         : counter === 0
           ? t`Quote is updating...`
           : t`Quote will be updated in ${time}`}
