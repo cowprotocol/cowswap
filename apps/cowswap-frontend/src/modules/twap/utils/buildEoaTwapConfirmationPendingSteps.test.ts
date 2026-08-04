@@ -115,7 +115,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         id: EoaTwapSigningSteps.FundingOrder,
         label: 'Sign TWAP',
         status: 'upcoming',
-        description: 'Sign in your wallet. We’ll submit the funding order automatically.',
+        description: "Sign in your wallet. We'll submit the funding order automatically.",
       },
     ])
   })
@@ -190,7 +190,13 @@ describe('getEoaTwapStepDescription()', () => {
 
   it('returns sign copy for FundingOrder when active', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'active')).toBe(
-      'Sign in your wallet. We’ll submit the funding order automatically.',
+      "Sign in your wallet. We'll submit the funding order automatically.",
     )
+  })
+
+  it('returns no description for success status', () => {
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveOrPermit, 'success')).toBeUndefined()
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'success')).toBeUndefined()
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'success')).toBeUndefined()
   })
 })

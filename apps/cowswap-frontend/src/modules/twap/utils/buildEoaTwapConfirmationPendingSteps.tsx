@@ -73,6 +73,10 @@ export function getEoaTwapStepDescription(
   step: EoaTwapSigningSteps,
   status: MultiConfirmationPendingStep['status'],
 ): ReactNode | undefined {
+  if (status === 'success') {
+    return undefined
+  }
+
   const isLoading = status === 'loading'
 
   switch (step) {
