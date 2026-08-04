@@ -8045,6 +8045,10 @@ msgstr "Clear all"
 msgid "To proceed, change the network in your {walletName}"
 msgstr "To proceed, change the network in your {walletName}"
 
+#: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
+msgid "Complete the CAPTCHA to get a quote"
+msgstr "Complete the CAPTCHA to get a quote"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "User rejected transaction"
 msgstr "User rejected transaction"
