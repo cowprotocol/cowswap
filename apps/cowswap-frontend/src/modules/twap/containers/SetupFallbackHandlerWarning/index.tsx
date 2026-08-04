@@ -82,15 +82,25 @@ export function SetupFallbackHandlerWarning() {
 
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleUpdateClick = async () => {
-    const txHash = await setupFallbackHandler()
+  const [isSendingTx, setIsSendingTx] = useState(false)
+  const [setupError, setSetupError] = useState<string | null>(null)
 
-    if (txHash) {
-      setPendingTxHash(txHash)
+  const handleUpdateClick = useCallback(async (): Promise<void> => {
+    setSetupError(null)
+    setIsSendingTx(true)
+
+    try {
+      const txHash = await setupFallbackHandler()
+
+      if (txHash) {
+        setPendingTxHash(txHash)
+      }
+    } catch (error) {
+      setSetupError(error instanceof Error ? error.message : String(error))
+    } finally {
+      setIsSendingTx(false)
     }
-  }
+  }, [setupFallbackHandler, setPendingTxHash])
 
   const checkFallbackHandler = useCallback(() => {
     if (!extensibleFallbackContext || !account) return Promise.resolve()
@@ -155,9 +165,14 @@ export function SetupFallbackHandlerWarning() {
               created because of that. Please, update the fallback handler in order to make the orders work again.
             </Trans>
           </p>
-          <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-            {isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
+          <ActionButton disabled={isSendingTx || isTransactionPending} onClick={handleUpdateClick}>
+            {isSendingTx || isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
           </ActionButton>
+          {setupError && (
+            <p>
+              <Trans>The transaction could not be sent</Trans>: {setupError}
+            </p>
+          )}
         </span>
       </Banner>
     </div>
