@@ -97,11 +97,10 @@ behavior, only to call its methods). Sub-mocks:
   the fixed RPC-proxy port, shared for the whole run and baked into the Synpress/MetaMask cache). If
   something's listening, either reuse it or find out whose it is before touching it — don't force a
   second instance onto the same port.
-- **`playwright.config.ts`'s `webServer.command` (`pnpm nx serve cowswap-frontend`) is currently broken**
-  against the root `package.json`'s `nx` alias (`"nx": "npx nx run"` — the command expands to invalid
-  `nx` syntax). This only surfaces when *no* dev server is already running, because
-  `reuseExistingServer: true` otherwise skips it. Workaround: start the app yourself first —
-  `pnpm start:cowswap` from the repo root — then run tests normally.
+- `playwright.config.ts`'s `webServer.command` is `pnpm start:cowswap` (repo root). An earlier version
+  used `pnpm nx serve cowswap-frontend`, which silently ran through the root `package.json`'s `nx` alias
+  (`"nx": "npx nx run"`) and expanded to invalid `nx run` syntax — this only surfaced in CI, where
+  `reuseExistingServer: !process.env.CI` is `false` and Playwright always launches the server itself.
 - Run one test at a time while iterating: `npx playwright test <file> -g "<title>"`.
 - On failure, Playwright writes a screenshot, video, and trace under `test-results/`.
   `npx playwright show-trace <path>` gives you the real network/console timeline — much faster than
