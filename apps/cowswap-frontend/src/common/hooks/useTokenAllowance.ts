@@ -1,9 +1,8 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { allowancesAtom, useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -12,6 +11,7 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
+import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAllowance'
 
 import { getOptimisticAllowanceKey } from '../../entities/optimisticAllowance/getOptimisticAllowanceKey'
 
@@ -87,24 +87,4 @@ export function useTokenAllowance(
     }),
     [solanaAllowance, optimisticAllowance?.amount, swrResponse],
   )
-}
-
-/**
- * Solana has no ERC-20 `allowance` call, so the approve gating (`useApproveState`, `useNeedsApproval`)
- * reads the SPL delegation persisted into `allowancesAtom` here instead. Returns `undefined` on
- * non-Solana chains so the EVM allowance path is used unchanged.
- *
- * A token that isn't delegated to the settlement authority is stored as `undefined` (the display's
- * "not delegated" marker). For the approve gating that means "no allowance", so it is coalesced to `0`
- * here — otherwise `getApprovalState` would read it as `UNKNOWN` and hide the Approve button.
- */
-function useSolanaDelegationAllowance(tokenAddress: string | undefined): bigint | undefined {
-  const { chainId } = useWalletInfo()
-  const persistedAllowancesByChain = useAtomValue(allowancesAtom)
-
-  return useMemo(() => {
-    if (!isSolanaChain(chainId) || !tokenAddress) return undefined
-
-    return persistedAllowancesByChain[chainId]?.[getAddressKey(tokenAddress)] ?? 0n
-  }, [persistedAllowancesByChain, chainId, tokenAddress])
 }
