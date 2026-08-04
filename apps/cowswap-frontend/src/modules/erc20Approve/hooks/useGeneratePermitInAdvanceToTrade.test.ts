@@ -141,6 +141,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
         account: mockAccount,
         permitInfo: mockPermitInfo,
         amount: BigInt(mockAmountToApprove.quotient.toString()),
+        sellCurrency: mockAmountToApprove.currency,
         preSignCallback: expect.any(Function),
         postSignCallback: expect.any(Function),
       })

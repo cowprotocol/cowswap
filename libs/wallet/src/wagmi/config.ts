@@ -130,12 +130,55 @@ const reownAppKit = createAppKit({
 })
 
 /**
+ * Reconnect to the injected wallet, waiting for it to become available first.
+ *
+ * Mobile in-app browsers (e.g. MetaMask on iOS) may attach `window.ethereum` a
+ * few hundred ms after the app bootstraps, so the synchronous check below can run
+ * before the provider exists and the eager reconnect never fires (#7862). Wait for
+ * the provider to appear — via an EIP-6963 announcement or a short poll — before
+ * connecting, giving up after a timeout so we never hang.
+ */
+function autoConnectInjectedWhenReady(): void {
+  const connect = (): void => {
+    void connectWalletById('injected', 'injected')
+  }
+
+  if (window.ethereum) {
+    connect()
+    return
+  }
+
+  const TIMEOUT_MS = 3000
+  const POLL_INTERVAL_MS = 100
+  let settled = false
+
+  const stop = (): void => {
+    settled = true
+    window.removeEventListener('eip6963:announceProvider', onProviderReady)
+    clearInterval(pollId)
+    clearTimeout(timeoutId)
+  }
+
+  function onProviderReady(): void {
+    if (settled || !window.ethereum) return
+    stop()
+    connect()
+  }
+
+  window.addEventListener('eip6963:announceProvider', onProviderReady)
+  const pollId = setInterval(onProviderReady, POLL_INTERVAL_MS)
+  const timeoutId = setTimeout(stop, TIMEOUT_MS)
+  // Prompt EIP-6963 providers to (re-)announce themselves so we react as soon as possible.
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+}
+
+/**
  * Instantly connect to Safe if in Safe
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (hasRecentConnector && isMobile && window.ethereum) {
-  connectWalletById('injected', 'injected')
+} else if (hasRecentConnector && isMobile) {
+  autoConnectInjectedWhenReady()
 }
 
 bindActiveProvider(wagmiAdapter)
