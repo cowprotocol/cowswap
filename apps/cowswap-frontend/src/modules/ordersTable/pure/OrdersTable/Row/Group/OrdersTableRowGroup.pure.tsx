@@ -117,7 +117,7 @@ export function OrdersTableRowGroup({
           <TwapStatusAndToggle
             approveOrderToken={orderActions.approveOrderToken}
             parent={parent}
-            childrenLength={childrenLength}
+            totalParts={twapOrder?.order.n ?? childrenLength}
             isCollapsed={isCollapsed}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
