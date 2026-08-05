@@ -1917,7 +1917,7 @@ importers:
         version: link:../core
       '@cowprotocol/cow-sdk':
         specifier: 9.2.6
-        version: 9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        version: 9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1940,8 +1940,11 @@ importers:
         specifier: 1.0.0-beta.33
         version: 1.0.0-beta.33
       ajv:
-        specifier: 6.12.6
-        version: 6.12.6
+        specifier: 8.17.1
+        version: 8.17.1
+      ajv-formats:
+        specifier: 3.0.1
+        version: 3.0.1(ajv@8.17.1)
       graphql-request:
         specifier: 4.3.0
         version: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
@@ -20077,24 +20080,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/cow-sdk@9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.1
-      '@cowprotocol/sdk-config': 2.4.0
-      '@cowprotocol/sdk-contracts-ts': 3.3.3
-      '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.6(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.2.6(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      cross-fetch: 4.0.0(encoding@0.1.13)
-    optionalDependencies:
-      '@openzeppelin/merkle-tree': 1.0.8
-      multiformats: 14.0.0
-    transitivePeerDependencies:
-      - ajv
-      - encoding
-      - supports-color
-
   '@cowprotocol/cow-sdk@9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-app-data': 5.3.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
@@ -20171,18 +20156,6 @@ snapshots:
     dependencies:
       '@cowprotocol/sdk-common': 0.12.0
       ajv: 8.17.1
-      cross-fetch: 4.0.0(encoding@0.1.13)
-      ipfs-unixfs-importer: 16.1.5(encoding@0.1.13)
-      json-stringify-deterministic: 1.0.12
-      multiformats: 14.0.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@cowprotocol/sdk-app-data@5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.12.1
-      ajv: 6.12.6
       cross-fetch: 4.0.0(encoding@0.1.13)
       ipfs-unixfs-importer: 16.1.5(encoding@0.1.13)
       json-stringify-deterministic: 1.0.12
@@ -20399,22 +20372,6 @@ snapshots:
       '@cowprotocol/sdk-contracts-ts': 3.2.1
       '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
       '@cowprotocol/sdk-order-signing': 1.1.2(encoding@0.1.13)
-      deepmerge: 4.3.1
-    transitivePeerDependencies:
-      - ajv
-      - cross-fetch
-      - encoding
-      - multiformats
-      - supports-color
-
-  '@cowprotocol/sdk-trading@2.2.6(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.1
-      '@cowprotocol/sdk-config': 2.4.0
-      '@cowprotocol/sdk-contracts-ts': 3.3.3
-      '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.6(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -28945,6 +28902,10 @@ snapshots:
   ajv-formats@3.0.1(ajv@8.13.0):
     optionalDependencies:
       ajv: 8.13.0
+
+  ajv-formats@3.0.1(ajv@8.17.1):
+    optionalDependencies:
+      ajv: 8.17.1
 
   ajv-keywords@3.5.2(ajv@6.12.6):
     dependencies:
