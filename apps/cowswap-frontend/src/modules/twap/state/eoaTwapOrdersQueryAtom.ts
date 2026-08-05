@@ -17,6 +17,7 @@ export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get
   const { account, chainId } = get(walletInfoAtom)
   const owner = account ? getAddressKey(account) : ''
   const limit = get(ordersLimitAtom)
+  const accountType = get(accountTypeAtom)
 
   return {
     queryKey: ['eoaTwapOrders', chainId, owner, limit] as const,
@@ -27,7 +28,7 @@ export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get
     },
     enabled:
       get(featureFlagsAtom).isTwapEoaEnabled === true &&
-      get(accountTypeAtom) === AccountType.EOA &&
+      (accountType === AccountType.EOA || accountType === AccountType.EIP7702EOA) &&
       !!chainId &&
       !!owner,
     placeholderData: (previousData, previousQuery) =>

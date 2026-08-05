@@ -105,6 +105,17 @@ describe('eoaTwapOrdersEffectAtom', () => {
     expect(fetchEoaTwapOrdersMock).not.toHaveBeenCalled()
   })
 
+  it('loads TWAP orders for EIP-7702 EOAs', async () => {
+    const store = createStore()
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    store.set(writableAccountTypeAtom, AccountType.EIP7702EOA)
+
+    render(<Effect />, { wrapper: testWrapper(store) })
+
+    await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 100))
+  })
+
   it('clears on account changes and ignores stale responses', async () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
