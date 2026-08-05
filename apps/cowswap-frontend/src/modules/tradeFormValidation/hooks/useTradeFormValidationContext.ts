@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
@@ -16,6 +17,8 @@ import {
 } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
@@ -34,6 +37,7 @@ import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
@@ -50,6 +54,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
+  const featureFlagsStatus = useAtomValue(featureFlagsStatusAtom)
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
+  const captchaInteractionRequired = useAtomValue(captchaInteractionRequiredAtom)
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const isRestoringConnection = useIsRestoringConnection()
 
@@ -129,6 +136,10 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isOutputCurrencyXstock,
       isNonEvmReceiverConfirmed,
       isRestoringConnection,
+      isCaptchaPending:
+        featureFlagsStatus === 'loading' ||
+        (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
+      isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
     }
   }, [
     hasFirstLoad,
@@ -161,6 +172,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
     isRestoringConnection,
+    featureFlagsStatus,
+    canQuote,
+    captchaInteractionRequired,
   ])
 }
 

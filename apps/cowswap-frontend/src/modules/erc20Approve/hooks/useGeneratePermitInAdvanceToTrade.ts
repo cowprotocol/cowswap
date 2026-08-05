@@ -21,6 +21,8 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   return useCallback(async () => {
     if (!account || !permitInfo) return false
 
+    const amountRaw = BigInt(amountToApprove.quotient.toString())
+
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
         currency: amountToApprove.currency,
@@ -29,11 +31,15 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       })
 
     try {
+      // The ON_BEFORE_APPROVAL widget veto fires inside `generatePermit` on a genuine cache miss
+      // (passing `sellCurrency` opts this trade approval into it) and throws WidgetHookDeclineError
+      // on decline, which is caught below and reported as "not approved".
       const permitData = await generatePermit({
         inputToken: { name: token.name || '', address: token.address as `0x${string}` },
         account,
         permitInfo,
-        amount: BigInt(amountToApprove.quotient.toString()),
+        amount: amountRaw,
+        sellCurrency: amountToApprove.currency,
         preSignCallback,
         postSignCallback: resetApproveProgressModalState,
       })
