@@ -164,8 +164,9 @@ export const TokensTableRow = ({
         account,
         approvalState,
         balanceLessThanAllowance,
+        hasATA: !hasZeroBalance,
       }),
-    [isSolana, isNativeToken, allowance, account, approvalState, balanceLessThanAllowance],
+    [isSolana, isNativeToken, allowance, account, approvalState, balanceLessThanAllowance, hasZeroBalance],
   )
 
   const explorerLink = (

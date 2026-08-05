@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import { CardsSpinner } from 'pages/Account/styled'
 
 import { TokenApproveActionState } from './getTokenApproveActionState'
-import { ApproveLabel, CustomLimit, TableButton } from './styled'
+import { ApproveLabel, CustomLimit, TableButton, UnavailableLabel } from './styled'
 
 type TokenApproveActionCellProps = {
   state: TokenApproveActionState
@@ -34,6 +34,15 @@ export function TokenApproveActionCell({ state, allowance, onApprove }: TokenApp
       <TableButton onClick={onApprove}>
         <Trans>Approve</Trans>
       </TableButton>
+    )
+  }
+
+  // Solana mint with no associated token account: nothing to approve, so show a neutral placeholder.
+  if (state === 'unavailable') {
+    return (
+      <UnavailableLabel>
+        <Trans>N/A</Trans>
+      </UnavailableLabel>
     )
   }
 

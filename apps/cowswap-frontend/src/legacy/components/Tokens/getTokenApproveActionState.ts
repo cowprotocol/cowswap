@@ -3,7 +3,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { ApprovalState } from 'modules/erc20Approve'
 
-export type TokenApproveActionState = 'approved' | 'notApproved' | 'partial' | 'pending'
+export type TokenApproveActionState = 'approved' | 'notApproved' | 'partial' | 'pending' | 'unavailable'
 
 interface TokenApproveActionStateParams {
   isNativeToken: boolean
@@ -12,6 +12,7 @@ interface TokenApproveActionStateParams {
   account: string | undefined
   approvalState: ApprovalState
   balanceLessThanAllowance: boolean
+  hasATA: boolean
 }
 
 export function getTokenApproveActionState(params: TokenApproveActionStateParams): TokenApproveActionState | null {
@@ -38,8 +39,11 @@ function getEvmApprovalState({
 function getSolanaDelegationState({
   allowance,
   balanceLessThanAllowance,
+  hasATA,
 }: TokenApproveActionStateParams): TokenApproveActionState {
-  if (isFractionFalsy(allowance)) return 'notApproved'
+  // No delegation yet: only offer Approve when the ATA exists. With no ATA an SPL approve would target a
+  // non-existent account and fail on-chain, so mark it unavailable ("N/A") rather than draw a broken button.
+  if (isFractionFalsy(allowance)) return hasATA ? 'notApproved' : 'unavailable'
 
   return balanceLessThanAllowance ? 'approved' : 'partial'
 }
