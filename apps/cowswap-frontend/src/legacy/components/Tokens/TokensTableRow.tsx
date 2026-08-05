@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import iconEtherscanSrc from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
+import iconSolanaExplorerSrc from '@cowprotocol/assets/cow-swap/solana-explorer-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
@@ -172,7 +173,11 @@ export const TokensTableRow = ({
   const explorerLink = (
     <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
       <TableButton>
-        <SVG src={iconEtherscanSrc} title={t`View token contract`} description={t`View token contract`} />
+        <SVG
+          src={isSolana ? iconSolanaExplorerSrc : iconEtherscanSrc}
+          title={t`View token contract`}
+          description={t`View token contract`}
+        />
       </TableButton>
     </ExtLink>
   )
