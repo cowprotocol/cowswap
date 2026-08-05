@@ -87,8 +87,8 @@ function mockCompetitionStatus(solver: string): OrderCompetitionStatus {
 }
 
 /**
- * Once the backend migrates, the competition `solver` field carries the on-chain solver address
- * instead of the solver name, so CMS branding has to be joined on the address.
+ * The competition `solver` field carries the on-chain solver address, so the CMS display name and
+ * logo are joined on that address.
  */
 describe('useOrderSolver - solver address resolution', () => {
   beforeEach(() => {
@@ -101,7 +101,7 @@ describe('useOrderSolver - solver address resolution', () => {
     mockedUseNetworkId.mockReturnValue(1)
   })
 
-  it('resolves CMS branding when the order competition returns an address', async () => {
+  it('resolves the CMS solver info when the order competition returns an address', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(CMS_ADDRESS_LOWERCASE))
     mockedFetchSolversInfo.mockResolvedValueOnce([createSolver(CMS_ADDRESS_LOWERCASE)])
 
@@ -152,16 +152,5 @@ describe('useOrderSolver - solver address resolution', () => {
       displayName: '0x2222...2222',
       image: undefined,
     })
-  })
-
-  it('still resolves solver names for backends that have not migrated', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('OnchainSolver-Solve'))
-    mockedFetchSolversInfo.mockResolvedValueOnce([createSolver(CMS_ADDRESS_CHECKSUMMED)])
-
-    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false))
-
-    expect(result.current.solver?.displayName).toBe('On-chain Solver')
   })
 })

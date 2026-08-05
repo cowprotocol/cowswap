@@ -59,6 +59,8 @@ export interface TradeFormValidationCommonContext {
   tradePriceImpact: PriceImpact
   isNonEvmReceiverConfirmed: boolean
   isRestoringConnection: boolean
+  isCaptchaPending: boolean
+  isCaptchaRequired: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -89,6 +91,8 @@ export enum TradeFormValidation {
   BrowserOffline,
 
   // Quote loading indicator
+  CaptchaPending,
+  CaptchaRequired,
   QuoteLoading,
   ImpactLoading,
   QuoteExpired,
