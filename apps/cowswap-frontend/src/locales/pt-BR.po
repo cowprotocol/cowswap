@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-05 09:10\n"
+"PO-Revision-Date: 2026-08-05 14:36\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1984,7 +1984,7 @@ msgstr "Digite uma URL de hook dapp"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Pick your own code or generate one. Once saved, it becomes permanently linked to your wallet, without ever revealing your wallet address."
-msgstr ""
+msgstr "Escolha seu próprio código ou gere um. Uma vez salvo, ele fica permanentemente vinculado à sua carteira, sem nunca revelar seu endereço."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "By clicking Confirm, you expressly represent and warrant that you are NOT:"
@@ -2012,7 +2012,7 @@ msgstr "Formato de ID de hook dapp inválido. O ID deve ser uma string hexadecim
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "QR scanning is not supported in this browser."
-msgstr ""
+msgstr "A leitura de QR code não é suportada neste navegador."
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 msgid "Select custom token"
@@ -2032,7 +2032,7 @@ msgstr "Ordens TWAP atualmente exigem uma Safe com um fallback handler especial.
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
-msgstr ""
+msgstr "O CoW Swap foi a primeira DEX a oferecer negociação baseada em intenções, swaps sem gás, coincidências de desejos e muitas outras inovações em DeFi."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
@@ -2134,11 +2134,11 @@ msgstr "Faça a modificação ao colocar a ordem"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
-msgstr ""
+msgstr "Ordens limite, mas <0>mais suuuave</0> que nunca"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW contract not present"
-msgstr ""
+msgstr "contrato vCOW não encontrado"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerQrModal.tsx
 msgid "Accent"
@@ -2163,7 +2163,7 @@ msgstr "Mín. a receber"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No unfillable orders"
-msgstr ""
+msgstr "Nenhuma ordem não executável"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
 msgid "Token officially issued by {tokenIssuedByIssuer}"
@@ -2179,7 +2179,7 @@ msgstr "Convide seus amigos. Ganhem juntos."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "No fees for failed transactions"
-msgstr ""
+msgstr "Sem taxas para transações falhas"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Across"
@@ -2262,7 +2262,7 @@ msgstr "Você já reivindicou este airdrop"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancel multiple orders: {ordersCount}"
-msgstr ""
+msgstr "Cancelar múltiplas ordens: {ordersCount}"
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/index.tsx
@@ -2271,11 +2271,11 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap my {nativeSymbol} and swap"
-msgstr ""
+msgstr "Converter meu {nativeSymbol} e fazer swap"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Read more about limit orders"
-msgstr ""
+msgstr "Leia mais sobre ordens limite"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
