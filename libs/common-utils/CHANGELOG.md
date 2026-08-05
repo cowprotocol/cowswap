@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.11.0...common-utils-v3.12.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.10.0...common-utils-v3.11.0) (2026-07-30)
 
 ### Minor Changes
