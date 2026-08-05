@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'apps/cowswap-frontend/**'
-      - 'apps/cowswap-frontend-e2e-pw/**'
+      - '../../apps/cowswap-e2e-tests/**'
       - 'libs/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -36,5 +36,5 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: playwright-report
-          path: apps/cowswap-frontend-e2e-pw/playwright-report
+          path: apps/cowswap-e2e-tests/playwright-report
           retention-days: 7

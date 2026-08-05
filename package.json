@@ -7,7 +7,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "config": {
-    "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
+    "enabledApps": "cowswap-frontend abis ui ui-utils widget-lib widget-react"
   },
   "scripts": {
     "start": "pnpm run start:cowswap",
@@ -21,11 +21,11 @@
     "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
-    "e2e": "nx run cowswap-frontend-e2e-pw:e2e",
-    "e2e:build-cache": "nx run cowswap-frontend-e2e-pw:e2e:build-cache",
-    "e2e:smoke": "nx run cowswap-frontend-e2e-pw:e2e:smoke",
-    "e2e:ui": "nx run cowswap-frontend-e2e-pw:e2e:ui",
-    "e2e:record-mocks": "nx run cowswap-frontend-e2e-pw:e2e:record-mocks",
+    "e2e": "nx run cowswap-e2e-tests:e2e",
+    "e2e:build-cache": "nx run cowswap-e2e-tests:e2e:build-cache",
+    "e2e:smoke": "nx run cowswap-e2e-tests:e2e:smoke",
+    "e2e:ui": "nx run cowswap-e2e-tests:e2e:ui",
+    "e2e:record-mocks": "nx run cowswap-e2e-tests:e2e:record-mocks",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
     "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",

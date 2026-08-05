@@ -2,10 +2,10 @@
 author: agents
 status: normative
 last_reviewed: 2026-08-04
-source_of_truth_scope: cowswap-frontend-e2e-pw app-specific conventions, mocks, and debugging notes
+source_of_truth_scope: cowswap-e2e-tests app-specific conventions, mocks, and debugging notes
 ---
 
-# cowswap-frontend-e2e-pw AGENTS.md
+# cowswap-e2e-tests AGENTS.md
 
 Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
 Design background: [`../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md`](../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md)
@@ -15,11 +15,11 @@ restatement of the design doc.
 
 ## App commands
 
-- Run all tests: `pnpx nx run cowswap-frontend-e2e-pw:e2e` (wraps `playwright test`)
+- Run all tests: `pnpx nx run cowswap-e2e-tests:e2e` (wraps `playwright test`)
 - Run one test while iterating: `npx playwright test src/tests/<file>.spec.ts -g "<title substring>"`
-- Smoke only: `pnpx nx run cowswap-frontend-e2e-pw:e2e:smoke`
-- Playwright UI mode: `pnpx nx run cowswap-frontend-e2e-pw:e2e:ui`
-- Lint: `pnpx nx run cowswap-frontend-e2e-pw:lint`
+- Smoke only: `pnpx nx run cowswap-e2e-tests:e2e:smoke`
+- Playwright UI mode: `pnpx nx run cowswap-e2e-tests:e2e:ui`
+- Lint: `pnpx nx run cowswap-e2e-tests:lint`
 - Unit-test the mocks themselves (pure functions, no browser): `npx tsx --test "src/**/*.test.ts"`
 - Build the Synpress/MetaMask wallet cache (required once, only for the Synpress fixtures — see below):
   `pnpm e2e:build-cache`

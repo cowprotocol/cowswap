@@ -1,4 +1,4 @@
-# cowswap-frontend-e2e-pw
+# cowswap-e2e-tests
 
 Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 
@@ -197,7 +197,7 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 | `pnpm e2e` | Full suite — all 362 tests |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
-| `npx nx test cowswap-frontend-e2e-pw` | Unit tests for the mocks and support code (`node:test` via tsx) |
+| `npx nx test cowswap-e2e-tests` | Unit tests for the mocks and support code (`node:test` via tsx) |
 | `pnpm e2e:record-mocks` | Re-record the CoW Protocol API response fixtures from the live barn API |
 
 Run a single spec or test from inside this directory:

@@ -1,41 +1,41 @@
 {
-  "name": "cowswap-frontend-e2e-pw",
+  "name": "cowswap-e2e-tests",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/cowswap-frontend-e2e-pw/src",
+  "sourceRoot": "apps/cowswap-e2e-tests/src",
   "projectType": "application",
   "targets": {
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "playwright test"
       }
     },
     "e2e:build-cache": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "tsx src/support/buildWalletCache.ts"
       }
     },
     "e2e:smoke": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "playwright test --grep @smoke"
       }
     },
     "e2e:ui": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "playwright test --ui"
       }
     },
     "e2e:record-mocks": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "tsx src/mocks/cowProtocolApi/record.ts"
       }
     },
@@ -43,13 +43,13 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/cowswap-frontend-e2e-pw/src/**/*.{js,ts}"]
+        "lintFilePatterns": ["apps/cowswap-e2e-tests/src/**/*.{js,ts}"]
       }
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
+        "cwd": "apps/cowswap-e2e-tests",
         "command": "tsx --test \"src/**/*.test.ts\""
       }
     }
