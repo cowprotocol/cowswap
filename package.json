@@ -47,6 +47,7 @@
     "test:tools": "node --test tools/scripts/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
     "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
+    "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
     "agents:check": "node tools/scripts/agents-check.mjs && node tools/scripts/check-pinned-package-versions.mjs",
     "lint:fix": "pnpm run lint --fix --skip-nx-cache",

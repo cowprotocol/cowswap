@@ -147,35 +147,31 @@ pnpm run cosmos
 
 # 🤓 Development
 
-## E2E tests
+## Integration test
 
-CoW Swap's e2e suite lives in [`apps/cowswap-e2e-tests`](apps/cowswap-e2e-tests) (Playwright +
-Synpress). See that app's [README](apps/cowswap-e2e-tests/README.md) for the full guide — mocks, page
-objects, wallet fixtures, and troubleshooting.
-
-> ⚠️ Add the required environment variables to your root `.env.local` file:
+> ⚠️ To run the tests. Make sure you add the required environment variables to
+> your root `.env.local` file with:
 >
-> - `INTEGRATION_TEST_PRIVATE_KEY=<a throwaway Sepolia private key>`
-> - `REACT_APP_NETWORK_URL_11155111=<a Sepolia RPC URL>`
+> - `CYPRESS_INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
+> - `CYPRESS_INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+> - `CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY=<your-alchemy-key>`: Alchemy key (preferred if both are set)
 
-Build the Synpress MetaMask cache once (required for the real-wallet fixtures):
+To launch it with our development server (so you have live-reloading):
 
 ```bash
-pnpm e2e:build-cache
+# Terminal 1
+pnpm run start
+# Terminal 2
+pnpm run e2e
 ```
 
-Then run the suite. Playwright builds and serves the app itself, so there's no need to start a dev
-server in a separate terminal:
+If we want to use the Cypress UI, with the production build:
 
 ```bash
-# Full suite
-pnpm e2e
-
-# PR smoke subset only
-pnpm e2e:smoke
-
-# Playwright UI mode, for interactive debugging
-pnpm e2e:ui
+# Terminal 1
+npx nx run cowswap-frontend:serve-static --port 3000
+# Terminal 2
+pnpm run e2e:open
 ```
 
 ## Analyze build
