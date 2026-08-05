@@ -16,7 +16,7 @@ env:
 jobs:
   ipfs:
     name: IPFS
-    if: contains(fromJSON('["push", "workflow_dispatch"]'), github.event.workflow_run.event)
+    if: github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     environment:
       name: cowswap-ipfs
