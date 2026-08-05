@@ -141,4 +141,10 @@ describe('limit orders tradeFlow - permit amount', () => {
 
     expect(analytics.error).not.toHaveBeenCalled()
   })
+
+  it('propagates quoteId and allowsOffchainSigning on the Send analytics event', async () => {
+    await runTradeFlow(buildParams())
+
+    expect(analytics.trade).toHaveBeenCalledWith(expect.objectContaining({ quoteId: 1, allowsOffchainSigning: true }))
+  })
 })

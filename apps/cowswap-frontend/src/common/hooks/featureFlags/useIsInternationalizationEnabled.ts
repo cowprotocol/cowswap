@@ -1,9 +1,7 @@
-import { useAtomValue } from 'jotai'
-
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 export function useIsInternationalizationEnabled(): boolean {
-  const { isInternationalizationEnabled } = useAtomValue(featureFlagsAtom)
+  const { isInternationalizationEnabled } = useFeatureFlags()
 
   return Boolean(isInternationalizationEnabled)
 }

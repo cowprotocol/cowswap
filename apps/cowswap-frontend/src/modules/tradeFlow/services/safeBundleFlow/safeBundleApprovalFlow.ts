@@ -69,7 +69,11 @@ export async function safeBundleApprovalFlow({
   const tradeAmounts = { inputAmount, outputAmount }
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: orderParams.quoteId,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
