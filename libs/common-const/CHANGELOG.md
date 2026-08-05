@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.1...common-const-v3.8.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix: update EURe and GBPe on Gnosis (#7954)
+
+- fix(internationalization): clear stale translations and add pt-br and fr-fr (#7943)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.0...common-const-v3.7.1) (2026-07-30)
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.3...permit-utils-v3.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.12
+
 ## [3.4.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.2...permit-utils-v3.4.3) (2026-07-30)
 
 ### Patch Changes
