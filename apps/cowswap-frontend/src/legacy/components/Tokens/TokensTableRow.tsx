@@ -3,21 +3,15 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import iconEtherscanSrc from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
-import {
-  getBlockExplorerUrl,
-  getIsNativeToken,
-  isFractionFalsy,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
-} from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, getIsNativeToken, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { MAX_UINT256, getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
+import { Loader, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
@@ -29,22 +23,15 @@ import { parameterizeTradeRoute } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { CardsSpinner, ExtLink } from 'pages/Account/styled'
+import { ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
 import FavoriteTokenButton from './FavoriteTokenButton'
 import { FiatBalanceCell } from './FiatBalanceCell'
-import { SplDelegationCell } from './SplDelegationCell'
-import {
-  ApproveLabel,
-  BalanceValue,
-  Cell,
-  CustomLimit,
-  IndexNumber,
-  ResponsiveLogo,
-  TableButton,
-  TokenText,
-} from './styled'
+import { getTokenApproveActionState } from './getTokenApproveActionState'
+import { BalanceValue, Cell, IndexNumber, ResponsiveLogo, TableButton, TokenText } from './styled'
+import { TokenApproveActionCell } from './TokenApproveActionCell'
+import { useSolanaTokenApprove } from './useSolanaTokenApprove'
 
 type DataRowParams = {
   tokenData: TokenWithLogo
@@ -146,6 +133,13 @@ export const TokensTableRow = ({
     amountToApprove,
   ])
 
+  const onSolanaApprove = useSolanaTokenApprove({
+    token: tokenData,
+    openApproveModal,
+    closeApproveModal,
+    toggleWalletModal,
+  })
+
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
   const balanceLessThanAllowance = balance && allowance ? balance.lessThan(allowance) : false
@@ -161,45 +155,18 @@ export const TokensTableRow = ({
     }
   }, [account, balance, hasZeroBalance, theme])
 
-  const displayApproveContent = useMemo(() => {
-    if (isNativeToken) {
-      return null
-    }
-
-    if (approvalState === ApprovalState.APPROVED || balanceLessThanAllowance) {
-      return (
-        <ApproveLabel>
-          <Trans>Approved</Trans> ✓
-        </ApproveLabel>
-      )
-    }
-
-    if (!account || approvalState === ApprovalState.NOT_APPROVED) {
-      if (isFractionFalsy(allowance)) {
-        return (
-          <TableButton onClick={handleApprove}>
-            <Trans>Approve</Trans>
-          </TableButton>
-        )
-      }
-
-      return (
-        <CustomLimit>
-          <TableButton onClick={handleApprove}>
-            <Trans>Approve all</Trans>
-          </TableButton>
-          <ApproveLabel>
-            <Trans>Approved</Trans>:{' '}
-            <strong>
-              <TokenAmount amount={allowance} />
-            </strong>
-          </ApproveLabel>
-        </CustomLimit>
-      )
-    }
-
-    return <CardsSpinner />
-  }, [account, isNativeToken, allowance, handleApprove, approvalState, balanceLessThanAllowance])
+  const approveActionState = useMemo(
+    () =>
+      getTokenApproveActionState({
+        isNativeToken,
+        isSolana,
+        allowance,
+        account,
+        approvalState,
+        balanceLessThanAllowance,
+      }),
+    [isSolana, isNativeToken, allowance, account, approvalState, balanceLessThanAllowance],
+  )
 
   const explorerLink = (
     <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
@@ -239,22 +206,19 @@ export const TokensTableRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        {/* This EVM/Solana split is temporary. Once a Solana approve (delegation) flow exists,
-            unify both branches into a single allowance cell instead of branching on chain here. */}
-        {isSolana
-          ? !isNativeToken && (
-              <>
-                {explorerLink}
-                {/* Delegation status is only meaningful for a connected wallet; hide it otherwise. */}
-                {account && <SplDelegationCell balance={balance} allowance={allowance} />}
-              </>
-            )
-          : displayApproveContent && (
-              <>
-                {explorerLink}
-                {displayApproveContent}
-              </>
+        {approveActionState && (
+          <>
+            {explorerLink}
+            {/* Solana delegation actions need a connected wallet; EVM shows Approve to prompt connecting. */}
+            {(!isSolana || account) && (
+              <TokenApproveActionCell
+                state={approveActionState}
+                allowance={allowance}
+                onApprove={isSolana ? onSolanaApprove : handleApprove}
+              />
             )}
+          </>
+        )}
       </Cell>
     </>
   )
