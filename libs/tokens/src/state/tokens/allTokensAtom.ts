@@ -1,12 +1,14 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
+import { GLOBAL_TOKENS_OVERRIDES } from '../../const/tokensOverrides'
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
@@ -52,23 +54,33 @@ const tokensStateAtom = atom(async (get) => {
           const isListEnabled = listsEnabledState[list.source] || selectedLists?.includes(list.source)
           const lpTokenProvider = list.lpTokenProvider
 
+          // eslint-disable-next-line complexity
           list.list.tokens.forEach((token) => {
             const tokenInfo = parseTokenInfo(chainId, token)
-            const tokenAddressKey = tokenInfo?.address.toLowerCase()
+            const tokenAddressKey = tokenInfo?.address ? getAddressKey(tokenInfo?.address) : null
 
             if (!tokenInfo || !tokenAddressKey) return
+
+            const override = GLOBAL_TOKENS_OVERRIDES[tokenInfo.chainId]?.[tokenAddressKey]
+
+            // Filter out tokens which are overriden with null
+            if (override === null) return
 
             if (lpTokenProvider) {
               tokenInfo.lpTokenProvider = lpTokenProvider
             }
 
+            const mappedTokenInfo = override ? parseTokenInfo(chainId, override) : tokenInfo
+
+            if (!mappedTokenInfo) return
+
             if (isListEnabled) {
               if (!acc.activeTokens[tokenAddressKey]) {
-                acc.activeTokens[tokenAddressKey] = tokenInfo
+                acc.activeTokens[tokenAddressKey] = mappedTokenInfo
               }
             } else {
               if (!acc.inactiveTokens[tokenAddressKey]) {
-                acc.inactiveTokens[tokenAddressKey] = tokenInfo
+                acc.inactiveTokens[tokenAddressKey] = mappedTokenInfo
               }
             }
           })

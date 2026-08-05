@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, safeShortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import {
@@ -15,8 +15,6 @@ import {
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { MoreHorizontal } from 'react-feather'
-
-import { safeShortenAddress } from 'utils/address'
 
 import * as styledEl from './DefaultAccountContent.styled'
 

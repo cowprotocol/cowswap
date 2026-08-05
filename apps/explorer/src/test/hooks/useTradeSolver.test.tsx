@@ -22,8 +22,11 @@ const mockedUseNetworkId = jest.mocked(useNetworkId)
 const mockedGetSolverCompetitionByTxHash = jest.mocked(getSolverCompetitionByTxHash)
 const mockedFetchSolversInfo = jest.mocked(fetchSolversInfo)
 
-const BLANC_ADDRESS = '0xBlanc0000000000000000000000000000000001'
-const EXT_QUASIMODO_ADDRESS = '0xExt00000000000000000000000000000000000002'
+// Valid 42-char all-hex addresses, so `areAddressesEqual` and `shortenAddress` behave as in prod.
+// All-digit so the EIP-55 checksum is an identity and the shortened form is predictable.
+const BLANC_ADDRESS = '0x1111111111111111111111111111111111111111'
+const EXT_QUASIMODO_ADDRESS = '0x4444444444444444444444444444444444444444'
+const UNKNOWN_ADDRESS = '0x3333333333333333333333333333333333333333'
 
 const MOCK_SOLVERS: SolverInfo[] = [
   {
@@ -90,18 +93,36 @@ describe('useTradeSolver', () => {
     expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
-  it('returns undefined solver when the winner solverAddress matches no known deployment', async () => {
+  it('falls back to a shortened address when the winner solverAddress is not in CMS', async () => {
     const orderId = '0xorderNoMatch'
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
-      mockSolverCompetitionResponse('0xUnknownAddress00000000000000000000000000', orderId),
-    )
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(UNKNOWN_ADDRESS, orderId))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const { result } = renderHook(() => useTradeSolver('0xtxNoMatch', orderId))
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-    expect(result.current.solver).toBeUndefined()
+    expect(result.current.solver).toEqual({
+      solverId: UNKNOWN_ADDRESS,
+      displayName: '0x3333...3333',
+      image: undefined,
+    })
+  })
+
+  it('still shows the winner address when the CMS lookup fails', async () => {
+    const orderId = '0xorderCmsDown'
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS, orderId))
+    mockedFetchSolversInfo.mockRejectedValueOnce(new Error('CMS down'))
+
+    const { result } = renderHook(() => useTradeSolver('0xtxCmsDown', orderId))
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solver).toEqual({
+      solverId: BLANC_ADDRESS,
+      displayName: '0x1111...1111',
+      image: undefined,
+    })
   })
 
   it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {

@@ -4,7 +4,6 @@ import { sendTransaction } from 'wagmi/actions'
 import { captureError, ERROR_TYPES, normalizeError, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
-import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
@@ -14,7 +13,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -73,8 +72,6 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(permitInfo)) await beforePermit()
-
     postOrderParams.appData = await handlePermit({
       permitInfo,
       inputToken: sellToken,
@@ -83,6 +80,9 @@ export async function tradeFlow(
       typedHooks,
       amount: permitAmountToSign,
       generatePermitHook,
+      // Cache lookup, the ON_BEFORE_APPROVAL veto and the "requesting permit signature" UI all fire
+      // inside `generatePermitHook` on a genuine cache miss now; `beforePermit` flags the step.
+      preSignCallback: beforePermit,
     })
 
     if (callDataContainsPermitSigner(postOrderParams.appData.fullAppData)) {
@@ -90,7 +90,11 @@ export async function tradeFlow(
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')
-    analytics.trade(swapFlowAnalyticsContext)
+    analytics.trade({
+      ...swapFlowAnalyticsContext,
+      quoteId: postOrderParams.quoteId,
+      allowsOffchainSigning: postOrderParams.allowsOffchainSigning,
+    })
 
     beforeTrade()
 
@@ -195,6 +199,11 @@ export async function tradeFlow(
     return orderId
   } catch (err: unknown) {
     const error = normalizeError(err)
+
+    // Expected abort path: skip generic swap-error analytics so widget-hook declines don't pollute telemetry.
+    if (error instanceof WidgetHookDeclineError) {
+      throw error
+    }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

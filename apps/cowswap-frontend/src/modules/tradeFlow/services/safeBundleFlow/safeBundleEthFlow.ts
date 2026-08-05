@@ -70,7 +70,11 @@ export async function safeBundleEthFlow(
   const { account, recipientAddressOrName, kind } = orderParams
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+  analytics.wrapApproveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: orderParams.quoteId,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   // Wrap the max sell amount (slippage-adjusted for buy orders); inputAmount alone underwraps buy orders and makes them unfillable.
   const nativeAmountInWei = maximumSendSellAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }

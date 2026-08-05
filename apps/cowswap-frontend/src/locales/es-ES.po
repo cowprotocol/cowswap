@@ -7871,11 +7871,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "View List"
-msgstr ""
-
-#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
-msgid "This requires connecting a different wallet."
-msgstr ""
+msgstr "Ver lista"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Add liquidity to any of the CoW AMM pools"
