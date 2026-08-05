@@ -2,7 +2,7 @@ queue_rules:
   - name: default
     conditions:
       - check-success=Deploy
-      - check-success=Cypress
+      - check-success=smoke
 
 pull_request_rules:
   - name: Merge approved and green PRs when tagged with 'Auto-merge'
@@ -10,7 +10,7 @@ pull_request_rules:
       - '#approved-reviews-by>=2'
       - label="Auto-merge"
       - check-success=Deploy
-      - check-success=Cypress
+      - check-success=smoke
     actions:
       queue:
         method: squash
