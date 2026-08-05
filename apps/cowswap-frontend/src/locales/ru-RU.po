@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-03 12:30\n"
+"PO-Revision-Date: 2026-08-05 09:10\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -424,6 +424,10 @@ msgstr "продать"
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 #~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 #~ msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+
+#: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
+msgid "Click the checkbox to get a quote"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
@@ -1265,6 +1269,10 @@ msgstr "Копировать контракт"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "pools available to get yield on your assets!"
 msgstr "доступные бассейны, чтобы получить доходность на ваших активах!"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Click the checkbox"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
@@ -4374,6 +4382,10 @@ msgstr "Восстановляемое значение"
 msgid "is worth"
 msgstr "стоит"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
+#~ msgid "The transaction could not be sent"
+#~ msgstr "The transaction could not be sent"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
 msgstr "Посмотреть аккаунт"
@@ -5098,6 +5110,10 @@ msgstr "Установить одобрение"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be before {maxDateStr} {timeZone}"
 msgstr "Должно быть перед {maxDateStr} {timeZone}"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#~ msgid "Complete the CAPTCHA"
+#~ msgstr "Complete the CAPTCHA"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
@@ -8031,6 +8047,10 @@ msgstr "Очистить все"
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "To proceed, change the network in your {walletName}"
 msgstr "Чтобы продолжить, смените сеть в {walletName}"
+
+#: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
+#~ msgid "Complete the CAPTCHA to get a quote"
+#~ msgstr "Complete the CAPTCHA to get a quote"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "User rejected transaction"
