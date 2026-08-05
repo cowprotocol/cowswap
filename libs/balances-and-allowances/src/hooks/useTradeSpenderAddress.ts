@@ -8,6 +8,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { findSolanaSettlementStatePda } from '../const/solanaSettlement'
 import { tradeSpenderAtom } from '../state/balancesAtom'
 
+let solanaSpenderAddress: string | undefined
+
 export function useTradeSpenderAddress(): string | undefined {
   const { chainId } = useWalletInfo()
   const spenderOverride = useAtomValue(tradeSpenderAtom)
@@ -17,7 +19,11 @@ export function useTradeSpenderAddress(): string | undefined {
     if (!chainId) return undefined
 
     // On Solana the spender is the settlement state PDA — the SPL delegate authority the sell token is approved to.
-    if (isSolanaChain(chainId)) return findSolanaSettlementStatePda().toBase58()
+    if (isSolanaChain(chainId)) {
+      solanaSpenderAddress ??= findSolanaSettlementStatePda().toBase58()
+
+      return solanaSpenderAddress
+    }
 
     return COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
   }, [chainId, spenderOverride])
