@@ -14,3 +14,4 @@ export { SetupFallbackHandlerWarning } from './containers/SetupFallbackHandlerWa
 export * from './updaters/index'
 export * from './types'
 export { TwapFormState } from './pure/PrimaryActionButton/getTwapFormState'
+export * from './hooks/useEoaTwapSigningStep'

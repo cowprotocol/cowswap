@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -24,11 +24,13 @@ import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useEoaTwapFlowUpdater, useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
+import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
@@ -73,7 +75,7 @@ const getConfirmModalConfig = (): {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapConfirmModal() {
   const confirmModalConfig = getConfirmModalConfig()
   const { account } = useWalletInfo()
@@ -97,6 +99,8 @@ export function TwapConfirmModal() {
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
+  const eoaTwapSigningStep = useEoaTwapSigningStep()
+  const updateEoaTwapFlow = useEoaTwapFlowUpdater()
 
   // Re-check the balance against the (frozen) sell amount in case it changed while the modal was open
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
@@ -105,6 +109,11 @@ export function TwapConfirmModal() {
 
   const priceImpact = useTradePriceImpact()
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
+
+  const onDismiss = useCallback(() => {
+    updateEoaTwapFlow(null)
+    tradeConfirmActions.onDismiss()
+  }, [updateEoaTwapFlow, tradeConfirmActions])
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -129,57 +138,61 @@ export function TwapConfirmModal() {
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
-      <TradeConfirmation
-        {...commonTradeConfirmContext}
-        title={CONFIRM_TITLE}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-        onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
-        onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={isConfirmDisabled}
-        priceImpact={priceImpact}
-        buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbol} balance` : t`Place TWAP order`}
-        recipient={recipient}
-      >
-        {(warnings) => (
-          <>
-            {receiveAmountInfo && numOfParts && (
-              <TradeBasicConfirmDetails
-                rateInfoParams={rateInfoParams}
-                receiveAmountInfo={receiveAmountInfo}
-                slippage={slippage}
-                recipient={recipient}
-                recipientAddress={recipientAddress}
-                account={account}
-                labelsAndTooltips={{
-                  ...confirmModalConfig,
-                  networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
-                  networkCostsTooltipSuffix: !allowsOffchainSigning ? (
-                    <>
-                      <br />
-                      <br />
-                      <Trans>
-                        Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
-                        order placement on-chain.
-                      </Trans>
-                    </>
-                  ) : null,
-                }}
+      {eoaTwapSigningStep ? (
+        <EoaTwapSigningPendingContent onDismiss={onDismiss} />
+      ) : (
+        <TradeConfirmation
+          {...commonTradeConfirmContext}
+          title={CONFIRM_TITLE}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
+          onDismiss={onDismiss}
+          isConfirmDisabled={isConfirmDisabled}
+          priceImpact={priceImpact}
+          buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbol} balance` : t`Place TWAP order`}
+          recipient={recipient}
+        >
+          {(warnings) => (
+            <>
+              {receiveAmountInfo && numOfParts && (
+                <TradeBasicConfirmDetails
+                  rateInfoParams={rateInfoParams}
+                  receiveAmountInfo={receiveAmountInfo}
+                  slippage={slippage}
+                  recipient={recipient}
+                  recipientAddress={recipientAddress}
+                  account={account}
+                  labelsAndTooltips={{
+                    ...confirmModalConfig,
+                    networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
+                    networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+                      <>
+                        <br />
+                        <br />
+                        <Trans>
+                          Because you are using a smart contract wallet, you will pay a separate gas cost for signing
+                          the order placement on-chain.
+                        </Trans>
+                      </>
+                    ) : null,
+                  }}
+                />
+              )}
+              {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+              <DividerHorizontal />
+              <TwapConfirmDetails
+                startTime={twapOrder?.startTime}
+                numOfParts={numOfParts}
+                partDuration={partDuration}
+                totalDuration={totalDuration}
               />
-            )}
-            {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-            <DividerHorizontal />
-            <TwapConfirmDetails
-              startTime={twapOrder?.startTime}
-              numOfParts={numOfParts}
-              partDuration={partDuration}
-              totalDuration={totalDuration}
-            />
-            {warnings}
-            <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
-          </>
-        )}
-      </TradeConfirmation>
+              {warnings}
+              <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+            </>
+          )}
+        </TradeConfirmation>
+      )}
     </TradeConfirmModal>
   )
 }
