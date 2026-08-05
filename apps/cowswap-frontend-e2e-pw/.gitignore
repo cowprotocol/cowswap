@@ -4,6 +4,5 @@ test-results/
 playwright-report/
 .playwright/
 .cache-synpress/
-src/checklist/checklist.json
 coverage-report.md
 .env

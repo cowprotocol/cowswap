@@ -32,25 +32,11 @@
         "command": "playwright test --ui"
       }
     },
-    "e2e:report": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
-        "command": "tsx src/checklist/coverageReport.ts"
-      }
-    },
     "e2e:record-mocks": {
       "executor": "nx:run-commands",
       "options": {
         "cwd": "apps/cowswap-frontend-e2e-pw",
         "command": "tsx src/mocks/cowProtocolApi/record.ts"
-      }
-    },
-    "sync-checklist": {
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "apps/cowswap-frontend-e2e-pw",
-        "command": "tsx src/support/syncChecklist.ts"
       }
     },
     "lint": {

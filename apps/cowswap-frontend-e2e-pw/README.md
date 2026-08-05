@@ -197,36 +197,14 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 | `pnpm e2e` | Full suite — all 362 tests |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
-| `pnpm e2e:report` | Regenerate `coverage-report.md` from current tests + xlsx |
 | `npx nx test cowswap-frontend-e2e-pw` | Unit tests for the mocks and support code (`node:test` via tsx) |
 | `pnpm e2e:record-mocks` | Re-record the CoW Protocol API response fixtures from the live barn API |
-| `pnpm e2e:sync-checklist` | Regenerate `src/checklist/checklist.json` from `e2e-checklist.xlsx` |
 
 Run a single spec or test from inside this directory:
 
 ```bash
 pnpm exec playwright test src/tests/market-orders.spec.ts
 pnpm exec playwright test --grep '\[MO-01\]'
-```
-
-## Adding a new automated test
-
-1. Pick a `[XX-NN]` ID from the checklist that is currently a `todo` or `manual`
-   placeholder in the relevant `src/tests/<sheet>.spec.ts` file.
-2. Replace the placeholder with a real `test()` body using the fixtures from
-   `src/fixtures/index.ts` (`wallet`, `swapPage`, `mocks`, `rpcProxy`, etc.).
-3. Tag it with `@smoke` if it should run on every PR.
-4. Run `pnpm e2e:report` and confirm the new ID moves from the `TODO` or
-   `Manual` column to the `Automated` column. Totals must always sum to 362.
-5. Commit.
-
-## Refreshing the checklist after QA edits the xlsx
-
-```bash
-pnpm e2e:sync-checklist                                # rewrites checklist.json
-pnpm --filter @cowprotocol/cowswap-e2e-pw exec tsx \
-  src/checklist/scaffold.ts                            # scaffolds any new IDs as placeholders
-pnpm e2e:report                                        # confirm coverage-report.md is consistent
 ```
 
 If `scaffold.ts` adds new placeholders, commit those spec-file changes
