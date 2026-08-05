@@ -8,9 +8,9 @@
     "@cowprotocol/cow-fi": 4.9,
     "@cowprotocol/cowswap": 10.2,
     "@cowprotocol/explorer": 10.8,
-    "@cowprotocol/sdk-tools": 11.8,
-    "@cowprotocol/storybook": 4.7,
-    "@cowprotocol/widget-configurator": 12.4,
+    "@cowprotocol/sdk-tools": 9.8,
+    "@cowprotocol/storybook": 3.5,
+    "@cowprotocol/widget-configurator": 11,
   },
   "packages": {
     "@cowprotocol/currency": 0,
