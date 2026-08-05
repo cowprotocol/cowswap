@@ -1292,10 +1292,8 @@ msgid "is on {chainName} network"
 msgstr "is on {chainName} network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 msgid "Approved"
 msgstr "Approved"
 
@@ -4428,7 +4426,7 @@ msgstr "and saved "
 #~ msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 #~ msgstr "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 msgid "Approve all"
 msgstr "Approve all"
 
@@ -4876,7 +4874,7 @@ msgid "Unsupported Network"
 msgstr "Unsupported Network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Approve"
@@ -5147,6 +5145,7 @@ msgstr "Minutes"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "The referral code was applied after the trader's first qualifying trade."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "User rejected approval transaction"
@@ -5761,6 +5760,7 @@ msgstr "Turn on Expert mode?"
 msgid "Checking route availability..."
 msgstr "Checking route availability..."
 
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
@@ -6217,8 +6217,8 @@ msgid "Approval amount"
 msgstr "Approval amount"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/SolanaApproveModal.tsx
-msgid "Approving"
-msgstr "Approving"
+#~ msgid "Approving"
+#~ msgstr "Approving"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerPayoutHistory.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHistory.tsx
