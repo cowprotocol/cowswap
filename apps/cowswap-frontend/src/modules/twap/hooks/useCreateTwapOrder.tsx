@@ -280,7 +280,11 @@ export function useCreateTwapOrder() {
             amountToApprove: maxUint256,
           })
 
-          const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
+          const signingStepPlan = buildEoaTwapSigningStepPlan({
+            vaultRelayer: approvalNeeds,
+            // TODO(JIT): read the real EOA => ComposableCowPoller allowance once JIT funding placement lands.
+            poller: { needsApproval: true, needsZeroApproval: false },
+          })
 
           // Open the multi-step pending UI as soon as the plan is known.
           const firstStep = signingStepPlan[0]

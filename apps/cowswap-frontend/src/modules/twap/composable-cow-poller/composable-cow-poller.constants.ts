@@ -26,7 +26,7 @@ export const COMPOSABLE_COW_POLLER_ADDRESS: Partial<Record<SupportedChainId, Add
  *
  * @see https://github.com/cowprotocol/composable-cow/pull/128
  */
-export const EOA_TWAP_JIT_REGISTER_VIA_SIGNATURE = false as const
+export const EOA_TWAP_JIT_REGISTER_VIA_SIGNATURE: boolean = false
 
 /**
  * Gas budget for the `pollFunds` pre-hook on each TWAP part

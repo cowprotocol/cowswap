@@ -83,14 +83,22 @@ export function getEoaTwapStepDescription(
     case EoaTwapSigningSteps.ZeroApprove:
     case EoaTwapSigningSteps.ApproveOrPermit:
       if (isLoading) {
-        return (
-          <p>
-            {t`Waiting for tx`}
-            <ThreeDots />
-          </p>
-        )
+        return waitingForTxDescription()
       }
       return t`Confirm the approval transaction in your connected wallet.`
+
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
+      if (isLoading) {
+        return waitingForTxDescription()
+      }
+      return t`Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.`
+
+    case EoaTwapSigningSteps.RegisterPoller:
+      if (isLoading) {
+        return waitingForTxDescription()
+      }
+      return t`Confirm the funding schedule transaction in your connected wallet.`
 
     case EoaTwapSigningSteps.TwapSetup:
       return t`Confirm this required setup signature in your connected wallet.`
@@ -104,12 +112,12 @@ export function getEoaTwapStepDescription(
           </p>
         )
       }
-      return t`Sign in your wallet. We'll submit the funding order automatically.`
+      return t`Sign in your wallet. We'll submit the setup order automatically.`
 
     case EoaTwapSigningSteps.CreatingOrder:
       return (
         <p>
-          {t`Settling the funding order and registering your TWAP`}
+          {t`Settling the setup order and registering your TWAP`}
           <ThreeDots />
         </p>
       )
@@ -121,6 +129,11 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
     case EoaTwapSigningSteps.ZeroApprove:
     case EoaTwapSigningSteps.ApproveOrPermit:
       return symbol ? t`Approve ${symbol}` : t`Approve`
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
+      return symbol ? t`Approve ${symbol} for funding` : t`Approve funding`
+    case EoaTwapSigningSteps.RegisterPoller:
+      return t`Schedule funding`
     case EoaTwapSigningSteps.TwapSetup:
       return t`Set up TWAP`
     case EoaTwapSigningSteps.FundingOrder:
@@ -128,4 +141,13 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
     case EoaTwapSigningSteps.CreatingOrder:
       return t`Activating TWAP`
   }
+}
+
+function waitingForTxDescription(): ReactNode {
+  return (
+    <p>
+      {t`Waiting for tx`}
+      <ThreeDots />
+    </p>
+  )
 }
