@@ -21,6 +21,11 @@
     "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
+    "e2e": "nx run cowswap-frontend-e2e-pw:e2e",
+    "e2e:build-cache": "nx run cowswap-frontend-e2e-pw:e2e:build-cache",
+    "e2e:smoke": "nx run cowswap-frontend-e2e-pw:e2e:smoke",
+    "e2e:ui": "nx run cowswap-frontend-e2e-pw:e2e:ui",
+    "e2e:record-mocks": "nx run cowswap-frontend-e2e-pw:e2e:record-mocks",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
     "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
@@ -42,7 +47,6 @@
     "test:tools": "node --test tools/scripts/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
     "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
-    "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
     "agents:check": "node tools/scripts/agents-check.mjs && node tools/scripts/check-pinned-package-versions.mjs",
@@ -136,6 +140,7 @@
       }
     },
     "patchedDependencies": {
+      "@synthetixio/synpress-metamask@0.0.11": "patches/@synthetixio__synpress-metamask@0.0.11.patch",
       "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
     }
   },
@@ -227,6 +232,7 @@
     "rollup-plugin-visualizer": "6.0.4",
     "ts-jest": "29.4.5",
     "ts-node": "10.9.1",
+    "tsx": "4.22.0",
     "typechain": "8.3.2",
     "typescript": "5.9.3",
     "vite": "7.3.1",
