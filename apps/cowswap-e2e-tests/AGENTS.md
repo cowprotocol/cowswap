@@ -8,8 +8,6 @@ source_of_truth_scope: cowswap-e2e-tests app-specific conventions, mocks, and de
 # cowswap-e2e-tests AGENTS.md
 
 Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and verification baseline).
-Design background: [`../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md`](../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md)
-and [`../../docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md`](../../docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md).
 This file: operational conventions and hard-won debugging notes for agents working in this app, not a
 restatement of the design doc.
 

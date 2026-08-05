@@ -9,11 +9,6 @@ Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 - A **todo** placeholder (`test.fixme()` + `annotation.type === 'todo'`) for
   scenarios planned for later milestones.
 
-See [`../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md`](../../docs/superpowers/specs/2026-05-23-playwright-e2e-design.md)
-for the design and
-[`../../docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md`](../../docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md)
-for the implementation plan.
-
 ## Prerequisites
 
 - Node 22 (LTS, matches the repo).
