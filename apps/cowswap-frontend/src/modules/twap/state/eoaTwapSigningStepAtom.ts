@@ -36,6 +36,9 @@ export enum EoaTwapSigningPhase {
 export enum EoaTwapSigningSteps {
   ZeroApprove = 'ZeroApprove',
   ApproveOrPermit = 'ApproveOrPermit',
+  ZeroApprovePoller = 'ZeroApprovePoller',
+  ApprovePoller = 'ApprovePoller',
+  RegisterPoller = 'RegisterPoller',
   TwapSetup = 'TwapSetup',
   FundingOrder = 'FundingOrder',
   CreatingOrder = 'CreatingOrder',

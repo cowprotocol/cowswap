@@ -115,7 +115,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         id: EoaTwapSigningSteps.FundingOrder,
         label: 'Sign TWAP',
         status: 'upcoming',
-        description: "Sign in your wallet. We'll submit the funding order automatically.",
+        description: "Sign in your wallet. We'll submit the setup order automatically.",
       },
     ])
   })
@@ -165,6 +165,9 @@ describe('getEoaTwapStepLabel()', () => {
   it('returns stable labels per step', () => {
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveOrPermit, 'COW')).toBe('Approve COW')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveOrPermit)).toBe('Approve')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'COW')).toBe('Approve COW for funding')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller)).toBe('Approve funding')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.RegisterPoller)).toBe('Schedule funding')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.TwapSetup)).toBe('Set up TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.FundingOrder)).toBe('Sign TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.CreatingOrder)).toBe('Activating TWAP')
@@ -190,7 +193,16 @@ describe('getEoaTwapStepDescription()', () => {
 
   it('returns sign copy for FundingOrder when active', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'active')).toBe(
-      "Sign in your wallet. We'll submit the funding order automatically.",
+      "Sign in your wallet. We'll submit the setup order automatically.",
+    )
+  })
+
+  it('returns poller approve and register copy when active', () => {
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'active')).toBe(
+      'Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.',
+    )
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.RegisterPoller, 'active')).toBe(
+      'Confirm the funding schedule transaction in your connected wallet.',
     )
   })
 

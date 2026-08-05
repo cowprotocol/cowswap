@@ -1831,6 +1831,14 @@ msgstr "Remove list"
 msgid "Help Center"
 msgstr "Help Center"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm the funding schedule transaction in your connected wallet."
+msgstr "Confirm the funding schedule transaction in your connected wallet."
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve funding"
+msgstr "Approve funding"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 msgid "Last updated"
 msgstr "Last updated"
@@ -2052,6 +2060,10 @@ msgstr "TWAP orders currently require a Safe with a special fallback handler. Ha
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
 msgstr "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve {symbol} for funding"
+msgstr "Approve {symbol} for funding"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
@@ -3276,6 +3288,10 @@ msgstr "Your position has 0 liquidity, and is not earning fees."
 #~ msgid "No failed orders found"
 #~ msgstr "No failed orders found"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Settling the setup order and registering your TWAP"
+msgstr "Settling the setup order and registering your TWAP"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can avoid price impact on large trades by using TWAP orders on CoW Swap."
 msgstr "You can avoid price impact on large trades by using TWAP orders on CoW Swap."
@@ -4252,6 +4268,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "unfillable"
 #~ msgstr "unfillable"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
+msgstr "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -5913,8 +5933,8 @@ msgid "Save & lock code"
 msgstr "Save & lock code"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Sign in your wallet. We'll submit the funding order automatically."
-msgstr "Sign in your wallet. We'll submit the funding order automatically."
+#~ msgid "Sign in your wallet. We'll submit the funding order automatically."
+#~ msgstr "Sign in your wallet. We'll submit the funding order automatically."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 msgid "To at least"
@@ -7002,6 +7022,10 @@ msgstr "Allow CoW Swap to use your <0/>"
 msgid "Wallet address"
 msgstr "Wallet address"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign in your wallet. We'll submit the setup order automatically."
+msgstr "Sign in your wallet. We'll submit the setup order automatically."
+
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "mo"
 msgstr "mo"
@@ -7474,8 +7498,8 @@ msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Settling the funding order and registering your TWAP"
-msgstr "Settling the funding order and registering your TWAP"
+#~ msgid "Settling the funding order and registering your TWAP"
+#~ msgstr "Settling the funding order and registering your TWAP"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Earn more by adding a referral code."
@@ -7932,6 +7956,10 @@ msgstr "Continue"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "(also known as CoW Shed)"
 msgstr "(also known as CoW Shed)"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Schedule funding"
+msgstr "Schedule funding"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/PreparingBridgingContent/index.tsx
 msgid "Loading bridge data <0/>"

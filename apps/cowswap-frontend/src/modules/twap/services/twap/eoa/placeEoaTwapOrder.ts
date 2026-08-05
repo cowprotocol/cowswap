@@ -39,6 +39,7 @@ import {
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
+import { EoaTwapPlacementCancelledError } from '../../../utils/eoaTwapPlacementCancel'
 import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
@@ -47,6 +48,12 @@ const DEFAULT_GAS_LIMIT = 600_000n
 const FUNDING_ORDER_VALID_FOR_SEC = 1800
 const log = createCowLogger('EOA TWAP')
 const EOA_TWAP_POC_DEBUG = true
+
+/**
+ * Temporary: placement is disabled while the JIT funding flow (poller approve + register) is implemented,
+ * so the updated signing stepper can be reviewed without running the outdated placement logic.
+ */
+const IS_EOA_TWAP_PLACEMENT_DISABLED: boolean = true
 
 // TODO: Move to `@cowprotocol/cow-sdk` just like `import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'`?
 const EOA_TWAP_SETUP_DAPP_ID = 'cowswap://twap/eoa-setup' // cow-sdk-scripts://composable-cow/post-twap-for-eoa
@@ -209,6 +216,14 @@ export async function placeEoaTwapOrder({
   generatePermitHook,
   onSigningStep,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
+  if (IS_EOA_TWAP_PLACEMENT_DISABLED) {
+    // Yield so the pending stepper paints before the blocking alert.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    alert('EOA TWAP placement is disabled while the JIT funding flow is implemented. Showing the stepper UI only.')
+    // Cancellation keeps the stepper on screen instead of switching the modal to the error view.
+    throw new EoaTwapPlacementCancelledError()
+  }
+
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
   assertCaptchaCanQuote()
 
