@@ -4,6 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
+import { t } from '@lingui/core/macro'
+
 import { useSolanaApproveCallback } from 'modules/trade'
 
 import { LegacyApproveButton } from '../pure/LegacyApproveButton'
@@ -35,8 +37,13 @@ export function SolanaTradeApproveButton(approveParams: SolanaTradeApproveButton
     updateApproveState({ currency: token, approveInProgress: true, amountToApprove })
 
     try {
-      await approve?.(partialApproveAmount)
-      resetApproveState()
+      const approveResult = await approve?.(partialApproveAmount)
+
+      if (approveResult) {
+        resetApproveState()
+      } else {
+        updateApproveState({ approveInProgress: false, error: t`User rejected approval transaction` })
+      }
     } catch (error) {
       updateApproveState({ approveInProgress: false, error: error instanceof Error ? error.message : String(error) })
     }
