@@ -5,11 +5,11 @@
 {
   "schemaVersion": 1,
   "apps": {
-    "@cowprotocol/cow-fi": 5987, // 5.85 MiB
-    "@cowprotocol/cowswap": 11786, // 11.51 MiB
+    "@cowprotocol/cow-fi": 5988, // 5.85 MiB
+    "@cowprotocol/cowswap": 11798, // 11.52 MiB
     "@cowprotocol/explorer": 12289, // 12 MiB
-    "@cowprotocol/sdk-tools": 11329, // 11.06 MiB
-    "@cowprotocol/storybook": 4837, // 4.72 MiB
+    "@cowprotocol/sdk-tools": 11330, // 11.06 MiB
+    "@cowprotocol/storybook": 4838, // 4.72 MiB
     "@cowprotocol/widget-configurator": 12514, // 12.22 MiB
   },
   "packages": {
