@@ -2,11 +2,9 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ApiError } from '@cowprotocol/common-utils'
+import { ApiError, safeShortenAddress } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
-
-import { safeShortenAddress } from 'utils/address'
 
 import { AffiliateVerificationResult } from '../analytics/affiliateAnalytics.types'
 import { trackAffiliateEvent } from '../analytics/affiliateAnalytics.utils'
