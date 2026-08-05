@@ -1,7 +1,7 @@
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { Address } from '@cowprotocol/cow-sdk'
 
 import { getOrders } from 'api/cowProtocol'
-import { safeShortenAddress } from 'utils/address'
 
 import {
   AFFILIATE_SUPPORTED_CHAIN_IDS,
