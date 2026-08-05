@@ -70,7 +70,11 @@ export async function safeBundleFlow({
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: params.postOrderParams.quoteId,
+    allowsOffchainSigning: params.postOrderParams.allowsOffchainSigning,
+  })
   beforeTrade?.()
 
   const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions } = params
