@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'apps/cowswap-frontend/**'
-      - '../../apps/cowswap-e2e-tests/**'
+      - 'apps/cowswap-e2e-tests/**'
       - 'libs/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
