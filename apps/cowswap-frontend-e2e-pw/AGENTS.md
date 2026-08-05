@@ -13,9 +13,6 @@ and [`../../docs/superpowers/plans/2026-05-23-playwright-e2e-suite.md`](../../do
 This file: operational conventions and hard-won debugging notes for agents working in this app, not a
 restatement of the design doc.
 
-This is the **new**, checklist-driven Playwright suite. The old Cypress suite at
-`apps/cowswap-frontend-e2e/` is frozen — do not add tests there.
-
 ## App commands
 
 - Run all tests: `pnpx nx run cowswap-frontend-e2e-pw:e2e` (wraps `playwright test`)
