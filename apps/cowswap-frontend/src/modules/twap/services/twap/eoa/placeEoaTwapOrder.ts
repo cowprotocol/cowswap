@@ -3,6 +3,7 @@ import type { Config } from 'wagmi'
 import { readContract } from 'wagmi/actions'
 
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger, isProdLike } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   AccountAddress,
   OrderKind,
@@ -16,6 +17,7 @@ import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { prodTradingSdk } from 'tradingSdk/tradingSdk'
 
 import {
@@ -208,6 +210,7 @@ export async function placeEoaTwapOrder({
   onSigningStep,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
   if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
+  assertCaptchaCanQuote()
 
   const { sellAmount } = twapOrder
   const sellTokenAddress = sellAmount.currency.address as `0x${string}`
@@ -323,6 +326,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   // Using the regular `tradingSdk` will use the staging orderbook for barn backend env. Passing `env: 'prod'` and `settlementContractOverride` would work,
   // but `getQuote` will then mutate the shared OrderBookApi context, so the easiest solution is to use the prod-only `prodTradingSdk`.
+  assertCaptchaCanQuote()
+
   const { quoteResults, postSwapOrderFromQuote } = await prodTradingSdk.getQuote(
     {
       kind: OrderKind.BUY,
@@ -409,8 +414,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       permitInfo,
       generatePermitHook,
       preferOnChainApprove: true,
-      // No approval should be needed here, but if it does, we don't want to reset the step to
-      // ZeroApprove/ApproveOrPermit, so we pass `step`:
+      // Keep the stepper on FundingOrder instead of rewinding to ZeroApprove/ApproveOrPermit:
       step: EoaTwapSigningSteps.FundingOrder,
       onSigningStep,
       approvalNeeds,
@@ -438,6 +442,8 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
 
   // Ready for the funding-order EIP-712 signature. Past this point the pending UI hides dismiss.
   onSigningStep({ step: EoaTwapSigningSteps.FundingOrder, phase: EoaTwapSigningPhase.Sign, lockDismiss: true })
+
+  assertCaptchaCanQuote()
 
   let orderPostingResult: OrderPostingResult
 
@@ -518,6 +524,10 @@ export const jsonReplacer = (_key: string, value: unknown): unknown => {
     return String(value)
   }
   return value
+}
+
+function assertCaptchaCanQuote(): void {
+  if (!jotaiStore.get(captchaCanQuoteAtom)) throw new Error('Complete the CAPTCHA before you request a quote')
 }
 
 function eoaTwapDebugLog(...args: unknown[]): void {
