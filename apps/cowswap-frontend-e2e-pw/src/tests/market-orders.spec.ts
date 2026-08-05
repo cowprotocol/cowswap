@@ -1,6 +1,6 @@
 import type { Hex } from 'viem'
 
-import { test, expect } from '../fixtures/mockWallet'
+import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 

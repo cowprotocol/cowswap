@@ -1,6 +1,6 @@
 import type { Hex } from 'viem'
 
-import { test, expect } from '../fixtures/mockWallet'
+import { test, expect } from '../fixtures'
 import { CHAIN_IDS } from '../support/constants'
 
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
