@@ -1,5 +1,5 @@
-import { shortenAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isEvmAddress } from '@cowprotocol/cow-sdk'
+import { safeShortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import {
   getOrderCompetitionStatus,
@@ -21,7 +21,6 @@ export type UseOrderSolverResult = {
   isLoading: boolean
 }
 
-const SOLVER_SUFFIX_REGEX = /-solve$/i
 type CompetitionStatusEntry = NonNullable<OrderCompetitionStatus['value']>[number]
 type ExecutedAmounts = NonNullable<CompetitionStatusEntry['executedAmounts']>
 
@@ -30,24 +29,28 @@ export async function resolveSolver(
   orderUid: string,
   txHash: string | undefined,
 ): Promise<OrderSolverInfo | undefined> {
-  // Solver branding is global metadata. Do not scope this by network, because CMS network mappings can lag
-  // behind the competition winner data and would hide valid logos/display names on order and fill views.
+  // A solver's display name and logo are global metadata. Do not scope this by network, because CMS
+  // network mappings can lag behind the competition winner data and would hide valid names/logos on
+  // order and fill views.
   const [competitionStatus, solvers] = await Promise.all([
     getOrderCompetitionStatus({ networkId, orderId: orderUid }),
     fetchSolversInfo().catch(() => []),
   ])
 
-  const winnerFromOrder = getWinnerSolver(competitionStatus?.value)
+  const winnerAddress = getWinnerSolverAddress(competitionStatus?.value)
 
-  const winnerSolverName =
-    winnerFromOrder ||
-    (txHash
-      ? getWinnerSolverFromCompetition(await getSolverCompetitionByTxHash({ networkId, txHash }), solvers, orderUid)
-      : undefined)
+  if (winnerAddress) {
+    return buildSolverInfoFromAddress(winnerAddress, solvers)
+  }
 
-  if (!winnerSolverName) return undefined
+  if (!txHash) return undefined
 
-  return buildSolverInfo(winnerSolverName, solvers)
+  const competitionWinner = findCompetitionWinnerAddress(
+    await getSolverCompetitionByTxHash({ networkId, txHash }),
+    orderUid,
+  )
+
+  return competitionWinner ? buildSolverInfoFromAddress(competitionWinner, solvers) : undefined
 }
 
 export async function resolveSolverByTxHash(
@@ -60,73 +63,42 @@ export async function resolveSolverByTxHash(
     fetchSolversInfo().catch(() => []),
   ])
 
-  const winnerSolverName = getWinnerSolverFromCompetition(competition, solvers, orderId)
+  const winnerAddress = findCompetitionWinnerAddress(competition, orderId)
 
-  if (!winnerSolverName) return undefined
-
-  return buildSolverInfo(winnerSolverName, solvers)
-}
-
-function buildSolverInfo(winnerSolver: string, solvers: SolverInfo[]): OrderSolverInfo {
-  // Once the backend migrates, the competition `solver` field carries the on-chain solver address
-  // instead of the name. Resolve CMS branding by address in that case; otherwise fall back to the
-  // legacy name-based lookup (backend still returns a name, e.g. `naive`, `barter-solve`).
-  return isEvmAddress(winnerSolver)
-    ? buildSolverInfoFromAddress(winnerSolver, solvers)
-    : buildSolverInfoFromName(winnerSolver, solvers)
+  return winnerAddress ? buildSolverInfoFromAddress(winnerAddress, solvers) : undefined
 }
 
 function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): OrderSolverInfo {
   const matchingSolver = matchSolverByAddress(address, solvers)
-  return {
-    solverId: matchingSolver?.solverId || address,
-    // When the address isn't found in CMS, fall back to a shortened address for display so the
-    // full 42-char address doesn't break the UI layout.
-    displayName: matchingSolver?.displayName || shortenAddress(address),
-    image: matchingSolver?.image,
-  }
+
+  if (matchingSolver) return toOrderSolverInfo(matchingSolver)
+
+  // Unknown to the CMS: display the address itself, shortened when possible.
+  return { solverId: address, displayName: safeShortenAddress(address) }
 }
 
-function buildSolverInfoFromName(solverName: string, solvers: SolverInfo[]): OrderSolverInfo {
-  const matchingSolver = matchSolverByName(solverName, solvers)
-  return {
-    solverId: matchingSolver?.solverId || solverName,
-    displayName: matchingSolver?.displayName || solverName,
-    image: matchingSolver?.image,
-  }
+/**
+ * The solver competition reports the winner by its on-chain address as well, so both sources feed
+ * the same CMS join and share the shortened-address fallback.
+ */
+function findCompetitionWinnerAddress(
+  competition: SolverCompetitionResponse | undefined,
+  orderId: string | undefined,
+): string | undefined {
+  if (!competition?.solutions?.length || !orderId) return undefined
+
+  return competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))?.solverAddress
 }
 
-function getWinnerSolver(value?: OrderCompetitionStatus['value']): string | undefined {
+/**
+ * The `/status` endpoint reports each solution's solver by its on-chain address.
+ */
+function getWinnerSolverAddress(value?: OrderCompetitionStatus['value']): string | undefined {
   if (!value?.length) return undefined
 
   const executedSolvers = value.filter((solver) => hasNonZeroExecutedAmounts(solver.executedAmounts))
-  const winner = executedSolvers[executedSolvers.length - 1]
 
-  return winner?.solver
-}
-
-function getWinnerSolverFromCompetition(
-  competition?: SolverCompetitionResponse,
-  solvers?: SolverInfo[],
-  orderId?: string,
-): string | undefined {
-  if (!competition?.solutions?.length || !solvers?.length || !orderId) return undefined
-
-  const winner = competition.solutions.find((s) => s.isWinner && s.orders?.find((o) => o?.id === orderId))
-  if (!winner) return undefined
-
-  return getWinnerSolverName(winner, solvers)
-}
-
-function getWinnerSolverName(winner: unknown, solvers: SolverInfo[]): string | undefined {
-  if (!winner || typeof winner !== 'object' || !('solverAddress' in winner)) return undefined
-
-  const solverAddress = winner.solverAddress
-
-  if (typeof solverAddress === 'string') {
-    return matchSolverByAddress(solverAddress, solvers)?.displayName ?? undefined
-  }
-  return undefined
+  return executedSolvers[executedSolvers.length - 1]?.solver
 }
 
 function hasNonZeroExecutedAmounts(executedAmounts: CompetitionStatusEntry['executedAmounts']): boolean {
@@ -155,15 +127,6 @@ function matchSolverByAddress(address: string, solvers: SolverInfo[]): SolverInf
   )
 }
 
-function matchSolverByName(solverName: string, solvers: SolverInfo[]): SolverInfo | undefined {
-  const normalizedName = normalizeSolverId(solverName)
-  return solvers.find((candidate) => {
-    const normalizedSolverId = normalizeSolverId(candidate.solverId)
-    const normalizedDisplayName = normalizeSolverId(candidate.displayName)
-    return normalizedSolverId === normalizedName || normalizedDisplayName === normalizedName
-  })
-}
-
-function normalizeSolverId(solverId: string): string {
-  return solverId.trim().toLowerCase().replace(SOLVER_SUFFIX_REGEX, '')
+function toOrderSolverInfo({ solverId, displayName, image }: SolverInfo): OrderSolverInfo {
+  return { solverId, displayName, image }
 }

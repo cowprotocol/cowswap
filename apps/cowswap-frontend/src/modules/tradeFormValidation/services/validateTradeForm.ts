@@ -38,6 +38,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
     isRestoringConnection,
+    isCaptchaPending,
+    isCaptchaRequired,
   } = context
 
   const {
@@ -90,6 +92,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
   if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
     return [TradeFormValidation.XstockMinimumTradeSize]
+  }
+
+  if (isCaptchaPending) {
+    return [TradeFormValidation.CaptchaPending]
+  }
+
+  if (isCaptchaRequired) {
+    return [TradeFormValidation.CaptchaRequired]
   }
 
   if (injectedWidgetParams.tokenPairConstraints && inputCurrency && outputCurrency) {
