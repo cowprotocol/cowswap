@@ -172,7 +172,7 @@ export function AccountDetails({
           <SurplusCard />
 
           {activityTotalCount ? (
-            <LowerSection>
+            <LowerSection id="account-activities-list">
               <span>
                 {' '}
                 <h5>
@@ -201,7 +201,7 @@ export function AccountDetails({
               </div>
             </LowerSection>
           ) : (
-            <LowerSection>
+            <LowerSection id="account-activities-list">
               <NoActivityMessage>
                 <span>
                   <Trans>Your activity will appear here...</Trans>
