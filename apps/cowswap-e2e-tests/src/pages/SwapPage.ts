@@ -71,6 +71,10 @@ export class SwapPage implements TradePage {
     await this.inputAmount.fill(amount)
   }
 
+  async enterBuyAmount(amount: string): Promise<void> {
+    await this.outputAmount.fill(amount)
+  }
+
   async clickMax(): Promise<void> {
     await this.maxButton.click()
   }

@@ -1,8 +1,18 @@
-import { formatUnits, parseUnits, type Hex } from 'viem'
+import {
+  decodeFunctionData,
+  encodeAbiParameters,
+  encodeEventTopics,
+  erc20Abi,
+  formatUnits,
+  parseUnits,
+  type Hex,
+} from 'viem'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
+
+import type { RpcStub } from '../mockWallet/walletEngine'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
@@ -257,5 +267,139 @@ test.describe('Market Orders', () => {
     await accountModal.activitiesList.scrollIntoViewIfNeeded()
     await expect(accountModal.activitiesList).toContainText('Filled')
     await accountModal.close()
+  })
+
+  test('[MO-07] Buy order: partial approval amount matches the confirm modal\'s "Maximum sent"', async ({
+    swapPage,
+    wallet,
+    mocks,
+    context,
+  }) => {
+    // Fixed rate (1 WETH = 2000 USDC) with zero fee/protocolFeeBps keeps the sell side a clean
+    // round number derived from whatever buy amount was actually requested — same technique as
+    // [MO-04]/[MO-06], just for a buy-kind quote.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const buyAmount = BigInt(defaults.quote.buyAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: { ...defaults.quote, sellAmount: (buyAmount / 2000n).toString(), feeAmount: '0' },
+      }
+    })
+    // Matches the quote's implied rate so the trade doesn't look like a loss against the fixture's
+    // flat $1-per-token USD prices, which would otherwise trip the "Confirm Price Impact" dialog.
+    mocks.usdPrices.setPrice(WETH, 2000)
+
+    mocks.balances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('2', 18), [USDC]: 0n })
+    // Precondition: sell token not yet approved.
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: 0n })
+
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
+    await swapPage.enterBuyAmount('1000')
+    await swapPage.waitForQuote()
+
+    // Select "Partial approval" so the wallet requests a finite amount tied to the trade instead
+    // of the default infinite (MaxUint256) approval — only then is there a "maximum sent" figure
+    // to compare against.
+    const approveModeSelector = swapPage.page.locator('#approve-mode-selector')
+    await approveModeSelector.getByText('Partial approval').click()
+    const approvalAmount = await approveModeSelector.locator('[title]').getAttribute('title')
+
+    // The approve() call would otherwise be broadcast for real: `eth_sendTransaction` goes through
+    // the connected wallet (stubbed below), but the confirmation poll that follows it
+    // (`eth_getTransactionReceipt`) goes through the app's own direct RPC client straight to
+    // `REACT_APP_NETWORK_URL_11155111` — the same wire `mocks.balances`/`mocks.allowances`
+    // intercept — bypassing the wallet entirely, so it needs its own route stub here.
+    const FAKE_APPROVE_TX_HASH = `0x${'ab'.repeat(32)}`
+    let approvedRawAmount: bigint | undefined
+    let approveSpender: Hex | undefined
+    const approveTxStub: RpcStub = ({ params }) => {
+      const tx = params[0] as { data?: Hex }
+      // Ground truth: decode the actual approve(spender, amount) calldata rather than trusting
+      // the UI's rendered figure — also what re-syncs the allowance mock below, since faking the
+      // send doesn't change anything the real allowance-read mock would otherwise report.
+      const { args } = decodeFunctionData({ abi: erc20Abi, data: tx.data as Hex })
+      approveSpender = args[0] as Hex
+      approvedRawAmount = args[1] as bigint
+      mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: approvedRawAmount })
+      return FAKE_APPROVE_TX_HASH
+    }
+    wallet.stubRpc('eth_sendTransaction', approveTxStub)
+
+    const sepoliaRpcUrl = process.env.REACT_APP_NETWORK_URL_11155111
+    if (!sepoliaRpcUrl) throw new Error('REACT_APP_NETWORK_URL_11155111 not set')
+    await context.route(sepoliaRpcUrl, async (route) => {
+      const body = route.request().postDataJSON() as
+        | { id: number | string; method: string; params: unknown[] }
+        | Array<{ id: number | string; method: string; params: unknown[] }>
+      const entries = Array.isArray(body) ? body : [body]
+      if (!entries.some((entry) => entry.method === 'eth_getTransactionReceipt')) {
+        return route.fallback()
+      }
+
+      // `useApproveAndSwap` confirms the approved amount by parsing the receipt's `Approval` log
+      // (not by re-reading `allowance()`) — an empty `logs: []` reads as "approval failed".
+      const approvalLog = {
+        address: WETH,
+        topics: encodeEventTopics({
+          abi: erc20Abi,
+          eventName: 'Approval',
+          args: { owner: wallet.address as Hex, spender: approveSpender as Hex },
+        }),
+        data: encodeAbiParameters([{ type: 'uint256' }], [approvedRawAmount as bigint]),
+        blockNumber: '0x1',
+        transactionHash: FAKE_APPROVE_TX_HASH,
+        transactionIndex: '0x0',
+        blockHash: `0x${'cd'.repeat(32)}`,
+        logIndex: '0x0',
+        removed: false,
+      }
+
+      const payload = entries.map((entry) => ({
+        jsonrpc: '2.0',
+        id: entry.id,
+        result:
+          entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_APPROVE_TX_HASH
+            ? {
+                transactionHash: FAKE_APPROVE_TX_HASH,
+                status: '0x1',
+                blockNumber: '0x1',
+                blockHash: `0x${'cd'.repeat(32)}`,
+                contractAddress: null,
+                cumulativeGasUsed: '0x5208',
+                gasUsed: '0x5208',
+                effectiveGasPrice: '0x3b9aca00',
+                logs: [approvalLog],
+                logsBloom: `0x${'0'.repeat(512)}`,
+                transactionIndex: '0x0',
+                from: wallet.address,
+                to: WETH,
+                type: '0x0',
+              }
+            : null,
+      }))
+      await route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+    })
+
+    await swapPage.approveButton.click()
+
+    // Approving a buy order auto-advances into the swap confirm screen. Its "Maximum sent" row is
+    // the slippage-adjusted sell amount *without* the buy-order's +1% buffer
+    // (`getOrderTypeReceiveAmounts.ts`) — a deliberately different figure from the approve amount
+    // (`useAmountsToSignFromQuote.ts`'s `maximumSendSellAmount`, which adds that 1% on top).
+    const maximumSentRow = swapPage.page.locator(
+      'xpath=//*[contains(text(),"Maximum sent")]/ancestor::div[.//*[@title]][1]',
+    )
+    const maximumSentTitle = await maximumSentRow.locator('[title]').getAttribute('title')
+    const [maximumSentDisplayValue] = (maximumSentTitle ?? '').split(' ')
+    const maximumSentRaw = parseUnits(maximumSentDisplayValue, 18)
+
+    // What the toggle showed before signing matches the real approve() calldata's amount.
+    const [approvalDisplayValue] = (approvalAmount ?? '').split(' ')
+    expect(parseUnits(approvalDisplayValue, 18)).toBe(approvedRawAmount)
+
+    // The core relationship: approval amount = "Maximum sent" + the 1% buy-order buffer.
+    expect(approvedRawAmount).toBe((maximumSentRaw * 101n) / 100n)
   })
 })
