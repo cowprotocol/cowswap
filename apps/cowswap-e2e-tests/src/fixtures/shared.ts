@@ -8,6 +8,7 @@ import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
+import { AccountModal } from '../pages/AccountModal'
 import { AccountPage } from '../pages/AccountPage'
 import { ConfirmModal } from '../pages/ConfirmModal'
 import { HeaderPage } from '../pages/HeaderPage'
@@ -23,6 +24,7 @@ export interface SharedFixtures {
   limitPage: LimitPage
   twapPage: TwapPage
   accountPage: AccountPage
+  accountModal: AccountModal
   confirmModal: ConfirmModal
   header: HeaderPage
   rpcProxy: RpcProxyHandle
@@ -61,6 +63,9 @@ export const sharedFixtures: Fixtures<
   },
   accountPage: async ({ page }, use) => {
     await use(new AccountPage(page))
+  },
+  accountModal: async ({ page }, use) => {
+    await use(new AccountModal(page))
   },
   confirmModal: async ({ page }, use) => {
     await use(new ConfirmModal(page))

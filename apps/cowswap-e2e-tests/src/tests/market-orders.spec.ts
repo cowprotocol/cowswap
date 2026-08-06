@@ -1,4 +1,4 @@
-import type { Hex } from 'viem'
+import { formatUnits, parseUnits, type Hex } from 'viem'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
@@ -165,5 +165,95 @@ test.describe('Market Orders', () => {
     })
 
     await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
+  })
+
+  test('[MO-06] Sell order: full lifecycle from token selection to filled activity', async ({
+    swapPage,
+    wallet,
+    confirmModal,
+    accountModal,
+    mocks,
+  }) => {
+    // On this Sepolia deployment both test tokens report 18 decimals on-chain (verified via
+    // `decimals()`), not USDC's real-world 6 — `support/tokens.ts` disagrees, so raw atoms are
+    // computed here via `parseUnits` with an explicit 18 instead of going through `resolveToken`.
+    const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
+    const BUY_RATE_NUM = 804n
+    const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
+
+    // Same technique as [MO-04]: zero out the fee/protocolFeeBps so the posted sellAmount
+    // matches the typed amount exactly, keeping the sell-side balance assertion a round number.
+    // The buy side still goes through the app's own slippage, so it's asserted dynamically below
+    // via `posting.getPostedBuyAmount()` rather than a hardcoded figure.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: {
+          ...defaults.quote,
+          buyAmount: ((sellAmount * BUY_RATE_NUM) / BUY_RATE_DEN).toString(),
+          feeAmount: '0',
+        },
+      }
+    })
+
+    const posting = swapPage.mockOrderPosting(mocks.cowApi, wallet.address)
+
+    // `usdPrices` defaults every token to $1 — under that assumption this trade's quoted rate
+    // looks like a ~99.9% loss and trips the "Confirm Price Impact" dialog. Pricing WETH to match
+    // the quote rate keeps the trade looking fair so that extra screen doesn't appear.
+    mocks.usdPrices.setPrice(WETH, Number(BUY_RATE_DEN) / Number(BUY_RATE_NUM))
+
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE })
+
+    await swapPage.goto({ chainId: CHAIN_ID })
+
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('USDC')
+    await swapPage.tokens.openOutput()
+    await swapPage.tokens.searchAndPick('WETH')
+
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
+    await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
+
+    await swapPage.enterSellAmount('1000')
+    await swapPage.waitForQuote()
+
+    await swapPage.clickSwap()
+    await confirmModal.confirmButton.click()
+
+    await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
+    await swapPage.page.keyboard.press('Escape')
+    await expect(swapPage.orderProgressBarModal).toBeHidden()
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Open')
+    await accountModal.close()
+
+    // Settle the order now that it's posted and confirmed — mirrors [MO-04].
+    posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+
+    // Unlike [MO-04] (which keeps the progress modal open throughout), this order was dismissed
+    // before settling — reopening it now goes through the surplus-modal queue driven by
+    // `PendingOrdersUpdater`'s own polling cadence rather than the still-open modal's watcher, so
+    // it needs more room than the default 5s.
+    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+    await swapPage.page.keyboard.press('Escape')
+
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC', { timeout: 15_000 })
+    await expect(swapPage.buyBalance).toHaveAttribute(
+      'title',
+      `${formatUnits(BigInt(posting.getPostedBuyAmount()), 18)} WETH`,
+      { timeout: 15_000 },
+    )
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Filled')
+    await accountModal.close()
   })
 })

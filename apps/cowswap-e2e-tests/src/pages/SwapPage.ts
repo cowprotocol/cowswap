@@ -121,6 +121,11 @@ export class SwapPage implements TradePage {
       return req.defaults
     })
 
+    // `PendingOrdersUpdater` classifies pending orders (and decides whether a dismissed
+    // progress modal should reopen) off this single-order endpoint rather than `orderStatus` —
+    // without it, an order dismissed before `fulfill()` never gets picked back up.
+    cowApi.set('order', (req) => postedOrder ?? req.defaults)
+
     return {
       getPostedBuyAmount: () => postedBody?.buyAmount ?? '',
 
