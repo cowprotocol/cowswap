@@ -10,7 +10,8 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './TwapStatusAndToggle.styled'
 
-import { WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
+import { FallbackHandlerWarningTooltip, WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 
 import type { OrderParams } from '../../utils/getOrderParams'
@@ -24,6 +25,7 @@ interface TwapStatusAndToggleProps {
   parent: ParsedOrder
   childrenLength: number
   isCollapsed: boolean
+  isFallbackHandlerRequired?: boolean
   onToggle: () => void
   onClick: () => void
   childOrders: ChildOrderItems[]
@@ -36,6 +38,7 @@ export function TwapStatusAndToggle({
   parent,
   childrenLength,
   isCollapsed,
+  isFallbackHandlerRequired,
   onToggle,
   onClick,
   childOrders,
@@ -56,14 +59,22 @@ export function TwapStatusAndToggle({
 
   const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
+  // A reset Safe ComposableCoW fallback handler blocks a still-open order (see issue #5426). This is
+  // a per-account state (resolved in the view, not persisted onto the order); the parent status
+  // already reflects whether the TWAP is still open, so checking it is enough — surface the same
+  // danger design on the parent badge as the Fills-at column and the parts.
+  const isFallbackHandlerBlocked = getIsFallbackHandlerUnfillable(parent.status, !!isFallbackHandlerRequired)
+
   return (
     <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={!!warningChild}
+        withWarning={!!warningChild || isFallbackHandlerBlocked}
         WarningTooltip={
-          warningChild ? (
+          isFallbackHandlerBlocked ? (
+            <FallbackHandlerWarningTooltip />
+          ) : warningChild ? (
             <WarningTooltip
               hasEnoughBalance={!childWithBalanceWarning}
               hasEnoughAllowance={!childWithAllowanceWarning}

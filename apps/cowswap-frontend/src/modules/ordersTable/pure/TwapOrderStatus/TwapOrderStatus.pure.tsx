@@ -9,17 +9,21 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 // TODO: make CancelledDisplay, FilledDisplay, ExpiredDisplay common
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
+import { WarningReason } from '../OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
+import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 
 export interface FillsAtStatusProps {
   childOrders?: ParsedOrder[]
   orderStatus: OrderStatus
+  isFallbackHandlerRequired?: boolean
   children: ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtStatusProps) {
+export function TwapOrderStatus({ childOrders, orderStatus, isFallbackHandlerRequired, children }: FillsAtStatusProps) {
   if (!childOrders) return null
 
   const areAllChildOrdersCancelled = childOrders.every((order) => order.status === OrderStatus.CANCELLED)
@@ -33,6 +37,30 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
             <X size={14} strokeWidth={2.5} />
             <Trans>Order cancelled</Trans>
           </styledEl.CancelledDisplay>
+        </b>
+        <i></i>
+      </>
+    )
+  }
+
+  // An open order is unfillable when it can no longer be executed (e.g. the Safe's ComposableCoW
+  // fallback handler was reset). Surface it instead of the default "pending execution" display.
+  const isUnfillable = childOrders.some((childOrder) =>
+    getIsFallbackHandlerUnfillable(childOrder.status, !!isFallbackHandlerRequired),
+  )
+
+  if (isUnfillable) {
+    return (
+      <>
+        <b>
+          <OrderEstimatedExecutionPrice
+            amount={undefined}
+            tokenSymbol={undefined}
+            isInverted={false}
+            isUnfillable={true}
+            canShowWarning={true}
+            warningReason={WarningReason.FallbackHandler}
+          />
         </b>
         <i></i>
       </>
