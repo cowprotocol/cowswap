@@ -1,26 +1,28 @@
-import { useSafeAppsSdk } from '@cowprotocol/wallet'
+import { useCallback } from 'react'
+
+import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 
 import { useTransactionAdder } from '../../../legacy/state/enhancedTransactions/hooks'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
 
-export function useSetupFallbackHandler() {
-  const safeAppsSdk = useSafeAppsSdk()
+export function useSetupFallbackHandler(): () => Promise<string | undefined> {
+  const sendBatchTransactions = useSendBatchTransactions()
   const extensibleFallbackContext = useExtensibleFallbackContext()
   const addTransaction = useTransactionAdder()
 
-  return async () => {
-    if (!safeAppsSdk || !extensibleFallbackContext) return
+  return useCallback(async () => {
+    if (!extensibleFallbackContext) return
 
     const fallbackSetupTxs = await extensibleFallbackSetupTxs(extensibleFallbackContext)
-    const { safeTxHash } = await safeAppsSdk.txs.send({ txs: fallbackSetupTxs })
+    const txHash = await sendBatchTransactions(fallbackSetupTxs)
 
     addTransaction({
-      hash: safeTxHash,
+      hash: txHash,
       summary: 'Setup TWAP fallback handler',
     })
 
-    return safeTxHash
-  }
+    return txHash
+  }, [extensibleFallbackContext, sendBatchTransactions, addTransaction])
 }

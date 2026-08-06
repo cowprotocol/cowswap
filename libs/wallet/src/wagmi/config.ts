@@ -35,10 +35,17 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<EvmChains, Transport>,
 )
 
+const walletRpcUrlOverrides: Partial<Record<EvmChains, string>> = {
+  // Viem's Thirdweb defaults rate-limit wallet chain-ID checks.
+  [EvmChains.BNB]: 'https://bsc-rpc.publicnode.com',
+  [EvmChains.SEPOLIA]: 'https://ethereum-sepolia-rpc.publicnode.com',
+}
+
 /** Public RPCs for AppKit's UI and wallet network-add prompts. */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = VIEM_CHAINS[chain.id as EvmChains]?.rpcUrls.default.http[0]
+  const chainId = chain.id as EvmChains
+  const url = walletRpcUrlOverrides[chainId] ?? VIEM_CHAINS[chainId]?.rpcUrls.default.http[0]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -123,12 +130,55 @@ const reownAppKit = createAppKit({
 })
 
 /**
+ * Reconnect to the injected wallet, waiting for it to become available first.
+ *
+ * Mobile in-app browsers (e.g. MetaMask on iOS) may attach `window.ethereum` a
+ * few hundred ms after the app bootstraps, so the synchronous check below can run
+ * before the provider exists and the eager reconnect never fires (#7862). Wait for
+ * the provider to appear — via an EIP-6963 announcement or a short poll — before
+ * connecting, giving up after a timeout so we never hang.
+ */
+function autoConnectInjectedWhenReady(): void {
+  const connect = (): void => {
+    void connectWalletById('injected', 'injected')
+  }
+
+  if (window.ethereum) {
+    connect()
+    return
+  }
+
+  const TIMEOUT_MS = 3000
+  const POLL_INTERVAL_MS = 100
+  let settled = false
+
+  const stop = (): void => {
+    settled = true
+    window.removeEventListener('eip6963:announceProvider', onProviderReady)
+    clearInterval(pollId)
+    clearTimeout(timeoutId)
+  }
+
+  function onProviderReady(): void {
+    if (settled || !window.ethereum) return
+    stop()
+    connect()
+  }
+
+  window.addEventListener('eip6963:announceProvider', onProviderReady)
+  const pollId = setInterval(onProviderReady, POLL_INTERVAL_MS)
+  const timeoutId = setTimeout(stop, TIMEOUT_MS)
+  // Prompt EIP-6963 providers to (re-)announce themselves so we react as soon as possible.
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+}
+
+/**
  * Instantly connect to Safe if in Safe
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (hasRecentConnector && isMobile && window.ethereum) {
-  connectWalletById('injected', 'injected')
+} else if (hasRecentConnector && isMobile) {
+  autoConnectInjectedWhenReady()
 }
 
 bindActiveProvider(wagmiAdapter)

@@ -5,6 +5,7 @@ import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/commo
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { useGetCorrelatedTokensByChainId } from 'entities/correlatedTokens'
 
 import { QuoteParams } from './useQuoteParams'
@@ -21,6 +22,7 @@ export function usePollQuoteCallback(
   quoteParamsState: QuoteParams | undefined,
   currentAmountRef: RefObject<string | null>,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
   const tradeQuote = useTradeQuote()
@@ -47,7 +49,13 @@ export function usePollQuoteCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
       const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
 
-      if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
+      if (
+        !canQuote ||
+        !isQuoteUpdatePossible ||
+        !tradeQuoteManager ||
+        !quoteParams ||
+        getIsUnsupportedTokens(quoteParams)
+      ) {
         return false
       }
 
@@ -107,6 +115,7 @@ export function usePollQuoteCallback(
       hasSmartSlippage,
       hasSmartSlippagePrev,
       currentAmountRef,
+      canQuote,
     ],
   )
 }
