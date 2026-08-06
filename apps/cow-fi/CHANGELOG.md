@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.10.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.0...cow-fi-v2.10.1) (2026-08-05)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/widget-react@3.2.5
+
 ## [2.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.2...cow-fi-v2.10.0) (2026-07-30)
 
 ### Minor Changes

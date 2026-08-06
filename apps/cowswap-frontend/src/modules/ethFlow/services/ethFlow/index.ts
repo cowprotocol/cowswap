@@ -67,7 +67,11 @@ export async function ethFlow({
   orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
-  analytics.trade(swapFlowAnalyticsContext)
+  analytics.trade({
+    ...swapFlowAnalyticsContext,
+    quoteId: tradeQuote.quoteResults.quoteResponse.id,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {

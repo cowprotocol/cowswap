@@ -14,6 +14,8 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { fireOnBeforeApprovalHook } from 'modules/injectedWidget'
+
 import { useGetCachedPermit } from './useGetCachedPermit'
 
 import { storePermitCacheAtom } from '../state/permitCacheAtom'
@@ -95,7 +97,19 @@ async function runPermitRequest(
   const cachedPermit = await getCachedPermit(params.inputToken.address, amount, spender)
   if (cachedPermit) return cachedPermit
 
-  params.preSignCallback?.()
+  // Cache miss: a real permit signature is about to be requested. When a sell currency is provided
+  // (i.e. this is a user-facing trade approval), give the host widget a chance to veto it first.
+  // Throws WidgetHookDeclineError on decline so the calling flow aborts.
+  if (params.sellCurrency && params.account) {
+    await fireOnBeforeApprovalHook({
+      sellCurrency: params.sellCurrency,
+      sellAmount: params.amount,
+      walletAddress: params.account,
+      spenderAddress: spender,
+    })
+  }
+
+  await params.preSignCallback?.()
   try {
     const hookData = await generatePermitHook({
       account: params.account,
