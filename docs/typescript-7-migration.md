@@ -5,9 +5,23 @@ TypeScript 7.0 ships a native compiler written in Go (`tsgo`), distributed as
 type-check compatible with `tsc` and roughly 10x faster, which is the motivation for adopting it as
 the type-checker across the repo.
 
-This is an incremental migration: `tsgo` is wired in per project as each one is verified to type-check
-cleanly under it. `tsc` (`typescript@5.9.3`) stays installed and is still used everywhere `tsgo` has
-not been rolled out yet.
+The repo type-checks with `tsgo` everywhere `tsc` was used before: `cowswap-frontend` (its `typecheck`
+target), every workspace typechecked by `tools/scripts/typecheck-workspaces.mjs`, and `ui`. `tsc`
+(`typescript@5.9.3`) stays installed for editors/other tooling.
+
+## Required tsconfig changes
+
+TypeScript 7.0 removes several options; these were cleaned up in `tsconfig.base.json` and the
+per-project configs so `tsgo` accepts them:
+
+- `baseUrl` — removed. `cowswap-frontend` and `explorer` replace `baseUrl: "src"` with
+  `"paths": { "*": ["./src/*"] }`; others just drop `baseUrl: "."`.
+- `downlevelIteration` — removed (unnecessary at `target: es2022`).
+- `esModuleInterop: false` — removed; TS7 always behaves as `esModuleInterop: true`.
+- `moduleResolution: "node"` (node10) — removed; the base now uses `"bundler"`.
+
+The `"bundler"` resolution is stricter about bare side-effect imports with no types, so the apps that
+`import 'inter-ui'` add a one-line `declare module 'inter-ui'` ambient shim.
 
 ## Running the native type-checker
 
@@ -17,26 +31,22 @@ not been rolled out yet.
 # any project
 node_modules/.bin/tsgo --noEmit -p apps/cowswap-frontend/tsconfig.app.json
 
-# via nx (projects already switched over)
-nx typecheck cowswap-frontend
+# the repo-wide typecheck
+pnpm run typecheck
 ```
 
 ## Status
 
-| Project             | `tsgo` type-checks | Notes                                                        |
-| ------------------- | ------------------ | ----------------------------------------------------------- |
-| `cowswap-frontend`  | ✅ migrated         | `typecheck` target runs `tsgo`                              |
-| `ui`                | ✅ (pending)        | Fixed in #7905 (missing `*.woff2` module declarations)      |
-| `snackbars`         | ⬜ blocked          | See #7828                                                    |
-| `core`              | ⬜ blocked          | See #7828                                                    |
-| `tokens`            | ⬜ blocked          | See #7828                                                    |
-| `wallet`            | ⬜ blocked          | See #7828                                                    |
-| `balances-and-allowances` | ⬜ blocked    | See #7828                                                    |
-| `cowswap-frontend-e2e`    | ⬜ blocked    | See #7828                                                    |
+| Project                   | `tsgo` type-checks | Notes                                                                    |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `cowswap-frontend`        | ✅ migrated        | `typecheck` target runs `tsgo`                                           |
+| all libs + workspace apps | ✅ migrated        | run under `tsgo` via `typecheck-workspaces.mjs`                          |
+| `ui`                      | ✅ migrated        | `typecheck` target runs `tsgo`                                           |
+| `balances-and-allowances` | ⬜ blocked         | Real error: missing `@cowprotocol/cow-sdk` Solana exports; still skipped |
 
 ## Remaining work
 
-Repo-wide adoption is gated on #7828 ("Fix all TypeScript errors"). The libraries above do not
-type-check cleanly yet, so they cannot be switched to `tsgo` (or run through repo-wide typecheck in
-CI) until those errors are resolved. As each project is fixed and verified under `tsgo`, switch its
-`typecheck` target to `tsgo` and tick it off above.
+Only `balances-and-allowances` is still skipped — it has genuine type errors (missing
+`SOLANA_SETTLEMENT_PROGRAM_ID` / `SOLANA_SETTLEMENT_PROGRAM_ID_STAGING` exports from
+`@cowprotocol/cow-sdk`), unrelated to the compiler swap. Once those are resolved, drop it from the
+`skippedLibs` set in `tools/scripts/typecheck-workspaces.mjs`.

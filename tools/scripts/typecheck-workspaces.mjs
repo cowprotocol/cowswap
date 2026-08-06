@@ -1,7 +1,9 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync } from 'node:fs'
 
-const skippedLibs = new Set(['balances-and-allowances', 'core', 'snackbars', 'tokens', 'ui', 'wallet'])
+// `balances-and-allowances` still has real type errors under tsgo (missing
+// `@cowprotocol/cow-sdk` Solana exports); the rest now pass and are checked.
+const skippedLibs = new Set(['balances-and-allowances'])
 const skippedApps = new Set(['cowswap-frontend', 'cowswap-frontend-e2e'])
 
 const apps = readdirSync('apps', { withFileTypes: true })
@@ -28,7 +30,7 @@ console.log(`🚨 Skipping failing libs: ${Array.from(skippedLibs).sort().join('
 for (const project of [...apps, ...libs]) {
   console.log(`\n> typecheck ${project.name}`)
 
-  const result = spawnSync('pnpm', ['exec', 'tsc', '-p', project.tsconfig, '--noEmit', '--pretty', 'false'], {
+  const result = spawnSync('pnpm', ['exec', 'tsgo', '-p', project.tsconfig, '--noEmit', '--pretty', 'false'], {
     stdio: 'inherit',
   })
 
