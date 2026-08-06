@@ -5,6 +5,40 @@ import type { BalancesMock } from '../mocks/balances'
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { Page, Locator } from '@playwright/test'
 
+interface PostedOrder {
+  creationDate: string
+  owner: string
+  uid: string
+  availableBalance: null
+  executedBuyAmount: string
+  executedSellAmount: string
+  executedSellAmountBeforeFees: string
+  executedFeeAmount: string
+  executedFee: string
+  executedFeeToken: string
+  invalidated: boolean
+  status: 'open' | 'fulfilled'
+  class: string
+  settlementContract: string
+  isLiquidityOrder: boolean
+  fullAppData: string
+  sellToken: string
+  buyToken: string
+  receiver: string
+  sellAmount: string
+  buyAmount: string
+  validTo: number
+  appData: string
+  feeAmount: string
+  kind: string
+  partiallyFillable: boolean
+  sellTokenBalance: string
+  buyTokenBalance: string
+  signingScheme: string
+  signature: string
+  interactions: { pre: unknown[]; post: unknown[] }
+}
+
 interface PostOrderBody {
   sellToken: string
   buyToken: string
@@ -100,28 +134,30 @@ export class SwapPage implements TradePage {
   }
 
   /**
-   * Emulates the orderbook fulfilling whatever order gets posted next: keeps the balances mock
-   * in sync with the trade (debits the sell token, credits the buy token), makes `accountOrders`
-   * include it as `fulfilled`, and makes `orderStatus` report it as `traded` — the three things
-   * the real backend would eventually reflect once the trade settles on-chain.
+   * Emulates the orderbook accepting whatever order gets posted next: makes `accountOrders`
+   * reflect it as `open` right away. Posting alone does **not** settle it — call the returned
+   * `fulfill()` whenever the test wants the trade to go through. `fulfill()` then keeps the
+   * balances mock in sync with the trade (debits the sell token, credits the buy token), flips
+   * the order to `fulfilled` in `accountOrders`, and makes `orderStatus` report it as `traded` —
+   * the three things the real backend would eventually reflect once the trade settles on-chain.
    *
-   * Returns a handle to read the posted buyAmount back once the order goes through, since the
-   * app applies its own slippage on top of the quote — a caller asserting on the resulting
-   * balance needs the amount that was actually posted, not the pre-slippage quote.
+   * The returned handle also lets a caller read the posted buyAmount back once the order goes
+   * through, since the app applies its own slippage on top of the quote — asserting on the
+   * resulting balance needs the amount that was actually posted, not the pre-slippage quote.
    */
-  mockSwapFulfillment(
+  mockOrderPosting(
     cowApi: CowProtocolApiMock,
-    balances: BalancesMock,
     owner: string,
-    chainId: number,
-    sellTokenBalanceBefore: bigint,
-  ): { getPostedBuyAmount(): string } {
-    let postedOrder: Record<string, unknown> | null = null
-    let postedBuyAmount = ''
+  ): {
+    getPostedBuyAmount(): string
+    fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void
+  } {
+    let postedBody: PostOrderBody | null = null
+    let postedOrder: PostedOrder | null = null
 
-    // Starts out as the plain fixture list; once the order below is posted, this starts
-    // prepending it — fulfilled — so "My orders" reflects the trade emulated as settled in the
-    // orderbook, without the app ever seeing a real fill on-chain.
+    // Starts out as the plain fixture list; once an order is posted, this starts prepending it —
+    // open, then fulfilled once `fulfill()` runs — so "My orders" reflects the order's actual
+    // lifecycle without the app ever seeing a real fill on-chain.
     cowApi.set('accountOrders', (req) => {
       const defaults = req.defaults as unknown[]
       return postedOrder ? [postedOrder, ...defaults] : defaults
@@ -130,66 +166,96 @@ export class SwapPage implements TradePage {
     cowApi.set('postOrder', (req) => {
       const body = req.body as PostOrderBody
       const uid = req.defaults as string
-      postedBuyAmount = body.buyAmount
-
-      const balancesUpdate = {
-        [body.sellToken]: (sellTokenBalanceBefore - BigInt(body.sellAmount)).toString(),
-        [body.buyToken]: body.buyAmount,
-      }
-
-      balances.set(owner, chainId, balancesUpdate)
-
-      console.log('[E2E] balances update after swap fulfillment', balancesUpdate)
-
-      postedOrder = {
-        creationDate: new Date().toISOString(),
-        owner,
-        uid,
-        availableBalance: null,
-        executedBuyAmount: body.buyAmount,
-        executedSellAmount: body.sellAmount,
-        executedSellAmountBeforeFees: body.sellAmount,
-        executedFeeAmount: '0',
-        executedFee: '123000000000',
-        executedFeeToken: body.sellToken,
-        invalidated: false,
-        status: 'fulfilled',
-        class: 'market',
-        settlementContract: '0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13',
-        isLiquidityOrder: false,
-        fullAppData: body.appData,
-        sellToken: body.sellToken,
-        buyToken: body.buyToken,
-        receiver: body.receiver,
-        sellAmount: body.sellAmount,
-        buyAmount: body.buyAmount,
-        validTo: body.validTo,
-        appData: body.appDataHash,
-        feeAmount: body.feeAmount,
-        kind: body.kind,
-        partiallyFillable: body.partiallyFillable,
-        sellTokenBalance: body.sellTokenBalance,
-        buyTokenBalance: body.buyTokenBalance,
-        signingScheme: body.signingScheme,
-        signature: body.signature,
-        interactions: { pre: [], post: [] },
-      }
-
-      // Order-progress polls this once the order exists — "traded" is what moves it past
-      // "still searching" to a fulfilled state, mirroring the same fill emulated above.
-      cowApi.set('orderStatus', () => ({
-        type: 'traded',
-        value: [
-          {
-            solver: '0x99b4136666ca1d13020830350ca8d01a0e5e466b',
-            executedAmounts: { sell: body.sellAmount, buy: body.buyAmount },
-          },
-        ],
-      }))
-
+      postedBody = body
+      postedOrder = buildOpenOrder(body, uid, owner)
       return req.defaults
     })
 
-    return { getPostedBuyAmount: () => postedBuyAmount }
+    return {
+      getPostedBuyAmount: () => postedBody?.buyAmount ?? '',
+
+      fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void {
+        if (!postedBody || !postedOrder) {
+          throw new Error('mockOrderPosting: fulfill() called before an order was posted')
+        }
+
+        balances.set(owner, chainId, {
+          [postedBody.sellToken]: (sellTokenBalanceBefore - BigInt(postedBody.sellAmount)).toString(),
+          [postedBody.buyToken]: postedBody.buyAmount,
+        })
+
+        postedOrder = { ...postedOrder, ...buildFulfilledOrderPatch(postedBody) }
+
+        // Order-progress polls this once the order exists — "traded" is what moves it past
+        // "still searching" to a fulfilled state, mirroring the same fill emulated above.
+        cowApi.set('orderStatus', () => buildTradedOrderStatus(postedBody as PostOrderBody))
+      },
+    }
+  }
+}
+
+/** The subset of `PostedOrder` fields that change once the order actually settles. */
+function buildFulfilledOrderPatch(
+  body: PostOrderBody,
+): Pick<
+  PostedOrder,
+  'status' | 'executedBuyAmount' | 'executedSellAmount' | 'executedSellAmountBeforeFees' | 'executedFee'
+> {
+  return {
+    status: 'fulfilled',
+    executedBuyAmount: body.buyAmount,
+    executedSellAmount: body.sellAmount,
+    executedSellAmountBeforeFees: body.sellAmount,
+    executedFee: '123000000000',
+  }
+}
+
+/** The order as the orderbook would report it right after accepting it — not yet settled. */
+function buildOpenOrder(body: PostOrderBody, uid: string, owner: string): PostedOrder {
+  return {
+    creationDate: new Date().toISOString(),
+    owner,
+    uid,
+    availableBalance: null,
+    executedBuyAmount: '0',
+    executedSellAmount: '0',
+    executedSellAmountBeforeFees: '0',
+    executedFeeAmount: '0',
+    executedFee: '0',
+    executedFeeToken: body.sellToken,
+    invalidated: false,
+    status: 'open',
+    class: 'market',
+    settlementContract: '0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13',
+    isLiquidityOrder: false,
+    fullAppData: body.appData,
+    sellToken: body.sellToken,
+    buyToken: body.buyToken,
+    receiver: body.receiver,
+    sellAmount: body.sellAmount,
+    buyAmount: body.buyAmount,
+    validTo: body.validTo,
+    appData: body.appDataHash,
+    feeAmount: body.feeAmount,
+    kind: body.kind,
+    partiallyFillable: body.partiallyFillable,
+    sellTokenBalance: body.sellTokenBalance,
+    buyTokenBalance: body.buyTokenBalance,
+    signingScheme: body.signingScheme,
+    signature: body.signature,
+    interactions: { pre: [], post: [] },
+  }
+}
+
+/** What order-progress polls to learn a trade has settled — "traded" is what it waits for. */
+function buildTradedOrderStatus(body: PostOrderBody): { type: string; value: unknown[] } {
+  return {
+    type: 'traded',
+    value: [
+      {
+        solver: '0x99b4136666ca1d13020830350ca8d01a0e5e466b',
+        executedAmounts: { sell: body.sellAmount, buy: body.buyAmount },
+      },
+    ],
   }
 }

@@ -91,14 +91,9 @@ test.describe('Market Orders', () => {
     // The orderbook is fully mocked already (the shared `mocks` fixture blocks and fails the
     // test on any un-mocked CoW API URL) — this additionally keeps the rest of the mock stack
     // in sync with what posting the order actually did, exactly as the real backend would once
-    // the trade settles on-chain.
-    const fulfillment = swapPage.mockSwapFulfillment(
-      mocks.cowApi,
-      mocks.balances,
-      wallet.address,
-      CHAIN_ID,
-      DEFAULT_WETH_BALANCE,
-    )
+    // the trade settles on-chain. Posting alone doesn't settle it; `fulfill()` below does that on
+    // demand, once this test is ready for it.
+    const posting = swapPage.mockOrderPosting(mocks.cowApi, wallet.address)
 
     await setupTestConditions({
       chainId: CHAIN_ID,
@@ -121,20 +116,28 @@ test.describe('Market Orders', () => {
 
     // The currency panels hide their balance while a trade is pending/just-submitted
     // (`CurrencyInputPanel` only renders it when `!disabled`). Posting the order opens the
-    // order-progress screen; `orderStatus` reporting "traded" (mocked above) is what moves it
-    // to a completed state, whose back arrow has no accessible name but dismisses on Escape,
-    // returning to the normal, interactive swap form.
+    // order-progress screen — wait for it before fulfilling, so `postOrder` has actually landed
+    // and `posting` has something to settle (fulfilling too early throws).
+    await expect(swapPage.orderProgressBarModal).toBeVisible()
+
+    // Settle the order now that it's posted and confirmed — this is what makes `orderStatus`
+    // report "traded" and the balances mock reflect the trade below.
+    posting.fulfill(mocks.balances, CHAIN_ID, DEFAULT_WETH_BALANCE)
+
+    // `orderStatus` reporting "traded" (via `fulfill()` above) is what moves the order-progress
+    // screen to a completed state, whose back arrow has no accessible name but dismisses on
+    // Escape, returning to the normal, interactive swap form.
     await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
     await swapPage.page.keyboard.press('Escape')
 
-    // Waits out the balances-watcher SSE reconnect that picks up `mockSwapFulfillment`'s
-    // update above — Playwright's `expect` polls until this passes.
+    // Waits out the balances-watcher SSE reconnect that picks up `fulfill()`'s update above —
+    // Playwright's `expect` polls until this passes.
     await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
     // The order's buyAmount is the quote's buyAmount minus the app's own slippage — assert
     // against what was actually posted rather than re-deriving that math.
     await expect(swapPage.buyBalance).toHaveAttribute(
       'title',
-      `${BigInt(fulfillment.getPostedBuyAmount()) / 10n ** 18n} USDC`,
+      `${BigInt(posting.getPostedBuyAmount()) / 10n ** 18n} USDC`,
       { timeout: 15_000 },
     )
   })
