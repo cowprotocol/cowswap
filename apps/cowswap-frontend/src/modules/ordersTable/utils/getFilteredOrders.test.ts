@@ -16,6 +16,19 @@ describe('getFilteredOrders', () => {
     expect(filterIds(orders, HistoryStatusFilter.EXPIRED)).toEqual(['expired'])
     expect(filterIds(orders, HistoryStatusFilter.ALL)).toEqual(['filled', 'cancelled', 'expired'])
   })
+
+  it('includes fulfilled orders whose execution fee lowers the displayed fill percentage', () => {
+    const filled = {
+      ...ordersMock[3],
+      id: 'fee-reduced-filled',
+      executionData: {
+        ...ordersMock[3].executionData,
+        executedFeeAmount: '1000000000000',
+      },
+    }
+
+    expect(filterIds([filled], HistoryStatusFilter.FILLED)).toEqual(['fee-reduced-filled'])
+  })
 })
 
 function filterIds(orders: typeof ordersMock, historyStatusFilter: HistoryStatusFilter): string[] {
