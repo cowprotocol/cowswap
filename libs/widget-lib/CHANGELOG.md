@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.4...widget-lib-v4.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/iframe-transport@2.3.5
+
 ## [4.4.4](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.3...widget-lib-v4.4.4) (2026-07-30)
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.10.0...widget-configurator-v3.11.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/widget-lib@4.5.0
+  - @cowprotocol/widget-react@3.2.5
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.9.4...widget-configurator-v3.10.0) (2026-07-30)
 
 ### Minor Changes
