@@ -329,4 +329,16 @@ test.describe('Market Orders', () => {
     // The core relationship: approval amount = "Maximum sent" + the 1% buy-order buffer.
     expect(approveMock.getApprovedAmount()).toBe((maximumSentRaw * 101n) / 100n)
   })
+
+  test('[MO-08] ETH-flow: buy field is disabled, only Sell order kind is available', async ({ swapPage }) => {
+    await swapPage.goto({ chainId: CHAIN_ID })
+
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('ETH')
+
+    // Selling native ETH as an EOA (`isEoaEthFlowAtom`) makes the buy field read-only —
+    // there's no separate Sell/Buy order-kind toggle in this UI, so this is the only signal
+    // that the order kind is locked to Sell.
+    await expect(swapPage.outputAmount).not.toBeEditable()
+  })
 })
