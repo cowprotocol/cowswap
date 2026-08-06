@@ -107,13 +107,14 @@ jobs:
           {
             echo "### IPFS deployment"
             echo
-            echo "- Source tag: \`${{ github.event.workflow_run.head_branch }}\`"
+            echo "- Source tag: \`${DEPLOY_REF}\`"
             echo "- Source SHA: \`${{ github.event.workflow_run.head_sha }}\`"
             echo "- CID: \`${cid}\`"
             echo "- Primary URL: ${url}"
             echo "- Fallback URL: ${fallback_url}"
           } >> "$GITHUB_STEP_SUMMARY"
         env:
+          DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
           IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
           IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
 
