@@ -40,6 +40,11 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
 - Page objects hold `Locator`s as readonly properties set in the constructor, plus action methods
   (`goto`, `enterSellAmount`, `clickSwap`, ...) that encapsulate waits. Add new locators/actions there,
   not ad hoc selectors inside a spec.
+- **Prefer the `setupTestConditions` fixture** (`src/support/setupTestConditions.ts`) over manually
+  chaining `goto` + `enterSellAmount` + `waitForQuote` + `mocks.balances.set`/`mocks.allowances.set`. It
+  wires up the whole "navigate to a trade, fund/allowance the wallet, type an amount, wait for its quote"
+  flow in one call, takes human-readable amounts (`{ WETH: '1' }`, not raw atoms). Reach for manual page-object calls only for
+  what `setupTestConditions` doesn't cover, e.g. changing the amount again mid-test.
 - **Mock-driven scenarios that span multiple endpoints belong on the page object as a method**, not as a
   free function in the spec file. Example: `SwapPage.mockSwapFulfillment(cowApi, balances, owner, chainId,
   sellTokenBalanceBefore)` sets up `postOrder` + `accountOrders` + `orderStatus` + the balance debit/credit

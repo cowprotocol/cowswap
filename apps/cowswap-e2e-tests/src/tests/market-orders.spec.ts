@@ -9,7 +9,6 @@ const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
 
 const DEFAULT_WETH_BALANCE = 1_000_000_000_000_000_000n // 1 WETH
-const DEFAULT_USDC_BALANCE = 0n
 
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
@@ -65,6 +64,7 @@ test.describe('Market Orders', () => {
   })
 
   test('[MO-04] Sell order: balances update in the UI after the order is posted', async ({
+    setupTestConditions,
     swapPage,
     wallet,
     confirmModal,
@@ -72,20 +72,12 @@ test.describe('Market Orders', () => {
   }) => {
     const PRICE_FACTOR = 12_000n // buy-token units per 1 sell-token unit — arbitrary, just needs to stay proportional
 
-    mocks.balances.set(wallet.address, CHAIN_ID, {
-      [WETH]: DEFAULT_WETH_BALANCE.toString(),
-      [USDC]: DEFAULT_USDC_BALANCE.toString(),
-    })
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: '10000000000000000000' })
-
     // Pin buyAmount proportional to whatever sellAmount was actually requested, not a fixed
-    // absolute value: the swap form defaults the sell input to the full wallet balance before
-    // the test types its own amount, firing its own quote for that default amount first. A
-    // fixed buyAmount would make that stale quote and the real one indistinguishable, hiding
-    // the race below. Fee and protocolFeeBps are zeroed: the former so the posted order's
-    // sellAmount (quote sellAmount + fee) matches the typed amount exactly, the latter because
-    // the fixture's "0.3" otherwise gets layered on top of the displayed buy amount — both
-    // would otherwise turn the balance assertions after the trade into non-round numbers.
+    // absolute value, so the assertions below stay round numbers. Fee and protocolFeeBps are
+    // zeroed: the former so the posted order's sellAmount (quote sellAmount + fee) matches the
+    // typed amount exactly, the latter because the fixture's "0.3" otherwise gets layered on top
+    // of the displayed buy amount — both would otherwise turn the balance assertions after the
+    // trade into non-round numbers.
     mocks.cowApi.set('quote', (req) => {
       const defaults = req.defaults as { quote: Record<string, unknown> }
       const sellAmount = BigInt(defaults.quote.sellAmount as string)
@@ -108,24 +100,17 @@ test.describe('Market Orders', () => {
       DEFAULT_WETH_BALANCE,
     )
 
-    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
-    await swapPage.waitForQuote()
-    // The swap form defaults the sell input to the full wallet balance (1 WETH), firing its
-    // own quote for a not-quite-round amount (a pre-existing app quirk unrelated to this
-    // test). Wait for that response to settle — two stable reads in a row — before typing,
-    // so it can't race the fresh quote below and overwrite it when it resolves later.
-    await expect(async () => {
-      const before = await swapPage.outputAmount.inputValue()
-      await swapPage.page.waitForTimeout(300)
-      const after = await swapPage.outputAmount.inputValue()
-      expect(before).not.toBe('')
-      expect(before).toBe(after)
-    }).toPass({ timeout: 10_000 })
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1', USDC: '0' },
+      allowances: { WETH: '10' },
+    })
 
-    await swapPage.enterSellAmount('0.5')
     const sellAmount = 500_000_000_000_000_000n // 0.5 WETH
-    // Waiting for the specific expected value (not just "non-empty") is what actually waits
-    // out the debounce — the stale full-balance quote above already satisfies "non-empty".
     await expect(swapPage.outputAmount).toHaveValue(String((sellAmount * PRICE_FACTOR) / 10n ** 18n))
 
     await expect(swapPage.sellBalance).toHaveAttribute('title', '1 WETH')

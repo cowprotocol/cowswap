@@ -132,10 +132,14 @@ export class SwapPage implements TradePage {
       const uid = req.defaults as string
       postedBuyAmount = body.buyAmount
 
-      balances.set(owner, chainId, {
+      const balancesUpdate = {
         [body.sellToken]: (sellTokenBalanceBefore - BigInt(body.sellAmount)).toString(),
         [body.buyToken]: body.buyAmount,
-      })
+      }
+
+      balances.set(owner, chainId, balancesUpdate)
+
+      console.log('[E2E] balances update after swap fulfillment', balancesUpdate)
 
       postedOrder = {
         creationDate: new Date().toISOString(),
