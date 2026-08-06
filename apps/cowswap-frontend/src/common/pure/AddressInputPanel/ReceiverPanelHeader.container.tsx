@@ -1,7 +1,7 @@
-import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode } from 'react'
 
 import svgQrCodeSrc from '@cowprotocol/assets/cow-swap/qr-code.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -22,8 +22,6 @@ import {
   ReceiverHeader,
 } from './styled'
 
-import { featureFlagsAtom } from '../../state/featureFlagsState'
-
 export interface ReceiverPanelHeaderProps {
   onChange(value: string): void
   value: string
@@ -37,7 +35,7 @@ export function ReceiverPanelHeader({ onChange, value, targetChainId, label }: R
   const { isEmpty, isError, explorerUrl } = useReceiverValidation(value, targetChainId)
   const { handlePaste, handleClear, handleScan, showQrModal, setShowQrModal, canPaste } = useReceiverActions(onChange)
 
-  const { isQrScanEnabled } = useAtomValue(featureFlagsAtom)
+  const { isQrScanEnabled } = useFeatureFlags()
   const networkName = chainInfo?.label
   const chainLabel = t`Send to ${networkName} wallet`
   const computedLabel = label || (isNonEvm ? chainLabel : <Trans>Recipient</Trans>)

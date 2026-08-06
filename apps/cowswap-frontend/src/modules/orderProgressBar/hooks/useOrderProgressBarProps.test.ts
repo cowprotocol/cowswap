@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
 import { buildSolverCompetition, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
@@ -104,45 +106,56 @@ describe('buildSolverCompetition', () => {
     return { solver, marker, executedAmounts: { sell: '1', buy: '1' } } as unknown as ApiSolverCompetition
   }
 
+  const ADDR_LIVE = '0x1111111111111111111111111111111111111111'
+  const ADDR_RETIRED = '0x2222222222222222222222222222222222222222'
+  const ADDR_OTHER = '0x3333333333333333333333333333333333333333'
+  // A solver's live and retired deployments are distinct on-chain addresses that the CMS maps to
+  // the same solverId; a different solver maps to its own.
+  const byAddress = {
+    [getAddressKey(ADDR_LIVE)]: { solverId: 'baseline' },
+    [getAddressKey(ADDR_RETIRED)]: { solverId: 'baseline' },
+    [getAddressKey(ADDR_OTHER)]: { solverId: 'barter' },
+  } as unknown as Parameters<typeof buildSolverCompetition>[1]
+
   it('keeps the highest-ranked occurrence of a repeated solver as the winner', () => {
     const result = buildSolverCompetition(
-      [entry('naive', 'first'), entry('barter-solve', 'barter'), entry('naive', 'last')],
-      {},
-      {},
+      [entry(ADDR_LIVE, 'first'), entry(ADDR_OTHER, 'barter'), entry(ADDR_RETIRED, 'last')],
+      byAddress,
     )
 
-    expect(result.map((s) => s.solverId)).toEqual(['naive', 'barter'])
-    // Winner stays at index 0 and is the highest-ranked (last) `naive` entry, not the first.
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
+    // Winner stays at index 0 and is the highest-ranked (last) `baseline` occurrence, not the first.
     expect((result[0] as unknown as { marker: string }).marker).toBe('last')
   })
 
-  it('deduplicates legacy aliases that normalize to the same solverId', () => {
-    const result = buildSolverCompetition(
-      [entry('naive', 'first'), entry('barter-solve', 'barter'), entry('naive-solve', 'alias')],
-      {},
-      {},
-    )
+  it('collapses distinct addresses that resolve to the same solverId', () => {
+    const result = buildSolverCompetition([entry(ADDR_LIVE, 'live'), entry(ADDR_RETIRED, 'retired')], byAddress)
 
-    expect(result.map((s) => s.solverId)).toEqual(['naive', 'barter'])
-    // `naive-solve` outranks `naive`, so its entry is the one retained.
-    expect((result[0] as unknown as { marker: string }).marker).toBe('alias')
+    expect(result.map((s) => s.solverId)).toEqual(['baseline'])
+    // The higher-ranked (last) address wins the collapsed entry.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('retired')
+  })
+
+  it('does not deduplicate distinct solvers', () => {
+    const result = buildSolverCompetition([entry(ADDR_OTHER, 'barter'), entry(ADDR_LIVE, 'baseline')], byAddress)
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
   })
 
   it('excludes entries without a solver or executedAmounts', () => {
     const result = buildSolverCompetition(
       [
         { marker: 'no-solver', executedAmounts: {} } as unknown as ApiSolverCompetition,
-        { solver: 'naive', marker: 'no-amounts' } as unknown as ApiSolverCompetition,
-        entry('barter-solve', 'valid'),
+        { solver: ADDR_LIVE, marker: 'no-amounts' } as unknown as ApiSolverCompetition,
+        entry(ADDR_OTHER, 'valid'),
       ],
-      {},
-      {},
+      byAddress,
     )
 
     expect(result.map((s) => s.solverId)).toEqual(['barter'])
   })
 
   it('returns an empty list when there is no competition data', () => {
-    expect(buildSolverCompetition(undefined, {}, {})).toEqual([])
+    expect(buildSolverCompetition(undefined, {})).toEqual([])
   })
 })

@@ -2,7 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { shortenAddress } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { SolverInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -21,9 +22,8 @@ import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useSolversInfo, useSolversInfoByAddress } from 'common/hooks/useSolversInfo'
+import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
@@ -175,7 +175,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   } = activityDerivedState || {}
 
   const { disableProgressBar: widgetDisabled = false } = useInjectedWidgetParams()
-  const { disableProgressBar: featureFlagDisabled } = useAtomValue(featureFlagsAtom)
+  const { disableProgressBar: featureFlagDisabled } = useFeatureFlags()
 
   // Do not build progress bar data when these conditions are set
   const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
@@ -197,15 +197,16 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
 
-  const solversInfo = useSolversInfo(chainId)
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
-  const totalSolvers = Object.keys(solversInfo).length
+  // Count distinct solvers, not addresses: the CMS keeps a solver's retired deployments alongside
+  // the live one, so one solver can contribute several addresses for the same chain.
+  const totalSolvers = new Set(Object.values(solversInfoByAddress).map(({ solverId }) => solverId)).size
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const solverCompetition = useMemo(
-    () => buildSolverCompetition(apiSolverCompetition, solversInfo, solversInfoByAddress),
-    [apiSolverCompetition, solversInfo, solversInfoByAddress],
+    () => buildSolverCompetition(apiSolverCompetition, solversInfoByAddress),
+    [apiSolverCompetition, solversInfoByAddress],
   )
   const { swapAndBridgeContext } = useSwapAndBridgeContext(
     chainId,
@@ -530,10 +531,10 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string |
 
   useEffect(() => {
     if (orderId && (backendApiStatus || value)) {
-      // Lowercase solver names as CMS might return them in different cases
+      // Normalize solver addresses as the backend and the CMS might return them in different cases
       const solverCompetition = value?.map(({ solver, ...rest }) => ({
         ...rest,
-        solver: solver.toLowerCase(),
+        solver: getAddressKey(solver),
       }))
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
@@ -554,7 +555,6 @@ const POOLING_SWR_OPTIONS = {
  */
 export function buildSolverCompetition(
   apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
-  solversInfo: Record<string, SolverInfo>,
   solversInfoByAddress: Record<string, SolverInfo>,
 ): SolverCompetition[] {
   const seenSolverIds = new Set<string>()
@@ -565,8 +565,9 @@ export function buildSolverCompetition(
       return acc
     }
     // Merge with the info fetched from CMS, then deduplicate on the merged solver identity rather
-    // than the raw backend value, so legacy aliases (e.g. `naive` and `naive-solve`) collapse.
-    const merged = mergeSolverData(entry, solversInfo, solversInfoByAddress)
+    // than the raw backend address, so a solver's retired deployments (several addresses for the
+    // same solverId on one chain) collapse into a single entry.
+    const merged = mergeSolverData(entry, solversInfoByAddress)
     const { solverId } = merged
     // solverId is always set by mergeSolverData, but the SolverCompetition type keeps it optional;
     // entries without one can't be deduplicated by identity, so keep them as-is.
@@ -585,36 +586,27 @@ export function buildSolverCompetition(
 
 /**
  * Merges solverCompetition data returned by the orderbook /status endpoint with
- * solver info fetched from CMS
+ * solver info fetched from CMS.
+ *
+ * The endpoint's `solver` field carries the on-chain solver address, so that address is the key
+ * the CMS display name and logo are looked up by.
  *
  * @param solverCompetition
- * @param solversInfo
+ * @param solversInfoByAddress
  */
 function mergeSolverData(
   solverCompetition: ApiSolverCompetition,
-  solversInfo: Record<string, SolverInfo>,
   solversInfoByAddress: Record<string, SolverInfo>,
 ): SolverCompetition {
-  const rawSolver = solverCompetition.solver
+  const solverAddress = solverCompetition.solver
+  const solverInfo = solversInfoByAddress[getAddressKey(solverAddress)]
 
-  // Once the backend migrates, the `solver` field carries the on-chain solver address instead of
-  // the name. Resolve CMS branding by address in that case; otherwise fall back to the legacy
-  // name-based lookup (backend still returns a name, e.g. `naive`, `barter-solve`).
-  if (rawSolver.startsWith('0x') && rawSolver.length === 42) {
-    const solverInfo = solversInfoByAddress[getAddressKey(rawSolver)]
-    const solverId = solverInfo?.solverId ?? rawSolver
-    // When the address isn't found in CMS, fall back to a shortened address for display so the
-    // full 42-char address doesn't break the UI layout.
-    const solver = solverInfo ? solverId : shortenAddress(rawSolver)
-    return { ...solverCompetition, ...solverInfo, solverId, solver }
+  if (!solverInfo) {
+    // Unknown to the CMS: display the address itself, shortened when possible.
+    return { ...solverCompetition, solverId: solverAddress, solver: safeShortenAddress(solverAddress) }
   }
 
-  // Backend has the prefix `-solve` on some solvers. We should discard that for now.
-  // In the future this prefix will be removed.
-  const solverId = rawSolver.replace(/-solve$/, '')
-  const solverInfo = solversInfo[solverId.toLowerCase()]
-
-  return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
+  return { ...solverCompetition, ...solverInfo, solverId: solverInfo.solverId, solver: solverInfo.solverId }
 }
 
 function usePendingOrderStatus(
