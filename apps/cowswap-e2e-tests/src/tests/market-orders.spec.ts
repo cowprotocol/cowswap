@@ -274,6 +274,7 @@ test.describe('Market Orders', () => {
     wallet,
     mocks,
     context,
+    header,
   }) => {
     // Fixed rate (1 WETH = 2000 USDC) with zero fee/protocolFeeBps keeps the sell side a clean
     // round number derived from whatever buy amount was actually requested — same technique as
@@ -348,7 +349,7 @@ test.describe('Market Orders', () => {
           args: { owner: wallet.address as Hex, spender: approveSpender as Hex },
         }),
         data: encodeAbiParameters([{ type: 'uint256' }], [approvedRawAmount as bigint]),
-        blockNumber: '0x1',
+        blockNumber: '0x2783872',
         transactionHash: FAKE_APPROVE_TX_HASH,
         transactionIndex: '0x0',
         blockHash: `0x${'cd'.repeat(32)}`,
@@ -383,6 +384,8 @@ test.describe('Market Orders', () => {
     })
 
     await swapPage.approveButton.click()
+
+    await expect(header.snackbarPopup).toContainText('Approve WETH', { timeout: 15_000 })
 
     // Approving a buy order auto-advances into the swap confirm screen. Its "Maximum sent" row is
     // the slippage-adjusted sell amount *without* the buy-order's +1% buffer
