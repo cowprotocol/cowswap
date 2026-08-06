@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.7...multicall-v3.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/types@4.8.0
+
 ## [3.4.7](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.6...multicall-v3.4.7) (2026-07-30)
 
 ### Patch Changes
