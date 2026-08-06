@@ -16,10 +16,6 @@ import { solanaApproveCallback } from '../services/solanaApprove/solanaApproveCa
 
 export type SolanaApproveCallback = (amount?: bigint) => Promise<{ hash: string } | null>
 
-/**
- * Returns `null` on every non-Solana chain (and until a Solana wallet is connected), so callers keep
- * using the EVM approve untouched.
- */
 export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaApproveCallback | null {
   const { chainId, account } = useWalletInfo()
   const provider = useSolanaWalletProvider()
