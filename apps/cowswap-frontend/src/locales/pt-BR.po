@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-06 00:07\n"
+"PO-Revision-Date: 2026-08-06 01:12\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -5292,15 +5292,15 @@ msgstr "Agora"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "<0><1>Allows you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount.</5><7><8>Fill or kill</8> orders will either be filled fully or not at all.</7></4></0>"
-msgstr ""
+msgstr "<0><1>Permite que você escolha se suas ordens limite serão <2>Parcialmente preenchíveis</2> ou <3>Fill or kill</3>.</1><4><5><6>Ordens parcialmente preenchíveis</6> poderão ser preenchidas parcialmente se não houver liquidez suficiente para cobrir o valor total.</5><7><8>Ordens Fill or kill</8>serão preenchidas completamente ou não.</7></4></0>"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
-msgstr ""
+msgstr "Mooova-se entre <0/> qualquer rede, sem complicações"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Scans locally in your browser. Nothing is uploaded."
-msgstr ""
+msgstr "Verifica localmente no seu navegador. Nada é carregado."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate payouts happen on Ethereum mainnet."
@@ -5308,15 +5308,15 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
-msgstr ""
+msgstr "Embrulhar {nativeSymbol} para {wrappedNativeSymbol}"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
-msgstr ""
+msgstr "O endereço que receberá os tokens."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "The number of signers who have confirmed this transaction versus the number of signer confirmations needed."
-msgstr ""
+msgstr "O número de signatários que confirmaram esta transação versus o número de confirmações de signatário necessárias."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 #~ msgid "Dynamic"
@@ -5324,19 +5324,19 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Fills at"
-msgstr ""
+msgstr "Preenche em"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
-msgstr ""
+msgstr "Confirmar Impacto no Preço"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing"
-msgstr ""
+msgstr "Executando"
 
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Another order has used up the approval amount. Set a new token approval to proceed with your order."
-msgstr ""
+msgstr "Outra ordem utilizou o valor de aprovação. Defina uma nova aprovação de token para prosseguir."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 #~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -5344,7 +5344,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid token address"
-msgstr ""
+msgstr "Insira um endereço de token válido"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Type or generate a code (subject to availability). Saving locks this code to your wallet and can't be changed."
@@ -5356,26 +5356,26 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "vCOW conversion"
-msgstr ""
+msgstr "conversão de vCOW"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "Sorry, we were unable to load the requested page."
-msgstr ""
+msgstr "Desculpe, não foi possível carregar a página solicitada."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
 msgid "Available"
-msgstr ""
+msgstr "Disponível"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Order Creation Failed"
-msgstr ""
+msgstr "Falha na Criação da Ordem"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "This wallet is not yet supported"
-msgstr ""
+msgstr "Esta carteira ainda não é suportada"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "The token pair is constrained"
