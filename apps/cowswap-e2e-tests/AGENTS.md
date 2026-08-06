@@ -27,6 +27,7 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
 
 ## Writing tests
 
+- Use [E2E-SPEC-SKILL.md](./E2E-SPEC-SKILL.md) to write e2e tests.
 - Every spec follows the same shape: import `test`/`expect` from a fixtures entrypoint, drive the flow
   through a **page object** (`src/pages/*.ts`), assert through `mocks`.
 - **Two wallet entrypoints — pick deliberately:**
