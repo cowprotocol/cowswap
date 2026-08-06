@@ -38,11 +38,12 @@ function getEvmApprovalState({
 
 function getSolanaDelegationState({
   allowance,
+  account,
   balanceLessThanAllowance,
   hasATA,
 }: TokenApproveActionStateParams): TokenApproveActionState {
-  // No delegation yet: only offer Approve when the ATA exists. With no ATA an SPL approve would target a
-  // non-existent account and fail on-chain, so mark it unavailable ("N/A") rather than draw a broken button.
+  if (!account) return 'notApproved'
+
   if (isFractionFalsy(allowance)) return hasATA ? 'notApproved' : 'unavailable'
 
   return balanceLessThanAllowance ? 'approved' : 'partial'

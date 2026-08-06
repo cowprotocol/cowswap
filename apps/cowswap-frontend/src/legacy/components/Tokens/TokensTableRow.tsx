@@ -215,14 +215,11 @@ export const TokensTableRow = ({
         {approveActionState && (
           <>
             {explorerLink}
-            {/* Solana delegation actions need a connected wallet; EVM shows Approve to prompt connecting. */}
-            {(!isSolana || account) && (
-              <TokenApproveActionCell
-                state={approveActionState}
-                allowance={allowance}
-                onApprove={isSolana ? onSolanaApprove : handleApprove}
-              />
-            )}
+            <TokenApproveActionCell
+              state={approveActionState}
+              allowance={allowance}
+              onApprove={isSolana ? onSolanaApprove : handleApprove}
+            />
           </>
         )}
       </Cell>
