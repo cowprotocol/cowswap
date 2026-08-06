@@ -19,7 +19,7 @@ jobs:
     if: github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     environment:
-      name: ipfs
+      name: cowswap-ipfs
       deployment: false
 
     steps:
@@ -55,7 +55,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: process.env.DEPLOY_REF,
-              environment: 'ipfs',
+              environment: 'cowswap-ipfs',
               auto_merge: false,
               required_contexts: [],
             })
