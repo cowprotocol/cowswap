@@ -52,6 +52,12 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
   trade to settle — it's what flips `accountOrders` to `fulfilled`, debits/credits `balances`, and makes
   `orderStatus` report `traded`. Posting and fulfilling are deliberately separate calls, not one bundled
   step, so a spec can assert on the pending/open state before triggering settlement.
+- **Prefer real CoW Protocol SDK types over hand-rolled interfaces** when shaping a mock's request/response
+  body. `@cowprotocol/sdk-order-book` (also re-exported wholesale by `@cowprotocol/cow-sdk`, already a
+  devDependency here) exports `OrderCreation` (the `postOrder` body), `Order` (an `accountOrders`/`order`
+  entry), `OrderStatus` (the status enum), and the rest of the real API shapes. Only
+  hand-roll a type for something genuinely local to this test app (`TradePage`, fixture helper options,
+  etc.), not for anything that crosses the wire to/from the CoW Protocol API.
 - Use `test.describe(...)` + `test.beforeEach(...)` for setup every test in a file needs (e.g. giving the
   wallet a default, sufficient token balance) instead of repeating `mocks.balances.set(...)` in every test
   body. Individual tests can still override on top for their specific scenario.

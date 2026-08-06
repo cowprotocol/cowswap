@@ -1,61 +1,11 @@
+import { Order, OrderStatus, OrderCreation } from '@cowprotocol/sdk-order-book'
+
 import { TokenSelector } from './TokenSelector'
 
 import type { TradePage } from './TradePage'
 import type { BalancesMock } from '../mocks/balances'
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { Page, Locator } from '@playwright/test'
-
-interface PostedOrder {
-  creationDate: string
-  owner: string
-  uid: string
-  availableBalance: null
-  executedBuyAmount: string
-  executedSellAmount: string
-  executedSellAmountBeforeFees: string
-  executedFeeAmount: string
-  executedFee: string
-  executedFeeToken: string
-  invalidated: boolean
-  status: 'open' | 'fulfilled'
-  class: string
-  settlementContract: string
-  isLiquidityOrder: boolean
-  fullAppData: string
-  sellToken: string
-  buyToken: string
-  receiver: string
-  sellAmount: string
-  buyAmount: string
-  validTo: number
-  appData: string
-  feeAmount: string
-  kind: string
-  partiallyFillable: boolean
-  sellTokenBalance: string
-  buyTokenBalance: string
-  signingScheme: string
-  signature: string
-  interactions: { pre: unknown[]; post: unknown[] }
-}
-
-interface PostOrderBody {
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  receiver: string
-  validTo: number
-  appData: string
-  appDataHash: string
-  feeAmount: string
-  kind: string
-  partiallyFillable: boolean
-  sellTokenBalance: string
-  buyTokenBalance: string
-  signingScheme: string
-  signature: string
-}
 
 export class SwapPage implements TradePage {
   readonly page: Page
@@ -152,8 +102,8 @@ export class SwapPage implements TradePage {
     getPostedBuyAmount(): string
     fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void
   } {
-    let postedBody: PostOrderBody | null = null
-    let postedOrder: PostedOrder | null = null
+    let postedBody: OrderCreation | null = null
+    let postedOrder: Order | null = null
 
     // Starts out as the plain fixture list; once an order is posted, this starts prepending it —
     // open, then fulfilled once `fulfill()` runs — so "My orders" reflects the order's actual
@@ -164,7 +114,7 @@ export class SwapPage implements TradePage {
     })
 
     cowApi.set('postOrder', (req) => {
-      const body = req.body as PostOrderBody
+      const body = req.body as OrderCreation
       const uid = req.defaults as string
       postedBody = body
       postedOrder = buildOpenOrder(body, uid, owner)
@@ -188,7 +138,7 @@ export class SwapPage implements TradePage {
 
         // Order-progress polls this once the order exists — "traded" is what moves it past
         // "still searching" to a fulfilled state, mirroring the same fill emulated above.
-        cowApi.set('orderStatus', () => buildTradedOrderStatus(postedBody as PostOrderBody))
+        cowApi.set('orderStatus', () => buildTradedOrderStatus(postedBody as OrderCreation))
       },
     }
   }
@@ -196,13 +146,10 @@ export class SwapPage implements TradePage {
 
 /** The subset of `PostedOrder` fields that change once the order actually settles. */
 function buildFulfilledOrderPatch(
-  body: PostOrderBody,
-): Pick<
-  PostedOrder,
-  'status' | 'executedBuyAmount' | 'executedSellAmount' | 'executedSellAmountBeforeFees' | 'executedFee'
-> {
+  body: OrderCreation,
+): Pick<Order, 'status' | 'executedBuyAmount' | 'executedSellAmount' | 'executedSellAmountBeforeFees' | 'executedFee'> {
   return {
-    status: 'fulfilled',
+    status: OrderStatus.FULFILLED,
     executedBuyAmount: body.buyAmount,
     executedSellAmount: body.sellAmount,
     executedSellAmountBeforeFees: body.sellAmount,
@@ -211,7 +158,7 @@ function buildFulfilledOrderPatch(
 }
 
 /** The order as the orderbook would report it right after accepting it — not yet settled. */
-function buildOpenOrder(body: PostOrderBody, uid: string, owner: string): PostedOrder {
+function buildOpenOrder(body: OrderCreation, uid: string, owner: string): Order {
   return {
     creationDate: new Date().toISOString(),
     owner,
@@ -244,11 +191,11 @@ function buildOpenOrder(body: PostOrderBody, uid: string, owner: string): Posted
     signingScheme: body.signingScheme,
     signature: body.signature,
     interactions: { pre: [], post: [] },
-  }
+  } as Order
 }
 
 /** What order-progress polls to learn a trade has settled — "traded" is what it waits for. */
-function buildTradedOrderStatus(body: PostOrderBody): { type: string; value: unknown[] } {
+function buildTradedOrderStatus(body: OrderCreation): { type: string; value: unknown[] } {
   return {
     type: 'traded',
     value: [
