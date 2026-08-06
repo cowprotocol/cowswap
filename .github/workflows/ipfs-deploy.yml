@@ -19,8 +19,8 @@ jobs:
     if: github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     environment:
-      name: cowswap-ipfs
-      url: ${{ steps.deploy-ipfs.outputs.url }}
+      name: ipfs
+      deployment: false
 
     steps:
       - name: Checkout trusted workflow repository
@@ -42,6 +42,24 @@ jobs:
           DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: node ../tools/scripts/verify-tag-reachable-from-main.mjs
+
+      - name: Create GitHub deployment for release tag
+        id: create-deployment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
+        with:
+          result-encoding: string
+          script: |
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: process.env.DEPLOY_REF,
+              environment: 'ipfs',
+              auto_merge: false,
+              required_contexts: [],
+            })
+            return String(deployment.id)
 
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
@@ -89,6 +107,7 @@ jobs:
           {
             echo "### IPFS deployment"
             echo
+            echo "- Source tag: \`${{ github.event.workflow_run.head_branch }}\`"
             echo "- Source SHA: \`${{ github.event.workflow_run.head_sha }}\`"
             echo "- CID: \`${cid}\`"
             echo "- Primary URL: ${url}"
@@ -97,3 +116,24 @@ jobs:
         env:
           IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
           IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+
+      - name: Complete GitHub deployment
+        id: complete-deployment
+        if: always() && steps.create-deployment.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DEPLOYMENT_ID: ${{ steps.create-deployment.outputs.result }}
+          DEPLOYMENT_STATE: ${{ steps.deploy-ipfs.outcome == 'success' && 'success' || 'failure' }}
+          DEPLOYMENT_URL: ${{ steps.deploy-ipfs.outputs.url }}
+        with:
+          script: |
+            const status = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: Number(process.env.DEPLOYMENT_ID),
+              state: process.env.DEPLOYMENT_STATE,
+            }
+            if (status.state === 'success') {
+              status.environment_url = process.env.DEPLOYMENT_URL
+            }
+            await github.rest.repos.createDeploymentStatus(status)
