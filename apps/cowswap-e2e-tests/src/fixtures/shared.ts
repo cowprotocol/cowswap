@@ -15,6 +15,7 @@ import { HeaderPage } from '../pages/HeaderPage'
 import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
+import { mockOrderPosting } from '../support/mockOrderPosting'
 import { createSetupTestConditions, type SetupTestConditions } from '../support/setupTestConditions'
 
 import type { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions } from '@playwright/test'
@@ -29,6 +30,8 @@ export interface SharedFixtures {
   header: HeaderPage
   rpcProxy: RpcProxyHandle
   setupTestConditions: SetupTestConditions
+  /** Page-agnostic order-mocking helpers shared by swap, limit and TWAP order flows. */
+  tradePage: { mockOrderPosting: typeof mockOrderPosting }
   mocks: {
     allowances: AllowancesMock
     balances: BalancesMock
@@ -75,6 +78,9 @@ export const sharedFixtures: Fixtures<
   },
   setupTestConditions: async ({ wallet, mocks, swapPage, limitPage, twapPage }, use) => {
     await use(createSetupTestConditions({ wallet, mocks, swapPage, limitPage, twapPage }))
+  },
+  tradePage: async ({}, use) => {
+    await use({ mockOrderPosting })
   },
   rpcProxy: async ({}, use, testInfo) => {
     const handle = createRpcProxyHandle(testInfo)

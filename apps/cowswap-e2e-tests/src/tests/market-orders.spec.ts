@@ -66,6 +66,7 @@ test.describe('Market Orders', () => {
   test('[MO-04] Sell order: balances update in the UI after the order is posted', async ({
     setupTestConditions,
     swapPage,
+    tradePage,
     wallet,
     confirmModal,
     mocks,
@@ -93,7 +94,7 @@ test.describe('Market Orders', () => {
     // in sync with what posting the order actually did, exactly as the real backend would once
     // the trade settles on-chain. Posting alone doesn't settle it; `fulfill()` below does that on
     // demand, once this test is ready for it.
-    const posting = swapPage.mockOrderPosting(mocks.cowApi, wallet.address)
+    const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
     await setupTestConditions({
       chainId: CHAIN_ID,
@@ -169,6 +170,7 @@ test.describe('Market Orders', () => {
 
   test('[MO-06] Sell order: full lifecycle from token selection to filled activity', async ({
     swapPage,
+    tradePage,
     wallet,
     confirmModal,
     accountModal,
@@ -199,7 +201,7 @@ test.describe('Market Orders', () => {
       }
     })
 
-    const posting = swapPage.mockOrderPosting(mocks.cowApi, wallet.address)
+    const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
     // `usdPrices` defaults every token to $1 — under that assumption this trade's quoted rate
     // looks like a ~99.9% loss and trips the "Confirm Price Impact" dialog. Pricing WETH to match
