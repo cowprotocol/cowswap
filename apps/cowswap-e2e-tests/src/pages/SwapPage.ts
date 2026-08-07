@@ -19,6 +19,10 @@ export class SwapPage implements TradePage {
   readonly orderProgressBarModal: Locator
   readonly sellTokenSelect: Locator
   readonly buyTokenSelect: Locator
+  readonly sellFiatAmount: Locator
+  readonly buyFiatAmount: Locator
+  readonly priceImpact: Locator
+  readonly priceImpactTooltipTrigger: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -33,6 +37,15 @@ export class SwapPage implements TradePage {
     // which is the only titled element in either panel outside USD-values mode.
     this.sellBalance = page.locator('#input-currency-input .currency-balance-text > span')
     this.buyBalance = page.locator('#output-currency-input .currency-balance-text > span')
+    this.sellFiatAmount = page.locator('#input-currency-input [data-testid="fiat-amount"]')
+    this.buyFiatAmount = page.locator('#output-currency-input [data-testid="fiat-amount"]')
+    // Only the output panel receives `priceImpactParams` (`TradeWidgetForm`), so price impact
+    // only ever renders next to the buy-side USD estimation.
+    this.priceImpact = page.locator('#output-currency-input [data-testid="price-impact"]')
+    // `HoverTooltip`'s mouseenter/mouseleave handlers sit on the innermost wrapper div around the
+    // "(X%)" text, not on the outer `[data-testid]` span — hovering the outer span can land the
+    // pointer outside that inner div's box and never open the tooltip.
+    this.priceImpactTooltipTrigger = this.priceImpact.locator('div div')
     this.swapButton = page.locator('#do-trade-button')
     this.approveButton = page.locator('#approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')

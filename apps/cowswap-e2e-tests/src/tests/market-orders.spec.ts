@@ -341,4 +341,61 @@ test.describe('Market Orders', () => {
     // that the order kind is locked to Sell.
     await expect(swapPage.outputAmount).not.toBeEditable()
   })
+
+  test('[MO-09] Swap form: To field, USD estimation and price impact', async ({
+    setupTestConditions,
+    swapPage,
+    wallet,
+    mocks,
+  }) => {
+    const BUY_RATE_NUM = 8n
+    const BUY_RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
+
+    // Same technique as [MO-06]: zero out fee/protocolFeeBps so the displayed To-amount is an
+    // exact, round multiple of the typed sell amount.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: {
+          ...defaults.quote,
+          buyAmount: ((sellAmount * BUY_RATE_NUM) / BUY_RATE_DEN).toString(),
+          feeAmount: '0',
+        },
+      }
+    })
+
+    // Pricing WETH 2% below the quote's implied rate ($12.25 instead of $12.50) makes the buy
+    // side's fiat value ($98) 2% under the sell side's ($100), producing a deterministic -2%
+    // price impact instead of ~0%.
+    mocks.usdPrices.setPrice(WETH, 12.25)
+
+    // Set balances/allowances directly (both Sepolia test tokens report 18 decimals on-chain,
+    // same quirk as [MO-06]) rather than via `setupTestConditions`, whose `balances`/`allowances`
+    // options trust `support/tokens.ts`'s incorrect 6-decimal USDC entry.
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18), [WETH]: 0n })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18) })
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'USDC',
+      buyToken: 'WETH',
+      sellAmount: '100',
+    })
+
+    // To amount = Sell amount × Price (from BE): 100 USDC × (8/100) = 8 WETH.
+    await expect(swapPage.outputAmount).toHaveValue('8')
+
+    // USD estimation shown for both fields.
+    await expect(swapPage.sellFiatAmount).toContainText('$100')
+    await expect(swapPage.buyFiatAmount).toContainText('$98')
+
+    // Price impact shown near the USD estimation, with its explanatory tooltip.
+    await expect(swapPage.priceImpact).toContainText('-2%')
+    await swapPage.priceImpactTooltipTrigger.hover()
+    await expect(swapPage.page.getByText('Price impact due to current liquidity levels')).toBeVisible()
+  })
 })
