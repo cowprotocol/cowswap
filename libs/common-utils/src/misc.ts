@@ -21,6 +21,16 @@ const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'Transaction was rejected',
 ]
 
+// Raw JSON-RPC messages returned by nodes (geth/erigon/anvil) when an account can't cover
+// `gas * gas price + value`. Viem wraps these into an `InsufficientFundsError` (matched by name
+// below) with its own reworded shortMessage, so the raw substrings only apply to unwrapped
+// provider errors (e.g. a wallet returning the node message directly).
+const INSUFFICIENT_FUNDS_ERROR_MESSAGES = ['insufficient funds', 'exceeds transaction sender account balance']
+
+// Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
+// or pathologically deep chain.
+const MAX_ERROR_CAUSE_DEPTH = 8
+
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
@@ -182,6 +192,38 @@ export function hashCode(text: string): number {
 }
 
 /**
+ * @param error Optional error object returned by a provider when a transaction fails to submit
+ * because the account can't cover `gas * gas price + value` — e.g. selling ~100% of an ETH
+ * balance and picking a low gas setting, leaving nothing to pay for gas.
+ *
+ * @returns true if the error is an "insufficient funds for gas/value" failure
+ */
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isInsufficientFundsProviderError(error: any, depth = 0): boolean {
+  if (!error || depth > MAX_ERROR_CAUSE_DEPTH) {
+    return false
+  }
+
+  // Viem's `InsufficientFundsError` rewords the raw node message into its own shortMessage,
+  // so it's matched by name rather than by string content.
+  if (error.name === 'InsufficientFundsError') {
+    return true
+  }
+
+  const message = getProviderErrorMessage(error)
+  if (message && INSUFFICIENT_FUNDS_ERROR_MESSAGES.some((needle) => message.toLowerCase().includes(needle))) {
+    return true
+  }
+
+  if (error.cause !== undefined && error.cause !== error) {
+    return isInsufficientFundsProviderError(error.cause, depth + 1)
+  }
+
+  return false
+}
+
+/**
  *
  * @param error Optional error object return by a provider.
  *
@@ -190,10 +232,6 @@ export function hashCode(text: string): number {
  *
  * @returns true if the user rejected the request in their wallet
  */
-// Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
-// or pathologically deep chain.
-const MAX_ERROR_CAUSE_DEPTH = 8
-
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isRejectRequestProviderError(error: any, depth = 0): boolean {
