@@ -23,6 +23,17 @@ interface ApprovalTransactionParams {
   currency: Nullish<Currency>
 }
 
+interface TransactionReceiptLike {
+  status: 'success' | 'reverted'
+  blockNumber: bigint
+  transactionHash: `0x${string}`
+  logs: {
+    address: string
+    topics: string[]
+    data: `0x${string}`
+  }[]
+}
+
 /**
  * Extracts the approved amount from the Approval event in transaction logs
  * @param txReceipt Transaction receipt containing logs
@@ -93,4 +104,17 @@ export function processApprovalTransaction(
   }
 
   return null
+}
+
+export function toApprovalTxReceipt(txResponse: TransactionReceiptLike): ApprovalTxReceipt {
+  return {
+    status: txResponse.status,
+    blockNumber: txResponse.blockNumber,
+    transactionHash: txResponse.transactionHash,
+    logs: txResponse.logs.map((log) => ({
+      address: log.address,
+      topics: [...log.topics],
+      data: log.data,
+    })),
+  }
 }

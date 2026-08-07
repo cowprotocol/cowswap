@@ -2,13 +2,18 @@ import { type Address, erc20Abi } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, createCowLogger } from '@cowprotocol/common-utils'
+import { createCowLogger } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
 import { t } from '@lingui/core/macro'
 
-import { estimateApprove, extractApprovalAmountFromLogs, type ApprovalTxReceipt } from 'modules/erc20Approve'
+import {
+  extractApprovalAmountFromLogs,
+  sendApproveTransaction,
+  toApprovalTxReceipt,
+  type ApprovalTxReceipt,
+} from 'modules/erc20Approve'
 import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
@@ -221,31 +226,21 @@ async function approveEoaSellToken({
     throw new Error('Public client is required to approve sell token')
   }
 
-  const estimation = await estimateApprove(publicClient, sellTokenAddress, spender, amount, account, chainId)
-
-  const hash = await writeContract(config, {
-    address: sellTokenAddress,
-    abi: erc20Abi,
-    functionName: 'approve',
-    args: [spender as Address, amount],
-    gas: calculateGasMargin(estimation.gasLimit),
+  const hash = await sendApproveTransaction({
+    publicClient,
+    tokenAddress: sellTokenAddress,
+    spender,
+    amount,
     account,
+    chainId,
+    writeContract: (params) => writeContract(config, params),
   })
 
   onSubmitted()
 
   const txResponse = await waitForTransactionReceipt(config, { hash })
 
-  return {
-    status: txResponse.status,
-    blockNumber: txResponse.blockNumber,
-    transactionHash: txResponse.transactionHash,
-    logs: txResponse.logs.map((log) => ({
-      address: log.address,
-      topics: [...log.topics],
-      data: log.data,
-    })),
-  }
+  return toApprovalTxReceipt(txResponse)
 }
 
 async function runOnChainApprovalStep({
