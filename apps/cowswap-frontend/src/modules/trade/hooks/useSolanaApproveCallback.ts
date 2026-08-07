@@ -16,16 +16,6 @@ import { solanaApproveCallback } from '../services/solanaApprove/solanaApproveCa
 
 export type SolanaApproveCallback = (amount?: bigint) => Promise<{ hash: string } | null>
 
-/**
- * Returns `null` on every non-Solana chain (and until a Solana wallet is connected), so callers keep
- * using the EVM approve untouched.
- *
- * The returned callback delegates `amount` (default unlimited, `SOLANA_MAX_APPROVE_AMOUNT`) and is
- * modal-less: it resolves to `{ hash }` on success, `null` on user rejection, and rethrows on any other
- * error — the caller (trade widget / tokens page) owns the pending/error UI, reusing the same EVM approve
- * modal. On success the delegation is written into `allowancesAtom` optimistically so consumers leave
- * their "approve required" state without waiting for a refetch.
- */
 export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaApproveCallback | null {
   const { chainId, account } = useWalletInfo()
   const provider = useSolanaWalletProvider()
