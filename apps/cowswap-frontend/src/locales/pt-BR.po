@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-06 23:47\n"
+"PO-Revision-Date: 2026-08-07 01:48\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3716,7 +3716,7 @@ msgstr "Proteção de preço"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
-msgstr ""
+msgstr "Aprovar {wrappedSymbol} falhou!"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Verified"
@@ -3793,7 +3793,7 @@ msgstr "No CoW Swap, ordens limite têm colocação e cancelamento gratuitos. Al
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
 msgid "safeBundleFlowContext is not set!"
-msgstr "safeBundleFlowContext não está definido!"
+msgstr "safeBundleFlowContext não está habilitado!"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: No manifest.json file found. Please check the URL and try again."
@@ -3806,7 +3806,7 @@ msgstr "URL inválida: Nenhum arquivo manifest.json encontrado. Por favor, verif
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
-msgstr "Token COW não encontrado para a rede {SupportedChainIdMAINNET}"
+msgstr "Token COW não encontrado para a rede/cadeia {SupportedChainIdMAINNET}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
 msgid "Tokenized by {tokenizedByIssuer}"
@@ -3814,7 +3814,7 @@ msgstr "Tokenizado por {tokenizedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
-msgstr "Converter"
+msgstr "Desembrulhar"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Connect your wallet first"
@@ -3826,7 +3826,7 @@ msgstr "Vaca animada reage à lista de ordens vazia"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Trade alerts"
-msgstr "Alertas de trade"
+msgstr "Alertas de negociação"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "Auto"
