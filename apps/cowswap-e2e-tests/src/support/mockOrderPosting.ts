@@ -13,15 +13,17 @@ import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
  *
  * Page-agnostic (only wires CoW API mocks) — shared by swap, limit and TWAP order flows.
  *
- * The returned handle also lets a caller read the posted buyAmount back once the order goes
- * through, since the app applies its own slippage on top of the quote — asserting on the
- * resulting balance needs the amount that was actually posted, not the pre-slippage quote.
+ * The returned handle also lets a caller read the posted buyAmount/sellAmount back once the
+ * order goes through, since the app applies its own slippage on top of the quote — asserting on
+ * the resulting balance needs the amount that was actually posted, not the pre-slippage quote
+ * (buyAmount varies for a sell order, sellAmount varies for a buy order).
  */
 export function mockOrderPosting(
   cowApi: CowProtocolApiMock,
   owner: string,
 ): {
   getPostedBuyAmount(): string
+  getPostedSellAmount(): string
   fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void
 } {
   let postedBody: OrderCreation | null = null
@@ -50,6 +52,7 @@ export function mockOrderPosting(
 
   return {
     getPostedBuyAmount: () => postedBody?.buyAmount ?? '',
+    getPostedSellAmount: () => postedBody?.sellAmount ?? '',
 
     fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void {
       if (!postedBody || !postedOrder) {

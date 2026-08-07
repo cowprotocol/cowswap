@@ -102,6 +102,94 @@ test.describe('Market Orders', () => {
     await accountModal.close()
   })
 
+  test('[MO-03] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
+    swapPage,
+    tradePage,
+    wallet,
+    confirmModal,
+    accountModal,
+    mocks,
+  }) => {
+    // Same 18-decimals quirk as [MO-02].
+    const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
+    const RATE = 1000n // 1 WETH = 1000 USDC
+
+    // Mirrors [MO-02]'s technique, but derived from the quote's `buyAmount` instead of its
+    // `sellAmount` — for a buy order the typed amount fixes buyAmount exactly, and it's sellAmount
+    // that's quoted/slippage-adjusted. Fee/protocolFeeBps stay zeroed so the posted buyAmount
+    // matches the typed amount exactly, keeping the buy-side balance assertion a round number.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const buyAmount = BigInt(defaults.quote.buyAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: {
+          ...defaults.quote,
+          sellAmount: (buyAmount * RATE).toString(),
+          feeAmount: '0',
+        },
+      }
+    })
+
+    const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+
+    // `usdPrices` defaults every token to $1 — pricing WETH to match the quote rate keeps the
+    // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [MO-02].
+    mocks.usdPrices.setPrice(WETH, Number(RATE))
+
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE })
+
+    await swapPage.goto({ chainId: CHAIN_ID })
+
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('USDC')
+    await swapPage.tokens.openOutput()
+    await swapPage.tokens.searchAndPick('WETH')
+
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
+    await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
+
+    await swapPage.enterBuyAmount('1')
+    await swapPage.waitForQuote()
+
+    await swapPage.clickSwap()
+    await confirmModal.confirmButton.click()
+
+    await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
+    await swapPage.page.keyboard.press('Escape')
+    await expect(swapPage.orderProgressBarModal).toBeHidden()
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Open')
+    await accountModal.close()
+
+    // Settle the order now that it's posted and confirmed — mirrors [MO-02].
+    posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+
+    // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
+    // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
+    // so it needs more room than the default 5s — mirrors [MO-02].
+    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+    await swapPage.page.keyboard.press('Escape')
+
+    // Buy amount is fixed by the order kind — it lands exactly on the typed amount, unlike the
+    // sell side, which carries the app's own slippage buffer on top of the quote (see [MO-04]).
+    await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH', { timeout: 15_000 })
+    await expect(swapPage.sellBalance).toHaveAttribute(
+      'title',
+      `${formatUnits(INITIAL_USDC_BALANCE - BigInt(posting.getPostedSellAmount()), 18)} USDC`,
+      { timeout: 15_000 },
+    )
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Filled')
+    await accountModal.close()
+  })
+
   test('[MO-04] Buy order: approval amount includes slippage buffer @smoke', async ({
     swapPage,
     wallet,
