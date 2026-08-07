@@ -84,7 +84,7 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
 
   return (
-    <>
+    <div id="orders-table">
       <TableBox>
         <TableInner onScroll={onScroll}>
           <OrdersTableHeader
@@ -120,6 +120,6 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
       {currentTab === OrderTabId.OPEN && currentPageNumber === lastPageNumber && orderType === TabOrderTypes.LIMIT && (
         <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} />
       )}
-    </>
+    </div>
   )
 }

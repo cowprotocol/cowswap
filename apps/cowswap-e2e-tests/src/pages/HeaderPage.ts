@@ -1,11 +1,13 @@
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 /** The app-wide header (network selector, wallet status) — present on every route, not just Swap. */
 export class HeaderPage {
   readonly page: Page
+  readonly snackbarPopup: Locator
 
   constructor(page: Page) {
     this.page = page
+    this.snackbarPopup = page.locator('.snackbar-popup').first()
   }
 
   /**

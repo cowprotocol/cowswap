@@ -40,11 +40,24 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
 - Page objects hold `Locator`s as readonly properties set in the constructor, plus action methods
   (`goto`, `enterSellAmount`, `clickSwap`, ...) that encapsulate waits. Add new locators/actions there,
   not ad hoc selectors inside a spec.
+- **Prefer the `setupTestConditions` fixture** (`src/support/setupTestConditions.ts`) over manually
+  chaining `goto` + `enterSellAmount` + `waitForQuote` + `mocks.balances.set`/`mocks.allowances.set`. It
+  wires up the whole "navigate to a trade, fund/allowance the wallet, type an amount, wait for its quote"
+  flow in one call, takes human-readable amounts (`{ WETH: '1' }`, not raw atoms). Reach for manual page-object calls only for
+  what `setupTestConditions` doesn't cover, e.g. changing the amount again mid-test.
 - **Mock-driven scenarios that span multiple endpoints belong on the page object as a method**, not as a
-  free function in the spec file. Example: `SwapPage.mockSwapFulfillment(cowApi, balances, owner, chainId,
-  sellTokenBalanceBefore)` sets up `postOrder` + `accountOrders` + `orderStatus` + the balance debit/credit
-  together, because they describe one coherent thing ("the orderbook fulfilled this order") and every spec
-  needing that scenario should get it identically.
+  free function in the spec file. Example: `SwapPage.mockOrderPosting(cowApi, owner)` sets up `postOrder` +
+  `accountOrders` together (the order shows up as `open` the moment it's posted), and returns a handle
+  whose `fulfill(balances, chainId, sellTokenBalanceBefore)` you call whenever the test is ready for the
+  trade to settle — it's what flips `accountOrders` to `fulfilled`, debits/credits `balances`, and makes
+  `orderStatus` report `traded`. Posting and fulfilling are deliberately separate calls, not one bundled
+  step, so a spec can assert on the pending/open state before triggering settlement.
+- **Prefer real CoW Protocol SDK types over hand-rolled interfaces** when shaping a mock's request/response
+  body. `@cowprotocol/sdk-order-book` (also re-exported wholesale by `@cowprotocol/cow-sdk`, already a
+  devDependency here) exports `OrderCreation` (the `postOrder` body), `Order` (an `accountOrders`/`order`
+  entry), `OrderStatus` (the status enum), and the rest of the real API shapes. Only
+  hand-roll a type for something genuinely local to this test app (`TradePage`, fixture helper options,
+  etc.), not for anything that crosses the wire to/from the CoW Protocol API.
 - Use `test.describe(...)` + `test.beforeEach(...)` for setup every test in a file needs (e.g. giving the
   wallet a default, sufficient token balance) instead of repeating `mocks.balances.set(...)` in every test
   body. Individual tests can still override on top for their specific scenario.
