@@ -12,11 +12,6 @@ function InnerWithLDProvider({ children }: PropsWithChildren) {
 
 export const WithLDProvider = withLDProvider<PropsWithChildren & JSX.IntrinsicAttributes>({
   clientSideID: NEXT_PUBLIC_LAUNCH_DARKLY_KEY,
-  context: {
-    kind: 'user',
-    key: 'cow-fi',
-    name: 'cow-fi',
-  },
   options: {
     bootstrap: 'localStorage',
   },

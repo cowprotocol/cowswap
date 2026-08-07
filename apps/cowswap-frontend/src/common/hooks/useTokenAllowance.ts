@@ -11,7 +11,6 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
-import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAllowance'
 
 import { getOptimisticAllowanceKey } from '../../entities/optimisticAllowance/getOptimisticAllowanceKey'
 
@@ -34,7 +33,6 @@ export function useTokenAllowance(
   const { contract: erc20Contract } = useTokenContract(tokenAddress)
   const tradeSpender = useTradeSpenderAddress()
   const [optimisticAllowances, setOptimisticAllowances] = useAtom(optimisticAllowancesAtom)
-  const solanaAllowance = useSolanaDelegationAllowance(tokenAddress)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
@@ -83,8 +81,8 @@ export function useTokenAllowance(
   return useMemo(
     () => ({
       ...swrResponse,
-      data: solanaAllowance ?? optimisticAllowance?.amount ?? swrResponse.data,
+      data: optimisticAllowance?.amount ?? swrResponse.data,
     }),
-    [solanaAllowance, optimisticAllowance?.amount, swrResponse],
+    [optimisticAllowance?.amount, swrResponse],
   )
 }
