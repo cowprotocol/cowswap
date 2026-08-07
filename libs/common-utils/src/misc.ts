@@ -151,7 +151,7 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
     // Prefer viem's shortMessage (concise, human-readable) over the full message
     // which includes verbose request arguments and hex data.
     if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
-    if ('message' in error) return error.message as string
+    if ('message' in error && typeof error.message === 'string') return error.message
   }
   return error?.toString()
 }
@@ -198,26 +198,25 @@ export function hashCode(text: string): number {
  *
  * @returns true if the error is an "insufficient funds for gas/value" failure
  */
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isInsufficientFundsProviderError(error: any, depth = 0): boolean {
+export function isInsufficientFundsProviderError(error: unknown, depth = 0): boolean {
   if (!error || depth > MAX_ERROR_CAUSE_DEPTH) {
     return false
   }
 
   // Viem's `InsufficientFundsError` rewords the raw node message into its own shortMessage,
   // so it's matched by name rather than by string content.
-  if (error.name === 'InsufficientFundsError') {
+  if (getErrorName(error) === 'InsufficientFundsError') {
     return true
   }
 
   const message = getProviderErrorMessage(error)
-  if (message && INSUFFICIENT_FUNDS_ERROR_MESSAGES.some((needle) => message.toLowerCase().includes(needle))) {
+  if (message && matchesInsufficientFundsMessage(message)) {
     return true
   }
 
-  if (error.cause !== undefined && error.cause !== error) {
-    return isInsufficientFundsProviderError(error.cause, depth + 1)
+  const cause = getErrorCause(error)
+  if (cause !== undefined && cause !== error) {
+    return isInsufficientFundsProviderError(cause, depth + 1)
   }
 
   return false
@@ -270,4 +269,17 @@ export function isRejectRequestProviderError(error: any, depth = 0): boolean {
  */
 export function percentToBps(percent: Percent): number {
   return Number(percent.multiply('100').toSignificant())
+}
+
+function getErrorCause(error: unknown): unknown {
+  return typeof error === 'object' && error !== null && 'cause' in error ? error.cause : undefined
+}
+
+function getErrorName(error: unknown): unknown {
+  return typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined
+}
+
+function matchesInsufficientFundsMessage(message: string): boolean {
+  const lowerCaseMessage = message.toLowerCase()
+  return INSUFFICIENT_FUNDS_ERROR_MESSAGES.some((needle) => lowerCaseMessage.includes(needle))
 }

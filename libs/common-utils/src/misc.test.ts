@@ -1,4 +1,10 @@
-import { isInsufficientFundsProviderError, isRejectRequestProviderError, TimeoutError, withTimeout } from './misc'
+import {
+  getProviderErrorMessage,
+  isInsufficientFundsProviderError,
+  isRejectRequestProviderError,
+  TimeoutError,
+  withTimeout,
+} from './misc'
 
 describe('withTimeout', () => {
   it('resolves when the promise settles before the timeout', async () => {
@@ -100,5 +106,18 @@ describe('isInsufficientFundsProviderError', () => {
     const cyclic: { message: string; cause?: unknown } = { message: 'boom' }
     cyclic.cause = cyclic
     expect(isInsufficientFundsProviderError(cyclic)).toBe(false)
+  })
+
+  it('does not throw when a malformed provider puts a non-string value in error.message', () => {
+    expect(() => isInsufficientFundsProviderError({ message: {} })).not.toThrow()
+    expect(isInsufficientFundsProviderError({ message: {} })).toBe(false)
+  })
+})
+
+describe('getProviderErrorMessage', () => {
+  it('ignores a non-string error.message instead of returning it as-is', () => {
+    // Falls through to the generic `.toString()` fallback rather than returning the object
+    // as-is, which would make downstream `.toLowerCase()` calls throw.
+    expect(getProviderErrorMessage({ message: {} })).toBe('[object Object]')
   })
 })
