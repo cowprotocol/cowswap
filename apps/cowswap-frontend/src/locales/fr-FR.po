@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-07 08:33\n"
+"PO-Revision-Date: 2026-08-07 12:39\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3668,6 +3668,10 @@ msgstr "Ajouter un post-hook"
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap est la seule plateforme d’échange qui associe les Coincidences of Wants (CoWs) : des swaps pair-à-pair qui réduisent les frais de règlement."
 
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
+msgid "EOA TWAP cancellation is not implemented"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copied!"
@@ -4869,6 +4873,7 @@ msgstr "Swap bridgé via votre"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/Group/OrdersTableRowGroup.pure.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Loading..."
 msgstr "Chargement..."
@@ -5154,6 +5159,7 @@ msgstr "Minutes"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "Le code de parrainage a été appliqué après le premier trade éligible du trader."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "L’utilisateur a rejeté la transaction d’approbation"
@@ -6223,7 +6229,7 @@ msgstr "Nouveau"
 msgid "Approval amount"
 msgstr "Montant de l’approbation"
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+#: apps/cowswap-frontend/src/modules/trade/containers/SolanaApproveModal.tsx
 #~ msgid "Approving"
 #~ msgstr "Approving"
 
@@ -7064,6 +7070,7 @@ msgid "Add custom hook"
 msgstr "Ajouter un hook personnalisé"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
 msgid "Approve {symbol}"
 msgstr "Approuver {symbol}"
 
@@ -7489,7 +7496,7 @@ msgstr "Prix d’exécution estimé"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
 msgid "Transaction failed"
 msgstr "Échec de la transaction"
 
