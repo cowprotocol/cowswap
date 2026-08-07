@@ -10,6 +10,7 @@ import styled from 'styled-components/macro'
 import { Field } from 'legacy/state/types'
 
 import { EthFlowBanner } from 'modules/ethFlow'
+import { SolanaWrapAndDelegateButton } from 'modules/trade'
 
 import { SwapFormState } from '../../hooks/useSwapFormState'
 
@@ -122,6 +123,9 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
         wrapCallback={props.onEthFlow}
       />
     </Wrapper>
+  ),
+  [SwapFormState.SolanaWrapAndDelegate]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
+    <SolanaWrapAndDelegateButton isDisabled={isDisabled} clickEvent={props.swapBridgeClickEvent} />
   ),
   [SwapFormState.SellNativeInHooks]: (props: SwapTradeButtonsContext) => {
     const currency = props.inputCurrency

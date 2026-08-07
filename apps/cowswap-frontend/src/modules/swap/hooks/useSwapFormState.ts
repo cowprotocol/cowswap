@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useIsSmartContractWallet, useIsTxBundlingSupported } from '@cowprotocol/wallet'
 
 import { useIsHooksTradeType } from 'modules/trade'
@@ -13,6 +14,7 @@ export enum SwapFormState {
   WrapAndSwap = 'WrapAndSwap',
   WrapAndSwapAndBridge = 'WrapAndSwapAndBridge',
   SellNativeInHooks = 'SellNativeInHooks',
+  SolanaWrapAndDelegate = 'SolanaWrapAndDelegate',
 }
 
 export function useSwapFormState(): SwapFormState | null {
@@ -24,6 +26,7 @@ export function useSwapFormState(): SwapFormState | null {
   return useMemo(() => {
     if (state.inputCurrency && getIsNativeToken(state.inputCurrency)) {
       if (isHooksStore) return SwapFormState.SellNativeInHooks
+      if (isSolanaChain(state.inputCurrency.chainId)) return SwapFormState.SolanaWrapAndDelegate
 
       const isBridging =
         state.inputCurrency && state.outputCurrency && state.inputCurrency.chainId !== state.outputCurrency.chainId
