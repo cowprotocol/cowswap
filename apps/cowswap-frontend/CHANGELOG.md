@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.23.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.23.0...cowswap-v3.23.1) (2026-08-07)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.10.1
+  - @cowprotocol/tokens@3.9.1
+  - @cowprotocol/ui@3.10.1
+  - @cowprotocol/snackbars@2.2.11
+  - @cowprotocol/wallet@3.11.1
+  - @cowprotocol/multicall@3.5.1
+
 ## [3.23.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.22.0...cowswap-v3.23.0) (2026-08-05)
 
 ### Minor Changes

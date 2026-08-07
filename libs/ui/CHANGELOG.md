@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.10.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.10.0...ui-v3.10.1) (2026-08-07)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.5...ui-v3.10.0) (2026-08-05)
 
 ### Minor Changes
