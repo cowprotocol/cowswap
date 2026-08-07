@@ -23,7 +23,7 @@ export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendin
   const symbol = inputCurrencyAmount?.currency.symbol
 
   const steps = useMemo(() => {
-    return signingStep ? buildEoaTwapConfirmationPendingSteps(signingStep, { symbol }) : undefined
+    return signingStep ? buildEoaTwapConfirmationPendingSteps({ signingStep, symbol }) : undefined
   }, [signingStep, symbol])
 
   if (!steps) {

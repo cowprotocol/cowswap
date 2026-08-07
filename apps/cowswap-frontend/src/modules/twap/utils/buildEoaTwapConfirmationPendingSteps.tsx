@@ -13,13 +13,14 @@ const LOADING_PHASES: ReadonlySet<EoaTwapSigningPhase> = new Set([
 ])
 
 export interface BuildEoaTwapConfirmationPendingStepsParams {
+  signingStep: EoaTwapSigningStepState
   symbol?: string
 }
 
-export function buildEoaTwapConfirmationPendingSteps(
-  signingStep: EoaTwapSigningStepState,
-  { symbol }: BuildEoaTwapConfirmationPendingStepsParams = {},
-): MultiConfirmationPendingStep[] {
+export function buildEoaTwapConfirmationPendingSteps({
+  signingStep,
+  symbol,
+}: BuildEoaTwapConfirmationPendingStepsParams): MultiConfirmationPendingStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
   if (currentIndex === -1) {
