@@ -286,8 +286,12 @@ describe('getExecutedSummaryData', () => {
       executedFee: '0',
       executedFeeToken: baseWeth.address,
       invalidated: false,
-      status: 'fulfilled',
-      class: 'limit',
+      status: OrderStatus.FULFILLED,
+      class: OrderClass.LIMIT,
+      apiAdditionalInfo: {
+        executedBuyAmount: '1000000',
+        executedSellAmountBeforeFees: '0',
+      },
       sellToken: baseWeth.address,
       buyToken: baseUsdc.address,
       sellAmount: '500000000000000', // 0.0005 WETH
@@ -321,15 +325,14 @@ describe('getExecutedSummaryData', () => {
     } as unknown as GenericOrder
 
     const result = getExecutedSummaryData(order1, null)
-    console.log('Result:', result) // Log the result for debugging
 
     expect(result.formattedSwappedAmount.currency.address).toBe(baseWeth.address)
     expect(result.formattedSwappedAmount.currency.chainId).toBe(baseWeth.chainId)
     expect(result.surplusAmount.currency.address).toBe(baseWeth.address)
     expect(result.surplusToken.address).toBe(baseWeth.address)
     // Verify denominators are not zero to avoid division by zero errors
-    expect(result.surplusAmount.denominator).not.toBe('0')
-    expect(result.formattedFilledAmount.denominator).toBe('0')
-    expect(result.formattedSwappedAmount.denominator).not.toBe('0')
+    expect(result.surplusAmount.denominator).not.toBe(0n)
+    expect(result.formattedFilledAmount.denominator).not.toBe(0n)
+    expect(result.formattedSwappedAmount.denominator).not.toBe(0n)
   })
 })
