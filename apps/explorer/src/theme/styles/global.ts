@@ -1,11 +1,9 @@
-import { baseGlobalStyles, Color, ThemeColorVars, UI } from '@cowprotocol/ui'
+import { Color, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import variables from 'components/layout/GenericLayout/variablesCss'
 import { createGlobalStyle } from 'styled-components/macro'
 
 export const StaticGlobalStyle = createGlobalStyle`
-  ${baseGlobalStyles}
-
   /* TEMPORARY: import variables */
   ${variables}
 
@@ -19,11 +17,15 @@ export const StaticGlobalStyle = createGlobalStyle`
 
   html, body {
     width: 100%;
+    margin: 0;
     font-size: 62.5%;
     text-rendering: geometricPrecision;
     line-height: 10px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
     overscroll-behavior-y: none;
+    scroll-behavior: smooth;
   }
 
   *, *:before, *:after {
