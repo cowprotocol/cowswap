@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 
 import { useTokensByAddressMap } from './useTokensByAddressMap'
@@ -29,12 +29,13 @@ export function useTokenBySymbolOrAddress(
       return null
     }
 
-    const foundByAddress = tokensByAddress[getAddressKey(symbolOrAddress)]
+    const symbolOrAddressLowerCase = symbolOrAddress.toLowerCase()
+
+    const foundByAddress = tokensByAddress[symbolOrAddressLowerCase]
 
     if (foundByAddress) return foundByAddress
 
-    // Symbol lookup stays case-insensitive: `tokensBySymbolAtom` is keyed by the lower-cased symbol.
-    const foundBySymbol = tokensBySymbol[symbolOrAddress.toLowerCase()]
+    const foundBySymbol = tokensBySymbol[symbolOrAddressLowerCase]
 
     if (foundBySymbol) return foundBySymbol[0]
 
