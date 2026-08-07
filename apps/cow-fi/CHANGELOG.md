@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.10.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.1...cow-fi-v2.10.2) (2026-08-07)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: reduce cowfi contexts to a single user like other apps (#7982)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.10.1
+  - @cowprotocol/wallet@3.11.1
+
 ## [2.10.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.0...cow-fi-v2.10.1) (2026-08-05)
 
 ### Patch Changes

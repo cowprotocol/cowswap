@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.9.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.9.0...explorer-v4.9.1) (2026-08-07)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.10.1
+
 ## [4.9.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.8.0...explorer-v4.9.0) (2026-08-05)
 
 ### Minor Changes
