@@ -8,7 +8,6 @@ import { useTwapOrderById } from 'entities/twap'
 import JSBI from 'jsbi'
 
 import { PendingOrdersPrices } from 'modules/orders'
-import { useTwapOrderByChildId } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
@@ -29,9 +28,9 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const { name: receiverEnsName } = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined)
 
   const twapOrderById = useTwapOrderById(order?.id)
-  const twapOrderByChildId = useTwapOrderByChildId(order?.id)
-  const twapOrder = twapOrderById || twapOrderByChildId
-  const isTwapPartOrder = !!twapOrderByChildId
+  const twapOrderByParentId = useTwapOrderById(order?.composableCowInfo?.parentId)
+  const twapOrder = twapOrderById || twapOrderByParentId
+  const isTwapPartOrder = !!twapOrderByParentId
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const alternativeOrderModalContextFromHook = useGetAlternativeOrderModalContext(order)
