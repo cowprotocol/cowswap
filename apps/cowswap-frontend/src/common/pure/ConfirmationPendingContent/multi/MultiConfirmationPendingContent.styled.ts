@@ -31,7 +31,7 @@ export const StepItem = styled.li`
     content: '';
     position: absolute;
     top: calc(1.5 * var(--spacing-around) + var(--circle-size));
-    bottom: calc(0.5 * var(--spacing-around));
+    bottom: calc(-0.5 * var(--spacing-around));
     left: calc(var(--circle-size) / 2);
     transform: translateX(-50%);
     border-left: 2px solid var(${UI.COLOR_TEXT_OPACITY_10});
