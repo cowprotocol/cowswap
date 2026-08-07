@@ -32,7 +32,7 @@ export function PriceImpactIndicator({ priceImpactParams, isBridging = false }: 
 
   return (
     <span>
-      {priceImpact ? (
+      {priceImpact && !priceImpactLoading ? (
         <PriceImpactWrapper priceImpact$={priceImpact} isBridging$={isBridging}>
           {' '}
           <HoverTooltip
