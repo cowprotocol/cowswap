@@ -1,4 +1,4 @@
-import { isTruthy, logSafeApi, normalizeError } from '@cowprotocol/common-utils'
+import { isTruthy, logSafeApi, normalizeError, logTwap } from '@cowprotocol/common-utils'
 import { localForageJotai } from '@cowprotocol/core'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -35,11 +35,30 @@ export async function fetchCachedTwapOrdersFromSafe(
   const fresh = await fetchFreshTwapOrders(chainId, safeAddress, composableCowContract, cached, setData)
 
   if (!fresh) return cached?.orders || []
-  if (!fresh.complete && cached) return cached.orders
+
+  if (!fresh.complete && cached) {
+    logTwap.warn('Keeping cached Safe TWAP orders after incomplete scan', {
+      cachedOrderCount: cached.orders.length,
+      chainId,
+      freshOrderCount: fresh.orders.length,
+      safeAddress,
+    })
+    return cached.orders
+  }
 
   const merged = await mergeAndCacheTwapOrders(chainId, safeAddress, fresh, cached)
 
   setData(merged)
+
+  logTwap.debug('Loaded Safe TWAP orders', {
+    cacheHit: !!cached,
+    chainId,
+    fetchComplete: fresh.complete,
+    freshOrderCount: fresh.orders.length,
+    orderCount: merged.length,
+    safeAddress,
+  })
+
   return merged
 }
 
@@ -152,8 +171,13 @@ async function writeSafeTwapScanCache(
       orders,
     }
 
-    logSafeApi.debug(`Saving to cache TWAP executed orders newestSubmissionDate=${newestSubmissionDate}`)
     await localForageJotai.setItem(SAFE_TX_SCAN_CACHE_IDB_KEY, cache)
+    logTwap.debug('Saved executed Safe TWAP orders to cache', {
+      chainId,
+      newestSubmissionDate,
+      orderCount: orders.length,
+      safeAddress,
+    })
   } catch {
     // Ignore storage failures. The next load will run without cache.
   }
