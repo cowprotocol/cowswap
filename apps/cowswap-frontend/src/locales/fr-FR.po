@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-05 22:47\n"
+"PO-Revision-Date: 2026-08-07 08:33\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -7357,7 +7357,7 @@ msgstr "Il s’agit du montant minimum que vous recevrez."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claiming COW..."
-msgstr "Réclamation des COW..."
+msgstr "Récupération des COW..."
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "continue with this swap"
@@ -7789,7 +7789,7 @@ msgstr "Version du hook"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Spender"
-msgstr "Adresse autorisée"
+msgstr "Spender"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Enter a code to copy the referral link"
@@ -7860,7 +7860,7 @@ msgstr "Frais de réseau globaux réduits"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more"
-msgstr "Si le solde reste insuffisant au moment de la création, cette partie de l’ordre ne sera pas créée. Ajoutez davantage de"
+msgstr "Si le solde reste insuffisant au moment de la création, cette partie de l’ordre ne sera pas créée. Ajoutez des fonds supplémentaires"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Leverage advanced strategies for optimal growth"
@@ -8142,7 +8142,7 @@ msgstr "Exécuter la transaction Safe"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Always review wallet requests carefully before approving."
-msgstr "Vérifiez toujours attentivement les demandes de votre wallet avant de les approuver."
+msgstr "Vérifiez toujours attentivement les demandes affichées dans votre wallet avant de les approuver."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Reduce or withdraw Uniswap v2 from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -8201,7 +8201,7 @@ msgstr "pool"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: Path contains consecutive forward slashes"
-msgstr "URL invalide : le chemin contient plusieurs barres obliques consécutives"
+msgstr "URL invalide : le chemin contient des « / » consécutifs"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "Generate"
