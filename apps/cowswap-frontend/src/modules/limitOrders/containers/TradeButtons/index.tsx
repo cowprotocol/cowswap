@@ -2,6 +2,10 @@ import React, { isValidElement } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
 
+import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -31,6 +35,7 @@ interface TradeButtonsProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const { i18n, t } = useLingui()
+  const { chainId } = useWalletInfo()
   const CONFIRM_TEXT = t`Review limit order`
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -40,7 +45,8 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
 
   const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
-  const isDisabled = !warningsAccepted || !isTradeContextReady
+  const skipTradeContextReadyGate = IS_SOLANA_ENABLED && isSolanaChain(chainId)
+  const isDisabled = !warningsAccepted || (!skipTradeContextReadyGate && !isTradeContextReady)
 
   if (!tradeFormButtonContext) return null
 
