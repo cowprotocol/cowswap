@@ -63,6 +63,7 @@ Normative language:
 - Hardening roadmap (next enforcement steps): [`docs/HARNESS_HARDENING.md`](./docs/HARNESS_HARDENING.md)
 - Frontend-specific additive rules: [`apps/cowswap-frontend/AGENTS.md`](./apps/cowswap-frontend/AGENTS.md)
 - Other app-local commands/overrides: `apps/*/AGENTS.md`
+- E2E tests (Playwright): `apps/cowswap-e2e-tests/AGENTS.md`
 
 ## Branch-Scoped AGENTS Task Protocol
 

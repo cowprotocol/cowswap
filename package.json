@@ -7,7 +7,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "config": {
-    "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
+    "enabledApps": "cowswap-frontend abis ui ui-utils widget-lib widget-react"
   },
   "scripts": {
     "start": "pnpm run start:cowswap",
@@ -21,6 +21,11 @@
     "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
+    "e2e": "nx run cowswap-e2e-tests:e2e",
+    "e2e:build-cache": "nx run cowswap-e2e-tests:e2e:build-cache",
+    "e2e:smoke": "nx run cowswap-e2e-tests:e2e:smoke",
+    "e2e:ui": "nx run cowswap-e2e-tests:e2e:ui",
+    "e2e:record-mocks": "nx run cowswap-e2e-tests:e2e:record-mocks",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
     "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
@@ -42,7 +47,6 @@
     "test:tools": "node --test tools/scripts/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
     "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
-    "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
     "agents:check": "node tools/scripts/agents-check.mjs && node tools/scripts/check-pinned-package-versions.mjs",
@@ -85,14 +89,7 @@
     "@babel/traverse": "7.28.6",
     "@types/react": "19.1.3",
     "@types/react-dom": "19.1.3",
-    "@walletconnect/core": "2.23.10",
-    "@walletconnect/ethereum-provider": "2.23.10",
-    "@walletconnect/sign-client": "2.23.10",
-    "@walletconnect/types": "2.23.10",
-    "@walletconnect/universal-provider": "2.23.10",
-    "@walletconnect/utils": "2.23.10",
-    "stylus": "npm:empty-npm-package@1.0.0",
-    "utf-8-validate": "5.0.10"
+    "stylus": "npm:empty-npm-package@1.0.0"
   },
   "engines": {
     "node": ">=20.19 <23",
@@ -122,7 +119,7 @@
         "react-dom": "19",
         "graphql": "16",
         "cross-fetch": "4",
-        "@walletconnect/ethereum-provider": "2.23"
+        "@walletconnect/ethereum-provider": "2.18"
       },
       "ignoreMissing": [
         "utf-8-validate",
@@ -143,6 +140,7 @@
       }
     },
     "patchedDependencies": {
+      "@synthetixio/synpress-metamask@0.0.11": "patches/@synthetixio__synpress-metamask@0.0.11.patch",
       "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
     }
   },
@@ -151,8 +149,8 @@
     "@lingui/cli": "5.5.1",
     "@swc/helpers": "0.5.17",
     "@types/hdkey": "2.0.1",
-    "@walletconnect/ethereum-provider": "2.23.10",
-    "@walletconnect/types": "2.23.10",
+    "@walletconnect/ethereum-provider": "2.18.0",
+    "@walletconnect/types": "2.17.3",
     "cross-env": "7.0.3",
     "dotenv": "16.4.7",
     "next": "15.5.18",
@@ -234,6 +232,7 @@
     "rollup-plugin-visualizer": "6.0.4",
     "ts-jest": "29.4.5",
     "ts-node": "10.9.1",
+    "tsx": "4.22.0",
     "typechain": "8.3.2",
     "typescript": "5.9.3",
     "vite": "7.3.1",
