@@ -80,8 +80,8 @@ export function getEoaTwapStepDescription(
   const isLoading = status === 'loading'
 
   switch (step) {
-    case EoaTwapSigningSteps.ZeroApprove:
-    case EoaTwapSigningSteps.ApproveOrPermit:
+    case EoaTwapSigningSteps.ZeroApproveVaultRelayer:
+    case EoaTwapSigningSteps.ApproveVaultRelayer:
       if (isLoading) {
         return waitingForTxDescription()
       }
@@ -94,14 +94,11 @@ export function getEoaTwapStepDescription(
       }
       return t`Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.`
 
-    case EoaTwapSigningSteps.RegisterPoller:
-      if (isLoading) {
-        return waitingForTxDescription()
-      }
-      return t`Confirm the funding schedule transaction in your connected wallet.`
+    case EoaTwapSigningSteps.PermitPoller:
+      return t`Sign the permit in your wallet. Each part is pulled right before it trades.`
 
     case EoaTwapSigningSteps.TwapSetup:
-      return t`Confirm this required setup signature in your connected wallet.`
+      return t`Confirm setup in your wallet. This authorizes just-in-time funding and creates the TWAP.`
 
     case EoaTwapSigningSteps.FundingOrder:
       if (isLoading) {
@@ -126,14 +123,14 @@ export function getEoaTwapStepDescription(
 
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
-    case EoaTwapSigningSteps.ZeroApprove:
-    case EoaTwapSigningSteps.ApproveOrPermit:
+    case EoaTwapSigningSteps.ZeroApproveVaultRelayer:
+    case EoaTwapSigningSteps.ApproveVaultRelayer:
       return symbol ? t`Approve ${symbol}` : t`Approve`
     case EoaTwapSigningSteps.ZeroApprovePoller:
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol} for funding` : t`Approve funding`
-    case EoaTwapSigningSteps.RegisterPoller:
-      return t`Schedule funding`
+    case EoaTwapSigningSteps.PermitPoller:
+      return symbol ? t`Permit ${symbol} for funding` : t`Permit funding`
     case EoaTwapSigningSteps.TwapSetup:
       return t`Set up TWAP`
     case EoaTwapSigningSteps.FundingOrder:

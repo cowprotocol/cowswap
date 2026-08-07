@@ -15,7 +15,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
   it('keeps stable labels and uses loading description for approve', () => {
     const plan = [
-      EoaTwapSigningSteps.ApproveOrPermit,
+      EoaTwapSigningSteps.ApproveVaultRelayer,
       EoaTwapSigningSteps.TwapSetup,
       EoaTwapSigningSteps.FundingOrder,
       EoaTwapSigningSteps.CreatingOrder,
@@ -23,7 +23,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     const steps = buildEoaTwapConfirmationPendingSteps(
       {
-        step: EoaTwapSigningSteps.ApproveOrPermit,
+        step: EoaTwapSigningSteps.ApproveVaultRelayer,
         plan,
         phase: EoaTwapSigningPhase.WaitingForTx,
         lockDismiss: false,
@@ -33,7 +33,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
-        id: EoaTwapSigningSteps.ApproveOrPermit,
+        id: EoaTwapSigningSteps.ApproveVaultRelayer,
         label: 'Approve USDC',
         status: 'loading',
       },
@@ -58,11 +58,11 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
   })
 
   it('marks Sign phase as active with Approve {symbol}', () => {
-    const plan = [EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningSteps.TwapSetup]
+    const plan = [EoaTwapSigningSteps.ApproveVaultRelayer, EoaTwapSigningSteps.TwapSetup]
 
     const steps = buildEoaTwapConfirmationPendingSteps(
       {
-        step: EoaTwapSigningSteps.ApproveOrPermit,
+        step: EoaTwapSigningSteps.ApproveVaultRelayer,
         plan,
         phase: EoaTwapSigningPhase.Sign,
         lockDismiss: false,
@@ -72,7 +72,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
-        id: EoaTwapSigningSteps.ApproveOrPermit,
+        id: EoaTwapSigningSteps.ApproveVaultRelayer,
         label: 'Approve USDC',
         status: 'active',
       },
@@ -86,7 +86,11 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
   })
 
   it('keeps past-step labels stable on success', () => {
-    const plan = [EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.FundingOrder]
+    const plan = [
+      EoaTwapSigningSteps.ApproveVaultRelayer,
+      EoaTwapSigningSteps.TwapSetup,
+      EoaTwapSigningSteps.FundingOrder,
+    ]
 
     expect(
       buildEoaTwapConfirmationPendingSteps(
@@ -100,7 +104,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       ).map(({ id, label, status, description }) => ({ id, label, status, description: description ?? null })),
     ).toEqual([
       {
-        id: EoaTwapSigningSteps.ApproveOrPermit,
+        id: EoaTwapSigningSteps.ApproveVaultRelayer,
         label: 'Approve USDC',
         status: 'success',
         description: null,
@@ -109,7 +113,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         id: EoaTwapSigningSteps.TwapSetup,
         label: 'Set up TWAP',
         status: 'active',
-        description: 'Confirm this required setup signature in your connected wallet.',
+        description: 'Confirm setup in your wallet. This authorizes just-in-time funding and creates the TWAP.',
       },
       {
         id: EoaTwapSigningSteps.FundingOrder,
@@ -163,11 +167,12 @@ describe('getEoaTwapStepLabel()', () => {
   })
 
   it('returns stable labels per step', () => {
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveOrPermit, 'COW')).toBe('Approve COW')
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveOrPermit)).toBe('Approve')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveVaultRelayer, 'COW')).toBe('Approve COW')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApproveVaultRelayer)).toBe('Approve')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'COW')).toBe('Approve COW for funding')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller)).toBe('Approve funding')
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.RegisterPoller)).toBe('Schedule funding')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'COW')).toBe('Permit COW for funding')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller)).toBe('Permit funding')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.TwapSetup)).toBe('Set up TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.FundingOrder)).toBe('Sign TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.CreatingOrder)).toBe('Activating TWAP')
@@ -180,14 +185,14 @@ describe('getEoaTwapStepDescription()', () => {
   })
 
   it('returns approve confirm copy when active', () => {
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveOrPermit, 'active')).toBe(
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveVaultRelayer, 'active')).toBe(
       'Confirm the approval transaction in your connected wallet.',
     )
   })
 
   it('returns setup copy for TwapSetup', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'active')).toBe(
-      'Confirm this required setup signature in your connected wallet.',
+      'Confirm setup in your wallet. This authorizes just-in-time funding and creates the TWAP.',
     )
   })
 
@@ -197,17 +202,20 @@ describe('getEoaTwapStepDescription()', () => {
     )
   })
 
-  it('returns poller approve and register copy when active', () => {
+  it('returns poller approve copy when active', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'active')).toBe(
       'Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.',
     )
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.RegisterPoller, 'active')).toBe(
-      'Confirm the funding schedule transaction in your connected wallet.',
+  })
+
+  it('returns poller permit copy when active', () => {
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.PermitPoller, 'active')).toBe(
+      'Sign the permit in your wallet. Each part is pulled right before it trades.',
     )
   })
 
   it('returns no description for success status', () => {
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveOrPermit, 'success')).toBeUndefined()
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveVaultRelayer, 'success')).toBeUndefined()
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'success')).toBeUndefined()
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'success')).toBeUndefined()
   })

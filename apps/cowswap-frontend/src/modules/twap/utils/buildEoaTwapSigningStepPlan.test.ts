@@ -5,9 +5,8 @@ import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 const NO_APPROVAL_NEEDS = { needsApproval: false, needsZeroApproval: false }
 
 describe('buildEoaTwapSigningStepPlan()', () => {
-  it('always includes register, setup, funding, and creating steps', () => {
+  it('always includes setup, funding, and creating steps', () => {
     expect(buildEoaTwapSigningStepPlan({ vaultRelayer: NO_APPROVAL_NEEDS, poller: NO_APPROVAL_NEEDS })).toEqual([
-      EoaTwapSigningSteps.RegisterPoller,
       EoaTwapSigningSteps.TwapSetup,
       EoaTwapSigningSteps.FundingOrder,
       EoaTwapSigningSteps.CreatingOrder,
@@ -21,8 +20,7 @@ describe('buildEoaTwapSigningStepPlan()', () => {
         poller: NO_APPROVAL_NEEDS,
       }),
     ).toEqual([
-      EoaTwapSigningSteps.ApproveOrPermit,
-      EoaTwapSigningSteps.RegisterPoller,
+      EoaTwapSigningSteps.ApproveVaultRelayer,
       EoaTwapSigningSteps.TwapSetup,
       EoaTwapSigningSteps.FundingOrder,
       EoaTwapSigningSteps.CreatingOrder,
@@ -36,29 +34,50 @@ describe('buildEoaTwapSigningStepPlan()', () => {
         poller: NO_APPROVAL_NEEDS,
       }),
     ).toEqual([
-      EoaTwapSigningSteps.ZeroApprove,
-      EoaTwapSigningSteps.ApproveOrPermit,
-      EoaTwapSigningSteps.RegisterPoller,
+      EoaTwapSigningSteps.ZeroApproveVaultRelayer,
+      EoaTwapSigningSteps.ApproveVaultRelayer,
       EoaTwapSigningSteps.TwapSetup,
       EoaTwapSigningSteps.FundingOrder,
       EoaTwapSigningSteps.CreatingOrder,
     ])
   })
 
-  it('adds poller approvals after the vault relayer ones', () => {
+  it('adds poller on-chain approvals after the vault relayer ones', () => {
     expect(
       buildEoaTwapSigningStepPlan({
         vaultRelayer: { needsApproval: true, needsZeroApproval: false },
         poller: { needsApproval: true, needsZeroApproval: true },
       }),
     ).toEqual([
-      EoaTwapSigningSteps.ApproveOrPermit,
+      EoaTwapSigningSteps.ApproveVaultRelayer,
       EoaTwapSigningSteps.ZeroApprovePoller,
       EoaTwapSigningSteps.ApprovePoller,
-      EoaTwapSigningSteps.RegisterPoller,
       EoaTwapSigningSteps.TwapSetup,
       EoaTwapSigningSteps.FundingOrder,
       EoaTwapSigningSteps.CreatingOrder,
     ])
+  })
+
+  it('uses PermitPoller and skips zero-approve when poller can use permit', () => {
+    expect(
+      buildEoaTwapSigningStepPlan({
+        vaultRelayer: NO_APPROVAL_NEEDS,
+        poller: { needsApproval: true, needsZeroApproval: true, canUsePermit: true },
+      }),
+    ).toEqual([
+      EoaTwapSigningSteps.PermitPoller,
+      EoaTwapSigningSteps.TwapSetup,
+      EoaTwapSigningSteps.FundingOrder,
+      EoaTwapSigningSteps.CreatingOrder,
+    ])
+  })
+
+  it('omits poller steps when allowance already covers', () => {
+    expect(
+      buildEoaTwapSigningStepPlan({
+        vaultRelayer: NO_APPROVAL_NEEDS,
+        poller: { needsApproval: false, needsZeroApproval: true, canUsePermit: true },
+      }),
+    ).toEqual([EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.FundingOrder, EoaTwapSigningSteps.CreatingOrder])
   })
 })

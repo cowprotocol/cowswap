@@ -34,11 +34,12 @@ export enum EoaTwapSigningPhase {
 }
 
 export enum EoaTwapSigningSteps {
-  ZeroApprove = 'ZeroApprove',
-  ApproveOrPermit = 'ApproveOrPermit',
+  ZeroApproveVaultRelayer = 'ZeroApproveVaultRelayer',
+  ApproveVaultRelayer = 'ApproveVaultRelayer',
   ZeroApprovePoller = 'ZeroApprovePoller',
   ApprovePoller = 'ApprovePoller',
-  RegisterPoller = 'RegisterPoller',
+  /** EIP-2612 / Dai-like permit for ComposableCowPoller (sell=buy pre-hook). */
+  PermitPoller = 'PermitPoller',
   TwapSetup = 'TwapSetup',
   FundingOrder = 'FundingOrder',
   CreatingOrder = 'CreatingOrder',

@@ -26,6 +26,7 @@ const paramsStruct: ConditionalOrderParams = {
 
 const vaultRelayer = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
 const APP_DATA_HASH = getAppData().appDataKeccak256
+const POLLER = '0xA360eE11eD0d2025604518CF4B8F6e6CB76C7Df7'
 
 const twapOrder: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 100_000_000_000),
@@ -54,6 +55,19 @@ const twapOrderCreationContext: TwapOrderCreationContext = {
     chainId,
     contract: null,
   },
+}
+
+const pollerRegistration = {
+  pollerAddress: POLLER as `0x${string}`,
+  schedule: {
+    handler: paramsStruct.handler as `0x${string}`,
+    funder: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6' as `0x${string}`,
+    owner: '0x0000000000000000000000000000000000000001' as `0x${string}`,
+    salt: paramsStruct.salt as `0x${string}`,
+    staticInput: paramsStruct.staticInput as `0x${string}`,
+  },
+  deadline: 2_000_000_000n,
+  signature: '0x1234' as `0x${string}`,
 }
 
 describe('getEoaTwapOrderShedCalls()', () => {
@@ -111,5 +125,39 @@ describe('getEoaTwapOrderShedCalls()', () => {
     expect(calls[1].allowFailure).toBe(false)
     expect(calls[2].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
     expect(calls[2].allowFailure).toBe(false)
+  })
+
+  it('Includes registerWithSignature before create when pollerRegistration is set', () => {
+    const calls = getEoaTwapOrderShedCalls({
+      twapOrder,
+      twapOrderCreationContext,
+      paramsStruct,
+      spender: vaultRelayer,
+      proxyAllowances: { needsApproval: false, needsZeroApproval: false },
+      pollerRegistration,
+    })
+
+    expect(calls).toHaveLength(2)
+    expect(calls[0].target).toBe(POLLER)
+    expect(calls[0].allowFailure).toBe(false)
+    expect(calls[0].callData).toMatch(/^0x/)
+    expect(calls[1].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
+  })
+
+  it('Orders zero-approve, approve, register, then create', () => {
+    const calls = getEoaTwapOrderShedCalls({
+      twapOrder,
+      twapOrderCreationContext,
+      paramsStruct,
+      spender: vaultRelayer,
+      proxyAllowances: { needsApproval: true, needsZeroApproval: true },
+      pollerRegistration,
+    })
+
+    expect(calls).toHaveLength(4)
+    expect(calls[0].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[1].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[2].target).toBe(POLLER)
+    expect(calls[3].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
   })
 })

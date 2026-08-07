@@ -56,6 +56,19 @@ jest.mock('modules/advancedOrders', () => ({
   useUpdateAdvancedOrdersRawState: jest.fn(),
 }))
 jest.mock('modules/appData', () => ({ uploadAppDataDocOrderbookApi: jest.fn(), useAppData: jest.fn() }))
+jest.mock('modules/accountProxy', () => ({
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
+  getCowShedHooks: jest.fn(() => ({ proxyOf: jest.fn(() => '0xproxy') })),
+}))
+jest.mock('../composable-cow-poller/injectPollFundsPreHookIntoAppData', () => ({
+  injectPollFundsPreHookIntoAppData: jest.fn(async (appData) => appData),
+}))
+jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
+  getComposableCowPollerScheduleId: jest.fn(() => '0xschedule'),
+}))
+jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
+  COMPOSABLE_COW_POLLER_ADDRESS: { 1: '0xA360eE11eD0d2025604518CF4B8F6e6CB76C7Df7' },
+}))
 jest.mock('modules/injectedWidget', () => ({
   buildTradeWidgetHookPayload: jest.fn(() => ({})),
   callWidgetHook: jest.fn(),
@@ -75,9 +88,9 @@ jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapFlowUpdater: jest.fn(() 
 jest.mock('./useExtensibleFallbackContext', () => ({ useExtensibleFallbackContext: jest.fn() }))
 jest.mock('./useTwapOrder', () => ({ useTwapOrder: jest.fn() }))
 jest.mock('./useTwapOrderCreationContext', () => ({ useTwapOrderCreationContext: jest.fn() }))
-jest.mock('../services/twap/eoa/ensureEoaTwapVaultRelayerApproval', () => ({
-  ensureEoaTwapVaultRelayerApproval: jest.fn(),
-  getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false }),
+jest.mock('../services/twap/eoa/ensureEoaTwapSpenderAllowance', () => ({
+  ensureEoaTwapSpenderAllowance: jest.fn().mockResolvedValue({ permitData: null, usedPermit: false }),
+  getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false, needsZeroApproval: false }),
 }))
 jest.mock('../services/twap/eoa/placeEoaTwapOrder', () => ({ placeEoaTwapOrder: jest.fn() }))
 jest.mock('../services/twap/eoa/waitForFundingOrderSettlementTx', () => ({
@@ -85,10 +98,16 @@ jest.mock('../services/twap/eoa/waitForFundingOrderSettlementTx', () => ({
 }))
 jest.mock('../services/twap/safe/placeSafeTwapOrder', () => ({ placeSafeTwapOrder: jest.fn() }))
 jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
-jest.mock('../utils/buildTwapOrderParamsStruct', () => ({ buildTwapOrderParamsStruct: jest.fn(() => ({})) }))
+jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
+  buildTwapOrderParamsStruct: jest.fn(() => ({})),
+  createTwapOrderSalt: jest.fn(() => '0xsalt'),
+}))
 jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest.fn() }))
 jest.mock('../utils/twapOrderToStruct', () => ({ twapOrderToStruct: jest.fn(() => ({})) }))
-
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD: { 1: '0xvault' },
+}))
 const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
@@ -174,7 +193,7 @@ describe('useCreateTwapOrder', () => {
     mockedUseTwapOrder.mockReturnValue({
       receiver: '0xreceiver',
       sellAmount: {
-        currency: { address: '0xsell', name: 'SELL', symbol: 'SELL' },
+        currency: { address: '0xsell', name: 'SELL', symbol: 'SELL', decimals: 18 },
         quotient: { toString: () => '1000000' },
       },
       buyAmount: { currency: { symbol: 'BUY' } },

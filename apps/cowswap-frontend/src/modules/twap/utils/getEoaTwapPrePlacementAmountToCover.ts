@@ -1,19 +1,33 @@
 /**
- * Extra headroom (bps) on top of the TWAP sell when deciding if pre-placement Approve is needed.
+ * Extra headroom (bps) on top of the setup-order fee estimate when deciding if pre-placement
+ * Vault Relayer Approve is needed.
  *
- * The intermediate sell=buy funding order often sells slightly more than the TWAP sell amount
- * (protocol costs / slippage). Funding size is only known after the quote inside placeEoaTwapOrder.
- * Without this buffer, allowance can cover the TWAP sell (Approve skipped in the stepper) but still
- * fall short of the funding sell. In this case, we'll request approval to the user again, but if it
- * falls short once again (e.g. the user manually edits the amount to approve), an error will be shown.
+ * Under JIT funding the sell=buy setup BUY order is 1 wei, so its sell amount is mostly
+ * protocol costs. Exact size is only known after the quote inside placeEoaTwapOrder. This buffer
+ * reduces the chances of a second approve prompt when the quote slightly exceeds a conservative fee estimate.
  *
  * When Approve does run, the on-chain tx still uses maxUint256. This buffer is only used for checking.
  */
 export const EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS = 100n // 1%
 
+/** BUY amount for the minimal JIT setup sell=buy order. */
+export const EOA_TWAP_SETUP_BUY_AMOUNT_ATOMS = 1n
+
 /**
- * TWAP sell atoms plus {@link EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS} for pre-placement allowance checks.
+ * Setup fee estimate atoms + {@link EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS} for pre-placement VR checks.
  */
-export function getEoaTwapPrePlacementAmountToCover(sellAmountAtoms: bigint): bigint {
-  return sellAmountAtoms + (sellAmountAtoms * EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS) / 10000n
+export function getEoaTwapPrePlacementAmountToCover(setupFeeEstimateAtoms: bigint): bigint {
+  return setupFeeEstimateAtoms + (setupFeeEstimateAtoms * EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS) / 10000n
+}
+
+/**
+ * Conservative sell-token cover for the dust BUY setup order before a quote exists.
+ * Roughly 0.05 of the token (or 5 atoms when decimals ≤ 2).
+ */
+export function getEoaTwapSetupFeeEstimateAtoms(decimals: number): bigint {
+  if (decimals <= 2) {
+    return 5n
+  }
+
+  return 5n * 10n ** BigInt(decimals - 2)
 }
