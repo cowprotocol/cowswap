@@ -398,4 +398,77 @@ test.describe('Market Orders', () => {
     await swapPage.priceImpactTooltipTrigger.hover()
     await expect(swapPage.page.getByText('Price impact due to current liquidity levels')).toBeVisible()
   })
+
+  test('[MO-10] Swap form: "Receive (incl. fees)" field calculation', async ({
+    setupTestConditions,
+    swapPage,
+    mocks,
+  }) => {
+    const RATE = 2000n // 1 WETH = 2000 USDC
+
+    // Non-zero protocol fee (1%) and network cost (also modeled as 1% of the sell amount, in
+    // sell-token terms) so both the "Protocol fee" and "Network costs" tooltip rows render with
+    // real amounts instead of "Free". Everything below is read back from the DOM rather than
+    // hardcoded, so the exact numbers only need to be non-zero, not any particular value.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '100',
+        quote: {
+          ...defaults.quote,
+          feeAmount: (sellAmount / 100n).toString(),
+          buyAmount: (sellAmount * RATE).toString(),
+        },
+      }
+    })
+
+    // Matches the quote's implied rate so the trade doesn't look like a loss against the
+    // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
+    // Impact" dialog — same technique as [MO-07].
+    mocks.usdPrices.setPrice(WETH, Number(RATE))
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '10',
+      balances: { WETH: '10', USDC: '0' },
+      allowances: { WETH: '10' },
+    })
+
+    await swapPage.receiveAmountTooltipTrigger.hover()
+
+    const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
+    await expect(tooltipBox).toBeVisible()
+    await expect(tooltipBox.getByText('Protocol fee', { exact: true })).toBeVisible()
+    await expect(tooltipBox.getByText('Network costs', { exact: true })).toBeVisible()
+    await expect(tooltipBox.getByText('To', { exact: true })).toBeVisible()
+
+    // Both Sepolia test tokens report 18 decimals on-chain — same quirk as [MO-06]/[MO-09].
+    const readRowAmount = async (label: string): Promise<bigint> => {
+      const title = await tooltipBox
+        .getByText(label, { exact: true })
+        .locator('xpath=following-sibling::*[1]')
+        .locator('[title]')
+        .getAttribute('title')
+      const [value] = (title ?? '').split(' ')
+      return parseUnits(value, 18)
+    }
+
+    const beforeCosts = await readRowAmount('Before costs')
+    const protocolFee = await readRowAmount('Protocol fee')
+    const networkCosts = await readRowAmount('Network costs')
+    const toAmount = await readRowAmount('To')
+
+    // The core relationship: To = Before costs − Network costs − Protocol fee.
+    expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
+
+    // The main "Receive (incl. fees)" field displays the same amount as the tooltip's "To" row.
+    const receiveTitle = await swapPage.receiveAmountValue.getAttribute('title')
+    const [receiveValue] = (receiveTitle ?? '').split(' ')
+    expect(parseUnits(receiveValue, 18)).toBe(toAmount)
+  })
 })

@@ -23,6 +23,9 @@ export class SwapPage implements TradePage {
   readonly buyFiatAmount: Locator
   readonly priceImpact: Locator
   readonly priceImpactTooltipTrigger: Locator
+  readonly receiveAmountLabel: Locator
+  readonly receiveAmountTooltipTrigger: Locator
+  readonly receiveAmountValue: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -46,6 +49,14 @@ export class SwapPage implements TradePage {
     // "(X%)" text, not on the outer `[data-testid]` span — hovering the outer span can land the
     // pointer outside that inner div's box and never open the tooltip.
     this.priceImpactTooltipTrigger = this.priceImpact.locator('div div')
+    // `ReceiveAmount` renders as a sibling of `#output-currency-input`, not inside it — its
+    // "Receive (incl. fees)" label and the `HelpTooltip` icon next to it (the real hover hitbox,
+    // same `HoverTooltip` quirk as `priceImpactTooltipTrigger` above) are the label's next sibling.
+    this.receiveAmountLabel = page.getByText('Receive (incl. fees)', { exact: true })
+    this.receiveAmountTooltipTrigger = this.receiveAmountLabel.locator('xpath=following-sibling::*[1]')
+    // The exact "<amount> <symbol>" value lives in `ReceiveAmountValue`'s own `title`, one level
+    // above `TokenAmount`'s inner titled span — same convention as `sellBalance`/`buyBalance`.
+    this.receiveAmountValue = this.receiveAmountLabel.locator('xpath=../..').locator('[title]').first()
     this.swapButton = page.locator('#do-trade-button')
     this.approveButton = page.locator('#approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
