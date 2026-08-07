@@ -56,7 +56,10 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      // The wallet must support off-chain signing
+      // The wallet must support off-chain signing.
+      // Pre-signed orders (e.g. an approve+presign bundle) are signed on-chain, so they are excluded
+      // here via isOrderOffChainCancellable (which requires the EIP-712 scheme) and fall back to the
+      // on-chain cancellation path — the orderbook rejects an off-chain cancellation for them.
       const isOffChainCancellable = allowsOffchainSigning && isOrderOffChainCancellable(order)
 
       // When the order is not cancellable, there won't be a callback
