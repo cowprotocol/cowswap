@@ -204,26 +204,10 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
-  const solverCompetition = useMemo(() => {
-    const solversMap = apiSolverCompetition?.reduce(
-      (acc, entry) => {
-        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
-        if (!entry || !entry.solver || !entry.executedAmounts) {
-          return acc
-        }
-        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
-        acc[entry.solver] = mergeSolverData(entry, solversInfoByAddress)
-        return acc
-      },
-      {} as Record<string, SolverCompetition>,
-    )
-
-    return (
-      Object.values(solversMap || {})
-        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse()
-    )
-  }, [apiSolverCompetition, solversInfoByAddress])
+  const solverCompetition = useMemo(
+    () => buildSolverCompetition(apiSolverCompetition, solversInfoByAddress),
+    [apiSolverCompetition, solversInfoByAddress],
+  )
   const { swapAndBridgeContext } = useSwapAndBridgeContext(
     chainId,
     isBridgingTrade ? order : undefined,
@@ -559,6 +543,45 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string |
 
 const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
+}
+
+/**
+ * Builds the displayed solver competition list from the raw orderbook entries.
+ *
+ * Backend returns solutions ranked ascending, so the winner is the last entry. We traverse from
+ * highest to lowest rank and keep the first occurrence of each merged `solverId`. This retains the
+ * highest-ranked entry per solver identity (deduplicating legacy aliases that normalize to the same
+ * `solverId`) and keeps the winner at index 0.
+ */
+export function buildSolverCompetition(
+  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
+  solversInfoByAddress: Record<string, SolverInfo>,
+): SolverCompetition[] {
+  const seenSolverIds = new Set<string>()
+
+  return (apiSolverCompetition || []).reduceRight<SolverCompetition[]>((acc, entry) => {
+    // If the entry is not valid or has no executedAmounts, the solution doesn't consider this order, skip it
+    if (!entry || !entry.solver || !entry.executedAmounts) {
+      return acc
+    }
+    // Merge with the info fetched from CMS, then deduplicate on the merged solver identity rather
+    // than the raw backend address, so a solver's retired deployments (several addresses for the
+    // same solverId on one chain) collapse into a single entry.
+    const merged = mergeSolverData(entry, solversInfoByAddress)
+    const { solverId } = merged
+    // solverId is always set by mergeSolverData, but the SolverCompetition type keeps it optional;
+    // entries without one can't be deduplicated by identity, so keep them as-is.
+    if (solverId === undefined) {
+      acc.push(merged)
+      return acc
+    }
+    if (seenSolverIds.has(solverId)) {
+      return acc
+    }
+    seenSolverIds.add(solverId)
+    acc.push(merged)
+    return acc
+  }, [])
 }
 
 /**
