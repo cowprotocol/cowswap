@@ -22,7 +22,7 @@ interface ChildOrderItems {
 
 interface TwapStatusAndToggleProps {
   parent: ParsedOrder
-  childrenLength: number
+  totalParts: number
   isCollapsed: boolean
   onToggle: () => void
   onClick: () => void
@@ -34,7 +34,7 @@ interface TwapStatusAndToggleProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapStatusAndToggle({
   parent,
-  childrenLength,
+  totalParts,
   isCollapsed,
   onToggle,
   onClick,
@@ -74,14 +74,14 @@ export function TwapStatusAndToggle({
           ) : null
         }
       />
-      <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
-        {childrenLength && (
+      {totalParts > 0 && (
+        <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
           <i>
-            {childrenLength} {childrenLength > 1 ? <Trans>parts</Trans> : <Trans>part</Trans>}
+            {totalParts} {totalParts > 1 ? <Trans>parts</Trans> : <Trans>part</Trans>}
           </i>
-        )}
-        <button />
-      </styledEl.ToggleExpandButton>
+          <button />
+        </styledEl.ToggleExpandButton>
+      )}
     </>
   )
 }
