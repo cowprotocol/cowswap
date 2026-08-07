@@ -1,5 +1,7 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
+import { bpsToPercentage } from '@cowprotocol/cow-sdk'
+
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
@@ -490,7 +492,7 @@ test.describe('Market Orders', () => {
     expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
   })
 
-  test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
+  test('[MO-11] [MO-14] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
     swapPage,
     wallet,
     context,
@@ -647,5 +649,84 @@ test.describe('Market Orders', () => {
     await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
       timeout: 15_000,
     })
+  })
+
+  test('[MO-22] Slippage: dynamic mode defaults and range (regular flow)', async ({
+    setupTestConditions,
+    swapPage,
+    context,
+  }) => {
+    let dynamicSlippageBps = 20 // 0.2% — comfortably under the 2% banner threshold
+    await context.route(/bff\.(?:barn\.)?cow\.fi\/\d+\/markets\/.*\/slippageTolerance$/i, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ slippageBps: dynamicSlippageBps }),
+      })
+    })
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '0.5',
+      balances: { WETH: '1' },
+      allowances: { WETH: '1' },
+    })
+
+    await swapPage.page.locator('#open-settings-dialog-button').click()
+
+    const slippageInput = swapPage.page.locator('#slippage-input')
+    const adjustedBanner = swapPage.page.getByText(/Slippage adjusted to [\d.]+% to ensure quick execution/)
+
+    const readPlaceholderPercent = async (): Promise<number> =>
+      Number((await slippageInput.getAttribute('placeholder')) ?? NaN)
+
+    // Dynamic ("Auto") slippage is selected by default: the input holds no custom value, only a
+    // placeholder showing the currently suggested percentage, tracking the mocked suggestion.
+    // `setupTestConditions`'s `waitForQuote()` only clears once the first ("fast") quote response
+    // lands — the smart-slippage hook ignores that one, so the placeholder settles slightly later.
+    await expect(slippageInput).toHaveValue('')
+    await expect.poll(readPlaceholderPercent, { timeout: 15_000 }).toBeCloseTo(bpsToPercentage(dynamicSlippageBps), 0)
+
+    // The suggested value stays under 2%, so the "adjusted" banner doesn't show.
+    await expect(adjustedBanner).toBeHidden()
+
+    // Range check: min/max aren't shown as static copy anywhere in the UI — the only concrete
+    // signal is this validation message, triggered by typing a value outside [0, 50] for the
+    // regular ERC-20 flow (the 0.5% floor only applies to native-ETH-sell orders, see [MO-11]).
+    // `.fill('60')` was observed to silently no-op here (value stays empty) — `pressSequentially`
+    // (real keystrokes) is what actually lands the value; unclear why, but empirically reliable.
+    await slippageInput.click()
+    await slippageInput.pressSequentially('60')
+    await expect(swapPage.page.getByText('Enter slippage percentage between 0% and 50%.')).toBeVisible()
+
+    // Blurring an out-of-range value reverts to dynamic mode and clears the input — same as
+    // `useSlippageInput`'s `onSlippageInputBlur` does for a user clicking away without confirming
+    // an invalid custom value.
+    await slippageInput.blur()
+    await expect(slippageInput).toHaveValue('')
+
+    // Push the suggested value clearly above the 2% banner threshold and force a fresh quote to
+    // pick it up — demonstrates the value adjusting automatically as conditions (the mocked
+    // suggestion) change, and that the banner appears once it clears the threshold.
+    dynamicSlippageBps = 900 // 9%
+    await swapPage.page.keyboard.press('Escape')
+    await swapPage.enterSellAmount('0.6')
+    await swapPage.waitForQuote()
+    await swapPage.page.locator('#open-settings-dialog-button').click()
+
+    // `waitForQuote()` only waits out the loading spinner for the first ("fast") quote response —
+    // the smart-slippage hook explicitly ignores fast quotes and keeps the last valid value until
+    // the slower, BFF-informed quote lands, so the placeholder needs its own poll rather than a
+    // single read right after the spinner clears.
+    await expect.poll(readPlaceholderPercent, { timeout: 15_000 }).toBeGreaterThan(2)
+    expect(await readPlaceholderPercent()).toBeCloseTo(bpsToPercentage(dynamicSlippageBps), 0)
+    await expect(adjustedBanner).toBeVisible({ timeout: 15_000 })
+
+    const bannerText = (await adjustedBanner.textContent()) ?? ''
+    const [, adjustedPercent] = /Slippage adjusted to ([\d.]+)% to ensure quick execution/.exec(bannerText) ?? []
+    expect(Number(adjustedPercent)).toBeGreaterThan(2)
   })
 })
