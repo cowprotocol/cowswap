@@ -400,4 +400,91 @@ test.describe('Market Orders', () => {
     const [receiveValue] = (receiveTitle ?? '').split(' ')
     expect(parseUnits(receiveValue, 18)).toBe(toAmount)
   })
+
+  test('[MO-08] Swap form: "Minimum receive" calculation in Confirm modal @smoke', async ({
+    setupTestConditions,
+    swapPage,
+    wallet,
+    mocks,
+  }) => {
+    const RATE_NUM = 8n
+    const RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
+
+    // Zero out fee/protocolFeeBps so "Expected to receive" (amountAfterFees) is an exact, round
+    // multiple of the typed sell amount — same technique as [MO-06].
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: {
+          ...defaults.quote,
+          buyAmount: ((sellAmount * RATE_NUM) / RATE_DEN).toString(),
+          feeAmount: '0',
+        },
+      }
+    })
+
+    // Matches the quote's implied rate so the trade doesn't look like a loss against the
+    // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
+    // Impact" dialog — same technique as [MO-06].
+    mocks.usdPrices.setPrice(WETH, Number(RATE_DEN) / Number(RATE_NUM))
+
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18), [WETH]: 0n })
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18) })
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'USDC',
+      buyToken: 'WETH',
+      sellAmount: '1000',
+    })
+
+    // No dedicated page-object locators exist yet for the settings dropdown/slippage input or for
+    // reading a labeled confirm-modal amount row by value (only `confirmModal.minimumReceive`,
+    // which matches the label text, not the amount) — built here the same way [MO-04] builds its
+    // one-off `#approve-mode-selector`/`.confirm-order-amount` locators.
+    const setSlippage = async (percent: string): Promise<void> => {
+      await swapPage.page.locator('#open-settings-dialog-button').click()
+      const slippageInput = swapPage.page.locator('#slippage-input')
+      await slippageInput.fill(percent)
+      await slippageInput.blur()
+      await swapPage.page.keyboard.press('Escape')
+    }
+
+    const readConfirmRowAmount = async (label: string): Promise<bigint> => {
+      const row = swapPage.page.locator('.confirm-order-amount', { hasText: label })
+      const title = await row.locator('[title]').getAttribute('title')
+      const [value] = (title ?? '').split(' ')
+      return parseUnits(value, 18)
+    }
+
+    // Sets slippage tolerance, opens the Confirm modal, and returns "Minimum receive" after
+    // checking it against "Expected to receive" and confirming it's read-only.
+    const readMinimumReceiveAt = async (slippagePercent: string, slippageBps: bigint): Promise<bigint> => {
+      await setSlippage(slippagePercent)
+      await swapPage.clickSwap()
+
+      const expectedToReceive = await readConfirmRowAmount('Expected to receive')
+      const minimumReceive = await readConfirmRowAmount('Minimum receive')
+
+      // The core relationship: Minimum receive = Expected to receive × (1 − slippage%).
+      expect(minimumReceive).toBe((expectedToReceive * (10_000n - slippageBps)) / 10_000n)
+
+      // Read-only: rendered as plain text inside the row, not an editable control.
+      const minimumReceiveRow = swapPage.page.locator('.confirm-order-amount', { hasText: 'Minimum receive' })
+      await expect(minimumReceiveRow.locator('input, textarea, [contenteditable]')).toHaveCount(0)
+
+      await swapPage.page.keyboard.press('Escape')
+      return minimumReceive
+    }
+
+    const minimumReceiveAt1Pct = await readMinimumReceiveAt('1', 100n)
+    const minimumReceiveAt2Pct = await readMinimumReceiveAt('2', 200n)
+
+    // Changing slippage tolerance in settings recalculates "Minimum receive".
+    expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
+  })
 })
