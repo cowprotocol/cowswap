@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "es2022",
     "module": "esnext",
     "lib": ["es2022", "dom"],
@@ -27,9 +27,7 @@
     "useUnknownInCatchVariables": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "."
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "tmp"]
 }
