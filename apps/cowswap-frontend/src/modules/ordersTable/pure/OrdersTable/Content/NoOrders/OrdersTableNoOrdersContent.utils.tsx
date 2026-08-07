@@ -16,7 +16,9 @@ export interface GetDescriptionOptions {
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
-  orderType?: TabOrderTypes
+  isLoading: boolean
+  loadMore: () => void
+  orderType: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
   isSafeViaWc?: boolean
@@ -27,7 +29,6 @@ export interface GetTitleOptions {
   hasOrders: boolean
   limit: number
   hasMoreOrders: boolean
-  orderType?: TabOrderTypes
   searchTerm: string
   historyStatusFilter: HistoryStatusFilter
 }
@@ -37,6 +38,8 @@ export function getDescription({
   hasOrders,
   limit,
   hasMoreOrders,
+  isLoading,
+  loadMore,
   orderType,
   searchTerm,
   historyStatusFilter,
@@ -63,7 +66,7 @@ export function getDescription({
         </styledEl.ExternalLinkStyled>
       ) : null
 
-    if (hasMoreOrders && orderType === TabOrderTypes.LIMIT) {
+    if (hasMoreOrders) {
       return [
         limit === AMOUNT_OF_ORDERS_TO_FETCH
           ? t`Only the ${limit} most recent orders were searched.`
@@ -71,7 +74,7 @@ export function getDescription({
         <>
           <Trans>Press the button below to search older orders, or create a new one!</Trans> {learnMoreLink}
         </>,
-        <LoadMoreOrdersButton />,
+        <LoadMoreOrdersButton disabled={isLoading || !hasMoreOrders} onClick={loadMore} />,
       ]
     }
 
@@ -107,16 +110,13 @@ export function getTitle({
   hasOrders,
   limit,
   hasMoreOrders,
-  orderType,
   searchTerm,
   historyStatusFilter,
 }: GetTitleOptions): string {
   if (currentTab === OrderTabId.UNFILLABLE) return t`No unfillable orders`
 
   if (currentTab === OrderTabId.OPEN) {
-    return hasMoreOrders && orderType === TabOrderTypes.LIMIT
-      ? t`No open orders found in your last ${limit} orders`
-      : t`No open orders found`
+    return hasMoreOrders ? t`No open orders found in your last ${limit} orders` : t`No open orders found`
   }
 
   if (currentTab === OrderTabId.SIGNING) return t`No signing orders`

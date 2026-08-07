@@ -108,4 +108,14 @@ describe('getOrderParams', () => {
       expect(result.hasEnoughAllowance).toEqual(false)
     })
   })
+
+  it('does not check connected-wallet funding for EOA TWAP orders', () => {
+    const result = getOrderParams(1, BASE_BALANCES_AND_ALLOWANCES, {
+      ...BASE_ORDER,
+      isEoaTwapOrder: true,
+    })
+
+    expect(result.hasEnoughBalance).toBeUndefined()
+    expect(result.hasEnoughAllowance).toBeUndefined()
+  })
 })

@@ -365,6 +365,7 @@ export function useCreateTwapOrder() {
           status: orderStatus,
           chainId,
           safeAddress: safeAddressOrCowShedAddress,
+          resolvedOwner: isEoaTwap ? account : safeAddressOrCowShedAddress,
           submissionDate: new Date().toISOString(),
           id: twapOrderId,
           executionInfo: { ...DEFAULT_TWAP_EXECUTION },

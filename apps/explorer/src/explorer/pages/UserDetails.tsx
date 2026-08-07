@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { NetworkLogo } from '@cowprotocol/ui'
+
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 import styled from 'styled-components/macro'
@@ -35,6 +37,7 @@ const UserDetails: React.FC = () => {
         <>
           <FlexContainerVar>
             <h1>Order history</h1>
+            {networkId && <NetworkLogo chainId={networkId} size={16} />}
             <TitleAddress
               textToCopy={addressAccount.address}
               contentsToDisplay={

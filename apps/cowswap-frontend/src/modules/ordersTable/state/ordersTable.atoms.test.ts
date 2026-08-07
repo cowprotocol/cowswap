@@ -402,7 +402,8 @@ describe('observeReduxOrders', () => {
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
-    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING }
+    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING, isEoaTwapOrder: true }
+    const safeTwapOrder = { id: 'safe-twap', status: OrderStatus.PENDING }
     const emulatedPartOrder = { id: 'emulated-part', status: OrderStatus.PENDING }
     const virtualPartOrder = {
       composableCowInfo: { isVirtualPart: true },
@@ -414,7 +415,7 @@ describe('observeReduxOrders', () => {
       id: 'discrete-twap',
       status: OrderStatus.PENDING,
     }
-    const expectedReduxOrders = [emulatedTwapOrder, emulatedPartOrder, discreteTwapOrder]
+    const expectedReduxOrders = [emulatedTwapOrder, safeTwapOrder, emulatedPartOrder, discreteTwapOrder]
     const ordersList = {
       ...EMPTY_ORDERS_LIST,
       [OrderTabId.OPEN]: expectedReduxOrders,
@@ -456,7 +457,7 @@ describe('observeReduxOrders', () => {
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
         [tabParamAtom, null],
-        [emulatedTwapOrdersAtom, [emulatedTwapOrder]],
+        [emulatedTwapOrdersAtom, [emulatedTwapOrder, safeTwapOrder]],
         [emulatedPartOrdersAtom, [emulatedPartOrder]],
         [
           ordersTableFiltersAtom,
