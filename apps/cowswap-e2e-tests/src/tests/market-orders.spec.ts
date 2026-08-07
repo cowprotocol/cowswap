@@ -1,8 +1,10 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
 import { test, expect } from '../fixtures'
+import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
+import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
@@ -486,5 +488,164 @@ test.describe('Market Orders', () => {
 
     // Changing slippage tolerance in settings recalculates "Minimum receive".
     expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
+  })
+
+  test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
+    swapPage,
+    wallet,
+    context,
+    confirmModal,
+    accountModal,
+    mocks,
+  }) => {
+    const INITIAL_ETH_BALANCE = parseUnits('1', 18)
+    const SELL_AMOUNT = parseUnits('0.5', 18)
+
+    // Selling native ETH doesn't POST an off-chain signed order like every other trade in this
+    // file — it sends an on-chain `createOrder()` tx to a dedicated EthFlow contract instead. See
+    // `mockEthFlowTransaction` for why this needs its own mock rather than `mockOrderPosting`.
+    const ethFlow = await mockEthFlowTransaction({
+      context,
+      wallet,
+      chainId: CHAIN_ID,
+      initialEthBalance: INITIAL_ETH_BALANCE,
+    })
+
+    // `GET /api/v1/orders/{uid}`'s default fixture already answers any uid with a valid `open`
+    // order — exactly what flips the order out of `creating` once polled. Withholding that
+    // success (independently of `ethFlow.confirmMined()`, which only gates the *tx receipt*)
+    // keeps the "Creating Order" state below observable instead of racing straight past it: the
+    // real app moves through "Sending ETH" → "Sent ETH"/"Creating Order" → "Order Created" as two
+    // separate gates (tx receipt, then order indexed), not one.
+    //
+    // There's no `postOrder` call to hook for an ETH-flow order (its uid is computed client-side
+    // before anything is sent on-chain, see `mockEthFlowTransaction`), so `mockOrderPosting` can't
+    // be reused here — `fulfill()`-equivalent behaviour is inlined below instead, keyed off
+    // `ethFlow.isFilled()` and the order params decoded straight from the sent `createOrder()`
+    // calldata rather than trusting the UI's rendered figures.
+    let orderIndexed = false
+    mocks.cowApi.set('order', (req) => {
+      if (!orderIndexed) return reply(404, { errorType: 'NotFound' })
+
+      // `classifyOrder`'s `isOrderFulfilled` compares this response's own `sellAmount` against
+      // `executedSellAmountBeforeFees` — the unrelated fixture's `sellAmount` would never match,
+      // so every amount field below has to come from the real order, not `req.defaults`.
+      const orderParams = ethFlow.getOrderParams()
+      const defaults = req.defaults as Record<string, unknown>
+      const filled = ethFlow.isFilled()
+      const executedSellAmount = filled ? orderParams?.sellAmount.toString() : '0'
+      return {
+        ...defaults,
+        kind: 'sell',
+        buyToken: orderParams?.buyToken,
+        sellAmount: orderParams?.sellAmount.toString(),
+        buyAmount: orderParams?.buyAmount.toString(),
+        status: filled ? 'fulfilled' : 'open',
+        executedBuyAmount: filled ? orderParams?.buyAmount.toString() : '0',
+        executedSellAmount,
+        executedSellAmountBeforeFees: executedSellAmount,
+      }
+    })
+
+    // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
+    // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
+    // [MO-02]/[MO-06]/[MO-07], keeps the sent value and the post-tx balance round numbers below.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      return { ...defaults, protocolFeeBps: '0', quote: { ...defaults.quote, feeAmount: '0' } }
+    })
+
+    await swapPage.goto({ chainId: CHAIN_ID })
+
+    // Typed before switching the sell token to ETH, not after: selecting a token with no amount
+    // set yet auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
+    // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
+    // debounced quote fetch and can win under load — the mocked wallet balance here is exactly
+    // 1 ETH, so that default is indistinguishable from "sold everything" when it wins. Typing an
+    // amount first (against the default WETH sell token) marks one as already set, so switching to
+    // ETH afterwards carries the typed amount over instead of triggering the default.
+    await swapPage.enterSellAmount('0.5')
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('ETH')
+    await swapPage.tokens.openOutput()
+    await swapPage.tokens.searchAndPick('USDC')
+
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
+    await expect(swapPage.inputAmount).toHaveValue('0.5')
+    await swapPage.waitForQuote()
+    await expect(swapPage.inputAmount).toHaveValue('0.5')
+
+    await swapPage.clickSwap()
+    await confirmModal.confirmButton.click()
+
+    // Confirming signs/sends the on-chain creation tx directly (`eth_sendTransaction`, stubbed by
+    // `mockEthFlowTransaction`) — there's no separate off-chain EIP-712 signature for this flow.
+    await expect.poll(() => ethFlow.getSentValue()).toBe(SELL_AMOUNT)
+
+    // Before the mocked receipt confirms, `EthFlowStepper`'s step 1 reads "Sending ETH" — matched
+    // `exact` since an SVG `<desc>` elsewhere on the page repeats the same text non-visibly.
+    await expect(swapPage.page.getByText('Sending ETH', { exact: true })).toBeVisible()
+
+    // The creation tx hash is linked right there as step 1's own "View transaction" explorer link,
+    // verbatim in its `href` — scoped by accessible name since the snackbar in the corner links
+    // the same hash via its own "View on Etherscan" links.
+    const viewTransactionLink = swapPage.page.getByRole('link', { name: /view transaction/i })
+    await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
+
+    // Let the mocked creation tx "mine" — step 1 becomes "Sent ETH" and step 2 becomes "Creating
+    // Order", since the order-by-uid poll above is still withheld (`orderIndexed` is still false).
+    ethFlow.confirmMined()
+
+    // "Creating Order" (`EthFlowStepper`'s step-2 label) has no stable container to scope to: the
+    // regular `#order-progress-bar-modal` div isn't even mounted yet at this point (its own setup
+    // is disabled while the order is still `creating`), so this checks the text directly. Getting
+    // here requires the app to notice the mocked receipt, which it only rechecks on a new block —
+    // real Sepolia block time, not a fixed poll interval — hence the generous timeout.
+    await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible({ timeout: 30_000 })
+
+    // Let the order-by-uid poll start succeeding — this is what flips the order from `creating` to
+    // `pending`, rendered in the activities list as "Open".
+    orderIndexed = true
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
+    await accountModal.close()
+
+    // With the order indexed, `EthFlowStepper`'s step 3 becomes the active step: "Receive USDC",
+    // pending — order-progress hasn't reported a fill yet.
+    await expect(swapPage.page.getByText('Receive USDC', { exact: true })).toBeVisible()
+
+    // Settle the order now that it's posted and confirmed — mirrors `mockOrderPosting.fulfill()`,
+    // minus the `postOrder` bookkeeping that flow never goes through. Credits the buy-side balance
+    // with the amount actually encoded in the sent `createOrder()` calldata, and flips the `order`
+    // override above to report `fulfilled`.
+    const orderParams = ethFlow.getOrderParams()
+    if (!orderParams) throw new Error('mockEthFlowTransaction: fulfill attempted before an order was sent')
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: orderParams.buyAmount })
+    ethFlow.confirmFilled()
+
+    // Once truly fulfilled, `TransactionSubmittedContent` stops rendering `EthFlowStepper`
+    // (`!isFinished`) and shows the same generic completed screen every other order type uses —
+    // there's no "Received USDC" checkmark state to catch, the stepper disappears entirely. This
+    // is what makes `#order-progress-bar-modal` get mounted in the first place, per [MO-02]/[MO-03].
+    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    await expect(accountModal.activitiesList).toContainText('Filled', { timeout: 15_000 })
+    await accountModal.close()
+
+    // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
+    // a balance while `!disabled`) — dismiss it the same way [MO-02]/[MO-03] do.
+    await swapPage.page.keyboard.press('Escape')
+
+    // Native ETH leaves the wallet as soon as the creation tx is sent (it's the tx's own `value`,
+    // not a separate settlement step) — by the time the order shows "Open" it's already reflected
+    // here.
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
+    await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
+      timeout: 15_000,
+    })
   })
 })
