@@ -1,5 +1,235 @@
 # Changelog
 
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.22.0...cowswap-v3.23.0) (2026-08-05)
+
+### Minor Changes
+
+- feat: block quotes until captcha is solved or errors (#7955)
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- fix(twap): make "Update fallback handler" work for Safe via WC (#7953)
+
+- fix: add quoteId and allowsOffchainSigning tracking when order is sent to sign (#7952)
+
+- fix(internationalization): clear stale translations and add pt-br and fr-fr (#7943)
+
+- fix(widget): fire ON_BEFORE_APPROVAL widget hook before permit signing (#7697)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/tokens@3.9.0
+  - @cowprotocol/balances-and-allowances@3.10.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/ens@3.5.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/multicall@3.5.0
+  - @cowprotocol/permit-utils@3.5.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/widget-lib@4.5.0
+  - @cowprotocol/snackbars@2.2.10
+  - @cowprotocol/iframe-transport@2.3.5
+  - @cowprotocol/hook-dapp-lib@2.2.12
+
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.21.0...cowswap-v3.22.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: measure bundle size changes (#7899)
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+- feat: allow EIP7702 wallets to batch transactions (#7844)
+
+- feat: introduce separate branches for Safe vs EOA TWAP (#7851)
+
+### Patch Changes
+
+- fix(sentry): ignore any fetch error (#7900)
+
+- fix(order-progress): show cancelling screen from unfillable step (#7889)
+
+- fix: fix ethflow & cancellation for MM smart accounts (#7914)
+
+- fix(wallet): prevent network switching (#7922)
+
+- fix(ipfs): update ipfs flow/env vars to support turnstile (#7913)
+
+- fix: hide captcha if BE is down (#7812)
+
+- fix: fix measure bundle loop (#7919)
+
+- fix: remove `new` flag from Plasma and Ink chains (#7911)
+
+- fix(order-progress): match countdown to reduced solve deadlines
+
+- fix(sentry): ignore launchdarkly noisy NetworkError (#7896)
+
+- fix(token-selector): show sell network panel for Rabby with Safe imported (#7890)
+
+- fix: allow safes imported in other wallets to use twaps (#7915)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/wallet@3.10.0
+  - @cowprotocol/balances-and-allowances@3.9.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/analytics@3.8.1
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ens@3.4.7
+  - @cowprotocol/tokens@3.8.7
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/widget-lib@4.4.4
+  - @cowprotocol/common-const@3.7.1
+  - @cowprotocol/iframe-transport@2.3.4
+  - @cowprotocol/multicall@3.4.7
+  - @cowprotocol/snackbars@2.2.9
+  - @cowprotocol/hook-dapp-lib@2.2.11
+  - @cowprotocol/permit-utils@3.4.3
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.20.0...cowswap-v3.21.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: add TWAP EOA proxy to Account Proxy page (#7866)
+
+- feat(bridge): show approximate bridging time while order is pending (#7803)
+
+- feat: track captcha analytics (#7822)
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix: add deprecation note
+
+- fix(cow-fi): remove CoW AMM/MEV Blocker mentions (#7852)
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(swap-n-bridge): winning solver order (#7877)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- fix: rename accountProxy index/styled files (#7867)
+
+- fix: shorten address when not found in DB
+
+- fix: move from solver ID to address
+
+- fix: coderabbit comments
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/balances-and-allowances@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/ens@3.4.6
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/multicall@3.4.6
+  - @cowprotocol/permit-utils@3.4.2
+  - @cowprotocol/tokens@3.8.6
+  - @cowprotocol/wallet@3.9.0
+  - @cowprotocol/widget-lib@4.4.3
+  - @cowprotocol/snackbars@2.2.8
+  - @cowprotocol/iframe-transport@2.3.3
+  - @cowprotocol/hook-dapp-lib@2.2.10
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.19.0...cowswap-v3.20.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/balances-and-allowances@3.7.1
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+  - @cowprotocol/tokens@3.8.5
+  - @cowprotocol/wallet@3.8.2
+  - @cowprotocol/snackbars@2.2.7
+  - @cowprotocol/multicall@3.4.5
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.1...cowswap-v3.19.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add client id parameter into bw query (#7823)
+
+- feat(bw): implement percentage-based rollout (#7845)
+
+- feat(twap): track unsupported wallet demand (#7816)
+
+- feat(cow-fi): remove LP on CoW AMM header CTA (#7814)
+
+- feat: unlock TWAP UI for EOA (WIP, behind flag) (#7849)
+
+- feat(affiliate): handle code not found (#7830)
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
+- feat: add commit hash to footer to help identify IPFS deployments
+
+### Patch Changes
+
+- fix(limit-twap): disable confirm when balance is insufficient (#7804)
+
+- fix: harden deferred HIGH frontend follow-ups (#7612)
+
+- fix(bridge): keep bridge order status polling while tab is hidden (#7707)
+
+- fix(twap): stay on Signing tab after placing a TWAP order (#7730)
+
+- fix: query bot ID using curl instead of gh (#7817)
+
+- fix(trade): remove 'total fee' row from swap form (#7805)
+
+- fix(tradeQuote): clear stale error on params change (#7728)
+
+- fix(address-input): drop chain-prefix warning when recipient is cleared (#7720)
+
+- fix: enforce widget token list restrictions (#7834)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.7.0
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/wallet@3.8.1
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/events@4.8.0
+  - @cowprotocol/widget-lib@4.4.2
+  - @cowprotocol/tokens@3.8.4
+  - @cowprotocol/snackbars@2.2.6
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/multicall@3.4.4
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/ens@3.4.4
+
 ## [3.18.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.18.0...cowswap-v3.18.1) (2026-07-09)
 
 ### Patch Changes

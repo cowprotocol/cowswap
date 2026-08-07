@@ -5,6 +5,7 @@ import { useConfig } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -19,7 +20,7 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
@@ -60,6 +61,9 @@ export function useHandleOrderPlacement(
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
+  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const shouldUseSafeBundle = isSafeBundle && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
@@ -110,7 +114,7 @@ export function useHandleOrderPlacement(
     const partiallyFillableState =
       typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
 
-    if (isSafeBundle) {
+    if (shouldUseSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
       return safeBundleFlow({
@@ -147,7 +151,7 @@ export function useHandleOrderPlacement(
     )
   }, [
     config,
-    isSafeBundle,
+    shouldUseSafeBundle,
     tradeContext,
     partiallyFillableOverride,
     priceImpact,
@@ -192,6 +196,10 @@ export function useHandleOrderPlacement(
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
+        if (error instanceof WidgetHookDeclineError) {
+          tradeConfirmActions.onDismiss()
+          return
+        }
 
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message || error.description)

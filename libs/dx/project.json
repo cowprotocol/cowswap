@@ -1,0 +1,21 @@
+{
+  "name": "dx",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/dx"],
+      "options": {
+        "command": "rm -rf dist/libs/dx && mkdir -p dist/libs/dx && cp libs/dx/package.json libs/dx/*.mjs dist/libs/dx/"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/dx/**/*.mjs"]
+      }
+    }
+  }
+}

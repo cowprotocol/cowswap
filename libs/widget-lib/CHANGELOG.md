@@ -1,5 +1,46 @@
 # Changelog
 
+## [4.5.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.4...widget-lib-v4.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/iframe-transport@2.3.5
+
+## [4.4.4](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.3...widget-lib-v4.4.4) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/iframe-transport@2.3.4
+
+## [4.4.3](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.2...widget-lib-v4.4.3) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.1
+  - @cowprotocol/iframe-transport@2.3.3
+
+## [4.4.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.1...widget-lib-v4.4.2) (2026-07-17)
+
+### Patch Changes
+
+- fix(widget-lib): harden disableWindowOpen sandbox (#7826)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.8.0
+
 ## [4.4.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.0...widget-lib-v4.4.1) (2026-07-08)
 
 ### Patch Changes

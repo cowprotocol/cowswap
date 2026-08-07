@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.2...currency-v1.3.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+## [1.2.2](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.1...currency-v1.2.2) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.0...currency-v1.2.1) (2026-06-23)
 
 ### Patch Changes

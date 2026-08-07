@@ -1,5 +1,75 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.5...ui-v3.10.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix(menu-bar): improve scrollbar in the languages dropdown (#7948)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
+## [3.9.5](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.4...ui-v3.9.5) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/analytics@3.8.1
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/common-const@3.7.1
+
+## [3.9.4](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.3...ui-v3.9.4) (2026-07-28)
+
+### Patch Changes
+
+- fix(cow-fi): remove CoW AMM/MEV Blocker mentions (#7852)
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/analytics@3.8.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+
+## [3.9.3](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.2...ui-v3.9.3) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.7.0
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
+## [3.9.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.1...ui-v3.9.2) (2026-07-17)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/analytics@3.6.0
+  - @cowprotocol/core@3.6.1
+
 ## [3.9.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.0...ui-v3.9.1) (2026-07-08)
 
 ### Patch Changes

@@ -2,5 +2,7 @@ import { atom } from 'jotai'
 
 import type { FeatureFlags } from '@cowprotocol/common-const'
 
+export type FeatureFlagsStatus = 'loading' | 'ready' | 'unavailable'
+
 export const featureFlagsAtom = atom<FeatureFlags>({})
-export const featureFlagsHydratedAtom = atom<boolean>(false)
+export const featureFlagsStatusAtom = atom<FeatureFlagsStatus>('loading')

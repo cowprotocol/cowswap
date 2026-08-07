@@ -1,6 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
+
+import { captchaCanQuoteAtom } from 'entities/captcha'
+
 import {
   DEFAULT_LIMIT_DERIVED_STATE,
   LimitOrdersDerivedState,
@@ -21,18 +25,26 @@ export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
 }
 
 export function useLimitOrdersDerivedStateToFill(): LimitOrdersDerivedState {
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isUnlocked = useIsWidgetUnlocked()
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom, false)
 
   return useMemo(() => {
-    return isProviderNetworkUnsupported
-      ? DEFAULT_LIMIT_DERIVED_STATE
-      : {
-          ...derivedState,
-          isUnlocked,
-          slippage: LIMIT_ORDER_SLIPPAGE,
-          tradeType: TradeType.LIMIT_ORDER,
-        }
-  }, [derivedState, isUnlocked, isProviderNetworkUnsupported])
+    if (isProviderNetworkUnsupported) return DEFAULT_LIMIT_DERIVED_STATE
+
+    const gatedAmounts = canQuote
+      ? {}
+      : isSellOrder(derivedState.orderKind)
+        ? { outputCurrencyAmount: null, outputCurrencyFiatAmount: null }
+        : { inputCurrencyAmount: null, inputCurrencyFiatAmount: null }
+
+    return {
+      ...derivedState,
+      ...gatedAmounts,
+      isUnlocked,
+      slippage: LIMIT_ORDER_SLIPPAGE,
+      tradeType: TradeType.LIMIT_ORDER,
+    }
+  }, [canQuote, derivedState, isUnlocked, isProviderNetworkUnsupported])
 }

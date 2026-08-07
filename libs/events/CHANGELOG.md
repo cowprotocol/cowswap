@@ -1,5 +1,44 @@
 # Changelog
 
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/events-v4.9.0...events-v4.10.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.8.0
+
+## [4.9.0](https://github.com/cowprotocol/cowswap/compare/events-v4.8.1...events-v4.9.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
+## [4.8.1](https://github.com/cowprotocol/cowswap/compare/events-v4.8.0...events-v4.8.1) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/events-v4.7.1...events-v4.8.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
 ## [4.7.1](https://github.com/cowprotocol/cowswap/compare/events-v4.7.0...events-v4.7.1) (2026-06-23)
 
 ### Patch Changes
