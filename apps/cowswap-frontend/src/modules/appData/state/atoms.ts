@@ -27,3 +27,14 @@ export const appDataInfoAtom = atom<AppDataInfo | null, [AppDataInfo | null], un
  * In memory atom for storing the current appData hooks info
  */
 export const appDataHooksAtom = atom<TypedAppDataHooks | undefined>(undefined)
+
+/**
+ * In memory atom holding the hooks that the current appDataInfo was built from.
+ *
+ * appDataInfo is rebuilt asynchronously whenever the hooks change, so there is a
+ * window where appDataHooksAtom already reflects a freshly added hook but
+ * appDataInfoAtom still holds a doc built without it. Tracking the hooks used to
+ * build the current doc lets consumers detect (and wait out) that window before
+ * placing an order. See appData/hooks.ts#useIsAppDataHooksInSync.
+ */
+export const appDataBuiltWithHooksAtom = atom<TypedAppDataHooks | undefined>(undefined)

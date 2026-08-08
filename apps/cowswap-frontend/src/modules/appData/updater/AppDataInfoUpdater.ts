@@ -7,7 +7,7 @@ import { CowEnv } from '@cowprotocol/cow-sdk'
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
 import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
-import { appDataInfoAtom } from '../state/atoms'
+import { appDataBuiltWithHooksAtom, appDataInfoAtom } from '../state/atoms'
 import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
@@ -46,11 +46,13 @@ export function AppDataInfoUpdater({
 }: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
+  const setAppDataBuiltWithHooks = useSetAtom(appDataBuiltWithHooksAtom)
 
   useAsyncEffect(async () => {
     if (!appCodeWithWidgetMetadata) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
+      setAppDataBuiltWithHooks(undefined)
       return
     }
 
@@ -79,10 +81,15 @@ export function AppDataInfoUpdater({
     } catch (e: any) {
       console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
       setAppDataInfo(getAppData())
+    } finally {
+      // Record the hooks this appData build was based on, so consumers can tell
+      // whether the current appDataInfo is in sync with the latest hooks.
+      setAppDataBuiltWithHooks(typedHooks)
     }
   }, [
     appCodeWithWidgetMetadata,
     setAppDataInfo,
+    setAppDataBuiltWithHooks,
     slippageBips,
     orderClass,
     utm,
