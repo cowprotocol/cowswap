@@ -5,10 +5,15 @@ import { bpsToPercentage } from '@cowprotocol/cow-sdk'
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
+import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
 import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
+import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { mockWrapTransaction } from '../support/mockWrapTransaction'
+import { readTitledAmount } from '../support/readTitledAmount'
+import { seedTrader } from '../support/seedTrader'
+import { selectTokens } from '../support/selectTokens'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
@@ -32,23 +37,11 @@ test.describe('Market Orders', () => {
     const BUY_RATE_NUM = 804n
     const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
 
-    // Same technique as [MO-04]: zero out the fee/protocolFeeBps so the posted sellAmount
-    // matches the typed amount exactly, keeping the sell-side balance assertion a round number.
-    // The buy side still goes through the app's own slippage, so it's asserted dynamically below
-    // via `posting.getPostedBuyAmount()` rather than a hardcoded figure.
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const sellAmount = BigInt(defaults.quote.sellAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: {
-          ...defaults.quote,
-          buyAmount: ((sellAmount * BUY_RATE_NUM) / BUY_RATE_DEN).toString(),
-          feeAmount: '0',
-        },
-      }
-    })
+    // Zeroing the fee keeps the posted sellAmount matching the typed amount exactly, so the
+    // sell-side balance assertion below is a round number. The buy side still goes through the
+    // app's own slippage, so it's asserted dynamically via `posting.getPostedBuyAmount()` rather
+    // than a hardcoded figure.
+    mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
 
     const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
@@ -57,15 +50,13 @@ test.describe('Market Orders', () => {
     // the quote rate keeps the trade looking fair so that extra screen doesn't appear.
     mocks.usdPrices.setPrice(WETH, Number(BUY_RATE_DEN) / Number(BUY_RATE_NUM))
 
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n })
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n },
+      allowances: { [USDC]: INITIAL_USDC_BALANCE },
+    })
 
     await swapPage.goto({ chainId: CHAIN_ID })
-
-    await swapPage.tokens.openInput()
-    await swapPage.tokens.searchAndPick('USDC')
-    await swapPage.tokens.openOutput()
-    await swapPage.tokens.searchAndPick('WETH')
+    await selectTokens(swapPage, 'USDC', 'WETH')
 
     await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
     await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
@@ -80,10 +71,7 @@ test.describe('Market Orders', () => {
     await swapPage.page.keyboard.press('Escape')
     await expect(swapPage.orderProgressBarModal).toBeHidden()
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Open')
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Open')
 
     // Settle the order now that it's posted and confirmed — mirrors [MO-04].
     posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
@@ -102,10 +90,7 @@ test.describe('Market Orders', () => {
       { timeout: 15_000 },
     )
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Filled')
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Filled')
   })
 
   // TODO: merge with MO-48
@@ -125,19 +110,7 @@ test.describe('Market Orders', () => {
     // `sellAmount` — for a buy order the typed amount fixes buyAmount exactly, and it's sellAmount
     // that's quoted/slippage-adjusted. Fee/protocolFeeBps stay zeroed so the posted buyAmount
     // matches the typed amount exactly, keeping the buy-side balance assertion a round number.
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const buyAmount = BigInt(defaults.quote.buyAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: {
-          ...defaults.quote,
-          sellAmount: (buyAmount * RATE).toString(),
-          feeAmount: '0',
-        },
-      }
-    })
+    mockFixedRateQuote({ cowApi: mocks.cowApi, direction: 'buy', rate: { numerator: RATE, denominator: 1n } })
 
     const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
@@ -145,15 +118,13 @@ test.describe('Market Orders', () => {
     // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [MO-02].
     mocks.usdPrices.setPrice(WETH, Number(RATE))
 
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n })
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: INITIAL_USDC_BALANCE })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n },
+      allowances: { [USDC]: INITIAL_USDC_BALANCE },
+    })
 
     await swapPage.goto({ chainId: CHAIN_ID })
-
-    await swapPage.tokens.openInput()
-    await swapPage.tokens.searchAndPick('USDC')
-    await swapPage.tokens.openOutput()
-    await swapPage.tokens.searchAndPick('WETH')
+    await selectTokens(swapPage, 'USDC', 'WETH')
 
     await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
     await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
@@ -168,10 +139,7 @@ test.describe('Market Orders', () => {
     await swapPage.page.keyboard.press('Escape')
     await expect(swapPage.orderProgressBarModal).toBeHidden()
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Open')
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Open')
 
     // Settle the order now that it's posted and confirmed — mirrors [MO-02].
     posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
@@ -191,10 +159,7 @@ test.describe('Market Orders', () => {
       { timeout: 15_000 },
     )
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Filled')
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Filled')
   })
 
   test('[MO-04] Buy order: approval amount includes slippage buffer @smoke', async ({
@@ -206,22 +171,16 @@ test.describe('Market Orders', () => {
   }) => {
     // Fixed rate (1 WETH = 2000 USDC) with zero fee/protocolFeeBps keeps the sell side a clean
     // round number derived from whatever buy amount was actually requested
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const buyAmount = BigInt(defaults.quote.buyAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: { ...defaults.quote, sellAmount: (buyAmount / 2000n).toString(), feeAmount: '0' },
-      }
-    })
+    mockFixedRateQuote({ cowApi: mocks.cowApi, direction: 'buy', rate: { numerator: 1n, denominator: 2000n } })
     // Matches the quote's implied rate so the trade doesn't look like a loss against the fixture's
     // flat $1-per-token USD prices, which would otherwise trip the "Confirm Price Impact" dialog.
     mocks.usdPrices.setPrice(WETH, 2000)
 
-    mocks.balances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('2', 18), [USDC]: 0n })
-    // Precondition: sell token not yet approved.
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: 0n })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [WETH]: parseUnits('2', 18), [USDC]: 0n },
+      // Precondition: sell token not yet approved.
+      allowances: { [WETH]: 0n },
+    })
 
     await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
     await swapPage.enterBuyAmount('1000')
@@ -232,7 +191,7 @@ test.describe('Market Orders', () => {
     // to compare against.
     const approveModeSelector = swapPage.page.locator('#approve-mode-selector')
     await approveModeSelector.getByText('Partial approval').click()
-    const approvalAmount = await approveModeSelector.locator('[title]').getAttribute('title')
+    const approvalAmount = await readTitledAmount(approveModeSelector)
 
     // Faking the approve() end-to-end instead of letting it broadcast for real — see
     // `mockApproveTransaction` for why both `eth_sendTransaction` and `eth_getTransactionReceipt`
@@ -254,13 +213,10 @@ test.describe('Market Orders', () => {
     // (`getOrderTypeReceiveAmounts.ts`) — a deliberately different figure from the approve amount
     // (`useAmountsToSignFromQuote.ts`'s `maximumSendSellAmount`, which adds that 1% on top).
     const maximumSentRow = swapPage.page.locator('.confirm-order-amount', { hasText: 'Maximum sent' })
-    const maximumSentTitle = await maximumSentRow.locator('[title]').getAttribute('title')
-    const [maximumSentDisplayValue] = (maximumSentTitle ?? '').split(' ')
-    const maximumSentRaw = parseUnits(maximumSentDisplayValue, 18)
+    const maximumSentRaw = await readTitledAmount(maximumSentRow)
 
     // What the toggle showed before signing matches the real approve() calldata's amount.
-    const [approvalDisplayValue] = (approvalAmount ?? '').split(' ')
-    expect(parseUnits(approvalDisplayValue, 18)).toBe(approveMock.getApprovedAmount())
+    expect(approvalAmount).toBe(approveMock.getApprovedAmount())
 
     // The core relationship: approval amount = "Maximum sent" + the 1% buy-order buffer.
     expect(approveMock.getApprovedAmount()).toBe((maximumSentRaw * 101n) / 100n)
@@ -284,24 +240,10 @@ test.describe('Market Orders', () => {
     wallet,
     mocks,
   }) => {
-    const BUY_RATE_NUM = 8n
-    const BUY_RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
-
-    // Same technique as [MO-06]: zero out fee/protocolFeeBps so the displayed To-amount is an
-    // exact, round multiple of the typed sell amount.
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const sellAmount = BigInt(defaults.quote.sellAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: {
-          ...defaults.quote,
-          buyAmount: ((sellAmount * BUY_RATE_NUM) / BUY_RATE_DEN).toString(),
-          feeAmount: '0',
-        },
-      }
-    })
+    // Same technique as [MO-02]: zero out fee/protocolFeeBps so the displayed To-amount is an
+    // exact, round multiple of the typed sell amount. Quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH
+    // = 12.5 USDC.
+    mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 8n, denominator: 100n } })
 
     // Pricing WETH 2% below the quote's implied rate ($12.25 instead of $12.50) makes the buy
     // side's fiat value ($98) 2% under the sell side's ($100), producing a deterministic -2%
@@ -309,10 +251,12 @@ test.describe('Market Orders', () => {
     mocks.usdPrices.setPrice(WETH, 12.25)
 
     // Set balances/allowances directly (both Sepolia test tokens report 18 decimals on-chain,
-    // same quirk as [MO-06]) rather than via `setupTestConditions`, whose `balances`/`allowances`
+    // same quirk as [MO-02]) rather than via `setupTestConditions`, whose `balances`/`allowances`
     // options trust `support/tokens.ts`'s incorrect 6-decimal USDC entry.
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18), [WETH]: 0n })
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18) })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [USDC]: parseUnits('1000', 18), [WETH]: 0n },
+      allowances: { [USDC]: parseUnits('1000', 18) },
+    })
 
     await setupTestConditions({
       chainId: CHAIN_ID,
@@ -384,15 +328,8 @@ test.describe('Market Orders', () => {
     await expect(tooltipBox.getByText('To', { exact: true })).toBeVisible()
 
     // Both Sepolia test tokens report 18 decimals on-chain — same quirk as [MO-06]/[MO-09].
-    const readRowAmount = async (label: string): Promise<bigint> => {
-      const title = await tooltipBox
-        .getByText(label, { exact: true })
-        .locator('xpath=following-sibling::*[1]')
-        .locator('[title]')
-        .getAttribute('title')
-      const [value] = (title ?? '').split(' ')
-      return parseUnits(value, 18)
-    }
+    const readRowAmount = (label: string): Promise<bigint> =>
+      readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
 
     const beforeCosts = await readRowAmount('Before costs')
     const protocolFee = await readRowAmount('Protocol fee')
@@ -418,28 +355,18 @@ test.describe('Market Orders', () => {
     const RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
 
     // Zero out fee/protocolFeeBps so "Expected to receive" (amountAfterFees) is an exact, round
-    // multiple of the typed sell amount — same technique as [MO-06].
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const sellAmount = BigInt(defaults.quote.sellAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: {
-          ...defaults.quote,
-          buyAmount: ((sellAmount * RATE_NUM) / RATE_DEN).toString(),
-          feeAmount: '0',
-        },
-      }
-    })
+    // multiple of the typed sell amount — same technique as [MO-02].
+    mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: RATE_NUM, denominator: RATE_DEN } })
 
     // Matches the quote's implied rate so the trade doesn't look like a loss against the
     // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-    // Impact" dialog — same technique as [MO-06].
+    // Impact" dialog — same technique as [MO-02].
     mocks.usdPrices.setPrice(WETH, Number(RATE_DEN) / Number(RATE_NUM))
 
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18), [WETH]: 0n })
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1000', 18) })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [USDC]: parseUnits('1000', 18), [WETH]: 0n },
+      allowances: { [USDC]: parseUnits('1000', 18) },
+    })
 
     await setupTestConditions({
       chainId: CHAIN_ID,
@@ -461,12 +388,8 @@ test.describe('Market Orders', () => {
       await swapPage.page.keyboard.press('Escape')
     }
 
-    const readConfirmRowAmount = async (label: string): Promise<bigint> => {
-      const row = swapPage.page.locator('.confirm-order-amount', { hasText: label })
-      const title = await row.locator('[title]').getAttribute('title')
-      const [value] = (title ?? '').split(' ')
-      return parseUnits(value, 18)
-    }
+    const readConfirmRowAmount = (label: string): Promise<bigint> =>
+      readTitledAmount(swapPage.page.locator('.confirm-order-amount', { hasText: label }))
 
     // Sets slippage tolerance, opens the Confirm modal, and returns "Minimum receive" after
     // checking it against "Expected to receive" and confirming it's read-only.
@@ -556,10 +479,8 @@ test.describe('Market Orders', () => {
     // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
     // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
     // [MO-02]/[MO-06]/[MO-07], keeps the sent value and the post-tx balance round numbers below.
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      return { ...defaults, protocolFeeBps: '0', quote: { ...defaults.quote, feeAmount: '0' } }
-    })
+    // No `rate` needed: this order's buyAmount is never asserted on, only that fees don't skew it.
+    mockFixedRateQuote({ cowApi: mocks.cowApi })
 
     await swapPage.goto({ chainId: CHAIN_ID })
 
@@ -613,10 +534,7 @@ test.describe('Market Orders', () => {
     // `pending`, rendered in the activities list as "Open".
     orderIndexed = true
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Open', { timeout: 15_000 })
 
     // With the order indexed, `EthFlowStepper`'s step 3 becomes the active step: "Receive USDC",
     // pending — order-progress hasn't reported a fill yet.
@@ -628,7 +546,7 @@ test.describe('Market Orders', () => {
     // override above to report `fulfilled`.
     const orderParams = ethFlow.getOrderParams()
     if (!orderParams) throw new Error('mockEthFlowTransaction: fulfill attempted before an order was sent')
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: orderParams.buyAmount })
+    seedTrader(mocks, wallet, CHAIN_ID, { balances: { [USDC]: orderParams.buyAmount } })
     ethFlow.confirmFilled()
 
     // Once truly fulfilled, `TransactionSubmittedContent` stops rendering `EthFlowStepper`
@@ -637,10 +555,7 @@ test.describe('Market Orders', () => {
     // is what makes `#order-progress-bar-modal` get mounted in the first place, per [MO-02]/[MO-03].
     await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
-    await expect(accountModal.activitiesList).toContainText('Filled', { timeout: 15_000 })
-    await accountModal.close()
+    await expectActivityStatus(accountModal, 'Filled', { timeout: 15_000 })
 
     // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
     // a balance while `!disabled`) — dismiss it the same way [MO-02]/[MO-03] do.
@@ -750,20 +665,14 @@ test.describe('Market Orders', () => {
     // is a plain injected-provider wallet, not a smart-contract wallet capable of batching approve
     // + swap into one transaction, so it already exercises the two-separate-transactions path this
     // scenario is about.
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const sellAmount = BigInt(defaults.quote.sellAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: { ...defaults.quote, buyAmount: (sellAmount * 2000n).toString(), feeAmount: '0' },
-      }
-    })
+    mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 2000n, denominator: 1n } })
     mocks.usdPrices.setPrice(WETH, 2000)
 
-    mocks.balances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('2', 18), [USDC]: 0n })
-    // Precondition: sell token has no existing approval.
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: 0n })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [WETH]: parseUnits('2', 18), [USDC]: 0n },
+      // Precondition: sell token has no existing approval.
+      allowances: { [WETH]: 0n },
+    })
 
     // No `mockOrderPosting` here — this test only needs to know an order was (or wasn't yet)
     // posted, not settle it, so a bare flag on the `postOrder` override is enough to prove
@@ -832,23 +741,17 @@ test.describe('Market Orders', () => {
     // "Approve and Swap" label, see [MO-30]) — `useApproveAndSwap`'s `handlePermit()` branches on
     // token support *inside* the click handler: a permit-supported token signs a typed-data
     // message and skips the on-chain `approve()` call entirely.
-    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1500', 18), [WETH]: 0n })
-    // Precondition: no existing on-chain approval — irrelevant to the permit path itself, but
-    // keeps this consistent with [MO-30] and confirms the button renders regardless of the reason.
-    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: 0n })
+    seedTrader(mocks, wallet, CHAIN_ID, {
+      balances: { [USDC]: parseUnits('1500', 18), [WETH]: 0n },
+      // Precondition: no existing on-chain approval — irrelevant to the permit path itself, but
+      // keeps this consistent with [MO-30] and confirms the button renders regardless of the reason.
+      allowances: { [USDC]: 0n },
+    })
 
     // Matches the quote's implied rate so the trade doesn't look like a loss against the fixture's
     // flat $1-per-token USD prices, which would otherwise trip the "Confirm Price Impact" dialog.
     mocks.usdPrices.setPrice(WETH, 2000)
-    mocks.cowApi.set('quote', (req) => {
-      const defaults = req.defaults as { quote: Record<string, unknown> }
-      const sellAmount = BigInt(defaults.quote.sellAmount as string)
-      return {
-        ...defaults,
-        protocolFeeBps: '0',
-        quote: { ...defaults.quote, buyAmount: (sellAmount / 2000n).toString(), feeAmount: '0' },
-      }
-    })
+    mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 1n, denominator: 2000n } })
 
     let uploadedAppData: string | undefined
     let uploadedAppDataHash: string | undefined
@@ -977,15 +880,12 @@ test.describe('Market Orders', () => {
     // same as [MO-02]/[MO-03], is what gets them into that set (no order is ever created through
     // this UI, only the token registration piggybacks on it).
     await swapPage.goto({ chainId: CHAIN_ID })
-    await swapPage.tokens.openInput()
-    await swapPage.tokens.searchAndPick('WETH')
-    await swapPage.tokens.openOutput()
-    await swapPage.tokens.searchAndPick('USDC')
+    await selectTokens(swapPage, 'WETH', 'USDC')
 
-    await accountModal.open()
-    await accountModal.activitiesList.scrollIntoViewIfNeeded()
     // `OrdersFromApiUpdater` only picks this up once its own effects settle — longer than the
     // default 5s.
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
     await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
 
     const cancelLink = accountModal.activitiesList.getByText('Cancel order', { exact: true })
