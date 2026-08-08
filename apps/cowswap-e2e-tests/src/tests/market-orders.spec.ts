@@ -492,7 +492,8 @@ test.describe('Market Orders', () => {
     expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
   })
 
-  test('[MO-11] [MO-14] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
+  // Same as [MO-14]
+  test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
     swapPage,
     wallet,
     context,
@@ -728,5 +729,78 @@ test.describe('Market Orders', () => {
     const bannerText = (await adjustedBanner.textContent()) ?? ''
     const [, adjustedPercent] = /Slippage adjusted to ([\d.]+)% to ensure quick execution/.exec(bannerText) ?? []
     expect(Number(adjustedPercent)).toBeGreaterThan(2)
+  })
+
+  test('[MO-30] Token not approved (non-permittable, no bundling): approval button shown', async ({
+    swapPage,
+    wallet,
+    mocks,
+    context,
+    header,
+    confirmModal,
+  }) => {
+    // WETH is the non-permittable token already used throughout this file (no EIP-2612 support,
+    // so there's never a cached permit signature to fall back to) — `TradeApproveButton`'s
+    // `noCachedPermit` is therefore always true for it, which is what selects the "Approve and
+    // Swap" label (`useGetConfirmButtonLabel('approve', ...)`) over the plain "Swap" one.
+    // "Wallet does not support bundling" doesn't need separate setup: this suite's mock EOA wallet
+    // is a plain injected-provider wallet, not a smart-contract wallet capable of batching approve
+    // + swap into one transaction, so it already exercises the two-separate-transactions path this
+    // scenario is about.
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: { ...defaults.quote, buyAmount: (sellAmount * 2000n).toString(), feeAmount: '0' },
+      }
+    })
+    mocks.usdPrices.setPrice(WETH, 2000)
+
+    mocks.balances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('2', 18), [USDC]: 0n })
+    // Precondition: sell token has no existing approval.
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: 0n })
+
+    // No `mockOrderPosting` here — this test only needs to know an order was (or wasn't yet)
+    // posted, not settle it, so a bare flag on the `postOrder` override is enough to prove
+    // ordering against the approval below.
+    let orderPosted = false
+    mocks.cowApi.set('postOrder', (req) => {
+      orderPosted = true
+      return req.defaults
+    })
+
+    await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
+    await swapPage.enterSellAmount('1')
+    await swapPage.waitForQuote()
+
+    // The action button reads "Approve and Swap" — not a generic "Approve" — confirming the
+    // single-button, non-permittable flow this scenario is about.
+    await expect(swapPage.approveButton).toContainText('Swap')
+
+    // Faking the approve() end-to-end instead of letting it broadcast for real — see
+    // `mockApproveTransaction` for why both `eth_sendTransaction` and `eth_getTransactionReceipt`
+    // need stubbing, and at two different layers.
+    const approveMock = await mockApproveTransaction({
+      context,
+      wallet,
+      allowances: mocks.allowances,
+      chainId: CHAIN_ID,
+      token: WETH,
+    })
+
+    await swapPage.approveButton.click()
+    await expect(header.snackbarPopup).toContainText('Approve WETH', { timeout: 15_000 })
+
+    // The approval transaction is sent — and, since approving auto-advances into the swap confirm
+    // screen without posting anything, no order exists yet at this point.
+    expect(approveMock.getApprovedAmount()).toBeDefined()
+    expect(orderPosted).toBe(false)
+
+    // Only placing the swap from here on posts the order — proving the approval tx really did
+    // happen before it, not just alongside it.
+    await confirmModal.confirmButton.click()
+    await expect.poll(() => orderPosted).toBe(true)
   })
 })

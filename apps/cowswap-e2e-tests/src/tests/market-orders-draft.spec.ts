@@ -13,21 +13,6 @@ const DEFAULT_WETH_BALANCE = 1_000_000_000_000_000_000n // 1 WETH
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Market Orders', () => {
-  test('Sell order: WETH → USDC', async ({ setupTestConditions, swapPage, confirmModal }) => {
-    await setupTestConditions({
-      chainId: CHAIN_ID,
-      tradeType: 'swap',
-      sellToken: 'WETH',
-      buyToken: 'USDC',
-      sellAmount: '0.5',
-      balances: { WETH: '1', USDC: '0' },
-      allowances: { WETH: '10' },
-    })
-    await expect(swapPage.outputAmount).not.toHaveValue('')
-    await swapPage.clickSwap()
-    await expect(confirmModal.confirmButton).toContainText(/confirm swap/i)
-  })
-
   test('Sufficient allowance: proceeds straight to confirm swap', async ({
     setupTestConditions,
     swapPage,
