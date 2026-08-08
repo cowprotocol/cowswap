@@ -803,4 +803,101 @@ test.describe('Market Orders', () => {
     await confirmModal.confirmButton.click()
     await expect.poll(() => orderPosted).toBe(true)
   })
+
+  test('[MO-42] Token approval: gasless approval (EIP-2612 permit)', async ({
+    swapPage,
+    wallet,
+    mocks,
+    confirmModal,
+    context,
+  }) => {
+    // Whether a token supports EIP-2612 permit isn't decided by probing the token's own contract
+    // in this app (that on-chain fallback needs a real `nonces()`/`permit()`-implementing contract,
+    // which this suite's fake Sepolia "USDC" isn't) — it's resolved from a pre-generated list
+    // fetched from `files.cow.fi` first (`usePreGeneratedPermitInfo.ts`), and the on-chain probe is
+    // skipped entirely once that list responds. Mocking this CDN endpoint is enough to make the
+    // fake token register as permit-compatible.
+    await context.route(/files\.cow\.fi\/token-lists\/PermitInfo\.\d+\.json$/i, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ [USDC.toLowerCase()]: { type: 'eip-2612', name: 'USDC', version: '2' } }),
+      })
+    })
+
+    // Clicking the action button is identical either way (same `#approve-trade-button`, same
+    // "Approve and Swap" label, see [MO-30]) — `useApproveAndSwap`'s `handlePermit()` branches on
+    // token support *inside* the click handler: a permit-supported token signs a typed-data
+    // message and skips the on-chain `approve()` call entirely.
+    mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1500', 18), [WETH]: 0n })
+    // Precondition: no existing on-chain approval — irrelevant to the permit path itself, but
+    // keeps this consistent with [MO-30] and confirms the button renders regardless of the reason.
+    mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: 0n })
+
+    // Matches the quote's implied rate so the trade doesn't look like a loss against the fixture's
+    // flat $1-per-token USD prices, which would otherwise trip the "Confirm Price Impact" dialog.
+    mocks.usdPrices.setPrice(WETH, 2000)
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '0',
+        quote: { ...defaults.quote, buyAmount: (sellAmount / 2000n).toString(), feeAmount: '0' },
+      }
+    })
+
+    let uploadedAppData: string | undefined
+    let uploadedAppDataHash: string | undefined
+    mocks.cowApi.set('putAppData', (req) => {
+      uploadedAppData = (req.body as { fullAppData: string }).fullAppData
+      uploadedAppDataHash = req.params.hash
+      return req.params.hash
+    })
+
+    let postedOrderAppDataHash: string | undefined
+    mocks.cowApi.set('postOrder', (req) => {
+      postedOrderAppDataHash = (req.body as { appDataHash?: string }).appDataHash
+      return req.defaults
+    })
+
+    await swapPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: WETH })
+    await swapPage.enterSellAmount('1000')
+    await swapPage.waitForQuote()
+
+    await expect(swapPage.approveButton).toContainText('Approve and Swap')
+    await swapPage.approveButton.click()
+
+    // The wallet is asked to sign the permit — an EIP-712 `Permit` message, not a transaction —
+    // before the swap gets confirmed below. This suite's mock wallet already signs whatever
+    // typed-data it's handed (no special stub needed, see `walletEngine.ts`), so the request is
+    // read back from its own call log rather than mocked.
+    await expect.poll(() => wallet.rpcCalls('eth_signTypedData_v4').length).toBeGreaterThan(0)
+    const permitSignRequest = wallet
+      .rpcCalls('eth_signTypedData_v4')
+      .map((call) => JSON.parse(call.params[1] as string))
+      .find((typedData) => typedData.primaryType === 'Permit')
+    expect(permitSignRequest?.domain?.verifyingContract?.toLowerCase()).toBe(USDC.toLowerCase())
+
+    // No on-chain approval transaction is ever sent — the permit signature replaces it entirely.
+    expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
+
+    // Signing auto-advances into the swap confirm screen, same as a real approval does.
+    await confirmModal.confirmButton.click()
+
+    // The signed permit is what gets "executed with the swap settlement": it's uploaded as a
+    // pre-interaction CoW Hook on the order's appData, not a separate approve() call.
+    await expect.poll(() => uploadedAppData).toBeDefined()
+    const appData = JSON.parse(uploadedAppData as string)
+    const permitHook = appData.metadata.hooks.pre.find(
+      (hook: { target?: string }) => hook.target?.toLowerCase() === USDC.toLowerCase(),
+    )
+    expect(permitHook?.dappId).toBe('cow-swap://libs/hook-dapp-lib/permit')
+
+    // The permit hook alone doesn't prove it's actually part of *this* order — the signed order
+    // must reference the exact appData hash that content was uploaded under, or the permit hook
+    // would never be picked up by the settlement.
+    await expect.poll(() => postedOrderAppDataHash).toBeDefined()
+    expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
+  })
 })
