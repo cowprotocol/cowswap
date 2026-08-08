@@ -4411,6 +4411,7 @@ msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing 
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/trade/containers/SolanaWrapAndDelegateButton/index.tsx
 msgid "Wrap <0/> and Swap"
 msgstr "Wrap <0/> and Swap"
 
@@ -6550,6 +6551,10 @@ msgstr "Tip: Custom tokens are stored locally in your browser"
 msgid "You receive at least"
 msgstr "You receive at least"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planWrapStep.ts
+msgid "Wrap {sellAmountStr} SOL"
+msgstr "Wrap {sellAmountStr} SOL"
+
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "You are connected to"
 #~ msgstr "You are connected to"
@@ -7079,6 +7084,7 @@ msgstr "Add custom hook"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planDelegateStep.ts
 msgid "Approve {symbol}"
 msgstr "Approve {symbol}"
 
@@ -7361,6 +7367,10 @@ msgstr "turn on expert mode"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #~ msgid "Buying native currency with smart contract wallets is not currently supported"
 #~ msgstr "Buying native currency with smart contract wallets is not currently supported"
+
+#: apps/cowswap-frontend/src/modules/trade/containers/SolanaWrapAndDelegateButton/index.tsx
+#~ msgid "Enable trading"
+#~ msgstr "Enable trading"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "Expected to sell"
