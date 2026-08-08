@@ -94,6 +94,35 @@ interface JsonRpcEntry {
 }
 
 /**
+ * Recognizes an `aggregate3` batch where every inner call is Multicall3's own
+ * `getEthBalance(owner)` for `owner`. Returns the call count (== how many result slots to fill)
+ * or `undefined` if the calldata isn't such a batch — a mixed batch (some other read alongside a
+ * balance read) isn't something real traffic has shown happening, so it's left unhandled here
+ * rather than guessed at.
+ */
+export function countOwnEthBalanceCalls(data: Hex | undefined, owner: string): number | undefined {
+  if (!data || !data.toLowerCase().startsWith(AGGREGATE3_SELECTOR)) return undefined
+  try {
+    const payload = `0x${data.slice(10)}` as Hex
+    const [calls] = decodeAbiParameters(CALL3_TUPLE, payload)
+    const isOwnBalanceCall = (call: { callData: string }): boolean => {
+      if (!call.callData.toLowerCase().startsWith(GET_ETH_BALANCE_SELECTOR)) return false
+      const [address] = decodeAbiParameters([{ type: 'address' }], `0x${call.callData.slice(10)}` as Hex)
+      return (address as string).toLowerCase() === owner.toLowerCase()
+    }
+    const callList = calls as ReadonlyArray<{ callData: string }>
+    return callList.length > 0 && callList.every(isOwnBalanceCall) ? callList.length : undefined
+  } catch {
+    return undefined
+  }
+}
+
+export function encodeEthBalanceResult(callCount: number, balance: bigint): Hex {
+  const slot = { success: true, returnData: encodeAbiParameters([{ type: 'uint256' }], [balance]) }
+  return encodeAbiParameters(RESULT_TUPLE, [Array.from({ length: callCount }, () => slot)])
+}
+
+/**
  * Fakes the ETH-flow order-creation transaction end-to-end. Selling native ETH doesn't post an
  * off-chain EIP-712-signed order like every other trade in this suite — it sends an on-chain
  * `createOrder()` tx (with the sell amount as `tx.value`) to a dedicated EthFlow contract instead.
@@ -214,30 +243,6 @@ function buildReceipt(): unknown {
   }
 }
 
-/**
- * Recognizes an `aggregate3` batch where every inner call is Multicall3's own
- * `getEthBalance(owner)` for `owner`. Returns the call count (== how many result slots to fill)
- * or `undefined` if the calldata isn't such a batch — a mixed batch (some other read alongside a
- * balance read) isn't something real traffic has shown happening, so it's left unhandled here
- * rather than guessed at.
- */
-function countOwnEthBalanceCalls(data: Hex | undefined, owner: string): number | undefined {
-  if (!data || !data.toLowerCase().startsWith(AGGREGATE3_SELECTOR)) return undefined
-  try {
-    const payload = `0x${data.slice(10)}` as Hex
-    const [calls] = decodeAbiParameters(CALL3_TUPLE, payload)
-    const isOwnBalanceCall = (call: { callData: string }): boolean => {
-      if (!call.callData.toLowerCase().startsWith(GET_ETH_BALANCE_SELECTOR)) return false
-      const [address] = decodeAbiParameters([{ type: 'address' }], `0x${call.callData.slice(10)}` as Hex)
-      return (address as string).toLowerCase() === owner.toLowerCase()
-    }
-    const callList = calls as ReadonlyArray<{ callData: string }>
-    return callList.length > 0 && callList.every(isOwnBalanceCall) ? callList.length : undefined
-  } catch {
-    return undefined
-  }
-}
-
 /** Decodes `createOrder(EthFlowOrder.Data)`'s single struct argument straight off the sent calldata. */
 function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | undefined {
   if (!data) return undefined
@@ -248,9 +253,4 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
   } catch {
     return undefined
   }
-}
-
-function encodeEthBalanceResult(callCount: number, balance: bigint): Hex {
-  const slot = { success: true, returnData: encodeAbiParameters([{ type: 'uint256' }], [balance]) }
-  return encodeAbiParameters(RESULT_TUPLE, [Array.from({ length: callCount }, () => slot)])
 }

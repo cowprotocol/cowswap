@@ -7,6 +7,7 @@ import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
+import { mockWrapTransaction } from '../support/mockWrapTransaction'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
@@ -899,6 +900,55 @@ test.describe('Market Orders', () => {
     // would never be picked up by the settlement.
     await expect.poll(() => postedOrderAppDataHash).toBeDefined()
     expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
+  })
+
+  test('[MO-46] Wrap ETH → WETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
+    const INITIAL_ETH_BALANCE = parseUnits('1', 18)
+    const WRAP_AMOUNT = parseUnits('0.5', 18)
+
+    // Selecting ETH as sell and WETH as buy isn't a CoW order at all — `validateTradeForm.ts`
+    // recognizes it as `WrapUnwrapFlow` and swaps in a local `deposit()` call on the WETH contract
+    // (`legacy/hooks/useWrapCallback.ts`) instead of the usual quote/sign/post flow. See
+    // `mockWrapTransaction` for why this needs its own mock rather than `mockEthFlowTransaction`
+    // (no order, no CoW API involvement at all) or `mockApproveTransaction` (different calldata).
+    const wrapTx = await mockWrapTransaction({
+      context,
+      wallet,
+      balances: mocks.balances,
+      chainId: CHAIN_ID,
+      wethToken: WETH,
+      initialEthBalance: INITIAL_ETH_BALANCE,
+    })
+
+    await swapPage.goto({ chainId: CHAIN_ID })
+
+    // Typed before switching the sell token to ETH, not after — see [MO-11]'s note on
+    // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
+    // with no amount set yet is selected.
+    await swapPage.enterSellAmount('0.5')
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('ETH')
+    await swapPage.tokens.openOutput()
+    await swapPage.tokens.searchAndPick('WETH')
+
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
+    await expect(swapPage.inputAmount).toHaveValue('0.5')
+
+    // The action button reads "Wrap", not "Swap" — this validation state's button doesn't carry
+    // the `#do-trade-button` id the ordinary swap/approve states do (same gap found in [MO-45]),
+    // so it's matched by its own text instead of `swapPage.swapButton`.
+    const wrapButton = swapPage.page.getByRole('button', { name: 'Wrap', exact: true })
+    await expect(wrapButton).toBeVisible()
+    await wrapButton.click()
+
+    // Confirming signs/sends the on-chain `deposit()` tx directly — there's no off-chain signature
+    // step for a wrap, and no CoW API call of any kind.
+    await expect.poll(() => wrapTx.getSentValue()).toBe(WRAP_AMOUNT)
+    wrapTx.confirmMined()
+
+    // ETH decreases and WETH increases by the same wrapped amount.
+    await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
+    await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
   })
 
   test.describe('disconnected wallet', () => {
