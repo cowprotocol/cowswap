@@ -492,7 +492,7 @@ test.describe('Market Orders', () => {
     expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
   })
 
-  // Same as [MO-14]
+  // Same as [MO-14] [MO-44]
   test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
     swapPage,
     wallet,
@@ -899,5 +899,24 @@ test.describe('Market Orders', () => {
     // would never be picked up by the settlement.
     await expect.poll(() => postedOrderAppDataHash).toBeDefined()
     expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
+  })
+
+  test.describe('disconnected wallet', () => {
+    // The shared `wallet` fixture is `auto: true` (always instantiated so the injected provider
+    // exists before the page loads), but with auto-connect seeding off it never reconnects the
+    // app on boot — `wallet.connectViaModal()` is there for specs that need to connect later,
+    // simply never calling it is what keeps this test's app state disconnected throughout.
+    test.use({ mockWalletAutoConnect: false })
+
+    test('[MO-45] Not connected state: Connect Wallet button shown', async ({ swapPage }) => {
+      await swapPage.goto({ chainId: CHAIN_ID })
+
+      // This validation state's button (`TradeFormBlankButton`) doesn't carry the `#do-trade-button`
+      // id the other validation states render under, and the header has its own, differently-cased
+      // "Connect wallet" button — matched `exact` to land on the swap form's "Connect Wallet"
+      // specifically (confirmed via a DOM dump: two buttons, only this one capitalizes "Wallet").
+      const connectWalletButton = swapPage.page.getByRole('button', { name: 'Connect Wallet', exact: true })
+      await expect(connectWalletButton).toBeVisible()
+    })
   })
 })
