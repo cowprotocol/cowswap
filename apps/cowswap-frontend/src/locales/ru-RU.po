@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-08 07:57\n"
+"PO-Revision-Date: 2026-08-08 09:22\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -3660,7 +3660,7 @@ msgstr "Уменьшите ваше проскальзывание, разбив
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Add post-hook"
-msgstr "Добавить post-hook"
+msgstr "Добавить post-хук"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
@@ -4444,7 +4444,7 @@ msgstr "Внимание"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Add pre-hook"
-msgstr "Добавить pre-hook"
+msgstr "Добавить pre-хук"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Morpho Borrow"
@@ -5277,7 +5277,7 @@ msgstr "Скидка на CoWmunity"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -5445,7 +5445,7 @@ msgstr "до"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Copy calldata"
-msgstr ""
+msgstr "Скопировать calldata"
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "24 Hours"
@@ -6285,7 +6285,7 @@ msgstr "Хуки"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Only confirm if you trust this dapp and recognize the target contract and calldata above."
-msgstr ""
+msgstr "Подтверждайте только в том случае, если доверяете этому dApp и узнаёте целевой контракт и calldata выше."
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
@@ -6498,7 +6498,7 @@ msgstr "Подтвердить замену"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Confirm hook"
-msgstr ""
+msgstr "Подтвердить хук"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
@@ -7675,7 +7675,7 @@ msgstr "Отменено"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Review hook request"
-msgstr ""
+msgstr "Запрос от хука"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. <1/>"
@@ -7759,7 +7759,7 @@ msgstr "Нам не удалось проверить ваше право на �
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Source"
-msgstr ""
+msgstr "Источник"
 
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
 msgid "Reset {symbol} allowance to 0 before setting new spending cap"
@@ -7976,7 +7976,7 @@ msgstr "Знаете ли вы?"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 msgid "You're switching from {sourceChainLabel} to {targetChainLabel}."
-msgstr ""
+msgstr "Вы переключаетесь с {sourceChainLabel} на {targetChainLabel}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "Insufficient time between parts"
