@@ -6,6 +6,7 @@ import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
+import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockWrapTransaction } from '../support/mockWrapTransaction'
 
@@ -107,6 +108,7 @@ test.describe('Market Orders', () => {
     await accountModal.close()
   })
 
+  // TODO: merge with MO-48
   test('[MO-03] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
     swapPage,
     tradePage,
@@ -902,6 +904,7 @@ test.describe('Market Orders', () => {
     expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
   })
 
+  // Same as [MO-47]
   test('[MO-46] Wrap ETH → WETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
     const INITIAL_ETH_BALANCE = parseUnits('1', 18)
     const WRAP_AMOUNT = parseUnits('0.5', 18)
@@ -949,6 +952,72 @@ test.describe('Market Orders', () => {
     // ETH decreases and WETH increases by the same wrapped amount.
     await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
     await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
+  })
+
+  test('[MO-54] Cancel market order: off-chain soft cancellation (EOA)', async ({
+    swapPage,
+    wallet,
+    mocks,
+    accountModal,
+  }) => {
+    // Deliberately not created through the swap UI (per spec) — seeded directly via
+    // `mockCancellableOrder` instead. See that helper for why mocking `accountOrders` is the
+    // correct lever (not something reverse-engineered from localStorage).
+    const cancellableOrder = mockCancellableOrder({
+      cowApi: mocks.cowApi,
+      owner: wallet.address,
+      sellToken: WETH,
+      buyToken: USDC,
+      sellAmount: parseUnits('1', 18),
+      buyAmount: parseUnits('2000', 18),
+    })
+
+    // `OrdersFromApiUpdater` only turns a fetched order into local state once it can resolve both
+    // its sell/buy tokens from `useAllActiveTokens()` — selecting them via the real dropdown UI,
+    // same as [MO-02]/[MO-03], is what gets them into that set (no order is ever created through
+    // this UI, only the token registration piggybacks on it).
+    await swapPage.goto({ chainId: CHAIN_ID })
+    await swapPage.tokens.openInput()
+    await swapPage.tokens.searchAndPick('WETH')
+    await swapPage.tokens.openOutput()
+    await swapPage.tokens.searchAndPick('USDC')
+
+    await accountModal.open()
+    await accountModal.activitiesList.scrollIntoViewIfNeeded()
+    // `OrdersFromApiUpdater` only picks this up once its own effects settle — longer than the
+    // default 5s.
+    await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
+
+    const cancelLink = accountModal.activitiesList.getByText('Cancel order', { exact: true })
+    await expect(cancelLink).toBeVisible()
+    await cancelLink.click()
+
+    // Clicking "Cancel order" only opens a confirmation modal (`RequestCancellationModal`) — the
+    // actual off-chain signature + DELETE only fire once this button is clicked too.
+    await swapPage.page.getByRole('button', { name: 'Request cancellation' }).click()
+
+    // The wallet is asked to sign an `OrderCancellations` EIP-712 message (`orderUids: bytes[]`,
+    // see `@cowprotocol/sdk-contracts-ts`'s `CANCELLATIONS_TYPE_FIELDS`) — not a transaction.
+    await expect.poll(() => cancellableOrder.wasCancelRequested()).toBe(true)
+    const cancellationSignRequest = wallet
+      .rpcCalls('eth_signTypedData_v4')
+      .map((call) => JSON.parse(call.params[1] as string))
+      .find((typedData) => typedData.primaryType === 'OrderCancellations')
+    expect(cancellationSignRequest?.message?.orderUids).toContain(cancellableOrder.uid)
+
+    // No gas transaction is ever sent for a soft cancellation.
+    expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
+
+    // The API now considers the order invalidated — the order's own `creationDate` hasn't cleared
+    // `PENDING_ORDERS_BUFFER` yet, so the UI shows the transient "Cancelling..." state first
+    // (`isCancelling: apiStatus === 'pending' && order.invalidated`, `OrdersFromApiUpdater.ts`).
+    cancellableOrder.markCancelled()
+    await expect(accountModal.activitiesList).toContainText('Cancelling...', { timeout: 45_000 })
+
+    // Once enough real time has passed since `creationDate`, `isOrderCancelled` flips true and the
+    // order settles into its final "Cancelled" state — genuinely time-dependent, hence the long
+    // timeout rather than a flaw in the mock.
+    await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
   })
 
   test.describe('disconnected wallet', () => {
