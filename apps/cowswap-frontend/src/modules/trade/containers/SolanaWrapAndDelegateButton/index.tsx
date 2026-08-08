@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react'
 
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
-import { ButtonError, ButtonSize, HelpTooltip } from '@cowprotocol/ui'
+import { ButtonError, ButtonSize, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -38,7 +38,9 @@ export function SolanaWrapAndDelegateButton({ isDisabled, clickEvent }: SolanaWr
       data-click-event={clickEvent}
     >
       <div>
-        <Trans>Enable trading</Trans>
+        <Trans>
+          Wrap <TokenSymbol token={state?.inputCurrency} length={6} /> and Swap
+        </Trans>
         {error && <HelpTooltip placement="top" text={<div>{error}</div>} />}
       </div>
     </ButtonError>
