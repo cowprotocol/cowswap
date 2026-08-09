@@ -17,6 +17,8 @@ import { selectTokens } from '../support/selectTokens'
 
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
+const DAI = '0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D'
+const USDT = '0x58eb19ef91e8a6327fed391b51ae1887b833cc91'
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
 
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
@@ -938,6 +940,196 @@ test.describe('Market Orders', () => {
     // order settles into its final "Cancelled" state — genuinely time-dependent, hence the long
     // timeout rather than a flaw in the mock.
     await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
+  })
+
+  test('[MO-70] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair', async ({
+    setupTestConditions,
+    swapPage,
+    mocks,
+  }) => {
+    const RATE = 2000n // 1 WETH = 2000 USDC — arbitrary, same convention as [MO-07]
+
+    // `protocolFeeBps` is a top-level field on the quote response, not nested under `quote` (see
+    // `useTradeQuoteProtocolFee.ts`). Zeroing `feeAmount` (network cost) removes that term from
+    // "Before costs" entirely, so `protocolFee / beforeCosts` reduces to exactly
+    // `protocolFeeBps / 10000` instead of being diluted by an unrelated network-cost fraction —
+    // the SDK reverses a sell order's protocol fee out of `buyAmount` as
+    // `buyAmount * protocolFeeBps / (10000 - protocolFeeBps)`, so with `feeAmount = 0`:
+    // `beforeCosts = buyAmount + protocolFee = buyAmount * 10000 / (10000 - protocolFeeBps)`, and
+    // `protocolFee / beforeCosts = protocolFeeBps / 10000` exactly (mod integer-division rounding).
+    mocks.cowApi.set('quote', (req) => {
+      const defaults = req.defaults as { quote: Record<string, unknown> }
+      const sellAmount = BigInt(defaults.quote.sellAmount as string)
+      return {
+        ...defaults,
+        protocolFeeBps: '2',
+        quote: {
+          ...defaults.quote,
+          feeAmount: '0',
+          buyAmount: (sellAmount * RATE).toString(),
+        },
+      }
+    })
+
+    // Matches the quote's implied rate so the trade doesn't look like a loss against the
+    // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
+    // Impact" dialog — same technique as [MO-07].
+    mocks.usdPrices.setPrice(WETH, Number(RATE))
+
+    await setupTestConditions({
+      chainId: CHAIN_ID,
+      tradeType: 'swap',
+      sellToken: 'WETH',
+      buyToken: 'USDC',
+      sellAmount: '10',
+      balances: { WETH: '10', USDC: '0' },
+      allowances: { WETH: '10' },
+    })
+
+    await swapPage.receiveAmountTooltipTrigger.hover()
+
+    const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
+    await expect(tooltipBox).toBeVisible()
+
+    const protocolFeeCell = tooltipBox
+      .getByText('Protocol fee', { exact: true })
+      .locator('xpath=following-sibling::*[1]')
+
+    // The surplus/buy token (USDC), with a leading "-" — `FeeItem` renders a sell order's fee rows
+    // with `typeString = '-'` and `feeAmount.currency` (the buy token for a sell order's protocol
+    // fee, per `getQuoteAmountsAndCosts`), not the sell token being spent.
+    await expect(protocolFeeCell).toContainText('-')
+    const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
+    expect(protocolFeeTitle).toMatch(/ USDC$/)
+
+    // Both Sepolia test tokens report 18 decimals on-chain — same quirk as [MO-06]/[MO-07]/[MO-09].
+    const readRowAmount = (label: string): Promise<bigint> =>
+      readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
+
+    const beforeCosts = await readRowAmount('Before costs')
+    const protocolFee = await readRowAmount('Protocol fee')
+    const networkCosts = await readRowAmount('Network costs')
+    const toAmount = await readRowAmount('To')
+
+    expect(protocolFee).toBeGreaterThan(0n)
+    expect(networkCosts).toBe(0n)
+
+    // Protocol fee ≈ Before costs × 0.0002 (2 bps).
+    expect(Number(protocolFee) / Number(beforeCosts)).toBeCloseTo(0.0002, 6)
+
+    // The core relationship: To = Before costs − Network costs − Protocol fee.
+    expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
+  })
+
+  test('[MO-71] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs)', async ({
+    setupTestConditions,
+    swapPage,
+    wallet,
+    mocks,
+  }) => {
+    const STANDARD_TIER_RATIO = 0.0002 // The non-correlated 2 bps tier from [MO-70], for the ~6.67× comparison below.
+
+    // Same mechanism as [MO-70] (`protocolFeeBps` is a top-level quote field, applied identically
+    // regardless of which tokens are picked — correlation-based tier selection is a backend/solver
+    // decision this frontend just renders), just a different bps value and, for the USDC→USDT leg
+    // below, a buy side with real 6 decimals instead of 18.
+    function mockCorrelatedQuote(sellDecimals: number, buyDecimals: number): void {
+      mocks.cowApi.set('quote', (req) => {
+        const defaults = req.defaults as { quote: Record<string, unknown> }
+        const sellAmount = BigInt(defaults.quote.sellAmount as string)
+        const buyAmount =
+          sellDecimals === buyDecimals ? sellAmount : sellAmount / 10n ** BigInt(sellDecimals - buyDecimals)
+        return {
+          ...defaults,
+          protocolFeeBps: '0.3',
+          quote: { ...defaults.quote, feeAmount: '0', buyAmount: buyAmount.toString() },
+        }
+      })
+    }
+
+    async function checkProtocolFeeTier(opts: {
+      sellSymbol: string
+      buySymbol: string
+      sellAddress: string
+      buyAddress: string
+      sellDecimals: number
+      buyDecimals: number
+    }): Promise<void> {
+      const { sellSymbol, buySymbol, sellAddress, buyAddress, sellDecimals, buyDecimals } = opts
+
+      mockCorrelatedQuote(sellDecimals, buyDecimals)
+
+      // `setupTestConditions`'s own `balances`/`allowances` option resolves decimals via
+      // `support/tokens.ts`, whose USDC entry is deliberately wrong (see known quirks) — seeded
+      // directly by address/decimals here instead, same workaround as [MO-02]'s `seedTrader` use.
+      seedTrader(mocks, wallet, CHAIN_ID, {
+        balances: { [sellAddress]: parseUnits('1000', sellDecimals), [buyAddress]: 0n },
+        allowances: { [sellAddress]: parseUnits('1000', sellDecimals) },
+      })
+
+      await setupTestConditions({
+        chainId: CHAIN_ID,
+        tradeType: 'swap',
+        sellToken: sellSymbol,
+        buyToken: buySymbol,
+        sellAmount: '1000',
+      })
+
+      await swapPage.receiveAmountTooltipTrigger.hover()
+
+      const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
+      await expect(tooltipBox).toBeVisible()
+
+      const protocolFeeCell = tooltipBox
+        .getByText('Protocol fee', { exact: true })
+        .locator('xpath=following-sibling::*[1]')
+
+      // The surplus/buy token, with a leading "-" — same rendering as [MO-70].
+      await expect(protocolFeeCell).toContainText('-')
+      const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
+      expect(protocolFeeTitle).toMatch(new RegExp(` ${buySymbol}$`))
+
+      const readRowAmount = (label: string): Promise<bigint> =>
+        readTitledAmount(
+          tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'),
+          buyDecimals,
+        )
+
+      const beforeCosts = await readRowAmount('Before costs')
+      const protocolFee = await readRowAmount('Protocol fee')
+      const networkCosts = await readRowAmount('Network costs')
+      const toAmount = await readRowAmount('To')
+
+      expect(protocolFee).toBeGreaterThan(0n)
+      expect(networkCosts).toBe(0n)
+
+      // Protocol fee ≈ Before costs × 0.00003 (0.3 bps) — ~6.67× smaller than [MO-70]'s 2 bps tier
+      // on equivalent volume.
+      const ratio = Number(protocolFee) / Number(beforeCosts)
+      expect(ratio).toBeCloseTo(0.00003, 6)
+      expect(STANDARD_TIER_RATIO / ratio).toBeCloseTo(6.667, 1)
+
+      // The core relationship: To = Before costs − Network costs − Protocol fee.
+      expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
+    }
+
+    await checkProtocolFeeTier({
+      sellSymbol: 'USDC',
+      buySymbol: 'USDT',
+      sellAddress: USDC,
+      buyAddress: USDT,
+      sellDecimals: 18,
+      buyDecimals: 6,
+    })
+
+    await checkProtocolFeeTier({
+      sellSymbol: 'DAI',
+      buySymbol: 'USDC',
+      sellAddress: DAI,
+      buyAddress: USDC,
+      sellDecimals: 18,
+      buyDecimals: 18,
+    })
   })
 
   test.describe('disconnected wallet', () => {
