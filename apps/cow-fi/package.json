@@ -12,7 +12,7 @@
   },
   "browserslist": {
     "production": [
-      "supports bigint",
+      ">0.2%",
       "not dead",
       "not op_mini all"
     ],
