@@ -11,6 +11,11 @@ import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
  * the order to `fulfilled` in `accountOrders`, and makes `orderStatus` report it as `traded` —
  * the three things the real backend would eventually reflect once the trade settles on-chain.
  *
+ * `markExecuting()` is a lighter-weight intermediate step for tests that also want to observe
+ * the order-progress bar's `EXECUTING` stage (solver picked a winner, submitting on-chain) before
+ * the trade actually settles — it only advances `orderStatus`, none of the balance/`accountOrders`
+ * bookkeeping `fulfill()` does, since nothing has actually executed yet at that stage.
+ *
  * Page-agnostic (only wires CoW API mocks) — shared by swap, limit and TWAP order flows.
  *
  * The returned handle also lets a caller read the posted buyAmount/sellAmount back once the
@@ -24,6 +29,7 @@ export function mockOrderPosting(
 ): {
   getPostedBuyAmount(): string
   getPostedSellAmount(): string
+  markExecuting(): void
   fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void
 } {
   let postedBody: OrderCreation | null = null
@@ -54,6 +60,14 @@ export function mockOrderPosting(
     getPostedBuyAmount: () => postedBody?.buyAmount ?? '',
     getPostedSellAmount: () => postedBody?.sellAmount ?? '',
 
+    markExecuting(): void {
+      if (!postedBody) {
+        throw new Error('mockOrderPosting: markExecuting() called before an order was posted')
+      }
+
+      cowApi.set('orderStatus', () => buildOrderStatus('executing', postedBody as OrderCreation))
+    },
+
     fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void {
       if (!postedBody || !postedOrder) {
         throw new Error('mockOrderPosting: fulfill() called before an order was posted')
@@ -68,7 +82,7 @@ export function mockOrderPosting(
 
       // Order-progress polls this once the order exists — "traded" is what moves it past
       // "still searching" to a fulfilled state, mirroring the same fill emulated above.
-      cowApi.set('orderStatus', () => buildTradedOrderStatus(postedBody as OrderCreation))
+      cowApi.set('orderStatus', () => buildOrderStatus('traded', postedBody as OrderCreation))
     },
   }
 }
@@ -123,10 +137,10 @@ function buildOpenOrder(body: OrderCreation, uid: string, owner: string): Order 
   } as Order
 }
 
-/** What order-progress polls to learn a trade has settled — "traded" is what it waits for. */
-function buildTradedOrderStatus(body: OrderCreation): { type: string; value: unknown[] } {
+/** What order-progress polls to learn how a trade is being handled by the competition. */
+function buildOrderStatus(type: 'executing' | 'traded', body: OrderCreation): { type: string; value: unknown[] } {
   return {
-    type: 'traded',
+    type,
     value: [
       {
         solver: '0x99b4136666ca1d13020830350ca8d01a0e5e466b',

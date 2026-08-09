@@ -22,6 +22,7 @@ const CHAIN_ID = CHAIN_IDS.SEPOLIA
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Market Orders', () => {
+  // Includes MO-61
   test('[MO-02] Sell order: ERC-20 → ERC-20 @smoke', async ({
     swapPage,
     tradePage,
@@ -67,20 +68,39 @@ test.describe('Market Orders', () => {
     await swapPage.clickSwap()
     await confirmModal.confirmButton.click()
 
+    // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just posted, competition not started yet.
     await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
-    await swapPage.page.keyboard.press('Escape')
-    await expect(swapPage.orderProgressBarModal).toBeHidden()
+
+    // Step 2 (SOLVING, backend ACTIVE — the default `orderStatus` fixture) — competition started,
+    // solvers searching for the best price. All 4 steps' titles are always rendered together
+    // regardless of which one is active (`StepsWrapper` renders the full `STEPS` list, see
+    // `constants.ts`), so "Batching orders" alone wouldn't distinguish this step from step 1 —
+    // `SolvingStep`'s own body text is the part unique to it being the *active* step.
+    await expect(swapPage.orderProgressBarModal).toContainText('best price wins')
+
+    // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain.
+    // `ExecutingStep` overrides that step's own title to "Best price found!" while active.
+    // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds each step on screen for at
+    // least 5s before advancing to the next one, so this needs more room than the default 5s.
+    posting.markExecuting()
+    await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
     await expectActivityStatus(accountModal, 'Open')
 
-    // Settle the order now that it's posted and confirmed — mirrors [MO-04].
+    // Settle the order now that it's posted and confirmed.
     posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
 
-    // Unlike [MO-04] (which keeps the progress modal open throughout), this order was dismissed
-    // before settling — reopening it now goes through the surplus-modal queue driven by
-    // `PendingOrdersUpdater`'s own polling cadence rather than the still-open modal's watcher, so
-    // it needs more room than the default 5s.
+    // Step 4 (FINISHED, backend TRADED) — trade settled.
     await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+
+    // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts
+    // (`order.apiAdditionalInfo.executedSellAmount`/`executedBuyAmount`), not the originally
+    // quoted ones — cross-check them against what `fulfill()` actually settled the order at.
+    const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
+    const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
+    expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
+    expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
+
     await swapPage.page.keyboard.press('Escape')
 
     await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC', { timeout: 15_000 })
@@ -418,7 +438,7 @@ test.describe('Market Orders', () => {
     expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
   })
 
-  // Same as [MO-14] [MO-44]
+  // Includes [MO-14] [MO-44]
   test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
     swapPage,
     wallet,
@@ -807,7 +827,7 @@ test.describe('Market Orders', () => {
     expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
   })
 
-  // Same as [MO-47]
+  // Includes [MO-47]
   test('[MO-46] Wrap ETH → WETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
     const INITIAL_ETH_BALANCE = parseUnits('1', 18)
     const WRAP_AMOUNT = parseUnits('0.5', 18)
