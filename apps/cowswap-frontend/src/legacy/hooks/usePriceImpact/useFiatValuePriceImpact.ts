@@ -8,7 +8,6 @@ import { Fraction, Percent } from '@cowprotocol/currency'
 import ms from 'ms.macro'
 
 import { useDerivedTradeState } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -32,23 +31,9 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
-  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged, fetchParams } = useTradeQuote()
-
-  // Bumps on every genuine quote request (see `doQuotePolling`). Used to re-arm the timeout below.
-  const quoteFetchStartTimestamp = fetchParams?.fetchStartTimestamp
-
-  // Trade-quote signals indicate the current output amount is stale (token just changed
-  // or a fresh quote is in flight). Compute price impact only once the quote catches up,
-  // otherwise we'd display a huge nonsense % derived from mismatched in/out amounts.
-  const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
+  const isLoading = inputIsLoading || outputIsLoading
   const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
 
-  // Restart the safety-valve timeout on a token-pair change OR whenever a new quote request begins
-  // (`quoteFetchStartTimestamp`, which bumps per fetch). Keying it off the `quoteParamsChanged`
-  // boolean instead left `hasLoadingTimedOut` stuck true once it had timed out: a second changed-
-  // params quote for the same pair keeps the flag `true`, so the effect never re-ran and the stale
-  // value rendered immediately. The per-fetch timestamp re-arms on every genuinely new quote, while
-  // plain loading flicker (no new fetch) still lets a stuck quote time out.
   useEffect(() => {
     logPriceImpact.debug(`Price impact timeout reset`)
     setHasLoadingTimedOut(false)
@@ -60,26 +45,18 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     }, PRICE_IMPACT_LOADING_TIMEOUT)
 
     return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp])
+  }, [isTradeSetUp, inputToken, outputToken])
 
   return useSafeMemo(() => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
     if (!isTradeSetUp) return null
-
-    const stillLoading = isLoading && !hasLoadingTimedOut
-
-    // While a fresh quote is loading, don't expose the stale value at all — consumers
-    // hide the percentage when `priceImpact` is undefined, leaving just the spinner.
-    if (stillLoading) {
-      return { priceImpact: undefined, isLoading: true }
-    }
 
     const priceImpact = computeFiatValuePriceImpact(
       fiatValueInput ? FractionUtils.fractionLikeToFraction(fiatValueInput) : null,
       fiatValueOutput ? FractionUtils.fractionLikeToFraction(fiatValueOutput) : null,
     )
 
-    return { priceImpact, isLoading: false }
+    return { priceImpact, isLoading: isLoading && !hasLoadingTimedOut }
   }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
 }
 

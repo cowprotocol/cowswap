@@ -14,6 +14,11 @@ export const solSettlementAddress = isBarnBackendEnv
 
 const SETTLEMENT_SEED = new TextEncoder().encode('settlement')
 
+/**
+ * Settlement state PDA — the SPL delegate a sell-token account is approved to. A token's delegation
+ * counts as a CoW approval only when its on-account `delegate` equals this PDA (the program pulls the
+ * sell funds through it at execution time). This is the Solana analogue of the EVM vault relayer spender.
+ */
 export function findSolanaSettlementStatePda(): PublicKey {
   return PublicKey.findProgramAddressSync([SETTLEMENT_SEED], new PublicKey(solSettlementAddress))[0]
 }

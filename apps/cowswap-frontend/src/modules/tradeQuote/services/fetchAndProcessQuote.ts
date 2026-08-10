@@ -1,6 +1,5 @@
-import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SwapAdvancedSettings, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   BridgeQuoteErrors,
@@ -17,8 +16,6 @@ import { AppDataInfo } from 'modules/appData'
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
-
-import { getSolanaMockQuote } from './getSolanaMockQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -57,17 +54,6 @@ export async function fetchAndProcessQuote(
     const parsedError = parseError(errorLocation, error)
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
-
-    // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet, so swallow
-    // Solana quote errors instead of surfacing them (`reset` just clears the loading spinner). The swap
-    // path serves a mock quote (see `fetchSwapQuote`), so this mainly covers any other Solana error.
-    // Remove once real Solana quotes are wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
-    if (IS_SOLANA_ENABLED && isSolanaChain(chainId)) {
-      console.warn('[fetchAndProcessQuote]:: Solana quote error ignored (no Solana quote backend yet)', parsedError)
-      tradeQuoteManager.reset()
-
-      return
-    }
 
     tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
   }
@@ -134,15 +120,6 @@ async function fetchSwapQuote(
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
 ): Promise<void> {
-  // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet — serve a
-  // mock quote so the trade-widget flow can reach the Approve step. Remove once real Solana quotes are
-  // wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
-  if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    tradeQuoteManager.onResponse(getSolanaMockQuote(quoteParams), null, fetchParams, quoteParams)
-
-    return
-  }
-
   const { priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
