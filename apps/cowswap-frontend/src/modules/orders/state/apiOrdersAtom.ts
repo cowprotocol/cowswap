@@ -2,4 +2,9 @@ import { atom } from 'jotai'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
-export const apiOrdersAtom = atom<EnrichedOrder[]>([])
+export interface ApiOrdersState {
+  orders: EnrichedOrder[]
+  isLoadingMore: boolean
+}
+
+export const apiOrdersAtom = atom<ApiOrdersState>({ orders: [], isLoadingMore: false })
