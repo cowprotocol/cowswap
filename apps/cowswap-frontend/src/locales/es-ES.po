@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-07 21:03\n"
+"PO-Revision-Date: 2026-08-10 15:37\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2763,6 +2763,10 @@ msgstr "Nativo"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "Pool analytics"
 msgstr "Análisis de Pool"
+
+#: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
+#~ msgid "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
+#~ msgstr "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -6349,6 +6353,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "seconds"
+msgstr ""
+
+#: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
+msgid "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
