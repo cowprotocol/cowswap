@@ -6,6 +6,8 @@ import JSBI from 'jsbi'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { GenericOrder } from 'common/types'
+
 import { getExecutedSummaryData } from '../getExecutedSummaryData'
 
 import type { ParsedOrder } from '../orderUtils/parseOrder'
@@ -272,5 +274,65 @@ describe('getExecutedSummaryData', () => {
     expect(result.surplusAmount.currency.address).toBe(polygonWeth.address)
     expect(result.surplusAmount.currency.decimals).toBe(18)
     expect(result.surplusAmount.toExact()).toBe('0.000000000000025')
+  })
+
+  it('keeps the parsed output token when executed sell amount is zero', () => {
+    const order1 = {
+      owner: '0xowner',
+      executedBuyAmount: '1000000', // 1 USDC
+      executedSellAmount: '0',
+      executedSellAmountBeforeFees: '0',
+      executedFeeAmount: '0',
+      executedFee: '0',
+      executedFeeToken: baseWeth.address,
+      invalidated: false,
+      status: OrderStatus.FULFILLED,
+      class: OrderClass.LIMIT,
+      apiAdditionalInfo: {
+        executedBuyAmount: '1000000',
+        executedSellAmountBeforeFees: '0',
+      },
+      sellToken: baseWeth.address,
+      buyToken: baseUsdc.address,
+      sellAmount: '500000000000000', // 0.0005 WETH
+      buyAmount: '1000000', // 1 USDC
+      feeAmount: '0',
+      kind: OrderKind.BUY,
+      sellTokenBalance: 'erc20',
+      buyTokenBalance: 'erc20',
+      totalFee: '0',
+      sellAmountBeforeFee: '500000000000000', // 0.0005 WETH
+      inputToken: {
+        chainId: baseWeth.chainId,
+        decimals: baseWeth.decimals,
+        symbol: baseWeth.symbol,
+        name: baseWeth.symbol,
+        isNative: baseWeth.isNative,
+        isToken: baseWeth.isToken,
+        address: baseWeth.address,
+      },
+      outputToken: {
+        chainId: baseUsdc.chainId,
+        decimals: baseUsdc.decimals,
+        symbol: baseUsdc.symbol,
+        name: baseUsdc.symbol,
+        isNative: baseUsdc.isNative,
+        isToken: baseUsdc.isToken,
+        address: baseUsdc.address,
+      },
+      id: '0xorderid',
+      isCancelling: false,
+    } as unknown as GenericOrder
+
+    const result = getExecutedSummaryData(order1, null)
+
+    expect(result.formattedSwappedAmount.currency.address).toBe(baseWeth.address)
+    expect(result.formattedSwappedAmount.currency.chainId).toBe(baseWeth.chainId)
+    expect(result.surplusAmount.currency.address).toBe(baseWeth.address)
+    expect(result.surplusToken.address).toBe(baseWeth.address)
+    // Verify denominators are not zero to avoid division by zero errors
+    expect(result.surplusAmount.denominator).not.toBe(0n)
+    expect(result.formattedFilledAmount.denominator).not.toBe(0n)
+    expect(result.formattedSwappedAmount.denominator).not.toBe(0n)
   })
 })

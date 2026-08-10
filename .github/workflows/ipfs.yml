@@ -3,8 +3,6 @@ name: ipfs
 on:
   push:
     tags: [ cowswap-v* ]
-  # Added for testing the deployment. Should be removed after testing
-  workflow_dispatch:
 
 permissions:
   contents: read

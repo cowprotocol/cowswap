@@ -77,6 +77,7 @@ function makeTwapOrderItem(sellToken: string, buyToken: string): TwapOrderItem {
     id: 'twap-1',
     chainId: SupportedChainId.MAINNET,
     safeAddress: '0x0000000000000000000000000000000000000001',
+    resolvedOwner: '0x0000000000000000000000000000000000000001',
     status: TwapOrderStatus.Pending,
     submissionDate: '2024-01-01T00:00:00.000Z',
     executionInfo: {
