@@ -1,5 +1,46 @@
 # Changelog
 
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.22.0...cowswap-v3.23.0) (2026-08-05)
+
+### Minor Changes
+
+- feat: block quotes until captcha is solved or errors (#7955)
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- fix(twap): make "Update fallback handler" work for Safe via WC (#7953)
+
+- fix: add quoteId and allowsOffchainSigning tracking when order is sent to sign (#7952)
+
+- fix(internationalization): clear stale translations and add pt-br and fr-fr (#7943)
+
+- fix(widget): fire ON_BEFORE_APPROVAL widget hook before permit signing (#7697)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/tokens@3.9.0
+  - @cowprotocol/balances-and-allowances@3.10.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/ens@3.5.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/multicall@3.5.0
+  - @cowprotocol/permit-utils@3.5.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/widget-lib@4.5.0
+  - @cowprotocol/snackbars@2.2.10
+  - @cowprotocol/iframe-transport@2.3.5
+  - @cowprotocol/hook-dapp-lib@2.2.12
+
 ## [3.22.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.21.0...cowswap-v3.22.0) (2026-07-30)
 
 ### Minor Changes

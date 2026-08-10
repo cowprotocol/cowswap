@@ -126,7 +126,10 @@ export function ReceiptModal({
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
 
-  const isCustomRecipient = getIsCustomRecipient(order)
+  const isCustomRecipient = getIsCustomRecipient({
+    owner: twapOrder?.resolvedOwner ?? order.owner,
+    receiver: order.receiver,
+  })
   const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
 
   if (!order || !chainId) {

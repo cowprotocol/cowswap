@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.2...currency-v1.3.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
 ## [1.2.2](https://github.com/cowprotocol/cowswap/compare/currency-v1.2.1...currency-v1.2.2) (2026-07-28)
 
 ### Patch Changes

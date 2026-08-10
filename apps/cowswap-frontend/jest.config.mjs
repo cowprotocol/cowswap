@@ -16,8 +16,8 @@ export default {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
   transformIgnorePatterns: [
-    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown))',
-    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown))',
+    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
+    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
   ],
   moduleNameMapper: {
     '^wagmi$': require.resolve('wagmi'),

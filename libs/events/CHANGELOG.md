@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/events-v4.9.0...events-v4.10.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.8.0
+
 ## [4.9.0](https://github.com/cowprotocol/cowswap/compare/events-v4.8.1...events-v4.9.0) (2026-07-30)
 
 ### Minor Changes
