@@ -48,7 +48,7 @@ export function OrdersFromApiUpdater(): null {
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
-  const ordersFromOrderBook = useOrdersFromOrderBook()
+  const { orders: ordersFromOrderBook, isLoadingMore } = useOrdersFromOrderBook()
   const getTokensForOrdersList = useTokensForOrdersList()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
@@ -86,8 +86,8 @@ export function OrdersFromApiUpdater(): null {
   )
 
   useEffect(() => {
-    updateApiOrders(ordersFromOrderBook)
-  }, [ordersFromOrderBook, updateApiOrders])
+    updateApiOrders({ orders: ordersFromOrderBook, isLoadingMore })
+  }, [isLoadingMore, ordersFromOrderBook, updateApiOrders])
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {
