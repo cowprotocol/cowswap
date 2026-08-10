@@ -1,4 +1,5 @@
 export * from './TradeApproveButton'
+export * from './SolanaTradeApproveButton'
 export * from './TradeApproveModal'
 export * from './TradeApproveToggle'
 export * from './TradeSignPermitButton'

@@ -6,9 +6,11 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   font-size: inherit;
   gap: 4px;
+  overflow-wrap: break-word;
+  word-break: normal;
 `
 
 export const NativeWrapper = styled.span`

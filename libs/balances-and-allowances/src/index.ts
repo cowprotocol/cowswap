@@ -28,6 +28,7 @@ export type { AllowancesState } from './hooks/useTokenAllowances'
 
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
+export { findSolanaSettlementStatePda } from './const/solanaSettlement'
 
 // Atoms + enums
 export {
