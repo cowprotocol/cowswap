@@ -1,6 +1,3 @@
 export { ConfirmationPendingContent } from './ConfirmationPendingContent'
-export { MultiConfirmationPendingContent } from './multi/MultiConfirmationPendingContent'
-export type {
-  MultiConfirmationPendingStep,
-  MultiConfirmationPendingStepStatus,
-} from './multi/MultiConfirmationPendingContent'
+export { OrderSteps } from './multi/OrderSteps.pure'
+export type { OrderStep, OrderStepStatus } from './multi/item/OrderStepItem.pure'

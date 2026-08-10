@@ -4,10 +4,14 @@ import { X } from 'react-feather'
 
 import * as styledEl from './styled'
 
-import { BackButton } from '../BackButton'
+export { IconButton } from './styled'
 
 export interface ModalHeaderProps {
   children?: ReactNode
+
+  title?: ReactNode
+
+  rightSlot?: ReactNode
 
   onBack?(): void
 
@@ -16,22 +20,31 @@ export interface ModalHeaderProps {
   className?: string
 }
 
-export function ModalHeader({ children, className, onBack, onClose }: ModalHeaderProps): ReactNode {
+export function ModalHeader({
+  title,
+  children,
+  rightSlot,
+  className,
+  onBack,
+  onClose,
+}: ModalHeaderProps): ReactNode {
+  const headerClassName = [className, onBack ? 'hasBack' : null, onClose ? 'hasClose' : null]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <styledEl.Header className={className} withoutBorder={true}>
-      {onBack && (
-        <div>
-          <BackButton onClick={onBack} />
-        </div>
-      )}
-      <styledEl.Title hasClose={!!onClose}>{children}</styledEl.Title>
-      {onClose && (
-        <div>
-          <styledEl.IconButton onClick={onClose}>
-            <X />
-          </styledEl.IconButton>
-        </div>
-      )}
+    <styledEl.Header className={headerClassName} withoutBorder>
+      {onBack ? <styledEl.BackButtonStyled onClick={onBack} /> : null}
+
+      <styledEl.Title>{title || children}</styledEl.Title>
+
+      {rightSlot ? <styledEl.RightSlot>{rightSlot}</styledEl.RightSlot> : null}
+
+      {onClose ? (
+        <styledEl.CloseButtonStyled onClick={onClose}>
+          <X />
+        </styledEl.CloseButtonStyled>
+      ) : null}
     </styledEl.Header>
   )
 }

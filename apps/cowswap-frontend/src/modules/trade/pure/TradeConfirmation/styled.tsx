@@ -59,39 +59,8 @@ export const ContentWrapper = styled.div`
   padding: 0 10px 10px;
 `
 
-export const Header = styled.div`
-  --arrow-size: 19px;
-
-  align-items: top;
-  background: var(${UI.COLOR_PAPER});
-  column-gap: 4px;
-  display: grid;
-  grid-template-columns: 18px auto 1.25fr;
-  left: 0;
-  line-height: var(--arrow-size);
-  margin: 0;
-  padding: 14px 10px;
-  position: sticky;
-  top: 0;
-  width: 100%;
-  z-index: 20;
-
-  > svg {
-    height: var(--arrow-size);
-    margin-right: 0;
-    width: var(--arrow-size);
-  }
-`
-
 export const HeaderRightContent = styled.div`
   line-height: var(--arrow-size);
-`
-
-export const ConfirmHeaderTitle = styled.h3`
-  font-size: 15px;
-  line-height: var(--arrow-size);
-  margin: 0;
-  word-wrap: break-word;
 `
 
 export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`

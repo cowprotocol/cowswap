@@ -1,25 +1,34 @@
 import { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useTradePriceImpact } from 'modules/trade'
 
-import { MultiConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
+import { OrderSteps } from 'common/pure/ConfirmationPendingContent'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { buildEoaTwapConfirmationPendingSteps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
 
 interface EoaTwapSigningPendingContentProps {
   onDismiss: Command
+  tradeDetailsSlot: ReactNode
 }
 
-export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendingContentProps): ReactNode {
+export function EoaTwapSigningPendingContent({ onDismiss, tradeDetailsSlot }: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const {
+    inputCurrencyAmount,
+    inputCurrencyFiatAmount,
+    inputCurrencyBalance,
+    outputCurrencyAmount,
+    outputCurrencyFiatAmount,
+    outputCurrencyBalance,
+  } = useAdvancedOrdersDerivedState()
+  const priceImpact = useTradePriceImpact()
   const symbol = inputCurrencyAmount?.currency.symbol
 
   const steps = useMemo(() => {
@@ -30,26 +39,30 @@ export function EoaTwapSigningPendingContent({ onDismiss }: EoaTwapSigningPendin
     return null
   }
 
-  const title = (
-    <span>
-      <Trans>Placing TWAP</Trans>
-      {inputCurrencyAmount && outputCurrencyAmount ? (
-        <>
-          {': '}
-          <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrencyAmount.currency} />
-          {' → '}
-          <TokenSymbol token={outputCurrencyAmount.currency} />
-        </>
-      ) : null}
-    </span>
-  )
+  const inputCurrencyInfo = {
+    amount: inputCurrencyAmount,
+    fiatAmount: inputCurrencyFiatAmount,
+    balance: inputCurrencyBalance,
+    label: t`Sell amount`,
+  } satisfies CurrencyPreviewInfo
+
+  const outputCurrencyInfo = {
+    amount: outputCurrencyAmount,
+    fiatAmount: outputCurrencyFiatAmount,
+    balance: outputCurrencyBalance,
+    label: t`Receive (before fees)`,
+  } satisfies CurrencyPreviewInfo
 
   return (
-    <MultiConfirmationPendingContent
-      title={title}
-      description={t`Confirm each step in your wallet`}
+    <OrderSteps
+      title={t`TWAP order`}
+      badge={t`Action required`}
+      onClose={!!signingStep?.lockDismiss ? undefined : onDismiss}
+      inputCurrencyInfo={inputCurrencyInfo}
+      outputCurrencyInfo={outputCurrencyInfo}
+      priceImpact={priceImpact}
+      tradeDetailsSlot={tradeDetailsSlot}
       steps={steps}
-      onDismiss={!!signingStep?.lockDismiss ? undefined : onDismiss}
     />
   )
 }

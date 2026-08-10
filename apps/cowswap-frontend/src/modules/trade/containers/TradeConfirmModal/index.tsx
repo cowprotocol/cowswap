@@ -20,6 +20,8 @@ const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};
+  background: red;
+  overflow: hidden;
 
   .modalMode & {
     box-shadow: none;

@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { BackButton } from '@cowprotocol/ui'
+import { ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -84,13 +84,12 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
+
+      <ModalHeader
+        title={props.title}
+        onBack={onDismiss}
+        rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />} />
+
       <styledEl.ContentWrapper id="trade-confirmation">
         <ConfirmAmounts
           inputCurrencyInfo={props.inputCurrencyInfo}

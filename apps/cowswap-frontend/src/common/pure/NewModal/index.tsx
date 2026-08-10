@@ -89,7 +89,7 @@ const BackButtonStyled = styled(BackButton)`
   left: 10px;
 `
 
-const NewModalContent = styled.div<{ padding?: string; justifyContent?: string }>`
+export const NewModalContent = styled.div<{ padding?: string; justifyContent?: string }>`
   display: flex;
   justify-content: ${({ justifyContent }) => justifyContent || 'center'};
   flex-flow: column wrap;

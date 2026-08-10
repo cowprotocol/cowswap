@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { MultiConfirmationPendingStep } from 'common/pure/ConfirmationPendingContent'
+import { OrderStep, OrderStepStatus } from 'common/pure/ConfirmationPendingContent'
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
@@ -20,7 +20,7 @@ export interface BuildEoaTwapConfirmationPendingStepsParams {
 export function buildEoaTwapConfirmationPendingSteps({
   signingStep,
   symbol,
-}: BuildEoaTwapConfirmationPendingStepsParams): MultiConfirmationPendingStep[] {
+}: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
   if (currentIndex === -1) {
@@ -72,7 +72,7 @@ export function buildEoaTwapConfirmationPendingSteps({
 
 export function getEoaTwapStepDescription(
   step: EoaTwapSigningSteps,
-  status: MultiConfirmationPendingStep['status'],
+  status: OrderStepStatus,
 ): ReactNode | undefined {
   if (status === 'success') {
     return undefined
