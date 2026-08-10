@@ -593,7 +593,7 @@ test.describe('Market Orders', () => {
       })
     })
 
-    test('[MO-22] Slippage: dynamic mode defaults and range (regular flow)', async ({
+    test('[MO-22] Slippage: dynamic mode defaults and range (regular flow) @smoke', async ({
       setupTestConditions,
       swapPage,
       context,
@@ -672,7 +672,7 @@ test.describe('Market Orders', () => {
       expect(Number(adjustedPercent)).toBeGreaterThan(2)
     })
 
-    test('[MO-30] Token not approved (non-permittable, no bundling): approval button shown', async ({
+    test('[MO-30] Token not approved (non-permittable, no bundling): approval button shown @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -739,7 +739,7 @@ test.describe('Market Orders', () => {
       await expect.poll(() => orderPosted).toBe(true)
     })
 
-    test('[MO-42] Token approval: gasless approval (EIP-2612 permit)', async ({
+    test('[MO-42] Token approval: gasless approval (EIP-2612 permit) @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -831,7 +831,7 @@ test.describe('Market Orders', () => {
     })
 
     // Includes [MO-47]
-    test('[MO-46] Wrap ETH → WETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
+    test('[MO-46] Wrap ETH → WETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const WRAP_AMOUNT = parseUnits('0.5', 18)
 
@@ -880,7 +880,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
     })
 
-    test('[MO-54] Cancel market order: off-chain soft cancellation (EOA)', async ({
+    test('[MO-54] Cancel market order: off-chain soft cancellation (EOA) @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -943,7 +943,7 @@ test.describe('Market Orders', () => {
       await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
     })
 
-    test('[MO-70] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair', async ({
+    test('[MO-70] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
       setupTestConditions,
       swapPage,
       mocks,
@@ -1022,7 +1022,7 @@ test.describe('Market Orders', () => {
       expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
     })
 
-    test('[MO-71] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs)', async ({
+    test('[MO-71] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs) @smoke', async ({
       setupTestConditions,
       swapPage,
       wallet,
@@ -1166,7 +1166,7 @@ test.describe('Market Orders', () => {
     // simply never calling it is what keeps this test's app state disconnected throughout.
     test.use({ mockWalletAutoConnect: false })
 
-    test('[MO-45] Not connected state: Connect Wallet button shown', async ({ swapPage }) => {
+    test('[MO-45] Not connected state: Connect Wallet button shown @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // This validation state's button (`TradeFormBlankButton`) doesn't carry the `#do-trade-button`
