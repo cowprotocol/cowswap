@@ -6,11 +6,11 @@
   "schemaVersion": 2,
   "apps": {
     "@cowprotocol/cow-fi": 4.9,
-    "@cowprotocol/cowswap": 10.3,
-    "@cowprotocol/explorer": 10.8,
-    "@cowprotocol/sdk-tools": 9.8,
+    "@cowprotocol/cowswap": 11.2,
+    "@cowprotocol/explorer": 10.9,
+    "@cowprotocol/sdk-tools": 10.6,
     "@cowprotocol/storybook": 3.5,
-    "@cowprotocol/widget-configurator": 11,
+    "@cowprotocol/widget-configurator": 11.1,
   },
   "packages": {
     "@cowprotocol/currency": 0,
