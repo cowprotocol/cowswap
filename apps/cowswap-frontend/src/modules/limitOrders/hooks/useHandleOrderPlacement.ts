@@ -204,7 +204,7 @@ export function useHandleOrderPlacement(
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message || error.description)
         } else {
-          tradeConfirmActions.onError(getSwapErrorMessage(error))
+          tradeConfirmActions.onError(getSwapErrorMessage(error, tradeContext.chainId))
         }
       })
   }, [
@@ -218,6 +218,7 @@ export function useHandleOrderPlacement(
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
     isSmartContractWallet,
+    tradeContext.chainId,
   ])
 }
 
