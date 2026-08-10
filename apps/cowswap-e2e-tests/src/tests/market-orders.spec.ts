@@ -79,7 +79,10 @@ test.describe('Market Orders', () => {
       // regardless of which one is active (`StepsWrapper` renders the full `STEPS` list, see
       // `constants.ts`), so "Batching orders" alone wouldn't distinguish this step from step 1 —
       // `SolvingStep`'s own body text is the part unique to it being the *active* step.
-      await expect(swapPage.orderProgressBarModal).toContainText('best price wins')
+      // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on screen for at
+      // least 5s before advancing here too, racing the default 5s assertion timeout — same reason
+      // step 3 below needs more room than the default.
+      await expect(swapPage.orderProgressBarModal).toContainText('best price wins', { timeout: 15_000 })
 
       // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain.
       // `ExecutingStep` overrides that step's own title to "Best price found!" while active.
