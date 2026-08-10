@@ -162,7 +162,7 @@ export const tokensByAddressAtom = atom(async (get) => {
   const activeTokens = await get(allActiveTokensAtom)
 
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
-    acc[getAddressKey(token.address)] = token
+    acc[token.address.toLowerCase()] = token
     return acc
   }, {})
 

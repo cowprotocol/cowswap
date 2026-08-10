@@ -97,6 +97,7 @@ describe('useBridgeQuoteRecipient', () => {
 
       const { result } = renderHook(() => useBridgeQuoteRecipient())
 
+      // Bug: previously returned ACCOUNT (EVM address), displaying it as bridge destination
       expect(result.current).toBe(BRIDGE_QUOTE_ACCOUNT)
       expect(result.current).not.toBe(ACCOUNT)
     })
