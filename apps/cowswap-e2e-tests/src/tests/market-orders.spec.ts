@@ -865,12 +865,17 @@ test.describe('Market Orders', () => {
 
       // Typed before switching the sell token to ETH, not after — see [MO-11]'s note on
       // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
-      // with no amount set yet is selected.
+      // with no amount set yet is selected. That mitigation alone isn't airtight for a *native* ETH
+      // pick specifically: selecting a new input currency awaits `crossChainFamilySwitch()` before
+      // applying the selection (`useOpenTokenSelectWidget.ts`), a real microtask gap that can still
+      // let the 1-unit default win under CI load. Retyping once both switches have landed removes
+      // any dependency on that race — there's no further currency switch left to lose the amount to.
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('WETH')
+      await swapPage.enterSellAmount('0.5')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')
