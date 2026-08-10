@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { useRef } from 'react'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { UtmParams } from '@cowprotocol/common-utils'
@@ -47,8 +48,13 @@ export function AppDataInfoUpdater({
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
   const setAppDataBuiltWithHooks = useSetAtom(appDataBuiltWithHooksAtom)
+  // Tracks the latest effect run so a slower, superseded build can't overwrite
+  // appDataInfo (and its built-with-hooks marker) after a newer run has started.
+  const latestRunIdRef = useRef(0)
 
   useAsyncEffect(async () => {
+    const runId = ++latestRunIdRef.current
+
     if (!appCodeWithWidgetMetadata) {
       // reset values when there is no price estimation or network changes
       setAppDataInfo(null)
@@ -75,16 +81,24 @@ export function AppDataInfoUpdater({
     try {
       const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
+      // Skip stale writes: a newer run started while this build was in flight.
+      if (runId !== latestRunIdRef.current) return
+
       setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
+      // Record the hooks this appData build was based on, so consumers can tell
+      // whether the current appDataInfo is in sync with the latest hooks.
+      setAppDataBuiltWithHooks(typedHooks)
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+
+      if (runId !== latestRunIdRef.current) return
+
       setAppDataInfo(getAppData())
-    } finally {
-      // Record the hooks this appData build was based on, so consumers can tell
-      // whether the current appDataInfo is in sync with the latest hooks.
-      setAppDataBuiltWithHooks(typedHooks)
+      // The fallback document may omit the newly added hooks, so clear the
+      // marker instead of claiming it was built with them.
+      setAppDataBuiltWithHooks(undefined)
     }
   }, [
     appCodeWithWidgetMetadata,
