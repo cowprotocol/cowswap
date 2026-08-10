@@ -11,7 +11,7 @@ import {
 } from './codec'
 import { loadAllowancesFixture, parseAllowanceValue } from './fixture'
 import { hasAnyEntry, isOwnerConfigured, resolveAllowance } from './resolve'
-import { normalizeRpcUrl, resolveRpcChainIds, unconfiguredChainIds } from './rpcUrls'
+import { normalizeRpcUrl, resolveRpcChainIds } from './rpcUrls'
 import { allowanceKey, type AllowanceLookup, type AllowanceRead, type AllowanceValue } from './types'
 
 import type { BrowserContext, Route } from '@playwright/test'
@@ -56,11 +56,6 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
       '[allowances mock] No REACT_APP_NETWORK_URL_<chainId> env var is set, so no RPC traffic is intercepted ' +
         'and allowances come from the real node. The suite requires REACT_APP_NETWORK_URL_11155111.',
     )
-  } else {
-    const missing = unconfiguredChainIds()
-    if (missing.length > 0) {
-      console.info(`[allowances mock] not intercepting chains without an RPC override: ${missing.join(', ')}`)
-    }
   }
 
   function resolveFor(chainId: number, call: AllowanceCall): bigint {

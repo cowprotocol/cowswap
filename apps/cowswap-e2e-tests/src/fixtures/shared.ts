@@ -94,6 +94,12 @@ export const sharedFixtures: Fixtures<
   // whole mock stack — including `assertNoUnmatched()` — would silently never run.
   mocks: [
     async ({ context }, use) => {
+      // The order book API is mocked, so updaters can poll much faster without adding real load.
+      // See `getUpdaterInterval` in `libs/common-const/src/common.ts`.
+      await context.addInitScript(() => {
+        ;(window as unknown as { __COWSWAP_E2E__?: boolean }).__COWSWAP_E2E__ = true
+      })
+
       const allowances = installAllowances(context)
       const balances = installBalances(context)
       const cowApi = installCowProtocolApi(context)
