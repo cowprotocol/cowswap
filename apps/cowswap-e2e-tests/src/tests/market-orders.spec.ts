@@ -452,7 +452,7 @@ test.describe('Market Orders', () => {
       expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
     })
 
-    // Includes [MO-14] [MO-44]
+    // Includes [MO-44]
     test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
       swapPage,
       wallet,
@@ -602,6 +602,125 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
         timeout: 15_000,
       })
+    })
+
+    test('[MO-14] ETH-flow: order status lifecycle', async ({
+      swapPage,
+      wallet,
+      context,
+      confirmModal,
+      accountModal,
+      mocks,
+    }) => {
+      const INITIAL_ETH_BALANCE = parseUnits('1', 18)
+      const SELL_AMOUNT = parseUnits('0.5', 18)
+
+      // Same ETH-flow mocking setup as [MO-11] — see that test's comments for why this needs
+      // `mockEthFlowTransaction` (on-chain `createOrder()`, no off-chain signature) and an inlined
+      // `order` override (no `postOrder` call exists for this flow to hook via `mockOrderPosting`).
+      const ethFlow = await mockEthFlowTransaction({
+        context,
+        wallet,
+        chainId: CHAIN_ID,
+        initialEthBalance: INITIAL_ETH_BALANCE,
+      })
+
+      let orderIndexed = false
+      mocks.cowApi.set('order', (req) => {
+        if (!orderIndexed) return reply(404, { errorType: 'NotFound' })
+
+        const orderParams = ethFlow.getOrderParams()
+        const defaults = req.defaults as Record<string, unknown>
+        const filled = ethFlow.isFilled()
+        const executedSellAmount = filled ? orderParams?.sellAmount.toString() : '0'
+        return {
+          ...defaults,
+          kind: 'sell',
+          buyToken: orderParams?.buyToken,
+          sellAmount: orderParams?.sellAmount.toString(),
+          buyAmount: orderParams?.buyAmount.toString(),
+          status: filled ? 'fulfilled' : 'open',
+          executedBuyAmount: filled ? orderParams?.buyAmount.toString() : '0',
+          executedSellAmount,
+          executedSellAmountBeforeFees: executedSellAmount,
+        }
+      })
+
+      mockFixedRateQuote({ cowApi: mocks.cowApi })
+
+      await swapPage.goto({ chainId: CHAIN_ID })
+
+      // Typed before switching the sell token to ETH — dodges the auto-fill race documented at
+      // [MO-11].
+      await swapPage.enterSellAmount('0.5')
+      await swapPage.tokens.openInput()
+      await swapPage.tokens.searchAndPick('ETH')
+      await swapPage.tokens.openOutput()
+      await swapPage.tokens.searchAndPick('USDC')
+
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
+      await expect(swapPage.inputAmount).toHaveValue('0.5')
+      await swapPage.waitForQuote()
+      await expect(swapPage.inputAmount).toHaveValue('0.5')
+
+      await swapPage.clickSwap()
+      await confirmModal.confirmButton.click()
+
+      // Creating (tx sent, not yet mined): "Sending ETH" is the active step, and the tx hash is
+      // already linked as its "View transaction" explorer link — same signals as [MO-11].
+      await expect.poll(() => ethFlow.getSentValue()).toBe(SELL_AMOUNT)
+      await expect(swapPage.page.getByText('Sending ETH', { exact: true })).toBeVisible()
+
+      const viewTransactionLink = swapPage.page.getByRole('link', { name: /view transaction/i })
+      await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
+
+      // Still Creating (tx mined, order not indexed yet): "Creating Order" — the explorer link still
+      // points at the same creation tx.
+      ethFlow.confirmMined()
+      await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible({ timeout: 30_000 })
+      await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
+
+      // Open (order indexed by the backend).
+      orderIndexed = true
+      await accountModal.open()
+      await accountModal.activitiesList.scrollIntoViewIfNeeded()
+      await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
+
+      // Cancellable while Open (`isOrderCancellable` gates on order status alone, not order kind) —
+      // precondition for the "no longer possible" check once Filled, below.
+      const cancelLink = accountModal.activitiesList.getByText('Cancel order', { exact: true })
+      await expect(cancelLink).toBeVisible()
+      await accountModal.close()
+
+      // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
+      // a balance while `!disabled`, same as [MO-11]) — dismiss it to read the sell balance. Native
+      // ETH leaves the wallet as soon as the creation tx is sent (it's the tx's own `value`, not a
+      // separate settlement step), so it's already reflected here even though the order only just
+      // reached "Open".
+      await swapPage.page.keyboard.press('Escape')
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
+
+      // Filled: settle the order — mirrors [MO-11]'s `fulfill()`-equivalent inline logic. Unlike
+      // [MO-11] (which keeps the progress view open throughout), it was already dismissed above to
+      // read the sell balance — the ETH-flow progress view doesn't reopen itself the way the regular
+      // (off-chain-signed) flow's surplus-modal queue does at [MO-03], so status/balance here are
+      // read via the activities list and swap form directly instead of waiting on it to reappear.
+      const orderParams = ethFlow.getOrderParams()
+      if (!orderParams) throw new Error('mockEthFlowTransaction: fulfill attempted before an order was sent')
+      seedTrader(mocks, wallet, CHAIN_ID, { balances: { [USDC]: orderParams.buyAmount } })
+      ethFlow.confirmFilled()
+
+      await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
+        timeout: 15_000,
+      })
+
+      await accountModal.open()
+      await accountModal.activitiesList.scrollIntoViewIfNeeded()
+      await expect(accountModal.activitiesList).toContainText('Filled', { timeout: 15_000 })
+
+      // No longer cancellable once Filled — `isOrderCancellable` only allows CREATING/PENDING.
+      await expect(cancelLink).toBeHidden()
+      await accountModal.close()
     })
 
     test('[MO-22] Slippage: dynamic mode defaults and range (regular flow) @smoke', async ({

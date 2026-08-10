@@ -1,9 +1,18 @@
-import { countOwnEthBalanceCalls, encodeEthBalanceResult } from './mockEthFlowTransaction'
+import { encodeAbiParameters, type Hex } from 'viem'
+
+import {
+  classifyEthCall,
+  isFullyMocked,
+  resolveEthBalanceBatch,
+  type ClassifiedEthCall,
+} from './mockEthFlowTransaction'
 
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { BalancesMock } from '../mocks/balances'
 import type { RpcStub } from '../mockWallet/walletEngine'
 import type { BrowserContext } from '@playwright/test'
+
+const UINT256 = [{ type: 'uint256' }] as const
 
 const FAKE_WRAP_TX_HASH = `0x${'10'.repeat(32)}` as const
 
@@ -25,12 +34,13 @@ export interface MockWrapTransactionOpts {
   initialEthBalance: bigint
 }
 
-type ClassifiedEntry = { kind: 'receipt' } | { kind: 'ethBalance'; callCount: number } | { kind: 'opaque' }
+type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
 
 interface JsonRpcEntry {
   id: number | string
   method: string
   params: unknown[]
+  result?: unknown
 }
 
 /**
@@ -66,16 +76,25 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
       return { kind: 'receipt' }
     }
     if (entry.method === 'eth_call') {
-      const call = entry.params[0] as { data?: `0x${string}` }
-      const callCount = countOwnEthBalanceCalls(call.data, wallet.address)
-      if (callCount !== undefined) return { kind: 'ethBalance', callCount }
+      const call = entry.params[0] as { data?: Hex }
+      if (call.data) {
+        const classifiedCall = classifyEthCall(call.data, wallet.address)
+        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
+      }
     }
     return { kind: 'opaque' }
   }
 
-  const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint): unknown => {
+  const isEntryFullyMocked = (entry: ClassifiedEntry): boolean =>
+    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
+
+  const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint, upstream?: Hex): unknown => {
     if (classified.kind === 'receipt') return mined ? buildReceipt() : null
-    if (classified.kind === 'ethBalance') return encodeEthBalanceResult(classified.callCount, remainingBalance)
+    if (classified.kind === 'call') {
+      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [remainingBalance])
+      if (classified.call.kind === 'opaque') return undefined
+      return resolveEthBalanceBatch(classified.call, remainingBalance, upstream)
+    }
     return undefined
   }
 
@@ -88,7 +107,7 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
 
     const remainingBalance = initialEthBalance - (sentValue ?? 0n)
 
-    if (classified.every((c) => c.kind !== 'opaque')) {
+    if (classified.every(isEntryFullyMocked)) {
       const payload = entries.map((entry, i) => ({
         jsonrpc: '2.0',
         id: entry.id,
@@ -97,7 +116,8 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
       return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
     }
 
-    // Mixed batch: fetch the real response for the entries we don't own, patch in ours by id.
+    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
+    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
     const upstream = await route.fetch()
     const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
     const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
@@ -108,7 +128,8 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
     const payload = upstreamEntries.map((entry) => {
       const classifiedEntry = classifiedById.get(entry.id)
       if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, remainingBalance) }
+      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
+      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, remainingBalance, upstreamResult) }
     })
     return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
   })

@@ -32,6 +32,105 @@ const RESULT_TUPLE = [
   },
 ] as const
 
+const UINT256 = [{ type: 'uint256' }] as const
+
+export interface BatchCall {
+  kind: 'batch'
+  calls: ClassifiedEthCall[]
+}
+
+export type ClassifiedEthCall = OwnBalanceCall | BatchCall | OpaqueCall
+
+export interface OpaqueCall {
+  kind: 'opaque'
+}
+
+export interface OwnBalanceCall {
+  kind: 'ownBalance'
+}
+
+interface BatchResultSlot {
+  success: boolean
+  returnData: Hex
+}
+
+const OPAQUE: OpaqueCall = { kind: 'opaque' }
+
+/**
+ * Classifies one `eth_call` payload for `owner`'s own ETH balance, recursively — mirrors
+ * `mocks/allowances/codec.ts`'s `classifyCall`, since Multicall3 batches nest the same way
+ * regardless of what's inside them. Recognizing `getEthBalance(owner)` wherever it appears inside
+ * a batch (rather than requiring the *whole* batch to be nothing but that) is what keeps this from
+ * ever needing to forward the owner's real balance to the real RPC just because some other,
+ * unrelated read got bundled into the same Multicall3 call.
+ */
+export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
+  const selector = data.slice(0, 10).toLowerCase()
+
+  if (selector === GET_ETH_BALANCE_SELECTOR) {
+    try {
+      const [address] = decodeAbiParameters([{ type: 'address' }], `0x${data.slice(10)}` as Hex)
+      return (address as string).toLowerCase() === owner.toLowerCase() ? { kind: 'ownBalance' } : OPAQUE
+    } catch {
+      return OPAQUE
+    }
+  }
+
+  if (selector === AGGREGATE3_SELECTOR) {
+    try {
+      const [calls] = decodeAbiParameters(CALL3_TUPLE, `0x${data.slice(10)}` as Hex)
+      return {
+        kind: 'batch',
+        calls: (calls as ReadonlyArray<{ callData: Hex }>).map((c) => classifyEthCall(c.callData, owner)),
+      }
+    } catch {
+      return OPAQUE
+    }
+  }
+
+  return OPAQUE
+}
+
+export function isFullyMocked(call: ClassifiedEthCall): boolean {
+  if (call.kind === 'ownBalance') return true
+  if (call.kind === 'opaque') return false
+  return call.calls.every(isFullyMocked)
+}
+
+/**
+ * Builds the `Result[]` blob for a batch, patching only the `ownBalance` slots and leaving every
+ * other slot as whatever the real upstream response had for it (or a failure slot if there's no
+ * upstream at all, i.e. the batch turned out to be nothing but `ownBalance` calls). Same
+ * upstream-as-base technique as `codec.ts`'s `resolveBatchResult`.
+ */
+export function resolveEthBalanceBatch(call: BatchCall, balance: bigint, upstream?: Hex): Hex {
+  const base = upstream ? decodeResultSlots(upstream) : []
+
+  const slots = call.calls.map((inner, index) => {
+    const fallback = base[index] ?? { success: false, returnData: '0x' as Hex }
+
+    if (inner.kind === 'ownBalance') {
+      return { success: true, returnData: encodeAbiParameters(UINT256, [balance]) }
+    }
+    if (inner.kind === 'batch') {
+      const nestedUpstream = fallback.success ? fallback.returnData : undefined
+      return { success: true, returnData: resolveEthBalanceBatch(inner, balance, nestedUpstream) }
+    }
+    return fallback
+  })
+
+  return encodeAbiParameters(RESULT_TUPLE, [slots])
+}
+
+function decodeResultSlots(blob: Hex): BatchResultSlot[] {
+  try {
+    return [...(decodeAbiParameters(RESULT_TUPLE, blob)[0] as ReadonlyArray<BatchResultSlot>)]
+  } catch {
+    // An upstream error body or a truncated blob must not lose the mocked slots.
+    return []
+  }
+}
+
 /** `EthFlowOrder.Data` — the struct `createOrder()` takes, per `libs/abis/src/abis/CoWSwapEthFlow.ts`. */
 const ETH_FLOW_ORDER_TUPLE = [
   {
@@ -85,41 +184,13 @@ export interface MockEthFlowTransactionOpts {
   initialEthBalance: bigint
 }
 
-type ClassifiedEntry = { kind: 'receipt' } | { kind: 'ethBalance'; callCount: number } | { kind: 'opaque' }
+type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
 
 interface JsonRpcEntry {
   id: number | string
   method: string
   params: unknown[]
-}
-
-/**
- * Recognizes an `aggregate3` batch where every inner call is Multicall3's own
- * `getEthBalance(owner)` for `owner`. Returns the call count (== how many result slots to fill)
- * or `undefined` if the calldata isn't such a batch — a mixed batch (some other read alongside a
- * balance read) isn't something real traffic has shown happening, so it's left unhandled here
- * rather than guessed at.
- */
-export function countOwnEthBalanceCalls(data: Hex | undefined, owner: string): number | undefined {
-  if (!data || !data.toLowerCase().startsWith(AGGREGATE3_SELECTOR)) return undefined
-  try {
-    const payload = `0x${data.slice(10)}` as Hex
-    const [calls] = decodeAbiParameters(CALL3_TUPLE, payload)
-    const isOwnBalanceCall = (call: { callData: string }): boolean => {
-      if (!call.callData.toLowerCase().startsWith(GET_ETH_BALANCE_SELECTOR)) return false
-      const [address] = decodeAbiParameters([{ type: 'address' }], `0x${call.callData.slice(10)}` as Hex)
-      return (address as string).toLowerCase() === owner.toLowerCase()
-    }
-    const callList = calls as ReadonlyArray<{ callData: string }>
-    return callList.length > 0 && callList.every(isOwnBalanceCall) ? callList.length : undefined
-  } catch {
-    return undefined
-  }
-}
-
-export function encodeEthBalanceResult(callCount: number, balance: bigint): Hex {
-  const slot = { success: true, returnData: encodeAbiParameters([{ type: 'uint256' }], [balance]) }
-  return encodeAbiParameters(RESULT_TUPLE, [Array.from({ length: callCount }, () => slot)])
+  result?: unknown
 }
 
 /**
@@ -135,6 +206,11 @@ export function encodeEthBalanceResult(callCount: number, balance: bigint): Hex 
  * traffic shows it's read via Multicall3's `getEthBalance(address)`, batched through `aggregate3`
  * the same way every other read on this RPC channel is (see `mocks/allowances/codec.ts`), so it
  * has to be decoded/patched at that level rather than intercepted as a plain `eth_getBalance`.
+ * `classifyEthCall` recognizes the owner's own `getEthBalance` wherever it appears inside a
+ * Multicall3 batch — not just when the whole batch is nothing else — so this never has to forward
+ * the owner's *real* balance to the real RPC just because some unrelated read got bundled
+ * alongside it (which is exactly what let a real Sepolia balance leak into an assertion here once
+ * a second ETH-flow test started running against the same wallet address).
  *
  * The receipt (and therefore the order leaving `CREATING`, since `GET /api/v1/orders/{uid}`'s
  * default fixture already answers any uid with a valid open order) is withheld until
@@ -165,15 +241,24 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     }
     if (entry.method === 'eth_call') {
       const call = entry.params[0] as { data?: Hex }
-      const callCount = countOwnEthBalanceCalls(call.data, wallet.address)
-      if (callCount !== undefined) return { kind: 'ethBalance', callCount }
+      if (call.data) {
+        const classifiedCall = classifyEthCall(call.data, wallet.address)
+        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
+      }
     }
     return { kind: 'opaque' }
   }
 
-  const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint): unknown => {
+  const isEntryFullyMocked = (entry: ClassifiedEntry): boolean =>
+    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
+
+  const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint, upstream?: Hex): unknown => {
     if (classified.kind === 'receipt') return mined ? buildReceipt() : null
-    if (classified.kind === 'ethBalance') return encodeEthBalanceResult(classified.callCount, remainingBalance)
+    if (classified.kind === 'call') {
+      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [remainingBalance])
+      if (classified.call.kind === 'opaque') return undefined
+      return resolveEthBalanceBatch(classified.call, remainingBalance, upstream)
+    }
     return undefined
   }
 
@@ -186,7 +271,7 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
 
     const remainingBalance = initialEthBalance - (sentValue ?? 0n)
 
-    if (classified.every((c) => c.kind !== 'opaque')) {
+    if (classified.every(isEntryFullyMocked)) {
       const payload = entries.map((entry, i) => ({
         jsonrpc: '2.0',
         id: entry.id,
@@ -195,7 +280,8 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
       return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
     }
 
-    // Mixed batch: fetch the real response for the entries we don't own, patch in ours by id.
+    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
+    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
     const upstream = await route.fetch()
     const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
     const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
@@ -206,7 +292,8 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     const payload = upstreamEntries.map((entry) => {
       const classifiedEntry = classifiedById.get(entry.id)
       if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, remainingBalance) }
+      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
+      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, remainingBalance, upstreamResult) }
     })
     return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
   })
