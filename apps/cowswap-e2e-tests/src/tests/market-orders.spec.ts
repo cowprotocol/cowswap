@@ -10,6 +10,7 @@ import { mockApproveTransaction } from '../support/mockApproveTransaction'
 import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
+import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
 import { mockWrapTransaction } from '../support/mockWrapTransaction'
 import { readTitledAmount } from '../support/readTitledAmount'
 import { seedTrader } from '../support/seedTrader'
@@ -960,7 +961,6 @@ test.describe('Market Orders', () => {
       expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
     })
 
-    // Includes [MO-47]
     test('[MO-46] Wrap ETH → WETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const WRAP_AMOUNT = parseUnits('0.5', 18)
@@ -1013,6 +1013,58 @@ test.describe('Market Orders', () => {
       // ETH decreases and WETH increases by the same wrapped amount.
       await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
+    })
+
+    test('[MO-47] Unwrap WETH → ETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
+      const INITIAL_WETH_BALANCE = parseUnits('1', 18)
+      const INITIAL_ETH_BALANCE = parseUnits('1', 18)
+      const UNWRAP_AMOUNT = parseUnits('0.5', 18)
+
+      // Selecting WETH as sell (the default) and ETH as buy isn't a CoW order at all either — the
+      // reverse of [MO-46]: `validateTradeForm.ts` still recognizes it as `WrapUnwrapFlow`, but
+      // routes to a local `withdraw()` call on the WETH contract instead of `deposit()`
+      // (`legacy/hooks/useWrapCallback.ts`'s `unwrapContractCall`). See `mockUnwrapTransaction` for
+      // why this needs its own mock rather than reusing `mockWrapTransaction` directly — `withdraw`'s
+      // amount is a calldata argument, not the tx's own `value` the way `deposit`'s is.
+      const unwrapTx = await mockUnwrapTransaction({
+        context,
+        wallet,
+        balances: mocks.balances,
+        chainId: CHAIN_ID,
+        wethToken: WETH,
+        initialEthBalance: INITIAL_ETH_BALANCE,
+        initialWethBalance: INITIAL_WETH_BALANCE,
+      })
+
+      seedTrader(mocks, wallet, CHAIN_ID, { balances: { [WETH]: INITIAL_WETH_BALANCE } })
+
+      await swapPage.goto({ chainId: CHAIN_ID })
+
+      // WETH is already the default sell token on Sepolia (see known quirks), so only the buy side
+      // needs switching — typed before switching, not after, same auto-fill race as [MO-11]/[MO-46].
+      await swapPage.enterSellAmount('0.5')
+      await swapPage.tokens.openOutput()
+      await swapPage.tokens.searchAndPick('ETH')
+      await swapPage.enterSellAmount('0.5')
+
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '1 WETH')
+      await expect(swapPage.inputAmount).toHaveValue('0.5')
+
+      // The action button reads "Unwrap", not "Swap" — same gap as [MO-46]'s "Wrap" button, which
+      // doesn't carry the `#do-trade-button` id the ordinary swap/approve states do.
+      const unwrapButton = swapPage.page.getByRole('button', { name: 'Unwrap', exact: true })
+      await expect(unwrapButton).toBeVisible()
+      await unwrapButton.click()
+
+      // Confirming signs/sends the on-chain `withdraw()` tx directly — there's no off-chain
+      // signature step for an unwrap, and no CoW API call of any kind.
+      await expect.poll(() => unwrapTx.getSentValue()).toBe(UNWRAP_AMOUNT)
+      unwrapTx.confirmMined()
+
+      // WETH decreases and ETH increases by the same unwrapped amount — 1:1, no slippage or
+      // protocol fee, since this flow never goes through a quote at all.
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
+      await expect(swapPage.buyBalance).toHaveAttribute('title', '1.5 ETH', { timeout: 15_000 })
     })
 
     test('[MO-54] Cancel market order: off-chain soft cancellation (EOA) @smoke', async ({
