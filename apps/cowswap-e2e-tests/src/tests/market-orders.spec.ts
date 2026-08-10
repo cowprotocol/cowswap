@@ -25,7 +25,6 @@ test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
     test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
-    // Includes MO-61
     test('[MO-02] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
       tradePage,
@@ -958,6 +957,73 @@ test.describe('Market Orders', () => {
       // order settles into its final "Cancelled" state — genuinely time-dependent, hence the long
       // timeout rather than a flaw in the mock.
       await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
+    })
+
+    test('[MO-61] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
+      swapPage,
+      tradePage,
+      wallet,
+      confirmModal,
+      mocks,
+    }) => {
+      // Same 18-decimals quirk as [MO-02].
+      const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
+      const BUY_RATE_NUM = 804n
+      const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
+
+      mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
+
+      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+
+      // Matches the quote's implied rate so the trade doesn't look like a loss against the
+      // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
+      // Impact" dialog — same technique as [MO-02].
+      mocks.usdPrices.setPrice(WETH, Number(BUY_RATE_DEN) / Number(BUY_RATE_NUM))
+
+      seedTrader(mocks, wallet, CHAIN_ID, {
+        balances: { [USDC]: INITIAL_USDC_BALANCE, [WETH]: 0n },
+        allowances: { [USDC]: INITIAL_USDC_BALANCE },
+      })
+
+      await swapPage.goto({ chainId: CHAIN_ID })
+
+      // Typed before selecting tokens, not after — dodges the auto-fill race documented at [MO-02].
+      await swapPage.enterSellAmount('1000')
+      await selectTokens(swapPage, 'USDC', 'WETH')
+      await swapPage.waitForQuote()
+
+      await swapPage.clickSwap()
+      await confirmModal.confirmButton.click()
+
+      // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just signed and posted, competition hasn't
+      // started yet.
+      await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
+
+      // Step 2 (SOLVING, backend ACTIVE — the default `orderStatus` fixture) — competition started,
+      // solvers searching for the best price. All 4 steps' titles are always rendered together
+      // (`StepsWrapper`), so `SolvingStep`'s own body text ("best price wins") is what distinguishes
+      // this step as the active one, same as [MO-02]. `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on
+      // screen for at least 5s before advancing here, hence the longer timeout.
+      await expect(swapPage.orderProgressBarModal).toContainText('best price wins', { timeout: 15_000 })
+
+      // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain. `ExecutingStep`
+      // overrides that step's own title to "Best price found!" while active.
+      posting.markExecuting()
+      await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
+
+      // Settle the order now that it's posted and confirmed.
+      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+
+      // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+
+      // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
+      // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
+      // order at, same as [MO-02].
+      const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
+      const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
     })
 
     test('[MO-70] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
