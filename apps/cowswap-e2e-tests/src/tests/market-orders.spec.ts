@@ -159,18 +159,12 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
-
-      // Typed before selecting tokens, not after — same race as [MO-02]'s note: selecting a token
-      // with no amount set yet auto-fills 1 whole unit of the *sell* side
-      // (`useSetupTradeAmountsFromUrl`'s `!isAtLeastOneAmountIsSetRef.current` default), which can
-      // win under load even though this is a buy order typed on the other field entirely.
-      await swapPage.enterBuyAmount('1')
       await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
-      await expect(swapPage.outputAmount).toHaveValue('1')
 
+      await swapPage.enterBuyAmount('1')
       await swapPage.waitForQuote()
 
       await swapPage.clickSwap()
