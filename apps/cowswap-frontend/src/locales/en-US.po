@@ -7513,7 +7513,6 @@ msgstr "Estimated fill price"
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
-#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Transaction failed"
 msgstr "Transaction failed"
 
