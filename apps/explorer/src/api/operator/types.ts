@@ -124,8 +124,7 @@ export type ProtocolFee = {
   amount: BigNumber
   tokenAddress: AddressKey
   type: ProtocolFeeType
-  // Index in a fill's `executedProtocolFees`, kept only to preserve the order the fees were applied
-  // in. It does not identify who charged the fee — the API doesn't say.
+  // Index in a fill's `executedProtocolFees`; preserves the order the fees were applied in.
   position: number
 }
 
@@ -160,7 +159,6 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 
 export type WithNetworkId = { networkId: Network }
 
-/** How a fee was calculated, derived from the trade's fee policy. */
 export enum ProtocolFeeType {
   Surplus = 'surplus',
   Volume = 'volume',

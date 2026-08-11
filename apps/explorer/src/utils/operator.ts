@@ -356,11 +356,9 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 }
 
 /**
- * Aggregates the fees charged across an order's fills into one total per fee policy.
- *
- * Position alone is not a safe key: a fee at the same position can be charged in a different token
- * or under a different policy from one fill to the next, and summing those would give a total in no
- * particular token. Keying on (position, type, token) keeps them distinct.
+ * Aggregates the fees charged across an order's fills into one total per (position, type, token).
+ * Position alone is not a safe key: across fills it can carry a different token or policy, and
+ * summing those would mix tokens.
  */
 export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFees'>>): ProtocolFee[] {
   const feesByPolicy = new Map<string, ProtocolFee>()
@@ -486,7 +484,6 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
-// Classifies a fee policy by its wrapper key: `{ surplus: {...} }`, `{ volume: {...} }`, etc.
 function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
   if (policy) {
     if ('surplus' in policy) return ProtocolFeeType.Surplus

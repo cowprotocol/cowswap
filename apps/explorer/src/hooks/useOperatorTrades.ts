@@ -23,8 +23,7 @@ type TradesTimestamps = { [txHash: string]: number }
 const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
 
 type ProtocolFeesResult = {
-  // Undefined until the fees are known: while loading, after a failed fetch, or when no order was
-  // given. Callers must not treat that as "this order charged no fees" — `[]` means that.
+  // Undefined while unknown (loading, failed, or no order); `[]` means no fee was charged.
   protocolFees?: ProtocolFee[]
   error?: UiError
   isLoading: boolean
@@ -128,8 +127,7 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
 
 // Large enough that most orders need a single call.
 const ALL_TRADES_PAGE_SIZE = 1000
-// Safety bound. Reaching it means the paging is broken, not that the order has this many fills, so
-// it throws rather than returning what it has.
+// Safety bound; reaching it means the paging is broken, not that the order has this many fills.
 const MAX_TRADES_PAGES = 100
 
 const PROTOCOL_FEES_ERROR = 'Failed to fetch the costs and fees breakdown'
@@ -146,8 +144,6 @@ export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
   const executedSellAmount = order?.executedSellAmount.toString()
   const executedBuyAmount = order?.executedBuyAmount.toString()
 
-  // Keying by order is also what stops one order's fees being shown as another's: a key with no
-  // data reads as "not known yet" rather than as the previous order's breakdown.
   const { data, error, isLoading } = useSWR(
     networkId && orderUid ? ['orderProtocolFees', networkId, orderUid, executedSellAmount, executedBuyAmount] : null,
     async ([, network, uid]: [string, Network, string, ...unknown[]]) =>
@@ -162,7 +158,6 @@ export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
   return useMemo<ProtocolFeesResult>(
     () => ({
       protocolFees: data,
-      // Distinct from useOrderTrades' message: the Fills table can load fine while this fails.
       error: error ? { message: PROTOCOL_FEES_ERROR, type: 'error' } : undefined,
       isLoading,
     }),
@@ -194,10 +189,7 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
   }, {} as TradesTimestamps)
 }
 
-/**
- * Fetches every trade of an order. Duplicates would be silently summed into the fee totals, so
- * already-seen records are skipped and an unterminated loop throws instead of returning a partial.
- */
+/** Fetches every trade of an order, skipping duplicates so they cannot inflate the fee totals. */
 async function getAllOrderTrades(networkId: Network, orderId: string): Promise<RawTrade[]> {
   const allTrades: RawTrade[] = []
   const seen = new Set<string>()
@@ -215,8 +207,7 @@ async function getAllOrderTrades(networkId: Network, orderId: string): Promise<R
 
     allTrades.push(...newTrades)
 
-    // Deliberately not stopping on a merely short page: the API may cap the page size below what we
-    // ask for, and treating that as the end would drop fills.
+    // A short page is not the end: the API may cap the page size below the requested limit.
     if (newTrades.length === 0) return allTrades
   }
 

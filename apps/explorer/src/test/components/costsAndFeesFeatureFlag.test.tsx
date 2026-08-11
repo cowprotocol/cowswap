@@ -18,8 +18,7 @@ jest.mock('hooks/useErc20', () => ({
   useMultipleErc20: jest.fn(() => ({ isLoading: false, error: {}, value: {} })),
 }))
 
-// Stand in for the real row so the assertions are about what the flag decides, not the tooltip and
-// popper machinery underneath it.
+// Stand-in so the assertions are about what the flag decides, not the tooltip machinery.
 jest.mock('../../components/common/DetailRow', () => ({
   DetailRow: ({
     label,
@@ -61,7 +60,6 @@ describe('costs & fees feature flag', () => {
     expect(screen.getByText('Costs & Fees')).not.toBeNull()
     expect(screen.getByTestId('stack').textContent).toBe('false')
     expect(screen.getByTestId('tooltip').textContent).toContain('The amount of fees paid for this order')
-    // The legacy display shows the combined executed fee, with no breakdown of any kind.
     expect(screen.queryByText('Network costs:')).toBeNull()
     expect(screen.queryByText('[+] Show more')).toBeNull()
   })

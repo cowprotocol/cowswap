@@ -38,21 +38,18 @@ describe('getProtocolFees', () => {
     expect(fees[0].type).toBe(ProtocolFeeType.Volume)
   })
 
-  it('keeps fees at different positions apart and orders them as they were applied', () => {
+  it('keeps fees at different positions apart and ordered, even when fills carry different fee counts', () => {
     const fees = getProtocolFees([
       fill([
         { amount: '100', token: WETH.address, policy: VOLUME },
         { amount: '7', token: USDT.address, policy: PRICE_IMPROVEMENT },
       ]),
-      fill([
-        { amount: '100', token: WETH.address, policy: VOLUME },
-        { amount: '3', token: USDT.address, policy: PRICE_IMPROVEMENT },
-      ]),
+      fill([{ amount: '100', token: WETH.address, policy: VOLUME }]),
     ])
 
     expect(fees.map((fee) => [fee.position, fee.type, fee.amount.toString(10)])).toEqual([
       [0, ProtocolFeeType.Volume, '200'],
-      [1, ProtocolFeeType.PriceImprovement, '10'],
+      [1, ProtocolFeeType.PriceImprovement, '7'],
     ])
   })
 
@@ -79,21 +76,6 @@ describe('getProtocolFees', () => {
     expect(fees.map((fee) => [fee.type, fee.amount.toString(10)])).toEqual([
       [ProtocolFeeType.Volume, '100'],
       [ProtocolFeeType.Surplus, '400'],
-    ])
-  })
-
-  it('handles fills that carry a different number of fees', () => {
-    const fees = getProtocolFees([
-      fill([
-        { amount: '100', token: USDT.address, policy: VOLUME },
-        { amount: '20', token: USDT.address, policy: SURPLUS },
-      ]),
-      fill([{ amount: '100', token: USDT.address, policy: VOLUME }]),
-    ])
-
-    expect(fees.map((fee) => [fee.position, fee.amount.toString(10)])).toEqual([
-      [0, '200'],
-      [1, '20'],
     ])
   })
 

@@ -172,14 +172,13 @@ describe('useOrderProtocolFees', () => {
     const { result } = renderHook(() => useOrderProtocolFees(null), { wrapper: FreshSwrCache })
 
     expect(mockedGetTrades).not.toHaveBeenCalled()
-    // Nothing is pending, so this must not sit in a permanent loading state.
     expect(result.current.isLoading).toBe(false)
     expect(result.current.protocolFees).toBeUndefined()
   })
 
   it('pages until the API runs out of trades, even when it serves shorter pages than requested', async () => {
     const fills = [createFill(0), createFill(1), createFill(2)]
-    // A server capping pages below the requested size: stopping on a short page would drop fill 3.
+    // A server capping pages below the requested size: stopping on a short page would drop the third fill.
     mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset, offset + 2))
 
     const { result } = renderHook(() => useOrderProtocolFees(createMockOrder()), { wrapper: FreshSwrCache })

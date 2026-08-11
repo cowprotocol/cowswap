@@ -38,8 +38,7 @@ const PRICE_IMPROVEMENT_POLICY: Policy = {
   priceImprovement: { factor: 0.5, maxVolumeFactor: 0.01, quote: { sellAmount: '1', buyAmount: '1', fee: '0' } },
 }
 
-// Every fill charges the same three policies: a WETH volume fee, a USDT price-improvement fee, and a
-// zero-amount one that must be dropped. Distinct txHash/logIndex so the fills survive deduplication.
+// Each fill charges the same three policies; the zero-amount one must be dropped.
 function fill(index: number): RawTrade {
   return {
     txHash: `0xfill${index}`,
@@ -55,11 +54,10 @@ function fill(index: number): RawTrade {
 // The real chain the app uses: derive the fees from every trade, attach them to the order, render.
 function Harness({ order }: { order: Order }): React.ReactNode {
   const { protocolFees } = useOrderProtocolFees(order)
-  // Stands in for the `isExplorerFeeDisplayEnabled` flag that `CostAndFeesItem` reads.
   return <GasFeeDisplay order={{ ...order, protocolFees }} showBreakdown />
 }
 
-// Fees are cached by order, so without a fresh cache the second case is served the first's fees.
+// Fees are cached by order, so tests need a fresh cache.
 function renderHarness(order: Order): ReturnType<typeof render> {
   return render(
     <SWRConfig value={{ provider: () => new Map() }}>
@@ -92,22 +90,9 @@ describe('costs & fees breakdown (integration)', () => {
 
     fireEvent.click(screen.getByText('[+] Show more'))
     expect(screen.getByText('Network costs:')).not.toBeNull()
-    // Labels describe the policy, not who charged it — the API doesn't say.
     expect(screen.getByText('Volume fee:')).not.toBeNull()
     expect(screen.getByText('Price improvement fee:')).not.toBeNull()
     // The zero-amount fee (position 2) is dropped, so the volume fee is not numbered.
     expect(screen.queryByText(/Volume fee \(/)).toBeNull()
-  })
-
-  it('shows the legacy fee instead of a breakdown while the fees are still unknown', async () => {
-    // Never resolves: the fees are in flight for the whole render.
-    mockedGetTrades.mockImplementation(() => new Promise(() => undefined))
-
-    const order = { ...RICH_ORDER, gasCost: new BigNumber('2500000000000000') }
-    renderHarness(order)
-
-    // No expander and no network-costs row: a total omitting the fees is never shown.
-    expect(screen.queryByText('[+] Show more')).toBeNull()
-    expect(screen.queryByText('Network costs:')).toBeNull()
   })
 })

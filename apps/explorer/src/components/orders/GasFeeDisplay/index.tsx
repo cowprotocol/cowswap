@@ -5,6 +5,7 @@ import { AddressKey, getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+import { TokenAmount } from 'components/token/TokenAmount'
 import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, ZERO_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
@@ -14,8 +15,7 @@ import { abbreviateString } from 'utils'
 import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// The API says how each fee was calculated but not who charged it, so labels describe the policy
-// instead of guessing at "protocol" vs "partner".
+// The API says how each fee was calculated but not who charged it, so labels name the policy.
 const FEE_TYPE_LABELS: Record<ProtocolFeeType, string> = {
   [ProtocolFeeType.Surplus]: 'Surplus fee',
   [ProtocolFeeType.Volume]: 'Volume fee',
@@ -40,8 +40,7 @@ type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const { order, showBreakdown = false } = props
 
-  // The total needs both the gas cost and the fees. Without either, fall back to the legacy
-  // combined fee rather than showing a total that silently omits a component.
+  // Without both the gas cost and the fees, a total would silently omit a component.
   if (!showBreakdown || !order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
     return <LegacyFeeDisplay order={order} />
   }
@@ -98,22 +97,28 @@ function CostsAndFeesBreakdown({
     return [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }, ...feeItems]
   }, [protocolFees, gasCost, nativeKey])
 
-  // One total per token. Wrapped native is deliberately not folded into native — to the user those
-  // are different assets, and folding them made the headline disagree with the rows below it.
+  // One total per token; wrapped native deliberately stays separate from native.
   const totals = useMemo(() => {
     const byToken = new Map<AddressKey, BigNumber>()
     for (const { tokenAddress, amount } of lineItems) {
       byToken.set(tokenAddress, (byToken.get(tokenAddress) ?? ZERO_BIG_NUMBER).plus(amount))
     }
-    return Array.from(byToken, ([key, amount]) => formatAmount(amount, tokenByKey.get(key), key)).join(', ')
-  }, [lineItems, tokenByKey])
+    return Array.from(byToken)
+  }, [lineItems])
 
-  // Amounts mean nothing without decimals; wait rather than flash unscaled numbers.
-  if (areFeeTokensLoading) return null
+  // Amounts mean nothing without decimals; keep the legacy fee up until they load.
+  if (areFeeTokensLoading) return <LegacyFeeDisplay order={order} />
 
   return (
     <>
-      <span>{totals}</span>
+      <span>
+        {totals.map(([tokenAddress, amount], index) => (
+          <React.Fragment key={tokenAddress}>
+            {index > 0 && ', '}
+            <FeeAmount amount={amount} token={tokenByKey.get(tokenAddress)} tokenAddress={tokenAddress} />
+          </React.Fragment>
+        ))}
+      </span>
       {/* A lone network-costs row would just repeat the total. */}
       {lineItems.length > 1 && (
         <NumbersBreakdown>
@@ -122,7 +127,13 @@ function CostsAndFeesBreakdown({
               {lineItems.map((item, index) => (
                 <tr key={index}>
                   <td>{item.label}:</td>
-                  <td>{formatAmount(item.amount, tokenByKey.get(item.tokenAddress), item.tokenAddress)}</td>
+                  <td>
+                    <FeeAmount
+                      amount={item.amount}
+                      token={tokenByKey.get(item.tokenAddress)}
+                      tokenAddress={item.tokenAddress}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -134,11 +145,18 @@ function CostsAndFeesBreakdown({
 }
 
 // No metadata means no decimals, so mark the figure unscaled rather than pass it off as an amount.
-function formatAmount(amount: BigNumber, token: TokenErc20 | undefined, tokenAddress: AddressKey): string {
+function FeeAmount({
+  amount,
+  token,
+  tokenAddress,
+}: {
+  amount: BigNumber
+  token?: TokenErc20
+  tokenAddress: AddressKey
+}): React.ReactNode {
   if (!token) return `${amount.toString(10)} (raw) ${abbreviateString(tokenAddress, 6, 4)}`
 
-  const { formattedAmount, symbol } = formatTokenAmount(amount, token)
-  return `${formattedAmount} ${symbol}`
+  return <TokenAmount amount={amount} token={token} />
 }
 
 // The combined executed fee in the sell token, shown whenever the breakdown can't be.
