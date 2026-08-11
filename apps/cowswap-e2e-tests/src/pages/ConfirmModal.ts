@@ -10,4 +10,8 @@ export class ConfirmModal {
     this.priceUpdatedBanner = page.getByText(/price updated/i)
     this.minimumReceive = page.getByText(/minimum receive/i)
   }
+
+  async confirm(): Promise<void> {
+    await this.confirmButton.click()
+  }
 }

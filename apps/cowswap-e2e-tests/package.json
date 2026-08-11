@@ -6,14 +6,14 @@
   "main": "index.js",
   "license": "ISC",
   "dependencies": {
-    "viem": "2.48.8"
+    "viem": "2.48.8",
+    "@cowprotocol/cow-sdk": "9.2.6",
+    "@cowprotocol/sdk-order-book": "4.0.2"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",
     "@synthetixio/synpress": "4.0.10",
-    "@synthetixio/synpress-metamask": "0.0.14",
-    "exceljs": "4.4.0",
-    "@cowprotocol/cow-sdk": "9.2.6",
-    "@cowprotocol/sdk-order-book": "4.0.2"
+    "@synthetixio/synpress-metamask": "0.0.11",
+    "exceljs": "4.4.0"
   }
 }
