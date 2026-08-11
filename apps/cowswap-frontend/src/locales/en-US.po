@@ -8051,6 +8051,10 @@ msgstr "Exec. price"
 msgid "You sold <0/>"
 msgstr "You sold <0/>"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
+msgid "Order details"
+msgstr "Order details"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
 #~ msgid "Less"
 #~ msgstr "Less"
