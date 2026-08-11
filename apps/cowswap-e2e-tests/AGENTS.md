@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-04
+last_reviewed: 2026-08-11
 source_of_truth_scope: cowswap-e2e-tests app-specific conventions, mocks, and debugging notes
 ---
 
@@ -124,6 +124,100 @@ behavior, only to call its methods). Sub-mocks:
   the environment: several failures this session traced back to the *frontend dev server* not having
   `REACT_APP_NETWORK_URL_11155111` in its own environment (it's a separate process from the test runner,
   which has it), or a transient DNS blip in the sandbox.
+
+## Cross-chain bridging (`cross-chain-swaps.spec.ts`)
+
+- **LaunchDarkly can't be mocked via HTTP here.** With no `REACT_APP_LAUNCH_DARKLY_KEY` configured,
+  the real LD SDK never even attempts flag-evaluation polling (only a `/sdk/goals/` call fires, never
+  `/sdk/evalx/...`), so route-mocking its API is a dead end. Instead `useFeatureFlags()`
+  (`libs/common-hooks/src/useFeatureFlags.ts`) reads `window.__COWSWAP_E2E_FEATURE_FLAGS__` directly and
+  merges it over the real (permanently unresolved) flags; `mocks/launchDarkly.ts` sets that window
+  property via `context.addInitScript`, and `mocks.launchDarkly.setFlag(key, value)` is how a spec turns
+  on `isBungeeBridgeProviderEnabled` / `isNearIntentsBridgeProviderEnabled` / `isSolBridgeEnabled` /
+  `isBtcBridgeEnabled`, etc. Bungee alone doesn't need this — it's added to the provider set
+  unconditionally at module load in `tradingSdk/bridgingSdk.ts`.
+- **Near Intents' attestation is a real ECDSA signature check and cannot be forged.**
+  `recoverDepositAddress` verifies the quote/attestation pair against Near's real attestor key — a
+  captured fixture pair only satisfies it if replayed byte-for-byte for the exact route it was captured
+  for. `bridgingSdk.ts` patches `nearIntentsBridgeProvider.recoverDepositAddress` to a no-op success,
+  gated behind the existing `window.__COWSWAP_E2E__` flag — a production-source-file edit, but scoped to
+  e2e only. Consequently the Near fixture (`mocks/bridge/fixtures/near-quote.json` /
+  `near-attestation.json`) can only be served verbatim for the one route it was recorded against
+  (Mainnet USDC → Base USDC) — don't edit its numbers.
+- **`BridgingSdk.getBestQuote()` always fetches a *regular* CoW quote first** (swap leg: sell token →
+  intermediate token) and feeds that quote's `buyAmount` in as the amount the bridge provider itself
+  quotes. The default `/quote` fixture's scaling is tuned for a same-decimals WETH:testUSDC pair and
+  produces nonsense for any other pair — always pin the swap leg with `mockFixedRateQuote` for a
+  cross-chain test. **When sell and intermediate-buy token decimals differ (e.g. native ETH's 18dec sell
+  → a 6dec USDC intermediate), `mockFixedRateQuote`'s plain `sellAmount * numerator / denominator` is
+  decimals-*agnostic* and silently produces an amount ~12 orders of magnitude too large** (surfaces as
+  an absurd `"for at least 99.339B USDC"` in the confirm modal). Override `quote` a second time after
+  `mockFixedRateQuote` with a manually decimals-adjusted ratio in that case (see `[CC-13]`).
+- **The app's own real-RPC traffic for a given chain does *not* reliably go through
+  `REACT_APP_NETWORK_URL_<chainId>`.** That env var only backs this suite's own wallet-side
+  dispatch/proxy (`walletEngine.ts` → `rpcProxy.ts`) and the handful of reads `mockEthFlowTransaction`/
+  `mockSocketVerifier` intercept by that exact URL (tx receipts, native-balance multicalls). Plenty of
+  other calls the *app itself* makes — Bungee's on-chain SocketVerifier check, `eth_estimateGas` before
+  every `eth_sendTransaction` — go straight to whichever of the app's own hardcoded providers it picks
+  (Infura, the WalletConnect RPC relay, publicnode, ...), unpredictable and outside this env var's
+  control. The only reliable way to intercept these is host-agnostic: `context.route('**/*', ...)`,
+  decode the JSON-RPC body, and match by `method` (see `mockSocketVerifier.ts` and
+  `mockEthEstimateGas` in `mockEthFlowTransaction.ts`), never by URL.
+- **A real native-ETH sell (`[CC-13]`, eth-flow) needs `eth_estimateGas` stubbed too, not just
+  `eth_sendTransaction`.** Left unmocked, gas estimation is a real simulation against the wallet's real
+  on-chain balance — zero on Mainnet, since this is a shared test key with no real funds (never fund it;
+  Sepolia's equivalent test works only because that address genuinely holds real, free Sepolia ETH) — and
+  fails with a genuine "exceeds the balance of the account" error before the stubbed send is ever
+  reached.
+- **`mockOrderPosting` doesn't work for eth-flow orders** — there's no `postOrder` call to hook (the uid
+  is computed client-side before anything is sent on-chain). Override `order`/`orderStatus` manually
+  instead (mirrors `[MO-11]`). One extra step specific to *bridging* eth-flow orders:
+  `useSwapAndBridgeContext` resolves the bridge provider from `order.apiAdditionalInfo.fullAppData`
+  (`bridgingSdk.getProviderFromAppData`) — without it, `bridgingStatus` never resolves and the progress
+  modal sticks on "Executing" forever regardless of what `order`/`orderStatus` say. Since an eth-flow tx
+  only carries the app-data *hash* on-chain (no room for the full JSON in a `bytes32`), capture the real
+  document via a `putAppData` override (`(req.body as { fullAppData: string }).fullAppData`) and thread
+  it into the `order` override's own `fullAppData` field.
+- **"Expected to receive" and "Min. to receive" are computed completely differently for a bridge leg,
+  and only one of them gets rescaled to match the swap leg.** `useEstimatedBridgeBuyAmount` rescales the
+  swap leg's real output through the bridge quote's own before-fee ratio, so form `Receive (incl. fees)`,
+  the *bridge* stop's `Expected to receive`, and (for Bungee, whose mock scales proportionally) roughly
+  the swap stop's own figure all end up self-consistent. `Min. to receive` at the bridge stop is **not**
+  rescaled — it's the bridge SDK quote's raw `amountsAndCosts.afterSlippage.buyAmount`, carrying that
+  provider's own real routeFee/slippage. Don't assert equality between a swap leg's and a bridge leg's
+  `Min. to receive` — assert presence instead. For Near Intents specifically, both the quote's `sellAmount`
+  and `buyAmount` come from the same static signed fixture, so its bridge-stop `Min. to receive` is an
+  absolute number from that fixture, unrelated to whatever amount the test actually trades.
+- **Solana availability needs two independent flags, Bitcoin needs only one.** `isSolBridgeEnabled` /
+  `isBtcBridgeEnabled` (the LD-bypass flags above) gate chain *availability* in
+  `useSupportedTargetChains`, but Solana additionally needs `IS_SOLANA_ENABLED` — a plain
+  `localStorage.getItem('IS_SOLANA_ENABLED')` check (`libs/common-const/src/featureFlags.ts`), a
+  completely different mechanism — for `CHAIN_INFO` to have a Solana entry to look up at all. Set it via
+  `context.addInitScript(() => localStorage.setItem('IS_SOLANA_ENABLED', '1'))` before navigating.
+- **Near Intents' real dest-tokens fixture has no usable exact-"BTC" entry.** Its one `blockchain: "btc"`
+  token with `symbol: "BTC"` (`nep141:btc.omft.near`) is on the SDK's own hardcoded deprecated-asset-id
+  list and gets filtered out client-side; the only Bitcoin-chain token that survives is
+  `symbol: "BTC(OMNI)"`. Search/pick `BTC(OMNI)`, not `BTC`.
+- **Validation-blocking button states can render with no `id` at all.** `TradeFormButtons` only gives
+  `#do-trade-button` to the "no validation errors" case; a function-component validation state (e.g.
+  `RecipientNotSet`, `RecipientNotConfirmed` in `tradeButtonsMap.tsx`) renders its own
+  `TradeFormBlankButton` with no `id` prop. Match those by role/text
+  (`page.getByRole('button', { name: /.../i })`), not by a `#do-trade-button`/`swapButton` locator.
+- **A controlled confirmation checkbox can lose a click under load.** `recipientConfirmationCheckbox`
+  (`#receiver-confirmation`) is driven by recipient-validation state that can still be settling right
+  after typing an address; a still-in-flight debounce can reset `confirmed` back to `false` immediately
+  after Playwright's `.check()` lands, surfacing as "Clicking the checkbox did not change its state" —
+  reproduces reliably only under concurrent test load (multiple workers), not in isolation. Retry via
+  `expect.poll(async () => { await checkbox.check(); return checkbox.isChecked() }).toBe(true)` instead
+  of a single `.check()`.
+- The app's HashRouter makes `page.goto()` to a new `#/...` route a same-document navigation —
+  `bridgingSdk`'s available-provider set is a page-lifetime singleton seeded once at module load, so a
+  test that switches providers mid-test (`mocks.launchDarkly.setFlag` again) needs an actual
+  `page.reload()` after the new hash is already in the address bar for the switch to take effect.
+- The Bungee quote fixture's `output.amount` is a single captured absolute number, unrelated to whatever
+  amount a given test's sell leg actually produces — `mocks/bungee.ts`'s `/quote` handler scales every
+  amount field (and their USD counterparts) proportionally to the live `inputAmount` query param to keep
+  the fixture's own input:output ratio (and therefore price impact) realistic for any sell amount.
 
 ## Known issues (discovered this session, unresolved)
 
