@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/core-v3.6.4...core-v3.7.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-utils@3.12.0
+
 ## [3.6.4](https://github.com/cowprotocol/cowswap/compare/core-v3.6.3...core-v3.6.4) (2026-07-30)
 
 ### Patch Changes

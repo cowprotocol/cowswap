@@ -1,6 +1,8 @@
 import { TokenInfo } from '@cowprotocol/types'
 
-import { validateTokens } from './validateTokenList'
+import { validateTokenList, validateTokens } from './validateTokenList'
+
+import type { TokenList } from '@uniswap/token-lists'
 
 const INVALID_TOKEN: TokenInfo = {
   name: 'Dai Stablecoin',
@@ -38,5 +40,29 @@ describe('validateTokens', () => {
 
   it('validates the passed token info', async () => {
     await expect(validateTokens(INLINE_TOKEN_LIST)).resolves.toBe(INLINE_TOKEN_LIST)
+  })
+
+  it('throws on invalid logo URIs', async () => {
+    await expect(
+      validateTokens([
+        {
+          ...INLINE_TOKEN_LIST[0],
+          logoURI: 'not a URI',
+        },
+      ]),
+    ).rejects.toThrow(/^Token list failed validation:.*logoURI/)
+  })
+})
+
+describe('validateTokenList', () => {
+  it('throws on invalid timestamps', async () => {
+    const tokenList: TokenList = {
+      name: 'Test Token List',
+      timestamp: 'not a timestamp',
+      version: { major: 1, minor: 0, patch: 0 },
+      tokens: INLINE_TOKEN_LIST,
+    }
+
+    await expect(validateTokenList(tokenList)).rejects.toThrow(/^Token list failed validation:.*timestamp/)
   })
 })

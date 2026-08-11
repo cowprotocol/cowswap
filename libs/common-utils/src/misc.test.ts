@@ -1,4 +1,10 @@
-import { isRejectRequestProviderError, TimeoutError, withTimeout } from './misc'
+import {
+  getProviderErrorMessage,
+  isInsufficientFundsProviderError,
+  isRejectRequestProviderError,
+  TimeoutError,
+  withTimeout,
+} from './misc'
 
 describe('withTimeout', () => {
   it('resolves when the promise settles before the timeout', async () => {
@@ -57,5 +63,61 @@ describe('isRejectRequestProviderError', () => {
     const cyclic: { message: string; cause?: unknown } = { message: 'boom' }
     cyclic.cause = cyclic
     expect(isRejectRequestProviderError(cyclic)).toBe(false)
+  })
+})
+
+describe('isInsufficientFundsProviderError', () => {
+  it('detects a raw node "insufficient funds" message (geth/anvil)', () => {
+    expect(
+      isInsufficientFundsProviderError({
+        message: 'insufficient funds for gas * price + value: address 0x123 have 1 want 2',
+      }),
+    ).toBe(true)
+  })
+
+  it('detects the erigon-specific wording', () => {
+    expect(isInsufficientFundsProviderError({ message: 'exceeds transaction sender account balance' })).toBe(true)
+  })
+
+  it("detects viem's InsufficientFundsError by name, even though its shortMessage is reworded", () => {
+    // viem rewords the raw node message into "...exceeds the balance of the account", so this
+    // can only be detected by error name, not by matching "insufficient funds" in the text.
+    const viemStyleError = {
+      name: 'TransactionExecutionError',
+      shortMessage:
+        'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.',
+      cause: {
+        name: 'InsufficientFundsError',
+        shortMessage:
+          'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.',
+      },
+    }
+    expect(isInsufficientFundsProviderError(viemStyleError)).toBe(true)
+  })
+
+  it('returns false for unrelated errors, including CoW API "not enough funds" wording', () => {
+    expect(isInsufficientFundsProviderError({ message: "The account doesn't have enough funds." })).toBe(false)
+    expect(isInsufficientFundsProviderError({ code: 4001, message: 'User rejected the request' })).toBe(false)
+    expect(isInsufficientFundsProviderError(undefined)).toBe(false)
+    expect(isInsufficientFundsProviderError(null)).toBe(false)
+  })
+
+  it('does not loop forever on a cyclic cause chain', () => {
+    const cyclic: { message: string; cause?: unknown } = { message: 'boom' }
+    cyclic.cause = cyclic
+    expect(isInsufficientFundsProviderError(cyclic)).toBe(false)
+  })
+
+  it('does not throw when a malformed provider puts a non-string value in error.message', () => {
+    expect(() => isInsufficientFundsProviderError({ message: {} })).not.toThrow()
+    expect(isInsufficientFundsProviderError({ message: {} })).toBe(false)
+  })
+})
+
+describe('getProviderErrorMessage', () => {
+  it('ignores a non-string error.message instead of returning it as-is', () => {
+    // Falls through to the generic `.toString()` fallback rather than returning the object
+    // as-is, which would make downstream `.toLowerCase()` calls throw.
+    expect(getProviderErrorMessage({ message: {} })).toBe('[object Object]')
   })
 })

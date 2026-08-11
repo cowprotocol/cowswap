@@ -87,10 +87,10 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                   <ThemeProvider>
                     <HistoryRouter history={hashHistory}>
                       <WalletProvider>
-                        <LanguageProvider messages={localeMessages}>
-                          <ErrorBoundary>
-                            <React310RecoveryErrorBoundary>
-                              <WithLDProvider>
+                        <WithLDProvider>
+                          <LanguageProvider messages={localeMessages}>
+                            <ErrorBoundary>
+                              <React310RecoveryErrorBoundary>
                                 <Web3Provider>
                                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                                     <WalletUnsupportedNetworkBanner />
@@ -99,10 +99,10 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                                     <App />
                                   </CowAnalyticsProvider>
                                 </Web3Provider>
-                              </WithLDProvider>
-                            </React310RecoveryErrorBoundary>
-                          </ErrorBoundary>
-                        </LanguageProvider>
+                              </React310RecoveryErrorBoundary>
+                            </ErrorBoundary>
+                          </LanguageProvider>
+                        </WithLDProvider>
                       </WalletProvider>
                     </HistoryRouter>
                   </ThemeProvider>

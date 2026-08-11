@@ -9,7 +9,13 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowpr
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSafeViaWc, useIsSafeWallet, useSendBatchTransactions, useWalletInfo } from '@cowprotocol/wallet'
+import {
+  useIsSafeViaWc,
+  useIsSafeWallet,
+  useSendBatchTransactions,
+  useWalletDetails,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
@@ -73,6 +79,7 @@ const log = createCowLogger('CreateTwapOrder')
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
@@ -204,7 +211,12 @@ export function useCreateTwapOrder() {
         const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
-        tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
+        tradeFlowAnalytics.placeAdvancedOrder({
+          ...twapFlowAnalyticsContext,
+          // No quote/quoteId exists yet at this point for either TWAP path (the EOA path only fetches
+          // one later, inside placeEoaTwapOrder).
+          allowsOffchainSigning,
+        })
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
         await uploadAppDataDocOrderbookApi({
@@ -270,6 +282,7 @@ export function useCreateTwapOrder() {
           status: orderStatus,
           chainId,
           safeAddress: safeAddressOrCowShedAddress,
+          resolvedOwner: isEoaTwap ? account : safeAddressOrCowShedAddress,
           submissionDate: new Date().toISOString(),
           id: twapOrderId,
           executionInfo: { ...DEFAULT_TWAP_EXECUTION },
@@ -319,6 +332,7 @@ export function useCreateTwapOrder() {
       isTwapEoaEnabled,
       isSafeWallet,
       isSafeViaWc,
+      allowsOffchainSigning,
       eoaSigner,
       config,
       chainId,

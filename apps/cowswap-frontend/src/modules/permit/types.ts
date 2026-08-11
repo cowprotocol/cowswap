@@ -19,8 +19,14 @@ export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<P
 
 export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
-  preSignCallback?: () => void
+  preSignCallback?: () => void | Promise<void>
   postSignCallback?: () => void
+  /**
+   * Full sell currency. When provided, a cache-miss fires the `ON_BEFORE_APPROVAL` widget hook
+   * before requesting the permit signature. Omit for speculative/pre-generation callers that must
+   * never prompt the host widget.
+   */
+  sellCurrency?: Currency
 }
 
 export type GetPermitCacheParams = PermitCacheKeyParams

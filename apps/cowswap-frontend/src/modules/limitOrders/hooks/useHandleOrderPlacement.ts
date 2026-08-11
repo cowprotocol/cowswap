@@ -20,7 +20,7 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
@@ -196,11 +196,15 @@ export function useHandleOrderPlacement(
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
+        if (error instanceof WidgetHookDeclineError) {
+          tradeConfirmActions.onDismiss()
+          return
+        }
 
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message || error.description)
         } else {
-          tradeConfirmActions.onError(getSwapErrorMessage(error))
+          tradeConfirmActions.onError(getSwapErrorMessage(error, tradeContext.chainId))
         }
       })
   }, [
@@ -214,6 +218,7 @@ export function useHandleOrderPlacement(
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
     isSmartContractWallet,
+    tradeContext.chainId,
   ])
 }
 

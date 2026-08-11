@@ -2,13 +2,13 @@ import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { isEvmChain } from '@cowprotocol/cow-sdk'
+import { isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { TradeApproveButton } from 'modules/erc20Approve'
+import { SolanaTradeApproveButton, TradeApproveButton } from 'modules/erc20Approve'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
@@ -143,6 +143,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
+  [TradeFormValidation.CaptchaPending]: {
+    text: <CenteredDots smaller />,
+    id: 'captcha-pending',
+  },
+  [TradeFormValidation.CaptchaRequired]: {
+    text: <Trans>Click the checkbox</Trans>,
+    id: 'complete-captcha',
+  },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
@@ -207,6 +215,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ApproveRequired]: ({ isDisabled = false, ...context }: ButtonComponentProps) => {
     const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
+
+    // Solana has no ERC20 approve / permit — run the SPL delegation approve via its own button/hook.
+    if (isSolanaChain(amountToApprove.currency.chainId)) {
+      return (
+        <SolanaTradeApproveButton
+          isDisabled={isDisabled}
+          amountToApprove={amountToApprove}
+          approveClickEvent={context.approveClickEvent}
+        />
+      )
+    }
 
     return (
       <TradeApproveButton

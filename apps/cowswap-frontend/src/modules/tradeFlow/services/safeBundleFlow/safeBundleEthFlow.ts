@@ -70,7 +70,11 @@ export async function safeBundleEthFlow(
   const { account, recipientAddressOrName, kind } = orderParams
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+  analytics.wrapApproveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: orderParams.quoteId,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   // Wrap the max sell amount (slippage-adjusted for buy orders); inputAmount alone underwraps buy orders and makes them unfillable.
   const nativeAmountInWei = maximumSendSellAmount.quotient.toString()
   const tradeAmounts = { inputAmount, outputAmount }
@@ -221,7 +225,7 @@ export async function safeBundleEthFlow(
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId as SupportedChainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

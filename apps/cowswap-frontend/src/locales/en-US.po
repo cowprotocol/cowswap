@@ -424,6 +424,10 @@ msgstr "sell"
 #~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 #~ msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 
+#: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
+msgid "Click the checkbox to get a quote"
+msgstr "Click the checkbox to get a quote"
+
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "Partner fee"
@@ -549,6 +553,7 @@ msgstr "Buy COW"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Reject"
 msgstr "Reject"
 
@@ -1268,6 +1273,10 @@ msgstr "Copy contract"
 msgid "pools available to get yield on your assets!"
 msgstr "pools available to get yield on your assets!"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Click the checkbox"
+msgstr "Click the checkbox"
+
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
@@ -1291,10 +1300,8 @@ msgid "is on {chainName} network"
 msgstr "is on {chainName} network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/SplDelegationCell.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 msgid "Approved"
 msgstr "Approved"
 
@@ -2516,6 +2523,10 @@ msgstr "MEV Slicer"
 msgid "From (incl. fees)"
 msgstr "From (incl. fees)"
 
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+#~ msgid "Wrap {inputAmountStr} {native} to {receiveAmountStr} {wrapped}"
+#~ msgstr "Wrap {inputAmountStr} {native} to {receiveAmountStr} {wrapped}"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "View rewards"
@@ -2759,6 +2770,10 @@ msgstr "Native"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "Pool analytics"
 msgstr "Pool analytics"
+
+#: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
+#~ msgid "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
+#~ msgstr "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -3178,6 +3193,10 @@ msgstr "native currency"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Manual slippage set."
 #~ msgstr "Manual slippage set."
+
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+msgid "Wrap {sendAmountStr} {native} to {receiveAmountStr} {wrapped}"
+msgstr "Wrap {sendAmountStr} {native} to {receiveAmountStr} {wrapped}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later"
@@ -3658,6 +3677,10 @@ msgstr "Add post-hook"
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
+msgid "EOA TWAP cancellation is not implemented"
+msgstr "EOA TWAP cancellation is not implemented"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copied!"
@@ -4032,6 +4055,7 @@ msgstr "both {joinedSupportedTypes}"
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeAdornment.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Error"
 msgstr "Error"
 
@@ -4094,6 +4118,7 @@ msgstr "Read more about unsupported tokens"
 #~ msgstr "This wallet isn't eligible."
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Signing transaction"
 msgstr "Signing transaction"
 
@@ -4372,6 +4397,10 @@ msgstr "Recoverable value"
 msgid "is worth"
 msgstr "is worth"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
+#~ msgid "The transaction could not be sent"
+#~ msgstr "The transaction could not be sent"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
 msgstr "View account"
@@ -4417,7 +4446,7 @@ msgstr "and saved "
 #~ msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 #~ msgstr "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 msgid "Approve all"
 msgstr "Approve all"
 
@@ -4698,6 +4727,10 @@ msgstr "Transaction was cancelled or sped up"
 msgid "Custom Recipient"
 msgstr "Custom Recipient"
 
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+msgid "Unwrap {sendAmountStr} {wrapped} to {receiveAmountStr} {native}"
+msgstr "Unwrap {sendAmountStr} {wrapped} to {receiveAmountStr} {native}"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 msgid "Download QR"
 msgstr "Download QR"
@@ -4851,6 +4884,7 @@ msgstr "Swap bridged via your"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/Group/OrdersTableRowGroup.pure.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Loading..."
 msgstr "Loading..."
@@ -4861,7 +4895,7 @@ msgid "Unsupported Network"
 msgstr "Unsupported Network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-#: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Approve"
@@ -5093,6 +5127,10 @@ msgstr "Set approval"
 msgid "Must be before {maxDateStr} {timeZone}"
 msgstr "Must be before {maxDateStr} {timeZone}"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#~ msgid "Complete the CAPTCHA"
+#~ msgstr "Complete the CAPTCHA"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
 msgstr "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
@@ -5132,6 +5170,7 @@ msgstr "Minutes"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "The referral code was applied after the trader's first qualifying trade."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "User rejected approval transaction"
@@ -5660,6 +5699,7 @@ msgstr "Unlock the Power of TWAP Orders"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Unwrapping"
 msgstr "Unwrapping"
 
@@ -5745,6 +5785,7 @@ msgstr "Turn on Expert mode?"
 msgid "Checking route availability..."
 msgstr "Checking route availability..."
 
+#: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
@@ -6200,7 +6241,7 @@ msgstr "New"
 msgid "Approval amount"
 msgstr "Approval amount"
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+#: apps/cowswap-frontend/src/modules/trade/containers/SolanaApproveModal.tsx
 #~ msgid "Approving"
 #~ msgstr "Approving"
 
@@ -6323,6 +6364,10 @@ msgstr "Unsupported"
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "seconds"
 msgstr "seconds"
+
+#: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
+msgid "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
+msgstr "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "token before creation."
@@ -6916,6 +6961,7 @@ msgstr "Safe logo"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 msgid "Wrapping"
 msgstr "Wrapping"
 
@@ -7022,6 +7068,10 @@ msgstr "If you approve an unlimited amount, you will only have to do this once p
 msgid "Try Again"
 msgstr "Try Again"
 
+#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+#~ msgid "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
+#~ msgstr "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "The order remains open. Execution requires adequate allowance for"
 msgstr "The order remains open. Execution requires adequate allowance for"
@@ -7036,6 +7086,7 @@ msgid "Add custom hook"
 msgstr "Add custom hook"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
 msgid "Approve {symbol}"
 msgstr "Approve {symbol}"
 
@@ -7461,6 +7512,7 @@ msgstr "Estimated fill price"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
 msgid "Transaction failed"
 msgstr "Transaction failed"
 
@@ -8018,6 +8070,10 @@ msgstr "Clear all"
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "To proceed, change the network in your {walletName}"
 msgstr "To proceed, change the network in your {walletName}"
+
+#: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
+#~ msgid "Complete the CAPTCHA to get a quote"
+#~ msgstr "Complete the CAPTCHA to get a quote"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "User rejected transaction"

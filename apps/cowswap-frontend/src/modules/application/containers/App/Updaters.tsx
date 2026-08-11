@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -35,6 +36,7 @@ import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { GeoDataUpdater } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { eoaTwapOrdersEffectAtom } from 'modules/twap'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
 
@@ -64,6 +66,8 @@ import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
+  useAtomValue(eoaTwapOrdersEffectAtom)
+
   const { account } = useWalletInfo()
   const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()

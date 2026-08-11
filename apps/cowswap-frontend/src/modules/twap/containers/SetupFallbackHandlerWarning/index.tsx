@@ -11,10 +11,13 @@ import styled from 'styled-components/macro'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useTradeConfirmActions } from 'modules/trade'
+
 import { useExtensibleFallbackContext } from '../../hooks/useExtensibleFallbackContext'
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
 import { verifyExtensibleFallback } from '../../services/verifyExtensibleFallback'
 import { updateFallbackHandlerVerificationAtom } from '../../state/fallbackHandlerVerificationAtom'
+import { getErrorMessage } from '../../utils/parseTwapError'
 
 const Banner = styled(InlineBanner)`
   /* TODO: Make all these part of the InlineBanner props */
@@ -82,15 +85,28 @@ export function SetupFallbackHandlerWarning() {
 
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleUpdateClick = async () => {
-    const txHash = await setupFallbackHandler()
+  const [isSendingTx, setIsSendingTx] = useState(false)
+  const tradeConfirmActions = useTradeConfirmActions()
 
-    if (txHash) {
-      setPendingTxHash(txHash)
+  const handleUpdateClick = useCallback(async (): Promise<void> => {
+    setIsSendingTx(true)
+
+    try {
+      const txHash = await setupFallbackHandler()
+
+      if (txHash) {
+        setPendingTxHash(txHash)
+      }
+    } catch (error) {
+      /**
+       * Wallet rejections and other failures are displayed in the trade form error screen,
+       * the same way as it works for TWAP order placement
+       */
+      tradeConfirmActions.onError(getErrorMessage(error))
+    } finally {
+      setIsSendingTx(false)
     }
-  }
+  }, [setupFallbackHandler, setPendingTxHash, tradeConfirmActions])
 
   const checkFallbackHandler = useCallback(() => {
     if (!extensibleFallbackContext || !account) return Promise.resolve()
@@ -155,8 +171,8 @@ export function SetupFallbackHandlerWarning() {
               created because of that. Please, update the fallback handler in order to make the orders work again.
             </Trans>
           </p>
-          <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-            {isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
+          <ActionButton disabled={isSendingTx || isTransactionPending} onClick={handleUpdateClick}>
+            {isSendingTx || isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
           </ActionButton>
         </span>
       </Banner>
