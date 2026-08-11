@@ -8,7 +8,7 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { isNonEvmChain } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -66,7 +66,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
   const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
-  const isWatcherActive = !isNonEvmChain(sourceChainId)
+  const isWatcherActive = isEvmChain(sourceChainId)
   // Mount the multicall stack when:
   // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
   // - the watcher is in recovery — sticky from the first failure until the next
@@ -97,7 +97,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       <>
         <BalancesWatcherUpdater
           account={balancesAccount}
-          chainId={sourceChainId}
+          chainId={sourceChainId as number as SupportedChainId}
           isBridgeMode={isBridgeMode}
           bridgeTokenList={bridgeTokenList}
         />

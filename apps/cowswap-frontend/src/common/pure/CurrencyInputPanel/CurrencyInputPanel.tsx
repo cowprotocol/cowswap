@@ -202,7 +202,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
   const balanceView = (
     <div>
       {balance && !disabled && (
-        <styledEl.BalanceText>
+        <styledEl.BalanceText className="currency-balance-text">
           {isUsdValuesMode ? (
             <FiatValue fiatValue={balanceUsdAmount} isBridging={isBridging} />
           ) : (
