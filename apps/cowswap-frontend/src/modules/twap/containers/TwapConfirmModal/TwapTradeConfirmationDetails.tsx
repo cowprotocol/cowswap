@@ -1,6 +1,7 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
+import { Accordion } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -12,10 +13,13 @@ import { ReceiveAmountInfo } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 
-import { RateInfoParams } from 'common/pure/RateInfo'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
+import * as styledEl from './TwapTradeConfirmationDetails.styled'
+
+const ORDER_DETAILS_ITEM = 'order-details'
 
 const getConfirmModalConfig = (): {
   priceLabel: string
@@ -66,6 +70,7 @@ export interface TwapTradeConfirmationDetailsProps {
   numOfParts: number
   partDuration: number | undefined
   totalDuration: number | undefined
+  isCollapsible?: boolean
 }
 
 export function TwapTradeConfirmationDetails({
@@ -79,12 +84,19 @@ export function TwapTradeConfirmationDetails({
   numOfParts,
   partDuration,
   totalDuration,
+  isCollapsible = false,
 }: TwapTradeConfirmationDetailsProps): ReactNode {
   const confirmModalConfig = getConfirmModalConfig()
   const { allowsOffchainSigning } = useWalletDetails()
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
+  const [isExpanded, setIsExpanded] = useState(!isCollapsible)
 
-  return (
+  useEffect(() => {
+    // Keep content visible outside collapsible mode; start collapsed when entering it.
+    setIsExpanded(!isCollapsible)
+  }, [isCollapsible])
+
+  const details = (
     <>
       <TradeBasicConfirmDetails
         rateInfoParams={rateInfoParams}
@@ -117,5 +129,32 @@ export function TwapTradeConfirmationDetails({
         totalDuration={totalDuration}
       />
     </>
+  )
+
+  return (
+    <styledEl.Root $isCollapsible={isCollapsible}>
+      <Accordion.Root
+        disabled={!isCollapsible}
+        value={isExpanded ? [ORDER_DETAILS_ITEM] : []}
+        onValueChange={(value) => {
+          if (!isCollapsible) return
+          setIsExpanded(value.includes(ORDER_DETAILS_ITEM))
+        }}
+      >
+        <Accordion.Item value={ORDER_DETAILS_ITEM}>
+          <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
+            <Accordion.Header>
+              <Accordion.Trigger>
+                <Trans>Order details</Trans>
+                <Accordion.Chevron aria-hidden />
+              </Accordion.Trigger>
+            </Accordion.Header>
+          </styledEl.TriggerSlot>
+          <Accordion.Panel keepMounted>
+            <styledEl.Body $withTopPadding={isCollapsible}>{details}</styledEl.Body>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion.Root>
+    </styledEl.Root>
   )
 }

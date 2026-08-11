@@ -88,25 +88,27 @@ export function TwapConfirmModal(): ReactNode {
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
-  const tradeDetailsElement = receiveAmountInfo && numOfParts ? (
-    <TwapTradeConfirmationDetails
-      rateInfoParams={rateInfoParams}
-      receiveAmountInfo={receiveAmountInfo}
-      slippage={slippage}
-      recipient={recipient}
-      recipientAddress={recipientAddress}
-      account={account}
-      startTime={twapOrder?.startTime}
-      numOfParts={numOfParts}
-      partDuration={partDuration}
-      totalDuration={totalDuration}
-    />
-  ) : null
+  const tradeDetailsElement =
+    receiveAmountInfo && numOfParts ? (
+      <TwapTradeConfirmationDetails
+        isCollapsible={!!eoaTwapSigningStep}
+        rateInfoParams={rateInfoParams}
+        receiveAmountInfo={receiveAmountInfo}
+        slippage={slippage}
+        recipient={recipient}
+        recipientAddress={recipientAddress}
+        account={account}
+        startTime={twapOrder?.startTime}
+        numOfParts={numOfParts}
+        partDuration={partDuration}
+        totalDuration={totalDuration}
+      />
+    ) : null
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       {eoaTwapSigningStep ? (
-        <EoaTwapSigningPendingContent onDismiss={onDismiss} tradeDetailsSlot={tradeDetailsElement}/>
+        <EoaTwapSigningPendingContent onDismiss={onDismiss} tradeDetailsSlot={tradeDetailsElement} />
       ) : (
         <TradeConfirmation
           {...commonTradeConfirmContext}

@@ -1,9 +1,10 @@
 import { ReactNode, useState } from 'react'
-import { Check, X, AlertTriangle, ChevronDown } from 'react-feather'
+
+import { AlertTriangle, Check, ChevronDown, X } from 'react-feather'
 
 import { ExpandableContent } from 'common/pure/ExpandableContent/ExpandableContent.pure'
-import * as styledEl from './OrderStepItem.styled'
 
+import * as styledEl from './OrderStepItem.styled'
 
 const ICON_STROKE_WIDTH = 2.5
 
@@ -19,8 +20,6 @@ const ICONS_BY_STATUS = {
 const EXPANDABLE_STATUSES = new Set(['success', 'error', 'warning'])
 const ALWAYS_EXPANDED_STATUSES = new Set(['active', 'loading'])
 
-export type OrderStepStatus = 'upcoming' | 'active' | 'loading' | 'success' | 'error' | 'warning'
-
 export interface OrderStep {
   id: string
   label: ReactNode
@@ -31,6 +30,8 @@ export interface OrderStep {
 export interface OrderStepItemProps {
   step: OrderStep
 }
+
+export type OrderStepStatus = 'upcoming' | 'active' | 'loading' | 'success' | 'error' | 'warning'
 
 export function OrderStepItem({ step: { label, description, status } }: OrderStepItemProps): ReactNode {
   const [isUserExpanded, setIsUserExpanded] = useState(false)

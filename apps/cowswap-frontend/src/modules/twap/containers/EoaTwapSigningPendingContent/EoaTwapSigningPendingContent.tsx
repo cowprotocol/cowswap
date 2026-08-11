@@ -5,9 +5,8 @@ import { Command } from '@cowprotocol/types'
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradePriceImpact } from 'modules/trade'
+import { OrderSteps, useTradePriceImpact } from 'modules/trade'
 
-import { OrderSteps } from 'common/pure/ConfirmationPendingContent'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
@@ -18,7 +17,10 @@ interface EoaTwapSigningPendingContentProps {
   tradeDetailsSlot: ReactNode
 }
 
-export function EoaTwapSigningPendingContent({ onDismiss, tradeDetailsSlot }: EoaTwapSigningPendingContentProps): ReactNode {
+export function EoaTwapSigningPendingContent({
+  onDismiss,
+  tradeDetailsSlot,
+}: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
   const {
     inputCurrencyAmount,

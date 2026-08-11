@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -15,7 +15,6 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
-import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
@@ -83,14 +82,14 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   )
 
   return (
-    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-
+    <Modal.Root>
       <ModalHeader
         title={props.title}
         onBack={onDismiss}
-        rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />} />
+        rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
+      />
 
-      <styledEl.ContentWrapper id="trade-confirmation">
+      <Modal.Content id="trade-confirmation">
         <ConfirmAmounts
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
@@ -120,7 +119,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           signingStep={signingStep}
           clickEvent={confirmClickEvent}
         />
-      </styledEl.ContentWrapper>
-    </styledEl.WidgetWrapper>
+      </Modal.Content>
+    </Modal.Root>
   )
 }

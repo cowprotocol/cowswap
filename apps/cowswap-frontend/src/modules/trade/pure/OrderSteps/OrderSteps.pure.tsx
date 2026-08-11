@@ -1,18 +1,22 @@
 import { ReactNode } from 'react'
 
-import { ModalHeader } from '@cowprotocol/ui'
+import { Command } from '@cowprotocol/types'
+import { ModalHeader, Modal } from '@cowprotocol/ui'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { ConfirmAmounts } from 'modules/trade'
-
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { NewModalContent } from 'common/pure/NewModal'
-import { OrderStepHeaderProps } from './header/OrderStepHeader.pure'
+
 import { OrderStep, OrderStepItem } from './item/OrderStepItem.pure'
 import * as styledEl from './OrderSteps.styled'
 
-export interface OrderStepsProps extends OrderStepHeaderProps {
+import { ConfirmAmounts } from '../TradeConfirmation/ConfirmAmounts'
+
+export interface OrderStepsProps {
+  title: string
+  badge?: string
+  onBack?: Command
+  onClose?: Command
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -35,12 +39,12 @@ export function OrderSteps({
   steps,
 }: OrderStepsProps): ReactNode {
   return (
-    <styledEl.Root>
+    <Modal.Root>
       <ModalHeader onBack={onBack} onClose={onClose}>
         {title}
       </ModalHeader>
 
-      <NewModalContent>
+      <Modal.Content>
         <styledEl.OrderSummary>
           <ConfirmAmounts
             inputCurrencyInfo={inputCurrencyInfo}
@@ -55,7 +59,7 @@ export function OrderSteps({
             <OrderStepItem key={step.id} step={step} />
           ))}
         </styledEl.StepsList>
-      </NewModalContent>
-    </styledEl.Root>
+      </Modal.Content>
+    </Modal.Root>
   )
 }

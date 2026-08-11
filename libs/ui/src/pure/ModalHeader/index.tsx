@@ -20,17 +20,11 @@ export interface ModalHeaderProps {
   className?: string
 }
 
-export function ModalHeader({
-  title,
-  children,
-  rightSlot,
-  className,
-  onBack,
-  onClose,
-}: ModalHeaderProps): ReactNode {
-  const headerClassName = [className, onBack ? 'hasBack' : null, onClose ? 'hasClose' : null]
-    .filter(Boolean)
-    .join(' ')
+export function ModalHeader({ title, children, rightSlot, className, onBack, onClose }: ModalHeaderProps): ReactNode {
+  const headerClassName = [className, onBack ? 'hasBack' : null, onClose ? 'hasClose' : null].filter(Boolean).join(' ')
+
+  //  onKeyDown={(e) => e.key === 'Escape' && onDismiss()}
+  // TODO: Use CloseButton / BackButton components...
 
   return (
     <styledEl.Header className={headerClassName} withoutBorder>

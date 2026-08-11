@@ -2,12 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Root = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 12px;
-`
-
 export const OrderSummary = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -31,4 +25,3 @@ export const StepsList = styled.ol`
   width: 100%;
   margin-inline: auto;
 `
-

@@ -2,7 +2,8 @@ import { ReactNode } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { OrderStep, OrderStepStatus } from 'common/pure/ConfirmationPendingContent'
+import { OrderStep, OrderStepStatus } from 'modules/trade'
+
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
@@ -70,10 +71,7 @@ export function buildEoaTwapConfirmationPendingSteps({
   })
 }
 
-export function getEoaTwapStepDescription(
-  step: EoaTwapSigningSteps,
-  status: OrderStepStatus,
-): ReactNode | undefined {
+export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {
   if (status === 'success') {
     return undefined
   }
