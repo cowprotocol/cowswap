@@ -35,11 +35,6 @@ jest.mock('@cowprotocol/balances-and-allowances', () => ({
   PRIORITY_TOKENS_REFRESH_INTERVAL: 60_000,
 }))
 
-jest.mock('@cowprotocol/common-hooks', () => ({
-  ...jest.requireActual('@cowprotocol/common-hooks'),
-  useFeatureFlags: jest.fn(),
-}))
-
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
