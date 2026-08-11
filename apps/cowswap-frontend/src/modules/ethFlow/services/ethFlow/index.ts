@@ -203,7 +203,7 @@ export async function ethFlow({
   } catch (err: unknown) {
     const error = normalizeError(err)
     logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
