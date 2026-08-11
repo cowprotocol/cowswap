@@ -94,11 +94,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
-  if (isCaptchaPending) {
+  if (!isWrapUnwrap && isCaptchaPending) {
     return [TradeFormValidation.CaptchaPending]
   }
 
-  if (isCaptchaRequired) {
+  if (!isWrapUnwrap && isCaptchaRequired) {
     return [TradeFormValidation.CaptchaRequired]
   }
 
