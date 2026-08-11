@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
@@ -109,7 +109,7 @@ function createTransformedTrade(overrides: Partial<Trade> = {}): Trade {
 }
 
 // Fees are cached by order, so without a fresh cache one test's fees satisfy another's key.
-function FreshSwrCache({ children }: { children: React.ReactNode }): React.ReactNode {
+function FreshSwrCache({ children }: { children: ReactNode }): ReactNode {
   return <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
 }
 

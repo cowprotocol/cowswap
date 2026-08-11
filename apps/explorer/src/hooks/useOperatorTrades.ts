@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { normalizeError } from '@cowprotocol/common-utils'
 
 import { useNetworkId } from 'state/network'
 import useSWR from 'swr'
@@ -151,7 +152,10 @@ export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
     {
       ...SWR_NO_REFRESH_OPTIONS,
       errorRetryCount: 0,
-      onError: (e) => console.error(`[useOrderProtocolFees] ${PROTOCOL_FEES_ERROR}`, e),
+      onError: (err: unknown) => {
+        const error = normalizeError(err)
+        console.error(`[useOrderProtocolFees] ${PROTOCOL_FEES_ERROR}`, error)
+      },
     },
   )
 

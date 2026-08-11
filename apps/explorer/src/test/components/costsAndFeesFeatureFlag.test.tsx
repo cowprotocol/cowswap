@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { render, screen } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
@@ -27,10 +27,10 @@ jest.mock('../../components/common/DetailRow', () => ({
     children,
   }: {
     label: string
-    tooltipText?: React.ReactNode
+    tooltipText?: ReactNode
     stack?: boolean
-    children: React.ReactNode
-  }): React.ReactNode => (
+    children: ReactNode
+  }): ReactNode => (
     <div>
       <span>{label}</span>
       <span data-testid="tooltip">{tooltipText}</span>
@@ -79,7 +79,27 @@ describe('costs & fees feature flag', () => {
 
     render(<CostAndFeesItem order={{ ...ORDER_WITH_BREAKDOWN, protocolFees: undefined }} />)
 
+    expect(screen.getByText('Costs & Fees')).not.toBeNull()
+    expect(screen.getByTestId('stack').textContent).toBe('false')
     expect(screen.queryByText('Network costs:')).toBeNull()
     expect(screen.queryByText('[+] Show more')).toBeNull()
+  })
+
+  it('falls back to the pre-feature row when the flag is on but no gas cost was recorded', () => {
+    useFlags.mockReturnValue({ isExplorerFeeDisplayEnabled: true })
+
+    render(<CostAndFeesItem order={{ ...ORDER_WITH_BREAKDOWN, gasCost: undefined }} />)
+
+    expect(screen.getByText('Costs & Fees')).not.toBeNull()
+    expect(screen.getByTestId('stack').textContent).toBe('false')
+  })
+
+  it('falls back to the pre-feature row when the flag is on but the gas cost is zero', () => {
+    useFlags.mockReturnValue({ isExplorerFeeDisplayEnabled: true })
+
+    render(<CostAndFeesItem order={{ ...ORDER_WITH_BREAKDOWN, gasCost: new BigNumber(0) }} />)
+
+    expect(screen.getByText('Costs & Fees')).not.toBeNull()
+    expect(screen.getByTestId('stack').textContent).toBe('false')
   })
 })

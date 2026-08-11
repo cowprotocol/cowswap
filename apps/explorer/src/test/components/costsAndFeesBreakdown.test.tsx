@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
@@ -52,7 +52,7 @@ function fill(index: number): RawTrade {
 }
 
 // The real chain the app uses: derive the fees from every trade, attach them to the order, render.
-function Harness({ order }: { order: Order }): React.ReactNode {
+function Harness({ order }: { order: Order }): ReactNode {
   const { protocolFees } = useOrderProtocolFees(order)
   return <GasFeeDisplay order={{ ...order, protocolFees }} showBreakdown />
 }

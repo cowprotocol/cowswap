@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react'
+import { Fragment, ReactNode, useMemo } from 'react'
 
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { AddressKey, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -10,7 +11,6 @@ import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, ZERO_BIG_NUMBER } from 
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { abbreviateString } from 'utils'
 
 import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
@@ -31,13 +31,13 @@ const LegacyWrapper = styled.div`
 
 export type Props = {
   order: Order
-  /** Gated by `isExplorerFeeDisplayEnabled`, which the caller reads. */
+  /** The caller gates this on `isExplorerFeeDisplayEnabled` plus a usable gas cost and fee list. */
   showBreakdown?: boolean
 }
 
 type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 
-export function GasFeeDisplay(props: Props): React.ReactNode | null {
+export function GasFeeDisplay(props: Props): ReactNode {
   const { order, showBreakdown = false } = props
 
   // Without both the gas cost and the fees, a total would silently omit a component.
@@ -56,7 +56,7 @@ function CostsAndFeesBreakdown({
   order: Order
   gasCost: BigNumber
   protocolFees: ProtocolFee[]
-}): React.ReactNode {
+}): ReactNode {
   const networkId = useNetworkId() ?? undefined
 
   const feeTokenAddresses = useMemo(() => protocolFees.map((fee) => fee.tokenAddress), [protocolFees])
@@ -113,10 +113,10 @@ function CostsAndFeesBreakdown({
     <>
       <span>
         {totals.map(([tokenAddress, amount], index) => (
-          <React.Fragment key={tokenAddress}>
+          <Fragment key={tokenAddress}>
             {index > 0 && ', '}
             <FeeAmount amount={amount} token={tokenByKey.get(tokenAddress)} tokenAddress={tokenAddress} />
-          </React.Fragment>
+          </Fragment>
         ))}
       </span>
       {/* A lone network-costs row would just repeat the total. */}
@@ -153,14 +153,14 @@ function FeeAmount({
   amount: BigNumber
   token?: TokenErc20
   tokenAddress: AddressKey
-}): React.ReactNode {
-  if (!token) return `${amount.toString(10)} (raw) ${abbreviateString(tokenAddress, 6, 4)}`
+}): ReactNode {
+  if (!token) return `${amount.toString(10)} (raw) ${shortenAddress(tokenAddress)}`
 
   return <TokenAmount amount={amount} token={token} />
 }
 
 // The combined executed fee in the sell token, shown whenever the breakdown can't be.
-function LegacyFeeDisplay({ order }: { order: Order }): React.ReactNode {
+function LegacyFeeDisplay({ order }: { order: Order }): ReactNode {
   const { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee } = order
 
   const { executedFeeFormatted, totalFeeFormatted, quoteSymbol } = useMemo(() => {

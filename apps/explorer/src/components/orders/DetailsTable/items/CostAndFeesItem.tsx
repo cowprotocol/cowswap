@@ -12,7 +12,10 @@ interface CostAndFeesItemProps {
 }
 
 export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
-  const showBreakdown = useFeeDisplayFeatureFlag()
+  const isFeeDisplayEnabled = useFeeDisplayFeatureFlag()
+  // GasFeeDisplay falls back to the legacy fee without a usable gas cost and fee list, so the
+  // row's label, tooltip and layout have to fall back with it.
+  const showBreakdown = isFeeDisplayEnabled && Boolean(order.gasCost?.isGreaterThan(0)) && Boolean(order.protocolFees)
 
   return (
     // The breakdown is a total plus an expandable table, so it stacks; the legacy fee stays inline.
