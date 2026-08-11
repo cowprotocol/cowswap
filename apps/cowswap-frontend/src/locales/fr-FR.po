@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-10 15:37\n"
+"PO-Revision-Date: 2026-08-11 11:49\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3672,7 +3672,7 @@ msgstr "CoW Swap est la seule plateforme d’échange qui associe les Coincidenc
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "EOA TWAP cancellation is not implemented"
-msgstr ""
+msgstr "L’annulation des ordres TWAP n’est pas prise en charge pour les wallets EOA"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
@@ -6358,7 +6358,7 @@ msgstr "secondes"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 msgid "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
-msgstr ""
+msgstr "Vous n’avez pas assez de {nativeCurrencySymbol} pour couvrir les frais de réseau. Réduisez le montant ou ajoutez davantage de {nativeCurrencySymbol} à votre wallet."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "token before creation."
