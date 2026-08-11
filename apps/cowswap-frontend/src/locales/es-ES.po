@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-10 15:37\n"
+"PO-Revision-Date: 2026-08-11 13:07\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -474,7 +474,7 @@ msgstr "Puedes ver tus transacciones anteriores en el Explorador"
 #. placeholder {1}: slippageWarningParams.max
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "Enter slippage percentage between {0}% and {1}%."
-msgstr "Introduzca el porcentaje de slippage entre {0}% y {1}%."
+msgstr "Introduzca el porcentaje de deslizamiento entre {0}% y {1}%."
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
@@ -587,7 +587,7 @@ msgstr "¡Esta CoW no huye más! ¡Ni de MEV!"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "Max. swap slippage"
-msgstr "Máximo slippage de intercambio"
+msgstr "Máximo deslizamiento de intercambio"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "We could not reliably determine your location (for example due to VPN or privacy settings). Before you can proceed with {displaySymbol}, you need to confirm that you are allowed to interact with this token."
@@ -955,7 +955,7 @@ msgstr "Pre Hooks"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "To let Cow Swap automatically select the slippage tolerance, toggle the \"Auto\" option."
-msgstr "Para permitir el intercambio de vacas automáticamente seleccione la tolerancia del slippage, active la opción \"Auto\"."
+msgstr "Para permitir el intercambio de CoW automáticamente seleccione la tolerancia del deslizamiento, active la opción \"Auto\"."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerQrModal.tsx
 msgid "White"
@@ -971,7 +971,7 @@ msgstr "¿No encuentras la pool que estás buscando?"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Custom slippage amount set{amountRange}."
-msgstr "Cantidad de slippage personalizada establecida{amountRange}."
+msgstr "Cantidad de deslizamiento personalizada establecida{amountRange}."
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -1133,7 +1133,7 @@ msgstr "Seleccionar cuenta {walletName}"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "With low slippage, your transaction may expire."
-msgstr "Con un slippage bajo, su transacción puede expirar."
+msgstr "Con un deslizamiento bajo, su transacción puede expirar."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
 #~ msgid "<0>Read our guide</0> on how to add custom tokens."
@@ -1579,7 +1579,7 @@ msgstr "5 Minutos"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "With high slippage, you may not get the best price."
-msgstr "Con un slippage alto, es posible que no obtenga el mejor precio."
+msgstr "Con un deslizamiento alto, es posible que no obtenga el mejor precio."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
@@ -1950,7 +1950,7 @@ msgstr "Saldo (v)COW"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "MEV-Protected Slippage"
-msgstr "Slippage protegido contra MEV"
+msgstr "deslizamiento protegido contra MEV"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Closed"
@@ -2358,11 +2358,11 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The minimum possible outcome after swap, including costs and slippage."
-msgstr ""
+msgstr "El mínimo resultado posible después del swap, incluyendo los costos y el deslizamiento."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The estimated amount you'll receive after estimated network costs and the max slippage setting"
-msgstr ""
+msgstr "La cantidad estimada que recibirás después de los costes estimados de la red y de la configuración máxima del deslizamiento"
 
 #: apps/cowswap-frontend/src/pages/games/CowRunner/index.tsx
 msgid "Run! ...and try not getting sandwiched"
@@ -2449,7 +2449,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "Slippage tolerance"
-msgstr "Tolerancia de slippage"
+msgstr "Tolerancia de deslizamiento"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
@@ -3567,7 +3567,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "(dynamic)"
-msgstr ""
+msgstr "(dinámico)"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 #: apps/cowswap-frontend/src/modules/twap/const.ts
@@ -3656,7 +3656,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Reduce your slippage by breaking big orders into smaller ones"
-msgstr ""
+msgstr "Reduzca su deslizamiento rompiendo grandes órdenes en pequeñas"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid " out of {totalSolvers}"
@@ -3836,7 +3836,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "you will pay a separate gas cost for signing the order placement on-chain."
@@ -4245,7 +4245,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots."
-msgstr ""
+msgstr "La robusta competencia de resolución de CoW Swap protege su deslizamiento de ser explotado por los bots MEV."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/ReferralCodeModal/controller.helpers.tsx
 #~ msgid "Rewards ended for this code. Try another."
@@ -4943,7 +4943,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "CoW Swap has dynamically selected this slippage tolerance, accounting for current gas prices and trade size, to ensure your trade executes quickly while still getting the best price."
-msgstr ""
+msgstr "El Swap de CoW ha seleccionado dinámicamente esta tolerancia del deslizamiento, teniendo en cuenta los precios actuales del gas y el tamaño de la operación, para asegurar que su operación se ejecuta rápidamente, al tiempo que obtiene el mejor precio."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "UPPERCASE | 5-20 chars | A-Z 0-9 - _"
@@ -5127,7 +5127,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "To override this, enter your desired slippage amount{amountRange}, but this may result in slower execution."
-msgstr ""
+msgstr "Para anular esto, introduce la cantidad de deslizamiento deseada{amountRange}, pero esto puede resultar en una ejecución más lenta."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Between currencies"
@@ -5193,11 +5193,11 @@ msgstr ""
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Trades are protected from MEV, so your slippage can't be exploited!"
-msgstr ""
+msgstr "¡Las operaciones están protegidas de MEV, así que no se puede explotar su deslizamiento!"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution."
-msgstr ""
+msgstr "Esta es la tolerancia recomendada de deslizamientos basada en los precios actuales del gas y el tamaño de la operación. Una cantidad menor puede resultar en una ejecución más lenta."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
@@ -5260,7 +5260,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeSlippage/containers/HighSuggestedSlippageWarning/index.tsx
 msgid "CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
-msgstr ""
+msgstr "El Swap de CoW ajusta dinámicamente su tolerancia de deslizamientos en función del precio actual del gas y del tamaño del comercio. Puede establecer un deslizamiento personalizado usando el icono de configuración de arriba."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Press the button below to search older orders, or create a new one!"
@@ -5583,7 +5583,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
-msgstr ""
+msgstr "Al vender {aNativeCurrency}, la tolerancia mínima de deslizamiento se establece en {minimumETHFlowSlippage}% o superior{amountRange} para asegurar una gran probabilidad de que coincida con la orden, incluso en condiciones de mercado volátiles."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Additional Results from External Sources"
@@ -5920,7 +5920,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeSlippage/containers/HighSuggestedSlippageWarning/index.tsx
 msgid "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
-msgstr ""
+msgstr "Deslizamiento ajustado al {slippageBpsPercentage}% para asegurar una ejecución rápida"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
@@ -5937,7 +5937,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
-msgstr ""
+msgstr "Los pedidos de CoW Swap pueden ser órdenes de mercado (que se llenan al precio de mercado dentro de la tolerancia del deslizamiento que ha establecido) u órdenes con límite (que se llenan a un precio que usted especifique)."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
@@ -5990,7 +5990,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
-msgstr ""
+msgstr "Bajar el deslizamiento mínimo (en lugar de {minEthFlowSlippageToSignificant}% mínimo)"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Submit"
@@ -6801,7 +6801,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "Suggested"
-msgstr ""
+msgstr "Sugerido"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Add the app at your own risk"
@@ -6857,7 +6857,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "If your orders often expire, consider increasing your slippage or contact us on"
-msgstr ""
+msgstr "Si sus órdenes a menudo caducan, considere aumentar su deslizamiento o póngase en contacto con nosotros en"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "The good news"
@@ -7415,7 +7415,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Either way, trades are protected from MEV, so your slippage can't be exploited!"
-msgstr ""
+msgstr "De cualquier manera, ¡las operaciones están protegidas de MEV, así que no se puede explotar su deslizamiento!"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "Your order will execute when the market price is {displayedPercent}% better than the current market price."
@@ -8171,7 +8171,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
-msgstr ""
+msgstr "¡Oh! El precio de mercado se ha movido fuera de su tolerancia de deslizamiento. Puede esperar a que los precios cambien {cancellationModal}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 msgid "Found {totalOpenOrders} open orders in the {limit} most recent ones."
