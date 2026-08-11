@@ -158,11 +158,18 @@ objects, wallet fixtures, and troubleshooting.
 > - `INTEGRATION_TEST_PRIVATE_KEY=<a throwaway Sepolia private key>`
 > - `REACT_APP_NETWORK_URL_11155111=<a Sepolia RPC URL>`
 
-Build the Synpress MetaMask cache once (required for the real-wallet fixtures):
+Most specs — including the PR smoke subset run in CI — use a fast mock wallet fixture and need no
+setup beyond the env vars above. A separate Synpress fixture drives a real MetaMask extension for
+scenarios that must exercise actual wallet UI; only specs using *that* fixture need a pre-built
+cache:
 
 ```bash
 pnpm e2e:build-cache
 ```
+
+> Neither the `e2e-pw-smoke` nor `e2e-pw-nightly` CI workflow runs this step — no spec in the
+> suite currently uses the Synpress fixture, so CI never touches `.cache-synpress`. If a spec
+> starts using it, its workflow must build or restore the cache first.
 
 Then run the suite. Playwright builds and serves the app itself, so there's no need to start a dev
 server in a separate terminal:
