@@ -9,7 +9,10 @@ export interface TokenInfo {
 const TOKENS: Partial<Record<SupportedChainId, Record<string, TokenInfo>>> = {
   [CHAIN_IDS.SEPOLIA]: {
     WETH: { address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14', decimals: 18 },
-    USDC: { address: '0xbe72E441BF55620febc26715db68d3494213D8Cb', decimals: 6 },
+    // NB: this Sepolia test token is labeled "USDC" but is actually deployed with 18 decimals
+    // (confirmed against ../mocks/cowProtocolApi/fixtures/quote.json's buyAmount) — do not
+    // "fix" this to 6 to match mainnet USDC.
+    USDC: { address: '0xbe72E441BF55620febc26715db68d3494213D8Cb', decimals: 18 },
   },
   [CHAIN_IDS.GNOSIS]: {
     WXDAI: { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', decimals: 18 },

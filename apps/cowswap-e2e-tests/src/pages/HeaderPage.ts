@@ -1,11 +1,15 @@
-import type { Page } from '@playwright/test'
+import type { Page, Locator } from '@playwright/test'
 
 /** The app-wide header (network selector, wallet status) — present on every route, not just Swap. */
 export class HeaderPage {
   readonly page: Page
+  readonly header: Locator
+  readonly networkDialog: Locator
 
   constructor(page: Page) {
     this.page = page
+    this.header = page.locator('#cowswap-app-header')
+    this.networkDialog = page.getByRole('dialog')
   }
 
   /**
@@ -15,7 +19,7 @@ export class HeaderPage {
    * would follow, as opposed to switching chains directly on the mocked wallet.
    */
   async switchNetwork(currentNetworkLabel: string, targetNetworkLabel: string): Promise<void> {
-    await this.page.locator('#cowswap-app-header').getByText(currentNetworkLabel, { exact: true }).click()
-    await this.page.getByRole('dialog').getByRole('button', { name: targetNetworkLabel, exact: true }).click()
+    await this.header.getByText(currentNetworkLabel, { exact: true }).click()
+    await this.networkDialog.getByRole('button', { name: targetNetworkLabel, exact: true }).click()
   }
 }

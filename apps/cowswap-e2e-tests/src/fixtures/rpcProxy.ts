@@ -21,13 +21,13 @@ export function createRpcProxyHandle(testInfo: TestInfo): RpcProxyHandle {
     baseUrl,
     workerId,
     async setBalance({ chainId, address, valueHex }) {
-      await post(`${baseUrl}/admin/setBalance`, { chainId, workerId, address, valueHex })
+      await post('/admin/setBalance', { chainId, workerId, address, valueHex })
     },
     async stubCall({ chainId, to, dataPrefix, returnHex }) {
-      await post(`${baseUrl}/admin/stubCall`, { chainId, workerId, to, dataPrefix, returnHex })
+      await post('/admin/stubCall', { chainId, workerId, to, dataPrefix, returnHex })
     },
     async reset() {
-      await post(`${baseUrl}/admin/reset`, { workerId })
+      await post('/admin/reset', { workerId })
     },
   }
 }

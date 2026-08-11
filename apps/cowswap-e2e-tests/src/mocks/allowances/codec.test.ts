@@ -99,7 +99,7 @@ test('classifies an aggregate3 batch, keeping call order', () => {
   assert.equal(call.kind, 'batch')
   assert.equal(call.calls.length, 2)
   assert.equal(call.calls[0].kind, 'allowance')
-  assert.equal((call.calls[0] as AllowanceCall).token, TOKEN_A.toLowerCase())
+  assert.equal((call.calls[0] as AllowanceCall).token, getAddressKey(TOKEN_A))
   assert.equal(call.calls[1].kind, 'opaque')
 })
 
@@ -162,7 +162,7 @@ test('collectAllowanceCalls flattens nested batches in order', () => {
 
   const tokens = collectAllowanceCalls(classifyCall(MULTICALL3, outer)).map((c) => c.token)
 
-  assert.deepEqual(tokens, [TOKEN_A.toLowerCase(), TOKEN_B.toLowerCase()])
+  assert.deepEqual(tokens, [getAddressKey(TOKEN_A), getAddressKey(TOKEN_B)])
 })
 
 test('encodeAllowanceResult produces a 32-byte uint256', () => {
@@ -181,7 +181,7 @@ test('resolveBatchResult fills every slot when the batch is fully mocked', () =>
     ]),
   ) as BatchCall
 
-  const results = decodeResults(resolveBatchResult(call, (c) => (c.token === TOKEN_A.toLowerCase() ? 7n : 9n)))
+  const results = decodeResults(resolveBatchResult(call, (c) => (c.token === getAddressKey(TOKEN_A) ? 7n : 9n)))
 
   assert.equal(results.length, 2)
   assert.equal(results[0].success, true)

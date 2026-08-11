@@ -22,7 +22,7 @@ export interface AllowanceRead {
 export type AllowanceValue = string | number | bigint
 
 export function allowanceKey(owner: string, chainId: number, token: string): string {
-  return `${getAddressKey(owner)}|${chainId}|${token.toLowerCase()}`
+  return `${getAddressKey(owner)}|${chainId}|${getAddressKey(token)}`
 }
 
 /** Prefix of every key belonging to `owner`, for owner-level scans. */
