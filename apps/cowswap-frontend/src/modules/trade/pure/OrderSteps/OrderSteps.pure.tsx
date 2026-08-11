@@ -47,6 +47,7 @@ export function OrderSteps({
       <Modal.Content>
         <styledEl.OrderSummary>
           <ConfirmAmounts
+            variant="slim"
             inputCurrencyInfo={inputCurrencyInfo}
             outputCurrencyInfo={outputCurrencyInfo}
             priceImpact={priceImpact}

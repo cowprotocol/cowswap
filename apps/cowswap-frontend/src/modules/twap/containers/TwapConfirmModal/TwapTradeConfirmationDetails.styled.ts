@@ -1,17 +1,15 @@
-import { UI } from '@cowprotocol/ui'
+import { Accordion, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 // TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
 const DEBUG_TRANSITION_DURATION = '10s'
 
-export const Root = styled.div<{ $isCollapsible: boolean }>`
+export const Root = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   border-radius: 12px;
-  padding: ${({ $isCollapsible }) => ($isCollapsible ? '10px' : '0')};
-  background: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   transition:
     padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
     background-color ${DEBUG_TRANSITION_DURATION} ease-in-out;
@@ -29,6 +27,15 @@ export const TriggerSlot = styled.div<{ $isVisible: boolean }>`
   > * {
     min-height: 0;
     overflow: hidden;
+  }
+`
+
+export const Trigger = styled(Accordion.Trigger)<{ $isCollapsible: boolean }>`
+  background: transparent;
+
+  &:hover {
+    background: ${({ $isCollapsible }) =>
+      $isCollapsible ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
   }
 `
 

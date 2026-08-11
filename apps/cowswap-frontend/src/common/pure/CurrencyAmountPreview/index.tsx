@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenAmount } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
@@ -10,7 +9,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import * as styledEl from './styled'
 
-import { FiatValue } from '../FiatValue'
+const TOKEN_LOGO_SIZE = 42
+
+export type CurrencyAmountPreviewVariant = 'default' | 'slim'
 
 export interface CurrencyPreviewInfo {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -20,6 +21,7 @@ export interface CurrencyPreviewInfo {
 }
 
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
+  variant?: CurrencyAmountPreviewVariant
   id: string
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
@@ -30,24 +32,31 @@ interface BuiltItProps {
   className: string
 }
 
-export function CurrencyAmountPreview(props: CurrencyPreviewProps): ReactNode {
-  const { id, currencyInfo, className, priceImpactParams, isBridging } = props
+export function CurrencyAmountPreview({
+  variant = 'default',
+  id,
+  currencyInfo,
+  className,
+  priceImpactParams,
+  isBridging,
+}: CurrencyPreviewProps): ReactNode {
   const { fiatAmount, amount } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
+  const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
-    <styledEl.Container id={id} className={className}>
+    <styledEl.Container id={id} className={containerClassName}>
       <div>{topLabel}</div>
       <div>
         <styledEl.TokenLogoWrapper>
-          <TokenLogo token={currency} size={42} />
+          <TokenLogo token={currency} size={TOKEN_LOGO_SIZE} />
         </styledEl.TokenLogoWrapper>
       </div>
-      <styledEl.Amount>
-        <TokenAmount className="token-amount-input" amount={amount} tokenSymbol={currency} />
-        <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
-      </styledEl.Amount>
+      <styledEl.Amounts>
+        <styledEl.Amount className="token-amount-input" amount={amount} tokenSymbol={currency} />
+        <styledEl.FiatAmountSlot fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
+      </styledEl.Amounts>
     </styledEl.Container>
   )
 }

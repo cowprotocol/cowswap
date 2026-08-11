@@ -1,6 +1,11 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { TokenAmount, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import { FiatValue } from '../FiatValue'
+
+export const TOKEN_SIZE_DEFAULT = 42
+export const TOKEN_SIZE_SLIM = 32
 
 export const Container = styled.div`
   padding: 24px 12px;
@@ -12,25 +17,49 @@ export const Container = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+  transition:
+    padding var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
+    gap var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
 
   ${Media.upToSmall()} {
     font-size: 13px;
     letter-spacing: -0.1px;
   }
+
+  &.slim {
+    padding: 8px 12px;
+    gap: 8px;
+  }
 `
 
-export const Amount = styled.div`
-  font-size: 15px;
-  font-weight: 600;
+export const Amounts = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
+`
 
-  // Targets FiatValue
-  > div {
-    font-weight: 500;
-    font-size: 13px;
+export const Amount = styled(TokenAmount)`
+  font-size: 15px;
+  font-weight: 600;
+`
+
+export const FiatAmountSlot = styled(FiatValue)`
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+  max-height: 2.5em;
+  opacity: 1;
+  overflow: hidden;
+  transition:
+    max-height var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
+    margin-top var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
+
+  ${Container}.slim & {
+    max-height: 0;
+    opacity: 0;
+    margin-top: -6px;
   }
 `
 

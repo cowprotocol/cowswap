@@ -133,6 +133,7 @@ export enum UI {
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
   BORDER_RADIUS_LARGE = '--cow-border-radius-large',
   PADDING_NORMAL = '--cow-padding-normal',
+  CLICKABLE_SIZE = '--cow-clickable-size',
 
   // Icons
   ICON_SIZE_NORMAL = '--cow-icon-size-normal',

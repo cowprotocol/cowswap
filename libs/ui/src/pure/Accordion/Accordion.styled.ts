@@ -4,14 +4,32 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
+// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
+const DEBUG_TRANSITION_DURATION = '10s'
+
 export const Root = styled(BaseAccordion.Root)`
   width: 100%;
   display: flex;
   flex-direction: column;
 `
 
-export const Item = styled(BaseAccordion.Item)`
+export const Item = styled(BaseAccordion.Item)<{ $isCollapsible?: boolean }>`
   width: 100%;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  /* Use opaque paper (not transparent) so background-color transitions match ConfirmAmounts,
+     instead of blending through alpha over the modal. */
+  background-color: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER})` : 'transparent')};
+  transition:
+    padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
+    background-color ${DEBUG_TRANSITION_DURATION} ease-in-out;
+
+  &[data-open] {
+    padding: ${({ $isCollapsible = true }) => ($isCollapsible ? '8px' : '0')};
+    background-color: ${({ $isCollapsible = true }) =>
+      $isCollapsible ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent'};
+  }
 `
 
 export const Header = styled(BaseAccordion.Header)`
@@ -22,12 +40,14 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   box-sizing: border-box;
   display: flex;
   width: 100%;
+  min-height: var(${UI.CLICKABLE_SIZE});
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 0;
   margin: 0;
   border: none;
+  border-radius: 8px;
   background: transparent;
   color: var(${UI.COLOR_TEXT});
   font-family: inherit;
@@ -37,16 +57,13 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   text-align: center;
   cursor: pointer;
   user-select: none;
+  transition: background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:focus-visible {
     outline: 2px solid var(${UI.COLOR_TEXT});
     outline-offset: 2px;
-    border-radius: 4px;
   }
 `
-
-// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
-const DEBUG_TRANSITION_DURATION = '10s'
 
 export const Chevron = styled(ChevronDown)`
   flex-shrink: 0;

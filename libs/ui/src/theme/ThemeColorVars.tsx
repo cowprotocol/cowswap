@@ -343,6 +343,7 @@ export const ThemeColorVars = css`
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.PADDING_NORMAL}: 24px;
+    ${UI.CLICKABLE_SIZE}: 44px;
 
     // Icons
     ${UI.ICON_SIZE_LARGE}: 36px;

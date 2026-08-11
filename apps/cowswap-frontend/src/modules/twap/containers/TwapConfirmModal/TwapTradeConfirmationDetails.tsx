@@ -132,22 +132,22 @@ export function TwapTradeConfirmationDetails({
   )
 
   return (
-    <styledEl.Root $isCollapsible={isCollapsible}>
+    <styledEl.Root>
       <Accordion.Root
         disabled={!isCollapsible}
-        value={isExpanded ? [ORDER_DETAILS_ITEM] : []}
+        value={!isCollapsible || isExpanded ? [ORDER_DETAILS_ITEM] : []}
         onValueChange={(value) => {
           if (!isCollapsible) return
           setIsExpanded(value.includes(ORDER_DETAILS_ITEM))
         }}
       >
-        <Accordion.Item value={ORDER_DETAILS_ITEM}>
+        <Accordion.Item value={ORDER_DETAILS_ITEM} $isCollapsible={isCollapsible}>
           <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
             <Accordion.Header>
-              <Accordion.Trigger>
+              <styledEl.Trigger $isCollapsible={isCollapsible}>
                 <Trans>Order details</Trans>
                 <Accordion.Chevron aria-hidden />
-              </Accordion.Trigger>
+              </styledEl.Trigger>
             </Accordion.Header>
           </styledEl.TriggerSlot>
           <Accordion.Panel keepMounted>

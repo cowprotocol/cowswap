@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 export const OrderSummary = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  gap: 12px;
+  gap: 6px;
 `
 
 export const StepsList = styled.ol`

@@ -91,6 +91,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
       <Modal.Content id="trade-confirmation">
         <ConfirmAmounts
+          variant="default"
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
