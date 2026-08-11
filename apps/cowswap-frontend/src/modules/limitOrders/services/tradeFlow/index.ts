@@ -206,7 +206,7 @@ export async function tradeFlow(
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
