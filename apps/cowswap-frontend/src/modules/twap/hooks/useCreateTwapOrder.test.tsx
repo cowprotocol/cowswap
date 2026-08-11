@@ -38,9 +38,12 @@ import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
 jest.mock('wagmi', () => ({ ...jest.requireActual('wagmi'), useConfig: jest.fn(() => ({})) }))
-jest.mock('@cowprotocol/analytics', () => ({ __resetGtmInstance: jest.fn(), useCowAnalytics: jest.fn() }))
-jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
+jest.mock('@cowprotocol/common-hooks', () => ({
+  ...jest.requireActual('@cowprotocol/common-hooks'),
+  useFeatureFlags: jest.fn(),
+}))
 jest.mock('@cowprotocol/wallet', () => ({
+  ...jest.requireActual('@cowprotocol/wallet'),
   useIsSafeViaWc: jest.fn(),
   useIsSafeWallet: jest.fn(),
   useSendBatchTransactions: jest.fn(),
@@ -68,13 +71,19 @@ jest.mock('modules/trade', () => ({
 jest.mock('common/hooks/useAppSigner', () => ({ useAppSigner: jest.fn() }))
 jest.mock('common/hooks/useConfirmPriceImpactWithoutFee', () => ({ useConfirmPriceImpactWithoutFee: jest.fn() }))
 jest.mock('common/utils/getAreBridgeCurrencies', () => ({ getAreBridgeCurrencies: jest.fn(() => false) }))
+jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapFlowUpdater: jest.fn(() => jest.fn()) }))
 jest.mock('./useExtensibleFallbackContext', () => ({ useExtensibleFallbackContext: jest.fn() }))
 jest.mock('./useTwapOrder', () => ({ useTwapOrder: jest.fn() }))
 jest.mock('./useTwapOrderCreationContext', () => ({ useTwapOrderCreationContext: jest.fn() }))
+jest.mock('../services/twap/eoa/ensureEoaTwapVaultRelayerApproval', () => ({
+  ensureEoaTwapVaultRelayerApproval: jest.fn(),
+  getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false }),
+}))
 jest.mock('../services/twap/eoa/placeEoaTwapOrder', () => ({ placeEoaTwapOrder: jest.fn() }))
 jest.mock('../services/twap/eoa/waitForFundingOrderSettlementTx', () => ({
   waitForFundingOrderSettlementTx: jest.fn(),
 }))
+jest.mock('../services/twap/safe/placeSafeTwapOrder', () => ({ placeSafeTwapOrder: jest.fn() }))
 jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
 jest.mock('../utils/buildTwapOrderParamsStruct', () => ({ buildTwapOrderParamsStruct: jest.fn(() => ({})) }))
 jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest.fn() }))
@@ -164,8 +173,11 @@ describe('useCreateTwapOrder', () => {
     mockedUseExtensibleFallbackContext.mockReturnValue(null)
     mockedUseTwapOrder.mockReturnValue({
       receiver: '0xreceiver',
-      sellAmount: {},
-      buyAmount: {},
+      sellAmount: {
+        currency: { address: '0xsell', name: 'SELL', symbol: 'SELL' },
+        quotient: { toString: () => '1000000' },
+      },
+      buyAmount: { currency: { symbol: 'BUY' } },
     } as ReturnType<typeof useTwapOrder>)
     mockedUseTwapOrderCreationContext.mockReturnValue(null)
     mockedCallWidgetHook.mockResolvedValue(true)
