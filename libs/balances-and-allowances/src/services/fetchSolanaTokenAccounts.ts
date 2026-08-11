@@ -8,7 +8,7 @@ export interface SolanaTokenAccountData {
   mint: string
   balance: bigint
   // SPL-approved amount when the account's delegate is the CoW settlement authority, else `undefined`
-  // (no CoW approval) — the Solana analogue of an EVM allowance.
+  // (no CoW approval).
   delegatedAmount: bigint | undefined
 }
 
