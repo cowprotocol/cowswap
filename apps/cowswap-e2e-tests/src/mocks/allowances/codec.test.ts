@@ -1,5 +1,7 @@
 import { decodeAbiParameters, encodeAbiParameters, encodeFunctionData, erc20Abi, type Hex } from 'viem'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
@@ -71,9 +73,9 @@ test('classifies a direct allowance call', () => {
 
   assert.deepEqual(call, {
     kind: 'allowance',
-    token: TOKEN_A.toLowerCase(),
-    owner: OWNER.toLowerCase(),
-    spender: SPENDER.toLowerCase(),
+    token: getAddressKey(TOKEN_A),
+    owner: getAddressKey(OWNER),
+    spender: getAddressKey(SPENDER),
   })
 })
 

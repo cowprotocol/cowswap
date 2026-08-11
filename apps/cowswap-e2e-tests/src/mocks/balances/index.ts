@@ -113,10 +113,10 @@ async function handleSse(
   owner: string,
 ): Promise<void> {
   const snapshot = resolveBalancesSnapshot(fixture, overrides, owner, chainId)
-  // Slow the browser's default auto-reconnect (~3s) so a route re-fulfil doesn't
-  // repeatedly re-fire for the rest of the test; each reconnect just re-sends the
-  // same snapshot anyway.
-  const body = `retry: 500\nevent: balance_update\ndata: ${JSON.stringify({ balances: snapshot })}\n\n`
+  // We don't implement real streaming mocks, so we don't get real time balances update
+  // To bypass that, we add retry: 800ms so it will re-open the SSE conenction often to update balances
+  // Since this is a mock, we can afford that
+  const body = `retry: 800\nevent: balance_update\ndata: ${JSON.stringify({ balances: snapshot })}\n\n`
 
   await route.fulfill({ status: 200, contentType: 'text/event-stream', body })
 }

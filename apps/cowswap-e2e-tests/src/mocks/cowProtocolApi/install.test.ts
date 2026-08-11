@@ -86,9 +86,9 @@ function parsedBody(fulfilled: { body: string } | undefined): unknown {
 let mock: CowProtocolApiMock
 let handler: (route: Route) => Promise<void>
 
-beforeEach(() => {
+beforeEach(async () => {
   const stub = createStubContext()
-  mock = installCowProtocolApi(stub.context)
+  mock = await installCowProtocolApi(stub.context)
   handler = stub.getHandler()
 })
 

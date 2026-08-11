@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 /**
  * Flat allowance lookup keyed by `${owner}|${chainId}|${token}`, addresses lowercased.
  *
@@ -20,10 +22,10 @@ export interface AllowanceRead {
 export type AllowanceValue = string | number | bigint
 
 export function allowanceKey(owner: string, chainId: number, token: string): string {
-  return `${owner.toLowerCase()}|${chainId}|${token.toLowerCase()}`
+  return `${getAddressKey(owner)}|${chainId}|${token.toLowerCase()}`
 }
 
 /** Prefix of every key belonging to `owner`, for owner-level scans. */
 export function ownerKeyPrefix(owner: string): string {
-  return `${owner.toLowerCase()}|`
+  return `${getAddressKey(owner)}|`
 }

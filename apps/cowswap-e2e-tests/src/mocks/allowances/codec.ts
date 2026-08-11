@@ -1,5 +1,7 @@
 import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 /** `allowance(address,address)` */
 export const ALLOWANCE_SELECTOR = '0xdd62ed3e'
 /** `aggregate3((address,bool,bytes)[])` on Multicall3 */
@@ -124,9 +126,9 @@ function classifyAllowance(to: string, payload: Hex): ClassifiedCall {
     const [owner, spender] = decodeAbiParameters(ADDRESS_PAIR, payload)
     return {
       kind: 'allowance',
-      token: to.toLowerCase(),
-      owner: owner.toLowerCase(),
-      spender: spender.toLowerCase(),
+      token: getAddressKey(to),
+      owner: getAddressKey(owner),
+      spender: getAddressKey(spender),
     }
   } catch {
     return OPAQUE

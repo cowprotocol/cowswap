@@ -6,7 +6,8 @@
   "main": "index.js",
   "license": "ISC",
   "dependencies": {
-    "viem": "2.48.8"
+    "viem": "2.48.8",
+    "@cowprotocol/cow-sdk": "9.2.6"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",

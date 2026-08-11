@@ -542,6 +542,9 @@ importers:
 
   apps/cowswap-e2e-tests:
     dependencies:
+      '@cowprotocol/cow-sdk':
+        specifier: 9.2.6
+        version: 9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       viem:
         specifier: 2.48.8
         version: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@6.0.6)(zod@3.25.76)
