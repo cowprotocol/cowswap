@@ -93,7 +93,11 @@ test('converts human-readable balances/allowances to raw atoms keyed by address'
   })
 
   assert.deepEqual(balances.calls, [
-    ['0xOwner', CHAIN_IDS.SEPOLIA, { [WETH_ADDRESS]: 1_000_000_000_000_000_000n, [USDC_ADDRESS]: 56_000_000_000n }],
+    [
+      '0xOwner',
+      CHAIN_IDS.SEPOLIA,
+      { [WETH_ADDRESS]: 1_000_000_000_000_000_000n, [USDC_ADDRESS]: 56_000_000_000_000_000_000_000n },
+    ],
   ])
   assert.deepEqual(allowances.calls, [['0xOwner', CHAIN_IDS.SEPOLIA, { [WETH_ADDRESS]: 50_000_000_000_000_000_000n }]])
 })

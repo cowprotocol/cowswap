@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
@@ -39,8 +41,8 @@ test('accountOrders default is re-owned and refreshed', () => {
 
   assert.ok(Array.isArray(body) && body.length > 0)
   for (const order of body) {
-    assert.equal(order.owner, TRADER.toLowerCase())
-    assert.equal(order.receiver, TRADER.toLowerCase())
+    assert.equal(order.owner, getAddressKey(TRADER))
+    assert.equal(order.receiver, getAddressKey(TRADER))
     assert.ok(Number(order.validTo) > nowSec, 'validTo must be in the future')
     assert.ok(Date.parse(String(order.creationDate)) <= Date.now() + 1000)
   }

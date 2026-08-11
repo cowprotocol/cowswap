@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { createHash } from 'node:crypto'
 
 import type { CowApiRequest } from './types'
@@ -162,5 +164,5 @@ function scale(reference: string, from: string, to: string): string {
 
 /** Address the fixture should appear to belong to for this request. */
 function subjectAddress(req: CowApiRequest): string | undefined {
-  return (req.params.address ?? req.query.get('owner') ?? undefined)?.toLowerCase()
+  return getAddressKey(req.params.address ?? req.query.get('owner') ?? undefined)
 }

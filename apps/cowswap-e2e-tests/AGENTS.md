@@ -84,11 +84,12 @@ behavior, only to call its methods). Sub-mocks:
   endpoint (matches both the prod and `.barn.` hosts). Give every test in a file a default balance via
   `beforeEach` so none of them fall back to a real, flaky balance fetch (see Known Issues below for why
   that fallback happens at all).
-  - The balances-watcher path itself is gated behind a **LaunchDarkly flag** (`bwEnabledPercentage`),
-    percentage-bucketed by wallet address. If it's off for the test wallet, the app falls back to a real
-    multicall RPC read that this mock cannot intercept, and you'll see "Couldn't load balances" in the UI
-    regardless of what you `.set()`. This is a live remote flag, not something in this repo — if balances
-    stop resolving for no code reason, suspect this first.
+  - The balances-watcher path is used for every EVM chain (see `isWatcherActive` in
+    `CommonPriorityBalancesAndAllowancesUpdater.tsx`) — it's no longer gated behind the
+    `bwEnabledPercentage` flag, which was removed in #7985. It still falls back to a real multicall RPC
+    read this mock cannot intercept for non-EVM chains, and transiently while the watcher is
+    "recovering" from a prior failure — if balances stop resolving for no code reason, suspect that
+    fallback path first.
 - `mocks.cowApi.set(endpointKey, override)` — override any catalogued CoW Protocol API endpoint (see
   `src/mocks/cowProtocolApi/endpoints.ts` for the list: `quote`, `postOrder`, `accountOrders`,
   `orderStatus`, `order`, ...). `override` is a literal body, `reply(status, body)`, or a factory

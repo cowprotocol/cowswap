@@ -31,7 +31,7 @@ export interface PostedOrder {
   body: unknown
 }
 
-export function installCowProtocolApi(context: BrowserContext): CowProtocolApiMock {
+export async function installCowProtocolApi(context: BrowserContext): Promise<CowProtocolApiMock> {
   const overrides = new Map<CowApiEndpointKey, CowApiOverride>()
   const posted: PostedOrder[] = []
   const unmatched: string[] = []
@@ -74,7 +74,7 @@ export function installCowProtocolApi(context: BrowserContext): CowProtocolApiMo
     }
   }
 
-  void context.route(COW_API_URL_PATTERN, handler)
+  await context.route(COW_API_URL_PATTERN, handler)
 
   return {
     posted,

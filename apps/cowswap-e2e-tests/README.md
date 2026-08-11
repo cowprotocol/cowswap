@@ -24,10 +24,14 @@ Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 | `E2E_PW_MM_SEED` | CI | Twelve-word seed used by the Synpress MetaMask cache |
 | `E2E_RPC_PROXY_PORT` | no | RPC proxy port (default `18545`) — must match between cache build and test runs |
 
-## Building the MetaMask cache (required once)
+## Building the MetaMask cache (required once, for Synpress specs only)
+
+Needed only by specs that import the Synpress wallet fixture (`../fixtures/synpress`) — none
+do today, so neither the `e2e-pw-smoke` nor `e2e-pw-nightly` CI workflow builds this cache.
+The mock-wallet fixture used by every current spec (see below) needs no cache at all.
 
 Synpress replays `src/support/wallet.setup.ts` in a real browser and snapshots the
-resulting MetaMask profile into `.cache-synpress/<hash>`. Tests fail with
+resulting MetaMask profile into `.cache-synpress/<hash>`. A Synpress-fixture test fails with
 `Cache for <hash> does not exist` until the cache is built:
 
 ```bash
@@ -188,7 +192,7 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 
 | Command | Description |
 |---|---|
-| `pnpm e2e:build-cache` | Build the Synpress MetaMask profile cache (prerequisite for all test runs) |
+| `pnpm e2e:build-cache` | Build the Synpress MetaMask profile cache (only needed by specs using the Synpress fixture; not run in CI today) |
 | `pnpm e2e` | Full suite — all 362 tests |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |

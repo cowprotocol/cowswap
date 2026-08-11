@@ -102,7 +102,7 @@ export const sharedFixtures: Fixtures<
 
       const allowances = installAllowances(context)
       const balances = installBalances(context)
-      const cowApi = installCowProtocolApi(context)
+      const cowApi = await installCowProtocolApi(context)
       const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)

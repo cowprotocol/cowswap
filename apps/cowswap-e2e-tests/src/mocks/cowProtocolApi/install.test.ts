@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { strict as assert } from 'node:assert'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -86,9 +88,9 @@ function parsedBody(fulfilled: { body: string } | undefined): unknown {
 let mock: CowProtocolApiMock
 let handler: (route: Route) => Promise<void>
 
-beforeEach(() => {
+beforeEach(async () => {
   const stub = createStubContext()
-  mock = installCowProtocolApi(stub.context)
+  mock = await installCowProtocolApi(stub.context)
   handler = stub.getHandler()
 })
 
@@ -102,8 +104,8 @@ test('a matched GET fulfills the normalized default, re-owned to the requested a
   const body = parsedBody(stub.fulfilled) as Array<{ owner: string; receiver: string }>
   assert.ok(Array.isArray(body) && body.length > 0)
   for (const order of body) {
-    assert.equal(order.owner, ADDRESS.toLowerCase())
-    assert.equal(order.receiver, ADDRESS.toLowerCase())
+    assert.equal(order.owner, getAddressKey(ADDRESS))
+    assert.equal(order.receiver, getAddressKey(ADDRESS))
   }
 })
 
