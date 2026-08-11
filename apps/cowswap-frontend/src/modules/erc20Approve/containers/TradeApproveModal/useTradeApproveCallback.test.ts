@@ -42,6 +42,7 @@ jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({
 
 jest.mock('./approveUtils', () => ({
   processApprovalTransaction: jest.fn(),
+  toApprovalTxReceipt: jest.requireActual('./approveUtils').toApprovalTxReceipt,
 }))
 
 jest.mock('../../hooks', () => ({

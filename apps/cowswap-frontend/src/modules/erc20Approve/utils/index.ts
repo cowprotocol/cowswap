@@ -1,2 +1,5 @@
 export { getApprovalState } from './getApprovalState'
 export * from './isMaxAmountToApprove'
+export { estimateApprove } from './estimateApprove'
+export { sendApproveTransaction } from './sendApproveTransaction'
+export type { ApproveWriteContractParams, SendApproveTransactionParams } from './sendApproveTransaction'
