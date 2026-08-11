@@ -76,11 +76,18 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
     })
-    const json = (await res.json()) as { result?: unknown; error?: { code?: number; message?: string } }
-    if (json.error) {
-      throw { code: json.error.code ?? -32000, message: json.error.message ?? 'RPC error' }
+    const json: unknown = await res.json()
+    if (typeof json !== 'object' || json === null) {
+      throw new Error(`Unexpected RPC response for ${method}: expected a JSON object`)
     }
-    return json.result
+    if ('error' in json && json.error != null) {
+      const err = json.error as { code?: unknown; message?: unknown }
+      throw {
+        code: typeof err.code === 'number' ? err.code : -32000,
+        message: typeof err.message === 'string' ? err.message : 'RPC error',
+      }
+    }
+    return 'result' in json ? (json as { result?: unknown }).result : undefined
   }
 
   function walletClient(): WalletClient<HttpTransport, Chain, PrivateKeyAccount> {
@@ -118,9 +125,17 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
         return account.signMessage({ message: { raw: params[0] as Hex } })
       case 'eth_signTypedData_v4': {
         // params: [address, jsonTypedData]; viem rejects an explicit EIP712Domain entry in types.
-        const typed = JSON.parse(params[1] as string)
+        const rawTypedData = params[1]
+        if (typeof rawTypedData !== 'string') {
+          throw new Error('eth_signTypedData_v4: expected params[1] to be a JSON-encoded string')
+        }
+        const parsed: unknown = JSON.parse(rawTypedData)
+        if (typeof parsed !== 'object' || parsed === null) {
+          throw new Error('eth_signTypedData_v4: expected typed data payload to be an object')
+        }
+        const typed = parsed as { types?: Record<string, unknown> }
         const { EIP712Domain: _domain, ...types } = typed.types ?? {}
-        return account.signTypedData({ ...typed, types })
+        return account.signTypedData({ ...typed, types } as Parameters<typeof account.signTypedData>[0])
       }
       case 'eth_sendTransaction': {
         const tx = (params[0] ?? {}) as TransactionParams

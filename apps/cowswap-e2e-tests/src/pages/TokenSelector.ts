@@ -1,19 +1,30 @@
-import type { Page } from '@playwright/test'
+import type { Page, Locator } from '@playwright/test'
 
 export class TokenSelector {
-  constructor(private readonly page: Page) {}
+  readonly page: Page
+  readonly inputSelectButton: Locator
+  readonly outputSelectButton: Locator
+  readonly searchInput: Locator
+  readonly currencyList: Locator
+
+  constructor(page: Page) {
+    this.page = page
+    this.inputSelectButton = page.locator('#input-currency-input .open-currency-select-button')
+    this.outputSelectButton = page.locator('#output-currency-input .open-currency-select-button')
+    this.searchInput = page.locator('#token-search-input')
+    this.currencyList = page.locator('#currency-list')
+  }
 
   async openInput(): Promise<void> {
-    await this.page.locator('#input-currency-input .open-currency-select-button').click()
+    await this.inputSelectButton.click()
   }
 
   async openOutput(): Promise<void> {
-    await this.page.locator('#output-currency-input .open-currency-select-button').click()
+    await this.outputSelectButton.click()
   }
 
   async searchAndPick(symbolOrAddress: string): Promise<void> {
-    const input = this.page.locator('#token-search-input')
-    await input.fill(symbolOrAddress)
-    await this.page.locator('#currency-list').getByText(symbolOrAddress, { exact: false }).first().click()
+    await this.searchInput.fill(symbolOrAddress)
+    await this.currencyList.getByText(symbolOrAddress, { exact: false }).first().click()
   }
 }

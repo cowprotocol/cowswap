@@ -16,6 +16,13 @@ function lookupOf(entries: Array<[string, bigint]>): AllowanceLookup {
 
 const EMPTY: AllowanceLookup = new Map()
 
+// Real addresses never have an uppercase "0X" prefix — EIP-55 checksumming only varies the hex
+// body's case. `address.toUpperCase()` on the whole string corrupts the prefix instead, which
+// `getAddressKey` treats as not an EVM address at all (it requires a literal lowercase "0x").
+function upperHex(address: string): string {
+  return `0x${address.slice(2).toUpperCase()}`
+}
+
 test('returns the fixture value', () => {
   const fixture = lookupOf([[allowanceKey(OWNER, CHAIN, TOKEN), 5000000n]])
 
@@ -25,7 +32,7 @@ test('returns the fixture value', () => {
 test('matches regardless of address case', () => {
   const fixture = lookupOf([[allowanceKey(OWNER, CHAIN, TOKEN), 42n]])
 
-  assert.equal(resolveAllowance(fixture, EMPTY, OWNER.toUpperCase(), CHAIN, TOKEN.toUpperCase()), 42n)
+  assert.equal(resolveAllowance(fixture, EMPTY, upperHex(OWNER), CHAIN, upperHex(TOKEN)), 42n)
 })
 
 test('an override wins over the fixture', () => {
@@ -58,7 +65,7 @@ test('isOwnerConfigured sees owners from either map', () => {
   const overrides = lookupOf([[allowanceKey(OTHER, CHAIN, TOKEN), 1n]])
 
   assert.equal(isOwnerConfigured(fixture, overrides, OWNER), true)
-  assert.equal(isOwnerConfigured(fixture, overrides, OTHER.toUpperCase()), true)
+  assert.equal(isOwnerConfigured(fixture, overrides, upperHex(OTHER)), true)
   assert.equal(isOwnerConfigured(fixture, overrides, '0x3333333333333333333333333333333333333333'), false)
 })
 

@@ -29,7 +29,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm preview',
+    command: process.env.CI ? 'pnpm preview' : 'pnpm start:cowswap',
     cwd: path.resolve(__dirname, '../../'),
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,

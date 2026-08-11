@@ -106,6 +106,7 @@ test.describe('Market Orders', () => {
       wallet.address,
       CHAIN_ID,
       DEFAULT_WETH_BALANCE,
+      DEFAULT_USDC_BALANCE,
     )
 
     await swapPage.goto({ chainId: CHAIN_ID, sell: WETH, buy: USDC })
@@ -132,7 +133,7 @@ test.describe('Market Orders', () => {
     await expect(swapPage.buyBalance).toHaveAttribute('title', '0 USDC')
 
     await swapPage.clickSwap()
-    await confirmModal.confirmButton.click()
+    await confirmModal.confirm()
 
     // The currency panels hide their balance while a trade is pending/just-submitted
     // (`CurrencyInputPanel` only renders it when `!disabled`). Posting the order opens the
@@ -176,6 +177,6 @@ test.describe('Market Orders', () => {
       allowances: { WETH: '10' },
     })
 
-    await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
+    await expect(swapPage.priceImpactWarning).toBeVisible()
   })
 })

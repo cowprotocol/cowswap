@@ -24,7 +24,7 @@ test.describe('Limit Orders', () => {
       allowances: { WETH: '10' },
     })
     await limitPage.setLimitPrice('2000')
-    await limitPage.placeOrderButton.click()
+    await limitPage.placeOrder()
     await expect(confirmModal.confirmButton).toContainText('Place limit order')
   })
 })

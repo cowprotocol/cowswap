@@ -101,6 +101,11 @@ function send(res: ServerResponse, body: JsonRpcResponse): void {
   res.end(JSON.stringify(body))
 }
 
+// Upstream Sepolia RPC calls must not hang forever: a stalled fetch would otherwise block
+// every proxying test client waiting on tryForward(). Bound it and let tryForward's catch
+// turn the abort into a proper JSON-RPC error response.
+const FORWARD_TIMEOUT_MS = 15_000
+
 const balanceKey = (workerId: string, chainId: number, address: string): StubKey =>
   `${workerId}|${chainId}|${address.toLowerCase()}`
 
@@ -112,12 +117,19 @@ export async function createRpcProxy(opts: CreateRpcProxyOpts): Promise<RpcProxy
   const calls: Stubs = new Map() // key: workerId|chainId|to-lower|dataPrefix
 
   async function forward(method: string, params: unknown[] | undefined): Promise<JsonRpcResponse> {
-    const r = await fetch(opts.sepoliaRpcUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params: params ?? [] }),
-    })
-    return r.json() as Promise<JsonRpcResponse>
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), FORWARD_TIMEOUT_MS)
+    try {
+      const r = await fetch(opts.sepoliaRpcUrl, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params: params ?? [] }),
+        signal: controller.signal,
+      })
+      return r.json() as Promise<JsonRpcResponse>
+    } finally {
+      clearTimeout(timeout)
+    }
   }
 
   const server: Server = createServer((req, res) => {

@@ -23,14 +23,15 @@ export function installSafeSdk(context: BrowserContext): SafeSdkMock {
         ) => {
           const msg = message as { id?: string; method?: string }
           if (msg && typeof msg.method === 'string' && msg.method.startsWith('safe_')) {
+            const bareMethod = msg.method.slice('safe_'.length)
             const reply = {
               id: msg.id,
               success: true,
               version: '1.0.0',
               data:
-                msg.method === 'getSafeInfo'
+                bareMethod === 'getSafeInfo'
                   ? { safeAddress, chainId, threshold: 1, owners: [safeAddress], isReadOnly: false }
-                  : msg.method === 'getEnvironmentInfo'
+                  : bareMethod === 'getEnvironmentInfo'
                     ? { origin: 'https://app.safe.global' }
                     : {},
             }

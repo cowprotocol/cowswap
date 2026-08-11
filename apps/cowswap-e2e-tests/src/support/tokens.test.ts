@@ -11,6 +11,13 @@ test('resolves a known symbol on a known chain', () => {
   assert.equal(weth.decimals, 18)
 })
 
+test('resolves Sepolia USDC with 18 decimals (this test token is not the real 6-decimal USDC)', () => {
+  const usdc = resolveToken(CHAIN_IDS.SEPOLIA, 'USDC')
+
+  assert.equal(usdc.address, '0xbe72E441BF55620febc26715db68d3494213D8Cb')
+  assert.equal(usdc.decimals, 18)
+})
+
 test('throws with the known symbols when the symbol is not registered', () => {
   assert.throws(
     () => resolveToken(CHAIN_IDS.SEPOLIA, 'DAI'),

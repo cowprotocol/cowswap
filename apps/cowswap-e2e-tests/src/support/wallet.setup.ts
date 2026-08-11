@@ -23,8 +23,11 @@ async function dismissPopovers(page: Page): Promise<void> {
     for (const selector of closeButtonSelectors) {
       const button = page.locator(selector).first()
       if (await button.isVisible()) {
-        await button.click({ force: true, timeout: 5_000 }).catch(() => undefined)
-        clicked = true
+        const succeeded = await button
+          .click({ force: true, timeout: 5_000 })
+          .then(() => true)
+          .catch(() => false)
+        if (succeeded) clicked = true
       }
     }
     if (clicked) {

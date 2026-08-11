@@ -37,6 +37,10 @@ export class LimitPage implements TradePage {
     await this.limitPriceInput.fill(value)
   }
 
+  async placeOrder(): Promise<void> {
+    await this.placeOrderButton.click()
+  }
+
   async enterSellAmount(amount: string): Promise<void> {
     await this.inputAmount.fill(amount)
   }

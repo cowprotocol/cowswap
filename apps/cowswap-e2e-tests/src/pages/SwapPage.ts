@@ -39,6 +39,7 @@ export class SwapPage implements TradePage {
   readonly orderProgressBarModal: Locator
   readonly sellTokenSelect: Locator
   readonly buyTokenSelect: Locator
+  readonly priceImpactWarning: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -60,6 +61,7 @@ export class SwapPage implements TradePage {
     this.openOrders = page.locator('[data-testid="open-orders-list"]')
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
+    this.priceImpactWarning = page.getByText('Price impact unknown - trade carefully')
     this.tokens = new TokenSelector(page)
   }
 
@@ -115,6 +117,7 @@ export class SwapPage implements TradePage {
     owner: string,
     chainId: number,
     sellTokenBalanceBefore: bigint,
+    buyTokenBalanceBefore: bigint,
   ): { getPostedBuyAmount(): string } {
     let postedOrder: Record<string, unknown> | null = null
     let postedBuyAmount = ''
@@ -134,7 +137,7 @@ export class SwapPage implements TradePage {
 
       balances.set(owner, chainId, {
         [body.sellToken]: (sellTokenBalanceBefore - BigInt(body.sellAmount)).toString(),
-        [body.buyToken]: body.buyAmount,
+        [body.buyToken]: (buyTokenBalanceBefore + BigInt(body.buyAmount)).toString(),
       })
 
       postedOrder = {
