@@ -242,6 +242,10 @@ msgstr "Wrap {nativeSymbol}"
 msgid "Total earned"
 msgstr "Total earned"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "day"
+msgstr "day"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Order expires in"
 msgstr "Order expires in"
@@ -1332,6 +1336,10 @@ msgstr "Protection from MEV by default"
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Interval time too long"
 msgstr "Interval time too long"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "year"
+msgstr "year"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/InitialStep.tsx
 msgid "to save on costs!"
@@ -3338,6 +3346,10 @@ msgstr "All"
 msgid "batched together"
 msgstr "batched together"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "hour"
+msgstr "hour"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Swap to"
 msgstr "Swap to"
@@ -5056,6 +5068,10 @@ msgstr "{label} has been deactivated"
 #~ msgid "Uniswap v2 Deposit"
 #~ msgstr "Uniswap v2 Deposit"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "second"
+msgstr "second"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Set your own price"
 msgstr "Set your own price"
@@ -6461,6 +6477,10 @@ msgstr "<0/><1/>Consider waiting for lower network costs.<2/><3/>You may still m
 msgid "Swapping on"
 msgstr "Swapping on"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "month"
+msgstr "month"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "(Fill or Kill)"
 msgstr "(Fill or Kill)"
@@ -7222,6 +7242,10 @@ msgstr "When enabled, the orders table will be displayed on the left side on des
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/RecoveryBanner/RecoveryBanner.container.tsx
 msgid "Dismiss incident notice"
 msgstr "Dismiss incident notice"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "minute"
+msgstr "minute"
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "View proposals"
