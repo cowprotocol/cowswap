@@ -4,6 +4,7 @@ import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
+import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
@@ -40,6 +41,7 @@ export interface SharedFixtures {
     safeSdk: SafeSdkMock
     bungee: BungeeMock
     nearIntents: NearIntentsMock
+    launchDarkly: LaunchDarklyMock
     usdPrices: UsdPricesMock
   }
 }
@@ -107,13 +109,15 @@ export const sharedFixtures: Fixtures<
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
+      const launchDarkly = installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
 
-      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents, usdPrices })
+      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents, launchDarkly, usdPrices })
 
       tokenLists.reset()
       bungee.reset()
       nearIntents.reset()
+      await launchDarkly.reset()
       usdPrices.reset()
       await safeSdk.disable()
       // Non-fatal, so it must run before the throwing assert below.

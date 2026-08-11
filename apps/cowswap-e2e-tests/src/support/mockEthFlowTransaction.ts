@@ -186,6 +186,9 @@ export interface MockEthFlowTransactionOpts {
 
 type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
 
+/** A generous flat estimate for the `createOrder()` call — never actually spent, since the send itself is stubbed. */
+const FAKE_GAS_ESTIMATE = '0x7a120' as const
+
 interface JsonRpcEntry {
   id: number | string
   method: string
@@ -227,13 +230,12 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
   let mined = false
   let filled = false
 
-  const stub: RpcStub = ({ params }) => {
+  wallet.stubRpc('eth_sendTransaction', (({ params }) => {
     const tx = params[0] as { value?: string; data?: Hex }
     sentValue = BigInt(tx.value ?? '0x0')
     orderParams = decodeEthFlowOrderParams(tx.data)
     return FAKE_ETH_FLOW_TX_HASH
-  }
-  wallet.stubRpc('eth_sendTransaction', stub)
+  }) as RpcStub)
 
   const classify = (entry: JsonRpcEntry): ClassifiedEntry => {
     if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_ETH_FLOW_TX_HASH) {
@@ -261,6 +263,8 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     }
     return undefined
   }
+
+  await mockEthEstimateGas(context)
 
   await context.route(rpcUrl, async (route) => {
     const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
@@ -340,4 +344,34 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
   } catch {
     return undefined
   }
+}
+
+/**
+ * Before ever calling `eth_sendTransaction` (stubbed by the caller), the app estimates gas for the
+ * real `createOrder()` call via its own default public RPC — which, traced live, is *not*
+ * `REACT_APP_NETWORK_URL_{chainId}` at all (that only backs this suite's own wallet-side
+ * dispatch/proxy) but whichever of the app's own hardcoded providers (Infura, the WalletConnect RPC
+ * relay, ...) it happens to pick, unpredictable and outside this test's control. Left unmocked,
+ * that estimate is a REAL simulation against the wallet's REAL on-chain balance (zero, since this
+ * is a shared test key with no real funds) and fails with a genuine "exceeds the balance of the
+ * account" error — well before the stubbed send is ever reached. Matched host-agnostically by
+ * JSON-RPC method (like `mockSocketVerifier`) rather than by URL, since there's no fixed host to
+ * route on.
+ */
+async function mockEthEstimateGas(context: BrowserContext): Promise<void> {
+  await context.route('**/*', async (route) => {
+    const request = route.request()
+    if (request.method() !== 'POST') return route.fallback()
+    let body: JsonRpcEntry | JsonRpcEntry[]
+    try {
+      body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
+    } catch {
+      return route.fallback()
+    }
+    const entries = Array.isArray(body) ? body : [body]
+    if (!entries.length || !entries.every((e) => e?.method === 'eth_estimateGas')) return route.fallback()
+
+    const payload = entries.map((entry) => ({ jsonrpc: '2.0', id: entry.id, result: FAKE_GAS_ESTIMATE }))
+    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+  })
 }

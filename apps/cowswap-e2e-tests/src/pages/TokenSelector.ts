@@ -11,6 +11,16 @@ export class TokenSelector {
     await this.page.locator('#output-currency-input .open-currency-select-button').click()
   }
 
+  /**
+   * Picks a destination network in the token picker's chain panel (only rendered when the field
+   * being picked for is bridging-eligible — see `useChainPanelState`). Chain rows have no
+   * `data-testid`; `ChainButton` renders only the chain's `label` text (e.g. "Arbitrum", "Base",
+   * "BNB", "Solana", "Bitcoin" — see `@cowprotocol/sdk-config`'s chain definitions).
+   */
+  async selectChain(chainLabel: string): Promise<void> {
+    await this.page.getByText(chainLabel, { exact: true }).click()
+  }
+
   async searchAndPick(symbolOrAddress: string): Promise<void> {
     const input = this.page.locator('#token-search-input')
     await input.fill(symbolOrAddress)

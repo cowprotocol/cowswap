@@ -1,0 +1,40 @@
+{
+  "quote": {
+    "amountIn": "5251177",
+    "amountInFormatted": "5.251177",
+    "amountInUsd": "5.249249818041",
+    "minAmountIn": "5224921",
+    "amountOut": "5248240",
+    "amountOutFormatted": "5.24824",
+    "amountOutUsd": "5.246313895920",
+    "minAmountOut": "5221998",
+    "timeEstimate": 47,
+    "refundFee": "300000",
+    "withdrawFee": "2400",
+    "deadline": "2026-08-14T09:03:45.000Z",
+    "timeWhenInactive": "2026-08-14T09:03:45.000Z",
+    "depositAddress": "0x844Cf53c3aB4388b29988d019875eB955db01Cb5"
+  },
+  "quoteRequest": {
+    "dry": false,
+    "depositMode": "SIMPLE",
+    "swapType": "FLEX_INPUT",
+    "slippageTolerance": 50,
+    "originAsset": "nep141:eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.omft.near",
+    "depositType": "ORIGIN_CHAIN",
+    "destinationAsset": "nep141:base-0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.omft.near",
+    "amount": "5251177",
+    "refundTo": "0xfb3c7eb936cAA12B5A884d612393969A557d4307",
+    "refundType": "ORIGIN_CHAIN",
+    "recipient": "0xfb3c7eb936cAA12B5A884d612393969A557d4307",
+    "recipientType": "DESTINATION_CHAIN",
+    "deadline": "2026-08-11T09:03:45.000Z",
+    "confidentiality": "public",
+    "referral": "cow",
+    "quoteWaitingTimeMs": 0,
+    "insured": false
+  },
+  "signature": "ed25519:mewrJzX3R7chvf3K3ko3oaKZQ5LG6qWKH9DQgjV9sGViyx5zmZREgsYPaJjWSkXkZaQm2KsN2EqGX2QMoW5wgKj",
+  "timestamp": "2026-08-11T08:33:45.277Z",
+  "correlationId": "f0200a32-441a-4921-909b-a8fb27782930"
+}

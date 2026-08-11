@@ -20,6 +20,7 @@ jobs:
     env:
       INTEGRATION_TEST_PRIVATE_KEY: ${{ secrets.INTEGRATION_TEST_PRIVATE_KEY }}
       REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
+      REACT_APP_NETWORK_URL_1: ${{ secrets.REACT_APP_NETWORK_URL_1 }}
       E2E_PW_MM_SEED: ${{ secrets.E2E_PW_MM_SEED }}
       CI: 'true'
     steps:
