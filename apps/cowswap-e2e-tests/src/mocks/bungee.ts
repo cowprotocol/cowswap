@@ -1,13 +1,6 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
+import { loadFixture } from './bridge/loadFixture'
 
 import type { BrowserContext, Route } from '@playwright/test'
-
-const FIXTURES_DIR = path.join(__dirname, 'bridge', 'fixtures')
-
-function loadFixture(name: string): unknown {
-  return JSON.parse(readFileSync(path.join(FIXTURES_DIR, name), 'utf8')) as unknown
-}
 
 // Matches both the real Bungee backend (prod-like builds) and the barn proxy CoW falls back to
 // otherwise — see `getBungeeApiBase()` in `apps/cowswap-frontend/src/tradingSdk/bridgingSdk.ts`.
@@ -177,6 +170,9 @@ function scaleBungeeQuoteFixture(fixture: BungeeQuoteFixture, requestedInputAmou
   }
 }
 
+// `Number(amount)` on a raw base-unit string stays inside Number.MAX_SAFE_INTEGER for the
+// committed 6-decimal USDC fixture — an 18-decimal fixture's scaled amount could exceed it and
+// silently lose precision here.
 function toUsd(amount: string, decimals: number): number {
   return Number(amount) / 10 ** decimals
 }

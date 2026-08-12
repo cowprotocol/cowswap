@@ -1,5 +1,7 @@
 import { parseUnits, type Hex } from 'viem'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
@@ -80,7 +82,7 @@ test.describe('Cross-chain swaps', () => {
     await mocks.launchDarkly.setFlag('isNearIntentsBridgeProviderEnabled', active === 'near-intents')
     mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 999n, denominator: 1000n } })
     if (active === 'bungee') {
-      mockSocketVerifier(context)
+      await mockSocketVerifier(context)
     }
   }
 
@@ -188,7 +190,7 @@ test.describe('Cross-chain swaps', () => {
     const swapRecipientHref = await swapPage.routePanel.swapRecipient().locator('a').getAttribute('href')
     const swapRecipientAddress = swapRecipientHref?.match(/0x[a-fA-F0-9]{40}/)?.[0]
     expect(swapRecipientAddress).toBeTruthy()
-    expect(swapRecipientAddress?.toLowerCase()).not.toBe(wallet.address.toLowerCase())
+    expect(areAddressesEqual(swapRecipientAddress, wallet.address)).toBe(false)
 
     // Bridge leg line items.
     await expect(swapPage.routePanel.bridgeEstTime()).toBeVisible()
@@ -543,8 +545,7 @@ test.describe('Cross-chain swaps', () => {
       // `outputCurrencyAmount` with `useEstimatedBridgeBuyAmount`'s bridge-rescaled figure, but the
       // swap stop's row in the panel reads the swap quote directly, un-rescaled).
       const formReceive = await swapPage.receiveAmountValue.getAttribute('title')
-      const bridgeExpectedToReceive = await swapPage.routePanel.bridgeExpectedToReceive().getAttribute('title')
-      expect(formReceive).toBe(bridgeExpectedToReceive)
+      await expect(swapPage.routePanel.bridgeExpectedToReceive()).toHaveAttribute('title', formReceive ?? '')
       await expect(swapPage.routePanel.swapExpectedToReceive()).toHaveAttribute('title', /.+/)
 
       // Unlike "Expected to receive" (rescaled through the same ratio for both stops, hence the
@@ -586,8 +587,7 @@ test.describe('Cross-chain swaps', () => {
       await swapPage.routePanel.expand()
 
       const swapMinToReceive = await swapPage.routePanel.swapMinToReceive().getAttribute('title')
-      const bridgeMinToDeposit = await swapPage.routePanel.bridgeMinToDeposit().getAttribute('title')
-      expect(bridgeMinToDeposit).toBe(swapMinToReceive)
+      await expect(swapPage.routePanel.bridgeMinToDeposit()).toHaveAttribute('title', swapMinToReceive ?? '')
     }
   })
 })

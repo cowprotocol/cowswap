@@ -1,13 +1,6 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
+import { loadFixture } from './bridge/loadFixture'
 
 import type { BrowserContext, Route } from '@playwright/test'
-
-const FIXTURES_DIR = path.join(__dirname, 'bridge', 'fixtures')
-
-function loadFixture(name: string): unknown {
-  return JSON.parse(readFileSync(path.join(FIXTURES_DIR, name), 'utf8')) as unknown
-}
 
 // The 1click SDK's `OpenAPI.BASE` — see `NearIntentsBridgeProvider` in `@cowprotocol/sdk-bridging`.
 const NEAR_INTENTS_URL_PATTERN = /^https:\/\/1click\.chaindefuser\.com\/v0\//i

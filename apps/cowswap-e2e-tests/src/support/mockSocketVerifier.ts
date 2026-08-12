@@ -1,14 +1,21 @@
-import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
+import { decodeAbiParameters, encodeAbiParameters, toFunctionSelector, type Hex } from 'viem'
+
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { AGGREGATE3_SELECTOR } from '../mocks/allowances/codec'
 
 import type { BrowserContext, Route } from '@playwright/test'
 
 const SOCKET_VERIFIER_ADDRESS = '0xa27a3f5a96df7d8be26ee2790999860c00eb688d'
-// `validateRotueId(bytes,uint32)` / `validateSocketRequest(bytes,(uint32,(uint256,address,uint256,address,bytes4)))`
-// — both `nonpayable` with no outputs, called via `eth_call`; the SDK only checks the call
-// doesn't revert (see `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`).
-const STUBBED_SELECTORS = new Set(['0xeee54b0d', '0xf75d4a35'])
+// Both `nonpayable` with no outputs, called via `eth_call`; the SDK only checks the call doesn't
+// revert (see `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`). Derived from the real
+// signatures (note the SDK's own typo: `validateRotueId`, not `validateRouteId`) rather than
+// hardcoded hex, so a signature change in the SDK surfaces as a diff here instead of silently
+// going stale.
+const STUBBED_SELECTORS = new Set<string>([
+  toFunctionSelector('validateRotueId(bytes,uint32)'),
+  toFunctionSelector('validateSocketRequest(bytes,(uint32,(uint256,address,uint256,address,bytes4)))'),
+])
 
 const CALL3_TUPLE = [
   {
@@ -68,8 +75,8 @@ const OPAQUE: OpaqueCall = { kind: 'opaque' }
  * this needs a host-agnostic route rather than `rpcProxy.stubCall`. Without it, the real call
  * reverts with `RouteIdNotFound()` and every Bungee quote fetch fails with `TX_BUILD_ERROR`.
  */
-export function mockSocketVerifier(context: BrowserContext): void {
-  void context.route('**/*', async (route: Route) => {
+export async function mockSocketVerifier(context: BrowserContext): Promise<void> {
+  await context.route('**/*', async (route: Route) => {
     const request = route.request()
     if (request.method() !== 'POST') return route.fallback()
 
@@ -120,7 +127,7 @@ function buildResult(call: ClassifiedCall, upstream?: Hex): unknown {
 function classifyCall(to: string, data: string): ClassifiedCall {
   const selector = data.slice(0, 10).toLowerCase()
 
-  if (to.toLowerCase() === SOCKET_VERIFIER_ADDRESS && STUBBED_SELECTORS.has(selector)) {
+  if (areAddressesEqual(to, SOCKET_VERIFIER_ADDRESS) && STUBBED_SELECTORS.has(selector)) {
     return { kind: 'stubbed' }
   }
   if (selector === AGGREGATE3_SELECTOR) {

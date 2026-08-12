@@ -19,7 +19,11 @@ export class BridgeRoutePanel {
 
   constructor(page: Page) {
     this.page = page
-    this.expandToggle = page.locator('[aria-expanded]').first()
+    // Scoped by class substring (babel-plugin-styled-components names it after its own export,
+    // `SummaryClickable`), not just `[aria-expanded]` — the app header's nav dropdown also renders
+    // `aria-expanded`, and an unscoped `.first()` would resolve to whichever renders first in DOM
+    // order.
+    this.expandToggle = page.locator('[aria-expanded][class*="SummaryClickable-"]').first()
     // Not an exact match: `BridgeRouteTitle` renders "Swap on" and "CoW Protocol" either side of a
     // protocol icon, which can add whitespace/alt text into the element's normalized text content.
     this.swapStopTitle = page.getByText(/Swap on.*CoW Protocol/)
