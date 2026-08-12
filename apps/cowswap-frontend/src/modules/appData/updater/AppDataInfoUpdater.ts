@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useRef } from 'react'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
-import { UtmParams } from '@cowprotocol/common-utils'
+import { normalizeError, UtmParams } from '@cowprotocol/common-utils'
 import { CowEnv } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
@@ -88,10 +88,9 @@ export function AppDataInfoUpdater({
       // Record the hooks this appData build was based on, so consumers can tell
       // whether the current appDataInfo is in sync with the latest hooks.
       setAppDataBuiltWithHooks(typedHooks)
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+      console.error(`[useAppData] failed to build appData, falling back to default`, params, error)
 
       if (runId !== latestRunIdRef.current) return
 
