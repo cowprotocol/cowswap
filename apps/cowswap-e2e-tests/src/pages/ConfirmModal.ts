@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test'
+import { Page, Locator, expect } from '@playwright/test'
 
 export class ConfirmModal {
   readonly confirmButton: Locator
@@ -12,6 +12,7 @@ export class ConfirmModal {
   }
 
   async confirm(): Promise<void> {
+    await expect(this.confirmButton).toBeEnabled()
     await this.confirmButton.click()
   }
 }

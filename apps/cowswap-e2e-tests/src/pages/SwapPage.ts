@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test'
+
 import { TokenSelector } from './TokenSelector'
 
 import type { TradePage } from './TradePage'
@@ -11,6 +13,16 @@ export class SwapPage implements TradePage {
   readonly buyBalance: Locator
   readonly swapButton: Locator
   readonly approveButton: Locator
+  /**
+   * The actual primary CTA once form validation passes: `#do-trade-button` for a plain swap, but
+   * `TradeApproveButton`'s `#approve-trade-button` instead whenever an ERC-20 allowance decision
+   * applies (e.g. every cross-chain swap here) — regardless of whether its own label says
+   * "Approve..." or, once the mocked allowance already covers the trade, "Swap and Bridge".
+   * `swapButton`/`#do-trade-button` alone still covers every *disabled*, validation-blocking state
+   * (`ButtonError` also renders under that same id), so this is only for the final ready-to-submit
+   * click and its enabled/text assertions.
+   */
+  readonly primaryActionButton: Locator
   readonly arrowSeparator: Locator
   readonly maxButton: Locator
   readonly openOrders: Locator
@@ -26,6 +38,13 @@ export class SwapPage implements TradePage {
   readonly receiveAmountLabel: Locator
   readonly receiveAmountTooltipTrigger: Locator
   readonly receiveAmountValue: Locator
+  /** `AddressInputPanel`'s wrapping `ReceiverPanel` — `id="recipient"` set by `SetRecipient`. */
+  readonly recipientPanel: Locator
+  /** `AddressInputPanel.tsx`'s default className on the `<input>` itself. */
+  readonly recipientInput: Locator
+  readonly recipientPasteButton: Locator
+  /** Hardcoded id on `ReceiverConfirmationRow.pure.tsx`'s "confirm this is the right chain" checkbox. */
+  readonly recipientConfirmationCheckbox: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -59,12 +78,17 @@ export class SwapPage implements TradePage {
     this.receiveAmountValue = this.receiveAmountLabel.locator('xpath=../..').locator('[title]').first()
     this.swapButton = page.locator('#do-trade-button')
     this.approveButton = page.locator('#approve-trade-button')
+    this.primaryActionButton = page.locator('#do-trade-button, #approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.maxButton = page.getByRole('button', { name: /^max$/i })
     this.openOrders = page.locator('[data-testid="open-orders-list"]')
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
     this.tokens = new TokenSelector(page)
+    this.recipientPanel = page.locator('#recipient')
+    this.recipientInput = page.locator('input.recipient-address-input')
+    this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
+    this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -75,11 +99,23 @@ export class SwapPage implements TradePage {
   }
 
   // The first visit shows an "unlock" intro screen instead of the order form — dismiss it.
-  private async unlockIfNeeded(): Promise<void> {
+  // Public: `MockWalletApi.openApp()` navigates directly (bypassing `goto()`), so callers using
+  // it need to dismiss this screen themselves the same way.
+  // The click can be swallowed by the trade widget's own state-reconciliation effects (chain/
+  // provider sync still settling right after navigation, especially under CI load) — retry the
+  // click until the form actually shows up instead of firing it once and hoping it stuck.
+  async unlockIfNeeded(): Promise<void> {
     await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
-    if (await this.unlockButton.isVisible()) {
-      await this.unlockButton.click()
-    }
+    if (!(await this.unlockButton.isVisible())) return
+
+    await expect
+      .poll(async () => {
+        if (await this.unlockButton.isVisible()) {
+          await this.unlockButton.click()
+        }
+        return this.inputAmount.isVisible()
+      })
+      .toBe(true)
   }
 
   async waitForQuote(): Promise<void> {
@@ -104,6 +140,13 @@ export class SwapPage implements TradePage {
   }
 
   async clickSwap(): Promise<void> {
+    // The button briefly disables itself while price impact is still being computed ("Price
+    // impact unknown") right after a fresh quote lands — clicking during that window is a no-op.
+    await expect(this.swapButton).toBeEnabled()
     await this.swapButton.click()
+  }
+
+  async clickPrimaryAction(): Promise<void> {
+    await this.primaryActionButton.click()
   }
 }

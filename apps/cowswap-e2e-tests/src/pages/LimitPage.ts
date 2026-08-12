@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test'
+
 import type { TradePage } from './TradePage'
 import type { Page, Locator } from '@playwright/test'
 
@@ -26,11 +28,21 @@ export class LimitPage implements TradePage {
   }
 
   // The first visit shows an "unlock" intro screen instead of the order form — dismiss it.
+  // The click can be swallowed by the trade widget's own state-reconciliation effects (chain/
+  // provider sync still settling right after navigation, especially under CI load) — retry the
+  // click until the form actually shows up instead of firing it once and hoping it stuck.
   private async unlockIfNeeded(): Promise<void> {
     await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
-    if (await this.unlockButton.isVisible()) {
-      await this.unlockButton.click()
-    }
+    if (!(await this.unlockButton.isVisible())) return
+
+    await expect
+      .poll(async () => {
+        if (await this.unlockButton.isVisible()) {
+          await this.unlockButton.click()
+        }
+        return this.inputAmount.isVisible()
+      })
+      .toBe(true)
   }
 
   async setLimitPrice(value: string): Promise<void> {
@@ -38,6 +50,7 @@ export class LimitPage implements TradePage {
   }
 
   async placeOrder(): Promise<void> {
+    await expect(this.placeOrderButton).toBeEnabled()
     await this.placeOrderButton.click()
   }
 
