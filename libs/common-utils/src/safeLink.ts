@@ -43,6 +43,16 @@ export function getSafeSameOriginOrAbsoluteUrl(
   }
 }
 
+export function isHttpUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url)
+
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function isAllowedHttpUrl(url: URL): boolean {
   if (url.username || url.password) return false
   if (url.protocol === 'https:') return true

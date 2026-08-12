@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { isHttpUrl } from '@cowprotocol/common-utils'
 import { useListsEnabledState } from '@cowprotocol/tokens'
 
 export function useEnabledTokensListsUrls(): string[] {
@@ -8,7 +9,7 @@ export function useEnabledTokensListsUrls(): string[] {
   return useMemo(
     () =>
       Object.entries(enabledState)
-        .filter(([, enabled]) => enabled === true)
+        .filter(([source, enabled]) => enabled === true && isHttpUrl(source))
         .map(([source]) => source)
         .sort(),
     [enabledState],

@@ -16,6 +16,12 @@
       "import": "./src/json-utils.ts",
       "require": "./src/json-utils.ts",
       "default": "./src/json-utils.ts"
+    },
+    "./safeLink": {
+      "types": "./src/safeLink.ts",
+      "import": "./src/safeLink.ts",
+      "require": "./src/safeLink.ts",
+      "default": "./src/safeLink.ts"
     }
   },
   "publishConfig": {
@@ -31,6 +37,11 @@
         "types": "./json-utils.d.ts",
         "import": "./json-utils.mjs",
         "require": "./json-utils.js"
+      },
+      "./safeLink": {
+        "types": "./safeLink.d.ts",
+        "import": "./safeLink.mjs",
+        "require": "./safeLink.js"
       }
     }
   },
