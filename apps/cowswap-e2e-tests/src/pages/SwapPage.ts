@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test'
+
 import { BridgeRoutePanel } from './BridgeRoutePanel'
 import { TokenSelector } from './TokenSelector'
 
@@ -102,11 +104,21 @@ export class SwapPage implements TradePage {
   // The first visit shows an "unlock" intro screen instead of the order form — dismiss it.
   // Public: `MockWalletApi.openApp()` navigates directly (bypassing `goto()`), so callers using
   // it need to dismiss this screen themselves the same way.
+  // The click can be swallowed by the trade widget's own state-reconciliation effects (chain/
+  // provider sync still settling right after navigation, especially under CI load) — retry the
+  // click until the form actually shows up instead of firing it once and hoping it stuck.
   async unlockIfNeeded(): Promise<void> {
     await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
-    if (await this.unlockButton.isVisible()) {
-      await this.unlockButton.click()
-    }
+    if (!(await this.unlockButton.isVisible())) return
+
+    await expect
+      .poll(async () => {
+        if (await this.unlockButton.isVisible()) {
+          await this.unlockButton.click()
+        }
+        return this.inputAmount.isVisible()
+      })
+      .toBe(true)
   }
 
   async waitForQuote(): Promise<void> {
@@ -131,6 +143,9 @@ export class SwapPage implements TradePage {
   }
 
   async clickSwap(): Promise<void> {
+    // The button briefly disables itself while price impact is still being computed ("Price
+    // impact unknown") right after a fresh quote lands — clicking during that window is a no-op.
+    await expect(this.swapButton).toBeEnabled()
     await this.swapButton.click()
   }
 
