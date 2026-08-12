@@ -43,9 +43,9 @@ export function getSafeSameOriginOrAbsoluteUrl(
   }
 }
 
-export function isHttpUrl(url: string): boolean {
+export function isHttpUrl(url: string | URL): boolean {
   try {
-    const parsedUrl = new URL(url)
+    const parsedUrl = url instanceof URL ? url : new URL(url)
 
     return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
   } catch {
@@ -55,9 +55,10 @@ export function isHttpUrl(url: string): boolean {
 
 function isAllowedHttpUrl(url: URL): boolean {
   if (url.username || url.password) return false
+  if (!isHttpUrl(url)) return false
   if (url.protocol === 'https:') return true
 
-  return url.protocol === 'http:' && isDevelopmentEnv() && isLocalDevHostname(url.hostname)
+  return isDevelopmentEnv() && isLocalDevHostname(url.hostname)
 }
 
 function isLocalDevHostname(hostname: string): boolean {

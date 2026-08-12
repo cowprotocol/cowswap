@@ -27,7 +27,7 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
   try {
     const parsedUrl = new URL(trimmedUrl)
 
-    if (!isHttpUrl(trimmedUrl)) {
+    if (!isHttpUrl(parsedUrl)) {
       return null
     }
 
