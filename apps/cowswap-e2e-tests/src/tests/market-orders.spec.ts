@@ -35,8 +35,9 @@ test.describe('Market Orders', () => {
       mocks,
     }) => {
       // On this Sepolia deployment both test tokens report 18 decimals on-chain (verified via
-      // `decimals()`), not USDC's real-world 6 — `support/tokens.ts` disagrees, so raw atoms are
-      // computed here via `parseUnits` with an explicit 18 instead of going through `resolveToken`.
+      // `decimals()`), not USDC's real-world 6 — `support/tokens.ts` already accounts for this.
+      // Raw atoms are computed here via `parseUnits` with an explicit 18 as a local literal, since
+      // this test doesn't go through `setupTestConditions`/`resolveToken` at all.
       const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
       const BUY_RATE_NUM = 804n
       const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
@@ -285,8 +286,10 @@ test.describe('Market Orders', () => {
       mocks.usdPrices.setPrice(WETH, 12.25)
 
       // Set balances/allowances directly (both Sepolia test tokens report 18 decimals on-chain,
-      // same quirk as [CS-59]) rather than via `setupTestConditions`, whose `balances`/`allowances`
-      // options trust `support/tokens.ts`'s incorrect 6-decimal USDC entry.
+      // same quirk as [CS-59]) rather than via `setupTestConditions`'s own `balances`/`allowances`
+      // options. `support/tokens.ts` already resolves this deployment's USDC to 18 decimals
+      // correctly, so this is no longer required to work around a decimals mismatch — it's simply
+      // how the test happens to be structured today.
       seedTrader(mocks, wallet, CHAIN_ID, {
         balances: { [USDC]: parseUnits('1000', 18), [WETH]: 0n },
         allowances: { [USDC]: parseUnits('1000', 18) },
@@ -340,7 +343,7 @@ test.describe('Market Orders', () => {
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-      // Impact" dialog — same technique as [CS-64].
+      // Impact" dialog — same technique as [CS-59].
       mocks.usdPrices.setPrice(WETH, Number(RATE))
 
       await setupTestConditions({
@@ -765,7 +768,8 @@ test.describe('Market Orders', () => {
 
       // Range check: min/max aren't shown as static copy anywhere in the UI — the only concrete
       // signal is this validation message, triggered by typing a value outside [0, 50] for the
-      // regular ERC-20 flow (the 0.5% floor only applies to native-ETH-sell orders, see [CS-68]).
+      // regular ERC-20 flow (native-ETH-sell orders have a separate 0.5% floor, not covered here —
+      // see the not-yet-written [CS-81]).
       // `.fill('60')` was observed to silently no-op here (value stays empty) — `pressSequentially`
       // (real keystrokes) is what actually lands the value; unclear why, but empirically reliable.
       await slippageInput.click()
@@ -1311,8 +1315,9 @@ test.describe('Market Orders', () => {
         mockCorrelatedQuote(sellDecimals, buyDecimals)
 
         // `setupTestConditions`'s own `balances`/`allowances` option resolves decimals via
-        // `support/tokens.ts`, whose USDC entry is deliberately wrong (see known quirks) — seeded
-        // directly by address/decimals here instead, same workaround as [CS-59]'s `seedTrader` use.
+        // `support/tokens.ts`, which already reports 18 decimals correctly for this deployment's
+        // USDC (see known quirks) — seeded directly by address/decimals here instead, same pattern
+        // as [CS-59]'s `seedTrader` use.
         seedTrader(mocks, wallet, CHAIN_ID, {
           balances: { [sellAddress]: parseUnits('1000', sellDecimals), [buyAddress]: 0n },
           allowances: { [sellAddress]: parseUnits('1000', sellDecimals) },
