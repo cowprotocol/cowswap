@@ -2,7 +2,7 @@ import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
 
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { RpcStub } from '../mockWallet/walletEngine'
-import type { BrowserContext } from '@playwright/test'
+import type { BrowserContext, Route } from '@playwright/test'
 
 const FAKE_ETH_FLOW_TX_HASH = `0x${'ef'.repeat(32)}` as const
 
@@ -186,12 +186,17 @@ export interface MockEthFlowTransactionOpts {
 
 type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
 
+/** A generous flat estimate for the `createOrder()` call — never actually spent, since the send itself is stubbed. */
+const FAKE_GAS_ESTIMATE = '0x7a120' as const
+
 interface JsonRpcEntry {
   id: number | string
   method: string
   params: unknown[]
   result?: unknown
 }
+
+type TxLookupEntry = { kind: 'receipt' } | { kind: 'transaction' }
 
 /**
  * Fakes the ETH-flow order-creation transaction end-to-end. Selling native ETH doesn't post an
@@ -227,13 +232,10 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
   let mined = false
   let filled = false
 
-  const stub: RpcStub = ({ params }) => {
-    const tx = params[0] as { value?: string; data?: Hex }
-    sentValue = BigInt(tx.value ?? '0x0')
-    orderParams = decodeEthFlowOrderParams(tx.data)
-    return FAKE_ETH_FLOW_TX_HASH
-  }
-  wallet.stubRpc('eth_sendTransaction', stub)
+  stubEthFlowSend(wallet, (value, order) => {
+    sentValue = value
+    orderParams = order
+  })
 
   const classify = (entry: JsonRpcEntry): ClassifiedEntry => {
     if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_ETH_FLOW_TX_HASH) {
@@ -253,7 +255,7 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
 
   const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint, upstream?: Hex): unknown => {
-    if (classified.kind === 'receipt') return mined ? buildReceipt() : null
+    if (classified.kind === 'receipt') return mined ? buildReceipt(FAKE_ETH_FLOW_TX_HASH) : null
     if (classified.kind === 'call') {
       if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [remainingBalance])
       if (classified.call.kind === 'opaque') return undefined
@@ -261,6 +263,8 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     }
     return undefined
   }
+
+  await mockEthFlowTxLookupFallback(context, wallet.address, () => mined)
 
   await context.route(rpcUrl, async (route) => {
     const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
@@ -313,9 +317,9 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
   }
 }
 
-function buildReceipt(): unknown {
+function buildReceipt(txHash: string): unknown {
   return {
-    transactionHash: FAKE_ETH_FLOW_TX_HASH,
+    transactionHash: txHash,
     status: '0x1',
     blockNumber: '0x1',
     blockHash: `0x${'cd'.repeat(32)}`,
@@ -330,6 +334,43 @@ function buildReceipt(): unknown {
   }
 }
 
+/** A plausible-looking, mined `eth_getTransactionByHash` result — mirrors `buildReceipt`'s made-up
+ * but shape-correct fields (same fake block, same flat gas figures), plus the sender/value/nonce
+ * fields a receipt doesn't carry but a full transaction object does. */
+function buildTransaction(txHash: string, from: string): unknown {
+  return {
+    hash: txHash,
+    blockNumber: '0x1',
+    blockHash: `0x${'cd'.repeat(32)}`,
+    transactionIndex: '0x0',
+    from,
+    to: null,
+    value: '0x0',
+    nonce: '0x0',
+    gas: FAKE_GAS_ESTIMATE,
+    gasPrice: '0x3b9aca00',
+    input: '0x',
+    type: '0x0',
+    v: '0x1',
+    r: `0x${'11'.repeat(32)}`,
+    s: `0x${'22'.repeat(32)}`,
+  }
+}
+
+function buildTxLookupResult(entry: TxLookupEntry, mined: boolean, from: string): unknown {
+  if (!mined) return null
+  return entry.kind === 'receipt' ? buildReceipt(FAKE_ETH_FLOW_TX_HASH) : buildTransaction(FAKE_ETH_FLOW_TX_HASH, from)
+}
+
+/** Recognizes `eth_getTransactionReceipt`/`eth_getTransactionByHash` for the ETH-flow creation tx,
+ * regardless of which entry in a batch it is. */
+function classifyTxLookup(entry: JsonRpcEntry): TxLookupEntry | undefined {
+  if (entry?.params?.[0] !== FAKE_ETH_FLOW_TX_HASH) return undefined
+  if (entry.method === 'eth_getTransactionReceipt') return { kind: 'receipt' }
+  if (entry.method === 'eth_getTransactionByHash') return { kind: 'transaction' }
+  return undefined
+}
+
 /** Decodes `createOrder(EthFlowOrder.Data)`'s single struct argument straight off the sent calldata. */
 function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | undefined {
   if (!data) return undefined
@@ -340,4 +381,58 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
   } catch {
     return undefined
   }
+}
+
+/**
+ * Same class of bug documented on `mockEthEstimateGas` (now `installEthEstimateGas`), but for the
+ * two polls the app runs *after* sending the creation tx rather than before it: tracing real RPC
+ * traffic for the bridging ETH-flow path (`[CC-13]`) found `eth_getTransactionReceipt` AND
+ * `eth_getTransactionByHash` for this exact tx hash going out to a real Infura/WalletConnect-relay
+ * host that sometimes 429s — not the configured `REACT_APP_NETWORK_URL_{chainId}` this file's
+ * `context.route(rpcUrl, ...)` handler below is scoped to, so that handler's own (receipt-only)
+ * mocking never saw them. Registered host-agnostically, alongside `installEthEstimateGas`, as a
+ * second line of defense: for the configured RPC host, `context.route(rpcUrl, ...)` (registered
+ * after this one) still wins and answers first, so there's no double-handling; this one only ever
+ * fires for the *other*, unpredictable hosts the app's own independent client happens to pick.
+ */
+async function mockEthFlowTxLookupFallback(
+  context: BrowserContext,
+  from: string,
+  isMined: () => boolean,
+): Promise<void> {
+  await context.route('**/*', async (route: Route) => {
+    const request = route.request()
+    if (request.method() !== 'POST') return route.fallback()
+    let body: JsonRpcEntry | JsonRpcEntry[]
+    try {
+      body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
+    } catch {
+      return route.fallback()
+    }
+    const entries = Array.isArray(body) ? body : [body]
+    const classified = entries.map(classifyTxLookup)
+    if (!entries.length || classified.some((c) => !c)) return route.fallback()
+
+    const mined = isMined()
+    const payload = entries.map((entry, i) => ({
+      jsonrpc: '2.0',
+      id: entry.id,
+      result: buildTxLookupResult(classified[i] as TxLookupEntry, mined, from),
+    }))
+    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+  })
+}
+
+/** Wires the ETH-flow creation tx's `eth_sendTransaction` stub, decoding the sent value/order struct
+ * before handing them off to the caller — pulled out of `mockEthFlowTransaction` itself purely to
+ * keep that function under this repo's `max-lines-per-function` limit. */
+function stubEthFlowSend(
+  wallet: Pick<MockWalletApi, 'stubRpc'>,
+  onSent: (value: bigint, order: EthFlowOrderParams | undefined) => void,
+): void {
+  wallet.stubRpc('eth_sendTransaction', (({ params }) => {
+    const tx = params[0] as { value?: string; data?: Hex }
+    onSent(BigInt(tx.value ?? '0x0'), decodeEthFlowOrderParams(tx.data))
+    return FAKE_ETH_FLOW_TX_HASH
+  }) as RpcStub)
 }
