@@ -99,26 +99,7 @@ export function mockSocketVerifier(context: BrowserContext): void {
       })
     }
 
-    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
-    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-
-    const classifiedById = new Map<number | string, ClassifiedCall>()
-    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
-
-    const payload = upstreamEntries.map((entry) => {
-      const classifiedEntry = classifiedById.get(entry.id)
-      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, upstreamResult) }
-    })
-    return route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(Array.isArray(upstreamBody) ? payload : payload[0]),
-    })
+    return fulfillFromUpstream(route, entries, classified)
   })
 }
 
@@ -163,6 +144,43 @@ function decodeResultSlots(blob: Hex): BatchResultSlot[] {
     return [...(decodeAbiParameters(RESULT_TUPLE, blob)[0] as ReadonlyArray<BatchResultSlot>)]
   } catch {
     return []
+  }
+}
+
+/**
+ * Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
+ * upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
+ * This is *always* the path taken here (the SocketVerifier call is never alone in its batch, see
+ * `classifyCall`'s doc comment), so every Bungee test's quote fetch depends on this real
+ * round-trip to whatever real RPC the app used — reliable for one test at a time, but a real,
+ * unmocked network dependency that can time out under `pnpm e2e`'s full parallel load (many
+ * workers hitting the same public endpoint at once). Mirror the allowances mock's own try/catch
+ * here: on failure, fall back instead of letting the rejection abort the request outright — the
+ * allowances mock (registered earlier) still gets a chance to answer the allowance slots, and a
+ * transient real-RPC hiccup no longer takes the whole quote down with it.
+ */
+async function fulfillFromUpstream(route: Route, entries: JsonRpcEntry[], classified: ClassifiedCall[]): Promise<void> {
+  try {
+    const upstream = await route.fetch()
+    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
+    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
+
+    const classifiedById = new Map<number | string, ClassifiedCall>()
+    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
+
+    const payload = upstreamEntries.map((entry) => {
+      const classifiedEntry = classifiedById.get(entry.id)
+      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
+      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
+      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, upstreamResult) }
+    })
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(Array.isArray(upstreamBody) ? payload : payload[0]),
+    })
+  } catch {
+    await route.fallback()
   }
 }
 

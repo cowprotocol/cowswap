@@ -33,6 +33,15 @@ export interface AllowancesMock {
   /** Non-fatal warning about queried-but-unconfigured owners and decode failures. */
   reportUnknownOwners(): void
   reset(): void
+  /**
+   * Resolve one already-decoded allowance read against the live fixture+override state, bypassing
+   * the URL-scoped route handler below entirely. Used by `mocks/multicall3.ts`'s host-agnostic
+   * `aggregate3` handler, which needs the exact same "override wins, else fixture, else 0" answer
+   * regardless of which real RPC host the app's independent read-only client happened to pick for a
+   * given batch — going through the same `resolveFor` the route handler itself uses keeps
+   * `reads()`/`reportUnknownOwners()` bookkeeping accurate no matter which handler answered.
+   */
+  resolve(chainId: number, call: AllowanceCall): bigint
 }
 
 interface JsonRpcEntry {
@@ -155,6 +164,9 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
       reads.length = 0
       unknownOwners.clear()
       problems.length = 0
+    },
+    resolve(chainId, call) {
+      return resolveFor(chainId, call)
     },
   }
 }

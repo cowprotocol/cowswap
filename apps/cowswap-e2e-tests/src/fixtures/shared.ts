@@ -4,7 +4,12 @@ import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
+import { installEthBlockNumber } from '../mocks/ethBlockNumber'
+import { installEthEstimateGas } from '../mocks/ethEstimateGas'
+import { installEthGetCode, type EthGetCodeMock } from '../mocks/ethGetCode'
+import { installEthGetTransactionCount } from '../mocks/ethGetTransactionCount'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
+import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
@@ -16,6 +21,7 @@ import { HeaderPage } from '../pages/HeaderPage'
 import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
+import { logUnmockedRpcRequests } from '../support/logUnmockedRpcRequests'
 import { mockOrderPosting } from '../support/mockOrderPosting'
 import { createSetupTestConditions, type SetupTestConditions } from '../support/setupTestConditions'
 
@@ -37,6 +43,7 @@ export interface SharedFixtures {
     allowances: AllowancesMock
     balances: BalancesMock
     cowApi: CowProtocolApiMock
+    ethGetCode: EthGetCodeMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
     bungee: BungeeMock
@@ -95,7 +102,15 @@ export const sharedFixtures: Fixtures<
   // teardown. A plain (non-auto) fixture is only set up when requested, so without this the
   // whole mock stack — including `assertNoUnmatched()` — would silently never run.
   mocks: [
-    async ({ context }, use) => {
+    async ({ context }, use, testInfo) => {
+      // Diagnostic-only, opt-in via `LOG_UNMOCKED_RPC=1` — see `logUnmockedRpcRequests`'s own doc
+      // comment. Registered before every other mock below (and therefore before any manually
+      // installed one too, e.g. `mockSocketVerifier`, since those only get added once the test body
+      // starts running) so it only ever sees requests nothing else claimed.
+      if (process.env.LOG_UNMOCKED_RPC) {
+        logUnmockedRpcRequests({ context, worker: testInfo.workerIndex, test: testInfo.title })
+      }
+
       // The order book API is mocked, so updaters can poll much faster without adding real load.
       // See `getUpdaterInterval` in `libs/common-const/src/common.ts`.
       await context.addInitScript(() => {
@@ -105,6 +120,11 @@ export const sharedFixtures: Fixtures<
       const allowances = installAllowances(context)
       const balances = installBalances(context)
       const cowApi = await installCowProtocolApi(context)
+      const ethGetCode = installEthGetCode(context)
+      installEthBlockNumber(context)
+      installEthEstimateGas(context)
+      installEthGetTransactionCount(context)
+      installMulticall3(context, { allowances })
       const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
@@ -112,8 +132,20 @@ export const sharedFixtures: Fixtures<
       const launchDarkly = installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
 
-      await use({ allowances, balances, cowApi, tokenLists, safeSdk, bungee, nearIntents, launchDarkly, usdPrices })
+      await use({
+        allowances,
+        balances,
+        cowApi,
+        ethGetCode,
+        tokenLists,
+        safeSdk,
+        bungee,
+        nearIntents,
+        launchDarkly,
+        usdPrices,
+      })
 
+      ethGetCode.reset()
       tokenLists.reset()
       bungee.reset()
       nearIntents.reset()

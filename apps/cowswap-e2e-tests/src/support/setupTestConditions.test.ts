@@ -45,6 +45,7 @@ function fakeAllowances(): AllowancesMock & { calls: Array<[string, number, Reco
     reads: () => [],
     reportUnknownOwners() {},
     reset() {},
+    resolve: () => 0n,
   }
 }
 

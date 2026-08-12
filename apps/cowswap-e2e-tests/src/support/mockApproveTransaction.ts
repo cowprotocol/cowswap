@@ -1,12 +1,19 @@
 import { decodeFunctionData, encodeAbiParameters, encodeEventTopics, erc20Abi, type Hex } from 'viem'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { RpcStub } from '../mockWallet/walletEngine'
 
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { AllowancesMock } from '../mocks/allowances'
-import type { BrowserContext } from '@playwright/test'
+import type { BrowserContext, Route } from '@playwright/test'
 
 const FAKE_APPROVE_TX_HASH = `0x${'ab'.repeat(32)}` as const
+
+/** `approve(address,uint256)` selector — what the preflight `eth_call` this mock also stubs is checking won't revert. */
+const APPROVE_SELECTOR = '0x095ea7b3'
+/** ABI-encoded `true` — the only thing a `bool`-returning `eth_call` needs to report success. */
+const APPROVE_CALL_SUCCESS_RESULT = encodeAbiParameters([{ type: 'bool' }], [true])
 
 export interface MockApproveTransactionHandle {
   /** The raw amount decoded from the actual approve(spender, amount) calldata, once sent. */
@@ -42,6 +49,14 @@ interface ReceiptContext {
  * `mocks.balances`/`mocks.allowances` intercept — bypassing the wallet entirely, so it needs its
  * own route stub. The allowance mock is also kept in sync, since faking the send doesn't change
  * anything the real allowance-read mock would otherwise report.
+ *
+ * Before ever reaching that stubbed `eth_sendTransaction`, the wallet-connector layer also fires a
+ * preflight, non-batched `eth_call` for the same `approve(address,uint256)` calldata — a
+ * simulate-before-sign check that the call won't revert. Tracing real RPC traffic
+ * (`LOG_UNMOCKED_RPC=1`) showed this going straight to a real, hardcoded provider (Infura) rather
+ * than any URL this suite controls, and getting rate-limited (HTTP 429) under `pnpm e2e`'s full
+ * parallel load — so it's matched host-agnostically by `to`/`data` (like `mockSocketVerifier.ts`)
+ * and answered with a successful ABI-encoded `true`, same as the real call would return.
  */
 export async function mockApproveTransaction(opts: MockApproveTransactionOpts): Promise<MockApproveTransactionHandle> {
   const { context, wallet, allowances, chainId, token } = opts
@@ -75,6 +90,8 @@ export async function mockApproveTransaction(opts: MockApproveTransactionOpts): 
     )
     await route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
   })
+
+  await context.route('**/*', (route) => handleApproveSimulationCall(route, token))
 
   return {
     getApprovedAmount: () => approvedAmount,
@@ -127,4 +144,73 @@ function buildReceiptRpcResponse(
 ): { jsonrpc: '2.0'; id: number | string; result: unknown } {
   const isOurReceipt = entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_APPROVE_TX_HASH
   return { jsonrpc: '2.0', id: entry.id, result: isOurReceipt ? buildApproveReceipt(ctx) : null }
+}
+
+/**
+ * Not observed in practice (this preflight is always a standalone, non-batched `eth_call`) — but if
+ * it ever turns up mixed with other, unrecognized calls, fetch the real upstream and patch in only
+ * the entries this mock actually understands, rather than fabricate data for the rest. Same
+ * try/catch → `route.fallback()` guard as `mockSocketVerifier.ts`'s `fulfillFromUpstream`, so a
+ * transient real-RPC hiccup here can't abort the whole request.
+ */
+async function fulfillApproveSimulationFromUpstream(
+  route: Route,
+  entries: JsonRpcEntry[],
+  matches: boolean[],
+): Promise<void> {
+  try {
+    const upstream = await route.fetch()
+    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
+    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
+    const matchedIds = new Set(entries.filter((_, i) => matches[i]).map((entry) => entry.id))
+    const payload = upstreamEntries.map((entry) =>
+      matchedIds.has(entry.id) ? { jsonrpc: '2.0', id: entry.id, result: APPROVE_CALL_SUCCESS_RESULT } : entry,
+    )
+    await route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
+  } catch {
+    await route.fallback()
+  }
+}
+
+/**
+ * Answers the preflight `approve(address,uint256)` simulation `eth_call` (see the doc comment on
+ * `mockApproveTransaction`) with a successful `true`, host-agnostically. Unlike `mockSocketVerifier.ts`,
+ * this call is never wrapped in a Multicall3 batch in practice (confirmed by tracing real RPC
+ * traffic), so no batch-decoding is needed — just the single/array JSON-RPC envelope every route in
+ * this suite already has to handle.
+ */
+async function handleApproveSimulationCall(route: Route, token: string): Promise<void> {
+  const request = route.request()
+  if (request.method() !== 'POST') return route.fallback()
+
+  let body: JsonRpcEntry | JsonRpcEntry[] | null
+  try {
+    // Unlike `route.request().postDataJSON()` elsewhere in this file (only ever called against a
+    // known JSON-RPC endpoint), this route sees every request in the page — `postDataJSON()`
+    // returns `null` rather than throwing for a POST with no/non-JSON body (e.g. an analytics
+    // beacon), so that has to be checked explicitly, not just guarded by try/catch.
+    body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[] | null
+  } catch {
+    return route.fallback()
+  }
+  if (!body) return route.fallback()
+
+  const entries = Array.isArray(body) ? body : [body]
+  const matches = entries.map((entry) => isApproveSimulationCall(entry, token))
+  if (!matches.some(Boolean)) return route.fallback()
+
+  if (matches.every(Boolean)) {
+    const payload = entries.map((entry) => ({ jsonrpc: '2.0', id: entry.id, result: APPROVE_CALL_SUCCESS_RESULT }))
+    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+  }
+
+  return fulfillApproveSimulationFromUpstream(route, entries, matches)
+}
+
+/** Matches the preflight `eth_call` simulating `approve(address,uint256)` against the same token this mock was set up for, before the real `eth_sendTransaction` is ever asked for. */
+function isApproveSimulationCall(entry: JsonRpcEntry | null | undefined, token: string): boolean {
+  if (entry?.method !== 'eth_call') return false
+  const call = entry.params?.[0] as { to?: string; data?: string } | undefined
+  if (!call?.to || !call?.data) return false
+  return areAddressesEqual(call.to, token) && call.data.toLowerCase().startsWith(APPROVE_SELECTOR)
 }

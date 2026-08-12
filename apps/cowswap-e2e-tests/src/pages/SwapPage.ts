@@ -150,6 +150,7 @@ export class SwapPage implements TradePage {
   }
 
   async clickPrimaryAction(): Promise<void> {
+    await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
   }
 }
