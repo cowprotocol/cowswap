@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.9.0...tokens-v3.10.0) (2026-08-12)
+
+### Minor Changes
+
+- feat(solana): approve flow (#7946)
+
+- feat: reduce bundle size by deduping ajv -0.1 MiB (#7932)
+
+### Patch Changes
+
+- fix: restore unified sol flow + bundle-size.mjs token list validation (#7994)
+
+- fix: solana token matching
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.7...tokens-v3.9.0) (2026-08-05)
 
 ### Minor Changes
