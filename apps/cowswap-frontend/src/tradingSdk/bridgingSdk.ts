@@ -41,7 +41,13 @@ const NEAR_INTENTS_E2E_ATTESTATOR_ADDRESS: Address = '0x0073DD100b51C555E41B2a45
 // is a live digital-signature check, not something a mocked pair can satisfy, so it's patched out
 // entirely for e2e rather than trying to forge a valid signature. See
 // `apps/cowswap-e2e-tests/src/mocks/nearIntents.ts`.
-if (typeof window !== 'undefined' && window.__COWSWAP_E2E__) {
+// The `NODE_ENV !== 'production'` check is load-bearing, not redundant with the `window` flag below:
+// every deployed build (prod, staging, and Vercel preview) runs through the production webpack build
+// (`NODE_ENV === 'production'`), so this whole branch — including the bypass itself — is dead code
+// there and gets stripped by Terser. Only the local/CI dev server e2e tests actually run against
+// (`NODE_ENV === 'development'`) ever evaluates it, so a real deployed bundle has no live code path
+// that can disable this signature check, no matter what `window.__COWSWAP_E2E__` is set to.
+if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined' && window.__COWSWAP_E2E__) {
   nearIntentsBridgeProvider.recoverDepositAddress = async ({ quote }) => ({
     address: NEAR_INTENTS_E2E_ATTESTATOR_ADDRESS,
     quoteHash: quote.depositAddress ?? '0x0',
