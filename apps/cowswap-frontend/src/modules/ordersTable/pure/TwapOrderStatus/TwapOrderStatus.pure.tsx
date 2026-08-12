@@ -26,7 +26,9 @@ export interface FillsAtStatusProps {
 export function TwapOrderStatus({ childOrders, orderStatus, isFallbackHandlerRequired, children }: FillsAtStatusProps) {
   if (!childOrders) return null
 
-  const areAllChildOrdersCancelled = childOrders.every((order) => order.status === OrderStatus.CANCELLED)
+  const hasChildOrders = childOrders.length > 0
+  const areAllChildOrdersCancelled =
+    hasChildOrders && childOrders.every((order) => order.status === OrderStatus.CANCELLED)
 
   // Second priority: Check for cancelled state
   if (areAllChildOrdersCancelled) {
@@ -80,10 +82,12 @@ export function TwapOrderStatus({ childOrders, orderStatus, isFallbackHandlerReq
   }
 
   // Fourth priority: Check for filled states
-  const allChildrenFilled = childOrders.every(
-    (childOrder) =>
-      childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
-  )
+  const allChildrenFilled =
+    hasChildOrders &&
+    childOrders.every(
+      (childOrder) =>
+        childOrder.status === OrderStatus.FULFILLED && Number(childOrder.executionData.filledPercentDisplay) >= 99.99,
+    )
 
   if (allChildrenFilled) {
     return (
@@ -119,7 +123,8 @@ export function TwapOrderStatus({ childOrders, orderStatus, isFallbackHandlerReq
   }
 
   // Fifth priority: Check for expired state
-  const allChildrenExpired = childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
+  const allChildrenExpired =
+    hasChildOrders && childOrders.every((childOrder) => childOrder.status === OrderStatus.EXPIRED)
 
   if (allChildrenExpired || orderStatus === OrderStatus.EXPIRED) {
     return (

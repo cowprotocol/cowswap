@@ -603,6 +603,9 @@ importers:
       '@cowprotocol/sdk-bridging':
         specifier: 4.4.2
         version: 4.4.2(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-composable':
+        specifier: 1.3.0
+        version: 1.3.0(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.3.3
         version: 3.3.3
@@ -928,19 +931,6 @@ importers:
       ts-mockito:
         specifier: 2.6.1
         version: 2.6.1
-
-  apps/cowswap-frontend-e2e:
-    dependencies:
-      eventemitter3:
-        specifier: 4.0.7
-        version: 4.0.7
-      viem:
-        specifier: 2.48.8
-        version: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-    devDependencies:
-      cypress:
-        specifier: 15.4.0
-        version: 15.4.0
 
   apps/explorer:
     dependencies:
@@ -1912,7 +1902,7 @@ importers:
         version: link:../core
       '@cowprotocol/cow-sdk':
         specifier: 9.2.6
-        version: 9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        version: 9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -3334,6 +3324,9 @@ packages:
 
   '@cowprotocol/sdk-composable@1.2.3':
     resolution: {integrity: sha512-SW9MK6VBkQv4FbL23JGbLASJJeQYBlRv904yvedDEdkzctE6hZLiZKAWY8X+eb5IX5oU3BfG4/wGRQMIbiNpSQ==}
+
+  '@cowprotocol/sdk-composable@1.3.0':
+    resolution: {integrity: sha512-ihtjl+HBl1iik7N3vZJ2jOZmQ98tnigAXKvN05c6C4l0mULBELzbqpI/WZDLeCBaIiDDQZ9RcAtW2+82/aKgZQ==}
 
   '@cowprotocol/sdk-config@1.2.0':
     resolution: {integrity: sha512-upZ2OPycc+rikwAnfNt58qBMlYb+7zpFPzG6zT/sfE50FS1f2ba4SMtw37HVq+v0e9R32o/rWZFcDZT5Ty5yyQ==}
@@ -16756,6 +16749,14 @@ packages:
     resolution: {integrity: sha512-6z3GW9x8G1gd+JIIgQQQxXuiJtCXeAjp6RaPEPLv62mH3iPHPxV6W3robxtCzNErRo6ZwTmzWhsbNvjyEBKzKA==}
     engines: {node: '>=10.12.0'}
 
+  valibot@1.4.2:
+    resolution: {integrity: sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
@@ -18804,8 +18805,8 @@ snapshots:
 
   '@coinbase/cdp-sdk@1.47.0(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@solana-program/system': 0.10.0(@solana/kit@5.5.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10))
-      '@solana-program/token': 0.9.0(@solana/kit@5.5.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10))
+      '@solana-program/system': 0.10.0(@solana/kit@5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
+      '@solana-program/token': 0.9.0(@solana/kit@5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))
       '@solana/kit': 5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
       abitype: 1.0.6(typescript@5.9.3)(zod@3.25.76)
       axios: 1.13.6
@@ -18993,24 +18994,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/cow-sdk@9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.1
-      '@cowprotocol/sdk-config': 2.4.0
-      '@cowprotocol/sdk-contracts-ts': 3.3.3
-      '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.6(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.2.6(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      cross-fetch: 4.0.0(encoding@0.1.13)
-    optionalDependencies:
-      '@openzeppelin/merkle-tree': 1.0.8
-      multiformats: 14.0.0
-    transitivePeerDependencies:
-      - ajv
-      - encoding
-      - supports-color
-
   '@cowprotocol/cow-sdk@9.2.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-app-data': 5.3.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
@@ -19095,18 +19078,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cowprotocol/sdk-app-data@5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.12.1
-      ajv: 6.12.6
-      cross-fetch: 4.0.0(encoding@0.1.13)
-      ipfs-unixfs-importer: 16.1.5(encoding@0.1.13)
-      json-stringify-deterministic: 1.0.12
-      multiformats: 14.0.0
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
   '@cowprotocol/sdk-app-data@5.3.3(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-common': 0.12.1
@@ -19182,6 +19153,20 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@cowprotocol/sdk-composable@1.3.0(encoding@0.1.13)(typescript@5.9.3)':
+    dependencies:
+      '@cowprotocol/sdk-common': 0.12.1
+      '@cowprotocol/sdk-config': 2.4.0
+      '@cowprotocol/sdk-contracts-ts': 3.3.3
+      '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.6(encoding@0.1.13)
+      '@openzeppelin/merkle-tree': 1.0.8
+      valibot: 1.4.2(typescript@5.9.3)
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+      - typescript
 
   '@cowprotocol/sdk-config@1.2.0':
     dependencies:
@@ -19315,22 +19300,6 @@ snapshots:
       '@cowprotocol/sdk-contracts-ts': 3.2.1
       '@cowprotocol/sdk-order-book': 4.0.1(encoding@0.1.13)
       '@cowprotocol/sdk-order-signing': 1.1.2(encoding@0.1.13)
-      deepmerge: 4.3.1
-    transitivePeerDependencies:
-      - ajv
-      - cross-fetch
-      - encoding
-      - multiformats
-      - supports-color
-
-  '@cowprotocol/sdk-trading@2.2.6(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 5.3.3(ajv@6.12.6)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.1
-      '@cowprotocol/sdk-config': 2.4.0
-      '@cowprotocol/sdk-contracts-ts': 3.3.3
-      '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.6(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -19537,6 +19506,7 @@ snapshots:
       tough-cookie: 5.1.2
       tunnel-agent: 0.6.0
       uuid: 8.3.2
+    optional: true
 
   '@cypress/xvfb@1.2.4(supports-color@8.1.1)':
     dependencies:
@@ -19544,6 +19514,7 @@ snapshots:
       lodash.once: 4.1.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@defuse-protocol/one-click-sdk-typescript@0.1.1-0.2':
     dependencies:
@@ -23567,12 +23538,12 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@solana-program/system@0.10.0(@solana/kit@5.5.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10))':
+  '@solana-program/system@0.10.0(@solana/kit@5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/kit': 5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
     optional: true
 
-  '@solana-program/token@0.9.0(@solana/kit@5.5.1(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10))':
+  '@solana-program/token@0.9.0(@solana/kit@5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@solana/kit': 5.5.1(bufferutil@4.0.8)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
     optional: true
@@ -25075,9 +25046,11 @@ snapshots:
       '@types/node': 24.7.1
       '@types/send': 0.17.1
 
-  '@types/sinonjs__fake-timers@8.1.1': {}
+  '@types/sinonjs__fake-timers@8.1.1':
+    optional: true
 
-  '@types/sizzle@2.3.3': {}
+  '@types/sizzle@2.3.3':
+    optional: true
 
   '@types/sockjs@0.3.36':
     dependencies:
@@ -25101,7 +25074,8 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
-  '@types/tmp@0.2.6': {}
+  '@types/tmp@0.2.6':
+    optional: true
 
   '@types/tough-cookie@4.0.2': {}
 
@@ -26393,6 +26367,7 @@ snapshots:
     dependencies:
       clean-stack: 2.2.0
       indent-string: 4.0.0
+    optional: true
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
     optionalDependencies:
@@ -26619,7 +26594,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  astral-regex@2.0.0: {}
+  astral-regex@2.0.0:
+    optional: true
 
   async-limiter@1.0.1: {}
 
@@ -26923,7 +26899,8 @@ snapshots:
 
   blakejs@1.2.1: {}
 
-  blob-util@2.0.2: {}
+  blob-util@2.0.2:
+    optional: true
 
   blockstore-core@6.1.3:
     dependencies:
@@ -27152,7 +27129,8 @@ snapshots:
       normalize-url: 6.1.0
       responselike: 2.0.1
 
-  cachedir@2.4.0: {}
+  cachedir@2.4.0:
+    optional: true
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -27327,7 +27305,8 @@ snapshots:
       source-map: 0.6.1
     optional: true
 
-  clean-stack@2.2.0: {}
+  clean-stack@2.2.0:
+    optional: true
 
   cli-cursor@3.1.0:
     dependencies:
@@ -27346,6 +27325,7 @@ snapshots:
       string-width: 4.2.3
     optionalDependencies:
       colors: 1.4.0
+    optional: true
 
   cli-table@0.3.11:
     dependencies:
@@ -27355,6 +27335,7 @@ snapshots:
     dependencies:
       slice-ansi: 3.0.0
       string-width: 4.2.3
+    optional: true
 
   cli-truncate@5.1.0:
     dependencies:
@@ -27949,6 +27930,7 @@ snapshots:
       tree-kill: 1.2.2
       untildify: 4.0.0
       yauzl: 2.10.0
+    optional: true
 
   cytoscape-fcose@2.2.0(cytoscape@3.33.1):
     dependencies:
@@ -29151,7 +29133,8 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
-  eventemitter2@6.4.7: {}
+  eventemitter2@6.4.7:
+    optional: true
 
   eventemitter2@6.4.9: {}
 
@@ -29183,6 +29166,7 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
+    optional: true
 
   execa@5.1.1:
     dependencies:
@@ -29199,6 +29183,7 @@ snapshots:
   executable@4.1.1:
     dependencies:
       pify: 2.3.0
+    optional: true
 
   exit-x@0.2.2: {}
 
@@ -29290,6 +29275,7 @@ snapshots:
       '@types/yauzl': 2.10.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   extsprintf@1.3.0: {}
 
@@ -29354,6 +29340,7 @@ snapshots:
   fd-slicer@1.1.0:
     dependencies:
       pend: 1.2.0
+    optional: true
 
   fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
@@ -29763,6 +29750,7 @@ snapshots:
   global-dirs@3.0.1:
     dependencies:
       ini: 2.0.0
+    optional: true
 
   global-modules@1.0.0:
     dependencies:
@@ -29963,6 +29951,7 @@ snapshots:
     dependencies:
       is-stream: 2.0.1
       type-fest: 0.8.1
+    optional: true
 
   hashlru@2.3.0: {}
 
@@ -30199,6 +30188,7 @@ snapshots:
       assert-plus: 1.0.0
       jsprim: 2.0.2
       sshpk: 1.18.0
+    optional: true
 
   http2-wrapper@1.0.3:
     dependencies:
@@ -30228,7 +30218,8 @@ snapshots:
 
   human-id@4.1.3: {}
 
-  human-signals@1.1.1: {}
+  human-signals@1.1.1:
+    optional: true
 
   human-signals@2.1.0: {}
 
@@ -30319,7 +30310,8 @@ snapshots:
 
   ini@1.3.8: {}
 
-  ini@2.0.0: {}
+  ini@2.0.0:
+    optional: true
 
   ini@4.1.1: {}
 
@@ -30566,6 +30558,7 @@ snapshots:
     dependencies:
       global-dirs: 3.0.1
       is-path-inside: 3.0.3
+    optional: true
 
   is-interactive@1.0.0: {}
 
@@ -30595,7 +30588,8 @@ snapshots:
 
   is-observable@2.1.0: {}
 
-  is-path-inside@3.0.3: {}
+  is-path-inside@3.0.3:
+    optional: true
 
   is-plain-obj@1.1.0: {}
 
@@ -31433,6 +31427,7 @@ snapshots:
       extsprintf: 1.3.0
       json-schema: 0.4.0
       verror: 1.10.0
+    optional: true
 
   jss-plugin-camel-case@10.10.0:
     dependencies:
@@ -31666,6 +31661,7 @@ snapshots:
       wrap-ansi: 7.0.0
     optionalDependencies:
       enquirer: 2.4.1
+    optional: true
 
   listr2@9.0.5:
     dependencies:
@@ -31752,7 +31748,8 @@ snapshots:
 
   lodash.mergewith@4.6.2: {}
 
-  lodash.once@4.1.1: {}
+  lodash.once@4.1.1:
+    optional: true
 
   lodash.snakecase@4.1.1: {}
 
@@ -31777,6 +31774,7 @@ snapshots:
       cli-cursor: 3.1.0
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
+    optional: true
 
   log-update@6.1.0:
     dependencies:
@@ -32926,7 +32924,8 @@ snapshots:
 
   os-tmpdir@1.0.2: {}
 
-  ospath@1.2.2: {}
+  ospath@1.2.2:
+    optional: true
 
   outdent@0.5.0: {}
 
@@ -33044,6 +33043,7 @@ snapshots:
   p-map@4.0.0:
     dependencies:
       aggregate-error: 3.1.0
+    optional: true
 
   p-queue@9.2.0:
     dependencies:
@@ -33621,7 +33621,8 @@ snapshots:
 
   proxy-compare@3.0.1: {}
 
-  proxy-from-env@1.0.0: {}
+  proxy-from-env@1.0.0:
+    optional: true
 
   proxy-from-env@1.1.0: {}
 
@@ -33680,6 +33681,7 @@ snapshots:
   qs@6.14.0:
     dependencies:
       side-channel: 1.1.0
+    optional: true
 
   qs@6.14.1:
     dependencies:
@@ -34279,6 +34281,7 @@ snapshots:
   request-progress@3.0.0:
     dependencies:
       throttleit: 1.0.0
+    optional: true
 
   request@2.88.2:
     dependencies:
@@ -34894,12 +34897,14 @@ snapshots:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
+    optional: true
 
   slice-ansi@4.0.0:
     dependencies:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
+    optional: true
 
   slice-ansi@7.1.0:
     dependencies:
@@ -35425,7 +35430,8 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
 
-  systeminformation@5.27.7: {}
+  systeminformation@5.27.7:
+    optional: true
 
   tabbable@5.3.3: {}
 
@@ -35548,7 +35554,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  throttleit@1.0.0: {}
+  throttleit@1.0.0:
+    optional: true
 
   through@2.3.8: {}
 
@@ -36069,7 +36076,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  untildify@4.0.0: {}
+  untildify@4.0.0:
+    optional: true
 
   untun@0.1.2:
     dependencies:
@@ -36184,6 +36192,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 1.9.0
+
+  valibot@1.4.2(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
 
   validate-npm-package-license@3.0.4:
     dependencies:
@@ -37240,6 +37252,7 @@ snapshots:
     dependencies:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
+    optional: true
 
   yauzl@3.2.0:
     dependencies:

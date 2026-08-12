@@ -63,4 +63,15 @@ describe('TwapOrderStatus()', () => {
     expect(screen.queryByText('Update fallback handler')).toBeNull()
     expect(screen.getByText('fallback children')).not.toBeNull()
   })
+
+  it('does not treat an optimistic TWAP without children as cancelled', () => {
+    render(
+      <TwapOrderStatus childOrders={[]} orderStatus={OrderStatus.PENDING}>
+        Open
+      </TwapOrderStatus>,
+    )
+
+    expect(screen.getByText('Open')).not.toBeNull()
+    expect(screen.queryByText('Order cancelled')).toBeNull()
+  })
 })

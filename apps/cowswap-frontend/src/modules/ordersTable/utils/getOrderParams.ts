@@ -32,7 +32,9 @@ export function getOrderParams(
   const isPermitInvalid = pendingOrdersPermitValidityState
     ? pendingOrdersPermitValidityState[order.id] === false
     : false
-  const permitAmount = isPermitInvalid ? undefined : getOrderPermitAmount(chainId, order) || undefined
+  const shouldCheckFunding = order.isEoaTwapOrder !== true
+  const permitAmount =
+    shouldCheckFunding && !isPermitInvalid ? getOrderPermitAmount(chainId, order) || undefined : undefined
 
   const rateInfoParams: RateInfoParams = {
     chainId,
@@ -43,8 +45,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[getAddressKey(order.inputToken.address)]
-  const allowance = allowances[getAddressKey(order.inputToken.address)]
+  const balance = shouldCheckFunding ? balances[getAddressKey(order.inputToken.address)] : undefined
+  const allowance = shouldCheckFunding ? allowances[getAddressKey(order.inputToken.address)] : undefined
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,

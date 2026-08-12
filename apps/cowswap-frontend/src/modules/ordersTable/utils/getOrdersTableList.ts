@@ -59,17 +59,19 @@ export function getOrdersTableList(
         const isPending = PENDING_STATES.includes(order.status)
         const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
 
-        // Check if order is unfillable (insufficient balance or allowance)
-        const params = getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState)
-
         // When allowance/balance is temporarily unavailable, keep the current persisted flag.
         // This avoids incorrectly flipping an already-unfillable order back to fillable.
-        const unfillableParams = getUnfillableParams(params, order.isUnfillable ?? false)
+        const unfillableParams = order.isEoaTwapOrder
+          ? { hasKnownFillability: false, isUnfillable: false }
+          : getUnfillableParams(
+              getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState),
+              order.isUnfillable ?? false,
+            )
         const { hasKnownFillability } = unfillableParams
         let { isUnfillable } = unfillableParams
 
         // For TWAP orders, also check child orders (unless we know the parent order is already unfillable)
-        if (!isParsedOrder(item) && item.children && !isUnfillable) {
+        if (!order.isEoaTwapOrder && !isParsedOrder(item) && item.children && !isUnfillable) {
           isUnfillable = item.children.some((childOrder) => {
             const childParams = getOrderParams(
               chainId,
