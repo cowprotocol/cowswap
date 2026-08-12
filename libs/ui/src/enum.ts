@@ -169,4 +169,5 @@ export enum UI {
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',
   ANIMATION_DURATION_SLOW = '--cow-animation-duration-slow',
+  ANIMATION_TIMING_FUNCTION = '--cow-animation-timing-function',
 }

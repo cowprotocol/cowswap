@@ -378,6 +378,7 @@ export const ThemeColorVars = css`
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
     ${UI.ANIMATION_DURATION_SLOW}: 0.2s;
+    ${UI.ANIMATION_TIMING_FUNCTION}: ease-in-out;
   }
 
   body {
