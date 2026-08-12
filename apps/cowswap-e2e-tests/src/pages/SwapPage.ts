@@ -104,7 +104,7 @@ export class SwapPage implements TradePage {
     this.recipientInput = page.locator('input.recipient-address-input')
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
-    this.approveModeSelector = page.locator('#approve-mode-selector')
+    this.approveModeSelector = page.locator('.approve-mode-selector')
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
     this.slippageInput = page.locator('#slippage-input')
     this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
