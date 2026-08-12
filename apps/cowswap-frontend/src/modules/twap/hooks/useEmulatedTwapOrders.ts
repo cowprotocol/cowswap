@@ -2,9 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useMachineTimeMs } from '@cowprotocol/common-hooks'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { twapOrdersListAtom, mapTwapOrderToStoreOrder } from 'entities/twap'
 import ms from 'ms.macro'
@@ -22,7 +20,6 @@ const EMULATED_ORDERS_REFRESH_MS = ms`5s`
  * Because of it, we wrap mapTwapOrderToStoreOrder() in try/catch and just don't add an order to the list
  */
 export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefined): Order[] {
-  const { account, chainId } = useWalletInfo()
   const allTwapOrders = useAtomValue(twapOrdersListAtom)
   // Update emulated twap orders every 5 seconds to recalculate expired state
   const refresher = useMachineTimeMs(EMULATED_ORDERS_REFRESH_MS)
@@ -33,15 +30,11 @@ export function useEmulatedTwapOrders(tokensByAddress: TokensByAddress | undefin
     if (!tokensByAddress) return []
 
     return allTwapOrders.reduce<Order[]>((acc, order) => {
-      if (order.chainId !== chainId || !areAddressesEqual(order.safeAddress, account)) {
-        return acc
-      }
-
       const storeOrder = mapTwapOrderToStoreOrder(order, tokensByAddress)
 
       if (storeOrder) acc.push(storeOrder)
 
       return acc
     }, [])
-  }, [allTwapOrders, account, chainId, tokensByAddress, refresher])
+  }, [allTwapOrders, tokensByAddress, refresher])
 }

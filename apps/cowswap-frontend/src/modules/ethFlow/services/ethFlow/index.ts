@@ -67,7 +67,11 @@ export async function ethFlow({
   orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
-  analytics.trade(swapFlowAnalyticsContext)
+  analytics.trade({
+    ...swapFlowAnalyticsContext,
+    quoteId: tradeQuote.quoteResults.quoteResponse.id,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
@@ -199,7 +203,7 @@ export async function ethFlow({
   } catch (err: unknown) {
     const error = normalizeError(err)
     logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

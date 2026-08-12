@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
 
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-
-import { safeShortenAddress } from 'utils/address'
 
 import { BaseAccountCard } from '../BaseAccountCard/BaseAccountCard.pure'
 import { DefaultAccountContent } from '../DefaultAccountContent/DefaultAccountContent.pure'

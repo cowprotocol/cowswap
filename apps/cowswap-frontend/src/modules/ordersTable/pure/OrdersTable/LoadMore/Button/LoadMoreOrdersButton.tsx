@@ -5,13 +5,14 @@ import { ButtonPrimary, Media } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { useLoadMoreOrders } from 'modules/orders'
+export interface LoadMoreOrdersButtonProps {
+  disabled: boolean
+  onClick: () => void
+}
 
-export function LoadMoreOrdersButton(): ReactNode {
-  const { loadMore, hasMoreOrders, isLoading } = useLoadMoreOrders()
-
+export function LoadMoreOrdersButton({ disabled, onClick }: LoadMoreOrdersButtonProps): ReactNode {
   return (
-    <LoadMoreButton onClick={loadMore} disabled={isLoading || !hasMoreOrders}>
+    <LoadMoreButton onClick={onClick} disabled={disabled}>
       <Trans>Search older orders</Trans>
     </LoadMoreButton>
   )

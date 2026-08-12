@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/types-v4.7.0...types-v4.8.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.3.0
+
 ## [4.7.0](https://github.com/cowprotocol/cowswap/compare/types-v4.6.0...types-v4.7.0) (2026-07-30)
 
 ### Minor Changes

@@ -1,17 +1,71 @@
 'use client'
 
-import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
+import FONT_STUDIO_FEIXEN_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenSans-Medium.woff2'
+import FONT_STUDIO_FEIXEN_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSans-Regular.woff2'
+import FONT_STUDIO_FEIXEN_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Semibold.woff2'
+import FONT_STUDIO_FEIXEN_SERIF_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSerif-Bold.woff2'
+import FONT_STUDIO_FEIXEN_SERIF_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSerif-Regular.woff2'
+import { baseGlobalStyles, Color, Font, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
 const GlobalStyles = createGlobalStyle`
 ${ThemeColorVars}
+${baseGlobalStyles}
+
+  @font-face {
+    font-family: 'studiofeixen';
+    src: url(${FONT_STUDIO_FEIXEN_REGULAR}) format('woff2');
+    font-weight: ${Font.weight.regular};
+    font-style: normal;
+    font-display: fallback;
+  }
+
+  @font-face {
+    font-family: 'studiofeixen';
+    src: url(${FONT_STUDIO_FEIXEN_MEDIUM}) format('woff2');
+    font-weight: ${Font.weight.medium};
+    font-style: normal;
+    font-display: fallback;
+  }
+
+  @font-face {
+    font-family: 'studiofeixen';
+    src: url(${FONT_STUDIO_FEIXEN_SEMIBOLD}) format('woff2');
+    font-weight: ${Font.weight.semibold};
+    font-style: normal;
+    font-display: fallback;
+  }
+
+  @font-face {
+    font-family: 'studiofeixen';
+    src: url(${FONT_STUDIO_FEIXEN_BOLD}) format('woff2');
+    font-weight: ${Font.weight.bold};
+    font-style: normal;
+    font-display: fallback;
+  }
+
+  @font-face {
+    font-family: 'studiofeixenserif';
+    src: url(${FONT_STUDIO_FEIXEN_SERIF_BOLD}) format('woff2');
+    font-weight: ${Font.weight.bold};
+    font-style: normal;
+    font-display: fallback;
+  }
+
+  @font-face {
+    font-family: 'studiofeixenserif';
+    src: url(${FONT_STUDIO_FEIXEN_SERIF_REGULAR}) format('woff2');
+    font-weight: ${Font.weight.regular};
+    font-style: normal;
+    font-display: fallback;
+  }
 
   html, body {
     width: 100%;
     min-height: 100vh;
     min-width: 300px;
-    margin: 0;
     font-size: 62.5%;
     line-height: 10px;
     box-sizing: border-box;
@@ -23,6 +77,19 @@ ${ThemeColorVars}
       button {
           font-family: inherit;
       }
+  }
+
+  body {
+    font-family: ${Font.family};
+    background: ${UI.COLOR_NEUTRAL_98};
+    color: ${UI.COLOR_TEXT};
+    font-variant: none;
+    font-variant-ligatures: none;
+    text-rendering: optimizeLegibility;
+    font-feature-settings:
+      'liga' off,
+      'kern' on;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   *::selection {
@@ -47,6 +114,7 @@ ${ThemeColorVars}
   }
 
   a {
+    color: inherit;
     text-decoration: underline;
     cursor: pointer;
   }

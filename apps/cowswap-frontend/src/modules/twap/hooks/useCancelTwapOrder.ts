@@ -36,6 +36,10 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
 
   return useCallback(
     async (twapOrderId: Hex, order: Order) => {
+      if (order.isEoaTwapOrder) {
+        throw new Error(t`EOA TWAP cancellation is not implemented`)
+      }
+
       if (!composableCowContract.address || !settlementContract.address) {
         throw new Error(t`Context is not full to cancel TWAP order`)
       }
