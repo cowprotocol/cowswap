@@ -3,13 +3,13 @@ import { Color } from '@cowprotocol/ui'
 import { TokenImg } from 'components/common/TokenImg'
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $wrap?: boolean }>`
   display: flex;
   align-items: center;
-  flex-flow: row wrap;
+  flex-flow: row ${({ $wrap }) => ($wrap ? 'wrap' : 'nowrap')};
   font-size: inherit;
   gap: 4px;
-  overflow-wrap: break-word;
+  overflow-wrap: ${({ $wrap }) => ($wrap ? 'break-word' : 'normal')};
   word-break: normal;
 `
 
