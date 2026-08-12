@@ -1,6 +1,13 @@
 import { type Hex } from 'viem'
 
 import {
+  areAddressesEqual,
+  // eslint-disable-next-line @typescript-eslint/no-restricted-imports
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
+} from '@cowprotocol/cow-sdk'
+
+import {
   classifyCall,
   encodeAllowanceResult,
   isFullyMocked,
@@ -68,6 +75,11 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
   }
 
   function resolveFor(chainId: number, call: AllowanceCall): bigint {
+    if (!isVaultRelayerSpender(chainId, call.spender)) {
+      reads.push({ chainId, owner: call.owner, spender: call.spender, token: call.token, value: 0n })
+      return 0n
+    }
+
     const value = resolveAllowance(fixture, overrides, call.owner, chainId, call.token)
 
     reads.push({ chainId, owner: call.owner, spender: call.spender, token: call.token, value })
@@ -189,6 +201,30 @@ function classifyEntry(entry: JsonRpcEntry): ClassifiedCall | undefined {
 
 async function fulfillJson(route: Route, body: unknown): Promise<void> {
   await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
+}
+
+/**
+ * `set()`/the committed fixture key on `(owner, chainId, token)` alone — there's no `spender` in
+ * that key because every test-authored allowance here is really "let the trade proceed", i.e. an
+ * approval to the CoW VaultRelayer, the only spender any of this suite's trades ever check. Without
+ * this gate, `resolveFor` would hand that same value back for *any* spender's `allowance()` query on
+ * that token — including ones with nothing to do with trading. That's exactly what broke the
+ * cross-chain WETH tests: `useIsAnySwapAffectedUser` queries `allowance(account, ANYSWAP_V4_CONTRACT)`
+ * for a fixed set of tokens (WETH among them) independent of what's being traded, and a seeded WETH
+ * VaultRelayer allowance was leaking into that unrelated read, flipping the app into its AnySwap-hack
+ * warning page instead of the swap form. Gating on the real spender here — rather than widening the
+ * key to carry one, which would ripple into every `set()` call site, the fixture format, and their
+ * unit tests — keeps every existing caller's "just let the trade through" intent working while
+ * making every other spender read as unconfigured (0), matching what the real chain would show for
+ * an account this suite never actually approved anything on.
+ */
+function isVaultRelayerSpender(chainId: number, spender: string): boolean {
+  const vaultRelayer = (COW_PROTOCOL_VAULT_RELAYER_ADDRESS as Record<number, string>)[chainId]
+  const vaultRelayerStaging = (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as Record<number, string>)[chainId]
+  return (
+    (vaultRelayer !== undefined && areAddressesEqual(vaultRelayer, spender)) ||
+    (vaultRelayerStaging !== undefined && areAddressesEqual(vaultRelayerStaging, spender))
+  )
 }
 
 function localResult(
