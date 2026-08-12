@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import type { Page, Locator } from '@playwright/test'
 
 export class TokenSelector {
@@ -40,7 +42,7 @@ export class TokenSelector {
     // directly (rather than the rendered text) avoids picking an unrelated element that merely
     // contains the search string, e.g. a tooltip icon next to the token's shortened address.
     const row = symbolOrAddress.startsWith('0x')
-      ? this.page.locator(`[data-address="${symbolOrAddress.toLowerCase()}"]`)
+      ? this.page.locator(`[data-address="${getAddressKey(symbolOrAddress)}"]`)
       : this.page.locator(`[data-token-symbol="${symbolOrAddress}"]`)
     const firstRow = row.first()
     // `TokenListItem`'s click handler no-ops on the already-selected token (it's a picker, not a

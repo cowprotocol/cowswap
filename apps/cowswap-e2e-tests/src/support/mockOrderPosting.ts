@@ -30,7 +30,7 @@ export function mockOrderPosting(
   getPostedBuyAmount(): string
   getPostedSellAmount(): string
   markExecuting(): void
-  fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void
+  fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint, buyTokenBalanceBefore: bigint): void
 } {
   let postedBody: OrderCreation | null = null
   let postedOrder: Order | null = null
@@ -68,14 +68,19 @@ export function mockOrderPosting(
       cowApi.set('orderStatus', () => buildOrderStatus('executing', postedBody as OrderCreation))
     },
 
-    fulfill(balances: BalancesMock, chainId: number, sellTokenBalanceBefore: bigint): void {
+    fulfill(
+      balances: BalancesMock,
+      chainId: number,
+      sellTokenBalanceBefore: bigint,
+      buyTokenBalanceBefore: bigint,
+    ): void {
       if (!postedBody || !postedOrder) {
         throw new Error('mockOrderPosting: fulfill() called before an order was posted')
       }
 
       balances.set(owner, chainId, {
         [postedBody.sellToken]: (sellTokenBalanceBefore - BigInt(postedBody.sellAmount)).toString(),
-        [postedBody.buyToken]: postedBody.buyAmount,
+        [postedBody.buyToken]: (buyTokenBalanceBefore + BigInt(postedBody.buyAmount)).toString(),
       })
 
       postedOrder = { ...postedOrder, ...buildFulfilledOrderPatch(postedBody) }

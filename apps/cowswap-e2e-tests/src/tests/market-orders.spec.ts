@@ -1,6 +1,6 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
-import { bpsToPercentage } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
@@ -8,6 +8,7 @@ import { CHAIN_IDS } from '../support/constants'
 import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
 import { mockCancellableOrder } from '../support/mockCancellableOrder'
+import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
@@ -25,6 +26,15 @@ const CHAIN_ID = CHAIN_IDS.SEPOLIA
 test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
     test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
+
+    // A default for every test in this file, per `AGENTS.md`'s "Using mocks" note — a test that
+    // forgets to seed its own balance (e.g. [CS-62], which never asserts on a balance figure at
+    // all) would otherwise leave `mocks.balances` unconfigured for its owner. Tests that care about
+    // a specific starting balance already override this via their own `seedTrader`/
+    // `setupTestConditions` call, which simply replaces these two entries.
+    test.beforeEach(({ mocks, wallet }) => {
+      mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: parseUnits('1500', 18), [WETH]: parseUnits('10', 18) })
+    })
 
     test('[CS-59] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
@@ -104,7 +114,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -177,7 +187,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed — mirrors [CS-59].
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
@@ -203,6 +213,7 @@ test.describe('Market Orders', () => {
       mocks,
       context,
       header,
+      confirmModal,
     }) => {
       // Fixed rate (1 WETH = 2000 USDC) with zero fee/protocolFeeBps keeps the sell side a clean
       // round number derived from whatever buy amount was actually requested
@@ -224,9 +235,8 @@ test.describe('Market Orders', () => {
       // Select "Partial approval" so the wallet requests a finite amount tied to the trade instead
       // of the default infinite (MaxUint256) approval — only then is there a "maximum sent" figure
       // to compare against.
-      const approveModeSelector = swapPage.page.locator('#approve-mode-selector')
-      await approveModeSelector.getByText('Partial approval').click()
-      const approvalAmount = await readTitledAmount(approveModeSelector)
+      await swapPage.approveModeSelector.getByText('Partial approval').click()
+      const approvalAmount = await readTitledAmount(swapPage.approveModeSelector)
 
       // Faking the approve() end-to-end instead of letting it broadcast for real — see
       // `mockApproveTransaction` for why both `eth_sendTransaction` and `eth_getTransactionReceipt`
@@ -247,8 +257,7 @@ test.describe('Market Orders', () => {
       // the slippage-adjusted sell amount *without* the buy-order's +1% buffer
       // (`getOrderTypeReceiveAmounts.ts`) — a deliberately different figure from the approve amount
       // (`useAmountsToSignFromQuote.ts`'s `maximumSendSellAmount`, which adds that 1% on top).
-      const maximumSentRow = swapPage.page.locator('.confirm-order-amount', { hasText: 'Maximum sent' })
-      const maximumSentRaw = await readTitledAmount(maximumSentRow)
+      const maximumSentRaw = await readTitledAmount(confirmModal.amountRow('Maximum sent'))
 
       // What the toggle showed before signing matches the real approve() calldata's amount.
       expect(approvalAmount).toBe(approveMock.getApprovedAmount())
@@ -386,6 +395,7 @@ test.describe('Market Orders', () => {
       swapPage,
       wallet,
       mocks,
+      confirmModal,
     }) => {
       const RATE_NUM = 8n
       const RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
@@ -412,35 +422,20 @@ test.describe('Market Orders', () => {
         sellAmount: '1000',
       })
 
-      // No dedicated page-object locators exist yet for the settings dropdown/slippage input or for
-      // reading a labeled confirm-modal amount row by value (only `confirmModal.minimumReceive`,
-      // which matches the label text, not the amount) — built here the same way [CS-61] builds its
-      // one-off `#approve-mode-selector`/`.confirm-order-amount` locators.
-      const setSlippage = async (percent: string): Promise<void> => {
-        await swapPage.page.locator('#open-settings-dialog-button').click()
-        const slippageInput = swapPage.page.locator('#slippage-input')
-        await slippageInput.fill(percent)
-        await slippageInput.blur()
-        await swapPage.page.keyboard.press('Escape')
-      }
-
-      const readConfirmRowAmount = (label: string): Promise<bigint> =>
-        readTitledAmount(swapPage.page.locator('.confirm-order-amount', { hasText: label }))
-
       // Sets slippage tolerance, opens the Confirm modal, and returns "Minimum receive" after
       // checking it against "Expected to receive" and confirming it's read-only.
       const readMinimumReceiveAt = async (slippagePercent: string, slippageBps: bigint): Promise<bigint> => {
-        await setSlippage(slippagePercent)
+        await swapPage.setSlippage(slippagePercent)
         await swapPage.clickSwap()
 
-        const expectedToReceive = await readConfirmRowAmount('Expected to receive')
-        const minimumReceive = await readConfirmRowAmount('Minimum receive')
+        const expectedToReceive = await readTitledAmount(confirmModal.amountRow('Expected to receive'))
+        const minimumReceive = await readTitledAmount(confirmModal.amountRow('Minimum receive'))
 
         // The core relationship: Minimum receive = Expected to receive × (1 − slippage%).
         expect(minimumReceive).toBe((expectedToReceive * (10_000n - slippageBps)) / 10_000n)
 
         // Read-only: rendered as plain text inside the row, not an editable control.
-        const minimumReceiveRow = swapPage.page.locator('.confirm-order-amount', { hasText: 'Minimum receive' })
+        const minimumReceiveRow = confirmModal.amountRow('Minimum receive')
         await expect(minimumReceiveRow.locator('input, textarea, [contenteditable]')).toHaveCount(0)
 
         await swapPage.page.keyboard.press('Escape')
@@ -480,36 +475,9 @@ test.describe('Market Orders', () => {
       // success (independently of `ethFlow.confirmMined()`, which only gates the *tx receipt*)
       // keeps the "Creating Order" state below observable instead of racing straight past it: the
       // real app moves through "Sending ETH" → "Sent ETH"/"Creating Order" → "Order Created" as two
-      // separate gates (tx receipt, then order indexed), not one.
-      //
-      // There's no `postOrder` call to hook for an ETH-flow order (its uid is computed client-side
-      // before anything is sent on-chain, see `mockEthFlowTransaction`), so `mockOrderPosting` can't
-      // be reused here — `fulfill()`-equivalent behaviour is inlined below instead, keyed off
-      // `ethFlow.isFilled()` and the order params decoded straight from the sent `createOrder()`
-      // calldata rather than trusting the UI's rendered figures.
-      let orderIndexed = false
-      mocks.cowApi.set('order', (req) => {
-        if (!orderIndexed) return reply(404, { errorType: 'NotFound' })
-
-        // `classifyOrder`'s `isOrderFulfilled` compares this response's own `sellAmount` against
-        // `executedSellAmountBeforeFees` — the unrelated fixture's `sellAmount` would never match,
-        // so every amount field below has to come from the real order, not `req.defaults`.
-        const orderParams = ethFlow.getOrderParams()
-        const defaults = req.defaults as Record<string, unknown>
-        const filled = ethFlow.isFilled()
-        const executedSellAmount = filled ? orderParams?.sellAmount.toString() : '0'
-        return {
-          ...defaults,
-          kind: 'sell',
-          buyToken: orderParams?.buyToken,
-          sellAmount: orderParams?.sellAmount.toString(),
-          buyAmount: orderParams?.buyAmount.toString(),
-          status: filled ? 'fulfilled' : 'open',
-          executedBuyAmount: filled ? orderParams?.buyAmount.toString() : '0',
-          executedSellAmount,
-          executedSellAmountBeforeFees: executedSellAmount,
-        }
-      })
+      // separate gates (tx receipt, then order indexed), not one. See `mockEthFlowOrderIndexing` for
+      // why this needs its own `order` override rather than `mockOrderPosting`.
+      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
 
       // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
       // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
@@ -555,7 +523,8 @@ test.describe('Market Orders', () => {
       await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
 
       // Let the mocked creation tx "mine" — step 1 becomes "Sent ETH" and step 2 becomes "Creating
-      // Order", since the order-by-uid poll above is still withheld (`orderIndexed` is still false).
+      // Order", since the order-by-uid poll above is still withheld (`orderIndexing` isn't marked
+      // indexed yet).
       ethFlow.confirmMined()
 
       // "Creating Order" (`EthFlowStepper`'s step-2 label) has no stable container to scope to: the
@@ -567,7 +536,7 @@ test.describe('Market Orders', () => {
 
       // Let the order-by-uid poll start succeeding — this is what flips the order from `creating` to
       // `pending`, rendered in the activities list as "Open".
-      orderIndexed = true
+      orderIndexing.markIndexed()
 
       await expectActivityStatus(accountModal, 'Open', { timeout: 15_000 })
 
@@ -626,26 +595,7 @@ test.describe('Market Orders', () => {
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 
-      let orderIndexed = false
-      mocks.cowApi.set('order', (req) => {
-        if (!orderIndexed) return reply(404, { errorType: 'NotFound' })
-
-        const orderParams = ethFlow.getOrderParams()
-        const defaults = req.defaults as Record<string, unknown>
-        const filled = ethFlow.isFilled()
-        const executedSellAmount = filled ? orderParams?.sellAmount.toString() : '0'
-        return {
-          ...defaults,
-          kind: 'sell',
-          buyToken: orderParams?.buyToken,
-          sellAmount: orderParams?.sellAmount.toString(),
-          buyAmount: orderParams?.buyAmount.toString(),
-          status: filled ? 'fulfilled' : 'open',
-          executedBuyAmount: filled ? orderParams?.buyAmount.toString() : '0',
-          executedSellAmount,
-          executedSellAmountBeforeFees: executedSellAmount,
-        }
-      })
+      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
 
       mockFixedRateQuote({ cowApi: mocks.cowApi })
 
@@ -682,7 +632,7 @@ test.describe('Market Orders', () => {
       await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
 
       // Open (order indexed by the backend).
-      orderIndexed = true
+      orderIndexing.markIndexed()
       await accountModal.open()
       await accountModal.activitiesList.scrollIntoViewIfNeeded()
       await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
@@ -748,9 +698,9 @@ test.describe('Market Orders', () => {
         allowances: { WETH: '1' },
       })
 
-      await swapPage.page.locator('#open-settings-dialog-button').click()
+      await swapPage.settingsDialogButton.click()
 
-      const slippageInput = swapPage.page.locator('#slippage-input')
+      const slippageInput = swapPage.slippageInput
       const adjustedBanner = swapPage.page.getByText(/Slippage adjusted to [\d.]+% to ensure quick execution/)
 
       const readPlaceholderPercent = async (): Promise<number> =>
@@ -789,7 +739,7 @@ test.describe('Market Orders', () => {
       await swapPage.page.keyboard.press('Escape')
       await swapPage.enterSellAmount('0.6')
       await swapPage.waitForQuote()
-      await swapPage.page.locator('#open-settings-dialog-button').click()
+      await swapPage.settingsDialogButton.click()
 
       // `waitForQuote()` only waits out the loading spinner for the first ("fast") quote response —
       // the smart-slippage hook explicitly ignores fast quotes and keeps the last valid value until
@@ -938,7 +888,7 @@ test.describe('Market Orders', () => {
         .rpcCalls('eth_signTypedData_v4')
         .map((call) => JSON.parse(call.params[1] as string))
         .find((typedData) => typedData.primaryType === 'Permit')
-      expect(permitSignRequest?.domain?.verifyingContract?.toLowerCase()).toBe(USDC.toLowerCase())
+      expect(areAddressesEqual(permitSignRequest?.domain?.verifyingContract, USDC)).toBe(true)
 
       // No on-chain approval transaction is ever sent — the permit signature replaces it entirely.
       expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
@@ -950,8 +900,8 @@ test.describe('Market Orders', () => {
       // pre-interaction CoW Hook on the order's appData, not a separate approve() call.
       await expect.poll(() => uploadedAppData).toBeDefined()
       const appData = JSON.parse(uploadedAppData as string)
-      const permitHook = appData.metadata.hooks.pre.find(
-        (hook: { target?: string }) => hook.target?.toLowerCase() === USDC.toLowerCase(),
+      const permitHook = appData.metadata.hooks.pre.find((hook: { target?: string }) =>
+        areAddressesEqual(hook.target, USDC),
       )
       expect(permitHook?.dappId).toBe('cow-swap://libs/hook-dapp-lib/permit')
 
@@ -978,7 +928,10 @@ test.describe('Market Orders', () => {
         chainId: CHAIN_ID,
         wethToken: WETH,
         initialEthBalance: INITIAL_ETH_BALANCE,
+        initialWethBalance: 0n,
       })
+
+      seedTrader(mocks, wallet, CHAIN_ID, { balances: { [WETH]: 0n } })
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
@@ -1001,10 +954,9 @@ test.describe('Market Orders', () => {
 
       // The action button reads "Wrap", not "Swap" — this validation state's button doesn't carry
       // the `#do-trade-button` id the ordinary swap/approve states do (same gap found in [CS-102]),
-      // so it's matched by its own text instead of `swapPage.swapButton`.
-      const wrapButton = swapPage.page.getByRole('button', { name: 'Wrap', exact: true })
-      await expect(wrapButton).toBeVisible()
-      await wrapButton.click()
+      // so `swapPage.wrapButton` matches it by its own text instead of `swapPage.swapButton`.
+      await expect(swapPage.wrapButton).toBeVisible()
+      await swapPage.wrapButton.click()
 
       // Confirming signs/sends the on-chain `deposit()` tx directly — there's no off-chain signature
       // step for a wrap, and no CoW API call of any kind.
@@ -1053,9 +1005,8 @@ test.describe('Market Orders', () => {
 
       // The action button reads "Unwrap", not "Swap" — same gap as [CS-103]'s "Wrap" button, which
       // doesn't carry the `#do-trade-button` id the ordinary swap/approve states do.
-      const unwrapButton = swapPage.page.getByRole('button', { name: 'Unwrap', exact: true })
-      await expect(unwrapButton).toBeVisible()
-      await unwrapButton.click()
+      await expect(swapPage.unwrapButton).toBeVisible()
+      await swapPage.unwrapButton.click()
 
       // Confirming signs/sends the on-chain `withdraw()` tx directly — there's no off-chain
       // signature step for an unwrap, and no CoW API call of any kind.
@@ -1105,7 +1056,7 @@ test.describe('Market Orders', () => {
 
       // Clicking "Cancel order" only opens a confirmation modal (`RequestCancellationModal`) — the
       // actual off-chain signature + DELETE only fire once this button is clicked too.
-      await swapPage.page.getByRole('button', { name: 'Request cancellation' }).click()
+      await accountModal.requestCancellationButton.click()
 
       // The wallet is asked to sign an `OrderCancellations` EIP-712 message (`orderUids: bytes[]`,
       // see `@cowprotocol/sdk-contracts-ts`'s `CANCELLATIONS_TYPE_FIELDS`) — not a transaction.
@@ -1184,7 +1135,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
+      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -1292,8 +1243,13 @@ test.describe('Market Orders', () => {
         mocks.cowApi.set('quote', (req) => {
           const defaults = req.defaults as { quote: Record<string, unknown> }
           const sellAmount = BigInt(defaults.quote.sellAmount as string)
+          const decimalsDelta = sellDecimals - buyDecimals
           const buyAmount =
-            sellDecimals === buyDecimals ? sellAmount : sellAmount / 10n ** BigInt(sellDecimals - buyDecimals)
+            decimalsDelta === 0
+              ? sellAmount
+              : decimalsDelta > 0
+                ? sellAmount / 10n ** BigInt(decimalsDelta)
+                : sellAmount * 10n ** BigInt(-decimalsDelta)
           return {
             ...defaults,
             protocolFeeBps: '0.3',
@@ -1426,10 +1382,10 @@ test.describe('Market Orders', () => {
 
       // This validation state's button (`TradeFormBlankButton`) doesn't carry the `#do-trade-button`
       // id the other validation states render under, and the header has its own, differently-cased
-      // "Connect wallet" button — matched `exact` to land on the swap form's "Connect Wallet"
-      // specifically (confirmed via a DOM dump: two buttons, only this one capitalizes "Wallet").
-      const connectWalletButton = swapPage.page.getByRole('button', { name: 'Connect Wallet', exact: true })
-      await expect(connectWalletButton).toBeVisible()
+      // "Connect wallet" button — `swapPage.connectWalletButton` matches `exact` to land on the swap
+      // form's "Connect Wallet" specifically (confirmed via a DOM dump: two buttons, only this one
+      // capitalizes "Wallet").
+      await expect(swapPage.connectWalletButton).toBeVisible()
     })
   })
 })

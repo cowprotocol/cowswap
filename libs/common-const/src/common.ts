@@ -99,10 +99,10 @@ declare global {
 
 // e2e tests mock the order book API, so updaters can poll much faster without adding real load
 const IS_E2E_FAST_POLLING = typeof window !== 'undefined' && window.__COWSWAP_E2E__ === true
-const E2E_FAST_POLL_INTERVAL = ms`800ms`
+const E2E_FAST_POLL_INTERVAL = ms`2s`
 
 export function getUpdaterInterval(interval: number): number {
-  return IS_E2E_FAST_POLLING ? Math.max(interval, E2E_FAST_POLL_INTERVAL) : interval
+  return IS_E2E_FAST_POLLING ? Math.min(interval, E2E_FAST_POLL_INTERVAL) : interval
 }
 
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
