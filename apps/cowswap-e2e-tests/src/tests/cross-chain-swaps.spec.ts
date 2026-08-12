@@ -203,7 +203,7 @@ test.describe('Cross-chain swaps', () => {
     await confirmModal.confirmButton.click()
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
-    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE)
+    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
@@ -262,7 +262,7 @@ test.describe('Cross-chain swaps', () => {
     await confirmModal.confirmButton.click()
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
-    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE)
+    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
