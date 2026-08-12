@@ -10,11 +10,14 @@ export class AccountModal {
   readonly page: Page
   readonly toggleButton: Locator
   readonly activitiesList: Locator
+  /** Confirms cancellation in `RequestCancellationModal`, opened via an activity row's "Cancel order" link. */
+  readonly requestCancellationButton: Locator
 
   constructor(page: Page) {
     this.page = page
     this.toggleButton = page.locator('#web3-status-connected')
     this.activitiesList = page.locator('#account-activities-list')
+    this.requestCancellationButton = page.getByRole('button', { name: 'Request cancellation' })
   }
 
   async open(): Promise<void> {

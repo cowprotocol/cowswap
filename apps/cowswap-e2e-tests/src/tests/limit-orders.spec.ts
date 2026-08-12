@@ -64,16 +64,16 @@ test.describe('Limit Orders', () => {
     // reciprocal of 5, so it encodes the same "1 USDC = 5 COW" price regardless of orientation.
     await limitPage.setLimitPrice('0.2')
 
-    await limitPage.placeOrderButton.click()
+    await limitPage.placeOrder()
     await expect(confirmModal.confirmButton).toContainText('Place limit order')
     await confirmModal.confirmButton.click()
 
     // The mock wallet signs and `postOrder` responds instantly, so the flow skips past any
     // transient progress step straight to the confirm modal's "Order Submitted" screen.
-    await expect(limitPage.page.getByRole('heading', { name: 'Order Submitted' })).toBeVisible()
-    await limitPage.page.getByRole('button', { name: /continue/i }).click()
+    await expect(limitPage.orderSubmittedHeading).toBeVisible()
+    await limitPage.continueButton.click()
 
-    await limitPage.page.locator('.orders-table_tab', { hasText: 'Open' }).click()
-    await expect(limitPage.page.locator('#orders-table')).toContainText('COW')
+    await limitPage.openOrdersTab.click()
+    await expect(limitPage.ordersTable).toContainText('COW')
   })
 })

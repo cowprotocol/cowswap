@@ -1,5 +1,7 @@
 import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { RpcStub } from '../mockWallet/walletEngine'
 import type { BrowserContext, Route } from '@playwright/test'
@@ -56,6 +58,22 @@ interface BatchResultSlot {
 
 const OPAQUE: OpaqueCall = { kind: 'opaque' }
 
+export interface NativeBalanceRouteOpts {
+  context: BrowserContext
+  rpcUrl: string
+  /** Owner whose `getEthBalance(owner)` reads (however deep inside a Multicall3 batch) get patched. */
+  owner: string
+  /** The fake hash `eth_getTransactionReceipt` polls for. */
+  txHash: Hex
+  /** Read fresh each time the route fires, so it reflects whatever the caller's own `eth_sendTransaction` stub last recorded. */
+  getBalance: () => bigint
+  /** Whether the receipt should report success yet — the caller owns this flag so it can also
+   * drive its own `confirmMined()`/other routes (e.g. `mockEthFlowTxLookupFallback`) in step. */
+  isMined: () => boolean
+}
+
+type NativeBalanceEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
+
 /**
  * Classifies one `eth_call` payload for `owner`'s own ETH balance, recursively — mirrors
  * `mocks/allowances/codec.ts`'s `classifyCall`, since Multicall3 batches nest the same way
@@ -70,7 +88,7 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
   if (selector === GET_ETH_BALANCE_SELECTOR) {
     try {
       const [address] = decodeAbiParameters([{ type: 'address' }], `0x${data.slice(10)}` as Hex)
-      return (address as string).toLowerCase() === owner.toLowerCase() ? { kind: 'ownBalance' } : OPAQUE
+      return areAddressesEqual(address as string, owner) ? { kind: 'ownBalance' } : OPAQUE
     } catch {
       return OPAQUE
     }
@@ -89,6 +107,85 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
   }
 
   return OPAQUE
+}
+
+/**
+ * Shared by every mock that fakes a plain `eth_sendTransaction` and needs to patch the two
+ * direct-RPC reads the app polls afterwards: the tx's own `eth_getTransactionReceipt`, and the
+ * wallet's native ETH balance (read via Multicall3's `getEthBalance`, batched through `aggregate3`
+ * — see `classifyEthCall`). Used by `mockEthFlowTransaction`, `mockWrapTransaction`, and
+ * `mockUnwrapTransaction` — the only things that differ between them are the fake tx hash and the
+ * direction/amount `getBalance()` computes. The receipt reports success only once `isMined()` says
+ * so, so a test can assert the transient "pending" state before letting it proceed. For entries
+ * this route doesn't recognize (fully opaque, or a batch only partially recognized), the real
+ * upstream is fetched and only the recognized slots are patched in, so unrelated batched reads
+ * still get real data instead of being silently nulled out.
+ */
+export async function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): Promise<void> {
+  const { context, rpcUrl, owner, txHash, getBalance, isMined } = opts
+
+  const classify = (entry: JsonRpcEntry): NativeBalanceEntry => {
+    if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === txHash) {
+      return { kind: 'receipt' }
+    }
+    if (entry.method === 'eth_call') {
+      const call = entry.params[0] as { data?: Hex }
+      if (call.data) {
+        const classifiedCall = classifyEthCall(call.data, owner)
+        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
+      }
+    }
+    return { kind: 'opaque' }
+  }
+
+  const isEntryFullyMocked = (entry: NativeBalanceEntry): boolean =>
+    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
+
+  const buildResult = (classified: NativeBalanceEntry, balance: bigint, upstream?: Hex): unknown => {
+    if (classified.kind === 'receipt') return isMined() ? buildReceipt(txHash) : null
+    if (classified.kind === 'call') {
+      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [balance])
+      if (classified.call.kind === 'opaque') return undefined
+      return resolveEthBalanceBatch(classified.call, balance, upstream)
+    }
+    return undefined
+  }
+
+  await context.route(rpcUrl, async (route) => {
+    const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
+    const entries = Array.isArray(body) ? body : [body]
+    const classified = entries.map(classify)
+
+    if (classified.every((c) => c.kind === 'opaque')) return route.fallback()
+
+    const balance = getBalance()
+
+    if (classified.every(isEntryFullyMocked)) {
+      const payload = entries.map((entry, i) => ({
+        jsonrpc: '2.0',
+        id: entry.id,
+        result: buildResult(classified[i], balance),
+      }))
+      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+    }
+
+    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
+    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
+    const upstream = await route.fetch()
+    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
+    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
+
+    const classifiedById = new Map<number | string, NativeBalanceEntry>()
+    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
+
+    const payload = upstreamEntries.map((entry) => {
+      const classifiedEntry = classifiedById.get(entry.id)
+      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
+      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
+      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, balance, upstreamResult) }
+    })
+    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
+  })
 }
 
 export function isFullyMocked(call: ClassifiedEthCall): boolean {
@@ -184,8 +281,6 @@ export interface MockEthFlowTransactionOpts {
   initialEthBalance: bigint
 }
 
-type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
-
 /** A generous flat estimate for the `createOrder()` call — never actually spent, since the send itself is stubbed. */
 const FAKE_GAS_ESTIMATE = '0x7a120' as const
 
@@ -237,69 +332,15 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
     orderParams = order
   })
 
-  const classify = (entry: JsonRpcEntry): ClassifiedEntry => {
-    if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_ETH_FLOW_TX_HASH) {
-      return { kind: 'receipt' }
-    }
-    if (entry.method === 'eth_call') {
-      const call = entry.params[0] as { data?: Hex }
-      if (call.data) {
-        const classifiedCall = classifyEthCall(call.data, wallet.address)
-        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
-      }
-    }
-    return { kind: 'opaque' }
-  }
-
-  const isEntryFullyMocked = (entry: ClassifiedEntry): boolean =>
-    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
-
-  const buildResult = (classified: ClassifiedEntry, remainingBalance: bigint, upstream?: Hex): unknown => {
-    if (classified.kind === 'receipt') return mined ? buildReceipt(FAKE_ETH_FLOW_TX_HASH) : null
-    if (classified.kind === 'call') {
-      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [remainingBalance])
-      if (classified.call.kind === 'opaque') return undefined
-      return resolveEthBalanceBatch(classified.call, remainingBalance, upstream)
-    }
-    return undefined
-  }
-
   await mockEthFlowTxLookupFallback(context, wallet.address, () => mined)
 
-  await context.route(rpcUrl, async (route) => {
-    const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    const entries = Array.isArray(body) ? body : [body]
-    const classified = entries.map(classify)
-
-    if (classified.every((c) => c.kind === 'opaque')) return route.fallback()
-
-    const remainingBalance = initialEthBalance - (sentValue ?? 0n)
-
-    if (classified.every(isEntryFullyMocked)) {
-      const payload = entries.map((entry, i) => ({
-        jsonrpc: '2.0',
-        id: entry.id,
-        result: buildResult(classified[i], remainingBalance),
-      }))
-      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-    }
-
-    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
-    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-
-    const classifiedById = new Map<number | string, ClassifiedEntry>()
-    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
-
-    const payload = upstreamEntries.map((entry) => {
-      const classifiedEntry = classifiedById.get(entry.id)
-      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, remainingBalance, upstreamResult) }
-    })
-    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
+  await installNativeBalanceRoute({
+    context,
+    rpcUrl,
+    owner: wallet.address,
+    txHash: FAKE_ETH_FLOW_TX_HASH,
+    getBalance: () => initialEthBalance - (sentValue ?? 0n),
+    isMined: () => mined,
   })
 
   return {

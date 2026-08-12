@@ -45,6 +45,21 @@ export class SwapPage implements TradePage {
   readonly recipientPasteButton: Locator
   /** Hardcoded id on `ReceiverConfirmationRow.pure.tsx`'s "confirm this is the right chain" checkbox. */
   readonly recipientConfirmationCheckbox: Locator
+  /** `TradeApproveButton`'s toggle between "Partial approval" (a finite, trade-tied amount) and infinite (MaxUint256). */
+  readonly approveModeSelector: Locator
+  readonly settingsDialogButton: Locator
+  readonly slippageInput: Locator
+  /**
+   * This validation state's button doesn't carry the `#do-trade-button` id the ordinary
+   * swap/approve states do (`validateTradeForm.ts`'s `WrapUnwrapFlow`), so it's matched by text.
+   */
+  readonly wrapButton: Locator
+  readonly unwrapButton: Locator
+  /**
+   * `TradeFormBlankButton`'s "Connect Wallet" — doesn't carry `#do-trade-button` either, and the
+   * header has its own, differently-cased "Connect wallet" button, so this is matched `exact`.
+   */
+  readonly connectWalletButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -89,6 +104,12 @@ export class SwapPage implements TradePage {
     this.recipientInput = page.locator('input.recipient-address-input')
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
+    this.approveModeSelector = page.locator('#approve-mode-selector')
+    this.settingsDialogButton = page.locator('#open-settings-dialog-button')
+    this.slippageInput = page.locator('#slippage-input')
+    this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
+    this.unwrapButton = page.getByRole('button', { name: 'Unwrap', exact: true })
+    this.connectWalletButton = page.getByRole('button', { name: 'Connect Wallet', exact: true })
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -149,5 +170,13 @@ export class SwapPage implements TradePage {
   async clickPrimaryAction(): Promise<void> {
     await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
+  }
+
+  /** Opens the settings dropdown, sets a custom slippage percentage, and closes it again. */
+  async setSlippage(percent: string): Promise<void> {
+    await this.settingsDialogButton.click()
+    await this.slippageInput.fill(percent)
+    await this.slippageInput.blur()
+    await this.page.keyboard.press('Escape')
   }
 }

@@ -81,14 +81,26 @@ export async function mockApproveTransaction(opts: MockApproveTransactionOpts): 
   await context.route(rpcUrl, async (route) => {
     const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
     const entries = Array.isArray(body) ? body : [body]
-    if (!entries.some((entry) => entry.method === 'eth_getTransactionReceipt')) {
-      return route.fallback()
+    const isReceiptEntry = entries.map((entry) => entry.method === 'eth_getTransactionReceipt')
+    if (!isReceiptEntry.some(Boolean)) return route.fallback()
+
+    const ctx: ReceiptContext = { owner: wallet.address, token, spender, amount: approvedAmount }
+
+    if (isReceiptEntry.every(Boolean)) {
+      const payload = entries.map((entry) => buildReceiptRpcResponse(entry, ctx))
+      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
     }
 
-    const payload = entries.map((entry) =>
-      buildReceiptRpcResponse(entry, { owner: wallet.address, token, spender, amount: approvedAmount }),
+    // A mixed batch — only the receipt entries are ours to answer; fetch upstream and patch just
+    // those in, so a non-receipt read bundled alongside our poll doesn't get nulled out.
+    const upstream = await route.fetch()
+    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
+    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
+    const receiptIds = new Set(entries.filter((_, i) => isReceiptEntry[i]).map((entry) => entry.id))
+    const payload = upstreamEntries.map((entry) =>
+      receiptIds.has(entry.id) ? buildReceiptRpcResponse(entry, ctx) : entry,
     )
-    await route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
   })
 
   await context.route('**/*', (route) => handleApproveSimulationCall(route, token))

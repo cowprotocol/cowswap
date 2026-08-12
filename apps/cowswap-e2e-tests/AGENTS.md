@@ -46,9 +46,9 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
   flow in one call, takes human-readable amounts (`{ WETH: '1' }`, not raw atoms). Reach for manual page-object calls only for
   what `setupTestConditions` doesn't cover, e.g. changing the amount again mid-test.
 - **Mock-driven scenarios that span multiple endpoints belong on the page object as a method**, not as a
-  free function in the spec file. Example: `SwapPage.mockOrderPosting(cowApi, owner)` sets up `postOrder` +
+  free function in the spec file. Example: `tradePage.mockOrderPosting(cowApi, owner)` sets up `postOrder` +
   `accountOrders` together (the order shows up as `open` the moment it's posted), and returns a handle
-  whose `fulfill(balances, chainId, sellTokenBalanceBefore)` you call whenever the test is ready for the
+  whose `fulfill(balances, chainId, sellTokenBalanceBefore, buyTokenBalanceBefore)` you call whenever the test is ready for the
   trade to settle — it's what flips `accountOrders` to `fulfilled`, debits/credits `balances`, and makes
   `orderStatus` report `traded`. Posting and fulfilling are deliberately separate calls, not one bundled
   step, so a spec can assert on the pending/open state before triggering settlement.

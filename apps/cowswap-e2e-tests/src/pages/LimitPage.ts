@@ -10,6 +10,10 @@ export class LimitPage implements TradePage {
   readonly placeOrderButton: Locator
   readonly unlockButton: Locator
   readonly arrowSeparator: Locator
+  readonly orderSubmittedHeading: Locator
+  readonly continueButton: Locator
+  readonly openOrdersTab: Locator
+  readonly ordersTable: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -18,6 +22,10 @@ export class LimitPage implements TradePage {
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-limit-orders-btn')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
+    this.orderSubmittedHeading = page.getByRole('heading', { name: 'Order Submitted' })
+    this.continueButton = page.getByRole('button', { name: /continue/i })
+    this.openOrdersTab = page.locator('.orders-table_tab', { hasText: 'Open' })
+    this.ordersTable = page.locator('#orders-table')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {

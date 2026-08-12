@@ -1,11 +1,6 @@
-import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
+import { decodeAbiParameters, type Hex } from 'viem'
 
-import {
-  classifyEthCall,
-  isFullyMocked,
-  resolveEthBalanceBatch,
-  type ClassifiedEthCall,
-} from './mockEthFlowTransaction'
+import { installNativeBalanceRoute } from './mockEthFlowTransaction'
 
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { BalancesMock } from '../mocks/balances'
@@ -38,15 +33,6 @@ export interface MockUnwrapTransactionOpts {
   initialWethBalance: bigint
 }
 
-type ClassifiedEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
-
-interface JsonRpcEntry {
-  id: number | string
-  method: string
-  params: unknown[]
-  result?: unknown
-}
-
 /**
  * Fakes the native-ETH unwrap transaction end-to-end — the reverse of `mockWrapTransaction`.
  * Unwrapping is a plain `withdraw(uint256)` call on the WETH contract
@@ -70,6 +56,9 @@ export async function mockUnwrapTransaction(opts: MockUnwrapTransactionOpts): Pr
   let mined = false
 
   const stub: RpcStub = ({ params }) => {
+    if (sentValue !== undefined) {
+      throw new Error('mockUnwrapTransaction: only one unwrap transaction is supported per handle')
+    }
     const tx = params[0] as { data?: Hex }
     const data = tx.data ?? '0x'
     if (!data.toLowerCase().startsWith(WITHDRAW_SELECTOR)) {
@@ -82,69 +71,15 @@ export async function mockUnwrapTransaction(opts: MockUnwrapTransactionOpts): Pr
   }
   wallet.stubRpc('eth_sendTransaction', stub)
 
-  const classify = (entry: JsonRpcEntry): ClassifiedEntry => {
-    if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_UNWRAP_TX_HASH) {
-      return { kind: 'receipt' }
-    }
-    if (entry.method === 'eth_call') {
-      const call = entry.params[0] as { data?: Hex }
-      if (call.data) {
-        const classifiedCall = classifyEthCall(call.data, wallet.address)
-        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
-      }
-    }
-    return { kind: 'opaque' }
-  }
-
-  const isEntryFullyMocked = (entry: ClassifiedEntry): boolean =>
-    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
-
-  const buildResult = (classified: ClassifiedEntry, ethBalance: bigint, upstream?: Hex): unknown => {
-    if (classified.kind === 'receipt') return mined ? buildReceipt() : null
-    if (classified.kind === 'call') {
-      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [ethBalance])
-      if (classified.call.kind === 'opaque') return undefined
-      return resolveEthBalanceBatch(classified.call, ethBalance, upstream)
-    }
-    return undefined
-  }
-
-  await context.route(rpcUrl, async (route) => {
-    const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    const entries = Array.isArray(body) ? body : [body]
-    const classified = entries.map(classify)
-
-    if (classified.every((c) => c.kind === 'opaque')) return route.fallback()
-
-    // ETH is credited back the moment the fake tx is "sent" — same timing `mockWrapTransaction`
-    // debits it, and the same reasoning as `mockEthFlowTransaction`'s own native-balance patch.
-    const ethBalance = initialEthBalance + (sentValue ?? 0n)
-
-    if (classified.every(isEntryFullyMocked)) {
-      const payload = entries.map((entry, i) => ({
-        jsonrpc: '2.0',
-        id: entry.id,
-        result: buildResult(classified[i], ethBalance),
-      }))
-      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-    }
-
-    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
-    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-
-    const classifiedById = new Map<number | string, ClassifiedEntry>()
-    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
-
-    const payload = upstreamEntries.map((entry) => {
-      const classifiedEntry = classifiedById.get(entry.id)
-      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, ethBalance, upstreamResult) }
-    })
-    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
+  // ETH is credited back the moment the fake tx is "sent" — same timing `mockWrapTransaction`
+  // debits it, and the same reasoning as `mockEthFlowTransaction`'s own native-balance patch.
+  await installNativeBalanceRoute({
+    context,
+    rpcUrl,
+    owner: wallet.address,
+    txHash: FAKE_UNWRAP_TX_HASH,
+    getBalance: () => initialEthBalance + (sentValue ?? 0n),
+    isMined: () => mined,
   })
 
   return {
@@ -154,22 +89,5 @@ export async function mockUnwrapTransaction(opts: MockUnwrapTransactionOpts): Pr
       mined = true
     },
     isMined: () => mined,
-  }
-}
-
-function buildReceipt(): unknown {
-  return {
-    transactionHash: FAKE_UNWRAP_TX_HASH,
-    status: '0x1',
-    blockNumber: '0x1',
-    blockHash: `0x${'ab'.repeat(32)}`,
-    contractAddress: null,
-    cumulativeGasUsed: '0x5208',
-    gasUsed: '0x5208',
-    effectiveGasPrice: '0x3b9aca00',
-    logs: [],
-    logsBloom: `0x${'0'.repeat(512)}`,
-    transactionIndex: '0x0',
-    type: '0x0',
   }
 }
