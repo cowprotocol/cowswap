@@ -10,10 +10,10 @@ export interface SeedTraderOpts {
  * Sets a trader's balances/allowances directly by token address, in raw atoms.
  *
  * This is the same thing `setupTestConditions`'s own `balances`/`allowances` options do, keyed by
- * token *symbol* with human-readable amounts — but that option resolves decimals via
- * `support/tokens.ts`, which has an incorrect 6-decimal entry for this Sepolia deployment's fake
- * USDC (it actually reports 18 on-chain). Whenever USDC is involved, seed here with
- * `parseUnits(amount, 18)` instead of through `setupTestConditions`.
+ * token *symbol* with human-readable amounts and resolved via `support/tokens.ts` (18 decimals for
+ * this Sepolia deployment's fake USDC, not its real-world 6 — already correct there). Use this
+ * directly instead when a test doesn't go through `setupTestConditions` at all, or needs to seed
+ * by address rather than by the symbols `support/tokens.ts` knows about.
  */
 export function seedTrader(
   mocks: { balances: BalancesMock; allowances: AllowancesMock },

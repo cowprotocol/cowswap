@@ -26,7 +26,7 @@ test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
     test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
-    test('[MO-02] Sell order: ERC-20 → ERC-20 @smoke', async ({
+    test('[CS-59] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
       tradePage,
       wallet,
@@ -35,8 +35,9 @@ test.describe('Market Orders', () => {
       mocks,
     }) => {
       // On this Sepolia deployment both test tokens report 18 decimals on-chain (verified via
-      // `decimals()`), not USDC's real-world 6 — `support/tokens.ts` disagrees, so raw atoms are
-      // computed here via `parseUnits` with an explicit 18 instead of going through `resolveToken`.
+      // `decimals()`), not USDC's real-world 6 — `support/tokens.ts` already accounts for this.
+      // Raw atoms are computed here via `parseUnits` with an explicit 18 as a local literal, since
+      // this test doesn't go through `setupTestConditions`/`resolveToken` at all.
       const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
       const BUY_RATE_NUM = 804n
       const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
@@ -64,7 +65,7 @@ test.describe('Market Orders', () => {
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — same race as [MO-11]'s ETH-flow note, just
+      // debounced quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just
       // hit here via `selectTokens` instead of a manual token switch. Typing first against
       // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
       // and the typed amount carries over once USDC/WETH are picked.
@@ -128,8 +129,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Filled')
     })
 
-    // TODO: merge with MO-48
-    test('[MO-03] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
+    test('[CS-60] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
       swapPage,
       tradePage,
       wallet,
@@ -137,11 +137,11 @@ test.describe('Market Orders', () => {
       accountModal,
       mocks,
     }) => {
-      // Same 18-decimals quirk as [MO-02].
+      // Same 18-decimals quirk as [CS-59].
       const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
       const RATE = 1000n // 1 WETH = 1000 USDC
 
-      // Mirrors [MO-02]'s technique, but derived from the quote's `buyAmount` instead of its
+      // Mirrors [CS-59]'s technique, but derived from the quote's `buyAmount` instead of its
       // `sellAmount` — for a buy order the typed amount fixes buyAmount exactly, and it's sellAmount
       // that's quoted/slippage-adjusted. Fee/protocolFeeBps stay zeroed so the posted buyAmount
       // matches the typed amount exactly, keeping the buy-side balance assertion a round number.
@@ -150,7 +150,7 @@ test.describe('Market Orders', () => {
       const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
       // `usdPrices` defaults every token to $1 — pricing WETH to match the quote rate keeps the
-      // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [MO-02].
+      // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [CS-59].
       mocks.usdPrices.setPrice(WETH, Number(RATE))
 
       seedTrader(mocks, wallet, CHAIN_ID, {
@@ -176,17 +176,17 @@ test.describe('Market Orders', () => {
 
       await expectActivityStatus(accountModal, 'Open')
 
-      // Settle the order now that it's posted and confirmed — mirrors [MO-02].
+      // Settle the order now that it's posted and confirmed — mirrors [CS-59].
       posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE)
 
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
-      // so it needs more room than the default 5s — mirrors [MO-02].
+      // so it needs more room than the default 5s — mirrors [CS-59].
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
       await swapPage.page.keyboard.press('Escape')
 
       // Buy amount is fixed by the order kind — it lands exactly on the typed amount, unlike the
-      // sell side, which carries the app's own slippage buffer on top of the quote (see [MO-04]).
+      // sell side, which carries the app's own slippage buffer on top of the quote (see [CS-61]).
       await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH', { timeout: 15_000 })
       await expect(swapPage.sellBalance).toHaveAttribute(
         'title',
@@ -197,7 +197,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Filled')
     })
 
-    test('[MO-04] Buy order: approval amount includes slippage buffer @smoke', async ({
+    test('[CS-61] Buy order: approval amount includes slippage buffer @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -257,7 +257,7 @@ test.describe('Market Orders', () => {
       expect(approveMock.getApprovedAmount()).toBe((maximumSentRaw * 101n) / 100n)
     })
 
-    test('[MO-05] Buy order: ETH as sell token (ETH-flow buy not supported) @smoke', async ({ swapPage }) => {
+    test('[CS-62] Buy order: ETH as sell token (ETH-flow buy not supported) @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       await swapPage.tokens.openInput()
@@ -269,13 +269,13 @@ test.describe('Market Orders', () => {
       await expect(swapPage.outputAmount).not.toBeEditable()
     })
 
-    test('[MO-06] Swap form: To field amount calculation @smoke', async ({
+    test('[CS-63] Swap form: To field amount calculation @smoke', async ({
       setupTestConditions,
       swapPage,
       wallet,
       mocks,
     }) => {
-      // Same technique as [MO-02]: zero out fee/protocolFeeBps so the displayed To-amount is an
+      // Same technique as [CS-59]: zero out fee/protocolFeeBps so the displayed To-amount is an
       // exact, round multiple of the typed sell amount. Quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH
       // = 12.5 USDC.
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 8n, denominator: 100n } })
@@ -286,8 +286,10 @@ test.describe('Market Orders', () => {
       mocks.usdPrices.setPrice(WETH, 12.25)
 
       // Set balances/allowances directly (both Sepolia test tokens report 18 decimals on-chain,
-      // same quirk as [MO-02]) rather than via `setupTestConditions`, whose `balances`/`allowances`
-      // options trust `support/tokens.ts`'s incorrect 6-decimal USDC entry.
+      // same quirk as [CS-59]) rather than via `setupTestConditions`'s own `balances`/`allowances`
+      // options. `support/tokens.ts` already resolves this deployment's USDC to 18 decimals
+      // correctly, so this is no longer required to work around a decimals mismatch — it's simply
+      // how the test happens to be structured today.
       seedTrader(mocks, wallet, CHAIN_ID, {
         balances: { [USDC]: parseUnits('1000', 18), [WETH]: 0n },
         allowances: { [USDC]: parseUnits('1000', 18) },
@@ -314,7 +316,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.page.getByText('Price impact due to current liquidity levels')).toBeVisible()
     })
 
-    test('[MO-07] Swap form: "Receive (incl. fees)" field calculation @smoke', async ({
+    test('[CS-64] Swap form: "Receive (incl. fees)" field calculation @smoke', async ({
       setupTestConditions,
       swapPage,
       mocks,
@@ -341,7 +343,7 @@ test.describe('Market Orders', () => {
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-      // Impact" dialog — same technique as [MO-07].
+      // Impact" dialog — same technique as [CS-59].
       mocks.usdPrices.setPrice(WETH, Number(RATE))
 
       await setupTestConditions({
@@ -362,7 +364,6 @@ test.describe('Market Orders', () => {
       await expect(tooltipBox.getByText('Network costs', { exact: true })).toBeVisible()
       await expect(tooltipBox.getByText('To', { exact: true })).toBeVisible()
 
-      // Both Sepolia test tokens report 18 decimals on-chain — same quirk as [MO-06]/[MO-09].
       const readRowAmount = (label: string): Promise<bigint> =>
         readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
 
@@ -380,7 +381,7 @@ test.describe('Market Orders', () => {
       expect(parseUnits(receiveValue, 18)).toBe(toAmount)
     })
 
-    test('[MO-08] Swap form: "Minimum receive" calculation in Confirm modal @smoke', async ({
+    test('[CS-65] Swap form: "Minimum receive" calculation in Confirm modal @smoke', async ({
       setupTestConditions,
       swapPage,
       wallet,
@@ -390,12 +391,12 @@ test.describe('Market Orders', () => {
       const RATE_DEN = 100n // quote rate: 100 USDC -> 8 WETH, i.e. 1 WETH = 12.5 USDC
 
       // Zero out fee/protocolFeeBps so "Expected to receive" (amountAfterFees) is an exact, round
-      // multiple of the typed sell amount — same technique as [MO-02].
+      // multiple of the typed sell amount — same technique as [CS-59].
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: RATE_NUM, denominator: RATE_DEN } })
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-      // Impact" dialog — same technique as [MO-02].
+      // Impact" dialog — same technique as [CS-59].
       mocks.usdPrices.setPrice(WETH, Number(RATE_DEN) / Number(RATE_NUM))
 
       seedTrader(mocks, wallet, CHAIN_ID, {
@@ -413,7 +414,7 @@ test.describe('Market Orders', () => {
 
       // No dedicated page-object locators exist yet for the settings dropdown/slippage input or for
       // reading a labeled confirm-modal amount row by value (only `confirmModal.minimumReceive`,
-      // which matches the label text, not the amount) — built here the same way [MO-04] builds its
+      // which matches the label text, not the amount) — built here the same way [CS-61] builds its
       // one-off `#approve-mode-selector`/`.confirm-order-amount` locators.
       const setSlippage = async (percent: string): Promise<void> => {
         await swapPage.page.locator('#open-settings-dialog-button').click()
@@ -453,8 +454,7 @@ test.describe('Market Orders', () => {
       expect(minimumReceiveAt2Pct).not.toBe(minimumReceiveAt1Pct)
     })
 
-    // Includes [MO-44]
-    test('[MO-11] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
+    test('[CS-68] ETH-flow: place ETH sell order (EOA wallet) @smoke', async ({
       swapPage,
       wallet,
       context,
@@ -513,7 +513,7 @@ test.describe('Market Orders', () => {
 
       // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
       // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
-      // [MO-02]/[MO-06]/[MO-07], keeps the sent value and the post-tx balance round numbers below.
+      // [CS-59]/[CS-63]/[CS-64], keeps the sent value and the post-tx balance round numbers below.
       // No `rate` needed: this order's buyAmount is never asserted on, only that fees don't skew it.
       mockFixedRateQuote({ cowApi: mocks.cowApi })
 
@@ -587,13 +587,13 @@ test.describe('Market Orders', () => {
       // Once truly fulfilled, `TransactionSubmittedContent` stops rendering `EthFlowStepper`
       // (`!isFinished`) and shows the same generic completed screen every other order type uses —
       // there's no "Received USDC" checkmark state to catch, the stepper disappears entirely. This
-      // is what makes `#order-progress-bar-modal` get mounted in the first place, per [MO-02]/[MO-03].
+      // is what makes `#order-progress-bar-modal` get mounted in the first place, per [CS-59]/[CS-60].
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
 
       await expectActivityStatus(accountModal, 'Filled', { timeout: 15_000 })
 
       // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
-      // a balance while `!disabled`) — dismiss it the same way [MO-02]/[MO-03] do.
+      // a balance while `!disabled`) — dismiss it the same way [CS-59]/[CS-60] do.
       await swapPage.page.keyboard.press('Escape')
 
       // Native ETH leaves the wallet as soon as the creation tx is sent (it's the tx's own `value`,
@@ -605,7 +605,7 @@ test.describe('Market Orders', () => {
       })
     })
 
-    test('[MO-14] ETH-flow: order status lifecycle', async ({
+    test('[CS-71] ETH-flow: order status lifecycle', async ({
       swapPage,
       wallet,
       context,
@@ -616,7 +616,7 @@ test.describe('Market Orders', () => {
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const SELL_AMOUNT = parseUnits('0.5', 18)
 
-      // Same ETH-flow mocking setup as [MO-11] — see that test's comments for why this needs
+      // Same ETH-flow mocking setup as [CS-68] — see that test's comments for why this needs
       // `mockEthFlowTransaction` (on-chain `createOrder()`, no off-chain signature) and an inlined
       // `order` override (no `postOrder` call exists for this flow to hook via `mockOrderPosting`).
       const ethFlow = await mockEthFlowTransaction({
@@ -652,7 +652,7 @@ test.describe('Market Orders', () => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // Typed before switching the sell token to ETH — dodges the auto-fill race documented at
-      // [MO-11].
+      // [CS-68].
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -668,7 +668,7 @@ test.describe('Market Orders', () => {
       await confirmModal.confirmButton.click()
 
       // Creating (tx sent, not yet mined): "Sending ETH" is the active step, and the tx hash is
-      // already linked as its "View transaction" explorer link — same signals as [MO-11].
+      // already linked as its "View transaction" explorer link — same signals as [CS-68].
       await expect.poll(() => ethFlow.getSentValue()).toBe(SELL_AMOUNT)
       await expect(swapPage.page.getByText('Sending ETH', { exact: true })).toBeVisible()
 
@@ -694,17 +694,17 @@ test.describe('Market Orders', () => {
       await accountModal.close()
 
       // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
-      // a balance while `!disabled`, same as [MO-11]) — dismiss it to read the sell balance. Native
+      // a balance while `!disabled`, same as [CS-68]) — dismiss it to read the sell balance. Native
       // ETH leaves the wallet as soon as the creation tx is sent (it's the tx's own `value`, not a
       // separate settlement step), so it's already reflected here even though the order only just
       // reached "Open".
       await swapPage.page.keyboard.press('Escape')
       await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
 
-      // Filled: settle the order — mirrors [MO-11]'s `fulfill()`-equivalent inline logic. Unlike
-      // [MO-11] (which keeps the progress view open throughout), it was already dismissed above to
+      // Filled: settle the order — mirrors [CS-68]'s `fulfill()`-equivalent inline logic. Unlike
+      // [CS-68] (which keeps the progress view open throughout), it was already dismissed above to
       // read the sell balance — the ETH-flow progress view doesn't reopen itself the way the regular
-      // (off-chain-signed) flow's surplus-modal queue does at [MO-03], so status/balance here are
+      // (off-chain-signed) flow's surplus-modal queue does at [CS-60], so status/balance here are
       // read via the activities list and swap form directly instead of waiting on it to reappear.
       const orderParams = ethFlow.getOrderParams()
       if (!orderParams) throw new Error('mockEthFlowTransaction: fulfill attempted before an order was sent')
@@ -724,7 +724,7 @@ test.describe('Market Orders', () => {
       await accountModal.close()
     })
 
-    test('[MO-22] Slippage: dynamic mode defaults and range (regular flow) @smoke', async ({
+    test('[CS-79] Slippage: dynamic mode defaults and range (regular flow) @smoke', async ({
       setupTestConditions,
       swapPage,
       context,
@@ -768,7 +768,8 @@ test.describe('Market Orders', () => {
 
       // Range check: min/max aren't shown as static copy anywhere in the UI — the only concrete
       // signal is this validation message, triggered by typing a value outside [0, 50] for the
-      // regular ERC-20 flow (the 0.5% floor only applies to native-ETH-sell orders, see [MO-11]).
+      // regular ERC-20 flow (native-ETH-sell orders have a separate 0.5% floor, not covered here —
+      // see the not-yet-written [CS-81]).
       // `.fill('60')` was observed to silently no-op here (value stays empty) — `pressSequentially`
       // (real keystrokes) is what actually lands the value; unclear why, but empirically reliable.
       await slippageInput.click()
@@ -803,7 +804,7 @@ test.describe('Market Orders', () => {
       expect(Number(adjustedPercent)).toBeGreaterThan(2)
     })
 
-    test('[MO-30] Token not approved (non-permittable, no bundling): approval button shown @smoke', async ({
+    test('[CS-87] Token not approved (non-permittable, no bundling): approval button shown @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -870,7 +871,7 @@ test.describe('Market Orders', () => {
       await expect.poll(() => orderPosted).toBe(true)
     })
 
-    test('[MO-42] Token approval: gasless approval (EIP-2612 permit) @smoke', async ({
+    test('[CS-99] Token approval: gasless approval (EIP-2612 permit) @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -892,13 +893,13 @@ test.describe('Market Orders', () => {
       })
 
       // Clicking the action button is identical either way (same `#approve-trade-button`, same
-      // "Approve and Swap" label, see [MO-30]) — `useApproveAndSwap`'s `handlePermit()` branches on
+      // "Approve and Swap" label, see [CS-87]) — `useApproveAndSwap`'s `handlePermit()` branches on
       // token support *inside* the click handler: a permit-supported token signs a typed-data
       // message and skips the on-chain `approve()` call entirely.
       seedTrader(mocks, wallet, CHAIN_ID, {
         balances: { [USDC]: parseUnits('1500', 18), [WETH]: 0n },
         // Precondition: no existing on-chain approval — irrelevant to the permit path itself, but
-        // keeps this consistent with [MO-30] and confirms the button renders regardless of the reason.
+        // keeps this consistent with [CS-87] and confirms the button renders regardless of the reason.
         allowances: { [USDC]: 0n },
       })
 
@@ -961,7 +962,7 @@ test.describe('Market Orders', () => {
       expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
     })
 
-    test('[MO-46] Wrap ETH → WETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
+    test('[CS-103] Wrap ETH → WETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const WRAP_AMOUNT = parseUnits('0.5', 18)
 
@@ -981,7 +982,7 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
-      // Typed before switching the sell token to ETH, not after — see [MO-11]'s note on
+      // Typed before switching the sell token to ETH, not after — see [CS-68]'s note on
       // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
       // with no amount set yet is selected. That mitigation alone isn't airtight for a *native* ETH
       // pick specifically: selecting a new input currency awaits `crossChainFamilySwitch()` before
@@ -999,7 +1000,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('0.5')
 
       // The action button reads "Wrap", not "Swap" — this validation state's button doesn't carry
-      // the `#do-trade-button` id the ordinary swap/approve states do (same gap found in [MO-45]),
+      // the `#do-trade-button` id the ordinary swap/approve states do (same gap found in [CS-102]),
       // so it's matched by its own text instead of `swapPage.swapButton`.
       const wrapButton = swapPage.page.getByRole('button', { name: 'Wrap', exact: true })
       await expect(wrapButton).toBeVisible()
@@ -1015,13 +1016,13 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
     })
 
-    test('[MO-47] Unwrap WETH → ETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
+    test('[CS-104] Unwrap WETH → ETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_WETH_BALANCE = parseUnits('1', 18)
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const UNWRAP_AMOUNT = parseUnits('0.5', 18)
 
       // Selecting WETH as sell (the default) and ETH as buy isn't a CoW order at all either — the
-      // reverse of [MO-46]: `validateTradeForm.ts` still recognizes it as `WrapUnwrapFlow`, but
+      // reverse of [CS-103]: `validateTradeForm.ts` still recognizes it as `WrapUnwrapFlow`, but
       // routes to a local `withdraw()` call on the WETH contract instead of `deposit()`
       // (`legacy/hooks/useWrapCallback.ts`'s `unwrapContractCall`). See `mockUnwrapTransaction` for
       // why this needs its own mock rather than reusing `mockWrapTransaction` directly — `withdraw`'s
@@ -1041,7 +1042,7 @@ test.describe('Market Orders', () => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // WETH is already the default sell token on Sepolia (see known quirks), so only the buy side
-      // needs switching — typed before switching, not after, same auto-fill race as [MO-11]/[MO-46].
+      // needs switching — typed before switching, not after, same auto-fill race as [CS-68]/[CS-103].
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -1050,7 +1051,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 WETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')
 
-      // The action button reads "Unwrap", not "Swap" — same gap as [MO-46]'s "Wrap" button, which
+      // The action button reads "Unwrap", not "Swap" — same gap as [CS-103]'s "Wrap" button, which
       // doesn't carry the `#do-trade-button` id the ordinary swap/approve states do.
       const unwrapButton = swapPage.page.getByRole('button', { name: 'Unwrap', exact: true })
       await expect(unwrapButton).toBeVisible()
@@ -1067,7 +1068,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '1.5 ETH', { timeout: 15_000 })
     })
 
-    test('[MO-54] Cancel market order: off-chain soft cancellation (EOA) @smoke', async ({
+    test('[CS-111] Cancel market order: off-chain soft cancellation (EOA) @smoke', async ({
       swapPage,
       wallet,
       mocks,
@@ -1087,7 +1088,7 @@ test.describe('Market Orders', () => {
 
       // `OrdersFromApiUpdater` only turns a fetched order into local state once it can resolve both
       // its sell/buy tokens from `useAllActiveTokens()` — selecting them via the real dropdown UI,
-      // same as [MO-02]/[MO-03], is what gets them into that set (no order is ever created through
+      // same as [CS-59]/[CS-60], is what gets them into that set (no order is ever created through
       // this UI, only the token registration piggybacks on it).
       await swapPage.goto({ chainId: CHAIN_ID })
       await selectTokens(swapPage, 'WETH', 'USDC')
@@ -1130,14 +1131,14 @@ test.describe('Market Orders', () => {
       await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
     })
 
-    test('[MO-61] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
+    test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
       swapPage,
       tradePage,
       wallet,
       confirmModal,
       mocks,
     }) => {
-      // Same 18-decimals quirk as [MO-02].
+      // Same 18-decimals quirk as [CS-59].
       const INITIAL_USDC_BALANCE = parseUnits('1500', 18)
       const BUY_RATE_NUM = 804n
       const BUY_RATE_DEN = 1_000_000n // quote buyAmount ~= 0.804 WETH per 1000 USDC sold, pre-slippage
@@ -1148,7 +1149,7 @@ test.describe('Market Orders', () => {
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-      // Impact" dialog — same technique as [MO-02].
+      // Impact" dialog — same technique as [CS-59].
       mocks.usdPrices.setPrice(WETH, Number(BUY_RATE_DEN) / Number(BUY_RATE_NUM))
 
       seedTrader(mocks, wallet, CHAIN_ID, {
@@ -1158,7 +1159,7 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
-      // Typed before selecting tokens, not after — dodges the auto-fill race documented at [MO-02].
+      // Typed before selecting tokens, not after — dodges the auto-fill race documented at [CS-59].
       await swapPage.enterSellAmount('1000')
       await selectTokens(swapPage, 'USDC', 'WETH')
       await swapPage.waitForQuote()
@@ -1173,7 +1174,7 @@ test.describe('Market Orders', () => {
       // Step 2 (SOLVING, backend ACTIVE — the default `orderStatus` fixture) — competition started,
       // solvers searching for the best price. All 4 steps' titles are always rendered together
       // (`StepsWrapper`), so `SolvingStep`'s own body text ("best price wins") is what distinguishes
-      // this step as the active one, same as [MO-02]. `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on
+      // this step as the active one, same as [CS-59]. `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on
       // screen for at least 5s before advancing here, hence the longer timeout.
       await expect(swapPage.orderProgressBarModal).toContainText('best price wins', { timeout: 15_000 })
 
@@ -1190,19 +1191,19 @@ test.describe('Market Orders', () => {
 
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
-      // order at, same as [MO-02].
+      // order at, same as [CS-59].
       const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
       const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
       expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
       expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
     })
 
-    test('[MO-70] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
+    test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
       setupTestConditions,
       swapPage,
       mocks,
     }) => {
-      const RATE = 2000n // 1 WETH = 2000 USDC — arbitrary, same convention as [MO-07]
+      const RATE = 2000n // 1 WETH = 2000 USDC — arbitrary, same convention as [CS-64]
 
       // `protocolFeeBps` is a top-level field on the quote response, not nested under `quote` (see
       // `useTradeQuoteProtocolFee.ts`). Zeroing `feeAmount` (network cost) removes that term from
@@ -1228,7 +1229,7 @@ test.describe('Market Orders', () => {
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
-      // Impact" dialog — same technique as [MO-07].
+      // Impact" dialog — same technique as [CS-64].
       mocks.usdPrices.setPrice(WETH, Number(RATE))
 
       await setupTestConditions({
@@ -1257,7 +1258,6 @@ test.describe('Market Orders', () => {
       const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
       expect(protocolFeeTitle).toMatch(/ USDC$/)
 
-      // Both Sepolia test tokens report 18 decimals on-chain — same quirk as [MO-06]/[MO-07]/[MO-09].
       const readRowAmount = (label: string): Promise<bigint> =>
         readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
 
@@ -1276,15 +1276,15 @@ test.describe('Market Orders', () => {
       expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
     })
 
-    test('[MO-71] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs) @smoke', async ({
+    test('[CS-128] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs) @smoke', async ({
       setupTestConditions,
       swapPage,
       wallet,
       mocks,
     }) => {
-      const STANDARD_TIER_RATIO = 0.0002 // The non-correlated 2 bps tier from [MO-70], for the ~6.67× comparison below.
+      const STANDARD_TIER_RATIO = 0.0002 // The non-correlated 2 bps tier from [CS-127], for the ~6.67× comparison below.
 
-      // Same mechanism as [MO-70] (`protocolFeeBps` is a top-level quote field, applied identically
+      // Same mechanism as [CS-127] (`protocolFeeBps` is a top-level quote field, applied identically
       // regardless of which tokens are picked — correlation-based tier selection is a backend/solver
       // decision this frontend just renders), just a different bps value and, for the USDC→USDT leg
       // below, a buy side with real 6 decimals instead of 18.
@@ -1315,8 +1315,9 @@ test.describe('Market Orders', () => {
         mockCorrelatedQuote(sellDecimals, buyDecimals)
 
         // `setupTestConditions`'s own `balances`/`allowances` option resolves decimals via
-        // `support/tokens.ts`, whose USDC entry is deliberately wrong (see known quirks) — seeded
-        // directly by address/decimals here instead, same workaround as [MO-02]'s `seedTrader` use.
+        // `support/tokens.ts`, which already reports 18 decimals correctly for this deployment's
+        // USDC (see known quirks) — seeded directly by address/decimals here instead, same pattern
+        // as [CS-59]'s `seedTrader` use.
         seedTrader(mocks, wallet, CHAIN_ID, {
           balances: { [sellAddress]: parseUnits('1000', sellDecimals), [buyAddress]: 0n },
           allowances: { [sellAddress]: parseUnits('1000', sellDecimals) },
@@ -1339,7 +1340,7 @@ test.describe('Market Orders', () => {
           .getByText('Protocol fee', { exact: true })
           .locator('xpath=following-sibling::*[1]')
 
-        // The surplus/buy token, with a leading "-" — same rendering as [MO-70].
+        // The surplus/buy token, with a leading "-" — same rendering as [CS-127].
         await expect(protocolFeeCell).toContainText('-')
         const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
         expect(protocolFeeTitle).toMatch(new RegExp(` ${buySymbol}$`))
@@ -1358,7 +1359,7 @@ test.describe('Market Orders', () => {
         expect(protocolFee).toBeGreaterThan(0n)
         expect(networkCosts).toBe(0n)
 
-        // Protocol fee ≈ Before costs × 0.00003 (0.3 bps) — ~6.67× smaller than [MO-70]'s 2 bps tier
+        // Protocol fee ≈ Before costs × 0.00003 (0.3 bps) — ~6.67× smaller than [CS-127]'s 2 bps tier
         // on equivalent volume.
         const ratio = Number(protocolFee) / Number(beforeCosts)
         expect(ratio).toBeCloseTo(0.00003, 6)
@@ -1420,7 +1421,7 @@ test.describe('Market Orders', () => {
     // simply never calling it is what keeps this test's app state disconnected throughout.
     test.use({ mockWalletAutoConnect: false })
 
-    test('[MO-45] Not connected state: Connect Wallet button shown @smoke', async ({ swapPage }) => {
+    test('[CS-102] Not connected state: Connect Wallet button shown @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // This validation state's button (`TradeFormBlankButton`) doesn't carry the `#do-trade-button`
