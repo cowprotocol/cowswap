@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.5.0...assets-v2.6.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: approve for token list page (#7967)
+
 ## [2.5.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.4.0...assets-v2.5.0) (2026-06-25)
 
 ### Minor Changes
