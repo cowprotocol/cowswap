@@ -14,7 +14,8 @@ export const Button = styled.button`
 
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
-    font-size var(${UI.ANIMATION_DURATION}) ease-in-out;
+    font-size var(${UI.ANIMATION_DURATION}) ease-in-out,
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   // TODO: Should we add a global CSS reset instead?
   border: none;

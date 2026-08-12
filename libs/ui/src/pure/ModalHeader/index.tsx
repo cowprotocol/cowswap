@@ -5,32 +5,29 @@ import clsx from 'clsx'
 import * as styledEl from './styled'
 
 export interface ModalHeaderProps {
-  children?: ReactNode
-
   title?: ReactNode
-
+  children?: ReactNode
   rightSlot?: ReactNode
-
   onBack?(): void
-
   onClose?(): void
-
   className?: string
 }
 
+// TODO: Move inside modal Modal directory
+
 export function ModalHeader({ title, children, rightSlot, className, onBack, onClose }: ModalHeaderProps): ReactNode {
-  //  onKeyDown={(e) => e.key === 'Escape' && onDismiss()}
-  // TODO: Use CloseButton / BackButton components...
+  const hasBack = !!onBack
+  const hasClose = !!onClose
 
   return (
-    <styledEl.Header className={clsx(className, onBack && 'hasBack', onClose && 'hasClose')} withoutBorder>
-      {onBack ? <styledEl.BackButtonStyled onClick={onBack} /> : null}
+    <styledEl.Header className={clsx(className, hasBack && 'hasBack', hasClose && 'hasClose')} withoutBorder>
+      <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
 
       <styledEl.Title>{title || children}</styledEl.Title>
 
       {rightSlot ? <styledEl.RightSlot>{rightSlot}</styledEl.RightSlot> : null}
 
-      {onClose ? <styledEl.CloseButtonStyled onClick={onClose} /> : null}
+      <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
     </styledEl.Header>
   )
 }

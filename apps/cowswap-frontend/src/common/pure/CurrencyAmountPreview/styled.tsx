@@ -7,6 +7,9 @@ import { FiatValue } from '../FiatValue'
 export const TOKEN_SIZE_DEFAULT = 42
 export const TOKEN_SIZE_SLIM = 32
 
+// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
+const DEBUG_TRANSITION_DURATION = '10s'
+
 export const Container = styled.div`
   padding: 24px 12px;
   width: 100%;
@@ -19,8 +22,8 @@ export const Container = styled.div`
   flex-direction: column;
   gap: 12px;
   transition:
-    padding var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
-    gap var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
+    padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
+    gap ${DEBUG_TRANSITION_DURATION} ease-in-out;
 
   ${Media.upToSmall()} {
     font-size: 13px;
@@ -52,9 +55,9 @@ export const FiatAmountSlot = styled(FiatValue)`
   opacity: 1;
   overflow: hidden;
   transition:
-    max-height var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
-    opacity var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out,
-    margin-top var(${UI.ANIMATION_DURATION_SLOW}) ease-in-out;
+    max-height ${DEBUG_TRANSITION_DURATION} ease-in-out,
+    opacity ${DEBUG_TRANSITION_DURATION} ease-in-out,
+    margin-top ${DEBUG_TRANSITION_DURATION} ease-in-out;
 
   ${Container}.slim & {
     max-height: 0;

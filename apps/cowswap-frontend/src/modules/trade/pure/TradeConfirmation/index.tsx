@@ -34,6 +34,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
+  hasSigningPlan?: boolean
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -49,8 +50,10 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData, confirmClickEvent } =
-    props
+
+  // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
+  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
+  const { title, hasSigningPlan, children } = _props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -84,18 +87,21 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   return (
     <Modal.Root>
       <ModalHeader
-        title={props.title}
-        onBack={onDismiss}
+        title={title}
+        onBack={hasSigningPlan ? undefined : onDismiss}
+        onClose={hasSigningPlan ? onDismiss : undefined}
+        // TODO: Consider still displaying this here or somewhere else?
         rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
       />
 
       <Modal.Content id="trade-confirmation">
         <ConfirmAmounts
-          variant="default"
+          variant={hasSigningPlan ? 'slim' : 'default'}
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
         />
+
         {children?.(
           <>
             {hookDetailsElement}
@@ -103,23 +109,27 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           </>,
         )}
 
-        <ConfirmWarnings
-          account={props.account}
-          ensName={props.ensName}
-          recipient={props.recipient}
-          isPriceChanged={isPriceChanged}
-          isPriceStatic={isPriceStatic}
-          resetPriceChanged={resetPriceChanged}
-        />
+        {hasSigningPlan ? null : (
+          <>
+            <ConfirmWarnings
+              account={props.account}
+              ensName={props.ensName}
+              recipient={props.recipient}
+              isPriceChanged={isPriceChanged}
+              isPriceStatic={isPriceStatic}
+              resetPriceChanged={resetPriceChanged}
+            />
 
-        <ConfirmButton
-          onConfirm={onConfirm}
-          buttonText={buttonText ? buttonText : t`Confirm`}
-          isButtonDisabled={isButtonDisabled}
-          hasPendingTrade={hasPendingTrade}
-          signingStep={signingStep}
-          clickEvent={confirmClickEvent}
-        />
+            <ConfirmButton
+              onConfirm={onConfirm}
+              buttonText={buttonText ? buttonText : t`Confirm`}
+              isButtonDisabled={isButtonDisabled}
+              hasPendingTrade={hasPendingTrade}
+              signingStep={signingStep}
+              clickEvent={confirmClickEvent}
+            />
+          </>
+        )}
       </Modal.Content>
     </Modal.Root>
   )

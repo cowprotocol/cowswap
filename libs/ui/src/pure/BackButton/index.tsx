@@ -27,6 +27,8 @@ interface BackButtonProps {
   onClick(): void
 }
 
+// TODO: Replace with BackIconButton
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BackButton(props: BackButtonProps) {

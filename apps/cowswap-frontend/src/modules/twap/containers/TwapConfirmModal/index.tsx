@@ -3,6 +3,7 @@ import { useCallback, ReactNode } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import styled from 'styled-components/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
@@ -17,7 +18,7 @@ import {
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
-import { TwapTradeConfirmationDetails } from './TwapTradeConfirmationDetails'
+import { TwapTradeConfirmationDetails as TwapTradeConfirmationDetailsBase } from './TwapTradeConfirmationDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useEoaTwapFlowUpdater, useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
@@ -30,6 +31,10 @@ import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/Eo
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
+
+const TwapTradeConfirmationDetails = styled(TwapTradeConfirmationDetailsBase)`
+  margin-top: -4px;
+`
 
 export function TwapConfirmModal(): ReactNode {
   const { account } = useWalletInfo()
@@ -88,10 +93,11 @@ export function TwapConfirmModal(): ReactNode {
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
+  const hasSigningPlan = !!eoaTwapSigningStep
+
   const tradeDetailsElement =
     receiveAmountInfo && numOfParts ? (
       <TwapTradeConfirmationDetails
-        isCollapsible={!!eoaTwapSigningStep}
         rateInfoParams={rateInfoParams}
         receiveAmountInfo={receiveAmountInfo}
         slippage={slippage}
@@ -102,35 +108,41 @@ export function TwapConfirmModal(): ReactNode {
         numOfParts={numOfParts}
         partDuration={partDuration}
         totalDuration={totalDuration}
+        isCollapsible={hasSigningPlan}
       />
     ) : null
 
+  const twapFormWarningsElement = <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+
+  // Actually only rendered if hasSigningPlan / !!eoaTwapSigningStep:
+  const eoaTwapSigningStepElement = <EoaTwapSigningPendingContent />
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
-      {eoaTwapSigningStep ? (
-        <EoaTwapSigningPendingContent onDismiss={onDismiss} tradeDetailsSlot={tradeDetailsElement} />
-      ) : (
-        <TradeConfirmation
-          {...commonTradeConfirmContext}
-          title={CONFIRM_TITLE}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-          onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
-          onDismiss={onDismiss}
-          isConfirmDisabled={isConfirmDisabled}
-          priceImpact={priceImpact}
-          buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbol} balance` : t`Place TWAP order`}
-          recipient={recipient}
-        >
-          {(warnings) => (
-            <>
-              {tradeDetailsElement}
-              {warnings}
-              <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
-            </>
-          )}
-        </TradeConfirmation>
-      )}
+      <TradeConfirmation
+        {...commonTradeConfirmContext}
+        // TODO: Maybe better to use the same?
+        title={hasSigningPlan ? t`TWAP order` : CONFIRM_TITLE}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+        onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
+        onDismiss={onDismiss}
+        isConfirmDisabled={isConfirmDisabled}
+        priceImpact={priceImpact}
+        buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbol} balance` : t`Place TWAP order`}
+        recipient={recipient}
+        hasSigningPlan={hasSigningPlan}
+      >
+        {(restContent) => (
+          <>
+            {tradeDetailsElement}
+            {restContent}
+            {twapFormWarningsElement}
+            {eoaTwapSigningStepElement}
+          </>
+        )}
+        {/* hasSigningPlan ? <ConfirmButton .../> : null */}
+      </TradeConfirmation>
     </TradeConfirmModal>
   )
 }

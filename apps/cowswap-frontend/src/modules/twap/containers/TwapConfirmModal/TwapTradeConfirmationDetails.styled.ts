@@ -2,7 +2,7 @@ import { Accordion, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
+// TODO: revert to var(${UI.ANIMATION_DURATION_SLOW})
 const DEBUG_TRANSITION_DURATION = '10s'
 
 export const Root = styled.div`
@@ -12,6 +12,7 @@ export const Root = styled.div`
   border-radius: 12px;
   transition:
     padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
+    margin ${DEBUG_TRANSITION_DURATION} ease-in-out,
     background-color ${DEBUG_TRANSITION_DURATION} ease-in-out;
 `
 
@@ -30,12 +31,12 @@ export const TriggerSlot = styled.div<{ $isVisible: boolean }>`
   }
 `
 
-export const Trigger = styled(Accordion.Trigger)<{ $isCollapsible: boolean }>`
+export const Trigger = styled(Accordion.Trigger)<{ $isExpanded: boolean }>`
   background: transparent;
 
   &:hover {
-    background: ${({ $isCollapsible }) =>
-      $isCollapsible ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
+    background: ${({ $isExpanded }) =>
+      $isExpanded ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
   }
 `
 

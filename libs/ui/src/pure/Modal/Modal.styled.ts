@@ -4,8 +4,7 @@ export const ModalRoot = styled.div`
   width: 100%;
   padding: 0;
   border-radius: 16px;
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
+  overflow-y: clip;
   height: inherit;
   ${({ theme }) => theme.colorScrollbar};
 `

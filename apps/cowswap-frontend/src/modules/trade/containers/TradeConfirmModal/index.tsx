@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -28,17 +28,15 @@ const Container = styled.div`
   }
 `
 
-export interface TradeConfirmModalProps {
-  children: ReactElement
+export interface TradeConfirmModalProps extends React.PropsWithChildren {
   title: string
   submittedContent?: ReactNode
 }
 
-type InnerComponentProps = {
-  children: ReactElement
+interface InnerComponentProps extends React.PropsWithChildren {
   chainId: SupportedChainId
   account: string
-  title: string
+  title: string // TODO: This is actually order type...
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null

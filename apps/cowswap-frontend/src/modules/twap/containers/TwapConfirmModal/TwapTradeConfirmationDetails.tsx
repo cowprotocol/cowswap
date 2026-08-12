@@ -71,6 +71,7 @@ export interface TwapTradeConfirmationDetailsProps {
   partDuration: number | undefined
   totalDuration: number | undefined
   isCollapsible?: boolean
+  className?: string
 }
 
 export function TwapTradeConfirmationDetails({
@@ -85,6 +86,7 @@ export function TwapTradeConfirmationDetails({
   partDuration,
   totalDuration,
   isCollapsible = false,
+  className,
 }: TwapTradeConfirmationDetailsProps): ReactNode {
   const confirmModalConfig = getConfirmModalConfig()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -132,7 +134,7 @@ export function TwapTradeConfirmationDetails({
   )
 
   return (
-    <styledEl.Root>
+    <styledEl.Root className={className}>
       <Accordion.Root
         disabled={!isCollapsible}
         value={!isCollapsible || isExpanded ? [ORDER_DETAILS_ITEM] : []}
@@ -144,7 +146,7 @@ export function TwapTradeConfirmationDetails({
         <Accordion.Item value={ORDER_DETAILS_ITEM} $isCollapsible={isCollapsible}>
           <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
             <Accordion.Header>
-              <styledEl.Trigger $isCollapsible={isCollapsible}>
+              <styledEl.Trigger $isExpanded={isExpanded}>
                 <Trans>Order details</Trans>
                 <Accordion.Chevron aria-hidden />
               </styledEl.Trigger>
