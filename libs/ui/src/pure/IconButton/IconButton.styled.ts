@@ -24,9 +24,13 @@ export const Button = styled.button`
   background: none;
   outline: none;
 
-  &::before {
+  &::before,
+  &::after {
     content: '';
     position: absolute;
+  }
+
+  &::before {
     inset: var(--pressableInset, 0);
   }
 
@@ -37,5 +41,11 @@ export const Button = styled.button`
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  &:focus-visible::after {
+    outline: 1.5px dotted var(${UI.COLOR_TEXT});
+    inset: -2px;
+    border-radius: 4px;
   }
 `
