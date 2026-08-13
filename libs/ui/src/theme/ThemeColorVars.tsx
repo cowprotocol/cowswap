@@ -385,8 +385,8 @@ export const ThemeColorVars = css`
     ${UI.LINE_HEIGHT_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[1]}px;
 
     // Font Families:
-    ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
-    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_PRIMARY}: 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_MONO}: 'Inter var', 'Inter', Arial, sans-serif;
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
