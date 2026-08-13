@@ -108,9 +108,14 @@ function createTransformedTrade(overrides: Partial<Trade> = {}): Trade {
   } as Trade
 }
 
-// Fees are cached by order, so without a fresh cache one test's fees satisfy another's key.
+// Trades are cached by order, so without a fresh cache one test's trades satisfy another's key.
 function FreshSwrCache({ children }: { children: ReactNode }): ReactNode {
   return <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+}
+
+// Serves `fills` as one full page, then an empty page so the paging terminates.
+function serveFills(fills: RawTrade[]): void {
+  mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset))
 }
 
 describe('useOrderTrades', () => {
@@ -120,14 +125,14 @@ describe('useOrderTrades', () => {
     mockedTransformTrade.mockReset()
 
     mockedUseNetworkId.mockReturnValue(1)
-    mockedTransformTrade.mockImplementation(() => createTransformedTrade())
+    mockedTransformTrade.mockImplementation((trade) => createTransformedTrade({ txHash: trade.txHash }))
   })
 
   it('surfaces error and returns no trades when getTrades fails', async () => {
-    mockedGetTrades.mockRejectedValueOnce(new Error('barn/prod unavailable'))
+    mockedGetTrades.mockRejectedValue(new Error('barn/prod unavailable'))
     const order = createMockOrder()
 
-    const { result } = renderHook(() => useOrderTrades(order, 0, 10))
+    const { result } = renderHook(() => useOrderTrades(order, 0, 10), { wrapper: FreshSwrCache })
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
@@ -136,14 +141,17 @@ describe('useOrderTrades', () => {
   })
 
   it('clears error and returns trades after a successful refetch', async () => {
-    mockedGetTrades.mockRejectedValueOnce(new Error('temporary outage')).mockResolvedValueOnce([createRawTrade()])
+    mockedGetTrades.mockRejectedValueOnce(new Error('temporary outage'))
     const initialOrder = createMockOrder()
     const { result, rerender } = renderHook(({ order }) => useOrderTrades(order, 0, 10), {
       initialProps: { order: initialOrder as Order | null },
+      wrapper: FreshSwrCache,
     })
 
     await waitFor(() => expect(result.current.isLoading).toBe(false))
     expect(result.current.error?.message).toBe('Failed to fetch trades')
+
+    serveFills([createFill(0)])
 
     const refreshedOrder = createMockOrder({
       uid: initialOrder.uid,
@@ -157,6 +165,55 @@ describe('useOrderTrades', () => {
       expect(result.current.error).toBeUndefined()
       expect(result.current.trades).toHaveLength(1)
     })
+  })
+
+  it('pages client-side, so walking the fills does not refetch them', async () => {
+    serveFills([createFill(0), createFill(1), createFill(2)])
+    const order = createMockOrder()
+
+    const { result, rerender } = renderHook(({ offset }) => useOrderTrades(order, offset, 2), {
+      initialProps: { offset: 0 },
+      wrapper: FreshSwrCache,
+    })
+
+    await waitFor(() => expect(result.current.trades).toHaveLength(2))
+    expect(result.current.hasNextPage).toBe(true)
+    const callsAfterFirstPage = mockedGetTrades.mock.calls.length
+
+    rerender({ offset: 2 })
+
+    await waitFor(() => expect(result.current.trades).toHaveLength(1))
+    expect(result.current.hasNextPage).toBe(false)
+    expect(result.current.trades[0].txHash).toBe('0xfill2')
+    expect(mockedGetTrades).toHaveBeenCalledTimes(callsAfterFirstPage)
+  })
+})
+
+describe('useOrderTrades + useOrderProtocolFees', () => {
+  beforeEach(() => {
+    mockedUseNetworkId.mockReset()
+    mockedGetTrades.mockReset()
+    mockedTransformTrade.mockReset()
+
+    mockedUseNetworkId.mockReturnValue(1)
+    mockedTransformTrade.mockImplementation((trade) => createTransformedTrade({ txHash: trade.txHash }))
+  })
+
+  it('fetches the trades once when both hooks read the same order', async () => {
+    serveFills([createFill(0), createFill(1)])
+    const order = createMockOrder()
+
+    const { result } = renderHook(() => ({ page: useOrderTrades(order, 0, 10), fees: useOrderProtocolFees(order) }), {
+      wrapper: FreshSwrCache,
+    })
+
+    await waitFor(() => {
+      expect(result.current.page.trades).toHaveLength(2)
+      expect(result.current.fees.protocolFees).toHaveLength(2)
+    })
+
+    // Two calls page the order to exhaustion; a second, unshared fetch would double that.
+    expect(mockedGetTrades).toHaveBeenCalledTimes(2)
   })
 })
 
