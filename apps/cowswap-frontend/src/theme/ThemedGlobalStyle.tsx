@@ -31,7 +31,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       'cv01' on,
       'cv03' on;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    color: var(${UI.COLOR_TEXT});
+    color: var(${UI.COLOR_TEXT_PAPER});
     background-color: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`)};
   }
 

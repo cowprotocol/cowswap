@@ -1529,7 +1529,7 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
 `
 
 export const BodyContent = styled.div<{ color?: string }>`
-  font-family: ${Font.familySerif};
+  font-family: ${Font.family};
   font-size: 1.8rem;
   line-height: 1.6;
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};

@@ -52,9 +52,8 @@ export const Media = {
 }
 
 export const Font = {
-  family: `'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif`,
-  familySerif: `'studiofeixenserif', Arial, serif`,
-  familyMono: `'studiofeixenmono', monospace, sans-serif`,
+  family: `'Inter var', 'Inter', Arial, sans-serif`,
+  familyMono: `'Inter var', 'Inter', Arial, sans-serif`,
   weight: {
     ultralight: 200,
     light: 300,
