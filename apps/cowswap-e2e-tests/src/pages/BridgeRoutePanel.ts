@@ -11,6 +11,7 @@ export class BridgeRoutePanel {
   private readonly page: Page
   /** `TradeDetailsAccordion`'s `SummaryClickable` — the only stable (non-text) hook here. */
   readonly expandToggle: Locator
+  readonly bridgeQuoteDetails: Locator
   readonly swapStopTitle: Locator
   /** `ProxyAccountBanner` — "Swap bridged via your Account Proxy: 0x..." (Bungee/Across). */
   readonly accountProxyBanner: Locator
@@ -24,6 +25,7 @@ export class BridgeRoutePanel {
     // `aria-expanded`, and an unscoped `.first()` would resolve to whichever renders first in DOM
     // order.
     this.expandToggle = page.locator('.trade-details-accordion-toggle').first()
+    this.bridgeQuoteDetails = page.locator('.collapsible-bridge-route').first()
     // Not an exact match: `BridgeRouteTitle` renders "Swap on" and "CoW Protocol" either side of a
     // protocol icon, which can add whitespace/alt text into the element's normalized text content.
     this.swapStopTitle = page.getByText(/Swap on.*CoW Protocol/)
@@ -35,11 +37,18 @@ export class BridgeRoutePanel {
     return this.page.getByText(new RegExp(`Bridge via.*${providerName}`))
   }
 
+  /**
+   * The toggle click occasionally doesn't register (e.g. a re-render swaps the element under the
+   * pointer mid-click), leaving the panel collapsed. Retrying the click up to 3 times is more
+   * reliable than firing it once and hoping it stuck.
+   */
   async expand(): Promise<void> {
-    if ((await this.expandToggle.getAttribute('aria-expanded')) !== 'true') {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (await this.bridgeQuoteDetails.isVisible()) return
       await this.expandToggle.click()
+      if (await this.bridgeQuoteDetails.isVisible()) return
+      await this.page.waitForTimeout(500)
     }
-    await this.swapStopTitle.waitFor({ state: 'visible' })
   }
 
   /**
