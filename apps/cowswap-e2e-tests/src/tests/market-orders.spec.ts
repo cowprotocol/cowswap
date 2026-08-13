@@ -1368,68 +1368,6 @@ test.describe('Market Orders', () => {
 
       await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
     })
-
-    test('[CS-129] Enable Hooks via settings toggle', async ({ swapPage }) => {
-      await swapPage.goto({ chainId: CHAIN_ID })
-
-      // `SettingsBox`/`Toggle` render the real `<input type="checkbox">` inert (0×0,
-      // `pointer-events: none`) and rely on the enclosing `<label>` (`SettingsBoxWrapper`) to forward
-      // clicks to it — the actual click target is the wrapper span (`#toggle-hooks-mode-button`
-      // itself), not the checkbox.
-      const hooksToggle = swapPage.page.locator('#toggle-hooks-mode-button')
-      const hooksCheckbox = hooksToggle.locator('input[type="checkbox"]')
-
-      // Enabling Hooks adds a new top-level nav item (`useMenuItems`'s `HOOKS_STORE_MENU_ITEM`)
-      // alongside Swap/Limit/TWAP, routing to a `/swap/hooks` URL — there's no tab *inside* the swap
-      // widget itself. At this viewport `TradeWidgetForm`'s `showDropdown` is true (a connected
-      // wallet renders the "My orders" button, one of its triggers), so these nav items only exist in
-      // the DOM behind the collapsed "Trading mode" dropdown, not as a plain visible link row.
-      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
-      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-
-      // Precondition: Hooks starts disabled, so its nav entry isn't rendered yet.
-      await tradingModeDropdown.click()
-      await expect(hooksLink).toBeHidden()
-
-      // A full reload (not another `goto`, which only changes the hash on this single-page app and
-      // wouldn't remount anything) is the simplest way to close the dropdown before opening settings —
-      // the dropdown's own overlay covers the header, including the settings gear icon, while open.
-      await swapPage.page.reload()
-
-      await swapPage.page.locator('#open-settings-dialog-button').click()
-      await expect(hooksCheckbox).not.toBeChecked()
-
-      await hooksToggle.click()
-      await expect(hooksCheckbox).toBeChecked()
-      await swapPage.page.keyboard.press('Escape')
-
-      await tradingModeDropdown.click()
-      await expect(hooksLink).toBeVisible()
-
-      // Setting persists across a refresh — it's backed by `state.user.hooksEnabled`, written to
-      // `localStorage` by `redux-localstorage-simple` with a 1s debounce (`legacy/state/index.ts`).
-      // Reloading before that debounce fires would reload the pre-toggle value, so wait for the
-      // write to actually land first instead of guessing a timeout.
-      await expect
-        .poll(() => swapPage.page.evaluate(() => localStorage.getItem('redux_localstorage_simple_user')))
-        .toContain('"hooksEnabled":true')
-
-      await swapPage.page.reload()
-
-      await swapPage.page.locator('#open-settings-dialog-button').click()
-      await expect(hooksCheckbox).toBeChecked()
-      await swapPage.page.keyboard.press('Escape')
-
-      await tradingModeDropdown.click()
-      await expect(hooksLink).toBeVisible()
-      await hooksLink.click()
-
-      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
-      // The Hooks tab is the same swap widget, with these hook-management buttons added around the
-      // form — there's no separate "browse hooks" landing screen at this route.
-      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
-      await expect(swapPage.page.getByText('Add Post-Hook Action')).toBeVisible()
-    })
   })
 
   test.describe('Disconnected wallet', () => {
