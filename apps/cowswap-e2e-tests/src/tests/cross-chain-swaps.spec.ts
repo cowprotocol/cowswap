@@ -10,10 +10,10 @@ import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { mockSocketVerifier } from '../support/mockSocketVerifier'
 import { seedTrader } from '../support/seedTrader'
 
+import type { RpcProxyHandle } from '../fixtures/rpcProxy'
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { LaunchDarklyMock } from '../mocks/launchDarkly'
 import type { SwapPage } from '../pages/SwapPage'
-import type { BrowserContext } from '@playwright/test'
 
 /**
  * Scope notes (see cross-chain-swaps.specs.md for the full scenarios):
@@ -75,14 +75,14 @@ test.describe('Cross-chain swaps', () => {
    */
   async function configureProviders(
     mocks: { launchDarkly: LaunchDarklyMock; cowApi: CowProtocolApiMock },
-    context: BrowserContext,
+    rpcProxy: RpcProxyHandle,
     active: 'bungee' | 'near-intents',
   ): Promise<void> {
     await mocks.launchDarkly.setFlag('isBungeeBridgeProviderEnabled', active === 'bungee')
     await mocks.launchDarkly.setFlag('isNearIntentsBridgeProviderEnabled', active === 'near-intents')
     mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 999n, denominator: 1000n } })
     if (active === 'bungee') {
-      await mockSocketVerifier(context)
+      await mockSocketVerifier(rpcProxy, MAINNET)
     }
   }
 
@@ -121,14 +121,14 @@ test.describe('Cross-chain swaps', () => {
     swapPage,
     wallet,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
 
-    await configureProviders(mocks, context, 'bungee')
+    await configureProviders(mocks, rpcProxy, 'bungee')
     await openCrossChainSwap(wallet, swapPage, {
       chainId: MAINNET,
       sell: USDC_MAINNET,
@@ -141,7 +141,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.swapStopTitle).toBeVisible()
     await expect(swapPage.routePanel.bridgeStopTitle('Bungee')).toBeVisible()
 
-    await configureProviders(mocks, context, 'near-intents')
+    await configureProviders(mocks, rpcProxy, 'near-intents')
     await openCrossChainSwap(wallet, swapPage, {
       chainId: MAINNET,
       sell: USDC_MAINNET,
@@ -161,13 +161,13 @@ test.describe('Cross-chain swaps', () => {
     wallet,
     confirmModal,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
-    await configureProviders(mocks, context, 'near-intents')
+    await configureProviders(mocks, rpcProxy, 'near-intents')
 
     await openCrossChainSwap(wallet, swapPage, {
       chainId: MAINNET,
@@ -223,13 +223,13 @@ test.describe('Cross-chain swaps', () => {
     wallet,
     confirmModal,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
-    await configureProviders(mocks, context, 'bungee')
+    await configureProviders(mocks, rpcProxy, 'bungee')
 
     await openCrossChainSwap(wallet, swapPage, {
       chainId: MAINNET,
@@ -282,9 +282,10 @@ test.describe('Cross-chain swaps', () => {
     confirmModal,
     mocks,
     context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, { balances: { [NATIVE_ETH]: INITIAL_ETH_BALANCE } })
-    await configureProviders(mocks, context, 'bungee')
+    await configureProviders(mocks, rpcProxy, 'bungee')
 
     // `configureProviders`'s `mockFixedRateQuote({ rate: { numerator: 999n, denominator: 1000n } })`
     // computes `buyAmount = sellAmount * 999n / 1000n` — correct for every other test here, where
@@ -413,12 +414,13 @@ test.describe('Cross-chain swaps', () => {
     wallet,
     mocks,
     context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
-    await configureProviders(mocks, context, 'near-intents')
+    await configureProviders(mocks, rpcProxy, 'near-intents')
     await mocks.launchDarkly.setFlag('isSolBridgeEnabled', true)
     // Distinct from the LaunchDarkly-style flag above: `IS_SOLANA_ENABLED` is a plain localStorage
     // switch (`libs/common-const/src/featureFlags.ts`) gating whether Solana even has a
@@ -475,13 +477,13 @@ test.describe('Cross-chain swaps', () => {
     swapPage,
     wallet,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
-    await configureProviders(mocks, context, 'near-intents')
+    await configureProviders(mocks, rpcProxy, 'near-intents')
     await mocks.launchDarkly.setFlag('isBtcBridgeEnabled', true)
 
     await wallet.openApp({ chainId: MAINNET, sell: USDC_MAINNET })
@@ -530,7 +532,7 @@ test.describe('Cross-chain swaps', () => {
     swapPage,
     wallet,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -538,7 +540,7 @@ test.describe('Cross-chain swaps', () => {
     })
 
     for (const provider of ['bungee', 'near-intents'] as const) {
-      await configureProviders(mocks, context, provider)
+      await configureProviders(mocks, rpcProxy, provider)
       await openCrossChainSwap(wallet, swapPage, {
         chainId: MAINNET,
         sell: USDC_MAINNET,
@@ -577,7 +579,7 @@ test.describe('Cross-chain swaps', () => {
     swapPage,
     wallet,
     mocks,
-    context,
+    rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -585,7 +587,7 @@ test.describe('Cross-chain swaps', () => {
     })
 
     for (const provider of ['bungee', 'near-intents'] as const) {
-      await configureProviders(mocks, context, provider)
+      await configureProviders(mocks, rpcProxy, provider)
       await openCrossChainSwap(wallet, swapPage, {
         chainId: MAINNET,
         sell: USDC_MAINNET,
