@@ -11,6 +11,7 @@ import { installEthGetTransactionCount } from '../mocks/ethGetTransactionCount'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
 import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
+import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { installTokenNonce } from '../mocks/tokenNonce'
@@ -45,6 +46,7 @@ export interface SharedFixtures {
     allowances: AllowancesMock
     balances: BalancesMock
     cowApi: CowProtocolApiMock
+    orders: OrdersMock
     ethGetCode: EthGetCodeMock
     tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
@@ -122,6 +124,7 @@ export const sharedFixtures: Fixtures<
       const allowances = installAllowances(context)
       const balances = installBalances(context)
       const cowApi = await installCowProtocolApi(context)
+      const orders = installOrdersMock(cowApi)
       const ethGetCode = installEthGetCode(context)
       installEthBlockNumber(context)
       installEthEstimateGas(context)
@@ -143,6 +146,7 @@ export const sharedFixtures: Fixtures<
         allowances,
         balances,
         cowApi,
+        orders,
         ethGetCode,
         tokenLists,
         safeSdk,
@@ -164,6 +168,7 @@ export const sharedFixtures: Fixtures<
       allowances.reset()
       balances.reportUnknownOwners()
       balances.reset()
+      orders.reset()
       // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
       // resets above must still happen.
       try {
