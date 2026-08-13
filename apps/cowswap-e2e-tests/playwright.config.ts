@@ -11,7 +11,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 1,
-  workers: process.env.CI ? 2 : undefined,
+  workers: 6,
   reporter: process.env.CI ? [['html', { open: 'never' }], ['github']] : [['list'], ['html', { open: 'never' }]],
   globalSetup: path.resolve(__dirname, 'src/support/globalSetup.ts'),
   globalTeardown: path.resolve(__dirname, 'src/support/globalTeardown.ts'),
