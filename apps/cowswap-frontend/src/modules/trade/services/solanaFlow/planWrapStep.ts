@@ -15,18 +15,11 @@ import { WSOL_MINT } from '../wrapNativeSolana/const'
 export interface PlanWrapStepParams {
   connection: Connection
   owner: PublicKey
-  /** Native SOL lamports that must land as WSOL — the trade's exact sell amount. */
+  // Native SOL lamports that must land as WSOL — the trade's exact sell amount.
   sellAmount: bigint
 }
 
-/**
- * Plans the wrap step for a bundled flow (e.g. native-SOL swap). Unlike the standalone wrap flow
- * (`getSolanaWrapPreview`), which caps total spend at the typed amount and lets the received WSOL
- * fall short on first use, this must guarantee exactly `sellAmount` WSOL lands in the account — the
- * delegate step and the eventual order both key off that exact figure — so when the WSOL associated
- * token account doesn't exist yet, the transfer is grown by the rent-exempt deposit instead of
- * shrunk.
- */
+// Unlike the standalone wrap flow (which caps spend and can under-deliver WSOL), the delegate step and order need the exact `sellAmount` — so the transfer is grown by the rent-exempt deposit when the WSOL account doesn't exist yet.
 export async function planWrapStep({
   connection,
   owner,

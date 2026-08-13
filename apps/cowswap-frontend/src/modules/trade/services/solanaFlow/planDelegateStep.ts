@@ -12,16 +12,10 @@ export interface PlanDelegateStepParams {
   owner: PublicKey
   token: TokenWithLogo
   amount: bigint
-  /** Currently delegated amount on this token's ATA, e.g. from `useSolanaDelegationAllowance`. */
   currentDelegation: bigint
 }
 
-/**
- * Plans the delegate step for a bundled flow. Skips the step when the existing delegation already
- * covers `amount` — reused as-is by both the native-SOL swap flow (delegating WSOL) and the future
- * SPL delegate+create-order flow (delegating the sell token directly), so this never needs to know
- * which flow it's called from.
- */
+// Skips the step when the existing delegation already covers `amount`; reused as-is by both the native-SOL flow and the future SPL delegate+order flow.
 export function planDelegateStep({
   owner,
   token,

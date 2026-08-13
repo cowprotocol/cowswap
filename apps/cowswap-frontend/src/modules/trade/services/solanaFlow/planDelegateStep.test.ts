@@ -1,6 +1,5 @@
 /**
- * Program-address derivation needs a working ed25519 curve check, and `PublicKey.isOnCurve` misreports
- * every point as on-curve under jsdom — which makes `findProgramAddressSync` exhaust all 255 bumps.
+ * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -11,8 +10,7 @@ import { planDelegateStep } from './planDelegateStep'
 
 import { buildApproveInstruction } from '../solanaApprove/buildApproveInstruction'
 
-// `@cowprotocol/balances-and-allowances` pulls in `@cowprotocol/tokens`, which reads `window.location`
-// at import time — avoid that entirely rather than fight the node/jsdom test-environment mismatch.
+// Avoids `@cowprotocol/tokens` (pulled in via balances-and-allowances), which reads `window.location` at import time.
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
   findSolanaSettlementStatePda: jest.fn(() => 'SETTLEMENT_PDA'),
 }))

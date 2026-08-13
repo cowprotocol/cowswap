@@ -1,6 +1,5 @@
 /**
- * Program-address derivation needs a working ed25519 curve check, and `PublicKey.isOnCurve` misreports
- * every point as on-curve under jsdom — which makes `findProgramAddressSync` exhaust all 255 bumps.
+ * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
 import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'

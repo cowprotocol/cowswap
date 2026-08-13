@@ -15,11 +15,7 @@ export interface SolanaFlowContext {
   addTransaction: TransactionAdder
 }
 
-/**
- * Sends whichever steps a concrete flow (native-SOL swap, SPL delegate+order, ...) assembled, as a
- * single transaction. Deliberately has no idea what a "wrap" or "delegate" is — that lets the same
- * function serve every combination of steps without growing a branch per combination.
- */
+// Sends whatever steps a flow assembled as one transaction; deliberately has no idea what "wrap" or "delegate" means, so it serves any combination of steps.
 export async function sendSolanaFlow(context: SolanaFlowContext, steps: SolanaFlowStep[]): Promise<{ hash: string }> {
   if (steps.length === 0) {
     throw new Error('sendSolanaFlow: no steps to send')

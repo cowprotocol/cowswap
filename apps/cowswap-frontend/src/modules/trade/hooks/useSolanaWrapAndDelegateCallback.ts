@@ -15,10 +15,7 @@ import { solanaNativeSwapCallback } from '../services/solanaFlow/solanaNativeSwa
 
 export type SolanaWrapAndDelegateCallback = () => Promise<{ hash: string } | null>
 
-/**
- * Enables trading native SOL for an SPL token, in one signed transaction. Returns `null` on every
- * non-Solana chain, mirroring `useSolanaWrapNativeCallback`/`useSolanaApproveCallback`.
- */
+// Returns null on every non-Solana chain, mirroring useSolanaWrapNativeCallback/useSolanaApproveCallback.
 export function useSolanaWrapAndDelegateCallback(sellAmount: Nullish<bigint>): SolanaWrapAndDelegateCallback | null {
   const { chainId, account } = useWalletInfo()
   const provider = useSolanaWalletProvider()

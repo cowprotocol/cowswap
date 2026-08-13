@@ -19,20 +19,15 @@ export interface SolanaNativeSwapContext {
   connection: Connection
   provider: SolanaProvider
   addTransaction: TransactionAdder
-  /** Native SOL lamports being sold — the trade's exact sell amount. */
+  // Native SOL lamports being sold — the trade's exact sell amount.
   sellAmount: bigint
-  /** Currently delegated WSOL amount, e.g. from `useSolanaDelegationAllowance`. */
+  // Currently delegated WSOL amount, e.g. from `useSolanaDelegationAllowance`.
   currentDelegation: bigint
 }
 
 const WSOL = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA]
 
-/**
- * Enables trading native SOL for an SPL token: wraps and delegates the trade's exact sell amount in a
- * single signed transaction. The amount is always the sell amount — unlike the standalone SPL approve
- * flow, there's no partial-delegation choice here. Order creation isn't part of this yet; this only
- * covers the "enable trading" prerequisite.
- */
+// Wraps and delegates the exact sell amount in one signed transaction. Order creation isn't part of this yet — this only covers the "enable trading" prerequisite.
 export async function solanaNativeSwapCallback(context: SolanaNativeSwapContext): Promise<{ hash: string } | null> {
   const { account, connection, provider, addTransaction, sellAmount, currentDelegation } = context
 
