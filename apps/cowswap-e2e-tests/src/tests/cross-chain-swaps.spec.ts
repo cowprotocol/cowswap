@@ -4,6 +4,7 @@ import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
+import { generateOrderId } from '../mocks/orders'
 import { CHAIN_IDS } from '../support/constants'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
@@ -203,13 +204,18 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToDeposit()).toHaveAttribute('title', /.+/)
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
-    const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
-
-    await swapPage.clickPrimaryAction()
-    await confirmModal.confirm()
+    const orderId = generateOrderId()
+    await mocks.orders.expectOrderToBePosted({
+      orderId,
+      owner: wallet.address,
+      trigger: async () => {
+        await swapPage.clickPrimaryAction()
+        await confirmModal.confirm()
+      },
+    })
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
-    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
+    mocks.orders.fulfillOrder(orderId, mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
@@ -262,13 +268,18 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToDeposit()).toHaveAttribute('title', /.+/)
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
-    const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
-
-    await swapPage.clickPrimaryAction()
-    await confirmModal.confirm()
+    const orderId = generateOrderId()
+    await mocks.orders.expectOrderToBePosted({
+      orderId,
+      owner: wallet.address,
+      trigger: async () => {
+        await swapPage.clickPrimaryAction()
+        await confirmModal.confirm()
+      },
+    })
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
-    posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
+    mocks.orders.fulfillOrder(orderId, mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
