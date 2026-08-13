@@ -54,6 +54,8 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     }
   }, [hasPendingTrade])
 
+  const pendingText = (signingStep ? getPendingText(signingStep) : null) || t`Confirm with your wallet`
+
   return (
     <ButtonPrimary
       onClick={handleConfirmClick}
@@ -63,7 +65,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     >
       {hasPendingTrade || isConfirmClicked ? (
         <LongLoadText fontSize={15} fontWeight={500}>
-          <span>{signingStep ? getPendingText(signingStep) : t`Confirm with your wallet`}</span>
+          <span>{pendingText}</span>
           <CenteredDots smaller />
         </LongLoadText>
       ) : (

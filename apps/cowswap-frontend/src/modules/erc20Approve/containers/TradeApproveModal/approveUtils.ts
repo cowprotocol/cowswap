@@ -23,6 +23,57 @@ interface ApprovalTransactionParams {
   currency: Nullish<Currency>
 }
 
+interface TransactionReceiptLike {
+  status: 'success' | 'reverted'
+  blockNumber: bigint
+  transactionHash: `0x${string}`
+  logs: {
+    address: string
+    topics: string[]
+    data: `0x${string}`
+  }[]
+}
+
+/**
+ * Extracts the approved amount from the Approval event in transaction logs
+ * @param txReceipt Transaction receipt containing logs
+ * @param tokenAddress Token contract address
+ * @param owner Address of the token owner
+ * @param spender Address of the spender
+ * @returns The approved amount as bigint, or undefined if not found
+ */
+export function extractApprovalAmountFromLogs(
+  txReceipt: ApprovalTxReceipt,
+  tokenAddress: string,
+  owner: string,
+  spender: string,
+): bigint | undefined {
+  try {
+    // Find the Approval event log
+    const approvalLog = txReceipt.logs.find((log) => {
+      // Check if it's from the token contract and has the Approval event signature
+      if (getAddressKey(log.address) !== getAddressKey(tokenAddress)) return false
+      if (log.topics[0] !== APPROVAL_EVENT_TOPIC) return false
+
+      // Verify owner and spender match (topics[1] = owner, topics[2] = spender)
+      const logOwner = getAddress(('0x' + log.topics[1].slice(26)) as `0x${string}`)
+      const logSpender = getAddress(('0x' + log.topics[2].slice(26)) as `0x${string}`)
+
+      return getAddressKey(logOwner) === getAddressKey(owner) && getAddressKey(logSpender) === getAddressKey(spender)
+    })
+
+    if (!approvalLog) return undefined
+
+    // Parse the value from log data (3rd parameter of Approval event)
+    const [value] = decodeAbiParameters([{ type: 'uint256' }], approvalLog.data)
+
+    return value
+  } catch (error) {
+    console.error('Error extracting approval amount from logs:', error)
+    return undefined
+  }
+}
+
 export function processApprovalTransaction(
   { chainId, currency, account, spender }: ApprovalTransactionParams,
   txResponse: ApprovalTxReceipt,
@@ -55,42 +106,15 @@ export function processApprovalTransaction(
   return null
 }
 
-/**
- * Extracts the approved amount from the Approval event in transaction logs
- * @param txReceipt Transaction receipt containing logs
- * @param tokenAddress Token contract address
- * @param owner Address of the token owner
- * @param spender Address of the spender
- * @returns The approved amount as bigint, or undefined if not found
- */
-function extractApprovalAmountFromLogs(
-  txReceipt: ApprovalTxReceipt,
-  tokenAddress: string,
-  owner: string,
-  spender: string,
-): bigint | undefined {
-  try {
-    // Find the Approval event log
-    const approvalLog = txReceipt.logs.find((log) => {
-      // Check if it's from the token contract and has the Approval event signature
-      if (getAddressKey(log.address) !== getAddressKey(tokenAddress)) return false
-      if (log.topics[0] !== APPROVAL_EVENT_TOPIC) return false
-
-      // Verify owner and spender match (topics[1] = owner, topics[2] = spender)
-      const logOwner = getAddress(('0x' + log.topics[1].slice(26)) as `0x${string}`)
-      const logSpender = getAddress(('0x' + log.topics[2].slice(26)) as `0x${string}`)
-
-      return getAddressKey(logOwner) === getAddressKey(owner) && getAddressKey(logSpender) === getAddressKey(spender)
-    })
-
-    if (!approvalLog) return undefined
-
-    // Parse the value from log data (3rd parameter of Approval event)
-    const [value] = decodeAbiParameters([{ type: 'uint256' }], approvalLog.data)
-
-    return value
-  } catch (error) {
-    console.error('Error extracting approval amount from logs:', error)
-    return undefined
+export function toApprovalTxReceipt(txResponse: TransactionReceiptLike): ApprovalTxReceipt {
+  return {
+    status: txResponse.status,
+    blockNumber: txResponse.blockNumber,
+    transactionHash: txResponse.transactionHash,
+    logs: txResponse.logs.map((log) => ({
+      address: log.address,
+      topics: [...log.topics],
+      data: log.data,
+    })),
   }
 }

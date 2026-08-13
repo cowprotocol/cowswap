@@ -225,7 +225,7 @@ export async function safeBundleEthFlow(
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId as SupportedChainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
