@@ -2,12 +2,15 @@
 
 Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 
-- An **automated** Playwright test (test title starts with `[XX-NN]`).
-- A **manual** placeholder (`test.skip()` + `annotation.type === 'manual'`) for
-  scenarios that require a real wallet, real Safe iframe, real bridge fill, or
-  human interaction.
-- A **todo** placeholder (`test.fixme()` + `annotation.type === 'todo'`) for
-  scenarios planned for later milestones.
+For an architecture tour (mocking mechanics, page objects, support utils) see
+[`docs/OVERVIEW.md`](docs/OVERVIEW.md). For debugging notes and conventions discovered while
+writing tests (including known flakiness causes and how they were diagnosed), see
+[`AGENTS.md`](AGENTS.md). This file is command/setup reference.
+
+Every test is a plain, fully automated Playwright test, titled `[XX-NN] description` — the prefix
+maps to its spec file (`CS`/`MO` → `market-orders.spec.ts`, `CC` → `cross-chain-swaps.spec.ts`,
+`LO` → `limit-orders.spec.ts`, `NW` → `network.spec.ts`). `@smoke`-tagged tests are the PR-gating
+subset; everything runs on the nightly job.
 
 ## Prerequisites
 
@@ -19,10 +22,12 @@ Playwright + Synpress e2e suite for [swap.cow.fi](https://swap.cow.fi).
 
 | Name | Required | Purpose |
 |---|---|---|
-| `INTEGRATION_TEST_PRIVATE_KEY` | yes | Sepolia test account private key |
+| `INTEGRATION_TEST_PRIVATE_KEY` | yes | Test account private key (shared by Sepolia and Mainnet specs) |
 | `REACT_APP_NETWORK_URL_11155111` | yes | Sepolia JSON-RPC URL |
+| `REACT_APP_NETWORK_URL_1` | yes | Mainnet JSON-RPC URL — needed by `cross-chain-swaps.spec.ts`, which trades on Mainnet rather than Sepolia |
 | `E2E_PW_MM_SEED` | CI | Twelve-word seed used by the Synpress MetaMask cache |
 | `E2E_RPC_PROXY_PORT` | no | RPC proxy port (default `18545`) — must match between cache build and test runs |
+| `LOG_UNMOCKED_RPC` | no | Set to `1` to log every real (unmocked) RPC request to `test-results/unmocked-rpc-requests.log` — see [`docs/OVERVIEW.md`](docs/OVERVIEW.md) |
 
 ## Building the MetaMask cache (required once, for Synpress specs only)
 
@@ -79,8 +84,6 @@ test('my scenario', async ({ wallet, page }) => {
 - Keep Synpress (`../fixtures`) for scenarios that must exercise real extension
   UI (connect prompts, network-approval dialogs, popup handling).
 
-Design: `docs/superpowers/specs/2026-07-26-mock-wallet-e2e-design.md`.
-
 ## CoW Protocol API mocks
 
 Every request to `api.cow.fi` and `barn.api.cow.fi` is intercepted. Defaults come
@@ -128,8 +131,31 @@ override `quote`.
 
 These still reach the network and are the next round of work:
 
-- `bff.cow.fi` — `usdPrice`, `topHolders`, `simulateBundle`, affiliate endpoints
+- `bff.cow.fi` — `topHolders`, `simulateBundle`, affiliate endpoints (`usdPrice` is now mocked, see below)
 - `partners.cow.fi` / `partners.barn.cow.fi`
+
+## Other mocks
+
+CoW API and allowances (below) aren't the only concerns intercepted — every test gets the full
+stack from the `mocks` fixture. Brief pointers; see
+[`docs/OVERVIEW.md`](docs/OVERVIEW.md)
+for the mechanics and gotchas behind each:
+
+| Concern | Handle | Notes |
+|---|---|---|
+| Token balances (SSE watcher stream) | `mocks.balances` | Give every test a default balance via `beforeEach`. |
+| USD prices (BFF + Defillama + CoW native) | `mocks.usdPrices` | `setPrice(address, price)` / `setUnknown(address)`; defaults every token to $1. |
+| Token lists | `mocks.tokenLists` | Empty by default; `setListForChain(chainId, list)`. |
+| LaunchDarkly feature flags | `mocks.launchDarkly` | Can't be mocked over HTTP at all — routed through `window.__COWSWAP_E2E_FEATURE_FLAGS__` instead. Only relevant to cross-chain specs today. |
+| Safe iframe context | `mocks.safeSdk` | Simulates the app running embedded in a Safe iframe. |
+| Bungee / Near Intents bridge APIs | `mocks.bungee` / `mocks.nearIntents` | Cross-chain-swap specs only. |
+| ERC-20 `approve()` preflight simulation, `eth_estimateGas`, `eth_getCode`, `eth_blockNumber`, `eth_getTransactionCount` | installed globally, no handle | Real, host-agnostic RPC calls the app fires regardless of what a test is checking — mocked unconditionally so nothing has to think about them. |
+
+`window.__COWSWAP_E2E__` is a separate, unrelated flag (a plain boolean, set by the `mocks`
+fixture before every test) that a couple of production source files branch on directly — e.g. to
+speed up polling intervals, and (combined with a build-time `NODE_ENV` guard) to bypass a
+signature check the mocked Near Intents fixture can't satisfy. See `docs/OVERVIEW.md` before
+touching either that flag or `__COWSWAP_E2E_FEATURE_FLAGS__`.
 
 ## Token allowances
 
@@ -157,8 +183,13 @@ transport, batched into Multicall3.
   `JSON.parse` rounds it.
 - **Anything not listed reads as 0**, including an owner with no entry at all. So
   the default state of every test is "nothing is approved".
-- **Spender is not part of the key.** Any spender gets the same value; the spender
-  is recorded in `reads()` if a spec needs to assert on it.
+- **Only reads for the CoW VaultRelayer (prod or staging) are ever answered from
+  fixture/overrides.** Any other spender always reads as 0, regardless of what's configured for
+  the VaultRelayer — this is deliberate: it's the one spender every real trade in this suite
+  checks, and treating every other spender as unconfigured is what stopped a seeded allowance from
+  leaking into unrelated app behavior that also happens to read `allowance()` on the same token
+  (see `docs/OVERVIEW.md`'s allowance gotcha for the concrete incident). The queried spender is
+  still recorded in `reads()` regardless of whether it matched.
 - The committed file is `{}`. Use it for defaults tied to a fixed address.
 
 Because the wallet address comes from `INTEGRATION_TEST_PRIVATE_KEY`, a spec
@@ -193,7 +224,7 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 | Command | Description |
 |---|---|
 | `pnpm e2e:build-cache` | Build the Synpress MetaMask profile cache (only needed by specs using the Synpress fixture; not run in CI today) |
-| `pnpm e2e` | Full suite — all 362 tests |
+| `pnpm e2e` | Full suite — every spec in `src/tests/` (31 tests across 4 files as of this writing; run `pnpm exec playwright test --list` for the current count) |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
 | `npx nx test cowswap-e2e-tests` | Unit tests for the mocks and support code (`node:test` via tsx) |
@@ -206,9 +237,6 @@ pnpm exec playwright test src/tests/market-orders.spec.ts
 pnpm exec playwright test --grep '\[MO-01\]'
 ```
 
-If `scaffold.ts` adds new placeholders, commit those spec-file changes
-alongside the xlsx update.
-
 ## Troubleshooting
 
 - **Synpress MetaMask version drift.** Synpress is pinned to a specific
@@ -219,5 +247,11 @@ alongside the xlsx update.
   forwards transactions and receipts to real Sepolia. If the upstream RPC
   flakes, the suite will surface as e2e flake. Switch
   `REACT_APP_NETWORK_URL_11155111` to a different provider.
+- **Flaky test under the full parallel suite, but not alone.** Almost never a logic bug — check
+  infrastructure contention first: a real, rate-limited RPC endpoint 429ing under N-way parallel
+  workers, or a tight timeout under CPU contention. `AGENTS.md`'s "Diagnosing flaky tests" section
+  has the full diagnostic workflow (`LOG_UNMOCKED_RPC=1`, reproducing under load, confirming a
+  regression by testing the unmodified code under the same load) and the concrete root causes
+  found so far.
 - **Selector drift.** When the cowswap-frontend UI changes selectors, update
   the relevant page object in `src/pages/` rather than each test.
