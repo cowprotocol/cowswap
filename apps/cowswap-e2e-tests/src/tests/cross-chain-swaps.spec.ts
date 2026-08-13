@@ -155,14 +155,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Near Intents')).toBeVisible()
   })
 
-  test('[CS-286] Cross-chain swap: Near provider', async ({
-    swapPage,
-    tradePage,
-    wallet,
-    confirmModal,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-286] Cross-chain swap: Near provider', async ({ swapPage, wallet, confirmModal, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -224,7 +217,6 @@ test.describe('Cross-chain swaps', () => {
 
   test('[CS-287] Cross-chain swap: Bungee provider @smoke', async ({
     swapPage,
-    tradePage,
     wallet,
     confirmModal,
     mocks,
