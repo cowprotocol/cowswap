@@ -1541,6 +1541,13 @@ test.describe('Market Orders', () => {
       await expect(swapPage.page.getByText('No routes found')).not.toBeVisible()
       await swapPage.waitForQuote()
       await expect(swapPage.outputAmount).not.toHaveValue('')
+
+      // The reset form isn't just quoted, it's genuinely actionable — the approve/swap button
+      // (WETH allowance is unset for this wallet, same describe-block default as every other test
+      // here, so the partial/full approval selector renders too) actually becomes enabled, proving
+      // this isn't a partially-broken post-reset state that merely looks quoted.
+      await expect(swapPage.approveModeSelector).toBeVisible()
+      await expect(swapPage.primaryActionButton).toBeEnabled()
     })
   })
 
