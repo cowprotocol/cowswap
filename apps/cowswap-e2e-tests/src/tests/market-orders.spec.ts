@@ -7,6 +7,7 @@ import { reply } from '../mocks/cowProtocolApi'
 import { CHAIN_IDS } from '../support/constants'
 import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
+import { mockBridgeSupportedTokens } from '../support/mockBridgeSupportedTokens'
 import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
@@ -21,7 +22,12 @@ const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 const DAI = '0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D'
 const USDT = '0x58eb19ef91e8a6327fed391b51ae1887b833cc91'
+// Real Gnosis-chain WXDAI — used only as a "buy token from another chain" stand-in for [CS-136],
+// never actually traded, so no real Gnosis RPC call is needed to back it (see that test's own
+// `mocks.tokenLists.setListForChain` call).
+const WXDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
+const GNOSIS_CHAIN_ID = CHAIN_IDS.GNOSIS
 
 test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
@@ -1457,6 +1463,78 @@ test.describe('Market Orders', () => {
       // form — there's no separate "browse hooks" landing screen at this route.
       await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
       await expect(swapPage.page.getByText('Add Post-Hook Action')).toBeVisible()
+    })
+
+    test('[CS-136] Hooks: cross-chain swaps are not available', async ({ swapPage, mocks, context }) => {
+      // Resolving WXDAI@Gnosis as a currency needs both of these — the general per-chain token
+      // list (same endpoint `installTokenLists` already stubs for every chain) and the bridge
+      // provider's own "is this a valid destination token" check, which otherwise hits a real,
+      // unmocked `bff.barn.cow.fi` endpoint (confirmed by tracing actual network requests — see
+      // `mockBridgeSupportedTokens`'s own doc comment). No live Gnosis RPC call is involved either
+      // way, since the test never submits a trade, only inspects picker/URL/nav state.
+      mocks.tokenLists.setListForChain(GNOSIS_CHAIN_ID, {
+        tokens: [{ address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID }],
+      })
+      mockBridgeSupportedTokens(context, [
+        { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
+      ])
+
+      // Part 1: the buy-token picker on the Hooks tab never offers another chain to pick from.
+      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
+      await swapPage.unlockIfNeeded()
+      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
+
+      await swapPage.tokens.openInput()
+      await swapPage.tokens.searchAndPick('WETH')
+      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
+
+      await swapPage.tokens.openOutput()
+      // `useChainPanelState`'s chain-tab (`ChainButton` rows, e.g. "Gnosis") only renders when
+      // `isBridgingEnabled` is true, which `BridgingEnabledUpdater` hardcodes to false off the
+      // Swap route — so there's no chain row to pick from at all on Hooks, scoped to the picker
+      // itself since the header's own network switcher also renders a "Gnosis" label elsewhere.
+      await expect(swapPage.tokens.currencyList.getByText('Gnosis', { exact: true })).not.toBeVisible()
+      await swapPage.page.keyboard.press('Escape')
+      await swapPage.tokens.currencyList.waitFor({ state: 'hidden' })
+
+      // Part 2: a cross-chain buy token set directly via URL query params on the Hooks route.
+      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${WXDAI}?targetChainId=${GNOSIS_CHAIN_ID}`)
+      await swapPage.unlockIfNeeded()
+      // KNOWN GAP (at time of writing): `InvalidBridgeOutputUpdater` only clears `outputCurrencyId`/
+      // `targetChainId` when the pair is unsupported by the bridge provider, and `HooksPage`'s own
+      // redirect only fires when `chainId` is missing from the path — neither checks "route is
+      // Hooks" on its own, so a fully-qualified Hooks URL carrying a cross-chain `targetChainId`
+      // isn't reset today. `.soft` so this expected-to-currently-fail check doesn't swallow the
+      // (passing) Part 3 assertions below.
+      expect
+        .soft(swapPage.page.url(), 'targetChainId should be reset on the Hooks route')
+        .not.toContain(`targetChainId=${GNOSIS_CHAIN_ID}`)
+
+      // Part 3: a cross-chain buy token set on Swap is reset when navigating to Hooks via the
+      // in-app tab link (`useGetTradeUrlParams` — the one path this ticket's reset IS wired up on).
+      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/${WETH}/${WXDAI}?targetChainId=${GNOSIS_CHAIN_ID}`)
+      await swapPage.unlockIfNeeded()
+      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
+
+      // The Hooks nav link only renders once `state.user.hooksEnabled` is set (same
+      // `redux-localstorage-simple`-backed flag [CS-129] toggles via Settings) — set it directly
+      // rather than re-exercising that toggle flow, and reload so the store rehydrates with it.
+      await swapPage.page.evaluate(() =>
+        localStorage.setItem('redux_localstorage_simple_user', JSON.stringify({ hooksEnabled: true })),
+      )
+      await swapPage.page.reload()
+      await swapPage.unlockIfNeeded()
+      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
+
+      // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
+      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
+      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
+      await tradingModeDropdown.click()
+      await hooksLink.click()
+
+      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
+      await expect(swapPage.page).not.toHaveURL(/targetChainId=/)
+      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
     })
   })
 
