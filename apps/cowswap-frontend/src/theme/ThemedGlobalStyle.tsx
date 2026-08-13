@@ -36,10 +36,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   button,
-  input[type='text'],
-  input[type='number'],
   textarea,
-  select {
+  select,
+  // Using where to avoid specificity issues with the input type selectors:
+  input:where(:not([type='checkbox'], [type='radio'], [type='range'])) {
     border: none;
     padding: 0;
     margin: 0;
