@@ -14,6 +14,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
+import { useIsFallbackHandlerRequired } from 'modules/twap'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -30,6 +31,7 @@ import { TableRow } from './OrderRow.styled'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
+import { WarningReason } from '../../pure/OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
 import { OrderFillsAt } from '../../pure/OrderFillsAt/OrderFillsAt.pure'
 import { OrderFillsAtWithDistance } from '../../pure/OrderFillsAtWithDistance/OrderFillsAtWithDistance.pure'
 import { OrderMarketPrice } from '../../pure/OrderMarketPrice/OrderMarketPrice.pure'
@@ -39,9 +41,13 @@ import {
   TableRowCheckboxWrapper,
 } from '../../pure/OrdersTable/Row/Checkbox/Checkbox.styled'
 import { OrderRowWarningEstimatedPrice } from '../../pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure'
-import { WarningTooltip } from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import {
+  FallbackHandlerWarningTooltip,
+  WarningTooltip,
+} from '../../pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../../pure/OrderStatusBox/OrderStatusBox.pure'
 import { OrderActions } from '../../state/ordersTable.types'
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
 import { OrderParams } from '../../utils/getOrderParams'
 import { shouldShowDashForExpiration } from '../../utils/shouldShowDashForExpiration'
 import { getActivityUrl } from '../../utils/url/getActivityUrl'
@@ -148,17 +154,27 @@ export function OrderRow({
 
   const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
 
-  const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
+  // The Safe ComposableCoW fallback handler being reset/removed is a per-account condition, so it is
+  // resolved here in the view (not persisted onto the order) and combined with the per-order status.
+  // It only applies to composable (TWAP) orders; surface it with the same danger design as the
+  // balance/allowance warnings (see issue #5426).
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+  const isFallbackHandlerUnfillable =
+    isTwapTable === true && getIsFallbackHandlerUnfillable(status, isFallbackHandlerRequired)
+
+  const isUnfillable =
+    isFallbackHandlerUnfillable ||
+    (!percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning))
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
-  // NOTE: Don't internationalize this, the text is being used as a flag...
-  const warningText =
-    hasEnoughBalance === false
-      ? `Insufficient balance`
+  const warningReason = isFallbackHandlerUnfillable
+    ? WarningReason.FallbackHandler
+    : hasEnoughBalance === false
+      ? WarningReason.Balance
       : hasEnoughAllowance === false
-        ? `Insufficient allowance`
-        : `Unfillable`
+        ? WarningReason.Allowance
+        : undefined
 
   const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
 
@@ -182,6 +198,7 @@ export function OrderRow({
       estimatedExecutionPrice={estimatedExecutionPrice}
       estimatedPriceWarning={estimatedPriceWarning}
       isChild={isChild}
+      isFallbackHandlerRequired={isFallbackHandlerRequired}
       isInverted={isInverted}
       isSafeWallet={isSafeWallet}
       isTwapTable={isTwapTable}
@@ -192,7 +209,7 @@ export function OrderRow({
       prices={prices}
       rateInfoParams={rateInfoParams}
       spotPrice={spotPrice}
-      warningText={warningText}
+      warningReason={warningReason}
       withWarning={withWarning}
     />
   )
@@ -252,10 +269,11 @@ export function OrderRow({
               <OrderFillsAtWithDistance
                 order={order}
                 withWarning={withWarning}
-                warningText={warningText}
+                warningReason={warningReason}
                 onApprove={onApprove}
                 isInverted={isInverted}
                 isUnfillable={isUnfillable}
+                isFallbackHandlerRequired={isFallbackHandlerRequired}
                 estimatedExecutionPrice={estimatedExecutionPrice}
                 spotPrice={spotPrice}
                 estimatedPriceWarning={estimatedPriceWarning}
@@ -346,16 +364,20 @@ export function OrderRow({
           <styledEl.StatusBox>
             <OrderStatusBox
               order={order}
-              withWarning={withWarning}
+              withWarning={withWarning || isFallbackHandlerUnfillable}
               onClick={onClick}
               WarningTooltip={
-                <WarningTooltip
-                  hasEnoughBalance={hasEnoughBalance ?? false}
-                  hasEnoughAllowance={hasEnoughAllowance ?? false}
-                  inputTokenSymbol={inputTokenSymbol}
-                  isOrderScheduled={isOrderScheduled}
-                  onApprove={() => orderActions.approveOrderToken(order.inputToken)}
-                />
+                isFallbackHandlerUnfillable ? (
+                  <FallbackHandlerWarningTooltip />
+                ) : (
+                  <WarningTooltip
+                    hasEnoughBalance={hasEnoughBalance ?? false}
+                    hasEnoughAllowance={hasEnoughAllowance ?? false}
+                    inputTokenSymbol={inputTokenSymbol}
+                    isOrderScheduled={isOrderScheduled}
+                    onApprove={() => orderActions.approveOrderToken(order.inputToken)}
+                  />
+                )
               }
             />
           </styledEl.StatusBox>
