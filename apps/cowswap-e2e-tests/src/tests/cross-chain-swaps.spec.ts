@@ -117,7 +117,7 @@ test.describe('Cross-chain swaps', () => {
     await swapPage.unlockIfNeeded()
   }
 
-  test('[CC-01] Cross-chain swap UI: accessible via Swap form', async ({ swapPage, wallet, mocks, context }) => {
+  test('[CS-285] Cross-chain swap UI: accessible via Swap form', async ({ swapPage, wallet, mocks, context }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -150,7 +150,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Near Intents')).toBeVisible()
   })
 
-  test('[CC-02] Cross-chain swap: Near provider', async ({
+  test('[CS-286] Cross-chain swap: Near provider', async ({
     swapPage,
     tradePage,
     wallet,
@@ -212,7 +212,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
   })
 
-  test('[CC-03] Cross-chain swap: Bungee provider', async ({
+  test('[CS-287] Cross-chain swap: Bungee provider', async ({
     swapPage,
     tradePage,
     wallet,
@@ -271,7 +271,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
   })
 
-  test('[CC-13] Cross-chain: ETH-flow source — native ETH sent cross-chain', async ({
+  test('[CS-297] Cross-chain: ETH-flow source — native ETH sent cross-chain', async ({
     swapPage,
     wallet,
     confirmModal,
@@ -403,7 +403,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
   })
 
-  test('[CC-15] Cross-chain: swap to Solana — SOL or SPL token as destination', async ({
+  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination', async ({
     swapPage,
     wallet,
     mocks,
@@ -466,7 +466,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
-  test('[CC-17] Cross-chain: swap to Bitcoin — BTC as destination', async ({ swapPage, wallet, mocks, context }) => {
+  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination', async ({ swapPage, wallet, mocks, context }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -516,7 +516,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
-  test('[CC-26] Cross-chain: calculation parity — form Receive equals bridge Expected to receive', async ({
+  test('[CS-310] Cross-chain: calculation parity — form Receive equals bridge Expected to receive', async ({
     swapPage,
     wallet,
     mocks,
@@ -563,7 +563,7 @@ test.describe('Cross-chain swaps', () => {
     }
   })
 
-  test('[CC-27] Cross-chain: calculation parity — bridge Min. to deposit equals swap Min. to receive', async ({
+  test('[CS-311] Cross-chain: calculation parity — bridge Min. to deposit equals swap Min. to receive', async ({
     swapPage,
     wallet,
     mocks,
