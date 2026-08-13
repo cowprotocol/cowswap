@@ -37,6 +37,7 @@ test.describe('Market Orders', () => {
 
     test('[CS-59] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
+      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -146,6 +147,7 @@ test.describe('Market Orders', () => {
 
     test('[CS-60] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
       swapPage,
+      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -1095,6 +1097,7 @@ test.describe('Market Orders', () => {
 
     test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
       swapPage,
+      tradePage,
       wallet,
       confirmModal,
       mocks,
