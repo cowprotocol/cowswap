@@ -76,3 +76,6 @@ CLAUDE.md
 
 # Serena project files
 .serena/
+
+# Subagent-driven-development scratch workspace (ledgers, briefs, review packages)
+.superpowers/
