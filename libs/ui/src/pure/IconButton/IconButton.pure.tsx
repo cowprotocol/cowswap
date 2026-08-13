@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { MouseEvent, ReactNode } from 'react'
 
 import { Icon } from 'react-feather'
 
@@ -17,10 +17,13 @@ export interface IconButtonProps {
   icon: Icon
   disabled?: boolean
   'aria-hidden'?: boolean
-  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void
+  'aria-label': string
+  onClick?: (e?: MouseEvent<HTMLButtonElement>) => void
 }
 
-export type SpecificIconButtonProps = Omit<IconButtonProps, 'icon'>
+export type SpecificIconButtonProps = Omit<IconButtonProps, 'icon' | 'aria-label'> & {
+  'aria-label'?: string
+}
 
 export function IconButton({
   size = 18,
@@ -31,6 +34,7 @@ export function IconButton({
   icon: Icon,
   disabled,
   'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
   onClick,
 }: IconButtonProps): ReactNode {
   return (
@@ -40,9 +44,10 @@ export function IconButton({
       style={asCSSVars({ size, color, colorHover, pressableInset })}
       disabled={disabled}
       aria-hidden={ariaHidden}
+      aria-label={ariaLabel}
       onClick={onClick}
     >
-      <Icon size="1em" color="currentColor" />
+      <Icon size="1em" color="currentColor" aria-hidden />
     </styledEl.Button>
   )
 }
