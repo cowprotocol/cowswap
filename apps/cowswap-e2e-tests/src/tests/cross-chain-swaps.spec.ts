@@ -114,7 +114,6 @@ test.describe('Cross-chain swaps', () => {
     const url = `/#/${opts.chainId}/swap/${opts.sell}/${opts.buy}?targetChainId=${opts.targetChainId}&sellAmount=${opts.sellAmount}`
     await swapPage.page.goto(url)
     await swapPage.page.reload()
-    await swapPage.unlockIfNeeded()
   }
 
   test('[CS-285] Cross-chain swap UI: accessible via Swap form @smoke', async ({

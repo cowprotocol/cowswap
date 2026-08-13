@@ -23,7 +23,7 @@ export class BridgeRoutePanel {
     // `SummaryClickable`), not just `[aria-expanded]` — the app header's nav dropdown also renders
     // `aria-expanded`, and an unscoped `.first()` would resolve to whichever renders first in DOM
     // order.
-    this.expandToggle = page.locator('[aria-expanded][class*="SummaryClickable-"]').first()
+    this.expandToggle = page.locator('.trade-details-accordion-toggle').first()
     // Not an exact match: `BridgeRouteTitle` renders "Swap on" and "CoW Protocol" either side of a
     // protocol icon, which can add whitespace/alt text into the element's normalized text content.
     this.swapStopTitle = page.getByText(/Swap on.*CoW Protocol/)
