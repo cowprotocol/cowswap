@@ -14,10 +14,12 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import type { PendingOrderPrices } from 'modules/orders'
 import { useEoaTwapPartOrders, useIsFallbackHandlerRequired } from 'modules/twap'
 
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
 import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/params/ordersTableParams.constants'
-import { getOrderParams } from '../../../../utils/getOrderParams'
+import { getOrderParams, type OrderParams } from '../../../../utils/getOrderParams'
 import { TwapStatusAndToggle } from '../../../TwapStatusAndToggle/TwapStatusAndToggle.pure'
 import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
 
@@ -100,10 +102,7 @@ export function OrdersTableRowGroup({
   }
 
   // Create an array of child order data with their orderParams
-  const childrenWithParams = (usesLocalChildren ? children : []).map((child) => ({
-    order: child,
-    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
-  }))
+  const childrenWithParams = buildChildrenWithParams(usesLocalChildren ? children : [], chainId, balancesAndAllowances)
 
   return (
     <GroupBox>
@@ -162,4 +161,15 @@ export function OrdersTableRowGroup({
       )}
     </GroupBox>
   )
+}
+
+function buildChildrenWithParams(
+  children: ParsedOrder[],
+  chainId: SupportedChainId,
+  balancesAndAllowances: BalancesAndAllowances,
+): Array<{ order: ParsedOrder; orderParams: OrderParams }> {
+  return children.map((child) => ({
+    order: child,
+    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
+  }))
 }
