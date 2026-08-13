@@ -140,12 +140,13 @@ never a logic bug in the test — check infrastructure contention first.
   [CC-26] ... status: 429 ... url: https://mainnet.infura.io/v3/...
   ```
 - **Root cause 1: a single shared real Infura key gets rate-limited under N-way parallel workers.**
-  `mockSocketVerifier`, `mocks.allowances`, and `installMulticall3` all deliberately fall back to a
-  real `route.fetch()` whenever a Multicall3 batch isn't *fully* recognized (see each one's own doc
-  comment) — reliable for one test at a time, but every worker's fallback hits the exact same
-  hardcoded Infura key, and enough concurrent workers trip its rate limit. `logUnmockedRpcRequests.ts`
-  exists specifically to make this observable; it's disabled by default because logging every
-  request has its own cost.
+  `mocks.allowances` and `installMulticall3` deliberately fall back to a real `route.fetch()`
+  whenever a Multicall3 batch isn't *fully* recognized (see each one's own doc comment) — reliable
+  for one test at a time, but every worker's fallback hits the exact same hardcoded Infura key, and
+  enough concurrent workers trip its rate limit. `logUnmockedRpcRequests.ts` exists specifically to
+  make this observable; it's disabled by default because logging every request has its own cost.
+  (`mockSocketVerifier` used to be in this list too — it no longer makes any real-RPC fallback at
+  all, see the "connected wallet's own provider" note below; a *different* root cause than this one.)
 - **Closing a real-RPC-fallback gap directly beats retrying around it.** `mocks/unmocked-rpc-requests.log`
   entries are a to-do list, not just a diagnosis — each distinct `(method, selector, to)` still
   hitting a real host is a mock this suite is missing, and adding it removes a 429 source instead
@@ -225,14 +226,35 @@ never a logic bug in the test — check infrastructure contention first.
   `mockFixedRateQuote` with a manually decimals-adjusted ratio in that case (see `[CC-13]`).
 - **The app's own real-RPC traffic for a given chain does *not* reliably go through
   `REACT_APP_NETWORK_URL_<chainId>`.** That env var only backs this suite's own wallet-side
-  dispatch/proxy (`walletEngine.ts` → `rpcProxy.ts`) and the handful of reads `mockEthFlowTransaction`/
-  `mockSocketVerifier` intercept by that exact URL (tx receipts, native-balance multicalls). Plenty of
-  other calls the *app itself* makes — Bungee's on-chain SocketVerifier check, `eth_estimateGas` before
-  every `eth_sendTransaction` — go straight to whichever of the app's own hardcoded providers it picks
-  (Infura, the WalletConnect RPC relay, publicnode, ...), unpredictable and outside this env var's
-  control. The only reliable way to intercept these is host-agnostic: `context.route('**/*', ...)`,
-  decode the JSON-RPC body, and match by `method` (see `mockSocketVerifier.ts` and
-  `mockEthEstimateGas` in `mockEthFlowTransaction.ts`), never by URL.
+  dispatch/proxy (`walletEngine.ts` → `rpcProxy.ts`) and the handful of reads `mockEthFlowTransaction`
+  intercepts by that exact URL (tx receipts, native-balance multicalls). Plenty of other calls the
+  *app itself* makes — `eth_estimateGas` before every `eth_sendTransaction` — go straight to
+  whichever of the app's own hardcoded providers it picks (Infura, the WalletConnect RPC relay,
+  publicnode, ...), unpredictable and outside this env var's control. The only reliable way to
+  intercept *those* is host-agnostic: `context.route('**/*', ...)`, decode the JSON-RPC body, and
+  match by `method` (see `mockEthEstimateGas` in `mockEthFlowTransaction.ts`), never by URL. Bungee's
+  on-chain SocketVerifier check is a *different* case entirely — see the next note.
+- **Not every on-chain read the app makes even reaches the page's network layer at all — some go
+  through the *connected wallet's own provider* instead, invisible to any `context.route()`.**
+  Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
+  `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`) was originally mocked with a
+  `context.route('**/*', ...)` handler decoding Multicall3 batches — modeled on `mockEthEstimateGas`
+  — and it silently never matched anything under load, intermittently manifesting as `[CS-287]`/
+  `[CS-297]`/etc. failing with "Error loading price" or a hung `BridgeRoutePanel.expand()`. Root
+  cause, found by having the app log the real `readContract` error instead of swallowing it: the SDK
+  adapter's `readContract` for this specific check runs against the connected wallet's own provider
+  (this suite's mock wallet resolves the chain from the currently-connected chain, which for these
+  tests happens to be the bridge's origin chain — Mainnet), not the app's separate HTTP viem client.
+  `eth_call`s made through the wallet provider go `injectedShim.ts` → `walletEngine.ts`'s
+  `dispatch()` → `forward()`, a plain **Node-side** `fetch()` straight to this suite's own RPC proxy
+  (`support/rpcProxy.ts`) — there is no page-level network request for `context.route()` to ever see.
+  Fixed in `mockSocketVerifier.ts` by switching to the RPC proxy's own existing per-`(to, selector)`
+  stub primitive instead: `rpcProxy.stubCall({ chainId, to: SOCKET_VERIFIER_ADDRESS, dataPrefix:
+  selector, returnHex: '0x' })` — no Multicall3-batch decoding needed at all, since a wallet-forwarded
+  `eth_call` is never batched. **Lesson: if a mock built on `context.route()` seems to work
+  "sometimes" for a wallet-adjacent on-chain read, check whether the call is actually reaching the
+  wallet's own provider instead of the page's network layer before adding more retry/timeout budget
+  around it** — no amount of extra timeout fixes a mock that's listening on the wrong layer.
 - **A real native-ETH sell (`[CC-13]`, eth-flow) needs `eth_estimateGas` stubbed too, not just
   `eth_sendTransaction`.** Left unmocked, gas estimation is a real simulation against the wallet's real
   on-chain balance — zero on Mainnet, since this is a shared test key with no real funds (never fund it;
