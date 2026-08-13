@@ -3,9 +3,7 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
-
-// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
-const DEBUG_TRANSITION_DURATION = '10s'
+import { slowTransition, transition } from '../../utils/animation'
 
 export const Root = styled(BaseAccordion.Root)`
   width: 100%;
@@ -21,9 +19,7 @@ export const Item = styled(BaseAccordion.Item)<{ $isCollapsible?: boolean }>`
   /* Use opaque paper (not transparent) so background-color transitions match ConfirmAmounts,
      instead of blending through alpha over the modal. */
   background-color: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER})` : 'transparent')};
-  transition:
-    padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
-    background-color ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${slowTransition(['padding', 'background-color'])};
 
   &[data-open] {
     padding: ${({ $isCollapsible = true }) => ($isCollapsible ? '8px' : '0')};
@@ -57,7 +53,7 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   text-align: center;
   cursor: pointer;
   user-select: none;
-  transition: background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition: ${transition(['background-color'])};
 
   &:focus-visible {
     outline: 2px solid var(${UI.COLOR_TEXT});
@@ -70,7 +66,7 @@ export const Chevron = styled(ChevronDown)`
   width: 16px;
   height: 16px;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
-  transition: transform ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${slowTransition(['transform'])};
 
   ${Trigger}[data-panel-open] & {
     transform: rotate(180deg);
@@ -81,7 +77,7 @@ export const Panel = styled(BaseAccordion.Panel)`
   box-sizing: border-box;
   height: var(--accordion-panel-height);
   overflow: hidden;
-  transition: height ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${slowTransition(['height'])};
 
   &[data-starting-style],
   &[data-ending-style] {

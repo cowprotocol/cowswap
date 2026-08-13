@@ -1,11 +1,9 @@
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
+import { transition } from '../../utils/animation'
 import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
-
-// TODO: debug — revert to var(${UI.ANIMATION_DURATION})
-const DEBUG_TRANSITION_DURATION = '10s'
 
 export const Header = styled.header<{ withoutBorder?: boolean }>`
   position: relative;
@@ -18,8 +16,7 @@ export const Header = styled.header<{ withoutBorder?: boolean }>`
   padding: 16px;
   font-size: 17px;
   border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
-  background: pink !important;
-  transition: padding ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${transition(['padding'])};
 
   &.hasBack {
     padding-left: 40px;
@@ -52,9 +49,7 @@ const headerIconButtonCss = css`
   top: 50%;
   opacity: 1;
   transform: translate(0, -50%);
-  transition:
-    transform ${DEBUG_TRANSITION_DURATION} ease-in-out,
-    opacity ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${transition(['transform', 'opacity'])};
 
   &[aria-hidden='true'] {
     pointer-events: none;

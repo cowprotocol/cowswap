@@ -1,4 +1,4 @@
-import { TokenAmount, Media, UI } from '@cowprotocol/ui'
+import { TokenAmount, Media, UI, slowTransition } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -6,9 +6,6 @@ import { FiatValue } from '../FiatValue'
 
 export const TOKEN_SIZE_DEFAULT = 42
 export const TOKEN_SIZE_SLIM = 32
-
-// TODO: debug — revert to var(${UI.ANIMATION_DURATION_SLOW})
-const DEBUG_TRANSITION_DURATION = '10s'
 
 export const Container = styled.div`
   padding: 24px 12px;
@@ -21,9 +18,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition:
-    padding ${DEBUG_TRANSITION_DURATION} ease-in-out,
-    gap ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${slowTransition(['padding', 'gap'])};
 
   ${Media.upToSmall()} {
     font-size: 13px;
@@ -54,10 +49,7 @@ export const FiatAmountSlot = styled(FiatValue)`
   max-height: 2.5em;
   opacity: 1;
   overflow: hidden;
-  transition:
-    max-height ${DEBUG_TRANSITION_DURATION} ease-in-out,
-    opacity ${DEBUG_TRANSITION_DURATION} ease-in-out,
-    margin-top ${DEBUG_TRANSITION_DURATION} ease-in-out;
+  transition: ${slowTransition(['max-height', 'opacity', 'margin-top'])};
 
   ${Container}.slim & {
     max-height: 0;
