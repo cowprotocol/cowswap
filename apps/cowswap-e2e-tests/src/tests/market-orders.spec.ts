@@ -1478,10 +1478,11 @@ test.describe('Market Orders', () => {
       mockBridgeSupportedTokens(context, [
         { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
       ])
-      // Pin a 1:1 rate matching `mocks.usdPrices`' $1-per-token default — the raw default quote
-      // fixture doesn't match that assumption, which otherwise renders an absurd (~54615%) rate
-      // deviation next to the buy amount (see suite's own known quirk on this).
-      mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 1n, denominator: 1n } })
+      // The default quote fixture's WETH/USDC rate is a real recorded snapshot (~546.99 USDC per
+      // WETH), not an arbitrary placeholder — leave it as-is rather than overriding it with an
+      // artificial rate. `mocks.usdPrices` defaults every token to $1 though, which doesn't match
+      // that real ratio and renders an absurd price-impact percentage; match it here instead.
+      mocks.usdPrices.setPrice(WETH, 546.9898499813039)
 
       // Part 1: the buy-token picker on the Hooks tab never offers another chain to pick from.
       await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
@@ -1507,6 +1508,12 @@ test.describe('Market Orders', () => {
       await swapPage.unlockIfNeeded()
       await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
 
+      // Make this a genuinely active bridge trade (amount entered, quote loaded), not just tokens
+      // picked with an empty form — the reset-on-navigate behavior below should hold for a real,
+      // in-flight bridge quote, not merely for two currency IDs sitting unused in the URL.
+      await swapPage.enterSellAmount('1')
+      await swapPage.waitForQuote()
+
       // The Hooks nav link only renders once `state.user.hooksEnabled` is set (same
       // `redux-localstorage-simple`-backed flag [CS-129] toggles via Settings) — set it directly
       // rather than re-exercising that toggle flow, and reload so the store rehydrates with it.
@@ -1531,16 +1538,21 @@ test.describe('Market Orders', () => {
       // `outputCurrencyId` to the target widget's default (USDC), dropping `targetChainId` entirely.
       await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
       await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
+      // The sell amount typed on the Swap tab carries over as-is (only the currencies reset) — no
+      // need to re-enter it here.
+      await expect(swapPage.inputAmount).toHaveValue('1')
 
       // The reset pair is same-chain (Sepolia/Sepolia), so this is an ordinary quote, not a bridge
       // one — no "No routes found" (that's a bridge-route error) should linger from the pre-reset
-      // cross-chain state, and a normal quote should load for the reset pair. A sell amount has to
-      // actually be entered first — without one, no quote request fires at all, and `waitForQuote`
-      // would resolve on a technicality (no request to wait on) instead of proving a quote loaded.
-      await swapPage.enterSellAmount('1')
+      // cross-chain state, and the carried-over sell amount should have a fresh, non-bridge quote
+      // automatically recalculated for it against the reset pair.
       await expect(swapPage.page.getByText('No routes found')).not.toBeVisible()
       await swapPage.waitForQuote()
-      await expect(swapPage.outputAmount).not.toHaveValue('')
+      // The realistic recorded rate (~546.99 USDC/WETH) from the default quote fixture, scaled to
+      // the carried-over 1 WETH sell amount — and, since `mocks.usdPrices` above now matches that
+      // same rate, a sane price impact rather than the fixture/$1-default mismatch's absurd one.
+      await expect(swapPage.outputAmount).toHaveValue('547.1548')
+      await expect(swapPage.priceImpact).toContainText('0.03%')
 
       // The reset form isn't just quoted, it's genuinely actionable — the approve/swap button
       // (WETH allowance is unset for this wallet, same describe-block default as every other test
