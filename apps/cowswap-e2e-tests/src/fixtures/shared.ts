@@ -20,6 +20,7 @@ import { LimitPage } from '../pages/LimitPage'
 import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
 import { logUnmockedRpcRequests } from '../support/logUnmockedRpcRequests'
+import { mockApproveSimulation } from '../support/mockApproveSimulation'
 import { mockOrderPosting } from '../support/mockOrderPosting'
 import { createSetupTestConditions, type SetupTestConditions } from '../support/setupTestConditions'
 
@@ -121,6 +122,10 @@ export const sharedFixtures: Fixtures<
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
       installMulticall3(context, { allowances })
+      // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
+      // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
+      // allowance and never click Approve), so this is global rather than opt-in per test.
+      mockApproveSimulation(context)
       const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const launchDarkly = installLaunchDarkly(context)

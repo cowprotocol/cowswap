@@ -11,9 +11,9 @@ import type { BrowserContext, Route } from '@playwright/test'
 const FAKE_APPROVE_TX_HASH = `0x${'ab'.repeat(32)}` as const
 
 /** `approve(address,uint256)` selector — what the preflight `eth_call` this mock also stubs is checking won't revert. */
-const APPROVE_SELECTOR = '0x095ea7b3'
+export const APPROVE_SELECTOR = '0x095ea7b3'
 /** ABI-encoded `true` — the only thing a `bool`-returning `eth_call` needs to report success. */
-const APPROVE_CALL_SUCCESS_RESULT = encodeAbiParameters([{ type: 'bool' }], [true])
+export const APPROVE_CALL_SUCCESS_RESULT = encodeAbiParameters([{ type: 'bool' }], [true])
 
 export interface MockApproveTransactionHandle {
   /** The raw amount decoded from the actual approve(spender, amount) calldata, once sent. */
