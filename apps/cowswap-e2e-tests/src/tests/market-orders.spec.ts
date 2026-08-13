@@ -1521,31 +1521,23 @@ test.describe('Market Orders', () => {
 
       await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
       await expect(swapPage.page).not.toHaveURL(/targetChainId=/)
+      // The whole trade form resets to the Sepolia Hooks-tab default pair (WETH/USDC) — not just
+      // the buy side — per `getDefaultTradeRawState`: `useGetTradeUrlParams` keeps `inputCurrencyId`
+      // as-is when leaving a bridging Swap (already WETH here, so unchanged) and falls back
+      // `outputCurrencyId` to the target widget's default (USDC), dropping `targetChainId` entirely.
+      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
       await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
+
+      // The reset pair is same-chain (Sepolia/Sepolia), so this is an ordinary quote, not a bridge
+      // one — no "No routes found" (that's a bridge-route error) should linger from the pre-reset
+      // cross-chain state, and a normal quote should load for the reset pair. A sell amount has to
+      // actually be entered first — without one, no quote request fires at all, and `waitForQuote`
+      // would resolve on a technicality (no request to wait on) instead of proving a quote loaded.
+      await swapPage.enterSellAmount('1')
+      await expect(swapPage.page.getByText('No routes found')).not.toBeVisible()
+      await swapPage.waitForQuote()
+      await expect(swapPage.outputAmount).not.toHaveValue('')
     })
-
-    // KNOWN GAP (at time of writing): `InvalidBridgeOutputUpdater` only clears `outputCurrencyId`/
-    // `targetChainId` when the pair is unsupported by the bridge provider, and `HooksPage`'s own
-    // redirect only fires when `chainId` is missing from the path — neither checks "route is
-    // Hooks" on its own, so a fully-qualified Hooks URL carrying a cross-chain `targetChainId`
-    // isn't reset today. Kept as its own `fixme` test (rather than folded into [CS-136] above) so
-    // that test stays green; un-`fixme` this once the frontend actually resets it.
-    test.fixme(
-      '[CS-136b] Hooks: cross-chain buy token set via URL query params is reset',
-      async ({ swapPage, mocks, context }) => {
-        mocks.tokenLists.setListForChain(GNOSIS_CHAIN_ID, {
-          tokens: [{ address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID }],
-        })
-        mockBridgeSupportedTokens(context, [
-          { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
-        ])
-
-        await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${WXDAI}?targetChainId=${GNOSIS_CHAIN_ID}`)
-        await swapPage.unlockIfNeeded()
-
-        expect(swapPage.page.url()).not.toContain(`targetChainId=${GNOSIS_CHAIN_ID}`)
-      },
-    )
   })
 
   test.describe('Disconnected wallet', () => {
