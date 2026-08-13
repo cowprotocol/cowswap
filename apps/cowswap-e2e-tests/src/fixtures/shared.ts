@@ -13,6 +13,7 @@ import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
 import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
+import { installTokenNonce } from '../mocks/tokenNonce'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
 import { AccountPage } from '../pages/AccountPage'
@@ -125,6 +126,7 @@ export const sharedFixtures: Fixtures<
       installEthBlockNumber(context)
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
+      installTokenNonce(context)
       installMulticall3(context, { allowances })
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
