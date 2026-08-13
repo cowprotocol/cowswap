@@ -35,6 +35,19 @@ export const ThemedGlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  button,
+  input,
+  textarea,
+  select {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+    outline: none;
+    font: inherit;
+    color: inherit;
+  }
+
   button {
     user-select: none;
   }
