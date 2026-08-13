@@ -35,6 +35,7 @@ export function IconButton({
 }: IconButtonProps): ReactNode {
   return (
     <styledEl.Button
+      type="button"
       className={className}
       style={asCSSVars({ size, color, colorHover, pressableInset })}
       disabled={disabled}
