@@ -1,9 +1,7 @@
 import { ReactNode } from 'react'
 
-import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList, UI } from '@cowprotocol/ui'
-
 import { t } from '@lingui/core/macro'
-import { ChevronDown } from 'react-feather'
+import { createPortal } from 'react-dom'
 import styled from 'styled-components/macro'
 
 import { OrderProgressBarStepName } from '../../types'
@@ -16,39 +14,28 @@ const Wrapper = styled.div`
   color: white;
   padding: 10px;
   border-radius: 5px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  z-index: 10000;
 `
 
-const DebugContextMenu = styled(ContextMenu)`
-  [data-reach-menu-items] {
-    max-height: 280px;
-    overflow-y: auto;
-    top: auto;
-    bottom: calc(100% + 6px);
-    right: 0;
-    background: var(${UI.COLOR_PAPER});
-  }
+const Label = styled.label`
+  display: block;
+  margin-bottom: 6px;
 `
 
-const DebugMenuButton = styled(ContextMenuButton)`
-  width: auto;
-  height: auto;
-  gap: 6px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  color: white;
-  background: rgba(255, 255, 255, 0.12);
+const Select = styled.select`
+  appearance: auto;
+  margin: 0;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  color: inherit;
   font: inherit;
+  cursor: pointer;
 
-  &:hover,
-  &:active,
-  &[data-reach-menu-button][data-state='open'] {
-    color: white;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
+  option {
+    color: #111;
+    background: #fff;
   }
 `
 
@@ -58,21 +45,22 @@ interface DebugPanelProps {
 }
 
 export function DebugPanel({ stepName, setDebugStep }: DebugPanelProps): ReactNode {
-  return (
+  return createPortal(
     <Wrapper>
-      <span>{t`Debug Step:`}</span>
-      <DebugContextMenu>
-        <DebugMenuButton aria-label={t`Select debug step`}>
-          {stepName} <ChevronDown size={16} />
-        </DebugMenuButton>
-        <ContextMenuList>
-          {Object.values(OrderProgressBarStepName).map((step) => (
-            <ContextMenuItem key={step} onSelect={() => setDebugStep(step)}>
-              {step}
-            </ContextMenuItem>
-          ))}
-        </ContextMenuList>
-      </DebugContextMenu>
-    </Wrapper>
+      <Label htmlFor="debug-step-select">{t`Debug Step:`}</Label>
+      <Select
+        id="debug-step-select"
+        value={stepName}
+        aria-label={t`Select debug step`}
+        onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}
+      >
+        {Object.values(OrderProgressBarStepName).map((step) => (
+          <option key={step} value={step}>
+            {step}
+          </option>
+        ))}
+      </Select>
+    </Wrapper>,
+    document.body,
   )
 }
