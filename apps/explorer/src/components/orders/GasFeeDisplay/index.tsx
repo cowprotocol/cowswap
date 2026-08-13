@@ -12,16 +12,10 @@ import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 
-import { Order, ProtocolFee, ProtocolFeeType } from 'api/operator'
+import { Order, ProtocolFee } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-// The API says how each fee was calculated but not who charged it, so labels name the policy.
-const FEE_TYPE_LABELS: Record<ProtocolFeeType, string> = {
-  [ProtocolFeeType.Surplus]: 'Surplus fee',
-  [ProtocolFeeType.Volume]: 'Volume fee',
-  [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
-  [ProtocolFeeType.Unknown]: 'Fee',
-}
+import { buildLineItems, indexTokensByKey, sumByToken } from './breakdown'
 
 const LegacyWrapper = styled.div`
   > span {
@@ -34,8 +28,6 @@ export type Props = {
   /** The caller gates this on `isExplorerFeeDisplayEnabled` plus a usable gas cost and fee list. */
   showBreakdown?: boolean
 }
-
-type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 
 export function GasFeeDisplay(props: Props): ReactNode {
   const { order, showBreakdown = false } = props
@@ -70,41 +62,14 @@ function CostsAndFeesBreakdown({
     : undefined
   const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
 
-  const tokenByKey = useMemo(() => {
-    const map = new Map<AddressKey, TokenErc20>()
-    for (const token of [...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]) {
-      if (token) map.set(getAddressKey(token.address), token)
-    }
-    return map
-  }, [feeTokens, nativeToken, order.buyToken, order.sellToken])
+  const tokenByKey = useMemo(
+    () => indexTokensByKey([...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]),
+    [feeTokens, nativeToken, order.buyToken, order.sellToken],
+  )
 
-  // Network costs first, then the fees in the order they were applied. Repeated types get numbered.
-  const lineItems = useMemo<LineItem[]>(() => {
-    const labels = protocolFees.map((fee) => FEE_TYPE_LABELS[fee.type])
-    const occurrences = new Map<string, number>()
-    const numbered = new Map<string, number>()
+  const lineItems = useMemo(() => buildLineItems(protocolFees, gasCost, nativeKey), [protocolFees, gasCost, nativeKey])
 
-    for (const label of labels) occurrences.set(label, (occurrences.get(label) ?? 0) + 1)
-
-    const feeItems = protocolFees.map(({ tokenAddress, amount }, index) => {
-      const label = labels[index]
-      const seen = (numbered.get(label) ?? 0) + 1
-      numbered.set(label, seen)
-
-      return { label: occurrences.get(label) === 1 ? label : `${label} (${seen})`, tokenAddress, amount }
-    })
-
-    return [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }, ...feeItems]
-  }, [protocolFees, gasCost, nativeKey])
-
-  // One total per token; wrapped native deliberately stays separate from native.
-  const totals = useMemo(() => {
-    const byToken = new Map<AddressKey, BigNumber>()
-    for (const { tokenAddress, amount } of lineItems) {
-      byToken.set(tokenAddress, (byToken.get(tokenAddress) ?? ZERO_BIG_NUMBER).plus(amount))
-    }
-    return Array.from(byToken)
-  }, [lineItems])
+  const totals = useMemo(() => sumByToken(lineItems), [lineItems])
 
   // Amounts mean nothing without decimals; keep the legacy fee up until they load.
   if (areFeeTokensLoading) return <LegacyFeeDisplay order={order} />
