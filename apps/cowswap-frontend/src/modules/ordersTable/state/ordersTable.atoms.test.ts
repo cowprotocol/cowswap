@@ -7,7 +7,7 @@ import {
   type BalancesState,
 } from '@cowprotocol/balances-and-allowances'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol/wallet'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
@@ -68,7 +68,6 @@ jest.mock('@cowprotocol/wallet', () => {
   const { atom } = require('jotai') as typeof import('jotai')
 
   return {
-    isAtomicBatchSupportedLoadableAtom: atom({ data: true, state: 'hasData' }),
     walletInfoAtom: atom({}),
   }
 })
@@ -398,12 +397,13 @@ describe('observeReduxOrders', () => {
     )
   })
 
-  it('composes advanced orders from emulated TWAPs, emulated parts, and discrete TWAP orders', () => {
+  it('composes advanced orders without gating history on wallet batching support', () => {
     const connector = { id: 'mock-connector' }
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
-    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING }
+    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING, isEoaTwapOrder: true }
+    const safeTwapOrder = { id: 'safe-twap', status: OrderStatus.PENDING }
     const emulatedPartOrder = { id: 'emulated-part', status: OrderStatus.PENDING }
     const virtualPartOrder = {
       composableCowInfo: { isVirtualPart: true },
@@ -415,7 +415,7 @@ describe('observeReduxOrders', () => {
       id: 'discrete-twap',
       status: OrderStatus.PENDING,
     }
-    const expectedReduxOrders = [emulatedTwapOrder, emulatedPartOrder, discreteTwapOrder]
+    const expectedReduxOrders = [emulatedTwapOrder, safeTwapOrder, emulatedPartOrder, discreteTwapOrder]
     const ordersList = {
       ...EMPTY_ORDERS_LIST,
       [OrderTabId.OPEN]: expectedReduxOrders,
@@ -457,8 +457,7 @@ describe('observeReduxOrders', () => {
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
         [tabParamAtom, null],
-        [isAtomicBatchSupportedLoadableAtom, { data: true, state: 'hasData' }],
-        [emulatedTwapOrdersAtom, [emulatedTwapOrder]],
+        [emulatedTwapOrdersAtom, [emulatedTwapOrder, safeTwapOrder]],
         [emulatedPartOrdersAtom, [emulatedPartOrder]],
         [
           ordersTableFiltersAtom,

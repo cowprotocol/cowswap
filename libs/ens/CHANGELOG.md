@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.5.0...ens-v3.5.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.7...ens-v3.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-utils@3.12.0
+
+## [3.4.7](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.6...ens-v3.4.7) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.4.6](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.5...ens-v3.4.6) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+
 ## [3.4.5](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.4...ens-v3.4.5) (2026-07-22)
 
 ### Patch Changes

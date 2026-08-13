@@ -23,11 +23,16 @@ import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWid
 import { useWethContractData } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useSolanaWrapNativeCallback } from './useSolanaWrapNativeCallback'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
 
 export function useWrapNativeFlow(): WrapUnwrapCallback {
   const state = useDerivedTradeState()
-  const wrapCallback = useWrapNativeCallback(state?.inputCurrencyAmount)
+  const evmCallback = useWrapNativeCallback(state?.inputCurrencyAmount)
+  const solanaCallback = useSolanaWrapNativeCallback(state?.inputCurrencyAmount)
+
+  // The Solana callback is null on every EVM chain, so EVM keeps using the callback it always has
+  const wrapCallback = solanaCallback ?? evmCallback
 
   return useCallback(
     async (params?: WrapUnwrapCallbackParams) => {

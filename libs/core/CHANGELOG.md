@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/core-v3.7.0...core-v3.7.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/core-v3.6.4...core-v3.7.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-utils@3.12.0
+
+## [3.6.4](https://github.com/cowprotocol/cowswap/compare/core-v3.6.3...core-v3.6.4) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.6.3](https://github.com/cowprotocol/cowswap/compare/core-v3.6.2...core-v3.6.3) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- fix: move from solver ID to address
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+
 ## [3.6.2](https://github.com/cowprotocol/cowswap/compare/core-v3.6.1...core-v3.6.2) (2026-07-22)
 
 ### Patch Changes

@@ -72,6 +72,7 @@ CLAUDE.md
 
 # Agents context files (local only)
 .agents/
+.plans/
 
 # Serena project files
 .serena/

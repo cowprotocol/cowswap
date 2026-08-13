@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/dx",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Shared development tooling for CoW Protocol repositories",
   "repository": {
     "type": "git",

@@ -37,6 +37,21 @@ export function isAddress(value: string | undefined | null): string | false {
   }
 }
 
+/**
+ * Shortens an address for display, falling back to the original value when it cannot be shortened.
+ *
+ * Use it for values that are only *expected* to be addresses (backend payloads, user input): the
+ * full 42-char address would break the UI layout, but `shortenAddress` throws on anything that
+ * isn't a known address format, so the raw value is displayed instead.
+ */
+export function safeShortenAddress(address: string, chars?: number): string {
+  try {
+    return shortenAddress(address, chars)
+  } catch {
+    return address
+  }
+}
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chars = 4): string {
   if (isEvmAddress(address)) {

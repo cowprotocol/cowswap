@@ -69,7 +69,11 @@ export async function safeBundleApprovalFlow({
   const tradeAmounts = { inputAmount, outputAmount }
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: orderParams.quoteId,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
@@ -209,7 +213,7 @@ export async function safeBundleApprovalFlow({
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_APPROVE, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

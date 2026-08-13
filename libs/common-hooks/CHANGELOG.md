@@ -1,5 +1,56 @@
 # Changelog
 
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.0...common-hooks-v3.9.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.8.0...common-hooks-v3.9.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/types@4.8.0
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.7.0...common-hooks-v3.8.0) (2026-07-30)
+
+### Minor Changes
+
+- feat(balances): add hook to make token lists steady to prevent many requests to bw (#7887)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.6.1...common-hooks-v3.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: add TWAP EOA proxy to Account Proxy page (#7866)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.6.0...common-hooks-v3.6.1) (2026-07-22)
 
 ### Patch Changes

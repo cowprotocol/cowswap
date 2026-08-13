@@ -1,5 +1,37 @@
 # Changelog
 
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/types-v4.7.0...types-v4.8.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.3.0
+
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/types-v4.6.0...types-v4.7.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: bump sdk with near fix for btc amount calculation (#7904)
+
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/types-v4.5.1...types-v4.6.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(bridge): show approximate bridging time while order is pending (#7803)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.2.2
+
 ## [4.5.1](https://github.com/cowprotocol/cowswap/compare/types-v4.5.0...types-v4.5.1) (2026-06-23)
 
 ### Patch Changes

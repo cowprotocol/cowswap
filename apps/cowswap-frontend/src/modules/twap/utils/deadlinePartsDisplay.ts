@@ -13,6 +13,7 @@ export function customDeadlineToSeconds(customDeadline: TwapOrdersDeadline['cust
   return (hoursToMinutes + customDeadline.minutes) * 60
 }
 
+// eslint-disable-next-line complexity
 export function deadlinePartsDisplay(timeInterval: number, longLabels = false): string {
   const timeMs = ms(`${timeInterval * 1000}ms`)
 
@@ -24,12 +25,12 @@ export function deadlinePartsDisplay(timeInterval: number, longLabels = false): 
   const seconds = Math.floor((timeMs % oneM) / oneS)
 
   return [
-    [years, longLabels ? ' ' + t`years` : t`y`],
-    [months, longLabels ? ' ' + t`months` : t`mo`],
-    [days, longLabels ? ' ' + t`days` : t`d`],
-    [hours, longLabels ? ' ' + t`hours` : t`h`],
-    [minutes, longLabels ? ' ' + t`minutes` : t`m`],
-    [seconds, longLabels ? ' ' + t`seconds` : t`s`],
+    [years, longLabels ? ' ' + (years === 1 ? t`year` : t`years`) : t`y`],
+    [months, longLabels ? ' ' + (months === 1 ? t`month` : t`months`) : t`mo`],
+    [days, longLabels ? ' ' + (days === 1 ? t`day` : t`days`) : t`d`],
+    [hours, longLabels ? ' ' + (hours === 1 ? t`hour` : t`hours`) : t`h`],
+    [minutes, longLabels ? ' ' + (minutes === 1 ? t`minute` : t`minutes`) : t`m`],
+    [seconds, longLabels ? ' ' + (seconds === 1 ? t`second` : t`seconds`) : t`s`],
   ]
     .filter(([value]) => !!value)
     .map(([value, suffix]) => `${value}${suffix}`)
