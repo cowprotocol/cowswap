@@ -147,3 +147,81 @@ test('reset() clears the registry', async () => {
   orders.reset()
   assert.equal(orders.getOrder(orderId), undefined)
 })
+
+test('seedOpenOrder registers a cancellable order without any postOrder call', () => {
+  const orderId = generateOrderId()
+  orders.seedOpenOrder({
+    orderId,
+    owner: OWNER,
+    sellToken: '0xaaa',
+    buyToken: '0xbbb',
+    sellAmount: 1_000_000n,
+    buyAmount: 2_000_000n,
+  })
+
+  const order = orders.getOrder(orderId)
+  assert.equal(order?.uid, orderId)
+  assert.equal(order?.sellAmount, '1000000')
+  assert.equal(order?.invalidated, false)
+  assert.equal(orders.wasCancelRequested(orderId), false)
+})
+
+test('accountOrders answers with only the seeded order, dropping the default fixture list', async () => {
+  const orderId = generateOrderId()
+  orders.seedOpenOrder({
+    orderId,
+    owner: OWNER,
+    sellToken: '0xaaa',
+    buyToken: '0xbbb',
+    sellAmount: 1n,
+    buyAmount: 1n,
+  })
+
+  const route = createStubRoute(`https://api.cow.fi/mainnet/api/v1/account/${OWNER}/orders`, 'GET')
+  await capturedHandler(route)
+  const body = JSON.parse((route as unknown as { fulfilled?: { body: string } }).fulfilled?.body ?? '[]') as Array<{
+    uid: string
+  }>
+  assert.equal(body.length, 1)
+  assert.equal(body[0]?.uid, orderId)
+})
+
+test('cancelOrders sets wasCancelRequested only for the named uid', async () => {
+  const cancelledId = generateOrderId()
+  const otherId = generateOrderId()
+  orders.seedOpenOrder({
+    orderId: cancelledId,
+    owner: OWNER,
+    sellToken: '0xa',
+    buyToken: '0xb',
+    sellAmount: 1n,
+    buyAmount: 1n,
+  })
+  orders.seedOpenOrder({
+    orderId: otherId,
+    owner: OWNER,
+    sellToken: '0xa',
+    buyToken: '0xb',
+    sellAmount: 1n,
+    buyAmount: 1n,
+  })
+
+  await capturedHandler(
+    createStubRoute('https://api.cow.fi/mainnet/api/v1/orders', 'DELETE', { orderUids: [cancelledId] }),
+  )
+
+  assert.equal(orders.wasCancelRequested(cancelledId), true)
+  assert.equal(orders.wasCancelRequested(otherId), false)
+})
+
+test('markCancelled sets invalidated on the seeded order', () => {
+  const orderId = generateOrderId()
+  orders.seedOpenOrder({ orderId, owner: OWNER, sellToken: '0xa', buyToken: '0xb', sellAmount: 1n, buyAmount: 1n })
+  orders.markCancelled(orderId)
+  assert.equal(orders.getOrder(orderId)?.invalidated, true)
+})
+
+test('wasCancelRequested and markCancelled throw for an unknown orderId', () => {
+  assert.throws(() => orders.wasCancelRequested(generateOrderId()), /unknown orderId/)
+  assert.throws(() => orders.markCancelled(generateOrderId()), /unknown orderId/)
+})

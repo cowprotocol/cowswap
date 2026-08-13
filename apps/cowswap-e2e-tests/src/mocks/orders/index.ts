@@ -137,14 +137,28 @@ export function installOrdersMock(cowApi: CowProtocolApiMock): OrdersMock {
       entry.stage = 'executing'
     },
 
-    seedOpenOrder(_opts) {
-      throw new Error('seedOpenOrder: not implemented yet (Task 2)')
+    seedOpenOrder({ orderId, owner, sellToken, buyToken, sellAmount, buyAmount, createdSecondsAgo = 30 }) {
+      state.registry.set(orderId, {
+        owner,
+        body: null,
+        order: buildSeededOrder({ orderId, owner, sellToken, buyToken, sellAmount, buyAmount, createdSecondsAgo }),
+        stage: 'open',
+        cancelRequested: false,
+        includeInAccountOrders: true,
+        soleAccountOrder: true,
+      })
     },
-    wasCancelRequested(_orderId) {
-      throw new Error('wasCancelRequested: not implemented yet (Task 2)')
+
+    wasCancelRequested(orderId) {
+      const entry = state.registry.get(orderId)
+      if (!entry) throw new Error(`wasCancelRequested: unknown orderId ${orderId}`)
+      return entry.cancelRequested
     },
-    markCancelled(_orderId) {
-      throw new Error('markCancelled: not implemented yet (Task 2)')
+
+    markCancelled(orderId) {
+      const entry = state.registry.get(orderId)
+      if (!entry?.order) throw new Error(`markCancelled: unknown orderId ${orderId}`)
+      entry.order = { ...entry.order, invalidated: true }
     },
     trackEthFlowOrder(_ethFlow) {
       throw new Error('trackEthFlowOrder: not implemented yet (Task 3)')
@@ -227,6 +241,52 @@ function buildOrderStatus(type: 'executing' | 'traded', body: OrderCreation): { 
       },
     ],
   }
+}
+
+/** A fake "open" order seeded directly, without ever posting one through the UI. */
+function buildSeededOrder(opts: {
+  orderId: string
+  owner: string
+  sellToken: string
+  buyToken: string
+  sellAmount: bigint
+  buyAmount: bigint
+  createdSecondsAgo: number
+}): Order {
+  const { orderId, owner, sellToken, buyToken, sellAmount, buyAmount, createdSecondsAgo } = opts
+  return {
+    creationDate: new Date(Date.now() - createdSecondsAgo * 1000).toISOString(),
+    owner,
+    uid: orderId,
+    availableBalance: null,
+    executedBuyAmount: '0',
+    executedSellAmount: '0',
+    executedSellAmountBeforeFees: '0',
+    executedFeeAmount: '0',
+    executedFee: '0',
+    executedFeeToken: sellToken,
+    invalidated: false,
+    status: 'open',
+    class: 'market',
+    settlementContract: '0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13',
+    isLiquidityOrder: false,
+    fullAppData: '{}',
+    sellToken,
+    buyToken,
+    receiver: owner,
+    sellAmount: sellAmount.toString(),
+    buyAmount: buyAmount.toString(),
+    validTo: Math.floor(Date.now() / 1000) + 3600,
+    appData: `0x${'cd'.repeat(32)}`,
+    feeAmount: '0',
+    kind: 'sell',
+    partiallyFillable: false,
+    sellTokenBalance: 'erc20',
+    buyTokenBalance: 'erc20',
+    signingScheme: 'eip712',
+    signature: `0x${'11'.repeat(65)}`,
+    interactions: { pre: [], post: [] },
+  } as Order
 }
 
 function setupOrderHandlers(state: State, cowApi: CowProtocolApiMock): void {
