@@ -1,6 +1,7 @@
 import { parseUnits, type Hex } from 'viem'
 
 import { test, expect } from '../fixtures'
+import { generateOrderId } from '../mocks/orders'
 import { CHAIN_IDS } from '../support/constants'
 
 const CHAIN_ID = CHAIN_IDS.SEPOLIA
@@ -32,7 +33,6 @@ test.describe('Limit Orders', () => {
 
   test('[LO-02] Place sell limit order: USDC → COW, order shows up in the orders table', async ({
     limitPage,
-    tradePage,
     wallet,
     confirmModal,
     mocks,
@@ -48,11 +48,7 @@ test.describe('Limit Orders', () => {
     mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: SELL_AMOUNT, [COW]: 0n })
     mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: ALLOWANCE })
 
-    // Page-agnostic (only wires CoW API mocks). The real trade flow tags the pending order
-    // `class: LIMIT` locally before dispatch, and that local class always wins over a fetched
-    // order's — so this helper's hardcoded `class: 'market'` on the fabricated order doesn't
-    // filter it out of the Limit tab.
-    tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+    const orderId = generateOrderId()
 
     await limitPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: COW })
     await limitPage.enterSellAmount('120')
@@ -66,7 +62,15 @@ test.describe('Limit Orders', () => {
 
     await limitPage.placeOrder()
     await expect(confirmModal.confirmButton).toContainText('Place limit order')
-    await confirmModal.confirm()
+
+    // Real trade flow tags the pending order `class: LIMIT` locally before dispatch, and that
+    // local class always wins over a fetched order's — so `expectOrderToBePosted`'s hardcoded
+    // `class: 'market'` on the fabricated order doesn't filter it out of the Limit tab.
+    await mocks.orders.expectOrderToBePosted({
+      orderId,
+      owner: wallet.address,
+      trigger: () => confirmModal.confirm(),
+    })
 
     // The mock wallet signs and `postOrder` responds instantly, so the flow skips past any
     // transient progress step straight to the confirm modal's "Order Submitted" screen.
