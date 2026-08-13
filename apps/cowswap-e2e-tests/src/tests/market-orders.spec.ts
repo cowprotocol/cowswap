@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits, type Hex } from 'viem'
+import { encodeFunctionData, formatUnits, parseUnits, type Hex } from 'viem'
 
 import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
 
@@ -1560,6 +1560,87 @@ test.describe('Market Orders', () => {
       // this isn't a partially-broken post-reset state that merely looks quoted.
       await expect(swapPage.approveModeSelector).toBeVisible()
       await expect(swapPage.primaryActionButton).toBeEnabled()
+    })
+
+    test('[CS-131] Add a Pre-hook to a swap order', async ({
+      swapPage,
+      tradePage,
+      wallet,
+      confirmModal,
+      accountModal,
+      mocks,
+    }) => {
+      // The real CoW Protocol GPv2VaultRelayer address (same across chains) — used only as the
+      // `approve()` spender encoded into the hook's calldata below, to represent a realistic
+      // "token approval" pre-hook per the ticket's example, not because it's ever actually called
+      // (the hook is never executed on a real chain in this mocked test).
+      const VAULT_RELAYER = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110'
+      const HOOK_GAS_LIMIT = '45000'
+      const approveCalldata = encodeFunctionData({
+        abi: [
+          {
+            name: 'approve',
+            type: 'function',
+            stateMutability: 'nonpayable',
+            inputs: [
+              { name: 'spender', type: 'address' },
+              { name: 'amount', type: 'uint256' },
+            ],
+            outputs: [{ name: '', type: 'bool' }],
+          },
+        ],
+        functionName: 'approve',
+        args: [VAULT_RELAYER, parseUnits('1', 18)],
+      })
+
+      mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 1n, denominator: 1n } })
+      mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('10', 18) })
+
+      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
+      await swapPage.unlockIfNeeded()
+      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
+
+      await swapPage.enterSellAmount('1')
+      await swapPage.waitForQuote()
+
+      // Opens `HookRegistryList` — a searchable Hook Store modal listing both built-in ("Build your
+      // own hook", `BUILD_CUSTOM_HOOK` in `hookRegistry.tsx`) and custom hook dapps.
+      await swapPage.page.getByText('Add Pre-Hook Action', { exact: true }).click()
+      await swapPage.page.getByPlaceholder('Search hooks by title or description').fill('Build your own hook')
+      // `HookListItem` renders the whole `<li>` card clickable to *open its details page*
+      // (`onOpenDetails`) — only the "Open" button inside it actually selects the dapp
+      // (`onSelect`) and opens `BuildHookApp`'s form.
+      const hookCard = swapPage.page.locator('li', { hasText: 'Build your own hook' })
+      await hookCard.getByRole('button', { name: 'Open', exact: true }).click()
+
+      // `BuildHookApp`'s plain form: `<input name="target">`, `<input name="gasLimit">`,
+      // `<textarea name="callData">` — no ids/`data-testid`, matched by their `name` attribute.
+      await swapPage.page.locator('input[name="target"]').fill(WETH)
+      await swapPage.page.locator('input[name="gasLimit"]').fill(HOOK_GAS_LIMIT)
+      await swapPage.page.locator('textarea[name="callData"]').fill(approveCalldata)
+      await swapPage.page.getByRole('button', { name: 'Add Pre-hook', exact: true }).click()
+
+      // The Hook Store modal closes back to the swap form once `context.addHook` resolves.
+      await swapPage.page.getByPlaceholder('Search hooks by title or description').waitFor({ state: 'hidden' })
+      await expect(swapPage.page.getByText('Build your own hook', { exact: true })).toBeVisible()
+
+      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      await swapPage.clickSwap()
+      await confirmModal.confirm()
+
+      await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
+      posting.fulfill(mocks.balances, CHAIN_ID, parseUnits('10', 18), parseUnits('1500', 18))
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+      await swapPage.page.keyboard.press('Escape')
+
+      // `mockOrderPosting`'s `buildOpenOrder` already echoes the posted `appData` back as
+      // `fullAppData` on the mocked `accountOrders`/`order` endpoints — `OrderHooksDetails`
+      // (`common/containers/OrderHooksDetails`) decodes that same field to render this "Hooks"
+      // summary in `ActivityDetails`, so this is a genuine round-trip check: the hook was correctly
+      // built into the signed order's appData, not just added to local form state.
+      await accountModal.open()
+      await expect(accountModal.activitiesList).toContainText('Hooks')
+      await expect(accountModal.activitiesList).toContainText('PRE')
     })
   })
 
