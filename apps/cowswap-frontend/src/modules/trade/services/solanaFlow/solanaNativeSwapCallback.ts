@@ -1,4 +1,5 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Connection, PublicKey } from '@solana/web3.js'
@@ -34,12 +35,14 @@ export async function solanaNativeSwapCallback(context: SolanaNativeSwapContext)
   try {
     const owner = new PublicKey(account)
 
-    const wrapStep = await planWrapStep({ connection, owner, sellAmount })
+    const wrapStep = planWrapStep({ owner, sellAmount })
     const delegateStep = planDelegateStep({ owner, token: WSOL, amount: sellAmount, currentDelegation })
     const steps = [wrapStep, delegateStep].filter((step): step is SolanaFlowStep => step !== null)
 
     return await sendSolanaFlow({ connection, provider, owner, addTransaction }, steps)
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
     return handleSolanaSendError(error, { useModals: false })
   }
 }

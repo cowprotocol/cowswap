@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react'
 
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { ButtonError, ButtonSize, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -24,8 +25,10 @@ export function SolanaWrapAndDelegateButton({ isDisabled, clickEvent }: SolanaWr
 
     try {
       await wrapAndDelegate?.()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+
+      setError(error.message)
     }
   })
 

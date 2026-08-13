@@ -4,42 +4,31 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
-import { ACCOUNT_SIZE, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
 
 import { buildWrapSolInstructions } from '../wrapNativeSolana/buildWrapSolInstructions'
-import { WSOL_MINT } from '../wrapNativeSolana/const'
 
 export interface PlanWrapStepParams {
-  connection: Connection
   owner: PublicKey
   // Native SOL lamports that must land as WSOL — the trade's exact sell amount.
   sellAmount: bigint
 }
 
-// Unlike the standalone wrap flow (which caps spend and can under-deliver WSOL), the delegate step and order need the exact `sellAmount` — so the transfer is grown by the rent-exempt deposit when the WSOL account doesn't exist yet.
-export async function planWrapStep({
-  connection,
-  owner,
-  sellAmount,
-}: PlanWrapStepParams): Promise<SolanaFlowStep | null> {
+// `SyncNative` sets the token amount to the account's lamports minus the *current* rent-exempt
+// minimum, so the rent an idempotent create instruction funds is always netted back out —
+// regardless of whether the WSOL account already existed. `sellAmount` alone is therefore always
+// the resulting WSOL amount; no adjustment for account creation is needed (contrast with the
+// standalone wrap flow's `getSolanaWrapPreview`, which caps *total spend* at the typed amount instead).
+export function planWrapStep({ owner, sellAmount }: PlanWrapStepParams): SolanaFlowStep | null {
   if (sellAmount <= 0n) return null
 
-  const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
-
-  const [accountInfo, rentExemptLamports] = await Promise.all([
-    connection.getAccountInfo(associatedTokenAccount),
-    connection.getMinimumBalanceForRentExemption(ACCOUNT_SIZE),
-  ])
-
-  const transferLamports = accountInfo ? sellAmount : sellAmount + BigInt(rentExemptLamports)
   const sellCurrencyAmount = CurrencyAmount.fromRawAmount(NATIVE_CURRENCIES[SupportedChainId.SOLANA], sellAmount)
   const sellAmountStr = formatTokenAmount(sellCurrencyAmount)
 
   return {
-    instructions: buildWrapSolInstructions({ owner, transferLamports }),
+    instructions: buildWrapSolInstructions({ owner, transferLamports: sellAmount }),
     summary: t`Wrap ${sellAmountStr} SOL`,
   }
 }
