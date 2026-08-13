@@ -14,6 +14,7 @@ import { Nullish } from 'types'
 
 import { HIGH_FEE_WARNING_PERCENTAGE, PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 
+import { WarningReason } from './orderEstimatedExecutionPrice.constants'
 import * as styledEl from './OrderEstimatedExecutionPrice.styled'
 
 import * as orderRowEl from '../../containers/OrderRow/OrderRow.styled'
@@ -32,7 +33,7 @@ export interface OrderEstimatedExecutionPriceProps extends TokenAmountProps {
   onApprove?: Command
   percentageDifference?: Percent
   percentageFee?: Percent
-  warningText?: string
+  warningReason?: WarningReason
 }
 
 type UnlikelyToExecuteWarningProps = {
@@ -57,7 +58,7 @@ export function OrderEstimatedExecutionPrice({
   percentageDifference,
   percentageFee,
   tokenSymbol,
-  warningText,
+  warningReason,
   ...rest
 }: OrderEstimatedExecutionPriceProps) {
   const [approveClicked, setApproveClicked] = useState(true)
@@ -101,27 +102,55 @@ export function OrderEstimatedExecutionPrice({
     return () => clearTimeout(timeout)
   }, [approveClicked])
 
-  const internationalizedWarningText =
-    warningText === 'Insufficient balance'
+  const isFallbackHandlerWarning = warningReason === WarningReason.FallbackHandler
+  const isAllowanceWarning = warningReason === WarningReason.Allowance
+  const isBalanceWarning = warningReason === WarningReason.Balance
+
+  const warningLabel = isFallbackHandlerWarning
+    ? t`Update fallback handler`
+    : isBalanceWarning
       ? t`Insufficient balance`
-      : warningText === 'Insufficient allowance'
+      : isAllowanceWarning
         ? t`Insufficient allowance`
         : t`Unfillable`
 
   const unfillableLabel = (
     <styledEl.UnfillableLabel>
-      {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
+      {isFallbackHandlerWarning && (
+        <HoverTooltip
+          content={
+            <warningTooltopEl.WarningContent>
+              <h3>{warningLabel}</h3>
+              <p>
+                <Trans>
+                  Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not
+                  getting created because of that. Please, update the fallback handler in order to make the orders work
+                  again.
+                </Trans>
+              </p>
+            </warningTooltopEl.WarningContent>
+          }
+          bgColor={`var(${UI.COLOR_DANGER_BG})`}
+          color={`var(${UI.COLOR_DANGER_TEXT})`}
+        >
+          <styledEl.WarningContent>
+            <SVG src={svgAlertSrc} />
+            {warningLabel}
+          </styledEl.WarningContent>
+        </HoverTooltip>
+      )}
+      {(isAllowanceWarning || isBalanceWarning) && (
         <>
           <HoverTooltip
             content={
               <warningTooltopEl.WarningContent>
-                <h3>{internationalizedWarningText}</h3>
+                <h3>{warningLabel}</h3>
                 <p>
-                  {warningText === 'Insufficient allowance'
+                  {isAllowanceWarning
                     ? t`The order remains open. Execution requires adequate allowance. Approve the token to proceed.`
                     : t`The order remains open. Execution requires sufficient balance.`}
                 </p>
-                {warningText === 'Insufficient allowance' && handleApproveClick && (
+                {isAllowanceWarning && handleApproveClick && (
                   <warningTooltopEl.WarningActionBox>
                     {approveClicked ? (
                       <styledEl.ApproveLoaderWrapper>
@@ -141,10 +170,10 @@ export function OrderEstimatedExecutionPrice({
           >
             <styledEl.WarningContent>
               <SVG src={iconAllowanceSrc} />
-              {internationalizedWarningText}
+              {warningLabel}
             </styledEl.WarningContent>
           </HoverTooltip>
-          {warningText === 'Insufficient allowance' &&
+          {isAllowanceWarning &&
             handleApproveClick &&
             (approveClicked ? (
               <Loader />
