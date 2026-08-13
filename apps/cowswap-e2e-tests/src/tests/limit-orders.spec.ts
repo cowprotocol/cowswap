@@ -66,7 +66,7 @@ test.describe('Limit Orders', () => {
 
     await limitPage.placeOrder()
     await expect(confirmModal.confirmButton).toContainText('Place limit order')
-    await confirmModal.confirmButton.click()
+    await confirmModal.confirm()
 
     // The mock wallet signs and `postOrder` responds instantly, so the flow skips past any
     // transient progress step straight to the confirm modal's "Order Submitted" screen.

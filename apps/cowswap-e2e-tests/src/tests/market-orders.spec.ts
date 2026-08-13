@@ -89,7 +89,7 @@ test.describe('Market Orders', () => {
       await swapPage.waitForQuote()
 
       await swapPage.clickSwap()
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just posted, competition not started yet.
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
@@ -178,7 +178,7 @@ test.describe('Market Orders', () => {
       await swapPage.waitForQuote()
 
       await swapPage.clickSwap()
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
       await swapPage.page.keyboard.press('Escape')
@@ -506,7 +506,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('0.5')
 
       await swapPage.clickSwap()
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       // Confirming signs/sends the on-chain creation tx directly (`eth_sendTransaction`, stubbed by
       // `mockEthFlowTransaction`) — there's no separate off-chain EIP-712 signature for this flow.
@@ -615,7 +615,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('0.5')
 
       await swapPage.clickSwap()
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       // Creating (tx sent, not yet mined): "Sending ETH" is the active step, and the tx hash is
       // already linked as its "View transaction" explorer link — same signals as [CS-68].
@@ -817,7 +817,7 @@ test.describe('Market Orders', () => {
 
       // Only placing the swap from here on posts the order — proving the approval tx really did
       // happen before it, not just alongside it.
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
       await expect.poll(() => orderPosted).toBe(true)
     })
 
@@ -894,7 +894,7 @@ test.describe('Market Orders', () => {
       expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
 
       // Signing auto-advances into the swap confirm screen, same as a real approval does.
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       // The signed permit is what gets "executed with the swap settlement": it's uploaded as a
       // pre-interaction CoW Hook on the order's appData, not a separate approve() call.
@@ -1116,7 +1116,7 @@ test.describe('Market Orders', () => {
       await swapPage.waitForQuote()
 
       await swapPage.clickSwap()
-      await confirmModal.confirmButton.click()
+      await confirmModal.confirm()
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just signed and posted, competition hasn't
       // started yet.
@@ -1212,16 +1212,27 @@ test.describe('Market Orders', () => {
       const readRowAmount = (label: string): Promise<bigint> =>
         readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
 
-      const beforeCosts = await readRowAmount('Before costs')
-      const protocolFee = await readRowAmount('Protocol fee')
-      const networkCosts = await readRowAmount('Network costs')
-      const toAmount = await readRowAmount('To')
+      // See [CS-128]'s comment on the identical read: four separately-awaited reads risk a
+      // re-render (the form's own default-amount probe quote settling into the typed one) landing
+      // in between two of them, tearing the snapshot and skewing the ratio. Re-reading all four
+      // together on every poll attempt rides out that race.
+      let beforeCosts = 0n
+      let protocolFee = 0n
+      let networkCosts = 0n
+      let toAmount = 0n
+
+      await expect
+        .poll(async () => {
+          beforeCosts = await readRowAmount('Before costs')
+          protocolFee = await readRowAmount('Protocol fee')
+          networkCosts = await readRowAmount('Network costs')
+          toAmount = await readRowAmount('To')
+          return Number(protocolFee) / Number(beforeCosts)
+        })
+        .toBeCloseTo(0.0002, 6)
 
       expect(protocolFee).toBeGreaterThan(0n)
       expect(networkCosts).toBe(0n)
-
-      // Protocol fee ≈ Before costs × 0.0002 (2 bps).
-      expect(Number(protocolFee) / Number(beforeCosts)).toBeCloseTo(0.0002, 6)
 
       // The core relationship: To = Before costs − Network costs − Protocol fee.
       expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
@@ -1307,10 +1318,28 @@ test.describe('Market Orders', () => {
             buyDecimals,
           )
 
-        const beforeCosts = await readRowAmount('Before costs')
-        const protocolFee = await readRowAmount('Protocol fee')
-        const networkCosts = await readRowAmount('Network costs')
-        const toAmount = await readRowAmount('To')
+        // The tooltip briefly shows a stale quote (the form's own default-amount probe, fetched
+        // before the typed "1000" settles) — `waitForQuote()` only waits for the loading flag to
+        // clear once, not for these four rows to all reflect the *same* render. Reading them as
+        // four separately-awaited calls risks a re-render landing in between two of them, tearing
+        // the snapshot (e.g. `beforeCosts` from the stale quote, `protocolFee` from the fresh one)
+        // and skewing the ratio below by orders of magnitude. Re-reading all four together on every
+        // poll attempt, instead of trusting a single one-shot batch, rides out that race the same
+        // way the recipient-checkbox retry in `[CC-17]` rides out its own settling-debounce race.
+        let beforeCosts = 0n
+        let protocolFee = 0n
+        let networkCosts = 0n
+        let toAmount = 0n
+
+        await expect
+          .poll(async () => {
+            beforeCosts = await readRowAmount('Before costs')
+            protocolFee = await readRowAmount('Protocol fee')
+            networkCosts = await readRowAmount('Network costs')
+            toAmount = await readRowAmount('To')
+            return Number(protocolFee) / Number(beforeCosts)
+          })
+          .toBeCloseTo(0.00003, 6)
 
         expect(protocolFee).toBeGreaterThan(0n)
         expect(networkCosts).toBe(0n)
@@ -1318,7 +1347,6 @@ test.describe('Market Orders', () => {
         // Protocol fee ≈ Before costs × 0.00003 (0.3 bps) — ~6.67× smaller than [CS-127]'s 2 bps tier
         // on equivalent volume.
         const ratio = Number(protocolFee) / Number(beforeCosts)
-        expect(ratio).toBeCloseTo(0.00003, 6)
         expect(STANDARD_TIER_RATIO / ratio).toBeCloseTo(6.667, 1)
 
         // The core relationship: To = Before costs − Network costs − Protocol fee.
