@@ -1478,6 +1478,10 @@ test.describe('Market Orders', () => {
       mockBridgeSupportedTokens(context, [
         { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
       ])
+      // Pin a 1:1 rate matching `mocks.usdPrices`' $1-per-token default — the raw default quote
+      // fixture doesn't match that assumption, which otherwise renders an absurd (~54615%) rate
+      // deviation next to the buy amount (see suite's own known quirk on this).
+      mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 1n, denominator: 1n } })
 
       // Part 1: the buy-token picker on the Hooks tab never offers another chain to pick from.
       await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
