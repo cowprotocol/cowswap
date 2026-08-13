@@ -13,9 +13,7 @@ export const TabsContainer = styled.div`
   }
 `
 export const TabButton = styled.button<{ active$: boolean; isCowAmm?: boolean }>`
-  cursor: pointer;
   border: 1px solid var(${UI.COLOR_BACKGROUND});
-  outline: none;
   padding: 8px 16px;
   border-radius: 32px;
   font-size: 14px;

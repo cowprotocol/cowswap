@@ -413,7 +413,6 @@ export const ViewMoreButton = styled.button`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_70});
   color: var(${UI.COLOR_TEXT});
   border-radius: 20px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;

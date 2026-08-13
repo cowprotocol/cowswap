@@ -220,13 +220,11 @@ export const CTAButton = styled.button<{
   --font-size: ${({ fontSize = 24 }) => fontSize}px;
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`};
   color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_GREEN})`};
-  border: none;
   border-radius: var(--size);
   min-height: var(--size);
   padding: 12px 24px;
   font-size: var(--font-size);
   font-weight: bold;
-  cursor: pointer;
   width: 100%;
   max-width: 100%;
   display: flex;

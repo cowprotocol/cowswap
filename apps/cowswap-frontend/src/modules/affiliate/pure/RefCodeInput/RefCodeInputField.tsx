@@ -28,7 +28,6 @@ export function RefCodeInputField({ compactSize = false, ...rest }: RefCodeInput
 
 const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolean }>`
   flex: 1;
-  border: none;
   background: transparent;
   color: inherit;
   position: relative;
@@ -40,9 +39,6 @@ const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolea
   letter-spacing: 0;
   text-transform: uppercase;
   font-family: ${Font.familyMono};
-  padding: 0;
-  margin: 0;
-  outline: none;
   caret-color: var(${UI.COLOR_PRIMARY});
 
   &:disabled {

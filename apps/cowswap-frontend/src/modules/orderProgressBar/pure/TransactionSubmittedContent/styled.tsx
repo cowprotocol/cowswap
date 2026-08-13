@@ -12,16 +12,12 @@ export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   align-items: center;
   border-radius: 16px;
   min-height: 52px;
-  border: 0;
   color: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
   background: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PRIMARY})`)};
-  outline: 0;
   padding: 8px 16px;
-  margin: 0;
   font-size: 16px;
   font-weight: 600;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  cursor: pointer;
   width: 100%;
 
   &:hover {
