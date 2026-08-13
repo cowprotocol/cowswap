@@ -98,11 +98,11 @@ test.describe('Cross-chain swaps', () => {
    * scoped, not amount-scoped, so nothing about the follow-up fetch retries or clears it.
    *
    * The app uses a hash router, so `page.goto()` to a new `#/...` route is a same-document
-   * navigation — `bridgingSdk`'s available-provider set is a page-lifetime singleton
-   * (`tradingSdk/bridgingSdk.ts` seeds it once at module load), so a test that calls this twice to
-   * switch providers (`configureProviders` in between) needs a genuine reload for the switch to
-   * take effect; `page.reload()` re-reads whatever hash is already in the address bar, so it must
-   * run after the hash is set, not before.
+   * navigation. No reload is needed to switch providers between calls (`configureProviders` in
+   * between): `mocks.launchDarkly.setFlag` pushes the new flags straight into the open page and
+   * fires a `featureFlagsUpdate` event, which `useFeatureFlags` (`libs/common-hooks/src/
+   * useFeatureFlags.ts`) picks up, causing `BridgeProvidersUpdater` to recompute `bridgingSdk`'s
+   * available providers reactively — see both files' doc comments.
    */
   async function openCrossChainSwap(
     wallet: { openApp(opts: { chainId: number; sell?: string }): Promise<void> },
@@ -113,7 +113,6 @@ test.describe('Cross-chain swaps', () => {
     await swapPage.unlockIfNeeded()
     const url = `/#/${opts.chainId}/swap/${opts.sell}/${opts.buy}?targetChainId=${opts.targetChainId}&sellAmount=${opts.sellAmount}`
     await swapPage.page.goto(url)
-    await swapPage.page.reload()
   }
 
   test('[CS-285] Cross-chain swap UI: accessible via Swap form @smoke', async ({
@@ -141,6 +140,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Bungee')).toBeVisible()
 
     await configureProviders(mocks, rpcProxy, 'near-intents')
+    await swapPage.page.reload()
     await openCrossChainSwap(wallet, swapPage, {
       chainId: MAINNET,
       sell: USDC_MAINNET,
