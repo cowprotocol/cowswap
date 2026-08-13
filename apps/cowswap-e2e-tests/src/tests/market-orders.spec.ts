@@ -12,6 +12,8 @@ import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
+import { mockHooksSimulation } from '../support/mockHooksSimulation'
+import { mockTokenLogos } from '../support/mockTokenLogos'
 import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
 import { mockWrapTransaction } from '../support/mockWrapTransaction'
 import { readTitledAmount } from '../support/readTitledAmount'
@@ -1569,6 +1571,7 @@ test.describe('Market Orders', () => {
       confirmModal,
       accountModal,
       mocks,
+      context,
     }) => {
       // The real CoW Protocol GPv2VaultRelayer address (same across chains) — used only as the
       // `approve()` spender encoded into the hook's calldata below, to represent a realistic
@@ -1593,11 +1596,30 @@ test.describe('Market Orders', () => {
         args: [VAULT_RELAYER, parseUnits('1', 18)],
       })
 
-      mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 1n, denominator: 1n } })
+      // Realistic quote: the default fixture's real recorded WETH/USDC rate (~546.99, see [CS-136]
+      // for how this was confirmed), not an artificial 1:1 — matching `usdPrices` to it avoids the
+      // otherwise-absurd price-impact percentage that mismatch produces.
+      mocks.usdPrices.setPrice(WETH, 546.9898499813039)
       mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('10', 18) })
+      // Neither of these real endpoints was mocked before this test — see each helper's own doc
+      // comment for what they replace and why (a 403'ing token-logo CDN, and a live Tenderly
+      // simulation call the confirmation screen makes once a hook is attached).
+      mockTokenLogos(context)
+      mockHooksSimulation(context)
 
-      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
-      await swapPage.unlockIfNeeded()
+      // Enable Hooks via the Settings toggle first (same mechanic [CS-129] exercises in full),
+      // then navigate to the Hooks tab through the UI — not a direct URL shortcut.
+      await swapPage.goto({ chainId: CHAIN_ID })
+      await swapPage.page.locator('#open-settings-dialog-button').click()
+      await swapPage.page.locator('#toggle-hooks-mode-button').click()
+      await swapPage.page.keyboard.press('Escape')
+
+      // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
+      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
+      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
+      await tradingModeDropdown.click()
+      await hooksLink.click()
+      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
       await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
 
       await swapPage.enterSellAmount('1')
@@ -1626,6 +1648,28 @@ test.describe('Market Orders', () => {
 
       const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
       await swapPage.clickSwap()
+
+      // `TradeConfirmation` renders `OrderHooksDetails` with `isTradeConfirmation`, which is what
+      // triggers the Tenderly simulation fetch — expand the "Hooks" summary, then the individual
+      // hook row, to reach the "Simulation successful" text `HookItem` renders off a `status: true`
+      // response (mocked above), plus its dapp logo actually loading (not a broken/letter fallback).
+      const confirmationModal = swapPage.page.locator('#trade-confirmation')
+      // `HookTag` renders "PRE" and its count (`<b>1</b>`) as one element's text ("PRE 1"), so an
+      // exact match on "PRE" alone doesn't match — substring instead.
+      await confirmationModal.getByText('PRE').click()
+      const hookRow = confirmationModal.getByText('Build your own hook', { exact: true })
+      await expect(hookRow).toBeVisible()
+      // This particular logo (`hookDappsRegistry.ts`'s `BUILD_CUSTOM_HOOK.image`) is a real,
+      // unmocked GitHub raw-content URL — real network round trip, so poll instead of a single
+      // immediate read.
+      const hookLogo = confirmationModal.locator('img[alt="Build your own hook"]')
+      await expect(hookLogo).toBeVisible()
+      await expect
+        .poll(() => hookLogo.evaluate((img: HTMLImageElement) => img.naturalWidth), { timeout: 15_000 })
+        .toBeGreaterThan(0)
+      await hookRow.click()
+      await expect(confirmationModal.getByText('Simulation successful', { exact: true })).toBeVisible()
+
       await confirmModal.confirm()
 
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
