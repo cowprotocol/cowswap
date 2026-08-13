@@ -58,7 +58,7 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual([getAddressKey(TOKEN_A), getAddressKey(TOKEN_C)])
+    expect(result.current).toEqual([getAddressKey(TOKEN_C), getAddressKey(TOKEN_A)])
   })
 
   it('normalizes addresses via getAddressKey', () => {
@@ -94,6 +94,17 @@ describe('useCustomTokensForChain', () => {
 
     const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
 
-    expect(result.current).toEqual([getAddressKey(TOKEN_A), getAddressKey(TOKEN_D)])
+    expect(result.current).toEqual([getAddressKey(TOKEN_D), getAddressKey(TOKEN_A)])
+  })
+
+  it('returns addresses sorted regardless of source insertion order', () => {
+    mockTokens([{ chainId: SupportedChainId.MAINNET, address: TOKEN_A }])
+    mockVirtualLists({
+      widgetCustomTokens: [{ chainId: SupportedChainId.MAINNET, address: TOKEN_B }],
+    })
+
+    const { result } = renderHook(() => useCustomTokensForChain(SupportedChainId.MAINNET))
+
+    expect(result.current).toEqual([...result.current].sort())
   })
 })

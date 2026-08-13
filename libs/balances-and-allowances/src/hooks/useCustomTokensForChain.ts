@@ -6,8 +6,11 @@ import { useUserAddedTokens, useVirtualLists } from '@cowprotocol/tokens'
 const EMPTY_CUSTOM_TOKENS: AddressKey[] = []
 
 /**
- * Normalized addresses of user-imported tokens for the given chain. The
- * reference is stable as long as the source atom does not recompute.
+ * Normalized addresses of user-imported tokens and widget-provided custom tokens (virtual lists,
+ * e.g. `widgetCustomTokens`) for the given chain. Virtual lists aren't fetchable URLs (see
+ * `useEnabledTokensListsUrls`), so their tokens are tracked by address here instead. Sorted so the
+ * result is deterministic regardless of source insertion order, keeping `useStableStringList`
+ * (index-sensitive) from treating a reordered-but-unchanged set as a change.
  */
 export function useCustomTokensForChain(chainId: SupportedChainId): AddressKey[] {
   const userAddedTokens = useUserAddedTokens()
@@ -30,6 +33,6 @@ export function useCustomTokensForChain(chainId: SupportedChainId): AddressKey[]
       }
     }
 
-    return addresses.size === 0 ? EMPTY_CUSTOM_TOKENS : Array.from(addresses)
+    return addresses.size === 0 ? EMPTY_CUSTOM_TOKENS : Array.from(addresses).sort()
   }, [userAddedTokens, virtualLists, chainId])
 }
