@@ -686,7 +686,6 @@ msgid "Sell amount"
 msgstr "Sell amount"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Unfillable"
@@ -4401,7 +4400,6 @@ msgid "Limit Order"
 msgstr "Limit Order"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient allowance"
 msgstr "Insufficient allowance"
 
@@ -8375,7 +8373,6 @@ msgid "View on Bridge Explorer ↗"
 msgstr "View on Bridge Explorer ↗"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient balance"
 msgstr "Insufficient balance"
 
