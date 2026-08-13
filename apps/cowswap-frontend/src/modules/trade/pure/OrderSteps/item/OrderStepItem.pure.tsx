@@ -44,7 +44,11 @@ export function OrderStepItem({ step: { label, description, status } }: OrderSte
     <styledEl.StepItem data-status={status}>
       <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
 
-      <styledEl.StepHeaderButton onClick={toggleIsUserExpanded} aria-expanded={isUserExpanded} disabled={!canExpand}>
+      <styledEl.StepHeaderButton
+        onClick={toggleIsUserExpanded}
+        aria-expanded={canExpand ? isUserExpanded : undefined}
+        disabled={!canExpand}
+      >
         <styledEl.StepLabel>{label}</styledEl.StepLabel>
 
         {canExpand ? (

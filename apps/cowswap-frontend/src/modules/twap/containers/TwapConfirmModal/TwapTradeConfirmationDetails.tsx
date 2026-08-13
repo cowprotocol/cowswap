@@ -9,9 +9,7 @@ import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
-import { ReceiveAmountInfo } from 'modules/trade'
-import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
+import { DividerHorizontal, ReceiveAmountInfo, TradeBasicConfirmDetails } from 'modules/trade'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
