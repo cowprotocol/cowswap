@@ -8,6 +8,7 @@ import { generateOrderId, installOrdersMock } from './index'
 import type { BalancesMock } from '../balances'
 import type { CowProtocolApiMock } from '../cowProtocolApi'
 import type { OrdersMock } from './index'
+import type { MockEthFlowTransactionHandle } from '../../support/mockEthFlowTransaction'
 import type { BrowserContext, Route } from '@playwright/test'
 
 const OWNER = `0x${'1'.repeat(40)}`
@@ -224,4 +225,62 @@ test('markCancelled sets invalidated on the seeded order', () => {
 test('wasCancelRequested and markCancelled throw for an unknown orderId', () => {
   assert.throws(() => orders.wasCancelRequested(generateOrderId()), /unknown orderId/)
   assert.throws(() => orders.markCancelled(generateOrderId()), /unknown orderId/)
+})
+
+function fakeEthFlow(
+  params: { sellAmount: bigint; buyAmount: bigint; buyToken: string },
+  filled = false,
+): MockEthFlowTransactionHandle {
+  return {
+    getOrderParams: () => params,
+    isFilled: () => filled,
+  } as unknown as import('../../support/mockEthFlowTransaction').MockEthFlowTransactionHandle
+}
+
+test('trackEthFlowOrder 404s any uid until markIndexed is called', async () => {
+  const tracker = orders.trackEthFlowOrder(fakeEthFlow({ sellAmount: 1n, buyAmount: 2n, buyToken: '0xbbb' }))
+  const route = orderByUidRoute(generateOrderId())
+  await capturedHandler(route)
+  assert.equal((route as unknown as { fulfilled?: { status: number } }).fulfilled?.status, 404)
+
+  tracker.markIndexed()
+  const route2 = orderByUidRoute(generateOrderId())
+  await capturedHandler(route2)
+  assert.equal((route2 as unknown as { fulfilled?: { status: number } }).fulfilled?.status, 200)
+})
+
+test('trackEthFlowOrder reports fields from ethFlow.getOrderParams(), reflecting isFilled() live', async () => {
+  let filled = false
+  const ethFlow = {
+    getOrderParams: () => ({ sellAmount: 5n, buyAmount: 9n, buyToken: '0xbbb' }),
+    isFilled: () => filled,
+  } as unknown as import('../../support/mockEthFlowTransaction').MockEthFlowTransactionHandle
+
+  const tracker = orders.trackEthFlowOrder(ethFlow)
+  tracker.markIndexed()
+
+  const route = orderByUidRoute(generateOrderId())
+  await capturedHandler(route)
+  let body = JSON.parse((route as unknown as { fulfilled?: { body: string } }).fulfilled?.body ?? '{}') as {
+    status: string
+  }
+  assert.equal(body.status, 'open')
+
+  filled = true
+  const route2 = orderByUidRoute(generateOrderId())
+  await capturedHandler(route2)
+  body = JSON.parse((route2 as unknown as { fulfilled?: { body: string } }).fulfilled?.body ?? '{}') as {
+    status: string
+  }
+  assert.equal(body.status, 'fulfilled')
+})
+
+test('reset() clears the eth-flow tracker too', async () => {
+  orders.trackEthFlowOrder(fakeEthFlow({ sellAmount: 1n, buyAmount: 1n, buyToken: '0xbbb' })).markIndexed()
+  orders.reset()
+
+  const route = orderByUidRoute(generateOrderId())
+  await capturedHandler(route)
+  // No tracker and no registry entry left — falls through to the default fixture (200, not 404).
+  assert.equal((route as unknown as { fulfilled?: { status: number } }).fulfilled?.status, 200)
 })

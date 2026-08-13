@@ -83,6 +83,7 @@ export function generateOrderId(): OrderUid {
   return `0x${randomBytes(56).toString('hex')}`
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function installOrdersMock(cowApi: CowProtocolApiMock): OrdersMock {
   const state: State = { registry: new Map(), ethFlowTracker: null }
 
@@ -160,8 +161,13 @@ export function installOrdersMock(cowApi: CowProtocolApiMock): OrdersMock {
       if (!entry?.order) throw new Error(`markCancelled: unknown orderId ${orderId}`)
       entry.order = { ...entry.order, invalidated: true }
     },
-    trackEthFlowOrder(_ethFlow) {
-      throw new Error('trackEthFlowOrder: not implemented yet (Task 3)')
+    trackEthFlowOrder(ethFlow) {
+      state.ethFlowTracker = { ethFlow, indexed: false }
+      return {
+        markIndexed: () => {
+          if (state.ethFlowTracker) state.ethFlowTracker.indexed = true
+        },
+      }
     },
 
     getOrder(orderId) {
@@ -175,9 +181,23 @@ export function installOrdersMock(cowApi: CowProtocolApiMock): OrdersMock {
   }
 }
 
-/** Placeholder so Task 1 compiles standalone; replaced by the real implementation in Task 3. */
-function buildEthFlowOrder(_ethFlow: MockEthFlowTransactionHandle, defaults: Record<string, unknown>): unknown {
-  return defaults
+/** Every amount/status field is read straight off `ethFlow`'s decoded `createOrder()` calldata (and
+ * its own `isFilled()` flag) rather than trusted from the UI. */
+function buildEthFlowOrder(ethFlow: MockEthFlowTransactionHandle, defaults: Record<string, unknown>): unknown {
+  const orderParams = ethFlow.getOrderParams()
+  const filled = ethFlow.isFilled()
+  const executedSellAmount = filled ? orderParams?.sellAmount.toString() : '0'
+  return {
+    ...defaults,
+    kind: 'sell',
+    buyToken: orderParams?.buyToken,
+    sellAmount: orderParams?.sellAmount.toString(),
+    buyAmount: orderParams?.buyAmount.toString(),
+    status: filled ? 'fulfilled' : 'open',
+    executedBuyAmount: filled ? orderParams?.buyAmount.toString() : '0',
+    executedSellAmount,
+    executedSellAmountBeforeFees: executedSellAmount,
+  }
 }
 
 /** The subset of fields that change once the order actually settles. */
