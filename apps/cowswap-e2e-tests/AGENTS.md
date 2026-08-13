@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-11
+last_reviewed: 2026-08-13
 source_of_truth_scope: cowswap-e2e-tests app-specific conventions, mocks, and debugging notes
 ---
 
@@ -124,6 +124,76 @@ behavior, only to call its methods). Sub-mocks:
   the environment: several failures this session traced back to the *frontend dev server* not having
   `REACT_APP_NETWORK_URL_11155111` in its own environment (it's a separate process from the test runner,
   which has it), or a transient DNS blip in the sandbox.
+
+## Diagnosing flaky tests
+
+A test that fails only under the full suite's parallel load, not alone or with `-g`, is almost
+never a logic bug in the test — check infrastructure contention first.
+
+- **Reproduce the actual failure before touching anything.** A single flaky test run proves
+  nothing either way; run the full suite (or the same worker count) a couple of times with
+  `LOG_UNMOCKED_RPC=1 npx playwright test` and look at `test-results/unmocked-rpc-requests.log` for
+  real `429`s before assuming a code regression. One session's evidence, captured this way:
+  ```
+  [CC-03] ... status: 429 ... url: https://mainnet.infura.io/v3/...
+  [CC-01] ... status: 429 ... url: https://mainnet.infura.io/v3/...
+  [CC-26] ... status: 429 ... url: https://mainnet.infura.io/v3/...
+  ```
+- **Root cause 1: a single shared real Infura key gets rate-limited under N-way parallel workers.**
+  `mockSocketVerifier`, `mocks.allowances`, and `installMulticall3` all deliberately fall back to a
+  real `route.fetch()` whenever a Multicall3 batch isn't *fully* recognized (see each one's own doc
+  comment) — reliable for one test at a time, but every worker's fallback hits the exact same
+  hardcoded Infura key, and enough concurrent workers trip its rate limit. `logUnmockedRpcRequests.ts`
+  exists specifically to make this observable; it's disabled by default because logging every
+  request has its own cost.
+- **Closing a real-RPC-fallback gap directly beats retrying around it.** `mocks/unmocked-rpc-requests.log`
+  entries are a to-do list, not just a diagnosis — each distinct `(method, selector, to)` still
+  hitting a real host is a mock this suite is missing, and adding it removes a 429 source instead
+  of just tolerating it. Example this session: an `approve(address,uint256)` preflight `eth_call`
+  (selector `0x095ea7b3`) was firing — and 429-ing — even on cross-chain tests that pre-seed
+  sufficient allowance and never click Approve, because the wallet-connector layer simulates it
+  unconditionally regardless of whether the UI will ever show that step.
+  `mockApproveTransaction.ts` already answered this exact selector, but only for its own specific
+  `token` and only for tests that call it — `mockApproveSimulation.ts` now answers it
+  host-agnostically for *any* token/spender, registered globally in the `mocks` fixture. Safe to
+  match on selector alone with no token/spender scoping: an ERC20 `approve()` succeeding is a fair
+  default assumption, no test in this suite asserts on one reverting, and Playwright's LIFO route
+  order means a more specific handler registered later (e.g. `mockApproveTransaction`'s own, set up
+  inside a test body) still wins for the token it cares about — this one only catches what nothing
+  more specific claimed.
+- **A multi-row UI read can tear across a re-render — read the whole snapshot atomically, not row
+  by row.** `[CS-127]`/`[CS-128]` each read four tooltip rows (`Before costs`/`Protocol fee`/
+  `Network costs`/`To`) as four separately-awaited `readRowAmount()` calls, then computed a ratio
+  from them. The swap form fires its own default-amount probe quote before the typed amount's real
+  quote lands (same root cause as the "full wallet balance" case already noted above, just a
+  different default-amount source) — `waitForQuote()` only waits for the loading flag to clear
+  *once*, so if the real quote's render lands in between two of the four reads, the result is a mix
+  of old and new state (e.g. `beforeCosts` from the stale 1-unit probe, `protocolFee` from the
+  fresh 1000-unit quote), producing a self-consistent-*looking* but wrong ratio — confirmed by
+  instrumenting the mock callback with `console.log` (prints to the Node process, not the browser)
+  and correlating its output against the same test's row-read output via a per-run random tag,
+  since parallel workers' console output interleaves. Fixed by moving all four reads inside a
+  single `expect.poll(async () => { ...four reads...; return ratio })` callback, so every retry
+  re-reads the full snapshot together instead of trusting a stale mix — the same idiom `[CC-17]`'s
+  checkbox retry already uses, just applied to a read instead of a click.
+- **Root cause 2: the default 5s `expect` timeout is tight under CPU contention.** Several
+  known-load-sensitive assertions (the recipient-confirmation checkbox retry in `[CC-17]`, the
+  order-progress-modal reopen in `[CS-60]`) have their own comments acknowledging they only flake
+  under concurrent test load, not in isolation — heavy parallel Chromium + one shared dev server
+  competing for CPU cores makes debounces/polling cycles that normally settle in well under a
+  second take long enough to blow past a tight default.
+- **Suite-wide mitigation applied in `playwright.config.ts`:** `expect: { timeout: 10_000 }` (was
+  the unconfigured 5s default) and `retries: 1` unconditionally (was `CI ? 1 : 0`) — a load-induced
+  flake should self-heal on retry rather than fail the run, locally too, not just in CI. These are
+  mitigations for contention, not a fix for the underlying rate limit — a real `429` under
+  sufficiently heavy load can still exhaust a retry. Per-assertion overrides above this floor (like
+  `[CS-60]`'s existing 15s wait) are still correct and still needed for the worst offenders; don't
+  remove them just because the global floor moved up.
+- **Confirm a suspected regression by testing the *unmodified* code under the same load**, not just
+  by re-running your changed version and seeing it pass once. `git stash` the diff, rerun the exact
+  same failing test/suite, and only call something a regression if the clean baseline doesn't
+  reproduce it too. This is how CC-13's "insufficient balance"/"Error loading price" failures and
+  CS-128's flake were both confirmed pre-existing and unrelated to a same-session diff, twice.
 
 ## Cross-chain bridging (`cross-chain-swaps.spec.ts`)
 

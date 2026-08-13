@@ -202,7 +202,7 @@ test.describe('Cross-chain swaps', () => {
     const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
     await swapPage.clickPrimaryAction()
-    await confirmModal.confirmButton.click()
+    await confirmModal.confirm()
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
     posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
@@ -261,7 +261,7 @@ test.describe('Cross-chain swaps', () => {
     const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
 
     await swapPage.clickPrimaryAction()
-    await confirmModal.confirmButton.click()
+    await confirmModal.confirm()
     await swapPage.orderProgressBarModal.waitFor({ state: 'visible' })
 
     posting.fulfill(mocks.balances, MAINNET, INITIAL_USDC_BALANCE, 0n)
@@ -368,7 +368,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.swapButton).toContainText(/swap.*bridge/i)
 
     await swapPage.clickSwap()
-    await confirmModal.confirmButton.click()
+    await confirmModal.confirm()
 
     // Confirming signs/sends the on-chain creation tx directly (`eth_sendTransaction`, stubbed by
     // `mockEthFlowTransaction`) — there's no separate off-chain EIP-712 signature for this flow.
