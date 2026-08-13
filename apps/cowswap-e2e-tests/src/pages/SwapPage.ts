@@ -86,10 +86,17 @@ export class SwapPage implements TradePage {
     // pointer outside that inner div's box and never open the tooltip.
     this.priceImpactTooltipTrigger = this.priceImpact.locator('div div')
     // `ReceiveAmount` renders as a sibling of `#output-currency-input`, not inside it — its
-    // "Receive (incl. fees)" label and the `HelpTooltip` icon next to it (the real hover hitbox,
-    // same `HoverTooltip` quirk as `priceImpactTooltipTrigger` above) are the label's next sibling.
+    // "Receive (incl. fees)" label and the `HelpTooltip` icon next to it are the label's next
+    // sibling. That sibling is `HelpTooltip`'s outer `HelpTooltipContainer` span, one level above
+    // the real `HoverTooltip` hitbox div (same quirk as `priceImpactTooltipTrigger` above, but
+    // nested one div deeper here: `ReferenceElement` div > listener div > icon-wrapper div) —
+    // `div div` matches both the listener div and the icon-wrapper div nested inside it, so take
+    // the first (outermost, document-order-first) match to land on the listener div itself.
     this.receiveAmountLabel = page.getByText('Receive (incl. fees)', { exact: true })
-    this.receiveAmountTooltipTrigger = this.receiveAmountLabel.locator('xpath=following-sibling::*[1]')
+    this.receiveAmountTooltipTrigger = this.receiveAmountLabel
+      .locator('xpath=following-sibling::*[1]')
+      .locator('div div')
+      .first()
     // The exact "<amount> <symbol>" value lives in `ReceiveAmountValue`'s own `title`, one level
     // above `TokenAmount`'s inner titled span — same convention as `sellBalance`/`buyBalance`.
     this.receiveAmountValue = this.receiveAmountLabel.locator('xpath=../..').locator('[title]').first()
