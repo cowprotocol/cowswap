@@ -13,7 +13,6 @@ import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
-import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { installTokenNonce } from '../mocks/tokenNonce'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
@@ -45,7 +44,6 @@ export interface SharedFixtures {
     cowApi: CowProtocolApiMock
     orders: OrdersMock
     ethGetCode: EthGetCodeMock
-    tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
     bungee: BungeeMock
     nearIntents: NearIntentsMock
@@ -129,7 +127,6 @@ export const sharedFixtures: Fixtures<
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
       // allowance and never click Approve), so this is global rather than opt-in per test.
       mockApproveSimulation(context)
-      const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
@@ -142,7 +139,6 @@ export const sharedFixtures: Fixtures<
         cowApi,
         orders,
         ethGetCode,
-        tokenLists,
         safeSdk,
         bungee,
         nearIntents,
@@ -151,7 +147,6 @@ export const sharedFixtures: Fixtures<
       })
 
       ethGetCode.reset()
-      tokenLists.reset()
       bungee.reset()
       nearIntents.reset()
       await launchDarkly.reset()
