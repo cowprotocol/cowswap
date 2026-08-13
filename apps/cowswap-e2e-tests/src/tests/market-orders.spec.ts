@@ -4,11 +4,10 @@ import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
+import { generateOrderId } from '../mocks/orders'
 import { CHAIN_IDS } from '../support/constants'
 import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
-import { mockCancellableOrder } from '../support/mockCancellableOrder'
-import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
@@ -38,7 +37,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-59] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -58,7 +56,7 @@ test.describe('Market Orders', () => {
       // than a hardcoded figure.
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // `usdPrices` defaults every token to $1 — under that assumption this trade's quoted rate
       // looks like a ~99.9% loss and trips the "Confirm Price Impact" dialog. Pricing WETH to match
@@ -88,8 +86,14 @@ test.describe('Market Orders', () => {
 
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just posted, competition not started yet.
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
@@ -108,13 +112,13 @@ test.describe('Market Orders', () => {
       // `ExecutingStep` overrides that step's own title to "Best price found!" while active.
       // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds each step on screen for at
       // least 5s before advancing to the next one, so this needs more room than the default 5s.
-      posting.markExecuting()
+      mocks.orders.markExecuting(orderId)
       await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -124,15 +128,16 @@ test.describe('Market Orders', () => {
       // quoted ones — cross-check them against what `fulfill()` actually settled the order at.
       const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
       const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
+      const postedOrder = mocks.orders.getOrder(orderId)
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC', { timeout: 15_000 })
       await expect(swapPage.buyBalance).toHaveAttribute(
         'title',
-        `${formatUnits(BigInt(posting.getPostedBuyAmount()), 18)} WETH`,
+        `${formatUnits(BigInt(mocks.orders.getOrder(orderId)?.buyAmount ?? 0), 18)} WETH`,
         { timeout: 15_000 },
       )
 
@@ -141,7 +146,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-60] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -157,7 +161,7 @@ test.describe('Market Orders', () => {
       // matches the typed amount exactly, keeping the buy-side balance assertion a round number.
       mockFixedRateQuote({ cowApi: mocks.cowApi, direction: 'buy', rate: { numerator: RATE, denominator: 1n } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // `usdPrices` defaults every token to $1 — pricing WETH to match the quote rate keeps the
       // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [CS-59].
@@ -177,8 +181,14 @@ test.describe('Market Orders', () => {
       await swapPage.enterBuyAmount('1')
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
       await swapPage.page.keyboard.press('Escape')
@@ -187,7 +197,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed — mirrors [CS-59].
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
@@ -200,7 +210,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH', { timeout: 15_000 })
       await expect(swapPage.sellBalance).toHaveAttribute(
         'title',
-        `${formatUnits(INITIAL_USDC_BALANCE - BigInt(posting.getPostedSellAmount()), 18)} USDC`,
+        `${formatUnits(INITIAL_USDC_BALANCE - BigInt(mocks.orders.getOrder(orderId)?.sellAmount ?? 0), 18)} USDC`,
         { timeout: 15_000 },
       )
 
@@ -477,7 +487,7 @@ test.describe('Market Orders', () => {
       // real app moves through "Sending ETH" → "Sent ETH"/"Creating Order" → "Order Created" as two
       // separate gates (tx receipt, then order indexed), not one. See `mockEthFlowOrderIndexing` for
       // why this needs its own `order` override rather than `mockOrderPosting`.
-      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
+      const orderIndexing = mocks.orders.trackEthFlowOrder(ethFlow)
 
       // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
       // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
@@ -595,7 +605,7 @@ test.describe('Market Orders', () => {
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 
-      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
+      const orderIndexing = mocks.orders.trackEthFlowOrder(ethFlow)
 
       mockFixedRateQuote({ cowApi: mocks.cowApi })
 
@@ -1028,8 +1038,9 @@ test.describe('Market Orders', () => {
       // Deliberately not created through the swap UI (per spec) — seeded directly via
       // `mockCancellableOrder` instead. See that helper for why mocking `accountOrders` is the
       // correct lever (not something reverse-engineered from localStorage).
-      const cancellableOrder = mockCancellableOrder({
-        cowApi: mocks.cowApi,
+      const orderId = generateOrderId()
+      mocks.orders.seedOpenOrder({
+        orderId,
         owner: wallet.address,
         sellToken: WETH,
         buyToken: USDC,
@@ -1060,12 +1071,12 @@ test.describe('Market Orders', () => {
 
       // The wallet is asked to sign an `OrderCancellations` EIP-712 message (`orderUids: bytes[]`,
       // see `@cowprotocol/sdk-contracts-ts`'s `CANCELLATIONS_TYPE_FIELDS`) — not a transaction.
-      await expect.poll(() => cancellableOrder.wasCancelRequested()).toBe(true)
+      await expect.poll(() => mocks.orders.wasCancelRequested(orderId)).toBe(true)
       const cancellationSignRequest = wallet
         .rpcCalls('eth_signTypedData_v4')
         .map((call) => JSON.parse(call.params[1] as string))
         .find((typedData) => typedData.primaryType === 'OrderCancellations')
-      expect(cancellationSignRequest?.message?.orderUids).toContain(cancellableOrder.uid)
+      expect(cancellationSignRequest?.message?.orderUids).toContain(orderId)
 
       // No gas transaction is ever sent for a soft cancellation.
       expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
@@ -1073,7 +1084,7 @@ test.describe('Market Orders', () => {
       // The API now considers the order invalidated — the order's own `creationDate` hasn't cleared
       // `PENDING_ORDERS_BUFFER` yet, so the UI shows the transient "Cancelling..." state first
       // (`isCancelling: apiStatus === 'pending' && order.invalidated`, `OrdersFromApiUpdater.ts`).
-      cancellableOrder.markCancelled()
+      mocks.orders.markCancelled(orderId)
       await expect(accountModal.activitiesList).toContainText('Cancelling...', { timeout: 45_000 })
 
       // Once enough real time has passed since `creationDate`, `isOrderCancelled` flips true and the
@@ -1084,7 +1095,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       mocks,
@@ -1096,7 +1106,7 @@ test.describe('Market Orders', () => {
 
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
@@ -1115,8 +1125,14 @@ test.describe('Market Orders', () => {
       await selectTokens(swapPage, 'USDC', 'WETH')
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just signed and posted, competition hasn't
       // started yet.
@@ -1131,11 +1147,11 @@ test.describe('Market Orders', () => {
 
       // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain. `ExecutingStep`
       // overrides that step's own title to "Best price found!" while active.
-      posting.markExecuting()
+      mocks.orders.markExecuting(orderId)
       await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -1145,8 +1161,9 @@ test.describe('Market Orders', () => {
       // order at, same as [CS-59].
       const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
       const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
+      const postedOrder = mocks.orders.getOrder(orderId)
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
     test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
