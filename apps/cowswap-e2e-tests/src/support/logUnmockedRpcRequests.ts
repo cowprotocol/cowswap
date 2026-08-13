@@ -27,7 +27,7 @@ const DEFAULT_LOG_PATH = path.join('test-results', 'unmocked-rpc-requests.log')
 /**
  * Diagnostic tool for CC-03/CC-26/CC-27-style flakiness ("Error loading price" under `pnpm e2e`'s
  * full parallel load, not reproducible running one test at a time): several mocks
- * (`mockSocketVerifier`, `mocks.allowances`, ...) fall back to a real `route.fetch()` against
+ * (`mocks/socketVerifier.ts`, `mocks.allowances`, ...) fall back to a real `route.fetch()` against
  * whatever real RPC the app picked (e.g. `ethereum-rpc.publicnode.com`) whenever a batch isn't
  * *fully* recognized — reliable for one test, but exactly the kind of real, rate-limited
  * dependency that starts 429-ing once dozens of parallel workers hit it at once.

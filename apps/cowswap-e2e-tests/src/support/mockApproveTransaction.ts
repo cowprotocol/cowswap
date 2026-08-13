@@ -55,7 +55,7 @@ interface ReceiptContext {
  * simulate-before-sign check that the call won't revert. Tracing real RPC traffic
  * (`LOG_UNMOCKED_RPC=1`) showed this going straight to a real, hardcoded provider (Infura) rather
  * than any URL this suite controls, and getting rate-limited (HTTP 429) under `pnpm e2e`'s full
- * parallel load — so it's matched host-agnostically by `to`/`data` (like `mockSocketVerifier.ts`)
+ * parallel load — so it's matched host-agnostically by `to`/`data` (like `mocks/socketVerifier.ts`)
  * and answered with a successful ABI-encoded `true`, same as the real call would return.
  */
 export async function mockApproveTransaction(opts: MockApproveTransactionOpts): Promise<MockApproveTransactionHandle> {
@@ -162,7 +162,7 @@ function buildReceiptRpcResponse(
  * Not observed in practice (this preflight is always a standalone, non-batched `eth_call`) — but if
  * it ever turns up mixed with other, unrecognized calls, fetch the real upstream and patch in only
  * the entries this mock actually understands, rather than fabricate data for the rest. Same
- * try/catch → `route.fallback()` guard as `mockSocketVerifier.ts`'s `fulfillFromUpstream`, so a
+ * try/catch → `route.fallback()` guard as `mocks/socketVerifier.ts`'s `fulfillFromUpstream`, so a
  * transient real-RPC hiccup here can't abort the whole request.
  */
 async function fulfillApproveSimulationFromUpstream(
@@ -186,10 +186,10 @@ async function fulfillApproveSimulationFromUpstream(
 
 /**
  * Answers the preflight `approve(address,uint256)` simulation `eth_call` (see the doc comment on
- * `mockApproveTransaction`) with a successful `true`, host-agnostically. Unlike `mockSocketVerifier.ts`,
- * this call is never wrapped in a Multicall3 batch in practice (confirmed by tracing real RPC
- * traffic), so no batch-decoding is needed — just the single/array JSON-RPC envelope every route in
- * this suite already has to handle.
+ * `mockApproveTransaction`) with a successful `true`, host-agnostically. Unlike
+ * `mocks/socketVerifier.ts`'s SocketVerifier check, this call is never wrapped in a Multicall3
+ * batch in practice (confirmed by tracing real RPC traffic), so no batch-decoding is needed — just
+ * the single/array JSON-RPC envelope every route in this suite already has to handle.
  */
 async function handleApproveSimulationCall(route: Route, token: string): Promise<void> {
   const request = route.request()

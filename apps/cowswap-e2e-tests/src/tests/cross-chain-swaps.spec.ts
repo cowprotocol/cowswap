@@ -8,7 +8,6 @@ import { generateOrderId } from '../mocks/orders'
 import { CHAIN_IDS } from '../support/constants'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
-import { mockSocketVerifier } from '../support/mockSocketVerifier'
 import { seedTrader } from '../support/seedTrader'
 
 import type { RpcProxyHandle } from '../fixtures/rpcProxy'
@@ -82,9 +81,6 @@ test.describe('Cross-chain swaps', () => {
     await mocks.launchDarkly.setFlag('isBungeeBridgeProviderEnabled', active === 'bungee')
     await mocks.launchDarkly.setFlag('isNearIntentsBridgeProviderEnabled', active === 'near-intents')
     mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 999n, denominator: 1000n } })
-    if (active === 'bungee') {
-      await mockSocketVerifier(rpcProxy, MAINNET)
-    }
   }
 
   /**

@@ -15,7 +15,7 @@ interface JsonRpcEntry {
  * `mockApproveTransaction` at all — the wallet-connector layer still fires this simulate-before-
  * sign check regardless of whether the UI ever shows an Approve step, and confirmed by tracing
  * real traffic (`LOG_UNMOCKED_RPC=1`), it goes to the app's own hardcoded provider rather than any
- * URL this suite controls, so it needs the same host-agnostic matching `mockSocketVerifier.ts`
+ * URL this suite controls, so it needs the same host-agnostic matching `mocks/socketVerifier.ts`
  * uses. Unlike `mockApproveTransaction`'s own per-token simulation stub, this one matches on the
  * selector alone — an ERC20 `approve()` call succeeding is safe to assume unconditionally
  * regardless of which token/spender it targets, and no test in this suite depends on one

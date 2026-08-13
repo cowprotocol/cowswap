@@ -106,7 +106,7 @@ export function installBungee(context: BrowserContext): BungeeMock {
 function buildTxResponse(): unknown {
   // `decodeBungeeBridgeTxData` just needs a 4-byte routeId followed by a function selector it
   // recognizes for the quote's bridge family — on-chain verification (not this payload) is what
-  // actually gates whether the quote is accepted, see `mockSocketVerifier`.
+  // actually gates whether the quote is accepted, see `mocks/socketVerifier.ts`.
   const routeId = '00000001'
   const data = `0x${routeId}${ACROSS_BRIDGE_ERC20_TO_SELECTOR}${'0'.repeat(64)}`
   return {

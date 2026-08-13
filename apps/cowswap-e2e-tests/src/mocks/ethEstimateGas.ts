@@ -24,7 +24,7 @@ const FAKE_GAS_ESTIMATE = '0x7a120' as const
  * never touch `mockEthFlowTransaction` at all — e.g. the cross-chain-to-Solana/Bitcoin tests. Since
  * every gas estimate this suite ever needs is fake regardless of what it's for, this is installed
  * unconditionally rather than only for ETH-flow tests. Matched host-agnostically by JSON-RPC method
- * (like `mockSocketVerifier`) rather than by URL, since there's no fixed host to route on.
+ * (like `mocks/socketVerifier.ts`) rather than by URL, since there's no fixed host to route on.
  */
 export function installEthEstimateGas(context: BrowserContext): void {
   void context.route('**/*', async (route: Route) => {

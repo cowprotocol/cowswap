@@ -234,27 +234,47 @@ never a logic bug in the test — check infrastructure contention first.
   intercept *those* is host-agnostic: `context.route('**/*', ...)`, decode the JSON-RPC body, and
   match by `method` (see `mockEthEstimateGas` in `mockEthFlowTransaction.ts`), never by URL. Bungee's
   on-chain SocketVerifier check is a *different* case entirely — see the next note.
-- **Not every on-chain read the app makes even reaches the page's network layer at all — some go
-  through the *connected wallet's own provider* instead, invisible to any `context.route()`.**
-  Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
-  `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`) was originally mocked with a
-  `context.route('**/*', ...)` handler decoding Multicall3 batches — modeled on `mockEthEstimateGas`
-  — and it silently never matched anything under load, intermittently manifesting as `[CS-287]`/
-  `[CS-297]`/etc. failing with "Error loading price" or a hung `BridgeRoutePanel.expand()`. Root
-  cause, found by having the app log the real `readContract` error instead of swallowing it: the SDK
-  adapter's `readContract` for this specific check runs against the connected wallet's own provider
-  (this suite's mock wallet resolves the chain from the currently-connected chain, which for these
-  tests happens to be the bridge's origin chain — Mainnet), not the app's separate HTTP viem client.
-  `eth_call`s made through the wallet provider go `injectedShim.ts` → `walletEngine.ts`'s
-  `dispatch()` → `forward()`, a plain **Node-side** `fetch()` straight to this suite's own RPC proxy
-  (`support/rpcProxy.ts`) — there is no page-level network request for `context.route()` to ever see.
-  Fixed in `mockSocketVerifier.ts` by switching to the RPC proxy's own existing per-`(to, selector)`
-  stub primitive instead: `rpcProxy.stubCall({ chainId, to: SOCKET_VERIFIER_ADDRESS, dataPrefix:
-  selector, returnHex: '0x' })` — no Multicall3-batch decoding needed at all, since a wallet-forwarded
-  `eth_call` is never batched. **Lesson: if a mock built on `context.route()` seems to work
-  "sometimes" for a wallet-adjacent on-chain read, check whether the call is actually reaching the
-  wallet's own provider instead of the page's network layer before adding more retry/timeout budget
-  around it** — no amount of extra timeout fixes a mock that's listening on the wrong layer.
+- **Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
+  `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`) is mocked entirely by
+  `mocks/socketVerifier.ts` — a standalone, host-agnostic `context.route('**/*', ...)` mock, same
+  shape as `ethBlockNumber.ts`/`ethGetCode.ts`.** It decodes both a direct `eth_call` to the
+  SocketVerifier contract and one batched inside a Multicall3 `aggregate3` (mirroring
+  `installMulticall3`'s own batch decoding), resolving either to a safe empty success without
+  touching the network, and otherwise falling back untouched. It's registered *ahead of* both
+  `installMulticall3` and `installAllowances` in the `mocks` fixture (Playwright's route order is
+  LIFO — last registered gets first look), so it catches the check regardless of which real RPC
+  host the app's independent read-only client would otherwise have picked — e.g.
+  `https://ethereum-rpc.publicnode.com` for Mainnet, the same host `REACT_APP_NETWORK_URL_1`
+  configures and `mocks/allowances` owns. Deliberately *not* folded into
+  `mocks/allowances/codec.ts`: that codec is allowance-shaped (`ClassifiedCall` = allowance |
+  batch | opaque) and shared with `installMulticall3`'s own resolver, so adding a third mock's
+  selector there would have coupled two unrelated concerns for no benefit — a standalone mock
+  keeps this one deletable/testable on its own, same as every other single-purpose mock in
+  `mocks/`.
+  - **History, worth keeping in mind if this check ever silently stops being mocked again:** it was
+    first mocked with a `context.route('**/*', ...)` handler modeled on `mockEthEstimateGas`, and
+    that silently never matched anything under load, intermittently manifesting as `[CS-287]`/
+    `[CS-297]`/etc. failing with "Error loading price" or a hung `BridgeRoutePanel.expand()`. Root
+    cause, found by having the app log the real `readContract` error instead of swallowing it: the
+    SDK adapter's `readContract` for this check ran against the *connected wallet's own provider*
+    (this suite's mock wallet resolves the chain from the currently-connected chain, which for
+    these tests happens to be the bridge's origin chain — Mainnet), not the app's separate HTTP
+    viem client — and `eth_call`s made through the wallet provider go `injectedShim.ts` →
+    `walletEngine.ts`'s `dispatch()` → `forward()`, a plain **Node-side** `fetch()` straight to
+    this suite's own RPC proxy (`support/rpcProxy.ts`), never touching the page's network layer at
+    all. That was fixed with a dedicated `support/mockSocketVerifier.ts`, stubbing the RPC proxy's
+    own `(to, selector)` primitive (`rpcProxy.stubCall(...)`) directly instead of routing pages.
+    Once `mocks/socketVerifier.ts` above existed and the suite kept passing without it,
+    `support/mockSocketVerifier.ts` and its `rpcProxy.stubCall` usage were deleted as redundant —
+    so today there is exactly one SocketVerifier mock, not two. **Lesson: if a mock built on
+    `context.route()` seems to work "sometimes" for a wallet-adjacent on-chain read, check whether
+    the call is actually reaching the wallet's own provider instead of the page's network layer
+    before adding more retry/timeout budget around it** — no amount of extra timeout fixes a mock
+    that's listening on the wrong layer. (Whether that still applies to *this* check specifically,
+    or the wallet-forwarded path simply doesn't fire for it anymore, wasn't re-diagnosed before
+    deleting the old mock — if this check ever starts flaking again the way `[CS-287]` did, that
+    wallet-provider path is the first thing to re-check before assuming `mocks/socketVerifier.ts`
+    itself regressed.)
 - **A real native-ETH sell (`[CC-13]`, eth-flow) needs `eth_estimateGas` stubbed too, not just
   `eth_sendTransaction`.** Left unmocked, gas estimation is a real simulation against the wallet's real
   on-chain balance — zero on Mainnet, since this is a shared test key with no real funds (never fund it;

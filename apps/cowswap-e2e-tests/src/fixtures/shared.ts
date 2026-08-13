@@ -13,6 +13,7 @@ import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
+import { installSocketVerifier } from '../mocks/socketVerifier'
 import { installTokenNonce } from '../mocks/tokenNonce'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
@@ -101,8 +102,8 @@ export const sharedFixtures: Fixtures<
     async ({ context }, use, testInfo) => {
       // Diagnostic-only, opt-in via `LOG_UNMOCKED_RPC=1` — see `logUnmockedRpcRequests`'s own doc
       // comment. Registered before every other mock below (and therefore before any manually
-      // installed one too, e.g. `mockSocketVerifier`, since those only get added once the test body
-      // starts running) so it only ever sees requests nothing else claimed.
+      // installed one too, e.g. `mockApproveTransaction`, since those only get added once the test
+      // body starts running) so it only ever sees requests nothing else claimed.
       if (process.env.LOG_UNMOCKED_RPC) {
         logUnmockedRpcRequests({ context, worker: testInfo.workerIndex, test: testInfo.title })
       }
@@ -123,6 +124,10 @@ export const sharedFixtures: Fixtures<
       installEthGetTransactionCount(context)
       installTokenNonce(context)
       installMulticall3(context, { allowances })
+      // Registered after `installMulticall3`/`installAllowances` so it always gets first look at
+      // a matching request (Playwright's route order is LIFO) — see its own doc comment for why
+      // neither of those two mocks can catch this on their own.
+      installSocketVerifier(context)
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
       // allowance and never click Approve), so this is global rather than opt-in per test.

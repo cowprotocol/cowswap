@@ -75,13 +75,10 @@ const ZERO: ZeroCall = { kind: 'zero' }
  * Host-agnostic fallback for Multicall3's `aggregate3` — the single biggest source of real,
  * rate-limited RPC traffic seen in `logUnmockedRpcRequests`' output (`LOG_UNMOCKED_RPC=1`): 87 of
  * ~143 unmocked lines in one traced run, 22 of them real `429`s. The app's independent read-only
- * RPC client (see `mockSocketVerifier.ts`'s doc comment, and the cross-chain-swaps `AGENTS.md`
- * note on it) doesn't reliably use the wallet's own `REACT_APP_NETWORK_URL_<chainId>` endpoint, so
- * `mocks/allowances`'s URL-scoped handler misses any batch that lands on a different real host
- * (Infura, the WalletConnect RPC relay, publicnode, ...). `mockSocketVerifier` is host-agnostic but
- * only installed for Bungee-provider cross-chain tests, and only resolves its own SocketVerifier
- * selectors — everything else inside the batch still falls through to a real (if now safely
- * try/caught) `route.fetch()`.
+ * RPC client (see the cross-chain-swaps `AGENTS.md` note on it) doesn't reliably use the wallet's
+ * own `REACT_APP_NETWORK_URL_<chainId>` endpoint, so `mocks/allowances`'s URL-scoped handler
+ * misses any batch that lands on a different real host (Infura, the WalletConnect RPC relay,
+ * publicnode, ...).
  *
  * This mock closes that gap generally: it engages for *any* `eth_call` whose decoded body is (or
  * contains, once batches are unwrapped) an `aggregate3` call to the canonical Multicall3 address,
@@ -95,9 +92,10 @@ const ZERO: ZeroCall = { kind: 'zero' }
  * Sepolia-based test relying on `mocks.allowances.set(...)`. So this mock only ever engages for
  * hosts *not* in that map — the genuinely unpredictable ones (Infura, the WalletConnect RPC relay,
  * publicnode-for-a-different-chain, ...) `mocks/allowances` was never scoped to reach — and fully
- * resolves those locally. Anything it doesn't own inside the batch (including SocketVerifier's own
- * selectors, when `mockSocketVerifier` isn't active) gets a safe empty success slot instead of a
- * real network round-trip.
+ * resolves those locally. Anything it doesn't own inside the batch gets a safe empty success slot
+ * instead of a real network round-trip — except Bungee's SocketVerifier selectors, which
+ * `mocks/socketVerifier.ts` (registered after this mock, so it gets first look) already resolves
+ * before a matching request ever reaches here.
  */
 export function installMulticall3(context: BrowserContext, deps: { allowances: AllowancesMock }): void {
   const configuredChainIdByUrl = resolveRpcChainIds()
@@ -219,7 +217,7 @@ function encodeBatchResult(call: BatchCall, chainId: number, allowances: Allowan
 /**
  * A mixed batch alongside something this mock doesn't recognize as `aggregate3`-to-Multicall3 (rare
  * — the log evidence shows this almost always arrives as a single `eth_call`) — same defensive
- * try/catch as every other host-agnostic mock in this suite (`mockSocketVerifier`,
+ * try/catch as every other host-agnostic mock in this suite (`installSocketVerifier`,
  * `installEthBlockNumber`, `installEthGetCode`), patching only the recognized slots and forwarding
  * the rest of the real response untouched.
  */
