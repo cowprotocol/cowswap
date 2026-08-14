@@ -25,6 +25,15 @@ test('passes when at least one secondary provider pins successfully', async () =
   )
 })
 
+test('treats an already-existing pin as successful', async () => {
+  const result = await pinSecondaryProviders(CID, {
+    providers: [{ name: 'IPFS Ninja', pin: async () => ({ status: 'exists' }) }],
+  })
+
+  assert.equal(result.ok, true)
+  assert.equal(result.results[0].status, 'pinned')
+})
+
 test('fails when every secondary provider fails', async () => {
   const result = await pinSecondaryProviders(CID, {
     providers: [

@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url'
 const DEFAULT_TIMEOUT_MS = 300_000
 const DEFAULT_POLL_MS = 5_000
 const PENDING = new Set(['queued', 'pinning', 'pending'])
-const SUCCESS = new Set(['pinned', 'completed', 'success'])
+const SUCCESS = new Set(['pinned', 'completed', 'success', 'exists'])
 
 class HttpError extends Error {
   constructor(status, message) {
