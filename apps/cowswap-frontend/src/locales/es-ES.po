@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-14 11:04\n"
+"PO-Revision-Date: 2026-08-14 16:22\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -77,7 +77,7 @@ msgstr "Tu actividad de recompensas se mostrará aquí."
 msgid "Bridge transaction"
 msgstr "Transacción del puente"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
 msgstr "Debido a que está utilizando una billetera de contrato inteligente, usted pagará un coste de gas separado por firmar la colocación de la orden en cadena."
 
@@ -683,7 +683,6 @@ msgid "Sell amount"
 msgstr "Vender cantidad"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Unfillable"
@@ -819,7 +818,7 @@ msgstr "Ver trabajos"
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 msgstr "Tus fichas guardadas favoritas. Edita esta lista en la <0>Página de tokens</0>."
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
 msgstr "Esta es la cantidad mínima que recibirá a través de su orden TWAP completa, asumiendo todas las partes de la ejecución de la orden."
 
@@ -2583,7 +2582,7 @@ msgid "Local device time is not accurate, CoW Swap most likely will not work cor
 msgstr "La hora del dispositivo local no es exacta, es probable que CoW Swap no funcione correctamente. Por favor, ajuste la hora del dispositivo."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Limit price (incl. fees)"
 msgstr "Precio límite (incl. comisiones)"
 
@@ -2879,7 +2878,7 @@ msgstr "Enviado {nativeTokenSymbol}"
 msgid "Choose a wallet to connect to CoW Swap"
 msgstr "Elija una billetera para conectarse a CoW Swap"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
 msgstr "Dado que las órdenes de TWAP consisten en múltiples piezas, se espera que los precios fluctúen. Sin embargo, para protegerse de los malos precios, CoW Swap no ejecutará su TWAP si el precio cae por debajo de este porcentaje."
 
@@ -3537,6 +3536,7 @@ msgid "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap amo
 msgstr "Los costes del puente son al menos un {formattedBridgeFeePercentage}% de la cantidad de intercambio"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "TWAP order"
 msgstr "Pedido TWAP"
@@ -3759,7 +3759,7 @@ msgstr "Orden TWAP dividida en partes {twapOrderN}"
 msgid "Gas limit"
 msgstr "Límite de gas"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Price protection"
@@ -4390,7 +4390,6 @@ msgid "Limit Order"
 msgstr "Orden con límite"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient allowance"
 msgstr "Permiso insuficiente"
 
@@ -5071,7 +5070,7 @@ msgstr "segundo"
 msgid "Set your own price"
 msgstr "Establecer su propio precio"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
 msgstr "Este porcentaje sólo se aplica a las caídas; si los precios son mejores que este porcentaje, CoW Swap seguirá ejecutando su orden."
 
@@ -5719,7 +5718,6 @@ msgid "Orders not matched after the threshold time are automatically refunded."
 msgstr "Las órdenes que no coinciden después del límite de tiempo son reembolsados automáticamente."
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/multi/MultiConfirmationPendingContent.tsx
 msgid "Follow these steps:"
 msgstr "Siga estos pasos:"
 
@@ -5877,7 +5875,7 @@ msgstr "parcialmente llenable"
 msgid "Insufficient token allowance"
 msgstr "Permiso de token insuficiente"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Rate"
 msgstr "Tasa"
@@ -6063,6 +6061,10 @@ msgstr "más firma es"
 #~ msgid "<0><1>Allow you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6><7>Partially fillable</7> orders may be filled partially if there isn't enough liquidity to fill the full amount.</6><8><9>Fill or kill</9> orders will either be filled fully or not at all.</8></5></4></0>"
 #~ msgstr "<0><1>Allow you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6><7>Partially fillable</7> orders may be filled partially if there isn't enough liquidity to fill the full amount.</6><8><9>Fill or kill</9> orders will either be filled fully or not at all.</8></5></4></0>"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+#~ msgid "Action required"
+#~ msgstr "Action required"
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
 msgstr "Bajar el deslizamiento mínimo (en lugar de {minEthFlowSlippageToSignificant}% mínimo)"
@@ -6171,7 +6173,7 @@ msgstr "Aprobar <0/> y {contextDefaultText}"
 #~ msgstr "Paid weekly by Friday via airdrop"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Minimum receive"
 msgstr "Recibir mínimo"
 
@@ -7083,8 +7085,8 @@ msgid "signing"
 msgstr "firmando"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "Confirm each step in your wallet"
-msgstr "Confirmar cada paso en su billetera"
+#~ msgid "Confirm each step in your wallet"
+#~ msgstr "Confirm each step in your wallet"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "Cow meditating..."
@@ -7425,7 +7427,7 @@ msgstr ""
 #~ msgid "All orders"
 #~ msgstr "All orders"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
 msgstr ""
 
@@ -7678,8 +7680,8 @@ msgid "Simulation Successful"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "Placing TWAP"
-msgstr ""
+#~ msgid "Placing TWAP"
+#~ msgstr "Placing TWAP"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "Partial approval may block <0>{ordersWithPermitLength}</0> other {orderWord}"
@@ -8040,6 +8042,10 @@ msgstr ""
 msgid "You sold <0/>"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
+msgid "Order details"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
 #~ msgid "Less"
 #~ msgstr "Less"
@@ -8357,7 +8363,6 @@ msgid "View on Bridge Explorer ↗"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningEstimatedPrice/OrderRowWarningEstimatedPrice.pure.tsx
 msgid "Insufficient balance"
 msgstr ""
 
