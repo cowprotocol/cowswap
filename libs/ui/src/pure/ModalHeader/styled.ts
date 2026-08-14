@@ -7,8 +7,6 @@ import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
 
 export const Header = styled.header<{ withoutBorder?: boolean }>`
-  ${font('FONT_LARGE', 'semibold')}
-
   position: relative;
   display: flex;
   flex-direction: row;
@@ -29,6 +27,8 @@ export const Header = styled.header<{ withoutBorder?: boolean }>`
 `
 
 export const Title = styled.div`
+  ${font('FONT_LARGE', 'semibold')}
+
   flex: 1;
   min-width: 0;
   display: flex;

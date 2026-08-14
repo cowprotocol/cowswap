@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { font, UI } from '@cowprotocol/ui'
 
 import { ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -56,11 +56,12 @@ export const HeaderRightContent = styled.div`
 `
 
 export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
+  ${font('FONT_SMALL_PLUS', 'regular')}
+
   animation: ${({ blink }) => (blink ? `blinkOut 1s ease-out forwards` : 'none')};
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   column-gap: 3px;
   display: grid;
-  font-size: 13px;
   grid-template-columns: 1fr auto;
 
   @keyframes blinkOut {
@@ -82,5 +83,4 @@ export const QuoteCountdownWrapperText = styled.span`
 
 export const QuoteCountdownWrapperValue = styled.span`
   color: var(${UI.COLOR_TEXT});
-  font-weight: normal;
 `
