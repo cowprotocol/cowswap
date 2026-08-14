@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.12.0...common-utils-v3.13.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
+### Patch Changes
+
+- fix(eth-flow): show short friendly message on insufficient ETH for gas (#7977)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.9.0
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.11.0...common-utils-v3.12.0) (2026-08-05)
 
 ### Minor Changes

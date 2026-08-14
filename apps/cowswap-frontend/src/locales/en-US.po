@@ -84,6 +84,8 @@ msgstr "Because you are using a smart contract wallet, you will pay a separate g
 #~ msgid "cancelled. Too many order cancellations"
 #~ msgstr "cancelled. Too many order cancellations"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting created because of that. Please, update the fallback handler in order to make the orders work again."
 msgstr "Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting created because of that. Please, update the fallback handler in order to make the orders work again."
@@ -1203,6 +1205,7 @@ msgstr "Switch Network"
 #~ msgstr "Invalid code"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
 msgid "warning"
 msgstr "warning"
@@ -1775,6 +1778,8 @@ msgstr "Deprecated Network"
 #~ msgid "Limit price (incl.costs)"
 #~ msgstr "Limit price (incl.costs)"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Update fallback handler"
 msgstr "Update fallback handler"
@@ -5223,6 +5228,7 @@ msgstr "Minutes"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "The referral code was applied after the trader's first qualifying trade."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "User rejected approval transaction"
@@ -7177,6 +7183,8 @@ msgid "Add custom hook"
 msgstr "Add custom hook"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Approve {symbol}"
 
@@ -7614,7 +7622,7 @@ msgstr "Estimated fill price"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/containers/EthFlowStepper/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
 msgid "Transaction failed"
 msgstr "Transaction failed"
 
