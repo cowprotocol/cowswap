@@ -14,5 +14,11 @@ const HARDCODED_BLOCK_NUMBER = '0x188bc6f'
  * load.
  */
 export function installEthBlockNumber(context: BrowserContext): void {
-  mockRpcNodeRequest(context, 'eth_blockNumber', () => HARDCODED_BLOCK_NUMBER)
+  // No other mock watches `eth_blockNumber`, so every call with this method is unambiguously ours.
+  mockRpcNodeRequest(
+    context,
+    'eth_blockNumber',
+    () => HARDCODED_BLOCK_NUMBER,
+    () => true,
+  )
 }

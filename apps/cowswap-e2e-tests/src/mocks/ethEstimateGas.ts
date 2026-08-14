@@ -24,5 +24,11 @@ const FAKE_GAS_ESTIMATE = '0x7a120' as const
  * (like `mocks/socketVerifier.ts`) rather than by URL, since there's no fixed host to route on.
  */
 export function installEthEstimateGas(context: BrowserContext): void {
-  mockRpcNodeRequest(context, 'eth_estimateGas', () => FAKE_GAS_ESTIMATE)
+  // No other mock watches `eth_estimateGas`, so every call with this method is unambiguously ours.
+  mockRpcNodeRequest(
+    context,
+    'eth_estimateGas',
+    () => FAKE_GAS_ESTIMATE,
+    () => true,
+  )
 }

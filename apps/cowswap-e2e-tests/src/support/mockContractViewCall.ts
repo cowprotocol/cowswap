@@ -2,7 +2,7 @@ import { Address, decodeFunctionData, decodeFunctionResult, encodeFunctionResult
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { mockRpcNodeRequest, TransactionParams } from './mockRpcNodeRequest'
+import { mockRpcNodeRequest, type JsonRpcEntry, type TransactionParams } from './mockRpcNodeRequest'
 
 import type { BrowserContext } from '@playwright/test'
 
@@ -39,85 +39,122 @@ export function mockContractViewCall(
   selector: string,
   resolve: (callData: Hex, target: Address) => unknown,
 ): void {
-  // eslint-disable-next-line complexity
-  mockRpcNodeRequest(context, 'eth_call', (entry, upstreamResult) => {
-    const call = entry.params?.[0] as TransactionParams
-    if (!call?.to || !call?.data || !call.to) {
-      return undefined
-    }
+  const isTarget = (call: { to?: Address; data?: Hex }): boolean => isTargetCall(call, selector, contractAddress)
 
-    if (
-      call.data.startsWith(selector) &&
-      (contractAddress ? getAddressKey(call.to) === getAddressKey(contractAddress) : true)
-    ) {
-      // Direct smart-contract call
-      const result = resolve(call.data, call.to)
+  mockRpcNodeRequest(
+    context,
+    'eth_call',
+    // eslint-disable-next-line complexity
+    (entry, upstreamResult) => {
+      const call = entry.params?.[0] as TransactionParams
+      if (!call?.to || !call?.data || !call.to) {
+        return undefined
+      }
 
-      return result
-    }
+      if (isTarget(call)) {
+        // Direct smart-contract call
+        const result = resolve(call.data, call.to)
 
-    // Multicall
-    if (isMulticall(call)) {
-      const { functionName, args } = decodeFunctionData({
-        abi: multicall3Abi,
-        data: call.data,
-      })
+        return result
+      }
 
-      if (functionName === 'aggregate3') {
-        const calls: Readonly<Aggregate3Calls[]> = args[0]
-
-        const resolved = calls.map((call) => {
-          return call.callData.startsWith(selector) &&
-            (contractAddress ? getAddressKey(call.target) === getAddressKey(contractAddress) : true)
-            ? resolve(call.callData, call.target)
-            : undefined
+      // Multicall
+      if (isMulticall(call)) {
+        const { functionName, args } = decodeFunctionData({
+          abi: multicall3Abi,
+          data: call.data,
         })
 
-        if (resolved.every((result) => typeof result !== 'undefined')) {
-          // All calls are matching
-          const result = packAggregate3Result(
-            resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })),
+        if (functionName === 'aggregate3') {
+          const calls: Readonly<Aggregate3Calls[]> = args[0]
+
+          const resolved = calls.map((call) =>
+            isTarget({ to: call.target, data: call.callData }) ? resolve(call.callData, call.target) : undefined,
           )
 
-          return result
-        }
+          if (resolved.every((result) => typeof result !== 'undefined')) {
+            // All calls are matching
+            const result = packAggregate3Result(
+              resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })),
+            )
 
-        if (resolved.some((result) => typeof result !== 'undefined')) {
-          if (typeof upstreamResult !== 'string') {
-            // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
-            return undefined
+            return result
           }
 
-          const upstreamResults = decodeFunctionResult({
-            abi: multicall3Abi,
-            functionName: 'aggregate3',
-            data: upstreamResult as Hex,
-          }) as Readonly<Aggregate3Result[]>
+          if (resolved.some((result) => typeof result !== 'undefined')) {
+            if (typeof upstreamResult !== 'string') {
+              // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
+              return undefined
+            }
 
-          return packAggregate3Result(
-            resolved.map((returnData, i) =>
-              typeof returnData === 'undefined' ? upstreamResults[i] : { success: true, returnData: returnData as Hex },
-            ),
-          )
+            const upstreamResults = decodeFunctionResult({
+              abi: multicall3Abi,
+              functionName: 'aggregate3',
+              data: upstreamResult as Hex,
+            }) as Readonly<Aggregate3Result[]>
+
+            return packAggregate3Result(
+              resolved.map((returnData, i) =>
+                typeof returnData === 'undefined'
+                  ? upstreamResults[i]
+                  : { success: true, returnData: returnData as Hex },
+              ),
+            )
+          }
+        }
+
+        if (functionName === 'getEthBalance') {
+          // TODO: wire up balances mocks here
+          return undefined
+        }
+
+        if (functionName === 'getCurrentBlockTimestamp') {
+          return undefined
         }
       }
 
-      if (functionName === 'getEthBalance') {
-        // TODO: wire up balances mocks here
-        return undefined
-      }
-
-      if (functionName === 'getCurrentBlockTimestamp') {
-        return undefined
-      }
-    }
-
-    return undefined
-  })
+      return undefined
+    },
+    (entry) => matchesSelector(entry, selector, contractAddress),
+  )
 }
 
 function isMulticall(call: TransactionParams): boolean {
   return call.data.startsWith(AGGREGATE3_SELECTOR)
+}
+
+function isTargetCall(
+  call: { to?: Address; data?: Hex },
+  selector: string,
+  contractAddress: string | undefined,
+): boolean {
+  return (
+    Boolean(call.to) &&
+    Boolean(call.data) &&
+    (call.data as Hex).startsWith(selector) &&
+    (contractAddress ? getAddressKey(call.to as Address) === getAddressKey(contractAddress) : true)
+  )
+}
+
+/**
+ * Cheap, upstream-independent check: does `selector` appear anywhere in this call (direct or
+ * nested in an `aggregate3` batch)? See `mockRpcNodeRequest.ts`'s doc comment on `matches` for why
+ * this must not reuse `resolve`'s own undefined-on-"need upstream" return value.
+ */
+function matchesSelector(entry: JsonRpcEntry, selector: string, contractAddress: string | undefined): boolean {
+  const call = entry.params?.[0] as TransactionParams
+  if (!call?.to || !call?.data) return false
+  if (isTargetCall(call, selector, contractAddress)) return true
+  if (!isMulticall(call)) return false
+
+  try {
+    const { functionName, args } = decodeFunctionData({ abi: multicall3Abi, data: call.data })
+    if (functionName !== 'aggregate3') return false
+    const calls: Readonly<Aggregate3Calls[]> = args[0]
+    return calls.some((c) => isTargetCall({ to: c.target, data: c.callData }, selector, contractAddress))
+  } catch {
+    return false
+  }
 }
 
 function packAggregate3Result(result: Readonly<Aggregate3Result[]>): Hex {

@@ -1,4 +1,4 @@
-import { mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
+import { JsonRpcEntry, mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
 
 import type { BrowserContext } from '@playwright/test'
 
@@ -8,12 +8,6 @@ export interface EthGetCodeMock {
   set(address: string, code: string): void
   /** Drop every override, back to `'0x'` (plain EOA) for every address. */
   reset(): void
-}
-
-interface JsonRpcEntry {
-  id: number | string
-  method: string
-  params?: [address?: string, ...unknown[]]
 }
 
 /**
@@ -31,7 +25,13 @@ interface JsonRpcEntry {
 export function installEthGetCode(context: BrowserContext): EthGetCodeMock {
   const overrides = new Map<string, string>()
 
-  mockRpcNodeRequest(context, 'eth_getCode', (entry) => resolveCode(entry, overrides))
+  // No other mock watches `eth_getCode`, so every call with this method is unambiguously ours.
+  mockRpcNodeRequest(
+    context,
+    'eth_getCode',
+    (entry) => resolveCode(entry, overrides),
+    () => true,
+  )
 
   return {
     set(address, code) {
@@ -45,6 +45,6 @@ export function installEthGetCode(context: BrowserContext): EthGetCodeMock {
 
 function resolveCode(entry: JsonRpcEntry, overrides: Map<string, string>): string {
   const address = entry.params?.[0]
-  const override = address ? overrides.get(address.toLowerCase()) : undefined
+  const override = address ? overrides.get((address as string).toLowerCase()) : undefined
   return override ?? '0x'
 }

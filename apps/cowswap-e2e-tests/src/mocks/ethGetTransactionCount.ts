@@ -14,5 +14,11 @@ const HARDCODED_TRANSACTION_COUNT = '0x0'
  * `eth_blockNumber` (`installEthBlockNumber`) that 429s under `pnpm e2e`'s full parallel load.
  */
 export function installEthGetTransactionCount(context: BrowserContext): void {
-  mockRpcNodeRequest(context, 'eth_getTransactionCount', () => HARDCODED_TRANSACTION_COUNT)
+  // No other mock watches `eth_getTransactionCount`, so every call with this method is unambiguously ours.
+  mockRpcNodeRequest(
+    context,
+    'eth_getTransactionCount',
+    () => HARDCODED_TRANSACTION_COUNT,
+    () => true,
+  )
 }

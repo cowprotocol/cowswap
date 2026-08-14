@@ -26,6 +26,7 @@ export function mockRpcNodeRequest(
   context: BrowserContext,
   rpcMethod: string,
   resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
+  matches: (entry: JsonRpcEntry) => boolean,
 ): void {
   void context.route('**/*', async (route: Route) => {
     const request = route.request()
@@ -39,7 +40,13 @@ export function mockRpcNodeRequest(
     }
 
     const entries = Array.isArray(body) ? body : [body]
-    if (!entries.some((entry) => entry?.method === rpcMethod)) return route.fallback()
+    // Method-name match alone isn't enough: several mocks share `eth_call`, and
+    // `context.route('**/*', ...)` dispatches them LIFO. Without checking whether this mock's own
+    // selector actually appears anywhere in the request, a later-registered mock would swallow
+    // every `eth_call` it sees via `fulfillFromUpstream` below — a real network fetch that never
+    // reaches `route.fallback()` — starving any earlier-registered mock (e.g. `allowances`) of the
+    // request entirely, even though it was never relevant to this mock in the first place.
+    if (!entries.some((entry) => entry?.method === rpcMethod && matches(entry))) return route.fallback()
 
     if (entries.every((entry) => entry?.method === rpcMethod)) {
       const results = entries.map((entry) => resolve(entry))
