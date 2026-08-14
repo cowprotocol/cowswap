@@ -82,6 +82,7 @@ async function fulfillFromUpstream(
 
       return { jsonrpc: '2.0', id: entry.id, result }
     })
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

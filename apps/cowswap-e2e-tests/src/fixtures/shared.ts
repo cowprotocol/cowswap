@@ -7,7 +7,6 @@ import { installEthEstimateGas } from '../mocks/ethEstimateGas'
 import { installEthGetCode, type EthGetCodeMock } from '../mocks/ethGetCode'
 import { installEthGetTransactionCount } from '../mocks/ethGetTransactionCount'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
-import { installMulticall3 } from '../mocks/multicall3'
 import { installNearIntents, type NearIntentsMock } from '../mocks/nearIntents'
 import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
@@ -116,10 +115,6 @@ export const sharedFixtures: Fixtures<
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
       installTokenNonce(context)
-      installMulticall3(context, { allowances })
-      // Registered after `installMulticall3`/`installAllowances` so it always gets first look at
-      // a matching request (Playwright's route order is LIFO) — see its own doc comment for why
-      // neither of those two mocks can catch this on their own.
       installSocketVerifier(context)
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
@@ -150,8 +145,6 @@ export const sharedFixtures: Fixtures<
       await launchDarkly.reset()
       usdPrices.reset()
       await safeSdk.disable()
-      // Non-fatal, so it must run before the throwing assert below.
-      allowances.reportUnknownOwners()
       allowances.reset()
       balances.reportUnknownOwners()
       balances.reset()

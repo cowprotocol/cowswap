@@ -35,9 +35,9 @@ const AGGREGATE3_SELECTOR = '0x82ad56cb'
  */
 export function mockContractViewCall(
   context: BrowserContext,
-  contractAddress: string,
+  contractAddress: string | undefined,
   selector: string,
-  resolve: (callData: string) => unknown,
+  resolve: (callData: Hex, target: Address) => unknown,
 ): void {
   // eslint-disable-next-line complexity
   mockRpcNodeRequest(context, 'eth_call', (entry, upstreamResult) => {
@@ -47,8 +47,12 @@ export function mockContractViewCall(
     }
 
     // Direct smart-contract call
-    if (call.data.startsWith(selector) && getAddressKey(call.to) === getAddressKey(contractAddress)) {
-      return resolve(call.data)
+    if (
+      call.data.startsWith(selector) && contractAddress
+        ? getAddressKey(call.to) === getAddressKey(contractAddress)
+        : true
+    ) {
+      return resolve(call.data, call.to)
     }
 
     // Multicall
@@ -62,9 +66,11 @@ export function mockContractViewCall(
         const calls: Readonly<Aggregate3Calls[]> = args[0]
 
         const resolved = calls.map((call) =>
-          call.callData.startsWith(selector) && getAddressKey(call.target) === getAddressKey(contractAddress)
-            ? resolve(call.callData)
-            : undefined,
+          call.callData.startsWith(selector) && contractAddress
+            ? getAddressKey(call.target) === getAddressKey(contractAddress)
+            : true
+              ? resolve(call.callData, call.target)
+              : undefined,
         )
 
         // All calls are matching

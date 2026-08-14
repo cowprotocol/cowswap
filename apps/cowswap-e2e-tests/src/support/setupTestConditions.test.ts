@@ -42,10 +42,7 @@ function fakeAllowances(): AllowancesMock & { calls: Array<[string, number, Reco
       calls.push([owner, chainId, allowances])
     },
     clear() {},
-    reads: () => [],
-    reportUnknownOwners() {},
     reset() {},
-    resolve: () => 0n,
   }
 }
 
