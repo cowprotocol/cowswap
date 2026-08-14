@@ -7,7 +7,7 @@ import { SWRConfig } from 'swr'
 import { getTrades, Order, RawTrade } from 'api/operator'
 
 import { GasFeeDisplay } from '../../components/orders/GasFeeDisplay'
-import { useOrderProtocolFees } from '../../hooks/useOperatorTrades'
+import { useOrderTrades } from '../../hooks/useOperatorTrades'
 import { RICH_ORDER, USDT, WETH } from '../data'
 
 jest.mock('state/network', () => ({
@@ -25,9 +25,9 @@ jest.mock('api/operator', () => ({
   getTrades: jest.fn(),
 }))
 
-// The hook imports web3 at module load but never touches it on this path.
+// Chain boundary: the hook reads block timestamps for the fills it pages, which this view ignores.
 jest.mock('../../explorer/api', () => ({
-  web3: { eth: { getBlock: jest.fn() } },
+  web3: { eth: { getBlock: jest.fn().mockResolvedValue({ timestamp: '1715000000' }) } },
 }))
 
 const mockedGetTrades = jest.mocked(getTrades)
@@ -53,7 +53,7 @@ function fill(index: number): RawTrade {
 
 // The real chain the app uses: derive the fees from every trade, attach them to the order, render.
 function Harness({ order }: { order: Order }): ReactNode {
-  const { protocolFees } = useOrderProtocolFees(order)
+  const { protocolFees } = useOrderTrades(order)
   return <GasFeeDisplay order={{ ...order, protocolFees }} showBreakdown />
 }
 
@@ -71,16 +71,16 @@ describe('costs & fees breakdown (integration)', () => {
 
   it('derives and renders the breakdown from an order’s trades, end to end', async () => {
     const fills = [fill(0), fill(1), fill(2)]
-    // Emulate a server that caps pages below the requested size, forcing the hook to page.
-    mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset, offset + 2))
+    mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset))
 
     const order = { ...RICH_ORDER, gasCost: new BigNumber('2500000000000000') } // 0.0025 native
     const { container } = renderHarness(order)
 
     await waitFor(() => expect(screen.queryByText('[+] Show more')).not.toBeNull())
 
-    // Reached offset 3, so the fees were aggregated across all three fills, not just the first page.
-    expect(mockedGetTrades).toHaveBeenLastCalledWith(expect.objectContaining({ orderId: order.uid, offset: 3 }))
+    // One call covers the order, and the fees below aggregate all three of its fills.
+    expect(mockedGetTrades).toHaveBeenCalledTimes(1)
+    expect(mockedGetTrades).toHaveBeenCalledWith(expect.objectContaining({ orderId: order.uid, offset: 0 }))
 
     // Each token keeps its own total; the native gas cost is not folded into the WETH fee.
     const headline = container.textContent || ''

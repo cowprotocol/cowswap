@@ -2,7 +2,7 @@ import React from 'react'
 
 import { OrderDetails } from '../../../components/orders/OrderDetails'
 import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
-import { useOrderProtocolFees, useOrderTrades } from '../../../hooks/useOperatorTrades'
+import { useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { Errors } from '../../../types'
@@ -31,13 +31,11 @@ export const OrderWidget: React.FC = () => {
   } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const {
     trades,
+    protocolFees,
     error,
     isLoading: areTradesLoading,
     hasNextPage,
   } = useOrderTrades(order, baseTableState.pageOffset, baseTableState.pageSize)
-
-  // Shares the trades fetch with `useOrderTrades` above, so this costs no extra request.
-  const { protocolFees } = useOrderProtocolFees(order)
 
   const tableState: TableState = { ...baseTableState, hasNextPage }
   const errors: Errors = { ...orderErrors }

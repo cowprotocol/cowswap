@@ -13,7 +13,13 @@ import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 import { web3 } from '../explorer/api'
 
 type Result = {
+  /** The requested page of fills. */
   trades: Trade[]
+  /**
+   * Fee breakdown over every fill, so it does not change as the user pages. `undefined` means
+   * unknown (loading or failed); `[]` means the order was charged no fee.
+   */
+  protocolFees?: ProtocolFee[]
   error?: UiError
   isLoading: boolean
   hasNextPage: boolean
@@ -30,39 +36,17 @@ type AllTradesResult = {
   isLoading: boolean
 }
 
-type ProtocolFeesResult = {
-  // Undefined while unknown (loading, failed, or no order); `[]` means no fee was charged.
-  protocolFees?: ProtocolFee[]
-  error?: UiError
-  isLoading: boolean
-}
-
-// Large enough that most orders need a single call.
-const ALL_TRADES_PAGE_SIZE = 1000
+// Large enough that most orders need a single call. Exported so tests can serve a full page.
+export const ALL_TRADES_PAGE_SIZE = 1000
 // Safety bound; reaching it means the paging is broken, not that the order has this many fills.
 const MAX_TRADES_PAGES = 100
 
 const TRADES_ERROR = 'Failed to fetch trades'
-const PROTOCOL_FEES_ERROR = 'Failed to fetch the costs and fees breakdown'
 
 /**
- * Order-level fee breakdown, derived from every fill. Unlike {@link useOrderTrades}, which is
- * scoped to the selected Fills page, this does not change as the user pages.
+ * An order's fills: the requested page, enriched with timestamps, plus the fee breakdown over all
+ * of them. One fetch serves both, so the order details page reads the trades once.
  */
-export function useOrderProtocolFees(order: Order | null): ProtocolFeesResult {
-  const { rawTrades, error, isLoading } = useAllOrderTrades(order)
-
-  return useMemo<ProtocolFeesResult>(
-    () => ({
-      protocolFees: rawTrades && getProtocolFees(rawTrades),
-      error: error ? { message: PROTOCOL_FEES_ERROR, type: 'error' } : undefined,
-      isLoading,
-    }),
-    [rawTrades, error, isLoading],
-  )
-}
-
-/** The requested page of an order's fills, sliced from the full list and enriched with timestamps. */
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
   const { rawTrades, error, isLoading } = useAllOrderTrades(order)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
@@ -77,13 +61,12 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     let cancelled = false
 
     fetchTradesTimestamps(pageTrades)
+      // Merged, not replaced: a timestamp belongs to its tx, so earlier pages stay correct.
       .then((timestamps) => {
-        if (!cancelled) setTradesTimestamps(timestamps)
+        if (!cancelled) setTradesTimestamps((current) => ({ ...current, ...timestamps }))
       })
       .catch((error) => {
         console.error('Trades timestamps fetching error: ', error)
-
-        if (!cancelled) setTradesTimestamps({})
       })
 
     return (): void => {
@@ -112,13 +95,15 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     })
   }, [order, pageTrades, tradesTimestamps])
 
+  const protocolFees = useMemo(() => rawTrades && getProtocolFees(rawTrades), [rawTrades])
+
   const hasNextPage = (rawTrades?.length ?? 0) > offset + limit
   // SWR reports nothing pending without a key, but the caller is still waiting on the order itself.
   const areTradesLoading = isLoading || (!rawTrades && !error)
 
   return useMemo(
-    () => ({ trades, error, isLoading: areTradesLoading, hasNextPage }),
-    [trades, error, areTradesLoading, hasNextPage],
+    () => ({ trades, protocolFees, error, isLoading: areTradesLoading, hasNextPage }),
+    [trades, protocolFees, error, areTradesLoading, hasNextPage],
   )
 }
 
@@ -164,17 +149,15 @@ async function getAllOrderTrades(networkId: Network, orderId: string): Promise<R
 
     allTrades.push(...newTrades)
 
-    // A short page is not the end: the API may cap the page size below the requested limit.
-    if (newTrades.length === 0) return allTrades
+    // Per the `/api/v2/trades` contract, a short page is the last one; the `newTrades` check covers
+    // an API that serves full pages forever.
+    if (trades.length < ALL_TRADES_PAGE_SIZE || newTrades.length === 0) return allTrades
   }
 
   throw new Error(`Reached ${MAX_TRADES_PAGES} pages of trades for order ${orderId}; the API is not paging correctly`)
 }
 
-/**
- * Every fill of an order. Both the Fills table and the fee breakdown derive from this one SWR entry,
- * so the order details page fetches the trades once however many consumers it has.
- */
+/** Every fill of an order, as one SWR entry that {@link useOrderTrades} pages and aggregates. */
 function useAllOrderTrades(order: Order | null): AllTradesResult {
   // Here we assume that we are already in the right network
   // contrary to useOrder hook, where it searches all networks for a given orderId
