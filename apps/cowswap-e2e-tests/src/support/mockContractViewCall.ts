@@ -46,13 +46,14 @@ export function mockContractViewCall(
       return undefined
     }
 
-    // Direct smart-contract call
     if (
-      call.data.startsWith(selector) && contractAddress
-        ? getAddressKey(call.to) === getAddressKey(contractAddress)
-        : true
+      call.data.startsWith(selector) &&
+      (contractAddress ? getAddressKey(call.to) === getAddressKey(contractAddress) : true)
     ) {
-      return resolve(call.data, call.to)
+      // Direct smart-contract call
+      const result = resolve(call.data, call.to)
+
+      return result
     }
 
     // Multicall
@@ -65,17 +66,20 @@ export function mockContractViewCall(
       if (functionName === 'aggregate3') {
         const calls: Readonly<Aggregate3Calls[]> = args[0]
 
-        const resolved = calls.map((call) =>
-          call.callData.startsWith(selector) && contractAddress
-            ? getAddressKey(call.target) === getAddressKey(contractAddress)
-            : true
-              ? resolve(call.callData, call.target)
-              : undefined,
-        )
+        const resolved = calls.map((call) => {
+          return call.callData.startsWith(selector) &&
+            (contractAddress ? getAddressKey(call.target) === getAddressKey(contractAddress) : true)
+            ? resolve(call.callData, call.target)
+            : undefined
+        })
 
-        // All calls are matching
         if (resolved.every((result) => typeof result !== 'undefined')) {
-          return packAggregate3Result(resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })))
+          // All calls are matching
+          const result = packAggregate3Result(
+            resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })),
+          )
+
+          return result
         }
 
         if (resolved.some((result) => typeof result !== 'undefined')) {

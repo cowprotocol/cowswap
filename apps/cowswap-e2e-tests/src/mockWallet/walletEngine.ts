@@ -56,6 +56,7 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
   // eslint-disable-next-line complexity
   async function dispatch(method: string, params: unknown[]): Promise<unknown> {
     const stub = stubs.get(method)
+
     if (stub) return stub({ method, params, chainId })
 
     switch (method) {
@@ -100,7 +101,7 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
       case 'wallet_revokePermissions':
         return null
       default:
-        throw new Error('Unkown RPC method in walletEngine.ts mock', { cause: params })
+        throw new Error('Unknown RPC method in walletEngine.ts mock', { cause: params })
     }
   }
 

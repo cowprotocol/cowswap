@@ -1,5 +1,6 @@
 import { decodeFunctionData, erc20Abi, toFunctionSelector } from 'viem'
 
+import { encodeAllowanceResult } from './codec'
 import { loadAllowancesFixture, parseAllowanceValue } from './fixture'
 import { allowanceKey, type AllowanceLookup, type AllowanceRead, type AllowanceValue } from './types'
 
@@ -29,27 +30,23 @@ const CHAIN_ID = CHAIN_IDS.SEPOLIA
 export function installAllowances(context: BrowserContext): AllowancesMock {
   const fixture = loadAllowancesFixture()
   const overrides: AllowanceLookup = new Map()
+  const selector = toFunctionSelector('allowance(address,address)')
 
-  mockContractViewCall(
-    context,
-    undefined,
-    toFunctionSelector('allowance(address,address)'),
-    (callData, tokenAddress) => {
-      const {
-        args: [account /*, spender */],
-      } = decodeFunctionData({
-        abi: erc20Abi,
-        data: callData,
-      })
+  mockContractViewCall(context, undefined, selector, (callData, tokenAddress) => {
+    const {
+      args: [account],
+    } = decodeFunctionData({
+      abi: erc20Abi,
+      data: callData,
+    })
 
-      if (!account) return
-      const key = allowanceKey(account, CHAIN_ID, tokenAddress)
+    if (!account) return
+    const key = allowanceKey(account, CHAIN_ID, tokenAddress)
 
-      const mocked = overrides.get(key) ?? fixture.get(key)
+    const mocked = overrides.get(key) ?? fixture.get(key)
 
-      return mocked
-    },
-  )
+    return typeof mocked === 'bigint' ? encodeAllowanceResult(mocked) : undefined
+  })
 
   return {
     set(owner, chainId, allowances) {
