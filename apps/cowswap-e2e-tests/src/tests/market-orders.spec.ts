@@ -12,6 +12,7 @@ import { mockCancellableOrder } from '../support/mockCancellableOrder'
 import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
+import { mockHookLogo } from '../support/mockHookLogo'
 import { mockHooksSimulation } from '../support/mockHooksSimulation'
 import { mockTokenLogos } from '../support/mockTokenLogos'
 import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
@@ -1601,10 +1602,12 @@ test.describe('Market Orders', () => {
       // otherwise-absurd price-impact percentage that mismatch produces.
       mocks.usdPrices.setPrice(WETH, 546.9898499813039)
       mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('10', 18) })
-      // Neither of these real endpoints was mocked before this test — see each helper's own doc
-      // comment for what they replace and why (a 403'ing token-logo CDN, and a live Tenderly
-      // simulation call the confirmation screen makes once a hook is attached).
+      // None of these real endpoints was mocked before this test — see each helper's own doc
+      // comment for what they replace and why (a 403'ing token-logo CDN, the hook's unmocked
+      // GitHub-hosted logo, and a live Tenderly simulation call the confirmation screen makes
+      // once a hook is attached).
       mockTokenLogos(context)
+      mockHookLogo(context)
       mockHooksSimulation(context)
 
       // Enable Hooks via the Settings toggle first (same mechanic [CS-129] exercises in full),
@@ -1659,8 +1662,8 @@ test.describe('Market Orders', () => {
       await confirmationModal.getByText('PRE').click()
       const hookRow = confirmationModal.getByText('Build your own hook', { exact: true })
       await expect(hookRow).toBeVisible()
-      // This particular logo (`hookDappsRegistry.ts`'s `BUILD_CUSTOM_HOOK.image`) is a real,
-      // unmocked GitHub raw-content URL — real network round trip, so poll instead of a single
+      // This particular logo (`hookDappsRegistry.ts`'s `BUILD_CUSTOM_HOOK.image`) is mocked via
+      // `mockHookLogo` above, but the `<img>` load is still async, so poll instead of a single
       // immediate read.
       const hookLogo = confirmationModal.locator('img[alt="Build your own hook"]')
       await expect(hookLogo).toBeVisible()
