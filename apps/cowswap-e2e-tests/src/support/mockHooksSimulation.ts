@@ -7,10 +7,10 @@ import type { BrowserContext, Route } from '@playwright/test'
  * mocked before this — `HookItem` renders "Simulation successful"/"Simulation failed" straight off
  * each response entry's `status` boolean, positionally matched to the posted pre/post hooks.
  */
-export function mockHooksSimulation(context: BrowserContext, opts: { status?: boolean } = {}): void {
+export async function mockHooksSimulation(context: BrowserContext, opts: { status?: boolean } = {}): Promise<void> {
   const status = opts.status ?? true
 
-  void context.route(/bff\.(?:barn\.)?cow\.fi\/\d+\/simulation\/simulateBundle/i, async (route: Route) => {
+  await context.route(/bff\.(?:barn\.)?cow\.fi\/\d+\/simulation\/simulateBundle/i, async (route: Route) => {
     const postedHooks = JSON.parse(route.request().postData() || '[]') as unknown[]
     const body = postedHooks.map((_, index) => ({
       link: `https://dashboard.tenderly.co/mock-simulation-${index}`,

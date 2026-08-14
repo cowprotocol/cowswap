@@ -17,8 +17,8 @@ export interface MockedBridgeToken {
  * Response shape: `{ success: true, result: TokenInfo[] }`, where the SDK maps each entry's
  * `logoURI` to `logoUrl` and otherwise passes it through as-is.
  */
-export function mockBridgeSupportedTokens(context: BrowserContext, tokens: MockedBridgeToken[]): void {
-  void context.route(/bungee-manual\/dest-tokens/i, async (route) => {
+export async function mockBridgeSupportedTokens(context: BrowserContext, tokens: MockedBridgeToken[]): Promise<void> {
+  await context.route(/bungee-manual\/dest-tokens/i, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

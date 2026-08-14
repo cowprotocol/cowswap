@@ -14,8 +14,8 @@ const BUILD_CUSTOM_HOOK_LOGO_PATH = path.resolve(
  * bare placeholder box instead of the hook's hard-hat icon. Fulfilling from the same `build.png` already
  * checked into the frontend source removes that live network dependency entirely.
  */
-export function mockHookLogo(context: BrowserContext): void {
-  void context.route(
+export async function mockHookLogo(context: BrowserContext): Promise<void> {
+  await context.route(
     /raw\.githubusercontent\.com\/cowprotocol\/cowswap\/.*\/BuildHookApp\/build\.png/i,
     async (route: Route) => {
       await route.fulfill({ status: 200, contentType: 'image/png', path: BUILD_CUSTOM_HOOK_LOGO_PATH })

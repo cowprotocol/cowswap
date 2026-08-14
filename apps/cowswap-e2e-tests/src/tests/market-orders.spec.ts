@@ -1421,11 +1421,10 @@ test.describe('Market Orders', () => {
       // widget itself. At this viewport `TradeWidgetForm`'s `showDropdown` is true (a connected
       // wallet renders the "My orders" button, one of its triggers), so these nav items only exist in
       // the DOM behind the collapsed "Trading mode" dropdown, not as a plain visible link row.
-      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
       const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
 
       // Precondition: Hooks starts disabled, so its nav entry isn't rendered yet.
-      await tradingModeDropdown.click()
+      await swapPage.tradingModeDropdown.click()
       await expect(hooksLink).toBeHidden()
 
       // A full reload (not another `goto`, which only changes the hash on this single-page app and
@@ -1440,7 +1439,7 @@ test.describe('Market Orders', () => {
       await expect(hooksCheckbox).toBeChecked()
       await swapPage.page.keyboard.press('Escape')
 
-      await tradingModeDropdown.click()
+      await swapPage.tradingModeDropdown.click()
       await expect(hooksLink).toBeVisible()
 
       // Setting persists across a refresh — it's backed by `state.user.hooksEnabled`, written to
@@ -1457,7 +1456,7 @@ test.describe('Market Orders', () => {
       await expect(hooksCheckbox).toBeChecked()
       await swapPage.page.keyboard.press('Escape')
 
-      await tradingModeDropdown.click()
+      await swapPage.tradingModeDropdown.click()
       await expect(hooksLink).toBeVisible()
       await hooksLink.click()
 
@@ -1478,7 +1477,7 @@ test.describe('Market Orders', () => {
       mocks.tokenLists.setListForChain(GNOSIS_CHAIN_ID, {
         tokens: [{ address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID }],
       })
-      mockBridgeSupportedTokens(context, [
+      await mockBridgeSupportedTokens(context, [
         { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
       ])
       // The default quote fixture's WETH/USDC rate is a real recorded snapshot (~546.99 USDC per
@@ -1520,17 +1519,24 @@ test.describe('Market Orders', () => {
       // The Hooks nav link only renders once `state.user.hooksEnabled` is set (same
       // `redux-localstorage-simple`-backed flag [CS-129] toggles via Settings) — set it directly
       // rather than re-exercising that toggle flow, and reload so the store rehydrates with it.
+      // Merge into the existing persisted state instead of replacing it outright, so other
+      // `state.user` fields written earlier (slippage, recipient, ...) survive the reload.
       await swapPage.page.evaluate(() =>
-        localStorage.setItem('redux_localstorage_simple_user', JSON.stringify({ hooksEnabled: true })),
+        localStorage.setItem(
+          'redux_localstorage_simple_user',
+          JSON.stringify({
+            ...JSON.parse(localStorage.getItem('redux_localstorage_simple_user') || '{}'),
+            hooksEnabled: true,
+          }),
+        ),
       )
       await swapPage.page.reload()
       await swapPage.unlockIfNeeded()
       await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
 
       // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
-      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
       const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-      await tradingModeDropdown.click()
+      await swapPage.tradingModeDropdown.click()
       await hooksLink.click()
 
       await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
@@ -1606,9 +1612,9 @@ test.describe('Market Orders', () => {
       // comment for what they replace and why (a 403'ing token-logo CDN, the hook's unmocked
       // GitHub-hosted logo, and a live Tenderly simulation call the confirmation screen makes
       // once a hook is attached).
-      mockTokenLogos(context)
-      mockHookLogo(context)
-      mockHooksSimulation(context)
+      await mockTokenLogos(context)
+      await mockHookLogo(context)
+      await mockHooksSimulation(context)
 
       // Enable Hooks via the Settings toggle first (same mechanic [CS-129] exercises in full),
       // then navigate to the Hooks tab through the UI — not a direct URL shortcut.
@@ -1618,9 +1624,8 @@ test.describe('Market Orders', () => {
       await swapPage.page.keyboard.press('Escape')
 
       // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
-      const tradingModeDropdown = swapPage.page.locator('[class*="styled__DropdownButton"]')
       const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-      await tradingModeDropdown.click()
+      await swapPage.tradingModeDropdown.click()
       await hooksLink.click()
       await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
       await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
@@ -1658,8 +1663,9 @@ test.describe('Market Orders', () => {
       // response (mocked above), plus its dapp logo actually loading (not a broken/letter fallback).
       const confirmationModal = swapPage.page.locator('#trade-confirmation')
       // `HookTag` renders "PRE" and its count (`<b>1</b>`) as one element's text ("PRE 1"), so an
-      // exact match on "PRE" alone doesn't match — substring instead.
-      await confirmationModal.getByText('PRE').click()
+      // exact match on "PRE" alone doesn't match — match the whole rendered pattern instead of a
+      // bare substring, which could resolve more than one node and hit a strict-mode error.
+      await confirmationModal.getByText(/^PRE\s*\d+$/).click()
       const hookRow = confirmationModal.getByText('Build your own hook', { exact: true })
       await expect(hookRow).toBeVisible()
       // This particular logo (`hookDappsRegistry.ts`'s `BUILD_CUSTOM_HOOK.image`) is mocked via
