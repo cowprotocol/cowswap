@@ -1,15 +1,13 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { TokenLogo } from '@cowprotocol/tokens'
 
 import { Nullish } from 'types'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import * as styledEl from './styled'
-
-const TOKEN_LOGO_SIZE = 42
+import { TOKEN_SIZE_DEFAULT } from './styled'
 
 export type CurrencyAmountPreviewVariant = 'default' | 'slim'
 
@@ -47,12 +45,8 @@ export function CurrencyAmountPreview({
 
   return (
     <styledEl.Container id={id} className={containerClassName}>
-      <div>{topLabel}</div>
-      <div>
-        <styledEl.TokenLogoWrapper>
-          <TokenLogo token={currency} size={TOKEN_LOGO_SIZE} />
-        </styledEl.TokenLogoWrapper>
-      </div>
+      <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
+      <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>
         <styledEl.Amount className="token-amount-input" amount={amount} tokenSymbol={currency} />
         <styledEl.FiatAmountSlot fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />

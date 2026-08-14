@@ -143,9 +143,7 @@ export enum UI {
   ICON_SIZE_LARGE = '--cow-icon-size-large',
   ICON_COLOR_NORMAL = '--cow-icon-color-normal',
 
-  // States
-
-  // Text
+  // Text Colors:
   COLOR_TEXT1 = '--cow-color-text1',
   COLOR_TEXT1_INACTIVE = '--cow-color-text1-inactive',
   COLOR_TEXT1_OPACITY_25 = '--cow-color-text1-opacity-25',
@@ -153,16 +151,29 @@ export enum UI {
   COLOR_TEXT2 = '--cow-color-text2',
   COLOR_LINK = '--cow-color-link',
   COLOR_LINK_OPACITY_10 = '--cow-color-link-opacity-10',
+
+  // Font Weights:
   FONT_WEIGHT_NORMAL = '--cow-font-weight-normal',
   FONT_WEIGHT_MEDIUM = '--cow-font-weight-medium',
   FONT_WEIGHT_BOLD = '--cow-font-weight-bold',
+
+  // Font Sizes:
   FONT_SIZE_SMALLER = '--cow-font-size-smaller',
   FONT_SIZE_SMALL = '--cow-font-size-small',
+  FONT_SIZE_SMALL_PLUS = '--cow-font-size-small-plus',
   FONT_SIZE_NORMAL = '--cow-font-size-normal',
+  FONT_SIZE_NORMAL_PLUS = '--cow-font-size-normal-plus',
   FONT_SIZE_MEDIUM = '--cow-font-size-medium',
   FONT_SIZE_LARGE = '--cow-font-size-large',
   FONT_SIZE_LARGER = '--cow-font-size-larger',
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
+
+  // Line Heights:
+  LINE_HEIGHT_SMALL = '--cow-line-height-small',
+  LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
+  LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
+
+  // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
   FONT_FAMILY_MONO = '--cow-font-family-mono',
 
