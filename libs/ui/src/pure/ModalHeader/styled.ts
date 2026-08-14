@@ -2,28 +2,29 @@ import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { transition } from '../../utils/animation'
+import { font } from '../../utils/font'
 import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
 
 export const Header = styled.header<{ withoutBorder?: boolean }>`
+  ${font('FONT_LARGE', 'semibold')}
+
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-weight: 500;
   padding: 16px;
-  font-size: 17px;
   border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
   transition: ${transition(['padding'])};
 
   &.hasBack {
-    padding-left: 40px;
+    padding-left: 32px;
   }
 
   &.hasClose {
-    padding-right: 40px;
+    padding-right: 32px;
   }
 `
 
@@ -43,8 +44,6 @@ export const RightSlot = styled.div`
 `
 
 const headerIconButtonCss = css`
-  --pressableInset: -17px -11px;
-
   position: absolute;
   top: 50%;
   opacity: 1;
@@ -65,6 +64,7 @@ const headerIconButtonCss = css`
 
 export const BackButton = styled(BackIconButton)`
   ${headerIconButtonCss}
+  --pressableInset: -18px 0 -18px -11px;
   left: 10px;
 
   &[aria-hidden='true'] {
@@ -74,6 +74,7 @@ export const BackButton = styled(BackIconButton)`
 
 export const CloseButton = styled(CloseIconButton)`
   ${headerIconButtonCss}
+  --pressableInset: -18px -11px -18px 0;
   right: 10px;
 
   &[aria-hidden='true'] {
