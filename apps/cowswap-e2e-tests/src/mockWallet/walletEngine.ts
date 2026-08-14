@@ -101,7 +101,7 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
       case 'wallet_revokePermissions':
         return null
       default:
-        throw new Error('Unknown RPC method in walletEngine.ts mock', { cause: params })
+        return forward(method, params)
     }
   }
 
@@ -134,6 +134,26 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
       return method ? calls.filter((c) => c.method === method) : [...calls]
     },
   }
+}
+
+async function forward(method: string, params: unknown[]): Promise<unknown> {
+  const res = await fetch('https://rpc-request-from.wallet', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  })
+  const json: unknown = await res.json()
+  if (typeof json !== 'object' || json === null) {
+    throw new Error(`Unexpected RPC response for ${method}: expected a JSON object`)
+  }
+  if ('error' in json && json.error != null) {
+    const err = json.error as { code?: unknown; message?: unknown }
+    throw {
+      code: typeof err.code === 'number' ? err.code : -32000,
+      message: typeof err.message === 'string' ? err.message : 'RPC error',
+    }
+  }
+  return 'result' in json ? (json as { result?: unknown }).result : undefined
 }
 
 function toRpcError(e: unknown): RpcError {
