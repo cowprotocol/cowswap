@@ -72,10 +72,6 @@ export function buildEoaTwapConfirmationPendingSteps({
 }
 
 export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {
-  if (status === 'success') {
-    return undefined
-  }
-
   const isLoading = status === 'loading'
 
   switch (step) {
@@ -106,6 +102,11 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
       return t`Sign in your wallet. We'll submit the funding order automatically.`
 
     case EoaTwapSigningSteps.CreatingOrder:
+      // Completed step has nothing useful to re-expand:
+      if (status === 'success') {
+        return undefined
+      }
+
       return (
         <p>
           {t`Settling the funding order and registering your TWAP`}

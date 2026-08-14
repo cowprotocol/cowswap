@@ -183,7 +183,7 @@ export const StepExpandIcon = styled.button`
     transition: transform 0.2s ease-in-out;
   }
 
-  &[aria-expanded='true'] > svg {
+  ${StepHeaderButton}[aria-expanded='true'] & > svg {
     transform: rotate(180deg);
   }
 `

@@ -44,6 +44,7 @@ export function OrderStepItem({ step: { label, description, status } }: OrderSte
       <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
 
       <styledEl.StepHeaderButton
+        type="button"
         onClick={toggleIsUserExpanded}
         aria-expanded={canExpand ? isUserExpanded : undefined}
         disabled={!canExpand}
@@ -52,7 +53,7 @@ export function OrderStepItem({ step: { label, description, status } }: OrderSte
 
         {canExpand ? (
           <styledEl.StepExpandIcon>
-            <ChevronDown aria-label={isUserExpanded ? 'Collapse' : 'Expand'} strokeWidth={ICON_STROKE_WIDTH} />
+            <ChevronDown aria-hidden strokeWidth={ICON_STROKE_WIDTH} />
           </styledEl.StepExpandIcon>
         ) : null}
       </styledEl.StepHeaderButton>
