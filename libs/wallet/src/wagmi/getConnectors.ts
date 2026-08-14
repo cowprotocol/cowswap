@@ -4,7 +4,7 @@ import type { CreateConnectorFn } from 'wagmi'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
-import { injected, safe } from '@wagmi/connectors'
+import { injected, metaMask, safe } from '@wagmi/connectors'
 
 import { getInjectedProvider } from '../api/utils/connection'
 import { createIsolatedProvider } from '../providerIsolation'
@@ -15,6 +15,21 @@ export function getConnectors(): CreateConnectorFn[] | undefined {
   const isSafeApp = getIsSafeAppIframe()
   const isWidget = isInjectedWidget()
   const connectors: CreateConnectorFn[] = []
+
+  // Register the MetaMask SDK connector for desktop browsers so MetaMask is
+  // always discoverable — even when the extension is not installed — via
+  // deeplink or the MetaMask mobile QR code flow.
+  if (!isSafeApp && !isWidget && !isMobile) {
+    connectors.push(
+      metaMask({
+        dappMetadata: {
+          name: 'CoW Swap',
+          url: 'https://swap.cow.fi',
+          iconUrl: 'https://swap.cow.fi/apple-touch-icon.png',
+        },
+      }),
+    )
+  }
 
   if (!isSafeApp && !isWidget && isMobile) {
     connectors.push(getBrowserInjectedConnector())

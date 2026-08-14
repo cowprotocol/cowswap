@@ -3,7 +3,7 @@ import './types.d.ts'
 export * from './api/types'
 export * from './assets'
 export * from './constants'
-export { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
+export { COW_WIDGET_CONNECTOR_ID, METAMASK_CONNECTOR_ID } from './reown/consts'
 
 // Hooks
 export * from './api/hooks'
@@ -12,6 +12,7 @@ export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo
 export { useWatchChainBlockNumber } from './api/hooks/useWatchChainBlockNumber'
 export { useSolanaNativeBalance } from './api/hooks/useSolanaNativeBalance'
 export { useSolanaWalletProvider } from './api/hooks/useSolanaWalletProvider'
+export { useStellarNativeBalance } from './api/hooks/useStellarNativeBalance'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
 export { useNetworkSwitchUnsupported } from './api/hooks/useNetworkSwitchUnsupported'
@@ -48,6 +49,9 @@ export {
 
 export * from './utils/getIsSafeAppIframe'
 export * from './utils/connectWalletById'
+
+// Stellar
+export { getStellarServer, isValidStellarAddress, StellarSdk } from './stellar'
 
 // Connectors and providers
 export { WalletProvider } from './api/container/WalletProvider'

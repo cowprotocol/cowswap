@@ -3,7 +3,7 @@ import type { CreateConnectorFn } from 'wagmi'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { injected, safe } from '@wagmi/connectors'
+import { injected, metaMask, safe } from '@wagmi/connectors'
 
 import { getConnectors } from './getConnectors'
 
@@ -14,6 +14,7 @@ let mockIsMobile = false
 const mockBrowserInjectedConnector = (() => undefined) as unknown as CreateConnectorFn
 const mockWidgetConnector = (() => undefined) as unknown as CreateConnectorFn
 const mockSafeConnector = (() => undefined) as unknown as CreateConnectorFn
+const mockMetaMaskConnector = (() => undefined) as unknown as CreateConnectorFn
 
 jest.mock('@cowprotocol/common-utils', () => ({
   get isMobile() {
@@ -30,6 +31,7 @@ jest.mock('@wagmi/connectors', () => ({
   injected: jest.fn((params: { target?: { id?: string } }) =>
     params.target?.id === 'cow-widget' ? mockWidgetConnector : mockBrowserInjectedConnector,
   ),
+  metaMask: jest.fn(() => mockMetaMaskConnector),
   safe: jest.fn(() => mockSafeConnector),
 }))
 
@@ -44,6 +46,7 @@ jest.mock('../providerIsolation', () => ({
 const isInjectedWidgetMock = isInjectedWidget as jest.MockedFunction<typeof isInjectedWidget>
 const getIsSafeAppIframeMock = getIsSafeAppIframe as jest.MockedFunction<typeof getIsSafeAppIframe>
 const injectedMock = injected as jest.MockedFunction<typeof injected>
+const metaMaskMock = metaMask as jest.MockedFunction<typeof metaMask>
 const safeMock = safe as jest.MockedFunction<typeof safe>
 
 describe('getConnectors', () => {
@@ -54,8 +57,14 @@ describe('getConnectors', () => {
     getIsSafeAppIframeMock.mockReturnValue(false)
   })
 
-  it('does not add the browser injected connector in desktop regular app mode', () => {
-    expect(getConnectors()).toBeUndefined()
+  it('adds the MetaMask SDK connector in desktop regular app mode', () => {
+    const connectors = getConnectors()
+    expect(connectors).toEqual([mockMetaMaskConnector])
+    expect(metaMaskMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dappMetadata: expect.objectContaining({ name: 'CoW Swap' }),
+      }),
+    )
     expect(injectedMock).not.toHaveBeenCalled()
   })
 

@@ -32,6 +32,7 @@
     "@reown/appkit-controllers": "1.8.19",
     "@reown/appkit-common": "1.8.19",
     "@solana/web3.js": "1.98.4",
+    "@stellar/stellar-sdk": "13.3.0",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
