@@ -54,6 +54,8 @@ export interface ArrowIconProps {
   verticalCenter?: boolean
 }
 
+// TODO: Replace with ArrowIconButton
+
 export function ArrowIcon({
   direction = ArrowDirection.Right,
   size = 18,
