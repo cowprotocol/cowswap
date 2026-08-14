@@ -25,7 +25,7 @@ export interface TransactionParams {
 export function mockRpcNodeRequest(
   context: BrowserContext,
   rpcMethod: string,
-  resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
+  resolve: (entry: JsonRpcEntry, upstreamResult?: unknown, requestUrl?: string) => unknown,
   matches: (entry: JsonRpcEntry) => boolean,
 ): void {
   void context.route('**/*', async (route: Route) => {
@@ -48,8 +48,10 @@ export function mockRpcNodeRequest(
     // request entirely, even though it was never relevant to this mock in the first place.
     if (!entries.some((entry) => entry?.method === rpcMethod && matches(entry))) return route.fallback()
 
+    const requestUrl = request.url()
+
     if (entries.every((entry) => entry?.method === rpcMethod)) {
-      const results = entries.map((entry) => resolve(entry))
+      const results = entries.map((entry) => resolve(entry, undefined, requestUrl))
 
       if (results.every((res) => typeof res !== 'undefined')) {
         const payload = entries.map((entry, i) => ({ jsonrpc: '2.0', id: entry.id, result: results[i] }))
@@ -62,7 +64,7 @@ export function mockRpcNodeRequest(
       }
     }
 
-    return fulfillFromUpstream(route, entries, rpcMethod, resolve)
+    return fulfillFromUpstream(route, entries, rpcMethod, resolve, requestUrl)
   })
 }
 
@@ -70,7 +72,8 @@ async function fulfillFromUpstream(
   route: Route,
   entries: JsonRpcEntry[],
   rpcMethod: string,
-  resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
+  resolve: (entry: JsonRpcEntry, upstreamResult?: unknown, requestUrl?: string) => unknown,
+  requestUrl: string,
 ): Promise<void> {
   try {
     const upstream = await route.fetch()
@@ -83,7 +86,7 @@ async function fulfillFromUpstream(
 
       if (!entry || entry.method !== rpcMethod) return res
 
-      const result = resolve(entry, res.result)
+      const result = resolve(entry, res.result, requestUrl)
 
       if (typeof result === 'undefined') return res
 

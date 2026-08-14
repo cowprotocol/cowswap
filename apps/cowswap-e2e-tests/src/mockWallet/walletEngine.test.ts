@@ -3,8 +3,7 @@ import { verifyMessage, verifyTypedData } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { strict as assert } from 'node:assert'
-import { createServer, type Server } from 'node:http'
-import { after, before, beforeEach, test } from 'node:test'
+import { afterEach, beforeEach, test } from 'node:test'
 
 import { createWalletEngine, type WalletEngine } from './walletEngine'
 
@@ -12,60 +11,40 @@ import { createWalletEngine, type WalletEngine } from './walletEngine'
 const TEST_KEY = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' as const
 const TEST_ADDRESS = privateKeyToAccount(TEST_KEY).address
 
-// Minimal JSON-RPC upstream standing in for the RPC proxy. Records requests,
-// answers eth_blockNumber, echoes eth_getTransactionCount = 0x0 and fee fields
-// so eth_sendTransaction can fill and sign.
-let upstream: Server
-let upstreamUrl: string
-let upstreamRequests: Array<{ path: string; method: string; params: unknown[] }>
+// forward() calls the global fetch directly (Playwright intercepts it in real runs), so we
+// stub global.fetch here to stand in for the RPC proxy and record what reached it.
+let fetchRequests: Array<{ method: string; params: unknown[] }>
+const originalFetch = global.fetch
 
-before(async () => {
-  upstream = createServer((req, res) => {
-    let body = ''
-    req.on('data', (c) => (body += c))
-    req.on('end', () => {
-      const { id, method, params } = JSON.parse(body)
-      upstreamRequests.push({ path: req.url ?? '', method, params: params ?? [] })
-      const results: Record<string, unknown> = {
-        eth_blockNumber: '0x10',
-        eth_chainId: '0xaa36a7',
-        eth_getTransactionCount: '0x0',
-        eth_estimateGas: '0x5208',
-        eth_gasPrice: '0x3b9aca00',
-        eth_maxPriorityFeePerGas: '0x1',
-        eth_getBlockByNumber: { baseFeePerGas: '0x1', gasLimit: '0x1c9c380', number: '0x10' },
-        eth_sendRawTransaction: '0x' + '11'.repeat(32),
-      }
-      const result = results[method]
-      res.setHeader('content-type', 'application/json')
-      if (result === undefined) {
-        res.end(JSON.stringify({ jsonrpc: '2.0', id, error: { code: -32601, message: `no stub for ${method}` } }))
-      } else {
-        res.end(JSON.stringify({ jsonrpc: '2.0', id, result }))
-      }
-    })
-  })
-  await new Promise<void>((resolve) => upstream.listen(0, '127.0.0.1', resolve))
-  const address = upstream.address()
-  if (typeof address === 'string' || address === null) throw new Error('unexpected address')
-  upstreamUrl = `http://127.0.0.1:${address.port}`
-})
-
-after(() => new Promise<void>((resolve, reject) => upstream.close((e) => (e ? reject(e) : resolve()))))
+function stubFetch(results: Record<string, unknown>): void {
+  global.fetch = (async (_url: unknown, init?: RequestInit) => {
+    const { id, method, params } = JSON.parse(String(init?.body))
+    fetchRequests.push({ method, params: params ?? [] })
+    const result = results[method]
+    const body =
+      result === undefined
+        ? { jsonrpc: '2.0', id, error: { code: -32601, message: `no stub for ${method}` } }
+        : { jsonrpc: '2.0', id, result }
+    return new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } })
+  }) as typeof fetch
+}
 
 let engine: WalletEngine
 let emitted: Array<{ event: string; payload: unknown }>
 
 beforeEach(() => {
-  upstreamRequests = []
-  emitted = []
+  fetchRequests = []
+  stubFetch({ eth_blockNumber: '0x10' })
   engine = createWalletEngine({
     privateKey: TEST_KEY,
     chainId: 11155111,
-    workerId: 'w0',
-    proxyBaseUrl: upstreamUrl,
     emit: (event, payload) => emitted.push({ event, payload }),
   })
+  emitted = []
+})
+
+afterEach(() => {
+  global.fetch = originalFetch
 })
 
 async function expectOk(req: { method: string; params?: unknown[] }): Promise<unknown> {
@@ -79,7 +58,7 @@ test('identity methods answer locally', async () => {
   assert.deepEqual(await expectOk({ method: 'eth_requestAccounts' }), [TEST_ADDRESS])
   assert.equal(await expectOk({ method: 'eth_chainId' }), '0xaa36a7')
   assert.equal(await expectOk({ method: 'net_version' }), '11155111')
-  assert.equal(upstreamRequests.length, 0)
+  assert.equal(fetchRequests.length, 0)
 })
 
 test('personal_sign produces a verifiable signature', async () => {
@@ -115,28 +94,43 @@ test('eth_signTypedData_v4 signs and strips EIP712Domain from types', async () =
   )
 })
 
-test('eth_sendTransaction signs locally and submits raw tx to the proxy partition', async () => {
-  const hash = await expectOk({
-    method: 'eth_sendTransaction',
-    params: [{ from: TEST_ADDRESS, to: TEST_ADDRESS, value: '0x1' }],
+test('eth_sendTransaction is unmocked by default and reports the tx params as the error cause', async () => {
+  const txParams = { from: TEST_ADDRESS, to: TEST_ADDRESS, value: '0x1' }
+  const envelope = await engine.handleRequest({ method: 'eth_sendTransaction', params: [txParams] })
+  assert.equal(envelope.ok, false)
+  assert.deepEqual(envelope, {
+    ok: false,
+    error: { code: -32000, message: 'eth_sendTransaction must be mocked!' },
   })
-  assert.equal(hash, '0x' + '11'.repeat(32))
-  const raw = upstreamRequests.find((r) => r.method === 'eth_sendRawTransaction')
-  assert.ok(raw, 'eth_sendRawTransaction reached upstream')
-  assert.equal(raw.path, '/rpc/11155111/w0')
+  assert.equal(fetchRequests.length, 0)
 })
 
-test('unknown methods forward to the proxy partition for the current chain', async () => {
+test('eth_sendTransaction can be stubbed like any other method', async () => {
+  const hash = '0x' + '11'.repeat(32)
+  engine.stubRpc('eth_sendTransaction', hash)
+  assert.equal(
+    await expectOk({ method: 'eth_sendTransaction', params: [{ from: TEST_ADDRESS, to: TEST_ADDRESS, value: '0x1' }] }),
+    hash,
+  )
+})
+
+test('unknown methods forward to the RPC proxy for the current chain', async () => {
   assert.equal(await expectOk({ method: 'eth_blockNumber' }), '0x10')
-  assert.deepEqual(upstreamRequests, [{ path: '/rpc/11155111/w0', method: 'eth_blockNumber', params: [] }])
+  assert.deepEqual(fetchRequests, [{ method: 'eth_blockNumber', params: [] }])
 })
 
-test('wallet_switchEthereumChain updates chainId, emits chainChanged, and re-routes forwards', async () => {
+test('wallet_switchEthereumChain updates chainId, emits chainChanged, and forwards keep working', async () => {
   await expectOk({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] })
   assert.equal(engine.chainId, 1)
   assert.deepEqual(emitted, [{ event: 'chainChanged', payload: '0x1' }])
   await expectOk({ method: 'eth_blockNumber' })
-  assert.equal(upstreamRequests.at(-1)?.path, '/rpc/1/w0')
+  assert.equal(fetchRequests.length, 1)
+})
+
+test('wallet_switchEthereumChain is a no-op when the chain is unchanged', async () => {
+  await expectOk({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xaa36a7' }] })
+  assert.equal(engine.chainId, 11155111)
+  assert.deepEqual(emitted, [])
 })
 
 test('wallet_getCapabilities defaults to empty object', async () => {
@@ -155,7 +149,7 @@ test('stubRpc overrides a method, restoreRpc removes the stub', async () => {
 test('stubRpc accepts a static value', async () => {
   engine.stubRpc('eth_blockNumber', '0xff')
   assert.equal(await expectOk({ method: 'eth_blockNumber' }), '0xff')
-  assert.equal(upstreamRequests.length, 0)
+  assert.equal(fetchRequests.length, 0)
 })
 
 test('a stub throwing { code, message } becomes an error envelope', async () => {

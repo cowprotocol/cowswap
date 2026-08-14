@@ -2,9 +2,9 @@ import { decodeFunctionData, erc20Abi, toFunctionSelector } from 'viem'
 
 import { encodeAllowanceResult } from './codec'
 import { loadAllowancesFixture, parseAllowanceValue } from './fixture'
+import { normalizeRpcUrl, resolveRpcChainIds } from './rpcUrls'
 import { allowanceKey, type AllowanceLookup, type AllowanceRead, type AllowanceValue } from './types'
 
-import { CHAIN_IDS } from '../../support/constants'
 import { mockContractViewCall } from '../../support/mockContractViewCall'
 
 import type { BrowserContext } from '@playwright/test'
@@ -24,15 +24,16 @@ export interface AllowancesMock {
   reset(): void
 }
 
-// TODO: make chainId configurable
-const CHAIN_ID = CHAIN_IDS.SEPOLIA
-
 export function installAllowances(context: BrowserContext): AllowancesMock {
   const fixture = loadAllowancesFixture()
   const overrides: AllowanceLookup = new Map()
   const selector = toFunctionSelector('allowance(address,address)')
+  // Which chain a call belongs to isn't in the call data at all — only the RPC endpoint it went
+  // out on says that (`rpcUrls.ts`'s doc comment). Resolved once per install rather than per call:
+  // env vars don't change mid-test.
+  const rpcChainIds = resolveRpcChainIds()
 
-  mockContractViewCall(context, undefined, selector, (callData, tokenAddress) => {
+  mockContractViewCall(context, undefined, selector, (callData, tokenAddress, requestUrl) => {
     const {
       args: [account],
     } = decodeFunctionData({
@@ -41,7 +42,13 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
     })
 
     if (!account) return
-    const key = allowanceKey(account, CHAIN_ID, tokenAddress)
+
+    // A chain this suite has no `REACT_APP_NETWORK_URL_<chainId>` override for isn't ours to
+    // answer — same "deliberately does not intercept" contract as `unconfiguredChainIds`.
+    const chainId = rpcChainIds.get(normalizeRpcUrl(requestUrl))
+    if (chainId === undefined) return
+
+    const key = allowanceKey(account, chainId, tokenAddress)
 
     const mocked = overrides.get(key) ?? fixture.get(key)
 
