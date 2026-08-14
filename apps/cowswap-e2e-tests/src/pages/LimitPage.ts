@@ -14,6 +14,7 @@ export class LimitPage implements TradePage {
   readonly continueButton: Locator
   readonly openOrdersTab: Locator
   readonly ordersTable: Locator
+  readonly tradeFormActionButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -26,6 +27,7 @@ export class LimitPage implements TradePage {
     this.continueButton = page.getByRole('button', { name: /continue/i })
     this.openOrdersTab = page.locator('.orders-table_tab', { hasText: 'Open' })
     this.ordersTable = page.locator('#orders-table')
+    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -40,7 +42,7 @@ export class LimitPage implements TradePage {
   // provider sync still settling right after navigation, especially under CI load) — retry the
   // click until the form actually shows up instead of firing it once and hoping it stuck.
   private async unlockIfNeeded(): Promise<void> {
-    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    await this.unlockButton.or(this.tradeFormActionButton).first().waitFor({ state: 'visible' })
     if (!(await this.unlockButton.isVisible())) return
 
     await expect

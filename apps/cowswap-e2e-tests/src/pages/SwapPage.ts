@@ -50,6 +50,7 @@ export class SwapPage implements TradePage {
   /** `TradeApproveButton`'s toggle between "Partial approval" (a finite, trade-tied amount) and infinite (MaxUint256). */
   readonly approveModeSelector: Locator
   readonly settingsDialogButton: Locator
+  readonly tradeFormActionButton: Locator
   readonly slippageInput: Locator
   /**
    * This validation state's button doesn't carry the `#do-trade-button` id the ordinary
@@ -116,6 +117,7 @@ export class SwapPage implements TradePage {
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
     this.approveModeSelector = page.locator('.approve-mode-selector')
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
+    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
     this.slippageInput = page.locator('#slippage-input')
     this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
     this.unwrapButton = page.getByRole('button', { name: 'Unwrap', exact: true })
@@ -136,7 +138,7 @@ export class SwapPage implements TradePage {
   // provider sync still settling right after navigation, especially under CI load) — retry the
   // click until the form actually shows up instead of firing it once and hoping it stuck.
   async unlockIfNeeded(): Promise<void> {
-    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    await this.unlockButton.or(this.tradeFormActionButton).first().waitFor({ state: 'visible' })
     if (!(await this.unlockButton.isVisible())) return
 
     await expect

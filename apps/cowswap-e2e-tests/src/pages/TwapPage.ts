@@ -11,6 +11,7 @@ export class TwapPage implements TradePage {
   readonly placeOrderButton: Locator
   readonly unlockButton: Locator
   readonly arrowSeparator: Locator
+  readonly tradeFormActionButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -20,6 +21,7 @@ export class TwapPage implements TradePage {
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-advanced-orders-btn')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
+    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -34,7 +36,7 @@ export class TwapPage implements TradePage {
   // provider sync still settling right after navigation, especially under CI load) — retry the
   // click until the form actually shows up instead of firing it once and hoping it stuck.
   private async unlockIfNeeded(): Promise<void> {
-    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    await this.unlockButton.or(this.tradeFormActionButton).first().waitFor({ state: 'visible' })
     if (!(await this.unlockButton.isVisible())) return
 
     await expect
