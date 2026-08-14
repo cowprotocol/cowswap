@@ -14,6 +14,7 @@ const STUBBED_SELECTORS = [
   toFunctionSelector('validateRotueId(bytes,uint32)'),
   toFunctionSelector('validateSocketRequest(bytes,(uint32,(uint256,address,uint256,address,bytes4)))'),
 ]
+const EMPTY_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 /**
  * Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
@@ -37,6 +38,6 @@ const STUBBED_SELECTORS = [
  * otherwise, the same shape as `ethBlockNumber.ts`/`ethGetCode.ts`.
  */
 export function installSocketVerifier(context: BrowserContext): void {
-  mockContractViewCall(context, SOCKET_VERIFIER_ADDRESS, STUBBED_SELECTORS[0], () => '0x')
-  mockContractViewCall(context, SOCKET_VERIFIER_ADDRESS, STUBBED_SELECTORS[1], () => '0x')
+  mockContractViewCall(context, SOCKET_VERIFIER_ADDRESS, STUBBED_SELECTORS[0], () => EMPTY_BYTES)
+  mockContractViewCall(context, SOCKET_VERIFIER_ADDRESS, STUBBED_SELECTORS[1], () => EMPTY_BYTES)
 }
