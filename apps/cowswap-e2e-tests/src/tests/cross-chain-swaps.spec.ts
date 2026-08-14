@@ -10,7 +10,6 @@ import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { seedTrader } from '../support/seedTrader'
 
-import type { RpcProxyHandle } from '../fixtures/rpcProxy'
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { LaunchDarklyMock } from '../mocks/launchDarkly'
 import type { SwapPage } from '../pages/SwapPage'
@@ -75,7 +74,7 @@ test.describe('Cross-chain swaps', () => {
    */
   async function configureProviders(
     mocks: { launchDarkly: LaunchDarklyMock; cowApi: CowProtocolApiMock },
-    rpcProxy: RpcProxyHandle,
+    rpcProxy: unknown,
     active: 'bungee' | 'near-intents',
   ): Promise<void> {
     await mocks.launchDarkly.setFlag('isBungeeBridgeProviderEnabled', active === 'bungee')

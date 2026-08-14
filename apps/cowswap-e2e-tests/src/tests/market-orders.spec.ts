@@ -24,7 +24,9 @@ const CHAIN_ID = CHAIN_IDS.SEPOLIA
 
 test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
-    test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
+    test.use({
+      mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined,
+    })
 
     // A default for every test in this file, per `AGENTS.md`'s "Using mocks" note — a test that
     // forgets to seed its own balance (e.g. [CS-62], which never asserts on a balance figure at

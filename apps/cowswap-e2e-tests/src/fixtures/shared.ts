@@ -1,5 +1,3 @@
-import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
-
 import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
 import { installBungee, type BungeeMock } from '../mocks/bungee'
@@ -37,7 +35,7 @@ export interface SharedFixtures {
   accountModal: AccountModal
   confirmModal: ConfirmModal
   header: HeaderPage
-  rpcProxy: RpcProxyHandle
+  rpcProxy: unknown
   setupTestConditions: SetupTestConditions
   mocks: {
     allowances: AllowancesMock
@@ -88,12 +86,7 @@ export const sharedFixtures: Fixtures<
   setupTestConditions: async ({ wallet, mocks, swapPage, limitPage, twapPage }, use) => {
     await use(createSetupTestConditions({ wallet, mocks, swapPage, limitPage, twapPage }))
   },
-  rpcProxy: async ({}, use, testInfo) => {
-    const handle = createRpcProxyHandle(testInfo)
-    await handle.reset()
-    await use(handle)
-    await handle.reset()
-  },
+  rpcProxy: undefined,
   // `auto: true`: nothing destructures `mocks` directly anymore (Task 4 dropped the last two
   // call sites), but every test still needs the CoW API lockdown installed and asserted at
   // teardown. A plain (non-auto) fixture is only set up when requested, so without this the

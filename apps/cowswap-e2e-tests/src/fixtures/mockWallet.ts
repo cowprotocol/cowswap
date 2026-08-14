@@ -7,7 +7,7 @@ import { sharedFixtures, type SharedFixtures } from './shared'
 import { E2E_WALLET_INFO, injectedShim } from '../mockWallet/injectedShim'
 import { seedAutoConnect } from '../mockWallet/seedAutoConnect'
 import { createWalletEngine, type RpcCallRecord, type RpcStub, type WalletEngine } from '../mockWallet/walletEngine'
-import { CHAIN_IDS, RPC_PROXY_PORT_ENV, type SupportedChainId } from '../support/constants'
+import { CHAIN_IDS, type SupportedChainId } from '../support/constants'
 
 export interface MockWalletApi {
   readonly address: string
@@ -84,15 +84,10 @@ export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
   // test using this entrypoint — the app boots connected whether or not the test body ever
   // touches the `wallet` handle (Playwright instantiates fixtures lazily otherwise).
   wallet: [
-    async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use, testInfo) => {
-      const port = process.env[RPC_PROXY_PORT_ENV]
-      if (!port) throw new Error(`${RPC_PROXY_PORT_ENV} not set — globalSetup did not run`)
-
+    async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use) => {
       const engine = createWalletEngine({
         privateKey: resolvePrivateKey(mockWalletKey),
         chainId: CHAIN_IDS.SEPOLIA,
-        workerId: `w${testInfo.workerIndex}`,
-        proxyBaseUrl: `http://127.0.0.1:${port}`,
         emit: (event, payload) => {
           page
             .evaluate(
