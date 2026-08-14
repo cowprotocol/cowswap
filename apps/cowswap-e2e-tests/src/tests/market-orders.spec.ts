@@ -1406,7 +1406,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
     })
 
-    test('[CS-129] Enable Hooks via settings toggle', async ({ swapPage }) => {
+    test('[CS-129] Enable Hooks via settings toggle @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // `SettingsBox`/`Toggle` render the real `<input type="checkbox">` inert (0×0,
@@ -1468,7 +1468,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.page.getByText('Add Post-Hook Action')).toBeVisible()
     })
 
-    test('[CS-136] Hooks: cross-chain swaps are not available', async ({ swapPage, mocks, context }) => {
+    test('[CS-136] Hooks: cross-chain swaps are not available @smoke', async ({ swapPage, mocks, context }) => {
       // Resolving WXDAI@Gnosis as a currency needs both of these — the general per-chain token
       // list (same endpoint `installTokenLists` already stubs for every chain) and the bridge
       // provider's own "is this a valid destination token" check, which otherwise hits a real,
@@ -1565,7 +1565,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.primaryActionButton).toBeEnabled()
     })
 
-    test('[CS-131] Add a Pre-hook to a swap order', async ({
+    test('[CS-131] Add a Pre-hook to a swap order @smoke', async ({
       swapPage,
       tradePage,
       wallet,
