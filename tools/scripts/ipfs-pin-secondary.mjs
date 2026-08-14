@@ -14,12 +14,21 @@ class HttpError extends Error {
   }
 }
 
+class DeadlineError extends Error {}
+
+class TransportError extends Error {}
+
 function responseError(response, body) {
   return `${response.status} ${body}`.trim()
 }
 
 async function jsonRequest(fetchImpl, url, init) {
-  const response = await fetchImpl(url, init)
+  let response
+  try {
+    response = await fetchImpl(url, init)
+  } catch (error) {
+    throw new TransportError(error instanceof Error ? error.message : String(error))
+  }
   const body = await response.text()
   if (!response.ok) throw new HttpError(response.status, responseError(response, body))
   try {
@@ -39,12 +48,13 @@ function create4EverlandProvider(token, fetchImpl) {
   return {
     name: '4EVERLAND',
     configured: Boolean(token),
-    async pin(cid) {
+    async pin(cid, { signal } = {}) {
       if (!requestId) {
         const payload = await jsonRequest(fetchImpl, 'https://api.4everland.dev/pins', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ cid, name: `cowswap-${cid}` }),
+          signal,
         })
         requestId = payload.requestid
         if (!requestId) throw new Error('4EVERLAND response did not include requestid')
@@ -52,6 +62,7 @@ function create4EverlandProvider(token, fetchImpl) {
       }
       const payload = await jsonRequest(fetchImpl, `https://api.4everland.dev/pins/${requestId}`, {
         headers: { Authorization: `Bearer ${token}` },
+        signal,
       })
       return { status: statusOf(payload) ?? 'pinning' }
     },
@@ -63,42 +74,80 @@ function createNinjaProvider(apiKey, fetchImpl) {
   return {
     name: 'IPFS Ninja',
     configured: Boolean(apiKey),
-    async pin(cid) {
+    async pin(cid, { signal } = {}) {
       if (!submitted) {
         const payload = await jsonRequest(fetchImpl, 'https://api.ipfs.ninja/pin', {
           method: 'POST',
           headers: { 'X-Api-Key': apiKey, 'Content-Type': 'application/json' },
           body: JSON.stringify({ cid }),
+          signal,
         })
         submitted = true
         return { status: statusOf(payload) ?? 'pinning' }
       }
       const payload = await jsonRequest(fetchImpl, `https://api.ipfs.ninja/pin/${cid}`, {
         headers: { 'X-Api-Key': apiKey },
+        signal,
       })
       return { status: payload.pinned === true ? 'pinned' : (statusOf(payload) ?? 'pinning') }
     },
   }
 }
 
-async function waitForPin(provider, cid, { timeoutMs, pollMs, sleep }) {
-  const started = Date.now()
+function withDeadline(operation, timeoutMs, onTimeout = () => {}) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => {
+        onTimeout()
+        reject(new DeadlineError('operation exceeded provider deadline'))
+      },
+      Math.max(timeoutMs, 0),
+    )
+
+    Promise.resolve()
+      .then(operation)
+      .then(resolve, reject)
+      .finally(() => clearTimeout(timer))
+  })
+}
+
+async function waitForPin(provider, cid, { timeoutMs, pollMs, sleep, now }) {
+  const deadline = now() + timeoutMs
   let lastStatus = 'pinning'
-  while (Date.now() - started <= timeoutMs) {
+  while (now() <= deadline) {
+    const remaining = deadline - now()
+    const controller = new AbortController()
     try {
-      const result = await provider.pin(cid)
+      const result = await withDeadline(
+        () => provider.pin(cid, { signal: controller.signal }),
+        remaining,
+        () => controller.abort(),
+      )
       lastStatus = result.status
       if (SUCCESS.has(lastStatus)) return { status: 'pinned' }
       if (!PENDING.has(lastStatus)) return { status: 'failed', error: `provider status: ${lastStatus}` }
     } catch (error) {
+      if (error instanceof DeadlineError) return { status: 'timeout', error: error.message }
       const status = error instanceof HttpError ? error.status : error?.status
-      if (status === 429 || (typeof status === 'number' && status >= 500)) {
-        lastStatus = `http-${status}`
+      if (
+        error instanceof TransportError ||
+        error instanceof TypeError ||
+        status === 429 ||
+        (typeof status === 'number' && status >= 500)
+      ) {
+        lastStatus = status ? `http-${status}` : 'transport-error'
       } else {
         return { status: 'failed', error: error instanceof Error ? error.message : String(error) }
       }
     }
-    await sleep(pollMs)
+    const remainingAfterRequest = deadline - now()
+    if (remainingAfterRequest <= 0) break
+    try {
+      await withDeadline(() => sleep(Math.min(pollMs, remainingAfterRequest)), remainingAfterRequest)
+    } catch (error) {
+      if (error instanceof DeadlineError) break
+      throw error
+    }
   }
   return { status: 'timeout', error: `last provider status: ${lastStatus}` }
 }
@@ -113,6 +162,7 @@ export async function pinSecondaryProviders(
     credentials,
     timeoutMs = Number(process.env.IPFS_PIN_TIMEOUT_MS ?? DEFAULT_TIMEOUT_MS),
     pollMs = Number(process.env.IPFS_PIN_POLL_MS ?? DEFAULT_POLL_MS),
+    now = Date.now,
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   } = {},
 ) {
@@ -121,7 +171,7 @@ export async function pinSecondaryProviders(
       const configured = credentials ? credentials.get(provider.name) === true : provider.configured !== false
       if (!configured)
         return { name: provider.name, status: 'missing-credential', error: 'credential is not configured' }
-      return { name: provider.name, ...(await waitForPin(provider, cid, { timeoutMs, pollMs, sleep })) }
+      return { name: provider.name, ...(await waitForPin(provider, cid, { timeoutMs, pollMs, sleep, now })) }
     }),
   )
   return { ok: results.some(({ status }) => status === 'pinned'), results }

@@ -96,3 +96,61 @@ test('retries a transient provider outage', async () => {
   assert.equal(attempts, 2)
   assert.equal(result.results[0].status, 'pinned')
 })
+
+test('retries a statusless transport failure', async () => {
+  let attempts = 0
+  const result = await pinSecondaryProviders(CID, {
+    providers: [
+      {
+        name: 'transport',
+        pin: async () => {
+          attempts += 1
+          if (attempts === 1) throw new TypeError('fetch failed')
+          return { status: 'pinned' }
+        },
+      },
+    ],
+    pollMs: 0,
+  })
+
+  assert.equal(attempts, 2)
+  assert.equal(result.results[0].status, 'pinned')
+})
+
+test('aborts a provider request at the configured deadline', async () => {
+  let signal
+  const result = await pinSecondaryProviders(CID, {
+    providers: [
+      {
+        name: 'hanging',
+        pin: (_cid, options) => {
+          signal = options.signal
+          return new Promise(() => {})
+        },
+      },
+    ],
+    timeoutMs: 10,
+    pollMs: 0,
+  })
+
+  assert.equal(result.results[0].status, 'timeout')
+  assert.equal(signal.aborted, true)
+})
+
+test('caps the final polling delay at the remaining deadline', async () => {
+  let now = 0
+  let observedSleep
+  const result = await pinSecondaryProviders(CID, {
+    providers: [{ name: 'pending', pin: async () => ({ status: 'pending' }) }],
+    timeoutMs: 100,
+    pollMs: 30,
+    now: () => now,
+    sleep: async (ms) => {
+      observedSleep = ms
+      now += ms
+    },
+  })
+
+  assert.equal(observedSleep, 10)
+  assert.equal(result.results[0].status, 'timeout')
+})
