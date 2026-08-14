@@ -1,4 +1,4 @@
-import { toFunctionSelector } from 'viem'
+import { encodeAbiParameters, toFunctionSelector } from 'viem'
 
 import { mockContractViewCall } from '../support/mockContractViewCall'
 
@@ -14,7 +14,8 @@ const STUBBED_SELECTORS = [
   toFunctionSelector('validateRotueId(bytes,uint32)'),
   toFunctionSelector('validateSocketRequest(bytes,(uint32,(uint256,address,uint256,address,bytes4)))'),
 ]
-const EMPTY_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+const EMPTY_BYTES = encodeAbiParameters([{ type: 'uint256' }], [0n])
 
 /**
  * Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
