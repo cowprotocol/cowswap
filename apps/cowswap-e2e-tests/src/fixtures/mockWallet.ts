@@ -37,7 +37,7 @@ function createMockWalletApi(engine: WalletEngine, page: Page): MockWalletApi {
     },
     async openApp({ chainId, sell = '', buy = '' }) {
       engine.setChainId(chainId)
-      await page.goto(`/#/${chainId}/swap/${sell}/${buy}`)
+      await page.goto(`/#/${chainId}/swap/${sell}/${buy}`, { waitUntil: 'domcontentloaded' })
       await page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })
     },
     async switchChain(chainId) {

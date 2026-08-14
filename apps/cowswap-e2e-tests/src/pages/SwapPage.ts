@@ -125,7 +125,7 @@ export class SwapPage implements TradePage {
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
     const sell = opts.sell ?? ''
     const buy = opts.buy ?? ''
-    await this.page.goto(`/#/${opts.chainId}/swap/${sell}/${buy}`)
+    await this.page.goto(`/#/${opts.chainId}/swap/${sell}/${buy}`, { waitUntil: 'domcontentloaded' })
     await this.unlockIfNeeded()
   }
 

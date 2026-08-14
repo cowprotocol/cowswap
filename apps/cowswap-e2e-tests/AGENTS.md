@@ -190,6 +190,23 @@ never a logic bug in the test — check infrastructure contention first.
   sufficiently heavy load can still exhaust a retry. Per-assertion overrides above this floor (like
   `[CS-60]`'s existing 15s wait) are still correct and still needed for the worst offenders; don't
   remove them just because the global floor moved up.
+- **Root cause 3: `page.goto()`'s default `waitUntil: 'load'` blocks on irrelevant third-party
+  resources, eating into a fixed post-navigation timeout.** `wallet.openApp()`
+  (`fixtures/mockWallet.ts`) and `SwapPage.goto()` both call
+  `page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })` right after `await
+  page.goto(...)` returns — but `goto()`'s default `waitUntil: 'load'` only resolves once *every*
+  resource on the page has finished loading, including third-party iframes the app injects for
+  analytics (Google Tag Manager), which has nothing to do with whether the wallet reconnected.
+  Confirmed by instrumenting the reconnect path end to end: in a captured failing run, the
+  mock wallet's `connect()` resolved in ~15ms, but `page.goto()` itself didn't return control to the
+  test for another 2.5s (`page`'s `load` event fired 2512ms after `goto()` started) — because it was
+  waiting on GTM's `ns.html` iframe, not on React/wagmi. Under this suite's local `workers: 6` (vs
+  CI's `2`), that resource-load tail grows with contention, sometimes eating enough of the fixed 15s
+  connect-timeout budget to blow past it, even though the actual reconnect logic underneath was
+  already done and reliable in every capture — this is why the failure looked like "wallet doesn't
+  connect" when the wallet had, in fact, already connected. Fixed by passing `{ waitUntil:
+  'domcontentloaded' }` to both `goto()` calls — the app only needs its own script to have run, not
+  third-party resources to finish loading.
 - **Confirm a suspected regression by testing the *unmodified* code under the same load**, not just
   by re-running your changed version and seeing it pass once. `git stash` the diff, rerun the exact
   same failing test/suite, and only call something a regression if the clean baseline doesn't
