@@ -1,9 +1,6 @@
-import type { BrowserContext, Route } from '@playwright/test'
+import { mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
 
-interface JsonRpcEntry {
-  id: number | string
-  method: string
-}
+import type { BrowserContext } from '@playwright/test'
 
 /** A generous flat estimate — never actually spent, since whatever gets estimated (a `createOrder()`
  * call, a `permit()`-based approval, ...) is either stubbed itself or never sent for real. */
@@ -27,21 +24,5 @@ const FAKE_GAS_ESTIMATE = '0x7a120' as const
  * (like `mocks/socketVerifier.ts`) rather than by URL, since there's no fixed host to route on.
  */
 export function installEthEstimateGas(context: BrowserContext): void {
-  void context.route('**/*', async (route: Route) => {
-    const request = route.request()
-    if (request.method() !== 'POST') return route.fallback()
-
-    let body: JsonRpcEntry | JsonRpcEntry[]
-    try {
-      body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    } catch {
-      return route.fallback()
-    }
-
-    const entries = Array.isArray(body) ? body : [body]
-    if (!entries.length || !entries.every((entry) => entry?.method === 'eth_estimateGas')) return route.fallback()
-
-    const payload = entries.map((entry) => ({ jsonrpc: '2.0', id: entry.id, result: FAKE_GAS_ESTIMATE }))
-    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-  })
+  mockRpcNodeRequest(context, 'eth_estimateGas', () => FAKE_GAS_ESTIMATE)
 }
