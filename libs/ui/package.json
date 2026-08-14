@@ -41,6 +41,7 @@
     "@reach/menu-button": "0.18.0",
     "@reach/portal": "0.18.0",
     "bignumber.js": "9.1.2",
+    "clsx": "2.1.1",
     "color2k": "2.0.2",
     "jotai": "2.16.2",
     "ms.macro": "2.0.0",
