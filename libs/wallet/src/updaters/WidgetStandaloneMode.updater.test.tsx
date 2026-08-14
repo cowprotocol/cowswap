@@ -79,8 +79,16 @@ function renderUpdater(standaloneMode: boolean | undefined): RenderResult {
   return render(<WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />)
 }
 
+function setConnectionState(state: { id?: string; isConnecting?: boolean; isReconnecting?: boolean }): void {
+  useConnectionMock.mockReturnValue({
+    connector: state.id ? { id: state.id } : undefined,
+    isConnecting: state.isConnecting ?? false,
+    isReconnecting: state.isReconnecting ?? false,
+  })
+}
+
 function setConnector(id: string | undefined): void {
-  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
+  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined, isConnecting: false, isReconnecting: false })
 }
 
 beforeEach(() => {
@@ -100,8 +108,6 @@ beforeEach(() => {
 describe('WidgetStandaloneModeUpdater', () => {
   describe('dapp mode: connecting to the widget connector', () => {
     it('disconnects the current wallet and connects the widget connector', async () => {
-      setConnector(COW_WIDGET_CONNECTOR_ID)
-
       renderUpdater(DAPP_MODE)
 
       await waitFor(() => {
@@ -174,6 +180,39 @@ describe('WidgetStandaloneModeUpdater', () => {
 
       await waitFor(() => {
         expect(logWalletErrorMock).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    it('does not connect when auto-reconnect or the bridge already connected the widget connector', () => {
+      setConnector(COW_WIDGET_CONNECTOR_ID)
+
+      renderUpdater(DAPP_MODE)
+
+      expect(reownAppKitDisconnectMock).not.toHaveBeenCalled()
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
+    })
+
+    it('does not connect while a reconnect/connect attempt is already in flight', () => {
+      setConnectionState({ isReconnecting: true })
+
+      renderUpdater(DAPP_MODE)
+
+      expect(reownAppKitDisconnectMock).not.toHaveBeenCalled()
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
+    })
+
+    it('connects once an in-flight reconnect settles without connecting the widget connector', async () => {
+      setConnectionState({ isReconnecting: true })
+
+      const { rerender } = renderUpdater(DAPP_MODE)
+
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
+
+      setConnectionState({ isReconnecting: false })
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
+
+      await waitFor(() => {
+        expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
       })
     })
   })
