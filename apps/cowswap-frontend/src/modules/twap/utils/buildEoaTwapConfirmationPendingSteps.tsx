@@ -2,7 +2,8 @@ import { ReactNode } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { MultiConfirmationPendingStep } from 'common/pure/ConfirmationPendingContent'
+import { OrderStep, OrderStepStatus } from 'modules/trade'
+
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
@@ -20,7 +21,7 @@ export interface BuildEoaTwapConfirmationPendingStepsParams {
 export function buildEoaTwapConfirmationPendingSteps({
   signingStep,
   symbol,
-}: BuildEoaTwapConfirmationPendingStepsParams): MultiConfirmationPendingStep[] {
+}: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
   if (currentIndex === -1) {
@@ -70,14 +71,7 @@ export function buildEoaTwapConfirmationPendingSteps({
   })
 }
 
-export function getEoaTwapStepDescription(
-  step: EoaTwapSigningSteps,
-  status: MultiConfirmationPendingStep['status'],
-): ReactNode | undefined {
-  if (status === 'success') {
-    return undefined
-  }
-
+export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {
   const isLoading = status === 'loading'
 
   switch (step) {
@@ -108,6 +102,11 @@ export function getEoaTwapStepDescription(
       return t`Sign in your wallet. We'll submit the funding order automatically.`
 
     case EoaTwapSigningSteps.CreatingOrder:
+      // Completed step has nothing useful to re-expand:
+      if (status === 'success') {
+        return undefined
+      }
+
       return (
         <p>
           {t`Settling the funding order and registering your TWAP`}
