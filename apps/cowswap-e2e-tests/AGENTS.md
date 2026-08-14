@@ -190,23 +190,62 @@ never a logic bug in the test — check infrastructure contention first.
   sufficiently heavy load can still exhaust a retry. Per-assertion overrides above this floor (like
   `[CS-60]`'s existing 15s wait) are still correct and still needed for the worst offenders; don't
   remove them just because the global floor moved up.
-- **Root cause 3: `page.goto()`'s default `waitUntil: 'load'` blocks on irrelevant third-party
-  resources, eating into a fixed post-navigation timeout.** `wallet.openApp()`
-  (`fixtures/mockWallet.ts`) and `SwapPage.goto()` both call
+- **Root cause 3a (real, but only part of the story): `page.goto()`'s default `waitUntil: 'load'`
+  blocks on irrelevant third-party resources, eating into a fixed post-navigation timeout.**
+  `wallet.openApp()` (`fixtures/mockWallet.ts`) and `SwapPage.goto()` both call
   `page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })` right after `await
   page.goto(...)` returns — but `goto()`'s default `waitUntil: 'load'` only resolves once *every*
   resource on the page has finished loading, including third-party iframes the app injects for
-  analytics (Google Tag Manager), which has nothing to do with whether the wallet reconnected.
-  Confirmed by instrumenting the reconnect path end to end: in a captured failing run, the
-  mock wallet's `connect()` resolved in ~15ms, but `page.goto()` itself didn't return control to the
-  test for another 2.5s (`page`'s `load` event fired 2512ms after `goto()` started) — because it was
-  waiting on GTM's `ns.html` iframe, not on React/wagmi. Under this suite's local `workers: 6` (vs
-  CI's `2`), that resource-load tail grows with contention, sometimes eating enough of the fixed 15s
-  connect-timeout budget to blow past it, even though the actual reconnect logic underneath was
-  already done and reliable in every capture — this is why the failure looked like "wallet doesn't
-  connect" when the wallet had, in fact, already connected. Fixed by passing `{ waitUntil:
-  'domcontentloaded' }` to both `goto()` calls — the app only needs its own script to have run, not
-  third-party resources to finish loading.
+  analytics (Google Tag Manager). Confirmed by instrumenting the reconnect path end to end: in one
+  captured run, the mock wallet's `connect()` resolved in ~15ms, but `page.goto()` itself didn't
+  return control to the test for another 2.5s, waiting on GTM's `ns.html` iframe. Fixed by passing
+  `{ waitUntil: 'domcontentloaded' }` to both `goto()` calls. **This genuinely helps but does not
+  fix the flake on its own** — it was fixed and retested, and the same "wallet not connected"
+  timeout still reproduced under `--workers=6`, which is what led to root cause 3b below.
+- **Root cause 3b (the actual cause): a startup race inside wagmi + `@reown/appkit-adapter-wagmi`
+  can wipe a just-written wallet connection before the UI ever reads it — nothing to do with this
+  suite's mocks.** Reconnect logic here always succeeded (`wagmi`'s internal store reached
+  `status: 'connected'` within ~100–400ms in every capture, confirmed via temporary instrumentation
+  of `@wagmi/core`'s `reconnect()`/`getConnection()`), yet `useAccountState()`
+  (`libs/wallet/src/wagmi/hooks/useAccountState.ts`) kept reporting `isConnected: true, address:
+  undefined` — so `WalletStatusButton` never rendered `#web3-status-connected` and fell through to
+  the disconnected UI once `useIsRestoringConnection`'s 1s safety timeout expired. Root cause,
+  proven with millisecond-level logs: AppKit's `WagmiAdapter.syncConnections()` drives its own
+  async `reconnect()` (writing the real connection into `config.state.connections`), while
+  `@wagmi/core`'s *own* `hydrate()` `onMount` — configured with `reconnectOnMount: false` since
+  AppKit handles reconnection itself — independently runs `config.setState(x => ({...x,
+  connections: new Map()}))` ("reset connections that may have been hydrated from storage") on
+  every mount, dozens of times in the first ~100ms of boot. These two initializations are
+  completely uncoordinated. Normally the reset finishes before `syncConnections()`'s reconnect
+  writes anything (harmless — nothing to reset yet). Under load, the ordering can flip: reconnect
+  writes the real connection, then the reset fires milliseconds later and wipes it; `reconnect()`'s
+  own final `status: 'connected'` write then lands on an empty `connections` map. This is why it
+  only shows up in *this* suite and not for real users: every mock-wallet RPC call
+  (`eth_accounts`/`eth_chainId`/etc.) is a genuine async round trip through
+  `context.exposeBinding`, unlike a real browser-extension wallet's near-synchronous response —
+  that extra latency is what gives the reset enough of a window to interleave and win.
+  **Fixed with a durable pnpm patch**, not a source edit to our own code: `patches/@wagmi__core@3.4.8.patch`
+  guards wagmi's reset branch on `config.state.status === 'disconnected'` — if anything (e.g.
+  AppKit's own reconnect) is already connecting/connected by the time this mount callback runs,
+  skip the reset instead of clobbering it. Registered via `patchedDependencies` in
+  `pnpm-workspace.yaml` (see the note below on where that key now belongs). Confirmed against 3+
+  consecutive `--workers=6` runs with zero recurrence after this patch, versus reliably reproducing
+  every few runs before it.
+- **`pnpm.patchedDependencies` (and `overrides`/`peerDependencyRules`/`packageExtensions`/
+  `allowBuilds`) in root `package.json` are silently ignored under this repo's pinned `pnpm@10.30.3`.**
+  Every `pnpm` invocation prints "The 'pnpm' field in package.json is no longer read by pnpm" —
+  these settings must live under a top-level `patchedDependencies:` (etc.) key in
+  `pnpm-workspace.yaml` instead. Only `patchedDependencies` has been migrated so far (required to
+  make the `@wagmi/core` patch above actually apply — `pnpm patch-commit` still *writes* new entries
+  into `package.json`'s dead `pnpm.patchedDependencies` block by default, which silently does
+  nothing on install; move the entry to `pnpm-workspace.yaml` immediately after committing any new
+  patch, or it won't take effect). Even after migrating, a single `pnpm install`/`pnpm dedupe` may
+  not converge every peer-dependency-hashed copy of a patched package in `node_modules` — check with
+  `find node_modules/.pnpm -maxdepth 1 -iname '<pkg>@<version>*'` and diff each copy's patched file
+  if something still isn't taking effect. `overrides`/`peerDependencyRules`/`packageExtensions`/
+  `allowBuilds` are still unmigrated and therefore still inert — a deliberate, separate fix, not
+  something to migrate as a side effect of an unrelated change, since enforcing dormant `overrides`
+  for the first time could shift other resolved versions.
 - **Confirm a suspected regression by testing the *unmodified* code under the same load**, not just
   by re-running your changed version and seeing it pass once. `git stash` the diff, rerun the exact
   same failing test/suite, and only call something a regression if the clean baseline doesn't
