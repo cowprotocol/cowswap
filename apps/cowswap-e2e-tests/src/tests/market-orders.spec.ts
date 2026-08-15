@@ -478,6 +478,7 @@ test.describe('Market Orders', () => {
       const ethFlow = await mockEthFlowTransaction({
         context,
         wallet,
+        chainId: CHAIN_ID,
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 
@@ -602,6 +603,7 @@ test.describe('Market Orders', () => {
       const ethFlow = await mockEthFlowTransaction({
         context,
         wallet,
+        chainId: CHAIN_ID,
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 

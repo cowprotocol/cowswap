@@ -42,11 +42,10 @@ interface ReceiptContext {
  * Fakes an ERC20 `approve()` end-to-end instead of letting it broadcast for real: the
  * `eth_sendTransaction` itself goes through the connected wallet (stubbed here), but the
  * confirmation poll that follows it (`eth_getTransactionReceipt`) goes through the app's own
- * direct RPC client — bypassing the wallet entirely, so it needs its own route stub. That client's
- * real-RPC traffic doesn't reliably go through `REACT_APP_NETWORK_URL_<chainId>` (see AGENTS.md),
- * so the receipt route below is registered host-agnostically and matched by tx hash instead of by
- * URL. The allowance mock is also kept in sync, since faking the send doesn't change anything the
- * real allowance-read mock would otherwise report.
+ * direct RPC client straight to `REACT_APP_NETWORK_URL_<chainId>` — the same wire
+ * `mocks.balances`/`mocks.allowances` intercept — bypassing the wallet entirely, so it needs its
+ * own route stub. The allowance mock is also kept in sync, since faking the send doesn't change
+ * anything the real allowance-read mock would otherwise report.
  *
  * Before ever reaching that stubbed `eth_sendTransaction`, the wallet-connector layer also fires a
  * preflight, non-batched `eth_call` for the same `approve(address,uint256)` calldata — a
@@ -58,6 +57,8 @@ interface ReceiptContext {
  */
 export async function mockApproveTransaction(opts: MockApproveTransactionOpts): Promise<MockApproveTransactionHandle> {
   const { context, wallet, allowances, chainId, token } = opts
+  const rpcUrl = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
+  if (!rpcUrl) throw new Error(`REACT_APP_NETWORK_URL_${chainId} not set`)
 
   let approvedAmount: bigint | undefined
   let spender: Hex | undefined
@@ -74,7 +75,7 @@ export async function mockApproveTransaction(opts: MockApproveTransactionOpts): 
   }
   wallet.stubRpc('eth_sendTransaction', stub)
 
-  // Every `eth_getTransactionReceipt`, on any host, is ours to answer — our own fake hash gets a
+  // Every `eth_getTransactionReceipt` on this rpcUrl is ours to answer — our own fake hash gets a
   // real-looking receipt, anything else (e.g. a stale poll for a since-superseded hash) reads as
   // not-yet-mined (`null`) rather than being forwarded, so this never needs an upstream fetch on
   // its own; only a batch mixing in some *other* method defers to upstream for that other entry.
@@ -83,6 +84,7 @@ export async function mockApproveTransaction(opts: MockApproveTransactionOpts): 
     'eth_getTransactionReceipt',
     (entry) => buildReceiptRpcResponse(entry, { owner: wallet.address, token, spender, amount: approvedAmount }),
     () => true,
+    rpcUrl,
   )
 
   // The preflight `approve()` simulation (see this file's own doc comment) is host-agnostic and

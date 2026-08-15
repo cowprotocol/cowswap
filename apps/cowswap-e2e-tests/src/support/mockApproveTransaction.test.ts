@@ -11,9 +11,9 @@ import type { RpcStub } from '../mockWallet/walletEngine'
 import type { BrowserContext, Route } from '@playwright/test'
 
 /**
- * `mockApproveTransaction` registers two host-agnostic routes via `mockRpcNodeRequest` (a receipt
- * poll and an approve-simulation stub), plus a `wallet.stubRpc` handler for the fake
- * `eth_sendTransaction`. These stubs cover exactly that surface.
+ * `mockApproveTransaction` registers two routes via `mockRpcNodeRequest` (a receipt poll scoped to
+ * `rpcUrl`, and a host-agnostic approve-simulation stub), plus a `wallet.stubRpc` handler for the
+ * fake `eth_sendTransaction`. These stubs cover exactly that surface.
  */
 
 interface StubRouteResult {
@@ -72,6 +72,8 @@ const OWNER = '0x8EB7cc3c5D90D2D6C835245D21622971628bdEB4'
 const TOKEN = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
 const SPENDER = '0x2222222222222222222222222222222222222222'
 const CHAIN_ID = 999999
+const RPC_URL_ENV = `REACT_APP_NETWORK_URL_${CHAIN_ID}`
+const RPC_URL = 'https://rpc.example.test'
 
 function approveCalldata(amount = 5000000n): `0x${string}` {
   return encodeFunctionData({ abi: erc20Abi, functionName: 'approve', args: [SPENDER as Address, amount] })
@@ -84,6 +86,7 @@ async function setUp(): Promise<{
   getApprovedAmount: () => bigint | undefined
   setCalls: Array<[string, number, Record<string, unknown>]>
 }> {
+  process.env[RPC_URL_ENV] = RPC_URL
   const stubContext = createStubContext()
   const stubs = new Map<string, RpcStub>()
   const wallet = {
@@ -107,7 +110,7 @@ async function setUp(): Promise<{
 
   const handlers = stubContext.getHandlers()
   assert.equal(handlers.length, 2, 'expected a receipt route and an approve-simulation route')
-  assert.equal(handlers[0].pattern, '**/*', 'the receipt route must be host-agnostic')
+  assert.equal(handlers[0].pattern, RPC_URL, 'the receipt route must stay scoped to rpcUrl')
   assert.equal(handlers[1].pattern, '**/*', 'the approve-simulation route must be host-agnostic')
 
   return {
@@ -205,4 +208,20 @@ test('the approve-simulation route falls back for a different token', async () =
   await ctx.approveSimHandler(route.route)
 
   assert.equal(route.fellBack, true)
+})
+
+test('throws when REACT_APP_NETWORK_URL_<chainId> is not set', async () => {
+  delete process.env[RPC_URL_ENV]
+  const stubContext = createStubContext()
+  const wallet = { address: OWNER, stubRpc: () => undefined } as Pick<MockWalletApi, 'address' | 'stubRpc'>
+  const allowances = {
+    set: () => undefined,
+    clear: () => undefined,
+    reset: () => undefined,
+  } as unknown as AllowancesMock
+
+  await assert.rejects(
+    () => mockApproveTransaction({ context: stubContext.context, wallet, allowances, chainId: CHAIN_ID, token: TOKEN }),
+    new RegExp(RPC_URL_ENV),
+  )
 })

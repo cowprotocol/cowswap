@@ -313,6 +313,7 @@ test.describe('Cross-chain swaps', () => {
     const ethFlow = await mockEthFlowTransaction({
       context,
       wallet,
+      chainId: MAINNET,
       initialEthBalance: INITIAL_ETH_BALANCE,
     })
 
