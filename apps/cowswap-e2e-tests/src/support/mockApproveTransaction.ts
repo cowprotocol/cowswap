@@ -2,11 +2,14 @@ import { decodeFunctionData, encodeAbiParameters, encodeEventTopics, erc20Abi, t
 
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
+import { mockRpcNodeRequest } from './mockRpcNodeRequest'
+
 import { RpcStub } from '../mockWallet/walletEngine'
 
+import type { JsonRpcEntry } from './mockRpcNodeRequest'
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { AllowancesMock } from '../mocks/allowances'
-import type { BrowserContext, Route } from '@playwright/test'
+import type { BrowserContext } from '@playwright/test'
 
 const FAKE_APPROVE_TX_HASH = `0x${'ab'.repeat(32)}` as const
 
@@ -26,12 +29,6 @@ export interface MockApproveTransactionOpts {
   allowances: AllowancesMock
   chainId: number
   token: string
-}
-
-interface JsonRpcEntry {
-  id: number | string
-  method: string
-  params: unknown[]
 }
 
 interface ReceiptContext {
@@ -78,32 +75,26 @@ export async function mockApproveTransaction(opts: MockApproveTransactionOpts): 
   }
   wallet.stubRpc('eth_sendTransaction', stub)
 
-  await context.route(rpcUrl, async (route) => {
-    const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    const entries = Array.isArray(body) ? body : [body]
-    const isReceiptEntry = entries.map((entry) => entry.method === 'eth_getTransactionReceipt')
-    if (!isReceiptEntry.some(Boolean)) return route.fallback()
+  // Every `eth_getTransactionReceipt` on this rpcUrl is ours to answer — our own fake hash gets a
+  // real-looking receipt, anything else (e.g. a stale poll for a since-superseded hash) reads as
+  // not-yet-mined (`null`) rather than being forwarded, so this never needs an upstream fetch on
+  // its own; only a batch mixing in some *other* method defers to upstream for that other entry.
+  mockRpcNodeRequest(
+    context,
+    'eth_getTransactionReceipt',
+    (entry) => buildReceiptRpcResponse(entry, { owner: wallet.address, token, spender, amount: approvedAmount }),
+    () => true,
+    rpcUrl,
+  )
 
-    const ctx: ReceiptContext = { owner: wallet.address, token, spender, amount: approvedAmount }
-
-    if (isReceiptEntry.every(Boolean)) {
-      const payload = entries.map((entry) => buildReceiptRpcResponse(entry, ctx))
-      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-    }
-
-    // A mixed batch — only the receipt entries are ours to answer; fetch upstream and patch just
-    // those in, so a non-receipt read bundled alongside our poll doesn't get nulled out.
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-    const receiptIds = new Set(entries.filter((_, i) => isReceiptEntry[i]).map((entry) => entry.id))
-    const payload = upstreamEntries.map((entry) =>
-      receiptIds.has(entry.id) ? buildReceiptRpcResponse(entry, ctx) : entry,
-    )
-    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
-  })
-
-  await context.route('**/*', (route) => handleApproveSimulationCall(route, token))
+  // The preflight `approve()` simulation (see this file's own doc comment) is host-agnostic and
+  // never batched in practice, but `mockRpcNodeRequest` handles a mixed batch just as well.
+  mockRpcNodeRequest(
+    context,
+    'eth_call',
+    (entry) => (isApproveSimulationCall(entry, token) ? APPROVE_CALL_SUCCESS_RESULT : undefined),
+    (entry) => isApproveSimulationCall(entry, token),
+  )
 
   return {
     getApprovedAmount: () => approvedAmount,
@@ -149,74 +140,10 @@ function buildApproveReceipt(ctx: ReceiptContext): unknown {
   }
 }
 
-/** A JSON-RPC response for one batched request — only `eth_getTransactionReceipt` for our own fake hash gets a real result, everything else (including a stale poll for a since-superseded hash) reads as not-yet-mined. */
-function buildReceiptRpcResponse(
-  entry: JsonRpcEntry,
-  ctx: ReceiptContext,
-): { jsonrpc: '2.0'; id: number | string; result: unknown } {
-  const isOurReceipt = entry.method === 'eth_getTransactionReceipt' && entry.params[0] === FAKE_APPROVE_TX_HASH
-  return { jsonrpc: '2.0', id: entry.id, result: isOurReceipt ? buildApproveReceipt(ctx) : null }
-}
-
-/**
- * Not observed in practice (this preflight is always a standalone, non-batched `eth_call`) — but if
- * it ever turns up mixed with other, unrecognized calls, fetch the real upstream and patch in only
- * the entries this mock actually understands, rather than fabricate data for the rest. Same
- * try/catch → `route.fallback()` guard as `mocks/socketVerifier.ts`'s `fulfillFromUpstream`, so a
- * transient real-RPC hiccup here can't abort the whole request.
- */
-async function fulfillApproveSimulationFromUpstream(
-  route: Route,
-  entries: JsonRpcEntry[],
-  matches: boolean[],
-): Promise<void> {
-  try {
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-    const matchedIds = new Set(entries.filter((_, i) => matches[i]).map((entry) => entry.id))
-    const payload = upstreamEntries.map((entry) =>
-      matchedIds.has(entry.id) ? { jsonrpc: '2.0', id: entry.id, result: APPROVE_CALL_SUCCESS_RESULT } : entry,
-    )
-    await route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
-  } catch {
-    await route.fallback()
-  }
-}
-
-/**
- * Answers the preflight `approve(address,uint256)` simulation `eth_call` (see the doc comment on
- * `mockApproveTransaction`) with a successful `true`, host-agnostically. Unlike
- * `mocks/socketVerifier.ts`'s SocketVerifier check, this call is never wrapped in a Multicall3
- * batch in practice (confirmed by tracing real RPC traffic), so no batch-decoding is needed — just
- * the single/array JSON-RPC envelope every route in this suite already has to handle.
- */
-async function handleApproveSimulationCall(route: Route, token: string): Promise<void> {
-  const request = route.request()
-  if (request.method() !== 'POST') return route.fallback()
-
-  let body: JsonRpcEntry | JsonRpcEntry[] | null
-  try {
-    // Unlike `route.request().postDataJSON()` elsewhere in this file (only ever called against a
-    // known JSON-RPC endpoint), this route sees every request in the page — `postDataJSON()`
-    // returns `null` rather than throwing for a POST with no/non-JSON body (e.g. an analytics
-    // beacon), so that has to be checked explicitly, not just guarded by try/catch.
-    body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[] | null
-  } catch {
-    return route.fallback()
-  }
-  if (!body) return route.fallback()
-
-  const entries = Array.isArray(body) ? body : [body]
-  const matches = entries.map((entry) => isApproveSimulationCall(entry, token))
-  if (!matches.some(Boolean)) return route.fallback()
-
-  if (matches.every(Boolean)) {
-    const payload = entries.map((entry) => ({ jsonrpc: '2.0', id: entry.id, result: APPROVE_CALL_SUCCESS_RESULT }))
-    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-  }
-
-  return fulfillApproveSimulationFromUpstream(route, entries, matches)
+/** The receipt result for one `eth_getTransactionReceipt` entry — our own fake hash gets a real result, everything else (including a stale poll for a since-superseded hash) reads as not-yet-mined. */
+function buildReceiptRpcResponse(entry: JsonRpcEntry, ctx: ReceiptContext): unknown {
+  const isOurReceipt = entry.params[0] === FAKE_APPROVE_TX_HASH
+  return isOurReceipt ? buildApproveReceipt(ctx) : null
 }
 
 /** Matches the preflight `eth_call` simulating `approve(address,uint256)` against the same token this mock was set up for, before the real `eth_sendTransaction` is ever asked for. */
