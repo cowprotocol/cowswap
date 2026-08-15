@@ -77,9 +77,10 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
 behavior, only to call its methods). Sub-mocks:
 
 - `mocks.allowances.set(owner, chainId, { [token]: rawAtomString })` — mocks ERC20 `allowance()` reads
-  (including when batched into a Multicall3 `aggregate3`), intercepted by matching the app's actual RPC
-  URL (`REACT_APP_NETWORK_URL_<chainId>`). An owner with no entry resolves to `0`, not "unknown" — this is
-  what makes `[MO-03]`-style "insufficient allowance" tests deterministic without any setup.
+  (including when batched into a Multicall3 `aggregate3`), intercepted host-agnostically by matching
+  `(owner, token)` in the call data itself, not by RPC URL (see the note below on why). An owner with no
+  entry resolves to `0`, not "unknown" — this is what makes `[MO-03]`-style "insufficient allowance"
+  tests deterministic without any setup.
 - `mocks.balances.set(owner, chainId, { [token]: rawAtomString })` — mocks the balances-watcher SSE
   endpoint (matches both the prod and `.barn.` hosts). Give every test in a file a default balance via
   `beforeEach` so none of them fall back to a real, flaky balance fetch (see Known Issues below for why
@@ -282,13 +283,15 @@ never a logic bug in the test — check infrastructure contention first.
   `mockFixedRateQuote` with a manually decimals-adjusted ratio in that case (see `[CC-13]`).
 - **The app's own real-RPC traffic for a given chain does *not* reliably go through
   `REACT_APP_NETWORK_URL_<chainId>`.** That env var only backs this suite's own wallet-side
-  dispatch/proxy (`walletEngine.ts` → `rpcProxy.ts`) and the handful of reads `mockEthFlowTransaction`
-  intercepts by that exact URL (tx receipts, native-balance multicalls). Plenty of other calls the
-  *app itself* makes — `eth_estimateGas` before every `eth_sendTransaction` — go straight to
-  whichever of the app's own hardcoded providers it picks (Infura, the WalletConnect RPC relay,
-  publicnode, ...), unpredictable and outside this env var's control. The only reliable way to
-  intercept *those* is host-agnostic: `context.route('**/*', ...)`, decode the JSON-RPC body, and
-  match by `method` (see `mockEthEstimateGas` in `mockEthFlowTransaction.ts`), never by URL. Bungee's
+  dispatch/proxy (`walletEngine.ts` → `rpcProxy.ts`) and the real MetaMask network config in
+  `wallet.setup.ts`. Every mock in `mocks/`/`support/` that intercepts a *direct* RPC read — receipt
+  polls, native-balance multicalls, allowance/approve reads, `eth_estimateGas` — is registered
+  host-agnostically (`context.route('**/*', ...)`, decode the JSON-RPC body, match by `method` and
+  the actual call data/tx hash) rather than scoped to that URL, precisely because plenty of calls the
+  *app itself* makes go straight to whichever of the app's own hardcoded providers it picks (Infura,
+  the WalletConnect RPC relay, publicnode, ...), unpredictable and outside this env var's control
+  (see `mockEthEstimateGas` in `mockEthFlowTransaction.ts` for the canonical example, and
+  `installNativeBalanceRoute`/`mockApproveTransaction`'s own receipt route for two more). Bungee's
   on-chain SocketVerifier check is a *different* case entirely — see the next note.
 - **Bungee's on-chain SocketVerifier check (`validateRotueId`/`validateSocketRequest`,
   `verifyBungeeBuildTxData` in `@cowprotocol/sdk-bridging`) is mocked entirely by

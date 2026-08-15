@@ -42,8 +42,6 @@ export interface MockWrapTransactionOpts {
  */
 export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promise<MockWrapTransactionHandle> {
   const { context, wallet, balances, chainId, wethToken, initialEthBalance, initialWethBalance } = opts
-  const rpcUrl = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
-  if (!rpcUrl) throw new Error(`REACT_APP_NETWORK_URL_${chainId} not set`)
 
   let sentValue: bigint | undefined
   let mined = false
@@ -58,7 +56,6 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
 
   await installNativeBalanceRoute({
     context,
-    rpcUrl,
     owner: wallet.address,
     txHash: FAKE_WRAP_TX_HASH,
     getBalance: () => initialEthBalance - (sentValue ?? 0n),
