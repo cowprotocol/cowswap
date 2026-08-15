@@ -24,11 +24,18 @@ export interface TransactionParams {
 
 export function mockRpcNodeRequest(
   context: BrowserContext,
-  rpcMethod: string,
+  rpcMethods: string | readonly string[],
   resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
   matches: (entry: JsonRpcEntry) => boolean,
+  // Host-agnostic by default: the app's own real-RPC traffic doesn't reliably go through any one
+  // configured URL (see AGENTS.md), so most callers want every host. A caller that instead scopes
+  // to one known RPC endpoint (e.g. `installNativeBalanceRoute`'s `rpcUrl`) can override this.
+  urlPattern: string | RegExp = '**/*',
 ): void {
-  void context.route('**/*', async (route: Route) => {
+  const methods = new Set(Array.isArray(rpcMethods) ? rpcMethods : [rpcMethods as string])
+  const isOwnMethod = (entry: JsonRpcEntry): boolean => methods.has(entry?.method)
+
+  void context.route(urlPattern, async (route: Route) => {
     const request = route.request()
     if (request.method() !== 'POST') return route.fallback()
 
@@ -46,9 +53,9 @@ export function mockRpcNodeRequest(
     // every `eth_call` it sees via `fulfillFromUpstream` below — a real network fetch that never
     // reaches `route.fallback()` — starving any earlier-registered mock (e.g. `allowances`) of the
     // request entirely, even though it was never relevant to this mock in the first place.
-    if (!entries.some((entry) => entry?.method === rpcMethod && matches(entry))) return route.fallback()
+    if (!entries.some((entry) => isOwnMethod(entry) && matches(entry))) return route.fallback()
 
-    if (entries.every((entry) => entry?.method === rpcMethod)) {
+    if (entries.every(isOwnMethod)) {
       const results = entries.map((entry) => resolve(entry))
 
       if (results.every((res) => typeof res !== 'undefined')) {
@@ -62,14 +69,14 @@ export function mockRpcNodeRequest(
       }
     }
 
-    return fulfillFromUpstream(route, entries, rpcMethod, resolve)
+    return fulfillFromUpstream(route, entries, isOwnMethod, resolve)
   })
 }
 
 async function fulfillFromUpstream(
   route: Route,
   entries: JsonRpcEntry[],
-  rpcMethod: string,
+  isOwnMethod: (entry: JsonRpcEntry) => boolean,
   resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
 ): Promise<void> {
   try {
@@ -81,7 +88,7 @@ async function fulfillFromUpstream(
     const payload = upstreamEntries.map((res) => {
       const entry = entriesById.get(res.id)
 
-      if (!entry || entry.method !== rpcMethod) return res
+      if (!entry || !isOwnMethod(entry)) return res
 
       const result = resolve(entry, res.result)
 
