@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { JsonRpcEntry, mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
 
 import type { BrowserContext } from '@playwright/test'
@@ -35,7 +37,7 @@ export function installEthGetCode(context: BrowserContext): EthGetCodeMock {
 
   return {
     set(address, code) {
-      overrides.set(address.toLowerCase(), code)
+      overrides.set(getAddressKey(address), code)
     },
     reset() {
       overrides.clear()
@@ -45,6 +47,6 @@ export function installEthGetCode(context: BrowserContext): EthGetCodeMock {
 
 function resolveCode(entry: JsonRpcEntry, overrides: Map<string, string>): string {
   const address = entry.params?.[0]
-  const override = address ? overrides.get((address as string).toLowerCase()) : undefined
+  const override = address ? overrides.get(getAddressKey(address as string)) : undefined
   return override ?? '0x'
 }

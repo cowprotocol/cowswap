@@ -6,6 +6,8 @@ import { test } from 'node:test'
 
 import { mockContractViewCall } from './mockContractViewCall'
 
+import { installBalances } from '../mocks/balances'
+
 import type { BrowserContext, Route } from '@playwright/test'
 
 /**
@@ -257,6 +259,178 @@ test('an aggregate3 batch mixing a matching and a non-matching call merges with 
   assert.equal(results[0].success, true)
   assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 42n)
   assert.equal(results[1].returnData, upstreamBalance)
+})
+
+// Real-world shape (bug report): the SDK's own `validateSocketRequest` call happens to land in the
+// same batch as a coincidental native-balance poll, purely by viem's incidental request batching —
+// the two calls are otherwise unrelated.
+const SOCKET_VERIFIER_ADDRESS = '0xa27a3f5a96df7d8be26ee2790999860c00eb688d'
+const VALIDATE_SOCKET_REQUEST_SELECTOR = toFunctionSelector(
+  'validateSocketRequest(bytes,(uint32,(uint256,address,uint256,address,bytes4)))',
+)
+const GET_ETH_BALANCE_SELECTOR = '0x4d2301cc'
+const SOCKET_VERIFIER_EMPTY_BYTES = '0x' as Hex
+// Same pseudo-address `mockContractViewCall.ts`/`cross-chain-swaps.spec.ts` use for a wallet's
+// native ETH balance inside `mocks/balances`.
+const NATIVE_ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
+function installSocketVerifierStub(context: BrowserContext): void {
+  mockContractViewCall(
+    context,
+    SOCKET_VERIFIER_ADDRESS,
+    VALIDATE_SOCKET_REQUEST_SELECTOR,
+    () => SOCKET_VERIFIER_EMPTY_BYTES,
+  )
+}
+
+function socketVerifierBatchCalldata(balanceOwner: string): Hex {
+  return aggregate3Calldata([
+    { target: SOCKET_VERIFIER_ADDRESS, callData: `${VALIDATE_SOCKET_REQUEST_SELECTOR}deadbeef` as Hex },
+    {
+      target: MULTICALL3,
+      callData: `${GET_ETH_BALANCE_SELECTOR}${'0'.repeat(24)}${balanceOwner.slice(2)}` as Hex,
+    },
+  ])
+}
+
+test('an aggregate3 batch mixing a matching call with getEthBalance resolves locally to the fallback balance when mocks/balances has nothing set', async () => {
+  const owner = '0x8eb7cc3c5d90d2d6c835245d21622971628bdeb4'
+  const data = socketVerifierBatchCalldata(owner)
+
+  const stub = createStubContext()
+  installBalances(stub.context)
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({ id: 1, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] })
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, false, 'must never need a live upstream fetch to fill the getEthBalance slot')
+  assert.equal(route.fellBack, false)
+  const results = decodeAggregate3Result(parsedBody(route.fulfilled).result)
+  assert.equal(results.length, 2)
+  assert.equal(results[0].success, true)
+  assert.equal(results[0].returnData, SOCKET_VERIFIER_EMPTY_BYTES)
+  assert.equal(results[1].success, true)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[1].returnData)[0], 10n ** 18n)
+})
+
+test('an aggregate3 batch mixing a matching call with getEthBalance uses mocks/balances state, not the fallback', async () => {
+  const owner = '0x8eb7cc3c5d90d2d6c835245d21622971628bdeb4'
+  const data = socketVerifierBatchCalldata(owner)
+
+  const stub = createStubContext()
+  const balances = installBalances(stub.context)
+  balances.set(owner, 1, { [NATIVE_ETH_ADDRESS]: 7n })
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({ id: 1, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] })
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, false)
+  const results = decodeAggregate3Result(parsedBody(route.fulfilled).result)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[1].returnData)[0], 7n)
+})
+
+test("an aggregate3 batch mixing a matching call with getEthBalance for a different owner still uses that owner's own mocks/balances state", async () => {
+  const owner = '0x8eb7cc3c5d90d2d6c835245d21622971628bdeb4'
+  const otherOwner = '0x9999999999999999999999999999999999999999'
+  const data = socketVerifierBatchCalldata(owner)
+
+  const stub = createStubContext()
+  const balances = installBalances(stub.context)
+  balances.set(otherOwner, 1, { [NATIVE_ETH_ADDRESS]: 7n })
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({ id: 1, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] })
+
+  await stub.getHandler()(route.route)
+
+  const results = decodeAggregate3Result(parsedBody(route.fulfilled).result)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[1].returnData)[0], 10n ** 18n)
+})
+
+function bareGetEthBalanceCalldata(owner: string): Hex {
+  return `${GET_ETH_BALANCE_SELECTOR}${'0'.repeat(24)}${owner.slice(2)}` as Hex
+}
+
+test('a bare, non-batched getEthBalance call resolves to the fallback balance when mocks/balances has nothing set', async () => {
+  const owner = '0x8eb7cc3c5d90d2d6c835245d21622971628bdeb4'
+  const stub = createStubContext()
+  installBalances(stub.context)
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({
+    id: 1,
+    method: 'eth_call',
+    params: [{ to: MULTICALL3, data: bareGetEthBalanceCalldata(owner) }, 'latest'],
+  })
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fellBack, false)
+  assert.equal(route.fetchCalled, false)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], parsedBody(route.fulfilled).result)[0], 10n ** 18n)
+})
+
+test('a bare, non-batched getEthBalance call resolves via mocks/balances state, no upstream fetch', async () => {
+  const owner = '0x8eb7cc3c5d90d2d6c835245d21622971628bdeb4'
+  const stub = createStubContext()
+  const balances = installBalances(stub.context)
+  balances.set(owner, 1, { [NATIVE_ETH_ADDRESS]: 123n })
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({
+    id: 1,
+    method: 'eth_call',
+    params: [{ to: MULTICALL3, data: bareGetEthBalanceCalldata(owner) }, 'latest'],
+  })
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fellBack, false)
+  assert.equal(route.fetchCalled, false)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], parsedBody(route.fulfilled).result)[0], 123n)
+})
+
+const GET_CURRENT_BLOCK_TIMESTAMP_SELECTOR = '0x0f28c97d'
+
+function bareGetCurrentBlockTimestampCalldata(): Hex {
+  return GET_CURRENT_BLOCK_TIMESTAMP_SELECTOR as Hex
+}
+
+test('a bare, non-batched getCurrentBlockTimestamp call resolves locally to a plausible timestamp, no upstream fetch', async () => {
+  const stub = createStubContext()
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({
+    id: 1,
+    method: 'eth_call',
+    params: [{ to: MULTICALL3, data: bareGetCurrentBlockTimestampCalldata() }, 'latest'],
+  })
+
+  const before = BigInt(Math.floor(Date.now() / 1000))
+  await stub.getHandler()(route.route)
+  const after = BigInt(Math.floor(Date.now() / 1000))
+
+  assert.equal(route.fellBack, false)
+  assert.equal(route.fetchCalled, false)
+  const timestamp = decodeAbiParameters([{ type: 'uint256' }], parsedBody(route.fulfilled).result)[0]
+  assert.ok(timestamp >= before && timestamp <= after, `expected ${timestamp} to be near ${before}`)
+})
+
+test('an aggregate3 batch mixing a matching call with getCurrentBlockTimestamp resolves locally, no upstream fetch', async () => {
+  const data = aggregate3Calldata([
+    { target: SOCKET_VERIFIER_ADDRESS, callData: `${VALIDATE_SOCKET_REQUEST_SELECTOR}deadbeef` as Hex },
+    { target: MULTICALL3, callData: bareGetCurrentBlockTimestampCalldata() },
+  ])
+  const stub = createStubContext()
+  installSocketVerifierStub(stub.context)
+  const route = createStubRoute({ id: 1, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] })
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, false)
+  const results = decodeAggregate3Result(parsedBody(route.fulfilled).result)
+  assert.equal(results.length, 2)
+  assert.equal(results[0].returnData, SOCKET_VERIFIER_EMPTY_BYTES)
+  const timestamp = decodeAbiParameters([{ type: 'uint256' }], results[1].returnData)[0]
+  assert.ok(timestamp > 0n)
 })
 
 test('an aggregate3 batch with no matching call at all falls back untouched', async () => {

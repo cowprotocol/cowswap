@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
-import { hasAnyEntry, isOwnerConfigured, resolveBalancesSnapshot } from './resolve'
+import { hasAnyEntry, isOwnerConfigured, resolveBalanceAnyChain, resolveBalancesSnapshot } from './resolve'
 import { balanceKey, type BalanceLookup } from './types'
 
 const OWNER = '0x1111111111111111111111111111111111111111'
@@ -71,4 +71,23 @@ test('hasAnyEntry is false only when both maps are empty', () => {
   assert.equal(hasAnyEntry(EMPTY, EMPTY), false)
   assert.equal(hasAnyEntry(lookupOf([[balanceKey(OWNER, CHAIN, TOKEN), 0n]]), EMPTY), true)
   assert.equal(hasAnyEntry(EMPTY, lookupOf([[balanceKey(OWNER, CHAIN, TOKEN), 0n]])), true)
+})
+
+test('resolveBalanceAnyChain finds a fixture entry regardless of chainId', () => {
+  const fixture = lookupOf([[balanceKey(OWNER, CHAIN, TOKEN), 42n]])
+
+  assert.equal(resolveBalanceAnyChain(fixture, EMPTY, OWNER, TOKEN), 42n)
+})
+
+test('resolveBalanceAnyChain prefers an override over the fixture', () => {
+  const fixture = lookupOf([[balanceKey(OWNER, CHAIN, TOKEN), 1n]])
+  const overrides = lookupOf([[balanceKey(OWNER, 1, TOKEN), 2n]])
+
+  assert.equal(resolveBalanceAnyChain(fixture, overrides, OWNER, TOKEN), 2n)
+})
+
+test('resolveBalanceAnyChain is undefined for an owner/token with no entry', () => {
+  const fixture = lookupOf([[balanceKey(OTHER, CHAIN, TOKEN), 1n]])
+
+  assert.equal(resolveBalanceAnyChain(fixture, EMPTY, OWNER, TOKEN), undefined)
 })

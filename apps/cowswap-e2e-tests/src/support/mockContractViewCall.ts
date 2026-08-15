@@ -1,8 +1,18 @@
-import { Address, decodeFunctionData, decodeFunctionResult, encodeFunctionResult, Hex, multicall3Abi } from 'viem'
+import {
+  Address,
+  decodeFunctionData,
+  decodeFunctionResult,
+  encodeAbiParameters,
+  encodeFunctionResult,
+  Hex,
+  multicall3Abi,
+} from 'viem'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { mockRpcNodeRequest, type JsonRpcEntry, type TransactionParams } from './mockRpcNodeRequest'
+
+import { getBalancesMock } from '../mocks/balances'
 
 import type { BrowserContext } from '@playwright/test'
 
@@ -22,6 +32,17 @@ type Aggregate3Result = {
  * imported so this mock stays a standalone, dependency-free unit like `ethBlockNumber.ts`. */
 const AGGREGATE3_SELECTOR = '0x82ad56cb'
 
+/** Same pseudo-address `cross-chain-swaps.spec.ts` seeds native ETH balances under via
+ * `mocks.balances.set(owner, chainId, { [NATIVE_ETH]: ... })` — reused here, rather than a new
+ * convention, to answer a `getEthBalance` call with whatever `mocks/balances` already tells the app
+ * for this wallet, instead of an unrelated value that could silently disagree with it. */
+const NATIVE_ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
+/** Used when `mocks/balances` has nothing set for this address (or `installBalances` was never
+ * called for this `context`) — good enough to let the batch resolve locally without a real fetch,
+ * for a caller that doesn't otherwise care about the real balance. */
+const FALLBACK_NATIVE_BALANCE = 10n ** 18n
+
 /**
  *
  * mockContractViewCall(context, '{USDC_ADDRESS}', toFunctionSelector('allowance(address,address)', (callData) => {
@@ -40,6 +61,11 @@ export function mockContractViewCall(
   resolve: (callData: Hex, target: Address) => unknown,
 ): void {
   const isTarget = (call: { to?: Address; data?: Hex }): boolean => isTargetCall(call, selector, contractAddress)
+  // Wired to whatever `installBalances` registered for this same `context` — see
+  // `getBalancesMock`'s doc comment — so every caller answers a `getEthBalance` side-call
+  // consistently with `mocks/balances`'s own state, without threading a resolver through by hand.
+  const getNativeBalance = (address: Address): bigint | undefined =>
+    getBalancesMock(context)?.getBalance(address, NATIVE_ETH_ADDRESS)
 
   mockRpcNodeRequest(
     context,
@@ -58,65 +84,106 @@ export function mockContractViewCall(
         return result
       }
 
-      // Multicall
+      // Multicall — `isMulticall` already confirms `call.data`'s selector is `aggregate3`'s, so
+      // decoding it against `multicall3Abi` can only ever produce that one function.
       if (isMulticall(call)) {
-        const { functionName, args } = decodeFunctionData({
+        const { args } = decodeFunctionData({
           abi: multicall3Abi,
           data: call.data,
         })
+        // `functionName` isn't checked — `isMulticall` above already guarantees it — so `args`'
+        // inferred type still spans every `multicall3Abi` function; assert the one shape it can
+        // structurally only be here.
+        const calls = args[0] as Readonly<Aggregate3Calls[]>
 
-        if (functionName === 'aggregate3') {
-          const calls: Readonly<Aggregate3Calls[]> = args[0]
+        const resolved = calls.map((call) =>
+          isTarget({ to: call.target, data: call.callData })
+            ? resolve(call.callData, call.target)
+            : answerIncidentalCall(call.callData, getNativeBalance),
+        )
 
-          const resolved = calls.map((call) =>
-            isTarget({ to: call.target, data: call.callData }) ? resolve(call.callData, call.target) : undefined,
+        if (resolved.every((result) => typeof result !== 'undefined')) {
+          // All calls are matching
+          const result = packAggregate3Result(
+            resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })),
           )
 
-          if (resolved.every((result) => typeof result !== 'undefined')) {
-            // All calls are matching
-            const result = packAggregate3Result(
-              resolved.map((returnData) => ({ success: true, returnData: returnData as Hex })),
-            )
+          return result
+        }
 
-            return result
+        if (resolved.some((result) => typeof result !== 'undefined')) {
+          if (typeof upstreamResult !== 'string') {
+            // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
+            return undefined
           }
 
-          if (resolved.some((result) => typeof result !== 'undefined')) {
-            if (typeof upstreamResult !== 'string') {
-              // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
-              return undefined
-            }
+          const upstreamResults = decodeFunctionResult({
+            abi: multicall3Abi,
+            functionName: 'aggregate3',
+            data: upstreamResult as Hex,
+          }) as Readonly<Aggregate3Result[]>
 
-            const upstreamResults = decodeFunctionResult({
-              abi: multicall3Abi,
-              functionName: 'aggregate3',
-              data: upstreamResult as Hex,
-            }) as Readonly<Aggregate3Result[]>
-
-            return packAggregate3Result(
-              resolved.map((returnData, i) =>
-                typeof returnData === 'undefined'
-                  ? upstreamResults[i]
-                  : { success: true, returnData: returnData as Hex },
-              ),
-            )
-          }
+          return packAggregate3Result(
+            resolved.map((returnData, i) =>
+              typeof returnData === 'undefined' ? upstreamResults[i] : { success: true, returnData: returnData as Hex },
+            ),
+          )
         }
 
-        if (functionName === 'getEthBalance') {
-          // TODO: wire up balances mocks here
-          return undefined
-        }
-
-        if (functionName === 'getCurrentBlockTimestamp') {
-          return undefined
-        }
+        // Matched (contains this mock's own target somewhere) but resolved nothing at all,
+        // incidental calls included — e.g. `resolve` itself declined to answer. Nothing more to do
+        // locally.
+        return undefined
       }
 
-      return undefined
+      // A bare, non-batched `getEthBalance`/`getCurrentBlockTimestamp` call — `isMulticall` above
+      // already ruled out an `aggregate3` call, so `call.data` can only be one of these two here.
+      return answerIncidentalCall(call.data, getNativeBalance)
     },
     (entry) => matchesSelector(entry, selector, contractAddress),
   )
+}
+
+/** Answers the other call shapes this mock recognizes even when they aren't its own target — see
+ * `decodeIncidentalCall`'s doc comment for why this exists at all. */
+function answerIncidentalCall(
+  callData: Hex,
+  getNativeBalance: (address: Address) => bigint | undefined,
+): Hex | undefined {
+  const call = decodeIncidentalCall(callData)
+  if (!call) return undefined
+
+  if (call.functionName === 'getEthBalance') {
+    const [address] = call.args as [Address]
+    const balance = getNativeBalance(address) ?? FALLBACK_NATIVE_BALANCE
+
+    return encodeAbiParameters([{ type: 'uint256' }], [balance])
+  }
+
+  if (call.functionName === 'getCurrentBlockTimestamp') {
+    return encodeAbiParameters([{ type: 'uint256' }], [BigInt(Math.floor(Date.now() / 1000))])
+  }
+
+  return undefined
+}
+
+/**
+ * Two Multicall3 functions that can land in the very same `aggregate3` batch as this mock's own
+ * call purely by viem's incidental request batching (any `readContract`/`getBalance`/etc. issued on
+ * the same tick), regardless of whether they're actually related — so without answering them here
+ * too, an otherwise-fully-mocked batch falls into the partial-match branch below and needs a live
+ * upstream fetch just to fill one unrelated slot. Matched by decoding against `multicall3Abi` and
+ * checking `functionName` (rather than hardcoding each one's selector) so this stays readable.
+ */
+function decodeIncidentalCall(callData: Hex): { functionName: string; args: readonly unknown[] } | undefined {
+  try {
+    const decoded = decodeFunctionData({ abi: multicall3Abi, data: callData })
+    return decoded.functionName === 'getEthBalance' || decoded.functionName === 'getCurrentBlockTimestamp'
+      ? decoded
+      : undefined
+  } catch {
+    return undefined
+  }
 }
 
 function isMulticall(call: TransactionParams): boolean {
@@ -136,25 +203,34 @@ function isTargetCall(
   )
 }
 
+function matchesNestedInAggregate3(
+  call: TransactionParams,
+  selector: string,
+  contractAddress: string | undefined,
+): boolean {
+  if (!isMulticall(call)) return false
+
+  try {
+    const { args } = decodeFunctionData({ abi: multicall3Abi, data: call.data })
+    const calls = args[0] as Readonly<Aggregate3Calls[]>
+    return calls.some((c) => isTargetCall({ to: c.target, data: c.callData }, selector, contractAddress))
+  } catch {
+    return false
+  }
+}
+
 /**
- * Cheap, upstream-independent check: does `selector` appear anywhere in this call (direct or
- * nested in an `aggregate3` batch)? See `mockRpcNodeRequest.ts`'s doc comment on `matches` for why
- * this must not reuse `resolve`'s own undefined-on-"need upstream" return value.
+ * Cheap, upstream-independent check: does `selector` appear anywhere in this call (direct, a bare
+ * incidental call — see `decodeIncidentalCall`'s doc comment — or nested in an `aggregate3` batch)?
+ * See `mockRpcNodeRequest.ts`'s doc comment on `matches` for why this must not reuse `resolve`'s own
+ * undefined-on-"need upstream" return value.
  */
 function matchesSelector(entry: JsonRpcEntry, selector: string, contractAddress: string | undefined): boolean {
   const call = entry.params?.[0] as TransactionParams
   if (!call?.to || !call?.data) return false
   if (isTargetCall(call, selector, contractAddress)) return true
-  if (!isMulticall(call)) return false
-
-  try {
-    const { functionName, args } = decodeFunctionData({ abi: multicall3Abi, data: call.data })
-    if (functionName !== 'aggregate3') return false
-    const calls: Readonly<Aggregate3Calls[]> = args[0]
-    return calls.some((c) => isTargetCall({ to: c.target, data: c.callData }, selector, contractAddress))
-  } catch {
-    return false
-  }
+  if (decodeIncidentalCall(call.data) !== undefined) return true
+  return matchesNestedInAggregate3(call, selector, contractAddress)
 }
 
 function packAggregate3Result(result: Readonly<Aggregate3Result[]>): Hex {

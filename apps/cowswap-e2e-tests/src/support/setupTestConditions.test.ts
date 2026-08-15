@@ -56,6 +56,7 @@ function fakeBalances(): BalancesMock & { calls: Array<[string, number, Record<s
     clear() {},
     sessions: () => [],
     reportUnknownOwners() {},
+    getBalance: () => undefined,
     reset() {},
   }
 }

@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import type { BrowserContext, Route } from '@playwright/test'
 
 /**
@@ -21,7 +23,7 @@ export function installUsdPrices(context: BrowserContext): UsdPricesMock {
   const prices = new Map<string, number | null>()
 
   function priceFor(address: string): number | null {
-    const key = address.toLowerCase()
+    const key = getAddressKey(address)
     return prices.has(key) ? (prices.get(key) ?? null) : DEFAULT_PRICE
   }
 
@@ -54,10 +56,10 @@ export function installUsdPrices(context: BrowserContext): UsdPricesMock {
 
   return {
     setPrice(address, price) {
-      prices.set(address.toLowerCase(), price)
+      prices.set(getAddressKey(address), price)
     },
     setUnknown(address) {
-      prices.set(address.toLowerCase(), null)
+      prices.set(getAddressKey(address), null)
     },
     reset() {
       prices.clear()
