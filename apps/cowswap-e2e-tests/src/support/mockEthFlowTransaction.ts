@@ -63,7 +63,6 @@ const OPAQUE: OpaqueCall = { kind: 'opaque' }
 
 export interface NativeBalanceRouteOpts {
   context: BrowserContext
-  rpcUrl: string
   /** Owner whose `getEthBalance(owner)` reads (however deep inside a Multicall3 batch) get patched. */
   owner: string
   /** The fake hash `eth_getTransactionReceipt` polls for. */
@@ -125,9 +124,14 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
  * only partially recognized (some `getEthBalance` calls, some unrelated reads) — returns
  * `undefined` on the first pass so `mockRpcNodeRequest` fetches the real upstream and calls
  * `resolve()` again with it, this time patching only the recognized slots.
+ *
+ * Registered host-agnostically (no `rpcUrl` scoping): the app's own real-RPC traffic for a given
+ * chain doesn't reliably go through `REACT_APP_NETWORK_URL_<chainId>` — see AGENTS.md — so matching
+ * by the actual JSON-RPC method/calldata (`classifyEthCall`, the tracked `txHash`) is what's
+ * reliable, not the host it happens to land on.
  */
 export function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): void {
-  const { context, rpcUrl, owner, txHash, getBalance, isMined } = opts
+  const { context, owner, txHash, getBalance, isMined } = opts
 
   const classifyCall = (entry: JsonRpcEntry): ClassifiedEthCall | undefined => {
     if (entry.method !== 'eth_call') return undefined
@@ -163,7 +167,7 @@ export function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): void {
     return resolveEthBalanceBatch(call, getBalance(), upstreamResult as Hex)
   }
 
-  mockRpcNodeRequest(context, ['eth_call', 'eth_getTransactionReceipt'], resolve, matches, rpcUrl)
+  mockRpcNodeRequest(context, ['eth_call', 'eth_getTransactionReceipt'], resolve, matches)
 }
 
 export function isFullyMocked(call: ClassifiedEthCall): boolean {
@@ -262,7 +266,6 @@ export interface MockEthFlowTransactionHandle {
 export interface MockEthFlowTransactionOpts {
   context: BrowserContext
   wallet: Pick<MockWalletApi, 'address' | 'stubRpc'>
-  chainId: number
   initialEthBalance: bigint
 }
 
@@ -294,11 +297,14 @@ type TxLookupEntry = { kind: 'receipt' } | { kind: 'transaction' }
  * default fixture already answers any uid with a valid open order) is withheld until
  * `confirmMined()` is called, so a test can assert the transient "creating" state before letting
  * it proceed — otherwise both mocks would resolve on the very first poll and race right past it.
+ *
+ * Both direct-RPC reads below are registered host-agnostically (see `installNativeBalanceRoute`
+ * and `mockEthFlowTxLookupFallback`) rather than scoped to `REACT_APP_NETWORK_URL_<chainId>` — the
+ * app's own RPC traffic doesn't reliably go through that URL, so there's no `chainId` to key on
+ * here in the first place.
  */
 export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): Promise<MockEthFlowTransactionHandle> {
-  const { context, wallet, chainId, initialEthBalance } = opts
-  const rpcUrl = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
-  if (!rpcUrl) throw new Error(`REACT_APP_NETWORK_URL_${chainId} not set`)
+  const { context, wallet, initialEthBalance } = opts
 
   let sentValue: bigint | undefined
   let orderParams: EthFlowOrderParams | undefined
@@ -314,7 +320,6 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
 
   await installNativeBalanceRoute({
     context,
-    rpcUrl,
     owner: wallet.address,
     txHash: FAKE_ETH_FLOW_TX_HASH,
     getBalance: () => initialEthBalance - (sentValue ?? 0n),
@@ -407,12 +412,11 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
  * two polls the app runs *after* sending the creation tx rather than before it: tracing real RPC
  * traffic for the bridging ETH-flow path (`[CC-13]`) found `eth_getTransactionReceipt` AND
  * `eth_getTransactionByHash` for this exact tx hash going out to a real Infura/WalletConnect-relay
- * host that sometimes 429s — not the configured `REACT_APP_NETWORK_URL_{chainId}` this file's
- * `context.route(rpcUrl, ...)` handler below is scoped to, so that handler's own (receipt-only)
- * mocking never saw them. Registered host-agnostically, alongside `installEthEstimateGas`, as a
- * second line of defense: for the configured RPC host, `context.route(rpcUrl, ...)` (registered
- * after this one) still wins and answers first, so there's no double-handling; this one only ever
- * fires for the *other*, unpredictable hosts the app's own independent client happens to pick.
+ * host — unpredictable and outside any one configured RPC URL's control (see AGENTS.md), so this is
+ * registered host-agnostically, matching by tx hash rather than by host. `eth_getTransactionReceipt`
+ * for this hash is also answered by `installNativeBalanceRoute` below, itself host-agnostic — the
+ * overlap is harmless (both compute the same result from the same `isMined` flag); this function's
+ * distinct job is `eth_getTransactionByHash`, which that route doesn't cover.
  *
  * Built on `mockRpcNodeRequest` rather than hand-rolling the same route/body-parsing/batch plumbing
  * `installNativeBalanceRoute` already shares it with.

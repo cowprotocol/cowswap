@@ -88,7 +88,6 @@ const GET_ETH_BALANCE_SELECTOR = '0x4d2301cc'
 const OWNER = '0x8EB7cc3c5D90D2D6C835245D21622971628bdEB4'
 const OTHER_ADDRESS = '0x1111111111111111111111111111111111111111'
 const TX_HASH = `0x${'ef'.repeat(32)}` as Hex
-const RPC_URL = 'https://ethereum-rpc.publicnode.com'
 
 const CALL3_TUPLE = [
   {
@@ -236,7 +235,6 @@ function install(overrides: Partial<{ getBalance: () => bigint; isMined: () => b
   const stub = createStubContext()
   installNativeBalanceRoute({
     context: stub.context,
-    rpcUrl: RPC_URL,
     owner: OWNER,
     txHash: TX_HASH,
     getBalance: overrides.getBalance ?? (() => 0n),
@@ -245,9 +243,9 @@ function install(overrides: Partial<{ getBalance: () => bigint; isMined: () => b
   return stub
 }
 
-test('registers scoped to the given rpcUrl, not host-agnostically', () => {
+test('registers host-agnostically', () => {
   const stub = install()
-  assert.equal(stub.getPattern(), RPC_URL)
+  assert.equal(stub.getPattern(), '**/*')
 })
 
 test('a real captured aggregate3 batch (SocketVerifier.validateRotueId, single call) falls back untouched, never fetching upstream', async () => {
