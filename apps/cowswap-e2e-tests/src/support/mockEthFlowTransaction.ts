@@ -7,7 +7,7 @@ import { mockRpcNodeRequest } from './mockRpcNodeRequest'
 import type { JsonRpcEntry } from './mockRpcNodeRequest'
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { RpcStub } from '../mockWallet/walletEngine'
-import type { BrowserContext, Route } from '@playwright/test'
+import type { BrowserContext } from '@playwright/test'
 
 const FAKE_ETH_FLOW_TX_HASH = `0x${'ef'.repeat(32)}` as const
 
@@ -413,33 +413,26 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
  * second line of defense: for the configured RPC host, `context.route(rpcUrl, ...)` (registered
  * after this one) still wins and answers first, so there's no double-handling; this one only ever
  * fires for the *other*, unpredictable hosts the app's own independent client happens to pick.
+ *
+ * Built on `mockRpcNodeRequest` rather than hand-rolling the same route/body-parsing/batch plumbing
+ * `installNativeBalanceRoute` already shares it with.
  */
 async function mockEthFlowTxLookupFallback(
   context: BrowserContext,
   from: string,
   isMined: () => boolean,
 ): Promise<void> {
-  await context.route('**/*', async (route: Route) => {
-    const request = route.request()
-    if (request.method() !== 'POST') return route.fallback()
-    let body: JsonRpcEntry | JsonRpcEntry[]
-    try {
-      body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    } catch {
-      return route.fallback()
-    }
-    const entries = Array.isArray(body) ? body : [body]
-    const classified = entries.map(classifyTxLookup)
-    if (!entries.length || classified.some((c) => !c)) return route.fallback()
+  const resolve = (entry: JsonRpcEntry): unknown => {
+    const lookup = classifyTxLookup(entry)
+    return lookup ? buildTxLookupResult(lookup, isMined(), from) : undefined
+  }
 
-    const mined = isMined()
-    const payload = entries.map((entry, i) => ({
-      jsonrpc: '2.0',
-      id: entry.id,
-      result: buildTxLookupResult(classified[i] as TxLookupEntry, mined, from),
-    }))
-    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-  })
+  mockRpcNodeRequest(
+    context,
+    ['eth_getTransactionReceipt', 'eth_getTransactionByHash'],
+    resolve,
+    (entry) => classifyTxLookup(entry) !== undefined,
+  )
 }
 
 /** Wires the ETH-flow creation tx's `eth_sendTransaction` stub, decoding the sent value/order struct
