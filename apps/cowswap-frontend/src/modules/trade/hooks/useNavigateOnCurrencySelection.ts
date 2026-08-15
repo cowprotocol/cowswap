@@ -15,6 +15,7 @@ import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeNavigate } from './useTradeNavigate'
+import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
@@ -33,9 +34,11 @@ export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) =>
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
+// eslint-disable-next-line max-lines-per-function -- already tracked by the complexity TODO below
 export function useNavigateOnCurrencySelection(enableSellEqBuy = false): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
+  const { state: tradeRawState } = useTradeState()
   const navigate = useTradeNavigate()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
@@ -68,13 +71,15 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
 
       const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
 
-      const inputCurrencyId = (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? null
+      // Fall back to the already-known raw id, not `null`, while the resolved Currency object catches up.
+      const inputCurrencyId =
+        (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? tradeRawState?.inputCurrencyId ?? null
       const outputCurrencyId = outputCurrency
         ? // For cross-chain order always use address for outputCurrencyId
           isBridgeTrade || targetChainMismatch
           ? getCurrencyAddress(outputCurrency)
           : resolveCurrencyAddressOrSymbol(outputCurrency)
-        : null
+        : (tradeRawState?.outputCurrencyId ?? null)
 
       // When switching SELL chain, persist token address for non-native tokens.
       // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
@@ -131,6 +136,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       orderKind,
       inputCurrency,
       outputCurrency,
+      tradeRawState,
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
       enableSellEqBuy,

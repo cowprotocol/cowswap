@@ -37,7 +37,7 @@ export function mockContractViewCall(
   context: BrowserContext,
   contractAddress: string | undefined,
   selector: string,
-  resolve: (callData: Hex, target: Address, requestUrl: string) => unknown,
+  resolve: (callData: Hex, target: Address) => unknown,
 ): void {
   const isTarget = (call: { to?: Address; data?: Hex }): boolean => isTargetCall(call, selector, contractAddress)
 
@@ -45,7 +45,7 @@ export function mockContractViewCall(
     context,
     'eth_call',
     // eslint-disable-next-line complexity
-    (entry, upstreamResult, requestUrl) => {
+    (entry, upstreamResult) => {
       const call = entry.params?.[0] as TransactionParams
       if (!call?.to || !call?.data || !call.to) {
         return undefined
@@ -53,7 +53,7 @@ export function mockContractViewCall(
 
       if (isTarget(call)) {
         // Direct smart-contract call
-        const result = resolve(call.data, call.to, requestUrl ?? '')
+        const result = resolve(call.data, call.to)
 
         return result
       }
@@ -69,9 +69,7 @@ export function mockContractViewCall(
           const calls: Readonly<Aggregate3Calls[]> = args[0]
 
           const resolved = calls.map((call) =>
-            isTarget({ to: call.target, data: call.callData })
-              ? resolve(call.callData, call.target, requestUrl ?? '')
-              : undefined,
+            isTarget({ to: call.target, data: call.callData }) ? resolve(call.callData, call.target) : undefined,
           )
 
           if (resolved.every((result) => typeof result !== 'undefined')) {

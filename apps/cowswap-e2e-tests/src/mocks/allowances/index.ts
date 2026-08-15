@@ -1,8 +1,9 @@
 import { decodeFunctionData, erc20Abi, toFunctionSelector } from 'viem'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { encodeAllowanceResult } from './codec'
 import { loadAllowancesFixture, parseAllowanceValue } from './fixture'
-import { normalizeRpcUrl, resolveRpcChainIds } from './rpcUrls'
 import { allowanceKey, type AllowanceLookup, type AllowanceRead, type AllowanceValue } from './types'
 
 import { mockContractViewCall } from '../../support/mockContractViewCall'
@@ -28,12 +29,8 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
   const fixture = loadAllowancesFixture()
   const overrides: AllowanceLookup = new Map()
   const selector = toFunctionSelector('allowance(address,address)')
-  // Which chain a call belongs to isn't in the call data at all — only the RPC endpoint it went
-  // out on says that (`rpcUrls.ts`'s doc comment). Resolved once per install rather than per call:
-  // env vars don't change mid-test.
-  const rpcChainIds = resolveRpcChainIds()
 
-  mockContractViewCall(context, undefined, selector, (callData, tokenAddress, requestUrl) => {
+  mockContractViewCall(context, undefined, selector, (callData, tokenAddress) => {
     const {
       args: [account],
     } = decodeFunctionData({
@@ -43,14 +40,14 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
 
     if (!account) return
 
-    // A chain this suite has no `REACT_APP_NETWORK_URL_<chainId>` override for isn't ours to
-    // answer — same "deliberately does not intercept" contract as `unconfiguredChainIds`.
-    const chainId = rpcChainIds.get(normalizeRpcUrl(requestUrl))
-    if (chainId === undefined) return
-
-    const key = allowanceKey(account, chainId, tokenAddress)
-
-    const mocked = overrides.get(key) ?? fixture.get(key)
+    // Which chain this `eth_call` actually went out on isn't derivable here: the app's own
+    // real-RPC traffic doesn't reliably go through `REACT_APP_NETWORK_URL_<chainId>` — it lands
+    // on whichever provider (Infura, a WalletConnect relay, publicnode, ...) the app's own client
+    // picked, unpredictable and invisible from the call itself (see AGENTS.md). The token
+    // *address*, unlike the chain, is right there in the call data and is unique per chain in
+    // practice — this suite never seeds the same token address under two different chain ids in
+    // one test — so match on `(owner, token)` alone instead of requiring an exact chain id.
+    const mocked = findAllowance(fixture, overrides, account, tokenAddress)
 
     return typeof mocked === 'bigint' ? encodeAllowanceResult(mocked) : undefined
   })
@@ -69,4 +66,24 @@ export function installAllowances(context: BrowserContext): AllowancesMock {
       overrides.clear()
     },
   }
+}
+
+/** Find an override/fixture entry by `(owner, token)` alone, across whichever chain id it was set under. */
+function findAllowance(
+  fixture: AllowanceLookup,
+  overrides: AllowanceLookup,
+  owner: string,
+  token: string,
+): bigint | undefined {
+  const prefix = `${getAddressKey(owner)}|`
+  const suffix = `|${getAddressKey(token)}`
+
+  return findByPrefixAndSuffix(overrides, prefix, suffix) ?? findByPrefixAndSuffix(fixture, prefix, suffix)
+}
+
+function findByPrefixAndSuffix(lookup: AllowanceLookup, prefix: string, suffix: string): bigint | undefined {
+  for (const [key, value] of lookup) {
+    if (key.startsWith(prefix) && key.endsWith(suffix)) return value
+  }
+  return undefined
 }
