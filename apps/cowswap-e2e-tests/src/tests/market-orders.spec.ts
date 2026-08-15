@@ -1159,11 +1159,20 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
       // order at, same as [CS-59].
+      //
+      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
+      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
+      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
+      // instead of a one-shot read to ride out that gap.
       const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
       const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
       const postedOrder = mocks.orders.getOrder(orderId)
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      await expect
+        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect
+        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
     test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
