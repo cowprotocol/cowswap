@@ -5,7 +5,10 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokensByAddress, useAllActiveTokens } from '@cowprotocol/tokens'
+import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
@@ -15,7 +18,9 @@ import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
 import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
@@ -47,6 +52,7 @@ export function OrdersFromApiUpdater(): null {
   const allTokens = useAllActiveTokens().tokens
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
+  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
   const { orders: ordersFromOrderBook, isLoadingMore } = useOrdersFromOrderBook()
   const getTokensForOrdersList = useTokensForOrdersList()
@@ -57,6 +63,13 @@ export function OrdersFromApiUpdater(): null {
   // Updated on every change
   // eslint-disable-next-line react-hooks/refs
   allTokensRef.current = allTokens
+
+  // This updater's own poll can independently observe a swap order turning `fulfilled` before
+  // `PendingOrdersUpdater`'s targeted per-order poll does — and unlike that updater, this one never
+  // called `addOrderToSurplusQueue`, so whichever poll won that race silently decided whether the
+  // "Transaction completed!" surplus modal ever appears. Tracked locally (not derived from Redux)
+  // so an order already enqueued here isn't pushed onto the queue again on every subsequent poll.
+  const alreadyQueuedRef = useRef<Set<string>>(new Set())
 
   const updateOrders = useCallback(
     async (chainId: ChainId): Promise<void> => {
@@ -76,13 +89,25 @@ export function OrdersFromApiUpdater(): null {
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
+
+        orders.forEach((order) => {
+          if (
+            order.status === OrderStatus.FULFILLED &&
+            !alreadyQueuedRef.current.has(order.id) &&
+            getUiOrderType(order) === UiOrderType.SWAP &&
+            !getIsBridgeOrder(order)
+          ) {
+            alreadyQueuedRef.current.add(order.id)
+            addOrderToSurplusQueue(order.id)
+          }
+        })
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet],
+    [addOrUpdateOrders, addOrderToSurplusQueue, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet],
   )
 
   useEffect(() => {
