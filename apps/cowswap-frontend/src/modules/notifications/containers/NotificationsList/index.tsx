@@ -22,7 +22,7 @@ import {
 import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
-import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
+import { markNotificationsAsReadCloneArrayAtom } from '../../state/readNotificationsAtom'
 import { isSidebarNotification } from '../../utils/filterNotifications.utils'
 import { getTrustedNotificationLink } from '../../utils/getTrustedNotificationLink'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
@@ -74,7 +74,7 @@ interface NotificationsListProps {
 export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps): ReactNode {
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
-  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
+  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadCloneArrayAtom)
 
   const sidebarNotifications = useMemo(
     () => (notifications ? notifications.filter(isSidebarNotification) : null),
