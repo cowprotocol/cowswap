@@ -17,6 +17,9 @@ export interface DrawerOrDialogProps {
   header?: ReactNode
   footer?: ReactNode
   className?: string
+  /** Dialog-mode CSS `width`. Ignored in drawer mode. */
+  width?: number | string
+  /** Dialog-mode CSS `max-width`. Ignored in drawer mode. */
   maxWidth?: number | string
 }
 
@@ -29,6 +32,7 @@ export function DrawerOrDialog({
   header,
   footer,
   className,
+  width,
   maxWidth,
 }: DrawerOrDialogProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
@@ -68,6 +72,7 @@ export function DrawerOrDialog({
       className={className}
       header={header}
       footer={footer}
+      width={width}
       maxWidth={maxWidth}
     >
       {children}

@@ -7,11 +7,21 @@ import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  DrawerOrDialog,
+  ExternalLink,
+  Icon,
+  IconType,
+  InlineBanner,
+  Modal,
+  ModalHeader,
+  StatusColorVariant,
+  UI,
+} from '@cowprotocol/ui'
 
 import { msg, t } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
-import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
@@ -20,7 +30,6 @@ import { TwapOrderItem } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
-import { CowModal } from 'common/pure/Modal'
 import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
@@ -147,26 +156,33 @@ export function ReceiptModal({
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n
 
-  return (
-    <CowModal onDismiss={onDismiss} isOpen={isOpen}>
-      <styledEl.Wrapper>
-        <styledEl.Header>
-          <div>
-            <styledEl.Title>
-              <Trans>Order Receipt</Trans>
-            </styledEl.Title>
-            {alternativeOrderModalContext && (
-              <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-                {alternativeOrderModalContext?.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
-                <Trans>this order</Trans>
-              </styledEl.LightButton>
-            )}
-          </div>
-          <CloseIcon onClick={() => onDismiss()} />
-        </styledEl.Header>
+  const titleContent = (
+    <styledEl.TitleWrapper>
+      <styledEl.Title>
+        <Trans>Order Receipt</Trans>
+      </styledEl.Title>
 
-        {twapOrder && (
-          <styledEl.InfoBannerWrapper>
+      {alternativeOrderModalContext && (
+        <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
+          {alternativeOrderModalContext?.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
+          <Trans>this order</Trans>
+        </styledEl.LightButton>
+      )}
+    </styledEl.TitleWrapper>
+  )
+
+  return (
+    <DrawerOrDialog onOpenChange={onDismiss} isOpen={isOpen}>
+      <Modal.Root>
+        <ModalHeader
+          sticky
+          title={titleContent}
+          // onBack={() => onDismiss()}
+          onClose={() => onDismiss()}
+        />
+
+        <Modal.Content>
+          {twapOrder && (
             <InlineBanner bannerType={StatusColorVariant.Info}>
               <p>
                 {isTwapPartOrder ? (
@@ -176,10 +192,8 @@ export function ReceiptModal({
                 )}
               </p>
             </InlineBanner>
-          </styledEl.InfoBannerWrapper>
-        )}
+          )}
 
-        <styledEl.Body>
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
@@ -311,8 +325,8 @@ export function ReceiptModal({
               />
             )}
           </styledEl.FieldsWrapper>
-        </styledEl.Body>
-      </styledEl.Wrapper>
-    </CowModal>
+        </Modal.Content>
+      </Modal.Root>
+    </DrawerOrDialog>
   )
 }

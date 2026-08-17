@@ -5,12 +5,14 @@ import { UI } from '../../enum'
 import { transition } from '../../utils/animation'
 
 export const Backdrop = styled(BaseDialog.Backdrop)`
+  /* Dim via a translucent fill, 'opacity' hides backdrop-filter. */
+  --backdrop-opacity: 40%;
+
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background-color: var(${UI.MODAL_BACKDROP});
-  --backdrop-opacity: 0.4;
-  opacity: var(--backdrop-opacity);
+  background-color: color-mix(in srgb, var(${UI.MODAL_BACKDROP}) var(--backdrop-opacity), transparent);
+  backdrop-filter: blur(10px);
   transition: ${transition(['opacity'])};
 
   &[data-starting-style],
@@ -33,15 +35,15 @@ export const Viewport = styled(BaseDialog.Viewport)`
   }
 `
 
-export const Popup = styled(BaseDialog.Popup)<{ $maxWidth: string }>`
+export const Popup = styled(BaseDialog.Popup)<{ $maxWidth: string; $width: string }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 32px);
+  width: ${({ $width }) => $width};
   max-width: ${({ $maxWidth }) => $maxWidth};
   max-height: 90dvh;
   overflow: hidden;
-  border-radius: var(${UI.BORDER_RADIUS_LARGE});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
   box-shadow: var(${UI.BOX_SHADOW});

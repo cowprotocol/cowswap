@@ -6,6 +6,7 @@ import * as styledEl from './Dialog.styled'
 import { getOverlayA11yTitle, resolveOverlayHeader } from './resolveOverlayHeader'
 
 const DEFAULT_DIALOG_MAX_WIDTH = 500
+const DEFAULT_DIALOG_WIDTH = 'calc(100% - 32px)'
 
 export interface DialogProps {
   open: boolean
@@ -16,6 +17,9 @@ export interface DialogProps {
   header?: ReactNode
   footer?: ReactNode
   className?: string
+  /** CSS `width` of the dialog surface. Defaults to viewport minus side inset. */
+  width?: number | string
+  /** CSS `max-width` of the dialog surface. Defaults to 500px. */
   maxWidth?: number | string
 }
 
@@ -28,6 +32,7 @@ export function Dialog({
   header,
   footer,
   className,
+  width = DEFAULT_DIALOG_WIDTH,
   maxWidth = DEFAULT_DIALOG_MAX_WIDTH,
 }: DialogProps): ReactNode {
   const handleOpenChange = useCallback(
@@ -53,7 +58,7 @@ export function Dialog({
       <BaseDialog.Portal>
         <styledEl.Backdrop />
         <styledEl.Viewport>
-          <styledEl.Popup className={className} $maxWidth={formatMaxWidth(maxWidth)}>
+          <styledEl.Popup className={className} $width={formatSize(width)} $maxWidth={formatSize(maxWidth)}>
             {resolvedHeader ? <styledEl.Header>{resolvedHeader}</styledEl.Header> : null}
 
             <styledEl.Content>
@@ -69,6 +74,6 @@ export function Dialog({
   )
 }
 
-function formatMaxWidth(maxWidth: number | string): string {
-  return typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth
+function formatSize(size: number | string): string {
+  return typeof size === 'number' ? `${size}px` : size
 }
