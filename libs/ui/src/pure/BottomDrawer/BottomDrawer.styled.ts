@@ -8,10 +8,14 @@ import { transition } from '../../utils/animation'
 const DRAWER_TRANSITION_DURATION = '450ms'
 const DRAWER_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
+/** Dropdown-level overlay. Must stay below modal z-index (1060) so dialogs opened from the drawer stack on top. */
+const DRAWER_BACKDROP_Z_INDEX = 1000
+const DRAWER_VIEWPORT_Z_INDEX = 1001
+
 export const Backdrop = styled(BaseDrawer.Backdrop)`
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: ${DRAWER_BACKDROP_Z_INDEX};
   background-color: var(${UI.MODAL_BACKDROP});
   --backdrop-opacity: 0.4;
   opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
@@ -34,7 +38,7 @@ export const Backdrop = styled(BaseDrawer.Backdrop)`
 export const Viewport = styled(BaseDrawer.Viewport)`
   position: fixed;
   inset: 0;
-  z-index: 1001;
+  z-index: ${DRAWER_VIEWPORT_Z_INDEX};
   display: flex;
   align-items: flex-end;
   justify-content: center;

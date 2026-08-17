@@ -2,6 +2,8 @@ import { baseGlobalStyles, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
+import { Z_INDEX } from './consts'
+
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
   ${baseGlobalStyles}
@@ -67,8 +69,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // TODO: Can be removed once we control this component
+  // Must stay above BottomDrawer (1000/1001) so order receipts and other modals are not covered
   [data-reach-dialog-overlay] {
-    z-index: 1000 !important;
+    z-index: ${Z_INDEX.modal} !important;
 
     ${Media.upToMedium()} {
       top: 0 !important;
