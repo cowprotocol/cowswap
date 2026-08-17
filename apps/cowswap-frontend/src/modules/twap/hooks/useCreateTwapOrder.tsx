@@ -28,6 +28,7 @@ import {
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
@@ -109,6 +110,7 @@ export function useCreateTwapOrder() {
   const sendSafeTransactions = useSendBatchTransactions()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
   const extensibleFallbackContext = useExtensibleFallbackContext()
+  const amountToSignApprove = useGetAmountToSignApprove()
 
   // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
   // against the production Vault Relayer (same spender placeEoaTwapOrder uses):
@@ -353,6 +355,7 @@ export function useCreateTwapOrder() {
             fallbackHandlerIsNotSet,
             extensibleFallbackContext,
             sendSafeTransactions,
+            amountToApprove: amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256,
           })
           orderCreationHash = safeTxHash
           confirmModalHash = safeTxHash
@@ -447,6 +450,7 @@ export function useCreateTwapOrder() {
       permitInfo,
       generatePermitHook,
       updateEoaTwapFlow,
+      amountToSignApprove,
     ],
   )
 }

@@ -51,7 +51,7 @@ export function ActionButtons({
     confirmTrade,
   }
 
-  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade, true)
 
   const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 

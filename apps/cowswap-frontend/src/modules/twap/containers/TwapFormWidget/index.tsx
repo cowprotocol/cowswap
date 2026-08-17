@@ -8,12 +8,17 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { useGetTradeFormValidations, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import {
+  useGetTradeFormValidations,
+  useIsTradeFormValidationPassed,
+  useShouldHideTradeRateDetails,
+} from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -75,6 +80,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
 
   const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -246,6 +252,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       {tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
+      {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

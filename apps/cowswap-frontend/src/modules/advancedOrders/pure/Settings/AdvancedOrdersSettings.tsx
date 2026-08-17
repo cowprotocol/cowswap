@@ -22,7 +22,7 @@ export interface SettingsProps {
 }
 
 export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: SettingsProps): ReactNode {
-  const { showRecipient } = state
+  const { showRecipient, enablePartialApprovalBySettings } = state
   // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
@@ -49,6 +49,13 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
           tooltip={i18n._(LEFT_ALIGNED.tooltip)}
           checked={limitOrdersSettings.ordersTableOnLeft}
           toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
+        />
+
+        <SettingsBox
+          title={t`Enable Partial Approvals`}
+          tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+          checked={enablePartialApprovalBySettings}
+          toggle={() => onStateChanged({ enablePartialApprovalBySettings: !enablePartialApprovalBySettings })}
         />
       </SettingsDropdownSection>
     </SettingsContainer>

@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { i18n } from '@lingui/core'
@@ -22,8 +23,10 @@ import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerived
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -105,10 +108,20 @@ export function ActivityDetails(props: {
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
+  const [isSwapPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
+  const { enablePartialApprovalBySettings: isLimitOrdersPartialApproveEnabledBySettings } =
+    useAtomValue(limitOrdersSettingsAtom)
+  const { enablePartialApprovalBySettings: isAdvancedOrdersPartialApproveEnabledBySettings } =
+    useAtomValue(advancedOrdersSettingsAtom)
   const getShowCancellationModal = useCancelOrder()
 
-  const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+  const uiOrderType = order ? getUiOrderType(order) : undefined
+  const isSwap = uiOrderType === UiOrderType.SWAP
+  const isPartialApproveEnabledBySettings = getIsPartialApproveEnabledBySettings(uiOrderType, {
+    swap: isSwapPartialApproveEnabledBySettings,
+    limit: isLimitOrdersPartialApproveEnabledBySettings,
+    twap: isAdvancedOrdersPartialApproveEnabledBySettings,
+  })
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
@@ -617,4 +630,21 @@ export function GnosisSafeTxDetails(props: {
       <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
     </TransactionInnerDetail>
   )
+}
+
+function getIsPartialApproveEnabledBySettings(
+  uiOrderType: UiOrderType | undefined,
+  settings: { swap: boolean; limit: boolean; twap: boolean },
+): boolean {
+  switch (uiOrderType) {
+    case UiOrderType.LIMIT:
+      return settings.limit
+    case UiOrderType.TWAP:
+      return settings.twap
+    case UiOrderType.SWAP:
+    case UiOrderType.HOOKS:
+      return settings.swap
+    default:
+      return false
+  }
 }

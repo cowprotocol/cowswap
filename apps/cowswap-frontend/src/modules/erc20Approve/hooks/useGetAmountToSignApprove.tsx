@@ -13,7 +13,11 @@ import { useIsPartialApprovalModeSelected } from './useIsPartialApprovalModeSele
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
 
-const PARTIAL_APPROVAL_SUPPORTED_TRADE_TYPES: TradeType[] = [TradeType.SWAP, TradeType.LIMIT_ORDER]
+const PARTIAL_APPROVAL_SUPPORTED_TRADE_TYPES: TradeType[] = [
+  TradeType.SWAP,
+  TradeType.LIMIT_ORDER,
+  TradeType.ADVANCED_ORDERS,
+]
 
 /**
  * Returns the amount to sign for the approval transaction/permit

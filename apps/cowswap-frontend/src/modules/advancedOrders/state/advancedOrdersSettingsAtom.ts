@@ -5,14 +5,16 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
 export interface AdvancedOrdersSettingsState {
   readonly showRecipient: boolean
+  readonly enablePartialApprovalBySettings: boolean
 }
 
 export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   showRecipient: false,
+  enablePartialApprovalBySettings: true,
 }
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
-  'advanced-orders-settings-atom:v0',
+  'advanced-orders-settings-atom:v1',
   defaultAdvancedOrdersSettings,
   getJotaiIsolatedStorage(),
 )
