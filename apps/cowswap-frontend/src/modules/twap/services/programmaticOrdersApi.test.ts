@@ -61,7 +61,7 @@ describe('fetchEoaTwapOrders', () => {
           "safeAddress": "0x62587918b2f00176646679509217a5a4d1ebbfd5",
           "status": "Fulfilled",
         },
-        "totalCount": 13,
+        "totalCount": 17,
       }
     `)
   }, 30_000)
