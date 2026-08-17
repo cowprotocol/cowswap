@@ -1,10 +1,11 @@
+/* eslint-disable max-lines-per-function */
 import { MutableRefObject, ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import * as styledEl from './PriceChart.styled'
-
 import { useTheme } from 'common/hooks/useTheme'
+
+import * as styledEl from './PriceChart.styled'
 
 import { logPriceChart } from '../../api'
 import {
@@ -28,6 +29,108 @@ import type {
   PriceChartPureProps,
   PriceChartSymbolDescriptor,
 } from '../../lib/tradingView.types'
+
+type PriceChartShapeId = ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>
+
+interface SyncHorizontalLineParams {
+  color: string
+  entityIdRef: MutableRefObject<PriceChartShapeId>
+  logKey: string
+  price: number | null | undefined
+  style: 0 | 1 | 2
+  ticker: string
+  widget: IChartingLibraryWidget | null
+}
+
+export function PriceChartPure({
+  activeTicker,
+  limitLinePrice,
+  onSelectPrice,
+  onSelectTicker,
+  symbols,
+}: PriceChartPureProps): ReactNode {
+  const { darkMode } = useTheme()
+  const chartId = useId().replace(/:/g, '')
+  const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
+  const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>({ kind: 'idle' })
+  const datafeedController = useMemo(
+    () =>
+      createPriceChartDatafeed({
+        onStatusChange: setHistoryStatus,
+        symbols,
+      }),
+    [symbols],
+  )
+  const visibleHistoryStatus = useMemo(
+    () => getVisibleHistoryStatus(activeTicker, historyStatus),
+    [activeTicker, historyStatus],
+  )
+
+  useEffect(() => {
+    return () => {
+      datafeedController.dispose()
+    }
+  }, [datafeedController])
+
+  useEffect(() => {
+    if (!activeTicker) {
+      setHistoryStatus({ kind: 'idle' })
+      return
+    }
+
+    setHistoryStatus((currentStatus) => {
+      if (currentStatus.ticker === activeTicker) {
+        return currentStatus
+      }
+
+      return { kind: 'idle', ticker: activeTicker }
+    })
+  }, [activeTicker])
+
+  useTradingViewWidget(
+    activeTicker,
+    containerId,
+    datafeedController.datafeed,
+    darkMode,
+    limitLinePrice,
+    onSelectPrice,
+    symbols,
+  )
+
+  if (!symbols.length) {
+    return <styledEl.EmptyState>Select both tokens to load the TradingView chart.</styledEl.EmptyState>
+  }
+
+  return (
+    <styledEl.PanelWrapper>
+      <styledEl.Header>
+        <styledEl.Heading>
+          <styledEl.Title>Price chart</styledEl.Title>
+        </styledEl.Heading>
+        <styledEl.SymbolList>
+          {symbols.map((symbol) => (
+            <styledEl.SymbolButton
+              $isActive={symbol.ticker === activeTicker}
+              key={symbol.ticker}
+              onClick={() => onSelectTicker(symbol.ticker)}
+              type="button"
+            >
+              {symbol.ticker}
+            </styledEl.SymbolButton>
+          ))}
+        </styledEl.SymbolList>
+      </styledEl.Header>
+      <styledEl.ChartFrame>
+        <styledEl.ChartContainer id={containerId} />
+        {visibleHistoryStatus.kind === 'loading' ||
+        visibleHistoryStatus.kind === 'empty' ||
+        visibleHistoryStatus.kind === 'error' ? (
+          <styledEl.OverlayState>{visibleHistoryStatus.message}</styledEl.OverlayState>
+        ) : null}
+      </styledEl.ChartFrame>
+    </styledEl.PanelWrapper>
+  )
+}
 
 function getCssVar(name: string, fallback: string): string {
   if (typeof window === 'undefined') return fallback
@@ -62,6 +165,17 @@ function getThemeOverrides(): Partial<ChartPropertiesOverrides> {
   }
 }
 
+function getVisibleHistoryStatus(
+  activeTicker: string,
+  historyStatus: PriceChartHistoryStatus,
+): PriceChartHistoryStatus {
+  if (!activeTicker || !historyStatus.ticker || historyStatus.ticker === activeTicker) {
+    return historyStatus
+  }
+
+  return { kind: 'idle' }
+}
+
 function isDarkColor(hexOrRgb: string): boolean {
   const rgb = hexOrRgb.match(/\d+/g)
 
@@ -80,29 +194,6 @@ function isDarkColor(hexOrRgb: string): boolean {
   }
 
   return true
-}
-
-function getVisibleHistoryStatus(
-  activeTicker: string,
-  historyStatus: PriceChartHistoryStatus,
-): PriceChartHistoryStatus {
-  if (!activeTicker || !historyStatus.ticker || historyStatus.ticker === activeTicker) {
-    return historyStatus
-  }
-
-  return { kind: 'idle' }
-}
-
-type PriceChartShapeId = ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>
-
-interface SyncHorizontalLineParams {
-  color: string
-  entityIdRef: MutableRefObject<PriceChartShapeId>
-  logKey: string
-  price: number | null | undefined
-  style: 0 | 1 | 2
-  ticker: string
-  widget: IChartingLibraryWidget | null
 }
 
 function removeHorizontalLine(
@@ -225,7 +316,7 @@ function useTradingViewWidget(
           'show_symbol_logo_in_legend',
           'symbol_search_hot_key',
         ],
-        enabled_features: ['hide_resolution_in_legend', 'timeframes_toolbar'],
+        enabled_features: ['hide_resolution_in_legend', 'iframe_loading_compatibility_mode', 'timeframes_toolbar'],
         favorites: {
           chartTypes: ['Candles', 'LineWithMarkers', 'Baseline'],
           intervals: PRO_CHART_FAVORITE_INTERVALS,
@@ -343,86 +434,4 @@ function useTradingViewWidget(
       widget.applyOverrides(getThemeOverrides())
     })
   }, [darkMode])
-}
-
-export function PriceChartPure({
-  activeTicker,
-  limitLinePrice,
-  onSelectPrice,
-  onSelectTicker,
-  symbols,
-}: PriceChartPureProps): ReactNode {
-  const { darkMode } = useTheme()
-  const chartId = useId().replace(/:/g, '')
-  const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
-  const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>({ kind: 'idle' })
-  const datafeedController = useMemo(
-    () =>
-      createPriceChartDatafeed({
-        onStatusChange: setHistoryStatus,
-        symbols,
-      }),
-    [symbols],
-  )
-  const visibleHistoryStatus = useMemo(
-    () => getVisibleHistoryStatus(activeTicker, historyStatus),
-    [activeTicker, historyStatus],
-  )
-
-  useEffect(() => {
-    return () => {
-      datafeedController.dispose()
-    }
-  }, [datafeedController])
-
-  useEffect(() => {
-    if (!activeTicker) {
-      setHistoryStatus({ kind: 'idle' })
-      return
-    }
-
-    setHistoryStatus((currentStatus) => {
-      if (currentStatus.ticker === activeTicker) {
-        return currentStatus
-      }
-
-      return { kind: 'idle', ticker: activeTicker }
-    })
-  }, [activeTicker])
-
-  useTradingViewWidget(activeTicker, containerId, datafeedController.datafeed, darkMode, limitLinePrice, onSelectPrice, symbols)
-
-  if (!symbols.length) {
-    return <styledEl.EmptyState>Select both tokens to load the TradingView chart.</styledEl.EmptyState>
-  }
-
-  return (
-    <styledEl.PanelWrapper>
-      <styledEl.Header>
-        <styledEl.Heading>
-          <styledEl.Title>Price chart</styledEl.Title>
-        </styledEl.Heading>
-        <styledEl.SymbolList>
-          {symbols.map((symbol) => (
-            <styledEl.SymbolButton
-              $isActive={symbol.ticker === activeTicker}
-              key={symbol.ticker}
-              onClick={() => onSelectTicker(symbol.ticker)}
-              type="button"
-            >
-              {symbol.ticker}
-            </styledEl.SymbolButton>
-          ))}
-        </styledEl.SymbolList>
-      </styledEl.Header>
-      <styledEl.ChartFrame>
-        <styledEl.ChartContainer id={containerId} />
-        {visibleHistoryStatus.kind === 'loading' ||
-        visibleHistoryStatus.kind === 'empty' ||
-        visibleHistoryStatus.kind === 'error' ? (
-          <styledEl.OverlayState>{visibleHistoryStatus.message}</styledEl.OverlayState>
-        ) : null}
-      </styledEl.ChartFrame>
-    </styledEl.PanelWrapper>
-  )
 }
