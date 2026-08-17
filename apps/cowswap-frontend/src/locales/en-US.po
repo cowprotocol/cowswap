@@ -3870,6 +3870,10 @@ msgstr "COW token not found for chain {SupportedChainIdMAINNET}"
 msgid "Tokenized by {tokenizedByIssuer}"
 msgstr "Tokenized by {tokenizedByIssuer}"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
+msgid "Pick the limit price from the chart"
+msgstr "Pick the limit price from the chart"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
 msgstr "Unwrap"
