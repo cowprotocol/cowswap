@@ -136,11 +136,24 @@ describe('useGetAmountToSignApprove', () => {
 
       expect(result.current).toEqual(mockMaxAmount)
     })
-    it('should return max amount when partial approval is selected but trade type is limit order', () => {
+    it('should return partial amount when partial approval is selected and trade type is limit order', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseAtomValue.mockReturnValue(true)
       mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.LIMIT_ORDER } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+
+      const { result } = renderHook(() => useGetAmountToSignApprove())
+
+      expect(result.current).toEqual(mockPartialAmount)
+    })
+
+    it('should return max amount when partial approval is selected but trade type is advanced orders (TWAP)', () => {
+      mockUseNeedsApproval.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
+      mockUseAtomValue.mockReturnValue(true)
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.ADVANCED_ORDERS } as ReturnType<
         typeof useDerivedTradeState
       >)
 

@@ -38,6 +38,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     limitPricePosition,
     limitPriceLocked,
     ordersTableOnLeft,
+    enablePartialApprovalBySettings,
     // TODO: Temporarily disabled - Global USD Mode feature
     // isUsdValuesMode,
   } = state
@@ -53,6 +54,12 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     analytics.togglePartialExecutions(newValue)
     onStateChanged({ ...state, partialFillsEnabled: newValue })
   }, [analytics, onStateChanged, state, partialFillsEnabled])
+
+  const handlePartialApprovalToggle = useCallback(() => {
+    const newValue = !enablePartialApprovalBySettings
+    analytics.togglePartialApproval(newValue)
+    onStateChanged({ ...state, enablePartialApprovalBySettings: newValue })
+  }, [analytics, onStateChanged, state, enablePartialApprovalBySettings])
 
   const handleSelect = useCallback(
     (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
@@ -135,6 +142,13 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
               checked={limitPriceLocked}
               toggle={handleLimitPriceLockedToggle}
+            />
+
+            <SettingsBox
+              title={t`Enable Partial Approvals`}
+              tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+              checked={enablePartialApprovalBySettings}
+              toggle={handlePartialApprovalToggle}
             />
           </SettingsBoxGroup>
         </SettingsDropdownSection>
