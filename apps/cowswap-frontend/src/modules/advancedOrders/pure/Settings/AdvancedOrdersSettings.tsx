@@ -32,16 +32,23 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
 
   return (
     <SettingsContainer>
-      {!disableCustomRecipient && (
-        <SettingsDropdownSection title={t`TWAP Settings`}>
+      <SettingsDropdownSection title={t`TWAP Settings`}>
+        {!disableCustomRecipient && (
           <SettingsBox
             title={t`Custom Recipient`}
             tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
             checked={showRecipient}
             toggle={() => onStateChanged({ showRecipient: !showRecipient })}
           />
-        </SettingsDropdownSection>
-      )}
+        )}
+
+        <SettingsBox
+          title={t`Enable Partial Approvals`}
+          tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+          checked={enablePartialApprovalBySettings}
+          toggle={() => onStateChanged({ enablePartialApprovalBySettings: !enablePartialApprovalBySettings })}
+        />
+      </SettingsDropdownSection>
 
       <SettingsDropdownSection title={t`TWAP Interface`}>
         <SettingsBox
@@ -49,13 +56,6 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
           tooltip={i18n._(LEFT_ALIGNED.tooltip)}
           checked={limitOrdersSettings.ordersTableOnLeft}
           toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
-        />
-
-        <SettingsBox
-          title={t`Enable Partial Approvals`}
-          tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-          checked={enablePartialApprovalBySettings}
-          toggle={() => onStateChanged({ enablePartialApprovalBySettings: !enablePartialApprovalBySettings })}
         />
       </SettingsDropdownSection>
     </SettingsContainer>
