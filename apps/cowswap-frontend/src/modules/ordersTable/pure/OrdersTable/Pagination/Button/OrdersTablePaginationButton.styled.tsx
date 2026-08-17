@@ -5,14 +5,14 @@ import { Link } from 'react-router'
 import styled, { css } from 'styled-components/macro'
 
 const pageButtonStyles = css<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: ${({ theme, $active }) => ($active ? transparentize(theme.info, 0.9) : 'transparent')};
   color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;
-  padding: 5px 6px;
-  border-radius: 4px;
-  width: 34px;
-  margin: 0 5px;
+  width: 36px;
   cursor: pointer;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
