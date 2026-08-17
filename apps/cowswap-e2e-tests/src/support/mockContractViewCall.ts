@@ -11,6 +11,7 @@ import {
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { mockRpcNodeRequest, type JsonRpcEntry, type TransactionParams } from './mockRpcNodeRequest'
+import { registerNestedCallResolver, resolveNestedCall } from './nestedRpcCallRegistry'
 
 import { getBalancesMock } from '../mocks/balances'
 
@@ -67,6 +68,15 @@ export function mockContractViewCall(
   const getNativeBalance = (address: Address): bigint | undefined =>
     getBalancesMock(context)?.getBalance(address, NATIVE_ETH_ADDRESS)
 
+  // Makes this call recognizable by a *different* mock's own, separate batch-merge logic (e.g.
+  // `mockEthFlowTransaction.ts`'s `resolveEthBalanceBatch`) when the two land in the same
+  // Multicall3 batch purely by viem's incidental request batching — see
+  // `nestedRpcCallRegistry.ts`'s doc comment. Automatic for every caller of this function, so
+  // nothing else needs to opt in by hand.
+  registerNestedCallResolver(context, (target, callData) =>
+    isTarget({ to: target, data: callData }) ? resolve(callData, target) : undefined,
+  )
+
   mockRpcNodeRequest(
     context,
     'eth_call',
@@ -99,7 +109,7 @@ export function mockContractViewCall(
         const resolved = calls.map((call) =>
           isTarget({ to: call.target, data: call.callData })
             ? resolve(call.callData, call.target)
-            : answerIncidentalCall(call.callData, getNativeBalance),
+            : answerIncidentalCall(context, call.target, call.callData, getNativeBalance),
         )
 
         if (resolved.every((result) => typeof result !== 'undefined')) {
@@ -136,35 +146,40 @@ export function mockContractViewCall(
         return undefined
       }
 
-      // A bare, non-batched `getEthBalance`/`getCurrentBlockTimestamp` call — `isMulticall` above
-      // already ruled out an `aggregate3` call, so `call.data` can only be one of these two here.
-      return answerIncidentalCall(call.data, getNativeBalance)
+      // A bare, non-batched incidental call (`getEthBalance`/`getCurrentBlockTimestamp`, or
+      // something only a *different* mock recognizes — see `resolveNestedCall`) — `isMulticall`
+      // above already ruled out an `aggregate3` call.
+      return answerIncidentalCall(context, call.to, call.data, getNativeBalance)
     },
     (entry) => matchesSelector(entry, selector, contractAddress),
   )
 }
 
 /** Answers the other call shapes this mock recognizes even when they aren't its own target — see
- * `decodeIncidentalCall`'s doc comment for why this exists at all. */
+ * `decodeIncidentalCall`'s doc comment for why this exists at all. Falls through to
+ * `resolveNestedCall` last, so a call some *other*, unrelated mock owns (batched alongside this
+ * one purely by viem's own request batching) gets that mock's answer instead of whatever a real
+ * upstream fetch would say for it. */
 function answerIncidentalCall(
+  context: BrowserContext,
+  target: Address,
   callData: Hex,
   getNativeBalance: (address: Address) => bigint | undefined,
-): Hex | undefined {
+): unknown {
   const call = decodeIncidentalCall(callData)
-  if (!call) return undefined
 
-  if (call.functionName === 'getEthBalance') {
+  if (call?.functionName === 'getEthBalance') {
     const [address] = call.args as [Address]
     const balance = getNativeBalance(address) ?? FALLBACK_NATIVE_BALANCE
 
     return encodeAbiParameters([{ type: 'uint256' }], [balance])
   }
 
-  if (call.functionName === 'getCurrentBlockTimestamp') {
+  if (call?.functionName === 'getCurrentBlockTimestamp') {
     return encodeAbiParameters([{ type: 'uint256' }], [BigInt(Math.floor(Date.now() / 1000))])
   }
 
-  return undefined
+  return resolveNestedCall(context, target, callData)
 }
 
 /**

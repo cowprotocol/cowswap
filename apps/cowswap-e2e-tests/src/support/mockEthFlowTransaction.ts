@@ -1,8 +1,9 @@
-import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
+import { decodeAbiParameters, encodeAbiParameters, type Address, type Hex } from 'viem'
 
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { mockRpcNodeRequest } from './mockRpcNodeRequest'
+import { resolveNestedCall } from './nestedRpcCallRegistry'
 
 import type { JsonRpcEntry } from './mockRpcNodeRequest'
 import type { MockWalletApi } from '../fixtures/mockWallet'
@@ -46,21 +47,6 @@ export interface BatchCall {
 
 export type ClassifiedEthCall = OwnBalanceCall | BatchCall | OpaqueCall
 
-export interface OpaqueCall {
-  kind: 'opaque'
-}
-
-export interface OwnBalanceCall {
-  kind: 'ownBalance'
-}
-
-interface BatchResultSlot {
-  success: boolean
-  returnData: Hex
-}
-
-const OPAQUE: OpaqueCall = { kind: 'opaque' }
-
 export interface NativeBalanceRouteOpts {
   context: BrowserContext
   /** Owner whose `getEthBalance(owner)` reads (however deep inside a Multicall3 batch) get patched. */
@@ -74,23 +60,45 @@ export interface NativeBalanceRouteOpts {
   isMined: () => boolean
 }
 
+/** Anything this route doesn't itself recognize — carries its own `target`/`callData` so
+ * `resolveEthBalanceBatch` can still ask `nestedRpcCallRegistry.ts` whether some *other*,
+ * unrelated mock (e.g. `installSocketVerifier`) recognizes it before ever trusting whatever a real
+ * upstream fetch said for it. */
+export interface OpaqueCall {
+  kind: 'opaque'
+  target: Address
+  callData: Hex
+}
+
+export interface OwnBalanceCall {
+  kind: 'ownBalance'
+}
+
+interface BatchResultSlot {
+  success: boolean
+  returnData: Hex
+}
+
 /**
  * Classifies one `eth_call` payload for `owner`'s own ETH balance, recursively — mirrors
  * `mocks/allowances/codec.ts`'s `classifyCall`, since Multicall3 batches nest the same way
  * regardless of what's inside them. Recognizing `getEthBalance(owner)` wherever it appears inside
  * a batch (rather than requiring the *whole* batch to be nothing but that) is what keeps this from
  * ever needing to forward the owner's real balance to the real RPC just because some other,
- * unrelated read got bundled into the same Multicall3 call.
+ * unrelated read got bundled into the same Multicall3 call. `target` is the call's own `to` (the
+ * top-level entry's `to` for a bare call, or each inner call's own `target` when nested in an
+ * `aggregate3` batch) — carried on an unrecognized (`opaque`) call so `resolveEthBalanceBatch` can
+ * still ask around for it later, see `OpaqueCall`'s doc comment.
  */
-export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
+export function classifyEthCall(data: Hex, owner: string, target: string): ClassifiedEthCall {
   const selector = data.slice(0, 10).toLowerCase()
 
   if (selector === GET_ETH_BALANCE_SELECTOR) {
     try {
       const [address] = decodeAbiParameters([{ type: 'address' }], `0x${data.slice(10)}` as Hex)
-      return areAddressesEqual(address as string, owner) ? { kind: 'ownBalance' } : OPAQUE
+      return areAddressesEqual(address as string, owner) ? { kind: 'ownBalance' } : opaque(target, data)
     } catch {
-      return OPAQUE
+      return opaque(target, data)
     }
   }
 
@@ -99,14 +107,16 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
       const [calls] = decodeAbiParameters(CALL3_TUPLE, `0x${data.slice(10)}` as Hex)
       return {
         kind: 'batch',
-        calls: (calls as ReadonlyArray<{ callData: Hex }>).map((c) => classifyEthCall(c.callData, owner)),
+        calls: (calls as ReadonlyArray<{ target: string; callData: Hex }>).map((c) =>
+          classifyEthCall(c.callData, owner, c.target),
+        ),
       }
     } catch {
-      return OPAQUE
+      return opaque(target, data)
     }
   }
 
-  return OPAQUE
+  return opaque(target, data)
 }
 
 /**
@@ -135,16 +145,16 @@ export function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): void {
 
   const classifyCall = (entry: JsonRpcEntry): ClassifiedEthCall | undefined => {
     if (entry.method !== 'eth_call') return undefined
-    const data = (entry.params[0] as { data?: Hex } | undefined)?.data
-    return data ? classifyEthCall(data, owner) : undefined
+    const call = entry.params[0] as { to?: string; data?: Hex } | undefined
+    return call?.data ? classifyEthCall(call.data, owner, call.to ?? '') : undefined
   }
 
-  // A batch's own `kind` is `'batch'` even when every call inside it is opaque (e.g. an
-  // aggregate3 wrapping nothing but an unrelated on-chain check, like SocketVerifier's
-  // `validateRotueId`) — `isFullyOpaqueCall` (rather than a shallow `kind !== 'opaque'` check) is
-  // what keeps that shape correctly unrecognized, so it falls back to `route.fallback()` and an
-  // earlier-registered, more specific mock (e.g. `installSocketVerifier`) gets a chance to answer
-  // it instead of this route sending it to `route.fetch()` and relaying a real revert.
+  // A batch's own `kind` is `'batch'` even when every call inside it is opaque (e.g. an aggregate3
+  // wrapping nothing but an unrelated on-chain check, like SocketVerifier's `validateRotueId`) —
+  // `isFullyOpaqueCall` (rather than a shallow `kind !== 'opaque'` check) is what keeps that shape
+  // correctly unrecognized, so it falls back to `route.fallback()` and an earlier-registered, more
+  // specific mock (e.g. `installSocketVerifier`) gets a chance to answer it instead of this route
+  // sending it to `route.fetch()` and relaying a real revert.
   const matches = (entry: JsonRpcEntry): boolean => {
     if (entry.method === 'eth_getTransactionReceipt') return entry.params[0] === txHash
     const call = classifyCall(entry)
@@ -160,23 +170,32 @@ export function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): void {
     if (!call || call.kind === 'opaque') return undefined
     if (call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [getBalance()])
 
-    // `call.kind === 'batch'`: answerable locally only once every leaf is `ownBalance` — otherwise
-    // the non-`ownBalance` slots need the real upstream blob as their base.
-    if (isFullyMocked(call)) return resolveEthBalanceBatch(call, getBalance())
+    // `call.kind === 'batch'`: answerable locally only once every leaf is `ownBalance` or
+    // something a *different*, unrelated mock recognizes (`nestedRpcCallRegistry.ts`) — otherwise
+    // the remaining slots need the real upstream blob as their base.
+    if (isFullyMocked(context, call)) return resolveEthBalanceBatch(context, call, getBalance())
     if (typeof upstreamResult !== 'string') return undefined
-    return resolveEthBalanceBatch(call, getBalance(), upstreamResult as Hex)
+    return resolveEthBalanceBatch(context, call, getBalance(), upstreamResult as Hex)
   }
 
   mockRpcNodeRequest(context, ['eth_call', 'eth_getTransactionReceipt'], resolve, matches)
 }
 
-export function isFullyMocked(call: ClassifiedEthCall): boolean {
+/** True once every leaf in `call` is something answerable without ever touching the real upstream:
+ * the caller's own balance, or a call some *other*, unrelated mock recognizes (e.g.
+ * `installSocketVerifier`'s own selectors, via `nestedRpcCallRegistry.ts`) — batched alongside a
+ * genuine `ownBalance` call purely by viem's own incidental request batching. */
+export function isFullyMocked(context: BrowserContext, call: ClassifiedEthCall): boolean {
   if (call.kind === 'ownBalance') return true
-  if (call.kind === 'opaque') return false
-  return call.calls.every(isFullyMocked)
+  if (call.kind === 'opaque') return typeof resolveNestedCall(context, call.target, call.callData) !== 'undefined'
+  return call.calls.every((inner) => isFullyMocked(context, inner))
 }
 
-/** True when `call` recognizes no `ownBalance` leaf anywhere — including a batch whose every call is itself opaque. */
+/** True when `call` recognizes no `ownBalance` leaf anywhere — including a batch whose every call
+ * is itself opaque (e.g. nothing but SocketVerifier checks). Deliberately does *not* consult
+ * `nestedRpcCallRegistry.ts`: a batch with no `ownBalance` concern of this route's own is none of
+ * its business at all, so it should defer the whole thing (`route.fallback()`) rather than answer
+ * it itself just because it happens to be *able* to, via some other mock's registered resolver. */
 export function isFullyOpaqueCall(call: ClassifiedEthCall): boolean {
   if (call.kind === 'ownBalance') return false
   if (call.kind === 'opaque') return true
@@ -184,12 +203,13 @@ export function isFullyOpaqueCall(call: ClassifiedEthCall): boolean {
 }
 
 /**
- * Builds the `Result[]` blob for a batch, patching only the `ownBalance` slots and leaving every
- * other slot as whatever the real upstream response had for it (or a failure slot if there's no
- * upstream at all, i.e. the batch turned out to be nothing but `ownBalance` calls). Same
- * upstream-as-base technique as `codec.ts`'s `resolveBatchResult`.
+ * Builds the `Result[]` blob for a batch, patching the `ownBalance` slots, asking around
+ * (`nestedRpcCallRegistry.ts`) for any other slot before ever trusting the real upstream response
+ * for it, and only actually falling back to that real response — or a failure slot if there's no
+ * upstream at all — once nothing recognizes a slot. Same upstream-as-base technique as `codec.ts`'s
+ * `resolveBatchResult`.
  */
-export function resolveEthBalanceBatch(call: BatchCall, balance: bigint, upstream?: Hex): Hex {
+export function resolveEthBalanceBatch(context: BrowserContext, call: BatchCall, balance: bigint, upstream?: Hex): Hex {
   const base = upstream ? decodeResultSlots(upstream) : []
 
   const slots = call.calls.map((inner, index) => {
@@ -200,9 +220,13 @@ export function resolveEthBalanceBatch(call: BatchCall, balance: bigint, upstrea
     }
     if (inner.kind === 'batch') {
       const nestedUpstream = fallback.success ? fallback.returnData : undefined
-      return { success: true, returnData: resolveEthBalanceBatch(inner, balance, nestedUpstream) }
+      return { success: true, returnData: resolveEthBalanceBatch(context, inner, balance, nestedUpstream) }
     }
-    return fallback
+
+    // `inner.kind === 'opaque'`: give any *other*, unrelated mock a chance to answer this exact
+    // call before ever relaying whatever the real upstream said for it.
+    const nestedAnswer = resolveNestedCall(context, inner.target, inner.callData)
+    return typeof nestedAnswer === 'undefined' ? fallback : { success: true, returnData: nestedAnswer as Hex }
   })
 
   return encodeAbiParameters(RESULT_TUPLE, [slots])
@@ -215,6 +239,10 @@ function decodeResultSlots(blob: Hex): BatchResultSlot[] {
     // An upstream error body or a truncated blob must not lose the mocked slots.
     return []
   }
+}
+
+function opaque(target: string, callData: Hex): OpaqueCall {
+  return { kind: 'opaque', target: target as Address, callData }
 }
 
 /** `EthFlowOrder.Data` — the struct `createOrder()` takes, per `libs/abis/src/abis/CoWSwapEthFlow.ts`. */

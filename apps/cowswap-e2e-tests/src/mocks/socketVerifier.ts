@@ -37,6 +37,12 @@ const EMPTY_BYTES = encodeAbiParameters([{ type: 'uint256' }], [0n])
  * fixture (last registered wins in Playwright's LIFO route order), so it always gets first look:
  * it resolves any matching call locally — never touching the network — and falls back untouched
  * otherwise, the same shape as `ethBlockNumber.ts`/`ethGetCode.ts`.
+ *
+ * `mockContractViewCall` also registers this mock into `nestedRpcCallRegistry.ts` automatically,
+ * so a *different* mock with its own separate batch-merge logic (`mockEthFlowTransaction.ts`'s
+ * `installNativeBalanceRoute`) can still answer a SocketVerifier slot correctly when it lands in
+ * the same `aggregate3` batch as that mock's own `getEthBalance` — without either file importing
+ * the other's selectors or addresses.
  */
 export function installSocketVerifier(context: BrowserContext): void {
   mockContractViewCall(context, SOCKET_VERIFIER_ADDRESS, STUBBED_SELECTORS[0], () => EMPTY_BYTES)

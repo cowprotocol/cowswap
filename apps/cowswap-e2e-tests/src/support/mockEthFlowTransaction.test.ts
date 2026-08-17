@@ -11,6 +11,7 @@ import {
   resolveEthBalanceBatch,
   type BatchCall,
 } from './mockEthFlowTransaction'
+import { registerNestedCallResolver } from './nestedRpcCallRegistry'
 
 import type { BrowserContext, Route } from '@playwright/test'
 
@@ -134,83 +135,125 @@ function opaqueCalldata(): Hex {
   })
 }
 
+/** Registers a fake "different, unrelated mock" resolver for testing purposes — proves
+ * `isFullyMocked`/`resolveEthBalanceBatch` correctly consult `nestedRpcCallRegistry.ts` for a slot
+ * this route doesn't itself recognize, without depending on any real mock (e.g.
+ * `installSocketVerifier`) to prove the mechanism — see `nestedRpcCallRegistry.test.ts` for that
+ * real, cross-mock composition. */
+function registerFakeOtherMock(context: BrowserContext, target: string, matchCallData: Hex, answer: Hex): void {
+  registerNestedCallResolver(context, (t, callData) =>
+    t.toLowerCase() === target.toLowerCase() && callData === matchCallData ? answer : undefined,
+  )
+}
+
 // --- classifyEthCall / isFullyMocked / isFullyOpaqueCall -------------------------------------
 
 test('classifyEthCall recognizes a direct getEthBalance(owner) call', () => {
-  assert.deepEqual(classifyEthCall(getEthBalanceCalldata(OWNER), OWNER), { kind: 'ownBalance' })
+  assert.deepEqual(classifyEthCall(getEthBalanceCalldata(OWNER), OWNER, MULTICALL3), { kind: 'ownBalance' })
 })
 
-test('classifyEthCall treats getEthBalance for a different address as opaque', () => {
-  assert.deepEqual(classifyEthCall(getEthBalanceCalldata(OTHER_ADDRESS), OWNER), { kind: 'opaque' })
+test('classifyEthCall treats getEthBalance for a different address as opaque, carrying its target+callData', () => {
+  const data = getEthBalanceCalldata(OTHER_ADDRESS)
+  assert.deepEqual(classifyEthCall(data, OWNER, MULTICALL3), { kind: 'opaque', target: MULTICALL3, callData: data })
 })
 
-test('classifyEthCall treats an unrelated selector as opaque', () => {
-  assert.deepEqual(classifyEthCall(opaqueCalldata(), OWNER), { kind: 'opaque' })
+test('classifyEthCall treats an unrelated selector as opaque, carrying its target+callData', () => {
+  const data = opaqueCalldata()
+  assert.deepEqual(classifyEthCall(data, OWNER, OTHER_ADDRESS), {
+    kind: 'opaque',
+    target: OTHER_ADDRESS,
+    callData: data,
+  })
 })
 
 test('classifyEthCall recognizes getEthBalance nested inside an aggregate3 batch', () => {
   const data = aggregate3Calldata([{ target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) }])
-  const call = classifyEthCall(data, OWNER) as BatchCall
+  const call = classifyEthCall(data, OWNER, MULTICALL3) as BatchCall
 
   assert.equal(call.kind, 'batch')
   assert.deepEqual(call.calls, [{ kind: 'ownBalance' }])
 })
 
-test('isFullyMocked is true only when every leaf in the batch is ownBalance', () => {
+test('isFullyMocked is true once every leaf is ownBalance, or something a different, unrelated mock recognizes', () => {
+  const context = createStubContext().context
+  const knownOtherCall = opaqueCalldata()
+  registerFakeOtherMock(context, MULTICALL3, knownOtherCall, '0xdeadbeef' as Hex)
+
   const allBalance = classifyEthCall(
     aggregate3Calldata([
       { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
       { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
     ]),
     OWNER,
+    MULTICALL3,
   )
-  const mixed = classifyEthCall(
+  // Same calldata bytes as the registered fake, but a different target — the fake resolver checks
+  // both, so this must NOT be recognized.
+  const unrecognizedMixed = classifyEthCall(
     aggregate3Calldata([
       { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
-      { target: MULTICALL3, callData: opaqueCalldata() },
+      { target: OTHER_ADDRESS, callData: knownOtherCall },
     ]),
     OWNER,
+    MULTICALL3,
+  )
+  const balancePlusKnownOther = classifyEthCall(
+    aggregate3Calldata([
+      { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
+      { target: MULTICALL3, callData: knownOtherCall },
+    ]),
+    OWNER,
+    MULTICALL3,
   )
 
-  assert.equal(isFullyMocked(allBalance), true)
-  assert.equal(isFullyMocked(mixed), false)
-  assert.equal(isFullyMocked({ kind: 'opaque' }), false)
+  assert.equal(isFullyMocked(context, allBalance), true)
+  assert.equal(isFullyMocked(context, unrecognizedMixed), false)
+  assert.equal(isFullyMocked(context, balancePlusKnownOther), true)
+  assert.equal(isFullyMocked(context, { kind: 'opaque', target: OTHER_ADDRESS, callData: opaqueCalldata() }), false)
 })
 
 test('isFullyOpaqueCall is true for a batch whose every call is opaque, even though the batch itself is not "opaque"-kind', () => {
-  // This is exactly the shape a real captured bug hit: an aggregate3 wrapping a single, unrelated
-  // SocketVerifier `validateRotueId` check — `kind` is `'batch'`, not `'opaque'`, but nothing
-  // inside it is `ownBalance` either, so this route must treat the whole thing as unrecognized.
-  const socketVerifierShaped = classifyEthCall(
+  // A batch that's *nothing but* an unrelated call, unrecognized by this route at all — the same
+  // shape a real bug hit: an aggregate3 wrapping a single unrelated on-chain check (e.g.
+  // SocketVerifier's `validateRotueId`) with no `getEthBalance` alongside it. `isFullyOpaqueCall`
+  // deliberately never consults `nestedRpcCallRegistry.ts` (see its own doc comment) — even though
+  // some other mock might recognize this call, a batch with none of *this* route's own concern in
+  // it is none of its business, so it must defer the whole thing via `route.fallback()` instead of
+  // claiming it just because it happens to be *able* to answer it.
+  const opaqueShaped = classifyEthCall(
     aggregate3Calldata([{ target: MULTICALL3, callData: opaqueCalldata() }]),
     OWNER,
+    MULTICALL3,
   )
 
-  assert.equal(socketVerifierShaped.kind, 'batch')
-  assert.equal(isFullyOpaqueCall(socketVerifierShaped), true)
+  assert.equal(opaqueShaped.kind, 'batch')
+  assert.equal(isFullyOpaqueCall(opaqueShaped), true)
 })
 
 test('isFullyOpaqueCall is false as soon as one leaf is ownBalance, and false for a mixed batch too', () => {
-  const pureBalance = classifyEthCall(getEthBalanceCalldata(OWNER), OWNER)
+  const pureBalance = classifyEthCall(getEthBalanceCalldata(OWNER), OWNER, MULTICALL3)
   const mixed = classifyEthCall(
     aggregate3Calldata([
       { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
       { target: MULTICALL3, callData: opaqueCalldata() },
     ]),
     OWNER,
+    MULTICALL3,
   )
 
   assert.equal(isFullyOpaqueCall(pureBalance), false)
   assert.equal(isFullyOpaqueCall(mixed), false)
 })
 
-test('resolveEthBalanceBatch patches only the ownBalance slot and preserves the upstream slot otherwise', () => {
+test('resolveEthBalanceBatch patches the ownBalance slot and preserves the real upstream slot for something nothing recognizes', () => {
+  const context = createStubContext().context
   const call = classifyEthCall(
     aggregate3Calldata([
       { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
       { target: MULTICALL3, callData: opaqueCalldata() },
     ]),
     OWNER,
+    MULTICALL3,
   ) as BatchCall
 
   const upstream = encodeAbiParameters(RESULT_TUPLE, [
@@ -220,9 +263,41 @@ test('resolveEthBalanceBatch patches only the ownBalance slot and preserves the 
     ],
   ])
 
-  const results = decodeAggregate3Result(resolveEthBalanceBatch(call, 777n, upstream))
+  const results = decodeAggregate3Result(resolveEthBalanceBatch(context, call, 777n, upstream))
   assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 777n)
   assert.equal(results[1].returnData, '0x000000000000000000000000000000000000000000000000000000000000002a')
+})
+
+test('resolveEthBalanceBatch patches a slot a different, unrelated mock recognizes instead of relaying a real revert for it', () => {
+  // This is the actual shape of the CS-297 bug: the owner's own `getEthBalance` batched alongside
+  // an unrelated on-chain check that, for real, reverts. Before this fix, this route had no way to
+  // find out anything besides "the real upstream said X" for a slot it didn't itself recognize —
+  // now it asks around first (`nestedRpcCallRegistry.ts`) and only relays the real answer once
+  // nothing else claims it either.
+  const context = createStubContext().context
+  const knownOtherCall = opaqueCalldata()
+  registerFakeOtherMock(context, MULTICALL3, knownOtherCall, '0xdeadbeef' as Hex)
+
+  const call = classifyEthCall(
+    aggregate3Calldata([
+      { target: MULTICALL3, callData: getEthBalanceCalldata(OWNER) },
+      { target: MULTICALL3, callData: knownOtherCall },
+    ]),
+    OWNER,
+    MULTICALL3,
+  ) as BatchCall
+
+  const upstream = encodeAbiParameters(RESULT_TUPLE, [
+    [
+      { success: true, returnData: '0x00' as Hex },
+      { success: false, returnData: '0xdeaddead' as Hex }, // a real revert — must never surface below.
+    ],
+  ])
+
+  const results = decodeAggregate3Result(resolveEthBalanceBatch(context, call, 777n, upstream))
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 777n)
+  assert.equal(results[1].success, true)
+  assert.equal(results[1].returnData, '0xdeadbeef')
 })
 
 // --- installNativeBalanceRoute (integration, via mockRpcNodeRequest) -------------------------
@@ -273,6 +348,50 @@ test('a real captured aggregate3 batch (SocketVerifier.validateRotueId, single c
   assert.equal(route.fetchCalled, false)
   assert.equal(route.fellBack, true)
   assert.equal(route.fulfilled, undefined)
+})
+
+test('a batch mixing ownBalance with a call a different, unrelated mock recognizes resolves both slots locally, no real upstream leaked', async () => {
+  // Same shape as the CS-297 CI failure: the owner's own `getEthBalance` batched alongside an
+  // unrelated on-chain check (there, SocketVerifier's `validateRotueId`) that, for real, reverts —
+  // expressed generically here via `registerFakeOtherMock` rather than a real SocketVerifier call;
+  // see `nestedRpcCallRegistry.test.ts` for the real, cross-mock composition with
+  // `installSocketVerifier`.
+  const owner = OWNER
+  const stub = createStubContext()
+  const knownOtherCall = opaqueCalldata()
+  registerFakeOtherMock(stub.context, MULTICALL3, knownOtherCall, '0xdeadbeef' as Hex)
+  installNativeBalanceRoute({
+    context: stub.context,
+    owner,
+    txHash: TX_HASH,
+    getBalance: () => 10n ** 18n,
+    isMined: () => false,
+  })
+  const data = aggregate3Calldata([
+    { target: MULTICALL3, callData: getEthBalanceCalldata(owner) },
+    { target: MULTICALL3, callData: knownOtherCall },
+  ])
+  const upstream = {
+    jsonrpc: '2.0',
+    id: 7,
+    result: encodeAbiParameters(RESULT_TUPLE, [
+      [
+        { success: true, returnData: '0x00' as Hex },
+        { success: false, returnData: '0xdeaddead' as Hex }, // a real revert — must never surface below.
+      ],
+    ]),
+  }
+  const route = createStubRoute({ id: 7, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] }, upstream)
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fellBack, false, 'must claim the batch for its own ownBalance slot')
+  assert.equal(route.fetchCalled, false, 'both slots are locally answerable, no real RPC round-trip needed')
+  const results = decodeAggregate3Result(parsedResult(route.fulfilled))
+  assert.equal(results.length, 2)
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 10n ** 18n)
+  assert.equal(results[1].success, true, 'must not be the real revert')
+  assert.equal(results[1].returnData, '0xdeadbeef')
 })
 
 test('a pure ownBalance call resolves locally to the mocked balance, without touching upstream', async () => {
