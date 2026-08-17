@@ -21,48 +21,6 @@ const RESOLUTION_TO_PRICE_CHART: Partial<Record<string, PriceChartResolution>> =
   '1W': '7D',
 }
 
-function parseVolume(value: string | undefined): number | undefined {
-  if (!value) return undefined
-
-  const parsed = Number(value)
-
-  return Number.isFinite(parsed) ? parsed : undefined
-}
-
-function buildResolvedPriceRequest(
-  asset: PriceChartCurrencyDescriptor,
-  currencyCode: PriceChartCurrencyCode,
-  isFallback: boolean,
-): PriceChartResolvedPriceRequest | null {
-  const { address, chainId } = asset
-
-  if (!address || chainId === undefined) {
-    return null
-  }
-
-  return {
-    address,
-    chainId,
-    currencyCode,
-    isFallback,
-  }
-}
-
-export function mapResolutionToPriceChartResolution(resolution: ResolutionString): PriceChartResolution | null {
-  return RESOLUTION_TO_PRICE_CHART[String(resolution)] || null
-}
-
-export function mapPriceChartBarsToTradingViewBars(bars: PriceChartBar[]): Bar[] {
-  return bars.map((bar) => ({
-    close: bar.close,
-    high: bar.high,
-    low: bar.low,
-    open: bar.open,
-    time: bar.time * 1000,
-    volume: parseVolume(bar.volume),
-  }))
-}
-
 export function buildPriceChartQueryParams(
   symbol: PriceChartSymbolDescriptor,
   request: PriceChartResolvedPriceRequest,
@@ -82,33 +40,6 @@ export function buildPriceChartQueryParams(
     resolution,
     to,
   }
-}
-
-export function getResolvedPriceRequests(symbol: PriceChartSymbolDescriptor): PriceChartResolvedPriceRequest[] {
-  if (symbol.quoteAsset.kind === 'usd') {
-    const usdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
-
-    return usdRequest ? [usdRequest] : []
-  }
-
-  if (symbol.quoteAsset.kind !== 'token') {
-    return []
-  }
-
-  const baseUsdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
-  const quoteUsdRequest = buildResolvedPriceRequest(symbol.quoteAsset, 'USD', false)
-
-  return [baseUsdRequest, quoteUsdRequest].filter(
-    (request): request is PriceChartResolvedPriceRequest => request !== null,
-  )
-}
-
-function getDerivedPairValue(numerator: number, denominator: number): number | null {
-  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || numerator <= 0 || denominator <= 0) {
-    return null
-  }
-
-  return numerator / denominator
 }
 
 export function derivePairBarsFromUsdBars(baseBars: PriceChartBar[], quoteBars: PriceChartBar[]): PriceChartBar[] {
@@ -149,4 +80,73 @@ export function getReadyStatusMessage(
   _request: PriceChartResolvedPriceRequest,
 ): string {
   return `Price history loaded for ${symbol.ticker}.`
+}
+
+export function getResolvedPriceRequests(symbol: PriceChartSymbolDescriptor): PriceChartResolvedPriceRequest[] {
+  if (symbol.quoteAsset.kind === 'usd') {
+    const usdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
+
+    return usdRequest ? [usdRequest] : []
+  }
+
+  if (symbol.quoteAsset.kind !== 'token') {
+    return []
+  }
+
+  const baseUsdRequest = buildResolvedPriceRequest(symbol.baseAsset, 'USD', false)
+  const quoteUsdRequest = buildResolvedPriceRequest(symbol.quoteAsset, 'USD', false)
+
+  return [baseUsdRequest, quoteUsdRequest].filter(
+    (request): request is PriceChartResolvedPriceRequest => request !== null,
+  )
+}
+
+export function mapPriceChartBarsToTradingViewBars(bars: PriceChartBar[]): Bar[] {
+  return bars.map((bar) => ({
+    close: bar.close,
+    high: bar.high,
+    low: bar.low,
+    open: bar.open,
+    time: bar.time * 1000,
+    volume: parseVolume(bar.volume),
+  }))
+}
+
+export function mapResolutionToPriceChartResolution(resolution: ResolutionString): PriceChartResolution | null {
+  return RESOLUTION_TO_PRICE_CHART[String(resolution)] || null
+}
+
+function buildResolvedPriceRequest(
+  asset: PriceChartCurrencyDescriptor,
+  currencyCode: PriceChartCurrencyCode,
+  isFallback: boolean,
+): PriceChartResolvedPriceRequest | null {
+  const { address, chainId } = asset
+
+  if (!address || chainId === undefined) {
+    return null
+  }
+
+  return {
+    address,
+    chainId,
+    currencyCode,
+    isFallback,
+  }
+}
+
+function getDerivedPairValue(numerator: number, denominator: number): number | null {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || numerator <= 0 || denominator <= 0) {
+    return null
+  }
+
+  return numerator / denominator
+}
+
+function parseVolume(value: string | undefined): number | undefined {
+  if (!value) return undefined
+
+  const parsed = Number(value)
+
+  return Number.isFinite(parsed) ? parsed : undefined
 }

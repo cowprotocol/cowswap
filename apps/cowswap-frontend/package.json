@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "1.5.2",
-    "@codex-data/sdk": "2.1.2",
     "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/balances-and-allowances": "workspace:*",

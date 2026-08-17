@@ -1,63 +1,30 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { Codex } from '@codex-data/sdk'
 
 import { fetchPriceChartData } from './fetchPriceChartData'
 
-import { DEFAULT_CODEX_API_KEY } from '../lib/priceChart.constants'
-
-jest.mock('@codex-data/sdk', () => ({
-  Codex: jest.fn(),
+jest.mock('@cowprotocol/common-utils', () => ({
+  fetchWithTimeout: jest.fn(),
 }))
 
-const mockGetTokenBars = jest.fn()
-const mockedCodex = jest.mocked(Codex)
-const originalCodexApiKey = process.env.REACT_APP_CODEX_API_KEY
-const originalDefinedApiKey = process.env.REACT_APP_DEFINED_API_KEY
+const mockedFetchWithTimeout = jest.mocked(fetchWithTimeout)
+
+function createResponse(body: unknown, status = 200): Response {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => body,
+  } as Response
+}
 
 describe('fetchPriceChartData', () => {
   beforeEach(() => {
-    process.env.REACT_APP_CODEX_API_KEY = 'codex-test-key'
-    process.env.REACT_APP_DEFINED_API_KEY = 'defined-test-key'
-    mockGetTokenBars.mockReset()
-    mockedCodex.mockReset()
-    mockedCodex.mockImplementation(
-      () =>
-        ({
-          queries: {
-            getTokenBars: mockGetTokenBars,
-          },
-        }) as unknown as Codex,
-    )
+    mockedFetchWithTimeout.mockReset()
   })
 
-  afterAll(() => {
-    process.env.REACT_APP_CODEX_API_KEY = originalCodexApiKey
-    process.env.REACT_APP_DEFINED_API_KEY = originalDefinedApiKey
-  })
-
-  it('fetches token bars through the Codex SDK and maps the response', async () => {
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: {
-        o: [1, 2],
-        h: [3, 4],
-        l: [0.5, 1.5],
-        c: [2.5, 3.5],
-        t: [1710000000, 1710003600],
-        s: 'ok',
-        volume: ['100.25', '200.50'],
-      },
-    })
-
-    const result = await fetchPriceChartData({
-      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      chainId: SupportedChainId.MAINNET,
-      from: 1710000000,
-      to: 1710007200,
-      resolution: '60',
-    })
-
-    expect(result).toEqual([
+  it('fetches normalized token bars through the BFF', async () => {
+    const bars = [
       {
         open: 1,
         high: 3,
@@ -67,49 +34,44 @@ describe('fetchPriceChartData', () => {
         status: 'ok',
         volume: '100.25',
       },
-      {
-        open: 2,
-        high: 4,
-        low: 1.5,
-        close: 3.5,
-        time: 1710003600,
-        status: 'ok',
-        volume: '200.50',
-      },
-    ])
+    ]
+    mockedFetchWithTimeout.mockResolvedValue(createResponse({ bars }))
 
-    expect(mockedCodex).toHaveBeenCalledWith(
-      'codex-test-key',
-      expect.objectContaining({
-        ws: false,
-        fetch: expect.any(Function),
+    await expect(
+      fetchPriceChartData({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        chainId: SupportedChainId.MAINNET,
+        from: 1710000000,
+        to: 1710007200,
+        resolution: '60',
+        countback: 300,
       }),
-    )
+    ).resolves.toEqual(bars)
 
-    expect(mockGetTokenBars).toHaveBeenCalledWith({
-      symbol: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48:1',
-      from: 1710000000,
-      to: 1710007200,
+    const requestUrl = new URL(String(mockedFetchWithTimeout.mock.calls[0]?.[0]))
+    expect(`${requestUrl.origin}${requestUrl.pathname}`).toBe(`${BFF_BASE_URL}/proxies/codex/token-bars`)
+    expect(Object.fromEntries(requestUrl.searchParams)).toEqual({
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      chainId: '1',
+      from: '1710000000',
+      to: '1710007200',
       resolution: '60',
       currencyCode: 'USD',
-      countback: undefined,
-      removeEmptyBars: true,
-      removeLeadingNullValues: true,
+      countback: '300',
+      removeEmptyBars: 'true',
+      removeLeadingNullValues: 'true',
     })
+    expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: { Accept: 'application/json' },
+        timeout: 10_000,
+      }),
+    )
   })
 
-  it('uses the legacy Defined env var as a fallback', async () => {
-    delete process.env.REACT_APP_CODEX_API_KEY
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: {
-        o: [],
-        h: [],
-        l: [],
-        c: [],
-        t: [],
-        s: 'ok',
-      },
-    })
+  it('forwards token quotes and explicit trimming flags', async () => {
+    mockedFetchWithTimeout.mockResolvedValue(createResponse({ bars: [] }))
 
     await fetchPriceChartData({
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -117,62 +79,19 @@ describe('fetchPriceChartData', () => {
       from: 1710000000,
       to: 1710007200,
       resolution: '60',
+      currencyCode: 'TOKEN',
+      removeEmptyBars: false,
+      removeLeadingNullValues: false,
     })
 
-    expect(mockedCodex).toHaveBeenCalledWith(
-      'defined-test-key',
-      expect.objectContaining({
-        ws: false,
-      }),
-    )
+    const requestUrl = new URL(String(mockedFetchWithTimeout.mock.calls[0]?.[0]))
+    expect(requestUrl.searchParams.get('currencyCode')).toBe('TOKEN')
+    expect(requestUrl.searchParams.get('removeEmptyBars')).toBe('false')
+    expect(requestUrl.searchParams.get('removeLeadingNullValues')).toBe('false')
   })
 
-  it('uses the built-in fallback key when both env vars are missing', async () => {
-    delete process.env.REACT_APP_CODEX_API_KEY
-    delete process.env.REACT_APP_DEFINED_API_KEY
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: {
-        o: [],
-        h: [],
-        l: [],
-        c: [],
-        t: [],
-        s: 'ok',
-      },
-    })
-
-    await fetchPriceChartData({
-      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      chainId: SupportedChainId.MAINNET,
-      from: 1710000000,
-      to: 1710007200,
-      resolution: '60',
-    })
-
-    expect(mockedCodex).toHaveBeenCalledWith(
-      DEFAULT_CODEX_API_KEY,
-      expect.objectContaining({
-        ws: false,
-        fetch: expect.any(Function),
-      }),
-    )
-
-    expect(mockGetTokenBars).toHaveBeenCalledWith({
-      symbol: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48:1',
-      from: 1710000000,
-      to: 1710007200,
-      resolution: '60',
-      currencyCode: 'USD',
-      countback: undefined,
-      removeEmptyBars: true,
-      removeLeadingNullValues: true,
-    })
-  })
-
-  it('throws when the SDK returns no token bars', async () => {
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: null,
-    })
+  it('rejects unsuccessful BFF responses', async () => {
+    mockedFetchWithTimeout.mockResolvedValue(createResponse({ message: 'Provider failed' }, 502))
 
     await expect(
       fetchPriceChartData({
@@ -182,77 +101,6 @@ describe('fetchPriceChartData', () => {
         to: 1710007200,
         resolution: '60',
       }),
-    ).rejects.toThrow('Codex price chart response is empty')
-  })
-
-  it('bubbles SDK query errors', async () => {
-    mockGetTokenBars.mockRejectedValue(new Error('No access'))
-
-    await expect(
-      fetchPriceChartData({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chainId: SupportedChainId.MAINNET,
-        from: 1710000000,
-        to: 1710007200,
-        resolution: '60',
-      }),
-    ).rejects.toThrow('No access')
-  })
-
-  it('filters out bars with null OHLC values', async () => {
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: {
-        o: [1, null],
-        h: [3, 4],
-        l: [0.5, 1.5],
-        c: [2.5, 3.5],
-        t: [1710000000, 1710003600],
-        s: 'ok',
-        volume: ['100.25', '200.50'],
-      },
-    })
-
-    await expect(
-      fetchPriceChartData({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chainId: SupportedChainId.MAINNET,
-        from: 1710000000,
-        to: 1710007200,
-        resolution: '60',
-      }),
-    ).resolves.toEqual([
-      {
-        open: 1,
-        high: 3,
-        low: 0.5,
-        close: 2.5,
-        time: 1710000000,
-        status: 'ok',
-        volume: '100.25',
-      },
-    ])
-  })
-
-  it('throws on inconsistent bar array lengths', async () => {
-    mockGetTokenBars.mockResolvedValue({
-      getTokenBars: {
-        o: [1],
-        h: [3, 4],
-        l: [0.5],
-        c: [2.5],
-        t: [1710000000],
-        s: 'ok',
-      },
-    })
-
-    await expect(
-      fetchPriceChartData({
-        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        chainId: SupportedChainId.MAINNET,
-        from: 1710000000,
-        to: 1710007200,
-        resolution: '60',
-      }),
-    ).rejects.toThrow('Codex price chart response has inconsistent array lengths')
+    ).rejects.toThrow('Price chart request failed with status 502')
   })
 })

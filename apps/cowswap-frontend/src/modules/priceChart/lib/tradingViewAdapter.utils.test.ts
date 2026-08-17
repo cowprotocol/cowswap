@@ -135,7 +135,7 @@ describe('priceChartAdapter.utils', () => {
     ])
   })
 
-  it('builds a token-quoted request for token pair symbols', () => {
+  it('builds two USD requests for token pair symbols', () => {
     const symbol = createSymbolDescriptor(
       createCurrency({
         address: '0xbase',
@@ -153,7 +153,13 @@ describe('priceChartAdapter.utils', () => {
       {
         address: '0xbase',
         chainId: SupportedChainId.MAINNET,
-        currencyCode: 'TOKEN',
+        currencyCode: 'USD',
+        isFallback: false,
+      },
+      {
+        address: '0xquote',
+        chainId: SupportedChainId.MAINNET,
+        currencyCode: 'USD',
         isFallback: false,
       },
     ])

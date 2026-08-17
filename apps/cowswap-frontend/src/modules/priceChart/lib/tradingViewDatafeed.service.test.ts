@@ -23,6 +23,20 @@ function createCurrency(overrides: Partial<PriceChartCurrencyDescriptor>): Price
   }
 }
 
+function createDeferred<T>(): { promise: Promise<T>; reject: (error?: unknown) => void; resolve: (value: T) => void } {
+  let resolvePromise!: (value: T) => void
+  let rejectPromise!: (error?: unknown) => void
+
+  return {
+    promise: new Promise<T>((resolve, reject) => {
+      resolvePromise = resolve
+      rejectPromise = reject
+    }),
+    reject: rejectPromise,
+    resolve: resolvePromise,
+  }
+}
+
 function createSymbolDescriptor(
   baseAsset: PriceChartCurrencyDescriptor,
   quoteAsset: PriceChartCurrencyDescriptor,
@@ -68,20 +82,6 @@ function flushTasks(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0))
 }
 
-function createDeferred<T>(): { promise: Promise<T>; reject: (error?: unknown) => void; resolve: (value: T) => void } {
-  let resolvePromise!: (value: T) => void
-  let rejectPromise!: (error?: unknown) => void
-
-  return {
-    promise: new Promise<T>((resolve, reject) => {
-      resolvePromise = resolve
-      rejectPromise = reject
-    }),
-    reject: rejectPromise,
-    resolve: resolvePromise,
-  }
-}
-
 const PERIOD_PARAMS = {
   countBack: 300,
   firstDataRequest: true,
@@ -97,6 +97,20 @@ const BACKFILL_PERIOD_PARAMS = {
 describe('createPriceChartDatafeed', () => {
   beforeEach(() => {
     mockedFetchPriceChartData.mockReset()
+  })
+
+  it('does not advertise unsupported server time', async () => {
+    const onReady = jest.fn()
+    const { datafeed } = createPriceChartDatafeed({
+      onStatusChange: jest.fn(),
+      symbols: [],
+    })
+
+    datafeed.onReady(onReady)
+    await flushTasks()
+
+    expect(onReady).toHaveBeenCalledWith(expect.objectContaining({ supports_time: false }))
+    expect(datafeed.getServerTime).toBeUndefined()
   })
 
   it('loads USD history and maps bars to TradingView format', async () => {
@@ -169,6 +183,7 @@ describe('createPriceChartDatafeed', () => {
     })
     expect(onStatusChange).toHaveBeenLastCalledWith({
       kind: 'ready',
+      latestPrice: 2,
       message: 'Price history loaded for USDCUSD.',
       ticker: 'USDCUSD',
     })
@@ -211,11 +226,22 @@ describe('createPriceChartDatafeed', () => {
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
     await flushTasks()
 
-    expect(mockedFetchPriceChartData).toHaveBeenCalledWith({
+    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(1, {
       address: '0xbase',
       chainId: SupportedChainId.MAINNET,
       countback: 300,
-      currencyCode: 'TOKEN',
+      currencyCode: 'USD',
+      from: 1710000000,
+      removeEmptyBars: true,
+      removeLeadingNullValues: true,
+      resolution: '60',
+      to: 1710007200,
+    })
+    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(2, {
+      address: '0xquote',
+      chainId: SupportedChainId.MAINNET,
+      countback: 300,
+      currencyCode: 'USD',
       from: 1710000000,
       removeEmptyBars: true,
       removeLeadingNullValues: true,
@@ -225,12 +251,12 @@ describe('createPriceChartDatafeed', () => {
     expect(onResult).toHaveBeenCalledWith(
       [
         {
-          close: 2,
+          close: 1,
           high: 3,
-          low: 1,
-          open: 1.5,
+          low: 1 / 3,
+          open: 1,
           time: 1710000000000,
-          volume: 42.5,
+          volume: undefined,
         },
       ],
       { noData: false },
@@ -238,6 +264,7 @@ describe('createPriceChartDatafeed', () => {
     expect(onError).not.toHaveBeenCalled()
     expect(onStatusChange).toHaveBeenLastCalledWith({
       kind: 'ready',
+      latestPrice: 1,
       message: 'Price history loaded for COWETH.',
       ticker: 'COWETH',
     })
@@ -268,11 +295,22 @@ describe('createPriceChartDatafeed', () => {
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
     await flushTasks()
 
-    expect(mockedFetchPriceChartData).toHaveBeenCalledWith({
+    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(1, {
       address: '0xbase',
       chainId: SupportedChainId.MAINNET,
       countback: 300,
-      currencyCode: 'TOKEN',
+      currencyCode: 'USD',
+      from: 1710000000,
+      removeEmptyBars: true,
+      removeLeadingNullValues: true,
+      resolution: '60',
+      to: 1710007200,
+    })
+    expect(mockedFetchPriceChartData).toHaveBeenNthCalledWith(2, {
+      address: '0xquote',
+      chainId: SupportedChainId.MAINNET,
+      countback: 300,
+      currencyCode: 'USD',
       from: 1710000000,
       removeEmptyBars: true,
       removeLeadingNullValues: true,
@@ -288,7 +326,7 @@ describe('createPriceChartDatafeed', () => {
     })
   })
 
-  it('skips Codex calls for backfill requests when backfill is disabled', async () => {
+  it('skips price chart calls for backfill requests when backfill is disabled', async () => {
     const symbol = createSymbolDescriptor(
       createCurrency({
         address: '0xbase',
@@ -317,8 +355,14 @@ describe('createPriceChartDatafeed', () => {
     expect(onResult).toHaveBeenCalledWith([], { noData: true })
     expect(onStatusChange).not.toHaveBeenCalled()
   })
+})
 
-  it('reports errors when all Codex requests fail', async () => {
+describe('createPriceChartDatafeed request lifecycle', () => {
+  beforeEach(() => {
+    mockedFetchPriceChartData.mockReset()
+  })
+
+  it('reports errors when all price chart requests fail', async () => {
     const symbol = createSymbolDescriptor(
       createCurrency({
         address: '0xbase',

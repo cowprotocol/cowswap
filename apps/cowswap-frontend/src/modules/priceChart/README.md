@@ -4,14 +4,13 @@
 
 Provide a single app-local integration point for historical OHLCV price data used by the swap chart.
 
-This module owns the Codex fetcher, request normalization, response validation, low-volume diagnostics, and the swap-owned pure chart component.
+This module owns the BFF client, request normalization, response validation, low-volume diagnostics, and the swap-owned pure chart component.
 
 ## 2) Responsibilities
 
-- Fetch token bar history from Codex via `@codex-data/sdk`
-- Normalize frontend query params into Codex request params
-- Validate Codex responses before chart code consumes them
-- Map Codex bar arrays into app-friendly `PriceChartBar[]`
+- Fetch token bar history from the CoW BFF
+- Normalize frontend query parameters into BFF request parameters
+- Validate BFF responses before chart code consumes them
 - Log fetch start/success/failure through `logPriceChart`
 
 ## 3) Product decisions
@@ -31,14 +30,14 @@ This module owns the Codex fetcher, request normalization, response validation, 
   - `3`: `sellToken/buyToken`
   - `4`: `buyToken/sellToken`
 - Pair history is attempted directly; when unavailable, the chart shows a local not-found overlay
-- Native assets must be resolved to wrapped token addresses before reaching Codex
-- TradingView backfill requests are intentionally disabled; only the first history request is sent to Codex
+- Native assets must be resolved to wrapped token addresses before reaching the BFF
+- TradingView backfill requests are intentionally disabled; only the first history request is sent to the BFF
 - Chart status is scoped to the active ticker so stale responses cannot leak banner/overlay state across symbol switches
 - Chart layout, drawings, and selected format are restored from local storage on load and auto-saved back to local storage
 
 ## 4) Internal structure
 
-- `api/`: Codex fetching + logging
+- `api/`: BFF fetching and logging
 - `lib/`: TradingView adapter/runtime glue + shared types/constants
 - `pure/`: chart UI owned by Swap
 
@@ -46,7 +45,7 @@ This module owns the Codex fetcher, request normalization, response validation, 
 
 The `PriceChart` component requests historical bars from this module's API layer.
 
-The API layer talks to Codex.
+The API layer talks to the CoW BFF. The BFF keeps the Codex API key on the server and returns normalized bars.
 
 The API layer returns normalized bars or throws a typed error path back to the caller.
 
@@ -55,12 +54,15 @@ flowchart LR
   Swap[Swap page]
   PriceChartUi[PriceChart pure UI + TradingView adapter]
   PriceChartApi[priceChart API]
+  Bff[CoW BFF]
   Codex[Codex API]
 
   Swap --> PriceChartUi
   PriceChartUi --> PriceChartApi
-  PriceChartApi --> Codex
-  Codex --> PriceChartApi
+  PriceChartApi --> Bff
+  Bff --> Codex
+  Codex --> Bff
+  Bff --> PriceChartApi
   PriceChartApi --> PriceChartUi
 ```
 
@@ -79,7 +81,7 @@ Inputs:
 - optional `countback`
 - optional empty/null trimming flags
 
-Codex symbol format:
+The BFF converts the token into the Codex symbol format:
 
 - `${address}:${chainId}`
 
@@ -90,33 +92,28 @@ Important:
 
 ## 7) Response model
 
-Codex returns array-shaped bar data.
+The BFF returns normalized bar objects.
 
 This module:
 
-- rejects inconsistent array lengths
-- drops bars with null OHLC fields
+- rejects malformed bar objects
 - preserves bar time as Unix seconds
 - leaves TradingView-specific adaptation to the caller
 
 ## 8) Runtime behavior
 
-- WS is disabled
 - requests use `fetchWithTimeout`
 - no realtime streaming
 - no broad symbol-search UX
 - no multi-exchange routing or comparison
 - TradingView state persistence uses `saved_data` on init and `onAutoSaveNeeded` plus unmount save for local storage
 - Selected format persistence uses `priceChartFormat:v0`
-- API key resolution order:
-  1. `CODEX_API_KEY_ENV`
-  2. `LEGACY_DEFINED_API_KEY_ENV`
-  3. built-in fallback test key
+- the browser does not receive a Codex API key
 
 ## 9) File structure
 
 - `api/`
-- `api/fetchPriceChartData.ts`: public Codex fetcher
+- `api/fetchPriceChartData.ts`: public BFF fetcher
 - `api/logPriceChart.ts`: scoped diagnostics
 - `lib/priceChart.types.ts`: query + bar types
 - `lib/priceChart.constants.ts`: env names, timeout, fallback key
@@ -132,7 +129,7 @@ This module:
 
 Focused tests exist for:
 
-- Codex fetcher behavior
+- BFF fetcher behavior
 - TradingView adapter behavior
 - TradingView datafeed behavior
 - swap-derived symbol catalog behavior
