@@ -289,6 +289,49 @@ export const AccountGroupingRow = styled.div`
   }
 `
 
+export const CreationDateRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+`
+
+export const GetNotifiedRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: inherit;
+`
+
+export const GetNotifiedLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+  }
+
+  &:active {
+    text-decoration: underline;
+  }
+`
+
 export const NoActivityMessage = styled.p`
   font-size: 14px;
   color: inherit;

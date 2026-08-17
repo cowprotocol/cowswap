@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -31,12 +31,51 @@ const ActionButton = styled(ButtonPrimary)`
   margin-top: 30px;
 `
 
+const GetNotifiedMessage = styled.p`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 400;
+  white-space: nowrap;
+  color: inherit;
+`
+
+const GetNotifiedLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+  }
+
+  &:active {
+    text-decoration: underline;
+  }
+`
+
 export interface OrderSubmittedContentProps {
   onDismiss(): void
   chainId: SupportedChainId
   isSafeWallet: boolean
   account: string
   hash: string
+  showGetNotifiedMessage?: boolean
+  onGetNotifiedClick?: () => void
 }
 
 export function OrderSubmittedContent({
@@ -45,6 +84,8 @@ export function OrderSubmittedContent({
   isSafeWallet,
   hash,
   onDismiss,
+  showGetNotifiedMessage,
+  onGetNotifiedClick,
 }: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
@@ -62,6 +103,16 @@ export function OrderSubmittedContent({
         <Trans>Order Submitted</Trans>
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
+      {showGetNotifiedMessage && onGetNotifiedClick && (
+        <GetNotifiedMessage>
+          <Badge type={BadgeTypes.ALERT2}>
+            <Trans>New</Trans>
+          </Badge>
+          <GetNotifiedLink onClick={onGetNotifiedClick}>
+            <Trans>Get notified when your order fills</Trans>
+          </GetNotifiedLink>
+        </GetNotifiedMessage>
+      )}
       <ActionButton onClick={onDismiss}>
         <Trans>Continue</Trans>
       </ActionButton>

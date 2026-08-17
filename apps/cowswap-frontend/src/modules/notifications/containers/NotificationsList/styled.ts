@@ -138,6 +138,33 @@ export const MessageReadIcon = styled(SVG)`
   color: var(${UI.COLOR_TEXT_OPACITY_15});
 `
 
+export const PromoBanner = styled.div`
+  background: var(${UI.COLOR_SUCCESS_BG});
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  text-align: left;
+
+  > p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: left;
+  }
+`
+
+export const PromoBannerLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  text-decoration: underline;
+  cursor: pointer;
+`
+
 export const EnableAlertsLink = styled.button`
   background: none;
   border: none;

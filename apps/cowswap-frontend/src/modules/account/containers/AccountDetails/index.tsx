@@ -3,10 +3,16 @@ import { Fragment, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
+import { styled, useFeatureFlags } from '@cowprotocol/common-hooks'
+import {
+  getEtherscanLink,
+  getExplorerAddressLink,
+  getExplorerLabel,
+  isInjectedWidget,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   getIsInjectedMobileBrowser,
@@ -26,6 +32,8 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hoo
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
+import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
+
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
@@ -35,6 +43,9 @@ import {
   AccountControl,
   AccountGroupingRow,
   AddressLink,
+  CreationDateRow,
+  GetNotifiedLink,
+  GetNotifiedRow,
   InfoCard,
   LowerSection,
   NetworkCard,
@@ -88,6 +99,17 @@ export function AccountDetails({
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
+  const openNotificationSidebar = useOpenNotificationSidebar()
+
+  const handleGetNotifiedClick = (): void => {
+    closeAccountModal()
+    openNotificationSidebar()
+  }
+
+  const showGetNotifiedRow =
+    areTelegramNotificationsEnabled && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -186,10 +208,22 @@ export function AccountDetails({
               </span>
 
               <div>
-                {activitiesGroupedByDate.map(({ date, activities }) => (
+                {activitiesGroupedByDate.map(({ date, activities }, index) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
-                    <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
+                    <CreationDateRow>
+                      <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
+                      {index === 0 && showGetNotifiedRow && (
+                        <GetNotifiedRow>
+                          <Badge type={BadgeTypes.ALERT2}>
+                            <Trans>New</Trans>
+                          </Badge>
+                          <GetNotifiedLink onClick={handleGetNotifiedClick}>
+                            <Trans>Get order notifications</Trans>
+                          </GetNotifiedLink>
+                        </GetNotifiedRow>
+                      )}
+                    </CreationDateRow>
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
