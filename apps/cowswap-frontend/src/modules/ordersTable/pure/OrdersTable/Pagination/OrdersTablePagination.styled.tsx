@@ -7,7 +7,7 @@ export const PaginationBox = styled.div`
   display: flex;
   overflow-x: auto;
   text-align: center;
-  margin: 20px auto 0;
+  margin: 20px auto 10px;
   justify-content: center;
   font-size: 14px;
   font-weight: 500;
