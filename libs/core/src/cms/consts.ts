@@ -80,3 +80,9 @@ export const RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
   tokenListUrl: RESERVE_PROTOCOL_BNB_TOKEN_LIST_URL,
   restrictedCountries: [...RESTRICTED_COUNTRIES],
 } as const
+
+export const COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'Coinbase Tokenized Stocks List',
+  tokenListUrl: 'https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/main/CowSwap.json',
+  restrictedCountries: [...RESTRICTED_COUNTRIES],
+} as const
