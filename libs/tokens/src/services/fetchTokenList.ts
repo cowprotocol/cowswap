@@ -146,7 +146,13 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
     return acc
   }, [])
 
-  const cleanedList = { ...list, tokens }
+  const cleanedList = {
+    ...list,
+    tokens,
+    // Uniswap's schema requires keywords to match /^[\w ]+$/ (letters/digits/underscore/space only);
+    // drop the ones that don't rather than failing the whole list over metadata.
+    ...(list.keywords ? { keywords: list.keywords.filter((keyword) => /^[\w ]{1,20}$/.test(keyword)) } : {}),
+  }
 
   if (hasNonEvmTokens) {
     // Uniswap's `validateTokenList` schema rejects non-EVM addresses by construction.
