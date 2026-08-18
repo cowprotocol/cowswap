@@ -7,6 +7,7 @@ import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -28,6 +29,7 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isPartialApprovalLockedByWidget = useIsInfiniteApproveDisabledInWidget()
   const { i18n } = useLingui()
 
   return (
@@ -45,8 +47,9 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
         <SettingsBox
           title={t`Enable Partial Approvals`}
           tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-          checked={enablePartialApprovalBySettings}
+          checked={isPartialApprovalLockedByWidget ? true : enablePartialApprovalBySettings}
           toggle={() => onStateChanged({ enablePartialApprovalBySettings: !enablePartialApprovalBySettings })}
+          disabled={isPartialApprovalLockedByWidget}
         />
       </SettingsDropdownSection>
 
