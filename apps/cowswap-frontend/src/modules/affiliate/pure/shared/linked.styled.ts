@@ -56,7 +56,7 @@ export const LinkedCodeText = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   color: inherit;
-  font-family: ${Font.familyMono};
+  font-family: ${Font.familyInter};
 
   ${Media.upToSmall()} {
     font-size: 14px;

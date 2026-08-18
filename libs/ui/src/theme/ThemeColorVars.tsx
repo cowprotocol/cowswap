@@ -385,8 +385,8 @@ export const ThemeColorVars = css`
     ${UI.LINE_HEIGHT_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[1]}px;
 
     // Font Families:
-    ${UI.FONT_FAMILY_PRIMARY}: ${Font.family};
-    ${UI.FONT_FAMILY_MONO}: ${Font.familyMono};
+    ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyInter};
+    ${UI.FONT_FAMILY_MONO}: ${Font.familyInter};
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;

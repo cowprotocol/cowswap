@@ -59,7 +59,7 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
         <Typography
           component="h1"
           sx={{
-            fontFamily: Font.family,
+            fontFamily: Font.familyStudioFeixen,
             fontWeight: Font.weight.bold,
             fontSize: '2rem',
             lineHeight: 1,

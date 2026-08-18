@@ -12,6 +12,12 @@ import { createGlobalStyle } from 'styled-components/macro'
 
 const GlobalStyles = createGlobalStyle`
 ${ThemeColorVars}
+
+  :root {
+    ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyStudioFeixen};
+    ${UI.FONT_FAMILY_MONO}: ${Font.familyStudioFeixenMono};
+  }
+
 ${baseGlobalStyles}
 
   @font-face {
@@ -80,7 +86,7 @@ ${baseGlobalStyles}
   }
 
   body {
-    font-family: ${Font.family};
+    font-family: ${Font.familyStudioFeixen};
     background: ${UI.COLOR_NEUTRAL_98};
     color: ${UI.COLOR_TEXT};
     font-variant: none;

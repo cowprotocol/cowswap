@@ -44,7 +44,7 @@ export const ValueLabel = styled.span`
 export const AddressDisplay = styled.span`
   font-size: 18px;
   font-weight: 600;
-  font-family: ${Font.familyMono};
+  font-family: ${Font.familyInter};
   font-feature-settings: 'ss10' on;
 
   ${Media.upToSmall()} {

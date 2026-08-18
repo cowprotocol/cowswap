@@ -38,7 +38,7 @@ const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolea
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
-  font-family: ${Font.familyMono};
+  font-family: ${Font.familyInter};
   caret-color: var(${UI.COLOR_PRIMARY});
 
   &:disabled {
