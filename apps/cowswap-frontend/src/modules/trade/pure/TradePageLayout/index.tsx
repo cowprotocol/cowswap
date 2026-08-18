@@ -69,34 +69,25 @@ export const SecondaryWrapper = styled.div.attrs({
   flex-flow: column nowrap;
   width: 100%;
   border-radius: ${({ $inDrawer }) => ($inDrawer ? '0' : `var(${UI.BORDER_RADIUS_NORMAL})`)};
-  background: ${({ $inDrawer }) => ($inDrawer ? 'transparent' : `var(${UI.COLOR_PAPER})`)};
+  background: var(${UI.COLOR_PAPER});
   color: inherit;
   border: none;
   box-shadow: none;
   position: relative;
   padding: 0;
-  margin: ${({ $inDrawer }) => ($inDrawer ? '0' : '0 0 76px')};
-  grid-area: ${({ $inDrawer }) => ($inDrawer ? 'unset' : 'secondary')};
+  overflow: hidden;
 
   ${({ $inDrawer }) =>
     $inDrawer
       ? css`
           /* Grow with table content so BottomDrawer.Content can scroll the whole body */
           flex: 0 0 auto;
-          height: auto;
-          max-height: none;
-          min-height: 0;
-          overflow: visible;
         `
       : css`
           flex: 1;
           min-height: 200px;
           height: 100%;
           max-height: 100%;
-          overflow: hidden;
-
-          ${Media.upToLargeAlt()} {
-            margin: 0 0 20px;
-          }
+          grid-area: secondary;
         `}
 `
