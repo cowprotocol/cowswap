@@ -4,9 +4,9 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { renderHook } from '@testing-library/react'
 
-import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
+import { useSwapPartialApprovalToggleState } from 'modules/swap'
 
 import {
   getIsPartialApproveEnabledBySettings,
@@ -15,13 +15,11 @@ import {
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useAtomValue: jest.fn() }))
 
-jest.mock('modules/advancedOrders/state/advancedOrdersSettingsAtom', () => ({
-  advancedOrdersSettingsAtom: 'advancedOrdersSettingsAtom',
-}))
+jest.mock('modules/advancedOrders', () => ({ advancedOrdersSettingsAtom: 'advancedOrdersSettingsAtom' }))
 
 jest.mock('modules/limitOrders', () => ({ limitOrdersSettingsAtom: 'limitOrdersSettingsAtom' }))
 
-jest.mock('modules/swap/hooks/useSwapSettings', () => ({ useSwapPartialApprovalToggleState: jest.fn() }))
+jest.mock('modules/swap', () => ({ useSwapPartialApprovalToggleState: jest.fn() }))
 
 const mockedUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const mockedUseSwapPartialApprovalToggleState = useSwapPartialApprovalToggleState as jest.MockedFunction<

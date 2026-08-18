@@ -4,9 +4,9 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { Nullish } from 'types'
 
-import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
+import { useSwapPartialApprovalToggleState } from 'modules/swap'
 
 interface PartialApproveEnabledBySettings {
   swap: boolean
