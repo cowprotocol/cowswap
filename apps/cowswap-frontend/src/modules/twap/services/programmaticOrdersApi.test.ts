@@ -7,11 +7,7 @@ const LIVE_ORDER_HASH = '0xf8edb9707569dec76a362bb6bac1909fdf43d5afe70beca3e422e
 
 describe('fetchEoaTwapOrders', () => {
   it('maps a known EOA TWAP from the live programmatic orders API', async () => {
-    const { orders, totalCount } = await programmaticOrdersApi.fetchEoaTwapOrders(
-      EOA,
-      SupportedChainId.GNOSIS_CHAIN,
-      100,
-    )
+    const { orders } = await programmaticOrdersApi.fetchEoaTwapOrders(EOA, SupportedChainId.GNOSIS_CHAIN, 100)
     const order = Object.values(orders).find(({ hash }) => hash === LIVE_ORDER_HASH)
 
     expect(order?.id).toBeTruthy()
@@ -35,7 +31,6 @@ describe('fetchEoaTwapOrders', () => {
             executionInfo: order.executionInfo,
           }
         : null,
-      totalCount,
     }).toMatchInlineSnapshot(`
       {
         "order": {
