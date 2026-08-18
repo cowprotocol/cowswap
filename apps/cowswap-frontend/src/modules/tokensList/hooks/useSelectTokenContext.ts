@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
@@ -19,12 +21,14 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
   const tokenData = useTokenDataSources()
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
+  const onSelectNetwork = useOnSelectNetwork()
 
   return useMemo(
     () => ({
       balancesState: tokenData.balancesState,
       selectedToken: widgetState.selectedToken,
       onSelectToken: handleSelectToken,
+      onSelectNetwork,
       onTokenListItemClick: params?.onTokenListItemClick,
       unsupportedTokens: tokenData.unsupportedTokens,
       permitCompatibleTokens: tokenData.permitCompatibleTokens,
@@ -35,6 +39,7 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
       tokenData.balancesState,
       widgetState.selectedToken,
       handleSelectToken,
+      onSelectNetwork,
       params?.onTokenListItemClick,
       tokenData.unsupportedTokens,
       tokenData.permitCompatibleTokens,

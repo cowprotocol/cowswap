@@ -66,6 +66,7 @@ export { environmentAtom } from './state/environmentAtom'
 export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 export { allActiveTokensAtom, tokensByAddressAtom } from './state/tokens/allTokensAtom'
 export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
+export { defaultTokensByChainFamily } from './state/tokens/defaultTokensByChainFamily'
 export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
 
 // Utils

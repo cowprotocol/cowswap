@@ -17,7 +17,12 @@ export const REPORT_THROTTLE_MS = ms`60s`
 export interface ReportWatcherErrorParams {
   error: unknown
   phase: WatcherErrorPhase
-  chainId: SupportedChainId
+  chainId: SupportedChainId | undefined
+  /**
+   * Sentry scope name. Defaults to `BalancesWatcher` (single-chain path);
+   * pass `BalancesAggregator` for the multi-chain aggregator session.
+   */
+  scope?: string
 }
 
 /**
@@ -29,19 +34,24 @@ export interface ReportWatcherErrorParams {
 export type WatcherErrorPhase = 'session' | 'stream' | 'first-snapshot-timeout'
 
 /**
- * Report a balances-watcher service failure to Sentry under the `BalancesWatcher`
- * scope. Provider rate-limiting (HTTP 429) is tagged distinctly (`rateLimited`,
+ * Report a balances-watcher (or balances-aggregator) service failure to Sentry.
+ * Provider rate-limiting (HTTP 429) is tagged distinctly (`rateLimited`,
  * `httpStatus: 429`), and the backend error `code` (limits, etc.) is preserved.
  * Throttled to at most one report per window so a persistent outage does not flood Sentry.
  */
-export function reportWatcherError({ error, phase, chainId }: ReportWatcherErrorParams): void {
+export function reportWatcherError({
+  error,
+  phase,
+  chainId,
+  scope = 'BalancesWatcher',
+}: ReportWatcherErrorParams): void {
   const { status, code } = extractWatcherErrorCodes(error)
   const isRateLimited = status === HTTP_TOO_MANY_REQUESTS
 
   const normalizedError = normalizeError(error)
   const { message } = normalizedError
   const sentryError = new Error(message, { cause: normalizedError })
-  sentryError.name = resolveErrorName(phase, isRateLimited)
+  sentryError.name = resolveErrorName(phase, isRateLimited, scope)
 
   logger.warn(`${sentryError.name} (phase: ${phase}, status: ${status ?? 'n/a'}, code: ${code ?? 'n/a'})`, {
     chainId,
@@ -53,7 +63,7 @@ export function reportWatcherError({ error, phase, chainId }: ReportWatcherError
     undefined,
     { chainId, phase, httpStatus: status, apiCode: code, message },
     {
-      scope: 'BalancesWatcher',
+      scope,
       errorType: sentryError.name,
       phase,
       ...(status !== undefined ? { httpStatus: String(status) } : undefined),
@@ -62,19 +72,29 @@ export function reportWatcherError({ error, phase, chainId }: ReportWatcherError
   )
 }
 
+// Duck-typed (not `instanceof`) so this also covers the aggregator's
+// `BalancesAggregatorApiError`/`BalancesAggregatorStreamError` (same shape)
+// without this module importing from the sibling `balancesAggregator` folder.
 function extractWatcherErrorCodes(error: unknown): { status?: number; code?: number } {
   if (error instanceof BalancesWatcherApiError) return { status: error.status, code: error.code }
   if (error instanceof BalancesWatcherStreamError) return { code: error.code }
+  if (!error || typeof error !== 'object') return {}
 
-  return {}
+  const record = error as Record<string, unknown>
+  return { status: readNumberProp(record, 'status'), code: readNumberProp(record, 'code') }
 }
 
-const ERROR_NAME_BY_PHASE = {
-  session: 'BalancesWatcherSessionError',
-  stream: 'BalancesWatcherStreamError',
-  'first-snapshot-timeout': 'BalancesWatcherSnapshotTimeout',
+function readNumberProp(obj: Record<string, unknown>, key: string): number | undefined {
+  const value = obj[key]
+  return typeof value === 'number' ? value : undefined
+}
+
+const ERROR_NAME_SUFFIX_BY_PHASE = {
+  session: 'SessionError',
+  stream: 'StreamError',
+  'first-snapshot-timeout': 'SnapshotTimeout',
 } as const satisfies Record<WatcherErrorPhase, string>
 
-function resolveErrorName(phase: WatcherErrorPhase, isRateLimited: boolean): string {
-  return isRateLimited ? 'BalancesWatcherRateLimitError' : ERROR_NAME_BY_PHASE[phase]
+function resolveErrorName(phase: WatcherErrorPhase, isRateLimited: boolean, scope: string): string {
+  return isRateLimited ? `${scope}RateLimitError` : `${scope}${ERROR_NAME_SUFFIX_BY_PHASE[phase]}`
 }

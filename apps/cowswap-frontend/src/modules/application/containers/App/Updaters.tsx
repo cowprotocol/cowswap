@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
+import { MultiChainBalancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import {
   RestrictedTokensListUpdater,
@@ -135,6 +136,7 @@ export function Updaters(): ReactNode {
 
       <UnsupportedTokensUpdater />
       <CommonPriorityBalancesAndAllowancesUpdater />
+      <MultiChainBalancesUpdater account={balancesAccount} />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />

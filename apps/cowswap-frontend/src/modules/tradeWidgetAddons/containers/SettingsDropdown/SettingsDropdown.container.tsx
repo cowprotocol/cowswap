@@ -1,6 +1,12 @@
+import { useAtom, useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useRef } from 'react'
 
 import svgExperimentSrc from '@cowprotocol/assets/cow-swap/experiment.svg'
+import {
+  multiChainBalancesHealthAtom,
+  MultiChainBalancesHealth,
+  multiChainModeEnabledAtom,
+} from '@cowprotocol/balances-and-allowances'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsBox, SettingsBoxGroup, SettingsDropdownSection } from '@cowprotocol/ui'
@@ -80,6 +86,14 @@ export function SettingsDropdown({
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
 
+  const [multiChainModeEnabled, setMultiChainModeEnabled] = useAtom(multiChainModeEnabledAtom)
+  const multiChainBalancesHealth = useAtomValue(multiChainBalancesHealthAtom)
+  const isMultiChainModeUnavailable = multiChainBalancesHealth.status === MultiChainBalancesHealth.Fallback
+  const toggleMultiChainMode = useCallback(
+    (value?: boolean) => setMultiChainModeEnabled(value ?? !multiChainModeEnabled),
+    [multiChainModeEnabled, setMultiChainModeEnabled],
+  )
+
   return (
     <Menu>
       <SettingsTabController buttonRef={menuButtonRef}>
@@ -121,6 +135,19 @@ export function SettingsDropdown({
                     disabled={partialApprovalLocked}
                   />
                 ) : null}
+
+                <SettingsBox
+                  id="toggle-multichain-balances-button"
+                  title={t`Multichain Balances`}
+                  tooltip={
+                    isMultiChainModeUnavailable
+                      ? t`Temporarily unavailable — reconnecting to the multichain balances service.`
+                      : t`Show your balance for a token across every supported network in the token list.`
+                  }
+                  checked={multiChainModeEnabled && !isMultiChainModeUnavailable}
+                  toggle={toggleMultiChainMode}
+                  disabled={isMultiChainModeUnavailable}
+                />
 
                 {!isInjectedWidget() && hooksEnabled !== null ? (
                   <SettingsBox
