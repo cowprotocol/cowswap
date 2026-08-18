@@ -3,6 +3,7 @@ import { TTLCache } from '@cowprotocol/cow-sdk'
 import { querySerializer } from './querySerializer'
 
 import {
+  COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
   DEFAULT_CMS_REQUEST_TTL,
   ONDO_FALLBACK_TOKEN_LIST,
   RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
@@ -73,6 +74,11 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [ONDO_FALLBACK_TOKEN_LIST, XStocks_FALLBACK_TOKEN_LIST, RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST]
+      return [
+        ONDO_FALLBACK_TOKEN_LIST,
+        XStocks_FALLBACK_TOKEN_LIST,
+        RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
+        COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
+      ]
     })
 }
