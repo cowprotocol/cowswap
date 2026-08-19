@@ -1,48 +1,62 @@
 import { TelegramConnectionStatus } from './index'
 
-const subscribeAccount = (): void => {}
-const subscribeWithData = async (_data: TelegramData): Promise<void> => {}
-const authorize = (): Promise<TelegramData | null> => Promise.resolve(null)
+const noop = (): void => {}
+const asyncNoop = async (): Promise<void> => {}
 
 const Fixtures = {
   loading: () => (
     <TelegramConnectionStatus
       isLoading={true}
       isSubscribed={false}
-      needsAuthorization={false}
-      authorize={authorize}
-      toggleSubscription={subscribeAccount}
-      subscribeWithData={subscribeWithData}
+      connectState="idle"
+      deepLink={null}
+      connect={asyncNoop}
+      cancelConnect={noop}
+      disconnect={asyncNoop}
     />
   ),
   subscribed: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={true}
-      needsAuthorization={false}
-      authorize={authorize}
-      toggleSubscription={subscribeAccount}
-      subscribeWithData={subscribeWithData}
+      connectState="idle"
+      deepLink={null}
+      connect={asyncNoop}
+      cancelConnect={noop}
+      disconnect={asyncNoop}
     />
   ),
-  needLogin: () => (
+  notConnected: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={false}
-      needsAuthorization={false}
-      authorize={authorize}
-      toggleSubscription={subscribeAccount}
-      subscribeWithData={subscribeWithData}
+      connectState="idle"
+      deepLink={null}
+      connect={asyncNoop}
+      cancelConnect={noop}
+      disconnect={asyncNoop}
     />
   ),
-  needsAuthorization: () => (
+  waitingForStart: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={false}
-      needsAuthorization={true}
-      authorize={authorize}
-      toggleSubscription={subscribeAccount}
-      subscribeWithData={subscribeWithData}
+      connectState="connecting"
+      deepLink="https://t.me/cowNotificationsBot?start=preview-token"
+      connect={asyncNoop}
+      cancelConnect={noop}
+      disconnect={asyncNoop}
+    />
+  ),
+  linkExpired: () => (
+    <TelegramConnectionStatus
+      isLoading={false}
+      isSubscribed={false}
+      connectState="expired"
+      deepLink={null}
+      connect={asyncNoop}
+      cancelConnect={noop}
+      disconnect={asyncNoop}
     />
   ),
 }

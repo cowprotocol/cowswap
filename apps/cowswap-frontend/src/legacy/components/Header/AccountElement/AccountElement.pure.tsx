@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -30,7 +29,8 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
   const shouldShowAffiliateTraderHeaderButton = useShouldShowAffiliateTraderHeaderButton()
   const unreadNotificationsCount = useUnreadSidebarNotificationsCount()
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  // FIXME
+  const areTelegramNotificationsEnabled = true
   const { hasSubscription, isLoading } = useHasNotificationSubscription()
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)

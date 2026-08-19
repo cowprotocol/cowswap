@@ -2,60 +2,70 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { Loader, UI, Toggle } from '@cowprotocol/ui'
 
+import { ConnectTelegramModal } from '../../containers/ConnectTelegram/ConnectTelegramModal'
+import { ConnectState } from '../../hooks/useTelegramConnect'
+
 interface TelegramConnectionStatusProps {
   isLoading: boolean
   isSubscribed: boolean
-  needsAuthorization: boolean
-  toggleSubscription(): void
-  subscribeWithData(data: TelegramData): Promise<void>
-  authorize(): Promise<TelegramData | null>
+  connectState: ConnectState
+  deepLink: string | null
+  connect(): Promise<void>
+  cancelConnect(): void
+  disconnect(): Promise<void>
 }
 
 export function TelegramConnectionStatus({
   isLoading,
   isSubscribed,
-  needsAuthorization,
-  authorize,
-  toggleSubscription,
-  subscribeWithData,
+  connectState,
+  deepLink,
+  connect,
+  cancelConnect,
+  disconnect,
 }: TelegramConnectionStatusProps): ReactNode {
-  const [isAuthorizingInProgress, setIsAuthorizingInProgress] = useState(false)
+  const [isDisconnecting, setIsDisconnecting] = useState(false)
 
   const handleToggle = useCallback(async () => {
-    if (needsAuthorization) {
-      // If not authorized, trigger authorization when toggled ON
-      setIsAuthorizingInProgress(true)
+    if (isSubscribed) {
+      setIsDisconnecting(true)
       try {
-        const authData = await authorize()
-        if (authData) {
-          // Pass the auth data directly to avoid race condition
-          await subscribeWithData(authData)
-        }
+        await disconnect()
       } catch (error) {
-        // If authorization fails, the toggle will revert to OFF automatically
-        console.warn('Telegram authorization failed or was cancelled:', error)
+        // No dedicated disconnect-error UI - swallow and let the toggle revert to "subscribed".
+        console.error('[TelegramConnectionStatus] Failed to disconnect Telegram notifications', error)
       } finally {
-        setIsAuthorizingInProgress(false)
+        setIsDisconnecting(false)
       }
     } else {
-      // If already authorized, handle normal subscription toggle
-      toggleSubscription()
+      try {
+        await connect()
+      } catch (error) {
+        // connect() handles its own errors internally (connectState becomes 'error'),
+        // this is just a safety net against an unhandled rejection.
+        console.error('[TelegramConnectionStatus] Failed to start Telegram connect flow', error)
+      }
     }
-  }, [needsAuthorization, authorize, toggleSubscription, subscribeWithData])
+  }, [isSubscribed, connect, disconnect])
 
-  if (isLoading || isAuthorizingInProgress) {
+  if (isLoading || isDisconnecting) {
     return <Loader size="33px" stroke={`var(${UI.COLOR_TEXT_OPACITY_50})`} />
   }
-
-  const checked = !needsAuthorization && isSubscribed
 
   return (
     <div>
       <Toggle
         id="toggle-telegram-notifications"
-        checked={checked}
+        checked={isSubscribed}
         toggle={handleToggle}
         inactiveBgColor={`var(${UI.COLOR_PAPER})`}
+      />
+      <ConnectTelegramModal
+        isOpen={connectState !== 'idle'}
+        connectState={connectState}
+        deepLink={deepLink}
+        onRetry={connect}
+        onDismiss={cancelConnect}
       />
     </div>
   )
