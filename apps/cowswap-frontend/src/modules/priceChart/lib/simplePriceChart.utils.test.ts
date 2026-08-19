@@ -1,4 +1,4 @@
-import { getSimplePriceChartPeriodConfig } from './simplePriceChart.utils'
+import { getSimplePriceChartPeriodConfig, getSimplePriceChartPriceFormat } from './simplePriceChart.utils'
 
 const NOW = 1_800_000_000
 
@@ -12,5 +12,17 @@ describe('getSimplePriceChartPeriodConfig', () => {
     ['All', 0, '7D'],
   ] as const)('maps %s to its request range and resolution', (period, from, resolution) => {
     expect(getSimplePriceChartPeriodConfig(period, NOW)).toEqual({ from, resolution, to: NOW })
+  })
+})
+
+describe('getSimplePriceChartPriceFormat', () => {
+  it.each([
+    [0.109, 3, 0.001],
+    [0.00001456, 7, 0.0000001],
+    [1_916, 2, 0.01],
+  ])('uses enough precision for %s', (price, precision, minMove) => {
+    const bar = { close: price, high: price, low: price, open: price, timestamp: 1 }
+
+    expect(getSimplePriceChartPriceFormat([bar])).toEqual({ minMove, precision, type: 'price' })
   })
 })

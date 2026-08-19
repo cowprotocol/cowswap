@@ -1,4 +1,6 @@
-import type { PriceChartResolution, SimplePriceChartPeriod } from './priceChart.types'
+import type { PriceFormatBuiltIn } from 'lightweight-charts'
+
+import type { PriceChartBar, PriceChartResolution, SimplePriceChartPeriod } from './priceChart.types'
 
 const DAY_SECONDS = 24 * 60 * 60
 
@@ -9,6 +11,13 @@ interface SimplePriceChartPeriodConfig {
 }
 
 export const SIMPLE_PRICE_CHART_PERIODS: SimplePriceChartPeriod[] = ['1H', '1D', '1W', '1M', '1Y', 'All']
+
+export function getSimplePriceChartPriceFormat(bars: PriceChartBar[]): PriceFormatBuiltIn {
+  const smallestPrice = bars.reduce((smallest, bar) => (bar.low > 0 ? Math.min(smallest, bar.low) : smallest), Infinity)
+  const precision = smallestPrice < 1 ? Math.min(18, 2 - Math.floor(Math.log10(smallestPrice))) : 2
+
+  return { minMove: 10 ** -precision, precision, type: 'price' }
+}
 
 export function getSimplePriceChartPeriodConfig(
   period: SimplePriceChartPeriod,

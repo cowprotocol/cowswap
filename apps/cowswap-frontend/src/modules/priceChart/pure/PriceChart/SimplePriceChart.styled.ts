@@ -10,6 +10,8 @@ export const ChartFrame = styled.div`
   overflow: hidden;
   border-radius: 12px;
   background: transparent;
+  margin-left: -10px;
+  margin-right: -10px;
 `
 
 export const ChartCanvas = styled.div<{ $canSelectPrice: boolean }>`

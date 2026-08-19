@@ -28,7 +28,11 @@ import * as simpleStyledEl from './SimplePriceChart.styled'
 import { logPriceChart } from '../../api'
 import { loadPriceChartHistory } from '../../lib/loadPriceChartHistory.service'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
-import { getSimplePriceChartPeriodConfig, SIMPLE_PRICE_CHART_PERIODS } from '../../lib/simplePriceChart.utils'
+import {
+  getSimplePriceChartPeriodConfig,
+  getSimplePriceChartPriceFormat,
+  SIMPLE_PRICE_CHART_PERIODS,
+} from '../../lib/simplePriceChart.utils'
 
 import type { PriceChartBar, PriceChartMetric, SimplePriceChartPeriod } from '../../lib/priceChart.types'
 import type {
@@ -124,9 +128,13 @@ export function SimplePriceChartPure({
   )
 
   useEffect(() => {
+    const priceFormat = getSimplePriceChartPriceFormat(data)
+
     if (chartType === 'line') {
+      areaSeriesRef.current?.applyOptions({ priceFormat })
       areaSeriesRef.current?.setData(data.map((bar) => ({ time: bar.timestamp as UTCTimestamp, value: bar.close })))
     } else {
+      candlestickSeriesRef.current?.applyOptions({ priceFormat })
       candlestickSeriesRef.current?.setData(
         data.map((bar) => ({
           close: bar.close,
