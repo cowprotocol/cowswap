@@ -6,6 +6,8 @@ import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 
 import * as styledEl from './BottomDrawer.styled'
 
+import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
+
 export interface BottomDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -20,8 +22,6 @@ export interface BottomDrawerProps {
   footer?: ReactNode
   /** Optional header content below the drag handle (outside the scroll body). */
   header?: ReactNode
-  /** Expands the drawer surface to the full dynamic viewport and removes the rounded sheet chrome. */
-  fullScreen?: boolean
 }
 
 export function BottomDrawer({
@@ -32,7 +32,6 @@ export function BottomDrawer({
   className,
   footer,
   header,
-  fullScreen = false,
 }: BottomDrawerProps): ReactNode {
   const [isContentScrolled, setIsContentScrolled] = useState(false)
 
@@ -58,12 +57,12 @@ export function BottomDrawer({
     <BaseDrawer.Root open={open} onOpenChange={handleOpenChange} swipeDirection="down">
       <BaseDrawer.VirtualKeyboardProvider>
         <BaseDrawer.Portal>
-          <styledEl.Layer data-bottom-drawer-layer="">
+          <OverlayLayer data-bottom-drawer-layer="">
             <styledEl.Backdrop data-bottom-drawer-backdrop="" forceRender />
             <styledEl.Viewport data-bottom-drawer-viewport="">
-              <styledEl.Popup className={className} $fullScreen={fullScreen}>
-                <styledEl.Header $fullScreen={fullScreen}>
-                  <styledEl.Handle aria-hidden $fullScreen={fullScreen} />
+              <styledEl.Popup className={className}>
+                <styledEl.Header>
+                  <styledEl.Handle aria-hidden />
                   {header}
                 </styledEl.Header>
 
@@ -79,7 +78,7 @@ export function BottomDrawer({
                 ) : null}
               </styledEl.Popup>
             </styledEl.Viewport>
-          </styledEl.Layer>
+          </OverlayLayer>
         </BaseDrawer.Portal>
       </BaseDrawer.VirtualKeyboardProvider>
     </BaseDrawer.Root>

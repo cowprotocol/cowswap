@@ -7,25 +7,25 @@ import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 import * as styledEl from './Dialog.styled'
 import { getOverlayA11yTitle, resolveOverlayHeader } from './resolveOverlayHeader'
 
-const DEFAULT_DIALOG_MAX_WIDTH = 500
-const DEFAULT_DIALOG_WIDTH = 'calc(100% - 32px)'
+import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
 
 export interface DialogProps {
+  variant?: DialogVariant
   open: boolean
   onOpenChange: (open: boolean) => void
   children: ReactNode
+  /** Optional a11y title; rendered visually hidden. Use `header` for visible chrome. */
   title?: ReactNode
   onBack?: () => void
   header?: ReactNode
   footer?: ReactNode
   className?: string
-  /** CSS `width` of the dialog surface. Defaults to viewport minus side inset. */
-  width?: number | string
-  /** CSS `max-width` of the dialog surface. Defaults to 500px. */
-  maxWidth?: number | string
 }
 
+export type DialogVariant = 'default' | 'narrow'
+
 export function Dialog({
+  variant = 'default',
   open,
   onOpenChange,
   children,
@@ -34,8 +34,6 @@ export function Dialog({
   header,
   footer,
   className,
-  width = DEFAULT_DIALOG_WIDTH,
-  maxWidth = DEFAULT_DIALOG_MAX_WIDTH,
 }: DialogProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
@@ -60,24 +58,22 @@ export function Dialog({
   return (
     <BaseDialog.Root open={open} onOpenChange={handleOpenChange}>
       <BaseDialog.Portal>
-        <styledEl.Backdrop />
-        <styledEl.Viewport>
-          <styledEl.Popup className={className} $width={formatSize(width)} $maxWidth={formatSize(maxWidth)}>
-            {resolvedHeader ? <styledEl.Header>{resolvedHeader}</styledEl.Header> : null}
+        <OverlayLayer data-dialog-layer="">
+          <styledEl.Backdrop data-dialog-backdrop="" forceRender />
+          <styledEl.Viewport data-dialog-viewport="">
+            <styledEl.Popup className={className} $variant={variant}>
+              {resolvedHeader ? <styledEl.Header>{resolvedHeader}</styledEl.Header> : null}
 
-            <styledEl.Content>
-              <styledEl.VisuallyHiddenTitle>{getOverlayA11yTitle(title, 'Dialog')}</styledEl.VisuallyHiddenTitle>
-              {children}
-            </styledEl.Content>
+              <styledEl.Content>
+                <styledEl.VisuallyHiddenTitle>{getOverlayA11yTitle(title, 'Dialog')}</styledEl.VisuallyHiddenTitle>
+                {children}
+              </styledEl.Content>
 
-            {footer ? <styledEl.Footer>{footer}</styledEl.Footer> : null}
-          </styledEl.Popup>
-        </styledEl.Viewport>
+              {footer ? <styledEl.Footer>{footer}</styledEl.Footer> : null}
+            </styledEl.Popup>
+          </styledEl.Viewport>
+        </OverlayLayer>
       </BaseDialog.Portal>
     </BaseDialog.Root>
   )
-}
-
-function formatSize(size: number | string): string {
-  return typeof size === 'number' ? `${size}px` : size
 }

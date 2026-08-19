@@ -75,13 +75,16 @@ export const SecondaryWrapper = styled.div.attrs({
   box-shadow: none;
   position: relative;
   padding: 0;
-  overflow: ${({ $inDrawer }) => ($inDrawer ? 'visible' : 'hidden')};
+  overflow: hidden;
 
   ${({ $inDrawer }) =>
     $inDrawer
       ? css`
-          /* Grow with table content so BottomDrawer.Content can scroll the whole body */
-          flex: 0 0 auto;
+          /* Fill the drawer so Modal.Root is the scroll container for sticky headers */
+          flex: 1 1 auto;
+          min-height: 0;
+          height: 100%;
+          max-height: 100%;
         `
       : css`
           flex: 1;

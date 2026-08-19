@@ -17,7 +17,7 @@ describe('BottomDrawer', () => {
     })
   })
 
-  it('stacks the drawer overlay below the dialog layer', () => {
+  it('stacks the drawer overlay in the shared overlay layer', () => {
     const { container } = render(
       <BottomDrawer open onOpenChange={jest.fn()}>
         Content
@@ -36,7 +36,7 @@ describe('BottomDrawer', () => {
       return
     }
 
-    expect(getComputedStyle(layer).zIndex).toBe(String(OVERLAY_Z_INDEX.drawer))
+    expect(getComputedStyle(layer).zIndex).toBe(String(OVERLAY_Z_INDEX.overlay))
     expect(layer.contains(backdrop)).toBe(true)
     expect(layer.contains(viewport)).toBe(true)
   })

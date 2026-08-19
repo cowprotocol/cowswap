@@ -11,13 +11,11 @@ export const Header = styled.header<{ withoutBorder?: boolean }>`
   position: relative;
   background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
   border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
-  transition: ${slowTransition(['border-color'])};
 
   &.sticky {
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid transparent;
 
     &::after {
       content: '';
@@ -27,19 +25,16 @@ export const Header = styled.header<{ withoutBorder?: boolean }>`
       top: 100%;
       height: 40px;
       pointer-events: none;
+      border-top: 1px solid transparent;
       backdrop-filter: blur(0);
       mask-image: linear-gradient(to bottom, black, transparent);
       -webkit-mask-image: linear-gradient(to bottom, black, transparent);
-      transition: ${slowTransition(['backdrop-filter'])};
+      transition: ${slowTransition(['border-top-color', 'backdrop-filter'])};
     }
   }
 
-  .${MODAL_ROOT_SCROLLED_CLASS} &.sticky {
-    border-bottom-color: var(${UI.COLOR_BORDER});
-    // box-shadow: 0 0 32px 32px var(${UI.COLOR_PAPER});
-  }
-
   .${MODAL_ROOT_SCROLLED_CLASS} &.sticky::after {
+    border-top-color: var(${UI.COLOR_BORDER});
     backdrop-filter: blur(16px);
   }
 `

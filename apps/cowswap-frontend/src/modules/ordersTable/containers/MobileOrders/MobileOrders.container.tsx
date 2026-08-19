@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useState } from 'react'
 
-import { CloseIconButton } from '@cowprotocol/ui'
+import { ModalHeader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -60,24 +60,23 @@ export function MobileOrders({
 
   return (
     <styledEl.Wrapper>
-      <styledEl.Header>
-        <styledEl.HeaderInner>
+      <ModalHeader
+        sticky
+        title={
           <styledEl.HeaderIdentity>
             <h2>{title}</h2>
             {showHeaderFilter && currentTabLabel ? (
               <styledEl.HeaderContext>{currentTabLabel}</styledEl.HeaderContext>
             ) : null}
           </styledEl.HeaderIdentity>
-
-          <styledEl.HeaderActions>
-            {showHeaderFilter && account && !isProviderNetworkUnsupported ? (
-              <FiltersButton activeCount={activeFilterCount} onClick={() => setIsFiltersOpen(true)} />
-            ) : null}
-
-            <CloseIconButton closeOnEscape={false} aria-label={t`Close orders`} onClick={onClose} />
-          </styledEl.HeaderActions>
-        </styledEl.HeaderInner>
-      </styledEl.Header>
+        }
+        rightSlot={
+          showHeaderFilter && account && !isProviderNetworkUnsupported ? (
+            <FiltersButton activeCount={activeFilterCount} onClick={() => setIsFiltersOpen(true)} />
+          ) : null
+        }
+        onClose={onClose}
+      />
 
       <styledEl.Main>
         {!account ? (

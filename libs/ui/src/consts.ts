@@ -12,7 +12,7 @@ export const MEDIA_WIDTHS = {
   upToLarge: 1280,
   upToLargeAlt: 1390,
   upToExtraLarge: 2560,
-}
+} as const
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -21,13 +21,12 @@ const getMediaQuery = (query: string, useMediaPrefix = true) => {
 }
 
 /**
- * Overlay stacking. Drawers stay at dropdown (1000) so modal-layer dialogs (1060)
- * — receipts, account, etc. — cover an open orders drawer.
+ * Shared overlay stacking context (above dropdowns at 1000). Dialogs and drawers
+ * use the same Layer z-index so a later portal — nested filters, receipts, etc. —
+ * paints over the previous overlay.
  */
 export const OVERLAY_Z_INDEX = {
-  drawer: 1000,
-  dialogBackdrop: 1060,
-  dialogViewport: 1061,
+  overlay: 1060,
 } as const
 
 export const Media = {

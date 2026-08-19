@@ -2,23 +2,22 @@ import { ReactNode, useEffect } from 'react'
 
 import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
 
-import { BottomDrawer } from './BottomDrawer.pure'
+import { Dialog } from './Dialog.pure'
 
 import { Media } from '../../consts'
 
-export interface DrawerOrInlineProps {
+export interface DialogOrInlineProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   children: ReactNode
+  /** Optional a11y title; rendered visually hidden in dialog mode. */
   title?: string
   className?: string
   header?: ReactNode
   footer?: ReactNode
-  /** Drawer-mode only: use an edge-to-edge surface that fills the dynamic viewport. */
-  fullScreen?: boolean
 }
 
-export function DrawerOrInline({
+export function DialogOrInline({
   isOpen,
   onOpenChange,
   children,
@@ -26,8 +25,7 @@ export function DrawerOrInline({
   className,
   header,
   footer,
-  fullScreen,
-}: DrawerOrInlineProps): ReactNode {
+}: DialogOrInlineProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const onOpenChangeRef = useLatestRef(onOpenChange)
@@ -57,16 +55,15 @@ export function DrawerOrInline({
   }
 
   return (
-    <BottomDrawer
+    <Dialog
       open={isOpen}
       onOpenChange={onOpenChange}
       title={title}
       className={className}
       header={header}
       footer={footer}
-      fullScreen={fullScreen}
     >
       {children}
-    </BottomDrawer>
+    </Dialog>
   )
 }

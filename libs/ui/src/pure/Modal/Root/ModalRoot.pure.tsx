@@ -11,7 +11,9 @@ const Root = styled.div`
   width: 100%;
   padding: 0;
   overflow-y: auto;
-  height: inherit;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
   background: ${MODAL_DEBUG ? 'magenta' : 'transparent'};
 
   ${({ theme }) => theme.colorScrollbar};

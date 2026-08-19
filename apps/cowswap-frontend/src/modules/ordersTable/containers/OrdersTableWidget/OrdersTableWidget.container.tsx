@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 
 import { useMediaQuery, useStateWithDeferredValue } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { Media, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -53,6 +53,7 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLA
 
 export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const { applyFilters, historyStatusFilter, searchTerm, setSearchTerm } = useOrdersTableFilters()
 
@@ -93,53 +94,64 @@ export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps
     [currentPageNumber, currentTabId, filteredOrders],
   )
 
+  const tableContainer = (
+    <OrdersTableContainer orderType={orderType}>
+      {!!pendingOrdersInCurrentPage?.length && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
+
+      {!!reduxOrders?.length && (
+        <>
+          {currentTabId === OrderTabId.HISTORY && (
+            <SelectContainer>
+              <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
+                <option value={HistoryStatusFilter.ALL}>{i18n._('All orders')}</option>
+                <option value={HistoryStatusFilter.FILLED}>{i18n._('Filled orders')}</option>
+                <option value={HistoryStatusFilter.PARTIALLY_FILLED}>{i18n._('Partially filled orders')}</option>
+                <option value={HistoryStatusFilter.CANCELLED}>{i18n._('Cancelled orders')}</option>
+                <option value={HistoryStatusFilter.EXPIRED}>{i18n._('Expired orders')}</option>
+              </Select>
+            </SelectContainer>
+          )}
+
+          <SearchInputContainer>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder={t`Token symbol, address`}
+              name="searchTerm"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+            {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
+          </SearchInputContainer>
+        </>
+      )}
+    </OrdersTableContainer>
+  )
+
+  // TODO: Missing Modal.Content wrapper and we are always rendering tableContainer even when not used...
+
   return (
     <>
       {!!pendingOrdersInCurrentPage?.length && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
-      {isUpToLarge ? (
-        <MobileOrders
-          orderType={orderType}
-          searchTerm={searchTerm}
-          historyStatusFilter={historyStatusFilter}
-          onApplyFilters={handleApplyMobileFilters}
-          onResetFilters={handleResetMobileFilters}
-          onClose={onClose}
-        />
+      {isUpToSmall ? (
+        <Modal.Root>
+          <MobileOrders
+            orderType={orderType}
+            searchTerm={searchTerm}
+            historyStatusFilter={historyStatusFilter}
+            onApplyFilters={handleApplyMobileFilters}
+            onResetFilters={handleResetMobileFilters}
+            onClose={onClose}
+          />
+        </Modal.Root>
+      ) : isUpToLarge ? (
+        <Modal.Root>
+          <ModalHeader title={t`Limit orders`} onClose={onClose} sticky />
+          {tableContainer}
+        </Modal.Root>
       ) : (
-        <OrdersTableContainer orderType={orderType}>
-          {!!pendingOrdersInCurrentPage?.length && (
-            <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />
-          )}
-
-          {!!reduxOrders?.length && (
-            <>
-              {currentTabId === OrderTabId.HISTORY && (
-                <SelectContainer>
-                  <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
-                    <option value={HistoryStatusFilter.ALL}>{i18n._('All orders')}</option>
-                    <option value={HistoryStatusFilter.FILLED}>{i18n._('Filled orders')}</option>
-                    <option value={HistoryStatusFilter.PARTIALLY_FILLED}>{i18n._('Partially filled orders')}</option>
-                    <option value={HistoryStatusFilter.CANCELLED}>{i18n._('Cancelled orders')}</option>
-                    <option value={HistoryStatusFilter.EXPIRED}>{i18n._('Expired orders')}</option>
-                  </Select>
-                </SelectContainer>
-              )}
-
-              <SearchInputContainer>
-                <SearchIcon />
-                <SearchInput
-                  type="text"
-                  placeholder={t`Token symbol, address`}
-                  name="searchTerm"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                />
-                {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
-              </SearchInputContainer>
-            </>
-          )}
-        </OrdersTableContainer>
+        tableContainer
       )}
 
       {pendingOrdersPrices && <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />}

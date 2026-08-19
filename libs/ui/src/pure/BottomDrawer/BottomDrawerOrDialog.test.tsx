@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { render, screen } from '@testing-library/react'
 
-import { DrawerOrInline } from './DrawerOrInline.pure'
+import { BottomDrawerOrDialog } from './BottomDrawerOrDialog'
 
 import { Media } from '../../consts'
 
@@ -25,7 +25,6 @@ jest.mock('./BottomDrawer.pure', () => ({
     className,
     header,
     footer,
-    fullScreen,
   }: {
     children: ReactNode
     open: boolean
@@ -33,15 +32,8 @@ jest.mock('./BottomDrawer.pure', () => ({
     className?: string
     header?: ReactNode
     footer?: ReactNode
-    fullScreen?: boolean
   }) => (
-    <div
-      data-testid="bottom-drawer"
-      data-open={String(open)}
-      data-title={title}
-      data-fullscreen={fullScreen ? 'true' : undefined}
-      className={className}
-    >
+    <div data-testid="bottom-drawer" data-open={String(open)} data-title={title} className={className}>
       {header}
       {children}
       {footer}
@@ -49,7 +41,33 @@ jest.mock('./BottomDrawer.pure', () => ({
   ),
 }))
 
-function renderDrawer(
+jest.mock('../Dialog/Dialog.pure', () => ({
+  Dialog: ({
+    children,
+    open,
+    title,
+    className,
+    header,
+    footer,
+    variant,
+  }: {
+    children: ReactNode
+    open: boolean
+    title?: string
+    className?: string
+    header?: ReactNode
+    footer?: ReactNode
+    variant?: string
+  }) => (
+    <div data-testid="dialog" data-open={String(open)} data-title={title} data-variant={variant} className={className}>
+      {header}
+      {children}
+      {footer}
+    </div>
+  ),
+}))
+
+function renderBottomDrawerOrDialog(
   isOpen: boolean,
   onOpenChange = jest.fn(),
   extra?: {
@@ -57,44 +75,43 @@ function renderDrawer(
     className?: string
     header?: ReactNode
     footer?: ReactNode
-    fullScreen?: boolean
     children?: ReactNode
+    variant?: 'default' | 'narrow'
   },
 ): ReturnType<typeof render> & {
   onOpenChange: jest.Mock
 } {
   const view = render(
-    <DrawerOrInline
+    <BottomDrawerOrDialog
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       title={extra?.title}
       className={extra?.className}
       header={extra?.header}
       footer={extra?.footer}
-      fullScreen={extra?.fullScreen}
+      variant={extra?.variant}
     >
-      {extra?.children ?? <div>orders</div>}
-    </DrawerOrInline>,
+      {extra?.children ?? <div>receipt</div>}
+    </BottomDrawerOrDialog>,
   )
 
   return { ...view, onOpenChange }
 }
 
-describe('DrawerOrInline', () => {
+describe('BottomDrawerOrDialog', () => {
   beforeEach(() => {
     mockUseMediaQuery.mockReset()
   })
 
-  it('renders the full-screen drawer at the up-to-large breakpoint', () => {
+  it('renders a bottom drawer at the up-to-large breakpoint', () => {
     mockUseMediaQuery.mockReturnValue(true)
     const onOpenChange = jest.fn()
 
-    renderDrawer(true, onOpenChange, {
-      title: 'Orders',
-      className: 'orders-drawer',
+    renderBottomDrawerOrDialog(true, onOpenChange, {
+      title: 'Order Receipt',
+      className: 'receipt-overlay',
       header: <span>Header</span>,
       footer: <span>Footer</span>,
-      fullScreen: true,
       children: <span>Content</span>,
     })
 
@@ -102,81 +119,60 @@ describe('DrawerOrInline', () => {
 
     expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
     expect(onOpenChange).not.toHaveBeenCalled()
+    expect(screen.queryByTestId('dialog')).toBeNull()
     expect(drawer.getAttribute('data-open')).toBe('true')
-    expect(drawer.getAttribute('data-title')).toBe('Orders')
-    expect(drawer.getAttribute('data-fullscreen')).toBe('true')
-    expect(drawer.className).toContain('orders-drawer')
+    expect(drawer.getAttribute('data-title')).toBe('Order Receipt')
+    expect(drawer.className).toContain('receipt-overlay')
     expect(drawer.textContent).toContain('Header')
     expect(drawer.textContent).toContain('Content')
     expect(drawer.textContent).toContain('Footer')
   })
 
-  it('renders header, content, and footer inline above the large breakpoint', () => {
+  it('renders a dialog above the large breakpoint', () => {
     mockUseMediaQuery.mockReturnValue(false)
 
-    renderDrawer(true, jest.fn(), {
+    const { onOpenChange } = renderBottomDrawerOrDialog(true, jest.fn(), {
+      title: 'Order Receipt',
       header: <span>Header</span>,
       footer: <span>Footer</span>,
-      fullScreen: true,
       children: <span>Content</span>,
+      variant: 'narrow',
     })
 
+    const dialog = screen.getByTestId('dialog')
+
     expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
+    expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('bottom-drawer')).toBeNull()
-    expect(screen.getByText('Header')).toBeTruthy()
-    expect(screen.getByText('Content')).toBeTruthy()
-    expect(screen.getByText('Footer')).toBeTruthy()
+    expect(dialog.getAttribute('data-open')).toBe('true')
+    expect(dialog.getAttribute('data-title')).toBe('Order Receipt')
+    expect(dialog.getAttribute('data-variant')).toBe('narrow')
+    expect(dialog.textContent).toContain('Header')
+    expect(dialog.textContent).toContain('Content')
+    expect(dialog.textContent).toContain('Footer')
   })
 
-  it('closes when mounting the inline branch while open', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange } = renderDrawer(true)
-
-    expect(onOpenChange).toHaveBeenCalledTimes(1)
-    expect(onOpenChange).toHaveBeenCalledWith(false)
-  })
-
-  it('closes the inline branch on mount even if already closed, but not on later desktop renders', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange, rerender } = renderDrawer(false)
-
-    expect(onOpenChange).toHaveBeenCalledTimes(1)
-    expect(onOpenChange).toHaveBeenCalledWith(false)
-
-    onOpenChange.mockClear()
-
-    rerender(
-      <DrawerOrInline isOpen={false} onOpenChange={onOpenChange}>
-        <div>orders</div>
-      </DrawerOrInline>,
-    )
-
-    expect(onOpenChange).not.toHaveBeenCalled()
-  })
-
-  it('closes after resizing from the drawer branch to the inline branch', () => {
+  it('closes after resizing from the drawer branch to the dialog branch', () => {
     mockUseMediaQuery.mockReturnValue(true)
 
-    const { onOpenChange, rerender } = renderDrawer(true)
+    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 
     mockUseMediaQuery.mockReturnValue(false)
     rerender(
-      <DrawerOrInline isOpen={true} onOpenChange={onOpenChange}>
-        <div>orders</div>
-      </DrawerOrInline>,
+      <BottomDrawerOrDialog isOpen={true} onOpenChange={onOpenChange}>
+        <div>receipt</div>
+      </BottomDrawerOrDialog>,
     )
 
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
-  it('closes on unmount so a later remount does not reopen the drawer', () => {
+  it('closes on unmount so a later remount does not reopen the overlay', () => {
     mockUseMediaQuery.mockReturnValue(true)
 
-    const { onOpenChange, unmount } = renderDrawer(true)
+    const { onOpenChange, unmount } = renderBottomDrawerOrDialog(true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 

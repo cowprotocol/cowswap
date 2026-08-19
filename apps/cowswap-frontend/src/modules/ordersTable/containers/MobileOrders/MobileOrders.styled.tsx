@@ -14,33 +14,6 @@ export const Wrapper = styled.div`
   color: var(${UI.COLOR_TEXT});
 `
 
-export const Header = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 4;
-  flex: 0 0 auto;
-  width: 100%;
-  min-height: 64px;
-  background: var(${UI.COLOR_PAPER});
-  box-shadow: none;
-  transition: box-shadow var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  [data-drawer-content][data-scrolled='true'] & {
-    box-shadow: var(${UI.BOX_SHADOW_2});
-  }
-`
-
-export const HeaderInner = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: ${MOBILE_ORDERS_CONTENT_WIDTH};
-  min-height: 64px;
-  margin: 0 auto;
-  padding: 0 8px 0 16px;
-`
-
 export const HeaderIdentity = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -64,13 +37,6 @@ export const HeaderContext = styled.span`
   line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
-
-export const HeaderActions = styled.div`
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 8px;
 `
 
 export const Main = styled.main`

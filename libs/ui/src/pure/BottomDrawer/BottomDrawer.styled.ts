@@ -1,7 +1,6 @@
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 import styled from 'styled-components/macro'
 
-import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
 import { OVERLAY_BACKDROP_EFFECT } from '../../styles/mixins'
 import { transition } from '../../utils/animation'
@@ -9,18 +8,6 @@ import { transition } from '../../utils/animation'
 /** Matches Base UI drawer demos: duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] */
 const DRAWER_TRANSITION_DURATION = '450ms'
 const DRAWER_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
-
-/**
- * One stacking context per drawer so a later portal (nested drawer) paints over
- * the previous sheet without a manual nested z-index.
- */
-export const Layer = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: ${OVERLAY_Z_INDEX.drawer};
-  pointer-events: none;
-  isolation: isolate;
-`
 
 export const Backdrop = styled(BaseDrawer.Backdrop)`
   ${OVERLAY_BACKDROP_EFFECT}
@@ -60,21 +47,20 @@ export const Viewport = styled(BaseDrawer.Viewport)`
   }
 `
 
-export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean }>`
+export const Popup = styled(BaseDrawer.Popup)`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: ${({ $fullScreen }) => ($fullScreen ? '100vw' : '100%')};
-  max-width: ${({ $fullScreen }) => ($fullScreen ? 'none' : '100%')};
+  width: 100%;
+  max-width: 100%;
   /* Definite max height so flex children can shrink and scroll inside */
-  height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : 'auto')};
-  max-height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : '90dvh')};
+  height: auto;
+  max-height: 90dvh;
   overflow: hidden;
-  border-radius: ${({ $fullScreen }) =>
-    $fullScreen ? '0' : `var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0`};
+  border-radius: var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  box-shadow: ${({ $fullScreen }) => ($fullScreen ? 'none' : `var(${UI.BOX_SHADOW})`)};
+  box-shadow: var(${UI.BOX_SHADOW});
   outline: none;
   transform: translateY(calc(var(--drawer-swipe-movement-y, 0px)));
   transition: transform ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};
@@ -94,18 +80,17 @@ export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean }>`
 `
 
 /** Stable header chrome outside the scrollable body (handle / optional title row). */
-export const Header = styled.div<{ $fullScreen: boolean }>`
+export const Header = styled.div`
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding-top: ${({ $fullScreen }) => ($fullScreen ? 'env(safe-area-inset-top, 0px)' : '0')};
 `
 
-export const Handle = styled.div<{ $fullScreen: boolean }>`
+export const Handle = styled.div`
   flex-shrink: 0;
   align-self: center;
-  display: ${({ $fullScreen }) => ($fullScreen ? 'none' : 'block')};
+  display: block;
   width: 36px;
   height: 4px;
   margin: 10px 0 4px;
@@ -116,6 +101,7 @@ export const Handle = styled.div<{ $fullScreen: boolean }>`
 /* Opt scroll body out of swipe-to-dismiss so vertical touch scrolling works */
 export const Content = styled(BaseDrawer.Content).attrs({
   'data-base-ui-swipe-ignore': '',
+  'data-drawer-content': '',
 })`
   ${({ theme }) => theme.colorScrollbar};
 
@@ -129,7 +115,6 @@ export const Content = styled(BaseDrawer.Content).attrs({
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  transform: translateZ(0);
 `
 
 /**
