@@ -18,6 +18,7 @@ import {
   LimitOrdersWidget,
   useIsWidgetUnlocked,
   useLimitOrdersDerivedState,
+  useOpenLimitOrderChartLines,
   useUpdateActiveRate,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
@@ -56,6 +57,19 @@ export function RegularLimitOrdersPage(): ReactNode {
 
     return getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)
   }, [activeRate, inputCurrency, outputCurrency])
+  const openOrderLines = useOpenLimitOrderChartLines({ inputCurrency, orders: pendingOrders, outputCurrency })
+  const referenceLines = useMemo(
+    () => [
+      {
+        id: 'trade:limit',
+        label: t`Limit`,
+        price: activeLimitPrice,
+        variant: 'trade' as const,
+      },
+      ...openOrderLines,
+    ],
+    [activeLimitPrice, openOrderLines, t],
+  )
   const handleSelectLimitPrice = useCallback(
     (activeRate: Fraction) => {
       updateRate({
@@ -91,7 +105,7 @@ export function RegularLimitOrdersPage(): ReactNode {
                 inputCurrency={inputCurrency}
                 onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
                 outputCurrency={outputCurrency}
-                referenceLine={{ label: t`Limit`, price: activeLimitPrice }}
+                referenceLines={referenceLines}
               />
             </styledEl.ChartWrapper>
           ) : null}

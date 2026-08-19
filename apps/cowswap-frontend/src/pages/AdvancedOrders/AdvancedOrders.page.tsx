@@ -138,7 +138,14 @@ function AdvancedOrdersChart(): ReactNode {
       <PriceChart
         inputCurrency={inputCurrency}
         outputCurrency={outputCurrency}
-        referenceLine={{ label: t`Protection`, price: protectionPrice }}
+        referenceLines={[
+          {
+            id: 'trade:protection',
+            label: t`Protection`,
+            price: protectionPrice,
+            variant: 'trade',
+          },
+        ]}
       />
     </styledEl.ChartWrapper>
   )

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines-per-function */
-import { MutableRefObject, ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
+import { ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -18,6 +18,7 @@ import {
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
+import { getPriceChartReferenceLineAppearance } from '../../lib/priceChartReferenceLine.utils'
 import { hasPriceChartVolume, syncTradingViewVolumeStudy } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
@@ -38,18 +39,19 @@ import type {
   PriceChartSymbolDescriptor,
 } from '../../lib/tradingView.types'
 
-type PriceChartShapeId = ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>
+export interface HorizontalLineEntity {
+  entityId: PriceChartShapeId
+  signature: string
+}
 
-interface SyncHorizontalLineParams {
-  color: string
-  entityIdRef: MutableRefObject<PriceChartShapeId>
-  label: string
-  logKey: string
-  price: number | null | undefined
-  style: 0 | 1 | 2
+export interface SyncHorizontalLinesParams {
+  entities: Map<string, HorizontalLineEntity>
+  referenceLines: PriceChartPureProps['referenceLines']
   ticker: string
   widget: IChartingLibraryWidget | null
 }
+
+type PriceChartShapeId = NonNullable<ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>>
 
 export function PriceChartPure({
   activeSymbol,
@@ -57,9 +59,10 @@ export function PriceChartPure({
   onSelectMetric,
   onSelectPrice,
   onSelectSelection,
-  referenceLine,
+  referenceLines,
   sizeControl,
   symbols,
+  supplyBasis = 'circulating',
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
   const { i18n } = useLingui()
@@ -79,8 +82,9 @@ export function PriceChartPure({
         },
         onStatusChange: setHistoryStatus,
         symbols,
+        supplyBasis,
       }),
-    [metric, symbols],
+    [metric, supplyBasis, symbols],
   )
 
   useEffect(() => {
@@ -101,8 +105,8 @@ export function PriceChartPure({
     datafeedController.datafeed,
     darkMode,
     hasVolume,
-    referenceLine,
-    metric === 'price' ? onSelectPrice : undefined,
+    referenceLines,
+    onSelectPrice,
     symbols,
     metric,
     i18n.locale,
@@ -134,6 +138,68 @@ export function PriceChartPure({
       </styledEl.ChartFrame>
     </styledEl.PanelWrapper>
   )
+}
+
+export function syncHorizontalLines({ entities, referenceLines, ticker, widget }: SyncHorizontalLinesParams): void {
+  if (!widget) return
+
+  const activeIds = new Set(referenceLines.map((line) => line.id))
+
+  entities.forEach(({ entityId }, id) => {
+    if (activeIds.has(id)) return
+
+    widget.activeChart().removeEntity(entityId, { disableUndo: true })
+    entities.delete(id)
+  })
+
+  referenceLines.forEach((referenceLine) => {
+    const appearance = getPriceChartReferenceLineAppearance(referenceLine.variant)
+    const color = getCssVar(appearance.colorToken, appearance.colorFallback)
+    const signature = [
+      ticker,
+      referenceLine.label,
+      referenceLine.price,
+      color,
+      appearance.lineStyle,
+      appearance.lineWidth,
+    ].join(':')
+    const existing = entities.get(referenceLine.id)
+
+    if (existing?.signature === signature) return
+
+    if (existing) widget.activeChart().removeEntity(existing.entityId, { disableUndo: true })
+
+    const entityId = widget.activeChart().createShape(
+      {
+        price: referenceLine.price,
+        time: Math.floor(Date.now() / 1000),
+      },
+      {
+        disableSave: true,
+        disableSelection: true,
+        disableUndo: true,
+        lock: true,
+        text: referenceLine.label,
+        overrides: {
+          'linetoolhorzline.linecolor': color,
+          'linetoolhorzline.linestyle': appearance.lineStyle,
+          'linetoolhorzline.linewidth': appearance.lineWidth,
+          'linetoolhorzline.showLabel': true,
+          'linetoolhorzline.showPrice': true,
+          'linetoolhorzline.textcolor': color,
+        },
+        shape: 'horizontal_line',
+        showInObjectsTree: false,
+        zOrder: 'top',
+      },
+    )
+
+    if (entityId === null) return
+
+    entities.set(referenceLine.id, { entityId, signature })
+  })
+
+  logPriceChart.debug('Synced price reference lines', { count: referenceLines.length, ticker })
 }
 
 function getCssVar(name: string, fallback: string): string {
@@ -189,62 +255,15 @@ function isDarkColor(hexOrRgb: string): boolean {
   return true
 }
 
-function removeHorizontalLine(
+function removeHorizontalLines(
   widget: IChartingLibraryWidget | null,
-  entityIdRef: MutableRefObject<PriceChartShapeId>,
+  entities: Map<string, HorizontalLineEntity>,
 ): void {
-  if (!widget || !entityIdRef.current) {
-    return
+  if (widget) {
+    entities.forEach(({ entityId }) => widget.activeChart().removeEntity(entityId, { disableUndo: true }))
   }
 
-  widget.activeChart().removeEntity(entityIdRef.current, { disableUndo: true })
-  entityIdRef.current = null
-}
-
-function syncHorizontalLine({
-  color,
-  entityIdRef,
-  label,
-  logKey,
-  price,
-  style,
-  ticker,
-  widget,
-}: SyncHorizontalLineParams): void {
-  removeHorizontalLine(widget, entityIdRef)
-
-  if (!widget || price === null || price === undefined) {
-    logPriceChart.debug(logKey, { price: null, ticker })
-    return
-  }
-
-  const entityId = widget.activeChart().createShape(
-    {
-      price,
-      time: Math.floor(Date.now() / 1000),
-    },
-    {
-      disableSave: true,
-      disableSelection: true,
-      disableUndo: true,
-      lock: true,
-      text: label,
-      overrides: {
-        'linetoolhorzline.linecolor': color,
-        'linetoolhorzline.linestyle': style,
-        'linetoolhorzline.linewidth': 2,
-        'linetoolhorzline.showLabel': true,
-        'linetoolhorzline.showPrice': true,
-        'linetoolhorzline.textcolor': color,
-      },
-      shape: 'horizontal_line',
-      showInObjectsTree: false,
-      zOrder: 'top',
-    },
-  )
-
-  entityIdRef.current = entityId
-  logPriceChart.debug(logKey, { created: !!entityId, price, ticker })
+  entities.clear()
 }
 
 function useTradingViewWidget(
@@ -253,7 +272,7 @@ function useTradingViewWidget(
   datafeed: ReturnType<typeof createPriceChartDatafeed>['datafeed'],
   darkMode: boolean,
   hasVolume: boolean | undefined,
-  referenceLine: PriceChartPureProps['referenceLine'],
+  referenceLines: PriceChartPureProps['referenceLines'],
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
   metric: PriceChartPureProps['metric'],
@@ -262,13 +281,13 @@ function useTradingViewWidget(
   const widgetRef = useRef<IChartingLibraryWidget | null>(null)
   const initialTickerRef = useRef(activeTicker)
   const isWidgetReadyRef = useRef(false)
-  const referenceLineEntityIdRef = useRef<PriceChartShapeId>(null)
-  const latestReferenceLineRef = useRef(referenceLine)
+  const referenceLineEntitiesRef = useRef<Map<string, HorizontalLineEntity>>(new Map())
+  const latestReferenceLinesRef = useRef(referenceLines)
   const latestCrosshairPriceRef = useRef<number | null>(null)
   const latestOnSelectPriceRef = useRef<typeof onSelectPrice>(onSelectPrice)
 
   initialTickerRef.current = activeTicker
-  latestReferenceLineRef.current = referenceLine
+  latestReferenceLinesRef.current = referenceLines
   latestOnSelectPriceRef.current = onSelectPrice
 
   useEffect(() => {
@@ -279,6 +298,7 @@ function useTradingViewWidget(
     let widget: IChartingLibraryWidget | null = null
     let isCancelled = false
     let isCrosshairSubscribed = false
+    const referenceLineEntities = referenceLineEntitiesRef.current
     const handleAutoSaveNeeded = (): void => {
       widget?.save((state) => {
         savePriceChartState(state)
@@ -366,15 +386,9 @@ function useTradingViewWidget(
         widget.activeChart().crossHairMoved().subscribe(null, handleCrossHairMoved)
         isCrosshairSubscribed = true
         widget.activeChart().setSymbol(nextTicker, () => {
-          const latestReferenceLine = latestReferenceLineRef.current
-
-          syncHorizontalLine({
-            color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-            entityIdRef: referenceLineEntityIdRef,
-            label: latestReferenceLine?.label || '',
-            logKey: 'Sync price reference line',
-            price: latestReferenceLine?.price,
-            style: 2,
+          syncHorizontalLines({
+            entities: referenceLineEntitiesRef.current,
+            referenceLines: latestReferenceLinesRef.current,
             ticker: nextTicker,
             widget,
           })
@@ -392,7 +406,7 @@ function useTradingViewWidget(
       try {
         const wasWidgetReady = isWidgetReadyRef.current
         isWidgetReadyRef.current = false
-        removeHorizontalLine(widget, referenceLineEntityIdRef)
+        removeHorizontalLines(widget, referenceLineEntities)
         if (widget && isCrosshairSubscribed) {
           widget.activeChart().crossHairMoved().unsubscribe(null, handleCrossHairMoved)
         }
@@ -421,13 +435,9 @@ function useTradingViewWidget(
 
     if (widget.activeChart().symbol() !== activeTicker) {
       widget.activeChart().setSymbol(activeTicker, () => {
-        syncHorizontalLine({
-          color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-          entityIdRef: referenceLineEntityIdRef,
-          label: referenceLine?.label || '',
-          logKey: 'Sync price reference line',
-          price: referenceLine?.price,
-          style: 2,
+        syncHorizontalLines({
+          entities: referenceLineEntitiesRef.current,
+          referenceLines,
           ticker: activeTicker,
           widget,
         })
@@ -435,17 +445,13 @@ function useTradingViewWidget(
       return
     }
 
-    syncHorizontalLine({
-      color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-      entityIdRef: referenceLineEntityIdRef,
-      label: referenceLine?.label || '',
-      logKey: 'Sync price reference line',
-      price: referenceLine?.price,
-      style: 2,
+    syncHorizontalLines({
+      entities: referenceLineEntitiesRef.current,
+      referenceLines,
       ticker: activeTicker,
       widget,
     })
-  }, [activeTicker, referenceLine?.label, referenceLine?.price])
+  }, [activeTicker, referenceLines])
 
   useEffect(() => {
     const widget = widgetRef.current
@@ -456,8 +462,14 @@ function useTradingViewWidget(
 
     void widget.changeTheme(darkMode ? 'dark' : 'light').then(() => {
       widget.applyOverrides(getThemeOverrides())
+      syncHorizontalLines({
+        entities: referenceLineEntitiesRef.current,
+        referenceLines: latestReferenceLinesRef.current,
+        ticker: activeTicker,
+        widget,
+      })
     })
-  }, [darkMode])
+  }, [activeTicker, darkMode])
 
   useEffect(() => {
     const widget = widgetRef.current

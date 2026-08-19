@@ -2,13 +2,14 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, SearchSymbolResultItem } from './charting_library'
-import type { PriceChartBar, PriceChartMetric } from './priceChart.types'
+import type { PriceChartBar, PriceChartMetric, PriceChartSupplyBasis } from './priceChart.types'
 
 export interface CreatePriceChartDatafeedParams {
   metric: PriceChartMetric
   onHistoryLoaded?: (bars: PriceChartBar[]) => void
   onStatusChange: (status: PriceChartHistoryStatus) => void
   symbols: PriceChartSymbolDescriptor[]
+  supplyBasis?: PriceChartSupplyBasis
 }
 
 export interface PriceChartAssetDescriptor {
@@ -22,7 +23,7 @@ export interface PriceChartContainerProps {
   inputCurrency: Currency | null
   onSelectLimitPrice?: (price: Fraction) => void
   outputCurrency: Currency | null
-  referenceLine?: PriceChartReferenceLine<Price<Currency, Currency> | null>
+  referenceLines?: PriceChartReferenceLine<Price<Currency, Currency> | null>[]
   sizeControl?: PriceChartSizeControl
 }
 
@@ -40,15 +41,21 @@ export interface PriceChartPureProps {
   onSelectMetric: (metric: PriceChartMetric) => void
   onSelectPrice?: (price: number) => void
   onSelectSelection: (selection: PriceChartSelection) => void
-  referenceLine?: PriceChartReferenceLine<number>
+  referenceLines: PriceChartReferenceLine<number>[]
   sizeControl?: PriceChartSizeControl
   symbols: PriceChartSymbolDescriptor[]
+  supplyBasis?: PriceChartSupplyBasis
 }
 
 export interface PriceChartReferenceLine<TPrice> {
+  id: string
   label: string
+  labels?: Partial<Record<PriceChartSelection, string>>
   price: TPrice
+  variant: PriceChartReferenceLineVariant
 }
+
+export type PriceChartReferenceLineVariant = 'open-order' | 'trade' | 'unfillable-order'
 
 export type PriceChartSelection = 'sell' | 'buy'
 

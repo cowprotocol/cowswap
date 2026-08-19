@@ -9,7 +9,7 @@ import {
 import { mapPriceChartBarsToTradingViewBars, mapResolutionToPriceChartResolution } from './tradingViewAdapter.utils'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './charting_library'
-import type { PriceChartBar, PriceChartMetric, PriceChartResolution } from './priceChart.types'
+import type { PriceChartBar, PriceChartMetric, PriceChartResolution, PriceChartSupplyBasis } from './priceChart.types'
 import type {
   CreatePriceChartDatafeedParams,
   PriceChartDatafeedController,
@@ -27,6 +27,7 @@ interface GetBarsHandlerParams {
   setActiveTicker: (ticker: string) => void
   setStatus: (status: PriceChartHistoryStatus, ticker: string) => void
   symbols: PriceChartSymbolDescriptor[]
+  supplyBasis: PriceChartSupplyBasis
 }
 
 type GetBarsParameters = Parameters<IBasicDataFeed['getBars']>
@@ -42,6 +43,7 @@ interface HistoryLoaderParams {
   resolution: PriceChartResolution
   setStatus: (status: PriceChartHistoryStatus) => void
   symbol: PriceChartSymbolDescriptor
+  supplyBasis: PriceChartSupplyBasis
 }
 
 type PeriodParams = GetBarsParameters[2]
@@ -51,6 +53,7 @@ export function createPriceChartDatafeed({
   onHistoryLoaded,
   onStatusChange,
   symbols,
+  supplyBasis = 'circulating',
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
   let activeTicker: string | undefined
@@ -89,6 +92,7 @@ export function createPriceChartDatafeed({
       setActiveTicker,
       setStatus,
       symbols,
+      supplyBasis,
     }),
     dispose: () => {
       disposed = true
@@ -177,6 +181,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
       resolution: resolvedResolution,
       setStatus: (status) => params.setStatus(status, symbol.ticker),
       symbol,
+      supplyBasis: params.supplyBasis,
     })
   }
 }
@@ -186,13 +191,28 @@ async function fetchHistory(
   periodParams: PeriodParams,
   resolution: PriceChartResolution,
   metric: PriceChartMetric,
+  supplyBasis: PriceChartSupplyBasis,
 ): Promise<PriceChartBar[]> {
-  return loadPriceChartHistory(symbol, periodParams.from, periodParams.to, resolution, metric, periodParams.countBack)
+  return loadPriceChartHistory(
+    symbol,
+    periodParams.from,
+    periodParams.to,
+    resolution,
+    metric,
+    supplyBasis,
+    periodParams.countBack,
+  )
 }
 
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
   try {
-    const bars = await fetchHistory(params.symbol, params.periodParams, params.resolution, params.metric)
+    const bars = await fetchHistory(
+      params.symbol,
+      params.periodParams,
+      params.resolution,
+      params.metric,
+      params.supplyBasis,
+    )
 
     if (bars.length) params.onHistoryLoaded(bars)
 

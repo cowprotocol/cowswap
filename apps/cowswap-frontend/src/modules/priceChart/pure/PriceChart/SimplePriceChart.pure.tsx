@@ -12,7 +12,6 @@ import {
   IChartApi,
   IPriceLine,
   ISeriesApi,
-  LineStyle,
   MouseEventParams,
   Time,
   UTCTimestamp,
@@ -28,6 +27,7 @@ import * as simpleStyledEl from './SimplePriceChart.styled'
 
 import { logPriceChart } from '../../api'
 import { loadPriceChartHistory, toMarketCapBars } from '../../lib/loadPriceChartHistory.service'
+import { getPriceChartReferenceLineAppearance } from '../../lib/priceChartReferenceLine.utils'
 import { mapPriceChartBarsToVolumeData } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
@@ -36,7 +36,12 @@ import {
   SIMPLE_PRICE_CHART_PERIODS,
 } from '../../lib/simplePriceChart.utils'
 
-import type { PriceChartBar, PriceChartMetric, SimplePriceChartPeriod } from '../../lib/priceChart.types'
+import type {
+  PriceChartBar,
+  PriceChartMetric,
+  PriceChartSupplyBasis,
+  SimplePriceChartPeriod,
+} from '../../lib/priceChart.types'
 import type {
   PriceChartHistoryStatus,
   PriceChartPureProps,
@@ -65,7 +70,7 @@ export interface SimplePriceChartTooltipProps {
 
 interface CachedSimplePriceHistory {
   key: string
-  marketCap?: Promise<PriceChartBar[]>
+  marketCap: Partial<Record<PriceChartSupplyBasis, Promise<PriceChartBar[]>>>
   price: Promise<PriceChartBar[]>
 }
 
@@ -97,9 +102,10 @@ export function SimplePriceChartPure({
   onSelectMetric,
   onSelectPrice,
   onSelectSelection,
-  referenceLine,
+  referenceLines,
   sizeControl,
   symbols,
+  supplyBasis = 'circulating',
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
   const { i18n, t } = useLingui()
@@ -108,22 +114,22 @@ export function SimplePriceChartPure({
   const areaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
-  const priceLineRef = useRef<IPriceLine | null>(null)
+  const priceLinesRef = useRef<Map<string, IPriceLine>>(new Map())
   const latestOnSelectPriceRef = useRef(onSelectPrice)
   const [period, setPeriod] = useState<SimplePriceChartPeriod>(DEFAULT_PERIOD)
   const [chartType, setChartType] = useState<SimplePriceChartType>('line')
   const [tooltip, setTooltip] = useState<SimplePriceChartTooltipData>()
-  const { data, historyStatus } = usePriceChartHistory(activeSymbol, period, metric)
+  const { data, historyStatus } = usePriceChartHistory(activeSymbol, period, metric, supplyBasis)
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
-  const isSelectingPrice = metric === 'price' && !!onSelectPrice
+  const isSelectingPrice = !!onSelectPrice
 
   useEffect(() => {
     if (historyStatus) setTooltip(undefined)
   }, [historyStatus])
 
   useEffect(() => {
-    latestOnSelectPriceRef.current = metric === 'price' ? onSelectPrice : undefined
-  }, [metric, onSelectPrice])
+    latestOnSelectPriceRef.current = onSelectPrice
+  }, [onSelectPrice])
 
   useSimpleChart(
     chartContainerRef,
@@ -131,7 +137,7 @@ export function SimplePriceChartPure({
     areaSeriesRef,
     candlestickSeriesRef,
     volumeSeriesRef,
-    priceLineRef,
+    priceLinesRef,
     latestOnSelectPriceRef,
     setTooltip,
     chartType,
@@ -182,22 +188,19 @@ export function SimplePriceChartPure({
 
     if (!series) return
 
-    if (priceLineRef.current) {
-      series.removePriceLine(priceLineRef.current)
-      priceLineRef.current = null
-    }
-
-    const autoscaleInfoProvider: AutoscaleInfoProvider | undefined = referenceLine
+    const autoscaleInfoProvider: AutoscaleInfoProvider | undefined = referenceLines.length
       ? (original) => {
           const info = original()
 
           if (!info) return info
 
+          const prices = referenceLines.map((line) => line.price)
+
           return {
             ...info,
             priceRange: {
-              maxValue: Math.max(info.priceRange.maxValue, referenceLine.price),
-              minValue: Math.min(info.priceRange.minValue, referenceLine.price),
+              maxValue: Math.max(info.priceRange.maxValue, ...prices),
+              minValue: Math.min(info.priceRange.minValue, ...prices),
             },
           }
         }
@@ -205,17 +208,8 @@ export function SimplePriceChartPure({
 
     series.applyOptions({ autoscaleInfoProvider })
 
-    if (!referenceLine) return
-
-    priceLineRef.current = series.createPriceLine({
-      axisLabelVisible: true,
-      color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-      lineStyle: LineStyle.Dashed,
-      lineWidth: 2,
-      price: referenceLine.price,
-      title: referenceLine.label,
-    })
-  }, [chartType, data, darkMode, metric, referenceLine])
+    syncSimplePriceLines(series, priceLinesRef.current, referenceLines)
+  }, [chartType, darkMode, referenceLines])
 
   if (!symbols.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
 
@@ -275,6 +269,40 @@ export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartToolti
       </simpleStyledEl.TooltipTime>
     </simpleStyledEl.Tooltip>
   )
+}
+
+export function syncSimplePriceLines(
+  series: ISeriesApi<'Area'> | ISeriesApi<'Candlestick'>,
+  priceLines: Map<string, IPriceLine>,
+  referenceLines: PriceChartPureProps['referenceLines'],
+): void {
+  const visibleLineIds = new Set(referenceLines.map((line) => line.id))
+
+  priceLines.forEach((line, id) => {
+    if (visibleLineIds.has(id)) return
+
+    series.removePriceLine(line)
+    priceLines.delete(id)
+  })
+
+  referenceLines.forEach((referenceLine) => {
+    const appearance = getPriceChartReferenceLineAppearance(referenceLine.variant)
+    const options = {
+      axisLabelVisible: true,
+      color: getCssVar(appearance.colorToken, appearance.colorFallback),
+      lineStyle: appearance.lineStyle,
+      lineWidth: appearance.lineWidth,
+      price: referenceLine.price,
+      title: referenceLine.label,
+    }
+    const existingLine = priceLines.get(referenceLine.id)
+
+    if (existingLine) {
+      existingLine.applyOptions(options)
+    } else {
+      priceLines.set(referenceLine.id, series.createPriceLine(options))
+    }
+  })
 }
 
 function ChartTypeControl({ chartType, onChange }: ChartTypeControlProps): ReactNode {
@@ -396,6 +424,7 @@ function usePriceChartHistory(
   symbol: PriceChartSymbolDescriptor | undefined,
   period: SimplePriceChartPeriod,
   metric: PriceChartMetric,
+  supplyBasis: PriceChartSupplyBasis,
 ): SimplePriceHistory {
   const [data, setData] = useState<PriceChartBar[]>([])
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
@@ -414,10 +443,14 @@ function usePriceChartHistory(
     let isCancelled = false
     const { from, resolution, to } = getSimplePriceChartPeriodConfig(period, Date.now() / 1000)
     const historyKey = `${symbol.ticker}:${period}`
-    const history =
+    const history: CachedSimplePriceHistory =
       historyCacheRef.current?.key === historyKey
         ? historyCacheRef.current
-        : { key: historyKey, price: loadPriceChartHistory(symbol, from, to, resolution, 'price') }
+        : {
+            key: historyKey,
+            marketCap: {},
+            price: loadPriceChartHistory(symbol, from, to, resolution, 'price', supplyBasis),
+          }
     historyCacheRef.current = history
 
     if (!hasRequestedHistoryRef.current) {
@@ -428,7 +461,7 @@ function usePriceChartHistory(
     const request =
       metric === 'price'
         ? history.price
-        : (history.marketCap ??= history.price.then((bars) => toMarketCapBars(symbol, bars)))
+        : (history.marketCap[supplyBasis] ??= history.price.then((bars) => toMarketCapBars(symbol, bars, supplyBasis)))
 
     void request
       .then((bars) => {
@@ -449,7 +482,7 @@ function usePriceChartHistory(
     return () => {
       isCancelled = true
     }
-  }, [metric, period, symbol])
+  }, [metric, period, supplyBasis, symbol])
 
   return { data, historyStatus }
 }
@@ -461,7 +494,7 @@ function useSimpleChart(
   areaSeriesRef: MutableRefObject<ISeriesApi<'Area'> | null>,
   candlestickSeriesRef: MutableRefObject<ISeriesApi<'Candlestick'> | null>,
   volumeSeriesRef: MutableRefObject<ISeriesApi<'Histogram'> | null>,
-  priceLineRef: MutableRefObject<IPriceLine | null>,
+  priceLinesRef: MutableRefObject<Map<string, IPriceLine>>,
   latestOnSelectPriceRef: MutableRefObject<((price: number) => void) | undefined>,
   onTooltipChange: (tooltip: SimplePriceChartTooltipData | undefined) => void,
   chartType: SimplePriceChartType,
@@ -471,6 +504,7 @@ function useSimpleChart(
 ): void {
   useEffect(() => {
     const container = chartContainerRef.current
+    const priceLines = priceLinesRef.current
 
     if (!container) return
 
@@ -554,7 +588,7 @@ function useSimpleChart(
       areaSeriesRef.current = null
       candlestickSeriesRef.current = null
       volumeSeriesRef.current = null
-      priceLineRef.current = null
+      priceLines.clear()
     }
   }, [
     areaSeriesRef,
@@ -567,7 +601,7 @@ function useSimpleChart(
     locale,
     metric,
     onTooltipChange,
-    priceLineRef,
+    priceLinesRef,
     volumeSeriesRef,
   ])
 }

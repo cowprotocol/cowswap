@@ -44,4 +44,6 @@ export interface PriceChartSummary {
   price: number
 }
 
+export type PriceChartSupplyBasis = 'circulating' | 'total'
+
 export type SimplePriceChartPeriod = '1H' | '1D' | '1W' | '1M' | '1Y' | 'All'

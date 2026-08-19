@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { loadCirculatingSupply, loadPriceChartHistory } from './loadPriceChartHistory.service'
+import { loadMarketCapSupply, loadPriceChartHistory } from './loadPriceChartHistory.service'
 
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
@@ -36,7 +36,18 @@ describe('loadPriceChartHistory', () => {
     async (circulatingSupply) => {
       jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply, totalSupply: 100 })
 
-      await expect(loadCirculatingSupply(SYMBOL.baseAsset)).rejects.toThrow('Circulating supply unavailable')
+      await expect(loadMarketCapSupply(SYMBOL.baseAsset, 'circulating')).rejects.toThrow(
+        'Circulating supply unavailable',
+      )
     },
   )
+
+  it('scales market cap with total supply when selected', async () => {
+    jest.mocked(fetchPriceChartData).mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1 }])
+    jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply: 10, totalSupply: 20 })
+
+    await expect(loadPriceChartHistory(SYMBOL, 1, 2, '60', 'marketCap', 'total')).resolves.toEqual([
+      { close: 40, high: 60, low: 20, open: 30, timestamp: 1 },
+    ])
+  })
 })

@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { useUsdPrice } from 'modules/usdAmount'
 
@@ -9,11 +10,12 @@ import { PriceChartPure } from './PriceChart.pure'
 import { SimplePriceChartPure } from './SimplePriceChart.pure'
 
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
-import { loadCirculatingSupply } from '../../lib/loadPriceChartHistory.service'
+import { loadMarketCapSupply } from '../../lib/loadPriceChartHistory.service'
 import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../../lib/priceLimitLine.utils'
 import { createSwapChartSymbols } from '../../lib/symbolCatalog'
 import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/tradingViewPersistence.utils'
 import { priceChartModeAtom } from '../../state/priceChartModeAtom'
+import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
 
 import type { PriceChartMetric } from '../../lib/priceChart.types'
 import type { PriceChartContainerProps, PriceChartSelection } from '../../lib/tradingView.types'
@@ -22,7 +24,7 @@ interface EnabledPriceChartProps extends PriceChartContainerProps {
   isAdvancedPriceChartEnabled: boolean
 }
 
-interface MarketCapSupply {
+interface LoadedMarketCapSupply {
   assetKey: string
   value: number | null
 }
@@ -41,10 +43,11 @@ function EnabledPriceChart({
   isAdvancedPriceChartEnabled,
   onSelectLimitPrice,
   outputCurrency,
-  referenceLine,
+  referenceLines = [],
   sizeControl,
 }: EnabledPriceChartProps): ReactNode {
   const chartMode = useAtomValue(priceChartModeAtom)
+  const supplyBasis = useAtomValue(priceChartSupplyBasisAtom)
   const [metric, setMetric] = useState<PriceChartMetric>('price')
   const inputUsdPriceState = useUsdPrice(inputCurrency ? getWrappedToken(inputCurrency) : null)
   const outputUsdPriceState = useUsdPrice(outputCurrency ? getWrappedToken(outputCurrency) : null)
@@ -66,70 +69,71 @@ function EnabledPriceChart({
     [selectedSelection, symbols],
   )
   const activeAssetKey = activeSymbol
-    ? `${activeSymbol.baseAsset.chainId}:${activeSymbol.baseAsset.address.toLowerCase()}`
+    ? `${activeSymbol.baseAsset.chainId}:${getAddressKey(activeSymbol.baseAsset.address)}`
     : null
-  const referenceLinePrice = useMemo(
+  const activeSupplyKey = activeAssetKey ? `${activeAssetKey}:${supplyBasis}` : null
+  const activeReferenceLines = useMemo(
     () =>
-      getActivePriceLimitLinePrice(
-        activeSymbol,
-        referenceLine?.price,
-        inputCurrency,
-        outputCurrency,
-        inputUsdPrice,
-        outputUsdPrice,
-      ),
-    [activeSymbol, inputCurrency, inputUsdPrice, outputCurrency, outputUsdPrice, referenceLine?.price],
+      metric === 'price'
+        ? referenceLines.flatMap((referenceLine) => {
+            const price = getActivePriceLimitLinePrice(
+              activeSymbol,
+              referenceLine.price,
+              inputCurrency,
+              outputCurrency,
+              inputUsdPrice,
+              outputUsdPrice,
+            )
+
+            const label = activeSymbol
+              ? referenceLine.labels?.[activeSymbol.selection] || referenceLine.label
+              : referenceLine.label
+
+            return price === null ? [] : [{ ...referenceLine, label, price }]
+          })
+        : [],
+    [activeSymbol, inputCurrency, inputUsdPrice, metric, outputCurrency, outputUsdPrice, referenceLines],
   )
-  const [marketCapSupply, setMarketCapSupply] = useState<MarketCapSupply>()
-  const shouldLoadMarketCapSupply = metric === 'marketCap' && referenceLinePrice !== null
+  const [marketCapSupply, setMarketCapSupply] = useState<LoadedMarketCapSupply>()
+  const shouldLoadMarketCapSupply = metric === 'marketCap' && onSelectLimitPrice !== undefined
 
   useEffect(() => {
-    if (!shouldLoadMarketCapSupply || !activeSymbol || !activeAssetKey) return
+    if (!shouldLoadMarketCapSupply || !activeSymbol || !activeSupplyKey) return
 
     let isCancelled = false
 
-    void loadCirculatingSupply(activeSymbol.baseAsset)
+    void loadMarketCapSupply(activeSymbol.baseAsset, supplyBasis)
       .then((value) => {
-        if (!isCancelled) setMarketCapSupply({ assetKey: activeAssetKey, value })
+        if (!isCancelled) setMarketCapSupply({ assetKey: activeSupplyKey, value })
       })
       .catch(() => {
-        if (!isCancelled) setMarketCapSupply({ assetKey: activeAssetKey, value: null })
+        if (!isCancelled) setMarketCapSupply({ assetKey: activeSupplyKey, value: null })
       })
 
     return () => {
       isCancelled = true
     }
-  }, [activeAssetKey, activeSymbol, shouldLoadMarketCapSupply])
+  }, [activeSupplyKey, activeSymbol, shouldLoadMarketCapSupply, supplyBasis])
 
-  const displayedReferenceLinePrice = useMemo(() => {
-    if (referenceLinePrice === null || metric === 'price') return referenceLinePrice
-
-    const circulatingSupply = marketCapSupply?.assetKey === activeAssetKey ? marketCapSupply.value : null
-
-    if (circulatingSupply === null || circulatingSupply === undefined) return null
-
-    const marketCap = referenceLinePrice * circulatingSupply
-
-    return Number.isFinite(marketCap) ? marketCap : null
-  }, [activeAssetKey, marketCapSupply, metric, referenceLinePrice])
-  const activeReferenceLine = useMemo(
-    () =>
-      referenceLine && displayedReferenceLinePrice !== null
-        ? { label: referenceLine.label, price: displayedReferenceLinePrice }
-        : undefined,
-    [displayedReferenceLinePrice, referenceLine],
-  )
+  const supply = marketCapSupply?.assetKey === activeSupplyKey ? marketCapSupply.value : null
   const handleSelectSelection = useCallback((selection: PriceChartSelection) => {
     setSelectedSelection(selection)
     savePriceChartSelection(selection)
   }, [])
   const handleSelectPrice = useCallback(
     (selectedPrice: number) => {
+      let selectedUsdPrice = selectedPrice
+
+      if (metric === 'marketCap') {
+        if (!supply) return
+        selectedUsdPrice /= supply
+      }
+
       const nextRate = getSelectedPriceLimitRate(
         activeSymbol,
         inputCurrency,
         outputCurrency,
-        selectedPrice,
+        selectedUsdPrice,
         inputUsdPrice,
         outputUsdPrice,
       )
@@ -140,19 +144,21 @@ function EnabledPriceChart({
 
       onSelectLimitPrice(nextRate)
     },
-    [activeSymbol, inputCurrency, inputUsdPrice, onSelectLimitPrice, outputCurrency, outputUsdPrice],
+    [activeSymbol, inputCurrency, inputUsdPrice, metric, onSelectLimitPrice, outputCurrency, outputUsdPrice, supply],
   )
+  const canSelectPrice = onSelectLimitPrice !== undefined && (metric === 'price' || (supply !== null && supply > 0))
 
   const chartProps = {
     activeSymbol,
     executionLinePrice: null,
     metric,
     onSelectMetric: setMetric,
-    onSelectPrice: metric === 'price' && onSelectLimitPrice ? handleSelectPrice : undefined,
+    onSelectPrice: canSelectPrice ? handleSelectPrice : undefined,
     onSelectSelection: handleSelectSelection,
-    referenceLine: activeReferenceLine,
+    referenceLines: activeReferenceLines,
     sizeControl,
     symbols,
+    supplyBasis,
   }
 
   return chartMode === 'advanced' && isAdvancedPriceChartEnabled ? (

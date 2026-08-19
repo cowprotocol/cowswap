@@ -218,6 +218,28 @@ describe('createPriceChartDatafeed', () => {
     })
   })
 
+  it('scales USD history by total supply when selected', async () => {
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const onResult = jest.fn()
+
+    mockedFetchPriceChartData.mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }])
+    mockedFetchTokenSupply.mockResolvedValue({ circulatingSupply: 100, totalSupply: 120 })
+
+    const { datafeed } = createPriceChartDatafeed({
+      metric: 'marketCap',
+      onStatusChange: jest.fn(),
+      supplyBasis: 'total',
+      symbols: [symbol],
+    })
+
+    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, jest.fn())
+    await flushTasks()
+
+    expect(onResult).toHaveBeenCalledWith([{ close: 240, high: 360, low: 120, open: 180, time: 1710000000000 }], {
+      noData: false,
+    })
+  })
+
   it('shows loading only for the first request for a symbol', async () => {
     const symbol = createSymbolDescriptor(
       createAsset({

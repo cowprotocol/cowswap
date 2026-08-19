@@ -1,11 +1,25 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import { PriceChartSettings } from './PriceChartSettings.container'
 
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 
 jest.mock('@cowprotocol/ui', () => ({
-  SettingsBox: ({ title }: { title: string }) => <span>{title}</span>,
+  SettingsBox: ({
+    checked,
+    title,
+    toggle,
+    tooltip,
+  }: {
+    checked: boolean
+    title: string
+    toggle: () => void
+    tooltip: string
+  }) => (
+    <button aria-pressed={checked} onClick={toggle} title={tooltip}>
+      {title}
+    </button>
+  ),
 }))
 
 jest.mock('../../hooks/usePriceChartFeatureFlags', () => ({
@@ -36,9 +50,10 @@ describe('PriceChartSettings', () => {
 
     expect(screen.getByText('Show price chart')).not.toBeNull()
     expect(screen.queryByText('Advanced price chart')).toBeNull()
+    expect(screen.getByText('Total supply for Market Cap')).not.toBeNull()
   })
 
-  it('shows both settings when both features are enabled', () => {
+  it('shows chart settings and switches the Market Cap supply basis', () => {
     usePriceChartFeatureFlagsMock.mockReturnValue({
       isAdvancedPriceChartEnabled: true,
       isPriceChartEnabled: true,
@@ -48,5 +63,11 @@ describe('PriceChartSettings', () => {
 
     expect(screen.getByText('Show price chart')).not.toBeNull()
     expect(screen.getByText('Advanced price chart')).not.toBeNull()
+    const supplySetting = screen.getByRole('button', { name: 'Total supply for Market Cap' })
+
+    expect(supplySetting.getAttribute('title')).toContain('Market Cap is an approximation')
+    expect(supplySetting.getAttribute('aria-pressed')).toBe('false')
+    fireEvent.click(supplySetting)
+    expect(supplySetting.getAttribute('aria-pressed')).toBe('true')
   })
 })
