@@ -1,3 +1,5 @@
+import { ReactNode, useCallback } from 'react'
+
 import { DrawerOrDialog, Modal, ModalHeader } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -7,41 +9,42 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 
 import { useAccountModalState } from '../../hooks/useAccountModalState'
 import { useCloseAccountModalOnNavigate } from '../../hooks/useCloseAccountModalOnNavigate'
-import { useToggleAccountModal } from '../../hooks/useToggleAccountModal'
+import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
 import { AccountDetails } from '../AccountDetails'
 
 const ACCOUNT_MODAL_MAX_WIDTH = 850
 
-// TODO: rename the component into AccountModal
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrdersPanel() {
+export function AccountModal(): ReactNode {
   const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
+  const closeAccountModal = useCloseAccountModal()
 
-  const handleCloseOrdersPanel = useToggleAccountModal()
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        closeAccountModal()
+      }
+    },
+    [closeAccountModal],
+  )
 
   useCloseAccountModalOnNavigate()
 
   const displayOrdersPanel = !!(active && isOpen && account)
 
   return (
-    <DrawerOrDialog
-      onOpenChange={handleCloseOrdersPanel}
-      isOpen={displayOrdersPanel}
-      maxWidth={ACCOUNT_MODAL_MAX_WIDTH}
-    >
+    <DrawerOrDialog onOpenChange={handleOpenChange} isOpen={displayOrdersPanel} maxWidth={ACCOUNT_MODAL_MAX_WIDTH}>
       <Modal.Root>
-        <ModalHeader sticky title={<Trans>Account</Trans>} onClose={handleCloseOrdersPanel} />
+        <ModalHeader sticky title={<Trans>Account</Trans>} onClose={closeAccountModal} />
 
         <Modal.Content>
           <AccountDetails
             ENSName={ensName}
             pendingTransactions={pendingActivity}
             confirmedTransactions={confirmedActivity}
-            handleCloseOrdersPanel={handleCloseOrdersPanel}
+            handleCloseOrdersPanel={closeAccountModal}
           />
         </Modal.Content>
       </Modal.Root>
