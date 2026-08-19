@@ -28,7 +28,7 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
     const chainId = chain.id as EvmChains
     const url = RPC_URLS[chainId]
     if (url) {
-      acc[chainId] = http(url)
+      acc[chainId] = http(url, { batch: { batchSize: 50, wait: 50 } })
     }
     return acc
   },
