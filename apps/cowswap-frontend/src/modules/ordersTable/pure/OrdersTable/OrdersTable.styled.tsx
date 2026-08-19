@@ -9,7 +9,7 @@ export const TableBox = styled.div`
   padding: 0;
   position: relative;
   background: var(${UI.COLOR_PAPER});
-  flex: 1 1 auto;
+  // flex: 1 1 auto;
   width: 100%;
   min-height: 0;
 `

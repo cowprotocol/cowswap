@@ -1,5 +1,3 @@
-import { Media } from '@cowprotocol/ui'
-
 import styled from 'styled-components/macro'
 
 export const PaginationBox = styled.div`
@@ -11,8 +9,4 @@ export const PaginationBox = styled.div`
   justify-content: center;
   font-size: 14px;
   font-weight: 500;
-
-  ${Media.upToSmall()} {
-    justify-content: flex-start;
-  }
 `
