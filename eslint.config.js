@@ -21,7 +21,7 @@ const compat = new FlatCompat({
 module.exports = [
   pluginLingui.configs['flat/recommended'],
   {
-    ignores: ['static-files/', '.nx/', '**/.next/', 'build/', 'dist/'],
+    ignores: ['public/', '**/charting_library/**', 'static-files/', '.nx/', '**/.next/', 'build/', 'dist/'],
   },
   {
     plugins: {

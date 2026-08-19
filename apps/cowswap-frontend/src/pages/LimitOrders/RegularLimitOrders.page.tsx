@@ -1,24 +1,70 @@
-import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode, Suspense, useCallback, useMemo } from 'react'
+
+import { Fraction, Price } from '@cowprotocol/currency'
+
+import styled from 'styled-components/macro'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
-import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
+import {
+  executionPriceAtom,
+  isChartPriceSelectionModeAtom,
+  limitOrdersSettingsAtom,
+  limitRateAtom,
+  LimitOrdersWidget,
+  useIsWidgetUnlocked,
+  useLimitOrdersDerivedState,
+  useUpdateActiveRate,
+} from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
+import { PriceChart } from 'modules/priceChart'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
+
+const SecondaryColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-area: secondary;
+`
 
 export function RegularLimitOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.LIMIT)
 
   const isUnlocked = useIsWidgetUnlocked()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
+  const executionPrice = useAtomValue(executionPriceAtom)
+  const { activeRate } = useAtomValue(limitRateAtom)
+  const isChartPriceSelectionMode = useAtomValue(isChartPriceSelectionModeAtom)
+  const updateRate = useUpdateActiveRate()
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const { hideOrdersTable } = useInjectedWidgetParams()
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
+  const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
+  const activeLimitPrice = useMemo(() => {
+    if (!inputCurrency || !outputCurrency || !activeRate) {
+      return null
+    }
+
+    return new Price(inputCurrency, outputCurrency, activeRate.denominator.toString(), activeRate.numerator.toString())
+  }, [activeRate, inputCurrency, outputCurrency])
+  const handleSelectLimitPrice = useCallback(
+    (activeRate: Fraction) => {
+      updateRate({
+        activeRate,
+        isAlternativeOrderRate: false,
+        isRateFromUrl: false,
+        isTypedValue: false,
+      })
+      setIsChartPriceSelectionMode(false)
+    },
+    [setIsChartPriceSelectionMode, updateRate],
+  )
 
   return (
     <styledEl.PageWrapper
@@ -32,12 +78,25 @@ export function RegularLimitOrdersPage(): ReactNode {
       </styledEl.PrimaryWrapper>
 
       {!hideOrdersTable && (
-        <styledEl.SecondaryWrapper className="trade-orders-table">
-          {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
-          <Suspense fallback={<Loading />}>
-            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
-          </Suspense>
-        </styledEl.SecondaryWrapper>
+        <SecondaryColumn className="trade-orders-table">
+          {inputCurrency && outputCurrency ? (
+            <styledEl.SecondaryWrapper>
+              <PriceChart
+                executionPrice={executionPrice}
+                inputCurrency={inputCurrency}
+                limitPrice={activeLimitPrice}
+                onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
+                outputCurrency={outputCurrency}
+              />
+            </styledEl.SecondaryWrapper>
+          ) : null}
+          <styledEl.SecondaryWrapper>
+            {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
+            <Suspense fallback={<Loading />}>
+              <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
+            </Suspense>
+          </styledEl.SecondaryWrapper>
+        </SecondaryColumn>
       )}
     </styledEl.PageWrapper>
   )
