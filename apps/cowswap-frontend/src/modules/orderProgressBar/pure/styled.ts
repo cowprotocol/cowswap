@@ -166,7 +166,7 @@ export const FinishedTagLine = styled.div`
   padding: 0;
   flex: 1 1 auto;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
 
   ${Media.upToSmall()} {
     flex: 0 0 auto;
