@@ -23,7 +23,7 @@ interface GetBarsHandlerParams {
   isDisposed: () => boolean
   latestRequestIdsByTicker: Map<string, number>
   metric: PriceChartMetric
-  setHistory: (bars: PriceChartBar[], ticker: string) => void
+  setHistory: (bars: PriceChartBar[], ticker: string, requestId: number) => void
   setActiveTicker: (ticker: string) => void
   setStatus: (status: PriceChartHistoryStatus, ticker: string) => void
   symbols: PriceChartSymbolDescriptor[]
@@ -54,6 +54,7 @@ export function createPriceChartDatafeed({
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
   let activeTicker: string | undefined
+  const historiesByTicker = new Map<string, { bars: PriceChartBar[]; requestId: number }>()
   const latestRequestIdsByTicker = new Map<string, number>()
 
   const setStatus = (status: PriceChartHistoryStatus, ticker: string): void => {
@@ -62,10 +63,21 @@ export function createPriceChartDatafeed({
     onStatusChange(status)
   }
 
-  const setHistory = (bars: PriceChartBar[], ticker: string): void => {
-    if (disposed || ticker !== activeTicker) return
+  const setHistory = (bars: PriceChartBar[], ticker: string, requestId: number): void => {
+    if (disposed || requestId <= (historiesByTicker.get(ticker)?.requestId ?? 0)) return
 
-    onHistoryLoaded?.(bars)
+    historiesByTicker.set(ticker, { bars, requestId })
+
+    if (ticker === activeTicker) onHistoryLoaded?.(bars)
+  }
+
+  const setActiveTicker = (ticker: string): void => {
+    if (disposed || ticker === activeTicker) return
+
+    activeTicker = ticker
+    const history = historiesByTicker.get(ticker)
+
+    if (history) onHistoryLoaded?.(history.bars)
   }
 
   return {
@@ -74,14 +86,13 @@ export function createPriceChartDatafeed({
       latestRequestIdsByTicker,
       metric,
       setHistory,
-      setActiveTicker: (ticker) => {
-        activeTicker = ticker
-      },
+      setActiveTicker,
       setStatus,
       symbols,
     }),
     dispose: () => {
       disposed = true
+      historiesByTicker.clear()
       latestRequestIdsByTicker.clear()
     },
   }
@@ -159,7 +170,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
     void loadHistory({
       isLatestRequest: () => !params.isDisposed() && params.latestRequestIdsByTicker.get(symbol.ticker) === requestId,
       onError,
-      onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker),
+      onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId),
       onResult,
       metric: params.metric,
       periodParams,
@@ -182,6 +193,8 @@ async function fetchHistory(
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
   try {
     const bars = await fetchHistory(params.symbol, params.periodParams, params.resolution, params.metric)
+
+    if (bars.length) params.onHistoryLoaded(bars)
 
     if (!params.isLatestRequest()) {
       params.onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: !bars.length })
@@ -214,7 +227,6 @@ function reportHistoryError(params: HistoryLoaderParams, error: unknown): void {
 }
 
 function reportReadyHistory(params: HistoryLoaderParams, bars: PriceChartBar[]): void {
-  params.onHistoryLoaded(bars)
   params.onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: false })
   params.setStatus(null)
 }

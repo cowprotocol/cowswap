@@ -5,6 +5,7 @@ import { createPriceChartDatafeed } from './tradingViewDatafeed.service'
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
 import type { LibrarySymbolInfo, ResolutionString, SearchSymbolResultItem } from './charting_library'
+import type { PriceChartBar } from './priceChart.types'
 import type { PriceChartAssetDescriptor, PriceChartSymbolDescriptor } from './tradingView.types'
 
 jest.mock('../api', () => ({
@@ -366,7 +367,7 @@ describe('createPriceChartDatafeed request lifecycle', () => {
     expect(onResult).toHaveBeenCalledWith([])
   })
 
-  it('completes overlapping requests while applying only the latest history', async () => {
+  it('does not let an older successful request replace newer history', async () => {
     const symbol = createSymbolDescriptor(
       createAsset({
         address: '0xbase',
@@ -374,24 +375,8 @@ describe('createPriceChartDatafeed request lifecycle', () => {
         symbol: 'COW',
       }),
     )
-    const firstRequest = createDeferred<
-      {
-        close: number
-        high: number
-        low: number
-        open: number
-        timestamp: number
-      }[]
-    >()
-    const secondRequest = createDeferred<
-      {
-        close: number
-        high: number
-        low: number
-        open: number
-        timestamp: number
-      }[]
-    >()
+    const firstRequest = createDeferred<PriceChartBar[]>()
+    const secondRequest = createDeferred<PriceChartBar[]>()
     const firstOnResult = jest.fn()
     const secondOnResult = jest.fn()
     const onHistoryLoaded = jest.fn()
@@ -408,15 +393,6 @@ describe('createPriceChartDatafeed request lifecycle', () => {
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, firstOnResult, jest.fn())
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, secondOnResult, jest.fn())
 
-    firstRequest.resolve([
-      {
-        close: 2,
-        high: 3,
-        low: 1,
-        open: 1.5,
-        timestamp: 1710000000,
-      },
-    ])
     secondRequest.resolve([
       {
         close: 4,
@@ -424,6 +400,16 @@ describe('createPriceChartDatafeed request lifecycle', () => {
         low: 3,
         open: 3.5,
         timestamp: 1710003600,
+      },
+    ])
+    await flushTasks()
+    firstRequest.resolve([
+      {
+        close: 2,
+        high: 3,
+        low: 1,
+        open: 1.5,
+        timestamp: 1710000000,
       },
     ])
     await flushTasks()
@@ -462,5 +448,58 @@ describe('createPriceChartDatafeed request lifecycle', () => {
         timestamp: 1710003600,
       },
     ])
+  })
+
+  it('keeps successful history when a newer overlapping request fails', async () => {
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const firstRequest = createDeferred<PriceChartBar[]>()
+    const secondRequest = createDeferred<PriceChartBar[]>()
+    const onHistoryLoaded = jest.fn()
+    const onError = jest.fn()
+    const bars = [{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }]
+
+    mockedFetchPriceChartData.mockReturnValueOnce(firstRequest.promise).mockReturnValueOnce(secondRequest.promise)
+
+    const { datafeed } = createPriceChartDatafeed({
+      metric: 'price',
+      onHistoryLoaded,
+      onStatusChange: jest.fn(),
+      symbols: [symbol],
+    })
+
+    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, jest.fn(), jest.fn())
+    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, jest.fn(), onError)
+    firstRequest.resolve(bars)
+    secondRequest.reject(new Error('failed'))
+    await flushTasks()
+
+    expect(onHistoryLoaded).toHaveBeenCalledWith(bars)
+    expect(onError).toHaveBeenCalledWith('failed')
+  })
+
+  it('restores successful history when its symbol becomes active again', async () => {
+    const cow = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const usdc = createSymbolDescriptor(createAsset({ symbol: 'USDC' }))
+    const bars = [{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }]
+    const onHistoryLoaded = jest.fn()
+
+    mockedFetchPriceChartData.mockResolvedValue(bars)
+
+    const { datafeed } = createPriceChartDatafeed({
+      metric: 'price',
+      onHistoryLoaded,
+      onStatusChange: jest.fn(),
+      symbols: [cow, usdc],
+    })
+
+    datafeed.getBars(cow.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, jest.fn(), jest.fn())
+    await flushTasks()
+    datafeed.resolveSymbol(usdc.ticker, jest.fn(), jest.fn())
+    await flushTasks()
+    datafeed.resolveSymbol(cow.ticker, jest.fn(), jest.fn())
+    await flushTasks()
+
+    expect(onHistoryLoaded).toHaveBeenCalledTimes(2)
+    expect(onHistoryLoaded).toHaveBeenLastCalledWith(bars)
   })
 })
