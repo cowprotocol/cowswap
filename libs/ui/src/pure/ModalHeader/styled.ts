@@ -5,12 +5,11 @@ import { slowTransition, transition } from '../../utils/animation'
 import { font } from '../../utils/font'
 import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
-import { MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
+import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
 
 export const Header = styled.header<{ withoutBorder?: boolean }>`
   position: relative;
-  background: var(${UI.COLOR_PAPER});
-  // background: red;
+  background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
   border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
   transition: ${slowTransition(['border-color'])};
 

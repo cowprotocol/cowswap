@@ -5,14 +5,15 @@ import styled from 'styled-components/macro'
 
 import { useIsScrolled } from './useIsScrolled'
 
-import { MODAL_ROOT_SCROLLED_CLASS } from '../Modal.constants'
+import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal.constants'
 
 const Root = styled.div`
   width: 100%;
   padding: 0;
   overflow-y: auto;
   height: inherit;
-  // background: yellow;
+  background: ${MODAL_DEBUG ? 'magenta' : 'transparent'};
+
   ${({ theme }) => theme.colorScrollbar};
 `
 

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useLayoutEffect, useRef } from 'react'
 
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
@@ -11,6 +11,7 @@ import { PendingOrdersPrices } from 'modules/orders'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useCloseReceiptModal, useGetAlternativeOrderModalContext, useSelectedOrder } from './OrdersReceiptModal.hooks'
 
@@ -22,7 +23,17 @@ interface OrdersReceiptModalProps {
 
 export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalProps): ReactNode {
   // TODO: can we get selected order from URL by id?
-  const order = useSelectedOrder()
+  const selectedOrder = useSelectedOrder()
+  const lastOrderRef = useRef<ParsedOrder | null>(null)
+
+  useLayoutEffect(() => {
+    if (selectedOrder) {
+      lastOrderRef.current = selectedOrder
+    }
+  }, [selectedOrder])
+
+  const order = selectedOrder ?? lastOrderRef.current
+  const isOpen = selectedOrder !== null
   const { chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
   const { name: receiverEnsName } = useENS((order?.receiver ?? undefined) as `0x${string}` | undefined)
@@ -37,13 +48,11 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const alternativeOrderModalContext = isChainIdDeprecated ? undefined : alternativeOrderModalContextFromHook
 
   if (!chainId || !order) {
-    return null
+    return <ReceiptModal isOpen={false} onDismiss={closeReceiptModal} order={null} />
   }
 
   const { inputToken, outputToken, buyAmount, sellAmount } = order
   const { executedBuyAmount, executedSellAmount } = order.executionData
-  // Sell and buy amounts
-  const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
   const limitPrice = calculatePrice({
@@ -66,7 +75,6 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   return (
     <ReceiptModal
       receiverEnsName={receiverEnsName}
-      sellAmount={sellAmountCurrency}
       buyAmount={buyAmountCurrency}
       limitPrice={limitPrice}
       executionPrice={executionPrice}
@@ -75,7 +83,7 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
       order={order}
       twapOrder={twapOrder}
       isTwapPartOrder={isTwapPartOrder}
-      isOpen={!!order}
+      isOpen={isOpen}
       onDismiss={closeReceiptModal}
       alternativeOrderModalContext={alternativeOrderModalContext}
     />

@@ -1,5 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
+
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 
 import * as styledEl from './BottomDrawer.styled'
@@ -35,6 +37,8 @@ export function BottomDrawer({
     },
     [onOpenChange],
   )
+
+  useBodyScrollbarLocker(open)
 
   return (
     <BaseDrawer.Root open={open} onOpenChange={handleOpenChange} swipeDirection="down">

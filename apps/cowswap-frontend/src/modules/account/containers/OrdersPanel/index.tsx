@@ -1,4 +1,3 @@
-import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { DrawerOrDialog, Modal, ModalHeader } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -28,14 +27,12 @@ export function OrdersPanel() {
 
   const displayOrdersPanel = !!(active && isOpen && account)
 
-  useBodyScrollbarLocker(displayOrdersPanel)
-
-  if (!displayOrdersPanel) {
-    return null
-  }
-
   return (
-    <DrawerOrDialog onOpenChange={handleCloseOrdersPanel} isOpen={isOpen} maxWidth={ACCOUNT_MODAL_MAX_WIDTH}>
+    <DrawerOrDialog
+      onOpenChange={handleCloseOrdersPanel}
+      isOpen={displayOrdersPanel}
+      maxWidth={ACCOUNT_MODAL_MAX_WIDTH}
+    >
       <Modal.Root>
         <ModalHeader sticky title={<Trans>Account</Trans>} onClose={handleCloseOrdersPanel} />
 
