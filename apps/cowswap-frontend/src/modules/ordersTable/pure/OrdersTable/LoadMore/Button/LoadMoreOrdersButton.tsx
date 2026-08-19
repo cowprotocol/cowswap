@@ -19,7 +19,7 @@ export function LoadMoreOrdersButton({ disabled, onClick }: LoadMoreOrdersButton
 }
 
 export const LoadMoreButton = styled(ButtonPrimary)`
-  margin: 10px auto 0;
+  margin: 12px auto 0;
   padding: 0 64px;
   width: auto;
 
