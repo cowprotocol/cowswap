@@ -1,4 +1,5 @@
 export * from './api'
+export * from './hooks/usePriceChartFeatureFlags'
 export * from './lib/priceChart.types'
 export { getLimitPriceFromRate } from './lib/priceLimitLine.utils'
 export * from './pure/ChartToggleButton/ChartToggleButton.container'

@@ -8,6 +8,7 @@ import { useUsdPrice } from 'modules/usdAmount'
 import { PriceChartPure } from './PriceChart.pure'
 import { SimplePriceChartPure } from './SimplePriceChart.pure'
 
+import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../../lib/priceLimitLine.utils'
 import { createSwapChartSymbols } from '../../lib/symbolCatalog'
 import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/tradingViewPersistence.utils'
@@ -16,13 +17,26 @@ import { priceChartModeAtom } from '../../state/priceChartModeAtom'
 import type { PriceChartMetric } from '../../lib/priceChart.types'
 import type { PriceChartContainerProps, PriceChartSelection } from '../../lib/tradingView.types'
 
-export function PriceChart({
+export function PriceChart({ ...props }: PriceChartContainerProps): ReactNode {
+  const { isAdvancedPriceChartEnabled, isPriceChartEnabled } = usePriceChartFeatureFlags()
+
+  if (!isPriceChartEnabled) return null
+
+  return <EnabledPriceChart {...props} isAdvancedPriceChartEnabled={isAdvancedPriceChartEnabled} />
+}
+
+interface EnabledPriceChartProps extends PriceChartContainerProps {
+  isAdvancedPriceChartEnabled: boolean
+}
+
+function EnabledPriceChart({
   inputCurrency,
+  isAdvancedPriceChartEnabled,
   limitPrice,
   onSelectLimitPrice,
   outputCurrency,
   sizeControl,
-}: PriceChartContainerProps): ReactNode {
+}: EnabledPriceChartProps): ReactNode {
   const chartMode = useAtomValue(priceChartModeAtom)
   const [metric, setMetric] = useState<PriceChartMetric>('price')
   const inputUsdPriceState = useUsdPrice(inputCurrency ? getWrappedToken(inputCurrency) : null)
@@ -92,5 +106,9 @@ export function PriceChart({
     symbols,
   }
 
-  return chartMode === 'simple' ? <SimplePriceChartPure {...chartProps} /> : <PriceChartPure {...chartProps} />
+  return chartMode === 'advanced' && isAdvancedPriceChartEnabled ? (
+    <PriceChartPure {...chartProps} />
+  ) : (
+    <SimplePriceChartPure {...chartProps} />
+  )
 }

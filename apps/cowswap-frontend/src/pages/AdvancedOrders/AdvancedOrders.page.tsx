@@ -22,7 +22,7 @@ import {
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
-import { PriceChart, priceChartVisibleAtom } from 'modules/priceChart'
+import { PriceChart, priceChartVisibleAtom, usePriceChartFeatureFlags } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect } from 'modules/trade'
 import {
@@ -65,7 +65,9 @@ export function AdvancedOrdersPage(): ReactNode {
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
   const { hideOrdersTable } = useInjectedWidgetParams()
   const isChartVisible = useAtomValue(priceChartVisibleAtom)
-  const hasSecondaryContent = isChartVisible || !hideOrdersTable
+  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const shouldShowChart = isPriceChartEnabled && isChartVisible
+  const hasSecondaryContent = shouldShowChart || !hideOrdersTable
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
@@ -104,7 +106,7 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {hasSecondaryContent && (
           <SecondaryColumn className="trade-orders-table">
-            {isChartVisible ? <AdvancedOrdersChart /> : null}
+            {shouldShowChart ? <AdvancedOrdersChart /> : null}
             {!hideOrdersTable ? (
               <styledEl.SecondaryWrapper>
                 <Suspense fallback={<Loading />}>

@@ -171,6 +171,8 @@ export const ChartFrame = styled.div`
   border-radius: 12px;
   overflow: hidden;
   background: transparent;
+  margin-left: -10px;
+  margin-right: -10px;
 `
 
 export const ChartContainer = styled.div`

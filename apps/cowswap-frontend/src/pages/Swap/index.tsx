@@ -8,11 +8,17 @@ import { useLingui } from '@lingui/react/macro'
 import { useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
-import { PriceChart, priceChartExpandedAtom, priceChartVisibleAtom } from 'modules/priceChart'
+import {
+  PriceChart,
+  priceChartExpandedAtom,
+  priceChartVisibleAtom,
+  usePriceChartFeatureFlags,
+} from 'modules/priceChart'
 import {
   swapDerivedStateAtom,
   SwapUpdaters,
   SwapWidget,
+  useCrossChainUnlockScreenState,
   useSwapDerivedState,
   useSwapDerivedStateToFill,
 } from 'modules/swap'
@@ -47,15 +53,19 @@ export function SwapPage(): ReactNode {
 }
 
 function SwapPageContent(): ReactNode {
-  const { inputCurrency, outputCurrency } = useSwapDerivedState()
+  const { inputCurrency, isUnlocked, outputCurrency } = useSwapDerivedState()
+  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const unlockScreenState = useCrossChainUnlockScreenState(isUnlocked)
   const isChartVisible = useAtomValue(priceChartVisibleAtom)
   const [isChartExpanded, setIsChartExpanded] = useAtom(priceChartExpandedAtom)
-  const shouldShowChart = Boolean(isChartVisible && inputCurrency && outputCurrency)
+  const shouldShowChart = Boolean(
+    isPriceChartEnabled && isChartVisible && unlockScreenState === 'hidden' && inputCurrency && outputCurrency,
+  )
 
   return (
     <PageWrapper
-      isUnlocked
-      maxWidth={isChartExpanded ? EXPANDED_TRADE_PAGE_MAX_WIDTH : COMPACT_TRADE_PAGE_MAX_WIDTH}
+      isUnlocked={unlockScreenState === 'hidden'}
+      maxWidth={shouldShowChart && isChartExpanded ? EXPANDED_TRADE_PAGE_MAX_WIDTH : COMPACT_TRADE_PAGE_MAX_WIDTH}
       hideOrdersTable={!shouldShowChart}
     >
       <PrimaryWrapper>

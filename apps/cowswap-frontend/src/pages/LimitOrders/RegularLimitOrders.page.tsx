@@ -20,7 +20,7 @@ import {
   useUpdateActiveRate,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
-import { getLimitPriceFromRate, PriceChart, priceChartVisibleAtom } from 'modules/priceChart'
+import { getLimitPriceFromRate, PriceChart, priceChartVisibleAtom, usePriceChartFeatureFlags } from 'modules/priceChart'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
@@ -45,6 +45,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { hideOrdersTable } = useInjectedWidgetParams()
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
   const isChartVisible = useAtomValue(priceChartVisibleAtom)
+  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
   const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
   const activeLimitPrice = useMemo(() => {
     if (!inputCurrency || !outputCurrency || !activeRate) {
@@ -65,7 +66,7 @@ export function RegularLimitOrdersPage(): ReactNode {
     },
     [setIsChartPriceSelectionMode, updateRate],
   )
-  const shouldShowChart = Boolean(isChartVisible && inputCurrency && outputCurrency)
+  const shouldShowChart = Boolean(isPriceChartEnabled && isChartVisible && inputCurrency && outputCurrency)
   const hasSecondaryContent = shouldShowChart || !hideOrdersTable
 
   return (

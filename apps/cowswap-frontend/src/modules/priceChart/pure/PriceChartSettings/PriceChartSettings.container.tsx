@@ -5,12 +5,16 @@ import { SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
+import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 import { priceChartModeAtom } from '../../state/priceChartModeAtom'
 import { priceChartVisibleAtom } from '../../state/priceChartVisibleAtom'
 
 export function PriceChartSettings(): ReactNode {
+  const { isAdvancedPriceChartEnabled, isPriceChartEnabled } = usePriceChartFeatureFlags()
   const [chartMode, setChartMode] = useAtom(priceChartModeAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
+
+  if (!isPriceChartEnabled) return null
 
   return (
     <>
@@ -20,12 +24,14 @@ export function PriceChartSettings(): ReactNode {
         checked={isVisible}
         toggle={() => setIsVisible((value) => !value)}
       />
-      <SettingsBox
-        title={t`Advanced price chart`}
-        tooltip={t`Turn this on for technical indicators, drawing tools, and more ways to explore price movements.`}
-        checked={chartMode === 'advanced'}
-        toggle={() => setChartMode(chartMode === 'advanced' ? 'simple' : 'advanced')}
-      />
+      {isAdvancedPriceChartEnabled ? (
+        <SettingsBox
+          title={t`Advanced price chart`}
+          tooltip={t`Turn this on for technical indicators, drawing tools, and more ways to explore price movements.`}
+          checked={chartMode === 'advanced'}
+          toggle={() => setChartMode(chartMode === 'advanced' ? 'simple' : 'advanced')}
+        />
+      ) : null}
     </>
   )
 }
