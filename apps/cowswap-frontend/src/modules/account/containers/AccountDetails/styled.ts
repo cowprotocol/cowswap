@@ -416,6 +416,8 @@ export const ActivityHeader = styled.span`
   }
 
   ${Media.upToSmall()} {
+    row-gap: 24px;
+
     > button {
       order: 0;
       flex: 1 1 100%;
