@@ -10,7 +10,11 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
 
-import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
+import {
+  useHasNotificationSubscription,
+  useOpenNotificationSidebar,
+  useTrackOrderBannerDismissal,
+} from 'modules/notifications'
 
 import { PermitModal } from 'common/containers/PermitModal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
@@ -50,6 +54,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
   submittedContent?: ReactNode
   showGetNotifiedMessage?: boolean
   onGetNotifiedClick: () => void
+  onDismissGetNotifiedMessage: () => void
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
@@ -63,11 +68,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
+  const { isDismissed: isTrackOrderBannerDismissed, dismiss: dismissTrackOrderBanner } = useTrackOrderBannerDismissal()
 
   const handleGetNotifiedClick = useCallback(() => {
-    onDismiss()
     openNotificationSidebar()
-  }, [onDismiss, openNotificationSidebar])
+  }, [openNotificationSidebar])
 
   if (!account) return null
 
@@ -90,9 +95,11 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
           areTelegramNotificationsEnabled &&
           !isNotificationSubscriptionLoading &&
           !hasSubscription &&
-          !isInjectedWidget()
+          !isInjectedWidget() &&
+          !isTrackOrderBannerDismissed
         }
         onGetNotifiedClick={handleGetNotifiedClick}
+        onDismissGetNotifiedMessage={dismissTrackOrderBanner}
       >
         {children}
       </InnerComponent>
@@ -115,6 +122,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
     submittedContent,
     showGetNotifiedMessage,
     onGetNotifiedClick,
+    onDismissGetNotifiedMessage,
   } = props
 
   if (error) {
@@ -145,6 +153,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
           hash={transactionHash}
           showGetNotifiedMessage={showGetNotifiedMessage}
           onGetNotifiedClick={onGetNotifiedClick}
+          onDismissGetNotifiedMessage={onDismissGetNotifiedMessage}
         />
       )
     )
