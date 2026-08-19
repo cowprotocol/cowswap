@@ -99,7 +99,7 @@ export function NotificationSidebar({
   const notificationSidebarElement = (
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
       {isSettingsOpen ? (
-        <NotificationSettings>
+        <NotificationSettings isSettingsOpen={isSettingsOpen}>
           <SettingsHeader onBack={toggleSettingsOpen} />
         </NotificationSettings>
       ) : (

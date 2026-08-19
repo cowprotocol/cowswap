@@ -3,6 +3,7 @@ export { NotificationBell } from './pure/NotificationBell/NotificationBell.pure'
 export { useSpeechBubbleNotification } from './hooks/useSpeechBubbleNotification'
 export { useHasNotificationSubscription } from './hooks/useHasNotificationSubscription'
 export { useNotificationAlertDismissal } from './hooks/useNotificationAlertDismissal'
+export { useTrackOrderBannerDismissal } from './hooks/useTrackOrderBannerDismissal'
 export {
   useNotificationSidebarState,
   useOpenNotificationSidebar,

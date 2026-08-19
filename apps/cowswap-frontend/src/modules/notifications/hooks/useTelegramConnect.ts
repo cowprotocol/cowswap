@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 
+import { useInterval } from '@cowprotocol/common-hooks'
 import { normalizeError } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
@@ -9,6 +10,10 @@ import { TelegramSubscriptionState, telegramSubscriptionAtom } from '../atoms/te
 
 const POLL_INTERVAL_MS = 3_000
 const CONNECT_TIMEOUT_MS = 10 * 60 * 1000 // matches the bff connect-token TTL
+// Unsubscribing happens on the bot side, so while the caller opts in (via `shouldPoll`,
+// e.g. only while the settings panel showing the toggle is open) we keep polling for
+// status changes to catch it and flip the toggle off without a page refresh.
+const SUBSCRIBED_POLL_INTERVAL_MS = 5_000
 
 const DEFAULT_SUBSCRIPTION_STATE: TelegramSubscriptionState = {
   isSubscribed: false,
@@ -38,7 +43,7 @@ interface ConnectFlow {
   cancelConnect(): void
 }
 
-export function useTelegramConnect(account: string | undefined): TelegramConnectController {
+export function useTelegramConnect(account: string | undefined, shouldPoll = false): TelegramConnectController {
   const [isLoading, setIsLoading] = useState(true)
   const [subscriptionByAccount, setSubscriptionByAccount] = useAtom(telegramSubscriptionAtom)
 
@@ -72,6 +77,8 @@ export function useTelegramConnect(account: string | undefined): TelegramConnect
     return status.connected
   }, [account, setSubscriptionByAccount])
 
+  const { connectState, deepLink, connect, cancelConnect } = useConnectFlow(account, accountRef, refreshStatus)
+
   useEffect(() => {
     const accountAtEffect = account
 
@@ -88,7 +95,16 @@ export function useTelegramConnect(account: string | undefined): TelegramConnect
       })
   }, [account, refreshStatus])
 
-  const { connectState, deepLink, connect, cancelConnect } = useConnectFlow(account, accountRef, refreshStatus)
+  // Keep polling while subscribed and the caller opts in (e.g. the settings panel
+  // showing the toggle is open) so an unsubscribe done on the bot side is picked up
+  // and the toggle flips off without needing a page refresh.
+  useInterval(
+    () => {
+      refreshStatus().catch(() => undefined)
+    },
+    account && isSubscribed && shouldPoll ? SUBSCRIBED_POLL_INTERVAL_MS : null,
+    false,
+  )
 
   return { isLoading, isSubscribed, username, botDeepLink, connectState, deepLink, connect, cancelConnect }
 }

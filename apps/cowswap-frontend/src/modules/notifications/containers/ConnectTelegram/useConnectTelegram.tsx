@@ -4,8 +4,8 @@ import { TelegramConnectController, useTelegramConnect } from '../../hooks/useTe
 
 export type ConnectTelegramController = TelegramConnectController
 
-export function useConnectTelegram(): ConnectTelegramController {
+export function useConnectTelegram(isSettingsOpen: boolean): ConnectTelegramController {
   const { account } = useWalletInfo()
 
-  return useTelegramConnect(account)
+  return useTelegramConnect(account, isSettingsOpen)
 }

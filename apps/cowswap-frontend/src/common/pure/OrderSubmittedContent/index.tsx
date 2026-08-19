@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Badge, BadgeTypes, ButtonPrimary, UI } from '@cowprotocol/ui'
+import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -12,13 +12,22 @@ import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
+import { TrackOrderBanner } from './TrackOrderBanner.pure'
+
 const Wrapper = styled.div`
+  position: relative;
   width: 100%;
   padding: 30px 15px 15px 15px;
   display: flex;
   gap: 20px;
   align-items: center;
   flex-direction: column;
+`
+
+const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
 `
 
 const Caption = styled.h3`
@@ -31,43 +40,6 @@ const ActionButton = styled(ButtonPrimary)`
   margin-top: 30px;
 `
 
-const GetNotifiedMessage = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 0 auto;
-  font-size: 15px;
-  line-height: 1.4;
-  font-weight: 400;
-  white-space: nowrap;
-  color: inherit;
-`
-
-const GetNotifiedLink = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(${UI.COLOR_TEXT});
-  font-size: inherit;
-  font-weight: 500;
-  text-decoration: underline;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(${UI.COLOR_PRIMARY});
-    outline-offset: 2px;
-  }
-
-  &:active {
-    text-decoration: underline;
-  }
-`
-
 export interface OrderSubmittedContentProps {
   onDismiss(): void
   chainId: SupportedChainId
@@ -76,6 +48,7 @@ export interface OrderSubmittedContentProps {
   hash: string
   showGetNotifiedMessage?: boolean
   onGetNotifiedClick?: () => void
+  onDismissGetNotifiedMessage?: () => void
 }
 
 export function OrderSubmittedContent({
@@ -86,6 +59,7 @@ export function OrderSubmittedContent({
   onDismiss,
   showGetNotifiedMessage,
   onGetNotifiedClick,
+  onDismissGetNotifiedMessage,
 }: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
@@ -98,24 +72,19 @@ export function OrderSubmittedContent({
 
   return (
     <Wrapper>
+      <BackButtonStyled onClick={onDismiss} />
       <AnimatedConfirmation />
       <Caption>
         <Trans>Order Submitted</Trans>
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
-      {showGetNotifiedMessage && onGetNotifiedClick && (
-        <GetNotifiedMessage>
-          <Badge type={BadgeTypes.ALERT2}>
-            <Trans>New</Trans>
-          </Badge>
-          <GetNotifiedLink onClick={onGetNotifiedClick}>
-            <Trans>Get trade alerts</Trans>
-          </GetNotifiedLink>
-        </GetNotifiedMessage>
+      {showGetNotifiedMessage && onGetNotifiedClick && onDismissGetNotifiedMessage ? (
+        <TrackOrderBanner onEnableClick={onGetNotifiedClick} onClose={onDismissGetNotifiedMessage} />
+      ) : (
+        <ActionButton onClick={onDismiss}>
+          <Trans>Continue</Trans>
+        </ActionButton>
       )}
-      <ActionButton onClick={onDismiss}>
-        <Trans>Continue</Trans>
-      </ActionButton>
     </Wrapper>
   )
 }
