@@ -3,5 +3,10 @@ export { NotificationBell } from './pure/NotificationBell/NotificationBell.pure'
 export { useSpeechBubbleNotification } from './hooks/useSpeechBubbleNotification'
 export { useHasNotificationSubscription } from './hooks/useHasNotificationSubscription'
 export { useNotificationAlertDismissal } from './hooks/useNotificationAlertDismissal'
+export {
+  useNotificationSidebarState,
+  useOpenNotificationSidebar,
+  useCloseNotificationSidebar,
+} from './hooks/useNotificationSidebarState'
 export { useUnreadSidebarNotificationsCount } from './hooks/useUnreadSidebarNotificationsCount'
 export { getTrustedNotificationLink } from './utils/getTrustedNotificationLink'
