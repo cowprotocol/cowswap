@@ -10,14 +10,7 @@ export const DEFAULT_ORDERS_TABLE_FILTERS = {
   historyStatusFilter: HistoryStatusFilter.FILLED,
 } as const satisfies OrdersTableFilters
 
-export const DEFAULT_MOBILE_ORDERS_TABLE_FILTERS = {
-  searchTerm: '',
-  historyStatusFilter: HistoryStatusFilter.ALL,
-} as const satisfies OrdersTableFilters
-
 export const ordersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)
-export const desktopOrdersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_ORDERS_TABLE_FILTERS)
-export const mobileOrdersTableFiltersAtom = atom<OrdersTableFilters>(DEFAULT_MOBILE_ORDERS_TABLE_FILTERS)
 
 export const { updateAtom: partiallyUpdateOrdersTableFiltersAtom } = atomWithPartialUpdate(ordersTableFiltersAtom)
 

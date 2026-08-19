@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 
 import { useMediaQuery, useStateWithDeferredValue } from '@cowprotocol/common-hooks'
@@ -26,11 +26,7 @@ import {
 
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import {
-  desktopOrdersTableFiltersAtom,
-  mobileOrdersTableFiltersAtom,
-  ordersTableFiltersAtom,
-} from '../../state/filters/ordersTableFilters.atom'
+import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
 import { OrdersTableFilters, OrderTableItem } from '../../state/ordersTable.types'
 import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
@@ -46,7 +42,7 @@ export interface OrdersTableWidgetProps {
   onClose(): void
 }
 
-interface ResponsiveOrdersTableFilters {
+interface OrdersTableFiltersControls {
   applyFilters(filters: Partial<OrdersTableFilters>): void
   historyStatusFilter: HistoryStatusFilter
   searchTerm: string
@@ -58,7 +54,7 @@ const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLA
 export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
-  const { applyFilters, historyStatusFilter, searchTerm, setSearchTerm } = useResponsiveOrdersTableFilters(isUpToLarge)
+  const { applyFilters, historyStatusFilter, searchTerm, setSearchTerm } = useOrdersTableFilters()
 
   useLayoutEffect(() => {
     setSearchTerm('')
@@ -175,22 +171,10 @@ function getPendingOrdersInCurrentPage(
   return currentPageItems.filter((order) => order.status === OrderStatus.PENDING)
 }
 
-function useResponsiveOrdersTableFilters(isMobile: boolean): ResponsiveOrdersTableFilters {
+function useOrdersTableFilters(): OrdersTableFiltersControls {
   const currentFilters = useAtomValue(ordersTableFiltersAtom)
-  const [desktopFilters, setDesktopFilters] = useAtom(desktopOrdersTableFiltersAtom)
-  const [mobileFilters, setMobileFilters] = useAtom(mobileOrdersTableFiltersAtom)
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
   const skipNextDeferredSearchUpdate = useRef(false)
-  const selectedFilters = isMobile ? mobileFilters : desktopFilters
-
-  const updateFilters = useCallback(
-    (filters: Partial<OrdersTableFilters>): void => {
-      const updateSnapshot = isMobile ? setMobileFilters : setDesktopFilters
-      updateSnapshot((current) => ({ ...current, ...filters }))
-      partiallyUpdateOrdersTableFilters(filters)
-    },
-    [isMobile, partiallyUpdateOrdersTableFilters, setDesktopFilters, setMobileFilters],
-  )
 
   const [searchTerm, setSearchTerm] = useStateWithDeferredValue(currentFilters.searchTerm, (nextSearchTerm) => {
     if (skipNextDeferredSearchUpdate.current) {
@@ -198,7 +182,7 @@ function useResponsiveOrdersTableFilters(isMobile: boolean): ResponsiveOrdersTab
       return
     }
 
-    updateFilters({ searchTerm: nextSearchTerm })
+    partiallyUpdateOrdersTableFilters({ searchTerm: nextSearchTerm })
   })
 
   const applyFilters = useCallback(
@@ -208,18 +192,10 @@ function useResponsiveOrdersTableFilters(isMobile: boolean): ResponsiveOrdersTab
         setSearchTerm(filters.searchTerm)
       }
 
-      updateFilters(filters)
+      partiallyUpdateOrdersTableFilters(filters)
     },
-    [searchTerm, setSearchTerm, updateFilters],
+    [partiallyUpdateOrdersTableFilters, searchTerm, setSearchTerm],
   )
-
-  useLayoutEffect(() => {
-    const filtersMatch =
-      currentFilters.searchTerm === selectedFilters.searchTerm &&
-      currentFilters.historyStatusFilter === selectedFilters.historyStatusFilter
-
-    if (!filtersMatch || searchTerm !== selectedFilters.searchTerm) applyFilters(selectedFilters)
-  }, [applyFilters, currentFilters, searchTerm, selectedFilters])
 
   return {
     applyFilters,
