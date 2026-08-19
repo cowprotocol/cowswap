@@ -1466,8 +1466,8 @@ msgstr "Not enough price data for one or both assets to calculate the price impa
 #~ msgstr "Unable to check"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
-msgid "Get order notifications"
-msgstr "Get order notifications"
+#~ msgid "Get order notifications"
+#~ msgstr "Get order notifications"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Open"
@@ -6820,6 +6820,7 @@ msgstr "Executes at"
 #~ msgstr "From (incl. costs)"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Get trade alerts"
 msgstr "Get trade alerts"
 

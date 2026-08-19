@@ -26,6 +26,7 @@ import {
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { Bell } from 'react-feather'
 
 import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
@@ -44,8 +45,7 @@ import {
   AccountGroupingRow,
   AddressLink,
   CreationDateRow,
-  GetNotifiedLink,
-  GetNotifiedRow,
+  GetNotifiedButton,
   InfoCard,
   LowerSection,
   NetworkCard,
@@ -214,14 +214,13 @@ export function AccountDetails({
                     <CreationDateRow>
                       <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
                       {index === 0 && showGetNotifiedRow && (
-                        <GetNotifiedRow>
+                        <GetNotifiedButton onClick={handleGetNotifiedClick}>
                           <Badge type={BadgeTypes.ALERT2}>
                             <Trans>New</Trans>
                           </Badge>
-                          <GetNotifiedLink onClick={handleGetNotifiedClick}>
-                            <Trans>Get order notifications</Trans>
-                          </GetNotifiedLink>
-                        </GetNotifiedRow>
+                          <Bell size={16} />
+                          <Trans>Get trade alerts</Trans>
+                        </GetNotifiedButton>
                       )}
                     </CreationDateRow>
                     <ActivitiesList activities={activities} />

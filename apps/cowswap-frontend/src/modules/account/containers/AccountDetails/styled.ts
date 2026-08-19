@@ -295,31 +295,39 @@ export const CreationDateRow = styled.div`
   justify-content: space-between;
   gap: 6px;
   width: 100%;
+  flex-wrap: wrap;
+
+  ${Media.upToSmall()} {
+    row-gap: 10px;
+  }
 `
 
-export const GetNotifiedRow = styled.div`
+export const GetNotifiedButton = styled.button`
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex: 0 0 auto;
   gap: 6px;
-  font-size: 14px;
-  line-height: 1.4;
-  font-weight: 400;
-  color: inherit;
-`
-
-export const GetNotifiedLink = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(${UI.COLOR_TEXT});
-  font-size: inherit;
-  font-weight: 500;
-  text-decoration: underline;
   cursor: pointer;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 6px 12px;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  > svg {
+    flex: 0 0 auto;
+    color: inherit;
+  }
 
   &:hover {
-    text-decoration: underline;
+    background: var(${UI.COLOR_PAPER_DARKER});
+    border-color: var(${UI.COLOR_PAPER_DARKER});
   }
 
   &:focus-visible {
@@ -327,8 +335,9 @@ export const GetNotifiedLink = styled.button`
     outline-offset: 2px;
   }
 
-  &:active {
-    text-decoration: underline;
+  ${Media.upToSmall()} {
+    width: 100%;
+    justify-content: center;
   }
 `
 
