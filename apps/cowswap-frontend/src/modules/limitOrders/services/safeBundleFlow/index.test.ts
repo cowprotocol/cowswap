@@ -145,6 +145,7 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
   it('checks zero-approval against an unlimited amount when amountToApprove is not provided', async () => {
     await run(123, false, undefined)
 
+    expect(buildApproveTx).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
     expect(shouldZeroApprove).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
   })
 })
