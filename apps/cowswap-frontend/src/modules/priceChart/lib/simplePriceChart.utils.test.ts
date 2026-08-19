@@ -17,8 +17,8 @@ describe('getSimplePriceChartPeriodConfig', () => {
 
 describe('getSimplePriceChartPriceFormat', () => {
   it.each([
-    [0.109, 3, 0.001],
-    [0.00001456, 7, 0.0000001],
+    [0.109, 4, 0.0001],
+    [0.00001456, 8, 0.00000001],
     [1_916, 2, 0.01],
   ])('uses enough precision for %s', (price, precision, minMove) => {
     const bar = { close: price, high: price, low: price, open: price, timestamp: 1 }

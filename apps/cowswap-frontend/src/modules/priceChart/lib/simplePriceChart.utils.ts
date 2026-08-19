@@ -35,7 +35,7 @@ export function getSimplePriceChartPeriodConfig(
 
 export function getSimplePriceChartPriceFormat(bars: PriceChartBar[]): PriceFormatBuiltIn {
   const smallestPrice = bars.reduce((smallest, bar) => (bar.low > 0 ? Math.min(smallest, bar.low) : smallest), Infinity)
-  const precision = smallestPrice < 1 ? Math.min(18, 2 - Math.floor(Math.log10(smallestPrice))) : 2
+  const precision = smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : 2
 
-  return { minMove: 10 ** -precision, precision, type: 'price' }
+  return { minMove: 1 / 10 ** precision, precision, type: 'price' }
 }

@@ -16,7 +16,7 @@ export function formatPriceChartValue(value: number, locale: string): string {
       notation: isCompact ? 'compact' : 'standard',
       style: 'currency',
     },
-    sigFigs: usesSignificantDigits ? 3 : undefined,
+    sigFigs: usesSignificantDigits ? 4 : undefined,
   })
 }
 
