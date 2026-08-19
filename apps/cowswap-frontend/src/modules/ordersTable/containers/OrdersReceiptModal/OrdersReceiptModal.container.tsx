@@ -24,6 +24,8 @@ interface OrdersReceiptModalProps {
 export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalProps): ReactNode {
   // TODO: can we get selected order from URL by id?
   const selectedOrder = useSelectedOrder()
+
+  // Keep the last order after close so DrawerOrDialog can animate out with content still mounted.
   const lastOrderRef = useRef<ParsedOrder | null>(null)
 
   useLayoutEffect(() => {
