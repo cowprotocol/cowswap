@@ -757,6 +757,10 @@ msgstr "h"
 msgid "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
 msgstr "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Show your balance for a token across every supported network in the token list."
+msgstr "Show your balance for a token across every supported network in the token list."
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Active referral code"
 msgstr "Active referral code"
@@ -1708,6 +1712,10 @@ msgstr "and got an extra "
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "s"
 msgstr "s"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Temporarily unavailable — reconnecting to the multichain balances service."
+msgstr "Temporarily unavailable — reconnecting to the multichain balances service."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
@@ -8339,6 +8347,10 @@ msgstr "Creation transaction"
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
 #~ msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Multichain Balances"
+msgstr "Multichain Balances"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
