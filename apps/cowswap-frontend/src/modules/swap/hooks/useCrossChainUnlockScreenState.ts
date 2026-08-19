@@ -6,8 +6,6 @@ import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-export type CrossChainUnlockScreenState = 'hidden' | 'pending' | 'visible'
-
 export interface CrossChainUnlockScreenContext {
   isConnected: boolean
   isEagerConnectInProgress: boolean
@@ -17,6 +15,26 @@ export interface CrossChainUnlockScreenContext {
   isNetworkUnsupported: boolean
   isSmartContractWallet: boolean | undefined
   isUnlocked: boolean
+}
+
+export type CrossChainUnlockScreenState = 'hidden' | 'pending' | 'visible'
+
+export function getCrossChainUnlockScreenState({
+  isConnected,
+  isEagerConnectInProgress,
+  isHydrated,
+  isInjectedWidget,
+  isNetworkDeprecated,
+  isNetworkUnsupported,
+  isSmartContractWallet,
+  isUnlocked,
+}: CrossChainUnlockScreenContext): CrossChainUnlockScreenState {
+  if (!isHydrated) return 'pending'
+  if ([isUnlocked, isNetworkUnsupported, isNetworkDeprecated, isInjectedWidget].some(Boolean)) return 'hidden'
+  if (isConnected && isSmartContractWallet === undefined) return 'pending'
+  if (isConnected) return isSmartContractWallet ? 'hidden' : 'visible'
+
+  return isEagerConnectInProgress ? 'pending' : 'visible'
 }
 
 export function useCrossChainUnlockScreenState(isUnlocked: boolean): CrossChainUnlockScreenState {
@@ -39,22 +57,4 @@ export function useCrossChainUnlockScreenState(isUnlocked: boolean): CrossChainU
     isSmartContractWallet,
     isUnlocked,
   })
-}
-
-export function getCrossChainUnlockScreenState({
-  isConnected,
-  isEagerConnectInProgress,
-  isHydrated,
-  isInjectedWidget,
-  isNetworkDeprecated,
-  isNetworkUnsupported,
-  isSmartContractWallet,
-  isUnlocked,
-}: CrossChainUnlockScreenContext): CrossChainUnlockScreenState {
-  if (!isHydrated) return 'pending'
-  if (isUnlocked || isNetworkUnsupported || isNetworkDeprecated || isInjectedWidget) return 'hidden'
-  if (isConnected && isSmartContractWallet === undefined) return 'pending'
-  if (isConnected) return isSmartContractWallet ? 'hidden' : 'visible'
-
-  return isEagerConnectInProgress ? 'pending' : 'visible'
 }

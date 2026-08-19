@@ -18,6 +18,7 @@ describe('priceChartAdapter.utils', () => {
         low: 1,
         open: 1.5,
         timestamp: 1710000000,
+        volume: 123.45,
       },
       {
         close: 4,
@@ -35,6 +36,7 @@ describe('priceChartAdapter.utils', () => {
         low: 1,
         open: 1.5,
         time: 1710000000000,
+        volume: 123.45,
       },
       {
         close: 4,

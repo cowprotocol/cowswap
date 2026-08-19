@@ -18,6 +18,7 @@ import {
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
+import { hasPriceChartVolume, syncTradingViewVolumeStudy } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
   PRO_CHART_CONTAINER_ID,
@@ -65,12 +66,16 @@ export function PriceChartPure({
   const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
   const [priceSummary, setPriceSummary] = useState<PriceChartSummary>()
+  const [hasVolume, setHasVolume] = useState<boolean>()
   const activeTicker = activeSymbol?.ticker || ''
   const datafeedController = useMemo(
     () =>
       createPriceChartDatafeed({
         metric,
-        onHistoryLoaded: (bars) => setPriceSummary(getPriceChartSummary(bars)),
+        onHistoryLoaded: (bars) => {
+          setPriceSummary(getPriceChartSummary(bars))
+          setHasVolume(hasPriceChartVolume(bars))
+        },
         onStatusChange: setHistoryStatus,
         symbols,
       }),
@@ -86,6 +91,7 @@ export function PriceChartPure({
   useEffect(() => {
     setHistoryStatus(null)
     setPriceSummary(undefined)
+    setHasVolume(undefined)
   }, [activeTicker, metric])
 
   useTradingViewWidget(
@@ -93,6 +99,7 @@ export function PriceChartPure({
     containerId,
     datafeedController.datafeed,
     darkMode,
+    hasVolume,
     metric === 'price' ? limitLinePrice : null,
     metric === 'price' ? onSelectPrice : undefined,
     symbols,
@@ -240,6 +247,7 @@ function useTradingViewWidget(
   containerId: string,
   datafeed: ReturnType<typeof createPriceChartDatafeed>['datafeed'],
   darkMode: boolean,
+  hasVolume: boolean | undefined,
   limitLinePrice: number | null | undefined,
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
@@ -302,6 +310,7 @@ function useTradingViewWidget(
         } as unknown as CustomFormatters,
         datafeed,
         disabled_features: [
+          'create_volume_indicator_by_default',
           'display_market_status',
           'header_compare',
           'header_symbol_search',
@@ -438,4 +447,14 @@ function useTradingViewWidget(
       widget.applyOverrides(getThemeOverrides())
     })
   }, [darkMode])
+
+  useEffect(() => {
+    const widget = widgetRef.current
+
+    if (!widget || !isWidgetReadyRef.current || hasVolume === undefined) {
+      return
+    }
+
+    syncTradingViewVolumeStudy(widget, hasVolume)
+  }, [hasVolume])
 }

@@ -42,7 +42,7 @@ import * as styledEl from './styled'
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
 export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state

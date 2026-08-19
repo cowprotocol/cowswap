@@ -4,16 +4,6 @@ import styled from 'styled-components/macro'
 
 import { SegmentedControl, SegmentedControlButton } from './PriceChart.styled'
 
-export const ChartFrame = styled.div`
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-  border-radius: 12px;
-  background: transparent;
-  margin-left: -10px;
-  margin-right: -10px;
-`
-
 export const ChartCanvas = styled.div<{ $canSelectPrice: boolean }>`
   width: 100%;
   height: 100%;

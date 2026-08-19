@@ -18,6 +18,7 @@ export function mapPriceChartBarsToTradingViewBars(bars: PriceChartBar[]): Bar[]
     low: bar.low,
     open: bar.open,
     time: bar.timestamp * 1000,
+    ...(bar.volume === undefined ? {} : { volume: bar.volume }),
   }))
 }
 

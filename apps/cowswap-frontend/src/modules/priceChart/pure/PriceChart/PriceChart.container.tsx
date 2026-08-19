@@ -17,16 +17,16 @@ import { priceChartModeAtom } from '../../state/priceChartModeAtom'
 import type { PriceChartMetric } from '../../lib/priceChart.types'
 import type { PriceChartContainerProps, PriceChartSelection } from '../../lib/tradingView.types'
 
+interface EnabledPriceChartProps extends PriceChartContainerProps {
+  isAdvancedPriceChartEnabled: boolean
+}
+
 export function PriceChart({ ...props }: PriceChartContainerProps): ReactNode {
   const { isAdvancedPriceChartEnabled, isPriceChartEnabled } = usePriceChartFeatureFlags()
 
   if (!isPriceChartEnabled) return null
 
   return <EnabledPriceChart {...props} isAdvancedPriceChartEnabled={isAdvancedPriceChartEnabled} />
-}
-
-interface EnabledPriceChartProps extends PriceChartContainerProps {
-  isAdvancedPriceChartEnabled: boolean
 }
 
 function EnabledPriceChart({

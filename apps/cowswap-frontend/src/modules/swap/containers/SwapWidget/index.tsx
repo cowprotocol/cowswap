@@ -39,8 +39,8 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 
 import { Container } from './styled'
 
-import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useCrossChainUnlockScreenState } from '../../hooks/useCrossChainUnlockScreenState'
+import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
   useSwapDeadlineState,

@@ -28,10 +28,10 @@ export async function loadPriceChartHistory(
   }
 
   return bars.map((bar) => ({
+    ...bar,
     close: bar.close * circulatingSupply,
     high: bar.high * circulatingSupply,
     low: bar.low * circulatingSupply,
     open: bar.open * circulatingSupply,
-    timestamp: bar.timestamp,
   }))
 }

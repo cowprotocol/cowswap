@@ -264,9 +264,9 @@ msgstr "Network costs (est.)"
 msgid "The account address which will/did receive the bought amount."
 msgstr "The account address which will/did receive the bought amount."
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-#~ msgid "Volume"
-#~ msgstr "Volume"
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Volume"
+msgstr "Volume"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"

@@ -27,6 +27,7 @@ import * as simpleStyledEl from './SimplePriceChart.styled'
 
 import { logPriceChart } from '../../api'
 import { loadPriceChartHistory } from '../../lib/loadPriceChartHistory.service'
+import { mapPriceChartBarsToVolumeData } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
   getSimplePriceChartPeriodConfig,
@@ -43,8 +44,23 @@ import type {
 
 const DEFAULT_PERIOD: SimplePriceChartPeriod = '1D'
 const TOOLTIP_HEIGHT = 88
+const TOOLTIP_HEIGHT_WITH_VOLUME = 115
 const TOOLTIP_OFFSET = 12
 const TOOLTIP_WIDTH = 240
+
+export interface SimplePriceChartTooltipData {
+  placement: 'left' | 'right'
+  price: number
+  time: number
+  volume?: number
+  x: number
+  y: number
+}
+
+export interface SimplePriceChartTooltipProps {
+  data: SimplePriceChartTooltipData
+  metric: PriceChartMetric
+}
 
 interface ChartTypeControlProps {
   chartType: SimplePriceChartType
@@ -56,19 +72,6 @@ interface SimplePriceChartControlsProps {
   onChartTypeChange: (chartType: SimplePriceChartType) => void
   onPeriodChange: (period: SimplePriceChartPeriod) => void
   period: SimplePriceChartPeriod
-}
-
-interface SimplePriceChartTooltipData {
-  placement: 'left' | 'right'
-  price: number
-  time: number
-  x: number
-  y: number
-}
-
-interface SimplePriceChartTooltipProps {
-  data: SimplePriceChartTooltipData
-  metric: PriceChartMetric
 }
 
 type SimplePriceChartType = 'candles' | 'line'
@@ -97,6 +100,7 @@ export function SimplePriceChartPure({
   const chartRef = useRef<IChartApi | null>(null)
   const areaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const priceLineRef = useRef<IPriceLine | null>(null)
   const latestOnSelectPriceRef = useRef(onSelectPrice)
   const [period, setPeriod] = useState<SimplePriceChartPeriod>(DEFAULT_PERIOD)
@@ -118,6 +122,7 @@ export function SimplePriceChartPure({
     chartRef,
     areaSeriesRef,
     candlestickSeriesRef,
+    volumeSeriesRef,
     priceLineRef,
     latestOnSelectPriceRef,
     setTooltip,
@@ -146,6 +151,8 @@ export function SimplePriceChartPure({
       )
     }
 
+    volumeSeriesRef.current?.setData(mapPriceChartBarsToVolumeData(data))
+
     chartRef.current?.timeScale().fitContent()
   }, [chartType, data])
 
@@ -163,7 +170,7 @@ export function SimplePriceChartPure({
 
     priceLineRef.current = series.createPriceLine({
       axisLabelVisible: true,
-      color: getCssVar(UI.COLOR_PRIMARY, '#3b82f6'),
+      color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
       lineStyle: LineStyle.Dashed,
       lineWidth: 2,
       price: limitLinePrice,
@@ -185,7 +192,7 @@ export function SimplePriceChartPure({
         sizeControl={sizeControl}
         symbols={symbols}
       />
-      <simpleStyledEl.ChartFrame>
+      <styledEl.ChartFrame>
         <simpleStyledEl.ChartCanvas $canSelectPrice={metric === 'price' && !!onSelectPrice} ref={chartContainerRef} />
         {tooltip && !historyStatus ? <SimplePriceChartTooltip data={tooltip} metric={metric} /> : null}
         {historyStatus ? (
@@ -193,7 +200,7 @@ export function SimplePriceChartPure({
             <PriceChartStatus assetSymbol={activeSymbol?.baseAsset.symbol} kind={historyStatus} />
           </styledEl.OverlayState>
         ) : null}
-      </simpleStyledEl.ChartFrame>
+      </styledEl.ChartFrame>
       <SimplePriceChartControls
         chartType={chartType}
         onChartTypeChange={setChartType}
@@ -201,6 +208,28 @@ export function SimplePriceChartPure({
         period={period}
       />
     </styledEl.PanelWrapper>
+  )
+}
+
+export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartTooltipProps): ReactNode {
+  const { i18n, t } = useLingui()
+
+  return (
+    <simpleStyledEl.Tooltip $placement={data.placement} $width={TOOLTIP_WIDTH} $x={data.x} $y={data.y} role="tooltip">
+      <simpleStyledEl.TooltipRow>
+        <simpleStyledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</simpleStyledEl.TooltipLabel>
+        <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.price, i18n.locale)}</simpleStyledEl.TooltipValue>
+      </simpleStyledEl.TooltipRow>
+      {data.volume === undefined ? null : (
+        <simpleStyledEl.TooltipRow>
+          <simpleStyledEl.TooltipLabel>{t`Volume`}</simpleStyledEl.TooltipLabel>
+          <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.volume, i18n.locale)}</simpleStyledEl.TooltipValue>
+        </simpleStyledEl.TooltipRow>
+      )}
+      <simpleStyledEl.TooltipTime>
+        {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
+      </simpleStyledEl.TooltipTime>
+    </simpleStyledEl.Tooltip>
   )
 }
 
@@ -243,6 +272,30 @@ function createAreaSeries(chart: IChartApi, primaryColor: string): ISeriesApi<'A
   })
 }
 
+function createSimpleChart(container: HTMLDivElement, darkMode: boolean, locale: string): IChartApi {
+  return createChart(container, {
+    autoSize: true,
+    crosshair: {
+      horzLine: { labelVisible: false },
+      mode: CrosshairMode.Magnet,
+      vertLine: { labelVisible: false },
+    },
+    grid: { horzLines: { visible: false }, vertLines: { visible: false } },
+    handleScroll: { horzTouchDrag: true, mouseWheel: false, pressedMouseMove: true, vertTouchDrag: false },
+    handleScale: { axisPressedMouseMove: true, mouseWheel: false, pinch: true },
+    layout: {
+      background: { color: 'transparent' },
+      textColor: getCssVar(UI.COLOR_TEXT, darkMode ? '#f8fafc' : '#111827'),
+    },
+    localization: {
+      locale,
+      priceFormatter: (value: number) => formatPriceChartValue(value, locale),
+    },
+    rightPriceScale: { borderVisible: false, scaleMargins: { bottom: 0.15, top: 0.2 } },
+    timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true, timeVisible: true },
+  })
+}
+
 function getCssVar(name: string, fallback: string): string {
   if (typeof window === 'undefined') return fallback
 
@@ -254,14 +307,16 @@ function getSimplePriceChartTooltipData(
   container: HTMLDivElement,
   price: number,
   time: number,
+  volume?: number,
 ): SimplePriceChartTooltipData {
   const placeOnLeft = point.x + TOOLTIP_OFFSET + TOOLTIP_WIDTH > container.clientWidth
-  const halfTooltipHeight = TOOLTIP_HEIGHT / 2
+  const halfTooltipHeight = (volume === undefined ? TOOLTIP_HEIGHT : TOOLTIP_HEIGHT_WITH_VOLUME) / 2
 
   return {
     placement: placeOnLeft ? 'left' : 'right',
     price,
     time,
+    volume,
     x: point.x + (placeOnLeft ? -TOOLTIP_OFFSET : TOOLTIP_OFFSET),
     y: Math.max(halfTooltipHeight, Math.min(point.y, container.clientHeight - halfTooltipHeight)),
   }
@@ -290,22 +345,6 @@ function SimplePriceChartControls({
         ))}
       </simpleStyledEl.Controls>
     </simpleStyledEl.FooterControls>
-  )
-}
-
-function SimplePriceChartTooltip({ data, metric }: SimplePriceChartTooltipProps): ReactNode {
-  const { i18n, t } = useLingui()
-
-  return (
-    <simpleStyledEl.Tooltip $placement={data.placement} $width={TOOLTIP_WIDTH} $x={data.x} $y={data.y} role="tooltip">
-      <simpleStyledEl.TooltipRow>
-        <simpleStyledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</simpleStyledEl.TooltipLabel>
-        <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.price, i18n.locale)}</simpleStyledEl.TooltipValue>
-      </simpleStyledEl.TooltipRow>
-      <simpleStyledEl.TooltipTime>
-        {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
-      </simpleStyledEl.TooltipTime>
-    </simpleStyledEl.Tooltip>
   )
 }
 
@@ -367,6 +406,7 @@ function useSimpleChart(
   chartRef: MutableRefObject<IChartApi | null>,
   areaSeriesRef: MutableRefObject<ISeriesApi<'Area'> | null>,
   candlestickSeriesRef: MutableRefObject<ISeriesApi<'Candlestick'> | null>,
+  volumeSeriesRef: MutableRefObject<ISeriesApi<'Histogram'> | null>,
   priceLineRef: MutableRefObject<IPriceLine | null>,
   latestOnSelectPriceRef: MutableRefObject<((price: number) => void) | undefined>,
   onTooltipChange: (tooltip: SimplePriceChartTooltipData | undefined) => void,
@@ -381,27 +421,16 @@ function useSimpleChart(
     if (!container) return
 
     const primaryColor = getCssVar(UI.COLOR_PRIMARY, '#3b82f6')
-    const chart = createChart(container, {
-      autoSize: true,
-      crosshair: {
-        horzLine: { labelVisible: false },
-        mode: CrosshairMode.Magnet,
-        vertLine: { labelVisible: false },
-      },
-      grid: { horzLines: { visible: false }, vertLines: { visible: false } },
-      handleScroll: { horzTouchDrag: true, mouseWheel: false, pressedMouseMove: true, vertTouchDrag: false },
-      handleScale: { axisPressedMouseMove: false, mouseWheel: false, pinch: true },
-      layout: {
-        background: { color: 'transparent' },
-        textColor: getCssVar(UI.COLOR_TEXT, darkMode ? '#f8fafc' : '#111827'),
-      },
-      localization: {
-        locale,
-        priceFormatter: (value: number) => formatPriceChartValue(value, locale),
-      },
-      rightPriceScale: { borderVisible: false, scaleMargins: { bottom: 0.15, top: 0.2 } },
-      timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true, timeVisible: true },
+    const chart = createSimpleChart(container, darkMode, locale)
+    const volumeSeries = chart.addHistogramSeries({
+      color: getCssVar(UI.COLOR_TEXT_OPACITY_25, 'rgba(17, 24, 39, 0.25)'),
+      lastValueVisible: false,
+      priceFormat: { type: 'volume' },
+      priceLineVisible: false,
+      priceScaleId: '',
     })
+    volumeSeries.priceScale().applyOptions({ scaleMargins: { bottom: 0, top: 0.8 } })
+    volumeSeriesRef.current = volumeSeries
     let coordinateToPrice: (coordinate: Coordinate) => number | null
     let getCrosshairPrice: (event: MouseEventParams<Time>) => number | undefined
     if (chartType === 'line') {
@@ -442,13 +471,15 @@ function useSimpleChart(
 
     const handleCrosshairMove = (event: MouseEventParams<Time>): void => {
       const price = getCrosshairPrice(event)
+      const volumeData = event.seriesData.get(volumeSeries)
+      const volume = volumeData && 'value' in volumeData ? volumeData.value : undefined
 
       if (!event.point || typeof event.time !== 'number' || price === undefined) {
         onTooltipChange(undefined)
         return
       }
 
-      onTooltipChange(getSimplePriceChartTooltipData(event.point, container, price, event.time))
+      onTooltipChange(getSimplePriceChartTooltipData(event.point, container, price, event.time, volume))
     }
 
     chart.subscribeClick(handleClick)
@@ -463,6 +494,7 @@ function useSimpleChart(
       chartRef.current = null
       areaSeriesRef.current = null
       candlestickSeriesRef.current = null
+      volumeSeriesRef.current = null
       priceLineRef.current = null
     }
   }, [
@@ -477,5 +509,6 @@ function useSimpleChart(
     metric,
     onTooltipChange,
     priceLineRef,
+    volumeSeriesRef,
   ])
 }

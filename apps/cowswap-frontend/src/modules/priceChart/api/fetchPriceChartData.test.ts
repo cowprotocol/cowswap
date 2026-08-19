@@ -37,6 +37,7 @@ describe('fetchPriceChartData', () => {
         low: 0.5,
         close: 2.5,
         timestamp: 1710000000,
+        volume: 123.45,
       },
     ]
     mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 1, bars }))
