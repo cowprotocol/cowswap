@@ -2,11 +2,19 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, SearchSymbolResultItem } from './charting_library'
-import type { PriceChartCurrencyCode } from './priceChart.types'
+import type { PriceChartBar, PriceChartMetric } from './priceChart.types'
 
 export interface CreatePriceChartDatafeedParams {
+  metric: PriceChartMetric
+  onHistoryLoaded?: (bars: PriceChartBar[]) => void
   onStatusChange: (status: PriceChartHistoryStatus) => void
   symbols: PriceChartSymbolDescriptor[]
+}
+
+export interface PriceChartAssetDescriptor {
+  address: string
+  chainId: SupportedChainId
+  symbol: string
 }
 
 export interface PriceChartContainerProps {
@@ -15,15 +23,7 @@ export interface PriceChartContainerProps {
   limitPrice?: Price<Currency, Currency> | null
   onSelectLimitPrice?: (price: Fraction) => void
   outputCurrency: Currency | null
-}
-
-export interface PriceChartCurrencyDescriptor {
-  address?: string
-  chainId?: SupportedChainId
-  kind: 'token' | 'usd'
-  key: string
-  name: string
-  symbol: string
+  sizeControl?: PriceChartSizeControl
 }
 
 export interface PriceChartDatafeedController {
@@ -31,37 +31,32 @@ export interface PriceChartDatafeedController {
   dispose: () => void
 }
 
-export type PriceChartFormat = 1 | 2 | 3 | 4
-
-export interface PriceChartHistoryStatus {
-  kind: 'idle' | 'loading' | 'ready' | 'empty' | 'error'
-  latestPrice?: number
-  message?: string
-  ticker?: string
-}
+export type PriceChartHistoryStatus = 'loading' | 'empty' | 'error' | null
 
 export interface PriceChartPureProps {
-  activeTicker: string
+  activeSymbol: PriceChartSymbolDescriptor | undefined
   executionLinePrice?: number | null
   limitLinePrice?: number | null
+  metric: PriceChartMetric
+  onSelectMetric: (metric: PriceChartMetric) => void
   onSelectPrice?: (price: number) => void
-  onSelectTicker: (ticker: string) => void
+  onSelectSelection: (selection: PriceChartSelection) => void
+  sizeControl?: PriceChartSizeControl
   symbols: PriceChartSymbolDescriptor[]
 }
 
-export interface PriceChartResolvedPriceRequest {
-  address: string
-  chainId: SupportedChainId
-  currencyCode: PriceChartCurrencyCode
-  isFallback: boolean
+export type PriceChartSelection = 'sell' | 'buy'
+
+export interface PriceChartSizeControl {
+  isExpanded: boolean
+  onToggle: () => void
 }
 
 export interface PriceChartSymbolDescriptor {
-  baseAsset: PriceChartCurrencyDescriptor
+  baseAsset: PriceChartAssetDescriptor
   description: string
   librarySymbolInfo: LibrarySymbolInfo
-  quoteAsset: PriceChartCurrencyDescriptor
   searchSymbol: SearchSymbolResultItem
-  selectionId: PriceChartFormat
+  selection: PriceChartSelection
   ticker: string
 }

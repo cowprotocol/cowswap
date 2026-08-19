@@ -10,6 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 
+import { PriceChartSettings } from 'modules/priceChart'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container'
 import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container'
@@ -143,6 +144,8 @@ export function SettingsDropdown({
                     })}
                   />
                 ) : null}
+
+                <PriceChartSettings />
               </SettingsBoxGroup>
             </SettingsDropdownSection>
           </styledEl.MenuFlyout>

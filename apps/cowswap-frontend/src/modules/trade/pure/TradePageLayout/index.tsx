@@ -85,3 +85,10 @@ export const SecondaryWrapper = styled.div.attrs({
     margin: 0 0 20px;
   }
 `
+
+export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
+  width: 100%;
+  max-width: ${({ $isExpanded }) => ($isExpanded ? 'none' : '780px')};
+  height: ${({ $isExpanded }) => ($isExpanded ? '500px' : '430px')};
+  min-height: ${({ $isExpanded }) => ($isExpanded ? '500px' : '430px')};
+`

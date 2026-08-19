@@ -4,7 +4,7 @@
 
 Provide a single app-local integration point for historical OHLCV price data used by the swap chart.
 
-This module owns the BFF client, request normalization, response validation, low-volume diagnostics, and the swap-owned pure chart component.
+This module owns the BFF client, request normalization, response validation, diagnostics, and chart components.
 
 ## 2) Responsibilities
 
@@ -15,31 +15,36 @@ This module owns the BFF client, request normalization, response validation, low
 
 ## 3) Product decisions
 
-- This module owns the only swap price chart surface
-- The chart is mounted on the Swap page right column via `TradePageLayout`
-- The available symbols are exactly four swap-derived markets:
+- This module owns the price chart for Swap, Limit, and TWAP
+- The chart uses the right column of each trade page
+- The available symbols are exactly two swap-derived markets:
   - `sellToken/USD`
   - `buyToken/USD`
-  - `sellToken/buyToken`
-  - `buyToken/sellToken`
-- The default symbol is `sellToken/buyToken`
-- Symbol search is intentionally disabled; symbol selection happens through local buttons only
-- The selected local button format is persisted in local storage as `1 | 2 | 3 | 4`:
+- The default symbol is `sellToken/USD`
+- Symbol search is disabled. A local segmented control selects the sell or buy asset.
+- The selected local button format is persisted in local storage as `1 | 2`:
   - `1`: `sellToken/USD`
   - `2`: `buyToken/USD`
-  - `3`: `sellToken/buyToken`
-  - `4`: `buyToken/sellToken`
-- Pair history is attempted directly; when unavailable, the chart shows a local not-found overlay
+- Stored pair formats (`3` or `4`) are obsolete and reset to `sellToken/USD`
 - Native assets must be resolved to wrapped token addresses before reaching the BFF
 - TradingView backfill requests are intentionally disabled; only the first history request is sent to the BFF
 - Chart status is scoped to the active ticker so stale responses cannot leak banner/overlay state across symbol switches
 - Chart layout, drawings, and selected format are restored from local storage on load and auto-saved back to local storage
+- The chart mode is stored in `price-chart-mode:v0`. Simple is the default.
+- Chart visibility is stored in `price-chart-visible:v0`. Visible is the default.
+- Each trade form has a chart-visibility button next to its settings button.
+- Each trade settings menu has a `Show price chart` switch.
+- Each trade settings menu has an `Advanced price chart` switch.
+- The disabled switch selects Simple mode. The enabled switch selects Advanced mode.
+- Simple mode uses Lightweight Charts and the same BFF history endpoint.
+- Simple mode does not poll or subscribe for real-time updates.
 
 ## 4) Internal structure
 
 - `api/`: BFF fetching and logging
 - `lib/`: TradingView adapter/runtime glue + shared types/constants
-- `pure/`: chart UI owned by Swap
+- `pure/`: chart UI and shared chart controls
+- `state/`: persisted chart preferences
 
 ## 5) Data flow
 
@@ -51,13 +56,13 @@ The API layer returns normalized bars or throws a typed error path back to the c
 
 ```mermaid
 flowchart LR
-  Swap[Swap page]
+  TradePages[Swap, Limit, and TWAP pages]
   PriceChartUi[PriceChart pure UI + TradingView adapter]
   PriceChartApi[priceChart API]
   Bff[CoW BFF]
   Codex[Codex API]
 
-  Swap --> PriceChartUi
+  TradePages --> PriceChartUi
   PriceChartUi --> PriceChartApi
   PriceChartApi --> Bff
   Bff --> Codex
@@ -108,7 +113,13 @@ This module:
 - no multi-exchange routing or comparison
 - TradingView state persistence uses `saved_data` on init and `onAutoSaveNeeded` plus unmount save for local storage
 - Selected format persistence uses `priceChartFormat:v0`
+- Chart mode persistence uses `price-chart-mode:v0`
+- Chart visibility persistence uses `price-chart-visible:v0`
 - the browser does not receive a Codex API key
+
+The simple chart is adapted from the GPL-3.0-or-later Uniswap interface chart:
+
+- <https://github.com/Uniswap/interface/tree/main/apps/web/src/components/Charts>
 
 ## 9) File structure
 
@@ -124,6 +135,10 @@ This module:
 - `pure/PriceChart/PriceChart.container.tsx`
 - `pure/PriceChart/PriceChart.pure.tsx`
 - `pure/PriceChart/PriceChart.styled.ts`
+- `pure/ChartToggleButton/`: shared chart-visibility control
+- `pure/PriceChartSettings/`: shared chart-mode control
+- `state/priceChartModeAtom.ts`: persisted chart mode
+- `state/priceChartVisibleAtom.ts`: persisted chart visibility
 
 ## 10) Verification
 
@@ -136,10 +151,10 @@ Focused tests exist for:
 
 ## 11) Architecture note
 
-`priceChart` now owns both:
+`priceChart` owns both:
 
 - the price-history API boundary
-- the swap-owned pure chart component
+- the shared trade-page chart components
 
 The internal split is:
 

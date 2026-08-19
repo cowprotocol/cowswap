@@ -6,6 +6,8 @@ import { UI } from '@cowprotocol/ui'
 import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './PriceChart.styled'
+import { PriceChartHeader } from './PriceChartHeader.pure'
+import { PriceChartStatus } from './PriceChartStatus.pure'
 
 import { logPriceChart } from '../../api'
 import {
@@ -13,6 +15,7 @@ import {
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
+import { getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
   PRO_CHART_CONTAINER_ID,
   PRO_CHART_CSS_PATH,
@@ -24,6 +27,7 @@ import {
 import { createPriceChartDatafeed } from '../../lib/tradingViewDatafeed.service'
 import { loadSavedPriceChartState, savePriceChartState } from '../../lib/tradingViewPersistence.utils'
 
+import type { PriceChartSummary } from '../../lib/priceChart.types'
 import type {
   PriceChartHistoryStatus,
   PriceChartPureProps,
@@ -43,27 +47,30 @@ interface SyncHorizontalLineParams {
 }
 
 export function PriceChartPure({
-  activeTicker,
+  activeSymbol,
   limitLinePrice,
+  metric,
+  onSelectMetric,
   onSelectPrice,
-  onSelectTicker,
+  onSelectSelection,
+  sizeControl,
   symbols,
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
   const chartId = useId().replace(/:/g, '')
   const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
-  const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>({ kind: 'idle' })
+  const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
+  const [priceSummary, setPriceSummary] = useState<PriceChartSummary>()
+  const activeTicker = activeSymbol?.ticker || ''
   const datafeedController = useMemo(
     () =>
       createPriceChartDatafeed({
+        metric,
+        onHistoryLoaded: (bars) => setPriceSummary(getPriceChartSummary(bars)),
         onStatusChange: setHistoryStatus,
         symbols,
       }),
-    [symbols],
-  )
-  const visibleHistoryStatus = useMemo(
-    () => getVisibleHistoryStatus(activeTicker, historyStatus),
-    [activeTicker, historyStatus],
+    [metric, symbols],
   )
 
   useEffect(() => {
@@ -73,27 +80,17 @@ export function PriceChartPure({
   }, [datafeedController])
 
   useEffect(() => {
-    if (!activeTicker) {
-      setHistoryStatus({ kind: 'idle' })
-      return
-    }
-
-    setHistoryStatus((currentStatus) => {
-      if (currentStatus.ticker === activeTicker) {
-        return currentStatus
-      }
-
-      return { kind: 'idle', ticker: activeTicker }
-    })
-  }, [activeTicker])
+    setHistoryStatus(null)
+    setPriceSummary(undefined)
+  }, [activeTicker, metric])
 
   useTradingViewWidget(
     activeTicker,
     containerId,
     datafeedController.datafeed,
     darkMode,
-    limitLinePrice,
-    onSelectPrice,
+    metric === 'price' ? limitLinePrice : null,
+    metric === 'price' ? onSelectPrice : undefined,
     symbols,
   )
 
@@ -103,29 +100,22 @@ export function PriceChartPure({
 
   return (
     <styledEl.PanelWrapper>
-      <styledEl.Header>
-        <styledEl.Heading>
-          <styledEl.Title>Price chart</styledEl.Title>
-        </styledEl.Heading>
-        <styledEl.SymbolList>
-          {symbols.map((symbol) => (
-            <styledEl.SymbolButton
-              $isActive={symbol.ticker === activeTicker}
-              key={symbol.ticker}
-              onClick={() => onSelectTicker(symbol.ticker)}
-              type="button"
-            >
-              {symbol.ticker}
-            </styledEl.SymbolButton>
-          ))}
-        </styledEl.SymbolList>
-      </styledEl.Header>
+      <PriceChartHeader
+        activeSymbol={activeSymbol}
+        change={priceSummary?.change}
+        metric={metric}
+        onSelectMetric={onSelectMetric}
+        onSelectSelection={onSelectSelection}
+        price={priceSummary?.price}
+        sizeControl={sizeControl}
+        symbols={symbols}
+      />
       <styledEl.ChartFrame>
         <styledEl.ChartContainer id={containerId} />
-        {visibleHistoryStatus.kind === 'loading' ||
-        visibleHistoryStatus.kind === 'empty' ||
-        visibleHistoryStatus.kind === 'error' ? (
-          <styledEl.OverlayState>{visibleHistoryStatus.message}</styledEl.OverlayState>
+        {historyStatus ? (
+          <styledEl.OverlayState>
+            <PriceChartStatus assetSymbol={activeSymbol?.baseAsset.symbol} kind={historyStatus} />
+          </styledEl.OverlayState>
         ) : null}
       </styledEl.ChartFrame>
     </styledEl.PanelWrapper>
@@ -163,17 +153,6 @@ function getThemeOverrides(): Partial<ChartPropertiesOverrides> {
     'scalesProperties.lineColor': gridColor,
     'symbolWatermarkProperties.color': primaryColor,
   }
-}
-
-function getVisibleHistoryStatus(
-  activeTicker: string,
-  historyStatus: PriceChartHistoryStatus,
-): PriceChartHistoryStatus {
-  if (!activeTicker || !historyStatus.ticker || historyStatus.ticker === activeTicker) {
-    return historyStatus
-  }
-
-  return { kind: 'idle' }
 }
 
 function isDarkColor(hexOrRgb: string): boolean {
@@ -220,7 +199,7 @@ function syncHorizontalLine({
   removeHorizontalLine(widget, entityIdRef)
 
   if (!widget || price === null || price === undefined) {
-    logPriceChart(logKey, { price: null, ticker })
+    logPriceChart.debug(logKey, { price: null, ticker })
     return
   }
 
@@ -247,7 +226,7 @@ function syncHorizontalLine({
   )
 
   entityIdRef.current = entityId
-  logPriceChart(logKey, { created: !!entityId, price, ticker })
+  logPriceChart.debug(logKey, { created: !!entityId, price, ticker })
 }
 
 function useTradingViewWidget(
@@ -290,7 +269,7 @@ function useTradingViewWidget(
         return
       }
 
-      logPriceChart('Selected limit price from chart click', {
+      logPriceChart.debug('Selected limit price from chart click', {
         price: latestCrosshairPriceRef.current,
         ticker: initialTickerRef.current || symbols[0]?.ticker,
       })
@@ -307,7 +286,6 @@ function useTradingViewWidget(
         autosize: true,
         container: containerId,
         custom_css_url: PRO_CHART_CSS_PATH,
-        custom_font_family: 'ui-monospace, SFMono-Regular, monospace',
         datafeed,
         disabled_features: [
           'display_market_status',
@@ -341,6 +319,12 @@ function useTradingViewWidget(
       widget.subscribe('mouse_up', handleChartMouseUp)
 
       widget.onChartReady(() => {
+        if (isCancelled) {
+          widget?.remove()
+          widget = null
+          return
+        }
+
         isWidgetReadyRef.current = true
 
         const nextTicker = initialTickerRef.current || symbols[0].ticker
@@ -373,17 +357,23 @@ function useTradingViewWidget(
       isCancelled = true
 
       try {
+        const wasWidgetReady = isWidgetReadyRef.current
         isWidgetReadyRef.current = false
         removeHorizontalLine(widget, limitLineEntityIdRef)
         if (widget && isCrosshairSubscribed) {
           widget.activeChart().crossHairMoved().unsubscribe(null, handleCrossHairMoved)
         }
         widget?.unsubscribe('mouse_up', handleChartMouseUp)
-        widget?.save((state) => {
-          savePriceChartState(state)
-        })
+        if (wasWidgetReady) {
+          widget?.save((state) => {
+            savePriceChartState(state)
+          })
+        }
         widget?.unsubscribe('onAutoSaveNeeded', handleAutoSaveNeeded)
-        widget?.remove()
+        if (wasWidgetReady) {
+          widget?.remove()
+          widget = null
+        }
       } catch {
       } finally {
         widgetRef.current = null

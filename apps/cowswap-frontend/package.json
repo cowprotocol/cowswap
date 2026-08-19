@@ -107,6 +107,7 @@
     "jsbi": "3.2.5",
     "json-stringify-deterministic": "1.0.12",
     "launchdarkly-react-client-sdk": "3.0.8",
+    "lightweight-charts": "4.1.1",
     "limiter": "3.0.0",
     "lit-html": "2.8.0",
     "lottie-react": "2.4.0",

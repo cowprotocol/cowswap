@@ -12,6 +12,7 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
+import { PriceChartSettings } from 'modules/priceChart'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
@@ -30,7 +31,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const { i18n } = useLingui()
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false)
   const { disableCustomRecipient } = useInjectedWidgetParams()
   const {
     showRecipient,
@@ -59,7 +60,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
       e.stopPropagation()
       analytics.changeLimitPricePosition(limitPricePosition, value)
       onStateChanged({ ...state, limitPricePosition: value })
-      setIsOpen(false)
+      setIsPositionDropdownOpen(false)
     },
     [analytics, onStateChanged, state, limitPricePosition],
   )
@@ -76,9 +77,9 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     onStateChanged({ ...state, ordersTableOnLeft: newValue })
   }, [analytics, onStateChanged, state, ordersTableOnLeft])
 
-  const toggleDropdown = (e: React.MouseEvent): void => {
+  const togglePositionDropdown = (e: React.MouseEvent): void => {
     e.stopPropagation()
-    setIsOpen(!isOpen)
+    setIsPositionDropdownOpen((current) => !current)
   }
 
   const handleContainerClick = (e: React.MouseEvent): void => {
@@ -155,16 +156,18 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             toggle={handleOrdersTablePositionToggle}
           />
 
+          <PriceChartSettings />
+
           <styledEl.SettingsRow>
             <SettingsLabel
               title={t`Limit Price Position`}
               tooltip={t`Choose where to display the limit price input.`}
             />
             <styledEl.DropdownContainer>
-              <styledEl.DropdownButton onClick={toggleDropdown}>
+              <styledEl.DropdownButton onClick={togglePositionDropdown}>
                 {POSITION_LABELS[limitPricePosition]}
               </styledEl.DropdownButton>
-              <styledEl.DropdownList isOpen={isOpen}>
+              <styledEl.DropdownList isOpen={isPositionDropdownOpen}>
                 {Object.entries(POSITION_LABELS).map(([value, label]) => (
                   <styledEl.DropdownItem
                     key={value}

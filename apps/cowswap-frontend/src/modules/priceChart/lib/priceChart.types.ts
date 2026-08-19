@@ -1,16 +1,18 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface PriceChartBar {
+  timestamp: number
   open: number
   high: number
   low: number
   close: number
-  time: number
-  status: string
-  volume: string | undefined
 }
 
-export type PriceChartCurrencyCode = 'USD' | 'TOKEN'
+export type PriceChartInterval = '1m' | '5m' | '15m' | '1h' | '4h' | '1d' | '7d'
+
+export type PriceChartMetric = 'marketCap' | 'price'
+
+export type PriceChartMode = 'advanced' | 'simple'
 
 export interface PriceChartQueryParams {
   address: string
@@ -18,10 +20,7 @@ export interface PriceChartQueryParams {
   from: number
   to: number
   resolution: PriceChartResolution
-  currencyCode?: PriceChartCurrencyCode
   countback?: number
-  removeEmptyBars?: boolean
-  removeLeadingNullValues?: boolean
 }
 
 export type PriceChartResolution =
@@ -38,3 +37,10 @@ export type PriceChartResolution =
   | '720'
   | '1D'
   | '7D'
+
+export interface PriceChartSummary {
+  change: number
+  price: number
+}
+
+export type SimplePriceChartPeriod = '1H' | '1D' | '1W' | '1M' | '1Y' | 'All'

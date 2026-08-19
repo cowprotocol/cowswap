@@ -8,31 +8,17 @@ describe('priceLimitLine.utils', () => {
   const inputCurrency = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
   const outputCurrency = USDC_MAINNET
   const symbols = createSwapChartSymbols(inputCurrency, outputCurrency)
+  const sellSymbol = symbols.find((symbol) => symbol.selection === 'sell')
+  const buySymbol = symbols.find((symbol) => symbol.selection === 'buy')
 
-  it('maps direct pair chart selections to exact limit rates', () => {
-    const selectedRate = getSelectedPriceLimitRate(
-      'ETHUSDC',
-      symbols,
-      inputCurrency,
-      outputCurrency,
-      1234.5,
-      null,
-      null,
-    )
+  it('maps input USD chart selections to limit rates', () => {
+    const selectedRate = getSelectedPriceLimitRate(sellSymbol, inputCurrency, outputCurrency, 1234.5, null, 1)
 
     expect(selectedRate?.toSignificant(10)).toBe('1234.5')
   })
 
-  it('maps inverse pair chart selections to exact inverse limit rates', () => {
-    const selectedRate = getSelectedPriceLimitRate(
-      'USDCETH',
-      symbols,
-      inputCurrency,
-      outputCurrency,
-      0.0005,
-      null,
-      null,
-    )
+  it('maps output USD chart selections to inverse limit rates', () => {
+    const selectedRate = getSelectedPriceLimitRate(buySymbol, inputCurrency, outputCurrency, 1, 2000, null)
 
     expect(selectedRate?.toSignificant(10)).toBe('2000')
   })

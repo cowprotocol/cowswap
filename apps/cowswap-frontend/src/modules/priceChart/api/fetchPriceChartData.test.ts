@@ -5,6 +5,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { fetchPriceChartData } from './fetchPriceChartData'
 
 jest.mock('@cowprotocol/common-utils', () => ({
+  createCowLogger: () => ({
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  }),
   fetchWithTimeout: jest.fn(),
 }))
 
@@ -30,12 +36,10 @@ describe('fetchPriceChartData', () => {
         high: 3,
         low: 0.5,
         close: 2.5,
-        time: 1710000000,
-        status: 'ok',
-        volume: '100.25',
+        timestamp: 1710000000,
       },
     ]
-    mockedFetchWithTimeout.mockResolvedValue(createResponse({ bars }))
+    mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 1, bars }))
 
     await expect(
       fetchPriceChartData({
@@ -49,45 +53,51 @@ describe('fetchPriceChartData', () => {
     ).resolves.toEqual(bars)
 
     const requestUrl = new URL(String(mockedFetchWithTimeout.mock.calls[0]?.[0]))
-    expect(`${requestUrl.origin}${requestUrl.pathname}`).toBe(`${BFF_BASE_URL}/proxies/codex/token-bars`)
+    expect(`${requestUrl.origin}${requestUrl.pathname}`).toBe(
+      `${BFF_BASE_URL}/1/tokens/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/priceHistory`,
+    )
     expect(Object.fromEntries(requestUrl.searchParams)).toEqual({
-      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      chainId: '1',
       from: '1710000000',
       to: '1710007200',
-      resolution: '60',
-      currencyCode: 'USD',
+      interval: '1h',
       countback: '300',
-      removeEmptyBars: 'true',
-      removeLeadingNullValues: 'true',
     })
     expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         headers: { Accept: 'application/json' },
-        timeout: 10_000,
+        timeout: 30_000,
       }),
     )
   })
 
-  it('forwards token quotes and explicit trimming flags', async () => {
-    mockedFetchWithTimeout.mockResolvedValue(createResponse({ bars: [] }))
+  it('maps weekly TradingView resolution to the public interval', async () => {
+    mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 2, bars: [] }))
 
     await fetchPriceChartData({
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       chainId: SupportedChainId.MAINNET,
       from: 1710000000,
       to: 1710007200,
-      resolution: '60',
-      currencyCode: 'TOKEN',
-      removeEmptyBars: false,
-      removeLeadingNullValues: false,
+      resolution: '7D',
     })
 
     const requestUrl = new URL(String(mockedFetchWithTimeout.mock.calls[0]?.[0]))
-    expect(requestUrl.searchParams.get('currencyCode')).toBe('TOKEN')
-    expect(requestUrl.searchParams.get('removeEmptyBars')).toBe('false')
-    expect(requestUrl.searchParams.get('removeLeadingNullValues')).toBe('false')
+    expect(requestUrl.searchParams.get('interval')).toBe('7d')
+  })
+
+  it('rejects unsupported resolutions before requesting the BFF', async () => {
+    await expect(
+      fetchPriceChartData({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        chainId: SupportedChainId.MAINNET,
+        from: 1710000000,
+        to: 1710007200,
+        resolution: '30',
+      }),
+    ).rejects.toThrow('Unsupported price chart resolution: 30')
+
+    expect(mockedFetchWithTimeout).not.toHaveBeenCalled()
   })
 
   it('rejects unsuccessful BFF responses', async () => {

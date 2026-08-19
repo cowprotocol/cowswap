@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
@@ -5,29 +6,29 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useUsdPrice } from 'modules/usdAmount'
 
 import { PriceChartPure } from './PriceChart.pure'
+import { SimplePriceChartPure } from './SimplePriceChart.pure'
 
 import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../../lib/priceLimitLine.utils'
-import {
-  createSwapChartSymbols,
-  getChartFormatByTicker,
-  getChartTickerByFormat,
-  getDefaultPriceChartFormat,
-} from '../../lib/symbolCatalog'
-import { loadSavedPriceChartFormat, savePriceChartFormat } from '../../lib/tradingViewPersistence.utils'
+import { createSwapChartSymbols } from '../../lib/symbolCatalog'
+import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/tradingViewPersistence.utils'
+import { priceChartModeAtom } from '../../state/priceChartModeAtom'
 
-import type { PriceChartContainerProps } from '../../lib/tradingView.types'
+import type { PriceChartMetric } from '../../lib/priceChart.types'
+import type { PriceChartContainerProps, PriceChartSelection } from '../../lib/tradingView.types'
 
 export function PriceChart({
   inputCurrency,
   limitPrice,
   onSelectLimitPrice,
   outputCurrency,
+  sizeControl,
 }: PriceChartContainerProps): ReactNode {
+  const chartMode = useAtomValue(priceChartModeAtom)
+  const [metric, setMetric] = useState<PriceChartMetric>('price')
   const inputUsdPriceState = useUsdPrice(inputCurrency ? getWrappedToken(inputCurrency) : null)
   const outputUsdPriceState = useUsdPrice(outputCurrency ? getWrappedToken(outputCurrency) : null)
   const symbols = useMemo(() => createSwapChartSymbols(inputCurrency, outputCurrency), [inputCurrency, outputCurrency])
-  const defaultFormat = useMemo(() => getDefaultPriceChartFormat(symbols), [symbols])
-  const [selectedFormat, setSelectedFormat] = useState(() => loadSavedPriceChartFormat())
+  const [selectedSelection, setSelectedSelection] = useState(() => loadSavedPriceChartSelection())
   const inputUsdPrice = useMemo(() => {
     const price = inputUsdPriceState?.price ? Number(inputUsdPriceState.price.toSignificant(18)) : null
 
@@ -39,47 +40,30 @@ export function PriceChart({
     return price && Number.isFinite(price) && price > 0 ? price : null
   }, [outputUsdPriceState])
 
-  const activeTicker = useMemo(() => {
-    if (!symbols.length) {
-      return ''
-    }
-
-    return (
-      getChartTickerByFormat(symbols, selectedFormat) ||
-      getChartTickerByFormat(symbols, defaultFormat) ||
-      symbols[0]?.ticker ||
-      ''
-    )
-  }, [defaultFormat, selectedFormat, symbols])
+  const activeSymbol = useMemo(
+    () => symbols.find((symbol) => symbol.selection === selectedSelection) || symbols[0],
+    [selectedSelection, symbols],
+  )
   const limitLinePrice = useMemo(
     () =>
       getActivePriceLimitLinePrice(
-        activeTicker,
-        symbols,
+        activeSymbol,
         limitPrice,
         inputCurrency,
         outputCurrency,
         inputUsdPrice,
         outputUsdPrice,
       ),
-    [activeTicker, inputCurrency, inputUsdPrice, limitPrice, outputCurrency, outputUsdPrice, symbols],
+    [activeSymbol, inputCurrency, inputUsdPrice, limitPrice, outputCurrency, outputUsdPrice],
   )
-  const handleSelectTicker = useCallback(
-    (ticker: string) => {
-      const format = getChartFormatByTicker(symbols, ticker)
-
-      if (!format) return
-
-      setSelectedFormat(format)
-      savePriceChartFormat(format)
-    },
-    [symbols],
-  )
+  const handleSelectSelection = useCallback((selection: PriceChartSelection) => {
+    setSelectedSelection(selection)
+    savePriceChartSelection(selection)
+  }, [])
   const handleSelectPrice = useCallback(
     (selectedPrice: number) => {
       const nextRate = getSelectedPriceLimitRate(
-        activeTicker,
-        symbols,
+        activeSymbol,
         inputCurrency,
         outputCurrency,
         selectedPrice,
@@ -93,17 +77,20 @@ export function PriceChart({
 
       onSelectLimitPrice(nextRate)
     },
-    [activeTicker, inputCurrency, inputUsdPrice, onSelectLimitPrice, outputCurrency, outputUsdPrice, symbols],
+    [activeSymbol, inputCurrency, inputUsdPrice, onSelectLimitPrice, outputCurrency, outputUsdPrice],
   )
 
-  return (
-    <PriceChartPure
-      activeTicker={activeTicker}
-      executionLinePrice={null}
-      limitLinePrice={limitLinePrice}
-      onSelectPrice={handleSelectPrice}
-      onSelectTicker={handleSelectTicker}
-      symbols={symbols}
-    />
-  )
+  const chartProps = {
+    activeSymbol,
+    executionLinePrice: null,
+    limitLinePrice,
+    metric,
+    onSelectMetric: setMetric,
+    onSelectPrice: handleSelectPrice,
+    onSelectSelection: handleSelectSelection,
+    sizeControl,
+    symbols,
+  }
+
+  return chartMode === 'simple' ? <SimplePriceChartPure {...chartProps} /> : <PriceChartPure {...chartProps} />
 }

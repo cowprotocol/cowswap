@@ -1,12 +1,13 @@
 import {
-  loadSavedPriceChartFormat,
+  loadSavedPriceChartSelection,
   loadSavedPriceChartState,
-  savePriceChartFormat,
+  savePriceChartSelection,
   savePriceChartState,
 } from './tradingViewPersistence.utils'
 
 const STATE_STORAGE_KEY = 'priceChartState:v0'
-const FORMAT_STORAGE_KEY = 'priceChartFormat:v0'
+const SELECTION_STORAGE_KEY = 'priceChartSelection:v0'
+const LEGACY_FORMAT_STORAGE_KEY = 'priceChartFormat:v0'
 
 describe('tradingViewPersistence.utils', () => {
   beforeEach(() => {
@@ -35,23 +36,38 @@ describe('tradingViewPersistence.utils', () => {
     expect(window.localStorage.getItem(STATE_STORAGE_KEY)).toBeNull()
   })
 
-  it('saves and loads chart format from local storage', () => {
-    savePriceChartFormat(4)
+  it('saves and loads the chart selection from local storage', () => {
+    savePriceChartSelection('buy')
 
-    expect(loadSavedPriceChartFormat()).toBe(4)
+    expect(loadSavedPriceChartSelection()).toBe('buy')
   })
 
-  it('drops malformed local storage format', () => {
-    window.localStorage.setItem(FORMAT_STORAGE_KEY, '{broken json')
+  it('drops a malformed saved selection', () => {
+    window.localStorage.setItem(SELECTION_STORAGE_KEY, '{broken json')
 
-    expect(loadSavedPriceChartFormat()).toBeUndefined()
-    expect(window.localStorage.getItem(FORMAT_STORAGE_KEY)).toBeNull()
+    expect(loadSavedPriceChartSelection()).toBeUndefined()
+    expect(window.localStorage.getItem(SELECTION_STORAGE_KEY)).toBeNull()
   })
 
-  it('drops unsupported local storage format', () => {
-    window.localStorage.setItem(FORMAT_STORAGE_KEY, JSON.stringify(7))
+  it('drops an unsupported saved selection', () => {
+    window.localStorage.setItem(SELECTION_STORAGE_KEY, JSON.stringify('other'))
 
-    expect(loadSavedPriceChartFormat()).toBeUndefined()
-    expect(window.localStorage.getItem(FORMAT_STORAGE_KEY)).toBeNull()
+    expect(loadSavedPriceChartSelection()).toBeUndefined()
+    expect(window.localStorage.getItem(SELECTION_STORAGE_KEY)).toBeNull()
+  })
+
+  it('migrates the legacy numeric chart format', () => {
+    window.localStorage.setItem(LEGACY_FORMAT_STORAGE_KEY, JSON.stringify(2))
+
+    expect(loadSavedPriceChartSelection()).toBe('buy')
+    expect(window.localStorage.getItem(LEGACY_FORMAT_STORAGE_KEY)).toBeNull()
+    expect(window.localStorage.getItem(SELECTION_STORAGE_KEY)).toBe(JSON.stringify('buy'))
+  })
+
+  it('drops obsolete legacy chart formats', () => {
+    window.localStorage.setItem(LEGACY_FORMAT_STORAGE_KEY, JSON.stringify(3))
+
+    expect(loadSavedPriceChartSelection()).toBeUndefined()
+    expect(window.localStorage.getItem(LEGACY_FORMAT_STORAGE_KEY)).toBeNull()
   })
 })

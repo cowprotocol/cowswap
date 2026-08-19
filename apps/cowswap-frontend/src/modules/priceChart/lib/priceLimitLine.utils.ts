@@ -7,40 +7,28 @@ import F from 'fraction.js'
 import type { PriceChartSymbolDescriptor } from './tradingView.types'
 
 export function getActivePriceLimitLinePrice(
-  activeTicker: string,
-  symbols: PriceChartSymbolDescriptor[],
+  symbol: PriceChartSymbolDescriptor | undefined,
   limitPrice: Price<Currency, Currency> | null | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null,
   inputUsdPrice: number | null,
   outputUsdPrice: number | null,
 ): number | null {
-  const symbol = symbols.find((item) => item.ticker === activeTicker)
-
   if (!symbol) {
     return null
-  }
-
-  const displayedLimitPrice = getDisplayedLimitPrice(symbol, limitPrice)
-
-  if (displayedLimitPrice) {
-    return getPriceValue(displayedLimitPrice)
   }
 
   return getActiveUsdLimitLinePrice(symbol, limitPrice, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice)
 }
 
 export function getSelectedPriceLimitRate(
-  activeTicker: string,
-  symbols: PriceChartSymbolDescriptor[],
+  symbol: PriceChartSymbolDescriptor | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null,
   selectedPrice: number,
   inputUsdPrice: number | null,
   outputUsdPrice: number | null,
 ): Fraction | null {
-  const symbol = symbols.find((item) => item.ticker === activeTicker)
-
   if (!symbol) {
     return null
   }
@@ -51,10 +39,6 @@ export function getSelectedPriceLimitRate(
 
   if (!isPositiveFiniteNumber(selectedPrice)) {
     return null
-  }
-
-  if (symbol.quoteAsset.kind === 'token') {
-    return getSelectedTokenLimitRate(symbol, inputCurrency, outputCurrency, selectedPrice)
   }
 
   return getSelectedUsdLimitRate(symbol, inputCurrency, outputCurrency, selectedPrice, inputUsdPrice, outputUsdPrice)
@@ -68,10 +52,6 @@ function getActiveUsdLimitLinePrice(
   inputUsdPrice: number | null,
   outputUsdPrice: number | null,
 ): number | null {
-  if (symbol.quoteAsset.kind !== 'usd') {
-    return null
-  }
-
   const canonicalLimitRate = getCanonicalLimitRate(limitPrice, inputCurrency, outputCurrency)
 
   if (!isPositiveFiniteNumber(canonicalLimitRate)) {
@@ -116,60 +96,12 @@ function getCanonicalLimitRate(
   return null
 }
 
-function getDisplayedLimitPrice(
-  symbol: PriceChartSymbolDescriptor | undefined,
-  limitPrice: Price<Currency, Currency> | null | undefined,
-): Price<Currency, Currency> | null {
-  if (!symbol || !limitPrice || symbol.quoteAsset.kind !== 'token') {
-    return null
-  }
-
-  if (isMatchingAssetPair(limitPrice, symbol.baseAsset, symbol.quoteAsset)) {
-    return limitPrice
-  }
-
-  if (isMatchingAssetPair(limitPrice, symbol.quoteAsset, symbol.baseAsset)) {
-    return limitPrice.invert()
-  }
-
-  return null
-}
-
 function getPriceValue(price: Price<Currency, Currency>): number | null {
   const baseAmount = tryParseCurrencyAmount('1', price.baseCurrency)
   const quoteAmount = baseAmount ? price.quote(baseAmount) : null
   const parsedPrice = quoteAmount ? Number(quoteAmount.toExact()) : Number(price.toSignificant(18))
 
   return Number.isFinite(parsedPrice) ? parsedPrice : null
-}
-
-function getSelectedTokenLimitRate(
-  symbol: PriceChartSymbolDescriptor,
-  inputCurrency: Currency,
-  outputCurrency: Currency,
-  selectedPrice: number,
-): Fraction | null {
-  if (
-    isMatchingAssetPair(
-      { baseCurrency: inputCurrency, quoteCurrency: outputCurrency },
-      symbol.baseAsset,
-      symbol.quoteAsset,
-    )
-  ) {
-    return toExactFraction(selectedPrice)
-  }
-
-  if (
-    isMatchingAssetPair(
-      { baseCurrency: inputCurrency, quoteCurrency: outputCurrency },
-      symbol.quoteAsset,
-      symbol.baseAsset,
-    )
-  ) {
-    return toExactFraction(1 / selectedPrice)
-  }
-
-  return null
 }
 
 function getSelectedUsdLimitRate(
@@ -198,14 +130,6 @@ function isMatchingAsset(currency: Currency, asset: PriceChartSymbolDescriptor['
   const wrappedCurrency = getWrappedToken(currency)
 
   return wrappedCurrency.chainId === asset.chainId && wrappedCurrency.address.toLowerCase() === asset.address
-}
-
-function isMatchingAssetPair(
-  price: Pick<Price<Currency, Currency>, 'baseCurrency' | 'quoteCurrency'>,
-  baseAsset: PriceChartSymbolDescriptor['baseAsset'],
-  quoteAsset: PriceChartSymbolDescriptor['baseAsset'],
-): boolean {
-  return isMatchingAsset(price.baseCurrency, baseAsset) && isMatchingAsset(price.quoteCurrency, quoteAsset)
 }
 
 function isMatchingCurrency(currency: Currency, expectedCurrency: Currency): boolean {

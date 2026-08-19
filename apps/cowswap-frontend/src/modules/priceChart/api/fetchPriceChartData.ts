@@ -4,20 +4,29 @@ import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { logPriceChart } from './logPriceChart'
 
 import { PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
-import { PriceChartBar, PriceChartQueryParams } from '../lib/priceChart.types'
+import { PriceChartBar, PriceChartInterval, PriceChartQueryParams, PriceChartResolution } from '../lib/priceChart.types'
 
 interface PriceChartResponse {
+  providerId: number
   bars: PriceChartBar[]
+}
+
+const INTERVAL_BY_RESOLUTION: Partial<Record<PriceChartResolution, PriceChartInterval>> = {
+  '1': '1m',
+  '5': '5m',
+  '15': '15m',
+  '60': '1h',
+  '240': '4h',
+  '1D': '1d',
+  '7D': '7d',
 }
 
 export async function fetchPriceChartData(params: PriceChartQueryParams): Promise<PriceChartBar[]> {
   const url = buildPriceChartUrl(params)
-  const currencyCode = params.currencyCode === 'TOKEN' ? 'TOKEN' : 'USD'
   const symbol = `${params.address}:${params.chainId}`
 
-  logPriceChart('Fetching bars', {
+  logPriceChart.debug('Fetching bars', {
     countback: params.countback,
-    currencyCode,
     from: params.from,
     resolution: params.resolution,
     symbol,
@@ -37,16 +46,15 @@ export async function fetchPriceChartData(params: PriceChartQueryParams): Promis
 
     const payload = (await response.json()) as PriceChartResponse
 
-    logPriceChart('Fetched bars', {
+    logPriceChart.info('Fetched bars', {
       bars: payload.bars.length,
-      currencyCode,
+      providerId: payload.providerId,
       symbol,
     })
 
     return payload.bars
   } catch (error) {
-    logPriceChart('Failed to fetch bars', error, {
-      currencyCode,
+    logPriceChart.warn('Failed to fetch bars', error, {
       symbol,
     })
 
@@ -55,21 +63,21 @@ export async function fetchPriceChartData(params: PriceChartQueryParams): Promis
 }
 
 function buildPriceChartUrl(params: PriceChartQueryParams): string {
-  const currencyCode = params.currencyCode === 'TOKEN' ? 'TOKEN' : 'USD'
+  const interval = INTERVAL_BY_RESOLUTION[params.resolution]
+
+  if (!interval) {
+    throw new Error(`Unsupported price chart resolution: ${params.resolution}`)
+  }
+
   const query = new URLSearchParams({
-    address: params.address,
-    chainId: String(params.chainId),
     from: String(params.from),
     to: String(params.to),
-    resolution: params.resolution,
-    currencyCode,
-    removeEmptyBars: String(params.removeEmptyBars ?? true),
-    removeLeadingNullValues: String(params.removeLeadingNullValues ?? true),
+    interval,
   })
 
   if (params.countback !== undefined) {
     query.set('countback', String(params.countback))
   }
 
-  return `${BFF_BASE_URL}/proxies/codex/token-bars?${query}`
+  return `${BFF_BASE_URL}/${params.chainId}/tokens/${params.address}/priceHistory?${query}`
 }

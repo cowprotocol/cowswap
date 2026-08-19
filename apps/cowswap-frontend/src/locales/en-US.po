@@ -76,6 +76,10 @@ msgstr "Bridge transaction"
 msgid "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
 msgstr "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "1 year"
+#~ msgstr "1 year"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 #~ msgid "It isn’t a valid referral code."
 #~ msgstr "It isn’t a valid referral code."
@@ -784,6 +788,10 @@ msgstr "for a total of"
 msgid "Sign (gas-free!) in your wallet..."
 msgstr "Sign (gas-free!) in your wallet..."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "1 week"
+#~ msgstr "1 week"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
@@ -992,6 +1000,11 @@ msgstr "Custom slippage amount set{amountRange}."
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr "Activating TWAP"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartHeader.pure.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Market Cap"
+msgstr "Market Cap"
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -1500,6 +1513,10 @@ msgstr "Place limit order"
 msgid "Become an affiliate"
 msgstr "Become an affiliate"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Area chart"
+msgstr "Area chart"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 msgid "Insufficient {symbol} balance"
 msgstr "Insufficient {symbol} balance"
@@ -1708,6 +1725,10 @@ msgstr "and got an extra "
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "s"
 msgstr "s"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "Price chart period"
+#~ msgstr "Price chart period"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
@@ -2236,6 +2257,11 @@ msgstr "Order type"
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
 msgid "Expired orders"
 msgstr "Expired orders"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartToggleButton/ChartToggleButton.container.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Show price chart"
+msgstr "Show price chart"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "Learn more."
@@ -3019,6 +3045,10 @@ msgstr "place a new order"
 msgid "Not found"
 msgstr "Not found"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Candlestick chart"
+msgstr "Candlestick chart"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent.tsx
 #~ msgid "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
 #~ msgstr "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
@@ -3066,6 +3096,11 @@ msgstr "dialog content"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 msgstr "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "Line chart"
+#~ msgstr "Line chart"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
@@ -3286,6 +3321,10 @@ msgstr "Sell amount too small"
 msgid "Your position has 0 liquidity, and is not earning fees."
 msgstr "Your position has 0 liquidity, and is not earning fees."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartStatus.pure.tsx
+#~ msgid "Loading price history for {symbol}"
+#~ msgstr "Loading price history for {symbol}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "No failed orders found"
 #~ msgstr "No failed orders found"
@@ -3399,6 +3438,10 @@ msgstr "TWAP"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Insufficient liquidity for this trade"
 msgstr "Insufficient liquidity for this trade"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
+msgstr "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -4212,6 +4255,10 @@ msgstr "Keep in mind a solver might already have included the order in a solutio
 msgid "Token"
 msgstr "Token"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartHeader.pure.tsx
+msgid "Minimize price chart"
+msgstr "Minimize price chart"
+
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
 msgid "Order submitted"
 msgstr "Order submitted"
@@ -4255,6 +4302,10 @@ msgstr "Booooost APR!"
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 #~ msgstr "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartStatus.pure.tsx
+msgid "Failed to load price history for {assetSymbol}"
+msgstr "Failed to load price history for {assetSymbol}"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 #~ msgid "blocked activities"
@@ -4713,6 +4764,10 @@ msgstr "Start bridging"
 msgid "Confirm this is the correct address and that it exists on this chain."
 msgstr "Confirm this is the correct address and that it exists on this chain."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "All time"
+#~ msgstr "All time"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "Import at your own risk"
 msgstr "Import at your own risk"
@@ -4962,6 +5017,10 @@ msgstr "Approve"
 msgid "Execution time"
 msgstr "Execution time"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartToggleButton/ChartToggleButton.container.tsx
+msgid "Hide price chart"
+msgstr "Hide price chart"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Code already taken or wallet already linked."
 #~ msgstr "Code already taken or wallet already linked."
@@ -5052,6 +5111,10 @@ msgstr "Start time first"
 msgid "Swap with Wrapped {nativeSymbol}"
 msgstr "Swap with Wrapped {nativeSymbol}"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Show or hide the price chart next to the trade form."
+msgstr "Show or hide the price chart next to the trade form."
+
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Analytics"
 msgstr "Analytics"
@@ -5116,6 +5179,8 @@ msgstr "Use the Swap tab for trades that don't involve an LP token."
 msgid "off-chain"
 msgstr "off-chain"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartHeader.pure.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 msgid "Price"
@@ -5359,6 +5424,10 @@ msgstr "CoWmunity fees discount"
 msgid "Action"
 msgstr "Action"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Advanced price chart"
+msgstr "Advanced price chart"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
 msgstr "Swap with"
@@ -5438,6 +5507,10 @@ msgstr "Enter valid token address"
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "Confirm and continue"
 #~ msgstr "Confirm and continue"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartStatus.pure.tsx
+msgid "Service unavailable"
+msgstr "Service unavailable"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "vCOW conversion"
@@ -6018,6 +6091,10 @@ msgstr "Receive surplus of your order"
 msgid "CoW DAO Governance"
 msgstr "CoW DAO Governance"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "1 day"
+#~ msgstr "1 day"
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add <0/> to {walletName}"
 msgstr "Add <0/> to {walletName}"
@@ -6464,6 +6541,10 @@ msgstr "token before creation."
 msgid "at least "
 msgstr "at least "
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartHeader.pure.tsx
+msgid "Maximize price chart"
+msgstr "Maximize price chart"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "Recover funds from {accountProxyLabelString}"
 msgstr "Recover funds from {accountProxyLabelString}"
@@ -6586,6 +6667,10 @@ msgstr "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} pe
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to the classic {wrappedSymbol} experience and benefit!"
 msgstr "Switch to the classic {wrappedSymbol} experience and benefit!"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartStatus.pure.tsx
+#~ msgid "Failed to load price history for {symbol}"
+#~ msgstr "Failed to load price history for {symbol}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Add {hookTypeText}-hook"
@@ -6976,6 +7061,10 @@ msgstr "yield"
 msgid "Quote not yet verified by CoW Protocol simulation"
 msgstr "Quote not yet verified by CoW Protocol simulation"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartHeader.pure.tsx
+msgid "Chart metric"
+msgstr "Chart metric"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
 msgstr "Buy token"
@@ -7170,6 +7259,10 @@ msgstr "If you approve an unlimited amount, you will only have to do this once p
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Try Again"
 msgstr "Try Again"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/PriceChartStatus.pure.tsx
+msgid "Loading price history for {assetSymbol}"
+msgstr "Loading price history for {assetSymbol}"
 
 #: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 #~ msgid "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
@@ -7636,6 +7729,10 @@ msgstr "Transaction failed"
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Approve spending <0/> <1/> on CoW Swap"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Price chart type"
+msgstr "Price chart type"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Status"
@@ -7799,6 +7896,14 @@ msgstr "You will be prompted to <0>wrap your {nativeSymbol} to {wrappedSymbol}</
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancelling {ordersCount} orders"
 msgstr "Cancelling {ordersCount} orders"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "1 month"
+#~ msgstr "1 month"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+#~ msgid "1 hour"
+#~ msgstr "1 hour"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "User rejected signing COW claim transaction"

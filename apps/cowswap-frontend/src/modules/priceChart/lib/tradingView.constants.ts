@@ -54,9 +54,3 @@ export const PRO_CHART_TIME_FRAMES = [
     text: '1Y',
   },
 ]
-export const PRO_CHART_USD_ASSET = {
-  kind: 'usd',
-  key: 'usd',
-  name: 'US Dollar',
-  symbol: 'USD',
-} as const

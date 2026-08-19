@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 import { useParams } from 'react-router'
+import styled from 'styled-components/macro'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
@@ -15,11 +16,13 @@ import {
   advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
   SetupAdvancedOrderAmountsFromUrlUpdater,
+  useAdvancedOrdersDerivedState,
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
+import { PriceChart, priceChartVisibleAtom } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect } from 'modules/trade'
 import {
@@ -39,6 +42,13 @@ import { HydrateAtom } from 'common/state/HydrateAtom'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+const SecondaryColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-area: secondary;
+`
+
 export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
@@ -54,6 +64,8 @@ export function AdvancedOrdersPage(): ReactNode {
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
   const { hideOrdersTable } = useInjectedWidgetParams()
+  const isChartVisible = useAtomValue(priceChartVisibleAtom)
+  const hasSecondaryContent = isChartVisible || !hideOrdersTable
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
@@ -71,7 +83,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable}
+        hideOrdersTable={!hasSecondaryContent}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -90,14 +102,31 @@ export function AdvancedOrdersPage(): ReactNode {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper className="trade-orders-table">
-            <Suspense fallback={<Loading />}>
-              <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
-            </Suspense>
-          </styledEl.SecondaryWrapper>
+        {hasSecondaryContent && (
+          <SecondaryColumn className="trade-orders-table">
+            {isChartVisible ? <AdvancedOrdersChart /> : null}
+            {!hideOrdersTable ? (
+              <styledEl.SecondaryWrapper>
+                <Suspense fallback={<Loading />}>
+                  <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                </Suspense>
+              </styledEl.SecondaryWrapper>
+            ) : null}
+          </SecondaryColumn>
         )}
       </styledEl.PageWrapper>
     </HydrateAtom>
+  )
+}
+
+function AdvancedOrdersChart(): ReactNode {
+  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+
+  if (!inputCurrency || !outputCurrency) return null
+
+  return (
+    <styledEl.ChartWrapper $isExpanded>
+      <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+    </styledEl.ChartWrapper>
   )
 }

@@ -1,3 +1,3 @@
-export function logPriceChart(...args: unknown[]): void {
-  console.debug(`%c [PriceChart]`, 'font-weight: bold; color: #1c5dbf', ...args)
-}
+import { createCowLogger } from '@cowprotocol/common-utils'
+
+export const logPriceChart = createCowLogger('PriceChart')

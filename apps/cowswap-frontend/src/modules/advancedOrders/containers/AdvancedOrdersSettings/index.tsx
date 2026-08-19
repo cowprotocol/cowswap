@@ -5,7 +5,8 @@ import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
 import { AdvancedOrdersSettingsDropdown } from 'modules/advancedOrders/pure/Settings/AdvancedOrdersSettings'
-import { SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
+import { ChartToggleButton } from 'modules/priceChart'
+import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -47,19 +48,22 @@ export function AdvancedOrdersSettings() {
   )
 
   return (
-    <MenuWrapper>
-      <Menu>
-        <SettingsButton disabled={isSettingsDisabled}>
-          <SettingsIcon />
-        </SettingsButton>
-        <MenuPopover portal={false}>
-          <MenuItems>
-            <MenuItem disabled={true} onSelect={() => void 0}>
-              <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
-            </MenuItem>
-          </MenuItems>
-        </MenuPopover>
-      </Menu>
-    </MenuWrapper>
+    <ButtonsContainer>
+      <ChartToggleButton />
+      <MenuWrapper>
+        <Menu>
+          <SettingsButton disabled={isSettingsDisabled}>
+            <SettingsIcon />
+          </SettingsButton>
+          <MenuPopover portal={false}>
+            <MenuItems>
+              <MenuItem disabled={true} onSelect={() => void 0}>
+                <AdvancedOrdersSettingsDropdown state={settingsState} onStateChanged={onStateChanged} />
+              </MenuItem>
+            </MenuItems>
+          </MenuPopover>
+        </Menu>
+      </MenuWrapper>
+    </ButtonsContainer>
   )
 }

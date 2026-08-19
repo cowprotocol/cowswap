@@ -1,3 +1,4 @@
+import { loadPriceChartHistory } from './loadPriceChartHistory.service'
 import { findChartSymbol } from './symbolCatalog'
 import {
   PRO_CHART_DISABLE_BACKFILL_REQUESTS,
@@ -5,24 +6,14 @@ import {
   PRO_CHART_EXCHANGE_VALUE,
   PRO_CHART_SUPPORTED_RESOLUTIONS,
 } from './tradingView.constants'
-import {
-  buildPriceChartQueryParams,
-  derivePairBarsFromUsdBars,
-  getReadyStatusMessage,
-  getResolvedPriceRequests,
-  mapPriceChartBarsToTradingViewBars,
-  mapResolutionToPriceChartResolution,
-} from './tradingViewAdapter.utils'
-
-import { fetchPriceChartData } from '../api'
+import { mapPriceChartBarsToTradingViewBars, mapResolutionToPriceChartResolution } from './tradingViewAdapter.utils'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './charting_library'
-import type { PriceChartBar, PriceChartResolution } from './priceChart.types'
+import type { PriceChartBar, PriceChartMetric, PriceChartResolution } from './priceChart.types'
 import type {
   CreatePriceChartDatafeedParams,
   PriceChartDatafeedController,
   PriceChartHistoryStatus,
-  PriceChartResolvedPriceRequest,
   PriceChartSymbolDescriptor,
 } from './tradingView.types'
 
@@ -31,7 +22,10 @@ type ErrorCallback = GetBarsParameters[4]
 interface GetBarsHandlerParams {
   isDisposed: () => boolean
   latestRequestIdsByTicker: Map<string, number>
-  setStatus: (status: PriceChartHistoryStatus) => void
+  metric: PriceChartMetric
+  setHistory: (bars: PriceChartBar[], ticker: string) => void
+  setActiveTicker: (ticker: string) => void
+  setStatus: (status: PriceChartHistoryStatus, ticker: string) => void
   symbols: PriceChartSymbolDescriptor[]
 }
 
@@ -41,37 +35,48 @@ type HistoryCallback = GetBarsParameters[3]
 interface HistoryLoaderParams {
   isLatestRequest: () => boolean
   onError: ErrorCallback
+  onHistoryLoaded: (bars: PriceChartBar[]) => void
   onResult: HistoryCallback
+  metric: PriceChartMetric
   periodParams: PeriodParams
   resolution: PriceChartResolution
   setStatus: (status: PriceChartHistoryStatus) => void
   symbol: PriceChartSymbolDescriptor
 }
 
-interface LoadedHistory {
-  bars: PriceChartBar[]
-  request: PriceChartResolvedPriceRequest
-}
-
 type PeriodParams = GetBarsParameters[2]
 
 export function createPriceChartDatafeed({
+  metric,
+  onHistoryLoaded,
   onStatusChange,
   symbols,
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
+  let activeTicker: string | undefined
   const latestRequestIdsByTicker = new Map<string, number>()
 
-  const setStatus = (status: PriceChartHistoryStatus): void => {
-    if (disposed) return
+  const setStatus = (status: PriceChartHistoryStatus, ticker: string): void => {
+    if (disposed || ticker !== activeTicker) return
 
     onStatusChange(status)
+  }
+
+  const setHistory = (bars: PriceChartBar[], ticker: string): void => {
+    if (disposed || ticker !== activeTicker) return
+
+    onHistoryLoaded?.(bars)
   }
 
   return {
     datafeed: createBasicDatafeed({
       isDisposed: () => disposed,
       latestRequestIdsByTicker,
+      metric,
+      setHistory,
+      setActiveTicker: (ticker) => {
+        activeTicker = ticker
+      },
       setStatus,
       symbols,
     }),
@@ -109,6 +114,7 @@ function createBasicDatafeed(params: GetBarsHandlerParams): IBasicDataFeed {
           return
         }
 
+        params.setActiveTicker(symbol.ticker)
         onResolve(symbol.librarySymbolInfo)
       }, 0)
     },
@@ -139,17 +145,23 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
       return
     }
 
+    params.setActiveTicker(symbol.ticker)
     const requestId = (params.latestRequestIdsByTicker.get(symbol.ticker) || 0) + 1
     params.latestRequestIdsByTicker.set(symbol.ticker, requestId)
-    setFirstRequestStatus(periodParams, params.setStatus, getLoadingStatus(symbol))
+
+    if (requestId === 1) {
+      setFirstRequestStatus(periodParams, (status) => params.setStatus(status, symbol.ticker), 'loading')
+    }
 
     void loadHistory({
       isLatestRequest: () => !params.isDisposed() && params.latestRequestIdsByTicker.get(symbol.ticker) === requestId,
       onError,
+      onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker),
       onResult,
+      metric: params.metric,
       periodParams,
       resolution: resolvedResolution,
-      setStatus: params.setStatus,
+      setStatus: (status) => params.setStatus(status, symbol.ticker),
       symbol,
     })
   }
@@ -159,74 +171,26 @@ async function fetchHistory(
   symbol: PriceChartSymbolDescriptor,
   periodParams: PeriodParams,
   resolution: PriceChartResolution,
-): Promise<LoadedHistory | null> {
-  const requests = getResolvedPriceRequests(symbol)
-  const [firstRequest] = requests
-
-  if (!firstRequest) {
-    return null
-  }
-
-  const responses = await Promise.all(
-    requests.map((request) =>
-      fetchPriceChartData(
-        buildPriceChartQueryParams(
-          symbol,
-          request,
-          periodParams.from,
-          periodParams.to,
-          resolution,
-          periodParams.countBack,
-        ),
-      ),
-    ),
-  )
-  const bars =
-    symbol.quoteAsset.kind === 'token'
-      ? derivePairBarsFromUsdBars(responses[0] || [], responses[1] || [])
-      : responses[0] || []
-
-  return { bars, request: firstRequest }
-}
-
-function getEmptyStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
-  return {
-    kind: 'empty',
-    message: `No price history found for ${symbol.ticker}.`,
-    ticker: symbol.ticker,
-  }
-}
-
-function getErrorStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
-  return {
-    kind: 'error',
-    message: `Failed to load ${symbol.ticker} history.`,
-    ticker: symbol.ticker,
-  }
-}
-
-function getLoadingStatus(symbol: PriceChartSymbolDescriptor): PriceChartHistoryStatus {
-  return {
-    kind: 'loading',
-    message: `Loading ${symbol.ticker} history.`,
-    ticker: symbol.ticker,
-  }
+  metric: PriceChartMetric,
+): Promise<PriceChartBar[]> {
+  return loadPriceChartHistory(symbol, periodParams.from, periodParams.to, resolution, metric, periodParams.countBack)
 }
 
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
   try {
-    const history = await fetchHistory(params.symbol, params.periodParams, params.resolution)
+    const bars = await fetchHistory(params.symbol, params.periodParams, params.resolution, params.metric)
 
     if (!params.isLatestRequest()) {
+      params.onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: !bars.length })
       return
     }
 
-    if (!history || !history.bars.length) {
+    if (!bars.length) {
       reportEmptyHistory(params)
       return
     }
 
-    reportReadyHistory(params, history)
+    reportReadyHistory(params, bars)
   } catch (error) {
     reportHistoryError(params, error)
   }
@@ -234,27 +198,22 @@ async function loadHistory(params: HistoryLoaderParams): Promise<void> {
 
 function reportEmptyHistory(params: HistoryLoaderParams): void {
   params.onResult([], { noData: true })
-  setFirstRequestStatus(params.periodParams, params.setStatus, getEmptyStatus(params.symbol))
+  setFirstRequestStatus(params.periodParams, params.setStatus, 'empty')
 }
 
 function reportHistoryError(params: HistoryLoaderParams, error: unknown): void {
-  if (!params.isLatestRequest()) {
-    return
-  }
-
   const lastError = error instanceof Error ? error : new Error(String(error))
   params.onError(lastError.message || 'Unknown chart error')
-  setFirstRequestStatus(params.periodParams, params.setStatus, getErrorStatus(params.symbol))
+
+  if (params.isLatestRequest()) {
+    setFirstRequestStatus(params.periodParams, params.setStatus, 'error')
+  }
 }
 
-function reportReadyHistory(params: HistoryLoaderParams, history: LoadedHistory): void {
-  params.onResult(mapPriceChartBarsToTradingViewBars(history.bars), { noData: false })
-  params.setStatus({
-    kind: 'ready',
-    latestPrice: history.bars[history.bars.length - 1]?.close,
-    message: getReadyStatusMessage(params.symbol, history.request),
-    ticker: params.symbol.ticker,
-  })
+function reportReadyHistory(params: HistoryLoaderParams, bars: PriceChartBar[]): void {
+  params.onHistoryLoaded(bars)
+  params.onResult(mapPriceChartBarsToTradingViewBars(bars), { noData: false })
+  params.setStatus(null)
 }
 
 function resolveSymbolFromInfo(
