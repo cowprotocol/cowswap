@@ -31,7 +31,11 @@ describe('useTelegramConnect', () => {
   })
 
   it('loads the initial connect-status on mount', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: true, username: 'ada' })
+    mockedApi.getConnectStatus.mockResolvedValue({
+      connected: true,
+      username: 'ada',
+      botDeepLink: 'https://t.me/cowNotificationsBot',
+    })
     const { wrapper } = createTestWrapper()
 
     const { result } = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
@@ -52,11 +56,14 @@ describe('useTelegramConnect', () => {
   })
 
   it('connect() fetches a token, exposes the deep link, and polls until connected', async () => {
-    mockedApi.getConnectStatus.mockResolvedValueOnce({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValueOnce({
+      connected: false,
+      botDeepLink: 'https://t.me/cowNotificationsBot',
+    })
     mockedApi.getConnectToken.mockResolvedValue({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
     mockedApi.getConnectStatus
-      .mockResolvedValueOnce({ connected: false }) // first poll tick: still pending
-      .mockResolvedValueOnce({ connected: true, username: 'ada' }) // second poll tick: connected
+      .mockResolvedValueOnce({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' }) // first poll tick: still pending
+      .mockResolvedValueOnce({ connected: true, username: 'ada', botDeepLink: 'https://t.me/cowNotificationsBot' }) // second poll tick: connected
 
     const { wrapper } = createTestWrapper()
     const { result } = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
@@ -85,8 +92,40 @@ describe('useTelegramConnect', () => {
     expect(result.current.deepLink).toBeNull()
   })
 
+  it('connect() flips to "connecting" immediately, before getConnectToken resolves', async () => {
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
+    let resolveGetConnectToken: (value: { token: string; deepLink: string }) => void = () => undefined
+    mockedApi.getConnectToken.mockReturnValue(
+      new Promise((resolve) => {
+        resolveGetConnectToken = resolve
+      }),
+    )
+
+    const { wrapper } = createTestWrapper()
+    const { result } = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    let connectPromise: Promise<void> = Promise.resolve()
+    act(() => {
+      connectPromise = result.current.connect()
+    })
+
+    // The modal (isOpen = connectState !== 'idle') must open right away, showing its
+    // "preparing" state, instead of only after the token request resolves.
+    expect(result.current.connectState).toBe('connecting')
+    expect(result.current.deepLink).toBeNull()
+
+    await act(async () => {
+      resolveGetConnectToken({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
+      await connectPromise
+    })
+
+    expect(result.current.connectState).toBe('connecting')
+    expect(result.current.deepLink).toBe('https://t.me/bot?start=tok')
+  })
+
   it('connect() called again while already connecting does not leave the previous timers running', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
     mockedApi.getConnectToken.mockResolvedValue({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
 
     const { wrapper } = createTestWrapper()
@@ -129,7 +168,7 @@ describe('useTelegramConnect', () => {
   })
 
   it('connect() moves to "expired" after the connect timeout elapses without success', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
     mockedApi.getConnectToken.mockResolvedValue({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
 
     const { wrapper } = createTestWrapper()
@@ -151,7 +190,7 @@ describe('useTelegramConnect', () => {
 
   it('connect() moves to "error" when getConnectToken rejects, without an unhandled rejection', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined)
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
     mockedApi.getConnectToken.mockRejectedValue(new Error('bff unreachable'))
 
     const { wrapper } = createTestWrapper()
@@ -171,7 +210,7 @@ describe('useTelegramConnect', () => {
   })
 
   it('cancelConnect() stops polling and resets to idle', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
     mockedApi.getConnectToken.mockResolvedValue({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
 
     const { wrapper } = createTestWrapper()
@@ -196,39 +235,26 @@ describe('useTelegramConnect', () => {
     expect(mockedApi.getConnectStatus.mock.calls.length).toBe(callsBeforeAdvance)
   })
 
-  it('disconnect() calls the API and flips isSubscribed off', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: true, username: 'ada' })
-    mockedApi.disconnect.mockResolvedValue(undefined)
+  it('exposes botDeepLink from the connect-status response', async () => {
+    mockedApi.getConnectStatus.mockResolvedValue({
+      connected: true,
+      username: 'ada',
+      botDeepLink: 'https://t.me/cowNotificationsBot',
+    })
 
     const { wrapper } = createTestWrapper()
     const { result } = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
     await waitFor(() => expect(result.current.isSubscribed).toBe(true))
 
-    await act(async () => {
-      await result.current.disconnect()
-    })
-
-    expect(mockedApi.disconnect).toHaveBeenCalledWith('0xabc')
-    expect(result.current.isSubscribed).toBe(false)
-  })
-
-  it('disconnect() rejecting leaves the subscribed state untouched', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: true, username: 'ada' })
-    mockedApi.disconnect.mockRejectedValue(new Error('failed to disconnect'))
-
-    const { wrapper } = createTestWrapper()
-    const { result } = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
-    await waitFor(() => expect(result.current.isSubscribed).toBe(true))
-
-    await act(async () => {
-      await expect(result.current.disconnect()).rejects.toThrow('failed to disconnect')
-    })
-
-    expect(result.current.isSubscribed).toBe(true)
+    expect(result.current.botDeepLink).toBe('https://t.me/cowNotificationsBot')
   })
 
   it('shares subscription state across two hook instances via the atom store', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: true, username: 'ada' })
+    mockedApi.getConnectStatus.mockResolvedValue({
+      connected: true,
+      username: 'ada',
+      botDeepLink: 'https://t.me/cowNotificationsBot',
+    })
     const { wrapper } = createTestWrapper()
 
     const first = renderHook(() => useTelegramConnect('0xabc'), { wrapper })
@@ -250,7 +276,7 @@ describe('useTelegramConnect', () => {
   })
 
   it('resets connectState/deepLink when the account changes mid-connect', async () => {
-    mockedApi.getConnectStatus.mockResolvedValue({ connected: false })
+    mockedApi.getConnectStatus.mockResolvedValue({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })
     mockedApi.getConnectToken.mockResolvedValue({ token: 'tok', deepLink: 'https://t.me/bot?start=tok' })
     const { wrapper } = createTestWrapper()
 
@@ -288,8 +314,8 @@ describe('useTelegramConnect', () => {
     // The stale call has to still be "in flight" when the account switches -
     // achieved here by deferring its resolution with a manually-controlled
     // promise instead of letting jest fast-forward past it.
-    let resolveStaleAPoll: (value: { connected: boolean }) => void = () => undefined
-    const staleAPollPromise = new Promise<{ connected: boolean }>((resolve) => {
+    let resolveStaleAPoll: (value: { connected: boolean; botDeepLink: string }) => void = () => undefined
+    const staleAPollPromise = new Promise<{ connected: boolean; botDeepLink: string }>((resolve) => {
       resolveStaleAPoll = resolve
     })
 
@@ -299,10 +325,10 @@ describe('useTelegramConnect', () => {
     }))
 
     mockedApi.getConnectStatus
-      .mockImplementationOnce(async () => ({ connected: false })) // mount status check for account A
+      .mockImplementationOnce(async () => ({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })) // mount status check for account A
       .mockImplementationOnce(() => staleAPollPromise) // A's poll tick - deliberately left pending
-      .mockImplementationOnce(async () => ({ connected: false })) // mount status check for account B
-      .mockImplementationOnce(async () => ({ connected: true })) // B's own poll tick - the real success
+      .mockImplementationOnce(async () => ({ connected: false, botDeepLink: 'https://t.me/cowNotificationsBot' })) // mount status check for account B
+      .mockImplementationOnce(async () => ({ connected: true, botDeepLink: 'https://t.me/cowNotificationsBot' })) // B's own poll tick - the real success
 
     const { wrapper } = createTestWrapper()
     const { result, rerender } = renderHook(({ account }) => useTelegramConnect(account), {
@@ -347,7 +373,7 @@ describe('useTelegramConnect', () => {
     // accountRef.current === accountAtCall guard, this would incorrectly stop
     // B's brand new polling/expiry timers and reset B's connectState/deepLink.
     await act(async () => {
-      resolveStaleAPoll({ connected: true })
+      resolveStaleAPoll({ connected: true, botDeepLink: 'https://t.me/cowNotificationsBot' })
       await Promise.resolve()
       await Promise.resolve()
     })

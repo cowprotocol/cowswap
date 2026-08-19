@@ -9,17 +9,17 @@ interface ConnectTelegramProps {
 }
 
 export function ConnectTelegram({ controller }: ConnectTelegramProps): ReactElement {
-  const { isLoading, isSubscribed, connectState, deepLink, connect, cancelConnect, disconnect } = controller
+  const { isLoading, isSubscribed, botDeepLink, connectState, deepLink, connect, cancelConnect } = controller
 
   return (
     <TelegramConnectionStatus
       isLoading={isLoading}
       isSubscribed={isSubscribed}
+      botDeepLink={botDeepLink}
       connectState={connectState}
       deepLink={deepLink}
       connect={connect}
       cancelConnect={cancelConnect}
-      disconnect={disconnect}
     />
   )
 }

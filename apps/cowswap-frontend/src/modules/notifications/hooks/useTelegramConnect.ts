@@ -1,13 +1,20 @@
 import { useAtom } from 'jotai'
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 
+import { normalizeError } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { bffTelegramApi } from '../api/bffTelegramApi'
 import { TelegramSubscriptionState, telegramSubscriptionAtom } from '../atoms/telegramSubscriptionAtom'
 
 const POLL_INTERVAL_MS = 3_000
 const CONNECT_TIMEOUT_MS = 10 * 60 * 1000 // matches the bff connect-token TTL
 
-const DEFAULT_SUBSCRIPTION_STATE: TelegramSubscriptionState = { isSubscribed: false, username: undefined }
+const DEFAULT_SUBSCRIPTION_STATE: TelegramSubscriptionState = {
+  isSubscribed: false,
+  username: undefined,
+  botDeepLink: undefined,
+}
 
 export type ConnectState = 'idle' | 'connecting' | 'expired' | 'error'
 
@@ -15,11 +22,13 @@ export interface TelegramConnectController {
   isLoading: boolean
   isSubscribed: boolean
   username?: string
+  // Unsubscribing only happens from the bot side (tap its "Unsubscribe" button) - this
+  // is a static link to open that chat, not a fresh single-use connect-token.
+  botDeepLink: string | undefined
   connectState: ConnectState
   deepLink: string | null
   connect(): Promise<void>
   cancelConnect(): void
-  disconnect(): Promise<void>
 }
 
 interface ConnectFlow {
@@ -39,7 +48,8 @@ export function useTelegramConnect(account: string | undefined): TelegramConnect
   accountRef.current = account
 
   const accountKey = getAccountKey(account)
-  const { isSubscribed, username } = (accountKey && subscriptionByAccount[accountKey]) || DEFAULT_SUBSCRIPTION_STATE
+  const { isSubscribed, username, botDeepLink } =
+    (accountKey && subscriptionByAccount[accountKey]) || DEFAULT_SUBSCRIPTION_STATE
 
   const refreshStatus = useCallback(async (): Promise<boolean> => {
     if (!account) return false
@@ -52,7 +62,11 @@ export function useTelegramConnect(account: string | undefined): TelegramConnect
 
     setSubscriptionByAccount((prev) => ({
       ...prev,
-      [accountAtCall.toLowerCase()]: { isSubscribed: status.connected, username: status.username },
+      [getAddressKey(accountAtCall)]: {
+        isSubscribed: status.connected,
+        username: status.username,
+        botDeepLink: status.botDeepLink,
+      },
     }))
 
     return status.connected
@@ -76,26 +90,11 @@ export function useTelegramConnect(account: string | undefined): TelegramConnect
 
   const { connectState, deepLink, connect, cancelConnect } = useConnectFlow(account, accountRef, refreshStatus)
 
-  const disconnect = useCallback(async () => {
-    if (!account) return
-    const accountAtCall = account
-
-    await bffTelegramApi.disconnect(accountAtCall)
-
-    // Discard the result if the account changed while this request was in flight.
-    if (accountRef.current !== accountAtCall) return
-
-    setSubscriptionByAccount((prev) => ({
-      ...prev,
-      [accountAtCall.toLowerCase()]: { isSubscribed: false, username: undefined },
-    }))
-  }, [account, setSubscriptionByAccount])
-
-  return { isLoading, isSubscribed, username, connectState, deepLink, connect, cancelConnect, disconnect }
+  return { isLoading, isSubscribed, username, botDeepLink, connectState, deepLink, connect, cancelConnect }
 }
 
 function getAccountKey(account: string | undefined): string | undefined {
-  return account?.toLowerCase()
+  return account ? getAddressKey(account) : undefined
 }
 
 /**
@@ -134,23 +133,31 @@ function useConnectFlow(
     if (!account) return
     const accountAtCall = account
 
+    // Clear any previous polling/expiry timers so a re-entrant connect() call
+    // (e.g. a double-click before the trigger is disabled) can't orphan them.
+    stopConnecting()
+
+    // Open the modal immediately (it shows a "preparing" message while deepLink is
+    // still null) instead of waiting for getConnectToken to resolve, so there's no
+    // silent gap between the click and the QR code appearing.
+    setDeepLink(null)
+    setConnectState('connecting')
+
+    let link: string
     try {
-      // Clear any previous polling/expiry timers so a re-entrant connect() call
-      // (e.g. a double-click before the trigger is disabled) can't orphan them.
-      stopConnecting()
-
-      const { deepLink: link } = await bffTelegramApi.getConnectToken(accountAtCall)
-
+      const data = await bffTelegramApi.getConnectToken(accountAtCall)
+      link = data.deepLink
+    } catch (err: unknown) {
       if (accountRef.current !== accountAtCall) return
-
-      setDeepLink(link)
-      setConnectState('connecting')
-    } catch (error) {
-      if (accountRef.current !== accountAtCall) return
+      const error = normalizeError(err)
       console.error('[useTelegramConnect] Failed to start the Telegram connect flow', error)
       setConnectState('error')
       return
     }
+
+    if (accountRef.current !== accountAtCall) return
+
+    setDeepLink(link)
 
     pollTimerRef.current = setInterval(() => {
       refreshStatus()

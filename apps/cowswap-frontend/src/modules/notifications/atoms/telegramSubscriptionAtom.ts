@@ -3,6 +3,8 @@ import { atom } from 'jotai'
 export interface TelegramSubscriptionState {
   isSubscribed: boolean
   username?: string
+  // Static link to the bot chat (no connect-token) - unsubscribing only happens there.
+  botDeepLink?: string
 }
 
 /**

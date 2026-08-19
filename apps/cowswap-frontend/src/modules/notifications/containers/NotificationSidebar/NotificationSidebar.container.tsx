@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import iconNotificationSettingsSrc from '@cowprotocol/assets/images/icon-notification-settings.svg'
-import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useOnClickOutside, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -60,8 +60,7 @@ export function NotificationSidebar({
   const isMobile = useMediaQuery(Media.upToSmall(false))
   const isAnyModalOpen = useAtomValue(openModalState)
 
-  // FIXME
-  const areTelegramNotificationsEnabled = true
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription } = useHasNotificationSubscription()
   const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
     useNotificationSettingsPopoverDismissal()

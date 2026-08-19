@@ -8,55 +8,55 @@ const Fixtures = {
     <TelegramConnectionStatus
       isLoading={true}
       isSubscribed={false}
+      botDeepLink={undefined}
       connectState="idle"
       deepLink={null}
       connect={asyncNoop}
       cancelConnect={noop}
-      disconnect={asyncNoop}
     />
   ),
   subscribed: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={true}
+      botDeepLink="https://t.me/cowNotificationsBot"
       connectState="idle"
       deepLink={null}
       connect={asyncNoop}
       cancelConnect={noop}
-      disconnect={asyncNoop}
     />
   ),
   notConnected: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={false}
+      botDeepLink={undefined}
       connectState="idle"
       deepLink={null}
       connect={asyncNoop}
       cancelConnect={noop}
-      disconnect={asyncNoop}
     />
   ),
   waitingForStart: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={false}
+      botDeepLink={undefined}
       connectState="connecting"
       deepLink="https://t.me/cowNotificationsBot?start=preview-token"
       connect={asyncNoop}
       cancelConnect={noop}
-      disconnect={asyncNoop}
     />
   ),
   linkExpired: () => (
     <TelegramConnectionStatus
       isLoading={false}
       isSubscribed={false}
+      botDeepLink={undefined}
       connectState="expired"
       deepLink={null}
       connect={asyncNoop}
       cancelConnect={noop}
-      disconnect={asyncNoop}
     />
   ),
 }
