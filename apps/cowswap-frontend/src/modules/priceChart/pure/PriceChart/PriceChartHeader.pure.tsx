@@ -7,7 +7,7 @@ import { Maximize2, Minimize2 } from 'react-feather'
 
 import * as styledEl from './PriceChart.styled'
 
-import { formatUsdMarketCap, formatUsdPrice } from '../../lib/priceSummary.utils'
+import { formatPriceChartValue } from '../../lib/priceSummary.utils'
 
 import type { PriceChartMetric } from '../../lib/priceChart.types'
 import type {
@@ -40,12 +40,7 @@ export function PriceChartHeader({
   const { i18n, t } = useLingui()
   const sizeLabel = sizeControl?.isExpanded ? t`Minimize price chart` : t`Maximize price chart`
   const SizeIcon = sizeControl?.isExpanded ? Minimize2 : Maximize2
-  const formattedValue =
-    price === undefined
-      ? undefined
-      : metric === 'marketCap'
-        ? formatUsdMarketCap(price, i18n.locale)
-        : formatUsdPrice(price, i18n.locale)
+  const formattedValue = price === undefined ? undefined : formatPriceChartValue(price, i18n.locale)
 
   return (
     <styledEl.Header>

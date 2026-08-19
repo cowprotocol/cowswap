@@ -115,7 +115,10 @@ function createBasicDatafeed(params: GetBarsHandlerParams): IBasicDataFeed {
         }
 
         params.setActiveTicker(symbol.ticker)
-        onResolve(symbol.librarySymbolInfo)
+        onResolve({
+          ...symbol.librarySymbolInfo,
+          pricescale: params.metric === 'marketCap' ? 1 : 1_000_000_000_000,
+        })
       }, 0)
     },
     searchSymbols: (_userInput, _exchange, _symbolType, onResult) => onResult([]),

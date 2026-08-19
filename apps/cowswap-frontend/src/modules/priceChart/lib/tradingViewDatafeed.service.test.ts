@@ -113,6 +113,20 @@ describe('createPriceChartDatafeed', () => {
     expect(datafeed.getServerTime).toBeUndefined()
   })
 
+  it.each([
+    ['price', 1_000_000_000_000],
+    ['marketCap', 1],
+  ] as const)('resolves %s history with its required precision', async (metric, pricescale) => {
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const onResolve = jest.fn()
+    const { datafeed } = createPriceChartDatafeed({ metric, onStatusChange: jest.fn(), symbols: [symbol] })
+
+    datafeed.resolveSymbol(symbol.ticker, onResolve, jest.fn())
+    await flushTasks()
+
+    expect(onResolve).toHaveBeenCalledWith(expect.objectContaining({ pricescale }))
+  })
+
   it('loads USD history and maps bars to TradingView format', async () => {
     const symbol = createSymbolDescriptor(
       createAsset({

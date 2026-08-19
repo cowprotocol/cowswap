@@ -27,7 +27,7 @@ import * as simpleStyledEl from './SimplePriceChart.styled'
 
 import { logPriceChart } from '../../api'
 import { loadPriceChartHistory } from '../../lib/loadPriceChartHistory.service'
-import { formatUsdMarketCap, formatUsdPrice, getPriceChartSummary } from '../../lib/priceSummary.utils'
+import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import { getSimplePriceChartPeriodConfig, SIMPLE_PRICE_CHART_PERIODS } from '../../lib/simplePriceChart.utils'
 
 import type { PriceChartBar, PriceChartMetric, SimplePriceChartPeriod } from '../../lib/priceChart.types'
@@ -88,6 +88,7 @@ export function SimplePriceChartPure({
   symbols,
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
+  const { i18n } = useLingui()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const areaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
@@ -118,6 +119,8 @@ export function SimplePriceChartPure({
     setTooltip,
     chartType,
     darkMode,
+    metric,
+    i18n.locale,
   )
 
   useEffect(() => {
@@ -289,11 +292,7 @@ function SimplePriceChartTooltip({ data, metric }: SimplePriceChartTooltipProps)
     <simpleStyledEl.Tooltip $placement={data.placement} $width={TOOLTIP_WIDTH} $x={data.x} $y={data.y} role="tooltip">
       <simpleStyledEl.TooltipRow>
         <simpleStyledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</simpleStyledEl.TooltipLabel>
-        <simpleStyledEl.TooltipValue>
-          {metric === 'marketCap'
-            ? formatUsdMarketCap(data.price, i18n.locale)
-            : formatUsdPrice(data.price, i18n.locale)}
-        </simpleStyledEl.TooltipValue>
+        <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.price, i18n.locale)}</simpleStyledEl.TooltipValue>
       </simpleStyledEl.TooltipRow>
       <simpleStyledEl.TooltipTime>
         {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
@@ -365,6 +364,8 @@ function useSimpleChart(
   onTooltipChange: (tooltip: SimplePriceChartTooltipData | undefined) => void,
   chartType: SimplePriceChartType,
   darkMode: boolean,
+  metric: PriceChartMetric,
+  locale: string,
 ): void {
   useEffect(() => {
     const container = chartContainerRef.current
@@ -385,6 +386,10 @@ function useSimpleChart(
       layout: {
         background: { color: 'transparent' },
         textColor: getCssVar(UI.COLOR_TEXT, darkMode ? '#f8fafc' : '#111827'),
+      },
+      localization: {
+        locale,
+        priceFormatter: (value: number) => formatPriceChartValue(value, locale),
       },
       rightPriceScale: { borderVisible: false, scaleMargins: { bottom: 0.15, top: 0.2 } },
       timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true, timeVisible: true },
@@ -460,6 +465,8 @@ function useSimpleChart(
     chartType,
     darkMode,
     latestOnSelectPriceRef,
+    locale,
+    metric,
     onTooltipChange,
     priceLineRef,
   ])

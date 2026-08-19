@@ -1,21 +1,23 @@
+import { formatLocaleNumber } from '@cowprotocol/common-utils'
+
 import type { PriceChartBar, PriceChartSummary } from './priceChart.types'
 
-export function formatUsdMarketCap(marketCap: number, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    currency: 'USD',
-    maximumFractionDigits: 2,
-    notation: 'compact',
-    style: 'currency',
-  }).format(marketCap)
-}
+export function formatPriceChartValue(value: number, locale: string): string {
+  const absoluteValue = Math.abs(value)
+  const isCompact = absoluteValue >= 1_000_000
+  const usesSignificantDigits = absoluteValue > 0 && absoluteValue < 1
 
-export function formatUsdPrice(price: number, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    currency: 'USD',
-    maximumFractionDigits: price < 1 ? 4 : 2,
-    minimumFractionDigits: 2,
-    style: 'currency',
-  }).format(price)
+  return formatLocaleNumber({
+    fixedDecimals: usesSignificantDigits ? undefined : 2,
+    locale,
+    number: value,
+    options: {
+      currency: 'USD',
+      notation: isCompact ? 'compact' : 'standard',
+      style: 'currency',
+    },
+    sigFigs: usesSignificantDigits ? 3 : undefined,
+  })
 }
 
 export function getPriceChartSummary(bars: PriceChartBar[]): PriceChartSummary | undefined {

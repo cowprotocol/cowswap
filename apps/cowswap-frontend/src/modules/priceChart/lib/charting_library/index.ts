@@ -71,6 +71,7 @@ export function loadChartingLibraryWidget(): Promise<ChartingLibraryWidgetConstr
 export type {
   Bar,
   ChartPropertiesOverrides,
+  CustomFormatters,
   IBasicDataFeed,
   IChartingLibraryWidget,
   LibrarySymbolInfo,

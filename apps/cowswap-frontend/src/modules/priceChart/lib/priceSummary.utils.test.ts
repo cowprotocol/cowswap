@@ -1,4 +1,20 @@
-import { getPriceChartSummary } from './priceSummary.utils'
+import { formatPriceChartValue, getPriceChartSummary } from './priceSummary.utils'
+
+describe('price chart formatting', () => {
+  it('keeps significant digits for small prices', () => {
+    expect(formatPriceChartValue(0.10943, 'en-US')).toBe('$0.109')
+    expect(formatPriceChartValue(0.000001234, 'en-US')).toBe('$0.00000123')
+  })
+
+  it('formats regular and large prices', () => {
+    expect(formatPriceChartValue(1916.418, 'en-US')).toBe('$1,916.42')
+    expect(formatPriceChartValue(1_234_567, 'en-US')).toBe('$1.23M')
+  })
+
+  it('formats any large value consistently', () => {
+    expect(formatPriceChartValue(109_430_000, 'en-US')).toBe('$109.43M')
+  })
+})
 
 describe('getPriceChartSummary', () => {
   it('returns the latest price and change across the loaded period', () => {

@@ -3,6 +3,8 @@ import { MutableRefObject, ReactNode, useEffect, useId, useMemo, useRef, useStat
 
 import { UI } from '@cowprotocol/ui'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './PriceChart.styled'
@@ -12,10 +14,11 @@ import { PriceChartStatus } from './PriceChartStatus.pure'
 import { logPriceChart } from '../../api'
 import {
   type ChartPropertiesOverrides,
+  type CustomFormatters,
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
-import { getPriceChartSummary } from '../../lib/priceSummary.utils'
+import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
   PRO_CHART_CONTAINER_ID,
   PRO_CHART_CSS_PATH,
@@ -57,6 +60,7 @@ export function PriceChartPure({
   symbols,
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
+  const { i18n } = useLingui()
   const chartId = useId().replace(/:/g, '')
   const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
@@ -92,6 +96,8 @@ export function PriceChartPure({
     metric === 'price' ? limitLinePrice : null,
     metric === 'price' ? onSelectPrice : undefined,
     symbols,
+    metric,
+    i18n.locale,
   )
 
   if (!symbols.length) {
@@ -237,6 +243,8 @@ function useTradingViewWidget(
   limitLinePrice: number | null | undefined,
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
+  metric: PriceChartPureProps['metric'],
+  locale: string,
 ): void {
   const widgetRef = useRef<IChartingLibraryWidget | null>(null)
   const initialTickerRef = useRef(activeTicker)
@@ -286,6 +294,12 @@ function useTradingViewWidget(
         autosize: true,
         container: containerId,
         custom_css_url: PRO_CHART_CSS_PATH,
+        // TradingView accepts partial custom formatters, but its bundled type requires date and time formatters.
+        custom_formatters: {
+          priceFormatterFactory: () => ({
+            format: (value: number) => formatPriceChartValue(value, locale),
+          }),
+        } as unknown as CustomFormatters,
         datafeed,
         disabled_features: [
           'display_market_status',
@@ -380,7 +394,7 @@ function useTradingViewWidget(
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [containerId, datafeed, symbols])
+  }, [containerId, datafeed, locale, metric, symbols])
 
   useEffect(() => {
     const widget = widgetRef.current
