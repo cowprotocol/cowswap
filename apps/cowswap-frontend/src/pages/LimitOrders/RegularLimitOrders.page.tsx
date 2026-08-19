@@ -36,6 +36,10 @@ export function RegularLimitOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
+  const handleOrdersTableDrawerClose = useCallback(() => {
+    setOrdersTableDrawerOpen(false)
+  }, [setOrdersTableDrawerOpen])
+
   return (
     <styledEl.PageWrapper
       isUnlocked={isUnlocked}
@@ -51,12 +55,13 @@ export function RegularLimitOrdersPage(): ReactNode {
         <DrawerOrInline
           isOpen={isOrdersTableDrawerOpen}
           onOpenChange={handleOrdersTableDrawerOpenChange}
-          title={t`My orders`}
+          title={t`Limit orders`}
+          fullScreen
         >
           <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
             {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
             <Suspense fallback={<Loading />}>
-              <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
+              <OrdersTableWidget orderType={TabOrderTypes.LIMIT} onClose={handleOrdersTableDrawerClose} />
             </Suspense>
           </styledEl.SecondaryWrapper>
         </DrawerOrInline>

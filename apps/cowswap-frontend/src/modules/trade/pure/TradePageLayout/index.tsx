@@ -75,7 +75,7 @@ export const SecondaryWrapper = styled.div.attrs({
   box-shadow: none;
   position: relative;
   padding: 0;
-  overflow: hidden;
+  overflow: ${({ $inDrawer }) => ($inDrawer ? 'visible' : 'hidden')};
 
   ${({ $inDrawer }) =>
     $inDrawer

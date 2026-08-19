@@ -62,7 +62,7 @@ export const Inner = styled.div`
   }
 
   .hasClose & {
-    padding-right: 32px;
+    padding-right: 60px;
   }
 `
 
@@ -114,8 +114,7 @@ export const BackButton = styled(BackIconButton)`
 
 export const CloseButton = styled(CloseIconButton)`
   ${headerIconButtonCss}
-  --pressableInset: -18px -11px -18px 0;
-  right: 10px;
+  right: 4px;
 
   &[aria-hidden='true'] {
     transform: translate(calc(100% + 16px), -50%);

@@ -1,13 +1,13 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
+import { CloseIconButton } from '@cowprotocol/ui'
 
-import { X as CloseIcon } from 'react-feather'
 import styled from 'styled-components/macro'
 
 const Container = styled.header`
   display: flex;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
   padding: 0 0 16px;
@@ -21,21 +21,6 @@ const Title = styled.b`
   font-weight: 600;
 `
 
-const Close = styled(CloseIcon)`
-  height: 28px;
-  width: 28px;
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
-  > line {
-    stroke: var(${UI.COLOR_TEXT});
-  }
-`
 interface ConfirmationModalHeaderProps {
   children: ReactNode
   onCloseClick: Command
@@ -47,7 +32,7 @@ export function ConfirmationModalHeader({ children, onCloseClick }: Confirmation
   return (
     <Container>
       <Title>{children}</Title>
-      <Close onClick={onCloseClick} />
+      <CloseIconButton closeOnEscape={false} onClick={onCloseClick} />
     </Container>
   )
 }

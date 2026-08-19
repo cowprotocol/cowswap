@@ -67,6 +67,10 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
+  const handleOrdersTableDrawerClose = useCallback(() => {
+    setOrdersTableDrawerOpen(false)
+  }, [setOrdersTableDrawerOpen])
+
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
@@ -106,11 +110,12 @@ export function AdvancedOrdersPage(): ReactNode {
           <DrawerOrInline
             isOpen={isOrdersTableDrawerOpen}
             onOpenChange={handleOrdersTableDrawerOpenChange}
-            title={t`My orders`}
+            title={t`TWAP orders`}
+            fullScreen
           >
             <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
               <Suspense fallback={<Loading />}>
-                <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} onClose={handleOrdersTableDrawerClose} />
               </Suspense>
             </styledEl.SecondaryWrapper>
           </DrawerOrInline>

@@ -1,11 +1,10 @@
 import { ReactElement } from 'react'
 
-import { BackButton, ButtonPrimary, UI } from '@cowprotocol/ui'
+import { BackButton, ButtonPrimary, CloseIconButton, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-import { CloseIcon } from 'theme'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -65,7 +64,7 @@ export function TransactionErrorContent(props: TransactionErrorContentProps) {
         <span>
           <Trans>Error</Trans>
         </span>
-        {!modalMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
+        {!modalMode ? <div></div> : <CloseIconButton closeOnEscape={false} onClick={onDismiss} />}
       </Header>
       <Body>
         <AlertIcon size={64} />

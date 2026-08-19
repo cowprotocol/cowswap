@@ -1,7 +1,6 @@
 import { Media, RowBetween, ExternalLink, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-import { CloseIcon } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 
@@ -48,19 +47,6 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px 0;
   z-index: 20;
-`
-
-export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
-  display: flex;
-  margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  height: 28px;
-  width: 28px;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export const GPModalHeader = styled(RowBetween)`

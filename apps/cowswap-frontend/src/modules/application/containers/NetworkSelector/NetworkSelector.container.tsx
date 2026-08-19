@@ -26,8 +26,8 @@ const stopPropagation = (event: MouseEvent<HTMLDivElement>): void => {
 
 const createCloseHandler =
   (isOpen: boolean, toggleModal: () => void) =>
-  (event: MouseEvent<HTMLButtonElement>): void => {
-    event.stopPropagation()
+  (event?: MouseEvent<HTMLButtonElement>): void => {
+    event?.stopPropagation()
     if (isOpen) {
       toggleModal()
     }
@@ -101,9 +101,7 @@ export function NetworkSelector(): ReactNode {
                 <styledEl.FlyoutHeaderTitle>
                   <Trans>Select a network</Trans>
                 </styledEl.FlyoutHeaderTitle>
-                <styledEl.CloseButton type="button" aria-label={t`Close`} onClick={handleClose}>
-                  <styledEl.CloseIcon aria-hidden="true" />
-                </styledEl.CloseButton>
+                <styledEl.CloseButton aria-label={t`Close`} onClick={handleClose} />
               </styledEl.FlyoutHeader>
               <styledEl.FlayoutMenuList>
                 <NetworksList

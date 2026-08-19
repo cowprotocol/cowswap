@@ -17,6 +17,7 @@ export interface UseFilteredOrdersFilters {
 
 export enum HistoryStatusFilter {
   FILLED = 'filled',
+  PARTIALLY_FILLED = 'partially-filled',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
   ALL = 'all',
@@ -86,18 +87,22 @@ function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boo
 }
 
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
-  if (status === HistoryStatusFilter.FILLED)
-    return parsedOrder.status === OrderStatus.FULFILLED || isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
+  const isFilled = parsedOrder.status === OrderStatus.FULFILLED || isOrderFilled(parsedOrder)
+  const isPartial = !isFilled && isPartiallyFilled(parsedOrder)
+  const hasFill = isFilled || isPartial
 
-  if (status === HistoryStatusFilter.CANCELLED)
-    return (
-      parsedOrder.status === OrderStatus.CANCELLED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
-    )
-
-  if (status === HistoryStatusFilter.EXPIRED)
-    return parsedOrder.status === OrderStatus.EXPIRED && !(isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder))
-
-  return true
+  switch (status) {
+    case HistoryStatusFilter.FILLED:
+      return isFilled
+    case HistoryStatusFilter.PARTIALLY_FILLED:
+      return isPartial
+    case HistoryStatusFilter.CANCELLED:
+      return parsedOrder.status === OrderStatus.CANCELLED && !hasFill
+    case HistoryStatusFilter.EXPIRED:
+      return parsedOrder.status === OrderStatus.EXPIRED && !hasFill
+    default:
+      return true
+  }
 }
 
 function filterBySymbolExact(parsedOrder: ParsedOrder, searchTermLower: string): boolean {

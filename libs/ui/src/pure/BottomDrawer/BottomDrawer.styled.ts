@@ -11,11 +11,13 @@ const DRAWER_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
 /** Dropdown-level overlay. Must stay below modal z-index (1060) so dialogs opened from the drawer stack on top. */
 const DRAWER_BACKDROP_Z_INDEX = 1000
 const DRAWER_VIEWPORT_Z_INDEX = 1001
+const NESTED_DRAWER_BACKDROP_Z_INDEX = 1002
+const NESTED_DRAWER_VIEWPORT_Z_INDEX = 1003
 
-export const Backdrop = styled(BaseDrawer.Backdrop)`
+export const Backdrop = styled(BaseDrawer.Backdrop)<{ $nested: boolean }>`
   position: fixed;
   inset: 0;
-  z-index: ${DRAWER_BACKDROP_Z_INDEX};
+  z-index: ${({ $nested }) => ($nested ? NESTED_DRAWER_BACKDROP_Z_INDEX : DRAWER_BACKDROP_Z_INDEX)};
   background-color: var(${UI.MODAL_BACKDROP});
   --backdrop-opacity: 0.4;
   opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
@@ -35,10 +37,10 @@ export const Backdrop = styled(BaseDrawer.Backdrop)`
   }
 `
 
-export const Viewport = styled(BaseDrawer.Viewport)`
+export const Viewport = styled(BaseDrawer.Viewport)<{ $nested: boolean }>`
   position: fixed;
   inset: 0;
-  z-index: ${DRAWER_VIEWPORT_Z_INDEX};
+  z-index: ${({ $nested }) => ($nested ? NESTED_DRAWER_VIEWPORT_Z_INDEX : DRAWER_VIEWPORT_Z_INDEX)};
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -49,19 +51,22 @@ export const Viewport = styled(BaseDrawer.Viewport)`
   }
 `
 
-export const Popup = styled(BaseDrawer.Popup)`
+export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean; $nested: boolean }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%;
+  width: ${({ $fullScreen }) => ($fullScreen ? '100vw' : '100%')};
+  max-width: ${({ $fullScreen }) => ($fullScreen ? 'none' : '100%')};
   /* Definite max height so flex children can shrink and scroll inside */
-  max-height: 90dvh;
+  height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : 'auto')};
+  max-height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : '90dvh')};
   overflow: hidden;
-  border-radius: var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0;
+  border-radius: ${({ $fullScreen }) =>
+    $fullScreen ? '0' : `var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0`};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  box-shadow: var(${UI.BOX_SHADOW});
+  box-shadow: ${({ $fullScreen, $nested }) =>
+    $fullScreen ? 'none' : $nested ? `0 -8px 24px -8px var(${UI.COLOR_BLACK_OPACITY_30})` : `var(${UI.BOX_SHADOW})`};
   outline: none;
   transform: translateY(calc(var(--drawer-swipe-movement-y, 0px)));
   transition: transform ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};
@@ -81,16 +86,18 @@ export const Popup = styled(BaseDrawer.Popup)`
 `
 
 /** Stable header chrome outside the scrollable body (handle / optional title row). */
-export const Header = styled.div`
+export const Header = styled.div<{ $fullScreen: boolean }>`
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-top: ${({ $fullScreen }) => ($fullScreen ? 'env(safe-area-inset-top, 0px)' : '0')};
 `
 
-export const Handle = styled.div`
+export const Handle = styled.div<{ $fullScreen: boolean }>`
   flex-shrink: 0;
   align-self: center;
+  display: ${({ $fullScreen }) => ($fullScreen ? 'none' : 'block')};
   width: 36px;
   height: 4px;
   margin: 10px 0 4px;
@@ -101,7 +108,7 @@ export const Handle = styled.div`
 /* Opt scroll body out of swipe-to-dismiss so vertical touch scrolling works */
 export const Content = styled(BaseDrawer.Content).attrs({
   'data-base-ui-swipe-ignore': '',
-})`
+})<{ $fullScreen: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -112,7 +119,10 @@ export const Content = styled(BaseDrawer.Content).attrs({
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   /* Keep focused fields clear of the software keyboard when VirtualKeyboardProvider is active */
-  padding-bottom: var(--drawer-keyboard-inset, 0px);
+  padding-bottom: ${({ $fullScreen }) =>
+    $fullScreen
+      ? 'calc(env(safe-area-inset-bottom, 0px) + var(--drawer-keyboard-inset, 0px))'
+      : 'var(--drawer-keyboard-inset, 0px)'};
 `
 
 /**

@@ -126,6 +126,7 @@ export function getTitle({
   // These only appear in the History tab when using the search or the status filter:
 
   if (historyStatusFilter === HistoryStatusFilter.FILLED) return t`No filled orders found`
+  if (historyStatusFilter === HistoryStatusFilter.PARTIALLY_FILLED) return t`No partially filled orders found`
   if (historyStatusFilter === HistoryStatusFilter.CANCELLED) return t`No cancelled orders found`
   if (historyStatusFilter === HistoryStatusFilter.EXPIRED) return t`No expired orders found`
 

@@ -9,12 +9,27 @@ describe('getFilteredOrders', () => {
     const expired = { ...ordersMock[2], id: 'expired', isEoaTwapOrder: true }
     const filled = { ...ordersMock[3], id: 'filled', isEoaTwapOrder: true }
     const cancelled = { ...expired, id: 'cancelled', status: OrderStatus.CANCELLED }
-    const orders = [filled, cancelled, expired]
+    const partiallyFilled = {
+      ...expired,
+      id: 'partially-filled',
+      status: OrderStatus.CANCELLED,
+      executionData: {
+        ...filled.executionData,
+        executedBuyAmount: '1',
+        executedSellAmount: '1',
+        executedSellAmountBeforeFees: '1',
+        filledPercentDisplay: '10',
+        fullyFilled: false,
+        partiallyFilled: true,
+      },
+    }
+    const orders = [filled, partiallyFilled, cancelled, expired]
 
     expect(filterIds(orders, HistoryStatusFilter.FILLED)).toEqual(['filled'])
+    expect(filterIds(orders, HistoryStatusFilter.PARTIALLY_FILLED)).toEqual(['partially-filled'])
     expect(filterIds(orders, HistoryStatusFilter.CANCELLED)).toEqual(['cancelled'])
     expect(filterIds(orders, HistoryStatusFilter.EXPIRED)).toEqual(['expired'])
-    expect(filterIds(orders, HistoryStatusFilter.ALL)).toEqual(['filled', 'cancelled', 'expired'])
+    expect(filterIds(orders, HistoryStatusFilter.ALL)).toEqual(['filled', 'partially-filled', 'cancelled', 'expired'])
   })
 
   it('includes fulfilled orders whose execution fee lowers the displayed fill percentage', () => {

@@ -5,6 +5,7 @@ import { useNativeTokenBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
+import { CloseIconButton } from '@cowprotocol/ui'
 import {
   AccountIndexSelect,
   hwAccountIndexAtom,
@@ -93,7 +94,7 @@ export function AccountSelectorModal(): ReactNode {
           <h3>
             <styledEl.WalletIcon src={walletIcon} alt={walletName} /> <Trans>Select {walletName} Account</Trans>
           </h3>
-          <styledEl.CloseIcon onClick={closeModal} />
+          <CloseIconButton closeOnEscape={false} onClick={closeModal} />
         </styledEl.Header>
         <AccountIndexSelect
           accountsList={accountsList}

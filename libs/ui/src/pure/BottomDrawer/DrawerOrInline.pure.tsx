@@ -14,6 +14,8 @@ export interface DrawerOrInlineProps {
   className?: string
   header?: ReactNode
   footer?: ReactNode
+  /** Drawer-mode only: use an edge-to-edge surface that fills the dynamic viewport. */
+  fullScreen?: boolean
 }
 
 export function DrawerOrInline({
@@ -24,6 +26,7 @@ export function DrawerOrInline({
   className,
   header,
   footer,
+  fullScreen,
 }: DrawerOrInlineProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
@@ -45,6 +48,7 @@ export function DrawerOrInline({
       className={className}
       header={header}
       footer={footer}
+      fullScreen={fullScreen}
     >
       {children}
     </BottomDrawer>
