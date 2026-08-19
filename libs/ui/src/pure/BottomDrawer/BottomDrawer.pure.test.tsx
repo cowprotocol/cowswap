@@ -2,25 +2,65 @@ import { fireEvent, render } from '@testing-library/react'
 
 import { BottomDrawer } from './BottomDrawer.pure'
 
+import { OVERLAY_Z_INDEX } from '../../consts'
+
 describe('BottomDrawer', () => {
-  it('forces the backdrop to render for a nested drawer', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      })),
+    })
+  })
+
+  it('stacks the drawer overlay below the dialog layer', () => {
     const { container } = render(
       <BottomDrawer open onOpenChange={jest.fn()}>
-        <BottomDrawer open nested onOpenChange={jest.fn()}>
-          Nested content
+        Content
+      </BottomDrawer>,
+    )
+
+    const layer = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-layer]')
+    const backdrop = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-backdrop]')
+    const viewport = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-viewport]')
+
+    expect(layer).not.toBeNull()
+    expect(backdrop).not.toBeNull()
+    expect(viewport).not.toBeNull()
+
+    if (!layer || !backdrop || !viewport) {
+      return
+    }
+
+    expect(getComputedStyle(layer).zIndex).toBe(String(OVERLAY_Z_INDEX.drawer))
+    expect(layer.contains(backdrop)).toBe(true)
+    expect(layer.contains(viewport)).toBe(true)
+  })
+
+  it('always renders a backdrop that covers a parent drawer', () => {
+    const { container } = render(
+      <BottomDrawer open onOpenChange={jest.fn()}>
+        Parent
+        <BottomDrawer open onOpenChange={jest.fn()}>
+          Nested
         </BottomDrawer>
       </BottomDrawer>,
     )
 
+    const layers = container.ownerDocument.querySelectorAll<HTMLElement>('[data-bottom-drawer-layer]')
     const backdrops = container.ownerDocument.querySelectorAll<HTMLElement>('[data-bottom-drawer-backdrop]')
-    const viewports = container.ownerDocument.querySelectorAll<HTMLElement>('[data-bottom-drawer-viewport]')
 
+    expect(layers).toHaveLength(2)
     expect(backdrops).toHaveLength(2)
-    expect(viewports).toHaveLength(2)
-    expect(getComputedStyle(backdrops[0]).zIndex).toBe('1000')
-    expect(getComputedStyle(backdrops[1]).zIndex).toBe('1002')
-    expect(getComputedStyle(viewports[0]).zIndex).toBe('1001')
-    expect(getComputedStyle(viewports[1]).zIndex).toBe('1003')
+    expect(layers[0].contains(backdrops[0])).toBe(true)
+    expect(layers[1].contains(backdrops[1])).toBe(true)
+    expect(layers[0].compareDocumentPosition(layers[1]) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    )
   })
 
   it('exposes whether its content has been scrolled', () => {
@@ -29,7 +69,7 @@ describe('BottomDrawer', () => {
         Content
       </BottomDrawer>,
     )
-    const content = container.ownerDocument.querySelector<HTMLElement>('[data-drawer-content]')
+    const content = container.ownerDocument.querySelector<HTMLElement>('[data-base-ui-swipe-ignore]')
 
     expect(content).not.toBeNull()
     expect(content?.hasAttribute('data-scrolled')).toBe(false)

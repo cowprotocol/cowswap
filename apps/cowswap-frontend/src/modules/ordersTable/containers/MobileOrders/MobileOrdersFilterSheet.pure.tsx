@@ -85,7 +85,6 @@ export function MobileOrdersFilterSheet({
       open={isOpen}
       onOpenChange={onOpenChange}
       title={t`Search and filters`}
-      nested
       header={header}
       footer={
         <FilterSheetFooter

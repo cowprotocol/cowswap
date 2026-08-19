@@ -20,6 +20,16 @@ const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
 }
 
+/**
+ * Overlay stacking. Drawers stay at dropdown (1000) so modal-layer dialogs (1060)
+ * — receipts, account, etc. — cover an open orders drawer.
+ */
+export const OVERLAY_Z_INDEX = {
+  drawer: 1000,
+  dialogBackdrop: 1060,
+  dialogViewport: 1061,
+} as const
+
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
   upToExtraSmall: (useMediaPrefix = true) =>

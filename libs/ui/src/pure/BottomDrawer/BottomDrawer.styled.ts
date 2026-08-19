@@ -1,6 +1,7 @@
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 import styled from 'styled-components/macro'
 
+import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
 import { transition } from '../../utils/animation'
 
@@ -8,16 +9,23 @@ import { transition } from '../../utils/animation'
 const DRAWER_TRANSITION_DURATION = '450ms'
 const DRAWER_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
-/** Dropdown-level overlay. Must stay below modal z-index (1060) so dialogs opened from the drawer stack on top. */
-const DRAWER_BACKDROP_Z_INDEX = 1000
-const DRAWER_VIEWPORT_Z_INDEX = 1001
-const NESTED_DRAWER_BACKDROP_Z_INDEX = 1002
-const NESTED_DRAWER_VIEWPORT_Z_INDEX = 1003
-
-export const Backdrop = styled(BaseDrawer.Backdrop)<{ $nested: boolean }>`
+/**
+ * One stacking context per drawer so a later portal (nested drawer) paints over
+ * the previous sheet without a manual nested z-index.
+ */
+export const Layer = styled.div`
   position: fixed;
   inset: 0;
-  z-index: ${({ $nested }) => ($nested ? NESTED_DRAWER_BACKDROP_Z_INDEX : DRAWER_BACKDROP_Z_INDEX)};
+  z-index: ${OVERLAY_Z_INDEX.drawer};
+  pointer-events: none;
+  isolation: isolate;
+`
+
+export const Backdrop = styled(BaseDrawer.Backdrop)`
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: auto;
   background-color: var(${UI.MODAL_BACKDROP});
   --backdrop-opacity: 0.4;
   opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
@@ -37,10 +45,10 @@ export const Backdrop = styled(BaseDrawer.Backdrop)<{ $nested: boolean }>`
   }
 `
 
-export const Viewport = styled(BaseDrawer.Viewport)<{ $nested: boolean }>`
+export const Viewport = styled(BaseDrawer.Viewport)`
   position: fixed;
   inset: 0;
-  z-index: ${({ $nested }) => ($nested ? NESTED_DRAWER_VIEWPORT_Z_INDEX : DRAWER_VIEWPORT_Z_INDEX)};
+  z-index: 1;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -51,7 +59,7 @@ export const Viewport = styled(BaseDrawer.Viewport)<{ $nested: boolean }>`
   }
 `
 
-export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean; $nested: boolean }>`
+export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -65,8 +73,7 @@ export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean; $nested: b
     $fullScreen ? '0' : `var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0`};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  box-shadow: ${({ $fullScreen, $nested }) =>
-    $fullScreen ? 'none' : $nested ? `0 -8px 24px -8px var(${UI.COLOR_BLACK_OPACITY_30})` : `var(${UI.BOX_SHADOW})`};
+  box-shadow: ${({ $fullScreen }) => ($fullScreen ? 'none' : `var(${UI.BOX_SHADOW})`)};
   outline: none;
   transform: translateY(calc(var(--drawer-swipe-movement-y, 0px)));
   transition: transform ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};
@@ -108,7 +115,9 @@ export const Handle = styled.div<{ $fullScreen: boolean }>`
 /* Opt scroll body out of swipe-to-dismiss so vertical touch scrolling works */
 export const Content = styled(BaseDrawer.Content).attrs({
   'data-base-ui-swipe-ignore': '',
-})<{ $fullScreen: boolean }>`
+})`
+  ${({ theme }) => theme.colorScrollbar};
+
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -118,11 +127,8 @@ export const Content = styled(BaseDrawer.Content).attrs({
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  /* Keep focused fields clear of the software keyboard when VirtualKeyboardProvider is active */
-  padding-bottom: ${({ $fullScreen }) =>
-    $fullScreen
-      ? 'calc(env(safe-area-inset-bottom, 0px) + var(--drawer-keyboard-inset, 0px))'
-      : 'var(--drawer-keyboard-inset, 0px)'};
+  touch-action: pan-y;
+  transform: translateZ(0);
 `
 
 /**

@@ -1,6 +1,7 @@
 import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 import styled from 'styled-components/macro'
 
+import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
 import { transition } from '../../utils/animation'
 
@@ -10,7 +11,7 @@ export const Backdrop = styled(BaseDialog.Backdrop)`
 
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: ${OVERLAY_Z_INDEX.dialogBackdrop};
   background-color: color-mix(in srgb, var(${UI.MODAL_BACKDROP}) var(--backdrop-opacity), transparent);
   backdrop-filter: blur(10px);
   transition: ${transition(['opacity'])};
@@ -24,7 +25,7 @@ export const Backdrop = styled(BaseDialog.Backdrop)`
 export const Viewport = styled(BaseDialog.Viewport)`
   position: fixed;
   inset: 0;
-  z-index: 1001;
+  z-index: ${OVERLAY_Z_INDEX.dialogViewport};
   display: flex;
   align-items: center;
   justify-content: center;

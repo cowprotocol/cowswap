@@ -1,5 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
+
 import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 
 import * as styledEl from './Dialog.styled'
@@ -52,6 +54,8 @@ export function Dialog({
     onBack,
     onClose: handleClose,
   })
+
+  useBodyScrollbarLocker(open)
 
   return (
     <BaseDialog.Root open={open} onOpenChange={handleOpenChange}>

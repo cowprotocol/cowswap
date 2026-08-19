@@ -25,7 +25,6 @@ export const TitleWrapper = styled.div`
 `
 
 export const Title = styled.h3`
-  // font-size: 16px;
   font-size: inherit;
   margin: 0;
 `

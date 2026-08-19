@@ -51,6 +51,7 @@ export const ContentDescription = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 10px 0;
 
   > p {
     font-size: 15px;
