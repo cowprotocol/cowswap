@@ -202,11 +202,11 @@ export function AccountDetails({
                 </h5>
                 {showGetNotifiedRow && (
                   <GetNotifiedButton onClick={handleGetNotifiedClick}>
+                    <Bell size={16} />
+                    <Trans>Get trade alerts</Trans>
                     <Badge type={BadgeTypes.ALERT2}>
                       <Trans>New</Trans>
                     </Badge>
-                    <Bell size={16} />
-                    <Trans>Get trade alerts</Trans>
                   </GetNotifiedButton>
                 )}
                 {explorerOrdersLink && (

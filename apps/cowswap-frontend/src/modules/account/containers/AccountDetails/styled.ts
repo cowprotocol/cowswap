@@ -310,7 +310,7 @@ export const GetNotifiedButton = styled.button`
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
-  padding: 6px 12px;
+  padding: 12px;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -421,6 +421,7 @@ export const ActivityHeader = styled.span`
     > button {
       order: 0;
       flex: 1 1 100%;
+      margin-top: -12px;
     }
   }
 `
