@@ -7,7 +7,9 @@
  * fall short of the funding sell. In this case, we'll request approval to the user again, but if it
  * falls short once again (e.g. the user manually edits the amount to approve), an error will be shown.
  *
- * When Approve does run, the on-chain tx still uses maxUint256. This buffer is only used for checking.
+ * When Approve does run and the user hasn't opted into partial approvals, the on-chain tx uses
+ * maxUint256; see {@link getEoaTwapAmountToApprove} for the partial-approve case, which still
+ * approves at least this buffer.
  */
 export const EOA_TWAP_FUNDING_ALLOWANCE_BUFFER_BPS = 100n // 1%
 
