@@ -101,7 +101,7 @@ export function PriceChartPure({
     datafeedController.datafeed,
     darkMode,
     hasVolume,
-    metric === 'price' ? referenceLine : undefined,
+    referenceLine,
     metric === 'price' ? onSelectPrice : undefined,
     symbols,
     metric,
@@ -263,10 +263,12 @@ function useTradingViewWidget(
   const initialTickerRef = useRef(activeTicker)
   const isWidgetReadyRef = useRef(false)
   const referenceLineEntityIdRef = useRef<PriceChartShapeId>(null)
+  const latestReferenceLineRef = useRef(referenceLine)
   const latestCrosshairPriceRef = useRef<number | null>(null)
   const latestOnSelectPriceRef = useRef<typeof onSelectPrice>(onSelectPrice)
 
   initialTickerRef.current = activeTicker
+  latestReferenceLineRef.current = referenceLine
   latestOnSelectPriceRef.current = onSelectPrice
 
   useEffect(() => {
@@ -364,12 +366,14 @@ function useTradingViewWidget(
         widget.activeChart().crossHairMoved().subscribe(null, handleCrossHairMoved)
         isCrosshairSubscribed = true
         widget.activeChart().setSymbol(nextTicker, () => {
+          const latestReferenceLine = latestReferenceLineRef.current
+
           syncHorizontalLine({
             color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
             entityIdRef: referenceLineEntityIdRef,
-            label: referenceLine?.label || '',
+            label: latestReferenceLine?.label || '',
             logKey: 'Sync price reference line',
-            price: referenceLine?.price,
+            price: latestReferenceLine?.price,
             style: 2,
             ticker: nextTicker,
             widget,
@@ -408,7 +412,6 @@ function useTradingViewWidget(
         widgetRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerId, datafeed, locale, metric, symbols])
 
   useEffect(() => {

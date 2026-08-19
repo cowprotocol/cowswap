@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { MutableRefObject, ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { normalizeError } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
@@ -186,7 +186,7 @@ export function SimplePriceChartPure({
       priceLineRef.current = null
     }
 
-    if (metric !== 'price' || !referenceLine) return
+    if (!referenceLine) return
 
     priceLineRef.current = series.createPriceLine({
       axisLabelVisible: true,
@@ -450,7 +450,7 @@ function useSimpleChart(
   metric: PriceChartMetric,
   locale: string,
 ): void {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = chartContainerRef.current
 
     if (!container) return

@@ -1,7 +1,17 @@
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
 import type { PriceChartBar, PriceChartMetric, PriceChartResolution } from './priceChart.types'
-import type { PriceChartSymbolDescriptor } from './tradingView.types'
+import type { PriceChartAssetDescriptor, PriceChartSymbolDescriptor } from './tradingView.types'
+
+export async function loadCirculatingSupply(asset: PriceChartAssetDescriptor): Promise<number> {
+  const { circulatingSupply } = await fetchTokenSupply(asset)
+
+  if (typeof circulatingSupply !== 'number' || !Number.isFinite(circulatingSupply) || circulatingSupply <= 0) {
+    throw new Error('Circulating supply unavailable')
+  }
+
+  return circulatingSupply
+}
 
 export async function loadPriceChartHistory(
   symbol: PriceChartSymbolDescriptor,
@@ -23,11 +33,7 @@ export async function toMarketCapBars(
 ): Promise<PriceChartBar[]> {
   if (!bars.length) return bars
 
-  const { circulatingSupply } = await fetchTokenSupply(symbol.baseAsset)
-
-  if (typeof circulatingSupply !== 'number' || !Number.isFinite(circulatingSupply) || circulatingSupply <= 0) {
-    throw new Error('Circulating supply unavailable')
-  }
+  const circulatingSupply = await loadCirculatingSupply(symbol.baseAsset)
 
   return bars.map((bar) => ({
     ...bar,

@@ -1,5 +1,8 @@
 import { ReactNode } from 'react'
 
+import { Loader } from '@cowprotocol/ui'
+
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import type { PriceChartHistoryStatus } from '../../lib/tradingView.types'
@@ -13,7 +16,7 @@ interface PriceChartStatusProps {
 
 export function PriceChartStatus({ assetSymbol = 'TOKEN', kind }: PriceChartStatusProps): ReactNode {
   if (kind === 'loading') {
-    return <Trans>Loading price history for {assetSymbol}</Trans>
+    return <Loader aria-label={t`Loading price history for ${assetSymbol}`} role="status" size="32px" />
   }
 
   if (kind === 'empty') {

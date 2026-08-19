@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { loadPriceChartHistory } from './loadPriceChartHistory.service'
+import { loadCirculatingSupply, loadPriceChartHistory } from './loadPriceChartHistory.service'
 
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
@@ -30,4 +30,13 @@ describe('loadPriceChartHistory', () => {
       { close: 20, high: 30, low: 10, open: 15, timestamp: 1710000000, volume: 123.45 },
     ])
   })
+
+  it.each([null, 0, -1, Number.NaN, Number.POSITIVE_INFINITY])(
+    'rejects invalid circulating supply: %s',
+    async (circulatingSupply) => {
+      jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply, totalSupply: 100 })
+
+      await expect(loadCirculatingSupply(SYMBOL.baseAsset)).rejects.toThrow('Circulating supply unavailable')
+    },
+  )
 })
