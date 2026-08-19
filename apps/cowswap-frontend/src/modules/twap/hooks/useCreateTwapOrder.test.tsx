@@ -18,6 +18,7 @@ import {
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { callWidgetHook } from 'modules/injectedWidget'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
@@ -34,6 +35,7 @@ import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
 import { waitForFundingOrderSettlementTx } from '../services/twap/eoa/waitForFundingOrderSettlementTx'
+import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
@@ -56,6 +58,7 @@ jest.mock('modules/advancedOrders', () => ({
   useUpdateAdvancedOrdersRawState: jest.fn(),
 }))
 jest.mock('modules/appData', () => ({ uploadAppDataDocOrderbookApi: jest.fn(), useAppData: jest.fn() }))
+jest.mock('modules/erc20Approve', () => ({ useGetAmountToSignApprove: jest.fn() }))
 jest.mock('modules/injectedWidget', () => ({
   buildTradeWidgetHookPayload: jest.fn(() => ({})),
   callWidgetHook: jest.fn(),
@@ -132,6 +135,10 @@ const mockedWaitForFundingOrderSettlementTx = waitForFundingOrderSettlementTx as
   typeof waitForFundingOrderSettlementTx
 >
 const mockedGetConditionalOrderId = getConditionalOrderId as jest.MockedFunction<typeof getConditionalOrderId>
+const mockedPlaceSafeTwapOrder = placeSafeTwapOrder as jest.MockedFunction<typeof placeSafeTwapOrder>
+const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.MockedFunction<
+  typeof useGetAmountToSignApprove
+>
 
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
@@ -187,6 +194,8 @@ describe('useCreateTwapOrder', () => {
       orderPostingResult: { orderId: '0xfunding-order' },
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedWaitForFundingOrderSettlementTx.mockResolvedValue(undefined)
+    mockedUseGetAmountToSignApprove.mockReturnValue(null)
+    mockedPlaceSafeTwapOrder.mockResolvedValue({ safeTxHash: '0xsafetx', safeAddress: '0xsafe' })
     ;(uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>).mockResolvedValue(
       undefined,
     )
@@ -202,5 +211,22 @@ describe('useCreateTwapOrder', () => {
     expect(sendEvent).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false }),
     )
+  })
+
+  it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseTwapOrderCreationContext.mockReturnValue({ chainId: 1 } as ReturnType<typeof useTwapOrderCreationContext>)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '999' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceSafeTwapOrder).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 999n }))
   })
 })

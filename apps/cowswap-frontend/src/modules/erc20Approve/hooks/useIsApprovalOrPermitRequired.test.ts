@@ -570,6 +570,21 @@ describe('useIsApprovalOrPermitRequired', () => {
       expect(result.current.reason).toBe(expectedReason)
     })
 
+    it('should return the real permit requirement for LIMIT_ORDER when ignoreLimitOrderPermitDeferral is set', () => {
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType: TradeType.LIMIT_ORDER }))
+      mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: true,
+          ignoreLimitOrderPermitDeferral: true,
+        }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+    })
+
     it('should keep bundling limit-order permits without offchain signing', () => {
       mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType: TradeType.LIMIT_ORDER }))
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })

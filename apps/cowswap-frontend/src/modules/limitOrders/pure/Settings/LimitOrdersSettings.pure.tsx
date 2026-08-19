@@ -12,6 +12,7 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
@@ -32,12 +33,14 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
   const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isPartialApprovalLockedByWidget = useIsInfiniteApproveDisabledInWidget()
   const {
     showRecipient,
     partialFillsEnabled,
     limitPricePosition,
     limitPriceLocked,
     ordersTableOnLeft,
+    enablePartialApprovalBySettings,
     // TODO: Temporarily disabled - Global USD Mode feature
     // isUsdValuesMode,
   } = state
@@ -53,6 +56,12 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
     analytics.togglePartialExecutions(newValue)
     onStateChanged({ ...state, partialFillsEnabled: newValue })
   }, [analytics, onStateChanged, state, partialFillsEnabled])
+
+  const handlePartialApprovalToggle = useCallback(() => {
+    const newValue = !enablePartialApprovalBySettings
+    analytics.togglePartialApproval(newValue)
+    onStateChanged({ ...state, enablePartialApprovalBySettings: newValue })
+  }, [analytics, onStateChanged, state, enablePartialApprovalBySettings])
 
   const handleSelect = useCallback(
     (value: LimitOrdersSettingsState['limitPricePosition']) => (e: React.MouseEvent) => {
@@ -135,6 +144,14 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
               checked={limitPriceLocked}
               toggle={handleLimitPriceLockedToggle}
+            />
+
+            <SettingsBox
+              title={t`Enable Partial Approvals`}
+              tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+              checked={isPartialApprovalLockedByWidget ? true : enablePartialApprovalBySettings}
+              toggle={handlePartialApprovalToggle}
+              disabled={isPartialApprovalLockedByWidget}
             />
           </SettingsBoxGroup>
         </SettingsDropdownSection>
