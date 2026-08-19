@@ -1,10 +1,11 @@
-import { MutableRefObject, ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { MutableRefObject, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { normalizeError } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import {
+  type AutoscaleInfoProvider,
   createChart,
   Coordinate,
   CrosshairMode,
@@ -185,6 +186,24 @@ export function SimplePriceChartPure({
       series.removePriceLine(priceLineRef.current)
       priceLineRef.current = null
     }
+
+    const autoscaleInfoProvider: AutoscaleInfoProvider | undefined = referenceLine
+      ? (original) => {
+          const info = original()
+
+          if (!info) return info
+
+          return {
+            ...info,
+            priceRange: {
+              maxValue: Math.max(info.priceRange.maxValue, referenceLine.price),
+              minValue: Math.min(info.priceRange.minValue, referenceLine.price),
+            },
+          }
+        }
+      : undefined
+
+    series.applyOptions({ autoscaleInfoProvider })
 
     if (!referenceLine) return
 
@@ -450,7 +469,7 @@ function useSimpleChart(
   metric: PriceChartMetric,
   locale: string,
 ): void {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const container = chartContainerRef.current
 
     if (!container) return
