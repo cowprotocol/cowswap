@@ -43,6 +43,7 @@ type PriceChartShapeId = ReturnType<ReturnType<IChartingLibraryWidget['activeCha
 interface SyncHorizontalLineParams {
   color: string
   entityIdRef: MutableRefObject<PriceChartShapeId>
+  label: string
   logKey: string
   price: number | null | undefined
   style: 0 | 1 | 2
@@ -52,11 +53,11 @@ interface SyncHorizontalLineParams {
 
 export function PriceChartPure({
   activeSymbol,
-  limitLinePrice,
   metric,
   onSelectMetric,
   onSelectPrice,
   onSelectSelection,
+  referenceLine,
   sizeControl,
   symbols,
 }: PriceChartPureProps): ReactNode {
@@ -100,7 +101,7 @@ export function PriceChartPure({
     datafeedController.datafeed,
     darkMode,
     hasVolume,
-    metric === 'price' ? limitLinePrice : null,
+    metric === 'price' ? referenceLine : undefined,
     metric === 'price' ? onSelectPrice : undefined,
     symbols,
     metric,
@@ -203,6 +204,7 @@ function removeHorizontalLine(
 function syncHorizontalLine({
   color,
   entityIdRef,
+  label,
   logKey,
   price,
   style,
@@ -226,11 +228,14 @@ function syncHorizontalLine({
       disableSelection: true,
       disableUndo: true,
       lock: true,
+      text: label,
       overrides: {
         'linetoolhorzline.linecolor': color,
         'linetoolhorzline.linestyle': style,
         'linetoolhorzline.linewidth': 2,
+        'linetoolhorzline.showLabel': true,
         'linetoolhorzline.showPrice': true,
+        'linetoolhorzline.textcolor': color,
       },
       shape: 'horizontal_line',
       showInObjectsTree: false,
@@ -248,7 +253,7 @@ function useTradingViewWidget(
   datafeed: ReturnType<typeof createPriceChartDatafeed>['datafeed'],
   darkMode: boolean,
   hasVolume: boolean | undefined,
-  limitLinePrice: number | null | undefined,
+  referenceLine: PriceChartPureProps['referenceLine'],
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
   metric: PriceChartPureProps['metric'],
@@ -257,7 +262,7 @@ function useTradingViewWidget(
   const widgetRef = useRef<IChartingLibraryWidget | null>(null)
   const initialTickerRef = useRef(activeTicker)
   const isWidgetReadyRef = useRef(false)
-  const limitLineEntityIdRef = useRef<PriceChartShapeId>(null)
+  const referenceLineEntityIdRef = useRef<PriceChartShapeId>(null)
   const latestCrosshairPriceRef = useRef<number | null>(null)
   const latestOnSelectPriceRef = useRef<typeof onSelectPrice>(onSelectPrice)
 
@@ -361,9 +366,10 @@ function useTradingViewWidget(
         widget.activeChart().setSymbol(nextTicker, () => {
           syncHorizontalLine({
             color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-            entityIdRef: limitLineEntityIdRef,
-            logKey: 'Sync limit price line',
-            price: limitLinePrice,
+            entityIdRef: referenceLineEntityIdRef,
+            label: referenceLine?.label || '',
+            logKey: 'Sync price reference line',
+            price: referenceLine?.price,
             style: 2,
             ticker: nextTicker,
             widget,
@@ -382,7 +388,7 @@ function useTradingViewWidget(
       try {
         const wasWidgetReady = isWidgetReadyRef.current
         isWidgetReadyRef.current = false
-        removeHorizontalLine(widget, limitLineEntityIdRef)
+        removeHorizontalLine(widget, referenceLineEntityIdRef)
         if (widget && isCrosshairSubscribed) {
           widget.activeChart().crossHairMoved().unsubscribe(null, handleCrossHairMoved)
         }
@@ -414,9 +420,10 @@ function useTradingViewWidget(
       widget.activeChart().setSymbol(activeTicker, () => {
         syncHorizontalLine({
           color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-          entityIdRef: limitLineEntityIdRef,
-          logKey: 'Sync limit price line',
-          price: limitLinePrice,
+          entityIdRef: referenceLineEntityIdRef,
+          label: referenceLine?.label || '',
+          logKey: 'Sync price reference line',
+          price: referenceLine?.price,
           style: 2,
           ticker: activeTicker,
           widget,
@@ -427,14 +434,15 @@ function useTradingViewWidget(
 
     syncHorizontalLine({
       color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
-      entityIdRef: limitLineEntityIdRef,
-      logKey: 'Sync limit price line',
-      price: limitLinePrice,
+      entityIdRef: referenceLineEntityIdRef,
+      label: referenceLine?.label || '',
+      logKey: 'Sync price reference line',
+      price: referenceLine?.price,
       style: 2,
       ticker: activeTicker,
       widget,
     })
-  }, [activeTicker, limitLinePrice])
+  }, [activeTicker, referenceLine?.label, referenceLine?.price])
 
   useEffect(() => {
     const widget = widgetRef.current

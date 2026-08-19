@@ -32,9 +32,9 @@ export function PriceChart({ ...props }: PriceChartContainerProps): ReactNode {
 function EnabledPriceChart({
   inputCurrency,
   isAdvancedPriceChartEnabled,
-  limitPrice,
   onSelectLimitPrice,
   outputCurrency,
+  referenceLine,
   sizeControl,
 }: EnabledPriceChartProps): ReactNode {
   const chartMode = useAtomValue(priceChartModeAtom)
@@ -58,17 +58,24 @@ function EnabledPriceChart({
     () => symbols.find((symbol) => symbol.selection === selectedSelection) || symbols[0],
     [selectedSelection, symbols],
   )
-  const limitLinePrice = useMemo(
+  const referenceLinePrice = useMemo(
     () =>
       getActivePriceLimitLinePrice(
         activeSymbol,
-        limitPrice,
+        referenceLine?.price,
         inputCurrency,
         outputCurrency,
         inputUsdPrice,
         outputUsdPrice,
       ),
-    [activeSymbol, inputCurrency, inputUsdPrice, limitPrice, outputCurrency, outputUsdPrice],
+    [activeSymbol, inputCurrency, inputUsdPrice, outputCurrency, outputUsdPrice, referenceLine?.price],
+  )
+  const activeReferenceLine = useMemo(
+    () =>
+      referenceLine && referenceLinePrice !== null
+        ? { label: referenceLine.label, price: referenceLinePrice }
+        : undefined,
+    [referenceLine, referenceLinePrice],
   )
   const handleSelectSelection = useCallback((selection: PriceChartSelection) => {
     setSelectedSelection(selection)
@@ -97,11 +104,11 @@ function EnabledPriceChart({
   const chartProps = {
     activeSymbol,
     executionLinePrice: null,
-    limitLinePrice,
     metric,
     onSelectMetric: setMetric,
     onSelectPrice: onSelectLimitPrice ? handleSelectPrice : undefined,
     onSelectSelection: handleSelectSelection,
+    referenceLine: activeReferenceLine,
     sizeControl,
     symbols,
   }

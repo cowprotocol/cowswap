@@ -92,11 +92,11 @@ interface SimplePriceHistory {
 // eslint-disable-next-line max-lines-per-function
 export function SimplePriceChartPure({
   activeSymbol,
-  limitLinePrice,
   metric,
   onSelectMetric,
   onSelectPrice,
   onSelectSelection,
+  referenceLine,
   sizeControl,
   symbols,
 }: PriceChartPureProps): ReactNode {
@@ -186,17 +186,17 @@ export function SimplePriceChartPure({
       priceLineRef.current = null
     }
 
-    if (metric !== 'price' || limitLinePrice === null || limitLinePrice === undefined) return
+    if (metric !== 'price' || !referenceLine) return
 
     priceLineRef.current = series.createPriceLine({
       axisLabelVisible: true,
       color: getCssVar(UI.COLOR_WARNING, '#f59e0b'),
       lineStyle: LineStyle.Dashed,
       lineWidth: 2,
-      price: limitLinePrice,
-      title: 'Limit',
+      price: referenceLine.price,
+      title: referenceLine.label,
     })
-  }, [chartType, limitLinePrice, data, darkMode, metric])
+  }, [chartType, data, darkMode, metric, referenceLine])
 
   if (!symbols.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
 

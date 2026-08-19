@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense } from 'react'
+import { ReactNode, Suspense, useMemo } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
@@ -24,7 +24,7 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import { PriceChart, priceChartVisibleAtom, usePriceChartFeatureFlags } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
-import { TradeRouteRedirect } from 'modules/trade'
+import { getLimitPriceFromReceiveAmount, TradeRouteRedirect } from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -32,6 +32,7 @@ import {
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
+  useScaledReceiveAmountInfo,
   useTwapFormState,
   useTwapSlippage,
   TwapFormState,
@@ -122,13 +123,23 @@ export function AdvancedOrdersPage(): ReactNode {
 }
 
 function AdvancedOrdersChart(): ReactNode {
+  const { t } = useLingui()
   const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const protectionPrice = useMemo(
+    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
+    [receiveAmountInfo],
+  )
 
   if (!inputCurrency || !outputCurrency) return null
 
   return (
     <styledEl.ChartWrapper $isExpanded>
-      <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+      <PriceChart
+        inputCurrency={inputCurrency}
+        outputCurrency={outputCurrency}
+        referenceLine={{ label: t`Protection`, price: protectionPrice }}
+      />
     </styledEl.ChartWrapper>
   )
 }

@@ -20,9 +20,9 @@ export interface PriceChartAssetDescriptor {
 export interface PriceChartContainerProps {
   executionPrice?: Price<Currency, Currency> | null
   inputCurrency: Currency | null
-  limitPrice?: Price<Currency, Currency> | null
   onSelectLimitPrice?: (price: Fraction) => void
   outputCurrency: Currency | null
+  referenceLine?: PriceChartReferenceLine<Price<Currency, Currency> | null>
   sizeControl?: PriceChartSizeControl
 }
 
@@ -36,13 +36,18 @@ export type PriceChartHistoryStatus = 'loading' | 'empty' | 'error' | null
 export interface PriceChartPureProps {
   activeSymbol: PriceChartSymbolDescriptor | undefined
   executionLinePrice?: number | null
-  limitLinePrice?: number | null
   metric: PriceChartMetric
   onSelectMetric: (metric: PriceChartMetric) => void
   onSelectPrice?: (price: number) => void
   onSelectSelection: (selection: PriceChartSelection) => void
+  referenceLine?: PriceChartReferenceLine<number>
   sizeControl?: PriceChartSizeControl
   symbols: PriceChartSymbolDescriptor[]
+}
+
+export interface PriceChartReferenceLine<TPrice> {
+  label: string
+  price: TPrice
 }
 
 export type PriceChartSelection = 'sell' | 'buy'

@@ -3,6 +3,7 @@ import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { Fraction } from '@cowprotocol/currency'
 
+import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 import styled from 'styled-components/macro'
@@ -21,7 +22,7 @@ import {
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
 import { getLimitPriceFromRate, PriceChart, priceChartVisibleAtom, usePriceChartFeatureFlags } from 'modules/priceChart'
-import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import * as styledEl from 'modules/trade'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
@@ -35,6 +36,7 @@ const SecondaryColumn = styled.div`
 export function RegularLimitOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.LIMIT)
 
+  const { t } = useLingui()
   const isUnlocked = useIsWidgetUnlocked()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -87,9 +89,9 @@ export function RegularLimitOrdersPage(): ReactNode {
               <PriceChart
                 executionPrice={executionPrice}
                 inputCurrency={inputCurrency}
-                limitPrice={activeLimitPrice}
                 onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
                 outputCurrency={outputCurrency}
+                referenceLine={{ label: t`Limit`, price: activeLimitPrice }}
               />
             </styledEl.ChartWrapper>
           ) : null}
