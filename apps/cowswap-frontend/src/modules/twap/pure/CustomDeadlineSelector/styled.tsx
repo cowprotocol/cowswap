@@ -1,5 +1,6 @@
-import { ButtonSecondary, CloseIconButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonSecondary, Media, UI } from '@cowprotocol/ui'
 
+import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/trade/pure/TradeNumberInput/styled'
@@ -60,7 +61,21 @@ export const ModalContent = styled.div`
   }
 `
 
-export const CloseButton = styled(CloseIconButton)``
+export const CloseIcon = styled(X)`
+  height: 28px;
+  width: 28px;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  > line {
+    stroke: var(${UI.COLOR_TEXT});
+  }
+`
 
 export const CancelButton = styled(ButtonSecondary)`
   background: transparent;

@@ -69,8 +69,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
           <h3>
             <Trans>Define custom total time</Trans>
           </h3>
-          <styledEl.CloseButton
-            closeOnEscape={false}
+          <styledEl.CloseIcon
             onClick={_onDismiss}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.TWAP,

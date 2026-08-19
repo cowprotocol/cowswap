@@ -1,8 +1,12 @@
-import { CloseIconButton, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
-import { AlertTriangle, ChevronDown } from 'react-feather'
+import { AlertTriangle, ChevronDown, X } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { TAP_DESKTOP, TAP_MOBILE } from 'common/pure/NetworksList/NetworksList.constants'
+
+const CLOSE_ICON_SIZE = '24px'
 
 export const FlyoutHeader = styled.div`
   position: sticky;
@@ -30,11 +34,45 @@ export const FlyoutHeaderTitle = styled.div`
   }
 `
 
-export const CloseButton = styled(CloseIconButton)`
+export const CloseButton = styled.button`
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
   display: none;
+  justify-content: center;
+  min-height: ${TAP_DESKTOP};
+  min-width: auto;
+  object-fit: contain;
+  opacity: 0.7;
+  padding: 0;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${Media.upToMedium()} {
     display: inline-flex;
+    min-height: ${TAP_MOBILE};
+    min-width: auto;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+`
+
+export const CloseIcon = styled(X)`
+  --size: ${CLOSE_ICON_SIZE};
+  width: var(--size);
+  height: var(--size);
+
+  > line {
+    stroke: var(${UI.COLOR_TEXT});
   }
 `
 

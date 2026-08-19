@@ -1,11 +1,10 @@
 import React, { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { CloseIconButton } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 
-import { BottomSection, ContentWrapper, GPModalHeader, Section } from './styled'
+import { BottomSection, CloseIconWrapper, ContentWrapper, GPModalHeader, Section } from './styled'
 
 export interface ConfirmationModalContentProps {
   title: ReactNode
@@ -34,7 +33,7 @@ export function LegacyConfirmationModalContent({
           <Text fontWeight={600} fontSize={titleSize || 16} style={styles}>
             {title}
           </Text>
-          <CloseIconButton closeOnEscape={false} onClick={onDismiss} />
+          <CloseIconWrapper onClick={() => onDismiss()} />
         </GPModalHeader>
         {topContent}
       </Section>

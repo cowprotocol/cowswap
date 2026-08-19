@@ -176,7 +176,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             <h3>
               <Trans>Set custom deadline</Trans>
             </h3>
-            <styledEl.CloseButton closeOnEscape={false} onClick={onDismiss} />
+            <styledEl.CloseIcon onClick={onDismiss} />
           </styledEl.ModalHeader>
           <styledEl.ModalContent>
             <styledEl.CustomLabel htmlFor="custom-deadline">

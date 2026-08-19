@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 
 import { AccountIcon } from 'modules/account'
 
-import { Wrapper, CloseButton, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
+import { Wrapper, CloseIcon, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
 
 interface ConfirmationPendingContentShellProps {
   title: ReactNode
@@ -34,7 +34,7 @@ export function ConfirmationPendingContentShell({
           <AccountIcon size={56} />
         </WalletIcon>
         <span>{title}</span>
-        {modalMode && onDismiss && <CloseButton closeOnEscape={false} onClick={onDismiss} />}
+        {modalMode && onDismiss && <CloseIcon onClick={onDismiss} />}
       </UpperSection>
       <LowerSection>
         <h3>

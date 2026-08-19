@@ -1,5 +1,6 @@
-import { BackButton, CloseIconButton, Media, UI } from '@cowprotocol/ui'
+import { BackButton, Media, UI } from '@cowprotocol/ui'
 
+import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -278,10 +279,17 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
   }
 `
 
-export const CloseButton = styled(CloseIconButton)`
+export const CloseIcon = styled(X)`
+  cursor: pointer;
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 16px;
+  right: 16px;
+  color: var(${UI.COLOR_TEXT});
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_PRIMARY});
+  }
 `
 
 export const BackButtonStyled = styled(BackButton)`

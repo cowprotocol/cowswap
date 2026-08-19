@@ -1,7 +1,8 @@
-import { CloseIconButton, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
+import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -164,4 +165,18 @@ export const ModalContent = styled.div`
   border-radius: 12px;
 `
 
-export const CloseButton = styled(CloseIconButton)``
+export const CloseIcon = styled(X)`
+  height: 28px;
+  width: 28px;
+  opacity: 0.6;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  > line {
+    stroke: var(${UI.COLOR_TEXT});
+  }
+`
