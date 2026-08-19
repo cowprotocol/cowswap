@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
-import { Fraction, Price } from '@cowprotocol/currency'
+import { Fraction } from '@cowprotocol/currency'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
@@ -20,7 +20,7 @@ import {
   useUpdateActiveRate,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
-import { PriceChart, priceChartVisibleAtom } from 'modules/priceChart'
+import { getLimitPriceFromRate, PriceChart, priceChartVisibleAtom } from 'modules/priceChart'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
@@ -51,7 +51,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       return null
     }
 
-    return new Price(inputCurrency, outputCurrency, activeRate.denominator.toString(), activeRate.numerator.toString())
+    return getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)
   }, [activeRate, inputCurrency, outputCurrency])
   const handleSelectLimitPrice = useCallback(
     (activeRate: Fraction) => {

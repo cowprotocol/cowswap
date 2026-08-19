@@ -1,6 +1,6 @@
 import { getWrappedToken, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { Fraction } from '@cowprotocol/currency'
-import type { Currency, Price } from '@cowprotocol/currency'
+import { Fraction, Price } from '@cowprotocol/currency'
+import type { Currency } from '@cowprotocol/currency'
 
 import F from 'fraction.js'
 
@@ -19,6 +19,17 @@ export function getActivePriceLimitLinePrice(
   }
 
   return getActiveUsdLimitLinePrice(symbol, limitPrice, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice)
+}
+
+export function getLimitPriceFromRate(
+  inputCurrency: Currency,
+  outputCurrency: Currency,
+  rate: Fraction,
+): Price<Currency, Currency> | null {
+  const baseAmount = tryParseCurrencyAmount(rate.denominator.toString(), inputCurrency)
+  const quoteAmount = tryParseCurrencyAmount(rate.numerator.toString(), outputCurrency)
+
+  return baseAmount && quoteAmount ? new Price({ baseAmount, quoteAmount }) : null
 }
 
 export function getSelectedPriceLimitRate(
