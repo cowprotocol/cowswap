@@ -1,6 +1,6 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenListTags } from '@cowprotocol/tokens'
 
 import { PermitCompatibleTokens } from 'modules/permit'
@@ -16,6 +16,7 @@ export interface ChainsToSelectState {
 export interface SelectTokenContext {
   balancesState: BalancesState
   onTokenListItemClick?(token: TokenWithLogo): void
+  onSelectNetwork?(chainId: SupportedChainId, skipClose?: boolean): Promise<void>
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: PermitCompatibleTokens
   tokenListTags: TokenListTags

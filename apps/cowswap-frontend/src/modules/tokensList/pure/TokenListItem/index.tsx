@@ -1,18 +1,20 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, HoverTooltip, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
+import { CrossChainBalanceRow } from './CrossChainBalanceRow'
 import * as styledEl from './styled'
 
+import { CrossChainBalanceInfo } from '../../hooks/useCrossChainBalances'
 import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
 import { TokenSelectionHandler } from '../../types'
+import { checkIsTokenSelected } from '../../utils/checkIsTokenSelected'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -27,8 +29,10 @@ export interface TokenListItemProps {
   selectedToken?: Nullish<Currency>
   balance: bigint | undefined
   usdAmount?: CurrencyAmount<Currency> | null
+  crossChainBalances?: CrossChainBalanceInfo | null
 
   onSelectToken?: TokenSelectionHandler
+  onSelectNetworkToken?(chainId: SupportedChainId, token: TokenWithLogo): void
 
   isWalletConnected: boolean
   isUnsupported?: boolean
@@ -49,11 +53,6 @@ interface DisabledTooltipProps {
   children: ReactNode
   disabled: boolean
   disabledReason?: string
-}
-
-function checkIsTokenSelected(token: TokenWithLogo, selectedToken: Nullish<Currency>): boolean {
-  if (!selectedToken) return false
-  return areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) && token.chainId === selectedToken.chainId
 }
 
 function DisabledTooltip({ children, disabled, disabledReason }: DisabledTooltipProps): ReactNode {
@@ -83,6 +82,7 @@ interface TokenBalanceColumnProps {
   shouldFormat: boolean
   balanceAmount?: CurrencyAmount<Currency>
   usdAmount?: CurrencyAmount<Currency> | null
+  crossChainBalances?: CrossChainBalanceInfo | null
 }
 
 export function TokenListItem(props: TokenListItemProps): ReactNode {
@@ -91,7 +91,9 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     selectedToken,
     balance,
     usdAmount,
+    crossChainBalances,
     onSelectToken,
+    onSelectNetworkToken,
     isUnsupported = false,
     isPermitCompatible = false,
     isWalletConnected,
@@ -122,6 +124,9 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     onSelectToken?.(token)
   }
 
+  const crossChain =
+    shouldFormatBalances && crossChainBalances && crossChainBalances.perNetwork.length > 0 ? crossChainBalances : null
+
   return (
     <DisabledTooltip disabled={disabled} disabledReason={disabledReason}>
       <styledEl.TokenItem
@@ -134,27 +139,37 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
         className={getClassName(isTokenSelected, disabled, className)}
         {...getDisabledProps(disabled)}
       >
-        <TokenInfo
-          token={token}
-          showAddress={hasIntersected}
-          tags={
-            hasIntersected ? (
-              <TokenTags
-                isUnsupported={isUnsupported}
-                isPermitCompatible={isPermitCompatible}
-                tags={token.tags}
-                tokenListTags={tokenListTags}
-              />
-            ) : null
-          }
-        />
-        <TokenBalanceColumn
-          shouldShow={shouldShowBalances}
-          shouldFormat={shouldFormatBalances}
-          balanceAmount={balanceAmount}
-          usdAmount={usdAmount}
-        />
-        {children}
+        <styledEl.TopRow>
+          <TokenInfo
+            token={token}
+            showAddress={hasIntersected}
+            tags={
+              hasIntersected ? (
+                <TokenTags
+                  isUnsupported={isUnsupported}
+                  isPermitCompatible={isPermitCompatible}
+                  tags={token.tags}
+                  tokenListTags={tokenListTags}
+                />
+              ) : null
+            }
+          />
+          <TokenBalanceColumn
+            shouldShow={shouldShowBalances}
+            shouldFormat={shouldFormatBalances}
+            balanceAmount={balanceAmount}
+            usdAmount={usdAmount}
+            crossChainBalances={crossChainBalances}
+          />
+          {children}
+        </styledEl.TopRow>
+        {crossChain && onSelectNetworkToken ? (
+          <CrossChainBalanceRow
+            perNetwork={crossChain.perNetwork}
+            selectedToken={selectedToken}
+            onSelectNetworkToken={onSelectNetworkToken}
+          />
+        ) : null}
       </styledEl.TokenItem>
     </DisabledTooltip>
   )
@@ -165,16 +180,20 @@ function TokenBalanceColumn({
   shouldFormat,
   balanceAmount,
   usdAmount,
+  crossChainBalances,
 }: TokenBalanceColumnProps): ReactNode {
   if (!shouldShow) {
     return null
   }
 
+  const crossChain = crossChainBalances && crossChainBalances.perNetwork.length > 0 ? crossChainBalances : null
+  const displayAmount = crossChain ? crossChain.totalAmount : balanceAmount
+
   return (
     <styledEl.TokenBalance>
       {shouldFormat ? (
         <>
-          {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+          {displayAmount ? <TokenAmount amount={displayAmount} /> : LoadingElement}
           {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
         </>
       ) : (

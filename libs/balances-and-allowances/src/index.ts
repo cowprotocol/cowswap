@@ -1,6 +1,7 @@
 // Updater
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
 export { BalancesWatcherUpdater } from './updaters/BalancesWatcherUpdater'
+export { MultiChainBalancesUpdater } from './updaters/MultiChainBalancesUpdater'
 export { TradeSpenderOverrideUpdater } from './updaters/TradeSpenderOverrideUpdater'
 export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 
@@ -8,6 +9,18 @@ export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updat
 export { balancesAtom } from './state/balancesAtom'
 export { allowancesAtom, tokenAllowancesFamily } from './state/allowancesAtom'
 export { tradeSpenderAtom } from './state/balancesAtom'
+export { multiChainBalancesAtom } from './state/multiChainBalancesAtom'
+export type { MultiChainBalances } from './state/multiChainBalancesAtom'
+export {
+  multiChainBalancesHealthAtom,
+  MultiChainBalancesHealth,
+  DEFAULT_MULTI_CHAIN_BALANCES_HEALTH_STATE,
+} from './state/multiChainBalancesHealthAtom'
+export type { MultiChainBalancesHealthState } from './state/multiChainBalancesHealthAtom'
+export { multiChainModeEnabledAtom, multiChainModeActiveAtom } from './state/multiChainModeAtom'
+
+// Const
+export { EVM_CHAIN_IDS } from './const/evmChainIds'
 
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'

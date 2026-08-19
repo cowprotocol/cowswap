@@ -7,11 +7,18 @@ export const Wrapper = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
 `
 
-export const TokenItem = styled.div`
+export const TopRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
+  width: 100%;
+`
+
+export const TokenItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
   background: none;
   border: 0;
@@ -26,7 +33,7 @@ export const TokenItem = styled.div`
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  &.token-item-selected {
+  &.token-item-selected ${TopRow} {
     opacity: 0.5;
   }
 

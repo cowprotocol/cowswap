@@ -1,4 +1,5 @@
 export * from './balancesWatcher'
+export * from './balancesAggregator'
 export * from './bff'
 export * from './chainInfo'
 export * from './cdn'

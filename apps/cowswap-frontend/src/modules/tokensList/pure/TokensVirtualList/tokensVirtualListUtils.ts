@@ -103,7 +103,11 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   return [...composedRows, ...tokenRows]
 }
 
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
+export function sortTokensByBalance(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  symbolsWithCrossChainBalance?: ReadonlySet<string>,
+): TokenWithLogo[] {
   if (!balances) {
     return tokens
   }
@@ -113,14 +117,18 @@ export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesM
 
   for (const token of tokens) {
     const hasBalance = Boolean(balances[getAddressKey(token.address)])
-    if (hasBalance || getIsNativeToken(token)) {
+    const hasCrossChainBalance = !!token.symbol && !!symbolsWithCrossChainBalance?.has(token.symbol.toUpperCase())
+    if (hasBalance || hasCrossChainBalance || getIsNativeToken(token)) {
       prioritized.push(token)
     } else {
       remainder.push(token)
     }
   }
 
-  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+  const sortedPrioritized =
+    prioritized.length > 1
+      ? [...prioritized].sort(tokensListSorter(balances, symbolsWithCrossChainBalance))
+      : prioritized
 
   return [...sortedPrioritized, ...remainder]
 }

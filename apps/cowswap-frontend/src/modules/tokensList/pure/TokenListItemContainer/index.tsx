@@ -1,8 +1,9 @@
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useCrossChainBalances } from '../../hooks/useCrossChainBalances'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { SelectTokenContext } from '../../types'
 import { TokenListItem } from '../TokenListItem'
@@ -23,6 +24,7 @@ export function TokenListItemContainer({
   const {
     unsupportedTokens,
     onTokenListItemClick,
+    onSelectNetwork,
     tokenListTags,
     permitCompatibleTokens,
     balancesState: { values: balances },
@@ -30,6 +32,7 @@ export function TokenListItemContainer({
   } = context
 
   const { onSelectToken, selectedToken } = useSelectTokenWidgetState()
+  const crossChainBalances = useCrossChainBalances(token)
 
   const addressKey = getAddressKey(token.address)
   const handleSelectToken = useCallback(
@@ -39,6 +42,13 @@ export function TokenListItemContainer({
     },
     [onSelectToken, onTokenListItemClick],
   )
+  const handleSelectNetworkToken = useCallback(
+    (chainId: SupportedChainId, tokenToSelect: TokenWithLogo) => {
+      const switchNetwork = onSelectNetwork ? onSelectNetwork(chainId) : Promise.resolve()
+      switchNetwork.then(() => handleSelectToken(tokenToSelect))
+    },
+    [onSelectNetwork, handleSelectToken],
+  )
 
   return (
     <TokenListItem
@@ -47,7 +57,9 @@ export function TokenListItemContainer({
       selectedToken={selectedToken}
       token={token}
       balance={balances ? balances[addressKey] : undefined}
+      crossChainBalances={crossChainBalances}
       onSelectToken={handleSelectToken}
+      onSelectNetworkToken={handleSelectNetworkToken}
       isWalletConnected={isWalletConnected}
       tokenListTags={tokenListTags}
       disabled={disabled}
