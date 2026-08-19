@@ -118,7 +118,7 @@ export function TwapConfirmModal(): ReactNode {
   const eoaTwapSigningStepElement = <EoaTwapSigningPendingContent />
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE}>
+    <TradeConfirmModal title={CONFIRM_TITLE} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         // TODO: Maybe better to use the same?
