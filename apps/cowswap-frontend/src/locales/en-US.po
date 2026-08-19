@@ -7993,8 +7993,8 @@ msgid "Clear"
 msgstr "Clear"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
-msgid "Continue"
-msgstr "Continue"
+#~ msgid "Continue"
+#~ msgstr "Continue"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 #~ msgid "CowSwap 404 not found"

@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { BackButton } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -15,6 +15,7 @@ import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 import { TrackOrderBanner } from './TrackOrderBanner'
 
 const Wrapper = styled.div`
+  position: relative;
   width: 100%;
   padding: 30px 15px 15px 15px;
   display: flex;
@@ -23,14 +24,16 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
+const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+`
+
 const Caption = styled.h3`
   font-weight: 500;
   font-size: 20px;
   margin: 0;
-`
-
-const ActionButton = styled(ButtonPrimary)`
-  margin-top: 30px;
 `
 
 export interface OrderSubmittedContentProps {
@@ -65,6 +68,7 @@ export function OrderSubmittedContent({
 
   return (
     <Wrapper>
+      <BackButtonStyled onClick={onDismiss} />
       <AnimatedConfirmation />
       <Caption>
         <Trans>Order Submitted</Trans>
@@ -73,9 +77,6 @@ export function OrderSubmittedContent({
       {showGetNotifiedMessage && onGetNotifiedClick && onDismissGetNotifiedMessage && (
         <TrackOrderBanner onEnableClick={onGetNotifiedClick} onClose={onDismissGetNotifiedMessage} />
       )}
-      <ActionButton onClick={onDismiss}>
-        <Trans>Continue</Trans>
-      </ActionButton>
     </Wrapper>
   )
 }
