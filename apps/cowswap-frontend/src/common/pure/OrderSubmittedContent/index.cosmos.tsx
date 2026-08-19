@@ -23,6 +23,16 @@ const Fixtures = {
       <OrderSubmittedContent {...defaultProps} />
     </Wrapper>
   ),
+  withTrackOrderBanner: () => (
+    <Wrapper>
+      <OrderSubmittedContent
+        {...defaultProps}
+        showGetNotifiedMessage
+        onGetNotifiedClick={() => console.log('onGetNotifiedClick')}
+        onDismissGetNotifiedMessage={() => console.log('onDismissGetNotifiedMessage')}
+      />
+    </Wrapper>
+  ),
 }
 
 export default Fixtures
