@@ -102,6 +102,8 @@ export const Handle = styled.div`
 export const Content = styled(BaseDrawer.Content).attrs({
   'data-base-ui-swipe-ignore': '',
 })`
+  ${({ theme }) => theme.colorScrollbar};
+
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -111,6 +113,8 @@ export const Content = styled(BaseDrawer.Content).attrs({
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  transform: translateZ(0);
   /* Keep focused fields clear of the software keyboard when VirtualKeyboardProvider is active */
   padding-bottom: var(--drawer-keyboard-inset, 0px);
 `
