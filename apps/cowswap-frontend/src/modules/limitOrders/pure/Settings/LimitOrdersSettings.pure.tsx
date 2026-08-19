@@ -156,8 +156,6 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             toggle={handleOrdersTablePositionToggle}
           />
 
-          <PriceChartSettings />
-
           <styledEl.SettingsRow>
             <SettingsLabel
               title={t`Limit Price Position`}
@@ -179,6 +177,8 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               </styledEl.DropdownList>
             </styledEl.DropdownContainer>
           </styledEl.SettingsRow>
+
+          <PriceChartSettings />
         </SettingsDropdownSection>
       </SettingsContainer>
     </div>
