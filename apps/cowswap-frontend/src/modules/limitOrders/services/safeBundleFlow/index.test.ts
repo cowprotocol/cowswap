@@ -3,6 +3,7 @@ import { maxUint256 } from 'viem'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
+import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { SafeBundleFlowContext } from '../types'
 
@@ -133,5 +134,17 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
     await run(123, false, undefined)
 
     expect(buildApproveTx).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
+  })
+
+  it('checks zero-approval against the same amount used for the real approve tx', async () => {
+    await run(123, false, 555n)
+
+    expect(shouldZeroApprove).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 555n }))
+  })
+
+  it('checks zero-approval against an unlimited amount when amountToApprove is not provided', async () => {
+    await run(123, false, undefined)
+
+    expect(shouldZeroApprove).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
   })
 })

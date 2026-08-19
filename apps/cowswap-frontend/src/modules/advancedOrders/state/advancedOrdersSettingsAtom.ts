@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+import { getJotaiIsolatedStorage, migrateLocalStorageKey } from '@cowprotocol/core'
 
 export interface AdvancedOrdersSettingsState {
   readonly showRecipient: boolean
@@ -12,6 +12,12 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   showRecipient: false,
   enablePartialApprovalBySettings: true,
 }
+
+migrateLocalStorageKey<AdvancedOrdersSettingsState>(
+  'advanced-orders-settings-atom:v0',
+  'advanced-orders-settings-atom:v1',
+  { enablePartialApprovalBySettings: true },
+)
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
   'advanced-orders-settings-atom:v1',

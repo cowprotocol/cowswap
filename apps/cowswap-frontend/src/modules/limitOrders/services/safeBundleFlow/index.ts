@@ -157,7 +157,7 @@ export async function safeBundleFlow({
     const shouldZeroApprove = await shouldZeroApproveFn({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: inputAmount,
+      amountToApprove: amountToApprove ?? maxUint256,
       forceApprove: true,
       config,
     })

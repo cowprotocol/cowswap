@@ -108,9 +108,16 @@ export function useCreateTwapOrder() {
 
   const appDataInfo = useAppData()
   const sendSafeTransactions = useSendBatchTransactions()
-  const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
-  const extensibleFallbackContext = useExtensibleFallbackContext()
   const amountToSignApprove = useGetAmountToSignApprove()
+  // The exact amount the Safe flow will approve on-chain. Shared between the zero-approval
+  // pre-check (via useTwapOrderCreationContext) and the real approve tx (placeSafeTwapOrder)
+  // below so both simulate/target the same value.
+  const safeAmountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
+  const twapOrderCreationContext = useTwapOrderCreationContext(
+    inputCurrencyAmount as Nullish<CurrencyAmount<Token>>,
+    safeAmountToApprove,
+  )
+  const extensibleFallbackContext = useExtensibleFallbackContext()
 
   // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
   // against the production Vault Relayer (same spender placeEoaTwapOrder uses):
@@ -355,7 +362,7 @@ export function useCreateTwapOrder() {
             fallbackHandlerIsNotSet,
             extensibleFallbackContext,
             sendSafeTransactions,
-            amountToApprove: amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256,
+            amountToApprove: safeAmountToApprove,
           })
           orderCreationHash = safeTxHash
           confirmModalHash = safeTxHash
@@ -450,7 +457,7 @@ export function useCreateTwapOrder() {
       permitInfo,
       generatePermitHook,
       updateEoaTwapFlow,
-      amountToSignApprove,
+      safeAmountToApprove,
     ],
   )
 }
