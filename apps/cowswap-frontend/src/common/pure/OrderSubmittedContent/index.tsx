@@ -12,7 +12,7 @@ import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
-import { TrackOrderBanner } from './TrackOrderBanner'
+import { TrackOrderBanner } from './TrackOrderBanner.pure'
 
 const Wrapper = styled.div`
   position: relative;
