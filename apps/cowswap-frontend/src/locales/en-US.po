@@ -3384,6 +3384,7 @@ msgid "Unsupported wallet detected"
 msgstr "Unsupported wallet detected"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrders.container.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
 #: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit orders"
 msgstr "Limit orders"
@@ -4957,6 +4958,7 @@ msgstr "Because you are selling {nativeSymbol} (native currency)"
 msgid "Token symbol, address"
 msgstr "Token symbol, address"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order Receipt"
 msgstr "Order Receipt"
@@ -8105,8 +8107,8 @@ msgid "Total referrals"
 msgstr "Total referrals"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrders.container.tsx
-msgid "Close orders"
-msgstr "Close orders"
+#~ msgid "Close orders"
+#~ msgstr "Close orders"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
