@@ -295,11 +295,6 @@ export const CreationDateRow = styled.div`
   justify-content: space-between;
   gap: 6px;
   width: 100%;
-  flex-wrap: wrap;
-
-  ${Media.upToSmall()} {
-    row-gap: 10px;
-  }
 `
 
 export const GetNotifiedButton = styled.button`
@@ -359,17 +354,6 @@ export const LowerSection = styled.div`
   justify-content: flex-start;
   color: inherit;
 
-  > span {
-    display: flex;
-    color: inherit;
-    justify-content: space-between;
-    padding: 0 0 12px;
-
-    ${Media.upToMedium()} {
-      top: 42px;
-    }
-  }
-
   > div {
     display: flex;
     flex-flow: column wrap;
@@ -384,8 +368,23 @@ export const LowerSection = styled.div`
       margin: 24px auto 0;
     }
   }
+`
 
-  > span > h5 {
+export const ActivityHeader = styled.span`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  color: inherit;
+  gap: 8px 12px;
+  padding: 0 0 12px;
+  width: 100%;
+
+  ${Media.upToMedium()} {
+    top: 42px;
+  }
+
+  > h5 {
+    order: 1;
     margin: 0;
     font-weight: 500;
     color: inherit;
@@ -400,13 +399,26 @@ export const LowerSection = styled.div`
     }
   }
 
-  > span > ${StyledLink} {
+  > button {
+    order: 2;
+  }
+
+  > ${StyledLink} {
+    order: 3;
+    margin-left: auto;
     color: inherit;
     text-decoration: underline;
     font-size: 14px;
 
     &:hover {
       color: ${({ theme }) => theme.info};
+    }
+  }
+
+  ${Media.upToSmall()} {
+    > button {
+      order: 0;
+      flex: 1 1 100%;
     }
   }
 `

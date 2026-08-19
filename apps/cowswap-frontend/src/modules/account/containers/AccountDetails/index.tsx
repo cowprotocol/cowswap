@@ -43,6 +43,7 @@ import { ActivitiesList } from './ActivitiesList'
 import {
   AccountControl,
   AccountGroupingRow,
+  ActivityHeader,
   AddressLink,
   CreationDateRow,
   GetNotifiedButton,
@@ -195,33 +196,32 @@ export function AccountDetails({
 
           {activityTotalCount ? (
             <LowerSection>
-              <span>
-                {' '}
+              <ActivityHeader>
                 <h5>
                   <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
                 </h5>
+                {showGetNotifiedRow && (
+                  <GetNotifiedButton onClick={handleGetNotifiedClick}>
+                    <Badge type={BadgeTypes.ALERT2}>
+                      <Trans>New</Trans>
+                    </Badge>
+                    <Bell size={16} />
+                    <Trans>Get trade alerts</Trans>
+                  </GetNotifiedButton>
+                )}
                 {explorerOrdersLink && (
                   <ExternalLink href={explorerOrdersLink}>
                     <Trans>View all orders</Trans> ↗
                   </ExternalLink>
                 )}
-              </span>
+              </ActivityHeader>
 
               <div>
-                {activitiesGroupedByDate.map(({ date, activities }, index) => (
+                {activitiesGroupedByDate.map(({ date, activities }) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
                     <CreationDateRow>
                       <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
-                      {index === 0 && showGetNotifiedRow && (
-                        <GetNotifiedButton onClick={handleGetNotifiedClick}>
-                          <Badge type={BadgeTypes.ALERT2}>
-                            <Trans>New</Trans>
-                          </Badge>
-                          <Bell size={16} />
-                          <Trans>Get trade alerts</Trans>
-                        </GetNotifiedButton>
-                      )}
                     </CreationDateRow>
                     <ActivitiesList activities={activities} />
                   </Fragment>
