@@ -15,7 +15,7 @@ import {
 
 import { Trans } from '@lingui/react/macro'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { accountSelectorModalAtom, toggleAccountSelectorModalAtom } from './state'
 import * as styledEl from './styled'
@@ -87,7 +87,7 @@ export function AccountSelectorModal(): ReactNode {
   if (!accountsList || !accountsLoader) return null
 
   return (
-    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={closeModal} minHeight={false} maxHeight={90}>
+    <Modal maxWidth={600} isOpen={isOpen} onOpenChange={closeModal} minHeight={false} maxHeight={90}>
       <styledEl.Wrapper>
         <styledEl.Header>
           <h3>
@@ -103,6 +103,6 @@ export function AccountSelectorModal(): ReactNode {
           loadMoreAccounts={loadMoreAccounts}
         />
       </styledEl.Wrapper>
-    </CowModal>
+    </Modal>
   )
 }

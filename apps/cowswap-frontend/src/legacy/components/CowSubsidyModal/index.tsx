@@ -11,7 +11,7 @@ import { Text } from 'rebass'
 import { AutoColumn } from 'legacy/components/Column'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'
@@ -63,7 +63,7 @@ export default function CowSubsidyModal({
 
   // TODO: use TradeConfirmModal
   return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
+    <Modal isOpen={isOpen} onOpenChange={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
       <LegacyConfirmationModalContent
         {...restProps}
         title={t`CoWmunity fees discount`}
@@ -73,6 +73,6 @@ export default function CowSubsidyModal({
         topContent={TopContent}
         bottomContent={BottomContent}
       />
-    </CowModal>
+    </Modal>
   )
 }

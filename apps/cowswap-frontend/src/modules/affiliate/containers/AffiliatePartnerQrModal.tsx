@@ -10,7 +10,7 @@ import { Trans } from '@lingui/react/macro'
 import QRCode from 'react-qrcode-logo'
 import styled from 'styled-components/macro'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { getReferralLink } from '../lib/affiliateProgramUtils'
 
@@ -62,7 +62,7 @@ export function AffiliatePartnerQrModal({
   )
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss}>
+    <Modal isOpen={isOpen} onOpenChange={onDismiss}>
       <ModalContent>
         <ModalHeader onClose={onDismiss}>
           <Trans>Download referral QR code</Trans>
@@ -108,7 +108,7 @@ export function AffiliatePartnerQrModal({
           </QrActions>
         </ModalBody>
       </ModalContent>
-    </CowModal>
+    </Modal>
   )
 }
 

@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 import { useModalIsOpen, useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 export function ConnectWalletModal(): ReactNode {
   const isOpen = useModalIsOpen(ApplicationModal.WALLET)
@@ -29,7 +29,7 @@ export function ConnectWalletModal(): ReactNode {
   if (!isOpen) return null
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={closeModal}>
+    <Modal isOpen={isOpen} onOpenChange={closeModal}>
       <div style={{ padding: 24 }}>
         <h3 style={{ marginBottom: 16 }}>
           <Trans>Connect wallet</Trans>
@@ -51,6 +51,6 @@ export function ConnectWalletModal(): ReactNode {
         </div>
         {error && <p style={{ marginTop: 16, color: 'var(--cow-color-danger)', fontSize: 14 }}>{error.message}</p>}
       </div>
-    </CowModal>
+    </Modal>
   )
 }

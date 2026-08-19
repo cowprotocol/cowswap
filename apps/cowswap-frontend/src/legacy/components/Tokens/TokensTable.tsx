@@ -17,7 +17,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { usePendingApprovalModal } from 'modules/erc20Approve'
 
 import { BANNER_IDS } from 'common/constants/banners'
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { balanceComparator, useTokenComparator } from './sorting'
 import {
@@ -200,9 +200,10 @@ export function TokenTable({
   return (
     <Wrapper id="tokens-table">
       <ErrorModal />
-      <CowModal isOpen={isApproveModalOpen} onDismiss={closeApproveModal}>
+
+      <Modal isOpen={isApproveModalOpen} onOpenChange={closeApproveModal}>
         {PendingApprovalModal}
-      </CowModal>
+      </Modal>
 
       <>
         <Table ref={tableRef}>

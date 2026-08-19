@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
-import { CowModal as Modal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
@@ -82,7 +82,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
 
   return (
     content && (
-      <Modal isOpen={isOpen} onDismiss={onDismiss}>
+      <Modal isOpen={isOpen} onOpenChange={onDismiss}>
         {content}
       </Modal>
     )

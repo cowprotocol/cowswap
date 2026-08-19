@@ -32,7 +32,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   BalanceDisplay,
@@ -221,7 +221,7 @@ export default function Profile() {
 
   return (
     <>
-      <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
+      <Modal isOpen={isModalOpen} onOpenChange={closeModal}>
         <ConfirmationPendingContent
           modalMode
           onDismiss={closeModal}
@@ -229,7 +229,7 @@ export default function Profile() {
           description={t`Converting vCOW to COW`}
           operationLabel={t`vCOW conversion`}
         />
-      </CowModal>
+      </Modal>
 
       <ErrorModal />
 

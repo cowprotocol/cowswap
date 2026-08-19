@@ -19,7 +19,7 @@ jest.mock('./QrCameraView.pure', () => ({
   ),
 }))
 jest.mock('common/pure/Modal', () => ({
-  CowModal: ({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) =>
+  Modal: ({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) =>
     isOpen ? <div data-testid="cow-modal">{children}</div> : null,
 }))
 jest.mock('common/pure/NewModal', () => ({

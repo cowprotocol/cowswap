@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -10,7 +10,8 @@ import { Trans } from '@lingui/react/macro'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { CowModal as Modal } from 'common/pure/Modal'
+import { Modal as ModalComponent } from 'common/pure/Modal'
+import { Modal } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -63,55 +64,49 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   }, [hours, minutes, onDismiss])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={_onDismiss}>
-      <styledEl.ModalWrapper>
-        <styledEl.ModalHeader>
-          <h3>
-            <Trans>Define custom total time</Trans>
-          </h3>
-          <styledEl.CloseIcon
-            onClick={_onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.TWAP,
-              action: 'Close custom deadline selector',
-            })}
-          />
-        </styledEl.ModalHeader>
+    <ModalComponent isOpen={isOpen} onOpenChange={_onDismiss}>
+      <ModalHeader
+        title={<Trans>Define custom total time</Trans>}
+        onClose={_onDismiss}
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapAnalyticsCategory.TWAP,
+          action: 'Close custom deadline selector',
+        })}
+      />
 
-        <styledEl.ModalContent>
-          <TradeNumberInput
-            label={t`Hours`}
-            onUserInput={onHoursChange}
-            value={hoursValue}
-            showUpDownArrows
-            min={0}
-            max={null}
-          />
-          <TradeNumberInput
-            label={t`Minutes`}
-            onUserInput={onMinutesChange}
-            value={minutesValue}
-            showUpDownArrows
-            min={0}
-            max={null}
-          />
-        </styledEl.ModalContent>
+      <Modal.Content>
+        <TradeNumberInput
+          label={t`Hours`}
+          onUserInput={onHoursChange}
+          value={hoursValue}
+          showUpDownArrows
+          min={0}
+          max={null}
+        />
+        <TradeNumberInput
+          label={t`Minutes`}
+          onUserInput={onMinutesChange}
+          value={minutesValue}
+          showUpDownArrows
+          min={0}
+          max={null}
+        />
+      </Modal.Content>
 
-        <styledEl.ModalFooter>
-          <styledEl.CancelButton
-            onClick={_onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.TWAP,
-              action: 'Cancel custom deadline selection',
-            })}
-          >
-            <Trans>Cancel</Trans>
-          </styledEl.CancelButton>
-          <ButtonPrimary disabled={isDisabled} onClick={onApply}>
-            <Trans>Apply</Trans>
-          </ButtonPrimary>
-        </styledEl.ModalFooter>
-      </styledEl.ModalWrapper>
-    </Modal>
+      <Modal.Footer>
+        <styledEl.CancelButton
+          onClick={_onDismiss}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.TWAP,
+            action: 'Cancel custom deadline selection',
+          })}
+        >
+          <Trans>Cancel</Trans>
+        </styledEl.CancelButton>
+        <ButtonPrimary disabled={isDisabled} onClick={onApply}>
+          <Trans>Apply</Trans>
+        </ButtonPrimary>
+      </Modal.Footer>
+    </ModalComponent>
   )
 }

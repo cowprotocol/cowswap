@@ -8,7 +8,7 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useTradeConfirmState, useNavigateToNewOrderCallback } from 'modules/trade'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { useOrderProgressBarProps } from '../../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
@@ -57,7 +57,7 @@ export function SurplusModalSetup(): ReactNode {
   }
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
+    <Modal isOpen={isOpen} onOpenChange={onDismiss} maxHeight={90} maxWidth={470}>
       <TransactionSubmittedContent
         onDismiss={onDismiss}
         chainId={chainId}
@@ -66,6 +66,6 @@ export function SurplusModalSetup(): ReactNode {
         orderProgressBarProps={progressBarProps}
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
-    </CowModal>
+    </Modal>
   )
 }

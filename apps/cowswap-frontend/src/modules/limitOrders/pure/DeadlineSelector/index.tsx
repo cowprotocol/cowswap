@@ -3,7 +3,8 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 import { i18n } from '@lingui/core'
 
 import { useExtractText } from '@cowprotocol/common-utils'
-import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSecondary, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Modal as ModalComponent } from 'common/pure/Modal'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -18,10 +19,9 @@ import {
   limitDateString,
 } from 'modules/limitOrders/pure/DeadlineSelector/utils'
 
-import { CowModal as Modal } from 'common/pure/Modal'
-
 import { getLimitOrderDeadlines, LimitOrderDeadline } from './deadlines'
 import * as styledEl from './styled'
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -170,14 +170,17 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       )}
 
       {/* Custom deadline modal */}
-      <Modal isOpen={isOpen} onDismiss={onDismiss}>
-        <styledEl.ModalWrapper>
-          <styledEl.ModalHeader>
-            <h3>
-              <Trans>Set custom deadline</Trans>
-            </h3>
-            <styledEl.CloseIcon onClick={onDismiss} />
-          </styledEl.ModalHeader>
+      <ModalComponent isOpen={isOpen} onOpenChange={onDismiss}>
+        <ModalHeader
+          title={<Trans>Set custom deadline</Trans>}
+          onClose={onDismiss}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
+            action: 'Close custom deadline selector',
+          })}
+        />
+
+        <Modal.Content>
           <styledEl.ModalContent>
             <styledEl.CustomLabel htmlFor="custom-deadline">
               <Trans>Choose a custom deadline for your limit order</Trans>:
@@ -203,16 +206,19 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             {/* TODO: style me!!! */}
             {error && <div>{error}</div>}
           </styledEl.ModalContent>
-          <styledEl.ModalFooter>
-            <ButtonSecondary onClick={onDismiss}>
-              <Trans>Cancel</Trans>
-            </ButtonSecondary>
-            <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
-              <Trans>Set custom date</Trans>
-            </ButtonPrimary>
-          </styledEl.ModalFooter>
-        </styledEl.ModalWrapper>
-      </Modal>
+        </Modal.Content>
+
+        <Modal.Footer>
+          <ButtonSecondary onClick={onDismiss}>
+            <Trans>Cancel</Trans>
+          </ButtonSecondary>
+
+          <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
+            <Trans>Set custom date</Trans>
+          </ButtonPrimary>
+        </Modal.Footer>
+
+      </ModalComponent>
     </styledEl.Wrapper>
   )
 }

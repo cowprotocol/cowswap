@@ -6,8 +6,8 @@ import svgSadCowFaceSrc from '@cowprotocol/assets/cow-swap/sad-cow-face.svg'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-
-import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
+import { Modal } from '@cowprotocol/ui'
+import { Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { IneligibleImage } from '../pure/shared'
 import { TraderIneligible } from '../pure/TraderIneligible'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
@@ -31,7 +31,7 @@ export function AffiliateTraderModalIneligible(): ReactNode {
 
   return (
     <>
-      <Body>
+      <Modal.Content>
         <IneligibleImage src={svgSadCowFaceSrc} ariaHidden />
         <Title>
           <Trans>Your wallet is ineligible</Trans>
@@ -39,12 +39,12 @@ export function AffiliateTraderModalIneligible(): ReactNode {
         <Subtitle>
           <TraderIneligible />
         </Subtitle>
-      </Body>
-      <Footer>
+      </Modal.Content>
+      <Modal.Footer>
         <ButtonPrimary autoFocus disabled={false} onClick={onGoBack} type="button">
           <Trans>Go back</Trans>
         </ButtonPrimary>
-      </Footer>
+      </Modal.Footer>
     </>
   )
 }

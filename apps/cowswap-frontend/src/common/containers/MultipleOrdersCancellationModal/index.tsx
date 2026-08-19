@@ -15,7 +15,7 @@ import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import { useCancelMultipleOrders } from 'common/hooks/useCancelMultipleOrders'
-import { CowModal as Modal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
@@ -77,7 +77,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
 
     return (
-      <Modal isOpen onDismiss={dismissAll}>
+      <Modal isOpen onOpenChange={dismissAll}>
         <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
@@ -85,7 +85,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
 
   if (cancellationInProgress) {
     return (
-      <Modal isOpen={true} onDismiss={dismissAll}>
+      <Modal isOpen={true} onOpenChange={dismissAll}>
         <ConfirmationPendingContent
           modalMode
           onDismiss={onDismiss}
@@ -98,7 +98,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
   }
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Modal isOpen={isOpen} onOpenChange={onDismiss}>
       <LegacyConfirmationModalContent
         title={t`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}

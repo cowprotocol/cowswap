@@ -5,7 +5,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ModalHeader } from '@cowprotocol/ui'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { CowModal } from 'common/pure/Modal'
+import { Modal as ModalComponent } from 'common/pure/Modal'
+import { Modal } from '@cowprotocol/ui'
 
 import { AffiliateTraderModalCodeInfo } from './AffiliateTraderModalCodeInfo'
 import { AffiliateTraderModalCodeLinking } from './AffiliateTraderModalCodeLinking'
@@ -21,7 +22,6 @@ import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAn
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
 import { useAffiliateTraderRefUrlSideEffect } from '../hooks/useAffiliateTraderRefUrlSideEffect'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
-import { ModalContainer } from '../pure/AffiliateTraderModal/styles'
 import { UnsupportedNetwork } from '../pure/UnsupportedNetwork'
 import { affiliateTraderModalAtom, toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
@@ -78,20 +78,19 @@ export function AffiliateTraderModal(): ReactNode {
   return (
     <>
       {isModalOpen && showAffiliateBanner && <UnsupportedNetwork />}
-      <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
-        <ModalContainer>
-          <ModalHeader onBack={toggleAffiliateModal} />
-          {walletStatus === TraderWalletStatus.UNSUPPORTED ? (
-            <AffiliateTraderModalUnsupported />
-          ) : walletStatus === TraderWalletStatus.LINKED ? (
-            <AffiliateTraderModalCodeInfo />
-          ) : walletStatus === TraderWalletStatus.INELIGIBLE ? (
-            <AffiliateTraderModalIneligible />
-          ) : (
-            <AffiliateTraderModalCodeLinking />
-          )}
-        </ModalContainer>
-      </CowModal>
+      <ModalComponent isOpen={isModalOpen} onOpenChange={toggleAffiliateModal} padding="0" maxHeight={90}>
+        <ModalHeader sticky onBack={toggleAffiliateModal} />
+
+        {walletStatus === TraderWalletStatus.UNSUPPORTED ? (
+          <AffiliateTraderModalUnsupported />
+        ) : walletStatus === TraderWalletStatus.LINKED ? (
+          <AffiliateTraderModalCodeInfo />
+        ) : walletStatus === TraderWalletStatus.INELIGIBLE ? (
+          <AffiliateTraderModalIneligible />
+        ) : (
+          <AffiliateTraderModalCodeLinking />
+        )}
+      </ModalComponent>
     </>
   )
 }

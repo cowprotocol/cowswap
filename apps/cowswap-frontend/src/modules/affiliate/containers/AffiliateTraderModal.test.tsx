@@ -40,7 +40,7 @@ jest.mock('@cowprotocol/ui', () => ({
 }))
 
 jest.mock('common/pure/Modal', () => ({
-  CowModal: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+  Modal: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }))
 
 jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({

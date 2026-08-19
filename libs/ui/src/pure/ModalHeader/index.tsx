@@ -34,7 +34,7 @@ export function ModalHeader({
       <styledEl.Inner>
         <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
 
-        <styledEl.Title>{title || children}</styledEl.Title>
+        <styledEl.Title>{title || children || '\u00A0'}</styledEl.Title>
 
         {rightSlot ? <styledEl.RightSlot>{rightSlot}</styledEl.RightSlot> : null}
 

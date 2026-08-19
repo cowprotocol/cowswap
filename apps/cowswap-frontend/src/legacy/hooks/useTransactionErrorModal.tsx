@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { useCloseModals, useModalIsOpen, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 // TODO: Add proper return type annotation
@@ -17,9 +17,9 @@ export default function useTransactionErrorModal() {
 
   const TransactionErrorModal = useCallback(
     ({ message, onDismiss }: { message?: string; onDismiss: Command }) => (
-      <CowModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
+      <Modal isOpen={!!message && showTransactionErrorModal} onOpenChange={closeModal}>
         <TransactionErrorContent modalMode onDismiss={onDismiss} message={message || ''} />
-      </CowModal>
+      </Modal>
     ),
     [closeModal, showTransactionErrorModal],
   )

@@ -13,12 +13,11 @@ import { CodeLinkingStatusSection } from './CodeLinkingStatusSection'
 import { CodeLinkingSubtitle } from './CodeLinkingSubtitle'
 import { PayoutConfirmation, type PayoutConfirmationProps } from './PayoutConfirmation'
 import {
-  Body,
-  Footer,
   FormActionButton,
   FormActionDanger,
   FormActions,
   FormGroup,
+  HeroIllustration,
   Label,
   LabelAffordances,
   LabelRow,
@@ -30,6 +29,7 @@ import { type TraderWalletStatus } from '../../hooks/useAffiliateTraderWallet'
 import { formatRefCode } from '../../lib/affiliateProgramUtils'
 import { RefCodeInput, type RefCodeInputProps } from '../RefCodeInput/RefCodeInput'
 import { LabelContent, StatusText } from '../shared'
+import { Modal } from '@cowprotocol/ui'
 
 export interface AffiliateTradeCodeFormProps
   extends Omit<PayoutConfirmationProps, 'payoutWallet'>,
@@ -77,8 +77,8 @@ export function AffiliateTradeCodeForm({
         if (canSubmit) onSubmit()
       }}
     >
-      <Body>
-        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
+      <Modal.Content>
+        <HeroIllustration src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
           <Trans>You&apos;ve been referred - here&apos;s your reward</Trans>
         </Title>
@@ -135,12 +135,12 @@ export function AffiliateTradeCodeForm({
             onTogglePayoutConfirmed={onTogglePayoutConfirmed}
           />
         )}
-      </Body>
-      <Footer>
+      </Modal.Content>
+      <Modal.Footer>
         <ButtonPrimary disabled={!canSubmit} type="submit">
           {submitButtonLabel}
         </ButtonPrimary>
-      </Footer>
+      </Modal.Footer>
     </FormGroup>
   )
 }

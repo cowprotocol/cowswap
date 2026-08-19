@@ -1,21 +1,23 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { ContentWrapper, Modal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
 
 import { ConfirmedButton } from '../ConfirmedButton'
 
-const ModalContentWrapper = styled(ContentWrapper)`
+const ModalContentWrapper = styled.div`
   flex: 1;
   padding: 1.5rem;
   color: inherit;
   border-radius: 1.5rem;
+  background-color: var(${UI.COLOR_PAPER});
 `
 
 const Description = styled.p`
@@ -57,7 +59,14 @@ export function ConfirmationModal({
   const shouldShowWarning = !!warning
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onDismiss()
+        }
+      }}
+    >
       <ModalContentWrapper>
         <ConfirmationModalHeader onCloseClick={onDismiss}>{title}</ConfirmationModalHeader>
         {shouldShowDescription && <Description>{description}</Description>}

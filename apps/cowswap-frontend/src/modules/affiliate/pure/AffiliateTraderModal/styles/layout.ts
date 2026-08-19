@@ -2,35 +2,11 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const ModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+export const HeroIllustration = styled.img`
+  align-self: center;
   width: 100%;
-  min-height: 100%;
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT_PAPER});
-`
-
-export const Body = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  gap: 10px;
-
-  > img,
-  > svg {
-    width: 100%;
-    max-width: 180px;
-    height: auto;
-    align-self: center;
-  }
-
-  ${Media.upToSmall()} {
-    > img,
-    > svg {
-      max-width: 150px;
-    }
-  }
+  max-width: 180px;
+  height: auto;
 `
 
 export const Title = styled.h2`
@@ -65,7 +41,6 @@ export const Subtitle = styled.p`
 `
 
 export const FormGroup = styled.form`
-  overflow-y: auto;
 `
 
 export const LabelRow = styled.div`

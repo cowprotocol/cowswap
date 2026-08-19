@@ -6,5 +6,12 @@ export const ModalContent = styled.div`
   flex-direction: column;
   gap: 10px;
   padding: 0 10px 10px;
-  // background: cyan;
+`
+
+export const ModalFooter = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px;
 `

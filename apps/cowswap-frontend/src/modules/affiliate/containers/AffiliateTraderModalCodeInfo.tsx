@@ -9,8 +9,9 @@ import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
+import { Modal } from '@cowprotocol/ui'
 
-import { Body, Footer, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
+import { HeroIllustration, Subtitle, Title } from '../pure/AffiliateTraderModal/styles'
 import { HowItWorks } from '../pure/HowItWorks'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 
@@ -33,16 +34,16 @@ export function AffiliateTraderModalCodeInfo(): ReactNode {
 
   return (
     <>
-      <Body>
-        <img src={svgEarnAsTraderSrc} alt="" role="presentation" />
+      <Modal.Content>
+        <HeroIllustration src={svgEarnAsTraderSrc} alt="" role="presentation" />
         <Title>
           <Trans>Already linked to a referral code</Trans>
         </Title>
         <Subtitle>
           <Trans>Your wallet is already linked to a referral code.</Trans> <HowItWorks />
         </Subtitle>
-      </Body>
-      <Footer>
+      </Modal.Content>
+      <Modal.Footer>
         <ButtonPrimary
           as={Link}
           autoFocus
@@ -53,7 +54,7 @@ export function AffiliateTraderModalCodeInfo(): ReactNode {
         >
           <Trans>View rewards</Trans>
         </ButtonPrimary>
-      </Footer>
+      </Modal.Footer>
     </>
   )
 }

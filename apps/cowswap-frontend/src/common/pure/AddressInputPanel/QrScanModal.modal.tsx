@@ -2,7 +2,7 @@ import { ReactElement, useCallback, useRef, useState } from 'react'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
-import { CowModal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 import { NewModal } from 'common/pure/NewModal'
 
 import { useQrBarcodeScanner } from './hooks/useQrBarcodeScanner'
@@ -36,7 +36,7 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
   }, [])
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={handleDismiss} maxWidth={480}>
+    <Modal isOpen={isOpen} onOpenChange={handleDismiss} maxWidth={480}>
       <NewModal title={t`Scan QR code`} modalMode onDismiss={handleDismiss}>
         <QrModalWrapper>
           {permissionDenied ? (
@@ -54,6 +54,6 @@ export function QrScanModal({ isOpen, onDismiss, onScan }: QrScanModalProps): Re
           )}
         </QrModalWrapper>
       </NewModal>
-    </CowModal>
+    </Modal>
   )
 }
