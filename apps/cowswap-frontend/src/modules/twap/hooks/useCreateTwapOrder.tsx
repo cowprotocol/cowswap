@@ -67,6 +67,7 @@ import {
   startEoaTwapPlacement,
 } from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { getEoaTwapAmountToApprove } from '../utils/getEoaTwapAmountToApprove'
 import { getEoaTwapPrePlacementAmountToCover } from '../utils/getEoaTwapPrePlacementAmountToCover'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
@@ -280,13 +281,14 @@ export function useCreateTwapOrder() {
           const sellAmountAtoms = BigInt(twapOrder.sellAmount.quotient.toString())
           // Exact amount is unknown until after Twap Setup, so we cover the sell amount + buffer:
           const amountToCover = getEoaTwapPrePlacementAmountToCover(sellAmountAtoms)
+          const eoaAmountToApprove = getEoaTwapAmountToApprove(amountToSignApprove, amountToCover)
           const approvalNeeds = await getEoaTwapApprovalNeeds({
             config,
             account: account as `0x${string}`,
             sellTokenAddress,
             spender: vaultRelayerAddress,
             amountToCover,
-            amountToApprove: maxUint256,
+            amountToApprove: eoaAmountToApprove,
           })
 
           const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
@@ -299,8 +301,8 @@ export function useCreateTwapOrder() {
           }
 
           if (approvalNeeds.needsApproval) {
-            // Prefer on-chain max approve (not permit) when approval is needed: funding sell size
-            // is unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
+            // Prefer on-chain approve (not permit) when approval is needed: funding sell size is
+            // unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
             // already covers sell + buffer.
             await ensureEoaTwapVaultRelayerApproval({
               config,
@@ -310,7 +312,7 @@ export function useCreateTwapOrder() {
               sellTokenName: sellToken.name,
               spender: vaultRelayerAddress,
               amountToCover,
-              amountToApprove: maxUint256,
+              amountToApprove: eoaAmountToApprove,
               permitInfo,
               generatePermitHook,
               preferOnChainApprove: true,
@@ -458,6 +460,7 @@ export function useCreateTwapOrder() {
       generatePermitHook,
       updateEoaTwapFlow,
       safeAmountToApprove,
+      amountToSignApprove,
     ],
   )
 }
