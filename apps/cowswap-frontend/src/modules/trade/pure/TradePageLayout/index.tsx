@@ -1,6 +1,6 @@
 import { Media, UI, MY_ORDERS_ID } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 const DEFAULT_MAX_WIDTH = '1500px'
@@ -64,26 +64,30 @@ export const PrimaryWrapper = styled.div`
 // Graph + orders table
 export const SecondaryWrapper = styled.div.attrs({
   id: MY_ORDERS_ID,
-})`
+})<{ $inDrawer?: boolean }>`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   width: 100%;
-  overflow: hidden;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: ${({ $inDrawer }) => ($inDrawer ? '0' : `var(${UI.BORDER_RADIUS_NORMAL})`)};
   background: var(${UI.COLOR_PAPER});
   color: inherit;
   border: none;
   box-shadow: none;
   position: relative;
-  padding: 10px;
-  min-height: 200px;
-  height: 100%;
-  width: 100%;
-  margin: 0 0 76px;
-  grid-area: secondary;
+  padding: 0;
+  overflow: hidden;
 
-  ${Media.upToLargeAlt()} {
-    flex-flow: column wrap;
-    margin: 0 0 20px;
-  }
+  ${({ $inDrawer }) =>
+    $inDrawer
+      ? css`
+          /* Grow with table content so BottomDrawer.Content can scroll the whole body */
+          flex: 0 0 auto;
+        `
+      : css`
+          flex: 1;
+          min-height: 200px;
+          height: 100%;
+          max-height: 100%;
+          grid-area: secondary;
+        `}
 `

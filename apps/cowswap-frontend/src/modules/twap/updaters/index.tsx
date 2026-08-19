@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { TradeSpenderOverrideUpdater } from '@cowprotocol/balances-and-allowances'
@@ -5,7 +6,9 @@ import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@cowproto
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { AppDataUpdater } from 'modules/appData'
+import { Erc20ApproveWidget } from 'modules/erc20Approve'
 
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
 import { FallbackHandlerVerificationUpdater } from './FallbackHandlerVerificationUpdater'
@@ -23,6 +26,7 @@ export function TwapUpdaters(): ReactNode {
   const isSafeViaWc = useIsSafeViaWc()
   const composableCowContract = useComposableCowContractData()
   const twapOrderSlippage = useTwapSlippage()
+  const { enablePartialApprovalBySettings } = useAtomValue(advancedOrdersSettingsAtom)
 
   const shouldLoadTwapOrders = !!((isSafeWallet || isSafeViaWc) && account && composableCowContract.address)
   const composableCowChainId = composableCowContract.chainId
@@ -36,6 +40,7 @@ export function TwapUpdaters(): ReactNode {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />
       <QuoteObserverUpdater />
+      <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       {shouldLoadTwapOrders && (
         <>
           <FullAmountQuoteUpdater />
