@@ -28,6 +28,7 @@ import {
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
@@ -107,7 +108,15 @@ export function useCreateTwapOrder() {
 
   const appDataInfo = useAppData()
   const sendSafeTransactions = useSendBatchTransactions()
-  const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
+  const amountToSignApprove = useGetAmountToSignApprove()
+  // The exact amount the Safe flow will approve on-chain. Shared between the zero-approval
+  // pre-check (via useTwapOrderCreationContext) and the real approve tx (placeSafeTwapOrder)
+  // below so both simulate/target the same value.
+  const safeAmountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
+  const twapOrderCreationContext = useTwapOrderCreationContext(
+    inputCurrencyAmount as Nullish<CurrencyAmount<Token>>,
+    safeAmountToApprove,
+  )
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
   // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
@@ -353,6 +362,7 @@ export function useCreateTwapOrder() {
             fallbackHandlerIsNotSet,
             extensibleFallbackContext,
             sendSafeTransactions,
+            amountToApprove: safeAmountToApprove,
           })
           orderCreationHash = safeTxHash
           confirmModalHash = safeTxHash
@@ -447,6 +457,7 @@ export function useCreateTwapOrder() {
       permitInfo,
       generatePermitHook,
       updateEoaTwapFlow,
+      safeAmountToApprove,
     ],
   )
 }
