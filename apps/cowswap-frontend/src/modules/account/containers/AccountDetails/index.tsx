@@ -3,10 +3,16 @@ import { Fragment, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
+import { styled, useFeatureFlags } from '@cowprotocol/common-hooks'
+import {
+  getEtherscanLink,
+  getExplorerAddressLink,
+  getExplorerLabel,
+  isInjectedWidget,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   getIsInjectedMobileBrowser,
@@ -20,11 +26,14 @@ import {
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { Bell } from 'react-feather'
 
 import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
+
+import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
@@ -34,7 +43,10 @@ import { ActivitiesList } from './ActivitiesList'
 import {
   AccountControl,
   AccountGroupingRow,
+  ActivityHeader,
   AddressLink,
+  CreationDateRow,
+  GetNotifiedButton,
   InfoCard,
   LowerSection,
   NetworkCard,
@@ -88,6 +100,17 @@ export function AccountDetails({
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
+  const openNotificationSidebar = useOpenNotificationSidebar()
+
+  const handleGetNotifiedClick = (): void => {
+    closeAccountModal()
+    openNotificationSidebar()
+  }
+
+  const showGetNotifiedRow =
+    areTelegramNotificationsEnabled && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -173,23 +196,33 @@ export function AccountDetails({
 
           {activityTotalCount ? (
             <LowerSection>
-              <span>
-                {' '}
+              <ActivityHeader>
                 <h5>
                   <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
                 </h5>
+                {showGetNotifiedRow && (
+                  <GetNotifiedButton onClick={handleGetNotifiedClick}>
+                    <Bell size={16} />
+                    <Trans>Get trade alerts</Trans>
+                    <Badge type={BadgeTypes.ALERT2}>
+                      <Trans>New</Trans>
+                    </Badge>
+                  </GetNotifiedButton>
+                )}
                 {explorerOrdersLink && (
                   <ExternalLink href={explorerOrdersLink}>
                     <Trans>View all orders</Trans> ↗
                   </ExternalLink>
                 )}
-              </span>
+              </ActivityHeader>
 
               <div>
                 {activitiesGroupedByDate.map(({ date, activities }) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
-                    <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
+                    <CreationDateRow>
+                      <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
+                    </CreationDateRow>
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}

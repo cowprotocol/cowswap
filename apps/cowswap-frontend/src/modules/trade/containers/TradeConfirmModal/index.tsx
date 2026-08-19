@@ -1,5 +1,7 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -7,6 +9,8 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
+
+import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
 
 import { PermitModal } from 'common/containers/PermitModal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
@@ -30,6 +34,7 @@ const Container = styled.div`
 export interface TradeConfirmModalProps extends React.PropsWithChildren {
   title: string
   submittedContent?: ReactNode
+  showGetNotifiedMessage?: boolean
 }
 
 interface InnerComponentProps extends React.PropsWithChildren {
@@ -43,16 +48,26 @@ interface InnerComponentProps extends React.PropsWithChildren {
   permitSignatureState: string | undefined
   isSafeWallet: boolean
   submittedContent?: ReactNode
+  showGetNotifiedMessage?: boolean
+  onGetNotifiedClick: () => void
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
-  const { children, submittedContent, title } = props
+  const { children, submittedContent, title, showGetNotifiedMessage } = props
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
+  const openNotificationSidebar = useOpenNotificationSidebar()
+
+  const handleGetNotifiedClick = useCallback(() => {
+    onDismiss()
+    openNotificationSidebar()
+  }, [onDismiss, openNotificationSidebar])
 
   if (!account) return null
 
@@ -70,6 +85,14 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         permitSignatureState={signingStep ? undefined : permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
+        showGetNotifiedMessage={
+          showGetNotifiedMessage &&
+          areTelegramNotificationsEnabled &&
+          !isNotificationSubscriptionLoading &&
+          !hasSubscription &&
+          !isInjectedWidget()
+        }
+        onGetNotifiedClick={handleGetNotifiedClick}
       >
         {children}
       </InnerComponent>
@@ -90,6 +113,8 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
     permitSignatureState,
     transactionHash,
     submittedContent,
+    showGetNotifiedMessage,
+    onGetNotifiedClick,
   } = props
 
   if (error) {
@@ -118,6 +143,8 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
           isSafeWallet={isSafeWallet}
           onDismiss={onDismiss}
           hash={transactionHash}
+          showGetNotifiedMessage={showGetNotifiedMessage}
+          onGetNotifiedClick={onGetNotifiedClick}
         />
       )
     )
