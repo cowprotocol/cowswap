@@ -2,11 +2,9 @@ import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { getJotaiMergerStorage } from '@cowprotocol/core'
-
 const STORAGE_KEY = 'trackOrderNotificationBannerDismissed:v0'
 
-const isTrackOrderBannerDismissedAtom = atomWithStorage<boolean>(STORAGE_KEY, false, getJotaiMergerStorage())
+const isTrackOrderBannerDismissedAtom = atomWithStorage<boolean>(STORAGE_KEY, false)
 
 export interface UseTrackOrderBannerDismissalReturn {
   isDismissed: boolean
