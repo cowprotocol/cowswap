@@ -63,20 +63,18 @@ export const defaultTokensByChainFamily = atomFamily((chainId: SupportedChainId)
     if (hasFetched) return
     hasFetched = true
 
-    let cancelled = false
-
+    // No cancellation on unmount: this is a permanent cache, not an
+    // ephemeral per-component query. The token list is rendered in a
+    // virtualized list, so a row (and this atom's only subscriber) can
+    // unmount well before a slow fetch resolves — cancelling here would
+    // discard the result while `hasFetched` stays `true` forever, leaving
+    // the atom stuck at `null` with no retry.
     fetchDefaultTokensForChain(chainId)
-      .then((tokens) => {
-        if (!cancelled) set(tokens)
-      })
+      .then((tokens) => set(tokens))
       .catch((error: unknown) => {
         hasFetched = false
         console.error(`[defaultTokensByChainFamily] fetch failed for chain ${chainId}`, error)
       })
-
-    return () => {
-      cancelled = true
-    }
   }
 
   return dataAtom

@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { VirtualItem } from '@tanstack/react-virtual'
@@ -15,6 +16,7 @@ import { TokensVirtualRowRenderer } from './TokensVirtualRowRenderer'
 import { TokensVirtualRow } from './types'
 
 import { useTokenListContext } from '../../hooks/useTokenListContext'
+import { symbolsWithAnyChainBalanceAtom } from '../../state/symbolsWithAnyChainBalanceAtom'
 
 export interface TokensVirtualListProps {
   tokensToDisplay: TokenWithLogo[]
@@ -39,8 +41,12 @@ export function TokensVirtualList({
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
   const { hideRecentTokens, hideFavoriteTokens } = useInjectedWidgetParams()
+  const symbolsWithCrossChainBalance = useAtomValue(symbolsWithAnyChainBalanceAtom)
 
-  const sortedTokens = useMemo(() => sortTokensByBalance(tokensToDisplay, balances), [tokensToDisplay, balances])
+  const sortedTokens = useMemo(
+    () => sortTokensByBalance(tokensToDisplay, balances, symbolsWithCrossChainBalance),
+    [tokensToDisplay, balances, symbolsWithCrossChainBalance],
+  )
 
   const rows = useMemo<TokensVirtualRow[]>(
     () =>
