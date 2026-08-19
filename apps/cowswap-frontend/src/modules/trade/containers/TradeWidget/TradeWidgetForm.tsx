@@ -5,7 +5,7 @@ import { useFeatureFlags, useMediaQuery, useTheme, useThrottledCallback } from '
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
+import { ButtonOutlined, Media } from '@cowprotocol/ui'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -38,6 +38,7 @@ import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { useResetReceiverConfirmationOnWalletChange } from '../../hooks/useResetReceiverConfirmationOnWalletChange'
 import { useResetRecipientOnChainChange } from '../../hooks/useResetRecipientOnChainChange'
+import { useSetOrdersTableDrawerOpen } from '../../hooks/useSetOrdersTableDrawerOpen'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useSolanaWrapReceiveAmount } from '../../hooks/useSolanaWrapReceiveAmount'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
@@ -53,16 +54,6 @@ import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
 const noop: () => void = () => void 0
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const scrollToMyOrders = () => {
-  const element = document.getElementById(MY_ORDERS_ID)
-  if (element) {
-    const elementTop = element.getBoundingClientRect().top + window.scrollY - SWAP_HEADER_OFFSET
-    window.scrollTo({ top: elementTop, behavior: 'smooth' })
-  }
-}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
@@ -218,14 +209,15 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   )
 
   const toggleAccountModal = useToggleAccountModal()
+  const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
 
   const handleMyOrdersClick = useCallback(() => {
     if (isMarketOrderWidget) {
       toggleAccountModal()
     } else {
-      scrollToMyOrders()
+      setOrdersTableDrawerOpen(true)
     }
-  }, [isMarketOrderWidget, toggleAccountModal])
+  }, [isMarketOrderWidget, setOrdersTableDrawerOpen, toggleAccountModal])
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
