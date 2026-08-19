@@ -18,7 +18,6 @@ export const Header = styled.header<{ withoutBorder?: boolean }>`
     top: 0;
     z-index: 1000;
     border-bottom: 1px solid transparent;
-    // box-shadow: 0 0 0 0 transparent;
 
     &::after {
       content: '';
