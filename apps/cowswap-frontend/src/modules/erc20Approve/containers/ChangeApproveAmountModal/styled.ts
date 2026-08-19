@@ -5,7 +5,8 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: var(${UI.COLOR_PAPER});
   border-radius: 21px;
 `
