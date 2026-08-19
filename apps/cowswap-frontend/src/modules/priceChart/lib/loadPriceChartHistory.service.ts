@@ -12,13 +12,15 @@ export async function loadPriceChartHistory(
   countback?: number,
 ): Promise<PriceChartBar[]> {
   const { address, chainId } = symbol.baseAsset
-
-  if (metric === 'price') {
-    return fetchPriceChartData({ address, chainId, countback, from, resolution, to })
-  }
-
   const bars = await fetchPriceChartData({ address, chainId, countback, from, resolution, to })
 
+  return metric === 'price' ? bars : toMarketCapBars(symbol, bars)
+}
+
+export async function toMarketCapBars(
+  symbol: PriceChartSymbolDescriptor,
+  bars: PriceChartBar[],
+): Promise<PriceChartBar[]> {
   if (!bars.length) return bars
 
   const { circulatingSupply } = await fetchTokenSupply(symbol.baseAsset)

@@ -26,7 +26,7 @@ import { PriceChartStatus } from './PriceChartStatus.pure'
 import * as simpleStyledEl from './SimplePriceChart.styled'
 
 import { logPriceChart } from '../../api'
-import { loadPriceChartHistory } from '../../lib/loadPriceChartHistory.service'
+import { loadPriceChartHistory, toMarketCapBars } from '../../lib/loadPriceChartHistory.service'
 import { mapPriceChartBarsToVolumeData } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
@@ -60,6 +60,12 @@ export interface SimplePriceChartTooltipData {
 export interface SimplePriceChartTooltipProps {
   data: SimplePriceChartTooltipData
   metric: PriceChartMetric
+}
+
+interface CachedSimplePriceHistory {
+  key: string
+  marketCap?: Promise<PriceChartBar[]>
+  price: Promise<PriceChartBar[]>
 }
 
 interface ChartTypeControlProps {
@@ -374,11 +380,13 @@ function usePriceChartHistory(
 ): SimplePriceHistory {
   const [data, setData] = useState<PriceChartBar[]>([])
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
-  const requestedHistoryRef = useRef<string | undefined>(undefined)
+  const historyCacheRef = useRef<CachedSimplePriceHistory | undefined>(undefined)
+  const hasRequestedHistoryRef = useRef(false)
 
   useEffect(() => {
     if (!symbol) {
-      requestedHistoryRef.current = undefined
+      historyCacheRef.current = undefined
+      hasRequestedHistoryRef.current = false
       setData([])
       setHistoryStatus(null)
       return
@@ -386,17 +394,24 @@ function usePriceChartHistory(
 
     let isCancelled = false
     const { from, resolution, to } = getSimplePriceChartPeriodConfig(period, Date.now() / 1000)
-    const historyKey = `${symbol.ticker}:${metric}`
-    const isNewHistory = requestedHistoryRef.current !== historyKey
+    const historyKey = `${symbol.ticker}:${period}`
+    const history =
+      historyCacheRef.current?.key === historyKey
+        ? historyCacheRef.current
+        : { key: historyKey, price: loadPriceChartHistory(symbol, from, to, resolution, 'price') }
+    historyCacheRef.current = history
 
-    requestedHistoryRef.current = historyKey
-
-    if (isNewHistory) {
-      setData([])
+    if (!hasRequestedHistoryRef.current) {
+      hasRequestedHistoryRef.current = true
       setHistoryStatus('loading')
     }
 
-    void loadPriceChartHistory(symbol, from, to, resolution, metric)
+    const request =
+      metric === 'price'
+        ? history.price
+        : (history.marketCap ??= history.price.then((bars) => toMarketCapBars(symbol, bars)))
+
+    void request
       .then((bars) => {
         if (isCancelled) return
 
