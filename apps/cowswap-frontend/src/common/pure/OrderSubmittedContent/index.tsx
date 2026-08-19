@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BackButton } from '@cowprotocol/ui'
+import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -34,6 +34,10 @@ const Caption = styled.h3`
   font-weight: 500;
   font-size: 20px;
   margin: 0;
+`
+
+const ActionButton = styled(ButtonPrimary)`
+  margin-top: 30px;
 `
 
 export interface OrderSubmittedContentProps {
@@ -74,8 +78,12 @@ export function OrderSubmittedContent({
         <Trans>Order Submitted</Trans>
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
-      {showGetNotifiedMessage && onGetNotifiedClick && onDismissGetNotifiedMessage && (
+      {showGetNotifiedMessage && onGetNotifiedClick && onDismissGetNotifiedMessage ? (
         <TrackOrderBanner onEnableClick={onGetNotifiedClick} onClose={onDismissGetNotifiedMessage} />
+      ) : (
+        <ActionButton onClick={onDismiss}>
+          <Trans>Continue</Trans>
+        </ActionButton>
       )}
     </Wrapper>
   )

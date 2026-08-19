@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import styled from 'styled-components/macro'
 
 import { OrderSubmittedContent } from './index'
@@ -33,6 +35,21 @@ const Fixtures = {
       />
     </Wrapper>
   ),
+  withTrackOrderBannerDismissible: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [dismissed, setDismissed] = useState(false)
+
+    return (
+      <Wrapper>
+        <OrderSubmittedContent
+          {...defaultProps}
+          showGetNotifiedMessage={!dismissed}
+          onGetNotifiedClick={() => console.log('onGetNotifiedClick')}
+          onDismissGetNotifiedMessage={() => setDismissed(true)}
+        />
+      </Wrapper>
+    )
+  },
 }
 
 export default Fixtures
