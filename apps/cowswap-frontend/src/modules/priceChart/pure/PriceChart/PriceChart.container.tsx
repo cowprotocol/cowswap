@@ -100,7 +100,7 @@ function EnabledPriceChart({
     limitLinePrice,
     metric,
     onSelectMetric: setMetric,
-    onSelectPrice: handleSelectPrice,
+    onSelectPrice: onSelectLimitPrice ? handleSelectPrice : undefined,
     onSelectSelection: handleSelectSelection,
     sizeControl,
     symbols,

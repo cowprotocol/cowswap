@@ -11,6 +11,24 @@ export const ChartCanvas = styled.div<{ $canSelectPrice: boolean }>`
   cursor: ${({ $canSelectPrice }) => ($canSelectPrice ? 'crosshair' : 'default')};
 `
 
+export const SelectionHint = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border: 1px solid var(${UI.COLOR_BORDER});
+  border-radius: 999px;
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT});
+  font-size: 13px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+`
+
 export const Controls = styled(SegmentedControl)`
   padding: 2px;
   max-width: 100%;

@@ -95,7 +95,7 @@ export function SimplePriceChartPure({
   symbols,
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
-  const { i18n } = useLingui()
+  const { i18n, t } = useLingui()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const areaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
@@ -108,6 +108,7 @@ export function SimplePriceChartPure({
   const [tooltip, setTooltip] = useState<SimplePriceChartTooltipData>()
   const { data, historyStatus } = usePriceChartHistory(activeSymbol, period, metric)
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
+  const isSelectingPrice = metric === 'price' && !!onSelectPrice
 
   useEffect(() => {
     if (historyStatus) setTooltip(undefined)
@@ -131,6 +132,19 @@ export function SimplePriceChartPure({
     metric,
     i18n.locale,
   )
+
+  useEffect(() => {
+    if (isSelectingPrice) setTooltip(undefined)
+
+    chartRef.current?.applyOptions({
+      crosshair: {
+        horzLine: { labelVisible: isSelectingPrice },
+        mode: isSelectingPrice ? CrosshairMode.Normal : CrosshairMode.Magnet,
+        vertLine: { labelVisible: false, visible: !isSelectingPrice },
+      },
+    })
+    areaSeriesRef.current?.applyOptions({ crosshairMarkerVisible: !isSelectingPrice })
+  }, [chartType, darkMode, i18n.locale, isSelectingPrice])
 
   useEffect(() => {
     const priceFormat = getSimplePriceChartPriceFormat(data)
@@ -193,8 +207,13 @@ export function SimplePriceChartPure({
         symbols={symbols}
       />
       <styledEl.ChartFrame>
-        <simpleStyledEl.ChartCanvas $canSelectPrice={metric === 'price' && !!onSelectPrice} ref={chartContainerRef} />
-        {tooltip && !historyStatus ? <SimplePriceChartTooltip data={tooltip} metric={metric} /> : null}
+        <simpleStyledEl.ChartCanvas $canSelectPrice={isSelectingPrice} ref={chartContainerRef} />
+        {isSelectingPrice && !historyStatus ? (
+          <simpleStyledEl.SelectionHint>{t`Click chart to set limit price`}</simpleStyledEl.SelectionHint>
+        ) : null}
+        {tooltip && !historyStatus && !isSelectingPrice ? (
+          <SimplePriceChartTooltip data={tooltip} metric={metric} />
+        ) : null}
         {historyStatus ? (
           <styledEl.OverlayState>
             <PriceChartStatus assetSymbol={activeSymbol?.baseAsset.symbol} kind={historyStatus} />
@@ -401,6 +420,7 @@ function usePriceChartHistory(
   return { data, historyStatus }
 }
 
+// eslint-disable-next-line max-lines-per-function
 function useSimpleChart(
   chartContainerRef: MutableRefObject<HTMLDivElement | null>,
   chartRef: MutableRefObject<IChartApi | null>,
@@ -470,6 +490,11 @@ function useSimpleChart(
     }
 
     const handleCrosshairMove = (event: MouseEventParams<Time>): void => {
+      if (latestOnSelectPriceRef.current) {
+        onTooltipChange(undefined)
+        return
+      }
+
       const price = getCrosshairPrice(event)
       const volumeData = event.seriesData.get(volumeSeries)
       const volume = volumeData && 'value' in volumeData ? volumeData.value : undefined
