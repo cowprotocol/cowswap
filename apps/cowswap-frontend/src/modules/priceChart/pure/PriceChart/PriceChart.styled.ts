@@ -24,10 +24,10 @@ export const Header = styled.div`
 
 export const Heading = styled.div`
   grid-column: 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 24px 24px;
   align-items: flex-start;
-  gap: 12px;
+  gap: 6px;
   text-align: left;
 
   @media (max-width: 600px) {
@@ -38,15 +38,19 @@ export const Heading = styled.div`
 export const MetricControl = styled.div`
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
+  height: 24px;
 `
 
 export const MetricButton = styled.button<{ $isActive: boolean }>`
+  display: flex;
+  align-items: center;
+  min-height: 24px;
   padding: 0;
   border: 0;
   background: transparent;
   color: ${({ $isActive }) => `var(${$isActive ? UI.COLOR_TEXT : UI.COLOR_TEXT_OPACITY_50})`};
-  font-size: 14px;
+  font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   line-height: 1;
   cursor: pointer;
@@ -80,6 +84,7 @@ export const PriceSummary = styled.div`
   align-items: baseline;
   gap: 8px;
   flex-wrap: wrap;
+  min-height: 24px;
 `
 
 export const CurrentPrice = styled.span`

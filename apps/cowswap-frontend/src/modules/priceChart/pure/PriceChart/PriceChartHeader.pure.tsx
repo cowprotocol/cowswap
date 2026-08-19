@@ -68,14 +68,16 @@ export function PriceChartHeader({
             {t`Market Cap`}
           </styledEl.MetricButton>
         </styledEl.MetricControl>
-        {formattedValue !== undefined && change !== undefined ? (
-          <styledEl.PriceSummary>
-            <styledEl.CurrentPrice>{formattedValue}</styledEl.CurrentPrice>
-            <styledEl.PriceChange $isPositive={change >= 0}>
-              {formatPercentageChange(change, i18n.locale)}
-            </styledEl.PriceChange>
-          </styledEl.PriceSummary>
-        ) : null}
+        <styledEl.PriceSummary>
+          {formattedValue !== undefined && change !== undefined ? (
+            <>
+              <styledEl.CurrentPrice>{formattedValue}</styledEl.CurrentPrice>
+              <styledEl.PriceChange $isPositive={change >= 0}>
+                {formatPercentageChange(change, i18n.locale)}
+              </styledEl.PriceChange>
+            </>
+          ) : null}
+        </styledEl.PriceSummary>
       </styledEl.Heading>
       <styledEl.HeaderControls>
         <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
