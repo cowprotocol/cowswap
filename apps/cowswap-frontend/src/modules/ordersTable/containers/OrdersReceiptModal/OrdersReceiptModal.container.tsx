@@ -1,5 +1,6 @@
-import { ReactNode, useLayoutEffect, useRef } from 'react'
+import { ReactNode } from 'react'
 
+import { useLatestNonNullRef } from '@cowprotocol/common-hooks'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,7 +12,6 @@ import { PendingOrdersPrices } from 'modules/orders'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useCloseReceiptModal, useGetAlternativeOrderModalContext, useSelectedOrder } from './OrdersReceiptModal.hooks'
 
@@ -24,16 +24,8 @@ interface OrdersReceiptModalProps {
 export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalProps): ReactNode {
   // TODO: can we get selected order from URL by id?
   const selectedOrder = useSelectedOrder()
-
   // Keep the last order after close so DrawerOrDialog can animate out with content still mounted.
-  const lastOrderRef = useRef<ParsedOrder | null>(null)
-
-  useLayoutEffect(() => {
-    if (selectedOrder) {
-      lastOrderRef.current = selectedOrder
-    }
-  }, [selectedOrder])
-
+  const lastOrderRef = useLatestNonNullRef(selectedOrder)
   const order = selectedOrder ?? lastOrderRef.current
   const isOpen = selectedOrder !== null
   const { chainId } = useWalletInfo()
