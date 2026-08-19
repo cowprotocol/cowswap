@@ -109,7 +109,7 @@ export function OrderSubmittedContent({
             <Trans>New</Trans>
           </Badge>
           <GetNotifiedLink onClick={onGetNotifiedClick}>
-            <Trans>Get notified when your order fills</Trans>
+            <Trans>Get trade alerts</Trans>
           </GetNotifiedLink>
         </GetNotifiedMessage>
       )}
