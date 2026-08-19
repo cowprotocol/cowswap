@@ -3,17 +3,15 @@ import styled from 'styled-components/macro'
 
 import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
+import { OVERLAY_BACKDROP_EFFECT } from '../../styles/mixins'
 import { transition } from '../../utils/animation'
 
 export const Backdrop = styled(BaseDialog.Backdrop)`
-  /* Dim via a translucent fill, 'opacity' hides backdrop-filter. */
-  --backdrop-opacity: 40%;
+  ${OVERLAY_BACKDROP_EFFECT}
 
   position: fixed;
   inset: 0;
   z-index: ${OVERLAY_Z_INDEX.dialogBackdrop};
-  background-color: color-mix(in srgb, var(${UI.MODAL_BACKDROP}) var(--backdrop-opacity), transparent);
-  backdrop-filter: blur(10px);
   transition: ${transition(['opacity'])};
 
   &[data-starting-style],

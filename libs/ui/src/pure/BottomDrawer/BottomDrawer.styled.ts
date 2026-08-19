@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 
 import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
+import { OVERLAY_BACKDROP_EFFECT } from '../../styles/mixins'
 import { transition } from '../../utils/animation'
 
 /** Matches Base UI drawer demos: duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] */
@@ -22,13 +23,13 @@ export const Layer = styled.div`
 `
 
 export const Backdrop = styled(BaseDrawer.Backdrop)`
+  ${OVERLAY_BACKDROP_EFFECT}
+
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: auto;
-  background-color: var(${UI.MODAL_BACKDROP});
-  --backdrop-opacity: 0.4;
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  --backdrop-opacity: calc(var(--overlay-backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
   transition: opacity ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};
 
   &[data-starting-style],
