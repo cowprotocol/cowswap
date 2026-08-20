@@ -32,10 +32,22 @@ export interface PriceChartDatafeedController {
   dispose: () => void
 }
 
+export interface PriceChartExecutionMarker {
+  activeAmount: string
+  activeTokenSymbol: string
+  counterAmount: string
+  counterTokenSymbol: string
+  id: string
+  side: 'buy' | 'sell'
+  timestamp: number
+  title: string
+}
+
 export type PriceChartHistoryStatus = 'loading' | 'empty' | 'error' | null
 
 export interface PriceChartPureProps {
   activeSymbol: PriceChartSymbolDescriptor | undefined
+  executionMarkers: PriceChartExecutionMarker[]
   executionLinePrice?: number | null
   metric: PriceChartMetric
   onSelectMetric: (metric: PriceChartMetric) => void

@@ -109,3 +109,32 @@ export const TooltipTime = styled.time`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   white-space: nowrap;
 `
+
+export const TooltipExecution = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(${UI.COLOR_BORDER});
+`
+
+export const TooltipExecutionSide = styled.span<{ $side: 'buy' | 'sell' }>`
+  flex: 0 0 auto;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: ${({ $side }) => `var(${$side === 'buy' ? UI.COLOR_SUCCESS_BG : UI.COLOR_DANGER_BG})`};
+  color: ${({ $side }) => `var(${$side === 'buy' ? UI.COLOR_SUCCESS_TEXT : UI.COLOR_DANGER_TEXT})`};
+  font-size: 10px;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  letter-spacing: 0.03em;
+  line-height: 1;
+`
+
+export const TooltipExecutionText = styled.span`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
+
+export const TooltipExecutionAmount = styled.span`
+  color: var(${UI.COLOR_TEXT});
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+`

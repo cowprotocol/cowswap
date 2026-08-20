@@ -2,6 +2,10 @@ import { formatLocaleNumber } from '@cowprotocol/common-utils'
 
 import type { PriceChartBar, PriceChartSummary } from './priceChart.types'
 
+export function formatPriceChartAxisValue(value: number, locale: string, minMove: number): string {
+  return formatPriceChartValue(Math.abs(value) < minMove / 2 ? 0 : value, locale)
+}
+
 export function formatPriceChartValue(value: number, locale: string): string {
   const absoluteValue = Math.abs(value)
   const isCompact = absoluteValue >= 1_000_000

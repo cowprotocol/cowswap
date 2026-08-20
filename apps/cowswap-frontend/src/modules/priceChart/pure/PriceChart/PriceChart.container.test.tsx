@@ -9,6 +9,7 @@ import { PriceChart } from './PriceChart.container'
 import { PriceChartPure } from './PriceChart.pure'
 import { SimplePriceChartPure } from './SimplePriceChart.pure'
 
+import { useExecutedOrderChartMarkers } from '../../hooks/useExecutedOrderChartMarkers'
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 import { loadMarketCapSupply } from '../../lib/loadPriceChartHistory.service'
 import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../../lib/priceLimitLine.utils'
@@ -34,6 +35,10 @@ jest.mock('../../hooks/usePriceChartFeatureFlags', () => ({
   usePriceChartFeatureFlags: jest.fn(),
 }))
 
+jest.mock('../../hooks/useExecutedOrderChartMarkers', () => ({
+  useExecutedOrderChartMarkers: jest.fn(),
+}))
+
 jest.mock('../../lib/loadPriceChartHistory.service', () => ({
   loadMarketCapSupply: jest.fn(),
 }))
@@ -53,6 +58,7 @@ jest.mock('../../lib/tradingViewPersistence.utils', () => ({
 }))
 
 const usePriceChartFeatureFlagsMock = usePriceChartFeatureFlags as jest.MockedFunction<typeof usePriceChartFeatureFlags>
+const useExecutedOrderChartMarkersMock = jest.mocked(useExecutedOrderChartMarkers)
 const useUsdPriceMock = useUsdPrice as jest.MockedFunction<typeof useUsdPrice>
 const createSwapChartSymbolsMock = jest.mocked(createSwapChartSymbols)
 const getActivePriceLimitLinePriceMock = jest.mocked(getActivePriceLimitLinePrice)
@@ -65,6 +71,7 @@ const SYMBOLS = [createSymbol('sell', '0xsell'), createSymbol('buy', '0xbuy')]
 
 beforeEach(() => {
   createSwapChartSymbolsMock.mockReturnValue([])
+  useExecutedOrderChartMarkersMock.mockReturnValue([])
 })
 
 describe('PriceChart feature gates', () => {
@@ -131,6 +138,31 @@ describe('PriceChart reference lines', () => {
       { id: 'trade:test', label: 'Limit', price: 2, variant: 'trade' },
     ])
     expect(loadMarketCapSupplyMock).not.toHaveBeenCalled()
+  })
+
+  it('shows execution markers only in Price mode', async () => {
+    const markers = [
+      {
+        activeAmount: '2',
+        activeTokenSymbol: 'WETH',
+        counterAmount: '4,000',
+        counterTokenSymbol: 'USDC',
+        id: 'execution:1',
+        side: 'sell' as const,
+        timestamp: 1,
+        title: 'Sold 2 WETH for 4,000 USDC',
+      },
+    ]
+    useExecutedOrderChartMarkersMock.mockReturnValue(markers)
+    renderChart()
+
+    expect(getLatestProps(simplePriceChartPureMock).executionMarkers).toBe(markers)
+
+    act(() => getLatestProps(simplePriceChartPureMock).onSelectMetric('marketCap'))
+    await waitFor(() => expect(getLatestProps(simplePriceChartPureMock).executionMarkers).toEqual([]))
+
+    act(() => getLatestProps(simplePriceChartPureMock).onSelectMetric('price'))
+    expect(getLatestProps(simplePriceChartPureMock).executionMarkers).toBe(markers)
   })
 
   it('uses the label for the active chart token', () => {

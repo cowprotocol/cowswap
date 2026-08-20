@@ -9,6 +9,7 @@ import { useUsdPrice } from 'modules/usdAmount'
 import { PriceChartPure } from './PriceChart.pure'
 import { SimplePriceChartPure } from './SimplePriceChart.pure'
 
+import { useExecutedOrderChartMarkers } from '../../hooks/useExecutedOrderChartMarkers'
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 import { loadMarketCapSupply } from '../../lib/loadPriceChartHistory.service'
 import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../../lib/priceLimitLine.utils'
@@ -68,6 +69,7 @@ function EnabledPriceChart({
     () => symbols.find((symbol) => symbol.selection === selectedSelection) || symbols[0],
     [selectedSelection, symbols],
   )
+  const executionMarkers = useExecutedOrderChartMarkers({ activeSymbol, inputCurrency, outputCurrency })
   const activeAssetKey = activeSymbol
     ? `${activeSymbol.baseAsset.chainId}:${getAddressKey(activeSymbol.baseAsset.address)}`
     : null
@@ -150,6 +152,7 @@ function EnabledPriceChart({
 
   const chartProps = {
     activeSymbol,
+    executionMarkers: metric === 'price' ? executionMarkers : [],
     executionLinePrice: null,
     metric,
     onSelectMetric: setMetric,

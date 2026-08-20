@@ -18,6 +18,10 @@ import {
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
+import {
+  attachExecutionMarkersToBars,
+  type AttachedPriceChartExecutionMarker,
+} from '../../lib/priceChartExecutionMarker.utils'
 import { getPriceChartReferenceLineAppearance } from '../../lib/priceChartReferenceLine.utils'
 import { hasPriceChartVolume, syncTradingViewVolumeStudy } from '../../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
@@ -32,12 +36,18 @@ import {
 import { createPriceChartDatafeed } from '../../lib/tradingViewDatafeed.service'
 import { loadSavedPriceChartState, savePriceChartState } from '../../lib/tradingViewPersistence.utils'
 
-import type { PriceChartSummary } from '../../lib/priceChart.types'
+import type { IExecutionLineAdapter } from '../../lib/charting_library/charting_library'
+import type { PriceChartBar, PriceChartSummary } from '../../lib/priceChart.types'
 import type {
   PriceChartHistoryStatus,
   PriceChartPureProps,
   PriceChartSymbolDescriptor,
 } from '../../lib/tradingView.types'
+
+export interface ExecutionMarkerEntity {
+  adapter: IExecutionLineAdapter
+  signature: string
+}
 
 export interface HorizontalLineEntity {
   entityId: PriceChartShapeId
@@ -55,6 +65,7 @@ type PriceChartShapeId = NonNullable<ReturnType<ReturnType<IChartingLibraryWidge
 
 export function PriceChartPure({
   activeSymbol,
+  executionMarkers,
   metric,
   onSelectMetric,
   onSelectPrice,
@@ -71,12 +82,18 @@ export function PriceChartPure({
   const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
   const [priceSummary, setPriceSummary] = useState<PriceChartSummary>()
   const [hasVolume, setHasVolume] = useState<boolean>()
+  const [historyBars, setHistoryBars] = useState<PriceChartBar[]>([])
   const activeTicker = activeSymbol?.ticker || ''
+  const attachedExecutionMarkers = useMemo(
+    () => attachExecutionMarkersToBars(executionMarkers, historyBars),
+    [executionMarkers, historyBars],
+  )
   const datafeedController = useMemo(
     () =>
       createPriceChartDatafeed({
         metric,
         onHistoryLoaded: (bars) => {
+          setHistoryBars(bars)
           setPriceSummary(getPriceChartSummary(bars))
           setHasVolume(hasPriceChartVolume(bars))
         },
@@ -97,6 +114,7 @@ export function PriceChartPure({
     setHistoryStatus(null)
     setPriceSummary(undefined)
     setHasVolume(undefined)
+    setHistoryBars([])
   }, [activeTicker, metric])
 
   useTradingViewWidget(
@@ -106,6 +124,7 @@ export function PriceChartPure({
     darkMode,
     hasVolume,
     referenceLines,
+    attachedExecutionMarkers,
     onSelectPrice,
     symbols,
     metric,
@@ -138,6 +157,66 @@ export function PriceChartPure({
       </styledEl.ChartFrame>
     </styledEl.PanelWrapper>
   )
+}
+
+export function syncExecutionMarkers({
+  darkMode,
+  entities,
+  markers,
+  ticker,
+  widget,
+}: {
+  darkMode: boolean
+  entities: Map<string, ExecutionMarkerEntity>
+  markers: AttachedPriceChartExecutionMarker[]
+  ticker: string
+  widget: IChartingLibraryWidget | null
+}): void {
+  if (!widget) return
+
+  const activeIds = new Set(markers.map((marker) => marker.id))
+
+  entities.forEach(({ adapter }, id) => {
+    if (activeIds.has(id)) return
+
+    adapter.remove()
+    entities.delete(id)
+  })
+
+  markers.forEach((marker) => {
+    const color =
+      marker.side === 'buy'
+        ? getCssVar(UI.COLOR_SUCCESS, darkMode ? '#4ade80' : '#16a34a')
+        : getCssVar(UI.COLOR_DANGER, darkMode ? '#f87171' : '#dc2626')
+    const signature = [
+      ticker,
+      marker.barPrice,
+      marker.barTimestamp,
+      marker.side,
+      marker.stackIndex,
+      marker.title,
+      color,
+    ].join(':')
+    const existing = entities.get(marker.id)
+
+    if (existing?.signature === signature) return
+    if (existing) existing.adapter.remove()
+
+    const adapter = widget
+      .activeChart()
+      .createExecutionShape({ disableUndo: true })
+      .setArrowColor(color)
+      .setArrowHeight(12)
+      .setArrowSpacing(4 + marker.stackIndex * 10)
+      .setDirection(marker.side)
+      .setPrice(marker.barPrice)
+      .setText('')
+      .setTextColor(color)
+      .setTime(marker.barTimestamp)
+      .setTooltip(marker.title)
+
+    entities.set(marker.id, { adapter, signature })
+  })
 }
 
 export function syncHorizontalLines({ entities, referenceLines, ticker, widget }: SyncHorizontalLinesParams): void {
@@ -255,6 +334,11 @@ function isDarkColor(hexOrRgb: string): boolean {
   return true
 }
 
+function removeExecutionMarkers(entities: Map<string, ExecutionMarkerEntity>): void {
+  entities.forEach(({ adapter }) => adapter.remove())
+  entities.clear()
+}
+
 function removeHorizontalLines(
   widget: IChartingLibraryWidget | null,
   entities: Map<string, HorizontalLineEntity>,
@@ -273,6 +357,7 @@ function useTradingViewWidget(
   darkMode: boolean,
   hasVolume: boolean | undefined,
   referenceLines: PriceChartPureProps['referenceLines'],
+  executionMarkers: AttachedPriceChartExecutionMarker[],
   onSelectPrice: ((price: number) => void) | undefined,
   symbols: PriceChartSymbolDescriptor[],
   metric: PriceChartPureProps['metric'],
@@ -282,12 +367,17 @@ function useTradingViewWidget(
   const initialTickerRef = useRef(activeTicker)
   const isWidgetReadyRef = useRef(false)
   const referenceLineEntitiesRef = useRef<Map<string, HorizontalLineEntity>>(new Map())
+  const executionMarkerEntitiesRef = useRef<Map<string, ExecutionMarkerEntity>>(new Map())
   const latestReferenceLinesRef = useRef(referenceLines)
+  const latestExecutionMarkersRef = useRef(executionMarkers)
+  const latestDarkModeRef = useRef(darkMode)
   const latestCrosshairPriceRef = useRef<number | null>(null)
   const latestOnSelectPriceRef = useRef<typeof onSelectPrice>(onSelectPrice)
 
   initialTickerRef.current = activeTicker
   latestReferenceLinesRef.current = referenceLines
+  latestExecutionMarkersRef.current = executionMarkers
+  latestDarkModeRef.current = darkMode
   latestOnSelectPriceRef.current = onSelectPrice
 
   useEffect(() => {
@@ -299,6 +389,7 @@ function useTradingViewWidget(
     let isCancelled = false
     let isCrosshairSubscribed = false
     const referenceLineEntities = referenceLineEntitiesRef.current
+    const executionMarkerEntities = executionMarkerEntitiesRef.current
     const handleAutoSaveNeeded = (): void => {
       widget?.save((state) => {
         savePriceChartState(state)
@@ -392,6 +483,13 @@ function useTradingViewWidget(
             ticker: nextTicker,
             widget,
           })
+          syncExecutionMarkers({
+            darkMode: latestDarkModeRef.current,
+            entities: executionMarkerEntities,
+            markers: latestExecutionMarkersRef.current,
+            ticker: nextTicker,
+            widget,
+          })
         })
       })
 
@@ -407,6 +505,7 @@ function useTradingViewWidget(
         const wasWidgetReady = isWidgetReadyRef.current
         isWidgetReadyRef.current = false
         removeHorizontalLines(widget, referenceLineEntities)
+        removeExecutionMarkers(executionMarkerEntities)
         if (widget && isCrosshairSubscribed) {
           widget.activeChart().crossHairMoved().unsubscribe(null, handleCrossHairMoved)
         }
@@ -441,6 +540,13 @@ function useTradingViewWidget(
           ticker: activeTicker,
           widget,
         })
+        syncExecutionMarkers({
+          darkMode,
+          entities: executionMarkerEntitiesRef.current,
+          markers: executionMarkers,
+          ticker: activeTicker,
+          widget,
+        })
       })
       return
     }
@@ -451,7 +557,14 @@ function useTradingViewWidget(
       ticker: activeTicker,
       widget,
     })
-  }, [activeTicker, referenceLines])
+    syncExecutionMarkers({
+      darkMode,
+      entities: executionMarkerEntitiesRef.current,
+      markers: executionMarkers,
+      ticker: activeTicker,
+      widget,
+    })
+  }, [activeTicker, darkMode, executionMarkers, referenceLines])
 
   useEffect(() => {
     const widget = widgetRef.current
@@ -465,6 +578,13 @@ function useTradingViewWidget(
       syncHorizontalLines({
         entities: referenceLineEntitiesRef.current,
         referenceLines: latestReferenceLinesRef.current,
+        ticker: activeTicker,
+        widget,
+      })
+      syncExecutionMarkers({
+        darkMode,
+        entities: executionMarkerEntitiesRef.current,
+        markers: latestExecutionMarkersRef.current,
         ticker: activeTicker,
         widget,
       })

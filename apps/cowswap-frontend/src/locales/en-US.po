@@ -386,6 +386,10 @@ msgstr "{symbolName} orders require a minimum transaction expiration time thresh
 msgid "You've been referred - here's your reward"
 msgstr "You've been referred - here's your reward"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "SELL"
+msgstr "SELL"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "From network"
 msgstr "From network"
@@ -1063,6 +1067,10 @@ msgstr "Enable Hooks"
 msgid "Seamlessly swap your tokens into CoW AMM pools"
 msgstr "Seamlessly swap your tokens into CoW AMM pools"
 
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
+msgid "Protection"
+msgstr "Protection"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "Overview"
@@ -1587,6 +1595,14 @@ msgstr "Unsupported wallet"
 msgid "Expanded results from inactive Token Lists"
 msgstr "Expanded results from inactive Token Lists"
 
+#. placeholder {0}: execution.activeAmount
+#. placeholder {1}: execution.activeTokenSymbol
+#. placeholder {2}: execution.counterAmount
+#. placeholder {3}: execution.counterTokenSymbol
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "<0>{0}</0> {1} for <1>{2}</1> {3}"
+msgstr "<0>{0}</0> {1} for <1>{2}</1> {3}"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "No hooks match your search."
 msgstr "No hooks match your search."
@@ -1606,6 +1622,10 @@ msgstr "Try adjusting your search term or filters"
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Begin with TWAP Today!"
 msgstr "Begin with TWAP Today!"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "Click chart to set limit price"
+msgstr "Click chart to set limit price"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "Gas-free"
@@ -1766,6 +1786,10 @@ msgstr "1/2 Confirm funds recovering"
 #: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
 msgid "Price impact due to current liquidity levels and estimated swap fees and costs"
 msgstr "Price impact due to current liquidity levels and estimated swap fees and costs"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -3892,6 +3916,10 @@ msgstr "Switch to Ethereum"
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 msgstr "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "BUY"
+msgstr "BUY"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
 msgid "safeBundleFlowContext is not set!"
 msgstr "safeBundleFlowContext is not set!"
@@ -3972,6 +4000,10 @@ msgstr "Couldn't verify {accountProxyLabel}, please try later"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Creation time"
 msgstr "Creation time"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Unfillable · {label}"
+msgstr "Unfillable · {label}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Try adjusting your search term"
@@ -4417,6 +4449,10 @@ msgstr "This could have happened due to the lack of internet or the release of a
 #~ msgid "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
 #~ msgstr "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
+msgid "Total supply for Market Cap"
+msgstr "Total supply for Market Cap"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "No open orders"
 #~ msgstr "No open orders"
@@ -4577,6 +4613,11 @@ msgstr "This contract is deployed per account, with that account becoming the si
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Request cancellations"
 msgstr "Request cancellations"
+
+#. placeholder {0}: order.inputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Sell {formattedSellAmount} {0}"
+msgstr "Sell {formattedSellAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
@@ -5432,6 +5473,11 @@ msgstr "Advanced price chart"
 msgid "Swap with"
 msgstr "Swap with"
 
+#. placeholder {0}: order.outputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Buy {formattedBuyAmount} {0}"
+msgstr "Buy {formattedBuyAmount} {0}"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Current network fees"
 msgstr "Current network fees"
@@ -5564,6 +5610,10 @@ msgstr "Your wallet is eligible for rewards. After your first trade, the referra
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Update Pre-hook"
 msgstr "Update Pre-hook"
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+msgstr "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Governance"
@@ -6803,6 +6853,10 @@ msgstr "Rewards hub - My Rewards"
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 #~ msgid "Swaps just got smarter"
 #~ msgstr "Swaps just got smarter"
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+msgstr "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -8278,6 +8332,7 @@ msgstr "Loading"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
+#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit"
 msgstr "Limit"
 

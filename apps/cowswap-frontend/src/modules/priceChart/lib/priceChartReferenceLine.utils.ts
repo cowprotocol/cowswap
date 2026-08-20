@@ -14,8 +14,9 @@ export function getPriceChartReferenceLineAppearance(
 ): PriceChartReferenceLineAppearance {
   if (variant === 'trade') {
     return {
-      colorFallback: '#16a34a',
-      colorToken: UI.COLOR_SUCCESS,
+      colorFallback: 'rgba(67, 180, 69, 1)',
+      // colorToken: '--cow-heeey',
+      colorToken: UI.COLOR_WARNING,
       lineStyle: 1,
       lineWidth: 2,
     }
@@ -23,7 +24,7 @@ export function getPriceChartReferenceLineAppearance(
 
   if (variant === 'unfillable-order') {
     return {
-      colorFallback: 'rgba(17, 24, 39, 0.5)',
+      colorFallback: 'rgba(240, 24, 39, 0.6)',
       colorToken: UI.COLOR_TEXT_OPACITY_50,
       lineStyle: 1,
       lineWidth: 1,
@@ -31,8 +32,8 @@ export function getPriceChartReferenceLineAppearance(
   }
 
   return {
-    colorFallback: 'rgba(17, 24, 39, 0.7)',
-    colorToken: UI.COLOR_TEXT_OPACITY_70,
+    colorFallback: 'rgba(117, 124, 139, 1)',
+    colorToken: '--cow-heeey',
     lineStyle: 1,
     lineWidth: 1,
   }

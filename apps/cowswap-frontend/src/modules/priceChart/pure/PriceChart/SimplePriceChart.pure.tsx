@@ -3,7 +3,7 @@ import { MutableRefObject, ReactNode, useEffect, useMemo, useRef, useState } fro
 import { normalizeError } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 
-import { useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import {
   type AutoscaleInfoProvider,
   createChart,
@@ -13,6 +13,7 @@ import {
   IPriceLine,
   ISeriesApi,
   MouseEventParams,
+  SeriesMarker,
   Time,
   UTCTimestamp,
 } from 'lightweight-charts'
@@ -27,9 +28,13 @@ import * as simpleStyledEl from './SimplePriceChart.styled'
 
 import { logPriceChart } from '../../api'
 import { loadPriceChartHistory, toMarketCapBars } from '../../lib/loadPriceChartHistory.service'
+import {
+  attachExecutionMarkersToBars,
+  type AttachedPriceChartExecutionMarker,
+} from '../../lib/priceChartExecutionMarker.utils'
 import { getPriceChartReferenceLineAppearance } from '../../lib/priceChartReferenceLine.utils'
 import { mapPriceChartBarsToVolumeData } from '../../lib/priceChartVolume.utils'
-import { formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
+import { formatPriceChartAxisValue, formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
 import {
   getSimplePriceChartPeriodConfig,
   getSimplePriceChartPriceFormat,
@@ -51,10 +56,12 @@ import type {
 const DEFAULT_PERIOD: SimplePriceChartPeriod = '1D'
 const TOOLTIP_HEIGHT = 88
 const TOOLTIP_HEIGHT_WITH_VOLUME = 115
+const TOOLTIP_EXECUTION_HEIGHT = 34
 const TOOLTIP_OFFSET = 12
-const TOOLTIP_WIDTH = 240
+const TOOLTIP_WIDTH = 280
 
 export interface SimplePriceChartTooltipData {
+  executions: AttachedPriceChartExecutionMarker[]
   placement: 'left' | 'right'
   price: number
   time: number
@@ -93,11 +100,28 @@ interface SimplePriceHistory {
   historyStatus: PriceChartHistoryStatus
 }
 
+export function getSimpleSeriesMarkers(
+  markers: AttachedPriceChartExecutionMarker[],
+  darkMode: boolean,
+): SeriesMarker<Time>[] {
+  return markers.map((marker) => ({
+    color:
+      marker.side === 'buy'
+        ? getCssVar(UI.COLOR_SUCCESS, darkMode ? '#4ade80' : '#16a34a')
+        : getCssVar(UI.COLOR_DANGER, darkMode ? '#f87171' : '#dc2626'),
+    id: marker.id,
+    position: marker.side === 'buy' ? 'belowBar' : 'aboveBar',
+    shape: marker.side === 'buy' ? 'arrowUp' : 'arrowDown',
+    time: marker.barTimestamp as UTCTimestamp,
+  }))
+}
+
 // Adapted from Uniswap's GPL-3.0-or-later PriceChartModel and ChartModelCore.
 // Source: https://github.com/Uniswap/interface/tree/main/apps/web/src/components/Charts
 // eslint-disable-next-line max-lines-per-function
 export function SimplePriceChartPure({
   activeSymbol,
+  executionMarkers,
   metric,
   onSelectMetric,
   onSelectPrice,
@@ -120,6 +144,11 @@ export function SimplePriceChartPure({
   const [chartType, setChartType] = useState<SimplePriceChartType>('line')
   const [tooltip, setTooltip] = useState<SimplePriceChartTooltipData>()
   const { data, historyStatus } = usePriceChartHistory(activeSymbol, period, metric, supplyBasis)
+  const attachedExecutionMarkers = useMemo(
+    () => attachExecutionMarkersToBars(executionMarkers, data),
+    [data, executionMarkers],
+  )
+  const latestExecutionMarkersRef = useRef(attachedExecutionMarkers)
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
   const isSelectingPrice = !!onSelectPrice
 
@@ -131,6 +160,10 @@ export function SimplePriceChartPure({
     latestOnSelectPriceRef.current = onSelectPrice
   }, [onSelectPrice])
 
+  useEffect(() => {
+    latestExecutionMarkersRef.current = attachedExecutionMarkers
+  }, [attachedExecutionMarkers])
+
   useSimpleChart(
     chartContainerRef,
     chartRef,
@@ -139,6 +172,7 @@ export function SimplePriceChartPure({
     volumeSeriesRef,
     priceLinesRef,
     latestOnSelectPriceRef,
+    latestExecutionMarkersRef,
     setTooltip,
     chartType,
     darkMode,
@@ -162,9 +196,17 @@ export function SimplePriceChartPure({
   useEffect(() => {
     const priceFormat = getSimplePriceChartPriceFormat(data)
 
+    chartRef.current?.applyOptions({
+      localization: {
+        locale: i18n.locale,
+        priceFormatter: (value: number) => formatPriceChartAxisValue(value, i18n.locale, priceFormat.minMove),
+      },
+    })
+
     if (chartType === 'line') {
       areaSeriesRef.current?.applyOptions({ priceFormat })
       areaSeriesRef.current?.setData(data.map((bar) => ({ time: bar.timestamp as UTCTimestamp, value: bar.close })))
+      areaSeriesRef.current?.setMarkers(getSimpleSeriesMarkers(attachedExecutionMarkers, darkMode))
     } else {
       candlestickSeriesRef.current?.applyOptions({ priceFormat })
       candlestickSeriesRef.current?.setData(
@@ -176,12 +218,13 @@ export function SimplePriceChartPure({
           time: bar.timestamp as UTCTimestamp,
         })),
       )
+      candlestickSeriesRef.current?.setMarkers(getSimpleSeriesMarkers(attachedExecutionMarkers, darkMode))
     }
 
     volumeSeriesRef.current?.setData(mapPriceChartBarsToVolumeData(data))
 
     chartRef.current?.timeScale().fitContent()
-  }, [chartType, data])
+  }, [attachedExecutionMarkers, chartType, darkMode, data, i18n.locale])
 
   useEffect(() => {
     const series = chartType === 'line' ? areaSeriesRef.current : candlestickSeriesRef.current
@@ -267,6 +310,21 @@ export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartToolti
       <simpleStyledEl.TooltipTime>
         {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
       </simpleStyledEl.TooltipTime>
+      {data.executions.map((execution) => (
+        <simpleStyledEl.TooltipExecution key={execution.id}>
+          <simpleStyledEl.TooltipExecutionSide $side={execution.side}>
+            {execution.side === 'buy' ? t`BUY` : t`SELL`}
+          </simpleStyledEl.TooltipExecutionSide>
+          <simpleStyledEl.TooltipExecutionText>
+            <Trans>
+              <simpleStyledEl.TooltipExecutionAmount>{execution.activeAmount}</simpleStyledEl.TooltipExecutionAmount>{' '}
+              {execution.activeTokenSymbol} for{' '}
+              <simpleStyledEl.TooltipExecutionAmount>{execution.counterAmount}</simpleStyledEl.TooltipExecutionAmount>{' '}
+              {execution.counterTokenSymbol}
+            </Trans>
+          </simpleStyledEl.TooltipExecutionText>
+        </simpleStyledEl.TooltipExecution>
+      ))}
     </simpleStyledEl.Tooltip>
   )
 }
@@ -380,11 +438,14 @@ function getSimplePriceChartTooltipData(
   price: number,
   time: number,
   volume?: number,
+  executions: AttachedPriceChartExecutionMarker[] = [],
 ): SimplePriceChartTooltipData {
   const placeOnLeft = point.x + TOOLTIP_OFFSET + TOOLTIP_WIDTH > container.clientWidth
-  const halfTooltipHeight = (volume === undefined ? TOOLTIP_HEIGHT : TOOLTIP_HEIGHT_WITH_VOLUME) / 2
+  const baseHeight = volume === undefined ? TOOLTIP_HEIGHT : TOOLTIP_HEIGHT_WITH_VOLUME
+  const halfTooltipHeight = (baseHeight + executions.length * TOOLTIP_EXECUTION_HEIGHT) / 2
 
   return {
+    executions,
     placement: placeOnLeft ? 'left' : 'right',
     price,
     time,
@@ -496,6 +557,7 @@ function useSimpleChart(
   volumeSeriesRef: MutableRefObject<ISeriesApi<'Histogram'> | null>,
   priceLinesRef: MutableRefObject<Map<string, IPriceLine>>,
   latestOnSelectPriceRef: MutableRefObject<((price: number) => void) | undefined>,
+  latestExecutionMarkersRef: MutableRefObject<AttachedPriceChartExecutionMarker[]>,
   onTooltipChange: (tooltip: SimplePriceChartTooltipData | undefined) => void,
   chartType: SimplePriceChartType,
   darkMode: boolean,
@@ -572,7 +634,9 @@ function useSimpleChart(
         return
       }
 
-      onTooltipChange(getSimplePriceChartTooltipData(event.point, container, price, event.time, volume))
+      const executions = latestExecutionMarkersRef.current.filter((marker) => marker.barTimestamp === event.time)
+
+      onTooltipChange(getSimplePriceChartTooltipData(event.point, container, price, event.time, volume, executions))
     }
 
     chart.subscribeClick(handleClick)
@@ -598,6 +662,7 @@ function useSimpleChart(
     chartType,
     darkMode,
     latestOnSelectPriceRef,
+    latestExecutionMarkersRef,
     locale,
     metric,
     onTooltipChange,
