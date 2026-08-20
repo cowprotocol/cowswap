@@ -451,6 +451,10 @@ msgstr "<0>By adding this list you are implicitly trusting that the data is corr
 #~ msgid "As soon as anything important or interesting happens, we will definitely let you know."
 #~ msgstr "As soon as anything important or interesting happens, we will definitely let you know."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Thanks for swapping"
+msgstr "Thanks for swapping"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "SWAP order"
 msgstr "SWAP order"
@@ -646,10 +650,6 @@ msgstr "Free"
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 #~ msgid "Blocked Address"
 #~ msgstr "Blocked Address"
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
-msgid "Thanks for swapping"
-msgstr "Thanks for swapping"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.pure.tsx
 msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
