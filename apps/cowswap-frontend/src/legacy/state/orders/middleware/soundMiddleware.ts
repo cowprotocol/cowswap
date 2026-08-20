@@ -1,12 +1,17 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
 
+import { UiOrderType } from '@cowprotocol/types'
+
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundReceipt, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { AppState } from '../../index'
-import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
+import { AddPendingOrderParams, BatchOrdersUpdateParams, FulfillOrdersBatchParams, UpdateOrderParams } from '../actions'
 import * as OrderActions from '../actions'
 import { getOrderByIdFromState } from '../helpers'
 import { OrdersState } from '../reducer'
@@ -25,7 +30,6 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
-const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -55,8 +59,8 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (_shouldPlayPendingOrderSound(action.payload)) {
       cowSound = getCowSoundSend()
     }
-  } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+  } else if (isBatchFulfillOrderAction(action)) {
+    cowSound = _shouldPlayReceiptSound(action.payload.orders) ? getCowSoundReceipt() : getCowSoundSuccess()
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
       cowSound = getCowSoundError()
@@ -103,4 +107,8 @@ function _shouldPlayExpiredOrderSound(
 function _shouldPlayPendingOrderSound(payload: AddPendingOrderParams): boolean {
   // Only play COW sound if added pending order is not hidden
   return !payload.order.isHidden
+}
+
+function _shouldPlayReceiptSound(orders: FulfillOrdersBatchParams['orders']): boolean {
+  return orders.some((order) => getUiOrderType(order) === UiOrderType.SWAP && !getIsBridgeOrder(order))
 }

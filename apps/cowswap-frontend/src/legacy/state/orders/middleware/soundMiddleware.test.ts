@@ -1,7 +1,12 @@
+import { UiOrderType } from '@cowprotocol/types'
+
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundReceipt, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { soundMiddleware } from './soundMiddleware'
 
@@ -12,6 +17,15 @@ const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
 jest.mock('modules/sounds')
+jest.mock('common/utils/getIsBridgeOrder')
+jest.mock('utils/orderUtils/getUiOrderType')
+
+const getIsBridgeOrderMock = jest.mocked(getIsBridgeOrder)
+const getUiOrderTypeMock = jest.mocked(getUiOrderType)
+const receiptPlayMock = jest.fn().mockResolvedValue(undefined)
+const successPlayMock = jest.fn().mockResolvedValue(undefined)
+const receiptSoundMock = { play: receiptPlayMock } as unknown as HTMLAudioElement
+const successSoundMock = { play: successPlayMock } as unknown as HTMLAudioElement
 
 // TODO: Break down this large function into smaller functions
 
@@ -27,6 +41,10 @@ describe('soundMiddleware', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
     jest.clearAllMocks()
+    getIsBridgeOrderMock.mockReturnValue(false)
+    getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
+    jest.mocked(getCowSoundReceipt).mockReturnValue(receiptSoundMock)
+    jest.mocked(getCowSoundSuccess).mockReturnValue(successSoundMock)
   })
 
   describe('batch order action', () => {
@@ -92,15 +110,44 @@ describe('soundMiddleware', () => {
     })
   })
   describe('fulfill order action', () => {
-    it('should play a sound', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, orders: ['some data'] })
+    it('plays the receipt sound for a fulfilled, non-bridge swap', () => {
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{}] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
+      expect(getCowSoundReceipt).toHaveBeenCalledTimes(1)
+      expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
+      expect(receiptPlayMock).toHaveBeenCalledTimes(1)
+      expect(successPlayMock).toHaveBeenCalledTimes(0)
       expect(getCowSoundError).toHaveBeenCalledTimes(0)
       expect(getCowSoundSend).toHaveBeenCalledTimes(0)
+    })
+
+    it('keeps the existing success sound for a bridge swap leg', () => {
+      getIsBridgeOrderMock.mockReturnValue(true)
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{}] })
+      when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
+
+      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(getCowSoundReceipt).toHaveBeenCalledTimes(0)
+      expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
+      expect(receiptPlayMock).toHaveBeenCalledTimes(0)
+      expect(successPlayMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('keeps the existing success sound for non-swap orders', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{}] })
+      when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
+
+      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(getCowSoundReceipt).toHaveBeenCalledTimes(0)
+      expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
+      expect(receiptPlayMock).toHaveBeenCalledTimes(0)
+      expect(successPlayMock).toHaveBeenCalledTimes(1)
     })
   })
   describe('batch expire order action', () => {

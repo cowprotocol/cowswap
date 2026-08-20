@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactNode, useRef } from 'react'
+import { useCallback, useEffect, useState, ReactNode, useRef } from 'react'
 
 import {
   COW_CDN,
@@ -17,9 +17,10 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { Order } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
+import { getCowSoundReceipt } from 'modules/sounds'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
@@ -30,7 +31,14 @@ import { OrderProgressBar } from './index'
 
 const order = {
   ...getOrderMock(SupportedChainId.MAINNET),
-  apiAdditionalInfo: { executedBuyAmount: '1000000000000000000000', executedSellAmount: '5000000000000000000' },
+  status: OrderStatus.FULFILLED,
+  creationTime: '2026-08-19T12:59:50.000Z',
+  fulfillmentTime: '2026-08-19T13:00:00.000Z',
+  apiAdditionalInfo: {
+    executedBuyAmount: '1000000000',
+    executedSellAmount: '5000000000000000000',
+    executedSellAmountBeforeFees: '5000000000000000000',
+  },
 } as Order
 
 const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
@@ -115,7 +123,7 @@ const defaultProps: OrderProgressBarProps = {
   totalSolvers: 52,
   surplusData: {
     surplusFiatValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '10000000'),
-    surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '1000000000000000000'),
+    surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '10000000'),
     surplusToken: order.outputToken,
     surplusPercent: '10',
     showFiatValue: true,
@@ -126,17 +134,47 @@ const defaultProps: OrderProgressBarProps = {
 }
 
 const Wrapper = styled.div`
-  width: 560px;
+  width: min(560px, 100%);
   margin: 0 auto;
   background: var(${UI.COLOR_PAPER});
 `
 
 const NarrowWrapper = styled(Wrapper)`
-  width: 375px;
+  width: min(375px, 100%);
 `
 
 const WideWrapper = styled(Wrapper)`
-  width: 720px;
+  width: min(720px, 100%);
+`
+
+const ReceiptPreviewControls = styled.div`
+  position: fixed;
+  z-index: 20;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+
+  > button {
+    padding: 8px 14px;
+    color: var(${UI.COLOR_NEUTRAL_100});
+    background: var(${UI.COLOR_NEUTRAL_0});
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 `
 
 const cloneTokenWithSymbol = (token: Token | TokenWithLogo, symbol: string): TokenWithLogo => {
@@ -156,6 +194,42 @@ const orderWithLongSymbols: Order = {
   ...order,
   inputToken: cloneTokenWithSymbol(order.inputToken, 'VERY-LONG-ALGO-TOKEN-SYMBOL'),
   outputToken: cloneTokenWithSymbol(order.outputToken, 'WRAPPED-SUPER-STABLECOIN-WITH-AN-EXTRA-SUFFIX'),
+}
+
+function FinishedReceiptFixture(): ReactNode {
+  const [run, setRun] = useState(0)
+  const [playbackError, setPlaybackError] = useState<string | null>(null)
+
+  const playReceiptSound = useCallback((): void => {
+    const sound = getCowSoundReceipt()
+
+    setPlaybackError(null)
+    sound.currentTime = 0
+    sound.play().catch(() => setPlaybackError('Browser blocked audio playback'))
+  }, [])
+
+  useEffect(() => {
+    playReceiptSound()
+  }, [playReceiptSound])
+
+  const replayReceipt = (): void => {
+    setRun((value) => value + 1)
+    playReceiptSound()
+  }
+
+  return (
+    <Wrapper>
+      <ReceiptPreviewControls>
+        <button type="button" onClick={replayReceipt}>
+          Replay
+        </button>
+        <span role="status" aria-live="polite">
+          {playbackError}
+        </span>
+      </ReceiptPreviewControls>
+      <OrderProgressBar key={run} {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
+    </Wrapper>
+  )
 }
 
 function SolvingFixture(): ReactNode {
@@ -323,11 +397,7 @@ const Fixtures = {
       <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SUBMISSION_FAILED} />
     </Wrapper>
   ),
-  '4-finished': () => (
-    <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
-    </Wrapper>
-  ),
+  '4-finished': () => <FinishedReceiptFixture />,
   '4-finished-customReceiver': () => (
     <Wrapper>
       <OrderProgressBar

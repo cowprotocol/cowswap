@@ -11,12 +11,13 @@ import { cowSwapStore } from 'legacy/state'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 type Sounds = Record<SoundType, string>
-type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type SoundType = 'SEND' | 'SUCCESS' | 'RECEIPT' | 'ERROR'
 type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
 
 const DEFAULT_COW_SOUNDS: Sounds = {
   SEND: '/audio/send.mp3',
   SUCCESS: '/audio/success.mp3',
+  RECEIPT: '/audio/receipt-printer.wav',
   ERROR: '/audio/error.mp3',
 }
 
@@ -33,6 +34,7 @@ const HALLOWEEN_SOUNDS: Partial<Sounds> = {
 const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   SEND: 'postOrder',
   SUCCESS: 'orderExecuted',
+  RECEIPT: 'orderExecuted',
   ERROR: 'orderError',
 }
 
@@ -114,6 +116,10 @@ export function getCowSoundError(): HTMLAudioElement {
   return getAudio('ERROR')
 }
 
+export function getCowSoundReceipt(): HTMLAudioElement {
+  return getAudio('RECEIPT')
+}
+
 export function getCowSoundSend(): HTMLAudioElement {
   return getAudio('SEND')
 }
@@ -182,4 +188,5 @@ function getWidgetSoundUrl(type: SoundType): string | null | undefined {
 
 export const __soundTestUtils = {
   getThemeBasedSound,
+  getWidgetSoundUrl,
 } as const

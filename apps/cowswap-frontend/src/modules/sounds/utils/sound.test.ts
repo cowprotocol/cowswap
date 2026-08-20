@@ -107,6 +107,12 @@ describe('getThemeBasedSound', () => {
     expect(getThemeBasedSound('SUCCESS')).toBe('/audio/success.mp3')
   })
 
+  it('uses the thermal printer sound for receipts across seasonal themes', () => {
+    jotaiGet.mockReturnValue({ isChristmasEnabled: true })
+
+    expect(getThemeBasedSound('RECEIPT')).toBe('/audio/receipt-printer.wav')
+  })
+
   it('falls back to default sounds when April flag is disabled', () => {
     jotaiGet.mockReturnValue({})
 
@@ -136,5 +142,26 @@ describe('getThemeBasedSound', () => {
     getState.mockReturnValue({ user: { userDarkMode: false, matchesDarkMode: false } })
 
     expect(getThemeBasedSound('SEND')).toBe('/audio/send.mp3')
+  })
+})
+
+describe('receipt widget sound', () => {
+  const getWidgetSoundUrl = __soundTestUtils.getWidgetSoundUrl
+  const jotaiGet = jotaiStore.get as jest.Mock
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('uses the existing orderExecuted widget customization', () => {
+    jotaiGet.mockReturnValue({ params: { sounds: { orderExecuted: 'https://example.com/filled.mp3' } } })
+
+    expect(getWidgetSoundUrl('RECEIPT')).toBe('https://example.com/filled.mp3')
+  })
+
+  it('preserves an explicitly muted orderExecuted widget sound', () => {
+    jotaiGet.mockReturnValue({ params: { sounds: { orderExecuted: null } } })
+
+    expect(getWidgetSoundUrl('RECEIPT')).toBeNull()
   })
 })

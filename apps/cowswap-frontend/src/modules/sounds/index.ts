@@ -1,1 +1,1 @@
-export { getCowSoundSend, getCowSoundSuccess, getCowSoundError } from './utils/sound'
+export { getCowSoundSend, getCowSoundSuccess, getCowSoundReceipt, getCowSoundError } from './utils/sound'
