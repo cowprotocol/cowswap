@@ -32,27 +32,6 @@ const cutterKick = keyframes`
   }
 `
 
-const thermalInkVariation = css`
-  opacity: 0.94;
-  mix-blend-mode: multiply;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0 20%,
-    rgb(0 0 0 / 97%) 20% 22%,
-    #000 22% 58%,
-    rgb(0 0 0 / 98%) 58% 60%,
-    #000 60% 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0 20%,
-    rgb(0 0 0 / 97%) 20% 22%,
-    #000 22% 58%,
-    rgb(0 0 0 / 98%) 58% 60%,
-    #000 60% 100%
-  );
-`
-
 export const ReceiptStage = styled.section`
   width: 100%;
   max-width: 520px;
@@ -250,6 +229,19 @@ export const ReceiptPaper = styled.div`
   color: color-mix(in srgb, var(${UI.COLOR_NEUTRAL_0}) 96%, var(${UI.COLOR_NEUTRAL_40}));
   background-color: var(${UI.COLOR_NEUTRAL_100});
   background-color: color-mix(in srgb, var(${UI.COLOR_NEUTRAL_100}) 97%, #d8c8aa);
+  background-image:
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(${UI.COLOR_NEUTRAL_0}) 2.5%, transparent) 0 0.45px,
+      transparent 0.75px
+    ),
+    radial-gradient(circle, color-mix(in srgb, #8a7358 2%, transparent) 0 0.4px, transparent 0.7px);
+  background-position:
+    0 0,
+    7px 11px;
+  background-size:
+    13px 17px,
+    19px 23px;
   box-shadow: 0 18px 30px var(${UI.COLOR_BLACK_OPACITY_30});
   font-family: ${Font.familyMono};
   font-size: 13px;
@@ -277,7 +269,8 @@ export const Brand = styled.div`
 export const PrintedWordmark = styled.img`
   width: 204px;
   height: auto;
-  ${thermalInkVariation}
+  opacity: 0.94;
+  mix-blend-mode: multiply;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 
@@ -345,7 +338,8 @@ export const PrintedHero = styled.img`
   width: 120px;
   height: 80px;
   object-fit: contain;
-  ${thermalInkVariation}
+  opacity: 0.94;
+  mix-blend-mode: multiply;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 

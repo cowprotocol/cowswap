@@ -5,7 +5,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { getCowSoundError, getCowSoundReceipt, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundReceiptBundle, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
 
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -54,28 +54,30 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   }
 
-  let cowSound
+  let cowSounds: HTMLAudioElement[] = []
   if (isPendingOrderAction(action)) {
     if (_shouldPlayPendingOrderSound(action.payload)) {
-      cowSound = getCowSoundSend()
+      cowSounds = [getCowSoundSend()]
     }
   } else if (isBatchFulfillOrderAction(action)) {
-    cowSound = _shouldPlayReceiptSound(action.payload.orders) ? getCowSoundReceipt() : getCowSoundSuccess()
+    cowSounds = _shouldPlayReceiptSound(action.payload.orders) ? getCowSoundReceiptBundle() : [getCowSoundSuccess()]
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
-      cowSound = getCowSoundError()
+      cowSounds = [getCowSoundError()]
     }
   } else if (isBatchCancelOrderAction(action)) {
-    cowSound = getCowSoundError()
+    cowSounds = [getCowSoundError()]
   } else if (isUpdateOrderAction(action)) {
-    cowSound = _getUpdatedOrderSound(action.payload)
+    const cowSound = _getUpdatedOrderSound(action.payload)
+    cowSounds = cowSound ? [cowSound] : []
   }
 
-  if (cowSound) {
+  cowSounds.forEach((cowSound) => {
+    cowSound.currentTime = 0
     cowSound.play().catch((e) => {
       console.error('🐮 Moooooo sound cannot be played', e)
     })
-  }
+  })
 
   return result
 }

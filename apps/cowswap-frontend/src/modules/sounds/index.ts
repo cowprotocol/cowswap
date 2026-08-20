@@ -1,1 +1,8 @@
-export { getCowSoundSend, getCowSoundSuccess, getCowSoundReceipt, getCowSoundError } from './utils/sound'
+export {
+  getCowSoundSend,
+  getCowSoundSuccess,
+  getCowSoundReceipt,
+  getCowSoundReceiptBundle,
+  getCowSoundError,
+  setupCowSoundUnlock,
+} from './utils/sound'

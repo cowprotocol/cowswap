@@ -13,6 +13,8 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
+import { getCowSoundReceiptBundle } from 'modules/sounds'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { SolverCompetition } from 'common/types/soverCompetition'
@@ -56,10 +58,21 @@ export function FinishedStep({
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
+  const [receiptRun, setReceiptRun] = useState(0)
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
   const showPostTradeExtras = SHOW_POST_TRADE_EXTRAS_ON_SUCCESS || stepName !== OrderProgressBarStepName.FINISHED
+
+  const replayReceipt = (): void => {
+    getCowSoundReceiptBundle().forEach((sound) => {
+      sound.currentTime = 0
+      sound.play().catch((error: unknown) => {
+        console.error('Receipt sound cannot be replayed', error)
+      })
+    })
+    setReceiptRun((currentRun) => currentRun + 1)
+  }
 
   const visibleSolvers = useMemo(() => {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
@@ -96,12 +109,19 @@ export function FinishedStep({
 
       <styledEl.ConclusionContent>
         <PrintedOrderReceipt
+          key={receiptRun}
           order={order}
           chainId={chainId}
           receiverEnsName={receiverEnsName}
           surplusData={surplusData}
           winningSolver={solvers?.[0]}
         />
+
+        {stepName === OrderProgressBarStepName.FINISHED && (
+          <styledEl.ReceiptReplayButton type="button" onClick={replayReceipt}>
+            Replay
+          </styledEl.ReceiptReplayButton>
+        )}
 
         {showPostTradeExtras && solvers && solversLength > 0 && (
           <styledEl.SolverRankings>

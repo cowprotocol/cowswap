@@ -3,7 +3,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { getCowSoundError, getCowSoundReceipt, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundReceiptBundle, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
 
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -24,8 +24,10 @@ const getIsBridgeOrderMock = jest.mocked(getIsBridgeOrder)
 const getUiOrderTypeMock = jest.mocked(getUiOrderType)
 const receiptPlayMock = jest.fn().mockResolvedValue(undefined)
 const successPlayMock = jest.fn().mockResolvedValue(undefined)
-const receiptSoundMock = { play: receiptPlayMock } as unknown as HTMLAudioElement
-const successSoundMock = { play: successPlayMock } as unknown as HTMLAudioElement
+const otherPlayMock = jest.fn().mockResolvedValue(undefined)
+const receiptSoundMock = { currentTime: 1, play: receiptPlayMock } as unknown as HTMLAudioElement
+const successSoundMock = { currentTime: 1, play: successPlayMock } as unknown as HTMLAudioElement
+const otherSoundMock = { currentTime: 1, play: otherPlayMock } as unknown as HTMLAudioElement
 
 // TODO: Break down this large function into smaller functions
 
@@ -43,7 +45,12 @@ describe('soundMiddleware', () => {
     jest.clearAllMocks()
     getIsBridgeOrderMock.mockReturnValue(false)
     getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
-    jest.mocked(getCowSoundReceipt).mockReturnValue(receiptSoundMock)
+    receiptSoundMock.currentTime = 1
+    successSoundMock.currentTime = 1
+    otherSoundMock.currentTime = 1
+    jest.mocked(getCowSoundReceiptBundle).mockReturnValue([successSoundMock, receiptSoundMock])
+    jest.mocked(getCowSoundError).mockReturnValue(otherSoundMock)
+    jest.mocked(getCowSoundSend).mockReturnValue(otherSoundMock)
     jest.mocked(getCowSoundSuccess).mockReturnValue(successSoundMock)
   })
 
@@ -110,16 +117,18 @@ describe('soundMiddleware', () => {
     })
   })
   describe('fulfill order action', () => {
-    it('plays the receipt sound for a fulfilled, non-bridge swap', () => {
+    it('layers the success and receipt sounds for a fulfilled, non-bridge swap', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, orders: [{}] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(getCowSoundReceipt).toHaveBeenCalledTimes(1)
+      expect(getCowSoundReceiptBundle).toHaveBeenCalledTimes(1)
       expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
+      expect(receiptSoundMock.currentTime).toBe(0)
+      expect(successSoundMock.currentTime).toBe(0)
       expect(receiptPlayMock).toHaveBeenCalledTimes(1)
-      expect(successPlayMock).toHaveBeenCalledTimes(0)
+      expect(successPlayMock).toHaveBeenCalledTimes(1)
       expect(getCowSoundError).toHaveBeenCalledTimes(0)
       expect(getCowSoundSend).toHaveBeenCalledTimes(0)
     })
@@ -131,7 +140,7 @@ describe('soundMiddleware', () => {
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(getCowSoundReceipt).toHaveBeenCalledTimes(0)
+      expect(getCowSoundReceiptBundle).toHaveBeenCalledTimes(0)
       expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
       expect(receiptPlayMock).toHaveBeenCalledTimes(0)
       expect(successPlayMock).toHaveBeenCalledTimes(1)
@@ -144,7 +153,7 @@ describe('soundMiddleware', () => {
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(getCowSoundReceipt).toHaveBeenCalledTimes(0)
+      expect(getCowSoundReceiptBundle).toHaveBeenCalledTimes(0)
       expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
       expect(receiptPlayMock).toHaveBeenCalledTimes(0)
       expect(successPlayMock).toHaveBeenCalledTimes(1)
