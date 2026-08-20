@@ -56,7 +56,8 @@ import type {
 const DEFAULT_PERIOD: SimplePriceChartPeriod = '1D'
 const TOOLTIP_HEIGHT = 88
 const TOOLTIP_HEIGHT_WITH_VOLUME = 115
-const TOOLTIP_EXECUTION_HEIGHT = 34
+const TOOLTIP_EXECUTION_HEIGHT = 27
+const TOOLTIP_EXECUTION_SPACING = 16
 const TOOLTIP_OFFSET = 12
 const TOOLTIP_WIDTH = 280
 
@@ -307,24 +308,29 @@ export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartToolti
           <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.volume, i18n.locale)}</simpleStyledEl.TooltipValue>
         </simpleStyledEl.TooltipRow>
       )}
-      <simpleStyledEl.TooltipTime>
+      {data.executions.length > 0 ? (
+        <simpleStyledEl.TooltipExecutions>
+          {data.executions.map((execution) => (
+            <simpleStyledEl.TooltipExecution key={execution.id}>
+              <simpleStyledEl.TooltipExecutionSide $side={execution.side}>
+                {execution.side === 'buy' ? t`BUY` : t`SELL`}
+              </simpleStyledEl.TooltipExecutionSide>
+              <simpleStyledEl.TooltipExecutionText>
+                <Trans>
+                  <simpleStyledEl.TooltipExecutionAmount>
+                    {execution.activeAmount}
+                  </simpleStyledEl.TooltipExecutionAmount>{' '}
+                  {execution.activeTokenSymbol}
+                  {/* for {execution.counterAmount} {execution.counterTokenSymbol} */}
+                </Trans>
+              </simpleStyledEl.TooltipExecutionText>
+            </simpleStyledEl.TooltipExecution>
+          ))}
+        </simpleStyledEl.TooltipExecutions>
+      ) : null}
+      <simpleStyledEl.TooltipTime $hasExecutions={data.executions.length > 0}>
         {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
       </simpleStyledEl.TooltipTime>
-      {data.executions.map((execution) => (
-        <simpleStyledEl.TooltipExecution key={execution.id}>
-          <simpleStyledEl.TooltipExecutionSide $side={execution.side}>
-            {execution.side === 'buy' ? t`BUY` : t`SELL`}
-          </simpleStyledEl.TooltipExecutionSide>
-          <simpleStyledEl.TooltipExecutionText>
-            <Trans>
-              <simpleStyledEl.TooltipExecutionAmount>{execution.activeAmount}</simpleStyledEl.TooltipExecutionAmount>{' '}
-              {execution.activeTokenSymbol} for{' '}
-              <simpleStyledEl.TooltipExecutionAmount>{execution.counterAmount}</simpleStyledEl.TooltipExecutionAmount>{' '}
-              {execution.counterTokenSymbol}
-            </Trans>
-          </simpleStyledEl.TooltipExecutionText>
-        </simpleStyledEl.TooltipExecution>
-      ))}
     </simpleStyledEl.Tooltip>
   )
 }
@@ -442,7 +448,10 @@ function getSimplePriceChartTooltipData(
 ): SimplePriceChartTooltipData {
   const placeOnLeft = point.x + TOOLTIP_OFFSET + TOOLTIP_WIDTH > container.clientWidth
   const baseHeight = volume === undefined ? TOOLTIP_HEIGHT : TOOLTIP_HEIGHT_WITH_VOLUME
-  const halfTooltipHeight = (baseHeight + executions.length * TOOLTIP_EXECUTION_HEIGHT) / 2
+  const executionHeight = executions.length
+    ? executions.length * TOOLTIP_EXECUTION_HEIGHT + TOOLTIP_EXECUTION_SPACING
+    : 0
+  const halfTooltipHeight = (baseHeight + executionHeight) / 2
 
   return {
     executions,

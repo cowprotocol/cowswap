@@ -52,8 +52,8 @@ describe('SimplePriceChartTooltip', () => {
 
     expect(screen.getByText('BUY')).toBeTruthy()
     expect(screen.getByText('5.765')).toBeTruthy()
-    expect(screen.getByText('0.8531')).toBeTruthy()
-    expect(screen.getByText(/COW for/)).toBeTruthy()
+    expect(screen.getByText('COW')).toBeTruthy()
+    expect(screen.queryByText('0.8531')).toBeNull()
   })
 })
 
