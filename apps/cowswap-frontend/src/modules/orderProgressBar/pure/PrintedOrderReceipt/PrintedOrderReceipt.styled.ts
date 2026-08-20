@@ -32,11 +32,34 @@ const cutterKick = keyframes`
   }
 `
 
+const thermalInkVariation = css`
+  opacity: 0.94;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0 20%,
+    rgb(0 0 0 / 97%) 20% 22%,
+    #000 22% 58%,
+    rgb(0 0 0 / 98%) 58% 60%,
+    #000 60% 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0 20%,
+    rgb(0 0 0 / 97%) 20% 22%,
+    #000 22% 58%,
+    rgb(0 0 0 / 98%) 58% 60%,
+    #000 60% 100%
+  );
+`
+
 export const ReceiptStage = styled.section`
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
-  padding: 0 12px;
+  padding: 0 12px 16px;
+  background: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  border-radius: 24px;
 `
 
 export const PrinterDevice = styled.div`
@@ -161,20 +184,21 @@ export const PrinterMouth = styled.div`
   position: absolute;
   z-index: 5;
   left: 50%;
-  bottom: 3px;
+  bottom: 2px;
   width: calc(100% - 80px);
-  height: 7px;
+  height: 12px;
   background: var(${UI.COLOR_NEUTRAL_0});
-  border-radius: 2px 2px 5px 5px;
+  border: 1px solid color-mix(in srgb, var(${UI.COLOR_NEUTRAL_40}) 72%, transparent);
+  border-radius: 3px 3px 6px 6px;
   box-shadow:
-    inset 0 1px 0 var(${UI.COLOR_NEUTRAL_40}),
+    inset 0 1px 0 color-mix(in srgb, var(${UI.COLOR_NEUTRAL_100}) 22%, var(${UI.COLOR_NEUTRAL_40})),
     inset 0 -1px 2px var(${UI.COLOR_BLACK_OPACITY_30}),
-    0 5px 9px var(${UI.COLOR_BLACK_OPACITY_30});
+    0 4px 8px var(${UI.COLOR_BLACK_OPACITY_30});
   transform: translateX(-50%);
 
   ${Media.upToExtraSmall()} {
     width: 100%;
-    height: 6px;
+    height: 10px;
   }
 `
 
@@ -192,22 +216,15 @@ export const ReceiptReveal = styled.div`
   overflow: hidden;
   transform-origin: top center;
   will-change: max-height, transform;
+  -webkit-mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - 13px) no-repeat,
+    conic-gradient(from -45deg at 50% 100%, #000 0 90deg, transparent 90deg 360deg) bottom / 16px 13px repeat-x;
+  mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - 13px) no-repeat,
+    conic-gradient(from -45deg at 50% 100%, #000 0 90deg, transparent 90deg 360deg) bottom / 16px 13px repeat-x;
   animation:
     ${feedReceipt} 3.4s steps(30, end) forwards,
     ${cutterKick} 3.4s linear forwards;
-
-  &::after {
-    content: '';
-    position: absolute;
-    z-index: 2;
-    inset-inline: 0;
-    bottom: 0;
-    height: 13px;
-    pointer-events: none;
-    background:
-      linear-gradient(135deg, transparent 50%, var(${UI.COLOR_PAPER_DARKER}) 50%) 0 0 / 16px 13px repeat-x,
-      linear-gradient(45deg, var(${UI.COLOR_PAPER_DARKER}) 50%, transparent 50%) 0 0 / 16px 13px repeat-x;
-  }
 
   @media (prefers-reduced-motion: reduce) {
     max-height: none;
@@ -260,8 +277,7 @@ export const Brand = styled.div`
 export const PrintedWordmark = styled.img`
   width: 204px;
   height: auto;
-  opacity: 0.94;
-  mix-blend-mode: multiply;
+  ${thermalInkVariation}
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 
@@ -329,8 +345,7 @@ export const PrintedHero = styled.img`
   width: 120px;
   height: 80px;
   object-fit: contain;
-  opacity: 0.94;
-  mix-blend-mode: multiply;
+  ${thermalInkVariation}
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 
