@@ -87,6 +87,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
       permitAmountToSign,
+      amountToApprove: permitAmountToSign,
       getCachedPermit,
       quoteState,
       postOrderParams: {
