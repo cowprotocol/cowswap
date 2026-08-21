@@ -1,0 +1,108 @@
+name: Release PR
+
+on:
+  schedule:
+    - cron: '0 12 * * 5' # Every Friday at 12:00 UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: release-pr
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-release-pr:
+    name: Create release PR (develop → main)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: refs/heads/develop
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup release sync
+        id: setup
+        uses: ./.github/actions/setup-release-sync
+        with:
+          app-id: ${{ vars.COWSWAP_RELEASE_SYNC_APP_ID }}
+          private-key: ${{ secrets.COWSWAP_RELEASE_SYNC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.event.repository.name }}
+          checkout-ref: refs/heads/develop
+          pull-requests-write: 'true'
+
+      - name: Prepare release branch
+        id: prepare
+        run: |
+          set -euo pipefail
+
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${APP_USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+
+          git fetch origin main develop
+
+          release_date="$(date -u +%Y-%m-%d)"
+          release_branch="release/${release_date}"
+          pr_title="chore(release): ${release_date}"
+
+          echo "release-branch=${release_branch}" >> "$GITHUB_OUTPUT"
+          echo "pr-title=${pr_title}" >> "$GITHUB_OUTPUT"
+
+          if [ "$(git rev-list --count origin/main..origin/develop)" -eq 0 ]; then
+            echo "Nothing to release: develop has no commits ahead of main."
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "has-changes=true" >> "$GITHUB_OUTPUT"
+
+          git checkout -B "${release_branch}" origin/develop
+
+          {
+            echo "# Release!"
+            echo
+            echo "## Changes"
+            echo
+            git log origin/main..origin/develop --pretty='%h %s'
+          } > /tmp/release-pr-body.md
+        env:
+          APP_SLUG: ${{ steps.setup.outputs.app-slug }}
+          APP_USER_ID: ${{ steps.setup.outputs.app-user-id }}
+
+      - name: Create pull request
+        if: steps.prepare.outputs.has-changes == 'true'
+        id: create-pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.setup.outputs.token }}
+          branch: ${{ steps.prepare.outputs.release-branch }}
+          base: main
+          title: ${{ steps.prepare.outputs.pr-title }}
+          body-path: /tmp/release-pr-body.md
+          labels: RELEASE
+          draft: true
+          delete-branch: false
+
+      - name: Notify Slack release PR is ready
+        if: steps.prepare.outputs.has-changes == 'true'
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+            --data "{\"text\": \"🚀 Release PR is ready for review. <$PR_URL|Open pull request>.\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PR_URL: ${{ steps.create-pr.outputs.pull-request-url }}
+
+      - name: Notify Slack of failure
+        if: failure()
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+            --data "{\"text\": \"❌ Weekly release PR automation failed. <$RUN_URL|Open workflow run>.\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
