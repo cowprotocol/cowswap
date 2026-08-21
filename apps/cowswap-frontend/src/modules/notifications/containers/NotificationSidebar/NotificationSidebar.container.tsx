@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import iconNotificationSettingsSrc from '@cowprotocol/assets/images/icon-notification-settings.svg'
@@ -10,6 +11,7 @@ import { createPortal } from 'react-dom'
 import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { openModalState } from 'common/state/openModalState'
 
 import {
   Sidebar,
@@ -56,6 +58,7 @@ export function NotificationSidebar({
   const sidebarRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(Media.upToSmall(false))
+  const isAnyModalOpen = useAtomValue(openModalState)
 
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription } = useHasNotificationSubscription()
@@ -75,7 +78,10 @@ export function NotificationSidebar({
     setIsSettingsOpen(false)
   }, [onClose])
 
-  useOnClickOutside([sidebarRef], onDismiss)
+  // Don't dismiss the sidebar on outside clicks while a modal (e.g. the Telegram
+  // connect modal) is open - it portals outside `sidebarRef`'s DOM subtree, so any
+  // click inside it would otherwise be treated as "outside the sidebar" and close it.
+  useOnClickOutside([sidebarRef], isAnyModalOpen ? undefined : onDismiss)
 
   const toggleSettingsOpen = useCallback(() => {
     setIsSettingsOpen((prev) => !prev)
@@ -93,7 +99,7 @@ export function NotificationSidebar({
   const notificationSidebarElement = (
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
       {isSettingsOpen ? (
-        <NotificationSettings>
+        <NotificationSettings isSettingsOpen={isSettingsOpen}>
           <SettingsHeader onBack={toggleSettingsOpen} />
         </NotificationSettings>
       ) : (
