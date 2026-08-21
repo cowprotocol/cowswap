@@ -60,7 +60,10 @@ jobs:
           fi
           echo "has-changes=true" >> "$GITHUB_OUTPUT"
 
-          git checkout -B "${release_branch}" origin/develop
+          # Local branch must be named to match create-pull-request's `base` input
+          # (main), not the PR head name (release/<date>) or `develop`. It never gets
+          # pushed anywhere — content still comes from origin/develop below.
+          git checkout -B main origin/develop
 
           {
             echo "# Release!"
