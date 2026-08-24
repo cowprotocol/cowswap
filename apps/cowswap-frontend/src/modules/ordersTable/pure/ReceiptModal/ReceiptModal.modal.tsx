@@ -142,31 +142,26 @@ export function ReceiptModal({
   }
 
   return (
-    <BottomDrawerOrDialog
-      isOpen={isOpen}
-      onOpenChange={handleOpenChange}
-      variant="narrow"
-      title={t`Order Receipt`}
-      header={
+    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow" title={t`Order Receipt`}>
+      <Modal.Root>
         <ReceiptModalHeader
           alternativeOrderModalContext={contentProps.alternativeOrderModalContext}
           onDismiss={onDismiss}
         />
-      }
-    >
-      {order && chainId && buyAmount ? (
-        <ReceiptModalContent
-          order={order}
-          chainId={chainId}
-          buyAmount={buyAmount}
-          receiverEnsName={contentProps.receiverEnsName ?? null}
-          twapOrder={contentProps.twapOrder ?? null}
-          isTwapPartOrder={contentProps.isTwapPartOrder ?? false}
-          limitPrice={contentProps.limitPrice ?? null}
-          executionPrice={contentProps.executionPrice ?? null}
-          estimatedExecutionPrice={contentProps.estimatedExecutionPrice ?? null}
-        />
-      ) : null}
+        {order && chainId && buyAmount ? (
+          <ReceiptModalContent
+            order={order}
+            chainId={chainId}
+            buyAmount={buyAmount}
+            receiverEnsName={contentProps.receiverEnsName ?? null}
+            twapOrder={contentProps.twapOrder ?? null}
+            isTwapPartOrder={contentProps.isTwapPartOrder ?? false}
+            limitPrice={contentProps.limitPrice ?? null}
+            executionPrice={contentProps.executionPrice ?? null}
+            estimatedExecutionPrice={contentProps.estimatedExecutionPrice ?? null}
+          />
+        ) : null}
+      </Modal.Root>
     </BottomDrawerOrDialog>
   )
 }

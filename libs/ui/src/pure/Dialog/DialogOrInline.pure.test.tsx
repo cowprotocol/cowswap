@@ -20,23 +20,17 @@ jest.mock('@cowprotocol/common-hooks', () => {
 jest.mock('./Dialog.pure', () => ({
   Dialog: ({
     children,
-    open,
+    isOpen,
     title,
     className,
-    header,
-    footer,
   }: {
     children: ReactNode
-    open: boolean
+    isOpen: boolean
     title?: string
     className?: string
-    header?: ReactNode
-    footer?: ReactNode
   }) => (
-    <div data-testid="dialog" data-open={String(open)} data-title={title} className={className}>
-      {header}
+    <div data-testid="dialog" data-open={String(isOpen)} data-title={title} className={className}>
       {children}
-      {footer}
     </div>
   ),
 }))
@@ -47,22 +41,13 @@ function renderDialogOrInline(
   extra?: {
     title?: string
     className?: string
-    header?: ReactNode
-    footer?: ReactNode
     children?: ReactNode
   },
 ): ReturnType<typeof render> & {
   onOpenChange: jest.Mock
 } {
   const view = render(
-    <DialogOrInline
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      title={extra?.title}
-      className={extra?.className}
-      header={extra?.header}
-      footer={extra?.footer}
-    >
+    <DialogOrInline isOpen={isOpen} onOpenChange={onOpenChange} title={extra?.title} className={extra?.className}>
       {extra?.children ?? <div>orders</div>}
     </DialogOrInline>,
   )
@@ -82,8 +67,6 @@ describe('DialogOrInline', () => {
     renderDialogOrInline(true, onOpenChange, {
       title: 'Orders',
       className: 'orders-dialog',
-      header: <span>Header</span>,
-      footer: <span>Footer</span>,
       children: <span>Content</span>,
     })
 
@@ -94,25 +77,19 @@ describe('DialogOrInline', () => {
     expect(dialog.getAttribute('data-open')).toBe('true')
     expect(dialog.getAttribute('data-title')).toBe('Orders')
     expect(dialog.className).toContain('orders-dialog')
-    expect(dialog.textContent).toContain('Header')
     expect(dialog.textContent).toContain('Content')
-    expect(dialog.textContent).toContain('Footer')
   })
 
-  it('renders header, content, and footer inline above the large breakpoint', () => {
+  it('renders children inline above the large breakpoint', () => {
     mockUseMediaQuery.mockReturnValue(false)
 
     renderDialogOrInline(true, jest.fn(), {
-      header: <span>Header</span>,
-      footer: <span>Footer</span>,
       children: <span>Content</span>,
     })
 
     expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
     expect(screen.queryByTestId('dialog')).toBeNull()
-    expect(screen.getByText('Header')).toBeTruthy()
     expect(screen.getByText('Content')).toBeTruthy()
-    expect(screen.getByText('Footer')).toBeTruthy()
   })
 
   it('closes when mounting the inline branch while open', () => {

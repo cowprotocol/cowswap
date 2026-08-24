@@ -33,7 +33,7 @@ export function AccountModal(): ReactNode {
   const displayOrdersPanel = !!(active && isOpen && account)
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={displayOrdersPanel}>
+    <Dialog onOpenChange={handleOpenChange} isOpen={displayOrdersPanel}>
       <Modal.Root>
         <ModalHeader sticky title={<Trans>Account</Trans>} onClose={closeAccountModal} />
 

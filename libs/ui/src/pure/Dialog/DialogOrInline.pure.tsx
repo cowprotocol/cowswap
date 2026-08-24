@@ -10,25 +10,15 @@ export interface DialogOrInlineProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   children: ReactNode
-  /** Overlay title used for a11y. When `header` is omitted, Dialog also renders a sticky ModalHeader. */
+  /** Overlay title used for a11y. */
   title?: string
   className?: string
-  header?: ReactNode
-  footer?: ReactNode
 }
 
-export function DialogOrInline({
-  isOpen,
-  onOpenChange,
-  children,
-  title,
-  className,
-  header,
-  footer,
-}: DialogOrInlineProps): ReactNode {
+export function DialogOrInline({ children, ...props }: DialogOrInlineProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
-  const onOpenChangeRef = useLatestRef(onOpenChange)
+  const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
     const closeDrawer = onOpenChangeRef.current
@@ -45,25 +35,8 @@ export function DialogOrInline({
   }, [onOpenChangeRef, isUpToLarge])
 
   if (!isUpToLarge) {
-    return (
-      <>
-        {header}
-        {children}
-        {footer}
-      </>
-    )
+    return children
   }
 
-  return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={onOpenChange}
-      title={title}
-      className={className}
-      header={header}
-      footer={footer}
-    >
-      {children}
-    </Dialog>
-  )
+  return <Dialog {...props}>{children}</Dialog>
 }
