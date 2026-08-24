@@ -142,7 +142,7 @@ export function ReceiptModal({
   }
 
   return (
-    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow" title={t`Order Receipt`}>
+    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow" a11yTitle={t`Order Receipt`}>
       <Modal.Root>
         <ReceiptModalHeader
           alternativeOrderModalContext={contentProps.alternativeOrderModalContext}

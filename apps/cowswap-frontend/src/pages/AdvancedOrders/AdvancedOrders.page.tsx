@@ -106,7 +106,7 @@ export function AdvancedOrdersPage(): ReactNode {
           <DialogOrInline
             isOpen={isOrdersTableDrawerOpen}
             onOpenChange={handleOrdersTableDrawerOpenChange}
-            title={t`TWAP orders`}
+            a11yTitle={t`TWAP orders`}
           >
             <Modal.Root className="trade-orders-table">
               {isUpToLarge ? (

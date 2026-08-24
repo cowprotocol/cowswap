@@ -51,7 +51,7 @@ export function RegularLimitOrdersPage(): ReactNode {
         <DialogOrInline
           isOpen={isOrdersTableDrawerOpen}
           onOpenChange={handleOrdersTableDrawerOpenChange}
-          title={t`Limit orders`}
+          a11yTitle={t`Limit orders`}
         >
           <Modal.Root className="trade-orders-table">
             {isUpToLarge ? (

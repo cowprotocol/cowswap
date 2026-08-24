@@ -21,15 +21,15 @@ jest.mock('./BottomDrawer.pure', () => ({
   BottomDrawer: ({
     children,
     isOpen,
-    title,
+    a11yTitle,
     className,
   }: {
     children: ReactNode
     isOpen: boolean
-    title?: string
+    a11yTitle?: string
     className?: string
   }) => (
-    <div data-testid="bottom-drawer" data-open={String(isOpen)} data-title={title} className={className}>
+    <div data-testid="bottom-drawer" data-open={String(isOpen)} data-a11y-title={a11yTitle} className={className}>
       {children}
     </div>
   ),
@@ -39,20 +39,20 @@ jest.mock('../Dialog/Dialog.pure', () => ({
   Dialog: ({
     children,
     isOpen,
-    title,
+    a11yTitle,
     className,
     variant,
   }: {
     children: ReactNode
     isOpen: boolean
-    title?: string
+    a11yTitle?: string
     className?: string
     variant?: string
   }) => (
     <div
       data-testid="dialog"
       data-open={String(isOpen)}
-      data-title={title}
+      data-a11y-title={a11yTitle}
       data-variant={variant}
       className={className}
     >
@@ -65,7 +65,7 @@ function renderBottomDrawerOrDialog(
   isOpen: boolean,
   onOpenChange = jest.fn(),
   extra?: {
-    title?: string
+    a11yTitle?: string
     className?: string
     children?: ReactNode
     variant?: 'default' | 'narrow'
@@ -77,7 +77,7 @@ function renderBottomDrawerOrDialog(
     <BottomDrawerOrDialog
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      title={extra?.title}
+      a11yTitle={extra?.a11yTitle}
       className={extra?.className}
       variant={extra?.variant}
     >
@@ -98,7 +98,7 @@ describe('BottomDrawerOrDialog', () => {
     const onOpenChange = jest.fn()
 
     renderBottomDrawerOrDialog(true, onOpenChange, {
-      title: 'Order Receipt',
+      a11yTitle: 'Order Receipt',
       className: 'receipt-overlay',
       children: <span>Content</span>,
     })
@@ -109,7 +109,7 @@ describe('BottomDrawerOrDialog', () => {
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('dialog')).toBeNull()
     expect(drawer.getAttribute('data-open')).toBe('true')
-    expect(drawer.getAttribute('data-title')).toBe('Order Receipt')
+    expect(drawer.getAttribute('data-a11y-title')).toBe('Order Receipt')
     expect(drawer.className).toContain('receipt-overlay')
     expect(drawer.textContent).toContain('Content')
   })
@@ -118,7 +118,7 @@ describe('BottomDrawerOrDialog', () => {
     mockUseMediaQuery.mockReturnValue(false)
 
     const { onOpenChange } = renderBottomDrawerOrDialog(true, jest.fn(), {
-      title: 'Order Receipt',
+      a11yTitle: 'Order Receipt',
       children: <span>Content</span>,
       variant: 'narrow',
     })
@@ -129,7 +129,7 @@ describe('BottomDrawerOrDialog', () => {
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('bottom-drawer')).toBeNull()
     expect(dialog.getAttribute('data-open')).toBe('true')
-    expect(dialog.getAttribute('data-title')).toBe('Order Receipt')
+    expect(dialog.getAttribute('data-a11y-title')).toBe('Order Receipt')
     expect(dialog.getAttribute('data-variant')).toBe('narrow')
     expect(dialog.textContent).toContain('Content')
   })

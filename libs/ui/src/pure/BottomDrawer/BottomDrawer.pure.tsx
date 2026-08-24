@@ -6,18 +6,14 @@ import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 
 import * as styledEl from './BottomDrawer.styled'
 
-import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
+import { OverlayLayer } from '../surfaces/OverlayLayer.styled'
 
-export interface BottomDrawerProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden */
-  title?: string
-  className?: string
-}
+export type { BaseSurfaceProps as BaseOpenableContainerProps } from '../surfaces/BaseSurface.types'
 
-export function BottomDrawer({ isOpen, onOpenChange, children, title, className }: BottomDrawerProps): ReactNode {
+export type BottomDrawerProps = BaseSurfaceProps
+
+export function BottomDrawer({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -36,7 +32,7 @@ export function BottomDrawer({ isOpen, onOpenChange, children, title, className 
             <styledEl.Viewport data-bottom-drawer-viewport="">
               <styledEl.Popup className={className}>
                 <styledEl.Handle aria-hidden />
-                <styledEl.VisuallyHiddenTitle>{title ?? 'Drawer'}</styledEl.VisuallyHiddenTitle>
+                {a11yTitle ? <styledEl.VisuallyHiddenTitle>{a11yTitle}</styledEl.VisuallyHiddenTitle> : null}
                 {children}
               </styledEl.Popup>
             </styledEl.Viewport>

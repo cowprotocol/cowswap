@@ -5,15 +5,9 @@ import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
 import { Dialog } from './Dialog.pure'
 
 import { Media } from '../../consts'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
-export interface DialogOrInlineProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Overlay title used for a11y. */
-  title?: string
-  className?: string
-}
+export type DialogOrInlineProps = BaseSurfaceProps
 
 export function DialogOrInline({ children, ...props }: DialogOrInlineProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))

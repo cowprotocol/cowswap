@@ -6,16 +6,11 @@ import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 
 import * as styledEl from './Dialog.styled'
 
-import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
+import { OverlayLayer } from '../surfaces/OverlayLayer.styled'
 
-export interface DialogProps {
+export interface DialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Overlay title used for a11y. */
-  title?: ReactNode
-  className?: string
 }
 
 export type DialogVariant = 'default' | 'narrow'
@@ -25,7 +20,7 @@ export function Dialog({
   isOpen,
   onOpenChange,
   children,
-  title,
+  a11yTitle,
   className,
 }: DialogProps): ReactNode {
   const handleOpenChange = useCallback(
@@ -44,9 +39,7 @@ export function Dialog({
           <styledEl.Backdrop data-dialog-backdrop="" forceRender />
           <styledEl.Viewport data-dialog-viewport="">
             <styledEl.Popup className={className} $variant={variant}>
-              <styledEl.VisuallyHiddenTitle>
-                {typeof title === 'string' ? title : 'Dialog'}
-              </styledEl.VisuallyHiddenTitle>
+              {a11yTitle ? <styledEl.VisuallyHiddenTitle>{a11yTitle}</styledEl.VisuallyHiddenTitle> : null}
               {children}
             </styledEl.Popup>
           </styledEl.Viewport>

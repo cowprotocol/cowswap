@@ -21,15 +21,15 @@ jest.mock('./Dialog.pure', () => ({
   Dialog: ({
     children,
     isOpen,
-    title,
+    a11yTitle,
     className,
   }: {
     children: ReactNode
     isOpen: boolean
-    title?: string
+    a11yTitle?: string
     className?: string
   }) => (
-    <div data-testid="dialog" data-open={String(isOpen)} data-title={title} className={className}>
+    <div data-testid="dialog" data-open={String(isOpen)} data-a11y-title={a11yTitle} className={className}>
       {children}
     </div>
   ),
@@ -39,7 +39,7 @@ function renderDialogOrInline(
   isOpen: boolean,
   onOpenChange = jest.fn(),
   extra?: {
-    title?: string
+    a11yTitle?: string
     className?: string
     children?: ReactNode
   },
@@ -47,7 +47,12 @@ function renderDialogOrInline(
   onOpenChange: jest.Mock
 } {
   const view = render(
-    <DialogOrInline isOpen={isOpen} onOpenChange={onOpenChange} title={extra?.title} className={extra?.className}>
+    <DialogOrInline
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      a11yTitle={extra?.a11yTitle}
+      className={extra?.className}
+    >
       {extra?.children ?? <div>orders</div>}
     </DialogOrInline>,
   )
@@ -65,7 +70,7 @@ describe('DialogOrInline', () => {
     const onOpenChange = jest.fn()
 
     renderDialogOrInline(true, onOpenChange, {
-      title: 'Orders',
+      a11yTitle: 'Orders',
       className: 'orders-dialog',
       children: <span>Content</span>,
     })
@@ -75,7 +80,7 @@ describe('DialogOrInline', () => {
     expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(dialog.getAttribute('data-open')).toBe('true')
-    expect(dialog.getAttribute('data-title')).toBe('Orders')
+    expect(dialog.getAttribute('data-a11y-title')).toBe('Orders')
     expect(dialog.className).toContain('orders-dialog')
     expect(dialog.textContent).toContain('Content')
   })

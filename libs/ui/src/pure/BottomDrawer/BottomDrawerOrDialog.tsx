@@ -6,14 +6,9 @@ import { BottomDrawer } from './BottomDrawer.pure'
 
 import { Media } from '../../consts'
 import { Dialog, type DialogVariant } from '../Dialog/Dialog.pure'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
-export interface BottomDrawerOrDialogProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden. */
-  title?: string
-  className?: string
+export interface BottomDrawerOrDialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
 }
 
