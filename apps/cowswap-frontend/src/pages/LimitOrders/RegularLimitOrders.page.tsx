@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { DrawerOrInline, Media } from '@cowprotocol/ui'
+import { DialogOrInline, Media } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -48,10 +48,10 @@ export function RegularLimitOrdersPage(): ReactNode {
       </styledEl.PrimaryWrapper>
 
       {!hideOrdersTable && isUnlocked && (
-        <DrawerOrInline
+        <DialogOrInline
           isOpen={isOrdersTableDrawerOpen}
           onOpenChange={handleOrdersTableDrawerOpenChange}
-          title={t`My orders`}
+          title={t`Limit orders`}
         >
           <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
             {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
@@ -59,7 +59,7 @@ export function RegularLimitOrdersPage(): ReactNode {
               <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
             </Suspense>
           </styledEl.SecondaryWrapper>
-        </DrawerOrInline>
+        </DialogOrInline>
       )}
     </styledEl.PageWrapper>
   )

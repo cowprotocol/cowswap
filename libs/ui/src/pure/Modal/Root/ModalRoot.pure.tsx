@@ -11,7 +11,9 @@ const Root = styled.div`
   width: 100%;
   padding: 0;
   overflow-y: auto;
-  height: inherit;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
   background: ${MODAL_DEBUG ? 'magenta' : 'transparent'};
 
   ${({ theme }) => theme.colorScrollbar};
@@ -22,7 +24,7 @@ export function ModalRoot({ children }: { children: ReactNode }): ReactNode {
   const isScrolled = useIsScrolled(rootRef)
 
   return (
-    <Root ref={rootRef} className={clsx(isScrolled && MODAL_ROOT_SCROLLED_CLASS)}>
+    <Root ref={rootRef} data-modal-root="" className={clsx(isScrolled && MODAL_ROOT_SCROLLED_CLASS)}>
       {children}
     </Root>
   )
