@@ -10,21 +10,23 @@ export const TableWrapper = styled.div`
 
 export const TableBox = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   border: none;
   padding: 0;
   position: relative;
   background: var(${UI.COLOR_PAPER});
+  // flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
 `
 
 export const TableInner = styled.div`
   display: block;
   width: inherit;
-  height: inherit;
+  height: auto;
   padding: 0;
-  overflow-y: hidden;
   overflow-x: auto;
+  overflow-y: visible;
   ${({ theme }) => theme.colorScrollbar};
 `
 

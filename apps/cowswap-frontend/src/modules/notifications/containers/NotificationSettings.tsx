@@ -80,10 +80,11 @@ const TelegramUsername = styled.div`
 
 interface NotificationSettingsProps {
   children: ReactNode
+  isSettingsOpen: boolean
 }
 
-export function NotificationSettings({ children }: NotificationSettingsProps): ReactNode {
-  const telegramController = useConnectTelegram()
+export function NotificationSettings({ children, isSettingsOpen }: NotificationSettingsProps): ReactNode {
+  const telegramController = useConnectTelegram(isSettingsOpen)
   const { username } = telegramController
 
   return (
