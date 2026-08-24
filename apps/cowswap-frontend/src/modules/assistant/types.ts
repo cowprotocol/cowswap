@@ -1,5 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+/** One token the app can see the user holding, on the connected chain. */
+export interface AssistantHolding {
+  address: string
+  balance: string
+  symbol: string
+}
+
 export interface AssistantLimitOrderSize {
   status: 'small_for_chain'
   chainId: number
@@ -70,4 +77,10 @@ export interface AssistantUiContext {
   limitOrderSize?: AssistantLimitOrderSize | null
   /** In-app only: the widget path can't see this at all (spec §13). */
   estimatedFillPrice?: string | null
+  /**
+   * Non-zero balances across every token the app tracks — NOT the whole wallet.
+   * See deriveHoldings, and the disclosure the prompt requires when listing them.
+   */
+  holdings?: AssistantHolding[]
+  holdingsTruncated?: boolean
 }

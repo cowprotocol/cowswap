@@ -1,12 +1,15 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@cowprotocol/currency'
+import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { executionPriceAtom, useRateImpact } from 'modules/limitOrders'
 import {
   DEFAULT_TRADE_DERIVED_STATE,
@@ -17,6 +20,7 @@ import {
 } from 'modules/trade'
 
 import {
+  AssistantHolding,
   AssistantLimitOrderSize,
   AssistantLimitPrice,
   AssistantQuoteStatus,
@@ -41,6 +45,13 @@ const IMPACT_CALLOUT_PCT = 5
 const SMALL_LIMIT_USD: Record<number, number> = { 1: 100, 8453: 5 }
 
 /**
+ * How many holdings to send. Every turn resends this, so it can't be unbounded —
+ * and a wallet with hundreds of dust positions would drown the useful ones.
+ * Truncation is reported rather than hidden.
+ */
+const MAX_HOLDINGS = 40
+
+/**
  * Builds the state block the assistant reads each turn.
  *
  * The in-app replacement for the widget's ON_CHANGE_TRADE_PARAMS event, and better
@@ -60,12 +71,15 @@ export function useAssistantContext(): AssistantUiContext {
   const rateImpact = useRateImpact()
   const executionPrice = useAtomValue(executionPriceAtom)
   const tradeTypeInfo = useTradeTypeInfo()
+  const { values: balances } = useTokensBalancesCombined()
+  const tokensByAddress = useTokensByAddressMap()
 
   const isLimit = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
   return useMemo(() => {
     // Resolve the null-state once rather than optional-chaining every field.
     const state = derived ?? DEFAULT_TRADE_DERIVED_STATE
+    const { holdings, truncated } = deriveHoldings(balances, tokensByAddress)
 
     return {
       orderType: isLimit ? 'limit' : 'swap',
@@ -86,8 +100,46 @@ export function useAssistantContext(): AssistantUiContext {
       limitPrice: deriveLimitPrice(isLimit, rateImpact),
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
+      holdings,
+      ...(truncated ? { holdingsTruncated: true } : {}),
     }
-  }, [derived, priceImpact, rateImpact, executionPrice, isLimit, account, chainId])
+  }, [derived, priceImpact, rateImpact, executionPrice, isLimit, account, chainId, balances, tokensByAddress])
+}
+
+/**
+ * Everything the app can see the user holding, on the connected chain.
+ *
+ * ⚠️ **This is not the wallet.** Balances are multicalled for `useAllActiveTokens()`
+ * — the enabled token lists plus anything the user imported — so a token in no list
+ * and never imported is invisible here, however much of it they hold. The prompt
+ * requires that limit to be stated whenever holdings are listed, because "I can't
+ * see it" and "you don't have it" must never look the same.
+ *
+ * Zero balances are dropped: they're the overwhelming majority of the map and carry
+ * no information.
+ */
+function deriveHoldings(
+  balances: Record<string, bigint | undefined>,
+  tokensByAddress: Record<string, TokenWithLogo | undefined>,
+): { holdings: AssistantHolding[]; truncated: boolean } {
+  const held: AssistantHolding[] = []
+
+  for (const token of Object.values(tokensByAddress)) {
+    // Both maps are keyed by getAddressKey, so this lookup is exact rather than
+    // a case-sensitivity gamble.
+    const raw = token && balances[getAddressKey(token.address)]
+    if (!token || !raw) continue
+
+    held.push({
+      symbol: token.symbol ?? '?',
+      address: token.address,
+      balance: CurrencyAmount.fromRawAmount(token, raw.toString()).toExact(),
+    })
+  }
+
+  held.sort((a, b) => a.symbol.localeCompare(b.symbol))
+
+  return { holdings: held.slice(0, MAX_HOLDINGS), truncated: held.length > MAX_HOLDINGS }
 }
 
 /** Flags a limit order too small to be worth settling on its chain. */
