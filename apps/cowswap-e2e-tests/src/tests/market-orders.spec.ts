@@ -690,7 +690,10 @@ test.describe('Market Orders', () => {
       context,
     }) => {
       let dynamicSlippageBps = 20 // 0.2% — comfortably under the 2% banner threshold
-      await context.route(/bff\.(?:barn\.)?cow\.fi\/\d+\/markets\/.*\/slippageTolerance$/i, async (route) => {
+      // Matched by path only (not the `bff(.barn).cow.fi` host) so this still works when
+      // `REACT_APP_BFF_BASE_URL` points at a local proxy instead of the real BFF host — see
+      // `mocks/usdPrices.ts`'s equivalent BFF route for the same reasoning.
+      await context.route(/\/\d+\/markets\/.*\/slippageTolerance$/i, async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',

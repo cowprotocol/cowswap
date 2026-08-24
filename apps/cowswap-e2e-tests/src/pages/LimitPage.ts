@@ -12,6 +12,7 @@ export class LimitPage implements TradePage {
   readonly arrowSeparator: Locator
   readonly orderSubmittedHeading: Locator
   readonly continueButton: Locator
+  readonly myOrdersButton: Locator
   readonly openOrdersTab: Locator
   readonly ordersTable: Locator
   readonly tradeFormActionButton: Locator
@@ -25,6 +26,7 @@ export class LimitPage implements TradePage {
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.orderSubmittedHeading = page.getByRole('heading', { name: 'Order Submitted' })
     this.continueButton = page.getByRole('button', { name: /continue/i })
+    this.myOrdersButton = page.getByRole('button', { name: 'My orders' })
     this.openOrdersTab = page.locator('.orders-table_tab', { hasText: 'Open' })
     this.ordersTable = page.locator('#orders-table')
     this.tradeFormActionButton = page.locator('.trade-form-blank-button')
@@ -75,5 +77,15 @@ export class LimitPage implements TradePage {
       undefined,
       { timeout: 30_000 },
     )
+  }
+
+  // Below the "large" breakpoint (1280px — Playwright's default Desktop Chrome viewport width),
+  // the orders table renders in a closed drawer instead of inline, so it needs this button to open
+  // it first. Above that breakpoint the table is already inline and this button doesn't render.
+  async openOrders(): Promise<void> {
+    if (await this.myOrdersButton.isVisible()) {
+      await this.myOrdersButton.click()
+    }
+    await this.openOrdersTab.click()
   }
 }

@@ -48,16 +48,23 @@ test.describe('Limit Orders', () => {
     mocks.balances.set(wallet.address, CHAIN_ID, { [USDC]: SELL_AMOUNT, [COW]: 0n })
     mocks.allowances.set(wallet.address, CHAIN_ID, { [USDC]: ALLOWANCE })
 
+    // Limit orders derive their "market rate" from `usdPrices`, not from the quote (see
+    // `QuoteObserverUpdater`'s `useSpotPrice`). `usdPrices` defaults every token to $1, which would
+    // price this pair at 1 USDC = 1 COW market rate — five times the limit price set below (1 USDC =
+    // 0.2 COW) — and trips the confirm screen's "limit price is 80% lower than market" warning
+    // banner. Pricing COW at $5 makes 1 USDC = 0.2 COW the fair market rate, matching the limit price.
+    mocks.usdPrices.setPrice(COW, 5)
+
     const orderId = generateOrderId()
 
     await limitPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: COW })
     await limitPage.enterSellAmount('120')
     await limitPage.waitForQuote()
 
-    // USDC is a recognized Sepolia stablecoin, so once both amounts are quoted the app's smart
-    // quote-selection auto-quotes this pair by the non-stable side: the rate field ends up asking
-    // "When 1 COW is worth ? USDC" rather than "When 1 USDC is worth ? COW". 0.2 is the exact
-    // reciprocal of 5, so it encodes the same "1 USDC = 5 COW" price regardless of orientation.
+    // Typed while the field is still in its default (non-inverted) orientation — "1 USDC = ? COW" —
+    // so this sets the limit price to 1 USDC = 0.2 COW. Once the quote lands, USDC being a
+    // recognized Sepolia stablecoin makes the app's smart quote-selection auto-invert display to the
+    // non-stable side ("1 COW = 5 USDC" on screen), but that only re-displays this same stored rate.
     await limitPage.setLimitPrice('0.2')
 
     await limitPage.placeOrder()
@@ -77,7 +84,7 @@ test.describe('Limit Orders', () => {
     await expect(limitPage.orderSubmittedHeading).toBeVisible()
     await limitPage.continueButton.click()
 
-    await limitPage.openOrdersTab.click()
+    await limitPage.openOrders()
     await expect(limitPage.ordersTable).toContainText('COW')
   })
 })

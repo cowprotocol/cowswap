@@ -123,7 +123,7 @@ export const sharedFixtures: Fixtures<
       const safeSdk = installSafeSdk(context)
       const bungee = installBungee(context)
       const nearIntents = installNearIntents(context)
-      const launchDarkly = installLaunchDarkly(context)
+      const launchDarkly = await installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
 
       await use({

@@ -1,6 +1,6 @@
 import { parseUnits, type Hex } from 'viem'
 
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, BTC_CURRENCY_ADDRESS } from '@cowprotocol/cow-sdk'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
@@ -12,6 +12,7 @@ import { seedTrader } from '../support/seedTrader'
 
 import type { CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import type { LaunchDarklyMock } from '../mocks/launchDarkly'
+import type { UsdPricesMock } from '../mocks/usdPrices'
 import type { SwapPage } from '../pages/SwapPage'
 
 /**
@@ -56,6 +57,7 @@ const BASE = CHAIN_IDS.BASE
 const USDC_MAINNET = '0xA0b86991c6218b36c1d19D4A2e9Eb0cE3606eB48'
 const USDC_BASE = '0x833589fCD6eDb6E08f4C7C32D4f71b54bdA02913'
 const NATIVE_ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 
 const INITIAL_USDC_BALANCE = parseUnits('1000', 6)
 const INITIAL_ETH_BALANCE = parseUnits('1', 18)
@@ -71,15 +73,22 @@ test.describe('Cross-chain swaps', () => {
    * WETH/18-decimal:testUSDC/18-decimal ratio (~1:547), which is nonsensical for this suite's real
    * USDC(6dec)→USDC(6dec) pair and was silently producing an amount so degenerate the bridge
    * provider quote failed outright.
+   *
+   * Also pins both USDC's `usdPrices` at $1 (their real-world peg, and already `usdPrices`'
+   * unmocked default) — explicit rather than relying on that default, so this suite's price-impact-
+   * driven UI (warning banners, "Confirm Price Impact" dialogs) stays predictable even if that
+   * default ever changes. Consistent with the near-1:1 `mockFixedRateQuote` rate above.
    */
   async function configureProviders(
-    mocks: { launchDarkly: LaunchDarklyMock; cowApi: CowProtocolApiMock },
+    mocks: { launchDarkly: LaunchDarklyMock; cowApi: CowProtocolApiMock; usdPrices: UsdPricesMock },
     rpcProxy: unknown,
     active: 'bungee' | 'near-intents',
   ): Promise<void> {
     await mocks.launchDarkly.setFlag('isBungeeBridgeProviderEnabled', active === 'bungee')
     await mocks.launchDarkly.setFlag('isNearIntentsBridgeProviderEnabled', active === 'near-intents')
     mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: 999n, denominator: 1000n } })
+    mocks.usdPrices.setPrice(USDC_MAINNET, 1)
+    mocks.usdPrices.setPrice(USDC_BASE, 1)
   }
 
   /**
@@ -303,6 +312,11 @@ test.describe('Cross-chain swaps', () => {
       }
     })
 
+    // Prices ETH at $1 too (its `useUsdPrice` lookup goes through `getWrappedToken`, i.e. WETH's
+    // address, not the pseudo `NATIVE_ETH` one) — matching the near-1:1 rate the quote override
+    // above encodes (999/1000), same reasoning as `configureProviders`'s USDC pricing.
+    mocks.usdPrices.setPrice(WETH_MAINNET, 1)
+
     // Selling native ETH doesn't POST an off-chain EIP-712-signed order like every other trade in
     // this suite — it sends an on-chain `createOrder()` tx to a dedicated EthFlow contract instead
     // (with the sell amount as `tx.value`), so this needs `mockEthFlowTransaction` rather than
@@ -481,6 +495,8 @@ test.describe('Cross-chain swaps', () => {
     })
     await configureProviders(mocks, rpcProxy, 'near-intents')
     await mocks.launchDarkly.setFlag('isBtcBridgeEnabled', true)
+
+    mocks.usdPrices.setPrice(BTC_CURRENCY_ADDRESS, 64_016)
 
     await wallet.openApp({ chainId: MAINNET, sell: USDC_MAINNET })
     await swapPage.unlockIfNeeded()
