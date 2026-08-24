@@ -29,7 +29,8 @@ const chromeEdgeCss = css<ChromeEdgeProps>`
 export const Header = styled.header<ChromeEdgeProps>`
   position: relative;
   background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
-  padding: 16px 0;
+  // padding-bottom: 16px;
+
   ${chromeEdgeCss}
 
   &.sticky {
@@ -67,7 +68,6 @@ export const Inner = styled.div`
   justify-content: space-between;
   gap: 8px;
   padding: 0 16px;
-  // overflow: hidden;
   transition: ${transition(['padding'])};
 
   .hasBack & {
@@ -87,6 +87,7 @@ export const Title = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 16px 0;
 `
 
 export const RightSlot = styled.div`
@@ -115,7 +116,7 @@ export const Subtitle = styled.div`
   width: 100%;
   opacity: 1;
   transition: ${transition(['grid-template-rows', 'opacity', 'margin'])};
-  margin-bottom: -16px;
+  margin-top: -16px;
 
   &[aria-hidden='true'] {
     pointer-events: none;

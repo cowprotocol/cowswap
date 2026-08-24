@@ -97,7 +97,6 @@ export const FilterButton = styled.button`
   line-height: 20px;
   white-space: nowrap;
   cursor: pointer;
-  margin: -16px 0;
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
