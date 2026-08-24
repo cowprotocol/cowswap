@@ -1,3 +1,4 @@
+export * from './hooks/useVoiceInput'
 export * from './hooks/useAssistantContext'
 export * from './hooks/useApplyProposal'
 export * from './services/assistantApi'
