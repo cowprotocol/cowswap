@@ -24,7 +24,7 @@ export function ModalRoot({ children }: { children: ReactNode }): ReactNode {
   const isScrolled = useIsScrolled(rootRef)
 
   return (
-    <Root ref={rootRef} className={clsx(isScrolled && MODAL_ROOT_SCROLLED_CLASS)}>
+    <Root ref={rootRef} data-modal-root="" className={clsx(isScrolled && MODAL_ROOT_SCROLLED_CLASS)}>
       {children}
     </Root>
   )

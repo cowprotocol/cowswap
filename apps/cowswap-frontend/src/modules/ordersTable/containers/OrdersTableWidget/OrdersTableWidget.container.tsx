@@ -148,7 +148,7 @@ export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps
       ) : isUpToLarge ? (
         <Modal.Root>
           <ModalHeader title={t`Limit orders`} onClose={onClose} sticky />
-          {tableContainer}
+          <Modal.Content $noPadding>{tableContainer}</Modal.Content>
         </Modal.Root>
       ) : (
         tableContainer

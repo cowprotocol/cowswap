@@ -3,48 +3,6 @@ import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-const MOBILE_ORDERS_CONTENT_WIDTH = '720px'
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100%;
-  background: var(${UI.COLOR_PAPER});
-  color: var(${UI.COLOR_TEXT});
-`
-
-export const HeaderIdentity = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-
-  > h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 28px;
-  }
-`
-
-export const HeaderContext = styled.span`
-  overflow: hidden;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`
-
-export const Main = styled.main`
-  width: 100%;
-  max-width: ${MOBILE_ORDERS_CONTENT_WIDTH};
-  margin: 0 auto;
-`
-
 export const TabRail = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -52,7 +10,6 @@ export const TabRail = styled.div`
   gap: 8px;
   min-height: 48px;
   padding: 0 16px;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
 `
 
@@ -140,6 +97,7 @@ export const FilterButton = styled.button`
   line-height: 20px;
   white-space: nowrap;
   cursor: pointer;
+  margin: -16px 0;
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
@@ -158,9 +116,8 @@ export const Banner = styled.div`
 export const List = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 12px 12px 24px;
 `
 
 export const PaginationSection = styled.div`

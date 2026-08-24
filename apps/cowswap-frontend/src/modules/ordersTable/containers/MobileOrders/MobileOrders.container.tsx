@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useState } from 'react'
+import { ReactNode, RefObject, useLayoutEffect, useRef, useState } from 'react'
 
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal, ModalHeader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -10,14 +10,20 @@ import { OrderTabId, TabOrderTypes } from 'entities/routes/routes.atom'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { FiltersButton } from './FiltersButton.pure'
-import * as styledEl from './MobileOrders.styled'
 import { MobileOrdersContent } from './MobileOrdersContent.pure'
 import { MobileOrdersFilterSheet } from './MobileOrdersFilterSheet.pure'
+import { MobileOrdersTabRail } from './MobileOrdersTabRail.pure'
 
 import { OrdersTableNoWalletContent } from '../../pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent'
 import { OrdersTableUnsupportedNetworkContent } from '../../pure/OrdersTable/Content/UnsupportedNetwork/OrdersTableUnsupportedNetworkContent'
-import { ordersTableTabsAndCurrentTabAtom } from '../../state/params/ordersTableParams.atom'
+import {
+  ordersTablePageAtom,
+  ordersTableTabIdAtom,
+  ordersTableTabsAtom,
+} from '../../state/params/ordersTableParams.atom'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
+
+const OVERLAY_SCROLL_ROOT_SELECTOR = '[data-modal-root], [data-drawer-content]'
 
 export interface MobileOrdersProps {
   orderType: TabOrderTypes
@@ -39,9 +45,12 @@ export function MobileOrders({
   const { i18n, t } = useLingui()
   const { account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
-  const { tabs, tabId: currentTab } = useAtomValue(ordersTableTabsAndCurrentTabAtom)
+  const tabs = useAtomValue(ordersTableTabsAtom)
+  const currentTab = useAtomValue(ordersTableTabIdAtom)
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   const [showHeaderFilter, setShowHeaderFilter] = useState(false)
+  const tabRailRef = useRef<HTMLDivElement>(null)
+  const canShowOrders = Boolean(account) && !isProviderNetworkUnsupported
   const title = orderType === TabOrderTypes.ADVANCED ? t`TWAP orders` : t`Limit orders`
   const currentTabData = tabs.find((tab) => tab.id === currentTab)
   const currentTabCount = currentTabData?.count
@@ -58,27 +67,35 @@ export function MobileOrders({
     Number(currentTab === OrderTabId.HISTORY && historyStatusFilter !== HistoryStatusFilter.ALL)
   const hasActiveFilters = activeFilterCount > 0
 
+  useResetOverlayScrollOnPageChange(tabRailRef)
+
   return (
-    <styledEl.Wrapper>
+    <>
       <ModalHeader
         sticky
-        title={
-          <styledEl.HeaderIdentity>
-            <h2>{title}</h2>
-            {showHeaderFilter && currentTabLabel ? (
-              <styledEl.HeaderContext>{currentTabLabel}</styledEl.HeaderContext>
-            ) : null}
-          </styledEl.HeaderIdentity>
-        }
-        rightSlot={
-          showHeaderFilter && account && !isProviderNetworkUnsupported ? (
-            <FiltersButton activeCount={activeFilterCount} onClick={() => setIsFiltersOpen(true)} />
+        bottomBorder
+        contentMargin
+        title={title}
+        subtitle={currentTabLabel}
+        hideSubtitle={!showHeaderFilter}
+        rightSlot={<FiltersButton activeCount={activeFilterCount} onClick={() => setIsFiltersOpen(true)} />}
+        hideRightSlot={!showHeaderFilter || !canShowOrders}
+        scrollableBottomSlot={
+          canShowOrders ? (
+            <MobileOrdersTabRail
+              tabs={tabs}
+              currentTab={currentTab}
+              activeFilterCount={activeFilterCount}
+              tabRailRef={tabRailRef}
+              onOpenFilters={() => setIsFiltersOpen(true)}
+            />
           ) : null
         }
+        onScrollableBottomVisibilityChange={(visible) => setShowHeaderFilter(!visible)}
         onClose={onClose}
       />
 
-      <styledEl.Main>
+      <Modal.Content>
         {!account ? (
           <OrdersTableNoWalletContent />
         ) : isProviderNetworkUnsupported ? (
@@ -86,15 +103,12 @@ export function MobileOrders({
         ) : (
           <MobileOrdersContent
             orderType={orderType}
-            activeFilterCount={activeFilterCount}
             hasActiveFilters={hasActiveFilters}
             onClose={onClose}
-            onHeaderFilterVisibilityChange={setShowHeaderFilter}
-            onOpenFilters={() => setIsFiltersOpen(true)}
             onResetFilters={onResetFilters}
           />
         )}
-      </styledEl.Main>
+      </Modal.Content>
 
       <MobileOrdersFilterSheet
         isOpen={isFiltersOpen}
@@ -103,6 +117,23 @@ export function MobileOrders({
         onOpenChange={setIsFiltersOpen}
         onApply={onApplyFilters}
       />
-    </styledEl.Wrapper>
+    </>
   )
+}
+
+function useResetOverlayScrollOnPageChange(elementRef: RefObject<HTMLElement | null>): void {
+  const currentPage = useAtomValue(ordersTablePageAtom) ?? 1
+  const previousPageRef = useRef(currentPage)
+
+  useLayoutEffect(() => {
+    if (previousPageRef.current === currentPage) return
+
+    previousPageRef.current = currentPage
+
+    const scrollRoot = elementRef.current?.closest<HTMLElement>(OVERLAY_SCROLL_ROOT_SELECTOR)
+
+    if (scrollRoot) {
+      scrollRoot.scrollTop = 0
+    }
+  }, [currentPage, elementRef])
 }

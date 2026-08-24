@@ -7,10 +7,30 @@ import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
 import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
 
-export const Header = styled.header<{ withoutBorder?: boolean }>`
+interface ChromeEdgeProps {
+  $bottomBorder?: boolean
+  $contentMargin?: boolean
+}
+
+const chromeEdgeCss = css<ChromeEdgeProps>`
+  ${({ $bottomBorder }) =>
+    $bottomBorder &&
+    css`
+      border-bottom: 1px solid var(${UI.COLOR_BORDER});
+    `}
+
+  ${({ $contentMargin }) =>
+    $contentMargin &&
+    css`
+      margin-bottom: 10px;
+    `}
+`
+
+export const Header = styled.header<ChromeEdgeProps>`
   position: relative;
   background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
-  border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
+  padding: 16px 0;
+  ${chromeEdgeCss}
 
   &.sticky {
     position: sticky;
@@ -46,8 +66,8 @@ export const Inner = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 16px;
-  overflow: hidden;
+  padding: 0 16px;
+  // overflow: hidden;
   transition: ${transition(['padding'])};
 
   .hasBack & {
@@ -74,6 +94,50 @@ export const RightSlot = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
+  overflow: hidden;
+  max-width: 16rem;
+  opacity: 1;
+  transform: translateX(0);
+  transition: ${transition(['opacity', 'max-width', 'transform'])};
+
+  &[aria-hidden='true'] {
+    max-width: 0;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(8px);
+  }
+`
+
+export const Subtitle = styled.div`
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  width: 100%;
+  opacity: 1;
+  transition: ${transition(['grid-template-rows', 'opacity', 'margin'])};
+  margin-bottom: -16px;
+
+  &[aria-hidden='true'] {
+    pointer-events: none;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin: 0;
+  }
+`
+
+export const SubtitleContent = styled.div`
+  overflow: hidden;
+  min-height: 0;
+`
+
+export const SubtitleLabel = styled.div`
+  ${font('FONT_SMALL_PLUS', 'medium')}
+
+  padding: 8px 16px;
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 const headerIconButtonCss = css`
@@ -112,4 +176,9 @@ export const CloseButton = styled(CloseIconButton)`
   &[aria-hidden='true'] {
     transform: translate(calc(100% + 16px), -50%);
   }
+`
+
+export const ScrollableBottomSlot = styled.div<ChromeEdgeProps>`
+  width: 100%;
+  ${chromeEdgeCss}
 `
