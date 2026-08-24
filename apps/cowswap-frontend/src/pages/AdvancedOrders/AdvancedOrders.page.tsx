@@ -1,7 +1,9 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense } from 'react'
+import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { DrawerOrInline, Media } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -21,7 +23,7 @@ import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade'
-import { TradeRouteRedirect } from 'modules/trade'
+import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -43,7 +45,7 @@ export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
   const params = useParams()
-  const { i18n } = useLingui()
+  const { i18n, t } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -54,6 +56,16 @@ export function AdvancedOrdersPage(): ReactNode {
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
   const { hideOrdersTable } = useInjectedWidgetParams()
+  const { isOpen: isOrdersTableDrawerOpen } = useOrdersTableDrawerState()
+  const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+
+  const handleOrdersTableDrawerOpenChange = useCallback(
+    (open: boolean) => {
+      setOrdersTableDrawerOpen(open)
+    },
+    [setOrdersTableDrawerOpen],
+  )
 
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
@@ -71,7 +83,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable}
+        hideOrdersTable={hideOrdersTable || isUpToLarge}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -90,12 +102,18 @@ export function AdvancedOrdersPage(): ReactNode {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {!hideOrdersTable && (
-          <styledEl.SecondaryWrapper className="trade-orders-table">
-            <Suspense fallback={<Loading />}>
-              <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
-            </Suspense>
-          </styledEl.SecondaryWrapper>
+        {!hideOrdersTable && isUnlocked && (
+          <DrawerOrInline
+            isOpen={isOrdersTableDrawerOpen}
+            onOpenChange={handleOrdersTableDrawerOpenChange}
+            title={t`My orders`}
+          >
+            <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
+              <Suspense fallback={<Loading />}>
+                <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+              </Suspense>
+            </styledEl.SecondaryWrapper>
+          </DrawerOrInline>
         )}
       </styledEl.PageWrapper>
     </HydrateAtom>
