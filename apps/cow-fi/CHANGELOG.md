@@ -1,5 +1,45 @@
 # Changelog
 
+## [2.11.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.1...cow-fi-v2.11.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: reduce cowfi contexts to a single user like other apps (#7982)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/wallet@3.11.1
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
+## [2.10.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.0...cow-fi-v2.10.1) (2026-08-05)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/widget-react@3.2.5
+
 ## [2.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.9.2...cow-fi-v2.10.0) (2026-07-30)
 
 ### Minor Changes

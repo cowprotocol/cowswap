@@ -77,7 +77,7 @@ export async function safeBundleFlow({
   })
   beforeTrade?.()
 
-  const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions } = params
+  const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions, amountToApprove } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
@@ -88,7 +88,7 @@ export async function safeBundleFlow({
     const approveTx = await buildApproveTx({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: maxUint256,
+      amountToApprove: amountToApprove ?? maxUint256,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -157,7 +157,7 @@ export async function safeBundleFlow({
     const shouldZeroApprove = await shouldZeroApproveFn({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: inputAmount,
+      amountToApprove: amountToApprove ?? maxUint256,
       forceApprove: true,
       config,
     })
@@ -210,7 +210,7 @@ export async function safeBundleFlow({
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

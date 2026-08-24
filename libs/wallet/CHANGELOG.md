@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.11.0...wallet-v3.11.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+  - @cowprotocol/ens@3.5.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.10.0...wallet-v3.11.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- fix(wallet): wait for late injected provider before eager reconnect on mobile (#7909)
+
+- fix: use viem's default urls for wallets (#7926)
+
+- fix: set a custom default rpc for sepolia and bnb (#7940)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/ens@3.5.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/iframe-transport@2.3.5
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.9.0...wallet-v3.10.0) (2026-07-30)
 
 ### Minor Changes

@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.10.0...balances-and-allowances-v3.11.0) (2026-08-12)
+
+### Minor Changes
+
+- feat(solana): approve flow (#7946)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: restore lost files after squash revert from main
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/tokens@3.10.0
+  - @cowprotocol/wallet@3.11.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.9.0...balances-and-allowances-v3.10.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix(balances): display zero balance instead of a blank value on wrap eth modal (#7937)
+
+- fix(balances): check every subcall to divide Network errors and rpc layer (#7938)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/tokens@3.9.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.8.0...balances-and-allowances-v3.9.0) (2026-07-30)
 
 ### Minor Changes

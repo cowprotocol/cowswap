@@ -1,5 +1,51 @@
 # Changelog
 
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.9.0...explorer-v4.10.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix(explorer): bridge label word-wrap and order history chain icon (#7973)
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: restore translations + reverted fix
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
+## [4.9.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.8.0...explorer-v4.9.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix(explorer): show shortened address for unknown tx-hash solvers
+
+- fix(explorer): stop the solver badge resolving twice
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/analytics@3.9.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/hook-dapp-lib@2.2.12
+
 ## [4.8.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.7.0...explorer-v4.8.0) (2026-07-30)
 
 ### Minor Changes
