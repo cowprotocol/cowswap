@@ -14,6 +14,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../../containers/OrderRow/OrderRow.styled'
 import { getDistanceColor } from '../../utils/getDistanceColor'
+import { WarningReason } from '../OrderEstimatedExecutionPrice/orderEstimatedExecutionPrice.constants'
 import { OrderEstimatedExecutionPrice } from '../OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure'
 import { TwapOrderStatus } from '../TwapOrderStatus/TwapOrderStatus.pure'
 import { TwapScheduledOrderStatus } from '../TwapScheduledOrderStatus/TwapScheduledOrderStatus.pure'
@@ -28,8 +29,9 @@ export interface OrderFillsAtWithDistanceProps {
   order: ParsedOrder
   isInverted: boolean
   isUnfillable: boolean
+  isFallbackHandlerRequired?: boolean
   withWarning: boolean
-  warningText: string
+  warningReason?: WarningReason
   onApprove?: Command
   priceDiffs: PriceDifference
   orderFillsAt: ReactNode
@@ -49,8 +51,9 @@ export function OrderFillsAtWithDistance({
   order,
   isInverted,
   isUnfillable,
+  isFallbackHandlerRequired,
   withWarning,
-  warningText,
+  warningReason,
   onApprove,
   priceDiffs,
   orderFillsAt,
@@ -60,7 +63,11 @@ export function OrderFillsAtWithDistance({
     return (
       estimatedPriceWarning || (
         <styledEl.CellElement doubleRow>
-          <TwapOrderStatus orderStatus={order.status} childOrders={childOrders}>
+          <TwapOrderStatus
+            orderStatus={order.status}
+            childOrders={childOrders}
+            isFallbackHandlerRequired={isFallbackHandlerRequired}
+          >
             <TwapScheduledOrderStatus
               childOrders={childOrders}
               isInverted={isInverted}
@@ -84,7 +91,7 @@ export function OrderFillsAtWithDistance({
           isInverted={isInverted}
           isUnfillable={true}
           canShowWarning={true}
-          warningText={warningText}
+          warningReason={warningReason}
           onApprove={onApprove}
         />
       </styledEl.ExecuteCellWrapper>

@@ -28,11 +28,19 @@ type AdditionalParams = {
   isBundlingSupportedOrEnabledForContext: boolean | null
   /** Whether the connected wallet can sign orders and permits off-chain. */
   allowsOffchainSigning?: boolean
+  /**
+   * Limit orders defer the permit signature to the confirm step (`tradeFlow`'s `handlePermit`), so this
+   * hook normally reports `NotRequired` for them even when a permit is actually about to be signed. Pass
+   * `true` to get the real underlying reason instead — used by the partial-approve toggle, which needs to
+   * know a permit is coming so it can offer a choice before that deferred signature happens.
+   */
+  ignoreLimitOrderPermitDeferral?: boolean
 }
 
 export function useIsApprovalOrPermitRequired({
   isBundlingSupportedOrEnabledForContext,
   allowsOffchainSigning = false,
+  ignoreLimitOrderPermitDeferral = false,
 }: AdditionalParams): {
   reason: ApproveRequiredReason
   currentAllowance: Nullish<bigint>
@@ -42,8 +50,10 @@ export function useIsApprovalOrPermitRequired({
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const permitInfo = usePermitInfo(inputCurrency, tradeType)
   const type = permitInfo?.type
-  const offchainPermitRequirement =
-    tradeType === TradeType.LIMIT_ORDER ? ApproveRequiredReason.NotRequired : getPermitRequirements(type)
+  const deferLimitOrderPermit = tradeType === TradeType.LIMIT_ORDER && !ignoreLimitOrderPermitDeferral
+  const offchainPermitRequirement = deferLimitOrderPermit
+    ? ApproveRequiredReason.NotRequired
+    : getPermitRequirements(type)
 
   const reason = (() => {
     if (
@@ -75,7 +85,7 @@ export function useIsApprovalOrPermitRequired({
 
     if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
-    if (!isNewApproveFlowEnabled(tradeType)) {
+    if (!isNewApproveFlowEnabled(tradeType, deferLimitOrderPermit)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -118,6 +128,8 @@ function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Curre
   return !amountToApprove.equalTo('0')
 }
 
-function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>): boolean {
-  return tradeType === TradeType.SWAP
+function isNewApproveFlowEnabled(tradeType: Nullish<TradeType>, deferLimitOrderPermit: boolean): boolean {
+  if (tradeType === TradeType.SWAP) return true
+  if (tradeType === TradeType.LIMIT_ORDER) return !deferLimitOrderPermit
+  return false
 }

@@ -1,4 +1,9 @@
+import { maxUint256 } from 'viem'
+
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+
+import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
+import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { SafeBundleFlowContext } from '../types'
 
@@ -60,7 +65,11 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
     error: jest.fn(),
   }
 
-  function buildParams(quoteId: number | undefined, allowsOffchainSigning: boolean): SafeBundleFlowContext {
+  function buildParams(
+    quoteId: number | undefined,
+    allowsOffchainSigning: boolean,
+    amountToApprove?: bigint,
+  ): SafeBundleFlowContext {
     return {
       chainId: 1,
       dispatch: jest.fn(),
@@ -68,6 +77,7 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
       spender: '0xspender',
       sendBatchTransactions: jest.fn().mockResolvedValue('0xsafetxhash'),
       quoteState: {},
+      amountToApprove,
       postOrderParams: {
         class: 'limit',
         kind: 'sell',
@@ -91,9 +101,9 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
     } as unknown as SafeBundleFlowContext
   }
 
-  function run(quoteId: number | undefined, allowsOffchainSigning: boolean): Promise<string> {
+  function run(quoteId: number | undefined, allowsOffchainSigning: boolean, amountToApprove?: bigint): Promise<string> {
     return safeBundleFlow({
-      params: buildParams(quoteId, allowsOffchainSigning),
+      params: buildParams(quoteId, allowsOffchainSigning, amountToApprove),
       priceImpact: { priceImpact: undefined } as never,
       settingsState: {} as never,
       confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
@@ -112,5 +122,30 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
     expect(analytics.approveAndPresign).toHaveBeenCalledWith(
       expect.objectContaining({ quoteId: 123, allowsOffchainSigning: false }),
     )
+  })
+
+  it('uses the amountToApprove from context for the approve tx instead of an unlimited amount', async () => {
+    await run(123, false, 555n)
+
+    expect(buildApproveTx).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 555n }))
+  })
+
+  it('falls back to an unlimited approve when amountToApprove is not provided', async () => {
+    await run(123, false, undefined)
+
+    expect(buildApproveTx).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
+  })
+
+  it('checks zero-approval against the same amount used for the real approve tx', async () => {
+    await run(123, false, 555n)
+
+    expect(shouldZeroApprove).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 555n }))
+  })
+
+  it('checks zero-approval against an unlimited amount when amountToApprove is not provided', async () => {
+    await run(123, false, undefined)
+
+    expect(buildApproveTx).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
+    expect(shouldZeroApprove).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: maxUint256 }))
   })
 })

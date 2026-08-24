@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.8.0...common-const-v3.9.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.1...common-const-v3.8.0) (2026-08-05)
 
 ### Minor Changes

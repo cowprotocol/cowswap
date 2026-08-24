@@ -96,7 +96,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   )
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE}>
+    <TradeConfirmModal title={CONFIRM_TITLE} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}

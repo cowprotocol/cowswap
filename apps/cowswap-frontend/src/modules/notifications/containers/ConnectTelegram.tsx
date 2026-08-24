@@ -1,31 +1,25 @@
 import type { ReactElement } from 'react'
 
-import styled from 'styled-components/macro'
-
 import { ConnectTelegramController } from './ConnectTelegram/useConnectTelegram'
 
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
-
-const Wrapper = styled.div``
 
 interface ConnectTelegramProps {
   controller: ConnectTelegramController
 }
 
 export function ConnectTelegram({ controller }: ConnectTelegramProps): ReactElement {
-  const { wrapperRef, isLoading, isSubscribed, needsAuthorization, authorize, toggleSubscription, subscribeWithData } =
-    controller
+  const { isLoading, isSubscribed, botDeepLink, connectState, deepLink, connect, cancelConnect } = controller
 
   return (
-    <Wrapper ref={wrapperRef}>
-      <TelegramConnectionStatus
-        isLoading={isLoading}
-        isSubscribed={isSubscribed}
-        needsAuthorization={needsAuthorization}
-        authorize={authorize}
-        toggleSubscription={toggleSubscription}
-        subscribeWithData={subscribeWithData}
-      />
-    </Wrapper>
+    <TelegramConnectionStatus
+      isLoading={isLoading}
+      isSubscribed={isSubscribed}
+      botDeepLink={botDeepLink}
+      connectState={connectState}
+      deepLink={deepLink}
+      connect={connect}
+      cancelConnect={cancelConnect}
+    />
   )
 }
