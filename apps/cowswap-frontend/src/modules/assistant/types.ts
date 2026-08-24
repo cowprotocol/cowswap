@@ -9,6 +9,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
  * money they don't need to spend.
  */
 export interface AssistantApproval {
+  /** USDT-style: the allowance must be set to zero first, so it's two transactions. */
+  needsZeroFirst?: boolean
   permitType?: 'dai-like' | 'eip-2612'
   status: 'approval_transaction' | 'bundled_with_trade' | 'permit_signature'
 }

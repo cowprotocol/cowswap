@@ -1,6 +1,9 @@
+import { getWrappedToken } from '@cowprotocol/common-utils'
+import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
-import { ApproveRequiredReason, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { ApproveRequiredReason, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
 import { AssistantApproval } from '../types'
 
@@ -22,6 +25,11 @@ import { AssistantApproval } from '../types'
  * An approval is where a first-time CoW user meets an unexpected gas fee on a
  * product sold as gasless, and nothing in the UI explains it in advance.
  *
+ * Some tokens — USDT is the famous one — refuse to change a non-zero allowance
+ * directly, so the approval has to be set to zero first. That's TWO transactions
+ * and two wallet prompts, and "why is it asking me to approve twice?" is a
+ * genuinely confusing moment worth warning about rather than explaining afterwards.
+ *
  * `ignoreLimitOrderPermitDeferral: true` is deliberate. Limit orders defer the
  * permit signature to the confirm step, so the hook otherwise reports NotRequired
  * while a permit is in fact about to be requested — and telling someone "nothing
@@ -38,9 +46,25 @@ export function useApprovalContext(): AssistantApproval | null {
     ignoreLimitOrderPermitDeferral: true,
   })
 
+  const amountToApprove = useGetAmountToSignApprove()
+  const needsApproval = reason === ApproveRequiredReason.Required
+  const wrappedAmount =
+    amountToApprove && !amountToApprove.currency.isNative
+      ? (CurrencyAmount.fromRawAmount(
+          getWrappedToken(amountToApprove.currency),
+          amountToApprove.quotient.toString(),
+        ) as CurrencyAmount<Token>)
+      : null
+
+  const needsZeroFirst = useNeedsZeroApproval(
+    wrappedAmount,
+    wrappedAmount ? BigInt(wrappedAmount.quotient.toString()) : null,
+    needsApproval,
+  )
+
   switch (reason) {
     case ApproveRequiredReason.Required:
-      return { status: 'approval_transaction' }
+      return { status: 'approval_transaction', ...(needsZeroFirst ? { needsZeroFirst: true } : {}) }
     case ApproveRequiredReason.Eip2612PermitRequired:
       return { status: 'permit_signature', permitType: 'eip-2612' }
     case ApproveRequiredReason.DaiLikePermitRequired:
