@@ -7,6 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { TradeType, useDerivedTradeState } from 'modules/trade'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -35,6 +36,15 @@ jest.mock('../state')
 jest.mock('modules/injectedWidget', () => ({
   useIsInfiniteApproveDisabledInWidget: jest.fn(),
 }))
+jest.mock('modules/trade', () => ({
+  TradeType: {
+    SWAP: 'SWAP',
+    LIMIT_ORDER: 'LIMIT_ORDER',
+    ADVANCED_ORDERS: 'ADVANCED_ORDERS',
+    YIELD: 'YIELD',
+  },
+  useDerivedTradeState: jest.fn(),
+}))
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -52,6 +62,7 @@ const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jes
 const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
   typeof useIsInfiniteApproveDisabledInWidget
 >
+const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 type WalletInfo = ReturnType<typeof useWalletInfo>
 
 // eslint-disable-next-line max-lines-per-function
@@ -95,6 +106,7 @@ describe('useApproveAndSwap', () => {
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
     mockUseIsInfiniteApproveDisabled.mockReturnValue(false)
+    mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as ReturnType<typeof useDerivedTradeState>)
   })
 
   describe('permit flow', () => {
@@ -120,6 +132,25 @@ describe('useApproveAndSwap', () => {
         expect(mockOnApproveConfirm).toHaveBeenCalled()
         expect(mockHandleApprove).not.toHaveBeenCalled()
       })
+    })
+
+    it('should query permit support with the real trade type instead of a hardcoded one', () => {
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.ADVANCED_ORDERS } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+
+      renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      expect(mockUseTokenSupportsPermit).toHaveBeenCalledWith(mockAmountToApprove.currency, TradeType.ADVANCED_ORDERS)
     })
 
     it('should not fall back to on-chain approve when permit signing fails', async () => {
