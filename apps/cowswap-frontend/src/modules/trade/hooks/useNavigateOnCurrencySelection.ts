@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -34,7 +34,7 @@ export type StateUpdateCallback = (nextState: Partial<ExtendedTradeRawState>) =>
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
-// eslint-disable-next-line max-lines-per-function -- already tracked by the complexity TODO below
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useNavigateOnCurrencySelection(enableSellEqBuy = false): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, orderKind } = useDerivedTradeState() || {}
@@ -46,6 +46,28 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
   const isOutputCurrencyBridgeSupported = Boolean(
     outputCurrency ? bridgeSupportedNetworks?.some((network) => network.id === outputCurrency?.chainId) : true,
   )
+
+  /**
+   * Last-resort, sticky fallback for whichever side (input/output) the user *isn't* currently
+   * picking a new currency for — read via `.current` at click time, not captured in the callback's
+   * closure, so it stays correct even if this specific render's `inputCurrency`/`outputCurrency`
+   * (from `useDerivedTradeState()`) or `tradeRawState` (via `useTradeState()`, which can itself
+   * momentarily read as empty — see its `EMPTY_TRADE_STATE` short-circuit) are transiently
+   * unavailable right when the click fires. Without this, selecting a currency for one side while
+   * the other transiently reads as unresolved wipes that other, already-selected side to the `_`
+   * "unset" URL placeholder (`parameterizeTradeRoute`) instead of preserving it — observed as
+   * [CS-104]'s flaky sell token reverting to "Select a token" after picking the buy token.
+   */
+  const lastKnownInputCurrencyIdRef = useRef<string | null>(null)
+  const lastKnownOutputCurrencyIdRef = useRef<string | null>(null)
+
+  const knownInputCurrencyId =
+    (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? tradeRawState?.inputCurrencyId ?? null
+  const knownOutputCurrencyId =
+    (outputCurrency && resolveCurrencyAddressOrSymbol(outputCurrency)) ?? tradeRawState?.outputCurrencyId ?? null
+
+  if (knownInputCurrencyId) lastKnownInputCurrencyIdRef.current = knownInputCurrencyId
+  if (knownOutputCurrencyId) lastKnownOutputCurrencyIdRef.current = knownOutputCurrencyId
 
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
@@ -71,15 +93,16 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
 
       const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
 
-      // Fall back to the already-known raw id, not `null`, while the resolved Currency object catches up.
-      const inputCurrencyId =
-        (inputCurrency && resolveCurrencyAddressOrSymbol(inputCurrency)) ?? tradeRawState?.inputCurrencyId ?? null
+      // The preserved (non-bridge-aware) side just reads the sticky ref — it's already updated on
+      // every render with this exact `(currency && resolve(currency)) ?? tradeRawState?....id`
+      // fallback chain, so it's always at least as fresh as recomputing it here.
+      const inputCurrencyId = lastKnownInputCurrencyIdRef.current
       const outputCurrencyId = outputCurrency
         ? // For cross-chain order always use address for outputCurrencyId
           isBridgeTrade || targetChainMismatch
           ? getCurrencyAddress(outputCurrency)
           : resolveCurrencyAddressOrSymbol(outputCurrency)
-        : (tradeRawState?.outputCurrencyId ?? null)
+        : lastKnownOutputCurrencyIdRef.current
 
       // When switching SELL chain, persist token address for non-native tokens.
       // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
@@ -136,7 +159,6 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       orderKind,
       inputCurrency,
       outputCurrency,
-      tradeRawState,
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
       enableSellEqBuy,
