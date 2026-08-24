@@ -2,21 +2,22 @@ import { ReactNode, useEffect } from 'react'
 
 import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
 
-import { BottomDrawer } from './BottomDrawer.pure'
+import { Dialog } from './Dialog.pure'
 
 import { Media } from '../../consts'
 
-export interface DrawerOrInlineProps {
+export interface DialogOrInlineProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   children: ReactNode
+  /** Overlay title used for a11y. When `header` is omitted, Dialog also renders a sticky ModalHeader. */
   title?: string
   className?: string
   header?: ReactNode
   footer?: ReactNode
 }
 
-export function DrawerOrInline({
+export function DialogOrInline({
   isOpen,
   onOpenChange,
   children,
@@ -24,7 +25,7 @@ export function DrawerOrInline({
   className,
   header,
   footer,
-}: DrawerOrInlineProps): ReactNode {
+}: DialogOrInlineProps): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const onOpenChangeRef = useLatestRef(onOpenChange)
@@ -54,7 +55,7 @@ export function DrawerOrInline({
   }
 
   return (
-    <BottomDrawer
+    <Dialog
       open={isOpen}
       onOpenChange={onOpenChange}
       title={title}
@@ -63,6 +64,6 @@ export function DrawerOrInline({
       footer={footer}
     >
       {children}
-    </BottomDrawer>
+    </Dialog>
   )
 }

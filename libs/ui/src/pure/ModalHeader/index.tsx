@@ -1,14 +1,22 @@
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import clsx from 'clsx'
 
 import * as styledEl from './styled'
+import { useScrollableBottomVisibility } from './useScrollableBottomVisibility'
 
 export interface ModalHeaderProps {
   sticky?: boolean
   title?: ReactNode
   children?: ReactNode
+  subtitle?: ReactNode
+  hideSubtitle?: boolean
   rightSlot?: ReactNode
+  hideRightSlot?: boolean
+  scrollableBottomSlot?: ReactNode
+  bottomBorder?: boolean
+  contentMargin?: boolean
+  onScrollableBottomVisibilityChange?(visible: boolean): void
   onBack?(): void
   onClose?(): void
   className?: string
@@ -20,26 +28,77 @@ export function ModalHeader({
   sticky,
   title,
   children,
+  subtitle,
+  hideSubtitle = false,
   rightSlot,
+  hideRightSlot = false,
+  scrollableBottomSlot,
+  bottomBorder,
+  contentMargin,
+  onScrollableBottomVisibilityChange,
   className,
   onBack,
   onClose,
 }: ModalHeaderProps): ReactNode {
+  const headerRef = useRef<HTMLElement>(null)
+  const scrollableBottomSlotRef = useRef<HTMLDivElement>(null)
   const hasBack = !!onBack
   const hasClose = !!onClose
-  const rootClass = clsx(className, hasBack && 'hasBack', hasClose && 'hasClose', sticky && 'sticky')
+  const hasScrollableBottomSlot = !!scrollableBottomSlot
+  const headerClass = clsx(
+    className,
+    hasBack && 'hasBack',
+    hasClose && 'hasClose',
+    sticky && 'sticky',
+    subtitle && !hideSubtitle && 'noBottomPadding',
+  )
+
+  useScrollableBottomVisibility(
+    scrollableBottomSlotRef,
+    headerRef,
+    hasScrollableBottomSlot && !!onScrollableBottomVisibilityChange,
+    onScrollableBottomVisibilityChange,
+  )
 
   return (
-    <styledEl.Header className={rootClass} withoutBorder>
-      <styledEl.Inner>
-        <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
+    <>
+      <styledEl.Header
+        ref={headerRef}
+        className={headerClass}
+        $bottomBorder={bottomBorder && !hasScrollableBottomSlot}
+        $contentMargin={contentMargin && !hasScrollableBottomSlot}
+      >
+        <styledEl.Inner>
+          <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
 
-        <styledEl.Title>{title || children}</styledEl.Title>
+          <styledEl.Title>{title || children}</styledEl.Title>
+          {rightSlot ? (
+            <styledEl.RightSlot aria-hidden={hideRightSlot} inert={hideRightSlot}>
+              {rightSlot}
+            </styledEl.RightSlot>
+          ) : null}
 
-        {rightSlot ? <styledEl.RightSlot>{rightSlot}</styledEl.RightSlot> : null}
+          <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
+        </styledEl.Inner>
 
-        <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
-      </styledEl.Inner>
-    </styledEl.Header>
+        {subtitle ? (
+          <styledEl.Subtitle aria-hidden={hideSubtitle} inert={hideSubtitle}>
+            <styledEl.SubtitleContent>
+              <styledEl.SubtitleLabel>{subtitle}</styledEl.SubtitleLabel>
+            </styledEl.SubtitleContent>
+          </styledEl.Subtitle>
+        ) : null}
+      </styledEl.Header>
+
+      {hasScrollableBottomSlot ? (
+        <styledEl.ScrollableBottomSlot
+          ref={scrollableBottomSlotRef}
+          $bottomBorder={bottomBorder}
+          $contentMargin={contentMargin}
+        >
+          {scrollableBottomSlot}
+        </styledEl.ScrollableBottomSlot>
+      ) : null}
+    </>
   )
 }

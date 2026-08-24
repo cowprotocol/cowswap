@@ -1,8 +1,8 @@
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 import styled from 'styled-components/macro'
 
-import { OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
+import { OVERLAY_BACKDROP_EFFECT } from '../../styles/mixins'
 import { transition } from '../../utils/animation'
 
 /** Matches Base UI drawer demos: duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] */
@@ -10,12 +10,13 @@ const DRAWER_TRANSITION_DURATION = '450ms'
 const DRAWER_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
 export const Backdrop = styled(BaseDrawer.Backdrop)`
+  ${OVERLAY_BACKDROP_EFFECT}
+
   position: fixed;
   inset: 0;
-  z-index: ${OVERLAY_Z_INDEX.drawerBackdrop};
-  background-color: var(${UI.MODAL_BACKDROP});
-  --backdrop-opacity: 0.4;
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  z-index: 0;
+  pointer-events: auto;
+  --backdrop-opacity: calc(var(--overlay-backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
   transition: opacity ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};
 
   &[data-starting-style],
@@ -35,7 +36,7 @@ export const Backdrop = styled(BaseDrawer.Backdrop)`
 export const Viewport = styled(BaseDrawer.Viewport)`
   position: fixed;
   inset: 0;
-  z-index: ${OVERLAY_Z_INDEX.drawerViewport};
+  z-index: 1;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -53,6 +54,7 @@ export const Popup = styled(BaseDrawer.Popup)`
   width: 100%;
   max-width: 100%;
   /* Definite max height so flex children can shrink and scroll inside */
+  height: auto;
   max-height: 90dvh;
   overflow: hidden;
   border-radius: var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0;
@@ -88,6 +90,7 @@ export const Header = styled.div`
 export const Handle = styled.div`
   flex-shrink: 0;
   align-self: center;
+  display: block;
   width: 36px;
   height: 4px;
   margin: 10px 0 4px;
@@ -98,6 +101,7 @@ export const Handle = styled.div`
 /* Opt scroll body out of swipe-to-dismiss so vertical touch scrolling works */
 export const Content = styled(BaseDrawer.Content).attrs({
   'data-base-ui-swipe-ignore': '',
+  'data-drawer-content': '',
 })`
   ${({ theme }) => theme.colorScrollbar};
 
@@ -111,7 +115,6 @@ export const Content = styled(BaseDrawer.Content).attrs({
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  transform: translateZ(0);
 `
 
 /**

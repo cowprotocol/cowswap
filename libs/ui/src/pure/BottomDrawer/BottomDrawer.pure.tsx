@@ -1,10 +1,14 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, type UIEvent, useCallback, useEffect, useState } from 'react'
 
 import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
+import clsx from 'clsx'
 
 import * as styledEl from './BottomDrawer.styled'
+
+import { MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
+import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
 
 export interface BottomDrawerProps {
   open: boolean
@@ -31,6 +35,8 @@ export function BottomDrawer({
   footer,
   header,
 }: BottomDrawerProps): ReactNode {
+  const [isContentScrolled, setIsContentScrolled] = useState(false)
+
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -38,32 +44,43 @@ export function BottomDrawer({
     [onOpenChange],
   )
 
+  const handleContentScroll = useCallback((event: UIEvent<HTMLDivElement>) => {
+    setIsContentScrolled(event.currentTarget.scrollTop > 0)
+  }, [])
+
+  useEffect(() => {
+    if (!open) {
+      setIsContentScrolled(false)
+    }
+  }, [open])
   useBodyScrollbarLocker(open)
 
   return (
     <BaseDrawer.Root open={open} onOpenChange={handleOpenChange} swipeDirection="down">
       <BaseDrawer.VirtualKeyboardProvider>
         <BaseDrawer.Portal>
-          <styledEl.Backdrop />
-          <styledEl.Viewport>
-            <styledEl.Popup className={className}>
-              <styledEl.Header>
-                <styledEl.Handle aria-hidden />
-                {header}
-              </styledEl.Header>
+          <OverlayLayer data-bottom-drawer-layer="">
+            <styledEl.Backdrop data-bottom-drawer-backdrop="" forceRender />
+            <styledEl.Viewport data-bottom-drawer-viewport="">
+              <styledEl.Popup className={clsx(className, isContentScrolled && MODAL_ROOT_SCROLLED_CLASS)}>
+                <styledEl.Header>
+                  <styledEl.Handle aria-hidden />
+                  {header}
+                </styledEl.Header>
 
-              <styledEl.Content>
-                <styledEl.VisuallyHiddenTitle>{title ?? 'Drawer'}</styledEl.VisuallyHiddenTitle>
-                {children}
-              </styledEl.Content>
+                <styledEl.Content data-scrolled={isContentScrolled ? 'true' : undefined} onScroll={handleContentScroll}>
+                  <styledEl.VisuallyHiddenTitle>{title ?? 'Drawer'}</styledEl.VisuallyHiddenTitle>
+                  {children}
+                </styledEl.Content>
 
-              {footer ? (
-                <styledEl.FooterSlot>
-                  <styledEl.StickyFooter>{footer}</styledEl.StickyFooter>
-                </styledEl.FooterSlot>
-              ) : null}
-            </styledEl.Popup>
-          </styledEl.Viewport>
+                {footer ? (
+                  <styledEl.FooterSlot>
+                    <styledEl.StickyFooter>{footer}</styledEl.StickyFooter>
+                  </styledEl.FooterSlot>
+                ) : null}
+              </styledEl.Popup>
+            </styledEl.Viewport>
+          </OverlayLayer>
         </BaseDrawer.Portal>
       </BaseDrawer.VirtualKeyboardProvider>
     </BaseDrawer.Root>

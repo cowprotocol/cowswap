@@ -1308,6 +1308,10 @@ msgstr "Confirm"
 msgid "Total vCOW balance"
 msgstr "Total vCOW balance"
 
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
+msgid "TWAP orders"
+msgstr "TWAP orders"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/UnsupportedTokenButton.pure.tsx
 msgid "Unsupported token"
@@ -3320,6 +3324,10 @@ msgstr "Click to copy contract address"
 msgid "Unsupported wallet detected"
 msgstr "Unsupported wallet detected"
 
+#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
+msgid "Limit orders"
+msgstr "Limit orders"
+
 #: libs/common-const/src/common.ts
 #~ msgid "Tokens Overview"
 #~ msgstr "Tokens Overview"
@@ -4862,6 +4870,7 @@ msgid "Token symbol, address"
 msgstr "Token symbol, address"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order Receipt"
 msgstr "Order Receipt"
 
@@ -5355,8 +5364,8 @@ msgstr "Edit limit order"
 
 #: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 #: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
-msgid "My orders"
-msgstr "My orders"
+#~ msgid "My orders"
+#~ msgstr "My orders"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/CancellingStep.tsx
 msgid "Your order is being cancelled."
