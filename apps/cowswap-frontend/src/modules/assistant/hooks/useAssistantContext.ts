@@ -42,7 +42,20 @@ const IMPACT_CALLOUT_PCT = 5
  *
  * ⚠️ Judgement calls, not computed figures.
  */
-const SMALL_LIMIT_USD: Record<number, number> = { 1: 100, 8453: 5 }
+const SMALL_LIMIT_USD: Record<number, number> = {
+  [SupportedChainId.MAINNET]: 100,
+  [SupportedChainId.GNOSIS_CHAIN]: 2,
+  // Every other supported chain settles cheaply enough that $5 is the sane floor;
+  // Sepolia is deliberately absent, since warning about play money is noise.
+  [SupportedChainId.BASE]: 5,
+  [SupportedChainId.ARBITRUM_ONE]: 5,
+  [SupportedChainId.POLYGON]: 5,
+  [SupportedChainId.AVALANCHE]: 5,
+  [SupportedChainId.BNB]: 5,
+  [SupportedChainId.LINEA]: 5,
+  [SupportedChainId.INK]: 5,
+  [SupportedChainId.PLASMA]: 5,
+}
 
 /**
  * How many holdings to send. Every turn resends this, so it can't be unbounded —

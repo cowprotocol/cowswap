@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAINS_MAP, OrderKind } from '@cowprotocol/cow-sdk'
 
 import { parameterizeTradeRoute } from 'modules/trade'
 
@@ -8,8 +8,6 @@ import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { AssistantProposal } from '../types'
-
-const SUPPORTED_CHAINS: number[] = [SupportedChainId.MAINNET, SupportedChainId.BASE]
 
 export type ApplyResult = { ok: true } | { ok: false; problem: string }
 
@@ -83,8 +81,16 @@ export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult
   )
 }
 
-function isTokenId(id: string): boolean {
-  return id === 'ETH' || /^0x[a-fA-F0-9]{40}$/.test(id || '')
+/**
+ * A token id is a contract address, or the chain's native currency symbol.
+ *
+ * ⚠️ Native is NOT "ETH" everywhere — xDAI on Gnosis, POL on Polygon, plus AVAX,
+ * BNB and XPL. Reading the symbol from the SDK rather than hardcoding it means this
+ * can't drift from the chains the app actually supports.
+ */
+function isTokenId(id: string, chainId: number): boolean {
+  const chain = ALL_SUPPORTED_CHAINS_MAP[chainId as keyof typeof ALL_SUPPORTED_CHAINS_MAP]
+  return id === chain?.nativeCurrency.symbol || /^0x[a-fA-F0-9]{40}$/.test(id || '')
 }
 
 /**
@@ -116,9 +122,11 @@ function validateAmounts(proposal: AssistantProposal): string | null {
 
 /** Tokens must be real, distinct, and on a chain we support. */
 function validateTokens(proposal: AssistantProposal): string | null {
-  if (!SUPPORTED_CHAINS.includes(proposal.chainId)) return `Unsupported chain: ${proposal.chainId}`
-  if (!isTokenId(proposal.sellToken) || !isTokenId(proposal.buyToken)) {
-    return 'Token is not an address or "ETH".'
+  const chain = ALL_SUPPORTED_CHAINS_MAP[proposal.chainId as keyof typeof ALL_SUPPORTED_CHAINS_MAP]
+  if (!chain) return `Unsupported chain: ${proposal.chainId}`
+
+  if (!isTokenId(proposal.sellToken, proposal.chainId) || !isTokenId(proposal.buyToken, proposal.chainId)) {
+    return `Token is not an address or ${chain.nativeCurrency.symbol}.`
   }
   if (proposal.sellToken.toLowerCase() === proposal.buyToken.toLowerCase()) {
     return 'Sell and buy tokens are the same.'
