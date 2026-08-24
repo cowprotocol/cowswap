@@ -10,6 +10,7 @@ import {
   Order,
   OrderStatus,
   ProtocolFee,
+  ProtocolFeeOwner,
   ProtocolFeeType,
   RAW_ORDER_STATUS,
   RawOrder,
@@ -18,6 +19,7 @@ import {
 } from 'api/operator/types'
 
 import { getOrderBridgeProviderId } from './getOrderBridgeProviderId'
+import { PartnerFeePolicy } from './partnerFeePolicies'
 
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
 
@@ -359,8 +361,14 @@ export function getOrderSurplus(order: RawOrder): Surplus {
  * Aggregates the fees charged across an order's fills into one total per (position, type, token).
  * Position alone is not a safe key: across fills it can carry a different token or policy, and
  * summing those would mix tokens.
+ *
+ * `partnerFeePolicies` comes from the order's app data (see {@link getPartnerFeePolicies}) and is
+ * what each fee's owner is derived from.
  */
-export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFees'>>): ProtocolFee[] {
+export function getProtocolFees(
+  trades: Array<Pick<RawTrade, 'executedProtocolFees'>>,
+  partnerFeePolicies?: PartnerFeePolicy[],
+): ProtocolFee[] {
   const feesByPolicy = new Map<string, ProtocolFee>()
 
   for (const { executedProtocolFees } of trades) {
@@ -377,14 +385,30 @@ export function getProtocolFees(trades: Array<Pick<RawTrade, 'executedProtocolFe
       if (existing) {
         existing.amount = existing.amount.plus(amount)
       } else {
-        feesByPolicy.set(key, { amount: new BigNumber(amount), tokenAddress, type, position })
+        feesByPolicy.set(key, {
+          amount: new BigNumber(amount),
+          tokenAddress,
+          type,
+          factor: getProtocolFeeFactor(policy),
+          position,
+          owner: ProtocolFeeOwner.Protocol,
+        })
       }
     })
   }
 
-  return Array.from(feesByPolicy.values())
-    .sort((a, b) => a.position - b.position)
-    .filter((fee) => fee.amount.isGreaterThan(0))
+  const fees = Array.from(feesByPolicy.values()).sort((a, b) => a.position - b.position)
+
+  // Before dropping the empty ones: a policy that charged nothing still occupies its place in its
+  // type's run, so it has to be there for the partner boundary to line up.
+  attributeFeeOwners(fees, partnerFeePolicies)
+
+  const charged = fees.filter((fee) => fee.amount.isGreaterThan(0))
+
+  // After dropping them, so the numbers the user sees start at 1 and have no gaps.
+  numberPartners(charged)
+
+  return charged
 }
 
 export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
@@ -484,6 +508,76 @@ export function transformTrade(rawTrade: TradeMetaData, order: Order, executionT
   }
 }
 
+/**
+ * Marks each applied fee policy as the protocol's or a partner's, in place.
+ *
+ * The API doesn't record who a fee belongs to, so it is derived per fee type. Within one type the
+ * protocol's own policy is applied before any partner's, and the partner policies keep the order
+ * the app data declared them in. Matching per type rather than over one trailing run keeps this
+ * correct both for today's ordering (the protocol's policies, then the app data's) and for the
+ * planned grouped ordering, where the partner fees are no longer a single run at the end.
+ *
+ * Each type's declarations are checked against the end of that type's run. If they don't line up,
+ * or there is no app data to check against, that type falls back to the positional rule alone: the
+ * first fee of a type is the protocol's, the rest are partners'.
+ */
+function attributeFeeOwners(fees: ProtocolFee[], partnerFeePolicies: PartnerFeePolicy[] | undefined): void {
+  const declaredByType = new Map<ProtocolFeeType, PartnerFeePolicy[]>()
+
+  for (const declared of partnerFeePolicies ?? []) {
+    const forType = declaredByType.get(declared.type)
+    if (forType) forType.push(declared)
+    else declaredByType.set(declared.type, [declared])
+  }
+
+  const feesByType = new Map<ProtocolFeeType, ProtocolFee[]>()
+
+  for (const fee of fees) {
+    const forType = feesByType.get(fee.type)
+    if (forType) forType.push(fee)
+    else feesByType.set(fee.type, [fee])
+  }
+
+  for (const typeFees of feesByType.values()) {
+    // `undefined` means there is nothing to check against, as opposed to `[]` for app data that
+    // declares no partner fee of this type — then every fee of the type is the protocol's.
+    const declared = partnerFeePolicies && (declaredByType.get(typeFees[0].type) ?? [])
+
+    attributeTypeOwners(typeFees, declared)
+  }
+}
+
+/** Attributes one fee type's policies, in the order they were applied. */
+function attributeTypeOwners(typeFees: ProtocolFee[], declared: PartnerFeePolicy[] | undefined): void {
+  const matched = declared && matchDeclaredPolicies(typeFees, declared)
+  // Without a match to go by, everything past the protocol's own policy is a partner's.
+  const partnerCount = matched ? matched.length : Math.max(0, typeFees.length - 1)
+  const partnerStart = typeFees.length - partnerCount
+
+  typeFees.forEach((fee, index) => {
+    if (index < partnerStart) {
+      fee.owner = ProtocolFeeOwner.Protocol
+      return
+    }
+
+    fee.owner = ProtocolFeeOwner.Partner
+    fee.recipient = matched?.[index - partnerStart].recipient
+  })
+}
+
+/**
+ * Returns the fee policy's `factor`, when present (meaning is policy-specific; see
+ * {@link ProtocolFee.factor}).
+ */
+function getProtocolFeeFactor(policy: FeePolicy | undefined): number | undefined {
+  if (policy) {
+    if ('surplus' in policy) return policy.surplus.factor
+    if ('volume' in policy) return policy.volume.factor
+    if ('priceImprovement' in policy) return policy.priceImprovement.factor
+  }
+  return undefined
+}
+
 function getProtocolFeeType(policy: FeePolicy | undefined): ProtocolFeeType {
   if (policy) {
     if ('surplus' in policy) return ProtocolFeeType.Surplus
@@ -499,4 +593,56 @@ function getReceiverAddress({ owner, receiver }: RawOrder): string {
 
 function isZeroAddress(address: string): boolean {
   return /^0x0{40}$/.test(address)
+}
+
+/**
+ * The declared policies matched onto the end of a fee type's run, from the bottom up, or
+ * `undefined` when they don't line up with what was applied.
+ */
+function matchDeclaredPolicies(typeFees: ProtocolFee[], declared: PartnerFeePolicy[]): PartnerFeePolicy[] | undefined {
+  // A partner can declare a policy the order never applied, so match only as far as both go.
+  const matched = declared.slice(Math.max(0, declared.length - typeFees.length))
+  const partnerStart = typeFees.length - matched.length
+
+  const linesUp = matched.every((policy, index) => matchesDeclaredRate(typeFees[partnerStart + index], policy))
+
+  return linesUp ? matched : undefined
+}
+
+function matchesDeclaredRate(fee: ProtocolFee, declared: PartnerFeePolicy): boolean {
+  // The protocol caps partner fees, so the executed rate can be below the declared one, never above.
+  // The epsilon absorbs the rounding of bps to a fraction.
+  return fee.factor === undefined || fee.factor <= declared.factor + 1e-9
+}
+
+/**
+ * Numbers the partners from 1, in the order their fees appear.
+ *
+ * Partners are never named, so the number is what tells them apart: fees sharing a recipient share
+ * a number, which distinguishes one partner charging two fees from two partners charging one each
+ * (the Kerberus case). A partner fee with no known recipient counts as its own partner.
+ *
+ * Known limitation: the recipient is all the app data gives us, and an order may name a different
+ * recipient per fee kind — the volume fee paid to one address, the price improvement fee to
+ * another. One integrator splitting its fees over two addresses therefore counts as two partners.
+ * That is the accepted trade-off: nothing in the app data says which addresses belong together, and
+ * sharing a number between two addresses would misreport the more common case of two genuinely
+ * distinct partners.
+ */
+function numberPartners(fees: ProtocolFee[]): void {
+  const numberByPartner = new Map<string, number>()
+
+  for (const fee of fees) {
+    if (fee.owner !== ProtocolFeeOwner.Partner) continue
+
+    const key = fee.recipient ? getAddressKey(fee.recipient) : `position-${fee.position}`
+    let number = numberByPartner.get(key)
+
+    if (number === undefined) {
+      number = numberByPartner.size + 1
+      numberByPartner.set(key, number)
+    }
+
+    fee.partnerNumber = number
+  }
 }

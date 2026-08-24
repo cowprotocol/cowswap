@@ -4,24 +4,37 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'const'
 
-import { ProtocolFee, ProtocolFeeType } from 'api/operator'
+import { ProtocolFee, ProtocolFeeOwner, ProtocolFeeType } from 'api/operator'
 
-// The API says how each fee was calculated but not who charged it, so labels name the policy.
-export const FEE_TYPE_LABELS: Record<ProtocolFeeType, string> = {
-  [ProtocolFeeType.Surplus]: 'Surplus fee',
-  [ProtocolFeeType.Volume]: 'Volume fee',
-  [ProtocolFeeType.PriceImprovement]: 'Price improvement fee',
-  [ProtocolFeeType.Unknown]: 'Fee',
+/**
+ * The protocol's own fees. Both ways of charging on price improvement read as the DAO's share of
+ * it; the policy that computed it is an implementation detail the user doesn't need.
+ */
+const PROTOCOL_FEE_LABELS: Record<ProtocolFeeType, string> = {
+  [ProtocolFeeType.Surplus]: 'DAO price improvement share',
+  [ProtocolFeeType.PriceImprovement]: 'DAO price improvement share',
+  [ProtocolFeeType.Volume]: 'Protocol fee',
+  [ProtocolFeeType.Unknown]: 'Protocol fee',
+}
+
+/** A partner's fees, appended to its number. Partners are numbered but never named. */
+const PARTNER_FEE_LABELS: Record<ProtocolFeeType, string> = {
+  [ProtocolFeeType.Surplus]: 'surplus fee',
+  [ProtocolFeeType.PriceImprovement]: 'price improvement share',
+  [ProtocolFeeType.Volume]: 'volume fee',
+  [ProtocolFeeType.Unknown]: 'fee',
 }
 
 export type LineItem = { label: string; tokenAddress: AddressKey; amount: BigNumber }
 
 /**
  * One row per cost: network costs first, then the fees in the order they were applied.
- * Repeated fee types get numbered so the rows stay distinguishable.
+ *
+ * The labels already tell the protocol's fees from each partner's. A label that still repeats — one
+ * partner charging the same kind of fee twice — gets a counter so the rows stay distinguishable.
  */
 export function buildLineItems(protocolFees: ProtocolFee[], gasCost: BigNumber, nativeKey: AddressKey): LineItem[] {
-  const labels = protocolFees.map((fee) => FEE_TYPE_LABELS[fee.type])
+  const labels = protocolFees.map(getFeeLabel)
   const occurrences = new Map<string, number>()
   const numbered = new Map<string, number>()
 
@@ -36,6 +49,12 @@ export function buildLineItems(protocolFees: ProtocolFee[], gasCost: BigNumber, 
   })
 
   return [{ label: 'Network costs', tokenAddress: nativeKey, amount: gasCost }, ...feeItems]
+}
+
+export function getFeeLabel({ owner, type, partnerNumber }: ProtocolFee): string {
+  return owner === ProtocolFeeOwner.Partner
+    ? `Partner ${partnerNumber ?? 1} ${PARTNER_FEE_LABELS[type]}`
+    : PROTOCOL_FEE_LABELS[type]
 }
 
 /** Indexes whatever token metadata is available so line items can be rendered with decimals. */

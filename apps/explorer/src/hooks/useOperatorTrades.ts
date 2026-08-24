@@ -11,6 +11,7 @@ import { getProtocolFees, transformTrade } from 'utils'
 import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
+import { getPartnerFeePolicies } from '../utils/partnerFeePolicies'
 
 type Result = {
   /** The requested page of fills. */
@@ -95,7 +96,12 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     })
   }, [order, pageTrades, tradesTimestamps])
 
-  const protocolFees = useMemo(() => rawTrades && getProtocolFees(rawTrades), [rawTrades])
+  const partnerFeePolicies = useMemo(() => getPartnerFeePolicies(order?.fullAppData), [order?.fullAppData])
+
+  const protocolFees = useMemo(
+    () => rawTrades && getProtocolFees(rawTrades, partnerFeePolicies),
+    [rawTrades, partnerFeePolicies],
+  )
 
   const hasNextPage = (rawTrades?.length ?? 0) > offset + limit
   // SWR reports nothing pending without a key, but the caller is still waiting on the order itself.

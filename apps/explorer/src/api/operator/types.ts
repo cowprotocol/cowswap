@@ -124,8 +124,23 @@ export type ProtocolFee = {
   amount: BigNumber
   tokenAddress: AddressKey
   type: ProtocolFeeType
+  /**
+   * The fee policy's `factor`, when known. Its meaning is policy-specific: a fraction of trade
+   * volume, of price improvement, or of the surplus, per {@link type}.
+   */
+  factor?: number
   // Index in a fill's `executedProtocolFees`; preserves the order the fees were applied in.
   position: number
+  owner: ProtocolFeeOwner
+  /**
+   * Which partner charged the fee, counted from 1 in the order the partners' fees appear. Set on
+   * partner fees only. Partners are told apart but never named, so the label says "Partner 2"
+   * rather than who it is; fees sharing a {@link recipient} share a number. One partner using a
+   * different recipient per fee kind counts as two partners — see `numberPartners` for why.
+   */
+  partnerNumber?: number
+  /** The partner's fee recipient, when the fee mapped to a declared partner policy. */
+  recipient?: string
 }
 
 // TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
@@ -158,6 +173,16 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
 }
 
 export type WithNetworkId = { networkId: Network }
+
+/**
+ * Who a fee in `executedProtocolFees` was charged for. The API doesn't say, so it is derived by
+ * mapping the applied policies onto the partner fee policies the order declared in its app data.
+ */
+export enum ProtocolFeeOwner {
+  Protocol = 'protocol',
+  /** An integrator, from a `metadata.partnerFee` policy in the order's app data. */
+  Partner = 'partner',
+}
 
 export enum ProtocolFeeType {
   Surplus = 'surplus',
