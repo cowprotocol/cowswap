@@ -3,7 +3,7 @@ import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -103,14 +103,15 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && isUnlocked && (
-          <DialogOrInline
-            isOpen={isOrdersTableDrawerOpen}
-            onOpenChange={handleOrdersTableDrawerOpenChange}
-            a11yTitle={t`TWAP orders`}
-          >
+          <DialogOrInline isOpen={isOrdersTableDrawerOpen} onOpenChange={handleOrdersTableDrawerOpenChange}>
             <Modal.Root className="trade-orders-table">
               {isUpToLarge ? (
-                <ModalHeader sticky title={t`TWAP orders`} onClose={() => setOrdersTableDrawerOpen(false)} />
+                <ModalHeader
+                  sticky
+                  title={t`TWAP orders`}
+                  titleAs={Dialog.Title}
+                  onClose={() => setOrdersTableDrawerOpen(false)}
+                />
               ) : null}
               <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
                 <Suspense fallback={<Loading />}>

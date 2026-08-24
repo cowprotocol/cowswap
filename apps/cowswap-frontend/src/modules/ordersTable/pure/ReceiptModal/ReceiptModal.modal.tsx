@@ -1,19 +1,23 @@
-import { ReactElement, ReactNode } from 'react'
+import { ElementType, ReactElement, ReactNode } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
 import { Trans as TransReact } from '@lingui/react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import {
   BannerOrientation,
+  BottomDrawer,
   BottomDrawerOrDialog,
+  Dialog,
   ExternalLink,
   Icon,
   IconType,
   InlineBanner,
+  Media,
   Modal,
   ModalHeader,
   StatusColorVariant,
@@ -68,6 +72,7 @@ interface ReceiptModalContentProps {
 interface ReceiptModalHeaderProps {
   alternativeOrderModalContext?: AlternativeOrderModalContext
   onDismiss: Command
+  titleAs: ElementType
 }
 
 interface ReceiptProps {
@@ -135,6 +140,7 @@ export function ReceiptModal({
   buyAmount,
   ...contentProps
 }: ReceiptProps): ReactNode {
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
   const handleOpenChange = (open: boolean): void => {
     if (!open) {
       onDismiss()
@@ -142,11 +148,12 @@ export function ReceiptModal({
   }
 
   return (
-    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow" a11yTitle={t`Order Receipt`}>
+    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
         <ReceiptModalHeader
           alternativeOrderModalContext={contentProps.alternativeOrderModalContext}
           onDismiss={onDismiss}
+          titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title}
         />
         {order && chainId && buyAmount ? (
           <ReceiptModalContent
@@ -350,10 +357,11 @@ function ReceiptModalContent({
   )
 }
 
-function ReceiptModalHeader({ alternativeOrderModalContext, onDismiss }: ReceiptModalHeaderProps): ReactNode {
+function ReceiptModalHeader({ alternativeOrderModalContext, onDismiss, titleAs }: ReceiptModalHeaderProps): ReactNode {
   return (
     <ModalHeader
       sticky
+      titleAs={titleAs}
       title={
         <styledEl.TitleWrapper>
           <styledEl.Title>

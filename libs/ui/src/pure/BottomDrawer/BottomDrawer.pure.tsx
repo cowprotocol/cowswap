@@ -13,7 +13,7 @@ export type { BaseSurfaceProps as BaseOpenableContainerProps } from '../surfaces
 
 export type BottomDrawerProps = BaseSurfaceProps
 
-export function BottomDrawer({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
+function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -42,3 +42,8 @@ export function BottomDrawer({ isOpen, onOpenChange, children, a11yTitle, classN
     </BaseDrawer.Root>
   )
 }
+
+export const BottomDrawer = Object.assign(BottomDrawerComponent, {
+  /** Pass as `ModalHeader` `titleAs` so the visible heading names the drawer. */
+  Title: BaseDrawer.Title,
+})

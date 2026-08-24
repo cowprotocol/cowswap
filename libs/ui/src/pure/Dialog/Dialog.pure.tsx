@@ -15,7 +15,7 @@ export interface DialogProps extends BaseSurfaceProps {
 
 export type DialogVariant = 'default' | 'narrow'
 
-export function Dialog({
+function DialogComponent({
   variant = 'default',
   isOpen,
   onOpenChange,
@@ -48,3 +48,8 @@ export function Dialog({
     </BaseDialog.Root>
   )
 }
+
+export const Dialog = Object.assign(DialogComponent, {
+  /** Pass as `ModalHeader` `titleAs` so the visible heading names the dialog. */
+  Title: BaseDialog.Title,
+})

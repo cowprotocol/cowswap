@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react'
+import { ElementType, ReactNode, useRef } from 'react'
 
 import clsx from 'clsx'
 
@@ -8,6 +8,11 @@ import { useScrollableBottomVisibility } from './useScrollableBottomVisibility'
 export interface ModalHeaderProps {
   sticky?: boolean
   title?: ReactNode
+  /**
+   * Polymorphic title element: `Dialog.Title`, `BottomDrawer.Title`, or `'h2'` / `'h3'` / …
+   * Prefer the Base UI Title inside overlays so `aria-labelledby` is wired.
+   */
+  titleAs?: ElementType
   children?: ReactNode
   subtitle?: ReactNode
   hideSubtitle?: boolean
@@ -27,6 +32,7 @@ export interface ModalHeaderProps {
 export function ModalHeader({
   sticky,
   title,
+  titleAs,
   children,
   subtitle,
   hideSubtitle = false,
@@ -71,7 +77,7 @@ export function ModalHeader({
         <styledEl.Inner>
           <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
 
-          <styledEl.Title>{title || children}</styledEl.Title>
+          <styledEl.Title as={titleAs}>{title || children}</styledEl.Title>
           {rightSlot ? (
             <styledEl.RightSlot aria-hidden={hideRightSlot} inert={hideRightSlot}>
               {rightSlot}

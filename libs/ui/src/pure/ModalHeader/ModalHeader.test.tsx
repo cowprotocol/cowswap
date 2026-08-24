@@ -106,4 +106,10 @@ describe('ModalHeader', () => {
 
     expect(screen.getByText('Pool description')).not.toBeNull()
   })
+
+  it('renders the title with a polymorphic titleAs element', () => {
+    const { container } = render(<ModalHeader title="Orders" titleAs="h2" onClose={() => undefined} />)
+
+    expect(container.querySelector('h2')?.textContent).toBe('Orders')
+  })
 })
