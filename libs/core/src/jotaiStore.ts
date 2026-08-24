@@ -78,3 +78,29 @@ export function getJotaiMergerStorage<T>() {
 
   return { ...storage, getItem }
 }
+
+/**
+ * Migrates a persisted `atomWithStorage` value from an old localStorage key to a new one.
+ *
+ * Storage keys get bumped (e.g. `my-atom:v3` -> `my-atom:v4`) when the persisted shape changes.
+ * Without this, `atomWithStorage` finds nothing under the new key and silently falls back to the
+ * atom's default value, discarding everything the user had previously saved under the old key.
+ *
+ * No-ops once the new key already exists, so it's safe to call on every module load.
+ */
+export function migrateLocalStorageKey<T extends object>(oldKey: string, newKey: string, patch: Partial<T>): void {
+  if (typeof localStorage === 'undefined') return
+  if (localStorage.getItem(newKey) !== null) return
+
+  const oldValue = localStorage.getItem(oldKey)
+
+  if (oldValue === null) return
+
+  try {
+    const parsed = JSON.parse(oldValue) as T
+
+    localStorage.setItem(newKey, JSON.stringify({ ...parsed, ...patch }))
+  } catch {
+    // Malformed old value; leave the new key unset so the atom falls back to its default.
+  }
+}

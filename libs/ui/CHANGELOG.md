@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.10.0...ui-v3.11.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.5...ui-v3.10.0) (2026-08-05)
 
 ### Minor Changes

@@ -85,7 +85,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     expect(steps[0]?.description).toBe('Confirm the approval transaction in your connected wallet.')
   })
 
-  it('keeps past-step labels stable on success', () => {
+  it('keeps past-step labels stable on success and retains expandable descriptions', () => {
     const plan = [EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.FundingOrder]
 
     expect(
@@ -103,7 +103,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         id: EoaTwapSigningSteps.ApproveOrPermit,
         label: 'Approve USDC',
         status: 'success',
-        description: null,
+        description: 'Confirm the approval transaction in your connected wallet.',
       },
       {
         id: EoaTwapSigningSteps.TwapSetup,
@@ -202,9 +202,16 @@ describe('getEoaTwapStepDescription()', () => {
     )
   })
 
-  it('returns no description for success status', () => {
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveOrPermit, 'success')).toBeUndefined()
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'success')).toBeUndefined()
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'success')).toBeUndefined()
+  it('keeps static instructional copy for completed steps so they stay expandable', () => {
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApproveOrPermit, 'success')).toBe(
+      'Confirm the approval transaction in your connected wallet.',
+    )
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'success')).toBe(
+      'Confirm this required setup signature in your connected wallet.',
+    )
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.FundingOrder, 'success')).toBe(
+      "Sign in your wallet. We'll submit the funding order automatically.",
+    )
+    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.CreatingOrder, 'success')).toBeUndefined()
   })
 })
