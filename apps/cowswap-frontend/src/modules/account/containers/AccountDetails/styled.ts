@@ -126,22 +126,6 @@ export const WalletNameAddress = styled.div`
 `
 
 export const Wrapper = styled.div`
-  display: block;
-  width: 100%;
-  color: inherit;
-  padding: 0;
-  height: 100%;
-  margin: 0 24px;
-
-  ${Media.upToMedium()} {
-    padding: 12px 0 0;
-    margin: 0 16px;
-  }
-
-  ${Media.upToSmall()} {
-    margin: 0 8px;
-  }
-
   ${WalletName},
   ${AddressLink},
   ${CopyIcon},
