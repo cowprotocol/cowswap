@@ -11,7 +11,6 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
-import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeNavigate } from '../../hooks/useTradeNavigate'
 import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
@@ -26,7 +25,7 @@ const EMPTY_TOKEN_ID = '_'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useSetupTradeState(enableSellEqBuy = false): void {
-  useSetupTradeStateFromUrl()
+  const tradeStateFromUrl = useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
@@ -38,7 +37,6 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
   const onSelectNetwork = useOnSelectNetwork()
-  const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
 

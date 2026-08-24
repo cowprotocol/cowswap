@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 
 import { useLocation, useParams } from 'react-router'
 
@@ -17,14 +17,19 @@ const getChainId = (chainId: string | undefined | null): number | null => {
  * /1/swap/WETH/DAI?recipient=0x -> { chainId: 1, inputCurrencyId: 'WETH', outputCurrencyId: 'DAI', recipient: '0x' }
  *
  * Load this hook only once to avoid unnecessary re-renders
+ *
+ * Returns the freshly computed state too (not just via the atom): `useSetupTradeState` needs it
+ * synchronously within this same render (its own call to `useTradeStateFromUrl()` would otherwise
+ * see last render's atom value, since the atom is only updated in a `useLayoutEffect` below — see
+ * that effect's own comment for why it isn't updated during render instead).
  */
-export function useSetupTradeStateFromUrl(): null {
+export function useSetupTradeStateFromUrl(): TradeRawState {
   const params = useParams()
   const location = useLocation()
   const stringifiedParams = JSON.stringify(params)
   const setState = useSetAtom(tradeStateFromUrlAtom)
 
-  const { chainId, recipient, targetChainId, inputCurrencyId, outputCurrencyId } = useMemo(() => {
+  const state = useMemo<TradeRawState>(() => {
     const searchParams = new URLSearchParams(location.search)
     const targetChainId = searchParams.get('targetChainId')
     const recipient = searchParams.get('recipient')
@@ -34,27 +39,23 @@ export function useSetupTradeStateFromUrl(): null {
       chainId: getChainId(chainId),
       inputCurrencyId: inputCurrencyId ?? null,
       outputCurrencyId: outputCurrencyId ?? null,
-      recipient,
       targetChainId: getChainId(targetChainId),
+      ...(recipient ? { recipient } : undefined),
     }
   }, [location.search, stringifiedParams])
 
   /**
-   * useEffect() runs after the render completes and useMemo() runs during rendering.
-   * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
-   * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
+   * `useLayoutEffect` runs synchronously after render but before paint — this still propagates to
+   * other consumers of `tradeStateFromUrlAtom` (`useResetRecipient`, `useWithRecipient`) before the
+   * browser paints, but — unlike the render-phase `useMemo` this replaced — doesn't risk updating
+   * an already-rendered sibling/parent subscriber (e.g. `TradeWidgetUpdaters`, which reads this
+   * atom via `useResetRecipient`) while this component is still mid-render, which React flags as
+   * "Cannot update a component while rendering a different component" and can silently drop the
+   * update. See `HydrateAtom`'s and `useSetupTradeTypeInfo`'s identical fix/reasoning.
    */
-  useMemo(() => {
-    const state: TradeRawState = {
-      chainId,
-      targetChainId,
-      inputCurrencyId,
-      outputCurrencyId,
-      ...(recipient ? { recipient } : undefined),
-    }
-
+  useLayoutEffect(() => {
     setState(state)
-  }, [chainId, recipient, setState, targetChainId, inputCurrencyId, outputCurrencyId])
+  }, [state, setState])
 
-  return null
+  return state
 }
