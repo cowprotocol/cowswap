@@ -1,6 +1,18 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /** One token the app can see the user holding, on the connected chain. */
+/**
+ * The extra step, if any, before this trade can go through.
+ *
+ * Absent when there's nothing to mention. A permit is a free signature; an approval
+ * is a gas-costing transaction — conflating them is how you tell someone to spend
+ * money they don't need to spend.
+ */
+export interface AssistantApproval {
+  permitType?: 'dai-like' | 'eip-2612'
+  status: 'approval_transaction' | 'bundled_with_trade' | 'permit_signature'
+}
+
 export interface AssistantHolding {
   address: string
   balance: string
@@ -83,4 +95,5 @@ export interface AssistantUiContext {
    */
   holdings?: AssistantHolding[]
   holdingsTruncated?: boolean
+  approval?: AssistantApproval | null
 }

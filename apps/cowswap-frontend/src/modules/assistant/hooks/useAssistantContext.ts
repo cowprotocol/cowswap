@@ -19,6 +19,8 @@ import {
   useTradeTypeInfo,
 } from 'modules/trade'
 
+import { useApprovalContext } from './useApprovalContext'
+
 import {
   AssistantHolding,
   AssistantLimitOrderSize,
@@ -86,6 +88,7 @@ export function useAssistantContext(): AssistantUiContext {
   const tradeTypeInfo = useTradeTypeInfo()
   const { values: balances } = useTokensBalancesCombined()
   const tokensByAddress = useTokensByAddressMap()
+  const approval = useApprovalContext()
 
   const isLimit = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
@@ -113,10 +116,11 @@ export function useAssistantContext(): AssistantUiContext {
       limitPrice: deriveLimitPrice(isLimit, rateImpact),
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
+      approval,
       holdings,
       ...(truncated ? { holdingsTruncated: true } : {}),
     }
-  }, [derived, priceImpact, rateImpact, executionPrice, isLimit, account, chainId, balances, tokensByAddress])
+  }, [derived, priceImpact, rateImpact, executionPrice, isLimit, account, chainId, balances, tokensByAddress, approval])
 }
 
 /**
