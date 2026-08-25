@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 14:15\n"
+"PO-Revision-Date: 2026-08-25 15:25\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1142,7 +1142,7 @@ msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociaç
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
-msgstr "Selecionar Conta {walletName}"
+msgstr "Selecionar conta {walletName}"
 
 #: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
 #~ msgid "Please connect your wallet to one of our supported networks."
@@ -1162,7 +1162,7 @@ msgstr "Tentar novamente"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The estimated time for the bridge transaction to complete."
-msgstr "O tempo estimado para a transação de ponte ser concluída."
+msgstr "O tempo estimado para a conclusão da transação da ponte."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "months"
@@ -1178,7 +1178,7 @@ msgstr "No CoW Swap, você pode definir ordens limite para saldos que ainda não
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
-msgstr "O endereço do destinatário que você inseriu tinha o prefixo de rede <0>{chainPrefixWarning}</0>, que não é o esperado para a rede de destino do token."
+msgstr "O endereço do destinatário que você inseriu tinha o prefixo de cadeia <0>{chainPrefixWarning}</0>, o que não é o esperado para a rede do token de saída."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
@@ -1627,7 +1627,7 @@ msgstr "Criar Ordem"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Want to try out limit orders?"
-msgstr "Quer experimentar as ordens limite?"
+msgstr "Quer experimentar ordens limite?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
