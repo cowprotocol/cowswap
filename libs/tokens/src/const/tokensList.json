@@ -16,11 +16,11 @@
     },
     {
       "priority": 4,
-      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/cf97552db394cc10bffab7ac942805a89a882039/tokenlist.json"
     },
     {
       "priority": 5,
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
   "100": [
@@ -75,7 +75,7 @@
     },
     {
       "priority": 6,
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
   "11155111": [
@@ -111,11 +111,7 @@
     },
     {
       "priority": 6,
-      "source": "https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/main/CowSwap.json"
-    },
-    {
-      "priority": 7,
-      "source": "https://raw.githubusercontent.com/ST0x-Technology/st0x.registry/main/token-lists/base.json"
+      "source": "https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/e02f8a02bc76dd756f4e9388c21c8302be1a6509/CowSwap.json"
     }
   ],
   "137": [
@@ -170,15 +166,15 @@
     },
     {
       "priority": 4,
-      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/cf97552db394cc10bffab7ac942805a89a882039/tokenlist.json"
     },
     {
       "priority": 5,
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     },
     {
       "priority": 6,
-      "source": "https://raw.githubusercontent.com/reserve-protocol/dtf-interface/refs/heads/main/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json"
+      "source": "https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json"
     }
   ],
   "59144": [
@@ -218,7 +214,7 @@
     },
     {
       "priority": 3,
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/refs/heads/main/tokenlist.json"
+      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
   "1000000001": [
