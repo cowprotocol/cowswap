@@ -530,15 +530,6 @@ export const ClearSearchButton = styled.button`
   cursor: pointer;
 `
 
-export const FilterActions = styled.div`
-  display: grid;
-  grid-template-columns: 110px minmax(0, 1fr);
-  gap: 8px;
-  padding: 8px 16px 12px;
-  border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  background: var(${UI.COLOR_PAPER});
-`
-
 export const ResetButton = styled.button`
   min-height: 56px;
   padding: 0 12px;

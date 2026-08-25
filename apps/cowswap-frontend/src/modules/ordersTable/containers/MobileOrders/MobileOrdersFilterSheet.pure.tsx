@@ -21,13 +21,6 @@ export interface MobileOrdersFilterSheetProps {
   onApply(searchTerm: string, historyStatusFilter: HistoryStatusFilter): void
 }
 
-interface FilterSheetFooterProps {
-  canReset: boolean
-  filteredCount: number
-  onApply(): void
-  onReset(): void
-}
-
 interface FilterStatusChoicesProps {
   value: HistoryStatusFilter
   onChange(value: HistoryStatusFilter): void
@@ -113,31 +106,16 @@ export function MobileOrdersFilterSheet({
           </styledEl.FilterSheetBody>
         </Modal.Content>
 
-        <Modal.Footer>
-          <FilterSheetFooter
-            canReset={canReset}
-            filteredCount={filteredCount}
-            onApply={handleApply}
-            onReset={handleReset}
-          />
+        <Modal.Footer $stdSecondaryPrimaryLayout>
+          <styledEl.ResetButton type="button" disabled={!canReset} onClick={handleReset}>
+            {t`Reset filters`}
+          </styledEl.ResetButton>
+          <styledEl.ApplyButton onClick={handleApply}>
+            {filteredCount === 1 ? t`Show 1 order` : t`Show ${filteredCount} orders`}
+          </styledEl.ApplyButton>
         </Modal.Footer>
       </Modal.Root>
     </BottomDrawer>
-  )
-}
-
-function FilterSheetFooter({ canReset, filteredCount, onApply, onReset }: FilterSheetFooterProps): ReactNode {
-  const { t } = useLingui()
-
-  return (
-    <styledEl.FilterActions>
-      <styledEl.ResetButton type="button" disabled={!canReset} onClick={onReset}>
-        {t`Reset filters`}
-      </styledEl.ResetButton>
-      <styledEl.ApplyButton onClick={onApply}>
-        {filteredCount === 1 ? t`Show 1 order` : t`Show ${filteredCount} orders`}
-      </styledEl.ApplyButton>
-    </styledEl.FilterActions>
   )
 }
 
