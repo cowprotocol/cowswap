@@ -20,10 +20,10 @@ describe('overlay stacking', () => {
   it('lets a later drawer portal paint over an earlier dialog', () => {
     const { container } = render(
       <>
-        <Dialog open onOpenChange={jest.fn()}>
+        <Dialog isOpen onOpenChange={jest.fn()}>
           Orders
         </Dialog>
-        <BottomDrawer open onOpenChange={jest.fn()}>
+        <BottomDrawer isOpen onOpenChange={jest.fn()}>
           Filters
         </BottomDrawer>
       </>,

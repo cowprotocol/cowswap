@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, RefObject, useLayoutEffect, useRef, useState } from 'react'
+import { ElementType, ReactNode, RefObject, useLayoutEffect, useRef, useState } from 'react'
 
 import { Modal, ModalHeader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -32,6 +32,8 @@ export interface MobileOrdersProps {
   onApplyFilters(searchTerm: string, historyStatusFilter: HistoryStatusFilter): void
   onResetFilters(): void
   onClose(): void
+  /** Only pass `Dialog.Title` when already inside `Dialog.Root`. */
+  titleAs?: ElementType
 }
 
 export function MobileOrders({
@@ -41,6 +43,7 @@ export function MobileOrders({
   onApplyFilters,
   onResetFilters,
   onClose,
+  titleAs,
 }: MobileOrdersProps): ReactNode {
   const { i18n, t } = useLingui()
   const { account } = useWalletInfo()
@@ -76,6 +79,7 @@ export function MobileOrders({
         bottomBorder
         contentMargin
         title={title}
+        titleAs={titleAs}
         subtitle={currentTabLabel}
         hideSubtitle={!showHeaderFilter}
         rightSlot={<FiltersButton activeCount={activeFilterCount} onClick={() => setIsFiltersOpen(true)} />}

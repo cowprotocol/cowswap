@@ -19,7 +19,7 @@ describe('Dialog', () => {
 
   it('stacks backdrop and viewport inside one overlay layer', () => {
     const { container } = render(
-      <Dialog open onOpenChange={jest.fn()}>
+      <Dialog isOpen onOpenChange={jest.fn()}>
         Content
       </Dialog>,
     )
@@ -43,9 +43,9 @@ describe('Dialog', () => {
 
   it('always renders a backdrop that covers a parent dialog', () => {
     const { container } = render(
-      <Dialog open onOpenChange={jest.fn()}>
+      <Dialog isOpen onOpenChange={jest.fn()}>
         Orders
-        <Dialog open onOpenChange={jest.fn()} variant="narrow">
+        <Dialog isOpen onOpenChange={jest.fn()} variant="narrow">
           Receipt
         </Dialog>
       </Dialog>,

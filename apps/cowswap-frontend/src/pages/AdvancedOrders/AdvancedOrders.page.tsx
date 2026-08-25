@@ -3,7 +3,7 @@ import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { DialogOrInline, Media } from '@cowprotocol/ui'
+import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -45,7 +45,7 @@ export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
   const params = useParams()
-  const { i18n, t } = useLingui()
+  const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -79,6 +79,8 @@ export function AdvancedOrdersPage(): ReactNode {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
   }
 
+  // TODO: Do not use SecondaryWrapper in the dialog branch
+
   return (
     <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
       <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
@@ -108,15 +110,21 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && isUnlocked && (
           <DialogOrInline
+            isDialog={isUpToLarge}
             isOpen={isOrdersTableDrawerOpen}
             onOpenChange={handleOrdersTableDrawerOpenChange}
-            title={t`TWAP orders`}
           >
-            <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
-              <Suspense fallback={<Loading />}>
-                <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} onClose={handleOrdersTableDrawerClose} />
-              </Suspense>
-            </styledEl.SecondaryWrapper>
+            <Modal.Root className="trade-orders-table">
+              <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+                <Suspense fallback={<Loading />}>
+                  <OrdersTableWidget
+                    orderType={TabOrderTypes.ADVANCED}
+                    onClose={handleOrdersTableDrawerClose}
+                    isDialog={isUpToLarge}
+                  />
+                </Suspense>
+              </styledEl.SecondaryWrapper>
+            </Modal.Root>
           </DialogOrInline>
         )}
       </styledEl.PageWrapper>

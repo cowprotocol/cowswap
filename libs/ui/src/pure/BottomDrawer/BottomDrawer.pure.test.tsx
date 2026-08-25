@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import { BottomDrawer } from './BottomDrawer.pure'
 
@@ -19,7 +19,7 @@ describe('BottomDrawer', () => {
 
   it('stacks the drawer overlay in the shared overlay layer', () => {
     const { container } = render(
-      <BottomDrawer open onOpenChange={jest.fn()}>
+      <BottomDrawer isOpen onOpenChange={jest.fn()}>
         Content
       </BottomDrawer>,
     )
@@ -43,9 +43,9 @@ describe('BottomDrawer', () => {
 
   it('always renders a backdrop that covers a parent drawer', () => {
     const { container } = render(
-      <BottomDrawer open onOpenChange={jest.fn()}>
+      <BottomDrawer isOpen onOpenChange={jest.fn()}>
         Parent
-        <BottomDrawer open onOpenChange={jest.fn()}>
+        <BottomDrawer isOpen onOpenChange={jest.fn()}>
           Nested
         </BottomDrawer>
       </BottomDrawer>,
@@ -61,31 +61,5 @@ describe('BottomDrawer', () => {
     expect(layers[0].compareDocumentPosition(layers[1]) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
-  })
-
-  it('exposes whether its content has been scrolled', () => {
-    const { container } = render(
-      <BottomDrawer open onOpenChange={jest.fn()}>
-        Content
-      </BottomDrawer>,
-    )
-    const content = container.ownerDocument.querySelector<HTMLElement>('[data-base-ui-swipe-ignore]')
-
-    expect(content).not.toBeNull()
-    expect(content?.hasAttribute('data-scrolled')).toBe(false)
-
-    if (!content) {
-      return
-    }
-
-    Object.defineProperty(content, 'scrollTop', { configurable: true, value: 12 })
-    fireEvent.scroll(content)
-
-    expect(content.getAttribute('data-scrolled')).toBe('true')
-
-    Object.defineProperty(content, 'scrollTop', { configurable: true, value: 0 })
-    fireEvent.scroll(content)
-
-    expect(content.hasAttribute('data-scrolled')).toBe(false)
   })
 })

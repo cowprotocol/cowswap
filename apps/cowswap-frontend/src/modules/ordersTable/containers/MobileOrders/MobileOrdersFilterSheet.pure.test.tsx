@@ -46,6 +46,19 @@ function renderFilterSheet(historyStatusFilter = HistoryStatusFilter.ALL, search
 }
 
 describe('MobileOrdersFilterSheet', () => {
+  beforeEach(() => {
+    // BottomDrawer → useBodyScrollbarLocker → useMediaQuery
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      })),
+    })
+  })
+
   it('disables Reset at defaults and enables it for an applied filter', () => {
     const { unmount } = renderFilterSheet()
 

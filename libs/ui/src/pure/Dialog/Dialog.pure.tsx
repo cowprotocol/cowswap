@@ -5,34 +5,22 @@ import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 
 import * as styledEl from './Dialog.styled'
-import { getOverlayA11yTitle, resolveOverlayHeader } from './resolveOverlayHeader'
 
-import { OverlayLayer } from '../Overlay/OverlayLayer.styled'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
+import { OverlayLayer } from '../surfaces/OverlayLayer.styled'
 
-export interface DialogProps {
+export interface DialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden. Use `header` for visible chrome. */
-  title?: ReactNode
-  onBack?: () => void
-  header?: ReactNode
-  footer?: ReactNode
-  className?: string
 }
 
 export type DialogVariant = 'default' | 'narrow'
 
-export function Dialog({
+function DialogComponent({
   variant = 'default',
-  open,
+  isOpen,
   onOpenChange,
   children,
-  title,
-  onBack,
-  header,
-  footer,
+  a11yTitle,
   className,
 }: DialogProps): ReactNode {
   const handleOpenChange = useCallback(
@@ -42,34 +30,17 @@ export function Dialog({
     [onOpenChange],
   )
 
-  const handleClose = useCallback(() => {
-    onOpenChange(false)
-  }, [onOpenChange])
-
-  const resolvedHeader = resolveOverlayHeader({
-    header,
-    title,
-    onBack,
-    onClose: handleClose,
-  })
-
-  useBodyScrollbarLocker(open)
+  useBodyScrollbarLocker(isOpen)
 
   return (
-    <BaseDialog.Root open={open} onOpenChange={handleOpenChange}>
+    <BaseDialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       <BaseDialog.Portal>
         <OverlayLayer data-dialog-layer="">
           <styledEl.Backdrop data-dialog-backdrop="" forceRender />
           <styledEl.Viewport data-dialog-viewport="">
             <styledEl.Popup className={className} $variant={variant}>
-              {resolvedHeader ? <styledEl.Header>{resolvedHeader}</styledEl.Header> : null}
-
-              <styledEl.Content>
-                <styledEl.VisuallyHiddenTitle>{getOverlayA11yTitle(title, 'Dialog')}</styledEl.VisuallyHiddenTitle>
-                {children}
-              </styledEl.Content>
-
-              {footer ? <styledEl.Footer>{footer}</styledEl.Footer> : null}
+              {a11yTitle ? <styledEl.VisuallyHiddenTitle>{a11yTitle}</styledEl.VisuallyHiddenTitle> : null}
+              {children}
             </styledEl.Popup>
           </styledEl.Viewport>
         </OverlayLayer>
@@ -77,3 +48,8 @@ export function Dialog({
     </BaseDialog.Root>
   )
 }
+
+export const Dialog = Object.assign(DialogComponent, {
+  /** Pass as `ModalHeader` `titleAs` so the visible heading names the dialog. */
+  Title: BaseDialog.Title,
+})

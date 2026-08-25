@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 
 import { useMediaQuery, useStateWithDeferredValue } from '@cowprotocol/common-hooks'
-import { Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, Media, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -40,6 +40,12 @@ import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.con
 export interface OrdersTableWidgetProps {
   orderType: TabOrderTypes
   onClose(): void
+  /**
+   * Must match `DialogOrInline` `isDialog` from the page.
+   * Do not derive this from a local media query — a mistimed resize can render
+   * `Dialog.Title` outside `Dialog.Root` for a frame and crash.
+   */
+  isDialog: boolean
 }
 
 interface OrdersTableFiltersControls {
@@ -51,7 +57,7 @@ interface OrdersTableFiltersControls {
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLABLE] as const
 
-export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps): ReactNode {
+export function OrdersTableWidget({ orderType, onClose, isDialog }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
   const isUpToSmall = useMediaQuery(Media.upToSmall(false))
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
@@ -135,21 +141,25 @@ export function OrdersTableWidget({ orderType, onClose }: OrdersTableWidgetProps
       {!!pendingOrdersInCurrentPage?.length && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
       {isUpToSmall ? (
-        <Modal.Root>
-          <MobileOrders
-            orderType={orderType}
-            searchTerm={searchTerm}
-            historyStatusFilter={historyStatusFilter}
-            onApplyFilters={handleApplyMobileFilters}
-            onResetFilters={handleResetMobileFilters}
+        <MobileOrders
+          orderType={orderType}
+          searchTerm={searchTerm}
+          historyStatusFilter={historyStatusFilter}
+          onApplyFilters={handleApplyMobileFilters}
+          onResetFilters={handleResetMobileFilters}
+          onClose={onClose}
+          titleAs={isDialog ? Dialog.Title : undefined}
+        />
+      ) : isUpToLarge ? (
+        <>
+          <ModalHeader
+            sticky
+            title={orderType === TabOrderTypes.ADVANCED ? t`TWAP orders` : t`Limit orders`}
+            titleAs={isDialog ? Dialog.Title : undefined}
             onClose={onClose}
           />
-        </Modal.Root>
-      ) : isUpToLarge ? (
-        <Modal.Root>
-          <ModalHeader title={t`Limit orders`} onClose={onClose} sticky />
           <Modal.Content $noPadding>{tableContainer}</Modal.Content>
-        </Modal.Root>
+        </>
       ) : (
         tableContainer
       )}

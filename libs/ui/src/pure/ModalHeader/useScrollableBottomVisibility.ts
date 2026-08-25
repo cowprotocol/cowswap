@@ -2,7 +2,7 @@ import { RefObject, useEffect } from 'react'
 
 import { useLatestRef } from '@cowprotocol/common-hooks'
 
-const OVERLAY_SCROLL_ROOT_SELECTOR = '[data-modal-root], [data-drawer-content]'
+const OVERLAY_SCROLL_ROOT_SELECTOR = '[data-modal-root]'
 
 export function useScrollableBottomVisibility(
   slotRef: RefObject<HTMLElement | null>,

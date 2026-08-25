@@ -73,28 +73,13 @@ export function MobileOrdersFilterSheet({
     setDraftStatus(HistoryStatusFilter.ALL)
   }
 
-  const header = (
-    <styledEl.FilterSheetHeader>
-      <h2>{t`Search & filters`}</h2>
-      <CloseIconButton closeOnEscape={false} aria-label={t`Close filters`} onClick={() => onOpenChange(false)} />
-    </styledEl.FilterSheetHeader>
-  )
-
   return (
-    <BottomDrawer
-      open={isOpen}
-      onOpenChange={onOpenChange}
-      title={t`Search and filters`}
-      header={header}
-      footer={
-        <FilterSheetFooter
-          canReset={canReset}
-          filteredCount={filteredCount}
-          onApply={handleApply}
-          onReset={handleReset}
-        />
-      }
-    >
+    <BottomDrawer isOpen={isOpen} onOpenChange={onOpenChange} a11yTitle={t`Search and filters`}>
+      <styledEl.FilterSheetHeader>
+        <h2>{t`Search & filters`}</h2>
+        <CloseIconButton closeOnEscape={false} aria-label={t`Close filters`} onClick={() => onOpenChange(false)} />
+      </styledEl.FilterSheetHeader>
+
       <styledEl.FilterSheetBody>
         {currentTab === OrderTabId.HISTORY ? (
           <FilterStatusChoices value={draftStatus} onChange={setDraftStatus} />
@@ -123,6 +108,13 @@ export function MobileOrdersFilterSheet({
           </styledEl.SearchField>
         </styledEl.FilterGroup>
       </styledEl.FilterSheetBody>
+
+      <FilterSheetFooter
+        canReset={canReset}
+        filteredCount={filteredCount}
+        onApply={handleApply}
+        onReset={handleReset}
+      />
     </BottomDrawer>
   )
 }

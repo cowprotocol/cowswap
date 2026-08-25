@@ -3,7 +3,6 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { OVERLAY_BACKDROP_EFFECT } from '../../styles/mixins'
-import { transition } from '../../utils/animation'
 
 /** Matches Base UI drawer demos: duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] */
 const DRAWER_TRANSITION_DURATION = '450ms'
@@ -79,14 +78,6 @@ export const Popup = styled(BaseDrawer.Popup)`
   }
 `
 
-/** Stable header chrome outside the scrollable body (handle / optional title row). */
-export const Header = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-`
-
 export const Handle = styled.div`
   flex-shrink: 0;
   align-self: center;
@@ -96,63 +87,6 @@ export const Handle = styled.div`
   margin: 10px 0 4px;
   border-radius: 999px;
   background: var(${UI.COLOR_TEXT_OPACITY_25});
-`
-
-/* Opt scroll body out of swipe-to-dismiss so vertical touch scrolling works */
-export const Content = styled(BaseDrawer.Content).attrs({
-  'data-base-ui-swipe-ignore': '',
-  'data-drawer-content': '',
-})`
-  ${({ theme }) => theme.colorScrollbar};
-
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-`
-
-/**
- * Reserves space for a pinned footer below the scroll area.
- * Grows by --drawer-keyboard-inset when the keyboard is open (always include the 0px fallback).
- */
-export const FooterSlot = styled.div`
-  --footer-reserved-height: 0px;
-  position: relative;
-  flex-shrink: 0;
-  min-height: var(--footer-reserved-height);
-  transition: ${transition(['min-height'])};
-
-  &:focus-within {
-    min-height: calc(var(--footer-reserved-height) + var(--drawer-keyboard-inset, 0px));
-  }
-`
-
-/**
- * Pinned footer surface. On focus-within, lifts above the keyboard using
- * position:fixed against the transformed popup + --drawer-keyboard-inset padding.
- */
-export const StickyFooter = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  background: var(${UI.COLOR_PAPER});
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--drawer-keyboard-inset, 0px));
-  transition: ${transition(['padding-bottom'])};
-
-  ${FooterSlot}:focus-within & {
-    position: fixed;
-    z-index: 3;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    /* Contain fixed descendants inside the transformed popup */
-    transform: translate3d(0, 0, 0);
-  }
 `
 
 export const VisuallyHiddenTitle = styled(BaseDrawer.Title)`

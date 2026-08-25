@@ -1,69 +1,45 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
-import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 
 import { Dialog } from './Dialog.pure'
 
-import { Media } from '../../consts'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
-export interface DialogOrInlineProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden in dialog mode. */
-  title?: string
-  className?: string
-  header?: ReactNode
-  footer?: ReactNode
+export interface DialogOrInlineProps extends BaseSurfaceProps {
+  /**
+   * When true, wrap children in Dialog; otherwise render inline.
+   * Pass the same value used to gate `ModalHeader` / `Dialog.Title`.
+   */
+  isDialog: boolean
 }
 
-export function DialogOrInline({
-  isOpen,
-  onOpenChange,
-  children,
-  title,
-  className,
-  header,
-  footer,
-}: DialogOrInlineProps): ReactNode {
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
-
-  const onOpenChangeRef = useLatestRef(onOpenChange)
+export function DialogOrInline({ children, isDialog, ...props }: DialogOrInlineProps): ReactNode {
+  const onOpenChangeRef = useLatestRef(props.onOpenChange)
+  const wasDialogRef = useRef(isDialog)
 
   useEffect(() => {
-    const closeDrawer = onOpenChangeRef.current
+    const onOpenChange = onOpenChangeRef.current
+    const wasDialog = wasDialogRef.current
+    wasDialogRef.current = isDialog
 
-    // If we got from "drawer" to "inline" (we make the window wider),
-    // we close it, so that if we resize the window back down, the drawer is not already opened:
-    if (!isUpToLarge) {
-      closeDrawer(false)
+    if (!isDialog) {
+      // Inline mode: keep the drawer closed so resizing back down does not reopen it.
+      onOpenChange(false)
+    } else if (!wasDialog) {
+      // Switched from inline → dialog (e.g. desktop → mobile while viewing the table).
+      // Open so content stays visible inside the dialog instead of vanishing into a closed portal.
+      onOpenChange(true)
     }
 
     return () => {
-      closeDrawer(false)
+      onOpenChange(false)
     }
-  }, [onOpenChangeRef, isUpToLarge])
+  }, [onOpenChangeRef, isDialog])
 
-  if (!isUpToLarge) {
-    return (
-      <>
-        {header}
-        {children}
-        {footer}
-      </>
-    )
+  if (!isDialog) {
+    return children
   }
 
-  return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={onOpenChange}
-      title={title}
-      className={className}
-      header={header}
-      footer={footer}
-    >
-      {children}
-    </Dialog>
-  )
+  return <Dialog {...props}>{children}</Dialog>
 }

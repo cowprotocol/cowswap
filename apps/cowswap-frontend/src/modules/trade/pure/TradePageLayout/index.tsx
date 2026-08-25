@@ -46,6 +46,11 @@ export const PageWrapper = styled.div<{
 
   > .trade-orders-table {
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
+    grid-area: secondary;
+    flex: 1;
+    min-height: 200px;
+    height: 100%;
+    max-height: 100%;
   }
 `
 
@@ -75,22 +80,19 @@ export const SecondaryWrapper = styled.div.attrs({
   box-shadow: none;
   position: relative;
   padding: 0;
-  overflow: hidden;
+  /* In the orders dialog, Modal.Root is the scrollport for sticky ModalHeader.
+     overflow:hidden here would trap sticky and can also clip scrolling. */
+  overflow: ${({ $inDrawer }) => ($inDrawer ? 'visible' : 'hidden')};
 
   ${({ $inDrawer }) =>
     $inDrawer
       ? css`
-          /* Fill the drawer so Modal.Root is the scroll container for sticky headers */
-          flex: 1 1 auto;
-          min-height: 0;
-          height: 100%;
-          max-height: 100%;
+          /* Grow with table content so Modal.Root can scroll the whole body */
+          flex: 0 0 auto;
         `
       : css`
           flex: 1;
-          min-height: 200px;
+          min-height: 0;
           height: 100%;
-          max-height: 100%;
-          grid-area: secondary;
         `}
 `
