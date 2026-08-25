@@ -343,6 +343,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
+    ${UI.BORDER_RADIUS_LARGE}: 32px;
     ${UI.PADDING_NORMAL}: 24px;
     ${UI.CLICKABLE_SIZE}: 44px;
 

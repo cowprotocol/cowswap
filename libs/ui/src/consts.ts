@@ -12,13 +12,22 @@ export const MEDIA_WIDTHS = {
   upToLarge: 1280,
   upToLargeAlt: 1390,
   upToExtraLarge: 2560,
-}
+} as const
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
 }
+
+/**
+ * Shared overlay stacking context (above dropdowns at 1000). Dialogs and drawers
+ * use the same Layer z-index so a later portal — nested filters, receipts, etc. —
+ * paints over the previous overlay.
+ */
+export const OVERLAY_Z_INDEX = {
+  overlay: 1060,
+} as const
 
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
