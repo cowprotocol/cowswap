@@ -1,5 +1,8 @@
 import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
+import { installBungee, type BungeeMock } from '../mocks/bridge/bungee'
+import { installNearIntents, type NearIntentsMock } from '../mocks/bridge/nearIntents'
+import { installSocketVerifier } from '../mocks/bridge/socketVerifier'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
 import { installEthBlockNumber } from '../mocks/nodeRpc/ethBlockNumber'
@@ -40,6 +43,8 @@ export interface SharedFixtures {
     orders: OrdersMock
     ethGetCode: EthGetCodeMock
     safeSdk: SafeSdkMock
+    bungee: BungeeMock
+    nearIntents: NearIntentsMock
     launchDarkly: LaunchDarklyMock
     usdPrices: UsdPricesMock
   }
@@ -110,11 +115,14 @@ export const sharedFixtures: Fixtures<
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
       installTokenNonce(context)
+      installSocketVerifier(context)
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
       // allowance and never click Approve), so this is global rather than opt-in per test.
       mockApproveSimulation(context)
       const safeSdk = installSafeSdk(context)
+      const bungee = installBungee(context)
+      const nearIntents = installNearIntents(context)
       const launchDarkly = await installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
 
@@ -125,11 +133,15 @@ export const sharedFixtures: Fixtures<
         orders,
         ethGetCode,
         safeSdk,
+        bungee,
+        nearIntents,
         launchDarkly,
         usdPrices,
       })
 
       ethGetCode.reset()
+      bungee.reset()
+      nearIntents.reset()
       await launchDarkly.reset()
       usdPrices.reset()
       await safeSdk.disable()
