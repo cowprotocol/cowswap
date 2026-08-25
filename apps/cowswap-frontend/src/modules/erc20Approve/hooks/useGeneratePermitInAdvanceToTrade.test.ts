@@ -1,3 +1,5 @@
+import { ExecutionRevertedError } from 'viem'
+
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
@@ -52,6 +54,7 @@ const mockUseResetApproveProgressModalState = useResetApproveProgressModalState 
 >
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 
+// eslint-disable-next-line max-lines-per-function
 describe('useGeneratePermitInAdvanceToTrade', () => {
   const mockToken = new Token(1, '0x1234567890123456789012345678901234567890', 18, 'TEST', 'Test Token')
   const mockWrappedToken = new Token(1, '0x0987654321098765432109876543210987654321', 18, 'WETH', 'Wrapped Ether')
@@ -333,6 +336,16 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const generatePermit = result.current
 
       await expect(generatePermit()).resolves.toBe(false)
+    })
+
+    it('should propagate a confirmed permit execution revert for approval fallback', async () => {
+      const error = new ExecutionRevertedError({ message: 'invalid signature' })
+      mockGeneratePermit.mockRejectedValue(error)
+
+      const { result } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
+
+      await expect(result.current()).rejects.toBe(error)
+      expect(mockResetApproveProgressModalState).toHaveBeenCalled()
     })
 
     it('should handle generatePermit returning empty object', async () => {
