@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 22:23\n"
+"PO-Revision-Date: 2026-08-25 23:30\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -762,7 +762,7 @@ msgstr "Code de parrainage actif"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Receive (before fees)"
-msgstr "Montant reçu avant frais"
+msgstr "Montant reçu (avant frais)"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the network you are in."
@@ -779,7 +779,7 @@ msgstr "pour un total de"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Sign (gas-free!) in your wallet..."
-msgstr "Signez dans votre wallet, sans frais de gas..."
+msgstr "Signez dans votre wallet (sans frais de gas !)..."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -816,7 +816,7 @@ msgstr "Voir les offres d’emploi"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/FavoriteTokensTooltip.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
-msgstr "Vos tokens favoris enregistrés. Modifiez cette liste sur la <0>page Tokens</0>."
+msgstr "Vos tokens favoris enregistrés. Modifiez cette liste sur la <0>page des Tokens</0>."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
@@ -902,7 +902,7 @@ msgstr "Voir ↗"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote verified by CoW Protocol simulation"
-msgstr "Devis vérifié par une simulation de CoW Protocol"
+msgstr "Cotation vérifiée par une simulation de CoW Protocol"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
@@ -1619,7 +1619,7 @@ msgstr "Avec un slippage élevé, vous risquez de ne pas obtenir le meilleur pri
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
-msgstr "Partagez cette réussite !"
+msgstr "Partagez cette victoire !"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Create Order"
@@ -2174,7 +2174,7 @@ msgstr "Effectuer la modification lors du placement de l’ordre"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
-msgstr "Les ordres limite, mais <0>encore plus fluides</0>"
+msgstr "Les ordres limites, mais <0>encore plus fluides</0>"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW contract not present"
@@ -2700,7 +2700,7 @@ msgstr "CoW Hooks"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeNumberInput/index.tsx
 msgid "up"
-msgstr "à la hausse"
+msgstr "haut"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "Sign the {operationLabel} with your wallet."
@@ -3200,7 +3200,7 @@ msgstr "Une nouvelle compétition a commencé"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
 msgid "Quote expired. Please refresh."
-msgstr "Devis expiré. Veuillez l’actualiser."
+msgstr "Cotation expirée. Veuillez l’actualiser."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Successfully converted!"
@@ -4202,7 +4202,7 @@ msgstr "Rechercher des hooks"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeNumberInput/index.tsx
 msgid "down"
-msgstr "à la baisse"
+msgstr "bas"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
@@ -4241,7 +4241,7 @@ msgstr "Ordre soumis"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
 msgid "Quote is updating..."
-msgstr "Actualisation du devis..."
+msgstr "Actualisation de la cotation..."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started!"
@@ -5810,7 +5810,7 @@ msgstr "Déwrapping en cours"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
 msgid "Unknown quote error"
-msgstr "Erreur de devis inconnue"
+msgstr "Erreur de cotation inconnue"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "Read more about unsupported wallets"
@@ -6000,7 +6000,7 @@ msgstr "Il s’agit du montant vendu dans chaque partie de l’ordre TWAP."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Quote expired. Refreshing..."
-msgstr "Offre expirée. Actualisation..."
+msgstr "Cotation expirée. Actualisation..."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
@@ -6545,7 +6545,7 @@ msgstr "Jouer à MEV Slicer"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Refreshing quote..."
-msgstr "Actualisation du devis..."
+msgstr "Actualisation de la cotation..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "was sent to"
@@ -6678,7 +6678,7 @@ msgstr "En suggérer un"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copy full quote ID"
-msgstr "Copier l’identifiant complet du devis"
+msgstr "Copier l’identifiant complet de la cotation"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulation report"
@@ -6809,7 +6809,7 @@ msgstr "Donner votre avis"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
-msgstr "Masquer le biscuit chinois du jour"
+msgstr "Masquer le message du jour"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Post Hooks"
@@ -7026,7 +7026,7 @@ msgstr "rendement"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote not yet verified by CoW Protocol simulation"
-msgstr "Devis pas encore vérifié par la simulation de CoW Protocol"
+msgstr "Cotation pas encore vérifiée par la simulation de CoW Protocol"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
@@ -7207,7 +7207,7 @@ msgstr "Activer les approbations partielles"
 
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
-msgstr "Les frais de licence Safe App facturés ici sont prélevés par la Safe Foundation pour l’affichage de l’application dans le Safe Store. Ils sont automatiquement calculés dans ce devis. Une partie de ces frais alimentera la trésorerie de CoW DAO, qui soutient la communauté CoW."
+msgstr "Les frais de licence Safe App facturés ici sont prélevés par la Safe Foundation pour l’affichage de l’application dans le Safe Store. Ils sont automatiquement calculés dans cette cotation. Une partie de ces frais alimentera la trésorerie de CoW DAO, qui soutient la communauté CoW."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "win"
@@ -8204,7 +8204,7 @@ msgstr "coche"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
 msgid "Quote will be updated in {time}"
-msgstr "L'offre sera actualisée dans {time}"
+msgstr "La cotation sera actualisée dans {time}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Dark mode"
@@ -8213,7 +8213,7 @@ msgstr "Mode sombre"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Quote ID"
-msgstr "Identifiant de l'offre"
+msgstr "Identifiant de cotation"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
