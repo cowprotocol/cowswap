@@ -132,13 +132,15 @@ export function OrdersTablePagination({
 function getPaginationState(currentPage: number, pagesCount: number): PaginationState {
   const pageLimitMiddle = Math.ceil(PAGES_LIMIT / 2)
   const batchOffset = currentPage > pageLimitMiddle ? currentPage - pageLimitMiddle : 0
+  const batchStart = Math.max(Math.min(batchOffset, pagesCount - PAGES_LIMIT), 0)
+  const batchEnd = Math.min(PAGES_LIMIT + batchOffset, pagesCount)
 
   return {
     isListBig: pagesCount > PAGES_LIMIT,
-    isFirstPagesBatch: currentPage <= pageLimitMiddle,
-    isLastPagesBatch: currentPage > pagesCount - pageLimitMiddle,
-    batchStart: Math.max(Math.min(batchOffset, pagesCount - PAGES_LIMIT), 0),
-    batchEnd: Math.min(PAGES_LIMIT + batchOffset, pagesCount),
+    isFirstPagesBatch: batchStart === 0,
+    isLastPagesBatch: batchEnd === pagesCount,
+    batchStart,
+    batchEnd,
     previousPage: Math.max(currentPage - 1, 1),
     nextPage: Math.min(currentPage + 1, pagesCount),
   }

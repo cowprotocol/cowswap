@@ -34,4 +34,31 @@ describe('OrdersTablePagination', () => {
     expect(currentPage.getAttribute('aria-current')).toBe('page')
     expect(screen.getByRole('link', { name: 'Go to page 2' })).not.toBeNull()
   })
+
+  it('omits trailing ellipsis when the batch already ends at pagesCount (15 pages, page 8)', () => {
+    render(
+      <MemoryRouter>
+        <I18nProvider i18n={i18n}>
+          <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
+            <OrdersTablePagination
+              currentPage={8}
+              pageSize={10}
+              totalCount={150}
+              getPageUrl={(page) => ({ search: `?page=${page}` })}
+            />
+          </StyledComponentsThemeProvider>
+        </I18nProvider>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('link', { name: 'Page 8' })).not.toBeNull()
+    expect(screen.getAllByRole('link', { name: 'Go to page 15' })).toHaveLength(1)
+
+    const numberedPages = screen
+      .getAllByRole('link')
+      .map((link) => link.textContent)
+      .filter((text): text is string => text !== null && /^\d+$/.test(text))
+
+    expect(numberedPages).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'])
+  })
 })
