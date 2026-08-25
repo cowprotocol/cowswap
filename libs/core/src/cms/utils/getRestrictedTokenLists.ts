@@ -7,6 +7,7 @@ import {
   DEFAULT_CMS_REQUEST_TTL,
   ONDO_FALLBACK_TOKEN_LIST,
   RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
+  ST0X_FALLBACK_TOKEN_LIST,
   XStocks_FALLBACK_TOKEN_LIST,
 } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
@@ -79,6 +80,7 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
         XStocks_FALLBACK_TOKEN_LIST,
         RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
         COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
+        ST0X_FALLBACK_TOKEN_LIST,
       ]
     })
 }
