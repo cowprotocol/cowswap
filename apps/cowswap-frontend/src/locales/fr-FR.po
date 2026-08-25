@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 21:04\n"
+"PO-Revision-Date: 2026-08-25 22:23\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -97,7 +97,7 @@ msgstr "Le fallback handler de votre Safe a été modifié après le placement d
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve operation failed."
-msgstr "Échec de l'approbation de l'opération."
+msgstr "Échec de l’opération d’approbation."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 msgid "Set to trade"
@@ -6768,7 +6768,7 @@ msgstr "Les frais de swap représentent au moins {formattedFeePercentage}% du mo
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for."
-msgstr "Les ordres limite sur CoW Swap capturent le surplus : si le prix évolue en votre faveur, vous recevrez probablement davantage que demandé."
+msgstr "Les ordres limites sur CoW Swap récupèrent le surplus : si le prix évolue en votre faveur, vous recevrez probablement plus que demandé."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Your friend shared a referral code with you."
@@ -6784,7 +6784,7 @@ msgstr "Position du hook incorrecte :"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Track this order"
-msgstr ""
+msgstr "Suivre cet ordre"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/IframeDappContainer/index.tsx
 msgid "Loading hook..."
@@ -6796,7 +6796,7 @@ msgstr "Conditions générales"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
 msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a <1>protocol fee</1> will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limite et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
+msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limites et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "Invite your friends <0/> and earn rewards"
@@ -6809,7 +6809,7 @@ msgstr "Donner votre avis"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
-msgstr "Masquer la fortune du jour"
+msgstr "Masquer le biscuit chinois du jour"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Post Hooks"
@@ -6842,7 +6842,7 @@ msgstr "dans l’explorateur"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
-msgstr "Votre trade sera exécuté en 2 étapes. Vous swappez d’abord sur <0>{COW_PROTOCOL_NAME} (étape 1)</0>, puis vous bridgez via <1>{providerInfoName} (étape 2)</1>."
+msgstr "Votre trade sera exécuté en 2 étapes. Vous effectuez d’abord un swap sur <0>{COW_PROTOCOL_NAME} (étape 1)</0>, puis un bridge via <1>{providerInfoName} (étape 2)</1>."
 
 #: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
 #~ msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
@@ -6862,7 +6862,7 @@ msgstr "S’exécute à"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Open in Telegram"
-msgstr ""
+msgstr "Ouvrir dans Telegram"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
@@ -7709,11 +7709,11 @@ msgstr "Copier le lien de parrainage"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Enable Telegram alerts"
-msgstr ""
+msgstr "Activer les alertes Telegram"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
-msgstr "Lorsque le prix limite est verrouillé, il reste fixe lorsque les montants changent. Lorsqu’il est déverrouillé, il s’actualise selon les modifications des montants."
+msgstr "Lorsque le prix limite est verrouillé, il reste fixe lorsque les montants changent. Lorsqu’il est déverrouillé, il s’actualise en fonction des montants."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "For this order, network costs would be <0>{formattedFeePercentage}% (<1/>)</0> of your sell amount! Therefore, your order is unlikely to execute."
@@ -7721,7 +7721,7 @@ msgstr "Pour cet ordre, les frais de réseau représenteraient <0>{formattedFeeP
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Check that you are approving an amount equal to or greater than the input amount."
-msgstr "Vérifiez que le montant approuvé est supérieur ou égal au montant saisi."
+msgstr "Vérifiez que le montant approuvé soit supérieur ou égal au montant saisi."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since this contract temporarily holds funds, there's a possibility that funds could get stuck in certain edge cases."
@@ -8204,7 +8204,7 @@ msgstr "coche"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
 msgid "Quote will be updated in {time}"
-msgstr "Le devis sera actualisé dans {time}"
+msgstr "L'offre sera actualisée dans {time}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Dark mode"
@@ -8213,7 +8213,7 @@ msgstr "Mode sombre"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Quote ID"
-msgstr "Identifiant du devis"
+msgstr "Identifiant de l'offre"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
@@ -8222,7 +8222,7 @@ msgstr "Frais de bridge"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Waiting for you to tap Start…"
-msgstr ""
+msgstr "En attente d’un appui sur Démarrer…"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
