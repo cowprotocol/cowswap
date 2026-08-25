@@ -1348,7 +1348,6 @@ msgstr "Total vCOW balance"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrders.container.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
-#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 msgid "TWAP orders"
 msgstr "TWAP orders"
 
@@ -3394,7 +3393,6 @@ msgstr "Unsupported wallet detected"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrders.container.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
-#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit orders"
 msgstr "Limit orders"
 
