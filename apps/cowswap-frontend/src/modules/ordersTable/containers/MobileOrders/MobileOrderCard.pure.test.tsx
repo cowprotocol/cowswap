@@ -162,6 +162,19 @@ describe('MobileOrderCard', () => {
     expect(screen.getByText(/^Filled .*2022/)).not.toBeNull()
   })
 
+  it('uses the fulfillment time when executionData.fullyFilled is true even if status is not FULFILLED', () => {
+    const order = orderWithFillPercentage('100')
+
+    renderCard({
+      ...order,
+      status: OrderStatus.EXPIRED,
+      fulfillmentTime: '2022-11-11T13:24:00.000Z',
+      executionData: { ...order.executionData, fullyFilled: true },
+    })
+
+    expect(screen.getByText(/^Filled .*2022/)).not.toBeNull()
+  })
+
   it('uses the expiry time for an expired order', () => {
     const order = orderWithFillPercentage('0')
 

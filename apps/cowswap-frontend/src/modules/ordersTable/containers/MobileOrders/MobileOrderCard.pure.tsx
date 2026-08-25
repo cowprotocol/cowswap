@@ -179,7 +179,9 @@ function formatEventAt(date: Date, creationTime: Date, dateGroup: OrdersDateGrou
 }
 
 function getLifecycleEvent(order: ParsedOrder): LifecycleEvent {
-  if (order.status === OrderStatus.FULFILLED && order.fulfillmentTime) {
+  const isFullyFilled = order.status === OrderStatus.FULFILLED || order.executionData.fullyFilled
+
+  if (isFullyFilled && order.fulfillmentTime) {
     const fulfillmentTime = new Date(order.fulfillmentTime)
 
     if (isValidDate(fulfillmentTime)) return { type: 'filled', date: fulfillmentTime }
