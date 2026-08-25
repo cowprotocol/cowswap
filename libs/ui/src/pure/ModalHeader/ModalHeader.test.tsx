@@ -10,6 +10,7 @@ i18n.activate('en-US')
 class MockIntersectionObserver implements IntersectionObserver {
   readonly root = null
   readonly rootMargin = ''
+  readonly scrollMargin = ''
   readonly thresholds: number[] = []
   readonly callback: IntersectionObserverCallback
 
@@ -104,5 +105,11 @@ describe('ModalHeader', () => {
     render(<ModalHeader onClose={() => undefined}>Pool description</ModalHeader>)
 
     expect(screen.getByText('Pool description')).not.toBeNull()
+  })
+
+  it('renders the title with a polymorphic titleAs element', () => {
+    const { container } = render(<ModalHeader title="Orders" titleAs="h2" onClose={() => undefined} />)
+
+    expect(container.querySelector('h2')?.textContent).toBe('Orders')
   })
 })

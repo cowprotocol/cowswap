@@ -1,37 +1,23 @@
 import { ReactNode, useEffect } from 'react'
 
-import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 
 import { BottomDrawer } from './BottomDrawer.pure'
 
-import { Media } from '../../consts'
 import { Dialog, type DialogVariant } from '../Dialog/Dialog.pure'
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
-export interface BottomDrawerOrDialogProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden. */
-  title?: string
-  className?: string
-  header?: ReactNode
-  footer?: ReactNode
+export interface BottomDrawerOrDialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
+  /**
+   * When true, render BottomDrawer; otherwise Dialog.
+   * Pass the same value used for `ModalHeader` `titleAs`.
+   */
+  isDrawer: boolean
 }
 
-export function BottomDrawerOrDialog({
-  isOpen,
-  onOpenChange,
-  children,
-  title,
-  className,
-  header,
-  footer,
-  variant,
-}: BottomDrawerOrDialogProps): ReactNode {
-  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
-
-  const onOpenChangeRef = useLatestRef(onOpenChange)
+export function BottomDrawerOrDialog({ variant, isDrawer, ...props }: BottomDrawerOrDialogProps): ReactNode {
+  const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
     const closeOverlay = onOpenChangeRef.current
@@ -41,34 +27,11 @@ export function BottomDrawerOrDialog({
     return () => {
       closeOverlay(false)
     }
-  }, [onOpenChangeRef, isUpToSmall])
+  }, [onOpenChangeRef, isDrawer])
 
-  if (isUpToSmall) {
-    return (
-      <BottomDrawer
-        open={isOpen}
-        onOpenChange={onOpenChange}
-        title={title}
-        className={className}
-        header={header}
-        footer={footer}
-      >
-        {children}
-      </BottomDrawer>
-    )
+  if (isDrawer) {
+    return <BottomDrawer {...props} />
   }
 
-  return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={onOpenChange}
-      title={title}
-      className={className}
-      header={header}
-      footer={footer}
-      variant={variant}
-    >
-      {children}
-    </Dialog>
-  )
+  return <Dialog {...props} variant={variant} />
 }

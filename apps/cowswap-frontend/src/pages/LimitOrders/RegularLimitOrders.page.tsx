@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { DialogOrInline, Media } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -49,16 +49,26 @@ export function RegularLimitOrdersPage(): ReactNode {
 
       {!hideOrdersTable && isUnlocked && (
         <DialogOrInline
+          isDialog={isUpToLarge}
           isOpen={isOrdersTableDrawerOpen}
           onOpenChange={handleOrdersTableDrawerOpenChange}
-          title={t`Limit orders`}
         >
-          <styledEl.SecondaryWrapper className="trade-orders-table" $inDrawer={isUpToLarge}>
-            {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
-            <Suspense fallback={<Loading />}>
-              <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
-            </Suspense>
-          </styledEl.SecondaryWrapper>
+          <Modal.Root className="trade-orders-table">
+            {isUpToLarge ? (
+              <ModalHeader
+                sticky
+                title={t`Limit orders`}
+                titleAs={Dialog.Title}
+                onClose={() => setOrdersTableDrawerOpen(false)}
+              />
+            ) : null}
+            <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+              {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
+              <Suspense fallback={<Loading />}>
+                <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
+              </Suspense>
+            </styledEl.SecondaryWrapper>
+          </Modal.Root>
         </DialogOrInline>
       )}
     </styledEl.PageWrapper>

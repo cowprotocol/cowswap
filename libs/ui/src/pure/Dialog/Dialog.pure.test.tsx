@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import { Dialog } from './Dialog.pure'
 
@@ -19,7 +19,7 @@ describe('Dialog', () => {
 
   it('stacks backdrop and viewport inside one overlay layer', () => {
     const { container } = render(
-      <Dialog open onOpenChange={jest.fn()}>
+      <Dialog isOpen onOpenChange={jest.fn()}>
         Content
       </Dialog>,
     )
@@ -43,9 +43,9 @@ describe('Dialog', () => {
 
   it('always renders a backdrop that covers a parent dialog', () => {
     const { container } = render(
-      <Dialog open onOpenChange={jest.fn()}>
+      <Dialog isOpen onOpenChange={jest.fn()}>
         Orders
-        <Dialog open onOpenChange={jest.fn()} variant="narrow">
+        <Dialog isOpen onOpenChange={jest.fn()} variant="narrow">
           Receipt
         </Dialog>
       </Dialog>,
@@ -61,31 +61,5 @@ describe('Dialog', () => {
     expect(layers[0].compareDocumentPosition(layers[1]) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
-  })
-
-  it('marks the overlay surface as scrolled so a pinned header can blur', () => {
-    const { container } = render(
-      <Dialog open onOpenChange={jest.fn()}>
-        Content
-      </Dialog>,
-    )
-    const content = container.ownerDocument.querySelector<HTMLElement>('[data-dialog-content]')
-
-    expect(content).not.toBeNull()
-    expect(content?.parentElement?.classList.contains('isScrolled')).toBe(false)
-
-    if (!content) {
-      return
-    }
-
-    Object.defineProperty(content, 'scrollTop', { configurable: true, value: 12 })
-    fireEvent.scroll(content)
-
-    expect(content.parentElement?.classList.contains('isScrolled')).toBe(true)
-
-    Object.defineProperty(content, 'scrollTop', { configurable: true, value: 0 })
-    fireEvent.scroll(content)
-
-    expect(content.parentElement?.classList.contains('isScrolled')).toBe(false)
   })
 })

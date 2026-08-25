@@ -73,28 +73,6 @@ export const Popup = styled(BaseDialog.Popup)<{ $variant: DialogVariant }>`
   }
 `
 
-/** Stable header chrome outside the scrollable body. */
-export const Header = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-`
-
-export const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-`
-
-export const Footer = styled.div`
-  flex-shrink: 0;
-`
-
 export const VisuallyHiddenTitle = styled(BaseDialog.Title)`
   position: absolute;
   width: 1px;

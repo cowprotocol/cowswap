@@ -46,6 +46,11 @@ export const PageWrapper = styled.div<{
 
   > .trade-orders-table {
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
+    grid-area: secondary;
+    flex: 1;
+    min-height: 200px;
+    height: 100%;
+    max-height: 100%;
   }
 `
 
@@ -80,14 +85,12 @@ export const SecondaryWrapper = styled.div.attrs({
   ${({ $inDrawer }) =>
     $inDrawer
       ? css`
-          /* Grow with table content so BottomDrawer.Content can scroll the whole body */
+          /* Grow with table content so Modal.Root can scroll the whole body */
           flex: 0 0 auto;
         `
       : css`
           flex: 1;
-          min-height: 200px;
+          min-height: 0;
           height: 100%;
-          max-height: 100%;
-          grid-area: secondary;
         `}
 `

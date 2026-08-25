@@ -4,39 +4,20 @@ import { render, screen } from '@testing-library/react'
 
 import { BottomDrawerOrDialog } from './BottomDrawerOrDialog'
 
-import { Media } from '../../consts'
-
-const mockUseMediaQuery = jest.fn()
-
-jest.mock('@cowprotocol/common-hooks', () => {
-  const actual = jest.requireActual('@cowprotocol/common-hooks') as typeof import('@cowprotocol/common-hooks')
-
-  return {
-    ...actual,
-    useMediaQuery: (...args: unknown[]) => mockUseMediaQuery(...args),
-  }
-})
-
 jest.mock('./BottomDrawer.pure', () => ({
   BottomDrawer: ({
     children,
-    open,
-    title,
+    isOpen,
+    a11yTitle,
     className,
-    header,
-    footer,
   }: {
     children: ReactNode
-    open: boolean
-    title?: string
+    isOpen: boolean
+    a11yTitle?: string
     className?: string
-    header?: ReactNode
-    footer?: ReactNode
   }) => (
-    <div data-testid="bottom-drawer" data-open={String(open)} data-title={title} className={className}>
-      {header}
+    <div data-testid="bottom-drawer" data-open={String(isOpen)} data-a11y-title={a11yTitle} className={className}>
       {children}
-      {footer}
     </div>
   ),
 }))
@@ -44,37 +25,36 @@ jest.mock('./BottomDrawer.pure', () => ({
 jest.mock('../Dialog/Dialog.pure', () => ({
   Dialog: ({
     children,
-    open,
-    title,
+    isOpen,
+    a11yTitle,
     className,
-    header,
-    footer,
     variant,
   }: {
     children: ReactNode
-    open: boolean
-    title?: string
+    isOpen: boolean
+    a11yTitle?: string
     className?: string
-    header?: ReactNode
-    footer?: ReactNode
     variant?: string
   }) => (
-    <div data-testid="dialog" data-open={String(open)} data-title={title} data-variant={variant} className={className}>
-      {header}
+    <div
+      data-testid="dialog"
+      data-open={String(isOpen)}
+      data-a11y-title={a11yTitle}
+      data-variant={variant}
+      className={className}
+    >
       {children}
-      {footer}
     </div>
   ),
 }))
 
 function renderBottomDrawerOrDialog(
   isOpen: boolean,
+  isDrawer: boolean,
   onOpenChange = jest.fn(),
   extra?: {
-    title?: string
+    a11yTitle?: string
     className?: string
-    header?: ReactNode
-    footer?: ReactNode
     children?: ReactNode
     variant?: 'default' | 'narrow'
   },
@@ -84,11 +64,10 @@ function renderBottomDrawerOrDialog(
   const view = render(
     <BottomDrawerOrDialog
       isOpen={isOpen}
+      isDrawer={isDrawer}
       onOpenChange={onOpenChange}
-      title={extra?.title}
+      a11yTitle={extra?.a11yTitle}
       className={extra?.className}
-      header={extra?.header}
-      footer={extra?.footer}
       variant={extra?.variant}
     >
       {extra?.children ?? <div>receipt</div>}
@@ -99,69 +78,49 @@ function renderBottomDrawerOrDialog(
 }
 
 describe('BottomDrawerOrDialog', () => {
-  beforeEach(() => {
-    mockUseMediaQuery.mockReset()
-  })
-
-  it('renders a bottom drawer at the up-to-small breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(true)
+  it('renders a bottom drawer when isDrawer is true', () => {
     const onOpenChange = jest.fn()
 
-    renderBottomDrawerOrDialog(true, onOpenChange, {
-      title: 'Order Receipt',
+    renderBottomDrawerOrDialog(true, true, onOpenChange, {
+      a11yTitle: 'Order Receipt',
       className: 'receipt-overlay',
-      header: <span>Header</span>,
-      footer: <span>Footer</span>,
       children: <span>Content</span>,
     })
 
     const drawer = screen.getByTestId('bottom-drawer')
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToSmall(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('dialog')).toBeNull()
     expect(drawer.getAttribute('data-open')).toBe('true')
-    expect(drawer.getAttribute('data-title')).toBe('Order Receipt')
+    expect(drawer.getAttribute('data-a11y-title')).toBe('Order Receipt')
     expect(drawer.className).toContain('receipt-overlay')
-    expect(drawer.textContent).toContain('Header')
     expect(drawer.textContent).toContain('Content')
-    expect(drawer.textContent).toContain('Footer')
   })
 
-  it('renders a dialog above the small breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange } = renderBottomDrawerOrDialog(true, jest.fn(), {
-      title: 'Order Receipt',
-      header: <span>Header</span>,
-      footer: <span>Footer</span>,
+  it('renders a dialog when isDrawer is false', () => {
+    const { onOpenChange } = renderBottomDrawerOrDialog(true, false, jest.fn(), {
+      a11yTitle: 'Order Receipt',
       children: <span>Content</span>,
       variant: 'narrow',
     })
 
     const dialog = screen.getByTestId('dialog')
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToSmall(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('bottom-drawer')).toBeNull()
     expect(dialog.getAttribute('data-open')).toBe('true')
-    expect(dialog.getAttribute('data-title')).toBe('Order Receipt')
+    expect(dialog.getAttribute('data-a11y-title')).toBe('Order Receipt')
     expect(dialog.getAttribute('data-variant')).toBe('narrow')
-    expect(dialog.textContent).toContain('Header')
     expect(dialog.textContent).toContain('Content')
-    expect(dialog.textContent).toContain('Footer')
   })
 
-  it('closes after resizing from the drawer branch to the dialog branch', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true)
+  it('closes after switching from the drawer branch to the dialog branch', () => {
+    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 
-    mockUseMediaQuery.mockReturnValue(false)
     rerender(
-      <BottomDrawerOrDialog isOpen={true} onOpenChange={onOpenChange}>
+      <BottomDrawerOrDialog isOpen={true} isDrawer={false} onOpenChange={onOpenChange}>
         <div>receipt</div>
       </BottomDrawerOrDialog>,
     )
@@ -170,9 +129,7 @@ describe('BottomDrawerOrDialog', () => {
   })
 
   it('closes on unmount so a later remount does not reopen the overlay', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, unmount } = renderBottomDrawerOrDialog(true)
+    const { onOpenChange, unmount } = renderBottomDrawerOrDialog(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 
