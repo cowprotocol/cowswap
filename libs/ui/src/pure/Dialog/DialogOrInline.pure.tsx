@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { useLatestRef } from '@cowprotocol/common-hooks'
 
@@ -16,20 +16,14 @@ export interface DialogOrInlineProps extends BaseSurfaceProps {
 
 export function DialogOrInline({ children, isDialog, ...props }: DialogOrInlineProps): ReactNode {
   const onOpenChangeRef = useLatestRef(props.onOpenChange)
-  const wasDialogRef = useRef(isDialog)
 
   useEffect(() => {
     const onOpenChange = onOpenChangeRef.current
-    const wasDialog = wasDialogRef.current
-    wasDialogRef.current = isDialog
 
     if (!isDialog) {
-      // Inline mode: keep the drawer closed so resizing back down does not reopen it.
+      // Inline callers render children regardless of `isOpen`. Close so a later
+      // resize into the dialog branch does not reopen a drawer the user never opened.
       onOpenChange(false)
-    } else if (!wasDialog) {
-      // Switched from inline → dialog (e.g. desktop → mobile while viewing the table).
-      // Open so content stays visible inside the dialog instead of vanishing into a closed portal.
-      onOpenChange(true)
     }
 
     return () => {

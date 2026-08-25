@@ -115,7 +115,7 @@ describe('DialogOrInline', () => {
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
-  it('opens after switching from the inline branch to the dialog branch', () => {
+  it('does not open after switching from the inline branch to the dialog branch', () => {
     const { onOpenChange, rerender } = renderDialogOrInline(false, false)
 
     expect(onOpenChange).toHaveBeenCalledWith(false)
@@ -127,10 +127,12 @@ describe('DialogOrInline', () => {
       </DialogOrInline>,
     )
 
-    // cleanup of previous effect closes, then the new effect opens
+    // cleanup of the inline effect closes; the dialog branch must not auto-open
+    // (inline callers render unconditionally, so "was inline" is not "user had this open")
     expect(onOpenChange).toHaveBeenCalledWith(false)
-    expect(onOpenChange).toHaveBeenCalledWith(true)
+    expect(onOpenChange).not.toHaveBeenCalledWith(true)
     expect(screen.getByTestId('dialog')).toBeTruthy()
+    expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('false')
   })
 
   it('closes on unmount so a later remount does not reopen the dialog', () => {
