@@ -142,12 +142,7 @@ async function waitForPin(provider, cid, { timeoutMs, pollMs, sleep, now }) {
     }
     const remainingAfterRequest = deadline - now()
     if (remainingAfterRequest <= 0) break
-    try {
-      await withDeadline(() => sleep(Math.min(pollMs, remainingAfterRequest)), remainingAfterRequest)
-    } catch (error) {
-      if (error instanceof DeadlineError) break
-      throw error
-    }
+    await sleep(Math.min(pollMs, remainingAfterRequest))
   }
   return { status: 'timeout', error: `last provider status: ${lastStatus}` }
 }
