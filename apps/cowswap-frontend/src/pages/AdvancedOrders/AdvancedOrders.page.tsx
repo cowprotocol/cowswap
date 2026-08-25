@@ -103,7 +103,11 @@ export function AdvancedOrdersPage(): ReactNode {
         </styledEl.PrimaryWrapper>
 
         {!hideOrdersTable && isUnlocked && (
-          <DialogOrInline isOpen={isOrdersTableDrawerOpen} onOpenChange={handleOrdersTableDrawerOpenChange}>
+          <DialogOrInline
+            isDialog={isUpToLarge}
+            isOpen={isOrdersTableDrawerOpen}
+            onOpenChange={handleOrdersTableDrawerOpenChange}
+          >
             <Modal.Root className="trade-orders-table">
               {isUpToLarge ? (
                 <ModalHeader

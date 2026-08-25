@@ -1,17 +1,20 @@
 import { ReactNode, useEffect } from 'react'
 
-import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 
 import { Dialog } from './Dialog.pure'
 
-import { Media } from '../../consts'
 import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
-export type DialogOrInlineProps = BaseSurfaceProps
+export interface DialogOrInlineProps extends BaseSurfaceProps {
+  /**
+   * When true, wrap children in Dialog; otherwise render inline.
+   * Pass the same value used to gate `ModalHeader` / `Dialog.Title`.
+   */
+  isDialog: boolean
+}
 
-export function DialogOrInline({ children, ...props }: DialogOrInlineProps): ReactNode {
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
-
+export function DialogOrInline({ children, isDialog, ...props }: DialogOrInlineProps): ReactNode {
   const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
@@ -19,16 +22,16 @@ export function DialogOrInline({ children, ...props }: DialogOrInlineProps): Rea
 
     // If we got from "drawer" to "inline" (we make the window wider),
     // we close it, so that if we resize the window back down, the drawer is not already opened:
-    if (!isUpToLarge) {
+    if (!isDialog) {
       closeDrawer(false)
     }
 
     return () => {
       closeDrawer(false)
     }
-  }, [onOpenChangeRef, isUpToLarge])
+  }, [onOpenChangeRef, isDialog])
 
-  if (!isUpToLarge) {
+  if (!isDialog) {
     return children
   }
 

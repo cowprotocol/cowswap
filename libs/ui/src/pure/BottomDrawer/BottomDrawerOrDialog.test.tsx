@@ -4,19 +4,6 @@ import { render, screen } from '@testing-library/react'
 
 import { BottomDrawerOrDialog } from './BottomDrawerOrDialog'
 
-import { Media } from '../../consts'
-
-const mockUseMediaQuery = jest.fn()
-
-jest.mock('@cowprotocol/common-hooks', () => {
-  const actual = jest.requireActual('@cowprotocol/common-hooks') as typeof import('@cowprotocol/common-hooks')
-
-  return {
-    ...actual,
-    useMediaQuery: (...args: unknown[]) => mockUseMediaQuery(...args),
-  }
-})
-
 jest.mock('./BottomDrawer.pure', () => ({
   BottomDrawer: ({
     children,
@@ -63,6 +50,7 @@ jest.mock('../Dialog/Dialog.pure', () => ({
 
 function renderBottomDrawerOrDialog(
   isOpen: boolean,
+  isDrawer: boolean,
   onOpenChange = jest.fn(),
   extra?: {
     a11yTitle?: string
@@ -76,6 +64,7 @@ function renderBottomDrawerOrDialog(
   const view = render(
     <BottomDrawerOrDialog
       isOpen={isOpen}
+      isDrawer={isDrawer}
       onOpenChange={onOpenChange}
       a11yTitle={extra?.a11yTitle}
       className={extra?.className}
@@ -89,15 +78,10 @@ function renderBottomDrawerOrDialog(
 }
 
 describe('BottomDrawerOrDialog', () => {
-  beforeEach(() => {
-    mockUseMediaQuery.mockReset()
-  })
-
-  it('renders a bottom drawer at the up-to-small breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(true)
+  it('renders a bottom drawer when isDrawer is true', () => {
     const onOpenChange = jest.fn()
 
-    renderBottomDrawerOrDialog(true, onOpenChange, {
+    renderBottomDrawerOrDialog(true, true, onOpenChange, {
       a11yTitle: 'Order Receipt',
       className: 'receipt-overlay',
       children: <span>Content</span>,
@@ -105,7 +89,6 @@ describe('BottomDrawerOrDialog', () => {
 
     const drawer = screen.getByTestId('bottom-drawer')
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToSmall(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('dialog')).toBeNull()
     expect(drawer.getAttribute('data-open')).toBe('true')
@@ -114,10 +97,8 @@ describe('BottomDrawerOrDialog', () => {
     expect(drawer.textContent).toContain('Content')
   })
 
-  it('renders a dialog above the small breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange } = renderBottomDrawerOrDialog(true, jest.fn(), {
+  it('renders a dialog when isDrawer is false', () => {
+    const { onOpenChange } = renderBottomDrawerOrDialog(true, false, jest.fn(), {
       a11yTitle: 'Order Receipt',
       children: <span>Content</span>,
       variant: 'narrow',
@@ -125,7 +106,6 @@ describe('BottomDrawerOrDialog', () => {
 
     const dialog = screen.getByTestId('dialog')
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToSmall(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(screen.queryByTestId('bottom-drawer')).toBeNull()
     expect(dialog.getAttribute('data-open')).toBe('true')
@@ -134,16 +114,13 @@ describe('BottomDrawerOrDialog', () => {
     expect(dialog.textContent).toContain('Content')
   })
 
-  it('closes after resizing from the drawer branch to the dialog branch', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true)
+  it('closes after switching from the drawer branch to the dialog branch', () => {
+    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 
-    mockUseMediaQuery.mockReturnValue(false)
     rerender(
-      <BottomDrawerOrDialog isOpen={true} onOpenChange={onOpenChange}>
+      <BottomDrawerOrDialog isOpen={true} isDrawer={false} onOpenChange={onOpenChange}>
         <div>receipt</div>
       </BottomDrawerOrDialog>,
     )
@@ -152,9 +129,7 @@ describe('BottomDrawerOrDialog', () => {
   })
 
   it('closes on unmount so a later remount does not reopen the overlay', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, unmount } = renderBottomDrawerOrDialog(true)
+    const { onOpenChange, unmount } = renderBottomDrawerOrDialog(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 

@@ -148,7 +148,7 @@ export function ReceiptModal({
   }
 
   return (
-    <BottomDrawerOrDialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
+    <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
         <ReceiptModalHeader
           alternativeOrderModalContext={contentProps.alternativeOrderModalContext}

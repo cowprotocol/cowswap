@@ -4,19 +4,6 @@ import { render, screen } from '@testing-library/react'
 
 import { DialogOrInline } from './DialogOrInline.pure'
 
-import { Media } from '../../consts'
-
-const mockUseMediaQuery = jest.fn()
-
-jest.mock('@cowprotocol/common-hooks', () => {
-  const actual = jest.requireActual('@cowprotocol/common-hooks') as typeof import('@cowprotocol/common-hooks')
-
-  return {
-    ...actual,
-    useMediaQuery: (...args: unknown[]) => mockUseMediaQuery(...args),
-  }
-})
-
 jest.mock('./Dialog.pure', () => ({
   Dialog: ({
     children,
@@ -37,6 +24,7 @@ jest.mock('./Dialog.pure', () => ({
 
 function renderDialogOrInline(
   isOpen: boolean,
+  isDialog: boolean,
   onOpenChange = jest.fn(),
   extra?: {
     a11yTitle?: string
@@ -49,6 +37,7 @@ function renderDialogOrInline(
   const view = render(
     <DialogOrInline
       isOpen={isOpen}
+      isDialog={isDialog}
       onOpenChange={onOpenChange}
       a11yTitle={extra?.a11yTitle}
       className={extra?.className}
@@ -61,15 +50,10 @@ function renderDialogOrInline(
 }
 
 describe('DialogOrInline', () => {
-  beforeEach(() => {
-    mockUseMediaQuery.mockReset()
-  })
-
-  it('renders a dialog at the up-to-large breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(true)
+  it('renders a dialog when isDialog is true', () => {
     const onOpenChange = jest.fn()
 
-    renderDialogOrInline(true, onOpenChange, {
+    renderDialogOrInline(true, true, onOpenChange, {
       a11yTitle: 'Orders',
       className: 'orders-dialog',
       children: <span>Content</span>,
@@ -77,7 +61,6 @@ describe('DialogOrInline', () => {
 
     const dialog = screen.getByTestId('dialog')
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(dialog.getAttribute('data-open')).toBe('true')
     expect(dialog.getAttribute('data-a11y-title')).toBe('Orders')
@@ -85,31 +68,24 @@ describe('DialogOrInline', () => {
     expect(dialog.textContent).toContain('Content')
   })
 
-  it('renders children inline above the large breakpoint', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    renderDialogOrInline(true, jest.fn(), {
+  it('renders children inline when isDialog is false', () => {
+    renderDialogOrInline(true, false, jest.fn(), {
       children: <span>Content</span>,
     })
 
-    expect(mockUseMediaQuery).toHaveBeenCalledWith(Media.upToLarge(false))
     expect(screen.queryByTestId('dialog')).toBeNull()
     expect(screen.getByText('Content')).toBeTruthy()
   })
 
   it('closes when mounting the inline branch while open', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange } = renderDialogOrInline(true)
+    const { onOpenChange } = renderDialogOrInline(true, false)
 
     expect(onOpenChange).toHaveBeenCalledTimes(1)
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
-  it('closes the inline branch on mount even if already closed, but not on later desktop renders', () => {
-    mockUseMediaQuery.mockReturnValue(false)
-
-    const { onOpenChange, rerender } = renderDialogOrInline(false)
+  it('closes the inline branch on mount even if already closed, but not on later inline renders', () => {
+    const { onOpenChange, rerender } = renderDialogOrInline(false, false)
 
     expect(onOpenChange).toHaveBeenCalledTimes(1)
     expect(onOpenChange).toHaveBeenCalledWith(false)
@@ -117,7 +93,7 @@ describe('DialogOrInline', () => {
     onOpenChange.mockClear()
 
     rerender(
-      <DialogOrInline isOpen={false} onOpenChange={onOpenChange}>
+      <DialogOrInline isOpen={false} isDialog={false} onOpenChange={onOpenChange}>
         <div>orders</div>
       </DialogOrInline>,
     )
@@ -125,16 +101,13 @@ describe('DialogOrInline', () => {
     expect(onOpenChange).not.toHaveBeenCalled()
   })
 
-  it('closes after resizing from the dialog branch to the inline branch', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, rerender } = renderDialogOrInline(true)
+  it('closes after switching from the dialog branch to the inline branch', () => {
+    const { onOpenChange, rerender } = renderDialogOrInline(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 
-    mockUseMediaQuery.mockReturnValue(false)
     rerender(
-      <DialogOrInline isOpen={true} onOpenChange={onOpenChange}>
+      <DialogOrInline isOpen={true} isDialog={false} onOpenChange={onOpenChange}>
         <div>orders</div>
       </DialogOrInline>,
     )
@@ -143,9 +116,7 @@ describe('DialogOrInline', () => {
   })
 
   it('closes on unmount so a later remount does not reopen the dialog', () => {
-    mockUseMediaQuery.mockReturnValue(true)
-
-    const { onOpenChange, unmount } = renderDialogOrInline(true)
+    const { onOpenChange, unmount } = renderDialogOrInline(true, true)
 
     expect(onOpenChange).not.toHaveBeenCalled()
 

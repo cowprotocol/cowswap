@@ -1,20 +1,22 @@
 import { ReactNode, useEffect } from 'react'
 
-import { useLatestRef, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 
 import { BottomDrawer } from './BottomDrawer.pure'
 
-import { Media } from '../../consts'
 import { Dialog, type DialogVariant } from '../Dialog/Dialog.pure'
 import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
 export interface BottomDrawerOrDialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
+  /**
+   * When true, render BottomDrawer; otherwise Dialog.
+   * Pass the same value used for `ModalHeader` `titleAs`.
+   */
+  isDrawer: boolean
 }
 
-export function BottomDrawerOrDialog({ variant, ...props }: BottomDrawerOrDialogProps): ReactNode {
-  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
-
+export function BottomDrawerOrDialog({ variant, isDrawer, ...props }: BottomDrawerOrDialogProps): ReactNode {
   const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
@@ -25,9 +27,9 @@ export function BottomDrawerOrDialog({ variant, ...props }: BottomDrawerOrDialog
     return () => {
       closeOverlay(false)
     }
-  }, [onOpenChangeRef, isUpToSmall])
+  }, [onOpenChangeRef, isDrawer])
 
-  if (isUpToSmall) {
+  if (isDrawer) {
     return <BottomDrawer {...props} />
   }
 
