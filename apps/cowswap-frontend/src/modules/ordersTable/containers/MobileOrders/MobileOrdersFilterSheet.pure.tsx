@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react'
 
-import { BottomDrawer, CloseIconButton } from '@cowprotocol/ui'
+import { BottomDrawer, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { OrderTabId } from 'entities/routes/routes.atom'
@@ -73,48 +73,55 @@ export function MobileOrdersFilterSheet({
     setDraftStatus(HistoryStatusFilter.ALL)
   }
 
+  const handleClose = (): void => {
+    onOpenChange(false)
+  }
+
   return (
-    <BottomDrawer isOpen={isOpen} onOpenChange={onOpenChange} a11yTitle={t`Search and filters`}>
-      <styledEl.FilterSheetHeader>
-        <h2>{t`Search & filters`}</h2>
-        <CloseIconButton closeOnEscape={false} aria-label={t`Close filters`} onClick={() => onOpenChange(false)} />
-      </styledEl.FilterSheetHeader>
+    <BottomDrawer isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal.Root>
+        <ModalHeader sticky title={t`Search & filters`} titleAs={BottomDrawer.Title} onClose={handleClose} />
 
-      <styledEl.FilterSheetBody>
-        {currentTab === OrderTabId.HISTORY ? (
-          <FilterStatusChoices value={draftStatus} onChange={setDraftStatus} />
-        ) : null}
-
-        <styledEl.FilterGroup>
-          <label htmlFor="mobile-orders-search">{t`Token symbol or address`}</label>
-          <styledEl.SearchField>
-            <Search aria-hidden />
-            <input
-              id="mobile-orders-search"
-              type="search"
-              value={draftSearchTerm}
-              placeholder={t`Token symbol or address`}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setDraftSearchTerm(event.target.value)}
-            />
-            {draftSearchTerm ? (
-              <styledEl.ClearSearchButton
-                type="button"
-                aria-label={t`Clear search`}
-                onClick={() => setDraftSearchTerm('')}
-              >
-                <X aria-hidden size={16} />
-              </styledEl.ClearSearchButton>
+        <Modal.Content>
+          <styledEl.FilterSheetBody>
+            {currentTab === OrderTabId.HISTORY ? (
+              <FilterStatusChoices value={draftStatus} onChange={setDraftStatus} />
             ) : null}
-          </styledEl.SearchField>
-        </styledEl.FilterGroup>
-      </styledEl.FilterSheetBody>
 
-      <FilterSheetFooter
-        canReset={canReset}
-        filteredCount={filteredCount}
-        onApply={handleApply}
-        onReset={handleReset}
-      />
+            <styledEl.FilterGroup>
+              <label htmlFor="mobile-orders-search">{t`Token symbol or address`}</label>
+              <styledEl.SearchField>
+                <Search aria-hidden />
+                <input
+                  id="mobile-orders-search"
+                  type="search"
+                  value={draftSearchTerm}
+                  placeholder={t`Token symbol or address`}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => setDraftSearchTerm(event.target.value)}
+                />
+                {draftSearchTerm ? (
+                  <styledEl.ClearSearchButton
+                    type="button"
+                    aria-label={t`Clear search`}
+                    onClick={() => setDraftSearchTerm('')}
+                  >
+                    <X aria-hidden size={16} />
+                  </styledEl.ClearSearchButton>
+                ) : null}
+              </styledEl.SearchField>
+            </styledEl.FilterGroup>
+          </styledEl.FilterSheetBody>
+        </Modal.Content>
+
+        <Modal.Footer>
+          <FilterSheetFooter
+            canReset={canReset}
+            filteredCount={filteredCount}
+            onApply={handleApply}
+            onReset={handleReset}
+          />
+        </Modal.Footer>
+      </Modal.Root>
     </BottomDrawer>
   )
 }

@@ -425,26 +425,11 @@ export const EmptyLoadMore = styled.div`
   margin-top: 12px;
 `
 
-export const FilterSheetHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-  padding: 0 8px 0 16px;
-
-  > h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 28px;
-  }
-`
-
 export const FilterSheetBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 8px 16px 48px;
+  padding-bottom 22px;
 `
 
 export const FilterGroup = styled.fieldset`
