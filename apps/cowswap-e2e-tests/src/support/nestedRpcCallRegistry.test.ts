@@ -7,7 +7,7 @@ import { test } from 'node:test'
 import { installNativeBalanceRoute } from './mockEthFlowTransaction'
 import { registerNestedCallResolver, resolveNestedCall } from './nestedRpcCallRegistry'
 
-import { installSocketVerifier } from '../mocks/socketVerifier'
+import { installSocketVerifier } from '../mocks/bridge/socketVerifier'
 
 import type { BrowserContext, Route } from '@playwright/test'
 

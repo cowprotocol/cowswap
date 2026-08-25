@@ -1,6 +1,6 @@
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { JsonRpcEntry, mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
+import { JsonRpcEntry, mockRpcNodeRequest } from '../../support/mockRpcNodeRequest'
 
 import type { BrowserContext } from '@playwright/test'
 

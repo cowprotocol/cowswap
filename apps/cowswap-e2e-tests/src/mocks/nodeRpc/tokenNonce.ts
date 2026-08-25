@@ -1,6 +1,6 @@
 import { encodeAbiParameters, toFunctionSelector } from 'viem'
 
-import { mockContractViewCall } from '../support/mockContractViewCall'
+import { mockContractViewCall } from '../../support/mockContractViewCall'
 
 import type { BrowserContext } from '@playwright/test'
 

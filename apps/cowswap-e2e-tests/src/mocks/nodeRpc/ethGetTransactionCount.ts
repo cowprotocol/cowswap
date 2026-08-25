@@ -1,4 +1,4 @@
-import { mockRpcNodeRequest } from '../support/mockRpcNodeRequest'
+import { mockRpcNodeRequest } from '../../support/mockRpcNodeRequest'
 
 import type { BrowserContext } from '@playwright/test'
 

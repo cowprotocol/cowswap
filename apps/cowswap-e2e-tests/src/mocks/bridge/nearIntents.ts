@@ -1,4 +1,4 @@
-import { loadFixture } from './bridge/loadFixture'
+import { loadFixture } from './loadFixture'
 
 import type { BrowserContext, Route } from '@playwright/test'
 
