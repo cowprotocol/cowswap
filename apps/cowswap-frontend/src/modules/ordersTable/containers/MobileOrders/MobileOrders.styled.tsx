@@ -429,7 +429,7 @@ export const FilterSheetBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding-bottom 22px;
+  padding-bottom: 22px;
 `
 
 export const FilterGroup = styled.fieldset`
