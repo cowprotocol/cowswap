@@ -1403,8 +1403,8 @@ msgstr "Some orders can not be cancelled!"
 #~ msgstr "The selling amount for the order is lower than the fee"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrdersFilterSheet.pure.tsx
-msgid "Close filters"
-msgstr "Close filters"
+#~ msgid "Close filters"
+#~ msgstr "Close filters"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Orders history"
@@ -6539,8 +6539,8 @@ msgid "Boost Your Yield with One-Click Conversion"
 msgstr "Boost Your Yield with One-Click Conversion"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrdersFilterSheet.pure.tsx
-msgid "Search and filters"
-msgstr "Search and filters"
+#~ msgid "Search and filters"
+#~ msgstr "Search and filters"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
