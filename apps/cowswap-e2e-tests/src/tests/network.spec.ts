@@ -6,7 +6,7 @@ import { CHAIN_IDS } from '../support/constants'
 test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
 test.describe('Network', () => {
-  test('[NW-01] Switching network via the UI selector resets to the default pair for that chain', async ({
+  test('[NW-01] Switching network via the UI selector resets to the default pair for that chain @smoke', async ({
     swapPage,
     header,
   }) => {
