@@ -16,6 +16,7 @@ jest.mock('@cowprotocol/ui', () => ({
     },
   },
   Media: {
+    upToLarge: () => '',
     upToMedium: () => '',
   },
   UI: {

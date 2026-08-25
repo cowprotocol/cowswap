@@ -25,6 +25,10 @@ const Disclaimer = styled.aside`
     line-height: inherit;
   }
 
+  ${Media.upToLarge()} {
+    padding: 0 2.4rem;
+  }
+
   ${Media.upToMedium()} {
     margin: 8.8rem auto 2.4rem;
   }
