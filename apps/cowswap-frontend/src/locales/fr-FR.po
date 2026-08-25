@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 14:15\n"
+"PO-Revision-Date: 2026-08-25 21:04\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -1307,7 +1307,7 @@ msgstr "Solde total de vCOW"
 
 #: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 msgid "TWAP orders"
-msgstr ""
+msgstr "Ordres TWAP"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/UnsupportedTokenButton.pure.tsx
@@ -1503,7 +1503,7 @@ msgstr "Placer un ordre limite"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "<0>New!</0> Get Telegram notifications about your order status! <1>Get started</1>"
-msgstr ""
+msgstr "<0>Nouveau !</0> Recevez des notifications Telegram concernant le statut de votre ordre ! <1>Commencer</1>"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Become an affiliate"
@@ -1523,7 +1523,7 @@ msgstr "Proxy de compte TWAP"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started with limit orders"
-msgstr "Commencer avec les ordres limite"
+msgstr "Commencer avec les ordres limites"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
@@ -1996,7 +1996,7 @@ msgstr "Fermé"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
-msgstr ""
+msgstr "Connecter Telegram"
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
@@ -3004,7 +3004,7 @@ msgstr "Autorisation insuffisante accordée pour"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Try again"
-msgstr ""
+msgstr "Réessayer"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Failed to fetch manifest from {manifestUrl}. Please verify the URL and try again."
@@ -3307,7 +3307,7 @@ msgstr "Votre position ne contient aucune liquidité et ne génère pas de frais
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can avoid price impact on large trades by using TWAP orders on CoW Swap."
-msgstr "Vous pouvez éviter l’impact sur le prix des trades importants en utilisant les ordres TWAP sur CoW Swap."
+msgstr "Vous pouvez éviter l’impact sur le prix lors de trades importants en utilisant les ordres TWAP sur CoW Swap."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Click to copy contract address"
@@ -3319,7 +3319,7 @@ msgstr "Wallet non pris en charge détecté"
 
 #: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit orders"
-msgstr ""
+msgstr "Ordres limites"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Tokens Overview"
@@ -3407,7 +3407,7 @@ msgstr "En attente..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots."
-msgstr "Les pools de liquidité de CoW AMM se développent plus rapidement que ceux des autres AMM, car ils ne perdent pas d’argent au profit des bots d’arbitrage."
+msgstr "Les pools de liquidité sur CoW AMM se développent plus rapidement que ceux des autres AMM, car ils ne perdent pas d’argent au profit des bots d’arbitrage."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
@@ -3421,7 +3421,7 @@ msgstr "Liquidité insuffisante pour ce trade"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Get a new link"
-msgstr ""
+msgstr "Obtenir un nouveau lien"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -3614,11 +3614,11 @@ msgstr "Site web"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Interface"
-msgstr "Interface des ordres limite"
+msgstr "Interface des ordres limites"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Signed: <0>{numConfirmations} out of {gnosisSafeThreshold} signers</0>"
-msgstr "Signé : <0>{numConfirmations} signataire(s) sur {gnosisSafeThreshold}</0>"
+msgstr "Signé : <0>{numConfirmations} sur {gnosisSafeThreshold} signataires</0>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "This order can be partially filled"
@@ -5863,7 +5863,7 @@ msgstr "de votre montant à vendre ! Votre ordre a donc peu de chances d’être
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Something went wrong. Please try again."
-msgstr ""
+msgstr "Une erreur est survenue. Veuillez réessayer."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -6000,7 +6000,7 @@ msgstr "Il s’agit du montant vendu dans chaque partie de l’ordre TWAP."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Quote expired. Refreshing..."
-msgstr "Devis expiré. Actualisation..."
+msgstr "Offre expirée. Actualisation..."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
@@ -6013,7 +6013,7 @@ msgstr "Devis expiré. Actualisation..."
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Get Telegram updates when it fills or expires."
-msgstr ""
+msgstr "Recevez des mises à jour sur Telegram lorsque votre ordre est exécuté ou expire."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
