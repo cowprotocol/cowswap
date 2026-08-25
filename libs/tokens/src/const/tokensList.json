@@ -112,6 +112,10 @@
     {
       "priority": 6,
       "source": "https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/main/CowSwap.json"
+    },
+    {
+      "priority": 7,
+      "source": "https://raw.githubusercontent.com/ST0x-Technology/st0x.registry/main/token-lists/base.json"
     }
   ],
   "137": [
