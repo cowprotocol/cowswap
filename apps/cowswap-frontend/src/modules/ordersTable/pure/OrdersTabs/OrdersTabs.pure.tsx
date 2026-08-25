@@ -57,7 +57,6 @@ export function OrdersTabs(): ReactNode {
           const isSigning = tab.id === 'signing'
           return (
             <styledEl.TabButton
-              className="orders-table_tab"
               key={tab.id}
               $isActive={tab.id === currentTabId}
               $isUnfillable={isUnfillable}

@@ -28,7 +28,7 @@ export function Toggle({
   }
 
   return (
-    <styledEl.ToggleWrapper className="approve-mode-selector">
+    <styledEl.ToggleWrapper>
       <Option isActive={isPartialApproveSelected} onClick={() => handleSelect(true)} title={t`Partial approval`}>
         <styledEl.PartialAmountWrapper
           onClick={() => {

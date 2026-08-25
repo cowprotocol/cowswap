@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -54,10 +54,12 @@ export type StepProps = PropsWithChildren<{
   errorMessage?: string
 }>
 
-export function Step(props: StepProps): ReactNode {
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function Step(props: StepProps) {
   const { label, crossOut, children, state, icon, errorMessage } = props
   return (
-    <StepWrapper className="eth-flow-step">
+    <StepWrapper>
       <StatusIcon icon={icon} state={state} label={label} crossOut={crossOut} errorMessage={errorMessage}>
         {children}
       </StatusIcon>

@@ -1,4 +1,3 @@
-import { getUpdaterInterval } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 
@@ -9,11 +8,11 @@ export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
   [ChainId.GNOSIS_CHAIN]: 13566914,
 }
 
-export const MARKET_OPERATOR_API_POLL_INTERVAL = getUpdaterInterval(ms`2s`)
+export const MARKET_OPERATOR_API_POLL_INTERVAL = ms`2s`
 // We can have lots of limit orders and it creates a high load, so we poll them not so often as market orders
-export const LIMIT_OPERATOR_API_POLL_INTERVAL = getUpdaterInterval(ms`15s`)
-export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = getUpdaterInterval(ms`30s`)
-export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = getUpdaterInterval(ms`15s`)
+export const LIMIT_OPERATOR_API_POLL_INTERVAL = ms`15s`
+export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = ms`30s`
+export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = ms`15s`
 
 export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%
 

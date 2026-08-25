@@ -31,7 +31,7 @@ export function PriceImpactIndicator({ priceImpactParams, isBridging = false }: 
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
 
   return (
-    <span data-testid="price-impact">
+    <span>
       {priceImpact && !priceImpactLoading ? (
         <PriceImpactWrapper priceImpact$={priceImpact} isBridging$={isBridging}>
           {' '}

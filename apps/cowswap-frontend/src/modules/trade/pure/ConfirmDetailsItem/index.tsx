@@ -11,7 +11,6 @@ import { TimelineDot } from '../Row/styled'
 export type ConfirmDetailsItemProps = {
   children: ReactNode
   label?: ReactNode
-  className?: string
   labelOpacity?: boolean
   tooltip?: ReactNode
   withArrow?: boolean
@@ -25,7 +24,6 @@ export type ConfirmDetailsItemProps = {
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
   const {
     children,
-    className,
     label,
     labelOpacity = false,
     tooltip,
@@ -36,7 +34,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
   } = props
 
   return (
-    <Wrapper className={className}>
+    <Wrapper>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot isLast={isLast} />}
       {label ? (

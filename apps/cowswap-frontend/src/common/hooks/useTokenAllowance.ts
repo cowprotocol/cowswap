@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { getUpdaterInterval, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,7 +20,7 @@ const OPTIMISTIC_ALLOWANCE_TTL = ms`30s`
 const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
   revalidateIfStale: false,
-  refreshInterval: getUpdaterInterval(ms`10s`),
+  refreshInterval: ms`10s`,
 }
 
 export function useTokenAllowance(

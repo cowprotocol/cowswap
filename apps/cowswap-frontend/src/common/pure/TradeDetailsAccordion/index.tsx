@@ -47,17 +47,10 @@ export function TradeDetailsAccordion({
   const defaultFeeContent = <DefaultFeeContent feeUsdTotalAmount={feeUsdTotalAmount} feeTotalAmount={feeTotalAmount} />
 
   return (
-    <Wrapper className="trade-details-accordion" isOpen={open}>
+    <Wrapper isOpen={open}>
       <Summary>
         {rateInfo}
-        <SummaryClickable
-          className="trade-details-accordion-toggle"
-          onClick={onToggle}
-          onKeyDown={handleKeyDown}
-          aria-expanded={open}
-          tabIndex={0}
-          isOpen={open}
-        >
+        <SummaryClickable onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={open} tabIndex={0} isOpen={open}>
           {feeWrapper ? feeWrapper(defaultFeeContent, open) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />

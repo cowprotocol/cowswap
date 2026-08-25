@@ -112,7 +112,7 @@ export function TradeFormBlankButton({
     <ActionButton
       ref={ref}
       id={id}
-      className={'trade-form-blank-button ' + className}
+      className={className}
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}
