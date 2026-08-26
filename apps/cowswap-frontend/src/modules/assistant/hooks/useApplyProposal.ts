@@ -59,21 +59,27 @@ export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult
       // is the one the user meant — "buy exactly 100 AAVE" is a BUY order.
       const orderKind = proposal.buyAmount && !proposal.sellAmount ? OrderKind.BUY : OrderKind.SELL
 
-      navigate(
-        parameterizeTradeRoute(
-          {
-            chainId: String(proposal.chainId),
-            inputCurrencyId: proposal.sellToken,
-            outputCurrencyId: proposal.buyToken,
-            inputCurrencyAmount: proposal.sellAmount,
-            outputCurrencyAmount: proposal.buyAmount,
-            orderKind,
-            targetChainId: undefined,
-          },
-          proposal.orderType === 'limit' ? Routes.LIMIT_ORDERS : Routes.SWAP,
-          true,
-        ),
+      const url = parameterizeTradeRoute(
+        {
+          chainId: String(proposal.chainId),
+          inputCurrencyId: proposal.sellToken,
+          outputCurrencyId: proposal.buyToken,
+          inputCurrencyAmount: proposal.sellAmount,
+          outputCurrencyAmount: proposal.buyAmount,
+          orderKind,
+          targetChainId: undefined,
+        },
+        proposal.orderType === 'limit' ? Routes.LIMIT_ORDERS : Routes.SWAP,
+        true,
       )
+
+      // Split rather than passing the joined string: this is the shape
+      // useTradeNavigate uses, and the app's own navigation is the thing to copy
+      // when a route has to be understood by the trade updaters at the other end.
+      const [pathname, search = ''] = url.split('?')
+
+      console.info('[assistant] applying proposal →', pathname, search)
+      navigate({ pathname, search })
 
       return { ok: true }
     },

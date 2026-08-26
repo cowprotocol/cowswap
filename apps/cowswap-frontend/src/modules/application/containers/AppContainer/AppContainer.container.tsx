@@ -14,6 +14,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate'
+import { AssistantDrawer, AssistantToggle } from 'modules/assistant'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
@@ -90,7 +91,12 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     [pageBackgroundVariant, pageScene],
   )
 
-  const networkAndAccountControls = <NetworkAndAccountControls />
+  const networkAndAccountControls = (
+    <styledEl.HeaderControls>
+      <AssistantToggle />
+      <NetworkAndAccountControls />
+    </styledEl.HeaderControls>
+  )
   const isChristmasTheme = isChristmasThemeHelper(customTheme)
   const shouldRenderCowSpeechBubble = shouldDisplayCowSpeechBubble({
     isInjectedWidgetMode,
@@ -111,6 +117,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         <InvalidLocalTimeWarning />
 
         <OrdersPanel />
+        <AssistantDrawer />
 
         <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
 

@@ -75,6 +75,12 @@ export interface AssistantTurn {
 }
 
 export interface AssistantUiContext {
+  /**
+   * How this turn arrived. 'voice' makes the prompt's rule about repeating dictated
+   * numbers back reachable — without it the model cannot tell a spoken ticker from a
+   * typed one, and the rule can never fire. 'app' marks a turn the app injected.
+   */
+  inputMode?: 'app' | 'typed' | 'voice'
   orderType: 'swap' | 'limit'
   chainId: SupportedChainId
   walletAddress?: string
