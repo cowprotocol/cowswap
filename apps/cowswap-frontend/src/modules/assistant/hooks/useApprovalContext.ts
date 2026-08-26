@@ -20,7 +20,13 @@ import { AssistantApproval } from '../types'
  * The distinction is the whole point of surfacing this at all:
  * - a **permit** is a signature — free, instant, no gas
  * - an **approval** is an on-chain transaction — costs gas, unlike the trade itself
- * - a **bundle** (Safe) does the approval and the trade together
+ * - a **bundle** does the approval and the trade together in one transaction
+ *
+ * ⚠️ A bundle is NOT a Safe. `useIsTxBundlingSupported` reads
+ * `isAtomicBatchSupportedAtom` — EIP-5792 atomic batching, a capability wallets
+ * advertise through `wallet_getCapabilities` — and plenty of ordinary EOA wallets
+ * support it. Nothing here reports the wallet's type, and `AssistantApproval`
+ * deliberately carries no field for one.
  *
  * An approval is where a first-time CoW user meets an unexpected gas fee on a
  * product sold as gasless, and nothing in the UI explains it in advance.
