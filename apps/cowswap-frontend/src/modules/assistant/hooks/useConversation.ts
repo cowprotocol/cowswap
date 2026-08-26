@@ -91,7 +91,12 @@ export function useConversation(): Conversation {
         // A failed turn must not leave the user's message with no reply after it —
         // the next turn would then send two user messages in a row and be rejected.
         setConversation(previous)
-        if (!isNudge) setError(failure instanceof Error ? failure.message : 'Something went wrong.')
+        // A nudge is unprompted, so a failed one must not raise a banner about a
+        // message the user never sent. But it must not vanish either: a silent
+        // failure here is indistinguishable from the assistant having nothing to
+        // say, which is how a broken quote check looks exactly like a working one.
+        if (isNudge) console.warn('[assistant] nudge failed:', trimmed, failure)
+        else setError(failure instanceof Error ? failure.message : 'Something went wrong.')
       } finally {
         setBusy(false)
         setStreamText('')

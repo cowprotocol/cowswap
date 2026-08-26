@@ -44,8 +44,8 @@ export function AssistantDrawer(): ReactNode {
   const { messages, proposal, proposalDisplay, preamble, proposalApplied } = useAtomValue(conversationAtom)
   const { busy, error, status, streamText, send, markApplied } = useConversation()
   const wrapWatch = useWrapWatch()
-  const quoteWatch = useQuoteWatch(uiContext)
   const landed = useProposalLanded(proposal, proposalApplied, uiContext)
+  const quoteWatch = useQuoteWatch(uiContext, landed)
 
   const [applyProblem, setApplyProblem] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
