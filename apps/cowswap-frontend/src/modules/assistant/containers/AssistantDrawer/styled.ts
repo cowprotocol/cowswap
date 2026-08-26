@@ -135,25 +135,38 @@ export const Message = styled.div<{ from: 'assistant' | 'user' }>`
 
 export const Composer = styled.form`
   display: flex;
-  align-items: center;
+  /* flex-end, not center: the buttons stay level with the last line as the box
+     grows, rather than drifting to the middle of a tall input. */
+  align-items: flex-end;
   flex-shrink: 0;
   gap: 8px;
   padding: 14px 20px;
   border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `
 
-export const Input = styled.input`
+// A textarea rather than an input so a long request stays readable while it's being
+// written. A single-line input scrolls its own start out of view, which is worst
+// exactly when it matters most: dictation, where you didn't type the words and are
+// reading them back to check the numbers landed. Height is assigned from content by
+// the composer — see growToFit — and bounded by the min/max here.
+export const Input = styled.textarea`
   flex: 1 1 auto;
   min-width: 0;
-  height: 40px;
-  padding: 0 13px;
+  /* One line: 20px of text plus 10px padding each side, matching the 40px buttons. */
+  min-height: 40px;
+  /* About six lines, then it scrolls — past that the drawer has nowhere to give. */
+  max-height: 140px;
+  padding: 10px 13px;
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   border-radius: 14px;
   background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
   font: inherit;
   font-size: 14px;
+  line-height: 20px;
   outline: none;
+  resize: none;
+  overflow-y: auto;
 
   &::placeholder {
     color: var(${UI.COLOR_TEXT_OPACITY_50});
