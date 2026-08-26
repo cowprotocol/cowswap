@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 00:26\n"
+"PO-Revision-Date: 2026-08-26 12:22\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -360,7 +360,7 @@ msgstr "Sélectionner un token"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Trade your way - personalize the interface and customize your limit orders"
-msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limite"
+msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limites"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -3626,7 +3626,7 @@ msgstr "Cet ordre peut être partiellement exécuté"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "This link expired before you tapped Start in Telegram."
-msgstr ""
+msgstr "Ce lien a expiré avant que vous n’ayez appuyé sur Démarrer dans Telegram."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Build your own hook"
@@ -5629,7 +5629,7 @@ msgstr "Ordre TWAP divisé en <0>{numOfParts} parties égales</0>"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Scan this code, or open the link on this device, then tap “Start” in the chat."
-msgstr ""
+msgstr "Scannez ce code ou ouvrez le lien sur cet appareil, puis appuyez sur “Démarrer” dans la discussion."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
@@ -5664,7 +5664,7 @@ msgstr "Voir la transaction"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Preparing your connect link…"
-msgstr ""
+msgstr "Préparation de votre lien de connexion…"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
 #~ msgid "This list requires consent before importing."
