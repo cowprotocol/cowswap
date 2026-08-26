@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 13:21\n"
+"PO-Revision-Date: 2026-08-26 14:30\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -1714,7 +1714,7 @@ msgstr "En savoir plus sur la tokenomics"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
-msgstr "et a reçu un surplus de "
+msgstr "et a obtenu un surplus de "
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "s"
@@ -1882,7 +1882,7 @@ msgstr "Prix du marché"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencyInputPanel/CurrencyInputPanel.tsx
 msgid "Max"
-msgstr "Max."
+msgstr "Max"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeLinking.tsx
 msgid "Checking code..."
@@ -2812,11 +2812,11 @@ msgstr "Données du pool"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
-msgstr "Aux prix actuels du gas, votre solde restant de {nativeSymbol} après confirmation pourrait uniquement suffire à<0>effectuer jusqu’à {txsRemaining} opération(s) de wrapping, de déwrapping ou d’approbation.</0>"
+msgstr "Aux prix actuels du gas, votre solde de {nativeSymbol} restant après confirmation pourrait uniquement suffire pour<0>effectuer jusqu’à {txsRemaining} opération(s) de wrapping, de déwrapping ou d’approbation.</0>"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
-msgstr "Le prix de ce pool est hors de la plage sélectionnée. Votre position ne génère actuellement pas de frais."
+msgstr "Le prix de ce pool est hors de la plage sélectionnée. Votre position ne génère aucun frais pour le moment."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
 #~ msgid "Receiver address (required)"
