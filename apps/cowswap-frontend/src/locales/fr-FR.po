@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 23:30\n"
+"PO-Revision-Date: 2026-08-26 00:26\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3874,7 +3874,7 @@ msgstr "Passer sur Ethereum"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
-msgstr "Sur CoW Swap, le placement et l’annulation des ordres limite sont gratuits. C’est unique dans la DeFi !"
+msgstr "Sur CoW Swap, le placement et l’annulation des ordres limites sont gratuits. C’est unique dans la DeFi !"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
 msgid "safeBundleFlowContext is not set!"
@@ -3972,7 +3972,7 @@ msgstr "Inclus dans le prix d’exécution estimé"
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
-msgstr "Les frais de réseau, gas inclus, sont couverts lorsque votre ordre est exécuté à un prix de marché supérieur à votre prix limite."
+msgstr "Les frais de réseau, gas inclus, sont couverts lorsque votre ordre est exécuté à un prix de marché meilleur que votre prix limite."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
