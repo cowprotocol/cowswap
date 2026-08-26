@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 22:57\n"
+"PO-Revision-Date: 2026-08-26 23:57\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -569,7 +569,7 @@ msgstr "Solde de {inputSymbol} insuffisant"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "got"
-msgstr "reçu"
+msgstr "obtenu"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/OrderIntent.tsx
 msgid "{sellTokenPart} for at least {buyTokenPart}"
@@ -1178,7 +1178,7 @@ msgstr "Sur CoW Swap, vous pouvez placer des ordres limites sur des soldes que v
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
-msgstr "L’adresse du destinataire saisie comportait le préfixe de chaîne <0>{chainPrefixWarning}</0>, qui ne correspond pas au réseau du token reçu."
+msgstr "L’adresse du destinataire saisie comportait le préfixe de chaîne <0>{chainPrefixWarning}</0>, qui ne correspond pas au réseau du token de sortie."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
@@ -1714,7 +1714,7 @@ msgstr "En savoir plus sur la tokenomics"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
-msgstr "et a obtenu un surplus de "
+msgstr "et obtenu un surplus de "
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "s"
@@ -2211,7 +2211,7 @@ msgstr "Token officiellement émis par {tokenIssuedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Invite your friends. Earn together."
-msgstr "Invitez vos proches. Gagnez ensemble."
+msgstr "Invitez vos amis. Gagnez ensemble."
 
 #: libs/common-utils/src/tooltips.ts
 #~ msgid "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
@@ -2227,7 +2227,7 @@ msgstr "Aucuns frais en cas d’échec de la transaction"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
-msgstr "L’accès à la caméra a été refusé. Autorisez la caméra dans les paramètres de votre navigateur pour scanner les QR codes."
+msgstr "L’accès à la caméra a été refusé. Veuillez autoriser l’accès à la caméra dans les paramètres de votre navigateur pour scanner des QR codes."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -2315,7 +2315,7 @@ msgstr "Wrapper mes {nativeSymbol} et swapper"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Read more about limit orders"
-msgstr "En savoir plus sur les ordres limite"
+msgstr "En savoir plus sur les ordres limites"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
@@ -3020,7 +3020,7 @@ msgstr "Paramètres des alertes de trade"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
-msgstr "Un problème de réseau, comme une hausse des frais de gas, retarde peut-être votre ordre. Vous pouvez attendre qu’il soit résolu{cancellationModal}"
+msgstr "Un problème de réseau, comme une hausse des frais de gas, retarde peut-être votre ordre. Vous pouvez attendre que le problème se résolve{cancellationModal}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Confirmed"
@@ -4682,7 +4682,7 @@ msgstr "Modifiez ici les paramètres des alertes de trade"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
-msgstr "Sélectionner l’entrée et la sortie"
+msgstr "Sélectionner les montants d’entrée et de sortie"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Button/LoadMoreOrdersButton.tsx
 msgid "Search older orders"
@@ -4981,7 +4981,7 @@ msgstr "Approuver"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Execution time"
-msgstr "Délai d’exécution"
+msgstr "Date d’exécution"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Code already taken or wallet already linked."
@@ -5581,7 +5581,7 @@ msgstr "approbation du token"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "including an extra "
-msgstr "dont un surplus de "
+msgstr "y compris un surplus de "
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL format"
@@ -5737,7 +5737,7 @@ msgstr "L’ordre reste ouvert. Son exécution nécessite une autorisation suffi
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Sell → Buy"
-msgstr "Vendre → Acheter"
+msgstr "Vente → Achat"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Cancel order {shortId}"
