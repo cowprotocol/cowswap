@@ -116,9 +116,24 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     const hasUpdates = Object.keys(update).length > 0
 
+    // A param that hasn't been consumed yet must survive into the next render.
+    //
+    // The two currencies do not always resolve on the same render — on a deep link
+    // to a pair that isn't already in state, the input can resolve a render before
+    // the output. Cleaning as soon as EITHER currency existed wiped buyAmount while
+    // only the sell amount had been applied, and onAmountsUpdate (which needs both)
+    // then never fired — silently dropping the limit price from a link like
+    // /#/1/limit/WETH/COW?sellAmount=4&buyAmount=360000 and leaving the form at the
+    // market rate.
+    //
+    // If a currency never resolves at all, its param simply stays in the URL: an
+    // unconsumed param left visible is a better failure than a price dropped
+    // without a trace.
+    const unconsumed = Boolean((sellAmount && !hasSellAmount) || (buyAmount && !hasBuyAmount))
+
     if (hasUpdates) {
-      // Clean params only when an update was applied or currencies are loaded
-      if (inputCurrency || outputCurrency) {
+      // Clean params only when an update was applied and nothing is left to consume
+      if (!unconsumed && (inputCurrency || outputCurrency)) {
         setTimeout(cleanParams)
       }
 
