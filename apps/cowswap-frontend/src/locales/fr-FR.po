@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 12:22\n"
+"PO-Revision-Date: 2026-08-26 13:21\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -368,7 +368,7 @@ msgstr "Réseaux pris en charge :"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
-msgstr "Portefeuilles EOA"
+msgstr "Wallets EOA"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
@@ -1627,7 +1627,7 @@ msgstr "Créer un ordre"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Want to try out limit orders?"
-msgstr "Envie d’essayer les ordres limite ?"
+msgstr "Envie d’essayer les ordres limites ?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
@@ -1639,7 +1639,7 @@ msgstr "smart contracts (par ex. Safe)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Quote refresh in"
-msgstr "Actualisation du devis dans"
+msgstr "Actualisation de cotation dans"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Want TWAP with this wallet? Let us know"
@@ -1651,7 +1651,7 @@ msgstr "Aucune route trouvée pour ce token"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/ProxyRecipient.container.tsx
 msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
-msgstr "Ce fournisseur de bridge utilise une adresse de réception spécifique pour bridger les fonds. Cette adresse est déterministe pour chaque devis et a été vérifiée par CoW Swap."
+msgstr "Ce fournisseur de bridge utilise une adresse de réception spécifique pour bridger les fonds. Cette adresse est déterministe pour chaque cotation et a été vérifiée par CoW Swap."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountModal/AccountModal.container.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1660,7 +1660,7 @@ msgstr "Compte"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders are now easier to use. <0/> Give them a try"
-msgstr "Les ordres limite sont désormais plus simples à utiliser. <0/> Essayez-les"
+msgstr "Les ordres limites sont désormais plus simples à utiliser. <0/> Essayez-les"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Create an issue on GitHub"
@@ -3593,7 +3593,7 @@ msgstr "Réinitialiser"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
 msgid "Share this reference when reporting an issue with this quote."
-msgstr "Partagez cette référence lorsque vous signalez un problème lié à ce devis."
+msgstr "Partagez cette référence lorsque vous signalez un problème lié à cette cotation."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
