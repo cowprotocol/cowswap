@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 14:30\n"
+"PO-Revision-Date: 2026-08-26 16:17\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2902,7 +2902,7 @@ msgstr "Les ordres TWAP étant composés de plusieurs parties, les prix peuvent 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "are"
-msgstr "sont"
+msgstr "existe"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time before your total TWAP order ends."
@@ -3080,7 +3080,7 @@ msgstr "contenu de la boîte de dialogue"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
-msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif, il peut être versionné et il existe"
+msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif, il peut comporter plusieurs versions. Il existe actuellement"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
@@ -3113,7 +3113,7 @@ msgstr "Vous avez {orderKind} un surplus de"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "Invalid argument \"{invalidArgument}\" provided"
-msgstr "Argument « {invalidArgument} » invalide"
+msgstr "L’argument « {invalidArgument} » fourni est invalide"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
@@ -3130,7 +3130,7 @@ msgstr "Impossible de générer les données du permit"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Place orders with a time-weighted average price"
-msgstr "Placez des ordres à prix moyen pondéré dans le temps"
+msgstr "Placez des ordres au prix moyen pondéré dans le temps"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Proxy Accounts"
@@ -3976,7 +3976,7 @@ msgstr "Les frais de réseau, gas inclus, sont couverts lorsque votre ordre est 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "Il {areIs} <0>{ordersWithPermitLength}</0> {orderWord} existant(s) utilisant une approbation du token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
+msgstr "Il {areIs} <0>{ordersWithPermitLength}</0> {orderWord} en cours utilisant une autorisation pour le token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Technical details:"
@@ -4113,7 +4113,7 @@ msgstr "Un instant. Calcul du meilleur prix"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "both {joinedSupportedTypes}"
-msgstr "les deux : {joinedSupportedTypes}"
+msgstr "à la fois {joinedSupportedTypes}"
 
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on Explorer"
@@ -4145,7 +4145,7 @@ msgstr "Approbation du token"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
-msgstr "Nous ne pouvons pas calculer l’impact sur le prix de cet ordre.<0/><1/>Vous pouvez tout de même continuer, mais <2>vérifiez attentivement que les montants reçus correspondent à vos attentes.</2>"
+msgstr "Nous ne pouvons pas calculer l’impact sur le prix pour cet ordre.<0/><1/>Vous pouvez quand même continuer, mais <2>vérifiez attentivement que les montants reçus correspondent à vos attentes.</2>"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Off-chain cancellations require a signature and are free."
@@ -4228,7 +4228,7 @@ msgstr "Solde CoW"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Keep in mind a solver might already have included the order in a solution even if this cancellation is successful."
-msgstr "Gardez à l’esprit qu’un solver peut déjà avoir inclus l’ordre dans une solution, même si cette annulation réussit."
+msgstr "Gardez à l’esprit qu’un solver peut déjà avoir inclus l’ordre dans une solution, même si cette annulation est confirmée."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
@@ -4289,13 +4289,13 @@ msgstr "Booooostez l’APR !"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "It is required to do a one-time approval of {wrappedSymbol} via an on-chain ERC20 Approve transaction."
-msgstr "Une approbation unique de {wrappedSymbol} est requise via une transaction ERC20 Approve on-chain."
+msgstr "Une approbation unique de {wrappedSymbol} est requise via une transaction d'approbation ERC20 on-chain."
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
 msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "La liste contient plusieurs tokens portant le symbole {doubledSymbol}.\n"
-"Sélectionnez le token souhaité dans l’interface ou utilisez son adresse plutôt que son symbole"
+msgstr "Il y a plusieurs tokens avec le symbole {doubledSymbol} dans la liste.\n"
+"Veuillez sélectionner le token souhaité dans l’interface ou utiliser son adresse au lieu du symbole"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "unfillable"
@@ -4414,7 +4414,7 @@ msgstr "Carrières"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
-msgstr "Montant de vente attendu"
+msgstr "Montant de vente estimé"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "orders"
@@ -4589,7 +4589,7 @@ msgstr "tokens"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "No wallet compatibility information available."
-msgstr "Aucune information disponible sur la compatibilité du wallet."
+msgstr "Aucune information de compatibilité de wallet disponible."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "submitted a solution"
@@ -4772,7 +4772,7 @@ msgstr "Demande de signature rejetée."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Can't find a hook that you like?"
-msgstr "Vous ne trouvez pas de hook qui vous convient ?"
+msgstr "Vous ne trouvez pas le hook qui vous convient ?"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Market:"
@@ -5672,7 +5672,7 @@ msgstr "Préparation de votre lien de connexion…"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "is"
-msgstr "est"
+msgstr "existe"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Transaction {errorType}"
