@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 15:25\n"
+"PO-Revision-Date: 2026-08-26 10:07\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -485,7 +485,7 @@ msgstr "Insira a porcentagem de derrapagem entre {0}% e {1}%."
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 msgid "Dismiss"
-msgstr "Descartar"
+msgstr "Ignorar"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/RefCodeInput/RefCodeInputField.tsx
 msgid "ENTER CODE"
@@ -518,7 +518,7 @@ msgstr "Quando"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}"
-msgstr "O volume mínimo de negociação para xStocks tokens é ${XSTOCK_MIN_TRADE_SIZE_USD}"
+msgstr "O volume mínimo de negociação para tokens xStocks é ${XSTOCK_MIN_TRADE_SIZE_USD}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "30 Minutes"
@@ -585,7 +585,7 @@ msgstr "Executar uma simulação"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "This CoW doesn't run away any more! Not from MEV!"
-msgstr "Este CoW não foge mais! Não do MEV!"
+msgstr "Esta CoW não foge mais! Não do MEV!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 #~ msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
@@ -646,7 +646,7 @@ msgstr "Grátis"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.pure.tsx
 msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
-msgstr "O destinatário está na rede {chainName}. Confirme se este é o endereço correto e se ele é válido nesta rede/cadeia."
+msgstr "O destinatário está na rede {chainName}. Confirme se este é o endereço correto e se ele é válido nesta rede."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -716,7 +716,7 @@ msgstr "Ponte concluída!"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Trades coming from integrator flow are excluded from affiliate rewards."
-msgstr "Negociações provenientes do fluxo de integrador são excluídas das recompensas de afiliados."
+msgstr "Operações vindas do fluxo de integradores são excluídas das recompensas de afiliados."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 #~ msgid "Nothing new yet"
@@ -976,7 +976,7 @@ msgstr "Branco"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Maybe next time"
-msgstr "Quem sabe da próxima vez"
+msgstr "Talvez da próxima vez"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Can't find the pool you're looking for?"
@@ -1008,7 +1008,7 @@ msgstr "Importar token intermediário"
 
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
-msgstr "Eu entendo"
+msgstr "Estou ciente"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
 msgid "Partial approval"
@@ -1307,7 +1307,7 @@ msgstr "Saldo total de vCOW"
 
 #: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 msgid "TWAP orders"
-msgstr ""
+msgstr "Ordens TWAP"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/UnsupportedTokenButton.pure.tsx
@@ -1503,7 +1503,7 @@ msgstr "Colocar ordem limite"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "<0>New!</0> Get Telegram notifications about your order status! <1>Get started</1>"
-msgstr ""
+msgstr "<0>Novo!</0> Receba notificações no Telegram sobre o status da sua ordem! <1>Comece agora</1>"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Become an affiliate"
@@ -1996,7 +1996,7 @@ msgstr "Encerrado"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
-msgstr ""
+msgstr "Conectar Telegram"
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
@@ -3004,7 +3004,7 @@ msgstr "Permissão insuficiente concedida para"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Try again"
-msgstr ""
+msgstr "Tente novamente"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Failed to fetch manifest from {manifestUrl}. Please verify the URL and try again."
@@ -3319,7 +3319,7 @@ msgstr "Carteira não suportada detectada"
 
 #: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit orders"
-msgstr ""
+msgstr "Ordens Limite"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Tokens Overview"
@@ -3421,7 +3421,7 @@ msgstr "Liquidez insuficiente para este trade"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Get a new link"
-msgstr ""
+msgstr "Obter um novo link"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -3626,7 +3626,7 @@ msgstr "Esta ordem pode ser parcialmente executada"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "This link expired before you tapped Start in Telegram."
-msgstr ""
+msgstr "Este link expirou antes de você clicar em \"Iniciar\" no chat do Telegram."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Build your own hook"
@@ -5628,7 +5628,7 @@ msgstr "Ordem TWAP dividida em <0>{numOfParts} partes iguais</0>"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Scan this code, or open the link on this device, then tap “Start” in the chat."
-msgstr ""
+msgstr "Escaneie o código ou abra o link neste dispositivo e clique em \"Iniciar\" no chat."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
@@ -5663,7 +5663,7 @@ msgstr "Ver transação"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Preparing your connect link…"
-msgstr ""
+msgstr "Preparando o seu link…"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
 #~ msgid "This list requires consent before importing."
@@ -5862,7 +5862,7 @@ msgstr "do seu valor de venda! Portanto, sua ordem provavelmente não será exec
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Something went wrong. Please try again."
-msgstr ""
+msgstr "Algo deu errado. Por favor, tente novamente."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -6012,7 +6012,7 @@ msgstr "Orçamento expirado. Atualizando..."
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Get Telegram updates when it fills or expires."
-msgstr ""
+msgstr "Receba atualizações no Telegram quando ela preencher ou expirar."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
@@ -6783,7 +6783,7 @@ msgstr "Incompatibilidade de posição do Hook:"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Track this order"
-msgstr ""
+msgstr "Acompanhar esta ordem"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/IframeDappContainer/index.tsx
 msgid "Loading hook..."
@@ -6861,7 +6861,7 @@ msgstr "Executa em"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Open in Telegram"
-msgstr ""
+msgstr "Abrir no Telegram"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
@@ -7708,7 +7708,7 @@ msgstr "Copiar link de indicação"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Enable Telegram alerts"
-msgstr ""
+msgstr "Ativar alertas no Telegram"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
@@ -8221,7 +8221,7 @@ msgstr "Custos de bridge/ponte"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Waiting for you to tap Start…"
-msgstr ""
+msgstr "Esperando você clicar em \"Iniciar\"…"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
