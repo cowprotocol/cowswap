@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 17:59\n"
+"PO-Revision-Date: 2026-08-26 19:42\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2412,7 +2412,7 @@ msgstr "Courez ! ...et essayez d’éviter les attaques sandwich"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
-msgstr "Wrapper vos {nativeSymbol} et profitez de l’expérience classique avec {wrappedSymbol} !"
+msgstr "Wrappez vos {nativeSymbol} et profitez de l’expérience classique avec {wrappedSymbol} !"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per ${triggerVolume} of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
@@ -3797,7 +3797,7 @@ msgstr "Limite de gas"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Price protection"
-msgstr "Protection du prix"
+msgstr "Protection de prix"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
@@ -4647,7 +4647,7 @@ msgstr "Approuver {tokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "The fill price of this order is close or at the market price and is expected to fill soon"
-msgstr "Le prix d’exécution de cet ordre est proche du prix du marché et son exécution est attendue prochainement"
+msgstr "Le prix d’exécution de cet ordre est proche ou au prix du marché et son exécution est attendue sous peu"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "My orders <0/>"
@@ -5203,7 +5203,7 @@ msgstr "Changer de réseau"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Set approval"
-msgstr "Définir l’approbation"
+msgstr "Accorder l'autorisation"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be before {maxDateStr} {timeZone}"
@@ -6083,11 +6083,11 @@ msgstr "au moins"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Earn <0>{rewardAmount}</0> per <1>{triggerVolume}</1> of eligible volume over {timeCapDays} days. Rewards are paid out weekly to your Ethereum wallet."
-msgstr "Gagnez <0>{rewardAmount}</0> pour chaque volume éligible de <1>{triggerVolume}</1> réalisé sous {timeCapDays} jours. Les récompenses sont versées chaque semaine sur votre wallet Ethereum."
+msgstr "Gagnez <0>{rewardAmount}</0> par tranche de <1>{triggerVolume}</1>de volume éligible sur {timeCapDays} jours. Les récompenses sont versées chaque semaine sur votre wallet Ethereum."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "m"
-msgstr "min"
+msgstr "m"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
@@ -6123,7 +6123,7 @@ msgstr "signature supplémentaire est"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
-msgstr "Slippage minimal réduit, au lieu du minimum de {minEthFlowSlippageToSignificant}%"
+msgstr "Slippage minimal réduit (au lieu de {minEthFlowSlippageToSignificant}% minimum)"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Submit"
@@ -6256,7 +6256,7 @@ msgstr "Hors plage"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
 msgid "Since prices can change significantly over time, we suggest increasing your price protection for orders with long deadlines."
-msgstr "Les prix pouvant fortement évoluer avec le temps, nous vous recommandons d’augmenter votre protection du prix pour les ordres dont l’échéance est éloignée."
+msgstr "Les prix pouvant varier considérablement au fil du temps, nous vous conseillons d’augmenter votre protection de prix pour les ordres à échéance longue."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"
@@ -6628,7 +6628,7 @@ msgstr "Le montant minimum d’un trade de tokens xStocks est de ${XSTOCK_MIN_TR
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to the classic {wrappedSymbol} experience and benefit!"
-msgstr "Passez à l’expérience classique avec {wrappedSymbol} et profitez-en !"
+msgstr "Passez à l’expérience classique avec {wrappedSymbol} et profitez de ses avantages !"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Add {hookTypeText}-hook"
@@ -6698,7 +6698,7 @@ msgstr "Vous recevez au moins"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown hook dapp"
-msgstr "Dapp de hook inconnue"
+msgstr "Dapp hook inconnue"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Swap now"
@@ -6706,7 +6706,7 @@ msgstr "Swapper maintenant"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "Send to {networkName} wallet"
-msgstr "Envoyer vers un wallet sur {networkName}"
+msgstr "Envoyer vers le wallet {networkName}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
@@ -6714,12 +6714,12 @@ msgstr "Une erreur inattendue est survenue"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Use a referral code to earn <0>{traderRewardAmount}</0> for<1/>every <2>{triggerVolumeLabel}</2> in eligible volume within {affiliateTimeCapDays} days.<3/>New wallets only."
-msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> pour<1/>chaque volume éligible de <2>{triggerVolumeLabel}</2> réalisé sous {affiliateTimeCapDays} jours.<3/>Réservé aux nouveaux wallets."
+msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> pour<1/>chaque tranche de <2>{triggerVolumeLabel}</2> de volume éligible sous {affiliateTimeCapDays} jours.<3/>Nouveaux wallets uniquement."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Ajouter le"
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Confirm Swap and Bridge"
@@ -7856,7 +7856,7 @@ msgstr "Mentions légales"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "You will be prompted to <0>wrap your {nativeSymbol} to {wrappedSymbol}</0> before placing your order."
-msgstr "Vous devrez <0>wrapper vos {nativeSymbol} en {wrappedSymbol}</0> avant de placer votre ordre."
+msgstr "Vous serez invité à <0>wrapper vos {nativeSymbol} en {wrappedSymbol}</0> avant de placer votre ordre."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancelling {ordersCount} orders"
@@ -8260,7 +8260,7 @@ msgstr "Configurer l’ordre TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
-msgstr "La « Durée de chaque partie » correspond à l’intervalle entre les parties de votre ordre TWAP.<0/><1/>Une durée plus courte accélère l’exécution de chaque partie et peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
+msgstr "La « Durée de chaque partie » correspond à l’intervalle entre chaque partie de votre ordre TWAP.<0/><1/>Choisir une durée plus courte permet une exécution plus rapide de chaque partie, ce qui peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Hours"
