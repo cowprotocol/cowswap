@@ -86,7 +86,7 @@ export function useAssistantContext(): AssistantUiContext {
   const rateImpact = useRateImpact()
   const executionPrice = useAtomValue(executionPriceAtom)
   const tradeTypeInfo = useTradeTypeInfo()
-  const { values: balances } = useTokensBalancesCombined()
+  const { values: balances, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const tokensByAddress = useTokensByAddressMap()
   const approval = useApprovalContext()
 
@@ -95,6 +95,16 @@ export function useAssistantContext(): AssistantUiContext {
   return useMemo(() => {
     // Resolve the null-state once rather than optional-chaining every field.
     const state = derived ?? DEFAULT_TRADE_DERIVED_STATE
+
+    // ⚠️ An empty holdings list must never stand in for an unread one.
+    //
+    // Balances are scoped to the current chain and refetch when it changes, so
+    // between "switch this to Ethereum" and the new balances arriving, the map is
+    // empty — and reporting that as holdings said "you hold none of the tracked
+    // tokens on Ethereum" to someone who holds plenty. The app draws this same
+    // distinction in useIsZeroBalance, which refuses to report zero before
+    // hasFirstLoad for exactly this reason.
+    const unavailable = balancesError ? 'error' : !hasFirstLoad ? 'loading' : null
     const { holdings, truncated } = deriveHoldings(balances, tokensByAddress)
 
     return {
@@ -117,10 +127,24 @@ export function useAssistantContext(): AssistantUiContext {
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
       approval,
-      holdings,
-      ...(truncated ? { holdingsTruncated: true } : {}),
+      // Absent while unknown, so the model has nothing to mistake for an answer.
+      ...(unavailable ? { holdingsUnavailable: unavailable } : { holdings }),
+      ...(!unavailable && truncated ? { holdingsTruncated: true } : {}),
     }
-  }, [derived, priceImpact, rateImpact, executionPrice, isLimit, account, chainId, balances, tokensByAddress, approval])
+  }, [
+    derived,
+    priceImpact,
+    rateImpact,
+    executionPrice,
+    isLimit,
+    account,
+    chainId,
+    balances,
+    hasFirstLoad,
+    balancesError,
+    tokensByAddress,
+    approval,
+  ])
 }
 
 /**

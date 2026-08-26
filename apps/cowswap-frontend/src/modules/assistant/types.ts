@@ -103,5 +103,11 @@ export interface AssistantUiContext {
    */
   holdings?: AssistantHolding[]
   holdingsTruncated?: boolean
+  /**
+   * Present when `holdings` could not be read, so an empty list never has to stand
+   * in for an unknown one. Switching chains is the ordinary case: balances refetch,
+   * and until they arrive the wallet looks empty on the new chain.
+   */
+  holdingsUnavailable?: 'error' | 'loading'
   approval?: AssistantApproval | null
 }
